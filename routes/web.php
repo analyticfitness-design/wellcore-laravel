@@ -1,5 +1,9 @@
 <?php
 
+use App\Livewire\Admin\ClientTable;
+use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Admin\InscriptionsList;
+use App\Livewire\Admin\PaymentsDashboard;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Client\ChallengesView;
@@ -13,6 +17,10 @@ use App\Livewire\Client\PlanViewer;
 use App\Livewire\Client\ProfileEditor;
 use App\Livewire\Client\ProgressPhotos;
 use App\Livewire\Client\TrainingView;
+use App\Livewire\Coach\CheckinReview;
+use App\Livewire\Coach\ClientList as CoachClientList;
+use App\Livewire\Coach\Dashboard as CoachDashboard;
+use App\Livewire\Coach\MessageCenter;
 use App\Livewire\TestDashboard;
 use Illuminate\Support\Facades\Route;
 
@@ -57,14 +65,36 @@ Route::middleware('auth:wellcore')->group(function () {
         return 'RISE Dashboard — Coming in Phase 2';
     })->name('rise.dashboard');
 
-    // Admin dashboards
-    Route::get('/admin', function () {
-        return 'Admin Dashboard — Coming in Phase 3';
-    })->name('admin.dashboard');
+    // Admin dashboard routes
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/', AdminDashboard::class)->name('dashboard');
+        Route::get('/clients', ClientTable::class)->name('clients');
+        Route::get('/payments', PaymentsDashboard::class)->name('payments');
+        Route::get('/inscriptions', InscriptionsList::class)->name('inscriptions');
+        Route::get('/coaches', function () {
+            return 'Coach Management — Coming soon';
+        })->name('coaches');
+        Route::get('/plans', function () {
+            return 'Plan Management — Coming soon';
+        })->name('plans');
+        Route::get('/tickets', function () {
+            return 'Ticket Management — Coming soon';
+        })->name('tickets');
+    });
 
-    Route::get('/coach', function () {
-        return 'Coach Portal — Coming in Phase 3';
-    })->name('coach.dashboard');
+    // Coach portal routes
+    Route::prefix('coach')->name('coach.')->group(function () {
+        Route::get('/', CoachDashboard::class)->name('dashboard');
+        Route::get('/clients', CoachClientList::class)->name('clients');
+        Route::get('/checkins', CheckinReview::class)->name('checkins');
+        Route::get('/messages', MessageCenter::class)->name('messages');
+        Route::get('/notes', function () {
+            return 'Coming soon';
+        })->name('notes');
+        Route::get('/plans', function () {
+            return 'Coming soon';
+        })->name('plans');
+    });
 
     // Logout
     Route::post('/logout', function () {
