@@ -297,6 +297,9 @@
 
             {{-- Right: user info, dark mode, etc. --}}
             <div class="flex items-center gap-3">
+                {{-- Notification Bell --}}
+                @livewire('client.notification-bell')
+
                 {{-- Dark Mode Toggle --}}
                 <button
                     x-on:click="darkMode = !darkMode"
