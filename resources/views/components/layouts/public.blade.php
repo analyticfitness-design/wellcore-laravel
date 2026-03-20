@@ -36,6 +36,9 @@
                 <a href="{{ route('metodo') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('metodo') ? '!text-wc-text' : '' }}">
                     Metodo
                 </a>
+                <a href="{{ route('proceso') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('proceso') ? '!text-wc-text' : '' }}">
+                    Proceso
+                </a>
                 <a href="{{ route('planes') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('planes') ? '!text-wc-text' : '' }}">
                     Planes
                 </a>
@@ -96,6 +99,7 @@
             <div class="space-y-1 px-4 py-4">
                 <a href="{{ route('home') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Inicio</a>
                 <a href="{{ route('metodo') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Metodo</a>
+                <a href="{{ route('proceso') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Proceso</a>
                 <a href="{{ route('planes') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Planes</a>
                 <a href="{{ route('nosotros') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Nosotros</a>
                 <a href="{{ route('faq') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">FAQ</a>
@@ -132,6 +136,7 @@
                     <ul class="mt-4 space-y-2">
                         <li><a href="{{ route('home') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Inicio</a></li>
                         <li><a href="{{ route('metodo') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">El Metodo</a></li>
+                        <li><a href="{{ route('proceso') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Proceso</a></li>
                         <li><a href="{{ route('planes') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Planes</a></li>
                         <li><a href="{{ route('nosotros') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Nosotros</a></li>
                         <li><a href="{{ route('faq') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">FAQ</a></li>

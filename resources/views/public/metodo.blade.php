@@ -465,7 +465,7 @@
                         <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
                             Comenzar ahora
                         </a>
-                        <a href="{{ route('home') }}" class="inline-flex items-center justify-center rounded-lg border border-wc-border px-8 py-3 text-base font-medium text-wc-text-secondary hover:text-wc-text">
+                        <a href="{{ route('proceso') }}" class="inline-flex items-center justify-center rounded-lg border border-wc-border px-8 py-3 text-base font-medium text-wc-text-secondary hover:text-wc-text">
                             Ver el Proceso
                         </a>
                     </div>

@@ -47,6 +47,9 @@ Route::get('/faq', function () {
 Route::get('/metodo', function () {
     return view('public.metodo');
 })->name('metodo');
+Route::get('/proceso', function () {
+    return view('public.proceso');
+})->name('proceso');
 
 // Shop routes (public, no auth required)
 Route::prefix('tienda')->name('shop.')->group(function () {
