@@ -33,6 +33,9 @@
                 <a href="{{ route('home') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('home') ? '!text-wc-text' : '' }}">
                     Inicio
                 </a>
+                <a href="{{ route('metodo') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('metodo') ? '!text-wc-text' : '' }}">
+                    Metodo
+                </a>
                 <a href="{{ route('planes') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('planes') ? '!text-wc-text' : '' }}">
                     Planes
                 </a>
@@ -92,6 +95,7 @@
         <div x-show="mobileMenu" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" x-cloak class="border-t border-wc-border bg-wc-bg md:hidden">
             <div class="space-y-1 px-4 py-4">
                 <a href="{{ route('home') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Inicio</a>
+                <a href="{{ route('metodo') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Metodo</a>
                 <a href="{{ route('planes') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Planes</a>
                 <a href="{{ route('nosotros') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Nosotros</a>
                 <a href="{{ route('faq') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">FAQ</a>
@@ -127,6 +131,7 @@
                     <h4 class="text-sm font-semibold uppercase tracking-wider text-wc-text">Navegacion</h4>
                     <ul class="mt-4 space-y-2">
                         <li><a href="{{ route('home') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Inicio</a></li>
+                        <li><a href="{{ route('metodo') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">El Metodo</a></li>
                         <li><a href="{{ route('planes') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Planes</a></li>
                         <li><a href="{{ route('nosotros') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Nosotros</a></li>
                         <li><a href="{{ route('faq') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">FAQ</a></li>
