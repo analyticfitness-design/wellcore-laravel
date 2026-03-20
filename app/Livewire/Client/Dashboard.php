@@ -2,12 +2,15 @@
 
 namespace App\Livewire\Client;
 
+use App\Models\AssignedPlan;
 use App\Models\Checkin;
 use App\Models\ClientXp;
 use App\Models\Payment;
 use App\Models\TrainingLog;
+use App\Models\WeightLog;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache as CacheFacade;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -32,6 +35,18 @@ class Dashboard extends Component
     // Recent activity
     public array $recentActivity = [];
 
+    // Daily missions
+    public array $dailyMissions = [];
+
+    // XP progress
+    public int $xpForNextLevel = 0;
+    public int $xpProgress = 0;
+
+    // Plan info
+    public bool $hasActivePlan = false;
+    public ?string $planPhase = null;
+    public int $planDaysActive = 0;
+
     public function mount(): void
     {
         $client = auth('wellcore')->user();
@@ -52,6 +67,8 @@ class Dashboard extends Component
         $this->loadStats($client);
         $this->loadWeeklyOverview($client);
         $this->loadRecentActivity($client);
+        $this->loadPlanInfo($client);
+        $this->loadDailyMissions($client);
     }
 
     protected function loadStats($client): void
@@ -67,6 +84,13 @@ class Dashboard extends Component
             $this->xpTotal = 0;
             $this->level = 1;
         }
+
+        // XP progress bar
+        $levelCap = $this->level * 500;
+        $this->xpForNextLevel = $levelCap;
+        $this->xpProgress = $levelCap > 0
+            ? (int) round(($this->xpTotal % $levelCap) / $levelCap * 100)
+            : 0;
 
         // Check-ins this month
         $this->checkinsThisMonth = Checkin::where('client_id', $client->id)
@@ -164,6 +188,83 @@ class Dashboard extends Component
             ])
             ->values()
             ->toArray();
+    }
+
+    protected function loadPlanInfo($client): void
+    {
+        $plan = CacheFacade::remember(
+            "client_plan_{$client->id}",
+            now()->addMinutes(5),
+            fn () => AssignedPlan::where('client_id', $client->id)
+                ->where('active', 1)
+                ->orderByDesc('valid_from')
+                ->first()
+        );
+
+        if ($plan) {
+            $this->hasActivePlan = true;
+            $this->planPhase = $plan->plan_type;
+            $this->planDaysActive = (int) Carbon::parse($plan->valid_from)->diffInDays(now());
+        } else {
+            $this->hasActivePlan = false;
+            $this->planPhase = null;
+            $this->planDaysActive = 0;
+        }
+    }
+
+    protected function loadDailyMissions($client): void
+    {
+        // Mission 1: completar entrenamiento hoy
+        $trainedToday = TrainingLog::where('client_id', $client->id)
+            ->where('log_date', now()->toDateString())
+            ->where('completed', true)
+            ->exists();
+
+        // Mission 2: check-in esta semana
+        $checkinThisWeek = Checkin::where('client_id', $client->id)
+            ->whereBetween('checkin_date', [
+                now()->startOfWeek()->toDateString(),
+                now()->endOfWeek()->toDateString(),
+            ])
+            ->exists();
+
+        // Mission 3: registrar peso esta semana
+        $weightThisWeek = WeightLog::where('client_id', $client->id)
+            ->where('week_number', now()->isoWeek())
+            ->where('year', now()->year)
+            ->exists();
+
+        // Mission 4: revisar plan de nutricion (always available)
+        $this->dailyMissions = [
+            [
+                'key'       => 'training',
+                'title'     => 'Completar entrenamiento',
+                'completed' => $trainedToday,
+                'route'     => route('client.training'),
+                'icon'      => 'dumbbell',
+            ],
+            [
+                'key'       => 'checkin',
+                'title'     => 'Hacer check-in semanal',
+                'completed' => $checkinThisWeek,
+                'route'     => route('client.checkin'),
+                'icon'      => 'checkin',
+            ],
+            [
+                'key'       => 'weight',
+                'title'     => 'Registrar peso',
+                'completed' => $weightThisWeek,
+                'route'     => route('client.metrics'),
+                'icon'      => 'scale',
+            ],
+            [
+                'key'       => 'nutrition',
+                'title'     => 'Revisar plan de nutricion',
+                'completed' => false,
+                'route'     => route('client.nutrition'),
+                'icon'      => 'nutrition',
+            ],
+        ];
     }
 
     public function render()
