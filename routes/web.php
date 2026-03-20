@@ -96,6 +96,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/profile', ProfileEditor::class)->name('profile');
         Route::get('/habits', HabitTracker::class)->name('habits');
         Route::get('/academia', \App\Livewire\Client\Academia::class)->name('academia');
+        Route::get('/timer', \App\Livewire\Client\WorkoutTimer::class)->name('timer');
     });
 
     // RISE program routes
