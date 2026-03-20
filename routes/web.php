@@ -99,6 +99,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/timer', \App\Livewire\Client\WorkoutTimer::class)->name('timer');
         Route::get('/mindfulness', \App\Livewire\Client\Mindfulness::class)->name('mindfulness');
         Route::get('/videos', \App\Livewire\Client\VideoLibrary::class)->name('videos');
+        Route::get('/recetas', \App\Livewire\Client\RecipeDatabase::class)->name('recipes');
     });
 
     // RISE program routes
