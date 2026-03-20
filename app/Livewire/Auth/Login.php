@@ -83,6 +83,9 @@ class Login extends Component
         // Dispatch browser event so Alpine.js can store token in localStorage
         // (for compatibility with the vanilla PHP app)
         $this->dispatch('login-success', token: $token, userType: $userType->value, redirectUrl: $redirectUrl);
+
+        // Server-side redirect as fallback (if JS dispatch doesn't trigger)
+        $this->redirect($redirectUrl);
     }
 
     protected function resolveRedirectUrl(Admin|Client $user, UserType $userType): string

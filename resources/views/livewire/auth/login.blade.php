@@ -2,14 +2,20 @@
     x-data="{
         showPassword: false,
         init() {
-            Livewire.on('login-success', (data) => {
-                // Store token in localStorage for vanilla PHP app compatibility
-                localStorage.setItem('wc_token', data.token);
-                localStorage.setItem('wc_user_type', data.userType);
+            Livewire.on('login-success', (params) => {
+                // Livewire 3 passes named params as first element of array
+                const data = Array.isArray(params) ? params[0] : params;
+                const token = data?.token || params?.token;
+                const userType = data?.userType || params?.userType;
+                const redirectUrl = data?.redirectUrl || params?.redirectUrl;
 
-                // Small delay so the user sees the success state
+                if (token) {
+                    localStorage.setItem('wc_token', token);
+                    localStorage.setItem('wc_user_type', userType || '');
+                }
+
                 setTimeout(() => {
-                    window.location.href = data.redirectUrl;
+                    window.location.href = redirectUrl || '/client';
                 }, 600);
             });
         }
