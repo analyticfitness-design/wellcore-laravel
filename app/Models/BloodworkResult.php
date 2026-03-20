@@ -8,22 +8,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable([
     'client_id',
-    'log_date',
-    'habit_type',
+    'test_name',
     'value',
+    'unit',
+    'reference_range',
+    'test_date',
 ])]
-class HabitLog extends Model
+class BloodworkResult extends Model
 {
-    protected $table = 'habit_logs';
-
-    public $timestamps = false;
+    protected $table = 'bloodwork_results';
 
     protected function casts(): array
     {
         return [
-            'log_date' => 'date',
-            'value' => 'integer',
-            'created_at' => 'datetime',
+            'value' => 'decimal:2',
+            'test_date' => 'date',
         ];
     }
 
