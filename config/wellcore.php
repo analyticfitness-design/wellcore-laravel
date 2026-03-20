@@ -57,4 +57,26 @@ return [
         'events_secret' => env('WOMPI_EVENTS_SECRET', ''),
         'sandbox' => env('WOMPI_SANDBOX', true),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Claude AI Integration
+    |--------------------------------------------------------------------------
+    */
+    'ai' => [
+        'api_key' => env('CLAUDE_API_KEY', ''),
+        'model' => env('CLAUDE_MODEL', 'claude-haiku-4-5-20251001'),
+        'base_url' => env('CLAUDE_BASE_URL', 'https://api.anthropic.com'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | VAPID Web Push Notifications
+    |--------------------------------------------------------------------------
+    */
+    'vapid' => [
+        'public_key' => env('VAPID_PUBLIC_KEY', ''),
+        'private_key' => env('VAPID_PRIVATE_KEY', ''),
+        'subject' => env('VAPID_SUBJECT', 'mailto:info@wellcorefitness.com'),
+    ],
 ];
