@@ -4,6 +4,7 @@ use App\Livewire\Admin\ClientDetail;
 use App\Livewire\Admin\ClientTable;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\InscriptionsList;
+use App\Livewire\Admin\InvitationManager;
 use App\Livewire\Admin\PaymentsDashboard;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
@@ -139,6 +140,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/clients/{clientId}', ClientDetail::class)->name('client-detail');
         Route::get('/payments', PaymentsDashboard::class)->name('payments');
         Route::get('/inscriptions', InscriptionsList::class)->name('inscriptions');
+        Route::get('/invitations', InvitationManager::class)->name('invitations');
         Route::get('/coaches', function () {
             return 'Coach Management — Coming soon';
         })->name('coaches');
