@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Admin\ClientDetail;
 use App\Livewire\Admin\ClientTable;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\InscriptionsList;
@@ -135,6 +136,7 @@ Route::middleware('auth:wellcore')->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/', AdminDashboard::class)->name('dashboard');
         Route::get('/clients', ClientTable::class)->name('clients');
+        Route::get('/clients/{clientId}', ClientDetail::class)->name('client-detail');
         Route::get('/payments', PaymentsDashboard::class)->name('payments');
         Route::get('/inscriptions', InscriptionsList::class)->name('inscriptions');
         Route::get('/coaches', function () {
