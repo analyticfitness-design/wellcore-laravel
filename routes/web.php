@@ -18,6 +18,7 @@ use App\Livewire\Client\Dashboard as ClientDashboard;
 use App\Livewire\Client\VideoCheckinUpload;
 use App\Livewire\Client\HabitTracker;
 use App\Livewire\Client\MetricsTracker;
+use App\Livewire\Client\AINutrition;
 use App\Livewire\Client\NutritionPlan;
 use App\Livewire\Client\PlanViewer;
 use App\Livewire\Client\ProfileEditor;
@@ -96,6 +97,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/training', TrainingView::class)->name('training');
         Route::get('/metrics', MetricsTracker::class)->name('metrics');
         Route::get('/nutrition', NutritionPlan::class)->name('nutrition');
+        Route::get('/ai-nutrition', AINutrition::class)->name('ai-nutrition');
         Route::get('/photos', ProgressPhotos::class)->name('photos');
         Route::get('/challenges', ChallengesView::class)->name('challenges');
         Route::get('/chat', ChatWidget::class)->name('chat');
