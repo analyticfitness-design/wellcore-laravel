@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Admin\AdminTools;
 use App\Livewire\Admin\ClientDetail;
 use App\Livewire\Admin\ClientTable;
 use App\Livewire\Admin\CoachManagement;
@@ -150,6 +151,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/plans', PlanManagement::class)->name('plans');
         Route::get('/rise', RiseManagement::class)->name('rise');
         Route::get('/tickets', \App\Livewire\Admin\TicketManager::class)->name('tickets');
+        Route::get('/tools', AdminTools::class)->name('tools');
     });
 
     // Coach portal routes
