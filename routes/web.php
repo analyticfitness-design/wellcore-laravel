@@ -53,6 +53,7 @@ Route::get('/proceso', function () {
 Route::get('/reto-rise', function () {
     return view('public.rise');
 })->name('reto-rise');
+Route::get('/inscripcion', \App\Livewire\InscriptionForm::class)->name('inscripcion');
 
 // Shop routes (public, no auth required)
 Route::prefix('tienda')->name('shop.')->group(function () {
