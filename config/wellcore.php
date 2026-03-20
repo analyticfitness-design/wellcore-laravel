@@ -44,4 +44,17 @@ return [
     |--------------------------------------------------------------------------
     */
     'legacy_url' => env('WC_LEGACY_URL', 'http://wellcorefitness.test'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Wompi Payment Gateway
+    |--------------------------------------------------------------------------
+    */
+    'wompi' => [
+        'base_url' => env('WOMPI_BASE_URL', 'https://production.wompi.co/v1'),
+        'public_key' => env('WOMPI_PUBLIC_KEY', ''),
+        'private_key' => env('WOMPI_PRIVATE_KEY', ''),
+        'events_secret' => env('WOMPI_EVENTS_SECRET', ''),
+        'sandbox' => env('WOMPI_SANDBOX', true),
+    ],
 ];

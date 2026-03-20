@@ -21,7 +21,14 @@ use App\Livewire\Coach\CheckinReview;
 use App\Livewire\Coach\ClientList as CoachClientList;
 use App\Livewire\Coach\Dashboard as CoachDashboard;
 use App\Livewire\Coach\MessageCenter;
+use App\Livewire\Rise\DailyTracking;
+use App\Livewire\Rise\Dashboard as RiseDashboard;
+use App\Livewire\Rise\Measurements as RiseMeasurements;
+use App\Livewire\Rise\ProgramView;
+use App\Livewire\Shop\ProductCatalog;
+use App\Livewire\Shop\ProductDetail;
 use App\Livewire\TestDashboard;
+use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 
 // Public marketing pages
@@ -37,6 +44,15 @@ Route::get('/nosotros', function () {
 Route::get('/faq', function () {
     return view('public.faq');
 })->name('faq');
+
+// Shop routes (public, no auth required)
+Route::prefix('tienda')->name('shop.')->group(function () {
+    Route::get('/', ProductCatalog::class)->name('catalog');
+    Route::get('/{slug}', ProductDetail::class)->name('product');
+});
+
+// Webhook routes (excluded from CSRF via bootstrap/app.php)
+Route::post('/webhooks/wompi', [WebhookController::class, 'wompi'])->name('webhooks.wompi');
 
 // Auth routes (guest only — redirect if already logged in)
 Route::middleware('guest:wellcore')->group(function () {
@@ -61,9 +77,17 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/habits', HabitTracker::class)->name('habits');
     });
 
-    Route::get('/rise', function () {
-        return 'RISE Dashboard — Coming in Phase 2';
-    })->name('rise.dashboard');
+    // RISE program routes
+    Route::prefix('rise')->name('rise.')->group(function () {
+        Route::get('/', RiseDashboard::class)->name('dashboard');
+        Route::get('/tracking', DailyTracking::class)->name('tracking');
+        Route::get('/measurements', RiseMeasurements::class)->name('measurements');
+        Route::get('/program', ProgramView::class)->name('program');
+        Route::get('/habits', function () { return 'Coming soon'; })->name('habits');
+        Route::get('/photos', function () { return 'Coming soon'; })->name('photos');
+        Route::get('/chat', function () { return 'Coming soon'; })->name('chat');
+        Route::get('/profile', function () { return 'Coming soon'; })->name('profile');
+    });
 
     // Admin dashboard routes
     Route::prefix('admin')->name('admin.')->group(function () {
