@@ -55,6 +55,12 @@ Route::get('/reto-rise', function () {
 })->name('reto-rise');
 Route::get('/inscripcion', \App\Livewire\InscriptionForm::class)->name('inscripcion');
 Route::get('/pagar', \App\Livewire\Checkout::class)->name('pagar');
+Route::get('/pago-exitoso', function () {
+    return view('public.pago-exitoso');
+})->name('pago-exitoso');
+Route::get('/pago-confirmado', function () {
+    return view('public.pago-exitoso');
+})->name('pago-confirmado');
 
 // Shop routes (public, no auth required)
 Route::prefix('tienda')->name('shop.')->group(function () {
