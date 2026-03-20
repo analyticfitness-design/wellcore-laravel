@@ -75,6 +75,7 @@ Route::post('/webhooks/wompi', [WebhookController::class, 'wompi'])->name('webho
 Route::middleware('guest:wellcore')->group(function () {
     Route::get('/login', Login::class)->name('login');
     Route::get('/forgot-password', ForgotPassword::class)->name('password.request');
+    Route::get('/reset-password/{token}', \App\Livewire\Auth\ResetPassword::class)->name('password.reset');
 });
 
 // Authenticated routes
