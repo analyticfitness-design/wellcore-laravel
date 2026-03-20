@@ -37,6 +37,7 @@ use App\Livewire\Coach\CheckinReview;
 use App\Livewire\Coach\ClientList as CoachClientList;
 use App\Livewire\Coach\CoachProfilePage;
 use App\Livewire\Coach\Dashboard as CoachDashboard;
+use App\Livewire\Coach\CoachNotesPage;
 use App\Livewire\Coach\MessageCenter;
 use App\Livewire\Rise\DailyTracking;
 use App\Livewire\Rise\Dashboard as RiseDashboard;
@@ -164,9 +165,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/checkins', CheckinReview::class)->name('checkins');
         Route::get('/messages', MessageCenter::class)->name('messages');
         Route::get('/broadcast', BroadcastCenter::class)->name('broadcast');
-        Route::get('/notes', function () {
-            return 'Coming soon';
-        })->name('notes');
+        Route::get('/notes', CoachNotesPage::class)->name('notes');
         Route::get('/plans', function () {
             return 'Coming soon';
         })->name('plans');
