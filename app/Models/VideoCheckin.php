@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
     'status',
     'plan_uses_this_month',
     'responded_at',
+    'created_at',
 ])]
 class VideoCheckin extends Model
 {

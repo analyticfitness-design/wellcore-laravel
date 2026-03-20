@@ -5,6 +5,7 @@ namespace App\Livewire\Coach;
 use App\Models\AssignedPlan;
 use App\Models\Checkin;
 use App\Models\Client;
+use App\Models\VideoCheckin;
 use Carbon\Carbon;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -15,6 +16,12 @@ class CheckinReview extends Component
     public string $replyText = '';
     public ?int $replyingTo = null;
     public bool $showReplied = false;
+
+    // Video check-in properties
+    public string $videoReplyText = '';
+    public ?int $videoReplyingTo = null;
+    public ?int $videoExpandedId = null;
+    public bool $showVideoReviewed = false;
 
     public function startReply(int $checkinId): void
     {
@@ -57,6 +64,55 @@ class CheckinReview extends Component
         $this->replyText = '';
     }
 
+    // Video check-in methods
+    public function startVideoReply(int $checkinId): void
+    {
+        $this->videoReplyingTo = $checkinId;
+        $this->videoReplyText = '';
+        $this->videoExpandedId = $checkinId;
+    }
+
+    public function cancelVideoReply(): void
+    {
+        $this->videoReplyingTo = null;
+        $this->videoReplyText = '';
+    }
+
+    public function toggleVideoExpand(int $id): void
+    {
+        $this->videoExpandedId = $this->videoExpandedId === $id ? null : $id;
+    }
+
+    public function submitVideoReply(): void
+    {
+        if (!$this->videoReplyingTo || trim($this->videoReplyText) === '') {
+            return;
+        }
+
+        $coachId = auth('wellcore')->id();
+
+        $videoCheckin = VideoCheckin::find($this->videoReplyingTo);
+        if (!$videoCheckin) return;
+
+        // Verify this video check-in belongs to a client assigned to this coach
+        $clientIds = AssignedPlan::where('assigned_by', $coachId)
+            ->pluck('client_id')
+            ->unique();
+
+        if (!$clientIds->contains($videoCheckin->client_id)) {
+            return;
+        }
+
+        $videoCheckin->update([
+            'coach_response' => trim($this->videoReplyText),
+            'status' => 'coach_reviewed',
+            'responded_at' => now(),
+        ]);
+
+        $this->videoReplyingTo = null;
+        $this->videoReplyText = '';
+    }
+
     public function render()
     {
         $coachId = auth('wellcore')->id();
@@ -97,9 +153,38 @@ class CheckinReview extends Component
 
         $pendingCount = Checkin::whereIn('client_id', $clientIds)->whereNull('coach_reply')->count();
 
+        // Video check-ins
+        $videoQuery = VideoCheckin::whereIn('client_id', $clientIds);
+        if (!$this->showVideoReviewed) {
+            $videoQuery->where('status', 'pending');
+        }
+        $videoCheckins = $videoQuery->orderByDesc('created_at')->get();
+
+        $videoCheckinData = $videoCheckins->map(function ($vc) {
+            $client = Client::find($vc->client_id);
+            return [
+                'id' => $vc->id,
+                'client_name' => $client->name ?? 'Cliente',
+                'client_initial' => substr($client->name ?? 'C', 0, 1),
+                'exercise_name' => $vc->exercise_name,
+                'media_type' => $vc->media_type,
+                'media_url' => $vc->media_url,
+                'notes' => $vc->notes,
+                'coach_response' => $vc->coach_response,
+                'status' => $vc->status,
+                'created_at' => $vc->created_at->format('d M Y, H:i'),
+                'created_at_ago' => $vc->created_at->diffForHumans(),
+                'responded_at' => $vc->responded_at?->diffForHumans(),
+            ];
+        });
+
+        $pendingVideoCount = VideoCheckin::whereIn('client_id', $clientIds)->where('status', 'pending')->count();
+
         return view('livewire.coach.checkin-review', [
             'checkins' => $checkinData,
             'pendingCount' => $pendingCount,
+            'videoCheckins' => $videoCheckinData,
+            'pendingVideoCount' => $pendingVideoCount,
         ]);
     }
 }

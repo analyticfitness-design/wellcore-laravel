@@ -5,7 +5,10 @@
         <div>
             <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">Check-ins</h1>
             <p class="mt-1 text-sm text-wc-text-tertiary">
-                {{ $pendingCount }} check-in{{ $pendingCount !== 1 ? 's' : '' }} pendiente{{ $pendingCount !== 1 ? 's' : '' }} de respuesta
+                {{ $pendingCount }} check-in{{ $pendingCount !== 1 ? 's' : '' }} pendiente{{ $pendingCount !== 1 ? 's' : '' }}
+                @if($pendingVideoCount > 0)
+                    &middot; {{ $pendingVideoCount }} video{{ $pendingVideoCount !== 1 ? 's' : '' }} pendiente{{ $pendingVideoCount !== 1 ? 's' : '' }}
+                @endif
             </p>
         </div>
 
@@ -24,6 +27,176 @@
             </button>
         </div>
     </div>
+
+    {{-- ============================================ --}}
+    {{-- VIDEO CHECK-INS SECTION                      --}}
+    {{-- ============================================ --}}
+    @if($videoCheckins->count() > 0 || $pendingVideoCount > 0)
+        <div class="space-y-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-wc-accent/10">
+                        <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-semibold text-wc-text">Video Check-ins</h2>
+                        <p class="text-xs text-wc-text-tertiary">{{ $pendingVideoCount }} pendiente{{ $pendingVideoCount !== 1 ? 's' : '' }}</p>
+                    </div>
+                </div>
+                <button
+                    wire:click="$toggle('showVideoReviewed')"
+                    class="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors
+                           {{ $showVideoReviewed ? 'border-wc-accent bg-wc-accent/10 text-wc-accent' : 'border-wc-border bg-wc-bg-tertiary text-wc-text-secondary hover:text-wc-text' }}"
+                >
+                    {{ $showVideoReviewed ? 'Todos' : 'Solo pendientes' }}
+                </button>
+            </div>
+
+            @foreach($videoCheckins as $vc)
+                <div class="rounded-card border border-wc-border bg-wc-bg-tertiary overflow-hidden {{ $vc['status'] === 'pending' ? 'border-l-2 border-l-orange-500' : '' }}">
+                    {{-- Video check-in header --}}
+                    <button
+                        wire:click="toggleVideoExpand({{ $vc['id'] }})"
+                        class="flex w-full items-center gap-4 p-4 sm:p-5 text-left"
+                    >
+                        {{-- Client avatar --}}
+                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent/15">
+                            <span class="text-sm font-semibold text-wc-accent">{{ $vc['client_initial'] }}</span>
+                        </div>
+
+                        {{-- Info --}}
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <p class="text-sm font-medium text-wc-text">{{ $vc['client_name'] }}</p>
+                                <span class="inline-flex shrink-0 rounded-full bg-wc-bg-secondary px-2 py-0.5 text-[10px] font-semibold text-wc-text-secondary uppercase">
+                                    {{ $vc['media_type'] }}
+                                </span>
+                                @if($vc['status'] === 'pending')
+                                    <span class="inline-flex shrink-0 rounded-full bg-orange-500/10 px-2 py-0.5 text-[10px] font-semibold text-orange-500">
+                                        Pendiente
+                                    </span>
+                                @else
+                                    <span class="inline-flex shrink-0 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-500">
+                                        Revisado
+                                    </span>
+                                @endif
+                            </div>
+                            <p class="mt-0.5 text-xs text-wc-text-tertiary">
+                                {{ $vc['exercise_name'] }} &middot; {{ $vc['created_at'] }} &middot; {{ $vc['created_at_ago'] }}
+                            </p>
+                        </div>
+
+                        {{-- Expand chevron --}}
+                        <svg class="h-4 w-4 shrink-0 text-wc-text-tertiary transition-transform {{ $videoExpandedId === $vc['id'] ? 'rotate-180' : '' }}"
+                             fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </button>
+
+                    {{-- Expanded content --}}
+                    @if($videoExpandedId === $vc['id'])
+                        <div class="border-t border-wc-border bg-wc-bg-secondary/30 p-4 sm:p-5 space-y-4">
+                            {{-- Media player --}}
+                            <div class="overflow-hidden rounded-lg bg-black/20">
+                                @if($vc['media_type'] === 'video')
+                                    <video
+                                        controls
+                                        preload="metadata"
+                                        class="mx-auto max-h-80 w-full"
+                                        src="{{ asset('storage/' . $vc['media_url']) }}"
+                                    >
+                                        Tu navegador no soporta el elemento video.
+                                    </video>
+                                @else
+                                    <img
+                                        src="{{ asset('storage/' . $vc['media_url']) }}"
+                                        alt="{{ $vc['exercise_name'] }}"
+                                        class="mx-auto max-h-80 object-contain"
+                                    />
+                                @endif
+                            </div>
+
+                            {{-- Client notes --}}
+                            @if($vc['notes'])
+                                <div class="rounded-lg border border-wc-border bg-wc-bg-tertiary p-3">
+                                    <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Notas del cliente</p>
+                                    <p class="mt-1.5 text-sm text-wc-text-secondary leading-relaxed">{{ $vc['notes'] }}</p>
+                                </div>
+                            @endif
+
+                            {{-- Existing coach response --}}
+                            @if($vc['coach_response'])
+                                <div class="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3">
+                                    <div class="flex items-center gap-2">
+                                        <svg class="h-3.5 w-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                        </svg>
+                                        <p class="text-[10px] font-semibold uppercase tracking-wider text-emerald-500">Tu respuesta</p>
+                                        @if($vc['responded_at'])
+                                            <span class="text-[10px] text-wc-text-tertiary">&middot; {{ $vc['responded_at'] }}</span>
+                                        @endif
+                                    </div>
+                                    <p class="mt-2 text-sm text-wc-text-secondary leading-relaxed">{{ $vc['coach_response'] }}</p>
+                                </div>
+                            @endif
+
+                            {{-- Reply form for video check-in --}}
+                            @if(!$vc['coach_response'])
+                                @if($videoReplyingTo === $vc['id'])
+                                    <div class="space-y-3">
+                                        <textarea
+                                            wire:model="videoReplyText"
+                                            rows="3"
+                                            placeholder="Escribe tu feedback sobre la forma, tecnica, sugerencias..."
+                                            class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary p-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent resize-none"
+                                        ></textarea>
+                                        <div class="flex items-center gap-2">
+                                            <button
+                                                wire:click="submitVideoReply"
+                                                class="inline-flex items-center gap-1.5 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors"
+                                            >
+                                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                                                </svg>
+                                                Enviar respuesta
+                                            </button>
+                                            <button
+                                                wire:click="cancelVideoReply"
+                                                class="inline-flex items-center rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2 text-sm font-medium text-wc-text-secondary hover:text-wc-text transition-colors"
+                                            >
+                                                Cancelar
+                                            </button>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div>
+                                        <button
+                                            wire:click="startVideoReply({{ $vc['id'] }})"
+                                            class="inline-flex items-center gap-1.5 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors"
+                                        >
+                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+                                            </svg>
+                                            Responder
+                                        </button>
+                                    </div>
+                                @endif
+                            @endif
+                        </div>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+
+        {{-- Divider between video and regular check-ins --}}
+        <div class="flex items-center gap-3">
+            <div class="h-px flex-1 bg-wc-border"></div>
+            <span class="text-xs font-medium text-wc-text-tertiary">Check-ins semanales</span>
+            <div class="h-px flex-1 bg-wc-border"></div>
+        </div>
+    @endif
 
     {{-- Check-in cards --}}
     @if($checkins->count() > 0)

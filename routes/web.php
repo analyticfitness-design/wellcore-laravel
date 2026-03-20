@@ -14,6 +14,7 @@ use App\Livewire\Client\ReferralProgram;
 use App\Livewire\Client\TicketSupport;
 use App\Livewire\Client\CheckinForm;
 use App\Livewire\Client\Dashboard as ClientDashboard;
+use App\Livewire\Client\VideoCheckinUpload;
 use App\Livewire\Client\HabitTracker;
 use App\Livewire\Client\MetricsTracker;
 use App\Livewire\Client\NutritionPlan;
@@ -105,6 +106,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/videos', \App\Livewire\Client\VideoLibrary::class)->name('videos');
         Route::get('/recetas', \App\Livewire\Client\RecipeDatabase::class)->name('recipes');
         Route::get('/records', \App\Livewire\Client\PersonalRecords::class)->name('records');
+        Route::get('/video-checkin', VideoCheckinUpload::class)->name('video-checkin');
         Route::get('/audio', \App\Livewire\Client\AudioPlayer::class)->name('audio');
         Route::get('/hacks', \App\Livewire\Client\EvidenceHacks::class)->name('hacks');
         Route::get('/settings', ClientSettings::class)->name('settings');
