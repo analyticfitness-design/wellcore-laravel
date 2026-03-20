@@ -1,0 +1,208 @@
+<div class="space-y-6">
+    {{-- Title --}}
+    <div>
+        <h1 class="font-display text-3xl tracking-wide text-wc-text">CHECK-IN SEMANAL</h1>
+        <p class="mt-1 text-sm text-wc-text-secondary">
+            Semana {{ now()->isoFormat('W') }} &middot; {{ now()->locale('es')->isoFormat('D [de] MMMM, YYYY') }}
+        </p>
+    </div>
+
+    {{-- Success Message --}}
+    @if ($showSuccess)
+        <div class="flex items-center justify-between rounded-[--radius-card] border border-emerald-500/30 bg-emerald-500/10 p-4">
+            <div class="flex items-center gap-3">
+                <svg class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <span class="text-sm font-medium text-emerald-400">Check-in enviado correctamente.</span>
+            </div>
+            <button wire:click="dismissSuccess" class="text-wc-text-tertiary hover:text-wc-text">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    @endif
+
+    {{-- Form --}}
+    <form wire:submit="submit" class="space-y-6 rounded-[--radius-card] border border-wc-border bg-wc-bg-tertiary p-5 sm:p-6">
+
+        {{-- Bienestar (1-5) --}}
+        <div>
+            <label class="mb-3 block text-sm font-medium text-wc-text">Bienestar general</label>
+            <div class="flex flex-wrap gap-2">
+                @php
+                    $bienestarLabels = [1 => 'Muy mal', 2 => 'Mal', 3 => 'Normal', 4 => 'Bien', 5 => 'Muy bien'];
+                @endphp
+                @foreach ($bienestarLabels as $value => $label)
+                    <button
+                        type="button"
+                        wire:click="setBienestar({{ $value }})"
+                        class="flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all
+                            {{ $bienestar === $value
+                                ? 'border-wc-accent bg-wc-accent text-white'
+                                : 'border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:border-wc-text-tertiary' }}"
+                    >
+                        <span class="font-data">{{ $value }}</span>
+                        <span>{{ $label }}</span>
+                    </button>
+                @endforeach
+            </div>
+            @error('bienestar')
+                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+            @enderror
+        </div>
+
+        {{-- Dias Entrenados --}}
+        <div>
+            <label for="diasEntrenados" class="mb-2 block text-sm font-medium text-wc-text">Dias entrenados esta semana</label>
+            <div class="flex items-center gap-3">
+                <input
+                    type="number"
+                    id="diasEntrenados"
+                    wire:model="diasEntrenados"
+                    min="0"
+                    max="7"
+                    class="w-24 rounded-[--radius-button] border border-wc-border bg-wc-bg-secondary px-4 py-2.5 font-data text-lg text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
+                >
+                <span class="text-sm text-wc-text-tertiary">de 7 dias</span>
+            </div>
+            @error('diasEntrenados')
+                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+            @enderror
+        </div>
+
+        {{-- Nutricion --}}
+        <div>
+            <label for="nutricion" class="mb-2 block text-sm font-medium text-wc-text">Nutricion</label>
+            <select
+                id="nutricion"
+                wire:model="nutricion"
+                class="w-full rounded-[--radius-button] border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
+            >
+                <option value="excelente">Excelente</option>
+                <option value="buena">Buena</option>
+                <option value="regular">Regular</option>
+                <option value="mala">Mala</option>
+            </select>
+            @error('nutricion')
+                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+            @enderror
+        </div>
+
+        {{-- RPE Slider --}}
+        <div>
+            <label for="rpe" class="mb-2 block text-sm font-medium text-wc-text">
+                RPE promedio
+                <span class="ml-2 font-data text-lg font-semibold text-wc-accent">{{ $rpe }}</span>
+            </label>
+            <input
+                type="range"
+                id="rpe"
+                wire:model.live="rpe"
+                min="1"
+                max="10"
+                class="w-full accent-wc-accent"
+            >
+            <div class="mt-1 flex justify-between text-xs text-wc-text-tertiary">
+                <span>1 - Muy facil</span>
+                <span>10 - Maximo esfuerzo</span>
+            </div>
+            @error('rpe')
+                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+            @enderror
+        </div>
+
+        {{-- Comentario --}}
+        <div>
+            <label for="comentario" class="mb-2 block text-sm font-medium text-wc-text">Comentario para tu coach</label>
+            <textarea
+                id="comentario"
+                wire:model="comentario"
+                rows="3"
+                placeholder="Como te sentiste esta semana? Alguna molestia o logro?"
+                class="w-full rounded-[--radius-button] border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
+            ></textarea>
+            @error('comentario')
+                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+            @enderror
+        </div>
+
+        {{-- Submit --}}
+        <button
+            type="submit"
+            class="w-full rounded-[--radius-button] bg-wc-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg disabled:opacity-50"
+            wire:loading.attr="disabled"
+        >
+            <span wire:loading.remove wire:target="submit">Enviar Check-in</span>
+            <span wire:loading wire:target="submit">Enviando...</span>
+        </button>
+    </form>
+
+    {{-- Recent Check-ins --}}
+    @if ($recentCheckins->isNotEmpty())
+        <div>
+            <h2 class="mb-4 font-display text-xl tracking-wide text-wc-text">CHECK-INS ANTERIORES</h2>
+
+            <div class="space-y-3">
+                @foreach ($recentCheckins as $checkin)
+                    <div class="rounded-[--radius-card] border border-wc-border bg-wc-bg-tertiary p-4">
+                        {{-- Header --}}
+                        <div class="mb-3 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="font-data text-sm font-semibold text-wc-text">{{ $checkin->week_label }}</span>
+                                <span class="text-xs text-wc-text-tertiary">
+                                    {{ $checkin->checkin_date?->locale('es')->isoFormat('D MMM YYYY') }}
+                                </span>
+                            </div>
+                            @if ($checkin->coach_reply)
+                                <span class="rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-500">Respondido</span>
+                            @endif
+                        </div>
+
+                        {{-- Metrics Row --}}
+                        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                            <div>
+                                <p class="text-xs text-wc-text-tertiary">Bienestar</p>
+                                <p class="font-data text-sm font-semibold text-wc-text">{{ $checkin->bienestar }}/5</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-wc-text-tertiary">Dias</p>
+                                <p class="font-data text-sm font-semibold text-wc-text">{{ $checkin->dias_entrenados }}/7</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-wc-text-tertiary">Nutricion</p>
+                                <p class="text-sm font-medium capitalize text-wc-text">{{ $checkin->nutricion }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-wc-text-tertiary">RPE</p>
+                                <p class="font-data text-sm font-semibold text-wc-text">{{ $checkin->rpe }}/10</p>
+                            </div>
+                        </div>
+
+                        {{-- Comentario --}}
+                        @if ($checkin->comentario)
+                            <p class="mt-3 text-sm text-wc-text-secondary">{{ $checkin->comentario }}</p>
+                        @endif
+
+                        {{-- Coach Reply --}}
+                        @if ($checkin->coach_reply)
+                            <div class="mt-3 rounded-lg border border-wc-accent/20 bg-wc-accent/5 p-3">
+                                <div class="mb-1 flex items-center gap-2">
+                                    <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+                                    </svg>
+                                    <span class="text-xs font-medium text-wc-accent">Respuesta del coach</span>
+                                    @if ($checkin->replied_at)
+                                        <span class="text-xs text-wc-text-tertiary">{{ $checkin->replied_at->locale('es')->diffForHumans() }}</span>
+                                    @endif
+                                </div>
+                                <p class="text-sm text-wc-text">{{ $checkin->coach_reply }}</p>
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+</div>

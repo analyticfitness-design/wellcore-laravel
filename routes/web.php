@@ -2,6 +2,17 @@
 
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
+use App\Livewire\Client\ChallengesView;
+use App\Livewire\Client\ChatWidget;
+use App\Livewire\Client\CheckinForm;
+use App\Livewire\Client\Dashboard as ClientDashboard;
+use App\Livewire\Client\HabitTracker;
+use App\Livewire\Client\MetricsTracker;
+use App\Livewire\Client\NutritionPlan;
+use App\Livewire\Client\PlanViewer;
+use App\Livewire\Client\ProfileEditor;
+use App\Livewire\Client\ProgressPhotos;
+use App\Livewire\Client\TrainingView;
 use App\Livewire\TestDashboard;
 use Illuminate\Support\Facades\Route;
 
@@ -27,10 +38,20 @@ Route::middleware('guest:wellcore')->group(function () {
 
 // Authenticated routes
 Route::middleware('auth:wellcore')->group(function () {
-    // Client dashboards
-    Route::get('/client', function () {
-        return 'Client Dashboard — Coming in Phase 2';
-    })->name('client.dashboard');
+    // Client dashboard routes
+    Route::prefix('client')->name('client.')->group(function () {
+        Route::get('/', ClientDashboard::class)->name('dashboard');
+        Route::get('/plan', PlanViewer::class)->name('plan');
+        Route::get('/checkin', CheckinForm::class)->name('checkin');
+        Route::get('/training', TrainingView::class)->name('training');
+        Route::get('/metrics', MetricsTracker::class)->name('metrics');
+        Route::get('/nutrition', NutritionPlan::class)->name('nutrition');
+        Route::get('/photos', ProgressPhotos::class)->name('photos');
+        Route::get('/challenges', ChallengesView::class)->name('challenges');
+        Route::get('/chat', ChatWidget::class)->name('chat');
+        Route::get('/profile', ProfileEditor::class)->name('profile');
+        Route::get('/habits', HabitTracker::class)->name('habits');
+    });
 
     Route::get('/rise', function () {
         return 'RISE Dashboard — Coming in Phase 2';
