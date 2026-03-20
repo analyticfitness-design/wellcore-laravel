@@ -8,6 +8,7 @@ use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Client\ChallengesView;
 use App\Livewire\Client\ChatWidget;
+use App\Livewire\Client\ReferralProgram;
 use App\Livewire\Client\TicketSupport;
 use App\Livewire\Client\CheckinForm;
 use App\Livewire\Client\Dashboard as ClientDashboard;
@@ -104,6 +105,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/records', \App\Livewire\Client\PersonalRecords::class)->name('records');
         Route::get('/audio', \App\Livewire\Client\AudioPlayer::class)->name('audio');
         Route::get('/hacks', \App\Livewire\Client\EvidenceHacks::class)->name('hacks');
+        Route::get('/referrals', ReferralProgram::class)->name('referrals');
         Route::get('/tickets', TicketSupport::class)->name('tickets');
     });
 

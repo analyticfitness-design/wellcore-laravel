@@ -172,6 +172,16 @@
                             Soporte
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('client.referrals') }}"
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                                  {{ request()->routeIs('client.referrals') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
+                            <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+                            </svg>
+                            Referidos
+                        </a>
+                    </li>
                 </ul>
             </div>
 
