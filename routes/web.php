@@ -9,6 +9,7 @@ use App\Livewire\Admin\InvitationManager;
 use App\Livewire\Admin\LiveFeed;
 use App\Livewire\Admin\PaymentsDashboard;
 use App\Livewire\Admin\PlanManagement;
+use App\Livewire\Admin\RiseManagement;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Client\ChallengesView;
@@ -147,6 +148,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/invitations', InvitationManager::class)->name('invitations');
         Route::get('/coaches', CoachManagement::class)->name('coaches');
         Route::get('/plans', PlanManagement::class)->name('plans');
+        Route::get('/rise', RiseManagement::class)->name('rise');
         Route::get('/tickets', \App\Livewire\Admin\TicketManager::class)->name('tickets');
     });
 
