@@ -8,6 +8,7 @@ use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Client\ChallengesView;
 use App\Livewire\Client\ChatWidget;
+use App\Livewire\Client\TicketSupport;
 use App\Livewire\Client\CheckinForm;
 use App\Livewire\Client\Dashboard as ClientDashboard;
 use App\Livewire\Client\HabitTracker;
@@ -103,6 +104,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/records', \App\Livewire\Client\PersonalRecords::class)->name('records');
         Route::get('/audio', \App\Livewire\Client\AudioPlayer::class)->name('audio');
         Route::get('/hacks', \App\Livewire\Client\EvidenceHacks::class)->name('hacks');
+        Route::get('/tickets', TicketSupport::class)->name('tickets');
     });
 
     // RISE program routes
@@ -129,9 +131,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/plans', function () {
             return 'Plan Management — Coming soon';
         })->name('plans');
-        Route::get('/tickets', function () {
-            return 'Ticket Management — Coming soon';
-        })->name('tickets');
+        Route::get('/tickets', \App\Livewire\Admin\TicketManager::class)->name('tickets');
     });
 
     // Coach portal routes
