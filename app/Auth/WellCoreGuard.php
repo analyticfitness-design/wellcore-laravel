@@ -81,19 +81,24 @@ class WellCoreGuard implements Guard
 
     protected function getTokenFromRequest(): ?string
     {
-        // Try Authorization header first
+        // 1. Try Laravel session (web login stores token here)
+        $sessionToken = session('wc_token');
+        if ($sessionToken) {
+            return $sessionToken;
+        }
+
+        // 2. Try Authorization header (API clients)
         $header = $this->request->header('Authorization', '');
         if (str_starts_with($header, 'Bearer ')) {
             return substr($header, 7);
         }
 
-        // Try cookie (for web sessions)
+        // 3. Try cookie (vanilla PHP app compatibility)
         $cookie = $this->request->cookie('wc_token');
         if ($cookie) {
             return $cookie;
         }
 
-        // Try query parameter (for testing)
-        return $this->request->query('_token');
+        return null;
     }
 }
