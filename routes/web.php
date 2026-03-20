@@ -95,6 +95,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/chat', ChatWidget::class)->name('chat');
         Route::get('/profile', ProfileEditor::class)->name('profile');
         Route::get('/habits', HabitTracker::class)->name('habits');
+        Route::get('/academia', \App\Livewire\Client\Academia::class)->name('academia');
     });
 
     // RISE program routes
