@@ -31,6 +31,7 @@ use App\Livewire\Client\PlanViewer;
 use App\Livewire\Client\ProfileEditor;
 use App\Livewire\Client\ProgressPhotos;
 use App\Livewire\Client\TrainingView;
+use App\Livewire\Coach\Analytics;
 use App\Livewire\Coach\CheckinReview;
 use App\Livewire\Coach\ClientList as CoachClientList;
 use App\Livewire\Coach\CoachProfilePage;
@@ -167,6 +168,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/plans', function () {
             return 'Coming soon';
         })->name('plans');
+        Route::get('/analytics', Analytics::class)->name('analytics');
         Route::get('/profile', CoachProfilePage::class)->name('profile');
     });
 
