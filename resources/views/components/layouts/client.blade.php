@@ -210,6 +210,16 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('client.audio') }}"
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                                  {{ request()->routeIs('client.audio') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
+                            <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" />
+                            </svg>
+                            Audio
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('client.profile') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.profile') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
