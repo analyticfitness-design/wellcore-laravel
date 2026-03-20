@@ -50,6 +50,9 @@ Route::get('/metodo', function () {
 Route::get('/proceso', function () {
     return view('public.proceso');
 })->name('proceso');
+Route::get('/reto-rise', function () {
+    return view('public.rise');
+})->name('reto-rise');
 
 // Shop routes (public, no auth required)
 Route::prefix('tienda')->name('shop.')->group(function () {
