@@ -32,6 +32,7 @@ use App\Livewire\Client\ProfileEditor;
 use App\Livewire\Client\ProgressPhotos;
 use App\Livewire\Client\TrainingView;
 use App\Livewire\Coach\Analytics;
+use App\Livewire\Coach\BroadcastCenter;
 use App\Livewire\Coach\CheckinReview;
 use App\Livewire\Coach\ClientList as CoachClientList;
 use App\Livewire\Coach\CoachProfilePage;
@@ -162,6 +163,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/clients', CoachClientList::class)->name('clients');
         Route::get('/checkins', CheckinReview::class)->name('checkins');
         Route::get('/messages', MessageCenter::class)->name('messages');
+        Route::get('/broadcast', BroadcastCenter::class)->name('broadcast');
         Route::get('/notes', function () {
             return 'Coming soon';
         })->name('notes');
