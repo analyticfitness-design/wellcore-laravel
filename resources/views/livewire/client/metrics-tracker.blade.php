@@ -186,6 +186,253 @@
         </div>
     @endif
 
+    {{-- Chart.js Charts Section --}}
+    <div
+        class="grid grid-cols-1 gap-4 lg:grid-cols-2"
+        x-data="metricsCharts()"
+        x-init="initCharts()"
+        data-weight-trend='@json($weightTrend)'
+        data-weekly-checkins='@json($weeklyCheckins)'
+        data-composition='@json($latestComposition)'
+        data-training-volume='@json($trainingVolume)'
+    >
+        {{-- 1. Weight Trend (Line) --}}
+        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+            <h3 class="font-display text-lg tracking-wide text-wc-text">Peso Corporal</h3>
+            <p class="text-xs text-wc-text-secondary">Ultimos 90 dias</p>
+            <div class="relative mt-4" style="height:180px">
+                <canvas x-ref="weightChart"></canvas>
+                <p x-show="!hasWeight" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
+                    Sin datos de peso aun
+                </p>
+            </div>
+        </div>
+
+        {{-- 2. Weekly Check-ins (Bar) --}}
+        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+            <h3 class="font-display text-lg tracking-wide text-wc-text">Check-ins Semanales</h3>
+            <p class="text-xs text-wc-text-secondary">Ultimas 12 semanas</p>
+            <div class="relative mt-4" style="height:180px">
+                <canvas x-ref="checkinChart"></canvas>
+                <p x-show="!hasCheckins" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
+                    Sin check-ins recientes
+                </p>
+            </div>
+        </div>
+
+        {{-- 3. Body Composition (Doughnut) --}}
+        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+            <h3 class="font-display text-lg tracking-wide text-wc-text">Composicion Corporal</h3>
+            <p class="text-xs text-wc-text-secondary">Ultima medicion</p>
+            <div class="relative mt-4 mx-auto flex items-center justify-center" style="height:180px;max-width:260px">
+                <canvas x-ref="compositionChart"></canvas>
+                <p x-show="!hasComposition" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
+                    Sin datos de composicion
+                </p>
+            </div>
+        </div>
+
+        {{-- 4. Training Volume (Line) --}}
+        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+            <h3 class="font-display text-lg tracking-wide text-wc-text">Volumen de Entrenamiento</h3>
+            <p class="text-xs text-wc-text-secondary">Sesiones por semana</p>
+            <div class="relative mt-4" style="height:180px">
+                <canvas x-ref="trainingChart"></canvas>
+                <p x-show="!hasTraining" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
+                    Sin sesiones registradas
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function metricsCharts() {
+        return {
+            hasWeight: false,
+            hasCheckins: false,
+            hasComposition: false,
+            hasTraining: false,
+
+            initCharts() {
+                if (typeof Chart === 'undefined') return;
+
+                // WellCore global defaults
+                Chart.defaults.color = '#a3a3a3';
+                Chart.defaults.borderColor = '#262626';
+                Chart.defaults.font.family = "'Barlow', sans-serif";
+                Chart.defaults.font.size = 11;
+
+                this.createWeightChart();
+                this.createCheckinChart();
+                this.createCompositionChart();
+                this.createTrainingChart();
+            },
+
+            createWeightChart() {
+                const raw = this.$el.dataset.weightTrend;
+                const data = raw ? JSON.parse(raw) : [];
+                this.hasWeight = data.length > 0;
+                if (!this.hasWeight) return;
+
+                new Chart(this.$refs.weightChart, {
+                    type: 'line',
+                    data: {
+                        labels: data.map(d => d.date),
+                        datasets: [{
+                            label: 'Peso (kg)',
+                            data: data.map(d => d.value),
+                            borderColor: '#DC2626',
+                            backgroundColor: 'rgba(220,38,38,0.08)',
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 3,
+                            pointBackgroundColor: '#DC2626',
+                            pointBorderColor: '#DC2626',
+                            borderWidth: 2,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx => ` ${ctx.parsed.y} kg`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } },
+                            y: { beginAtZero: false, grid: { color: '#262626' } }
+                        }
+                    }
+                });
+            },
+
+            createCheckinChart() {
+                const raw = this.$el.dataset.weeklyCheckins;
+                const data = raw ? JSON.parse(raw) : [];
+                this.hasCheckins = data.length > 0;
+                if (!this.hasCheckins) return;
+
+                // Convert YEARWEEK codes to readable labels (e.g. 202601 → "S1")
+                const labels = data.map((d, i) => {
+                    const yw = String(d.week);
+                    const week = parseInt(yw.slice(4), 10);
+                    return `S${week}`;
+                });
+
+                new Chart(this.$refs.checkinChart, {
+                    type: 'bar',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: 'Check-ins',
+                            data: data.map(d => d.cnt),
+                            backgroundColor: 'rgba(220,38,38,0.55)',
+                            borderColor: '#DC2626',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { beginAtZero: true, grid: { color: '#262626' }, ticks: { stepSize: 1 } }
+                        }
+                    }
+                });
+            },
+
+            createCompositionChart() {
+                const raw = this.$el.dataset.composition;
+                const comp = raw && raw !== 'null' ? JSON.parse(raw) : null;
+                this.hasComposition = !!comp;
+                if (!this.hasComposition) return;
+
+                new Chart(this.$refs.compositionChart, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Grasa', 'Musculo', 'Otro'],
+                        datasets: [{
+                            data: [comp.grasa, comp.musculo, comp.otro],
+                            backgroundColor: ['#DC2626', '#3B82F6', '#525252'],
+                            borderColor: '#171717',
+                            borderWidth: 2,
+                            hoverOffset: 6,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: { padding: 12, boxWidth: 10 }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx => ` ${ctx.label}: ${ctx.parsed}%`
+                                }
+                            }
+                        },
+                        cutout: '65%',
+                    }
+                });
+            },
+
+            createTrainingChart() {
+                const raw = this.$el.dataset.trainingVolume;
+                const data = raw ? JSON.parse(raw) : [];
+                this.hasTraining = data.length > 0;
+                if (!this.hasTraining) return;
+
+                const labels = data.map(d => {
+                    const yw = String(d.week);
+                    const week = parseInt(yw.slice(4), 10);
+                    return `S${week}`;
+                });
+
+                new Chart(this.$refs.trainingChart, {
+                    type: 'line',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: 'Sesiones',
+                            data: data.map(d => d.sessions),
+                            borderColor: '#3B82F6',
+                            backgroundColor: 'rgba(59,130,246,0.08)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#3B82F6',
+                            borderWidth: 2,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#262626' },
+                                ticks: { stepSize: 1 }
+                            }
+                        }
+                    }
+                });
+            },
+        };
+    }
+    </script>
+
     {{-- History Table --}}
     @if ($history->isNotEmpty())
         <div class="rounded-[--radius-card] border border-wc-border bg-wc-bg-tertiary">
