@@ -6,6 +6,7 @@ use App\Livewire\Admin\CoachManagement;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\InscriptionsList;
 use App\Livewire\Admin\InvitationManager;
+use App\Livewire\Admin\LiveFeed;
 use App\Livewire\Admin\PaymentsDashboard;
 use App\Livewire\Admin\PlanManagement;
 use App\Livewire\Auth\ForgotPassword;
@@ -138,6 +139,7 @@ Route::middleware('auth:wellcore')->group(function () {
     // Admin dashboard routes
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/', AdminDashboard::class)->name('dashboard');
+        Route::get('/feed', LiveFeed::class)->name('feed');
         Route::get('/clients', ClientTable::class)->name('clients');
         Route::get('/clients/{clientId}', ClientDetail::class)->name('client-detail');
         Route::get('/payments', PaymentsDashboard::class)->name('payments');

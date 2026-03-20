@@ -71,6 +71,20 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('admin.feed') }}"
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                                  {{ request()->routeIs('admin.feed') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
+                            <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                            </svg>
+                            Live Feed
+                            <span class="relative ml-auto flex h-2 w-2">
+                                <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.clients') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('admin.clients') || request()->routeIs('admin.client-detail') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">

@@ -56,6 +56,17 @@ Fitness coaching platform serving LATAM market with personalized training, nutri
 - Fonts: font-display (Bebas Neue), font-sans (Inter), font-data (Barlow), font-mono (JetBrains Mono)
 - Dark mode: .dark class on html, managed by Alpine.js + localStorage
 
+## Laravel Agent Team (wellcore-agents plugin)
+Use these specialized agents for complex tasks in this project:
+- **la-01-architect** — Architecture decisions, service layers, design patterns
+- **la-02-backend** — Eloquent advanced, business logic, form requests, enums
+- **la-03-livewire-blade** — Livewire components, Blade views, Alpine.js integration
+- **la-04-tailwind-ds** — Tailwind CSS 4, WellCore design tokens, dark mode
+- **la-05-security** — Auth, CSRF, OWASP, input validation, middleware
+- **la-06-database** — Migrations, schema design, query optimization
+- **la-10-performance** — Caching, N+1 prevention, Redis, OPcache
+- **la-11-ai-architect** — Claude API integration, SSE streaming, image analysis
+
 ## Rules
 - NEVER modify C:\Users\GODSF\Herd\wellcorefitness (vanilla PHP app)
 - NEVER create destructive database migrations
