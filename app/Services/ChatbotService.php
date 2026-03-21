@@ -83,11 +83,55 @@ class ChatbotService
         ],
     ];
 
+    private array $extraResponses = [
+        [
+            'keywords' => ['presencial', 'persona', 'bucaramanga', 'en vivo', 'cara a cara'],
+            'response' => 'Ofrecemos entrenamiento presencial en Bucaramanga, Colombia. Horarios: 8-10 AM y 2-4 PM de lunes a viernes. Planes desde $450,000 COP/mes con supervision de tecnica en vivo. Info en /presencial',
+        ],
+        [
+            'keywords' => ['horario', 'cuando', 'hora', 'disponibilidad', 'agenda'],
+            'response' => 'Para presencial en Bucaramanga: 8:00-10:00 AM y 2:00-4:00 PM, lunes a viernes. Sabados no disponibles. Para coaching online, el seguimiento es 24/7 a traves de la plataforma.',
+        ],
+        [
+            'keywords' => ['ubicacion', 'donde', 'direccion', 'lugar', 'sede'],
+            'response' => 'Nuestra sede presencial esta en la zona norte de Bucaramanga, Colombia. La direccion exacta se comparte al confirmar la inscripcion. El coaching online funciona desde cualquier lugar del mundo.',
+        ],
+        [
+            'keywords' => ['colombia', 'cop', 'pesos', 'moneda', 'colombiano'],
+            'response' => 'Todos nuestros precios estan en pesos colombianos (COP). Esencial: $299,000/mes, Metodo: $399,000/mes, Elite: $549,000/mes, RISE: $99,900 pago unico. Aceptamos tarjeta, transferencia y Nequi.',
+        ],
+        [
+            'keywords' => ['nequi', 'daviplata', 'transferencia', 'bancolombia', 'pse'],
+            'response' => 'Aceptamos pagos por tarjeta de credito/debito, transferencia bancaria, PSE y Nequi. El pago se procesa de forma segura a traves de Wompi. Puedes pagar en /pagar',
+        ],
+        [
+            'keywords' => ['rise programa', 'rise precio', 'rise cuesta', 'rise incluye', 'que es rise'],
+            'response' => 'RISE es un programa intensivo de 12 semanas por $99,900 COP (pago unico). Incluye: entrenamiento periodizado, nutricion, habitos diarios, check-ins semanales, comunidad exclusiva y dashboard de seguimiento. Inscribete en /rise-enroll',
+        ],
+        [
+            'keywords' => ['silvia', 'fitness femenino', 'mujer', 'femenin', 'coach silvia'],
+            'response' => 'La Coach Silvia Martinez es nuestra especialista en fitness femenino y recomposicion corporal. 6+ anos de experiencia, certificada NSCA-CPT. Conoce su perfil en /fit',
+        ],
+        [
+            'keywords' => ['blog', 'articulo', 'contenido', 'aprender', 'leer'],
+            'response' => 'Tenemos 9 articulos de ciencia del ejercicio y nutricion en nuestro blog: sobrecarga progresiva, periodizacion, TDEE, macros, cardio vs pesas, y mas. Visita /blog',
+        ],
+        [
+            'keywords' => ['app', 'aplicacion', 'plataforma', 'portal', 'dashboard'],
+            'response' => 'WellCore tiene una plataforma web completa donde puedes ver tu plan de entrenamiento, nutricion, hacer check-ins, subir fotos de progreso, chatear con tu coach y mas. Accede con tu cuenta en /login',
+        ],
+        [
+            'keywords' => ['latin', 'latam', 'latinoamerica', 'primer', 'internacional'],
+            'response' => 'WellCore es la primera plataforma de coaching fitness en Latinoamerica con estandares internacionales. Creada por y para latinos, con coaching en espanol y precios accesibles en moneda local.',
+        ],
+    ];
+
     public function getResponse(string $message): string
     {
         $message = mb_strtolower(trim($message));
 
-        foreach ($this->responses as $entry) {
+        $allResponses = array_merge($this->responses, $this->extraResponses);
+        foreach ($allResponses as $entry) {
             foreach ($entry['keywords'] as $keyword) {
                 if (str_contains($message, $keyword)) {
                     return $entry['response'];

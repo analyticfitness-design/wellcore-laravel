@@ -229,15 +229,15 @@ Route::middleware('auth:wellcore')->group(function () {
     })->name('logout');
 });
 
-// Test route (from Phase 0)
-Route::get('/test', TestDashboard::class);
-
-// DEV ONLY: Quick login as client (remove before production)
-Route::get('/dev-login/{clientId}', function ($clientId) {
-    $client = \App\Models\Client::find($clientId);
-    if (!$client) return redirect('/login');
-    $token = \App\Models\AuthToken::where('user_id', $clientId)->where('user_type', 'client')->where('expires_at', '>', now())->first();
-    if (!$token) return redirect('/login');
-    session(['wc_token' => $token->token, 'wc_user_type' => 'client', 'wc_user_id' => $clientId]);
-    return redirect('/client');
-});
+// DEV ONLY routes — disabled in production
+if (app()->environment('local', 'testing')) {
+    Route::get('/test', TestDashboard::class);
+    Route::get('/dev-login/{clientId}', function ($clientId) {
+        $client = \App\Models\Client::find($clientId);
+        if (!$client) return redirect('/login');
+        $token = \App\Models\AuthToken::where('user_id', $clientId)->where('user_type', 'client')->where('expires_at', '>', now())->first();
+        if (!$token) return redirect('/login');
+        session(['wc_token' => $token->token, 'wc_user_type' => 'client', 'wc_user_id' => $clientId]);
+        return redirect('/client');
+    });
+}

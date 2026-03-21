@@ -16,6 +16,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 
+    <x-seo-meta :title="$title ?? 'WellCore Fitness'" :description="$description ?? 'Coaching fitness basado en ciencia.'" />
     <x-ga-tracking />
     <x-pwa-meta />
 </head>
