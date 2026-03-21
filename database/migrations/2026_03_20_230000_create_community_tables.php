@@ -11,35 +11,42 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('community_posts', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedInteger('client_id');
-            $table->text('content');
-            $table->enum('post_type', ['text', 'achievement', 'pr', 'photo'])->default('text');
-            $table->string('image_path', 500)->nullable();
-            $table->boolean('visible')->default(true);
-            $table->timestamps();
-            $table->index('client_id');
-        });
+        // community_posts may already exist in the vanilla PHP production DB
+        if (! Schema::hasTable('community_posts')) {
+            Schema::create('community_posts', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedInteger('client_id');
+                $table->text('content');
+                $table->enum('post_type', ['text', 'achievement', 'pr', 'photo'])->default('text');
+                $table->string('image_path', 500)->nullable();
+                $table->boolean('visible')->default(true);
+                $table->timestamps();
+                $table->index('client_id');
+            });
+        }
 
-        Schema::create('post_reactions', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('post_id');
-            $table->unsignedInteger('client_id');
-            $table->enum('reaction_type', ['like', 'fire', 'muscle', 'clap'])->default('like');
-            $table->timestamp('created_at')->nullable();
-            $table->unique(['post_id', 'client_id', 'reaction_type']);
-            $table->index('post_id');
-        });
+        if (! Schema::hasTable('post_reactions')) {
+            Schema::create('post_reactions', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('post_id');
+                $table->unsignedInteger('client_id');
+                $table->enum('reaction_type', ['like', 'fire', 'muscle', 'clap'])->default('like');
+                $table->timestamp('created_at')->nullable();
+                $table->unique(['post_id', 'client_id', 'reaction_type']);
+                $table->index('post_id');
+            });
+        }
 
-        Schema::create('post_comments', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('post_id');
-            $table->unsignedInteger('client_id');
-            $table->text('content');
-            $table->timestamp('created_at')->nullable();
-            $table->index('post_id');
-        });
+        if (! Schema::hasTable('post_comments')) {
+            Schema::create('post_comments', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('post_id');
+                $table->unsignedInteger('client_id');
+                $table->text('content');
+                $table->timestamp('created_at')->nullable();
+                $table->index('post_id');
+            });
+        }
     }
 
     /**
