@@ -1,6 +1,19 @@
 <x-layouts.public>
     <x-slot:title>Preguntas Frecuentes - WellCore Fitness</x-slot:title>
 
+    <x-json-ld :data="[
+        '@context' => 'https://schema.org',
+        '@type' => 'FAQPage',
+        'mainEntity' => [
+            ['@type' => 'Question', 'name' => 'Que es WellCore Fitness?', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'WellCore es una plataforma de coaching fitness online 1:1 basada en ciencia, diseñada para Latinoamerica.']],
+            ['@type' => 'Question', 'name' => 'Que planes ofrecen?', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'Ofrecemos 3 planes: Esencial ($299k COP), Metodo ($399k COP) y Elite ($549k COP), mas el programa RISE de 30 dias.']],
+            ['@type' => 'Question', 'name' => 'Puedo cancelar en cualquier momento?', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'Si, puedes cancelar tu suscripcion en cualquier momento sin penalizacion.']],
+            ['@type' => 'Question', 'name' => 'Necesito experiencia previa?', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'No. Nuestros programas son 100% personalizados y se adaptan a cualquier nivel de experiencia.']],
+            ['@type' => 'Question', 'name' => 'En que paises estan disponibles?', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'Servimos a toda Latinoamerica: Colombia, Mexico, Chile, Peru, Argentina y Ecuador.']],
+            ['@type' => 'Question', 'name' => 'Cuanto dura cada sesion de entrenamiento?', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'Entre 45 y 75 minutos dependiendo de tu plan y nivel. Todo esta disenado para ser eficiente y efectivo.']],
+        ],
+    ]" />
+
     {{-- Hero --}}
     <section class="hero-gradient relative overflow-hidden bg-wc-bg-tertiary">
         {{-- Parallax decorative orbs --}}

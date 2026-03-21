@@ -2,6 +2,19 @@
     <x-slot:title>WellCore Fitness - Coaching 1:1 Basado en Ciencia</x-slot:title>
     <x-slot:description>Coaching fitness 1:1 basado en ciencia. Entrenamiento y nutricion personalizados. 94% adherencia. Sin milagros, solo resultados reales.</x-slot:description>
 
+    <x-json-ld :data="[
+        '@context' => 'https://schema.org',
+        '@type' => 'WebSite',
+        'name' => 'WellCore Fitness',
+        'url' => url('/'),
+        'description' => 'Coaching fitness 1:1 basado en ciencia para Latinoamerica.',
+        'potentialAction' => [
+            '@type' => 'SearchAction',
+            'target' => url('/blog?q={search_term_string}'),
+            'query-input' => 'required name=search_term_string',
+        ],
+    ]" />
+
     {{-- Reading progress bar --}}
     <div class="scroll-progress"></div>
 

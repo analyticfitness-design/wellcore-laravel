@@ -2,6 +2,24 @@
     <x-slot:title>Planes y Precios - WellCore Fitness</x-slot:title>
     <x-slot:description>Planes de coaching fitness personalizado desde $299.000 COP/mes. Esencial, Metodo y Elite. Sin contratos, cancela cuando quieras.</x-slot:description>
 
+    <x-json-ld :data="[
+        '@context' => 'https://schema.org',
+        '@type' => 'Service',
+        'name' => 'WellCore Fitness Coaching',
+        'provider' => ['@type' => 'Organization', 'name' => 'WellCore Fitness'],
+        'description' => 'Planes de coaching fitness personalizado desde $299.000 COP/mes.',
+        'areaServed' => ['@type' => 'Place', 'name' => 'Latinoamerica'],
+        'hasOfferCatalog' => [
+            '@type' => 'OfferCatalog',
+            'name' => 'Planes WellCore',
+            'itemListElement' => [
+                ['@type' => 'Offer', 'name' => 'Esencial', 'price' => '299000', 'priceCurrency' => 'COP'],
+                ['@type' => 'Offer', 'name' => 'Metodo', 'price' => '399000', 'priceCurrency' => 'COP'],
+                ['@type' => 'Offer', 'name' => 'Elite', 'price' => '549000', 'priceCurrency' => 'COP'],
+            ],
+        ],
+    ]" />
+
     {{-- Hero --}}
     <section class="hero-gradient relative overflow-hidden bg-wc-bg-tertiary">
         {{-- Parallax decorative orbs --}}

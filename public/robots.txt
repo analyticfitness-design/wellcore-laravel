@@ -1,2 +1,28 @@
 User-agent: *
-Disallow:
+Allow: /
+
+# Sitemap
+Sitemap: https://wellcorefitness.com/sitemap.xml
+
+# Disallow private areas
+Disallow: /client/
+Disallow: /coach/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dev-login/
+Disallow: /livewire/
+
+# Allow crawlers to see public pages
+Allow: /metodo
+Allow: /planes
+Allow: /proceso
+Allow: /reto-rise
+Allow: /nosotros
+Allow: /faq
+Allow: /blog
+Allow: /coaches
+Allow: /presencial
+Allow: /fit
+
+# Crawl delay for politeness
+Crawl-delay: 2

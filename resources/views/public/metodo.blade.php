@@ -2,6 +2,35 @@
     <x-slot:title>El Metodo - Protocolo de Entrenamiento Basado en Evidencia | WellCore Fitness</x-slot:title>
     <x-slot:description>Protocolo cientifico de entrenamiento personalizado al 100%. 5 pilares basados en evidencia, seguimiento 1:1 con coach real. 87% adherencia promedio.</x-slot:description>
 
+    <x-json-ld :data="[
+        '@context' => 'https://schema.org',
+        '@type' => 'EducationalOrganization',
+        'name' => 'WellCore Fitness — El Metodo',
+        'url' => url('/metodo'),
+        'description' => 'Protocolo cientifico de entrenamiento personalizado al 100%. 5 pilares basados en evidencia, seguimiento 1:1 con coach real.',
+        'teaches' => [
+            'Entrenamiento de fuerza basado en evidencia',
+            'Nutricion personalizada y periodizacion calorica',
+            'Habitos de recuperacion y manejo del estres',
+            'Composicion corporal y seguimiento de progreso',
+            'Psicologia del rendimiento y adherencia',
+        ],
+        'educationalCredentialAwarded' => 'Transformacion fisica medible con metodologia cientifica',
+        'provider' => [
+            '@type' => 'Organization',
+            'name' => 'WellCore Fitness',
+            'url' => url('/'),
+        ],
+        'offers' => [
+            '@type' => 'Offer',
+            'name' => 'Coaching 1:1 con El Metodo WellCore',
+            'description' => 'Protocolo de 5 pilares: entrenamiento, nutricion, habitos, recuperacion y mentalidad.',
+            'url' => url('/planes'),
+            'priceCurrency' => 'COP',
+            'price' => '299000',
+        ],
+    ]" />
+
     {{-- Hero Section --}}
     <section class="hero-gradient relative overflow-hidden bg-wc-bg-tertiary">
         <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>

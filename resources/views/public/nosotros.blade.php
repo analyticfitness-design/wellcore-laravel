@@ -1,6 +1,40 @@
 <x-layouts.public>
     <x-slot:title>Nosotros - WellCore Fitness</x-slot:title>
 
+    <x-json-ld :data="[
+        '@context' => 'https://schema.org',
+        '@type' => 'Organization',
+        'name' => 'WellCore Fitness',
+        'url' => url('/'),
+        'logo' => url('/images/logo-dark.png'),
+        'description' => 'WellCore Fitness es la primera plataforma de coaching fitness online 1:1 de Latinoamerica basada en ciencia. Fundada en Bucaramanga, Colombia, servimos a clientes en toda la region.',
+        'foundingDate' => '2021',
+        'foundingLocation' => [
+            '@type' => 'Place',
+            'name' => 'Bucaramanga, Santander, Colombia',
+        ],
+        'address' => [
+            '@type' => 'PostalAddress',
+            'addressLocality' => 'Bucaramanga',
+            'addressRegion' => 'Santander',
+            'addressCountry' => 'CO',
+        ],
+        'areaServed' => [
+            '@type' => 'Place',
+            'name' => 'Latinoamerica',
+        ],
+        'sameAs' => [
+            'https://www.instagram.com/wellcore.fitness/',
+            'https://www.youtube.com/@Wellcorefitness',
+        ],
+        'knowsAbout' => [
+            'Entrenamiento de fuerza',
+            'Nutricion deportiva',
+            'Coaching fitness personalizado',
+            'Transformacion corporal',
+        ],
+    ]" />
+
     {{-- 1. HERO --}}
     <section class="hero-gradient relative overflow-hidden bg-wc-bg-tertiary">
         {{-- Parallax decorative orbs --}}

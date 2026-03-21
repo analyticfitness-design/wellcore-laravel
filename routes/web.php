@@ -61,8 +61,12 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
+
+// Sitemap (public, no auth required)
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 // Chatbot API (public, no auth required)
 Route::post('/api/chat', [ChatController::class, 'send'])->name('api.chat');
