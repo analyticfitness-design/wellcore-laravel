@@ -36,7 +36,7 @@
     {{-- Summary stats cards --}}
     <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {{-- Active clients --}}
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
+        <div class="card-hover-lift stat-glow-emerald rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Clientes activos</span>
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
@@ -45,12 +45,12 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $activeClients }}">0</span></p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $activeClients }}" class="counter-highlight">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">en total</p>
         </div>
 
         {{-- Monthly revenue --}}
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
+        <div class="card-hover-lift stat-glow-red rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Ingresos del mes</span>
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10">
@@ -59,12 +59,12 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $monthlyRevenue }}" data-counter-prefix="$">0</span></p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $monthlyRevenue }}" data-counter-prefix="$" class="counter-highlight">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">COP este mes</p>
         </div>
 
         {{-- Pending check-ins --}}
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
+        <div class="card-hover-lift stat-glow-amber rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Check-ins pendientes</span>
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10">
@@ -73,12 +73,12 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $pendingCheckins }}">0</span></p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $pendingCheckins }}" class="counter-highlight">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">sin responder</p>
         </div>
 
         {{-- New inscriptions --}}
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
+        <div class="card-hover-lift stat-glow-violet rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Inscripciones</span>
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/10">
@@ -87,7 +87,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $newInscriptions }}">0</span></p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $newInscriptions }}" class="counter-highlight">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">nuevas este mes</p>
         </div>
     </div>
@@ -158,7 +158,7 @@
                 <span class="text-xs text-wc-text-tertiary">Ultimos 6 meses</span>
             </div>
             @if(count($revenueChartData) > 0)
-                <div class="relative h-52">
+                <div class="chart-container relative h-52">
                     <canvas x-ref="revenueCanvas"></canvas>
                 </div>
             @else
@@ -215,7 +215,7 @@
              @before-livewire-snapshot.window="destroy()">
             <h3 class="text-sm font-semibold text-wc-text mb-4">Distribucion de Planes</h3>
             @if(count($planDistributionData) > 0)
-                <div class="relative h-52">
+                <div class="chart-container relative h-52">
                     <canvas x-ref="planCanvas"></canvas>
                 </div>
             @else
@@ -282,7 +282,7 @@
             <span class="text-xs text-wc-text-tertiary">Ultimos 6 meses</span>
         </div>
         @if(count($clientGrowthData) > 0)
-            <div class="relative h-48">
+            <div class="chart-container relative h-48">
                 <canvas x-ref="growthCanvas"></canvas>
             </div>
         @else
@@ -441,7 +441,7 @@
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
 
         {{-- Recent inscriptions --}}
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+        <div class="card-hover-lift rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
             <div class="flex items-center justify-between">
                 <h2 class="font-display text-lg tracking-wide text-wc-text">Inscripciones Recientes</h2>
                 <a href="{{ route('admin.inscriptions') }}" class="text-xs font-medium text-red-500 hover:text-red-400 transition-colors">Ver todas</a>
@@ -450,7 +450,7 @@
             @if(count($recentInscriptions) > 0)
                 <div class="mt-4 space-y-3">
                     @foreach($recentInscriptions as $inscription)
-                        <div class="flex items-center gap-3 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5">
+                        <div class="flex items-center gap-3 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 transition-colors hover:bg-wc-bg-secondary/50">
                             <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sky-500/10">
                                 <span class="text-xs font-semibold text-sky-500">{{ substr($inscription['nombre'], 0, 1) }}</span>
                             </div>
@@ -476,7 +476,7 @@
         </div>
 
         {{-- Recent payments --}}
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+        <div class="card-hover-lift rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
             <div class="flex items-center justify-between">
                 <h2 class="font-display text-lg tracking-wide text-wc-text">Pagos Recientes</h2>
                 <a href="{{ route('admin.payments') }}" class="text-xs font-medium text-red-500 hover:text-red-400 transition-colors">Ver todos</a>
@@ -485,7 +485,7 @@
             @if(count($recentPayments) > 0)
                 <div class="mt-4 space-y-3">
                     @foreach($recentPayments as $payment)
-                        <div class="flex items-center gap-3 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5">
+                        <div class="flex items-center gap-3 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 transition-colors hover:bg-wc-bg-secondary/50">
                             <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/10">
                                 <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
@@ -514,7 +514,7 @@
     </div>
 
     {{-- Activity Timeline --}}
-    <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+    <div class="card-hover-lift rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <h2 class="font-display text-lg tracking-wide text-wc-text">Linea de Actividad</h2>
@@ -524,7 +524,7 @@
                 <span class="text-xs text-wc-text-tertiary mr-1">Filtrar:</span>
                 @foreach(['todos' => 'Todos', 'checkin' => 'Check-ins', 'training' => 'Entrenos', 'payment' => 'Pagos', 'registration' => 'Nuevos', 'xp' => 'XP'] as $key => $label)
                     <button wire:click="filterTimeline('{{ $key }}')"
-                        class="rounded-lg px-2.5 py-1 text-xs font-medium transition-colors
+                        class="btn-press rounded-lg px-2.5 py-1 text-xs font-medium transition-colors
                         {{ $timelineFilter === $key
                             ? 'bg-wc-accent text-white shadow-sm'
                             : 'bg-wc-bg-secondary text-wc-text-secondary hover:bg-wc-bg hover:text-wc-text' }}">
@@ -536,7 +536,7 @@
 
         <div class="mt-5">
             @forelse($activityTimeline as $activity)
-                <div class="flex gap-3 py-3 {{ !$loop->last ? 'border-b border-wc-border' : '' }}" wire:key="timeline-{{ $loop->index }}">
+                <div class="flex gap-3 py-3 transition-colors hover:bg-wc-bg-secondary/30 rounded-lg px-1 {{ !$loop->last ? 'border-b border-wc-border' : '' }}" wire:key="timeline-{{ $loop->index }}">
                     {{-- Activity icon --}}
                     <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full
                         @switch($activity['type'])

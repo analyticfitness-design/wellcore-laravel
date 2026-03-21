@@ -119,7 +119,7 @@
 
                         <template x-if="currentSlide < totalSlides - 1">
                             <button @click="next()"
-                                    class="inline-flex items-center gap-1.5 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors shadow-lg shadow-wc-accent/20">
+                                    class="inline-flex items-center gap-1.5 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors shadow-lg shadow-wc-accent/20 btn-press">
                                 Siguiente
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
@@ -128,7 +128,7 @@
                         </template>
                         <template x-if="currentSlide === totalSlides - 1">
                             <button @click="finish()"
-                                    class="inline-flex items-center gap-1.5 rounded-full bg-wc-accent px-6 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors shadow-lg shadow-wc-accent/20">
+                                    class="inline-flex items-center gap-1.5 rounded-full bg-wc-accent px-6 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors shadow-lg shadow-wc-accent/20 btn-press">
                                 Empezar
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
@@ -159,7 +159,7 @@
         {{-- Quick actions (desktop) --}}
         <div class="hidden sm:flex items-center gap-2">
             <a href="{{ route('client.plan') }}"
-               class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors">
+               class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors btn-press">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
@@ -226,7 +226,7 @@
     </div>
     <div wire:loading.remove class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {{-- Streak with Flame Animation --}}
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
+        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift stat-glow-red">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Racha</span>
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10 {{ $streakDays >= 3 ? 'flame-active' : '' }}">
@@ -235,12 +235,12 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $streakDays }}">0</span></p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $streakDays }}" class="counter-highlight">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">dias consecutivos</p>
         </div>
 
         {{-- Check-ins this month --}}
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
+        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift stat-glow-emerald">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Check-ins</span>
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
@@ -249,12 +249,12 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $checkinsThisMonth }}">0</span></p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $checkinsThisMonth }}" class="counter-highlight">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">este mes</p>
         </div>
 
         {{-- XP + Level --}}
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
+        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift stat-glow-violet">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Nivel {{ $level }}</span>
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10">
@@ -263,7 +263,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $xpTotal }}">0</span></p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $xpTotal }}" class="counter-highlight">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">XP total</p>
             {{-- XP Progress bar --}}
             <div class="mt-3">
@@ -278,7 +278,7 @@
         </div>
 
         {{-- Days trained this week — Progress Ring --}}
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
+        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift stat-glow-amber">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Esta semana</span>
             </div>
@@ -320,7 +320,7 @@
     </div>
 
     {{-- ITEM 5: Plan Progress Timeline --}}
-    <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+    <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 card-hover-lift">
         <div class="flex items-center justify-between mb-4">
             <h2 class="font-display text-lg tracking-wide text-wc-text">Tu Progreso</h2>
             <span class="text-xs text-wc-text-tertiary">Semana {{ min($weeksActive, $totalWeeks) }} de {{ $totalWeeks }}</span>
@@ -369,7 +369,7 @@
     </div>
 
     {{-- Streak Calendar — 90-day GitHub-style heatmap --}}
-    <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
+    <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift">
         <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
                 <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-orange-500/10">
@@ -418,12 +418,16 @@
 
                         if ($isFuture || $isBeforeRange) {
                             $colorClass = 'bg-wc-bg-secondary/30';
-                        } elseif ($count >= 3) {
+                        } elseif ($count >= 5) {
                             $colorClass = 'bg-wc-accent';
+                        } elseif ($count >= 4) {
+                            $colorClass = 'bg-wc-accent/80';
+                        } elseif ($count >= 3) {
+                            $colorClass = 'bg-wc-accent/60';
                         } elseif ($count === 2) {
-                            $colorClass = 'bg-wc-accent/70';
-                        } elseif ($count === 1) {
                             $colorClass = 'bg-wc-accent/40';
+                        } elseif ($count === 1) {
+                            $colorClass = 'bg-wc-accent/20';
                         } else {
                             $colorClass = 'bg-wc-bg-secondary';
                         }
@@ -431,10 +435,19 @@
                         $isToday = $date->isSameDay($today);
                     @endphp
                     <div
-                        class="h-2.5 w-2.5 rounded-[2px] {{ $colorClass }} sm:h-3 sm:w-3 sm:rounded-sm transition-colors {{ $isToday ? 'ring-1 ring-wc-text/30' : '' }}"
+                        class="h-2.5 w-2.5 rounded-[2px] {{ $colorClass }} sm:h-3 sm:w-3 sm:rounded-sm transition-all duration-150 hover:scale-125 hover:z-10 relative {{ $isToday ? 'ring-1 ring-wc-text/30' : '' }}"
                         title="{{ $date->translatedFormat('D j M Y') }}{{ $count ? ' — ' . $count . ' sesion(es)' : '' }}"
+                        x-data="{ tooltip: false }"
+                        @mouseenter="tooltip = true"
+                        @mouseleave="tooltip = false"
                         @if($isFuture) style="opacity: 0.2" @endif
-                    ></div>
+                    >
+                        <template x-if="tooltip">
+                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 z-20 pointer-events-none whitespace-nowrap rounded-md bg-wc-bg-secondary border border-wc-border px-2 py-1 text-[10px] text-wc-text shadow-lg">
+                                {{ $date->format('d/m') }}{{ $count ? ' · ' . $count . 'x' : '' }}
+                            </div>
+                        </template>
+                    </div>
                 @endfor
             </div>
         </div>
@@ -454,7 +467,7 @@
     </div>
 
     {{-- Weight/Metrics Trend Chart --}}
-    <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5"
+    <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 card-hover-lift"
          x-data="{
              chart: null,
              init() {
@@ -511,11 +524,20 @@
                                  labels: { padding: 12, usePointStyle: true, pointStyleWidth: 8, font: { size: 11 } }
                              },
                              tooltip: {
+                                 backgroundColor: 'rgba(24,24,27,0.92)',
+                                 borderColor: 'rgba(63,63,70,0.6)',
+                                 borderWidth: 1,
+                                 titleColor: '#f4f4f5',
+                                 bodyColor: '#a1a1aa',
+                                 padding: 10,
                                  callbacks: {
                                      label: ctx => {
                                          if (ctx.raw === null) return null;
-                                         return ctx.dataset.label + ': ' + ctx.raw + (ctx.datasetIndex === 0 ? ' kg' : '%');
-                                     }
+                                         const suffix = ctx.datasetIndex === 0 ? ' kg' : '%';
+                                         const val = typeof ctx.raw === 'number' ? ctx.raw.toFixed(1) : ctx.raw;
+                                         return ' ' + ctx.dataset.label.split(' ')[0] + ': ' + val + suffix;
+                                     },
+                                     title: items => items[0]?.label ?? ''
                                  }
                              }
                          },
@@ -548,7 +570,7 @@
             <span class="text-xs text-wc-text-tertiary">Ultimos 90 dias</span>
         </div>
         @if(count($weightChartData) > 0)
-            <div class="relative h-56">
+            <div class="relative h-56 chart-container">
                 <canvas x-ref="weightCanvas"></canvas>
             </div>
         @else
@@ -563,7 +585,7 @@
     </div>
 
     {{-- ITEM 3: Coach Avatar Card --}}
-    <div class="flex items-center gap-4 rounded-card border border-wc-border bg-wc-bg-tertiary p-4">
+    <div class="flex items-center gap-4 rounded-card border border-wc-border bg-wc-bg-tertiary p-4 card-hover-lift">
         <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
             <span class="font-display text-sm tracking-wide text-wc-accent">{{ $coachInitials }}</span>
         </div>
@@ -572,7 +594,7 @@
             <p class="text-sm font-semibold text-wc-text truncate">{{ $coachName }}</p>
         </div>
         <a href="{{ route('client.chat') }}"
-           class="inline-flex items-center gap-1.5 rounded-full bg-wc-accent px-4 py-2 text-xs font-medium text-white hover:bg-wc-accent-hover transition-colors shadow-lg shadow-wc-accent/20">
+           class="inline-flex items-center gap-1.5 rounded-full bg-wc-accent px-4 py-2 text-xs font-medium text-white hover:bg-wc-accent-hover transition-colors shadow-lg shadow-wc-accent/20 btn-press">
             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
             </svg>
@@ -668,7 +690,7 @@
     </div>
     <div wire:loading.remove>
     @if($hasLastWeekData)
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 card-hover-lift">
             <div class="flex items-center gap-2 mb-4">
                 <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-500/10">
                     <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -681,12 +703,12 @@
             <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {{-- Workouts --}}
                 <div class="rounded-xl bg-wc-bg-secondary px-4 py-3 text-center">
-                    <p class="font-data text-2xl font-bold text-wc-text"><span data-counter="{{ $lastWeekWorkouts }}">0</span></p>
+                    <p class="font-data text-2xl font-bold text-wc-text"><span data-counter="{{ $lastWeekWorkouts }}" class="counter-highlight">0</span></p>
                     <p class="mt-0.5 text-[11px] text-wc-text-tertiary">entrenamientos</p>
                 </div>
                 {{-- Check-ins --}}
                 <div class="rounded-xl bg-wc-bg-secondary px-4 py-3 text-center">
-                    <p class="font-data text-2xl font-bold text-wc-text"><span data-counter="{{ $lastWeekCheckins }}">0</span></p>
+                    <p class="font-data text-2xl font-bold text-wc-text"><span data-counter="{{ $lastWeekCheckins }}" class="counter-highlight">0</span></p>
                     <p class="mt-0.5 text-[11px] text-wc-text-tertiary">check-ins</p>
                 </div>
                 {{-- Weight --}}
@@ -712,7 +734,7 @@
             </div>
         </div>
     @else
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 card-hover-lift">
             <div class="flex items-center gap-2 mb-3">
                 <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-500/10">
                     <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -810,7 +832,7 @@
     <div wire:loading.remove class="grid grid-cols-1 gap-4 lg:grid-cols-3">
 
         {{-- Weekly training overview --}}
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 lg:col-span-2">
+        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 lg:col-span-2 card-hover-lift">
             <h2 class="font-display text-lg tracking-wide text-wc-text">Semana de entrenamiento</h2>
             <p class="mt-1 text-xs text-wc-text-tertiary">Semana {{ now()->isoWeek() }} del {{ now()->year }}</p>
 
@@ -854,7 +876,7 @@
         </div>
 
         {{-- Recent activity --}}
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 card-hover-lift">
             <h2 class="font-display text-lg tracking-wide text-wc-text">Actividad reciente</h2>
 
             @if(count($recentActivity) > 0)
@@ -906,7 +928,7 @@
     {{-- Quick actions (mobile) --}}
     <div class="grid grid-cols-1 gap-3 sm:hidden">
         <a href="{{ route('client.plan') }}"
-           class="flex items-center justify-center gap-2 rounded-lg bg-wc-accent px-4 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors">
+           class="flex items-center justify-center gap-2 rounded-lg bg-wc-accent px-4 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors btn-press">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>

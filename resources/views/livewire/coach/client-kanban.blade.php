@@ -37,7 +37,7 @@
             {{-- Refresh --}}
             <button
                 wire:click="loadBoard"
-                class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text transition-colors"
+                class="btn-press flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text transition-colors"
                 title="Actualizar"
             >
                 <svg class="h-4 w-4" wire:loading.class="animate-spin" wire:target="loadBoard" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -124,7 +124,7 @@
                     @forelse ($col['clients'] as $client)
                         {{-- Client Card --}}
                         <div
-                            class="kanban-card group relative cursor-grab rounded-lg border border-wc-border bg-wc-bg-tertiary p-3 shadow-sm transition-all hover:shadow-md hover:border-wc-accent/30 active:cursor-grabbing active:shadow-lg"
+                            class="kanban-card card-hover-lift group relative cursor-grab rounded-lg border border-wc-border bg-wc-bg-tertiary p-3 shadow-sm transition-all hover:shadow-md hover:border-wc-accent/30 active:cursor-grabbing active:shadow-lg"
                             draggable="true"
                             data-client-id="{{ $client['id'] }}"
                             x-on:dragstart="onDragStart($event, {{ $client['id'] }})"
@@ -205,7 +205,7 @@
                             {{-- Detail button --}}
                             <button
                                 wire:click="openDetail({{ $client['id'] }})"
-                                class="mt-2 flex w-full items-center justify-center gap-1 rounded-md border border-wc-border bg-wc-bg-secondary/50 py-1 text-[11px] font-medium text-wc-text-secondary opacity-0 transition-all group-hover:opacity-100 hover:bg-wc-bg-secondary hover:text-wc-text"
+                                class="btn-press mt-2 flex w-full items-center justify-center gap-1 rounded-md border border-wc-border bg-wc-bg-secondary/50 py-1 text-[11px] font-medium text-wc-text-secondary opacity-0 transition-all group-hover:opacity-100 hover:bg-wc-bg-secondary hover:text-wc-text"
                             >
                                 <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -335,21 +335,21 @@
                     {{-- Actions --}}
                     <div class="mt-5 flex items-center gap-2">
                         <a href="{{ route('coach.checkins') }}"
-                           class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-wc-accent px-3 py-2 text-xs font-medium text-white hover:bg-wc-accent-hover transition-colors">
+                           class="btn-press inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-wc-accent px-3 py-2 text-xs font-medium text-white hover:bg-wc-accent-hover transition-colors">
                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
                             Check-ins
                         </a>
                         <a href="{{ route('coach.messages') }}"
-                           class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-xs font-medium text-wc-text hover:bg-wc-bg-tertiary transition-colors">
+                           class="btn-press inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-xs font-medium text-wc-text hover:bg-wc-bg-tertiary transition-colors">
                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
                             </svg>
                             Mensajes
                         </a>
                         <a href="{{ route('coach.notes') }}"
-                           class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-xs font-medium text-wc-text hover:bg-wc-bg-tertiary transition-colors">
+                           class="btn-press inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-xs font-medium text-wc-text hover:bg-wc-bg-tertiary transition-colors">
                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" />
                             </svg>
