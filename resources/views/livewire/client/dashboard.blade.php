@@ -43,9 +43,9 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
                                 </svg>
                             </div>
-                            <h2 class="font-display text-2xl tracking-wide text-wc-text">Bienvenido a WellCore</h2>
+                            <h2 class="font-display text-2xl tracking-wide text-wc-text">{{ __('client_dashboard.onboarding_welcome_title') }}</h2>
                             <p class="mt-3 text-sm text-wc-text-tertiary leading-relaxed max-w-sm">
-                                Tu plataforma de coaching fitness basada en ciencia. Aqui encontraras todo lo que necesitas para transformar tu salud y rendimiento.
+                                {{ __('client_dashboard.onboarding_welcome_desc') }}
                             </p>
                         </div>
                     </div>
@@ -58,9 +58,9 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6Z" />
                                 </svg>
                             </div>
-                            <h2 class="font-display text-2xl tracking-wide text-wc-text">Tu Dashboard</h2>
+                            <h2 class="font-display text-2xl tracking-wide text-wc-text">{{ __('client_dashboard.onboarding_dashboard_title') }}</h2>
                             <p class="mt-3 text-sm text-wc-text-tertiary leading-relaxed max-w-sm">
-                                Completa <span class="font-semibold text-wc-text">misiones diarias</span> para ganar XP, revisa tu <span class="font-semibold text-wc-text">semana de entrenamiento</span> y sube de nivel con cada logro.
+                                {!! __('client_dashboard.onboarding_dashboard_text', ['missions' => __('client_dashboard.onboarding_dashboard_desc_1'), 'training' => __('client_dashboard.onboarding_dashboard_desc_2')]) !!}
                             </p>
                         </div>
                     </div>
@@ -73,25 +73,25 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
                                 </svg>
                             </div>
-                            <h2 class="font-display text-2xl tracking-wide text-wc-text">Primeros Pasos</h2>
+                            <h2 class="font-display text-2xl tracking-wide text-wc-text">{{ __('client_dashboard.onboarding_steps_title') }}</h2>
                             <div class="mt-4 space-y-3 text-left w-full max-w-xs">
                                 <div class="flex items-center gap-3">
                                     <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
                                         <span class="text-xs font-bold text-wc-accent">1</span>
                                     </div>
-                                    <span class="text-sm text-wc-text">Completa tu primer check-in</span>
+                                    <span class="text-sm text-wc-text">{{ __('client_dashboard.onboarding_step_1') }}</span>
                                 </div>
                                 <div class="flex items-center gap-3">
                                     <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
                                         <span class="text-xs font-bold text-wc-accent">2</span>
                                     </div>
-                                    <span class="text-sm text-wc-text">Contacta a tu coach</span>
+                                    <span class="text-sm text-wc-text">{{ __('client_dashboard.onboarding_step_2') }}</span>
                                 </div>
                                 <div class="flex items-center gap-3">
                                     <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
                                         <span class="text-xs font-bold text-wc-accent">3</span>
                                     </div>
-                                    <span class="text-sm text-wc-text">Explora tu plan de entrenamiento</span>
+                                    <span class="text-sm text-wc-text">{{ __('client_dashboard.onboarding_step_3') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -104,7 +104,7 @@
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                             </svg>
-                            Anterior
+                            {{ __('client_dashboard.onboarding_prev') }}
                         </button>
                         <div x-show="currentSlide === 0" class="w-20"></div>
 
@@ -120,7 +120,7 @@
                         <template x-if="currentSlide < totalSlides - 1">
                             <button @click="next()"
                                     class="inline-flex items-center gap-1.5 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors shadow-lg shadow-wc-accent/20 btn-press">
-                                Siguiente
+                                {{ __('client_dashboard.onboarding_next') }}
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                                 </svg>
@@ -129,7 +129,7 @@
                         <template x-if="currentSlide === totalSlides - 1">
                             <button @click="finish()"
                                     class="inline-flex items-center gap-1.5 rounded-full bg-wc-accent px-6 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors shadow-lg shadow-wc-accent/20 btn-press">
-                                Empezar
+                                {{ __('client_dashboard.onboarding_start') }}
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
                                 </svg>
@@ -150,7 +150,7 @@
             @if($planLabel)
                 <div class="mt-2 flex items-center gap-2">
                     <span class="inline-flex rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-semibold text-wc-accent">
-                        Plan {{ $planLabel }}
+                        {{ __('client_dashboard.plan_label', ['plan' => $planLabel]) }}
                     </span>
                 </div>
             @endif
@@ -163,11 +163,11 @@
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
-                Registrar entrenamiento
+                {{ __('client_dashboard.log_workout') }}
             </a>
             <a href="{{ route('client.checkin') }}"
                class="inline-flex items-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2 text-sm font-medium text-wc-text hover:bg-wc-bg-secondary transition-colors">
-                Hacer check-in
+                {{ __('client_dashboard.do_checkin') }}
             </a>
         </div>
     </div>
@@ -193,12 +193,12 @@
                 </svg>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold text-wc-text">No tienes un plan activo</p>
-                <p class="mt-0.5 text-xs text-wc-text-tertiary">Contacta a tu coach para que te asigne un plan de entrenamiento o nutricion.</p>
+                <p class="text-sm font-semibold text-wc-text">{{ __('client_dashboard.no_active_plan') }}</p>
+                <p class="mt-0.5 text-xs text-wc-text-tertiary">{{ __('client_dashboard.no_active_plan_desc') }}</p>
             </div>
             <a href="{{ route('client.chat') }}"
                class="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-wc-accent px-3 py-1.5 text-xs font-medium text-white hover:bg-wc-accent-hover transition-colors">
-                Contactar coach
+                {{ __('client_dashboard.contact_coach') }}
             </a>
         </div>
     @else
@@ -209,9 +209,9 @@
                 </svg>
             </div>
             <span class="text-xs text-wc-text-tertiary">
-                Plan
+                {{ __('client_dashboard.plan_label', ['plan' => '']) }}
                 @if($planPhase) <span class="font-semibold capitalize text-wc-text">{{ $planPhase }}</span> @endif
-                activo &mdash; dia <span class="font-semibold text-wc-text">{{ $planDaysActive }}</span>
+                {{ __('client_dashboard.plan_active_label') }} &mdash; {{ __('client_dashboard.plan_active_day') }} <span class="font-semibold text-wc-text">{{ $planDaysActive }}</span>
             </span>
         </div>
     @endif
@@ -228,7 +228,7 @@
         {{-- Streak with Flame Animation --}}
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift stat-glow-red">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Racha</span>
+                <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ __('client_dashboard.streak') }}</span>
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10 {{ $streakDays >= 3 ? 'flame-active' : '' }}">
                     <svg class="h-4 w-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
                         <path fill-rule="evenodd" d="M12.963 2.286a.75.75 0 0 0-1.071-.136 9.742 9.742 0 0 0-3.539 6.176A7.547 7.547 0 0 1 6.648 6.61a.75.75 0 0 0-1.152.082A9 9 0 1 0 15.68 4.534a7.46 7.46 0 0 1-2.717-2.248ZM15.75 14.25a3.75 3.75 0 1 1-7.313-1.172c.628.465 1.35.81 2.133 1a5.99 5.99 0 0 1 1.925-3.546 3.75 3.75 0 0 1 3.255 3.718Z" clip-rule="evenodd" />
@@ -236,13 +236,13 @@
                 </div>
             </div>
             <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $streakDays }}" class="counter-highlight">0</span></p>
-            <p class="mt-0.5 text-xs text-wc-text-tertiary">dias consecutivos</p>
+            <p class="mt-0.5 text-xs text-wc-text-tertiary">{{ __('client_dashboard.consecutive_days') }}</p>
         </div>
 
         {{-- Check-ins this month --}}
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift stat-glow-emerald">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Check-ins</span>
+                <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ __('client_dashboard.checkins') }}</span>
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
                     <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -250,13 +250,13 @@
                 </div>
             </div>
             <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $checkinsThisMonth }}" class="counter-highlight">0</span></p>
-            <p class="mt-0.5 text-xs text-wc-text-tertiary">este mes</p>
+            <p class="mt-0.5 text-xs text-wc-text-tertiary">{{ __('client_dashboard.this_month') }}</p>
         </div>
 
         {{-- XP + Level --}}
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift stat-glow-violet">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Nivel {{ $level }}</span>
+                <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ __('client_dashboard.level', ['level' => $level]) }}</span>
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10">
                     <svg class="h-4 w-4 text-violet-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
@@ -264,7 +264,7 @@
                 </div>
             </div>
             <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $xpTotal }}" class="counter-highlight">0</span></p>
-            <p class="mt-0.5 text-xs text-wc-text-tertiary">XP total</p>
+            <p class="mt-0.5 text-xs text-wc-text-tertiary">{{ __('client_dashboard.xp_total') }}</p>
             {{-- XP Progress bar --}}
             <div class="mt-3">
                 <div class="h-1.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
@@ -280,7 +280,7 @@
         {{-- Days trained this week — Progress Ring --}}
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift stat-glow-amber">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Esta semana</span>
+                <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ __('client_dashboard.this_week') }}</span>
             </div>
             <div class="mt-3 flex items-center gap-3">
                 {{-- SVG Progress Ring ~60px --}}
@@ -313,7 +313,7 @@
                           font-weight="700">{{ $trainedThisWeek }}/7</text>
                 </svg>
                 <div>
-                    <p class="text-xs text-wc-text-tertiary">dias entrenados</p>
+                    <p class="text-xs text-wc-text-tertiary">{{ __('client_dashboard.days_trained') }}</p>
                 </div>
             </div>
         </div>
@@ -322,8 +322,8 @@
     {{-- ITEM 5: Plan Progress Timeline --}}
     <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 card-hover-lift">
         <div class="flex items-center justify-between mb-4">
-            <h2 class="font-display text-lg tracking-wide text-wc-text">Tu Progreso</h2>
-            <span class="text-xs text-wc-text-tertiary">Semana {{ min($weeksActive, $totalWeeks) }} de {{ $totalWeeks }}</span>
+            <h2 class="font-display text-lg tracking-wide text-wc-text">{{ __('client_dashboard.your_progress') }}</h2>
+            <span class="text-xs text-wc-text-tertiary">{{ __('client_dashboard.week_x_of_y', ['current' => min($weeksActive, $totalWeeks), 'total' => $totalWeeks]) }}</span>
         </div>
 
         {{-- Progress bar with week markers --}}
@@ -344,7 +344,7 @@
         {{-- Week markers --}}
         <div class="mt-3 flex items-center justify-between">
             <div class="text-left">
-                <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Inicio</p>
+                <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ __('client_dashboard.start') }}</p>
                 <p class="text-xs font-data text-wc-text">{{ $startDate }}</p>
             </div>
             <div class="hidden sm:flex items-center gap-0 flex-1 mx-4">
@@ -362,7 +362,7 @@
                 @endfor
             </div>
             <div class="text-right">
-                <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ $weeksActive >= $totalWeeks ? 'Continuo' : 'Semana 12' }}</p>
+                <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ $weeksActive >= $totalWeeks ? __('client_dashboard.continuous') : __('client_dashboard.week_12') }}</p>
                 <p class="text-xs font-data text-wc-text">{{ $progressPercent }}%</p>
             </div>
         </div>
@@ -377,14 +377,14 @@
                         <path fill-rule="evenodd" d="M12.963 2.286a.75.75 0 0 0-1.071-.136 9.742 9.742 0 0 0-3.539 6.176A7.547 7.547 0 0 1 6.648 6.61a.75.75 0 0 0-1.152.082A9 9 0 1 0 15.68 4.534a7.46 7.46 0 0 1-2.717-2.248ZM15.75 14.25a3.75 3.75 0 1 1-7.313-1.172c.628.465 1.35.81 2.133 1a5.99 5.99 0 0 1 1.925-3.546 3.75 3.75 0 0 1 3.255 3.718Z" clip-rule="evenodd" />
                     </svg>
                 </div>
-                <h3 class="text-sm font-semibold text-wc-text">Racha de Entrenamiento</h3>
+                <h3 class="text-sm font-semibold text-wc-text">{{ __('client_dashboard.training_streak') }}</h3>
                 @if($calendarStreak > 0)
                     <span class="inline-flex items-center gap-1 rounded-full bg-orange-500/10 px-2 py-0.5 text-xs font-bold text-orange-500">
-                        {{ $calendarStreak }} {{ $calendarStreak === 1 ? 'dia' : 'dias' }} seguidos
+                        {{ trans_choice('client_dashboard.days_in_row', $calendarStreak, ['count' => $calendarStreak]) }}
                     </span>
                 @endif
             </div>
-            <span class="text-xs text-wc-text-tertiary hidden sm:inline">Ultimos 90 dias</span>
+            <span class="text-xs text-wc-text-tertiary hidden sm:inline">{{ __('client_dashboard.last_90_days') }}</span>
         </div>
 
         {{-- Calendar grid --}}
@@ -454,14 +454,14 @@
 
         {{-- Legend + mobile label --}}
         <div class="mt-2 flex items-center justify-between">
-            <span class="text-[10px] text-wc-text-tertiary sm:hidden">Ultimos 90 dias</span>
+            <span class="text-[10px] text-wc-text-tertiary sm:hidden">{{ __('client_dashboard.last_90_days') }}</span>
             <div class="flex items-center gap-1 text-[10px] text-wc-text-tertiary ml-auto">
-                <span>Menos</span>
+                <span>{{ __('client_dashboard.less') }}</span>
                 <div class="h-2 w-2 rounded-[2px] bg-wc-bg-secondary sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
                 <div class="h-2 w-2 rounded-[2px] bg-wc-accent/40 sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
                 <div class="h-2 w-2 rounded-[2px] bg-wc-accent/70 sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
                 <div class="h-2 w-2 rounded-[2px] bg-wc-accent sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
-                <span>Mas</span>
+                <span>{{ __('client_dashboard.more') }}</span>
             </div>
         </div>
     </div>
@@ -474,7 +474,7 @@
                  const data = @js($weightChartData);
                  if (!data.length) return;
                  const datasets = [{
-                     label: 'Peso (kg)',
+                     label: '{{ __('client_dashboard.weight_kg') }}',
                      data: data.map(d => d.weight),
                      borderColor: '#DC2626',
                      backgroundColor: 'rgba(220, 38, 38, 0.08)',
@@ -491,7 +491,7 @@
                  const hasBodyFat = data.some(d => d.bodyFat !== null);
                  if (hasBodyFat) {
                      datasets.push({
-                         label: 'Grasa corporal (%)',
+                         label: '{{ __('client_dashboard.body_fat_pct') }}',
                          data: data.map(d => d.bodyFat),
                          borderColor: '#8B5CF6',
                          backgroundColor: 'transparent',
@@ -547,14 +547,14 @@
                                  display: true,
                                  position: 'left',
                                  grid: { color: 'rgba(63, 63, 70, 0.15)' },
-                                 title: { display: true, text: 'Peso (kg)', font: { size: 11 } },
+                                 title: { display: true, text: '{{ __('client_dashboard.weight_kg') }}', font: { size: 11 } },
                              },
                              y1: hasBodyFat ? {
                                  type: 'linear',
                                  display: true,
                                  position: 'right',
                                  grid: { drawOnChartArea: false },
-                                 title: { display: true, text: 'Grasa (%)', font: { size: 11 } },
+                                 title: { display: true, text: '{{ __('client_dashboard.fat_pct_axis') }}', font: { size: 11 } },
                              } : undefined,
                              x: { grid: { display: false } }
                          }
@@ -566,8 +566,8 @@
          x-init="init()"
          @before-livewire-snapshot.window="destroy()">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="text-sm font-semibold text-wc-text">Tendencia de Peso</h3>
-            <span class="text-xs text-wc-text-tertiary">Ultimos 90 dias</span>
+            <h3 class="text-sm font-semibold text-wc-text">{{ __('client_dashboard.weight_trend') }}</h3>
+            <span class="text-xs text-wc-text-tertiary">{{ __('client_dashboard.last_90_days') }}</span>
         </div>
         @if(count($weightChartData) > 0)
             <div class="relative h-56 chart-container">
@@ -578,8 +578,8 @@
                 <svg class="h-8 w-8 text-wc-text-tertiary/40" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
                 </svg>
-                <p class="mt-2 text-sm text-wc-text-tertiary">Sin datos de peso registrados</p>
-                <a href="{{ route('client.metrics') }}" class="mt-2 text-xs font-medium text-wc-accent hover:underline">Registrar peso</a>
+                <p class="mt-2 text-sm text-wc-text-tertiary">{{ __('client_dashboard.no_weight_data') }}</p>
+                <a href="{{ route('client.metrics') }}" class="mt-2 text-xs font-medium text-wc-accent hover:underline">{{ __('client_dashboard.log_weight') }}</a>
             </div>
         @endif
     </div>
@@ -590,7 +590,7 @@
             <span class="font-display text-sm tracking-wide text-wc-accent">{{ $coachInitials }}</span>
         </div>
         <div class="min-w-0 flex-1">
-            <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Tu Coach</p>
+            <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ __('client_dashboard.your_coach') }}</p>
             <p class="text-sm font-semibold text-wc-text truncate">{{ $coachName }}</p>
         </div>
         <a href="{{ route('client.chat') }}"
@@ -598,7 +598,7 @@
             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
             </svg>
-            Enviar mensaje
+            {{ __('client_dashboard.send_message') }}
         </a>
     </div>
 
@@ -655,13 +655,13 @@
             {{-- Text --}}
             <div class="min-w-0 flex-1">
                 @if($daysUntilCheckin <= 0)
-                    <p class="text-sm font-semibold text-wc-accent uppercase tracking-wide">Check-in pendiente</p>
-                    <p class="mt-0.5 text-xs text-wc-text-tertiary">Tu check-in semanal esta listo para completar</p>
+                    <p class="text-sm font-semibold text-wc-accent uppercase tracking-wide">{{ __('client_dashboard.checkin_pending') }}</p>
+                    <p class="mt-0.5 text-xs text-wc-text-tertiary">{{ __('client_dashboard.checkin_pending_desc') }}</p>
                 @elseif($daysUntilCheckin <= 2)
-                    <p class="text-sm font-semibold text-amber-600 dark:text-amber-400">Check-in en {{ $daysUntilCheckin }} {{ $daysUntilCheckin === 1 ? 'dia' : 'dias' }}</p>
+                    <p class="text-sm font-semibold text-amber-600 dark:text-amber-400">{{ trans_choice('client_dashboard.checkin_in_days', $daysUntilCheckin, ['count' => $daysUntilCheckin]) }}</p>
                     <p class="mt-0.5 text-xs text-wc-text-tertiary capitalize">{{ $nextCheckinDate }}</p>
                 @else
-                    <p class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">Proximo check-in en {{ $daysUntilCheckin }} dias</p>
+                    <p class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{{ __('client_dashboard.next_checkin_in', ['count' => $daysUntilCheckin]) }}</p>
                     <p class="mt-0.5 text-xs text-wc-text-tertiary capitalize">{{ $nextCheckinDate }}</p>
                 @endif
             </div>
@@ -697,24 +697,24 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
                     </svg>
                 </div>
-                <h2 class="font-display text-lg tracking-wide text-wc-text">Resumen Semana Anterior</h2>
+                <h2 class="font-display text-lg tracking-wide text-wc-text">{{ __('client_dashboard.last_week_summary') }}</h2>
             </div>
 
             <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {{-- Workouts --}}
                 <div class="rounded-xl bg-wc-bg-secondary px-4 py-3 text-center">
                     <p class="font-data text-2xl font-bold text-wc-text"><span data-counter="{{ $lastWeekWorkouts }}" class="counter-highlight">0</span></p>
-                    <p class="mt-0.5 text-[11px] text-wc-text-tertiary">entrenamientos</p>
+                    <p class="mt-0.5 text-[11px] text-wc-text-tertiary">{{ __('client_dashboard.workouts_label') }}</p>
                 </div>
                 {{-- Check-ins --}}
                 <div class="rounded-xl bg-wc-bg-secondary px-4 py-3 text-center">
                     <p class="font-data text-2xl font-bold text-wc-text"><span data-counter="{{ $lastWeekCheckins }}" class="counter-highlight">0</span></p>
-                    <p class="mt-0.5 text-[11px] text-wc-text-tertiary">check-ins</p>
+                    <p class="mt-0.5 text-[11px] text-wc-text-tertiary">{{ __('client_dashboard.checkins_label') }}</p>
                 </div>
                 {{-- Weight --}}
                 <div class="rounded-xl bg-wc-bg-secondary px-4 py-3 text-center col-span-2 sm:col-span-1">
                     <p class="font-data text-2xl font-bold text-wc-text">{{ $lastWeekWeight ?? '--' }}</p>
-                    <p class="mt-0.5 text-[11px] text-wc-text-tertiary">{{ $lastWeekWeight ? 'kg actual' : 'sin registro' }}</p>
+                    <p class="mt-0.5 text-[11px] text-wc-text-tertiary">{{ $lastWeekWeight ? __('client_dashboard.current_kg') : __('client_dashboard.no_record') }}</p>
                 </div>
             </div>
 
@@ -722,13 +722,13 @@
             <div class="mt-4 rounded-xl bg-wc-accent/5 border border-wc-accent/10 px-4 py-2.5">
                 <p class="text-xs text-wc-text-tertiary">
                     @if($lastWeekWorkouts >= 5)
-                        <span class="font-semibold text-emerald-600 dark:text-emerald-400">Semana excepcional.</span> {{ $lastWeekWorkouts }} entrenamientos completados. Sigue asi, la consistencia es tu superpoder.
+                        <span class="font-semibold text-emerald-600 dark:text-emerald-400">{{ __('client_dashboard.exceptional_week') }}</span> {{ __('client_dashboard.exceptional_week_desc', ['count' => $lastWeekWorkouts]) }}
                     @elseif($lastWeekWorkouts >= 3)
-                        <span class="font-semibold text-sky-600 dark:text-sky-400">Buen ritmo.</span> {{ $lastWeekWorkouts }} entrenamientos la semana pasada. Estas construyendo habitos solidos.
+                        <span class="font-semibold text-sky-600 dark:text-sky-400">{{ __('client_dashboard.good_pace') }}</span> {{ __('client_dashboard.good_pace_desc', ['count' => $lastWeekWorkouts]) }}
                     @elseif($lastWeekWorkouts >= 1)
-                        <span class="font-semibold text-amber-600 dark:text-amber-400">Vas por buen camino.</span> Cada entrenamiento cuenta. Esta semana, apunta a uno mas.
+                        <span class="font-semibold text-amber-600 dark:text-amber-400">{{ __('client_dashboard.on_track') }}</span> {{ __('client_dashboard.on_track_desc') }}
                     @else
-                        <span class="font-semibold text-wc-accent">Nueva semana, nueva oportunidad.</span> El mejor momento para empezar es ahora. Tu coach esta aqui para apoyarte.
+                        <span class="font-semibold text-wc-accent">{{ __('client_dashboard.new_week') }}</span> {{ __('client_dashboard.new_week_desc') }}
                     @endif
                 </p>
             </div>
@@ -741,14 +741,14 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
                     </svg>
                 </div>
-                <h2 class="font-display text-lg tracking-wide text-wc-text">Resumen Semana Anterior</h2>
+                <h2 class="font-display text-lg tracking-wide text-wc-text">{{ __('client_dashboard.last_week_summary') }}</h2>
             </div>
             <div class="flex items-center gap-3 rounded-xl bg-wc-accent/5 border border-wc-accent/10 px-4 py-3">
                 <svg class="h-5 w-5 shrink-0 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
                 </svg>
                 <p class="text-sm text-wc-text-tertiary">
-                    <span class="font-semibold text-wc-text">Esta es tu primera semana</span> &mdash; vamos! Completa tu primer entrenamiento y check-in para ver tu resumen aqui.
+                    <span class="font-semibold text-wc-text">{{ __('client_dashboard.first_week') }}</span> &mdash; {{ __('client_dashboard.first_week_desc') }}
                 </p>
             </div>
         </div>
@@ -758,9 +758,9 @@
     {{-- Daily missions --}}
     <div>
         <div class="mb-3 flex items-center justify-between">
-            <h2 class="font-display text-lg tracking-wide text-wc-text">Misiones del dia</h2>
+            <h2 class="font-display text-lg tracking-wide text-wc-text">{{ __('client_dashboard.daily_missions') }}</h2>
             <span class="text-xs text-wc-text-tertiary">
-                {{ collect($dailyMissions)->where('completed', true)->count() }}/{{ count($dailyMissions) }} completadas
+                {{ __('client_dashboard.missions_completed', ['done' => collect($dailyMissions)->where('completed', true)->count(), 'total' => count($dailyMissions)]) }}
             </span>
         </div>
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -806,7 +806,7 @@
                             {{ $mission['title'] }}
                         </p>
                         <p class="mt-0.5 text-[11px] text-wc-text-tertiary">
-                            {{ $mission['completed'] ? 'Completado' : 'Pendiente' }}
+                            {{ $mission['completed'] ? __('client_dashboard.completed') : __('client_dashboard.pending') }}
                         </p>
                     </div>
 
@@ -833,8 +833,8 @@
 
         {{-- Weekly training overview --}}
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 lg:col-span-2 card-hover-lift">
-            <h2 class="font-display text-lg tracking-wide text-wc-text">Semana de entrenamiento</h2>
-            <p class="mt-1 text-xs text-wc-text-tertiary">Semana {{ now()->isoWeek() }} del {{ now()->year }}</p>
+            <h2 class="font-display text-lg tracking-wide text-wc-text">{{ __('client_dashboard.training_week') }}</h2>
+            <p class="mt-1 text-xs text-wc-text-tertiary">{{ __('client_dashboard.week_of_year', ['week' => now()->isoWeek(), 'year' => now()->year]) }}</p>
 
             <div class="mt-5 flex items-center justify-between gap-2 sm:justify-start sm:gap-4">
                 @foreach($weekDays as $day)
@@ -862,22 +862,22 @@
             <div class="mt-5 flex items-center gap-4 text-xs text-wc-text-tertiary">
                 <div class="flex items-center gap-1.5">
                     <div class="h-2.5 w-2.5 rounded-full bg-emerald-500/40"></div>
-                    Completado
+                    {{ __('client_dashboard.completed_legend') }}
                 </div>
                 <div class="flex items-center gap-1.5">
                     <div class="h-2.5 w-2.5 rounded-full border border-wc-border"></div>
-                    Pendiente
+                    {{ __('client_dashboard.pending_legend') }}
                 </div>
                 <div class="flex items-center gap-1.5">
                     <div class="h-2.5 w-2.5 rounded-full bg-wc-accent"></div>
-                    Hoy
+                    {{ __('client_dashboard.today') }}
                 </div>
             </div>
         </div>
 
         {{-- Recent activity --}}
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 card-hover-lift">
-            <h2 class="font-display text-lg tracking-wide text-wc-text">Actividad reciente</h2>
+            <h2 class="font-display text-lg tracking-wide text-wc-text">{{ __('client_dashboard.recent_activity') }}</h2>
 
             @if(count($recentActivity) > 0)
                 <ul class="mt-4 space-y-3">
@@ -919,7 +919,7 @@
                     <svg class="h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
-                    <p class="mt-2 text-sm text-wc-text-tertiary">Sin actividad reciente</p>
+                    <p class="mt-2 text-sm text-wc-text-tertiary">{{ __('client_dashboard.no_recent_activity') }}</p>
                 </div>
             @endif
         </div>
@@ -932,14 +932,14 @@
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
-            Registrar entrenamiento
+            {{ __('client_dashboard.log_workout') }}
         </a>
         <a href="{{ route('client.checkin') }}"
            class="flex items-center justify-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-3 text-sm font-medium text-wc-text hover:bg-wc-bg-secondary transition-colors">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
-            Hacer check-in
+            {{ __('client_dashboard.do_checkin') }}
         </a>
         <a href="{{ route('client.plan') }}"
            class="flex items-center justify-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-3 text-sm font-medium text-wc-text hover:bg-wc-bg-secondary transition-colors">
@@ -947,7 +947,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>
-            Ver mi plan
+            {{ __('client_dashboard.view_plan') }}
         </a>
     </div>
 
