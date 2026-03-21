@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>En mantenimiento — WellCore Fitness</title>
+    <title>Acceso denegado — WellCore Fitness</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -37,7 +37,7 @@
 
         .card {
             text-align: center;
-            max-width: 520px;
+            max-width: 480px;
             width: 100%;
         }
 
@@ -72,67 +72,46 @@
             margin-bottom: 2.5rem;
         }
 
-        .social-box {
-            background: #18181B;
-            border: 1px solid #27272A;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-        }
-
-        .social-box p {
-            font-size: 0.875rem;
-            color: #71717A;
-            margin-bottom: 1rem;
-        }
-
-        .social-links {
+        .actions {
             display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
             justify-content: center;
-            gap: 1.5rem;
         }
 
-        .social-links a {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.375rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #A1A1AA;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 9999px;
-            border: 1px solid #27272A;
-            transition: border-color 0.15s, color 0.15s;
-        }
-
-        .social-links a:hover {
-            border-color: #DC2626;
-            color: #DC2626;
-        }
-
-        .pulse {
+        .btn-primary {
             display: inline-block;
-            width: 8px;
-            height: 8px;
             background: #DC2626;
-            border-radius: 50%;
-            margin-right: 0.5rem;
-            animation: pulse 1.5s ease-in-out infinite;
+            color: #FFFFFF;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.75rem 1.75rem;
+            border-radius: 9999px;
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            box-shadow: 0 4px 24px rgba(220, 38, 38, 0.25);
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.85); }
+        .btn-primary:hover {
+            background: #B91C1C;
         }
 
-        .status-line {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8125rem;
-            color: #DC2626;
-            margin-bottom: 2rem;
-            font-weight: 500;
+        .btn-secondary {
+            display: inline-block;
+            background: transparent;
+            color: #A1A1AA;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.75rem 1.75rem;
+            border-radius: 9999px;
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            border: 1px solid #27272A;
+        }
+
+        .btn-secondary:hover {
+            border-color: #3F3F46;
+            color: #FAFAFA;
         }
 
         .footer-note {
@@ -146,27 +125,13 @@
     <a href="/" class="logo">WELL<span>CORE</span></a>
 
     <div class="card">
-        <div class="error-code">503</div>
+        <div class="error-code">403</div>
         <div class="divider"></div>
-        <h1 class="title">EN MANTENIMIENTO</h1>
-
-        <div class="status-line">
-            <span class="pulse"></span>
-            Actualizacion en progreso
-        </div>
-
-        <p class="message">Estamos realizando mejoras en la plataforma para brindarte una mejor experiencia. Volveremos muy pronto. Gracias por tu paciencia.</p>
-
-        <div class="social-box">
-            <p>Mientras esperas, siguenos en redes sociales:</p>
-            <div class="social-links">
-                <a href="https://www.instagram.com/wellcore.fitness/" target="_blank" rel="noopener">
-                    Instagram
-                </a>
-                <a href="https://www.youtube.com/@Wellcorefitness" target="_blank" rel="noopener">
-                    YouTube
-                </a>
-            </div>
+        <h1 class="title">ACCESO DENEGADO</h1>
+        <p class="message">No tienes permiso para acceder a esta seccion. Si crees que es un error, inicia sesion con tu cuenta o contacta a soporte.</p>
+        <div class="actions">
+            <a href="/" class="btn-primary">Volver al Inicio</a>
+            <a href="/login" class="btn-secondary">Iniciar Sesion</a>
         </div>
     </div>
 

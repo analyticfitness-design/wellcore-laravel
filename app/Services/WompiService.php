@@ -4,9 +4,17 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PaymentConfirmation;
+use App\Mail\WelcomeMail;
+use App\Models\Client;
 use App\Models\Payment;
 use App\Models\PaymentLog;
+use App\Models\WellcoreNotification;
 use App\Enums\PaymentStatus;
+use App\Enums\UserType;
+use App\Services\AuditService;
+use App\Services\WellCoinsService;
 
 class WompiService
 {
@@ -343,7 +351,88 @@ class WompiService
             'transaction_id' => $transactionId,
         ]);
 
+        // Post-approval automation — only run once when transitioning to APPROVED
+        if ($newStatus === PaymentStatus::Approved && $oldStatus !== PaymentStatus::Approved) {
+            $this->runPostApprovalAutomation($payment);
+        }
+
         return true;
+    }
+
+    /**
+     * Run all post-payment-approval automations:
+     * - Send welcome email to client
+     * - Send payment confirmation email
+     * - Award WellCoins for first payment
+     * - Create admin notification
+     * - Audit log the event
+     */
+    protected function runPostApprovalAutomation(Payment $payment): void
+    {
+        try {
+            $client = $payment->client_id ? Client::find($payment->client_id) : null;
+
+            // 1. Send welcome email to client
+            if ($client && $client->email) {
+                $planName = $payment->plan instanceof \App\Enums\PlanType
+                    ? $payment->plan->value
+                    : ($payment->plan ?? 'Esencial');
+
+                Mail::to($client->email)->queue(new WelcomeMail(
+                    clientName: $client->name ?? 'Cliente',
+                    planName: $planName,
+                    coachName: 'Tu coach asignado',
+                ));
+            }
+
+            // 2. Send payment confirmation email
+            $recipientEmail = $client?->email ?? $payment->email ?? null;
+            if ($recipientEmail) {
+                $planName = $payment->plan instanceof \App\Enums\PlanType
+                    ? $payment->plan->value
+                    : ($payment->plan ?? 'Plan WellCore');
+
+                Mail::to($recipientEmail)->queue(new PaymentConfirmation(
+                    clientName: $client?->name ?? $payment->buyer_name ?? 'Cliente',
+                    amount: number_format((float) $payment->amount, 0, '.', '.'),
+                    currency: $payment->currency ?? 'COP',
+                    plan: $planName,
+                    reference: $payment->wompi_reference ?? $payment->payu_reference ?? (string) $payment->id,
+                ));
+            }
+
+            // 3. Award WellCoins for first payment
+            if ($payment->client_id) {
+                WellCoinsService::earn($payment->client_id, 'first_checkin', 'Primer pago completado');
+            }
+
+            // 4. Create admin notification
+            WellcoreNotification::create([
+                'user_type' => UserType::Admin,
+                'user_id' => 1,
+                'type' => 'payment_approved',
+                'title' => 'Pago Aprobado',
+                'body' => 'Cliente #' . $payment->client_id . ' completó pago de $'
+                    . number_format((float) $payment->amount, 0, '.', '.') . ' ' . ($payment->currency ?? 'COP'),
+            ]);
+
+            // 5. Audit log
+            AuditService::logAction(
+                'payment_approved',
+                'Payment #' . ($payment->wompi_reference ?? $payment->id) . ' aprobado para cliente #' . $payment->client_id,
+            );
+
+            $this->logEvent('webhook.post_approval_done', [
+                'payment_id' => $payment->id,
+                'client_id' => $payment->client_id,
+                'reference' => $payment->wompi_reference,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('WompiService::runPostApprovalAutomation failed', [
+                'payment_id' => $payment->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

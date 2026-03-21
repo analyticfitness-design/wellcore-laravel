@@ -65,6 +65,34 @@ use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 
+// Health check endpoint (public, no auth — used by uptime monitors and load balancers)
+Route::get('/health', function () {
+    $checks = [
+        'app' => true,
+        'database' => false,
+        'cache' => false,
+    ];
+
+    try {
+        \DB::connection()->getPdo();
+        $checks['database'] = true;
+    } catch (\Exception $e) {}
+
+    try {
+        \Cache::store()->put('health_check', true, 10);
+        $checks['cache'] = \Cache::store()->get('health_check') === true;
+    } catch (\Exception $e) {}
+
+    $allHealthy = !in_array(false, $checks);
+
+    return response()->json([
+        'status' => $allHealthy ? 'healthy' : 'degraded',
+        'checks' => $checks,
+        'timestamp' => now()->toISOString(),
+        'version' => config('wellcore.version', '2.0.0'),
+    ], $allHealthy ? 200 : 503);
+})->name('health');
+
 // Sitemap (public, no auth required)
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
@@ -104,6 +132,9 @@ Route::get('/privacidad', fn() => view('public.legal.privacidad'))->name('privac
 Route::get('/politica-cookies', fn() => view('public.legal.cookies'))->name('cookies');
 Route::get('/reembolsos', fn() => view('public.legal.reembolso'))->name('reembolsos');
 
+// April 2026 Launch event landing page
+Route::get('/lanzamiento', fn () => view('public.lanzamiento'))->name('lanzamiento');
+
 // Coach Silvia landing
 Route::get('/fit', fn() => view('public.fit'))->name('fit');
 
@@ -125,11 +156,13 @@ Route::get('/blog', function () {
 })->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
-// Shop routes (public, no auth required)
-Route::prefix('tienda')->name('shop.')->group(function () {
-    Route::get('/', ProductCatalog::class)->name('catalog');
-    Route::get('/{slug}', ProductDetail::class)->name('product');
-});
+// Shop routes (public, no auth required) — hidden until shop is production-ready
+if (\App\Services\FeatureFlagService::isEnabled('shop')) {
+    Route::prefix('tienda')->name('shop.')->group(function () {
+        Route::get('/', ProductCatalog::class)->name('catalog');
+        Route::get('/{slug}', ProductDetail::class)->name('product');
+    });
+}
 
 // Newsletter API (public, no auth required)
 Route::post('/api/newsletter', [NewsletterController::class, 'subscribe'])->name('api.newsletter')->middleware('throttle:newsletter');

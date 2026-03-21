@@ -22,3 +22,4 @@ Artisan::command('inspire', function () {
 Schedule::command('wellcore:auto-renewal')->dailyAt('07:00');
 Schedule::command('wellcore:behavioral-triggers')->dailyAt('08:00');
 Schedule::command('wellcore:weekly-summary')->weeklyOn(0, '20:00'); // Sunday 8pm
+Schedule::command('wellcore:expire-trials')->hourly(); // Check trial expirations every hour

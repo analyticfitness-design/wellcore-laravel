@@ -6,7 +6,6 @@ use App\Enums\PlanType;
 use App\Enums\UserType;
 use App\Models\AuthToken;
 use App\Models\Client;
-use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleAuthController extends Controller
@@ -36,16 +35,13 @@ class GoogleAuthController extends Controller
             ?? Client::where('email', $googleUser->getEmail())->first();
 
         if (! $client) {
-            // Auto-create client account from Google data
-            $client = Client::create([
-                'client_code' => 'WC-' . strtoupper(Str::random(6)),
-                'name' => $googleUser->getName(),
-                'email' => $googleUser->getEmail(),
-                'password_hash' => bcrypt(Str::random(32)), // random password, user logged in via Google
+            // No existing account — redirect to inscription page with Google info pre-filled.
+            // We do NOT auto-create a free account; the user must complete registration and pay.
+            return redirect()->route('inscripcion', [
+                'name'      => $googleUser->getName(),
+                'email'     => $googleUser->getEmail(),
                 'google_id' => $googleUser->getId(),
-                'plan' => PlanType::Esencial->value,
-                'status' => 'pendiente',
-                'avatar_url' => $googleUser->getAvatar(),
+                'source'    => 'google',
             ]);
         }
 

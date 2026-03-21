@@ -54,7 +54,7 @@ return [
 
         'stack' => [
             'driver' => 'stack',
-            'channels' => explode(',', (string) env('LOG_STACK', 'single')),
+            'channels' => explode(',', (string) env('LOG_STACK_CHANNELS', env('LOG_STACK', 'single'))),
             'ignore_exceptions' => false,
         ],
 
@@ -125,6 +125,14 @@ return [
 
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
+        ],
+
+        // Sentry channel — active only when sentry/sentry-laravel is installed
+        // Enable by adding "sentry" to LOG_STACK_CHANNELS in .env
+        'sentry' => [
+            'driver' => 'sentry',
+            'level' => env('LOG_SENTRY_LEVEL', 'error'),
+            'bubble' => true,
         ],
 
     ],

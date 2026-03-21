@@ -30,5 +30,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Report to Sentry when available (install sentry/sentry-laravel to activate)
+        if (class_exists(\Sentry\Laravel\Integration::class)) {
+            $exceptions->reportable(function (\Throwable $e) {
+                \Sentry\Laravel\Integration::captureUnhandledException($e);
+            });
+        }
     })->create();

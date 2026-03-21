@@ -36,6 +36,19 @@ services:
     ports:
       - "6380:6379"
 
+  worker:
+    build: .
+    command: php artisan queue:work database --sleep=3 --tries=3 --max-time=3600
+    environment:
+      - APP_ENV=local
+      - DB_HOST=mysql
+      - DB_DATABASE=wellcore_fitness
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+    depends_on:
+      - mysql
+    restart: unless-stopped
+
   mailpit:
     image: axllent/mailpit
     ports:

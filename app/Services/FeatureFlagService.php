@@ -17,6 +17,7 @@ class FeatureFlagService
         'coach_marketplace'      => false,
         'wearables_integration'  => false,
         'multi_language'         => false,
+        'shop'                   => false,  // Shop not ready for production
     ];
 
     public static function isEnabled(string $feature): bool
