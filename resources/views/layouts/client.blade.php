@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="es"
       x-data="{ darkMode: localStorage.getItem('darkMode') !== 'false', sidebarOpen: false }"
-      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
+      x-init="$watch('darkMode', val => { localStorage.setItem('darkMode', val); val ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark') })"
       :class="{ 'dark': darkMode }">
+<script>if(localStorage.getItem('darkMode')!=='false')document.documentElement.classList.add('dark')</script>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">

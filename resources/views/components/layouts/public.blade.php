@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="es" x-data="{ darkMode: localStorage.getItem('darkMode') !== 'false' }" x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))" x-on:toggle-dark.window="darkMode = !darkMode" :class="{ 'dark': darkMode }">
+<html lang="es" x-data="{ darkMode: localStorage.getItem('darkMode') !== 'false' }" x-init="$watch('darkMode', val => { localStorage.setItem('darkMode', val); val ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark') })" x-on:toggle-dark.window="darkMode = !darkMode" :class="{ 'dark': darkMode }">
+<script>if(localStorage.getItem('darkMode')!=='false')document.documentElement.classList.add('dark')</script>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
