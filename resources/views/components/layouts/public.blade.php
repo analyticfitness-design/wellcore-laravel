@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" x-data="{ darkMode: localStorage.getItem('darkMode') !== 'false', mobileMenu: false }" x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))" :class="{ 'dark': darkMode }">
+<html lang="es" x-data="{ darkMode: localStorage.getItem('darkMode') !== 'false' }" x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))" :class="{ 'dark': darkMode }">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,7 +21,7 @@
 <body class="min-h-screen bg-wc-bg text-wc-text">
 
     {{-- Navigation --}}
-    <nav class="sticky top-0 z-50 border-b border-wc-border bg-wc-bg/80 backdrop-blur-xl">
+    <nav x-data="{ mobileMenu: false }" x-on:click.outside="mobileMenu = false" class="sticky top-0 z-50 border-b border-wc-border bg-wc-bg/80 backdrop-blur-xl">
         <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             {{-- Logo --}}
             <a href="{{ route('home') }}" class="flex shrink-0 items-center gap-2.5">
@@ -96,8 +96,16 @@
         </div>
 
         {{-- Mobile Menu --}}
-        <div x-show="mobileMenu" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" x-cloak class="border-t border-wc-border bg-wc-bg lg:hidden">
-            <div class="space-y-1 px-4 py-4">
+        <div x-show="mobileMenu"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-1"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-1"
+             style="display: none;"
+             class="border-t border-wc-border bg-wc-bg lg:hidden">
+            <div class="space-y-1 px-4 py-4" x-on:click="mobileMenu = false">
                 <a href="{{ route('metodo') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('metodo') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Metodo</a>
                 <a href="{{ route('reto-rise') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('reto-rise') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">RISE</a>
                 <a href="{{ route('nosotros') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('nosotros') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Nosotros</a>
