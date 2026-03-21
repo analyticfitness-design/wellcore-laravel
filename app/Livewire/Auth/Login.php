@@ -37,12 +37,14 @@ class Login extends Component
         $this->validate();
 
         // Try to find the user: first check admins by username, then clients by email or client_code
-        $user = Admin::where('username', $this->identity)->first();
+        $identity = trim($this->identity);
+
+        $user = Admin::whereRaw('LOWER(username) = ?', [strtolower($identity)])->first();
         $userType = UserType::Admin;
 
         if (! $user) {
-            $user = Client::where('email', $this->identity)
-                ->orWhere('client_code', $this->identity)
+            $user = Client::whereRaw('LOWER(email) = ?', [strtolower($identity)])
+                ->orWhere('client_code', $identity)
                 ->first();
             $userType = UserType::Client;
         }
