@@ -41,10 +41,10 @@
     {{-- Sidebar --}}
     <aside
         :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-        class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col bg-wc-bg-secondary border-r border-wc-border transition-transform duration-300 ease-in-out lg:translate-x-0"
+        class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col bg-gradient-to-b from-wc-bg-secondary to-wc-bg border-r border-wc-border/50 transition-transform duration-300 ease-in-out lg:translate-x-0"
     >
         {{-- Logo --}}
-        <div class="flex h-16 items-center border-b border-wc-border px-5">
+        <div class="flex h-16 items-center border-b border-wc-border/50 px-5">
             <img src="/images/logo-dark.png" alt="WellCore" class="h-8 dark:hidden">
             <img src="/images/logo-light.png" alt="WellCore" class="hidden h-8 dark:block">
         </div>
@@ -57,7 +57,7 @@
                 <ul class="space-y-0.5">
                     <li>
                         <a wire:navigate href="{{ route('client.dashboard') }}" data-nav-order="0"
-                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('client.dashboard') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
@@ -67,7 +67,7 @@
                     </li>
                     <li>
                         <a wire:navigate href="{{ route('client.plan') }}" data-nav-order="1"
-                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('client.plan') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z" />
@@ -77,7 +77,7 @@
                     </li>
                     <li>
                         <a wire:navigate href="{{ route('client.checkin') }}" data-nav-order="2"
-                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('client.checkin') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -87,7 +87,7 @@
                     </li>
                     <li>
                         <a wire:navigate href="{{ route('client.photos') }}" data-nav-order="3"
-                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('client.photos') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
@@ -104,7 +104,7 @@
                 <ul class="space-y-0.5">
                     <li>
                         <a wire:navigate href="{{ route('client.photos') }}"
-                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('client.photos') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 0 3Z" />
@@ -114,7 +114,7 @@
                     </li>
                     <li>
                         <a wire:navigate href="{{ route('client.metrics') }}" data-nav-order="4"
-                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('client.metrics') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />
@@ -124,7 +124,7 @@
                     </li>
                     <li>
                         <a wire:navigate href="{{ route('client.video-checkin') }}" data-nav-order="5"
-                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('client.video-checkin') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
@@ -141,7 +141,7 @@
                 <ul class="space-y-0.5">
                     <li>
                         <a wire:navigate href="{{ route('client.community') }}" data-nav-order="6"
-                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('client.community') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
@@ -151,7 +151,7 @@
                     </li>
                     <li>
                         <a wire:navigate href="{{ route('client.challenges') }}" data-nav-order="7"
-                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('client.challenges') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
@@ -162,7 +162,7 @@
                     </li>
                     <li>
                         <a wire:navigate href="{{ route('client.chat') }}" data-nav-order="8"
-                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('client.chat') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
@@ -172,7 +172,7 @@
                     </li>
                     <li>
                         <a wire:navigate href="{{ route('client.referrals') }}" data-nav-order="9"
-                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('client.referrals') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
@@ -182,7 +182,7 @@
                     </li>
                     <li>
                         <a wire:navigate href="{{ route('client.coach.feedback') }}" data-nav-order="10"
-                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('client.coach.feedback') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
@@ -199,7 +199,7 @@
                 <ul class="space-y-0.5">
                     <li>
                         <a wire:navigate href="{{ route('client.nutrition') }}" data-nav-order="11"
-                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('client.nutrition') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.379a48.474 48.474 0 0 0-6-.371c-2.032 0-4.034.126-6 .371m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Z" />
@@ -209,7 +209,7 @@
                     </li>
                     <li>
                         <a wire:navigate href="{{ route('client.ai-nutrition') }}" data-nav-order="12"
-                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('client.ai-nutrition') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
@@ -219,7 +219,7 @@
                     </li>
                     <li>
                         <a wire:navigate href="{{ route('client.settings') }}" data-nav-order="13"
-                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('client.settings') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
@@ -230,7 +230,7 @@
                     </li>
                     <li>
                         <a wire:navigate href="{{ route('client.profile') }}" data-nav-order="14"
-                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('client.profile') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
@@ -247,7 +247,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">RISE</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a wire:navigate href="{{ route('rise.dashboard') }}" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-wc-accent hover:bg-wc-bg-tertiary">
+                        <a wire:navigate href="{{ route('rise.dashboard') }}" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 text-wc-accent hover:bg-wc-bg-tertiary">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                             </svg>
@@ -283,7 +283,7 @@
             <div class="flex items-center gap-3">
                 <button
                     x-on:click="sidebarOpen = !sidebarOpen"
-                    class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text lg:hidden"
+                    class="btn-press flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text lg:hidden"
                 >
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -296,7 +296,7 @@
                 {{-- Dark Mode Toggle --}}
                 <button
                     x-on:click="darkMode = !darkMode"
-                    class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text"
+                    class="btn-press flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text"
                     title="Cambiar modo"
                 >
                     <template x-if="!darkMode">
@@ -397,7 +397,7 @@
         </div>
 
         {{-- Page content with swipe navigation (mobile) --}}
-        <main class="px-4 py-6 sm:px-6 lg:px-8" style="touch-action: pan-y;"
+        <main class="px-4 py-6 pb-16 sm:px-6 lg:px-8 lg:pb-6" style="touch-action: pan-y;"
               x-data="{
                   touchStartX: 0,
                   touchStartY: 0,
@@ -452,6 +452,7 @@
               @touchmove.passive="handleTouchMove($event)"
               @touchend="handleTouchEnd($event)"
         >
+            <div class="swipe-indicator lg:hidden"></div>
             {{ $slot }}
         </main>
 
@@ -482,6 +483,32 @@
             @endforeach
         </div>
     </div>
+
+    {{-- Mobile Bottom Navigation --}}
+    <nav class="fixed inset-x-0 bottom-0 z-40 border-t border-wc-border bg-wc-bg/95 backdrop-blur-xl lg:hidden" aria-label="Navegacion movil">
+        <div class="flex h-14 items-center justify-around">
+            <a href="{{ route('client.dashboard') }}" wire:navigate class="relative flex flex-col items-center gap-0.5 px-3 py-1 text-xs {{ request()->routeIs('client.dashboard') ? 'bottom-nav-active text-wc-accent' : 'text-wc-text-tertiary' }}">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>
+                <span>Inicio</span>
+            </a>
+            <a href="{{ route('client.training') }}" wire:navigate class="relative flex flex-col items-center gap-0.5 px-3 py-1 text-xs {{ request()->routeIs('client.training') ? 'bottom-nav-active text-wc-accent' : 'text-wc-text-tertiary' }}">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+                <span>Entreno</span>
+            </a>
+            <a href="{{ route('client.plan') }}" wire:navigate class="relative flex flex-col items-center gap-0.5 px-3 py-1 text-xs {{ request()->routeIs('client.plan') ? 'bottom-nav-active text-wc-accent' : 'text-wc-text-tertiary' }}">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" /></svg>
+                <span>Plan</span>
+            </a>
+            <a href="{{ route('client.chat') }}" wire:navigate class="relative flex flex-col items-center gap-0.5 px-3 py-1 text-xs {{ request()->routeIs('client.chat') ? 'bottom-nav-active text-wc-accent' : 'text-wc-text-tertiary' }}">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" /></svg>
+                <span>Chat</span>
+            </a>
+            <a href="{{ route('client.profile') }}" wire:navigate class="relative flex flex-col items-center gap-0.5 px-3 py-1 text-xs {{ request()->routeIs('client.profile') ? 'bottom-nav-active text-wc-accent' : 'text-wc-text-tertiary' }}">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+                <span>Perfil</span>
+            </a>
+        </div>
+    </nav>
 
     {{-- Quick Actions FAB --}}
     <div x-data="{ fabOpen: false }"
