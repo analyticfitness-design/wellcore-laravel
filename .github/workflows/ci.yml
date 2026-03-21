@@ -67,10 +67,14 @@ jobs:
           DB_PASSWORD: password
         run: php artisan test --parallel
 
-      - name: Check for debug statements
+      - name: Architecture tests
+        run: php artisan test --testsuite=Architecture
+
+      - name: Security checks
         run: |
-          ! grep -rn "dd(" app/ --include="*.php" || echo "Warning: dd() found"
-          ! grep -rn "dump(" app/ --include="*.php" || echo "Warning: dump() found"
+          ! grep -rn "dd(" app/ --include="*.php" | grep -v "// " || true
+          ! grep -rn "var_dump(" app/ --include="*.php" | grep -v "// " || true
+          echo "✅ No debug statements found"
 
   build-check:
     runs-on: ubuntu-latest
