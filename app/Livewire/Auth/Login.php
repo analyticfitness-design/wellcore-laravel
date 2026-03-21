@@ -12,7 +12,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-#[Layout('layouts.app', ['title' => 'Iniciar Sesión — WellCore'])]
+#[Layout('components.layouts.public', ['title' => 'Iniciar Sesión — WellCore'])]
 class Login extends Component
 {
     #[Validate('required|string|min:3')]

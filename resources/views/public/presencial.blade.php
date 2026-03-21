@@ -98,9 +98,9 @@
             <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
                 @php
                     $plans = [
-                        ['name' => '3 Sesiones/Semana', 'price' => '450.000', 'features' => ['12 sesiones presenciales/mes', 'Supervision de tecnica en vivo', 'Programa personalizado en plataforma', 'Plan nutricional basico', 'Check-in semanal', 'Acceso al portal de cliente 24/7']],
-                        ['name' => '4 Sesiones/Semana', 'price' => '550.000', 'popular' => true, 'features' => ['16 sesiones presenciales/mes', 'Supervision de tecnica en vivo', 'Programa personalizado en plataforma', 'Plan nutricional completo + macros', 'Check-in semanal', 'Acceso al portal de cliente 24/7', 'Mediciones corporales semanales', 'Ajuste quincenal del programa']],
-                        ['name' => '5 Sesiones/Semana', 'price' => '650.000', 'features' => ['20 sesiones presenciales/mes', 'Supervision de tecnica en vivo', 'Programa personalizado en plataforma', 'Plan nutricional completo + suplementacion', 'Check-in semanal', 'Acceso al portal de cliente 24/7', 'Mediciones corporales semanales', 'Ajuste semanal del programa', 'Soporte prioritario WhatsApp']],
+                        ['name' => '3 Sesiones/Semana', 'price' => '450.000', 'features' => ['12 sesiones presenciales/mes', 'Supervision de tecnica en vivo', 'Progresiones y variaciones semanales', 'Programa personalizado en plataforma', 'Plan nutricional basico', 'Revision quincenal de progreso', 'Acceso al portal de cliente 24/7']],
+                        ['name' => '4 Sesiones/Semana', 'price' => '550.000', 'popular' => true, 'features' => ['16 sesiones presenciales/mes', 'Supervision de tecnica en vivo', 'Progresiones y variaciones semanales', 'Intensidad progresiva supervisada', 'Programa personalizado en plataforma', 'Plan nutricional completo + macros', 'Revision quincenal de progreso', 'Mediciones corporales quincenales', 'Acceso al portal de cliente 24/7']],
+                        ['name' => '5 Sesiones/Semana', 'price' => '650.000', 'features' => ['20 sesiones presenciales/mes', 'Supervision de tecnica en vivo', 'Progresiones y variaciones semanales', 'Intensidad progresiva supervisada', 'Programa personalizado en plataforma', 'Plan nutricional completo + suplementacion', 'Revision quincenal de progreso', 'Mediciones corporales quincenales', 'Acceso al portal de cliente 24/7', 'Soporte prioritario WhatsApp']],
                     ];
                 @endphp
                 @foreach($plans as $plan)

@@ -126,63 +126,82 @@
 
     {{-- Footer --}}
     <footer class="border-t border-wc-border bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 gap-8 md:grid-cols-4">
-                {{-- Brand --}}
-                <div class="md:col-span-1">
-                    <div>
-                        <img src="/images/logo-dark.png" alt="WellCore Fitness" class="h-9 dark:hidden">
-                        <img src="/images/logo-light.png" alt="WellCore Fitness" class="hidden h-9 dark:block">
-                    </div>
-                    <p class="mt-4 text-sm text-wc-text-tertiary">Coaching fitness basado en ciencia, no en tendencias.</p>
-                </div>
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-                {{-- Links --}}
+            {{-- Top: Brand statement + Newsletter --}}
+            <div class="grid grid-cols-1 items-center gap-8 border-b border-wc-border py-12 lg:grid-cols-2">
                 <div>
-                    <h4 class="text-sm font-semibold uppercase tracking-wider text-wc-text">Navegacion</h4>
-                    <ul class="mt-4 space-y-2">
-                        <li><a href="{{ route('metodo') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Metodo</a></li>
-                        <li><a href="{{ route('reto-rise') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">RISE</a></li>
-                        <li><a href="{{ route('nosotros') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Nosotros</a></li>
-                        <li><a href="{{ route('proceso') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Proceso</a></li>
-                        <li><a href="{{ route('planes') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Planes</a></li>
-                        <li><a href="{{ route('blog.index') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Blog</a></li>
-                        <li><a href="{{ route('faq') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">FAQ</a></li>
-                        <li><a href="{{ route('coaches') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Coaches</a></li>
-                    </ul>
-                </div>
-
-                {{-- Legal --}}
-                <div>
-                    <h4 class="text-sm font-semibold uppercase tracking-wider text-wc-text">Legal</h4>
-                    <ul class="mt-4 space-y-2">
-                        <li><a href="{{ route('terminos') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Terminos de servicio</a></li>
-                        <li><a href="{{ route('privacidad') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Politica de privacidad</a></li>
-                        <li><a href="{{ route('cookies') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Politica de cookies</a></li>
-                        <li><a href="{{ route('reembolsos') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Politica de reembolso</a></li>
-                    </ul>
-                </div>
-
-                {{-- Social --}}
-                <div>
-                    <h4 class="text-sm font-semibold uppercase tracking-wider text-wc-text">Redes</h4>
+                    <img src="/images/logo-dark.png" alt="WellCore Fitness" class="h-10 dark:hidden">
+                    <img src="/images/logo-light.png" alt="WellCore Fitness" class="hidden h-10 dark:block">
+                    <p class="mt-4 max-w-md text-sm text-wc-text-secondary">
+                        Coaching online 1:1 basado en ciencia. La primera plataforma LATAM con estandares internacionales. Sin dogmas, sin atajos, sin suplementos obligatorios.
+                    </p>
                     <div class="mt-4 flex gap-4">
-                        <a href="#" class="text-wc-text-secondary hover:text-wc-text" aria-label="Instagram">
-                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"/></svg>
+                        <a href="https://www.instagram.com/wellcore.fitness/" target="_blank" class="flex h-9 w-9 items-center justify-center rounded-full bg-wc-bg-secondary text-wc-text-secondary hover:bg-wc-accent hover:text-white" aria-label="Instagram">
+                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"/></svg>
                         </a>
-                        <a href="#" class="text-wc-text-secondary hover:text-wc-text" aria-label="YouTube">
-                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        <a href="https://www.youtube.com/@Wellcorefitness" target="_blank" class="flex h-9 w-9 items-center justify-center rounded-full bg-wc-bg-secondary text-wc-text-secondary hover:bg-wc-accent hover:text-white" aria-label="YouTube">
+                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                         </a>
-                        <a href="#" class="text-wc-text-secondary hover:text-wc-text" aria-label="TikTok">
-                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+                        <a href="#" class="flex h-9 w-9 items-center justify-center rounded-full bg-wc-bg-secondary text-wc-text-secondary hover:bg-wc-accent hover:text-white" aria-label="TikTok">
+                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
                         </a>
                     </div>
+                </div>
+                <div class="lg:text-right">
+                    <p class="text-sm font-semibold text-wc-text">Ciencia del ejercicio, cada semana.</p>
+                    <p class="mt-1 text-xs text-wc-text-tertiary">Contenido exclusivo sobre entrenamiento y nutricion basada en evidencia.</p>
+                    <form class="mt-4 flex gap-2 lg:justify-end" onsubmit="event.preventDefault();">
+                        <input type="email" placeholder="tu@email.com" class="w-full max-w-xs rounded-full border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
+                        <button type="submit" class="rounded-full bg-wc-accent px-5 py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover">Suscribirse</button>
+                    </form>
+                </div>
+            </div>
+
+            {{-- Middle: Links grid --}}
+            <div class="grid grid-cols-2 gap-8 py-10 sm:grid-cols-4">
+                <div>
+                    <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">Programa</h4>
+                    <ul class="mt-4 space-y-2.5">
+                        <li><a href="{{ route('metodo') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">El Metodo</a></li>
+                        <li><a href="{{ route('proceso') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Proceso</a></li>
+                        <li><a href="{{ route('planes') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Planes</a></li>
+                        <li><a href="{{ route('coaches') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Coaches</a></li>
+                        <li><a href="{{ route('presencial') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Presencial</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">Recursos</h4>
+                    <ul class="mt-4 space-y-2.5">
+                        <li><a href="{{ route('blog.index') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Blog</a></li>
+                        <li><a href="{{ route('faq') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">FAQ</a></li>
+                        <li><a href="{{ route('nosotros') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Nosotros</a></li>
+                        <li><a href="{{ route('reto-rise') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">RISE</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">Cuenta</h4>
+                    <ul class="mt-4 space-y-2.5">
+                        <li><a href="{{ route('login') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Mi Cuenta</a></li>
+                        <li><a href="{{ route('inscripcion') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Empezar</a></li>
+                        <li><a href="{{ route('privacidad') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Privacidad</a></li>
+                        <li><a href="{{ route('terminos') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Terminos</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">Contacto</h4>
+                    <ul class="mt-4 space-y-2.5">
+                        <li><a href="mailto:info@wellcorefitness.com" class="text-sm text-wc-text-tertiary hover:text-wc-text">info@wellcorefitness.com</a></li>
+                        <li><a href="{{ route('cookies') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Cookies</a></li>
+                        <li><a href="{{ route('reembolsos') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Reembolsos</a></li>
+                    </ul>
                 </div>
             </div>
 
             {{-- Bottom bar --}}
-            <div class="mt-10 border-t border-wc-border pt-6 text-center text-sm text-wc-text-tertiary">
-                <p>WellCore Fitness &copy; {{ date('Y') }}. Todos los derechos reservados.</p>
+            <div class="flex flex-col items-center justify-between gap-4 border-t border-wc-border py-6 sm:flex-row">
+                <p class="text-xs text-wc-text-tertiary">&copy; {{ date('Y') }} WellCore Fitness. Todos los derechos reservados.</p>
+                <p class="text-xs text-wc-text-tertiary">Colombia &middot; info@wellcorefitness.com</p>
             </div>
         </div>
     </footer>

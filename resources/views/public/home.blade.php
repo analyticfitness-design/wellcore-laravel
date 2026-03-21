@@ -25,7 +25,7 @@
                 <div class="max-w-3xl">
                     <div class="inline-flex items-center gap-2 rounded-full border border-wc-border bg-wc-bg-secondary px-4 py-1.5">
                         <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
-                        <span class="text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">Acceso Fundador &middot; 2026</span>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">Primera plataforma LATAM &middot; Nivel Internacional &middot; 2026</span>
                     </div>
 
                     <h1 class="mt-6 font-display text-5xl leading-none tracking-wide text-wc-text sm:text-6xl lg:text-8xl">
@@ -35,7 +35,7 @@
                     </h1>
 
                     <p class="mt-6 max-w-xl text-lg text-wc-text-secondary">
-                        Coaching 1:1 completamente personalizado. Entrenamiento y nutricion basados en evidencia real, no en modas. Tu plan, tu ritmo, tu coach.
+                        La primera plataforma de coaching fitness en Latinoamerica con nivel internacional. Entrenamiento y nutricion 1:1 basados en ciencia real, creada por y para latinos.
                     </p>
 
                     <div class="mt-6 flex flex-wrap gap-6">
@@ -770,7 +770,7 @@
                         <span class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Lanzamiento 2026 — Acceso Fundador</span>
                     </div>
                     <h2 class="mt-6 font-display text-3xl tracking-wide text-wc-text sm:text-5xl">LISTO PARA TRANSFORMARTE?</h2>
-                    <p class="mx-auto mt-4 max-w-md text-wc-text-secondary">Sin compromiso. Sin contratos. Solo resultados medibles y un coach que te acompana en cada paso.</p>
+                    <p class="mx-auto mt-4 max-w-lg text-wc-text-secondary">La primera plataforma de coaching fitness hecha en LATAM con estandares internacionales. Creemos que los latinos merecen acceso a coaching de elite sin barreras.</p>
                     <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                         <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
                             Ver Planes
