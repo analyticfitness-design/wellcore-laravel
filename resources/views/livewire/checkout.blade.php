@@ -106,7 +106,7 @@
                         <div class="flex items-start gap-3">
                             <input type="checkbox" wire:model="terminos" id="checkout-terminos" class="mt-1 h-4 w-4 rounded border-wc-border bg-wc-bg-tertiary text-wc-accent focus:ring-wc-accent">
                             <label for="checkout-terminos" class="text-sm text-wc-text-secondary">
-                                Acepto los <a href="#" class="text-wc-accent hover:underline">terminos de servicio</a> y la <a href="#" class="text-wc-accent hover:underline">politica de privacidad</a> *
+                                Acepto los <a href="{{ route('terminos') }}" target="_blank" class="text-wc-accent hover:underline">terminos de servicio</a> y la <a href="{{ route('privacidad') }}" target="_blank" class="text-wc-accent hover:underline">politica de privacidad</a> *
                             </label>
                         </div>
                         @error('terminos') <p class="text-xs text-red-500">{{ $message }}</p> @enderror
@@ -137,21 +137,81 @@
                         <span class="rounded border border-wc-border bg-wc-bg-tertiary px-3 py-1.5 text-xs font-medium text-wc-text-secondary">Mastercard</span>
                         <span class="rounded border border-wc-border bg-wc-bg-tertiary px-3 py-1.5 text-xs font-medium text-wc-text-secondary">Amex</span>
                         <span class="rounded border border-wc-border bg-wc-bg-tertiary px-3 py-1.5 text-xs font-medium text-wc-text-secondary">PSE</span>
+                        <span class="rounded border border-wc-border bg-wc-bg-tertiary px-3 py-1.5 text-xs font-medium text-wc-text-secondary">Nequi</span>
                         <span class="rounded border border-wc-border bg-wc-bg-tertiary px-3 py-1.5 text-xs font-medium text-wc-text-secondary">Efecty</span>
                     </div>
 
-                    {{-- Wompi Widget Placeholder --}}
-                    <div class="mt-8 rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center">
-                        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-wc-accent/10">
-                            <svg class="h-8 w-8 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
-                            </svg>
+                    @if($paymentError)
+                        <div class="mt-4 rounded-lg border border-red-500/30 bg-red-500/5 p-4 text-sm text-red-400">
+                            {{ $paymentError }}
                         </div>
-                        <p class="mt-4 text-sm font-medium text-wc-text">Widget de pago Wompi</p>
-                        <p class="mt-1 text-xs text-wc-text-tertiary">El widget de Wompi se cargara aqui cuando las API keys esten configuradas.</p>
-                        <div id="wompi-widget" class="mt-6"></div>
-                        <p class="mt-4 text-xs text-wc-text-tertiary">Referencia: WC-{{ strtoupper(substr(md5(now()), 0, 8)) }}</p>
-                    </div>
+                    @endif
+
+                    {{-- Wompi Widget Container --}}
+                    @if($wompiPublicKey && $paymentReference)
+                        <div class="mt-8 rounded-xl border border-wc-border bg-wc-bg-tertiary p-6"
+                             x-data="wompiCheckout()"
+                             x-init="initWidget()">
+                            {{-- Loading state --}}
+                            <div x-show="loading" class="py-8 text-center">
+                                <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-wc-accent border-t-transparent"></div>
+                                <p class="mt-4 text-sm text-wc-text-secondary">Cargando pasarela de pago...</p>
+                            </div>
+
+                            {{-- Wompi widget mounts here --}}
+                            <div x-show="!loading">
+                                <form id="wompi-checkout-form">
+                                    <script
+                                        src="https://checkout.wompi.co/widget.js"
+                                        data-render="button"
+                                        data-public-key="{{ $wompiPublicKey }}"
+                                        data-currency="{{ $currency }}"
+                                        data-amount-in-cents="{{ $amountInCents }}"
+                                        data-reference="{{ $paymentReference }}"
+                                        data-signature:integrity="{{ $wompiSignature }}"
+                                        data-redirect-url="{{ $wompiRedirectUrl }}"
+                                        data-customer-data:email="{{ $email }}"
+                                        data-customer-data:full-name="{{ $nombre }}"
+                                        data-customer-data:phone-number="{{ $whatsapp }}"
+                                    ></script>
+                                </form>
+                            </div>
+
+                            {{-- Payment info --}}
+                            <div class="mt-6 space-y-2 border-t border-wc-border pt-4">
+                                <div class="flex items-center justify-between text-xs text-wc-text-tertiary">
+                                    <span>Referencia</span>
+                                    <span class="font-mono">{{ $paymentReference }}</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs text-wc-text-tertiary">
+                                    <span>Total a pagar</span>
+                                    <span class="font-data font-bold text-wc-accent">${{ number_format($total, 0, ',', '.') }} COP</span>
+                                </div>
+                                @if($wompiSandbox)
+                                    <div class="mt-2 rounded-lg bg-yellow-500/10 px-3 py-2 text-center text-xs text-yellow-500">
+                                        Modo sandbox activo - usa tarjeta de prueba: 4242 4242 4242 4242
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @else
+                        {{-- Fallback: no API keys configured --}}
+                        <div class="mt-8 rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center">
+                            <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-wc-accent/10">
+                                <svg class="h-8 w-8 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+                                </svg>
+                            </div>
+                            <p class="mt-4 text-sm font-medium text-wc-text">Pasarela de pago no disponible</p>
+                            <p class="mt-1 text-xs text-wc-text-tertiary">Contactanos por WhatsApp para completar tu inscripcion.</p>
+                            <a href="https://wa.me/573124904720?text=Hola%2C%20quiero%20inscribirme%20al%20plan%20{{ urlencode($planInfo['name']) }}"
+                               target="_blank"
+                               class="mt-4 inline-flex items-center gap-2 rounded-lg bg-green-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-green-700">
+                                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 0 0 .611.611l4.458-1.495A11.953 11.953 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.396 0-4.612-.804-6.39-2.157l-.152-.12-3.192 1.07 1.07-3.192-.12-.152A9.965 9.965 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+                                Pagar por WhatsApp
+                            </a>
+                        </div>
+                    @endif
 
                     <div class="mt-6 flex items-center justify-between">
                         <button type="button" wire:click="goToStep(2)" class="inline-flex items-center gap-2 text-sm font-medium text-wc-text-secondary hover:text-wc-text">
@@ -212,6 +272,16 @@
                             </div>
                             <p class="text-xs text-wc-text-tertiary">COP &middot; Pago mensual</p>
                         </div>
+
+                        {{-- User info summary in step 3 --}}
+                        @if($step === 3 && $nombre)
+                            <div class="mt-4 space-y-1 border-t border-wc-border pt-4">
+                                <p class="text-xs font-medium text-wc-text-tertiary">Datos del comprador</p>
+                                <p class="text-sm text-wc-text">{{ $nombre }}</p>
+                                <p class="text-xs text-wc-text-secondary">{{ $email }}</p>
+                                <p class="text-xs text-wc-text-secondary">{{ $whatsapp }}</p>
+                            </div>
+                        @endif
                     @else
                         <p class="mt-4 text-sm text-wc-text-tertiary">Selecciona un plan para ver el resumen.</p>
                     @endif
@@ -219,4 +289,32 @@
             </div>
         </div>
     </div>
+
+    @if($step === 3)
+    @script
+    <script>
+        Alpine.data('wompiCheckout', () => ({
+            loading: true,
+
+            initWidget() {
+                // Wait for Wompi script to load
+                this.loading = true;
+                const checkWidget = setInterval(() => {
+                    const btn = document.querySelector('#wompi-checkout-form button, #wompi-checkout-form .wompi-button');
+                    if (btn || document.querySelector('[data-render="button"]')) {
+                        this.loading = false;
+                        clearInterval(checkWidget);
+                    }
+                }, 500);
+
+                // Fallback: stop loading after 8 seconds
+                setTimeout(() => {
+                    this.loading = false;
+                    clearInterval(checkWidget);
+                }, 8000);
+            },
+        }));
+    </script>
+    @endscript
+    @endif
 </div>

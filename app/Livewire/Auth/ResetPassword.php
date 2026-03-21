@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -20,10 +21,28 @@ class ResetPassword extends Component
     {
         $this->token = $token;
         $this->email = request('email', '');
+
+        // Validate token exists and is not expired (1 hour)
+        if ($this->email && $this->token) {
+            $record = DB::table('password_reset_tokens')
+                ->where('email', $this->email)
+                ->first();
+
+            if (! $record || ! Hash::check($this->token, $record->token) ||
+                now()->diffInMinutes($record->created_at) > 60) {
+                $this->invalid = true;
+            }
+        } else {
+            $this->invalid = true;
+        }
     }
 
     public function resetPassword(): void
     {
+        if ($this->invalid) {
+            return;
+        }
+
         $this->validate([
             'email' => 'required|email',
             'password' => 'required|string|min:8|confirmed',
@@ -34,21 +53,30 @@ class ResetPassword extends Component
             'password.confirmed' => 'Las contrasenas no coinciden.',
         ]);
 
+        // Re-verify token (defense in depth)
         $record = DB::table('password_reset_tokens')
             ->where('email', $this->email)
-            ->where('token', hash('sha256', $this->token))
-            ->where('created_at', '>', now()->subHours(2))
             ->first();
 
-        if (!$record) {
+        if (! $record || ! Hash::check($this->token, $record->token) ||
+            now()->diffInMinutes($record->created_at) > 60) {
             $this->invalid = true;
             return;
         }
 
+        // Verify client exists
+        $client = DB::table('clients')->where('email', $this->email)->first();
+        if (! $client) {
+            $this->invalid = true;
+            return;
+        }
+
+        // Update password
         DB::table('clients')
             ->where('email', $this->email)
             ->update(['password_hash' => password_hash($this->password, PASSWORD_BCRYPT)]);
 
+        // Delete used token
         DB::table('password_reset_tokens')->where('email', $this->email)->delete();
 
         $this->reset = true;

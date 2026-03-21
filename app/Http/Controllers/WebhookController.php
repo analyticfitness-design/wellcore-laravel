@@ -2,41 +2,74 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Payment;
 use App\Services\WompiService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller
 {
-    public function wompi(Request $request, WompiService $wompi): \Illuminate\Http\JsonResponse
+    /**
+     * Handle Wompi webhook notifications.
+     *
+     * Events handled:
+     * - transaction.updated: Payment status changed (APPROVED, DECLINED, VOIDED, ERROR, PENDING)
+     *
+     * The webhook endpoint is excluded from CSRF verification in bootstrap/app.php.
+     */
+    public function wompi(Request $request, WompiService $wompi): JsonResponse
     {
-        $payload = $request->getContent();
-        $signature = $request->header('X-Event-Signature', '');
+        $payload = $request->json()->all();
+        $signature = $request->header('X-Event-Checksum', '');
 
+        Log::info('Wompi webhook received', [
+            'event' => $payload['event'] ?? 'unknown',
+            'has_signature' => !empty($signature),
+            'ip' => $request->ip(),
+        ]);
+
+        // Verify webhook signature
         if (!$wompi->verifyWebhookSignature($payload, $signature)) {
-            return response()->json(['error' => 'Invalid signature'], 403);
+            Log::warning('Wompi webhook: invalid signature', [
+                'ip' => $request->ip(),
+                'event' => $payload['event'] ?? 'unknown',
+            ]);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Firma invalida',
+            ], 403);
         }
 
-        $data = $request->json()->all();
-        $event = $data['event'] ?? '';
-        $transaction = $data['data']['transaction'] ?? [];
+        // Process the webhook event
+        $event = $payload['event'] ?? '';
 
-        if ($event === 'transaction.updated' && isset($transaction['reference'])) {
-            $payment = Payment::where('wompi_reference', $transaction['reference'])->first();
-            if ($payment) {
-                $payment->update([
-                    'status' => match ($transaction['status'] ?? '') {
-                        'APPROVED' => 'approved',
-                        'DECLINED' => 'declined',
-                        'VOIDED' => 'voided',
-                        'ERROR' => 'error',
-                        default => $payment->status,
-                    },
-                    'wompi_transaction_id' => $transaction['id'] ?? null,
-                ]);
-            }
+        if ($event === 'transaction.updated') {
+            $processed = $wompi->handleWebhook($payload);
+
+            return response()->json([
+                'status' => $processed ? 'ok' : 'ignored',
+                'message' => $processed
+                    ? 'Transaccion actualizada'
+                    : 'Transaccion no encontrada o evento no aplicable',
+            ]);
         }
 
-        return response()->json(['ok' => true]);
+        // Handle nequi.token.updated or other future events
+        if ($event === 'nequi_token.updated') {
+            Log::info('Wompi webhook: nequi token event', [
+                'data' => $payload['data'] ?? [],
+            ]);
+
+            return response()->json(['status' => 'ok', 'message' => 'Evento Nequi recibido']);
+        }
+
+        // Unknown event type - acknowledge receipt
+        Log::info('Wompi webhook: unhandled event type', ['event' => $event]);
+
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Evento recibido',
+        ]);
     }
 }

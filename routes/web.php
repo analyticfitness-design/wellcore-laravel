@@ -112,12 +112,8 @@ Route::get('/rise-enroll', RiseEnrollment::class)->name('rise.enroll');
 
 Route::get('/inscripcion', \App\Livewire\InscriptionForm::class)->name('inscripcion');
 Route::get('/pagar', \App\Livewire\Checkout::class)->name('pagar');
-Route::get('/pago-exitoso', function () {
-    return view('public.pago-exitoso');
-})->name('pago-exitoso');
-Route::get('/pago-confirmado', function () {
-    return view('public.pago-exitoso');
-})->name('pago-confirmado');
+Route::get('/pago-exitoso', [\App\Http\Controllers\PaymentController::class, 'result'])->name('pago-exitoso');
+Route::get('/pago-confirmado', [\App\Http\Controllers\PaymentController::class, 'result'])->name('pago-confirmado');
 
 // Blog
 Route::get('/blog', function () {

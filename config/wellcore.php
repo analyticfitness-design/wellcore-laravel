@@ -55,6 +55,7 @@ return [
         'public_key' => env('WOMPI_PUBLIC_KEY', ''),
         'private_key' => env('WOMPI_PRIVATE_KEY', ''),
         'events_secret' => env('WOMPI_EVENTS_SECRET', ''),
+        'integrity_secret' => env('WOMPI_INTEGRITY_SECRET', ''),
         'sandbox' => env('WOMPI_SANDBOX', true),
     ],
 

@@ -37,13 +37,23 @@
                 <p class="mt-1 text-sm text-wc-text-secondary">Ingresa tus credenciales para acceder</p>
             </div>
 
-            {{-- Error Message --}}
+            {{-- Error Message (Livewire validation / login errors) --}}
             @if ($errorMessage)
                 <div class="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-500/10 p-4">
                     <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
                     </svg>
                     <p class="text-sm text-red-400">{{ $errorMessage }}</p>
+                </div>
+            @endif
+
+            {{-- Google OAuth Error (from session flash) --}}
+            @if (session('google_error'))
+                <div class="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-500/10 p-4">
+                    <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                    </svg>
+                    <p class="text-sm text-red-400">{{ session('google_error') }}</p>
                 </div>
             @endif
 

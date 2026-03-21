@@ -7,6 +7,7 @@
             checkin: true,
             coach: true,
             achievements: true,
+            payments: true,
             weekly: true
         })),
         saveNotifications() {
@@ -195,131 +196,254 @@
 
     {{-- ─── TAB: NOTIFICACIONES ─────────────────────────────────────────── --}}
     <div x-show="tab === 'notificaciones'" x-cloak>
-        <div class="max-w-xl rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-            <div class="mb-5 flex items-center gap-3">
-                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-wc-accent/10">
-                    <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-                    </svg>
+        <div class="max-w-xl space-y-5">
+
+            {{-- Push Permission Card --}}
+            <div
+                x-data="{
+                    pushState: 'checking',
+                    pushSupported: ('serviceWorker' in navigator && 'PushManager' in window),
+                    init() {
+                        if (!this.pushSupported) { this.pushState = 'unsupported'; return; }
+                        window.addEventListener('wellcore:push-state', (e) => {
+                            if (e.detail.permission === 'denied') { this.pushState = 'denied'; }
+                            else if (e.detail.subscribed) { this.pushState = 'subscribed'; }
+                            else { this.pushState = 'unsubscribed'; }
+                        });
+                        // Check current state immediately
+                        if (typeof Notification !== 'undefined') {
+                            if (Notification.permission === 'denied') { this.pushState = 'denied'; }
+                            else {
+                                navigator.serviceWorker?.ready?.then(reg => {
+                                    reg.pushManager?.getSubscription().then(sub => {
+                                        this.pushState = sub ? 'subscribed' : 'unsubscribed';
+                                    });
+                                }).catch(() => { this.pushState = 'unsubscribed'; });
+                            }
+                        }
+                    }
+                }"
+                class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5"
+            >
+                <div class="mb-4 flex items-center gap-3">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-wc-accent/10">
+                        <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="font-display text-lg tracking-wide text-wc-text">NOTIFICACIONES PUSH</h2>
+                        <p class="text-xs text-wc-text-tertiary">Recibe alertas en tu navegador aunque no estes en la pagina</p>
+                    </div>
                 </div>
-                <div>
-                    <h2 class="font-display text-lg tracking-wide text-wc-text">PREFERENCIAS DE NOTIFICACION</h2>
-                    <p class="text-xs text-wc-text-tertiary">Configuracion guardada localmente en tu dispositivo</p>
+
+                {{-- Status: Checking --}}
+                <div x-show="pushState === 'checking'" class="rounded-lg border border-wc-border bg-wc-bg p-4 text-sm text-wc-text-secondary">
+                    Verificando estado de notificaciones push...
+                </div>
+
+                {{-- Status: Unsupported browser --}}
+                <div x-show="pushState === 'unsupported'" class="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4">
+                    <p class="text-sm font-medium text-amber-400">Navegador no compatible</p>
+                    <p class="mt-1 text-xs text-amber-400/70">Tu navegador no soporta notificaciones push. Usa Chrome, Edge, o Firefox para activarlas.</p>
+                </div>
+
+                {{-- Status: Permission denied --}}
+                <div x-show="pushState === 'denied'" class="rounded-lg border border-red-500/30 bg-red-500/10 p-4">
+                    <p class="text-sm font-medium text-red-400">Notificaciones bloqueadas</p>
+                    <p class="mt-1 text-xs text-red-400/70">Has bloqueado las notificaciones en tu navegador. Para activarlas, haz clic en el icono de candado en la barra de direcciones y permite las notificaciones.</p>
+                </div>
+
+                {{-- Status: Not subscribed --}}
+                <div x-show="pushState === 'unsubscribed'" class="rounded-lg border border-wc-border bg-wc-bg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-wc-text">Activar notificaciones push</p>
+                            <p class="mt-0.5 text-xs text-wc-text-tertiary">Recibe alertas de check-in, mensajes del coach, y mas</p>
+                        </div>
+                        <button
+                            type="button"
+                            @click="window.dispatchEvent(new Event('wellcore:subscribe-push'))"
+                            class="flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98]"
+                        >
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                            </svg>
+                            Activar
+                        </button>
+                    </div>
+                </div>
+
+                {{-- Status: Subscribed --}}
+                <div x-show="pushState === 'subscribed'" class="rounded-lg border border-green-500/30 bg-green-500/10 p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <svg class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                            </svg>
+                            <div>
+                                <p class="text-sm font-medium text-green-400">Push activado</p>
+                                <p class="mt-0.5 text-xs text-green-400/70">Recibiras notificaciones en este navegador</p>
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            @click="window.dispatchEvent(new Event('wellcore:unsubscribe-push')); pushState = 'unsubscribed'"
+                            class="text-xs text-wc-text-tertiary hover:text-red-400 transition-colors"
+                        >
+                            Desactivar
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="space-y-4">
-                {{-- Check-in reminders --}}
-                <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
-                    <div>
-                        <p class="text-sm font-medium text-wc-text">Recordatorios de check-in</p>
-                        <p class="mt-0.5 text-xs text-wc-text-tertiary">Recibe avisos para no olvidar tu check-in semanal</p>
+            {{-- Notification Preferences Card --}}
+            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+                <div class="mb-5 flex items-center gap-3">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-wc-accent/10">
+                        <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                        </svg>
                     </div>
-                    <button
-                        type="button"
-                        @click="notifications.checkin = !notifications.checkin"
-                        :class="notifications.checkin ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
-                        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none"
-                        role="switch"
-                        :aria-checked="notifications.checkin.toString()"
-                    >
-                        <span
-                            :class="notifications.checkin ? 'translate-x-5' : 'translate-x-0'"
-                            class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
-                        ></span>
-                    </button>
+                    <div>
+                        <h2 class="font-display text-lg tracking-wide text-wc-text">PREFERENCIAS DE NOTIFICACION</h2>
+                        <p class="text-xs text-wc-text-tertiary">Elige que notificaciones deseas recibir</p>
+                    </div>
                 </div>
 
-                {{-- Coach messages --}}
-                <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
-                    <div>
-                        <p class="text-sm font-medium text-wc-text">Mensajes del coach</p>
-                        <p class="mt-0.5 text-xs text-wc-text-tertiary">Notificaciones cuando tu coach te envia feedback</p>
+                <div class="space-y-4">
+                    {{-- Check-in reminders --}}
+                    <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
+                        <div>
+                            <p class="text-sm font-medium text-wc-text">Recordatorios de check-in</p>
+                            <p class="mt-0.5 text-xs text-wc-text-tertiary">Recibe avisos para no olvidar tu check-in semanal</p>
+                        </div>
+                        <button
+                            type="button"
+                            @click="notifications.checkin = !notifications.checkin"
+                            :class="notifications.checkin ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
+                            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none"
+                            role="switch"
+                            :aria-checked="notifications.checkin.toString()"
+                        >
+                            <span
+                                :class="notifications.checkin ? 'translate-x-5' : 'translate-x-0'"
+                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
+                            ></span>
+                        </button>
                     </div>
-                    <button
-                        type="button"
-                        @click="notifications.coach = !notifications.coach"
-                        :class="notifications.coach ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
-                        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none"
-                        role="switch"
-                        :aria-checked="notifications.coach.toString()"
+
+                    {{-- Coach messages --}}
+                    <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
+                        <div>
+                            <p class="text-sm font-medium text-wc-text">Mensajes del coach</p>
+                            <p class="mt-0.5 text-xs text-wc-text-tertiary">Notificaciones cuando tu coach te envia feedback</p>
+                        </div>
+                        <button
+                            type="button"
+                            @click="notifications.coach = !notifications.coach"
+                            :class="notifications.coach ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
+                            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none"
+                            role="switch"
+                            :aria-checked="notifications.coach.toString()"
+                        >
+                            <span
+                                :class="notifications.coach ? 'translate-x-5' : 'translate-x-0'"
+                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
+                            ></span>
+                        </button>
+                    </div>
+
+                    {{-- Achievement alerts / Streak milestones --}}
+                    <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
+                        <div>
+                            <p class="text-sm font-medium text-wc-text">Logros y rachas</p>
+                            <p class="mt-0.5 text-xs text-wc-text-tertiary">Celebra records personales y rachas de entrenamiento</p>
+                        </div>
+                        <button
+                            type="button"
+                            @click="notifications.achievements = !notifications.achievements"
+                            :class="notifications.achievements ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
+                            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none"
+                            role="switch"
+                            :aria-checked="notifications.achievements.toString()"
+                        >
+                            <span
+                                :class="notifications.achievements ? 'translate-x-5' : 'translate-x-0'"
+                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
+                            ></span>
+                        </button>
+                    </div>
+
+                    {{-- Payments & Plans --}}
+                    <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
+                        <div>
+                            <p class="text-sm font-medium text-wc-text">Pagos y planes</p>
+                            <p class="mt-0.5 text-xs text-wc-text-tertiary">Confirmaciones de pago y asignaciones de nuevos planes</p>
+                        </div>
+                        <button
+                            type="button"
+                            @click="notifications.payments = !notifications.payments"
+                            :class="notifications.payments ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
+                            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none"
+                            role="switch"
+                            :aria-checked="notifications.payments.toString()"
+                        >
+                            <span
+                                :class="notifications.payments ? 'translate-x-5' : 'translate-x-0'"
+                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
+                            ></span>
+                        </button>
+                    </div>
+
+                    {{-- Weekly summary --}}
+                    <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
+                        <div>
+                            <p class="text-sm font-medium text-wc-text">Resumen semanal</p>
+                            <p class="mt-0.5 text-xs text-wc-text-tertiary">Recibe un resumen de tu progreso cada semana</p>
+                        </div>
+                        <button
+                            type="button"
+                            @click="notifications.weekly = !notifications.weekly"
+                            :class="notifications.weekly ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
+                            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none"
+                            role="switch"
+                            :aria-checked="notifications.weekly.toString()"
+                        >
+                            <span
+                                :class="notifications.weekly ? 'translate-x-5' : 'translate-x-0'"
+                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
+                            ></span>
+                        </button>
+                    </div>
+
+                    {{-- Training completion sound --}}
+                    <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4"
+                         x-data="{ soundEnabled: localStorage.getItem('wc_sound_enabled') !== 'false' }"
+                         x-init="$watch('soundEnabled', val => localStorage.setItem('wc_sound_enabled', val ? 'true' : 'false'))"
                     >
-                        <span
-                            :class="notifications.coach ? 'translate-x-5' : 'translate-x-0'"
-                            class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
-                        ></span>
-                    </button>
+                        <div>
+                            <p class="text-sm font-medium text-wc-text">Sonido al completar entrenamiento</p>
+                            <p class="mt-0.5 text-xs text-wc-text-tertiary">Reproduce un sonido sutil cuando completas tu entrenamiento</p>
+                        </div>
+                        <button
+                            type="button"
+                            @click="soundEnabled = !soundEnabled"
+                            :class="soundEnabled ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
+                            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none"
+                            role="switch"
+                            :aria-checked="soundEnabled.toString()"
+                        >
+                            <span
+                                :class="soundEnabled ? 'translate-x-5' : 'translate-x-0'"
+                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
+                            ></span>
+                        </button>
+                    </div>
                 </div>
 
-                {{-- Achievement alerts --}}
-                <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
-                    <div>
-                        <p class="text-sm font-medium text-wc-text">Alertas de logros</p>
-                        <p class="mt-0.5 text-xs text-wc-text-tertiary">Celebra cuando alcances nuevos records personales</p>
-                    </div>
-                    <button
-                        type="button"
-                        @click="notifications.achievements = !notifications.achievements"
-                        :class="notifications.achievements ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
-                        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none"
-                        role="switch"
-                        :aria-checked="notifications.achievements.toString()"
-                    >
-                        <span
-                            :class="notifications.achievements ? 'translate-x-5' : 'translate-x-0'"
-                            class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
-                        ></span>
-                    </button>
-                </div>
-
-                {{-- Weekly summary --}}
-                <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
-                    <div>
-                        <p class="text-sm font-medium text-wc-text">Resumen semanal</p>
-                        <p class="mt-0.5 text-xs text-wc-text-tertiary">Recibe un resumen de tu progreso cada semana</p>
-                    </div>
-                    <button
-                        type="button"
-                        @click="notifications.weekly = !notifications.weekly"
-                        :class="notifications.weekly ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
-                        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none"
-                        role="switch"
-                        :aria-checked="notifications.weekly.toString()"
-                    >
-                        <span
-                            :class="notifications.weekly ? 'translate-x-5' : 'translate-x-0'"
-                            class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
-                        ></span>
-                    </button>
-                </div>
+                <p class="mt-4 text-xs text-wc-text-tertiary">Las preferencias se guardan automaticamente en este dispositivo.</p>
             </div>
-
-                {{-- Training completion sound --}}
-                <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4"
-                     x-data="{ soundEnabled: localStorage.getItem('wc_sound_enabled') !== 'false' }"
-                     x-init="$watch('soundEnabled', val => localStorage.setItem('wc_sound_enabled', val ? 'true' : 'false'))"
-                >
-                    <div>
-                        <p class="text-sm font-medium text-wc-text">Sonido al completar entrenamiento</p>
-                        <p class="mt-0.5 text-xs text-wc-text-tertiary">Reproduce un sonido sutil cuando completas tu entrenamiento</p>
-                    </div>
-                    <button
-                        type="button"
-                        @click="soundEnabled = !soundEnabled"
-                        :class="soundEnabled ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
-                        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none"
-                        role="switch"
-                        :aria-checked="soundEnabled.toString()"
-                    >
-                        <span
-                            :class="soundEnabled ? 'translate-x-5' : 'translate-x-0'"
-                            class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
-                        ></span>
-                    </button>
-                </div>
-            </div>
-
-            <p class="mt-4 text-xs text-wc-text-tertiary">Las preferencias se guardan automaticamente en este dispositivo.</p>
         </div>
     </div>
 

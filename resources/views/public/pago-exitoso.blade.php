@@ -3,10 +3,11 @@
     <x-slot:description>Tu pago ha sido procesado exitosamente. Bienvenido a WellCore Fitness.</x-slot:description>
 
     @php
-        $estado = request('estado', 'aprobado');
-        $planName = request('plan', 'Metodo');
-        $monto = request('monto', '$399.000 COP');
-        $ref = request('ref', 'WC-' . strtoupper(substr(md5(now()), 0, 8)));
+        // Variables passed from PaymentController: $estado, $planName, $monto, $reference
+        $estado = $estado ?? request('estado', 'pendiente');
+        $planName = $planName ?: request('plan', '');
+        $monto = $monto ?: request('monto', '');
+        $ref = $reference ?? request('ref', '');
     @endphp
 
     <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">

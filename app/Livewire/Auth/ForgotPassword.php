@@ -3,6 +3,9 @@
 namespace App\Livewire\Auth;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -23,9 +26,21 @@ class ForgotPassword extends Component
             'email.email' => 'Ingresa un email valido.',
         ]);
 
+        // Rate limit: max 3 reset requests per email per hour
+        $rateLimitKey = 'password-reset:' . Str::lower($this->email);
+
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 3)) {
+            $seconds = RateLimiter::availableIn($rateLimitKey);
+            $minutes = (int) ceil($seconds / 60);
+            $this->errorMsg = "Has solicitado demasiados enlaces. Intenta de nuevo en {$minutes} minuto" . ($minutes > 1 ? 's' : '') . '.';
+            return;
+        }
+
+        RateLimiter::hit($rateLimitKey, 3600); // 1 hour decay
+
         $client = DB::table('clients')->where('email', $this->email)->first();
 
-        if (!$client) {
+        if (! $client) {
             // Don't reveal if email exists — still show success
             $this->sent = true;
             return;
@@ -35,11 +50,21 @@ class ForgotPassword extends Component
 
         DB::table('password_reset_tokens')->updateOrInsert(
             ['email' => $this->email],
-            ['token' => hash('sha256', $token), 'created_at' => now()]
+            ['token' => Hash::make($token), 'created_at' => now()]
         );
 
-        // TODO: Send email with reset link
-        // Mail::to($this->email)->send(new PasswordResetMail($token));
+        // Send reset email
+        $resetUrl = url('/reset-password/' . $token . '?email=' . urlencode($this->email));
+        $clientName = $client->name;
+
+        Mail::send('emails.password-reset', [
+            'token' => $token,
+            'name' => $clientName,
+            'resetUrl' => $resetUrl,
+        ], function ($message) use ($clientName) {
+            $message->to($this->email, $clientName)
+                ->subject('Restablecer Contrasena — WellCore Fitness');
+        });
 
         $this->sent = true;
     }

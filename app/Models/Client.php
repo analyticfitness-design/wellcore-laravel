@@ -15,6 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
     'name',
     'email',
     'password_hash',
+    'google_id',
     'plan',
     'status',
     'fecha_inicio',

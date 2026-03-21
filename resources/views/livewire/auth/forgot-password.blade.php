@@ -21,6 +21,7 @@
                         Si existe una cuenta con <span class="font-semibold text-wc-text">{{ $email }}</span>, recibiras un enlace para restablecer tu contrasena.
                     </p>
                     <p class="mt-2 text-xs text-wc-text-tertiary">Revisa tu carpeta de spam si no lo ves en unos minutos.</p>
+                    <p class="mt-1 text-xs text-wc-text-tertiary">El enlace expira en 1 hora.</p>
                 </div>
                 <div class="mt-8 text-center">
                     <a href="{{ route('login') }}" class="inline-flex items-center gap-2 text-sm text-wc-accent hover:underline" wire:navigate>
@@ -39,6 +40,18 @@
                     <h2 class="mt-5 text-2xl font-bold text-wc-text">Recuperar Contrasena</h2>
                     <p class="mt-2 text-sm text-wc-text-secondary">Ingresa tu email y te enviaremos un enlace para restablecer tu contrasena.</p>
                 </div>
+
+                {{-- Rate limit error --}}
+                @if($errorMsg)
+                    <div class="mt-6 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3">
+                        <div class="flex items-start gap-3">
+                            <svg class="mt-0.5 h-5 w-5 shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                            </svg>
+                            <p class="text-sm text-red-400">{{ $errorMsg }}</p>
+                        </div>
+                    </div>
+                @endif
 
                 <form wire:submit="sendReset" class="mt-8 space-y-5">
                     <div>
