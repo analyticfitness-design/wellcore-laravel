@@ -29,10 +29,17 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader --no-interaction \
     && npm ci && npm run build && rm -rf node_modules
 
+# Bake nginx config with absolute root — survives every Docker rebuild
+# This replaces EasyPanel's default nginx that reverts to relative 'public'
+COPY docker/nginx.conf /etc/nginx/http.d/default.conf
+COPY docker/supervisord.conf /etc/supervisord.conf
+
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expose port
 EXPOSE 8000
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Run nginx + php-fpm via supervisor (production-grade, not php artisan serve)
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
