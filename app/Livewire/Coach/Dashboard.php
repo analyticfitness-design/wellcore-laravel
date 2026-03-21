@@ -96,14 +96,23 @@ class Dashboard extends Component
             ->limit(5)
             ->get();
 
+        // Eager-load clients and last messages to avoid N+1 queries
+        $pendingClientIds = $pendingByClient->pluck('client_id');
+        $clientsById = Client::whereIn('id', $pendingClientIds)
+            ->get()
+            ->keyBy('id');
+        $lastMessagesByClient = CoachMessage::whereIn('client_id', $pendingClientIds)
+            ->orderByDesc('created_at')
+            ->get()
+            ->unique('client_id')
+            ->keyBy('client_id');
+
         $this->attentionClients = [];
         foreach ($pendingByClient as $row) {
-            $client = Client::find($row->client_id);
+            $client = $clientsById->get($row->client_id);
             if (!$client) continue;
 
-            $lastMessage = CoachMessage::where('client_id', $row->client_id)
-                ->orderByDesc('created_at')
-                ->first();
+            $lastMessage = $lastMessagesByClient->get($row->client_id);
 
             $this->attentionClients[] = [
                 'id' => $client->id,
@@ -124,9 +133,15 @@ class Dashboard extends Component
             ->limit(5)
             ->get();
 
+        // Eager-load clients to avoid N+1 queries
+        $messageClientIds = $messages->pluck('client_id')->unique();
+        $clientsById = Client::whereIn('id', $messageClientIds)
+            ->get()
+            ->keyBy('id');
+
         $this->recentMessages = [];
         foreach ($messages as $msg) {
-            $client = Client::find($msg->client_id);
+            $client = $clientsById->get($msg->client_id);
             $this->recentMessages[] = [
                 'client_name' => $client->name ?? 'Cliente',
                 'message' => str()->limit($msg->message, 80),

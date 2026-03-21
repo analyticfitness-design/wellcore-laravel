@@ -545,18 +545,21 @@ class Analytics extends Component
 
         $clients = Client::whereIn('id', $this->coachClientIds)
             ->where('status', 'activo')
-            ->get();
+            ->get(['id', 'name', 'plan'])
+            ->keyBy('id');
+
+        // Bulk aggregate all checkin stats in a single query instead of per-client queries
+        $checkinStats = Checkin::whereIn('client_id', $this->coachClientIds)
+            ->when($dateFrom, fn($q) => $q->where('created_at', '>=', $dateFrom))
+            ->selectRaw('client_id, COUNT(*) as checkin_count, AVG(dias_entrenados) as avg_dias, AVG(bienestar) as avg_bienestar')
+            ->groupBy('client_id')
+            ->get()
+            ->keyBy('client_id');
 
         $clientStats = [];
-        foreach ($clients as $client) {
-            $query = Checkin::where('client_id', $client->id);
-            if ($dateFrom) {
-                $query->where('created_at', '>=', $dateFrom);
-            }
-
-            $avgDias = $query->clone()->whereNotNull('dias_entrenados')->avg('dias_entrenados');
-            $avgBienestar = $query->clone()->whereNotNull('bienestar')->avg('bienestar');
-            $checkinCount = $query->count();
+        foreach ($clients as $clientId => $client) {
+            $stats = $checkinStats->get($clientId);
+            $checkinCount = $stats?->checkin_count ?? 0;
 
             if ($checkinCount === 0) {
                 continue;
@@ -565,9 +568,9 @@ class Analytics extends Component
             $clientStats[] = [
                 'name' => $client->name,
                 'plan' => $client->plan?->value ?? 'sin plan',
-                'avg_dias' => round((float) $avgDias, 1),
-                'avg_bienestar' => round((float) $avgBienestar, 1),
-                'checkins' => $checkinCount,
+                'avg_dias' => round((float) ($stats->avg_dias ?? 0), 1),
+                'avg_bienestar' => round((float) ($stats->avg_bienestar ?? 0), 1),
+                'checkins' => (int) $checkinCount,
             ];
         }
 
@@ -708,29 +711,34 @@ class Analytics extends Component
                     'all' => 4, // Default to 4 for "all"
                 };
 
+                $clientIds = $clients->pluck('id');
+
+                // Bulk checkin aggregates — replaces 3 queries per client
+                $checkinAgg = Checkin::whereIn('client_id', $clientIds)
+                    ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
+                    ->selectRaw('client_id, COUNT(*) as checkin_count, AVG(bienestar) as avg_bienestar, AVG(dias_entrenados) as avg_dias')
+                    ->groupBy('client_id')
+                    ->get()
+                    ->keyBy('client_id');
+
+                // Bulk training aggregates — replaces 2 queries per client
+                $trainingAgg = TrainingLog::whereIn('client_id', $clientIds)
+                    ->when($dateFrom, fn ($q) => $q->where('log_date', '>=', $dateFrom))
+                    ->selectRaw('client_id, COUNT(*) as total, SUM(completed) as completed_count')
+                    ->groupBy('client_id')
+                    ->get()
+                    ->keyBy('client_id');
+
                 $result = [];
                 foreach ($clients as $client) {
-                    $checkinCount = Checkin::where('client_id', $client->id)
-                        ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
-                        ->count();
+                    $ci = $checkinAgg->get($client->id);
+                    $tr = $trainingAgg->get($client->id);
 
-                    $avgBienestar = round((float) Checkin::where('client_id', $client->id)
-                        ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
-                        ->whereNotNull('bienestar')
-                        ->avg('bienestar'), 1);
-
-                    $avgDias = round((float) Checkin::where('client_id', $client->id)
-                        ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
-                        ->whereNotNull('dias_entrenados')
-                        ->avg('dias_entrenados'), 1);
-
-                    $trainingTotal = TrainingLog::where('client_id', $client->id)
-                        ->when($dateFrom, fn ($q) => $q->where('log_date', '>=', $dateFrom))
-                        ->count();
-                    $trainingCompleted = TrainingLog::where('client_id', $client->id)
-                        ->where('completed', true)
-                        ->when($dateFrom, fn ($q) => $q->where('log_date', '>=', $dateFrom))
-                        ->count();
+                    $checkinCount      = (int) ($ci?->checkin_count ?? 0);
+                    $avgBienestar      = round((float) ($ci?->avg_bienestar ?? 0), 1);
+                    $avgDias           = round((float) ($ci?->avg_dias ?? 0), 1);
+                    $trainingTotal     = (int) ($tr?->total ?? 0);
+                    $trainingCompleted = (int) ($tr?->completed_count ?? 0);
 
                     $result[] = [
                         'name' => $client->name,
@@ -777,23 +785,30 @@ class Analytics extends Component
                     ];
                 }
 
+                // Bulk-load all training logs for all clients/weeks in two queries instead of (clients × weeks × 2)
+                $heatmapStart = now()->subWeeks(3)->startOfWeek()->toDateString();
+                $heatmapEnd   = now()->endOfWeek()->toDateString();
+                $clientIds = $clients->pluck('id');
+
+                $allLogs = TrainingLog::whereIn('client_id', $clientIds)
+                    ->whereBetween('log_date', [$heatmapStart, $heatmapEnd])
+                    ->selectRaw('client_id, log_date, completed')
+                    ->get();
+
+                // Index by client_id for fast lookup
+                $logsByClient = $allLogs->groupBy('client_id');
+
                 $rows = [];
                 foreach ($clients as $client) {
+                    $clientLogs = $logsByClient->get($client->id, collect());
                     $weekData = [];
                     foreach ($weeks as $week) {
-                        // Count training_logs completed for this week
-                        $completed = TrainingLog::where('client_id', $client->id)
-                            ->where('completed', true)
-                            ->whereBetween('log_date', [$week['start'], $week['end']])
-                            ->count();
-
-                        $total = TrainingLog::where('client_id', $client->id)
-                            ->whereBetween('log_date', [$week['start'], $week['end']])
-                            ->count();
-
+                        $weekLogs = $clientLogs->filter(
+                            fn($log) => $log->log_date >= $week['start'] && $log->log_date <= $week['end']
+                        );
                         $weekData[] = [
-                            'completed' => $completed,
-                            'total' => $total,
+                            'completed' => $weekLogs->where('completed', true)->count(),
+                            'total'     => $weekLogs->count(),
                         ];
                     }
                     $rows[] = [
@@ -889,32 +904,44 @@ class Analytics extends Component
                     ->where('status', 'activo')
                     ->get(['id', 'name', 'plan']);
 
+                $clientIds = $clients->pluck('id');
+
+                // Bulk aggregate for recent checkin counts (last 14 days) — replaces N queries
+                $recentCheckinCounts = Checkin::whereIn('client_id', $clientIds)
+                    ->where('created_at', '>=', now()->subDays(14))
+                    ->selectRaw('client_id, COUNT(*) as cnt')
+                    ->groupBy('client_id')
+                    ->get()
+                    ->keyBy('client_id');
+
+                // Bulk aggregate for bienestar + dias_entrenados averages — replaces 2N queries
+                $checkinAgg = Checkin::whereIn('client_id', $clientIds)
+                    ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
+                    ->selectRaw('client_id, AVG(bienestar) as avg_bienestar, AVG(dias_entrenados) as avg_dias')
+                    ->groupBy('client_id')
+                    ->get()
+                    ->keyBy('client_id');
+
                 $risk = [];
                 foreach ($clients as $client) {
                     $reasons = [];
 
                     // No check-ins in the last 14 days
-                    $recentCheckins = Checkin::where('client_id', $client->id)
-                        ->where('created_at', '>=', now()->subDays(14))
-                        ->count();
-                    if ($recentCheckins === 0) {
+                    $recentCount = (int) ($recentCheckinCounts->get($client->id)?->cnt ?? 0);
+                    if ($recentCount === 0) {
                         $reasons[] = 'Sin check-in hace 14+ dias';
                     }
 
+                    $agg = $checkinAgg->get($client->id);
+
                     // Low bienestar (avg < 5 in period)
-                    $avgB = Checkin::where('client_id', $client->id)
-                        ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
-                        ->whereNotNull('bienestar')
-                        ->avg('bienestar');
+                    $avgB = $agg?->avg_bienestar;
                     if ($avgB !== null && $avgB < 5) {
                         $reasons[] = 'Bienestar bajo (' . round($avgB, 1) . '/10)';
                     }
 
                     // Low training (avg < 2 days/week)
-                    $avgD = Checkin::where('client_id', $client->id)
-                        ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
-                        ->whereNotNull('dias_entrenados')
-                        ->avg('dias_entrenados');
+                    $avgD = $agg?->avg_dias;
                     if ($avgD !== null && $avgD < 2) {
                         $reasons[] = 'Entrenamiento bajo (' . round($avgD, 1) . ' dias/sem)';
                     }
