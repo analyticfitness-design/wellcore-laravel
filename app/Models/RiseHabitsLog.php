@@ -7,14 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable([
+    'rise_program_id',
     'client_id',
     'log_date',
-    'habits_json',
-    'completed',
+    'water_liters',
+    'sleep_hours',
+    'steps',
+    'meditation',
+    'training_completed',
+    'nutrition_followed',
+    'notes',
 ])]
 class RiseHabitsLog extends Model
 {
-    protected $table = 'rise_habits_log';
+    protected $table = 'rise_habits_logs';
 
     public $timestamps = true;
 
@@ -22,13 +28,22 @@ class RiseHabitsLog extends Model
     {
         return [
             'log_date' => 'date',
-            'habits_json' => 'array',
-            'completed' => 'boolean',
+            'water_liters' => 'decimal:1',
+            'sleep_hours' => 'decimal:1',
+            'steps' => 'integer',
+            'meditation' => 'boolean',
+            'training_completed' => 'boolean',
+            'nutrition_followed' => 'boolean',
         ];
     }
 
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function riseProgram(): BelongsTo
+    {
+        return $this->belongsTo(RiseProgram::class);
     }
 }

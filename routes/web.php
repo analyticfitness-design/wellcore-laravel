@@ -177,10 +177,10 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/tracking', DailyTracking::class)->name('tracking');
         Route::get('/measurements', RiseMeasurements::class)->name('measurements');
         Route::get('/program', ProgramView::class)->name('program');
-        Route::get('/habits', function () { return 'Coming soon'; })->name('habits');
-        Route::get('/photos', function () { return 'Coming soon'; })->name('photos');
-        Route::get('/chat', function () { return 'Coming soon'; })->name('chat');
-        Route::get('/profile', function () { return 'Coming soon'; })->name('profile');
+        Route::get('/habits', \App\Livewire\Rise\Habits::class)->name('habits');
+        Route::get('/photos', \App\Livewire\Rise\Photos::class)->name('photos');
+        Route::get('/chat', \App\Livewire\Rise\Chat::class)->name('chat');
+        Route::get('/profile', \App\Livewire\Rise\RiseProfile::class)->name('profile');
     });
 
     // Admin dashboard routes
@@ -231,3 +231,13 @@ Route::middleware('auth:wellcore')->group(function () {
 
 // Test route (from Phase 0)
 Route::get('/test', TestDashboard::class);
+
+// DEV ONLY: Quick login as client (remove before production)
+Route::get('/dev-login/{clientId}', function ($clientId) {
+    $client = \App\Models\Client::find($clientId);
+    if (!$client) return redirect('/login');
+    $token = \App\Models\AuthToken::where('user_id', $clientId)->where('user_type', 'client')->where('expires_at', '>', now())->first();
+    if (!$token) return redirect('/login');
+    session(['wc_token' => $token->token, 'wc_user_type' => 'client', 'wc_user_id' => $clientId]);
+    return redirect('/client');
+});
