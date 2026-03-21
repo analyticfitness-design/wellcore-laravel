@@ -24,8 +24,8 @@
             ],
             [
                 'label'  => __('dashboard.mobile.entrena'),
-                'href'   => route('client.plan'),
-                'route'  => 'client.plan',
+                'href'   => route('client.workout'),
+                'route'  => 'client.workout',
                 'badge'  => null,
                 'pulse'  => false,
                 // Heroicons: bolt (lightning)

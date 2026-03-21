@@ -19,6 +19,7 @@ class PlanOnboarding extends Component
         $this->planType = strtolower($plan instanceof \App\Enums\PlanType ? $plan->value : (string) $plan);
 
         $this->slides = $this->getSlidesForPlan($this->planType);
+        $this->showOnboarding = true;
     }
 
     public function dismissOnboarding(): void

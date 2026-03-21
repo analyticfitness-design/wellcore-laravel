@@ -1,8 +1,15 @@
 <div class="space-y-6">
 
-    {{-- ITEM 1: Welcome Onboarding Modal --}}
+    {{-- ITEM 1: Plan-Specific Onboarding (Livewire component) --}}
+    <div x-data="{ showOnboarding: !localStorage.getItem('wc_onboarding_plan_done') }"
+         x-init="if (showOnboarding) { $wire.$parent?.dispatch('trigger-onboarding'); localStorage.setItem('wc_onboarding_plan_done', '1'); }"
+         x-cloak>
+        <livewire:client.plan-onboarding />
+    </div>
+
+    {{-- Legacy Onboarding (replaced by PlanOnboarding — kept as fallback) --}}
     <div x-data="{
-            showOnboarding: !localStorage.getItem('wc_onboarding_done'),
+            showOnboarding: false,
             currentSlide: 0,
             totalSlides: 3,
             next() { if (this.currentSlide < this.totalSlides - 1) this.currentSlide++ },

@@ -45,16 +45,32 @@
     {{-- ==================== TAB: ENTRENAMIENTO ==================== --}}
     @if($activeTab === 'entrenamiento')
         @if($trainingPlan)
+            {{-- CTA Principal --}}
+            <a wire:navigate href="{{ route('client.workout') }}"
+                class="btn-press mb-4 flex items-center justify-center gap-2 rounded-xl bg-wc-accent px-6 py-3.5 font-display text-lg tracking-wider text-white shadow-lg shadow-wc-accent/20 transition-all hover:bg-wc-accent-hover">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" /></svg>
+                INICIAR ENTRENAMIENTO
+            </a>
+
             <div class="space-y-4">
                 @if(isset($trainingPlan['dias']))
-                    @foreach($trainingPlan['dias'] as $dia)
+                    @foreach($trainingPlan['dias'] as $diaIndex => $dia)
                         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-                            <h3 class="font-display text-lg tracking-wide text-wc-accent">
-                                {{ strtoupper($dia['nombre'] ?? $dia['dia'] ?? 'DIA') }}
-                            </h3>
-                            @if(isset($dia['grupo_muscular']))
-                                <p class="text-sm text-wc-text-secondary">{{ $dia['grupo_muscular'] }}</p>
-                            @endif
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-display text-lg tracking-wide text-wc-accent">
+                                        {{ strtoupper($dia['nombre'] ?? $dia['dia'] ?? 'DIA') }}
+                                    </h3>
+                                    @if(isset($dia['grupo_muscular']))
+                                        <p class="text-sm text-wc-text-secondary">{{ $dia['grupo_muscular'] }}</p>
+                                    @endif
+                                </div>
+                                <a wire:navigate href="{{ route('client.workout', ['day' => $diaIndex + 1]) }}"
+                                    class="btn-press inline-flex items-center gap-1.5 rounded-lg bg-wc-accent/10 px-3 py-1.5 text-xs font-semibold text-wc-accent hover:bg-wc-accent/20 transition-colors">
+                                    <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    Entrenar
+                                </a>
+                            </div>
                             @if(isset($dia['ejercicios']))
                                 <div class="mt-3 space-y-2">
                                     @foreach($dia['ejercicios'] as $ej)
