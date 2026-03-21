@@ -2,6 +2,9 @@
     <x-slot:title>WellCore Fitness - Coaching 1:1 Basado en Ciencia</x-slot:title>
     <x-slot:description>Coaching fitness 1:1 basado en ciencia. Entrenamiento y nutricion personalizados. 94% adherencia. Sin milagros, solo resultados reales.</x-slot:description>
 
+    {{-- Reading progress bar --}}
+    <div class="scroll-progress"></div>
+
     {{-- ================================================================== --}}
     {{-- 1. RISE BANNER                                                     --}}
     {{-- ================================================================== --}}
@@ -10,20 +13,22 @@
             <p class="text-xs text-wc-text-secondary">
                 <span class="font-semibold text-wc-accent">Programa RISE</span> — 30 dias de transformacion guiada.
             </p>
-            <a href="{{ route('reto-rise') }}" class="rounded bg-wc-accent px-3 py-1 text-xs font-semibold text-white hover:bg-wc-accent-hover">UNIRME</a>
+            <a href="{{ route('reto-rise') }}" class="btn-press rounded bg-wc-accent px-3 py-1 text-xs font-semibold text-white hover:bg-wc-accent-hover">UNIRME</a>
         </div>
     </div>
 
     {{-- ================================================================== --}}
     {{-- 2. HERO                                                            --}}
     {{-- ================================================================== --}}
-    <section class="relative overflow-hidden bg-wc-bg-tertiary">
+    <section class="hero-gradient relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
         {{-- Parallax decorative orbs --}}
         <div class="parallax-hero" aria-hidden="true">
             <div class="parallax-orb parallax-orb-1" data-parallax-speed="0.2"></div>
             <div class="parallax-orb parallax-orb-2" data-parallax-speed="0.35"></div>
             <div class="parallax-orb parallax-orb-3" data-parallax-speed="0.15"></div>
+            <div class="parallax-orb parallax-orb-4" data-parallax-speed="0.25"></div>
+            <div class="parallax-orb parallax-orb-5" data-parallax-speed="0.1"></div>
         </div>
         <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36" data-animate="fadeInUp">
             <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
@@ -37,31 +42,31 @@
                     <h1 class="mt-6 font-display text-5xl leading-none tracking-wide text-wc-text sm:text-6xl lg:text-8xl">
                         SIN MILAGROS,<br>
                         <span class="italic text-wc-text-secondary">solo</span>
-                        <span class="font-bold text-wc-accent">CIENCIA</span>
+                        <span class="text-gradient-accent font-bold text-wc-accent">CIENCIA</span>
                     </h1>
 
                     <p class="mt-6 max-w-xl text-lg text-wc-text-secondary">
                         La primera plataforma de coaching fitness en Latinoamerica con nivel internacional. Entrenamiento y nutricion 1:1 basados en ciencia real, creada por y para latinos.
                     </p>
 
-                    <div class="mt-6 flex flex-wrap gap-6">
+                    <div class="mt-6 flex flex-wrap gap-6" data-animate="fadeIn">
                         <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                            <span class="font-data text-lg font-bold text-wc-accent">94%</span> Adherencia
+                            <span class="counter-highlight font-data text-lg font-bold text-wc-accent" data-counter="94" data-counter-suffix="%">94%</span> Adherencia
                         </div>
                         <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                            <span class="font-data text-lg font-bold text-wc-accent">1:1</span> Coaching
+                            <span class="counter-highlight font-data text-lg font-bold text-wc-accent">1:1</span> Coaching
                         </div>
                         <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                            <span class="font-data text-lg font-bold text-wc-accent">100%</span> Personalizado
+                            <span class="counter-highlight font-data text-lg font-bold text-wc-accent" data-counter="100" data-counter-suffix="%">100%</span> Personalizado
                         </div>
                     </div>
 
                     <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                        <a href="{{ route('inscripcion') }}" class="inline-flex w-full items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover sm:w-auto">
+                        <a href="{{ route('inscripcion') }}" class="pulse-glow btn-press inline-flex w-full items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover sm:w-auto">
                             Comenzar Ahora
                             <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                         </a>
-                        <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-full px-8 py-3.5 text-base font-semibold text-wc-text hover:bg-wc-bg-secondary">
+                        <a href="{{ route('planes') }}" class="btn-press inline-flex items-center justify-center rounded-full px-8 py-3.5 text-base font-semibold text-wc-text hover:bg-wc-bg-secondary">
                             Ver Planes
                         </a>
                     </div>
@@ -77,7 +82,7 @@
 
                 {{-- Right — Dashboard Mockup --}}
                 <div class="hidden lg:block">
-                    <div class="rounded-xl border border-wc-border bg-wc-bg shadow-2xl shadow-black/10">
+                    <div class="animate-float-slow rounded-xl border border-wc-border bg-wc-bg shadow-2xl shadow-black/10">
                         {{-- Browser chrome --}}
                         <div class="flex items-center gap-2 border-b border-wc-border px-4 py-3">
                             <span class="h-3 w-3 rounded-full bg-red-500"></span>
@@ -146,11 +151,13 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- ================================================================== --}}
     {{-- 3. SOCIAL PROOF BAR                                                --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8" data-animate="fadeInUp">
+        <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8" data-animate="fadeIn">
             <p class="text-center text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Basado en ciencia, no en promesas</p>
             <div class="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-semibold uppercase tracking-widest text-wc-text-tertiary">
                 <span>NSCA</span>
@@ -166,47 +173,49 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- ================================================================== --}}
     {{-- 4. WHY WELLCORE                                                    --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
             <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Por que WellCore</p>
             <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">RESULTADOS QUE SE SOSTIENEN.</h2>
             <p class="mt-4 max-w-2xl text-sm text-wc-text-tertiary">No contamos con trucos rapidos. Contamos con metodo, seguimiento y ciencia aplicada a tu cuerpo. Cada decision tiene una razon.</p>
 
             {{-- Stats grid --}}
-            <div class="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
-                <div class="rounded-xl border border-wc-accent/30 bg-wc-accent/5 p-5 text-center">
-                    <p class="font-data text-3xl font-bold text-wc-accent"><span data-counter="94" data-counter-suffix="%">0%</span></p>
+            <div class="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4" data-animate="fadeIn">
+                <div class="scroll-reveal card-hover-lift card-glow rounded-xl border border-wc-accent/30 bg-wc-accent/5 p-5 text-center">
+                    <p class="counter-highlight font-data text-3xl font-bold text-wc-accent"><span data-counter="94" data-counter-suffix="%">0%</span></p>
                     <p class="mt-1 text-sm font-semibold text-wc-text">Adherencia</p>
                     <p class="mt-1 text-xs text-wc-text-tertiary">Nuestros clientes mantienen el plan semana a semana.</p>
                 </div>
-                <div class="rounded-xl border border-wc-border bg-wc-bg p-5 text-center">
-                    <p class="font-data text-3xl font-bold text-wc-text"><span data-counter="20" data-counter-suffix="+">0</span></p>
+                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg p-5 text-center">
+                    <p class="counter-highlight font-data text-3xl font-bold text-wc-text"><span data-counter="20" data-counter-suffix="+">0</span></p>
                     <p class="mt-1 text-sm font-semibold text-wc-text">Clientes</p>
                     <p class="mt-1 text-xs text-wc-text-tertiary">Activos con planes personalizados en ejecucion.</p>
                 </div>
-                <div class="rounded-xl border border-wc-border bg-wc-bg p-5 text-center">
-                    <p class="font-data text-3xl font-bold text-wc-text"><span data-counter="8" data-counter-suffix="sem">0</span></p>
+                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg p-5 text-center">
+                    <p class="counter-highlight font-data text-3xl font-bold text-wc-text"><span data-counter="8" data-counter-suffix="sem">0</span></p>
                     <p class="mt-1 text-sm font-semibold text-wc-text">Resultados</p>
                     <p class="mt-1 text-xs text-wc-text-tertiary">Cambios visibles y medibles en composicion corporal.</p>
                 </div>
-                <div class="rounded-xl border border-wc-border bg-wc-bg p-5 text-center">
-                    <p class="font-data text-3xl font-bold text-wc-text"><span data-counter="100" data-counter-suffix="%">0%</span></p>
+                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg p-5 text-center">
+                    <p class="counter-highlight font-data text-3xl font-bold text-wc-text"><span data-counter="100" data-counter-suffix="%">0%</span></p>
                     <p class="mt-1 text-sm font-semibold text-wc-text">Personalizado</p>
                     <p class="mt-1 text-xs text-wc-text-tertiary">Nada generico. Tu plan es tuyo y solo tuyo.</p>
                 </div>
             </div>
 
             {{-- 3 Pillars --}}
-            <div class="mt-14 grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div class="stagger-grid mt-14 grid grid-cols-1 gap-8 md:grid-cols-3">
                 @foreach([
-                    ['01', 'Ciencia, no intuicion', 'Cada decision de entrenamiento y nutricion esta respaldada por evidencia publicada. Sin mitos, sin dietas milagro.', 'M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 0-6.23.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5'],
-                    ['02', 'Atencion 1:1 real', 'Tu coach te conoce por nombre, sabe tu historial y responde tus dudas. No eres un numero en una base de datos.', 'M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z'],
-                    ['03', 'Entiendes el por que', 'Te explicamos la logica detras de cada indicacion. Aprendes a entrenar y comer bien de por vida.', 'M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342'],
-                ] as [$num, $title, $desc, $iconPath])
-                <div class="rounded-xl border border-wc-border bg-wc-bg p-8 transition-colors hover:border-wc-accent/30">
+                    ['01', 'Ciencia, no intuicion', 'Cada decision de entrenamiento y nutricion esta respaldada por evidencia publicada. Sin mitos, sin dietas milagro.', 'M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 0-6.23.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5', 100],
+                    ['02', 'Atencion 1:1 real', 'Tu coach te conoce por nombre, sabe tu historial y responde tus dudas. No eres un numero en una base de datos.', 'M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z', 200],
+                    ['03', 'Entiendes el por que', 'Te explicamos la logica detras de cada indicacion. Aprendes a entrenar y comer bien de por vida.', 'M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342', 300],
+                ] as [$num, $title, $desc, $iconPath, $delay])
+                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg p-8 transition-colors hover:border-wc-accent/30" data-animate="fadeInUp" data-animate-delay="{{ $delay }}">
                     <div class="flex items-center gap-3">
                         <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-wc-accent/10">
                             <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $iconPath }}" /></svg>
@@ -221,35 +230,37 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- ================================================================== --}}
     {{-- 5. COMMUNITY                                                       --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
             <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Comunidad</p>
             <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NO ENTRENAS SOLO. JAMAS.</h2>
             <p class="mt-4 max-w-2xl text-sm text-wc-text-tertiary">Una comunidad real de personas comprometidas con su transformacion. Retos, logros y soporte mutuo — no likes vacios.</p>
 
             {{-- Community stats --}}
-            <div class="mt-8 flex flex-wrap gap-6">
+            <div class="mt-8 flex flex-wrap gap-6" data-animate="fadeIn">
                 <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                    <span class="font-data text-lg font-bold text-wc-accent" data-counter="20" data-counter-suffix="+">0</span> Miembros
+                    <span class="counter-highlight font-data text-lg font-bold text-wc-accent" data-counter="20" data-counter-suffix="+">0</span> Miembros
                 </div>
                 <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                    <span class="font-data text-lg font-bold text-wc-accent" data-counter="3">0</span> Retos activos
+                    <span class="counter-highlight font-data text-lg font-bold text-wc-accent" data-counter="3">0</span> Retos activos
                 </div>
                 <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                    <span class="font-data text-lg font-bold text-wc-accent" data-counter="94" data-counter-suffix="%">0%</span> Adherencia
+                    <span class="counter-highlight font-data text-lg font-bold text-wc-accent" data-counter="94" data-counter-suffix="%">0%</span> Adherencia
                 </div>
                 <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                    <span class="font-data text-lg font-bold text-wc-accent" data-counter="500" data-counter-suffix="+">0</span> Logros
+                    <span class="counter-highlight font-data text-lg font-bold text-wc-accent" data-counter="500" data-counter-suffix="+">0</span> Logros
                 </div>
             </div>
 
             {{-- 3 feature cards --}}
-            <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div class="stagger-grid mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
                 {{-- Activity Feed --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
+                <div class="scroll-reveal card-hover-lift card-glow rounded-xl border border-wc-border bg-wc-bg-tertiary p-6" data-animate="fadeInUp" data-animate-delay="100">
                     <div class="flex items-center gap-2">
                         <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
                         <h3 class="text-base font-semibold text-wc-text">Actividad en vivo</h3>
@@ -286,7 +297,7 @@
                 </div>
 
                 {{-- Challenges --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
+                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-6" data-animate="fadeInUp" data-animate-delay="200">
                     <div class="flex items-center gap-2">
                         <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" /></svg>
                         <h3 class="text-base font-semibold text-wc-text">Retos y desafios</h3>
@@ -317,7 +328,7 @@
                 </div>
 
                 {{-- Gamification --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
+                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-6" data-animate="fadeInUp" data-animate-delay="300">
                     <div class="flex items-center gap-2">
                         <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" /></svg>
                         <h3 class="text-base font-semibold text-wc-text">Gamificacion</h3>
@@ -355,23 +366,25 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- ================================================================== --}}
     {{-- 6. COMO FUNCIONA                                                   --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
             <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Como funciona</p>
             <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">TU TRANSFORMACION EN 4 FASES.</h2>
             <p class="mt-4 max-w-2xl text-sm text-wc-text-tertiary">Un proceso estructurado donde cada semana tiene un proposito. Sin improvisacion, sin recetas genericas.</p>
 
-            <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="stagger-grid mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach([
-                    ['01', 'Diagnostico', 'Semana 1', 'Evaluacion completa: historial, habitos, metas, metabolismo y estilo de vida. Nada se asume.'],
-                    ['02', 'Plan personalizado', 'Semana 1-2', 'Diseno del protocolo de entrenamiento y nutricion hecho a tu medida, con la logica explicada.'],
-                    ['03', 'Ejecucion', 'Semanas 2-8', 'Acompanamiento semanal con check-ins, ajustes en tiempo real y soporte directo de tu coach.'],
-                    ['04', 'Evolucion', 'Continuo', 'Ajustes basados en datos reales de tu progreso. El plan evoluciona contigo permanentemente.'],
-                ] as [$num, $title, $time, $desc])
-                <div class="rounded-xl border border-wc-border bg-wc-bg p-6 transition-colors hover:border-wc-accent/30">
+                    ['01', 'Diagnostico', 'Semana 1', 'Evaluacion completa: historial, habitos, metas, metabolismo y estilo de vida. Nada se asume.', 100],
+                    ['02', 'Plan personalizado', 'Semana 1-2', 'Diseno del protocolo de entrenamiento y nutricion hecho a tu medida, con la logica explicada.', 200],
+                    ['03', 'Ejecucion', 'Semanas 2-8', 'Acompanamiento semanal con check-ins, ajustes en tiempo real y soporte directo de tu coach.', 300],
+                    ['04', 'Evolucion', 'Continuo', 'Ajustes basados en datos reales de tu progreso. El plan evoluciona contigo permanentemente.', 400],
+                ] as [$num, $title, $time, $desc, $delay])
+                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg p-6 transition-colors hover:border-wc-accent/30" data-animate="fadeInUp" data-animate-delay="{{ $delay }}">
                     <div class="flex items-center gap-3">
                         <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-wc-accent/10">
                             <span class="font-data text-sm font-bold text-wc-accent">{{ $num }}</span>
@@ -393,18 +406,20 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- ================================================================== --}}
     {{-- 7. PLANS                                                           --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="scaleIn">
             <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Planes</p>
             <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">ELIGE TU PLAN</h2>
             <p class="mt-4 max-w-2xl text-sm text-wc-text-tertiary">Sin contratos de permanencia. Cancela cuando quieras.</p>
 
-            <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div class="stagger-grid mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
                 {{-- ESENCIAL --}}
-                <div class="flex flex-col rounded-xl border border-wc-border bg-wc-bg-tertiary p-8">
+                <div class="scroll-reveal card-hover-lift flex flex-col rounded-xl border border-wc-border bg-wc-bg-tertiary p-8" data-animate="fadeInUp" data-animate-delay="100">
                     <div>
                         <h3 class="font-display text-2xl tracking-wide text-wc-text">ESENCIAL</h3>
                         <div class="mt-2 flex items-baseline gap-1">
@@ -437,13 +452,13 @@
                         </div>
                         @endforeach
                     </div>
-                    <a href="{{ route('inscripcion') }}?plan=esencial" class="mt-8 inline-flex w-full items-center justify-center rounded-lg border border-wc-border px-8 py-3 text-base font-medium text-wc-text hover:bg-wc-bg-secondary">
+                    <a href="{{ route('inscripcion') }}?plan=esencial" class="btn-press mt-8 inline-flex w-full items-center justify-center rounded-lg border border-wc-border px-8 py-3 text-base font-medium text-wc-text hover:bg-wc-bg-secondary">
                         Comenzar Esencial
                     </a>
                 </div>
 
                 {{-- METODO --}}
-                <div class="relative flex flex-col rounded-xl border-2 border-wc-accent bg-wc-bg-tertiary p-8">
+                <div class="scroll-reveal card-hover-lift card-glow relative flex flex-col rounded-xl border-2 border-wc-accent bg-wc-bg-tertiary p-8" data-animate="fadeInUp" data-animate-delay="200">
                     <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
                         <span class="rounded-full bg-wc-accent px-4 py-1 text-xs font-semibold text-white">Mejor Valor</span>
                     </div>
@@ -479,13 +494,13 @@
                         </div>
                         @endforeach
                     </div>
-                    <a href="{{ route('inscripcion') }}?plan=metodo" class="mt-8 inline-flex w-full items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
+                    <a href="{{ route('inscripcion') }}?plan=metodo" class="btn-press mt-8 inline-flex w-full items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
                         Comenzar Metodo
                     </a>
                 </div>
 
                 {{-- ELITE --}}
-                <div class="relative flex flex-col rounded-xl border border-wc-border bg-wc-bg-tertiary p-8">
+                <div class="scroll-reveal card-hover-lift relative flex flex-col rounded-xl border border-wc-border bg-wc-bg-tertiary p-8" data-animate="fadeInUp" data-animate-delay="300">
                     <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
                         <span class="rounded-full border border-wc-accent bg-wc-accent/10 px-4 py-1 text-xs font-semibold text-wc-accent">SOLO 5 CUPOS</span>
                     </div>
@@ -516,7 +531,7 @@
                         </div>
                         @endforeach
                     </div>
-                    <a href="{{ route('inscripcion') }}?plan=elite" class="mt-8 inline-flex w-full items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
+                    <a href="{{ route('inscripcion') }}?plan=elite" class="btn-press mt-8 inline-flex w-full items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
                         Comenzar Elite
                     </a>
                 </div>
@@ -526,22 +541,24 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- ================================================================== --}}
     {{-- 8. RESULTS / TESTIMONIALS                                          --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
             <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Casos Reales</p>
             <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">RESULTADOS REALES</h2>
             <p class="mt-4 max-w-2xl text-sm text-wc-text-tertiary">Sin filtros, sin edicion. Clientes reales con planes WellCore que transformaron su cuerpo y sus habitos.</p>
 
-            <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div class="stagger-grid mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
                 @foreach([
-                    ['ML', 'Maria L.', '-12kg', '4 meses', 'Plan Metodo', 'Por primera vez entendi por que hacia cada cosa. Eso lo cambio todo. No fue una dieta, fue un cambio de mentalidad.'],
-                    ['JC', 'Juan C.', '+8kg musculo', '6 meses', 'Plan Elite', 'Sin suplementos raros, solo entrenamiento inteligente y buena nutricion. El seguimiento semanal marco la diferencia.'],
-                    ['AP', 'Andrea P.', '-9kg grasa', '12 semanas', 'Plan Metodo', 'La guia de habitos fue lo que cambio todo. Ahora entreno por conviccion, no por obligacion.'],
-                ] as [$initials, $name, $stat, $duration, $plan, $quote])
-                <div class="rounded-xl border border-wc-border bg-wc-bg p-8">
+                    ['ML', 'Maria L.', '-12kg', '4 meses', 'Plan Metodo', 'Por primera vez entendi por que hacia cada cosa. Eso lo cambio todo. No fue una dieta, fue un cambio de mentalidad.', 100],
+                    ['JC', 'Juan C.', '+8kg musculo', '6 meses', 'Plan Elite', 'Sin suplementos raros, solo entrenamiento inteligente y buena nutricion. El seguimiento semanal marco la diferencia.', 200],
+                    ['AP', 'Andrea P.', '-9kg grasa', '12 semanas', 'Plan Metodo', 'La guia de habitos fue lo que cambio todo. Ahora entreno por conviccion, no por obligacion.', 300],
+                ] as [$initials, $name, $stat, $duration, $plan, $quote, $delay])
+                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg p-8" data-animate="fadeInUp" data-animate-delay="{{ $delay }}">
                     {{-- Before/After interactive slider --}}
                     <x-before-after-slider height="h-44" />
                     {{-- Stat badges --}}
@@ -553,7 +570,7 @@
                     {{-- Stars --}}
                     <div class="mt-4 flex gap-1">
                         @for ($i = 0; $i < 5; $i++)
-                            <svg class="h-4 w-4 text-wc-accent" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            <svg class="h-4 w-4 text-wc-accent" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 00.951-.69l1.07-3.292z"/></svg>
                         @endfor
                     </div>
                     {{-- Quote --}}
@@ -574,11 +591,13 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- ================================================================== --}}
     {{-- 9. COACHES                                                         --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
             <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
                 {{-- Left --}}
                 <div>
@@ -602,7 +621,7 @@
                     </div>
 
                     <div class="mt-8">
-                        <a href="{{ route('coaches') }}" class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
+                        <a href="{{ route('coaches') }}" class="btn-press inline-flex items-center gap-2 rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
                             Postulate
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                         </a>
@@ -610,7 +629,7 @@
                 </div>
 
                 {{-- Right — Coach Portal Mockup --}}
-                <div class="hidden lg:block">
+                <div class="hidden lg:block" data-animate="slideInRight">
                     <div class="rounded-xl border border-wc-border bg-wc-bg shadow-2xl shadow-black/10">
                         {{-- Browser chrome --}}
                         <div class="flex items-center gap-2 border-b border-wc-border px-4 py-3">
@@ -664,6 +683,8 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- ================================================================== --}}
     {{-- 10. BLOG PREVIEW                                                   --}}
     {{-- ================================================================== --}}
@@ -671,7 +692,7 @@
         $articles = array_slice(\App\Http\Controllers\BlogController::getArticles(), 0, 3);
     @endphp
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
             <div class="flex items-end justify-between">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Conocimiento</p>
@@ -683,9 +704,9 @@
                 </a>
             </div>
 
-            <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
-                @foreach($articles as $article)
-                <a href="{{ route('blog.show', $article['slug']) }}" class="group rounded-xl border border-wc-border bg-wc-bg transition-colors hover:border-wc-accent/30">
+            <div class="stagger-grid mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+                @foreach($articles as $index => $article)
+                <a href="{{ route('blog.show', $article['slug']) }}" class="scroll-reveal card-hover-lift group rounded-xl border border-wc-border bg-wc-bg transition-colors hover:border-wc-accent/30" data-animate="fadeInUp" data-animate-delay="{{ ($index + 1) * 100 }}">
                     {{-- Image placeholder --}}
                     <div class="relative h-48 overflow-hidden rounded-t-xl bg-gradient-to-br from-wc-accent/10 via-wc-bg-tertiary to-wc-bg-secondary">
                         <div class="absolute left-4 top-4">
@@ -714,6 +735,8 @@
             </div>
         </div>
     </section>
+
+    <div class="section-divider"></div>
 
     {{-- ================================================================== --}}
     {{-- 11. FAQ                                                            --}}
@@ -753,11 +776,13 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- ================================================================== --}}
     {{-- 12. FINAL CTA                                                      --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
+    <section class="gradient-animated bg-wc-bg-tertiary">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="scaleIn">
             <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg p-10 sm:p-16">
                 <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
                 <div class="relative text-center">
@@ -768,11 +793,11 @@
                     <h2 class="mt-6 font-display text-3xl tracking-wide text-wc-text sm:text-5xl">LISTO PARA TRANSFORMARTE?</h2>
                     <p class="mx-auto mt-4 max-w-lg text-wc-text-secondary">La primera plataforma de coaching fitness hecha en LATAM con estandares internacionales. Creemos que los latinos merecen acceso a coaching de elite sin barreras.</p>
                     <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                        <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
+                        <a href="{{ route('planes') }}" class="pulse-glow btn-press inline-flex items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
                             Ver Planes
                             <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                         </a>
-                        <a href="{{ route('inscripcion') }}" class="inline-flex items-center justify-center rounded-lg border border-wc-border px-8 py-3 text-base font-medium text-wc-text hover:bg-wc-bg-secondary">
+                        <a href="{{ route('inscripcion') }}" class="btn-press inline-flex items-center justify-center rounded-lg border border-wc-border px-8 py-3 text-base font-medium text-wc-text hover:bg-wc-bg-secondary">
                             Consulta Gratuita
                         </a>
                     </div>

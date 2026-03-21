@@ -136,12 +136,280 @@
     opacity: 0.03;
 }
 
+/* ─── CSS Scroll-Driven Animations (Chrome 115+, Safari 26+) ─── */
+
+/* Reading progress indicator */
+@keyframes grow-progress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
+.scroll-progress {
+    position: fixed;
+    left: 0; top: 0;
+    width: 100%; height: 3px;
+    background: var(--color-wc-accent);
+    transform-origin: 0 50%;
+    animation: grow-progress auto linear;
+    animation-timeline: scroll();
+    z-index: 9999;
+}
+
+/* Native scroll reveal — used alongside JS fallback */
+@keyframes scroll-reveal {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scroll-reveal-left {
+    from { opacity: 0; transform: translateX(-40px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scroll-reveal-right {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scroll-reveal-scale {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@supports (animation-timeline: view()) {
+    .scroll-reveal {
+        animation: scroll-reveal linear both;
+        animation-timeline: view();
+        animation-range: entry 5% entry 40%;
+    }
+    .scroll-reveal-left {
+        animation: scroll-reveal-left linear both;
+        animation-timeline: view();
+        animation-range: entry 5% entry 40%;
+    }
+    .scroll-reveal-right {
+        animation: scroll-reveal-right linear both;
+        animation-timeline: view();
+        animation-range: entry 5% entry 40%;
+    }
+    .scroll-reveal-scale {
+        animation: scroll-reveal-scale linear both;
+        animation-timeline: view();
+        animation-range: entry 5% entry 45%;
+    }
+}
+
+/* ─── Animated Gradient Backgrounds ─── */
+@keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.gradient-animated {
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
+}
+
+/* Hero gradient for public pages */
+.hero-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--color-wc-bg-tertiary) 0%,
+        var(--color-wc-bg) 40%,
+        var(--color-wc-bg-tertiary) 100%
+    );
+    background-size: 200% 200%;
+    animation: gradient-shift 12s ease infinite;
+}
+
+/* Accent gradient text */
+.text-gradient-accent {
+    background: linear-gradient(135deg, var(--color-wc-accent) 0%, #F87171 50%, var(--color-wc-accent) 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-shift 4s ease infinite;
+}
+
+/* ─── Card Hover Effects ─── */
+.card-hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.card-hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+.dark .card-hover-lift:hover {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Card with glow on hover */
+.card-glow:hover {
+    box-shadow: 0 0 0 1px var(--color-wc-accent), 0 8px 24px rgba(220, 38, 38, 0.12);
+}
+.dark .card-glow:hover {
+    box-shadow: 0 0 0 1px var(--color-wc-accent), 0 8px 24px rgba(220, 38, 38, 0.2);
+}
+
+/* ─── Floating Elements ─── */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}
+
+@keyframes float-slow {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-slow {
+    animation: float-slow 6s ease-in-out infinite;
+}
+
+/* ─── Shimmer Effect ─── */
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.shimmer {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.05) 50%,
+        transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 3s ease infinite;
+}
+
+/* ─── Pulse Glow ─── */
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+    50% { box-shadow: 0 0 20px 4px rgba(220, 38, 38, 0.15); }
+}
+
+.pulse-glow {
+    animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+/* ─── Stagger Grid Children ─── */
+.stagger-grid > *:nth-child(1) { transition-delay: 0ms; }
+.stagger-grid > *:nth-child(2) { transition-delay: 100ms; }
+.stagger-grid > *:nth-child(3) { transition-delay: 200ms; }
+.stagger-grid > *:nth-child(4) { transition-delay: 300ms; }
+.stagger-grid > *:nth-child(5) { transition-delay: 400ms; }
+.stagger-grid > *:nth-child(6) { transition-delay: 500ms; }
+
+/* ─── Number Counter Emphasis ─── */
+.counter-highlight {
+    display: inline-block;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ─── Typewriter cursor ─── */
+@keyframes blink-cursor {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.cursor-blink::after {
+    content: '|';
+    color: var(--color-wc-accent);
+    animation: blink-cursor 1s step-end infinite;
+    margin-left: 2px;
+}
+
+/* ─── Line Draw (for timeline/process lines) ─── */
+@keyframes line-draw {
+    from { height: 0; }
+    to { height: 100%; }
+}
+
+.line-draw {
+    overflow: hidden;
+}
+
+@supports (animation-timeline: view()) {
+    .line-draw-scroll {
+        animation: line-draw linear both;
+        animation-timeline: view();
+        animation-range: entry 0% exit 80%;
+    }
+}
+
+/* ─── Badge Shine Effect ─── */
+@keyframes badge-shine {
+    0% { left: -100%; }
+    20%, 100% { left: 100%; }
+}
+
+.badge-shine {
+    position: relative;
+    overflow: hidden;
+}
+.badge-shine::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    animation: badge-shine 3s ease-in-out infinite;
+}
+
+/* ─── Section Divider Gradient ─── */
+.section-divider {
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--color-wc-border) 20%,
+        var(--color-wc-accent) 50%,
+        var(--color-wc-border) 80%,
+        transparent 100%
+    );
+    opacity: 0.5;
+}
+
+/* ─── Enhanced Parallax Orbs ─── */
+.parallax-hero .parallax-orb-4 {
+    bottom: 20%;
+    right: 15%;
+    height: 8rem;
+    width: 8rem;
+    background: var(--color-wc-accent);
+    opacity: 0.02;
+}
+
+.parallax-hero .parallax-orb-5 {
+    top: 50%;
+    left: 20%;
+    height: 20rem;
+    width: 20rem;
+    background: linear-gradient(135deg, var(--color-wc-accent), #F87171);
+    opacity: 0.02;
+    filter: blur(80px);
+}
+
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
     [data-animate] {
         opacity: 1;
         transform: none;
         transition: none;
+    }
+    .scroll-reveal,
+    .scroll-reveal-left,
+    .scroll-reveal-right,
+    .scroll-reveal-scale {
+        animation: none;
+        opacity: 1;
+        transform: none;
     }
     .progress-ring-circle {
         animation: none;
@@ -161,5 +429,33 @@
     .parallax-hero .parallax-orb {
         transform: none !important;
         transition: none;
+    }
+    .gradient-animated,
+    .hero-gradient,
+    .text-gradient-accent {
+        animation: none;
+    }
+    .animate-float,
+    .animate-float-slow {
+        animation: none;
+    }
+    .shimmer {
+        animation: none;
+    }
+    .pulse-glow {
+        animation: none;
+    }
+    .card-hover-lift:hover {
+        transform: none;
+    }
+    .badge-shine::after {
+        animation: none;
+    }
+    .cursor-blink::after {
+        animation: none;
+    }
+    .scroll-progress {
+        animation: none;
+        transform: scaleX(1);
     }
 }
