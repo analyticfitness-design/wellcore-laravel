@@ -12,6 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->validateCsrfTokens(except: ['webhooks/*', 'api/chat', 'api/newsletter']);
+        $middleware->encryptCookies(except: ['wc_locale', 'wc_country', 'cookieConsent', 'wc_pwa_dismissed']);
 
         $middleware->redirectGuestsTo('/login');
         $middleware->redirectUsersTo('/client');
