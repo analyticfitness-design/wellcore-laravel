@@ -35,7 +35,8 @@ class PlanViewer extends Component
     {
         $user = auth('wellcore')->user();
         $clientId = $user?->id ?? auth('wellcore')->id();
-        $this->clientPlanType = strtolower($user->plan ?? 'esencial');
+        $plan = $user->plan ?? 'esencial';
+        $this->clientPlanType = strtolower($plan instanceof \App\Enums\PlanType ? $plan->value : (string) $plan);
 
         $plans = AssignedPlan::where('client_id', $clientId)
             ->where('active', true)

@@ -24,7 +24,7 @@
                        || (in_array($key, ['ciclo','bloodwork']) && !$canAccessElite);
             @endphp
             <button
-                wire:click="{{ $locked ? '' : \"setTab('$key')\" }}"
+                @if(!$locked) wire:click="setTab('{{ $key }}')" @endif
                 @class([
                     'shrink-0 flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors whitespace-nowrap',
                     'bg-wc-bg-tertiary text-wc-text shadow-sm' => $activeTab === $key,
@@ -34,7 +34,7 @@
             >
                 {{ $label }}
                 @if($locked)
-                    <span class="ml-1 text-[10px]">&#128274;</span>
+                    <span class="ml-1 text-xs">🔒</span>
                 @endif
             </button>
         @endforeach
