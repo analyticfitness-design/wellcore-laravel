@@ -24,75 +24,70 @@
     <nav class="sticky top-0 z-50 border-b border-wc-border bg-wc-bg/80 backdrop-blur-xl">
         <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             {{-- Logo --}}
-            <a href="{{ route('home') }}" class="flex items-center gap-3">
-                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-wc-accent">
-                    <span class="font-display text-lg leading-none text-white">W</span>
+            <a href="{{ route('home') }}" class="flex shrink-0 items-center gap-2.5">
+                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-wc-accent">
+                    <span class="font-display text-base leading-none text-white">W</span>
                 </div>
                 <span class="font-display text-xl tracking-wider text-wc-text">WELLCORE</span>
             </a>
 
-            {{-- Desktop Nav Links --}}
-            <div class="hidden items-center gap-8 md:flex">
-                <a href="{{ route('home') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('home') ? '!text-wc-text' : '' }}">
-                    Inicio
-                </a>
-                <a href="{{ route('metodo') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('metodo') ? '!text-wc-text' : '' }}">
-                    Metodo
-                </a>
-                <a href="{{ route('proceso') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('proceso') ? '!text-wc-text' : '' }}">
-                    Proceso
-                </a>
-                <a href="{{ route('planes') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('planes') ? '!text-wc-text' : '' }}">
-                    Planes
-                </a>
-                <a href="{{ route('nosotros') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('nosotros') ? '!text-wc-text' : '' }}">
-                    Nosotros
-                </a>
-                <a href="{{ route('faq') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('faq') ? '!text-wc-text' : '' }}">
-                    FAQ
-                </a>
-                <a href="{{ route('blog.index') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('blog.*') ? '!text-wc-text' : '' }}">
-                    Blog
-                </a>
+            {{-- Desktop Nav Links (8 links — need lg breakpoint) --}}
+            <div class="hidden items-center gap-5 lg:flex xl:gap-7">
+                <a href="{{ route('metodo') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('metodo') ? '!text-wc-text' : '' }}">Metodo</a>
+                <a href="{{ route('reto-rise') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('reto-rise') ? '!text-wc-text' : '' }}">RISE</a>
+                <a href="{{ route('nosotros') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('nosotros') ? '!text-wc-text' : '' }}">Nosotros</a>
+                <a href="{{ route('proceso') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('proceso') ? '!text-wc-text' : '' }}">Proceso</a>
+                <a href="{{ route('planes') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('planes') ? '!text-wc-text' : '' }}">Planes</a>
+                <a href="{{ route('blog.index') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('blog.*') ? '!text-wc-text' : '' }}">Blog</a>
+                <a href="{{ route('faq') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('faq') ? '!text-wc-text' : '' }}">FAQ</a>
+                <a href="{{ route('coaches') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('coaches*') ? '!text-wc-text' : '' }}">Coaches</a>
             </div>
 
             {{-- Right side --}}
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2.5">
+                {{-- Mi Cuenta --}}
+                <a href="{{ route('login') }}" class="hidden items-center gap-1.5 text-sm font-medium text-wc-text-secondary hover:text-wc-text lg:flex">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                    </svg>
+                    Mi Cuenta
+                </a>
+
                 {{-- Dark Mode Toggle --}}
                 <button
                     x-on:click="darkMode = !darkMode"
-                    class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text"
-                    title="Toggle dark mode"
+                    class="flex h-8 w-8 items-center justify-center rounded-full text-wc-text-secondary hover:text-wc-text"
+                    title="Cambiar modo"
                 >
                     <template x-if="!darkMode">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
                         </svg>
                     </template>
                     <template x-if="darkMode">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
                         </svg>
                     </template>
                 </button>
 
-                {{-- CTA --}}
-                <a href="{{ route('login') }}" class="hidden rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover md:inline-flex">
-                    Inicia Sesion
+                {{-- Empezar CTA --}}
+                <a href="{{ route('inscripcion') }}" class="hidden rounded-full bg-wc-accent px-5 py-2 text-sm font-semibold text-white hover:bg-wc-accent-hover sm:inline-flex">
+                    Empezar
                 </a>
 
-                {{-- Mobile Menu Button --}}
+                {{-- Hamburger Menu Button --}}
                 <button
                     x-on:click="mobileMenu = !mobileMenu"
-                    class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text md:hidden"
+                    class="flex h-9 w-9 items-center justify-center rounded-lg text-wc-text-secondary hover:text-wc-text lg:hidden"
                 >
                     <template x-if="!mobileMenu">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                         </svg>
                     </template>
                     <template x-if="mobileMenu">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                         </svg>
                     </template>
@@ -101,17 +96,19 @@
         </div>
 
         {{-- Mobile Menu --}}
-        <div x-show="mobileMenu" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" x-cloak class="border-t border-wc-border bg-wc-bg md:hidden">
+        <div x-show="mobileMenu" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" x-cloak class="border-t border-wc-border bg-wc-bg lg:hidden">
             <div class="space-y-1 px-4 py-4">
-                <a href="{{ route('home') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Inicio</a>
-                <a href="{{ route('metodo') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Metodo</a>
-                <a href="{{ route('proceso') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Proceso</a>
-                <a href="{{ route('planes') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Planes</a>
-                <a href="{{ route('nosotros') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Nosotros</a>
-                <a href="{{ route('faq') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">FAQ</a>
-                <a href="{{ route('blog.index') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Blog</a>
-                <div class="pt-2">
-                    <a href="{{ route('login') }}" class="block rounded-lg bg-wc-accent px-3 py-2 text-center text-sm font-medium text-white hover:bg-wc-accent-hover">Inicia Sesion</a>
+                <a href="{{ route('metodo') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('metodo') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Metodo</a>
+                <a href="{{ route('reto-rise') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('reto-rise') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">RISE</a>
+                <a href="{{ route('nosotros') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('nosotros') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Nosotros</a>
+                <a href="{{ route('proceso') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('proceso') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Proceso</a>
+                <a href="{{ route('planes') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('planes') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Planes</a>
+                <a href="{{ route('blog.index') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('blog.*') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Blog</a>
+                <a href="{{ route('faq') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('faq') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">FAQ</a>
+                <a href="{{ route('coaches') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('coaches*') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Coaches</a>
+                <div class="flex gap-2 pt-3">
+                    <a href="{{ route('login') }}" class="flex-1 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-center text-sm font-medium text-wc-text hover:bg-wc-bg-tertiary">Mi Cuenta</a>
+                    <a href="{{ route('inscripcion') }}" class="flex-1 rounded-lg bg-wc-accent px-3 py-2.5 text-center text-sm font-medium text-white hover:bg-wc-accent-hover">Empezar</a>
                 </div>
             </div>
         </div>
@@ -141,13 +138,14 @@
                 <div>
                     <h4 class="text-sm font-semibold uppercase tracking-wider text-wc-text">Navegacion</h4>
                     <ul class="mt-4 space-y-2">
-                        <li><a href="{{ route('home') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Inicio</a></li>
-                        <li><a href="{{ route('metodo') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">El Metodo</a></li>
+                        <li><a href="{{ route('metodo') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Metodo</a></li>
+                        <li><a href="{{ route('reto-rise') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">RISE</a></li>
+                        <li><a href="{{ route('nosotros') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Nosotros</a></li>
                         <li><a href="{{ route('proceso') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Proceso</a></li>
                         <li><a href="{{ route('planes') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Planes</a></li>
-                        <li><a href="{{ route('nosotros') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Nosotros</a></li>
-                        <li><a href="{{ route('faq') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">FAQ</a></li>
                         <li><a href="{{ route('blog.index') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Blog</a></li>
+                        <li><a href="{{ route('faq') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">FAQ</a></li>
+                        <li><a href="{{ route('coaches') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Coaches</a></li>
                     </ul>
                 </div>
 
