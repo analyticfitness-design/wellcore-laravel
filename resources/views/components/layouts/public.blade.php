@@ -14,6 +14,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <x-ga-tracking />
+    <x-pwa-meta />
 </head>
 <body class="min-h-screen bg-wc-bg text-wc-text">
 
@@ -47,6 +50,9 @@
                 </a>
                 <a href="{{ route('faq') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('faq') ? '!text-wc-text' : '' }}">
                     FAQ
+                </a>
+                <a href="{{ route('blog.index') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('blog.*') ? '!text-wc-text' : '' }}">
+                    Blog
                 </a>
             </div>
 
@@ -103,6 +109,7 @@
                 <a href="{{ route('planes') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Planes</a>
                 <a href="{{ route('nosotros') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Nosotros</a>
                 <a href="{{ route('faq') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">FAQ</a>
+                <a href="{{ route('blog.index') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Blog</a>
                 <div class="pt-2">
                     <a href="{{ route('login') }}" class="block rounded-lg bg-wc-accent px-3 py-2 text-center text-sm font-medium text-white hover:bg-wc-accent-hover">Inicia Sesion</a>
                 </div>
@@ -140,6 +147,7 @@
                         <li><a href="{{ route('planes') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Planes</a></li>
                         <li><a href="{{ route('nosotros') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Nosotros</a></li>
                         <li><a href="{{ route('faq') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">FAQ</a></li>
+                        <li><a href="{{ route('blog.index') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Blog</a></li>
                     </ul>
                 </div>
 
@@ -147,9 +155,10 @@
                 <div>
                     <h4 class="text-sm font-semibold uppercase tracking-wider text-wc-text">Legal</h4>
                     <ul class="mt-4 space-y-2">
-                        <li><a href="#" class="text-sm text-wc-text-secondary hover:text-wc-text">Terminos de servicio</a></li>
-                        <li><a href="#" class="text-sm text-wc-text-secondary hover:text-wc-text">Politica de privacidad</a></li>
-                        <li><a href="#" class="text-sm text-wc-text-secondary hover:text-wc-text">Politica de reembolso</a></li>
+                        <li><a href="{{ route('terminos') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Terminos de servicio</a></li>
+                        <li><a href="{{ route('privacidad') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Politica de privacidad</a></li>
+                        <li><a href="{{ route('cookies') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Politica de cookies</a></li>
+                        <li><a href="{{ route('reembolsos') }}" class="text-sm text-wc-text-secondary hover:text-wc-text">Politica de reembolso</a></li>
                     </ul>
                 </div>
 
@@ -176,6 +185,10 @@
             </div>
         </div>
     </footer>
+
+    <x-whatsapp-button />
+    <x-cookie-consent />
+    <x-toast-notifications />
 
 </body>
 </html>

@@ -50,7 +50,11 @@ use App\Livewire\Rise\Measurements as RiseMeasurements;
 use App\Livewire\Rise\ProgramView;
 use App\Livewire\Shop\ProductCatalog;
 use App\Livewire\Shop\ProductDetail;
+use App\Livewire\Public\CoachApplication;
+use App\Livewire\Public\PresencialForm;
+use App\Livewire\Public\RiseEnrollment;
 use App\Livewire\TestDashboard;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -76,6 +80,27 @@ Route::get('/proceso', function () {
 Route::get('/reto-rise', function () {
     return view('public.rise');
 })->name('reto-rise');
+Route::get('/coaches', function () {
+    return view('public.coaches');
+})->name('coaches');
+Route::get('/coaches/apply', CoachApplication::class)->name('coaches.apply');
+
+// Legal pages
+Route::get('/terminos', fn() => view('public.legal.terminos'))->name('terminos');
+Route::get('/privacidad', fn() => view('public.legal.privacidad'))->name('privacidad');
+Route::get('/politica-cookies', fn() => view('public.legal.cookies'))->name('cookies');
+Route::get('/reembolsos', fn() => view('public.legal.reembolso'))->name('reembolsos');
+
+// Coach Silvia landing
+Route::get('/fit', fn() => view('public.fit'))->name('fit');
+
+// Presencial
+Route::get('/presencial', fn() => view('public.presencial'))->name('presencial');
+Route::get('/presencial/inscripcion', PresencialForm::class)->name('presencial.form');
+
+// RISE Enrollment
+Route::get('/rise-enroll', RiseEnrollment::class)->name('rise.enroll');
+
 Route::get('/inscripcion', \App\Livewire\InscriptionForm::class)->name('inscripcion');
 Route::get('/pagar', \App\Livewire\Checkout::class)->name('pagar');
 Route::get('/pago-exitoso', function () {
@@ -84,6 +109,12 @@ Route::get('/pago-exitoso', function () {
 Route::get('/pago-confirmado', function () {
     return view('public.pago-exitoso');
 })->name('pago-confirmado');
+
+// Blog
+Route::get('/blog', function () {
+    return view('public.blog.index');
+})->name('blog.index');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 // Shop routes (public, no auth required)
 Route::prefix('tienda')->name('shop.')->group(function () {

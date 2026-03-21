@@ -303,6 +303,8 @@
         </main>
     </div>
 
+    <x-toast-notifications />
+    <x-ga-tracking />
     @livewireScripts
 </body>
 </html>

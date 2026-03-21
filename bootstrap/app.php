@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo('/login');
         $middleware->redirectUsersTo('/client');
 
+        $middleware->web(append: [
+            \App\Http\Middleware\TrackReferral::class,
+        ]);
+
         $middleware->alias([
             'auth' => \App\Http\Middleware\EnsureAuthenticated::class,
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,

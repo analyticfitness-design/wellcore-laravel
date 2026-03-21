@@ -171,7 +171,7 @@ class InscriptionForm extends Component
             'password_hash' => bcrypt($this->password),
         ], JSON_UNESCAPED_UNICODE);
 
-        Inscription::create([
+        $inscription = Inscription::create([
             'id' => Str::ulid()->toBase32(),
             'status' => 'pending_contact',
             'plan' => $this->plan,
@@ -191,6 +191,15 @@ class InscriptionForm extends Component
             'como_conocio' => $this->como_conocio,
             'ip_hash' => hash('sha256', request()->ip()),
         ]);
+
+        // Track referral if present in session
+        $referralCode = session('referral_code');
+        if ($referralCode) {
+            \App\Models\Referral::where('referred_email', $this->email)
+                ->where('status', 'pending')
+                ->update(['status' => 'registered']);
+            session()->forget('referral_code');
+        }
 
         $this->submitted = true;
     }
