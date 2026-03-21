@@ -6,7 +6,7 @@ return [
     // META
     // =========================================================
     'meta_title'       => 'Pricing & Plans — WellCore Fitness',
-    'meta_description' => 'Evidence-based 1:1 coaching plans starting at $299,000 COP/mo. Essential, Method, and Elite tiers. No contracts, cancel anytime, proven results.',
+    'meta_description' => 'Evidence-based 1:1 coaching plans starting at $65/mo. Essential, Method, and Elite tiers. No contracts, cancel anytime, proven results.',
 
     // =========================================================
     // HERO
@@ -32,7 +32,7 @@ return [
     // =========================================================
     // PLAN CARDS — SHARED
     // =========================================================
-    'cop_mes'       => 'COP/mo',
+    'cop_mes'       => 'USD/mo',
 
     // Essential
     'esencial_name'  => 'ESSENTIAL',

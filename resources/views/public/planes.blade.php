@@ -46,11 +46,18 @@
     <section class="bg-wc-bg"
         x-data="{
             billing: 'mensual',
-            prices: {
+            locale: '{{ app()->getLocale() }}',
+            pricesCOP: {
                 mensual:     { esencial: '$299,000', metodo: '$399,000', elite: '$549,000', savingsEsencial: null, savingsMetodo: null, savingsElite: null },
                 trimestral:  { esencial: '$269,100', metodo: '$359,100', elite: '$494,100', savingsEsencial: '$89,700', savingsMetodo: '$119,700', savingsElite: '$164,700' },
                 anual:       { esencial: '$239,200', metodo: '$319,200', elite: '$439,200', savingsEsencial: '$716,400', savingsMetodo: '$956,400', savingsElite: '$1,318,400' }
             },
+            pricesUSD: {
+                mensual:     { esencial: '$65', metodo: '$95', elite: '$150', savingsEsencial: null, savingsMetodo: null, savingsElite: null },
+                trimestral:  { esencial: '$59', metodo: '$86', elite: '$135', savingsEsencial: '$18', savingsMetodo: '$27', savingsElite: '$45' },
+                anual:       { esencial: '$52', metodo: '$76', elite: '$120', savingsEsencial: '$156', savingsMetodo: '$228', savingsElite: '$360' }
+            },
+            get prices() { return this.locale === 'en' ? this.pricesUSD : this.pricesCOP },
             get esencial() { return this.prices[this.billing].esencial },
             get metodo()   { return this.prices[this.billing].metodo },
             get elite()    { return this.prices[this.billing].elite },
