@@ -234,19 +234,24 @@ class Dashboard extends Component
 
     protected function loadPlanInfo($client): void
     {
-        $plan = CacheFacade::remember(
-            "client_plan_{$client->id}",
+        // Cache only a plain array (never the Eloquent model) to avoid
+        // "incomplete object" errors after deploys when the cached serialized
+        // model can no longer be deserialized into the current class.
+        $planData = CacheFacade::remember(
+            "client_plan_v2_{$client->id}",
             now()->addMinutes(5),
             fn () => AssignedPlan::where('client_id', $client->id)
                 ->where('active', 1)
                 ->orderByDesc('valid_from')
+                ->select('plan_type', 'valid_from')
                 ->first()
+                ?->only(['plan_type', 'valid_from']) // plain array, never the model
         );
 
-        if ($plan) {
+        if ($planData && isset($planData['plan_type'])) {
             $this->hasActivePlan = true;
-            $this->planPhase = $plan->plan_type;
-            $this->planDaysActive = (int) Carbon::parse($plan->valid_from)->diffInDays(now());
+            $this->planPhase = $planData['plan_type'];
+            $this->planDaysActive = (int) Carbon::parse($planData['valid_from'])->diffInDays(now());
         } else {
             $this->hasActivePlan = false;
             $this->planPhase = null;

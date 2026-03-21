@@ -35,7 +35,7 @@ class PlanViewer extends Component
     {
         $user = auth('wellcore')->user();
         $clientId = $user?->id ?? auth('wellcore')->id();
-        $plan = $user->plan ?? 'esencial';
+        $plan = $user?->plan ?? 'esencial';
         $this->clientPlanType = strtolower($plan instanceof \App\Enums\PlanType ? $plan->value : (string) $plan);
 
         $plans = AssignedPlan::where('client_id', $clientId)
@@ -48,8 +48,8 @@ class PlanViewer extends Component
                 : json_decode($plan->content, true);
 
             match ($plan->plan_type) {
-                'entrenamiento' => $this->trainingPlan = $content,
-                'nutricion' => $this->nutritionPlan = $content,
+                'entrenamiento' => $this->trainingPlan = $this->normalizeTrainingPlan($content),
+                'nutricion'     => $this->nutritionPlan = $content,
                 'suplementacion' => $this->supplementPlan = $content,
                 default => null,
             };
@@ -200,6 +200,80 @@ class PlanViewer extends Component
             ->delete();
 
         $this->loadBloodwork($clientId);
+    }
+
+    /**
+     * Normalize training plan JSON so English keys (weeks/days/exercises/name/sets/reps)
+     * are mapped to the Spanish keys the Blade view expects (dias/ejercicios/nombre/series).
+     */
+    private function normalizeTrainingPlan(?array $content): ?array
+    {
+        if (! $content) {
+            return null;
+        }
+
+        // Top-level: 'weeks' or 'days' → 'dias'
+        if (! isset($content['dias'])) {
+            $days = $content['weeks'] ?? $content['days'] ?? null;
+            if ($days !== null) {
+                $content['dias'] = $days;
+                unset($content['weeks'], $content['days']);
+            }
+        }
+
+        if (! isset($content['dias']) || ! is_array($content['dias'])) {
+            return $content;
+        }
+
+        foreach ($content['dias'] as &$dia) {
+            if (! is_array($dia)) {
+                continue;
+            }
+
+            // Day name: 'name' → 'nombre'
+            if (! isset($dia['nombre']) && isset($dia['name'])) {
+                $dia['nombre'] = $dia['name'];
+            }
+            // Day identifier: 'day' → 'dia'
+            if (! isset($dia['dia']) && isset($dia['day'])) {
+                $dia['dia'] = $dia['day'];
+            }
+
+            // Exercises list: 'exercises' or 'sessions' → 'ejercicios'
+            if (! isset($dia['ejercicios'])) {
+                $exercises = $dia['exercises'] ?? $dia['sessions'] ?? null;
+                if ($exercises !== null) {
+                    $dia['ejercicios'] = $exercises;
+                    unset($dia['exercises'], $dia['sessions']);
+                }
+            }
+
+            if (isset($dia['ejercicios']) && is_array($dia['ejercicios'])) {
+                foreach ($dia['ejercicios'] as &$ej) {
+                    if (! is_array($ej)) {
+                        continue;
+                    }
+                    // Exercise name
+                    if (! isset($ej['nombre']) && isset($ej['name'])) {
+                        $ej['nombre'] = $ej['name'];
+                    }
+                    if (! isset($ej['ejercicio']) && isset($ej['exercise'])) {
+                        $ej['ejercicio'] = $ej['exercise'];
+                    }
+                    // Sets / reps
+                    if (! isset($ej['series']) && isset($ej['sets'])) {
+                        $ej['series'] = $ej['sets'];
+                    }
+                    if (! isset($ej['repeticiones']) && isset($ej['reps'])) {
+                        $ej['repeticiones'] = $ej['reps'];
+                    }
+                }
+                unset($ej);
+            }
+        }
+        unset($dia);
+
+        return $content;
     }
 
     public function render()

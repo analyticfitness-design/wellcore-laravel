@@ -18,7 +18,7 @@ class EnsureAuthenticated
                 return response()->json(['error' => 'Unauthenticated.'], 401);
             }
 
-            return redirect()->guest(route('login'));
+            return redirect('/login');
         }
 
         // Validate the token exists and is not expired
@@ -27,14 +27,18 @@ class EnsureAuthenticated
             ->first();
 
         if (! $authToken) {
-            // Clear invalid session data
-            session()->forget(['wc_token', 'wc_user_type', 'wc_user_id']);
+            // Clear invalid session data (session may not be started on some routes)
+            try {
+                session()->forget(['wc_token', 'wc_user_type', 'wc_user_id']);
+            } catch (\RuntimeException $e) {
+                // session store not initialized — ignore
+            }
 
             if ($request->expectsJson()) {
                 return response()->json(['error' => 'Token expired or invalid.'], 401);
             }
 
-            return redirect()->guest(route('login'));
+            return redirect('/login');
         }
 
         return $next($request);
@@ -42,10 +46,14 @@ class EnsureAuthenticated
 
     protected function resolveToken(Request $request): ?string
     {
-        // 1. Check Laravel session
-        $sessionToken = session('wc_token');
-        if ($sessionToken) {
-            return $sessionToken;
+        // 1. Check Laravel session (may not be initialized on API-like routes)
+        try {
+            $sessionToken = session('wc_token');
+            if ($sessionToken) {
+                return $sessionToken;
+            }
+        } catch (\RuntimeException $e) {
+            // session store not yet available
         }
 
         // 2. Check Bearer token in Authorization header
@@ -54,10 +62,15 @@ class EnsureAuthenticated
             return substr($header, 7);
         }
 
-        // 3. Check cookie
-        $cookie = $request->cookie('wc_token');
-        if ($cookie) {
-            return $cookie;
+        // 3. Check cookie — wc_token is not in encryptCookies(except), so the vanilla
+        //    PHP app's unencrypted cookie will throw DecryptException; catch it silently.
+        try {
+            $cookie = $request->cookie('wc_token');
+            if ($cookie) {
+                return $cookie;
+            }
+        } catch (\Exception $e) {
+            // Decryption failed (e.g. cookie set by vanilla PHP app) — treat as absent
         }
 
         return null;
