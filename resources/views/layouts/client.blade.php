@@ -424,6 +424,79 @@
         });
     </script>
 
+    {{-- Keyboard shortcuts listener --}}
+    <div x-data x-on:keydown.window="
+        if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.tagName === 'SELECT') return;
+        if (event.key === 'c' || event.key === 'C') window.location.href = '{{ route("client.checkin") }}';
+        if (event.key === 't' || event.key === 'T') window.location.href = '{{ route("client.training") }}';
+        if (event.key === 'm' || event.key === 'M') window.location.href = '{{ route("client.metrics") }}';
+        if (event.key === 'p' || event.key === 'P') window.location.href = '{{ route("client.plan") }}';
+        if (event.key === 'h' || event.key === 'H') window.location.href = '{{ route("client.dashboard") }}';
+        if (event.key === '?' && event.shiftKey) $dispatch('show-shortcuts');
+    " style="display:none"></div>
+
+    {{-- Keyboard shortcuts help modal --}}
+    <div x-data="{ open: false }"
+         x-on:show-shortcuts.window="open = true"
+         x-on:keydown.escape.window="open = false"
+         x-show="open"
+         x-cloak
+         class="fixed inset-0 z-[60] flex items-center justify-center">
+        {{-- Backdrop --}}
+        <div x-show="open"
+             x-transition:enter="transition-opacity duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="absolute inset-0 bg-black/60"
+             x-on:click="open = false"></div>
+        {{-- Card --}}
+        <div x-show="open"
+             x-transition:enter="transition duration-200 ease-out"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition duration-150 ease-in"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+             class="relative w-full max-w-sm rounded-xl border border-wc-border bg-wc-bg-secondary p-6 shadow-2xl">
+            <div class="flex items-center justify-between">
+                <h3 class="font-display text-lg tracking-wide text-wc-text">ATAJOS DE TECLADO</h3>
+                <button x-on:click="open = false" class="rounded-lg p-1 text-wc-text-tertiary hover:bg-wc-bg-tertiary hover:text-wc-text">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div class="mt-4 space-y-2">
+                <div class="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-wc-bg-tertiary">
+                    <span class="text-sm text-wc-text-secondary">Dashboard</span>
+                    <kbd class="rounded border border-wc-border bg-wc-bg px-2 py-0.5 font-mono text-xs text-wc-text">H</kbd>
+                </div>
+                <div class="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-wc-bg-tertiary">
+                    <span class="text-sm text-wc-text-secondary">Mi Plan</span>
+                    <kbd class="rounded border border-wc-border bg-wc-bg px-2 py-0.5 font-mono text-xs text-wc-text">P</kbd>
+                </div>
+                <div class="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-wc-bg-tertiary">
+                    <span class="text-sm text-wc-text-secondary">Check-in</span>
+                    <kbd class="rounded border border-wc-border bg-wc-bg px-2 py-0.5 font-mono text-xs text-wc-text">C</kbd>
+                </div>
+                <div class="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-wc-bg-tertiary">
+                    <span class="text-sm text-wc-text-secondary">Entrenamiento</span>
+                    <kbd class="rounded border border-wc-border bg-wc-bg px-2 py-0.5 font-mono text-xs text-wc-text">T</kbd>
+                </div>
+                <div class="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-wc-bg-tertiary">
+                    <span class="text-sm text-wc-text-secondary">Metricas</span>
+                    <kbd class="rounded border border-wc-border bg-wc-bg px-2 py-0.5 font-mono text-xs text-wc-text">M</kbd>
+                </div>
+                <div class="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-wc-bg-tertiary">
+                    <span class="text-sm text-wc-text-secondary">Mostrar atajos</span>
+                    <kbd class="rounded border border-wc-border bg-wc-bg px-2 py-0.5 font-mono text-xs text-wc-text">Shift + ?</kbd>
+                </div>
+            </div>
+            <p class="mt-4 text-center text-xs text-wc-text-tertiary">Presiona <kbd class="rounded border border-wc-border bg-wc-bg px-1.5 py-0.5 font-mono text-[10px]">Esc</kbd> para cerrar</p>
+        </div>
+    </div>
+
     @livewireScripts
 </body>
 </html>
