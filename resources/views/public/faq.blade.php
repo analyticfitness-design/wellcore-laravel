@@ -2,8 +2,14 @@
     <x-slot:title>Preguntas Frecuentes - WellCore Fitness</x-slot:title>
 
     {{-- Header --}}
-    <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 sm:py-28 lg:px-8">
+    <section class="relative overflow-hidden bg-wc-bg-tertiary">
+        {{-- Parallax decorative orbs --}}
+        <div class="parallax-hero" aria-hidden="true">
+            <div class="parallax-orb parallax-orb-1" data-parallax-speed="0.2"></div>
+            <div class="parallax-orb parallax-orb-2" data-parallax-speed="0.35"></div>
+            <div class="parallax-orb parallax-orb-3" data-parallax-speed="0.15"></div>
+        </div>
+        <div class="relative mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 sm:py-28 lg:px-8">
             <h1 class="font-display text-4xl tracking-wide text-wc-text sm:text-5xl lg:text-6xl">PREGUNTAS FRECUENTES</h1>
             <p class="mx-auto mt-4 max-w-2xl text-lg text-wc-text-secondary">
                 Todo lo que necesitas saber sobre WellCore y nuestros servicios.

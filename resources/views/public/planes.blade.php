@@ -3,8 +3,14 @@
     <x-slot:description>Planes de coaching fitness personalizado desde $299.000 COP/mes. Esencial, Metodo y Elite. Sin contratos, cancela cuando quieras.</x-slot:description>
 
     {{-- Hero --}}
-    <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8" data-animate="fadeInUp">
+    <section class="relative overflow-hidden bg-wc-bg-tertiary">
+        {{-- Parallax decorative orbs --}}
+        <div class="parallax-hero" aria-hidden="true">
+            <div class="parallax-orb parallax-orb-1" data-parallax-speed="0.2"></div>
+            <div class="parallax-orb parallax-orb-2" data-parallax-speed="0.35"></div>
+            <div class="parallax-orb parallax-orb-3" data-parallax-speed="0.15"></div>
+        </div>
+        <div class="relative mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8" data-animate="fadeInUp">
             <h1 class="font-display text-4xl tracking-wide text-wc-text sm:text-5xl lg:text-6xl">ELIGE TU PLAN</h1>
             <p class="mx-auto mt-4 max-w-xl text-lg text-wc-text-secondary">Sin contratos de permanencia. Cancela cuando quieras. Invierte en lo que funciona.</p>
         </div>

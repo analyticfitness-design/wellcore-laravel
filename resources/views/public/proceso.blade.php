@@ -5,6 +5,12 @@
     {{-- Hero Section --}}
     <section class="relative overflow-hidden bg-wc-bg-tertiary">
         <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
+        {{-- Parallax decorative orbs --}}
+        <div class="parallax-hero" aria-hidden="true">
+            <div class="parallax-orb parallax-orb-1" data-parallax-speed="0.2"></div>
+            <div class="parallax-orb parallax-orb-2" data-parallax-speed="0.35"></div>
+            <div class="parallax-orb parallax-orb-3" data-parallax-speed="0.15"></div>
+        </div>
         <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36" data-animate="fadeInUp">
             <div class="mx-auto max-w-3xl text-center">
                 <p class="text-sm font-semibold uppercase tracking-widest text-wc-accent">Tu camino hacia los resultados</p>

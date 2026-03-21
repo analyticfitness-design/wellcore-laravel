@@ -56,7 +56,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Entrenamiento</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a wire:navigate href="{{ route('client.dashboard') }}"
+                        <a wire:navigate href="{{ route('client.dashboard') }}" data-nav-order="0"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.dashboard') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -66,7 +66,7 @@
                         </a>
                     </li>
                     <li>
-                        <a wire:navigate href="{{ route('client.plan') }}"
+                        <a wire:navigate href="{{ route('client.plan') }}" data-nav-order="1"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.plan') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -76,7 +76,7 @@
                         </a>
                     </li>
                     <li>
-                        <a wire:navigate href="{{ route('client.checkin') }}"
+                        <a wire:navigate href="{{ route('client.checkin') }}" data-nav-order="2"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.checkin') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -86,7 +86,7 @@
                         </a>
                     </li>
                     <li>
-                        <a wire:navigate href="{{ route('client.photos') }}"
+                        <a wire:navigate href="{{ route('client.photos') }}" data-nav-order="3"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.photos') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -113,7 +113,7 @@
                         </a>
                     </li>
                     <li>
-                        <a wire:navigate href="{{ route('client.metrics') }}"
+                        <a wire:navigate href="{{ route('client.metrics') }}" data-nav-order="4"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.metrics') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -123,7 +123,7 @@
                         </a>
                     </li>
                     <li>
-                        <a wire:navigate href="{{ route('client.video-checkin') }}"
+                        <a wire:navigate href="{{ route('client.video-checkin') }}" data-nav-order="5"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.video-checkin') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -140,7 +140,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Social</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a wire:navigate href="{{ route('client.community') }}"
+                        <a wire:navigate href="{{ route('client.community') }}" data-nav-order="6"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.community') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -150,7 +150,7 @@
                         </a>
                     </li>
                     <li>
-                        <a wire:navigate href="{{ route('client.challenges') }}"
+                        <a wire:navigate href="{{ route('client.challenges') }}" data-nav-order="7"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.challenges') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -161,7 +161,7 @@
                         </a>
                     </li>
                     <li>
-                        <a wire:navigate href="{{ route('client.chat') }}"
+                        <a wire:navigate href="{{ route('client.chat') }}" data-nav-order="8"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.chat') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -171,7 +171,7 @@
                         </a>
                     </li>
                     <li>
-                        <a wire:navigate href="{{ route('client.referrals') }}"
+                        <a wire:navigate href="{{ route('client.referrals') }}" data-nav-order="9"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.referrals') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -181,7 +181,7 @@
                         </a>
                     </li>
                     <li>
-                        <a wire:navigate href="{{ route('client.coach.feedback') }}"
+                        <a wire:navigate href="{{ route('client.coach.feedback') }}" data-nav-order="10"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.coach.feedback') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -198,7 +198,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Herramientas</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a wire:navigate href="{{ route('client.nutrition') }}"
+                        <a wire:navigate href="{{ route('client.nutrition') }}" data-nav-order="11"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.nutrition') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -208,7 +208,7 @@
                         </a>
                     </li>
                     <li>
-                        <a wire:navigate href="{{ route('client.ai-nutrition') }}"
+                        <a wire:navigate href="{{ route('client.ai-nutrition') }}" data-nav-order="12"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.ai-nutrition') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -218,7 +218,7 @@
                         </a>
                     </li>
                     <li>
-                        <a wire:navigate href="{{ route('client.settings') }}"
+                        <a wire:navigate href="{{ route('client.settings') }}" data-nav-order="13"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.settings') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -229,7 +229,7 @@
                         </a>
                     </li>
                     <li>
-                        <a wire:navigate href="{{ route('client.profile') }}"
+                        <a wire:navigate href="{{ route('client.profile') }}" data-nav-order="14"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.profile') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -328,10 +328,159 @@
             </div>
         </header>
 
-        {{-- Page content --}}
-        <main class="px-4 py-6 sm:px-6 lg:px-8">
+        {{-- Pull to Refresh (Mobile) --}}
+        <div x-data="{
+            pulling: false,
+            pullDistance: 0,
+            refreshing: false,
+            threshold: 60,
+            maxPull: 100,
+            startY: 0,
+            handleTouchStart(e) {
+                if (window.innerWidth >= 768 || window.scrollY > 0) return;
+                this.startY = e.touches[0].clientY;
+                this.pulling = true;
+            },
+            handleTouchMove(e) {
+                if (!this.pulling || this.refreshing) return;
+                const diff = e.touches[0].clientY - this.startY;
+                if (diff > 0) {
+                    this.pullDistance = Math.min(diff * 0.5, this.maxPull);
+                    if (this.pullDistance > 10) {
+                        e.preventDefault();
+                    }
+                } else {
+                    this.pulling = false;
+                    this.pullDistance = 0;
+                }
+            },
+            handleTouchEnd() {
+                if (!this.pulling) return;
+                if (this.pullDistance >= this.threshold) {
+                    this.refreshing = true;
+                    this.pullDistance = this.threshold;
+                    Livewire.dispatch('$refresh');
+                    setTimeout(() => {
+                        this.refreshing = false;
+                        this.pullDistance = 0;
+                        this.pulling = false;
+                    }, 1500);
+                } else {
+                    this.pullDistance = 0;
+                    this.pulling = false;
+                }
+            }
+        }"
+        @touchstart.passive="handleTouchStart($event)"
+        @touchmove="handleTouchMove($event)"
+        @touchend="handleTouchEnd($event)"
+        class="md:hidden">
+
+            {{-- Pull indicator --}}
+            <div
+                class="fixed top-0 left-0 right-0 flex justify-center z-50 transition-transform duration-200 pointer-events-none"
+                :style="'transform: translateY(' + (pullDistance - 40) + 'px)'"
+                x-show="pullDistance > 10"
+                x-transition
+            >
+                <div class="mt-2 flex h-10 w-10 items-center justify-center rounded-full bg-wc-bg-tertiary border border-wc-border shadow-lg">
+                    <svg
+                        class="h-5 w-5 text-wc-accent transition-transform"
+                        :class="{ 'animate-spin': refreshing }"
+                        :style="!refreshing ? 'transform: rotate(' + (pullDistance / threshold * 360) + 'deg)' : ''"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        {{-- Page content with swipe navigation (mobile) --}}
+        <main class="px-4 py-6 sm:px-6 lg:px-8" style="touch-action: pan-y;"
+              x-data="{
+                  touchStartX: 0,
+                  touchStartY: 0,
+                  swiping: false,
+                  swipeHint: 0,
+                  navLinks: [],
+                  init() {
+                      this.navLinks = [...document.querySelectorAll('[data-nav-order]')]
+                          .sort((a, b) => a.dataset.navOrder - b.dataset.navOrder)
+                          .map(a => a.getAttribute('href'))
+                          .filter((v, i, arr) => arr.indexOf(v) === i);
+                  },
+                  handleTouchStart(e) {
+                      if (window.innerWidth >= 768) return;
+                      if (e.target.closest('[data-no-swipe]') || e.target.closest('.overflow-x-auto') || e.target.closest('.overflow-x-scroll') || e.target.closest('table') || e.target.closest('[x-data*=fabOpen]')) return;
+                      this.touchStartX = e.touches[0].clientX;
+                      this.touchStartY = e.touches[0].clientY;
+                      this.swiping = true;
+                      this.swipeHint = 0;
+                  },
+                  handleTouchMove(e) {
+                      if (!this.swiping || window.innerWidth >= 768) return;
+                      const diffX = e.touches[0].clientX - this.touchStartX;
+                      const diffY = e.touches[0].clientY - this.touchStartY;
+                      if (Math.abs(diffY) > Math.abs(diffX)) {
+                          this.swiping = false;
+                          this.swipeHint = 0;
+                          return;
+                      }
+                      if (Math.abs(diffX) > 20) {
+                          this.swipeHint = Math.max(-1, Math.min(1, diffX / 80));
+                      }
+                  },
+                  handleTouchEnd(e) {
+                      if (!this.swiping || window.innerWidth >= 768) { this.swipeHint = 0; return; }
+                      this.swiping = false;
+                      const diffX = e.changedTouches[0].clientX - this.touchStartX;
+                      const diffY = e.changedTouches[0].clientY - this.touchStartY;
+                      this.swipeHint = 0;
+                      if (Math.abs(diffX) > 80 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+                          const currentPath = window.location.pathname;
+                          const currentIdx = this.navLinks.indexOf(currentPath);
+                          if (currentIdx === -1) return;
+                          const nextIdx = diffX > 0 ? currentIdx - 1 : currentIdx + 1;
+                          if (nextIdx >= 0 && nextIdx < this.navLinks.length) {
+                              Livewire.navigate(this.navLinks[nextIdx]);
+                          }
+                      }
+                  }
+              }"
+              @touchstart.passive="handleTouchStart($event)"
+              @touchmove.passive="handleTouchMove($event)"
+              @touchend="handleTouchEnd($event)"
+        >
             {{ $slot }}
         </main>
+
+        {{-- Mobile swipe navigation indicator --}}
+        @php
+            $swipeNavSections = [
+                ['route' => 'client.dashboard', 'path' => '/client'],
+                ['route' => 'client.plan', 'path' => '/client/plan'],
+                ['route' => 'client.checkin', 'path' => '/client/checkin'],
+                ['route' => 'client.photos', 'path' => '/client/photos'],
+                ['route' => 'client.metrics', 'path' => '/client/metrics'],
+                ['route' => 'client.video-checkin', 'path' => '/client/video-checkin'],
+                ['route' => 'client.community', 'path' => '/client/community'],
+                ['route' => 'client.challenges', 'path' => '/client/challenges'],
+                ['route' => 'client.chat', 'path' => '/client/chat'],
+                ['route' => 'client.referrals', 'path' => '/client/referrals'],
+                ['route' => 'client.coach.feedback', 'path' => '/client/coach-feedback'],
+                ['route' => 'client.nutrition', 'path' => '/client/nutrition'],
+                ['route' => 'client.ai-nutrition', 'path' => '/client/ai-nutrition'],
+                ['route' => 'client.settings', 'path' => '/client/settings'],
+                ['route' => 'client.profile', 'path' => '/client/profile'],
+            ];
+        @endphp
+        <div class="fixed bottom-20 left-0 right-0 flex justify-center gap-1.5 py-2 md:hidden pointer-events-none z-10"
+             aria-label="Indicador de navegacion">
+            @foreach($swipeNavSections as $idx => $section)
+                <div class="h-1.5 rounded-full transition-all duration-300 {{ request()->routeIs($section['route']) ? 'w-4 bg-wc-accent' : 'w-1.5 bg-wc-text-tertiary/30' }}"></div>
+            @endforeach
+        </div>
     </div>
 
     {{-- Quick Actions FAB --}}
@@ -396,6 +545,9 @@
             </svg>
         </button>
     </div>
+
+    {{-- Rest Timer (global overlay) --}}
+    <livewire:client.rest-timer />
 
     {{-- Training Completion Sound --}}
     <script>

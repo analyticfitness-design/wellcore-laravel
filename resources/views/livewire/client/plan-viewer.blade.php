@@ -45,11 +45,19 @@
                                             <span class="text-sm font-medium text-wc-text">
                                                 {{ is_array($ej) ? ($ej['nombre'] ?? $ej['ejercicio'] ?? '') : $ej }}
                                             </span>
-                                            @if(is_array($ej) && isset($ej['series']))
-                                                <span class="font-data text-sm text-wc-text-secondary">
-                                                    {{ $ej['series'] }}x{{ $ej['repeticiones'] ?? $ej['reps'] ?? '' }}
-                                                </span>
-                                            @endif
+                                            <div class="flex items-center gap-2">
+                                                @if(is_array($ej) && isset($ej['series']))
+                                                    <span class="font-data text-sm text-wc-text-secondary">
+                                                        {{ $ej['series'] }}x{{ $ej['repeticiones'] ?? $ej['reps'] ?? '' }}
+                                                    </span>
+                                                @endif
+                                                <button wire:click="$dispatch('open-rest-timer', {seconds: 90})"
+                                                    class="btn-press inline-flex items-center gap-1 rounded-lg bg-wc-bg-tertiary px-2 py-1 text-xs text-wc-text-secondary hover:bg-wc-accent/10 hover:text-wc-accent transition-colors"
+                                                    title="Timer de descanso">
+                                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                    <span class="hidden sm:inline">Descanso</span>
+                                                </button>
+                                            </div>
                                         </div>
                                     @endforeach
                                 </div>

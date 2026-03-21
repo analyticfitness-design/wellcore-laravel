@@ -3,8 +3,14 @@
     <x-slot:description>Únete al equipo de coaches WellCore. Trabajo remoto, herramientas propias, comunidad y comisiones competitivas.</x-slot:description>
 
     {{-- Hero --}}
-    <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 sm:py-28 lg:px-8" data-animate="fadeInUp">
+    <section class="relative overflow-hidden bg-wc-bg-tertiary">
+        {{-- Parallax decorative orbs --}}
+        <div class="parallax-hero" aria-hidden="true">
+            <div class="parallax-orb parallax-orb-1" data-parallax-speed="0.2"></div>
+            <div class="parallax-orb parallax-orb-2" data-parallax-speed="0.35"></div>
+            <div class="parallax-orb parallax-orb-3" data-parallax-speed="0.15"></div>
+        </div>
+        <div class="relative mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 sm:py-28 lg:px-8" data-animate="fadeInUp">
             <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-wc-accent/10">
                 <svg class="h-8 w-8 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />

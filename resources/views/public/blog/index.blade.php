@@ -5,6 +5,12 @@
     {{-- Hero --}}
     <section class="relative overflow-hidden bg-wc-bg-tertiary">
         <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
+        {{-- Parallax decorative orbs --}}
+        <div class="parallax-hero" aria-hidden="true">
+            <div class="parallax-orb parallax-orb-1" data-parallax-speed="0.2"></div>
+            <div class="parallax-orb parallax-orb-2" data-parallax-speed="0.35"></div>
+            <div class="parallax-orb parallax-orb-3" data-parallax-speed="0.15"></div>
+        </div>
         <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
             <h1 class="font-display text-5xl tracking-wide text-wc-text sm:text-6xl lg:text-7xl">BLOG</h1>
             <p class="mt-3 text-lg text-wc-text-secondary">Ciencia del entrenamiento y nutricion</p>

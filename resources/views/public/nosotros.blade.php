@@ -2,8 +2,14 @@
     <x-slot:title>Nosotros - WellCore Fitness</x-slot:title>
 
     {{-- 1. HERO --}}
-    <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 sm:py-28 lg:px-8" data-animate="fadeInUp">
+    <section class="relative overflow-hidden bg-wc-bg-tertiary">
+        {{-- Parallax decorative orbs --}}
+        <div class="parallax-hero" aria-hidden="true">
+            <div class="parallax-orb parallax-orb-1" data-parallax-speed="0.2"></div>
+            <div class="parallax-orb parallax-orb-2" data-parallax-speed="0.35"></div>
+            <div class="parallax-orb parallax-orb-3" data-parallax-speed="0.15"></div>
+        </div>
+        <div class="relative mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 sm:py-28 lg:px-8" data-animate="fadeInUp">
             <h1 class="font-display text-5xl tracking-wide text-wc-text sm:text-6xl lg:text-7xl">NOSOTROS</h1>
             <p class="mx-auto mt-6 max-w-2xl text-lg text-wc-text-secondary sm:text-xl">
                 Coaching fitness basado en ciencia, no en tendencias. Resultados sostenibles, no milagros.

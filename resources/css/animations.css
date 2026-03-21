@@ -93,6 +93,49 @@
     animation: fabSlideIn 0.25s ease-out forwards;
 }
 
+/* ─── Parallax Hero Decorative Elements ─── */
+.parallax-hero {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.parallax-hero .parallax-orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(60px);
+    will-change: transform;
+    transition: transform 0.1s linear;
+}
+
+.parallax-hero .parallax-orb-1 {
+    top: -5rem;
+    right: -5rem;
+    height: 24rem;
+    width: 24rem;
+    background: var(--color-wc-accent);
+    opacity: 0.04;
+}
+
+.parallax-hero .parallax-orb-2 {
+    bottom: -5rem;
+    left: -5rem;
+    height: 16rem;
+    width: 16rem;
+    background: var(--color-wc-accent);
+    opacity: 0.07;
+}
+
+.parallax-hero .parallax-orb-3 {
+    top: 30%;
+    left: 60%;
+    height: 12rem;
+    width: 12rem;
+    background: var(--color-wc-accent);
+    opacity: 0.03;
+}
+
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
     [data-animate] {
@@ -114,5 +157,9 @@
         animation: none;
         opacity: 1;
         transform: none;
+    }
+    .parallax-hero .parallax-orb {
+        transform: none !important;
+        transition: none;
     }
 }

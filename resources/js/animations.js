@@ -68,4 +68,55 @@ document.addEventListener('livewire:navigated', () => {
             counterObserver.observe(el);
         }
     });
+    // Re-init parallax after Livewire navigation
+    initParallaxHero();
 });
+
+// === Subtle Parallax for Hero Sections ===
+function initParallaxHero() {
+    // Bail out if reduced motion is preferred
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    // Detect mobile/touch devices — disable parallax (perf + iOS issues)
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+        || (navigator.maxTouchPoints > 0 && window.innerWidth < 1024);
+    if (isMobile) return;
+
+    const heroSections = document.querySelectorAll('.parallax-hero');
+    if (heroSections.length === 0) return;
+
+    let ticking = false;
+
+    function updateParallax() {
+        const scrollY = window.scrollY;
+        heroSections.forEach(hero => {
+            const section = hero.parentElement;
+            if (!section) return;
+            const rect = section.getBoundingClientRect();
+            const sectionBottom = rect.bottom;
+            // Only animate while section is visible (above fold + a bit)
+            if (sectionBottom < 0 || rect.top > window.innerHeight) return;
+
+            const orbs = hero.querySelectorAll('.parallax-orb');
+            orbs.forEach(orb => {
+                const speed = parseFloat(orb.dataset.parallaxSpeed || '0.3');
+                const yOffset = scrollY * speed;
+                // Cap the movement to prevent excessive displacement
+                const maxOffset = 150;
+                const clampedOffset = Math.min(yOffset, maxOffset);
+                orb.style.transform = `translateY(${clampedOffset}px)`;
+            });
+        });
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(updateParallax);
+            ticking = true;
+        }
+    }, { passive: true });
+}
+
+// Init parallax on first load
+document.addEventListener('DOMContentLoaded', initParallaxHero);
