@@ -10,12 +10,37 @@ class BlogController extends Controller
         [
             'slug' => 'progressive-overload-guia-completa',
             'title' => 'Sobrecarga Progresiva: La Clave del Crecimiento Muscular',
+            'title_en' => 'Progressive Overload: The Foundation of Muscle Growth',
             'excerpt' => 'Descubre como aplicar correctamente el principio de sobrecarga progresiva para maximizar tus ganancias musculares y evitar el estancamiento.',
+            'excerpt_en' => 'Learn how to correctly apply the principle of progressive overload to maximize muscle gains and break through training plateaus.',
             'category' => 'Entrenamiento',
+            'category_en' => 'Training',
             'date' => '2025-08-12',
             'author' => 'WellCore Team',
             'reading_time' => '8 min',
             'gradient' => 'from-red-500/20 to-orange-500/10',
+            'content_en' => '<h3>What Is Progressive Overload</h3>
+<p>Progressive overload is the cornerstone principle of resistance training. First formalized by Thomas Delorme in the 1940s, it states that to drive continuous muscular adaptation, the training stimulus must be systematically increased over time. Without this progression, the body adapts to the existing demand and hypertrophy stalls — a phenomenon known as accommodation or the repeated bout effect.</p>
+
+<p>Research published in the <em>Journal of Strength and Conditioning Research</em> consistently confirms that programs incorporating progressive overload produce significantly greater gains in both strength and hypertrophy compared to constant-load programs. The primary mechanism is mechanical tension: as muscles are subjected to progressively greater loads, signaling cascades including mTOR activation drive increased rates of muscle protein synthesis.</p>
+
+<h3>Methods of Progression</h3>
+<p>Progressive overload does not require adding weight to the bar every session — that approach works for novices but quickly reaches its ceiling. The main methods include: increasing load (most straightforward), adding total volume via additional sets or reps, improving training density by reducing rest periods, extending range of motion, and manipulating tempo to increase time under tension. The key is matching the progression method to your training age and current phase.</p>
+
+<ul>
+<li><strong>Load progression:</strong> 2.5–5 lb on compound lifts per week for beginners; 2.5 lb or less per week for intermediates</li>
+<li><strong>Rep progression:</strong> Hold load constant and progress within a rep range (e.g., 8 to 12) before adding weight — the "double progression" model</li>
+<li><strong>Volume progression:</strong> Add 1–2 sets per muscle group every 2–3 weeks, tracking weekly sets per muscle group</li>
+<li><strong>Tempo manipulation:</strong> Extending the eccentric phase from 2 to 4 seconds increases mechanical tension without loading the joints further</li>
+</ul>
+
+<h3>Practical Progression Examples</h3>
+<p>For a novice trainee on the bench press, a double-progression scheme might look like this: Week 1 — 135 lb x 3x8; Week 2 — 135 lb x 3x10; Week 3 — 140 lb x 3x8; Week 4 — 140 lb x 3x10. This approach is highly effective and sustainable because it separates rep targets from load increases, reducing the pressure of adding weight every session. For intermediate lifters, daily undulating periodization (DUP) — cycling heavy, moderate, and lighter days within the same week — allows continued progressive stimulus while managing fatigue accumulation.</p>
+
+<h3>When to Program a Deload</h3>
+<p>Linear progression is not indefinitely sustainable. Every 4–8 weeks — depending on accumulated training volume and intensity — a structured deload is warranted. During a deload week, either reduce volume by 40–50% while maintaining intensity, or reduce load by 10–15% while keeping volume similar. Clear signs you need a deload: stalled progress across all lifts for 2+ consecutive weeks, persistent joint discomfort (not just muscle soreness), disrupted sleep from systemic fatigue, and a noticeable drop in training motivation. A deload is not regression — it is the strategic investment that allows long-term progression to continue.</p>
+
+<p>Remember that progressive overload plays out over months and years, not single sessions. The most successful athletes are those who advance consistently over the long term, not those who chase maximum load every workout and end up injured or burned out. Log your training, respect your recovery, and trust the process.</p>',
             'content' => '<h3>Que es la Sobrecarga Progresiva</h3>
 <p>La sobrecarga progresiva es el principio fundamental del entrenamiento de fuerza. Establecido por Thomas Delorme en la decada de 1940, este principio dicta que para generar adaptaciones musculares continuas, el estimulo de entrenamiento debe incrementarse de manera sistematica con el tiempo. Sin esta progresion, el cuerpo se adapta al estimulo actual y el crecimiento muscular se detiene — un fenomeno conocido como acomodacion.</p>
 
@@ -42,12 +67,36 @@ class BlogController extends Controller
         [
             'slug' => 'periodizacion-entrenamiento',
             'title' => 'Periodizacion del Entrenamiento: Como Planificar tu Progreso',
+            'title_en' => 'Training Periodization: How to Plan Your Progress',
             'excerpt' => 'Aprende a estructurar tus ciclos de entrenamiento con periodizacion lineal y ondulante para progresar de forma sostenible y evitar mesetas.',
+            'excerpt_en' => 'Learn how to structure your training cycles using linear and undulating periodization to progress sustainably and break through plateaus.',
             'category' => 'Entrenamiento',
+            'category_en' => 'Training',
             'date' => '2025-09-03',
             'author' => 'WellCore Team',
             'reading_time' => '10 min',
             'gradient' => 'from-blue-500/20 to-cyan-500/10',
+            'content_en' => '<h3>Foundations of Periodization</h3>
+<p>Periodization is the systematic organization of training into time blocks with specific goals. The concept was developed by Soviet scientist Lev Matveyev and later refined by Tudor Bompa, grounded in Hans Selye\'s General Adaptation Syndrome: the body responds to stress through alarm, resistance, and ultimately exhaustion. Periodization strategically manipulates these phases to maximize adaptation and minimize the risk of overtraining — the point at which stress exceeds the body\'s capacity to recover.</p>
+
+<p>The classic framework divides training into macrocycles (the annual plan), mesocycles (3–6 week blocks), and microcycles (individual weeks). Each level has specific objectives that feed up to the next. Without this structure, training becomes random effort — and effort without direction rarely produces optimal results. This is not just a concern for competitive athletes; even recreational lifters respond significantly better to structured programming than to improvised training.</p>
+
+<h3>Linear vs. Undulating Periodization</h3>
+<p>Traditional linear periodization progresses from high volume/low intensity to low volume/high intensity across weeks or months. A classic example: Hypertrophy Phase (4 weeks, 4x10–12 at 65–75% 1RM) → Strength Phase (4 weeks, 4x5–6 at 80–85% 1RM) → Power Phase (3 weeks, 5x3 at 88–93% 1RM) → Deload (1 week). This model works well for beginners and early intermediates who benefit from focusing on one quality at a time.</p>
+
+<ul>
+<li><strong>Linear periodization:</strong> Ideal for beginners. Predictable progression, easy to program. Downside: untrained qualities can lose adaptations as the mesocycle progresses.</li>
+<li><strong>Daily undulating periodization (DUP):</strong> Varies intensity and volume within the same week — e.g., Monday strength (5x5), Wednesday hypertrophy (3x10), Friday power (6x3). Meta-analyses show advantages for intermediate and advanced trainees over traditional linear models.</li>
+<li><strong>Block periodization:</strong> Concentrates work on one primary quality per mesocycle while maintaining others with minimum effective volume. Commonly used by advanced athletes with defined competitive seasons.</li>
+</ul>
+
+<h3>Designing Your Mesocycles</h3>
+<p>An effective mesocycle consists of 3–5 weeks of progressive loading followed by a deload week. Within each mesocycle, define clear variables: primary and accessory exercises, rep ranges, weekly load progression, and success metrics. For hypertrophy, a typical mesocycle progresses weekly volume per muscle group from roughly 10 to 20 sets, adding 2–4 sets per week. Maximum adaptive volume (MAV) varies by individual, but most trainees respond well in the 12–20 weekly sets per muscle group range. Exceeding maximum recoverable volume (MRV) consistently leads to overreaching.</p>
+
+<h3>When to Change Programs</h3>
+<p>One of the most common training mistakes is program-hopping — switching programs too frequently before adaptation has occurred. The evidence is clear: a program needs a minimum of 4–6 weeks to produce meaningful adaptation. Legitimate reasons to switch include completing the planned mesocycle, sustained stagnation (3+ weeks of zero progress on any variable), a significant shift in primary goals, or the need to accommodate an injury. Variety should come from within-program progression, not from changing the entire program every time it feels challenging. Embrace the discomfort — it is the signal that adaptation is occurring.</p>
+
+<p>At WellCore, every training plan follows periodization principles adapted to your experience level, goals, and schedule. You do not need a sports science degree — you need an intelligent system that evolves with you.</p>',
             'content' => '<h3>Fundamentos de la Periodizacion</h3>
 <p>La periodizacion es la organizacion sistematica del entrenamiento en bloques temporales con objetivos especificos. Este concepto, desarrollado inicialmente por el cientifico sovietico Lev Matveyev y refinado por Tudor Bompa, se basa en el Sindrome General de Adaptacion de Hans Selye: el cuerpo responde al estres con alarma, resistencia y eventualmente agotamiento. La periodizacion manipula estrategicamente estas fases para maximizar la adaptacion y minimizar el riesgo de sobreentrenamiento.</p>
 
@@ -73,12 +122,34 @@ class BlogController extends Controller
         [
             'slug' => 'tdee-calcular-calorias',
             'title' => 'TDEE: Como Calcular tus Calorias Correctamente',
+            'title_en' => 'TDEE: How to Calculate Your Calories Accurately',
             'excerpt' => 'Entiende tu gasto calorico total diario con formulas validadas cientificamente y aprende a ajustar tus calorias segun tus objetivos reales.',
+            'excerpt_en' => 'Understand your total daily energy expenditure using scientifically validated equations and learn to dial in your calories for your actual goals.',
             'category' => 'Nutricion',
+            'category_en' => 'Nutrition',
             'date' => '2025-10-18',
             'author' => 'WellCore Team',
             'reading_time' => '7 min',
             'gradient' => 'from-emerald-500/20 to-teal-500/10',
+            'content_en' => '<h3>What Is TDEE</h3>
+<p>TDEE — Total Daily Energy Expenditure — is the total number of calories your body burns in a day. It is composed of four components: basal metabolic rate (BMR, roughly 60–70% of TDEE), the thermic effect of food (TEF, 8–15%), exercise activity thermogenesis (EAT, 5–10%), and non-exercise activity thermogenesis (NEAT, 15–30%). Understanding and estimating your TDEE is the starting point for any body composition goal, whether that is fat loss, muscle gain, or maintenance. Without knowing your energy baseline, caloric targets are little more than guesswork.</p>
+
+<p>It is important to recognize that TDEE is not a fixed number — it fluctuates daily based on activity level, sleep quality, stress, hormonal status, and even how much you fidget. Formulas provide an estimated starting point that must then be validated and adjusted using real bodyweight data over 2–3 weeks. Treat the formula output as a hypothesis, not a fact.</p>
+
+<h3>Calculation Formulas</h3>
+<p>The two most widely used and validated equations are the revised Harris-Benedict equation (1984) and the Mifflin-St Jeor equation (1990). Research published in the <em>Journal of the American Dietetic Association</em> found that Mifflin-St Jeor is the most accurate for the general population, with a mean error of approximately 10% — meaning it works well as a starting point but requires individual adjustment.</p>
+
+<ul>
+<li><strong>Mifflin-St Jeor (recommended):</strong> Men: (10 × weight in kg) + (6.25 × height in cm) − (5 × age) + 5. Women: (10 × weight in kg) + (6.25 × height in cm) − (5 × age) − 161</li>
+<li><strong>Activity multipliers:</strong> Sedentary (×1.2), Lightly active (×1.375), Moderately active (×1.55), Very active (×1.725), Extremely active (×1.9)</li>
+<li><strong>Practical example:</strong> A 176 lb male, 5\'10", age 30, training 4×/week: BMR ≈ 1,807 kcal. TDEE = 1,807 × 1.55 ≈ 2,800 kcal</li>
+</ul>
+
+<h3>Adjusting for Your Goal</h3>
+<p>Once you have your estimated TDEE, apply the appropriate deficit or surplus. For fat loss, a 15–25% deficit is the evidence-backed sweet spot — aggressive enough to produce visible results, moderate enough to preserve muscle mass and maintain dietary adherence. For a 2,800 kcal TDEE, this means targeting roughly 2,100–2,380 kcal per day. For muscle gain, a 10–15% caloric surplus is sufficient to maximize the rate of muscle protein accretion — larger surpluses do not accelerate muscle growth meaningfully but do accelerate fat gain.</p>
+
+<h3>Validation with Real Data</h3>
+<p>Formulas are estimates. The only way to determine your actual TDEE is to track your food intake and bodyweight for 2–3 weeks. Weigh yourself daily under consistent conditions (morning, post-void, fasted), calculate the weekly average, and compare week over week. If your average weight holds steady, your average intake approximates your TDEE. If it drops 0.7–1 lb per week, you are in a deficit of roughly 350–500 kcal. Adjust in 100–200 kcal increments and reassess after two weeks. This data-driven approach eliminates the need to blindly trust any formula and is the same methodology used by precision nutrition coaches working with competitive athletes.</p>',
             'content' => '<h3>Que es el TDEE</h3>
 <p>El TDEE (Total Daily Energy Expenditure) o Gasto Energetico Total Diario es la cantidad total de calorias que tu cuerpo quema en un dia. Compuesto por cuatro elementos principales: tu metabolismo basal (BMR, 60-70% del total), el efecto termico de los alimentos (TEF, 8-15%), la actividad fisica programada (EAT, 5-10%), y la termogenesis por actividad no programada (NEAT, 15-30%). Entender y calcular tu TDEE es el punto de partida para cualquier objetivo de composicion corporal, ya sea perder grasa, ganar musculo o mantener tu peso.</p>
 
@@ -102,12 +173,36 @@ class BlogController extends Controller
         [
             'slug' => 'macros-recomposicion-corporal',
             'title' => 'Macronutrientes para Recomposicion Corporal',
+            'title_en' => 'Macronutrients for Body Recomposition',
             'excerpt' => 'Aprende a distribuir proteinas, carbohidratos y grasas para ganar musculo y perder grasa simultaneamente con estrategias basadas en evidencia.',
+            'excerpt_en' => 'Learn how to distribute protein, carbohydrates, and fat to simultaneously build muscle and lose fat using evidence-based strategies.',
             'category' => 'Nutricion',
+            'category_en' => 'Nutrition',
             'date' => '2025-11-25',
             'author' => 'WellCore Team',
             'reading_time' => '9 min',
             'gradient' => 'from-violet-500/20 to-purple-500/10',
+            'content_en' => '<h3>Is Body Recomposition Real</h3>
+<p>Body recomposition — simultaneously gaining muscle while losing fat — was long dismissed as impossible in mainstream fitness circles. The prevailing wisdom held that you had to choose: bulk or cut. Current research tells a more nuanced story. Studies published in <em>Medicine & Science in Sports & Exercise</em> have documented successful recomposition in untrained beginners, individuals with higher body fat levels, returning athletes after a detraining period, and people optimizing their nutrition for the first time. The key is not just caloric balance but macronutrient distribution — specifically adequate protein in the context of a structured resistance training program.</p>
+
+<p>Recomposition works because muscle protein synthesis (MPS) and lipolysis (fat oxidation) are not mutually exclusive physiological processes. Both can occur simultaneously when the training stimulus is sufficient and protein intake is optimized. The common mistake is fixating exclusively on total calories while neglecting macronutrient composition — which determines where those calories come from and how the body partitions them.</p>
+
+<h3>Protein: The Non-Negotiable Macronutrient</h3>
+<p>For body recomposition, protein intake is the single most important nutritional variable. The evidence is remarkably consistent: 0.7–1.0 g of protein per pound of bodyweight (1.6–2.2 g/kg) represents the optimal range. A 2018 systematic review by Morton et al. published in the <em>British Journal of Sports Medicine</em> — analyzing data from over 1,800 subjects — confirmed that intakes above 1.62 g/kg maximized MPS response to resistance training. Targeting 1.0 g/lb bodyweight provides a comfortable margin without unnecessarily complicating dietary tracking.</p>
+
+<ul>
+<li><strong>Protein:</strong> 0.7–1.0 g per lb of bodyweight. Distribute across 3–5 meals with at least 30–40 g per meal to maximize the MPS response per feeding</li>
+<li><strong>Fat:</strong> Minimum 0.35–0.5 g/lb for optimal hormonal function (testosterone, estrogens, cortisol regulation). Do not drop below 20% of total calories</li>
+<li><strong>Carbohydrates:</strong> Fill the remaining caloric budget. Prioritize them around training to fuel performance and support recovery. Most active individuals do well at 1.5–2.5 g/lb bodyweight</li>
+</ul>
+
+<h3>Calorie Cycling for Recomposition</h3>
+<p>An advanced but effective strategy is calorie cycling: consuming more calories on training days (at or slightly above maintenance) and fewer on rest days (a moderate deficit). This approach exploits post-exercise insulin sensitivity and the 24–48 hour window of elevated muscle protein synthesis that follows resistance training. A common protocol: training days at TDEE +10% with higher carbohydrates, rest days at TDEE −20% with moderate fat intake. The net weekly caloric balance creates a slight deficit that favors fat loss without impairing the muscle-building signal on training days.</p>
+
+<h3>Who Responds Best to Recomposition</h3>
+<p>Not everyone recomposes at the same rate. Ideal candidates include: true beginners to resistance training (the first 6–12 months represent the highest rate of "newbie gains"), individuals carrying above-average body fat (≥18–20% for men, ≥25–28% for women), athletes returning after a detraining period (muscle memory accelerates regain), and anyone who has never systematically tracked protein. For advanced trainees with low body fat, dedicated bulk-and-cut cycles typically produce more efficient results than attempting recomposition. Recomposition requires patience — progress is best measured with progress photos, tape measurements, and strength metrics rather than the scale, which fluctuates with water retention.</p>
+
+<p>At WellCore, macronutrient targets are individualized based on your body composition, training level, food preferences, and lifestyle. There is no universal formula — there is the right formula for you.</p>',
             'content' => '<h3>Es Posible la Recomposicion Corporal</h3>
 <p>La recomposicion corporal — ganar musculo mientras se pierde grasa — fue considerada imposible durante anos por la comunidad fitness. Sin embargo, la investigacion actual demuestra que es no solo posible sino predecible bajo condiciones especificas. Estudios publicados en <em>Medicine & Science in Sports & Exercise</em> han documentado recomposicion exitosa en principiantes, personas con sobrepeso, atletas que retoman el entrenamiento despues de un descanso, y personas que optimizan su nutricion por primera vez. La clave esta en la distribucion correcta de macronutrientes.</p>
 
@@ -277,11 +372,30 @@ class BlogController extends Controller
     ];
 
     /**
-     * Get all articles (for the index page).
+     * Apply locale-appropriate fields to a single article array.
+     */
+    private static function localizeArticle(array $article): array
+    {
+        $isEn = app()->getLocale() === 'en';
+
+        if ($isEn) {
+            $article['title']    = $article['title_en']    ?? $article['title'];
+            $article['excerpt']  = $article['excerpt_en']  ?? $article['excerpt'];
+            $article['category'] = $article['category_en'] ?? $article['category'];
+            $article['content']  = $article['content_en']  ?? $article['content'];
+        }
+
+        return $article;
+    }
+
+    /**
+     * Get all articles (for the index page), localized to the current locale.
      */
     public static function getArticles(): array
     {
-        return self::$articles;
+        return collect(self::$articles)
+            ->map(fn (array $article) => self::localizeArticle($article))
+            ->toArray();
     }
 
     /**
@@ -295,9 +409,11 @@ class BlogController extends Controller
             abort(404);
         }
 
+        $article = self::localizeArticle($article);
+
         return view('public.blog.show', [
-            'article' => $article,
-            'articles' => self::$articles,
+            'article'  => $article,
+            'articles' => self::getArticles(),
         ]);
     }
 }
