@@ -2,9 +2,9 @@
 return [
     'metodo' => 'Method',
     'rise' => 'RISE',
-    'nosotros' => 'About Us',
+    'nosotros' => 'About',
     'proceso' => 'Process',
-    'planes' => 'Plans',
+    'planes' => 'Pricing',
     'blog' => 'Blog',
     'faq' => 'FAQ',
     'coaches' => 'Coaches',

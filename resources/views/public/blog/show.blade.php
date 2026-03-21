@@ -35,7 +35,7 @@
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
                 </svg>
-                Volver al Blog
+                {{ __('blog.back_to_blog') }}
             </a>
 
             <div class="mx-auto max-w-3xl pt-4">
@@ -67,7 +67,7 @@
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
-                        {{ $article['reading_time'] }} de lectura
+                        {{ $article['reading_time'] }} {{ __('blog.reading_time_suffix') }}
                     </span>
                 </div>
             </div>
@@ -98,8 +98,8 @@
     {{-- Related Articles --}}
     <section class="border-t border-wc-border bg-wc-bg-tertiary">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-            <h2 class="font-display text-2xl tracking-wide text-wc-text">ARTICULOS RELACIONADOS</h2>
-            <p class="mt-2 text-sm text-wc-text-tertiary">Sigue aprendiendo con mas contenido basado en evidencia.</p>
+            <h2 class="font-display text-2xl tracking-wide text-wc-text">{{ __('blog.related_heading') }}</h2>
+            <p class="mt-2 text-sm text-wc-text-tertiary">{{ __('blog.related_subtitle') }}</p>
 
             @php
                 $related = collect($articles)
@@ -156,11 +156,11 @@
         <div class="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-wc-accent/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
         <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-wc-accent/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
         <div class="relative mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
-            <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">LISTO PARA TRANSFORMARTE?</h2>
-            <p class="mx-auto mt-3 max-w-lg text-sm text-wc-text-secondary">El conocimiento sin accion no produce resultados. Da el primer paso con coaching personalizado basado en ciencia.</p>
+            <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('blog.show_cta_heading') }}</h2>
+            <p class="mx-auto mt-3 max-w-lg text-sm text-wc-text-secondary">{{ __('blog.show_cta_body') }}</p>
             <div class="mt-8">
                 <a href="{{ route('inscripcion') }}" class="btn-press pulse-glow inline-flex items-center rounded-lg bg-wc-accent px-6 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover">
-                    Comenzar Ahora
+                    {{ __('blog.show_cta_button') }}
                     <svg class="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                     </svg>

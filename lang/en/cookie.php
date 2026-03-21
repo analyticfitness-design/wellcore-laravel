@@ -2,8 +2,8 @@
 
 return [
     'title'     => 'Cookies',
-    'body'      => 'We use cookies to improve your experience.',
-    'read_more' => 'Read more',
+    'body'      => 'We use cookies to optimize your experience on our platform.',
+    'read_more' => 'Learn more',
     'accept'    => 'Accept',
     'decline'   => 'Decline',
 ];

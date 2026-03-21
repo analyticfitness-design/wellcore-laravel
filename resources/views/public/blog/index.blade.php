@@ -1,6 +1,6 @@
 <x-layouts.public>
-    <x-slot:title>Blog - WellCore Fitness</x-slot:title>
-    <x-slot:description>Articulos sobre entrenamiento, nutricion y ciencia del fitness. Informacion basada en evidencia para tu transformacion.</x-slot:description>
+    <x-slot:title>{{ __('blog.meta_title') }}</x-slot:title>
+    <x-slot:description>{{ __('blog.meta_description') }}</x-slot:description>
 
     @php
         $articles = \App\Http\Controllers\BlogController::getArticles();
@@ -18,9 +18,9 @@
             <div class="parallax-orb parallax-orb-5" data-parallax-speed="0.1"></div>
         </div>
         <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8" data-animate="fadeInUp">
-            <h1 class="font-display text-5xl tracking-wide text-wc-text sm:text-6xl lg:text-7xl">BLOG</h1>
-            <p class="mt-3 text-lg text-wc-text-secondary">Ciencia del entrenamiento y nutricion</p>
-            <p class="mt-2 max-w-xl text-sm text-wc-text-tertiary">Articulos basados en evidencia cientifica para que tomes decisiones informadas sobre tu entrenamiento, nutricion y recuperacion.</p>
+            <h1 class="font-display text-5xl tracking-wide text-wc-text sm:text-6xl lg:text-7xl">{{ __('blog.hero_heading') }}</h1>
+            <p class="mt-3 text-lg text-wc-text-secondary">{{ __('blog.hero_subtitle') }}</p>
+            <p class="mt-2 max-w-xl text-sm text-wc-text-tertiary">{{ __('blog.hero_description') }}</p>
         </div>
     </section>
 
@@ -50,7 +50,7 @@
                 <input
                     type="text"
                     x-model="search"
-                    placeholder="Buscar articulo..."
+                    placeholder="{{ __('blog.search_placeholder') }}"
                     class="w-full rounded-full border border-wc-border bg-wc-bg-secondary py-3 pl-12 pr-4 text-sm text-wc-text placeholder-wc-text-tertiary outline-none ring-0 transition-colors focus:border-wc-accent/50 focus:ring-1 focus:ring-wc-accent/30"
                 />
             </div>
@@ -61,25 +61,25 @@
                     @click="category = 'all'"
                     :class="category === 'all' ? 'bg-wc-accent text-white' : 'border border-wc-border text-wc-text-secondary hover:text-wc-text hover:border-wc-accent/40'"
                     class="rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-wider transition-all duration-200">
-                    Todos
+                    {{ __('blog.filter_all') }}
                 </button>
                 <button
                     @click="category = 'Entrenamiento'"
                     :class="category === 'Entrenamiento' ? 'bg-wc-accent text-white' : 'border border-wc-border text-wc-text-secondary hover:text-wc-text hover:border-wc-accent/40'"
                     class="rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-wider transition-all duration-200">
-                    Entrenamiento
+                    {{ __('blog.filter_training') }}
                 </button>
                 <button
                     @click="category = 'Nutricion'"
                     :class="category === 'Nutricion' ? 'bg-wc-accent text-white' : 'border border-wc-border text-wc-text-secondary hover:text-wc-text hover:border-wc-accent/40'"
                     class="rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-wider transition-all duration-200">
-                    Nutricion
+                    {{ __('blog.filter_nutrition') }}
                 </button>
                 <button
                     @click="category = 'Ciencia'"
                     :class="category === 'Ciencia' ? 'bg-wc-accent text-white' : 'border border-wc-border text-wc-text-secondary hover:text-wc-text hover:border-wc-accent/40'"
                     class="rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-wider transition-all duration-200">
-                    Ciencia
+                    {{ __('blog.filter_science') }}
                 </button>
             </div>
 
@@ -160,11 +160,11 @@
         <div class="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-wc-accent/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
         <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-wc-accent/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
         <div class="relative mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
-            <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">LISTO PARA TRANSFORMARTE?</h2>
-            <p class="mx-auto mt-3 max-w-lg text-sm text-wc-text-secondary">Deja de leer sobre resultados y empieza a vivirlos. Coaching 1:1 basado en la misma ciencia de nuestros articulos.</p>
+            <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('blog.cta_heading') }}</h2>
+            <p class="mx-auto mt-3 max-w-lg text-sm text-wc-text-secondary">{{ __('blog.cta_body') }}</p>
             <div class="mt-8">
                 <a href="{{ route('inscripcion') }}" class="btn-press pulse-glow inline-flex items-center rounded-lg bg-wc-accent px-6 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover">
-                    Comenzar Ahora
+                    {{ __('blog.cta_button') }}
                     <svg class="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                     </svg>
