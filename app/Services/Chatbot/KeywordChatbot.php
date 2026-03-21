@@ -85,6 +85,69 @@ class KeywordChatbot implements ChatbotInterface
         ],
     ];
 
+    private array $responsesEn = [
+        [
+            'keywords' => ['plan', 'price', 'pricing', 'cost', 'how much', 'fee', 'monthly', 'rate'],
+            'response' => 'We offer 3 plans: Essential ($299,000 COP/mo), Method ($399,000 COP/mo) and Elite ($549,000 COP/mo). Each includes different levels of coaching support. See full details at /planes',
+        ],
+        [
+            'keywords' => ['method', 'how it works', 'methodology', 'system', 'approach'],
+            'response' => 'The WellCore Method is built on 4 pillars: personalized training, flexible nutrition, behavioral coaching and community. It\'s not a diet or a generic routine — it\'s a comprehensive system adapted to your life. Learn more at /metodo',
+        ],
+        [
+            'keywords' => ['rise', 'challenge', '12 week', 'twelve week', 'transformation'],
+            'response' => 'RISE is our 12-week transformation program. It includes a training plan, nutrition guide, weekly coaching and access to an exclusive community. Perfect if you want visible results fast. Info at /reto-rise',
+        ],
+        [
+            'keywords' => ['nutrition', 'diet', 'macros', 'calories', 'eating', 'food'],
+            'response' => 'Our nutrition approach is flexible and sustainable. We don\'t eliminate food groups. Your coach helps you understand macros, portions and eating habits adapted to your tastes. No extreme diets.',
+        ],
+        [
+            'keywords' => ['training', 'exercise', 'gym', 'workout', 'routine'],
+            'response' => 'Every training plan is adapted to your level, available equipment and goals. You can train at the gym or at home. Your coach adjusts the routine weekly based on your progress.',
+        ],
+        [
+            'keywords' => ['coach', 'trainer', 'coaching', 'support', 'guidance'],
+            'response' => 'Every client gets a certified personal coach who accompanies them throughout the process. Your coach reviews check-ins, adjusts plans and is available to answer questions. Meet the team at /coaches',
+        ],
+        [
+            'keywords' => ['result', 'time', 'how long', 'when will i see', 'progress'],
+            'response' => 'Results vary based on consistency and starting point. Most clients see noticeable changes in 4-6 weeks. Significant changes typically occur between 8-12 weeks with adherence to the plan.',
+        ],
+        [
+            'keywords' => ['cancel', 'cancellation', 'unsubscribe', 'quit'],
+            'response' => 'You can cancel your subscription at any time from your profile or by emailing us at info@wellcorefitness.com. No minimum commitment or penalties. Cancellation takes effect at the end of the paid period.',
+        ],
+        [
+            'keywords' => ['payment', 'pay', 'card', 'transfer', 'payment method'],
+            'response' => 'We accept credit/debit cards, PSE and Nequi through Wompi (secure platform). You can also pay by bank transfer. Billing is monthly and automatic. Sign up at /inscripcion',
+        ],
+        [
+            'keywords' => ['beginner', 'experience', 'level', 'newbie', 'never have', 'first time', 'starting out'],
+            'response' => 'No prior experience needed! Our plans adapt to any level, from absolute beginners to advanced athletes. Your coach guides you step by step and adjusts everything to your current capacity.',
+        ],
+        [
+            'keywords' => ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening', 'what\'s up'],
+            'response' => 'Hello! Welcome to WellCore. I\'m here to help you with information about our plans, the method, pricing or any other questions. What would you like to know?',
+        ],
+        [
+            'keywords' => ['thank', 'thanks', 'great', 'awesome', 'perfect', 'excellent'],
+            'response' => 'My pleasure! If you have more questions don\'t hesitate to ask. You can also schedule a free consultation at /inscripcion to speak with an advisor.',
+        ],
+        [
+            'keywords' => ['refund', 'money back', 'guarantee', 'return'],
+            'response' => 'We offer a refund policy within the first 7 days if you\'re not satisfied. You can check the full terms at /reembolsos or email us at info@wellcorefitness.com',
+        ],
+        [
+            'keywords' => ['contact', 'email', 'whatsapp', 'phone', 'reach', 'message'],
+            'response' => 'You can contact us by email at info@wellcorefitness.com or via WhatsApp at +57 316 5250000. You can also schedule a free consultation from /inscripcion. We respond within 24 hours.',
+        ],
+        [
+            'keywords' => ['sign up', 'start', 'begin', 'register', 'join', 'enroll', 'get started'],
+            'response' => 'To sign up, go to /inscripcion and complete the form. You\'ll receive a welcome call with your assigned coach and get started in less than 48 hours. You can also schedule a free consultation first!',
+        ],
+    ];
+
     private array $extraResponses = [
         [
             'keywords' => ['presencial', 'persona', 'bucaramanga', 'en vivo', 'cara a cara'],
@@ -132,7 +195,15 @@ class KeywordChatbot implements ChatbotInterface
     {
         $message = mb_strtolower(trim($message));
 
-        $allResponses = array_merge($this->responses, $this->extraResponses);
+        $locale = $this->getLocale($context);
+        $isEnglish = str_starts_with($locale, 'en');
+
+        if ($isEnglish) {
+            $allResponses = array_merge($this->responsesEn, $this->extraResponses);
+        } else {
+            $allResponses = array_merge($this->responses, $this->extraResponses);
+        }
+
         foreach ($allResponses as $entry) {
             foreach ($entry['keywords'] as $keyword) {
                 if (str_contains($message, $keyword)) {
@@ -141,7 +212,12 @@ class KeywordChatbot implements ChatbotInterface
             }
         }
 
-        return $this->getDefaultResponse();
+        return $this->getDefaultResponse($isEnglish);
+    }
+
+    private function getLocale(array $context): string
+    {
+        return $context['locale'] ?? app()->getLocale();
     }
 
     public function provider(): string
@@ -154,8 +230,12 @@ class KeywordChatbot implements ChatbotInterface
         return true;
     }
 
-    private function getDefaultResponse(): string
+    private function getDefaultResponse(bool $english = false): string
     {
+        if ($english) {
+            return "I don't have a specific answer for that, but I can help you with information about plans, pricing, the method, nutrition or training. You can also email us at info@wellcorefitness.com or schedule a free consultation at /inscripcion";
+        }
+
         return 'No tengo una respuesta especifica para eso, pero puedo ayudarte con informacion sobre planes, precios, el metodo, nutricion o entrenamiento. Tambien puedes escribirnos a info@wellcorefitness.com o agendar una consulta gratuita en /inscripcion';
     }
 }

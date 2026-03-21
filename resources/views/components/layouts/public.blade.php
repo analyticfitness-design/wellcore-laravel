@@ -241,6 +241,7 @@
     </footer>
 
     <x-whatsapp-button />
+    <x-pwa-install-prompt />
     <x-cookie-consent />
     <x-toast-notifications />
 
