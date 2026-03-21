@@ -30,10 +30,10 @@
                         </div>
                     </div>
                     <div class="mt-8 flex flex-wrap gap-4">
-                        <a href="{{ route('inscripcion') }}" class="rounded-lg bg-emerald-500 px-6 py-3 text-sm font-medium text-white hover:bg-emerald-600">
+                        <a href="{{ route('inscripcion') }}" class="rounded-full bg-emerald-500 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 hover:bg-emerald-600">
                             Entrena Conmigo
                         </a>
-                        <a href="https://wa.me/573001234567?text=Hola%20Silvia%2C%20quiero%20informacion" target="_blank" class="rounded-lg border border-wc-border bg-wc-bg-secondary px-6 py-3 text-sm font-medium text-wc-text hover:bg-wc-bg-tertiary">
+                        <a href="https://wa.me/573001234567?text=Hola%20Silvia%2C%20quiero%20informacion" target="_blank" class="rounded-full px-6 py-3.5 text-sm font-semibold text-wc-text hover:bg-wc-bg-secondary">
                             WhatsApp
                         </a>
                     </div>
@@ -150,7 +150,7 @@
                 <a href="{{ route('inscripcion') }}" class="rounded-lg bg-emerald-500 px-8 py-3 text-base font-medium text-white hover:bg-emerald-600">
                     Inscribirme
                 </a>
-                <a href="{{ route('planes') }}" class="rounded-lg border border-wc-border bg-wc-bg px-8 py-3 text-base font-medium text-wc-text hover:bg-wc-bg-secondary">
+                <a href="{{ route('planes') }}" class="rounded-full px-8 py-3.5 text-base font-semibold text-wc-text hover:bg-wc-bg-secondary">
                     Ver Planes
                 </a>
             </div>

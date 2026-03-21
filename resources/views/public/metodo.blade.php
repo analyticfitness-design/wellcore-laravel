@@ -6,7 +6,7 @@
     <section class="relative overflow-hidden bg-wc-bg-tertiary">
         <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
         <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
-            <div class="max-w-3xl">
+            <div class="mx-auto max-w-3xl text-center">
                 <p class="text-sm font-semibold uppercase tracking-widest text-wc-accent">Protocolo de Entrenamiento Basado en Evidencia</p>
                 <h1 class="mt-4 font-display text-5xl leading-none tracking-wide text-wc-text sm:text-6xl lg:text-8xl">
                     EL METODO
@@ -14,7 +14,7 @@
                 <p class="mt-2 text-xl font-medium text-wc-text-secondary sm:text-2xl">
                     No seguimos modas. Seguimos la ciencia.
                 </p>
-                <p class="mt-6 max-w-xl text-lg text-wc-text-secondary">
+                <p class="mx-auto mt-6 max-w-xl text-lg text-wc-text-secondary">
                     WellCore no es una app de rutinas ni un plan de 30 dias. Es un protocolo cientifico, personalizado al 100%, con seguimiento real de coach. Cada variable de tu entrenamiento existe por una razon demostrada.
                 </p>
             </div>
@@ -23,7 +23,7 @@
 
     {{-- Stats Bar --}}
     <section class="border-y border-wc-border bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
                 <div class="text-center">
                     <p class="font-data text-4xl font-bold text-wc-accent">87%</p>
@@ -246,111 +246,150 @@
             <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">LA DIFERENCIA</h2>
             <p class="mt-2 text-lg text-wc-text-secondary">WellCore vs. el Resto</p>
 
-            {{-- Comparison Table --}}
-            <div class="mt-12 overflow-x-auto">
-                <table class="w-full min-w-[640px] border-collapse">
-                    <thead>
-                        <tr class="border-b border-wc-border">
-                            <th class="pb-4 pr-6 text-left text-sm font-medium text-wc-text-tertiary">Caracteristica</th>
-                            <th class="pb-4 px-6 text-center text-sm font-semibold text-wc-accent">WellCore</th>
-                            <th class="pb-4 px-6 text-center text-sm font-medium text-wc-text-tertiary">App Generica</th>
-                            <th class="pb-4 pl-6 text-center text-sm font-medium text-wc-text-tertiary">Gym PT</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-wc-border">
-                        <tr>
-                            <td class="py-4 pr-6 text-sm text-wc-text">Diagnostico inicial completo</td>
-                            <td class="py-4 px-6 text-center">
-                                <span class="inline-flex items-center gap-1.5 text-sm font-medium text-wc-accent">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                                    40+ variables
-                                </span>
-                            </td>
-                            <td class="py-4 px-6 text-center">
-                                <span class="text-sm text-wc-text-tertiary">No</span>
-                            </td>
-                            <td class="py-4 pl-6 text-center">
-                                <span class="text-sm text-wc-text-tertiary">Parcial</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="py-4 pr-6 text-sm text-wc-text">Programa 100% personalizado</td>
-                            <td class="py-4 px-6 text-center">
-                                <span class="inline-flex items-center gap-1.5 text-sm font-medium text-wc-accent">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                                    Desde cero
-                                </span>
-                            </td>
-                            <td class="py-4 px-6 text-center">
-                                <span class="text-sm text-wc-text-tertiary">No (plantillas)</span>
-                            </td>
-                            <td class="py-4 pl-6 text-center">
-                                <span class="text-sm text-wc-text-tertiary">Parcial</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="py-4 pr-6 text-sm text-wc-text">Seguimiento semanal</td>
-                            <td class="py-4 px-6 text-center">
-                                <span class="inline-flex items-center gap-1.5 text-sm font-medium text-wc-accent">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                                    Coach 1:1
-                                </span>
-                            </td>
-                            <td class="py-4 px-6 text-center">
-                                <span class="text-sm text-wc-text-tertiary">No</span>
-                            </td>
-                            <td class="py-4 pl-6 text-center">
-                                <span class="text-sm text-wc-text-tertiary">Solo sesiones</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="py-4 pr-6 text-sm text-wc-text">Ajustes en tiempo real</td>
-                            <td class="py-4 px-6 text-center">
-                                <span class="inline-flex items-center gap-1.5 text-sm font-medium text-wc-accent">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                                    Semanal
-                                </span>
-                            </td>
-                            <td class="py-4 px-6 text-center">
-                                <span class="text-sm text-wc-text-tertiary">No</span>
-                            </td>
-                            <td class="py-4 pl-6 text-center">
-                                <span class="text-sm text-wc-text-tertiary">Raro</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="py-4 pr-6 text-sm text-wc-text">Plan nutricional incluido</td>
-                            <td class="py-4 px-6 text-center">
-                                <span class="inline-flex items-center gap-1.5 text-sm font-medium text-wc-accent">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                                    Planes Base y Elite
-                                </span>
-                            </td>
-                            <td class="py-4 px-6 text-center">
-                                <span class="text-sm text-wc-text-tertiary">Extra</span>
-                            </td>
-                            <td class="py-4 pl-6 text-center">
-                                <span class="text-sm text-wc-text-tertiary">No</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="py-4 pr-6 text-sm text-wc-text">Informe final de resultados</td>
-                            <td class="py-4 px-6 text-center">
-                                <span class="inline-flex items-center gap-1.5 text-sm font-medium text-wc-accent">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                                    Semana 12
-                                </span>
-                            </td>
-                            <td class="py-4 px-6 text-center">
-                                <span class="text-sm text-wc-text-tertiary">No</span>
-                            </td>
-                            <td class="py-4 pl-6 text-center">
-                                <span class="text-sm text-wc-text-tertiary">Raro</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            {{-- Comparison Table: Desktop --}}
+            <div class="mt-12 hidden sm:block">
+                <div class="overflow-x-auto rounded-xl border border-wc-border">
+                    <table class="w-full min-w-[640px] border-collapse">
+                        <thead>
+                            <tr class="border-b border-wc-border bg-wc-bg/50">
+                                <th class="px-6 py-4 text-left text-sm font-medium text-wc-text-tertiary">Caracteristica</th>
+                                <th class="px-6 py-4 text-center text-sm font-semibold text-wc-accent">WellCore</th>
+                                <th class="px-6 py-4 text-center text-sm font-medium text-wc-text-tertiary">App Generica</th>
+                                <th class="px-6 py-4 text-center text-sm font-medium text-wc-text-tertiary">Gym PT</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-wc-border">
+                            <tr>
+                                <td class="px-6 py-4 text-sm text-wc-text">Diagnostico inicial completo</td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="inline-flex items-center gap-1.5 text-sm font-medium text-wc-accent">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                        40+ variables
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-sm text-wc-text-tertiary">No</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-sm text-wc-text-tertiary">Parcial</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 text-sm text-wc-text">Programa 100% personalizado</td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="inline-flex items-center gap-1.5 text-sm font-medium text-wc-accent">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                        Desde cero
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-sm text-wc-text-tertiary">No (plantillas)</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-sm text-wc-text-tertiary">Parcial</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 text-sm text-wc-text">Seguimiento semanal</td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="inline-flex items-center gap-1.5 text-sm font-medium text-wc-accent">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                        Coach 1:1
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-sm text-wc-text-tertiary">No</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-sm text-wc-text-tertiary">Solo sesiones</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 text-sm text-wc-text">Ajustes en tiempo real</td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="inline-flex items-center gap-1.5 text-sm font-medium text-wc-accent">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                        Semanal
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-sm text-wc-text-tertiary">No</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-sm text-wc-text-tertiary">Raro</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 text-sm text-wc-text">Plan nutricional incluido</td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="inline-flex items-center gap-1.5 text-sm font-medium text-wc-accent">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                        Planes Base y Elite
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-sm text-wc-text-tertiary">Extra</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-sm text-wc-text-tertiary">No</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 text-sm text-wc-text">Informe final de resultados</td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="inline-flex items-center gap-1.5 text-sm font-medium text-wc-accent">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                        Semana 12
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-sm text-wc-text-tertiary">No</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-sm text-wc-text-tertiary">Raro</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
+            {{-- Comparison Table: Mobile (stacked cards) --}}
+            <div class="mt-12 space-y-4 sm:hidden">
+                @php
+                    $comparisons = [
+                        ['feature' => 'Diagnostico inicial completo', 'wellcore' => '40+ variables', 'app' => 'No', 'gym' => 'Parcial'],
+                        ['feature' => 'Programa 100% personalizado', 'wellcore' => 'Desde cero', 'app' => 'No (plantillas)', 'gym' => 'Parcial'],
+                        ['feature' => 'Seguimiento semanal', 'wellcore' => 'Coach 1:1', 'app' => 'No', 'gym' => 'Solo sesiones'],
+                        ['feature' => 'Ajustes en tiempo real', 'wellcore' => 'Semanal', 'app' => 'No', 'gym' => 'Raro'],
+                        ['feature' => 'Plan nutricional incluido', 'wellcore' => 'Planes Base y Elite', 'app' => 'Extra', 'gym' => 'No'],
+                        ['feature' => 'Informe final de resultados', 'wellcore' => 'Semana 12', 'app' => 'No', 'gym' => 'Raro'],
+                    ];
+                @endphp
+                @foreach ($comparisons as $row)
+                    <div class="rounded-xl border border-wc-border bg-wc-bg p-5">
+                        <p class="text-sm font-semibold text-wc-text">{{ $row['feature'] }}</p>
+                        <div class="mt-3 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-wc-text-tertiary">WellCore</span>
+                                <span class="inline-flex items-center gap-1 text-sm font-medium text-wc-accent">
+                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                    {{ $row['wellcore'] }}
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-wc-text-tertiary">App Generica</span>
+                                <span class="text-sm text-wc-text-tertiary">{{ $row['app'] }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-wc-text-tertiary">Gym PT</span>
+                                <span class="text-sm text-wc-text-tertiary">{{ $row['gym'] }}</span>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
             <p class="mt-6 text-xs text-wc-text-tertiary">
                 Comparativa basada en oferta estandar de mercado. Las condiciones pueden variar.
             </p>
@@ -369,17 +408,17 @@
                 Si tienes mas dudas, estamos disponibles por WhatsApp o puedes revisar nuestra seccion de FAQ completa.
             </p>
 
-            <div class="mt-12 max-w-3xl space-y-4">
+            <div class="mt-12 max-w-3xl divide-y divide-wc-border">
                 {{-- Q1 --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary">
-                    <button x-on:click="active = active === 1 ? null : 1" class="flex w-full items-center justify-between px-6 py-5 text-left">
+                <div>
+                    <button x-on:click="active = active === 1 ? null : 1" class="flex w-full items-center justify-between py-5 text-left">
                         <span class="text-sm font-semibold text-wc-text">Necesito experiencia previa para empezar?</span>
-                        <svg class="h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-200" :class="{ 'rotate-45': active === 1 }" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        <svg class="h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-200" :class="{ 'rotate-180': active === 1 }" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                         </svg>
                     </button>
                     <div x-show="active === 1" x-collapse x-cloak>
-                        <div class="border-t border-wc-border px-6 pb-5 pt-4">
+                        <div class="pb-5">
                             <p class="text-sm leading-relaxed text-wc-text-secondary">
                                 No. El diagnostico inicial determina exactamente tu nivel de partida. El programa se construye desde ahi. Tenemos clientes sin experiencia previa y clientes con anos de entrenamiento. El protocolo se adapta a donde estas, no a donde deberia estar alguien generico.
                             </p>
@@ -388,15 +427,15 @@
                 </div>
 
                 {{-- Q2 --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary">
-                    <button x-on:click="active = active === 2 ? null : 2" class="flex w-full items-center justify-between px-6 py-5 text-left">
+                <div>
+                    <button x-on:click="active = active === 2 ? null : 2" class="flex w-full items-center justify-between py-5 text-left">
                         <span class="text-sm font-semibold text-wc-text">Puedo entrenar en casa sin equipamiento?</span>
-                        <svg class="h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-200" :class="{ 'rotate-45': active === 2 }" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        <svg class="h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-200" :class="{ 'rotate-180': active === 2 }" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                         </svg>
                     </button>
                     <div x-show="active === 2" x-collapse x-cloak>
-                        <div class="border-t border-wc-border px-6 pb-5 pt-4">
+                        <div class="pb-5">
                             <p class="text-sm leading-relaxed text-wc-text-secondary">
                                 Si. Durante el diagnostico indicamos el equipamiento disponible y el programa se disena especificamente para ese contexto. Si solo tienes tu propio peso corporal, el programa funciona igual. Si tienes acceso a un gym completo, aprovechamos todo lo disponible.
                             </p>
@@ -405,15 +444,15 @@
                 </div>
 
                 {{-- Q3 --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary">
-                    <button x-on:click="active = active === 3 ? null : 3" class="flex w-full items-center justify-between px-6 py-5 text-left">
+                <div>
+                    <button x-on:click="active = active === 3 ? null : 3" class="flex w-full items-center justify-between py-5 text-left">
                         <span class="text-sm font-semibold text-wc-text">Cuanto tiempo tarda en verse el primer resultado?</span>
-                        <svg class="h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-200" :class="{ 'rotate-45': active === 3 }" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        <svg class="h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-200" :class="{ 'rotate-180': active === 3 }" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                         </svg>
                     </button>
                     <div x-show="active === 3" x-collapse x-cloak>
-                        <div class="border-t border-wc-border px-6 pb-5 pt-4">
+                        <div class="pb-5">
                             <p class="text-sm leading-relaxed text-wc-text-secondary">
                                 Los cambios en composicion corporal comienzan a verse entre las semanas 6 y 10, dependiendo del punto de partida y el objetivo. Antes de eso, los resultados son internos: mas energia, mejor sueno, mayor fuerza. Los resultados visibles requieren tiempo. El promedio en WellCore es 8-12 semanas para cambios fotografiables.
                             </p>
@@ -422,15 +461,15 @@
                 </div>
 
                 {{-- Q4 --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary">
-                    <button x-on:click="active = active === 4 ? null : 4" class="flex w-full items-center justify-between px-6 py-5 text-left">
+                <div>
+                    <button x-on:click="active = active === 4 ? null : 4" class="flex w-full items-center justify-between py-5 text-left">
                         <span class="text-sm font-semibold text-wc-text">Que pasa si tengo una lesion o limitacion fisica?</span>
-                        <svg class="h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-200" :class="{ 'rotate-45': active === 4 }" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        <svg class="h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-200" :class="{ 'rotate-180': active === 4 }" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                         </svg>
                     </button>
                     <div x-show="active === 4" x-collapse x-cloak>
-                        <div class="border-t border-wc-border px-6 pb-5 pt-4">
+                        <div class="pb-5">
                             <p class="text-sm leading-relaxed text-wc-text-secondary">
                                 Las lesiones y limitaciones se documentan en el diagnostico y el programa las incorpora desde el principio. No ignoramos los problemas: los integramos al diseno. Si durante el programa aparece una lesion nueva, el plan se ajusta de inmediato sin costo adicional.
                             </p>
@@ -462,10 +501,10 @@
                         87% de adherencia. 12 semanas. Un protocolo disenado solo para ti. Sin plantillas, sin generico. Solo ciencia aplicada a tu cuerpo real.
                     </p>
                     <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                        <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
+                        <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover">
                             Comenzar ahora
                         </a>
-                        <a href="{{ route('proceso') }}" class="inline-flex items-center justify-center rounded-lg border border-wc-border px-8 py-3 text-base font-medium text-wc-text-secondary hover:text-wc-text">
+                        <a href="{{ route('proceso') }}" class="inline-flex items-center justify-center rounded-full px-8 py-3.5 text-base font-semibold text-wc-text hover:bg-wc-bg-secondary">
                             Ver el Proceso
                         </a>
                     </div>

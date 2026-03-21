@@ -31,7 +31,7 @@
                     </div>
                     <h2 class="mt-4 font-display text-2xl tracking-wide text-wc-text">INSCRIPCION EXITOSA</h2>
                     <p class="mt-2 text-wc-text-secondary">Bienvenido al programa RISE. Recibirás un correo con los proximos pasos y la fecha de inicio.</p>
-                    <a href="{{ route('home') }}" class="mt-6 inline-flex rounded-lg bg-wc-accent px-6 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover">Volver al Inicio</a>
+                    <a href="{{ route('home') }}" class="mt-6 inline-flex rounded-full bg-wc-accent px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover">Volver al Inicio</a>
                 </div>
             @else
 
@@ -101,7 +101,7 @@
                         </div>
 
                         <div class="mt-8 flex justify-end">
-                            <button wire:click="nextStep" class="rounded-lg bg-wc-accent px-6 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover">Siguiente</button>
+                            <button wire:click="nextStep" class="rounded-full bg-wc-accent px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover">Siguiente</button>
                         </div>
                     </div>
                 @endif
@@ -174,8 +174,8 @@
                         </div>
 
                         <div class="mt-8 flex justify-between">
-                            <button wire:click="prevStep" class="rounded-lg border border-wc-border bg-wc-bg-secondary px-6 py-3 text-sm font-medium text-wc-text hover:bg-wc-bg">Anterior</button>
-                            <button wire:click="nextStep" class="rounded-lg bg-wc-accent px-6 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover">Siguiente</button>
+                            <button wire:click="prevStep" class="rounded-full px-6 py-3 text-sm font-semibold text-wc-text hover:bg-wc-bg-secondary">Anterior</button>
+                            <button wire:click="nextStep" class="rounded-full bg-wc-accent px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover">Siguiente</button>
                         </div>
                     </div>
                 @endif
@@ -209,8 +209,8 @@
                         </div>
 
                         <div class="mt-8 flex justify-between">
-                            <button wire:click="prevStep" class="rounded-lg border border-wc-border bg-wc-bg-secondary px-6 py-3 text-sm font-medium text-wc-text hover:bg-wc-bg">Anterior</button>
-                            <button wire:click="submit" wire:loading.attr="disabled" class="rounded-lg bg-wc-accent px-8 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover disabled:opacity-50">
+                            <button wire:click="prevStep" class="rounded-full px-6 py-3 text-sm font-semibold text-wc-text hover:bg-wc-bg-secondary">Anterior</button>
+                            <button wire:click="submit" wire:loading.attr="disabled" class="rounded-full bg-wc-accent px-8 py-3 text-sm font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover disabled:opacity-50">
                                 <span wire:loading.remove>Confirmar Inscripcion</span>
                                 <span wire:loading>Procesando...</span>
                             </button>

@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="mt-8">
-                    <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-lg bg-wc-accent px-8 py-4 text-base font-semibold text-white hover:bg-wc-accent-hover">
+                    <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
                         Unirme al Reto RISE
                         <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                     </a>
@@ -106,7 +106,7 @@
     {{-- For Whom --}}
     <section class="bg-wc-bg-tertiary">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-            <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">PARA QUIEN ES</h2>
+            <h2 class="text-center font-display text-3xl tracking-wide text-wc-text sm:text-4xl">PARA QUIEN ES</h2>
 
             <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
                 <div class="flex gap-4">
@@ -171,7 +171,7 @@
                         </li>
                     </ul>
 
-                    <a href="{{ route('planes') }}" class="mt-8 flex w-full items-center justify-center rounded-lg bg-wc-accent px-8 py-4 text-base font-semibold text-white hover:bg-wc-accent-hover">
+                    <a href="{{ route('planes') }}" class="mt-8 flex w-full items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
                         Quiero unirme al RISE
                         <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                     </a>
@@ -185,9 +185,9 @@
     {{-- Testimonials --}}
     <section class="bg-wc-bg-tertiary">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-            <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">QUIENES YA LO VIVIERON</h2>
+            <h2 class="text-center font-display text-3xl tracking-wide text-wc-text sm:text-4xl">QUIENES YA LO VIVIERON</h2>
 
-            <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 <div class="rounded-xl border border-wc-border bg-wc-bg p-8">
                     <div class="flex gap-1">
                         @for ($i = 0; $i < 5; $i++)
@@ -265,7 +265,7 @@
                         No esperes al ultimo dia. Los cupos del RISE son limitados.
                     </p>
                     <div class="mt-8">
-                        <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-lg bg-wc-accent px-8 py-4 text-base font-semibold text-white hover:bg-wc-accent-hover">
+                        <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
                             Inscribirme ahora
                             <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                         </a>

@@ -111,11 +111,11 @@
 
             {{-- CTAs --}}
             <div class="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-lg bg-wc-accent px-6 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover">
+                <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-full bg-wc-accent px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover">
                     Acceso Cliente
                     <svg class="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                 </a>
-                <a href="{{ route('home') }}" class="inline-flex items-center justify-center rounded-lg border border-wc-border px-6 py-3 text-sm font-medium text-wc-text-secondary hover:text-wc-text">
+                <a href="{{ route('home') }}" class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">
                     Ir al Inicio
                 </a>
             </div>
@@ -129,7 +129,7 @@
                 <h1 class="mt-6 font-display text-4xl tracking-wide text-wc-text sm:text-5xl">PAGO PENDIENTE</h1>
                 <p class="mt-4 text-lg text-wc-text-secondary">Tu pago esta siendo procesado. Recibiras confirmacion por email cuando se complete.</p>
                 <p class="mt-2 text-sm text-wc-text-tertiary">Si pagaste con PSE o Efecty, puede tomar hasta 24 horas.</p>
-                <a href="{{ route('home') }}" class="mt-8 inline-flex items-center justify-center rounded-lg border border-wc-border px-6 py-3 text-sm font-medium text-wc-text-secondary hover:text-wc-text">Ir al Inicio</a>
+                <a href="{{ route('home') }}" class="mt-8 inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Ir al Inicio</a>
             </div>
 
         @else
@@ -141,8 +141,8 @@
                 <h1 class="mt-6 font-display text-4xl tracking-wide text-wc-text sm:text-5xl">PAGO RECHAZADO</h1>
                 <p class="mt-4 text-lg text-wc-text-secondary">No pudimos procesar tu pago. Verifica los datos de tu metodo de pago e intenta nuevamente.</p>
                 <div class="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                    <a href="{{ route('pagar') }}" class="inline-flex items-center justify-center rounded-lg bg-wc-accent px-6 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover">Intentar de nuevo</a>
-                    <a href="{{ route('home') }}" class="inline-flex items-center justify-center rounded-lg border border-wc-border px-6 py-3 text-sm font-medium text-wc-text-secondary hover:text-wc-text">Ir al Inicio</a>
+                    <a href="{{ route('pagar') }}" class="inline-flex items-center justify-center rounded-full bg-wc-accent px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover">Intentar de nuevo</a>
+                    <a href="{{ route('home') }}" class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Ir al Inicio</a>
                 </div>
             </div>
         @endif

@@ -13,108 +13,162 @@
     {{-- Plans Grid --}}
     <section class="bg-wc-bg">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+
+            {{-- Section heading --}}
+            <div class="mb-12 text-center">
+                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NUESTROS PLANES</h2>
+                <p class="mx-auto mt-3 max-w-lg text-wc-text-secondary">Cada plan incluye acceso completo a la plataforma. Elige el nivel de acompanamiento que necesitas.</p>
+            </div>
+
+            @php
+                $allFeatures = [
+                    'Entrenamiento personalizado desde cero',
+                    'Portal de cliente 24/7',
+                    'Evaluacion inicial + diagnostico',
+                    'Biblioteca de ejercicios con video',
+                    'Seguimiento de metricas y progreso',
+                    'Mediciones corporales + fotos',
+                    'Comunidad y chat grupal',
+                    'Ajuste mensual del programa',
+                    'Soporte por mensaje — respuesta 48h',
+                    'Nutricion 100% personalizada',
+                    'Macros y calorias ajustadas',
+                    'Recetas adaptadas a preferencias',
+                    'Guia de habitos y estilo de vida',
+                    'Seguimiento de sueno y estres',
+                    'Reporte mensual de progreso',
+                    'Ajuste quincenal del programa',
+                    'Soporte — respuesta 24h',
+                    'Check-in semanal en vivo',
+                    'Videollamada mensual',
+                    'Check-in semanal dedicado',
+                    'Videollamada mensual de revision',
+                    'Soporte prioritario — respuesta 8h',
+                    'Ajuste semanal del programa',
+                    'Analisis composicion corporal',
+                    'Estrategia de suplementacion',
+                    'Ciclo hormonal personalizado',
+                    'Bloodwork — analisis laboratorio',
+                    'Plan de viaje y contingencia',
+                    'Linea directa WhatsApp con coach',
+                ];
+
+                $esencialFeatures = array_slice($allFeatures, 0, 9);
+                $metodoFeatures   = array_slice($allFeatures, 0, 19);
+                $eliteFeatures    = $allFeatures;
+            @endphp
+
+            <div class="grid grid-cols-1 items-start gap-8 lg:grid-cols-3">
 
                 {{-- Esencial --}}
-                <div class="rounded-2xl border border-wc-border bg-wc-bg-tertiary p-8">
-                    <h2 class="font-display text-2xl tracking-wide text-wc-text">ESENCIAL</h2>
-                    <p class="mt-2 text-sm text-wc-text-secondary">Entrena con proposito. Primer paso real hacia resultados medibles.</p>
-                    <div class="mt-6">
-                        <span class="font-data text-4xl font-bold text-wc-text">$299.000</span>
-                        <span class="text-sm text-wc-text-tertiary">COP/mes</span>
+                <div class="flex h-full flex-col rounded-2xl border border-wc-border bg-wc-bg-tertiary p-8">
+                    <div class="mb-6">
+                        <h3 class="text-center font-display text-2xl tracking-wide text-wc-text">ESENCIAL</h3>
+                        <p class="mt-2 text-center text-sm text-wc-text-secondary">Entrena con proposito. Primer paso real hacia resultados medibles.</p>
                     </div>
-                    <a href="{{ route('pagar') }}?plan=esencial" class="mt-6 flex w-full items-center justify-center rounded-lg border border-wc-border bg-wc-bg px-6 py-3 text-sm font-medium text-wc-text hover:bg-wc-bg-tertiary">
+
+                    <div class="text-center">
+                        <span class="font-data text-5xl font-bold text-wc-text">$299,000</span>
+                        <span class="ml-1 text-sm text-wc-text-tertiary">COP/mes</span>
+                    </div>
+
+                    <a href="{{ route('pagar') }}?plan=esencial"
+                       class="mt-6 flex w-full items-center justify-center rounded-full border border-wc-border bg-wc-bg px-6 py-3 text-sm font-semibold text-wc-text transition hover:border-wc-accent hover:text-wc-accent">
                         Comenzar Esencial
                     </a>
-                    <ul class="mt-8 space-y-3">
-                        @foreach([
-                            'Entrenamiento personalizado desde cero',
-                            'Portal de cliente 24/7',
-                            'Evaluacion inicial + diagnostico',
-                            'Biblioteca de ejercicios con video',
-                            'Seguimiento de metricas y progreso',
-                            'Mediciones corporales + fotos',
-                            'Comunidad y chat grupal',
-                            'Ajuste mensual del programa',
-                            'Soporte por mensaje — respuesta 48h',
-                        ] as $feature)
-                        <li class="flex items-start gap-3 text-sm text-wc-text-secondary">
-                            <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                            {{ $feature }}
-                        </li>
+
+                    <ul class="mt-8 flex-1 space-y-3">
+                        @foreach($allFeatures as $feature)
+                            @if(in_array($feature, $esencialFeatures))
+                                <li class="flex items-start gap-3 text-sm text-wc-text-secondary">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                    {{ $feature }}
+                                </li>
+                            @else
+                                <li class="flex items-start gap-3 text-sm text-wc-text-tertiary/40 line-through">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-text-tertiary/30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                                    {{ $feature }}
+                                </li>
+                            @endif
                         @endforeach
                     </ul>
                 </div>
 
-                {{-- Metodo --}}
-                <div class="relative rounded-2xl border-2 border-wc-accent bg-wc-bg-tertiary p-8">
-                    <div class="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <span class="rounded-full bg-wc-accent px-4 py-1 text-xs font-semibold text-white">MEJOR VALOR</span>
+                {{-- Metodo (elevated / accent) --}}
+                <div class="relative flex h-full flex-col rounded-2xl border-2 border-wc-accent bg-wc-bg-tertiary p-8 shadow-lg shadow-wc-accent/10 lg:-mt-4 lg:mb-0 lg:pb-10 lg:pt-10">
+                    {{-- Badge --}}
+                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                        <span class="rounded-full bg-wc-accent px-5 py-1 text-xs font-bold tracking-wide text-white shadow-md">MEJOR VALOR</span>
                     </div>
-                    <h2 class="font-display text-2xl tracking-wide text-wc-text">METODO</h2>
-                    <p class="mt-2 text-sm text-wc-text-secondary">Entrenamiento + nutricion + habitos. El sistema completo.</p>
-                    <p class="mt-1 text-xs text-wc-accent">Elegido por el +60% de nuestros clientes</p>
-                    <div class="mt-6">
-                        <span class="font-data text-4xl font-bold text-wc-accent">$399.000</span>
-                        <span class="text-sm text-wc-text-tertiary">COP/mes</span>
+
+                    <div class="mb-6">
+                        <h3 class="text-center font-display text-2xl tracking-wide text-wc-text">METODO</h3>
+                        <p class="mt-2 text-center text-sm text-wc-text-secondary">Entrenamiento + nutricion + habitos. El sistema completo.</p>
+                        <p class="mt-1 text-center text-xs font-medium text-wc-accent">Elegido por el +60% de nuestros clientes</p>
                     </div>
-                    <a href="{{ route('pagar') }}?plan=metodo" class="mt-6 flex w-full items-center justify-center rounded-lg bg-wc-accent px-6 py-3 text-sm font-semibold text-white hover:bg-wc-accent-hover">
+
+                    <div class="text-center">
+                        <span class="font-data text-5xl font-bold text-wc-accent">$399,000</span>
+                        <span class="ml-1 text-sm text-wc-text-tertiary">COP/mes</span>
+                    </div>
+
+                    <a href="{{ route('pagar') }}?plan=metodo"
+                       class="mt-6 flex w-full items-center justify-center rounded-full bg-wc-accent px-6 py-3 text-sm font-bold text-white shadow-md transition hover:bg-wc-accent-hover hover:shadow-lg">
                         Comenzar Metodo
                     </a>
-                    <p class="mt-3 text-xs text-wc-text-tertiary">Todo lo del plan Esencial +</p>
-                    <ul class="mt-4 space-y-3">
-                        @foreach([
-                            'Nutricion 100% personalizada',
-                            'Macros y calorias ajustadas',
-                            'Recetas adaptadas a preferencias',
-                            'Guia de habitos y estilo de vida',
-                            'Seguimiento de sueno y estres',
-                            'Reporte mensual de progreso',
-                            'Ajuste quincenal del programa',
-                            'Soporte — respuesta 24h',
-                            'Check-in semanal en vivo',
-                            'Videollamada mensual',
-                        ] as $feature)
-                        <li class="flex items-start gap-3 text-sm text-wc-text-secondary">
-                            <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                            {{ $feature }}
-                        </li>
+
+                    <ul class="mt-8 flex-1 space-y-3">
+                        @foreach($allFeatures as $feature)
+                            @if(in_array($feature, $metodoFeatures))
+                                <li class="flex items-start gap-3 text-sm text-wc-text-secondary">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                    {{ $feature }}
+                                </li>
+                            @else
+                                <li class="flex items-start gap-3 text-sm text-wc-text-tertiary/40 line-through">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-text-tertiary/30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                                    {{ $feature }}
+                                </li>
+                            @endif
                         @endforeach
                     </ul>
                 </div>
 
                 {{-- Elite --}}
-                <div class="rounded-2xl border border-wc-border bg-wc-bg-tertiary p-8">
-                    <div class="mb-2">
-                        <span class="rounded-full bg-wc-text/10 px-3 py-1 text-xs font-semibold text-wc-text-secondary">SOLO 5 CUPOS</span>
+                <div class="flex h-full flex-col rounded-2xl border border-wc-border bg-wc-bg-tertiary p-8">
+                    {{-- Badge --}}
+                    <div class="mb-4 text-center">
+                        <span class="inline-block rounded-full border border-wc-accent/30 bg-wc-accent/10 px-4 py-1 text-xs font-bold tracking-wide text-wc-accent">SOLO 5 CUPOS</span>
                     </div>
-                    <h2 class="font-display text-2xl tracking-wide text-wc-text">ELITE</h2>
-                    <p class="mt-2 text-sm text-wc-text-secondary">Atencion total. Resultados sin excusas. Para quienes exigen lo mejor.</p>
-                    <div class="mt-6">
-                        <span class="font-data text-4xl font-bold text-wc-text">$549.000</span>
-                        <span class="text-sm text-wc-text-tertiary">COP/mes</span>
+
+                    <div class="mb-6">
+                        <h3 class="text-center font-display text-2xl tracking-wide text-wc-text">ELITE</h3>
+                        <p class="mt-2 text-center text-sm text-wc-text-secondary">Atencion total. Resultados sin excusas. Para quienes exigen lo mejor.</p>
                     </div>
-                    <a href="{{ route('pagar') }}?plan=elite" class="mt-6 flex w-full items-center justify-center rounded-lg border border-wc-border bg-wc-bg px-6 py-3 text-sm font-medium text-wc-text hover:bg-wc-bg-tertiary">
+
+                    <div class="text-center">
+                        <span class="font-data text-5xl font-bold text-wc-text">$549,000</span>
+                        <span class="ml-1 text-sm text-wc-text-tertiary">COP/mes</span>
+                    </div>
+
+                    <a href="{{ route('pagar') }}?plan=elite"
+                       class="mt-6 flex w-full items-center justify-center rounded-full border border-wc-border bg-wc-bg px-6 py-3 text-sm font-semibold text-wc-text transition hover:border-wc-accent hover:text-wc-accent">
                         Comenzar Elite
                     </a>
-                    <p class="mt-3 text-xs text-wc-text-tertiary">Todo lo del plan Metodo +</p>
-                    <ul class="mt-4 space-y-3">
-                        @foreach([
-                            'Check-in semanal dedicado',
-                            'Videollamada mensual de revision',
-                            'Soporte prioritario — respuesta 8h',
-                            'Ajuste semanal del programa',
-                            'Analisis composicion corporal',
-                            'Estrategia de suplementacion',
-                            'Ciclo hormonal personalizado',
-                            'Bloodwork — analisis laboratorio',
-                            'Plan de viaje y contingencia',
-                            'Linea directa WhatsApp con coach',
-                        ] as $feature)
-                        <li class="flex items-start gap-3 text-sm text-wc-text-secondary">
-                            <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                            {{ $feature }}
-                        </li>
+
+                    <ul class="mt-8 flex-1 space-y-3">
+                        @foreach($allFeatures as $feature)
+                            @if(in_array($feature, $eliteFeatures))
+                                <li class="flex items-start gap-3 text-sm text-wc-text-secondary">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                    {{ $feature }}
+                                </li>
+                            @else
+                                <li class="flex items-start gap-3 text-sm text-wc-text-tertiary/40 line-through">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-text-tertiary/30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                                    {{ $feature }}
+                                </li>
+                            @endif
                         @endforeach
                     </ul>
                 </div>
@@ -123,11 +177,11 @@
             {{-- Discounts --}}
             <div class="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-wc-text-secondary">
                 <div class="flex items-center gap-2">
-                    <span class="rounded bg-wc-accent/10 px-2 py-1 text-xs font-bold text-wc-accent">-10%</span>
+                    <span class="rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-bold text-wc-accent">-10%</span>
                     Pago trimestral
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="rounded bg-wc-accent/10 px-2 py-1 text-xs font-bold text-wc-accent">-20%</span>
+                    <span class="rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-bold text-wc-accent">-20%</span>
                     Pago anual
                 </div>
                 <div class="flex items-center gap-2">
@@ -141,39 +195,79 @@
     {{-- Trust --}}
     <section class="bg-wc-bg-tertiary">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+            <div class="mb-10 text-center">
+                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">SIN LETRA PEQUENA</h2>
+                <p class="mx-auto mt-3 max-w-md text-wc-text-secondary">Transparencia total. Asi trabajamos.</p>
+            </div>
             <div class="grid grid-cols-2 gap-6 sm:grid-cols-4">
                 <div class="text-center">
-                    <p class="font-data text-2xl font-bold text-wc-accent">0</p>
-                    <p class="mt-1 text-xs text-wc-text-secondary">Contratos largo plazo</p>
+                    <p class="font-data text-3xl font-bold text-wc-accent">0</p>
+                    <p class="mt-1 text-sm text-wc-text-secondary">Contratos largo plazo</p>
                 </div>
                 <div class="text-center">
-                    <p class="font-data text-2xl font-bold text-wc-accent">0</p>
-                    <p class="mt-1 text-xs text-wc-text-secondary">Suplementos obligatorios</p>
+                    <p class="font-data text-3xl font-bold text-wc-accent">0</p>
+                    <p class="mt-1 text-sm text-wc-text-secondary">Suplementos obligatorios</p>
                 </div>
                 <div class="text-center">
-                    <p class="font-data text-2xl font-bold text-wc-accent">SSL</p>
-                    <p class="mt-1 text-xs text-wc-text-secondary">Pago seguro Wompi</p>
+                    <p class="font-data text-3xl font-bold text-wc-accent">SSL</p>
+                    <p class="mt-1 text-sm text-wc-text-secondary">Pago seguro Wompi</p>
                 </div>
                 <div class="text-center">
-                    <p class="font-data text-2xl font-bold text-wc-accent">24h</p>
-                    <p class="mt-1 text-xs text-wc-text-secondary">Cancela sin penalidad</p>
+                    <p class="font-data text-3xl font-bold text-wc-accent">24h</p>
+                    <p class="mt-1 text-sm text-wc-text-secondary">Cancela sin penalidad</p>
                 </div>
             </div>
             <p class="mt-8 text-center text-xs text-wc-text-tertiary">Cancelacion sin penalizacion. Reembolsos evaluados antes de entregar el plan.</p>
         </div>
     </section>
 
-    {{-- CTA --}}
+    {{-- FAQ --}}
     <section class="bg-wc-bg">
+        <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
+            <div class="mb-10 text-center">
+                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">PREGUNTAS FRECUENTES</h2>
+                <p class="mx-auto mt-3 max-w-md text-wc-text-secondary">Resolvemos tus dudas antes de empezar.</p>
+            </div>
+
+            <div class="divide-y divide-wc-border" x-data="{ open: null }">
+                @foreach([
+                    ['question' => 'Puedo cambiar de plan despues?', 'answer' => 'Si. Puedes subir o bajar de plan en cualquier momento. El cambio se aplica en tu siguiente ciclo de facturacion.'],
+                    ['question' => 'Hay algun contrato de permanencia?', 'answer' => 'No. Todos los planes son mes a mes. Cancela cuando quieras sin penalizaciones ni cargos extra.'],
+                    ['question' => 'Que metodos de pago aceptan?', 'answer' => 'Aceptamos tarjeta de credito, debito, PSE y Nequi a traves de Wompi, nuestra pasarela de pago segura.'],
+                    ['question' => 'Que pasa si no veo resultados?', 'answer' => 'Ofrecemos garantia de 7 dias. Si no estas satisfecho, te devolvemos el dinero sin preguntas.'],
+                    ['question' => 'Necesito equipo de gimnasio?', 'answer' => 'Depende. Adaptamos tu plan a lo que tengas disponible: gimnasio completo, equipo en casa, o sin equipo.'],
+                    ['question' => 'Cuanto dura cada sesion de entrenamiento?', 'answer' => 'Entre 45 y 75 minutos dependiendo de tu plan y nivel. Todo esta disenado para ser eficiente y efectivo.'],
+                ] as $index => $faq)
+                    <div class="py-5">
+                        <button @click="open === {{ $index }} ? open = null : open = {{ $index }}"
+                                class="flex w-full items-center justify-between text-left">
+                            <span class="text-sm font-medium text-wc-text">{{ $faq['question'] }}</span>
+                            <svg class="ml-4 h-4 w-4 shrink-0 text-wc-text-tertiary transition-transform duration-200"
+                                 :class="{ 'rotate-180': open === {{ $index }} }"
+                                 fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </button>
+                        <div x-show="open === {{ $index }}" x-collapse x-cloak class="mt-3">
+                            <p class="text-sm leading-relaxed text-wc-text-secondary">{{ $faq['answer'] }}</p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    {{-- CTA --}}
+    <section class="bg-wc-bg-tertiary">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-            <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary p-10 sm:p-16">
+            <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg p-10 sm:p-16">
                 <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
                 <div class="relative text-center">
                     <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">TIENES DUDAS?</h2>
                     <p class="mx-auto mt-4 max-w-md text-wc-text-secondary">Un sistema completo de entrenamiento, nutricion y habitos por menos de $13.000 al dia.</p>
                     <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                        <a href="{{ route('inscripcion') }}" class="inline-flex items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">Comenzar Ahora</a>
-                        <a href="{{ route('faq') }}" class="inline-flex items-center justify-center rounded-lg border border-wc-border px-8 py-3 text-base font-medium text-wc-text-secondary hover:text-wc-text">Ver FAQ completo</a>
+                        <a href="{{ route('inscripcion') }}" class="inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3 text-base font-semibold text-white shadow-md transition hover:bg-wc-accent-hover hover:shadow-lg">Comenzar Ahora</a>
+                        <a href="{{ route('faq') }}" class="inline-flex items-center justify-center rounded-full border border-wc-border px-8 py-3 text-base font-medium text-wc-text-secondary transition hover:border-wc-accent hover:text-wc-accent">Ver FAQ completo</a>
                     </div>
                 </div>
             </div>

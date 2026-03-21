@@ -13,7 +13,7 @@
                 Coaching 1:1 en persona. El mismo metodo basado en ciencia de WellCore, con la ventaja del acompanamiento presencial.
             </p>
             <div class="mt-8">
-                <a href="{{ route('presencial.form') }}" class="rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
+                <a href="{{ route('presencial.form') }}" class="rounded-full bg-wc-accent px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover">
                     Inscribirme
                 </a>
             </div>

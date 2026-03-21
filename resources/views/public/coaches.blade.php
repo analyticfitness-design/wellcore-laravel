@@ -17,7 +17,7 @@
                 comprometidos y un modelo de negocio disenado para que crezcas.
             </p>
             <div class="mt-10">
-                <a href="{{ route('coaches.apply') }}" class="inline-flex items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
+                <a href="{{ route('coaches.apply') }}" class="inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover">
                     Aplica Ahora
                     <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
@@ -210,7 +210,7 @@
                 Si cumples con los requisitos y quieres formar parte de un equipo basado en ciencia, aplica hoy.
             </p>
             <div class="mt-8">
-                <a href="{{ route('coaches.apply') }}" class="inline-flex items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
+                <a href="{{ route('coaches.apply') }}" class="inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover">
                     Aplica como Coach
                     <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />

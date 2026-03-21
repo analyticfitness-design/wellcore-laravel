@@ -15,7 +15,7 @@
                     </div>
                     <h2 class="mt-4 font-display text-2xl tracking-wide text-wc-text">INSCRIPCION RECIBIDA</h2>
                     <p class="mt-2 text-wc-text-secondary">Te contactaremos por WhatsApp en las proximas 24 horas para agendar tu primera sesion.</p>
-                    <a href="{{ route('home') }}" class="mt-6 inline-flex rounded-lg bg-wc-accent px-6 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover">Volver al Inicio</a>
+                    <a href="{{ route('home') }}" class="mt-6 inline-flex rounded-full bg-wc-accent px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover">Volver al Inicio</a>
                 </div>
             @else
                 <form wire:submit="submit" class="space-y-6">
@@ -116,7 +116,7 @@
                         </div>
                     @endif
 
-                    <button type="submit" wire:loading.attr="disabled" class="w-full rounded-lg bg-wc-accent px-6 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover disabled:opacity-50">
+                    <button type="submit" wire:loading.attr="disabled" class="w-full rounded-full bg-wc-accent px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover disabled:opacity-50">
                         <span wire:loading.remove>Enviar Inscripcion</span>
                         <span wire:loading>Enviando...</span>
                     </button>

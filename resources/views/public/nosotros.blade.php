@@ -15,7 +15,12 @@
     {{-- 2. MISSION / VISION --}}
     <section class="bg-wc-bg">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <div class="text-center">
+                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NUESTRA ESENCIA</h2>
+                <p class="mt-2 text-wc-text-secondary">Lo que nos mueve y hacia donde vamos.</p>
+            </div>
+
+            <div class="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-2">
                 {{-- Mision --}}
                 <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8">
                     <div class="flex items-center gap-3">
@@ -25,7 +30,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.468 5.99 5.99 0 00-1.925 3.547 5.975 5.975 0 01-2.133-1.001A3.75 3.75 0 0012 18z" />
                             </svg>
                         </div>
-                        <h2 class="font-display text-3xl tracking-wide text-wc-text">NUESTRA MISION</h2>
+                        <h3 class="font-display text-2xl tracking-wide text-wc-text">NUESTRA MISION</h3>
                     </div>
                     <p class="mt-6 text-wc-text-secondary leading-relaxed">
                         Brindar coaching fitness de la mas alta calidad, combinando ciencia del ejercicio,
@@ -48,7 +53,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
                         </div>
-                        <h2 class="font-display text-3xl tracking-wide text-wc-text">NUESTRA VISION</h2>
+                        <h3 class="font-display text-2xl tracking-wide text-wc-text">NUESTRA VISION</h3>
                     </div>
                     <p class="mt-6 text-wc-text-secondary leading-relaxed">
                         Ser la plataforma de coaching fitness numero uno en Latinoamerica. Creemos que el acceso
@@ -270,7 +275,12 @@
     {{-- 5. STATS GRID --}}
     <section class="bg-wc-bg-tertiary">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 gap-8 lg:grid-cols-4">
+            <div class="text-center">
+                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">EN NUMEROS</h2>
+                <p class="mt-2 text-wc-text-secondary">WellCore en cifras.</p>
+            </div>
+
+            <div class="mt-14 grid grid-cols-2 gap-8 lg:grid-cols-4">
                 {{-- Clientes --}}
                 <div class="text-center">
                     <p class="font-data text-4xl font-bold text-wc-accent sm:text-5xl">500+</p>
@@ -384,7 +394,7 @@
                 Conoce nuestros planes y comienza tu proceso con un equipo que prioriza la ciencia y los resultados.
             </p>
             <div class="mt-8">
-                <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
+                <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
                     Ver Planes
                 </a>
             </div>
