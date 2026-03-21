@@ -14,7 +14,7 @@
 
                 <div>
                     <h2 class="font-display text-xl tracking-wide text-wc-text">1. ACEPTACION DE LOS TERMINOS</h2>
-                    <p class="mt-3">Al acceder y utilizar la plataforma WellCore Fitness (en adelante "la Plataforma"), operada por WellCore Fitness SAS (en adelante "WellCore"), con domicilio en Bogota, Colombia, usted acepta cumplir y estar sujeto a los presentes Terminos de Servicio. Si no esta de acuerdo con alguno de estos terminos, le solicitamos no utilizar nuestros servicios.</p>
+                    <p class="mt-3">Al acceder y utilizar la plataforma WellCore Fitness (en adelante "la Plataforma"), operada por WellCore Fitness SAS (en adelante "WellCore"), con domicilio en Bucaramanga, Santander, Colombia, usted acepta cumplir y estar sujeto a los presentes Terminos de Servicio. Si no esta de acuerdo con alguno de estos terminos, le solicitamos no utilizar nuestros servicios.</p>
                 </div>
 
                 <div>
@@ -83,7 +83,7 @@
 
                 <div>
                     <h2 class="font-display text-xl tracking-wide text-wc-text">12. LEY APLICABLE Y JURISDICCION</h2>
-                    <p class="mt-3">Estos terminos se rigen por las leyes de la Republica de Colombia. Cualquier controversia sera sometida a los tribunales competentes de la ciudad de Bogota, Colombia.</p>
+                    <p class="mt-3">Estos terminos se rigen por las leyes de la Republica de Colombia. Cualquier controversia sera sometida a los tribunales competentes de la ciudad de Bucaramanga, Santander, Colombia.</p>
                 </div>
 
                 <div>

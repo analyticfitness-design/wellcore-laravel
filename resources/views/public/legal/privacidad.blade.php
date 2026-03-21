@@ -14,7 +14,7 @@
 
                 <div>
                     <h2 class="font-display text-xl tracking-wide text-wc-text">1. RESPONSABLE DEL TRATAMIENTO</h2>
-                    <p class="mt-3">WellCore Fitness SAS, con domicilio en Bogota, Colombia, es el responsable del tratamiento de sus datos personales, en cumplimiento de la Ley 1581 de 2012 de Proteccion de Datos Personales y su decreto reglamentario 1377 de 2013.</p>
+                    <p class="mt-3">WellCore Fitness SAS, con domicilio en Bucaramanga, Santander, Colombia, es el responsable del tratamiento de sus datos personales, en cumplimiento de la Ley 1581 de 2012 de Proteccion de Datos Personales y su decreto reglamentario 1377 de 2013.</p>
                 </div>
 
                 <div>
