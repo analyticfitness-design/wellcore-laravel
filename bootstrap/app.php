@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             \App\Http\Middleware\TrackReferral::class,
+            \App\Http\Middleware\ContentSecurityPolicy::class,
         ]);
 
         $middleware->alias([

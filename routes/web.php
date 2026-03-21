@@ -69,7 +69,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 // Chatbot API (public, no auth required)
-Route::post('/api/chat', [ChatController::class, 'send'])->name('api.chat');
+Route::post('/api/chat', [ChatController::class, 'send'])->name('api.chat')->middleware('throttle:chat');
 
 // Public marketing pages
 Route::get('/', function () {
@@ -114,7 +114,7 @@ Route::get('/presencial/inscripcion', PresencialForm::class)->name('presencial.f
 // RISE Enrollment
 Route::get('/rise-enroll', RiseEnrollment::class)->name('rise.enroll');
 
-Route::get('/inscripcion', \App\Livewire\InscriptionForm::class)->name('inscripcion');
+Route::get('/inscripcion', \App\Livewire\InscriptionForm::class)->name('inscripcion')->middleware('throttle:inscription');
 Route::get('/pagar', \App\Livewire\Checkout::class)->name('pagar');
 Route::get('/pago-exitoso', [\App\Http\Controllers\PaymentController::class, 'result'])->name('pago-exitoso');
 Route::get('/pago-confirmado', [\App\Http\Controllers\PaymentController::class, 'result'])->name('pago-confirmado');
@@ -132,14 +132,14 @@ Route::prefix('tienda')->name('shop.')->group(function () {
 });
 
 // Newsletter API (public, no auth required)
-Route::post('/api/newsletter', [NewsletterController::class, 'subscribe'])->name('api.newsletter');
+Route::post('/api/newsletter', [NewsletterController::class, 'subscribe'])->name('api.newsletter')->middleware('throttle:newsletter');
 
 // Webhook routes (excluded from CSRF via bootstrap/app.php)
-Route::post('/webhooks/wompi', [WebhookController::class, 'wompi'])->name('webhooks.wompi');
+Route::post('/webhooks/wompi', [WebhookController::class, 'wompi'])->name('webhooks.wompi')->middleware('throttle:webhook');
 
 // Auth routes (guest only — redirect if already logged in)
 Route::middleware('guest:wellcore')->group(function () {
-    Route::get('/login', Login::class)->name('login');
+    Route::get('/login', Login::class)->name('login')->middleware('throttle:login');
     Route::get('/forgot-password', ForgotPassword::class)->name('password.request');
     Route::get('/reset-password/{token}', \App\Livewire\Auth\ResetPassword::class)->name('password.reset');
     Route::get('/auth/google', [\App\Http\Controllers\GoogleAuthController::class, 'redirect'])->name('auth.google');
