@@ -1,6 +1,6 @@
 <x-layouts.public>
-    <x-slot:title>Planes y Precios - WellCore Fitness</x-slot:title>
-    <x-slot:description>Planes de coaching fitness personalizado desde $299.000 COP/mes. Esencial, Metodo y Elite. Sin contratos, cancela cuando quieras.</x-slot:description>
+    <x-slot:title>{{ __('planes.meta_title') }}</x-slot:title>
+    <x-slot:description>{{ __('planes.meta_description') }}</x-slot:description>
 
     <x-json-ld :data="[
         '@context' => 'https://schema.org',
@@ -32,9 +32,9 @@
         </div>
         <div class="relative mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 sm:py-24 lg:px-8" data-animate="fadeInUp">
             <h1 class="font-display text-4xl tracking-wide text-wc-text sm:text-5xl lg:text-6xl">
-                ELIGE TU <span class="text-gradient-accent">PLAN</span>
+                {{ __('planes.hero_title_1') }}<span class="text-gradient-accent">{{ __('planes.hero_title_acc') }}</span>
             </h1>
-            <p class="mx-auto mt-4 max-w-xl text-lg text-wc-text-secondary">Sin contratos de permanencia. Cancela cuando quieras. Invierte en lo que funciona.</p>
+            <p class="mx-auto mt-4 max-w-xl text-lg text-wc-text-secondary">{{ __('planes.hero_subtitle') }}</p>
         </div>
     </section>
 
@@ -62,8 +62,8 @@
 
             {{-- Section heading --}}
             <div class="mb-10 text-center">
-                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NUESTROS PLANES</h2>
-                <p class="mx-auto mt-3 max-w-lg text-wc-text-secondary">Cada plan incluye acceso completo a la plataforma. Elige el nivel de acompañamiento que necesitas.</p>
+                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('planes.section_title') }}</h2>
+                <p class="mx-auto mt-3 max-w-lg text-wc-text-secondary">{{ __('planes.section_subtitle') }}</p>
             </div>
 
             {{-- Billing Toggle --}}
@@ -72,19 +72,19 @@
                     <button @click="billing = 'mensual'"
                             :class="billing === 'mensual' ? 'bg-wc-accent text-white shadow-md' : 'text-wc-text-secondary hover:text-wc-text'"
                             class="rounded-full px-5 py-2 text-sm font-medium transition-all duration-200">
-                        Mensual
+                        {{ __('planes.billing_mensual') }}
                     </button>
                     <button @click="billing = 'trimestral'"
                             :class="billing === 'trimestral' ? 'bg-wc-accent text-white shadow-md' : 'text-wc-text-secondary hover:text-wc-text'"
                             class="rounded-full px-5 py-2 text-sm font-medium transition-all duration-200">
-                        Trimestral
+                        {{ __('planes.billing_trimestral') }}
                         <span class="ml-1 rounded-full bg-wc-accent/20 px-1.5 py-0.5 text-xs font-bold text-wc-accent"
                               :class="billing === 'trimestral' ? 'bg-white/20 text-white' : ''">-10%</span>
                     </button>
                     <button @click="billing = 'anual'"
                             :class="billing === 'anual' ? 'bg-wc-accent text-white shadow-md' : 'text-wc-text-secondary hover:text-wc-text'"
                             class="rounded-full px-5 py-2 text-sm font-medium transition-all duration-200">
-                        Anual
+                        {{ __('planes.billing_anual') }}
                         <span class="ml-1 rounded-full bg-wc-accent/20 px-1.5 py-0.5 text-xs font-bold text-wc-accent"
                               :class="billing === 'anual' ? 'bg-white/20 text-white' : ''">-20%</span>
                     </button>
@@ -93,35 +93,35 @@
 
             @php
                 $allFeatures = [
-                    'Entrenamiento personalizado desde cero',
-                    'Portal de cliente 24/7',
-                    'Evaluacion inicial + diagnostico',
-                    'Biblioteca de ejercicios con video',
-                    'Seguimiento de metricas y progreso',
-                    'Mediciones corporales + fotos',
-                    'Comunidad y chat grupal',
-                    'Ajuste mensual del programa',
-                    'Soporte por mensaje — respuesta 48h',
-                    'Nutricion 100% personalizada',
-                    'Macros y calorias ajustadas',
-                    'Recetas adaptadas a preferencias',
-                    'Guia de habitos y estilo de vida',
-                    'Seguimiento de sueño y estres',
-                    'Reporte mensual de progreso',
-                    'Ajuste quincenal del programa',
-                    'Soporte — respuesta 24h',
-                    'Check-in semanal en vivo',
-                    'Videollamada mensual',
-                    'Check-in semanal dedicado',
-                    'Videollamada mensual de revision',
-                    'Soporte prioritario — respuesta 8h',
-                    'Ajuste semanal del programa',
-                    'Analisis composicion corporal',
-                    'Estrategia de suplementacion',
-                    'Ciclo hormonal personalizado',
-                    'Bloodwork — analisis laboratorio',
-                    'Plan de viaje y contingencia',
-                    'Linea directa WhatsApp con coach',
+                    __('planes.feat_01'),
+                    __('planes.feat_02'),
+                    __('planes.feat_03'),
+                    __('planes.feat_04'),
+                    __('planes.feat_05'),
+                    __('planes.feat_06'),
+                    __('planes.feat_07'),
+                    __('planes.feat_08'),
+                    __('planes.feat_09'),
+                    __('planes.feat_10'),
+                    __('planes.feat_11'),
+                    __('planes.feat_12'),
+                    __('planes.feat_13'),
+                    __('planes.feat_14'),
+                    __('planes.feat_15'),
+                    __('planes.feat_16'),
+                    __('planes.feat_17'),
+                    __('planes.feat_18'),
+                    __('planes.feat_19'),
+                    __('planes.feat_20'),
+                    __('planes.feat_21'),
+                    __('planes.feat_22'),
+                    __('planes.feat_23'),
+                    __('planes.feat_24'),
+                    __('planes.feat_25'),
+                    __('planes.feat_26'),
+                    __('planes.feat_27'),
+                    __('planes.feat_28'),
+                    __('planes.feat_29'),
                 ];
 
                 $esencialFeatures = array_slice($allFeatures, 0, 9);
@@ -135,13 +135,13 @@
                 <div class="card-hover-lift flex h-full flex-col rounded-2xl border border-wc-border bg-wc-bg-tertiary p-8"
                      data-animate="fadeInUp" data-delay="100">
                     <div class="mb-6">
-                        <h3 class="text-center font-display text-2xl tracking-wide text-wc-text">ESENCIAL</h3>
-                        <p class="mt-2 text-center text-sm text-wc-text-secondary">Entrena con proposito. Primer paso real hacia resultados medibles.</p>
+                        <h3 class="text-center font-display text-2xl tracking-wide text-wc-text">{{ __('planes.esencial_name') }}</h3>
+                        <p class="mt-2 text-center text-sm text-wc-text-secondary">{{ __('planes.esencial_desc') }}</p>
                     </div>
 
                     <div class="relative text-center">
                         <span class="font-data text-5xl font-bold text-wc-text" x-text="esencial"></span>
-                        <span class="ml-1 text-sm text-wc-text-tertiary">COP/mes</span>
+                        <span class="ml-1 text-sm text-wc-text-tertiary">{{ __('planes.cop_mes') }}</span>
                         <div x-show="savingsEsencial !== null"
                              x-transition:enter="transition ease-out duration-200"
                              x-transition:enter-start="opacity-0 -translate-y-1"
@@ -152,14 +152,14 @@
                              x-cloak
                              class="mt-2">
                             <span class="inline-flex items-center rounded-full bg-green-500/10 px-3 py-1 text-xs font-bold text-green-500">
-                                Ahorro: <span class="ml-1" x-text="savingsEsencial"></span>
+                                {{ __('planes.savings_label') }} <span class="ml-1" x-text="savingsEsencial"></span>
                             </span>
                         </div>
                     </div>
 
                     <a href="{{ route('pagar') }}?plan=esencial"
                        class="btn-press mt-6 flex w-full items-center justify-center rounded-full border border-wc-border bg-wc-bg px-6 py-3 text-sm font-semibold text-wc-text transition hover:border-wc-accent hover:text-wc-accent">
-                        Comenzar Esencial
+                        {{ __('planes.esencial_cta') }}
                     </a>
 
                     <ul class="mt-8 flex-1 space-y-3">
@@ -184,18 +184,18 @@
                      data-animate="fadeInUp" data-delay="200">
                     {{-- Badge --}}
                     <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                        <span class="badge-shine rounded-full bg-wc-accent px-5 py-1 text-xs font-bold tracking-wide text-white shadow-md">MEJOR VALOR</span>
+                        <span class="badge-shine rounded-full bg-wc-accent px-5 py-1 text-xs font-bold tracking-wide text-white shadow-md">{{ __('planes.metodo_badge') }}</span>
                     </div>
 
                     <div class="mb-6">
-                        <h3 class="text-center font-display text-2xl tracking-wide text-wc-text">METODO</h3>
-                        <p class="mt-2 text-center text-sm text-wc-text-secondary">Entrenamiento + nutricion + habitos. El sistema completo.</p>
-                        <p class="mt-1 text-center text-xs font-medium text-wc-accent">Elegido por el +60% de nuestros clientes</p>
+                        <h3 class="text-center font-display text-2xl tracking-wide text-wc-text">{{ __('planes.metodo_name') }}</h3>
+                        <p class="mt-2 text-center text-sm text-wc-text-secondary">{{ __('planes.metodo_desc') }}</p>
+                        <p class="mt-1 text-center text-xs font-medium text-wc-accent">{{ __('planes.metodo_popular') }}</p>
                     </div>
 
                     <div class="relative text-center">
                         <span class="font-data text-5xl font-bold text-wc-accent" x-text="metodo"></span>
-                        <span class="ml-1 text-sm text-wc-text-tertiary">COP/mes</span>
+                        <span class="ml-1 text-sm text-wc-text-tertiary">{{ __('planes.cop_mes') }}</span>
                         <div x-show="savingsMetodo !== null"
                              x-transition:enter="transition ease-out duration-200"
                              x-transition:enter-start="opacity-0 -translate-y-1"
@@ -206,14 +206,14 @@
                              x-cloak
                              class="mt-2">
                             <span class="inline-flex items-center rounded-full bg-green-500/10 px-3 py-1 text-xs font-bold text-green-500">
-                                Ahorro: <span class="ml-1" x-text="savingsMetodo"></span>
+                                {{ __('planes.savings_label') }} <span class="ml-1" x-text="savingsMetodo"></span>
                             </span>
                         </div>
                     </div>
 
                     <a href="{{ route('pagar') }}?plan=metodo"
                        class="btn-press pulse-glow mt-6 flex w-full items-center justify-center rounded-full bg-wc-accent px-6 py-3 text-sm font-bold text-white shadow-md transition hover:bg-wc-accent-hover hover:shadow-lg">
-                        Comenzar Metodo
+                        {{ __('planes.metodo_cta') }}
                     </a>
 
                     <ul class="mt-8 flex-1 space-y-3">
@@ -238,17 +238,17 @@
                      data-animate="fadeInUp" data-delay="300">
                     {{-- Badge --}}
                     <div class="mb-4 text-center">
-                        <span class="inline-block rounded-full border border-wc-accent/30 bg-wc-accent/10 px-4 py-1 text-xs font-bold tracking-wide text-wc-accent">SOLO 5 CUPOS</span>
+                        <span class="inline-block rounded-full border border-wc-accent/30 bg-wc-accent/10 px-4 py-1 text-xs font-bold tracking-wide text-wc-accent">{{ __('planes.elite_badge') }}</span>
                     </div>
 
                     <div class="mb-6">
-                        <h3 class="text-center font-display text-2xl tracking-wide text-wc-text">ELITE</h3>
-                        <p class="mt-2 text-center text-sm text-wc-text-secondary">Atencion total. Resultados sin excusas. Para quienes exigen lo mejor.</p>
+                        <h3 class="text-center font-display text-2xl tracking-wide text-wc-text">{{ __('planes.elite_name') }}</h3>
+                        <p class="mt-2 text-center text-sm text-wc-text-secondary">{{ __('planes.elite_desc') }}</p>
                     </div>
 
                     <div class="relative text-center">
                         <span class="font-data text-5xl font-bold text-wc-text" x-text="elite"></span>
-                        <span class="ml-1 text-sm text-wc-text-tertiary">COP/mes</span>
+                        <span class="ml-1 text-sm text-wc-text-tertiary">{{ __('planes.cop_mes') }}</span>
                         <div x-show="savingsElite !== null"
                              x-transition:enter="transition ease-out duration-200"
                              x-transition:enter-start="opacity-0 -translate-y-1"
@@ -259,14 +259,14 @@
                              x-cloak
                              class="mt-2">
                             <span class="inline-flex items-center rounded-full bg-green-500/10 px-3 py-1 text-xs font-bold text-green-500">
-                                Ahorro: <span class="ml-1" x-text="savingsElite"></span>
+                                {{ __('planes.savings_label') }} <span class="ml-1" x-text="savingsElite"></span>
                             </span>
                         </div>
                     </div>
 
                     <a href="{{ route('pagar') }}?plan=elite"
                        class="btn-press mt-6 flex w-full items-center justify-center rounded-full border border-wc-border bg-wc-bg px-6 py-3 text-sm font-semibold text-wc-text transition hover:border-wc-accent hover:text-wc-accent">
-                        Comenzar Elite
+                        {{ __('planes.elite_cta') }}
                     </a>
 
                     <ul class="mt-8 flex-1 space-y-3">
@@ -291,15 +291,15 @@
             <div class="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-wc-text-secondary">
                 <div class="flex items-center gap-2">
                     <span class="rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-bold text-wc-accent">-10%</span>
-                    Pago trimestral
+                    {{ __('planes.discount_trimestral') }}
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-bold text-wc-accent">-20%</span>
-                    Pago anual
+                    {{ __('planes.discount_anual') }}
                 </div>
                 <div class="flex items-center gap-2">
                     <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>
-                    Garantia 7 dias
+                    {{ __('planes.discount_garantia') }}
                 </div>
             </div>
         </div>
@@ -311,28 +311,28 @@
     <section class="bg-wc-bg-tertiary">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-10 text-center">
-                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">SIN LETRA PEQUENA</h2>
-                <p class="mx-auto mt-3 max-w-md text-wc-text-secondary">Transparencia total. Asi trabajamos.</p>
+                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('planes.trust_title') }}</h2>
+                <p class="mx-auto mt-3 max-w-md text-wc-text-secondary">{{ __('planes.trust_subtitle') }}</p>
             </div>
             <div class="grid grid-cols-2 gap-6 sm:grid-cols-4">
                 <div class="scroll-reveal text-center">
-                    <p class="counter-highlight font-data text-3xl font-bold text-wc-accent" data-counter="0">0</p>
-                    <p class="mt-1 text-sm text-wc-text-secondary">Contratos largo plazo</p>
+                    <p class="counter-highlight font-data text-3xl font-bold text-wc-accent" data-counter="0">{{ __('planes.trust_stat1_value') }}</p>
+                    <p class="mt-1 text-sm text-wc-text-secondary">{{ __('planes.trust_stat1_label') }}</p>
                 </div>
                 <div class="scroll-reveal text-center">
-                    <p class="counter-highlight font-data text-3xl font-bold text-wc-accent" data-counter="0">0</p>
-                    <p class="mt-1 text-sm text-wc-text-secondary">Suplementos obligatorios</p>
+                    <p class="counter-highlight font-data text-3xl font-bold text-wc-accent" data-counter="0">{{ __('planes.trust_stat2_value') }}</p>
+                    <p class="mt-1 text-sm text-wc-text-secondary">{{ __('planes.trust_stat2_label') }}</p>
                 </div>
                 <div class="scroll-reveal text-center">
-                    <p class="counter-highlight font-data text-3xl font-bold text-wc-accent">SSL</p>
-                    <p class="mt-1 text-sm text-wc-text-secondary">Pago seguro Wompi</p>
+                    <p class="counter-highlight font-data text-3xl font-bold text-wc-accent">{{ __('planes.trust_stat3_value') }}</p>
+                    <p class="mt-1 text-sm text-wc-text-secondary">{{ __('planes.trust_stat3_label') }}</p>
                 </div>
                 <div class="scroll-reveal text-center">
-                    <p class="counter-highlight font-data text-3xl font-bold text-wc-accent">24h</p>
-                    <p class="mt-1 text-sm text-wc-text-secondary">Cancela sin penalidad</p>
+                    <p class="counter-highlight font-data text-3xl font-bold text-wc-accent">{{ __('planes.trust_stat4_value') }}</p>
+                    <p class="mt-1 text-sm text-wc-text-secondary">{{ __('planes.trust_stat4_label') }}</p>
                 </div>
             </div>
-            <p class="mt-8 text-center text-xs text-wc-text-tertiary">Cancelacion sin penalizacion. Reembolsos evaluados antes de entregar el plan.</p>
+            <p class="mt-8 text-center text-xs text-wc-text-tertiary">{{ __('planes.trust_footnote') }}</p>
         </div>
     </section>
 
@@ -342,18 +342,18 @@
     <section class="bg-wc-bg">
         <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-10 text-center">
-                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">PREGUNTAS FRECUENTES</h2>
-                <p class="mx-auto mt-3 max-w-md text-wc-text-secondary">Resolvemos tus dudas antes de empezar.</p>
+                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('planes.faq_title') }}</h2>
+                <p class="mx-auto mt-3 max-w-md text-wc-text-secondary">{{ __('planes.faq_subtitle') }}</p>
             </div>
 
             <div class="divide-y divide-wc-border" x-data="{ open: null }">
                 @foreach([
-                    ['question' => 'Puedo cambiar de plan despues?', 'answer' => 'Si. Puedes subir o bajar de plan en cualquier momento. El cambio se aplica en tu siguiente ciclo de facturacion.'],
-                    ['question' => 'Hay algun contrato de permanencia?', 'answer' => 'No. Todos los planes son mes a mes. Cancela cuando quieras sin penalizaciones ni cargos extra.'],
-                    ['question' => 'Que metodos de pago aceptan?', 'answer' => 'Aceptamos tarjeta de credito, debito, PSE y Nequi a traves de Wompi, nuestra pasarela de pago segura.'],
-                    ['question' => 'Que pasa si no veo resultados?', 'answer' => 'Ofrecemos garantia de 7 dias. Si no estas satisfecho, te devolvemos el dinero sin preguntas.'],
-                    ['question' => 'Necesito equipo de gimnasio?', 'answer' => 'Depende. Adaptamos tu plan a lo que tengas disponible: gimnasio completo, equipo en casa, o sin equipo.'],
-                    ['question' => 'Cuanto dura cada sesion de entrenamiento?', 'answer' => 'Entre 45 y 75 minutos dependiendo de tu plan y nivel. Todo esta disenado para ser eficiente y efectivo.'],
+                    ['question' => __('planes.faq_q1'), 'answer' => __('planes.faq_a1')],
+                    ['question' => __('planes.faq_q2'), 'answer' => __('planes.faq_a2')],
+                    ['question' => __('planes.faq_q3'), 'answer' => __('planes.faq_a3')],
+                    ['question' => __('planes.faq_q4'), 'answer' => __('planes.faq_a4')],
+                    ['question' => __('planes.faq_q5'), 'answer' => __('planes.faq_a5')],
+                    ['question' => __('planes.faq_q6'), 'answer' => __('planes.faq_a6')],
                 ] as $index => $faq)
                     <div class="scroll-reveal py-5">
                         <button @click="open === {{ $index }} ? open = null : open = {{ $index }}"
@@ -391,11 +391,11 @@
                 <div class="absolute -bottom-12 -right-12 h-48 w-48 rounded-full bg-wc-accent/5 blur-3xl" aria-hidden="true"></div>
                 <div class="absolute -left-12 -top-12 h-48 w-48 rounded-full bg-wc-accent/5 blur-3xl" aria-hidden="true"></div>
                 <div class="relative text-center">
-                    <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">TIENES DUDAS?</h2>
-                    <p class="mx-auto mt-4 max-w-md text-wc-text-secondary">Un sistema completo de entrenamiento, nutricion y habitos por menos de $13.000 al dia.</p>
+                    <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('planes.cta_title') }}</h2>
+                    <p class="mx-auto mt-4 max-w-md text-wc-text-secondary">{{ __('planes.cta_subtitle') }}</p>
                     <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                        <a href="{{ route('inscripcion') }}" class="btn-press pulse-glow inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3 text-base font-semibold text-white shadow-md transition hover:bg-wc-accent-hover hover:shadow-lg">Comenzar Ahora</a>
-                        <a href="{{ route('faq') }}" class="btn-press inline-flex items-center justify-center rounded-full border border-wc-border px-8 py-3 text-base font-medium text-wc-text-secondary transition hover:border-wc-accent hover:text-wc-accent">Ver FAQ completo</a>
+                        <a href="{{ route('inscripcion') }}" class="btn-press pulse-glow inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3 text-base font-semibold text-white shadow-md transition hover:bg-wc-accent-hover hover:shadow-lg">{{ __('planes.cta_btn_comenzar') }}</a>
+                        <a href="{{ route('faq') }}" class="btn-press inline-flex items-center justify-center rounded-full border border-wc-border px-8 py-3 text-base font-medium text-wc-text-secondary transition hover:border-wc-accent hover:text-wc-accent">{{ __('planes.cta_btn_faq') }}</a>
                     </div>
                 </div>
             </div>

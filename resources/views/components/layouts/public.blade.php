@@ -44,15 +44,15 @@
 
             {{-- Desktop Nav Links (8 links — need lg breakpoint) --}}
             <div class="hidden items-center gap-5 lg:flex xl:gap-7">
-                <a href="{{ route('metodo') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('metodo') ? '!text-wc-text' : '' }}">Metodo</a>
-                <a href="{{ route('reto-rise') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('reto-rise') ? '!text-wc-text' : '' }}">RISE</a>
-                <a href="{{ route('nosotros') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('nosotros') ? '!text-wc-text' : '' }}">Nosotros</a>
-                <a href="{{ route('proceso') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('proceso') ? '!text-wc-text' : '' }}">Proceso</a>
-                <a href="{{ route('planes') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('planes') ? '!text-wc-text' : '' }}">Planes</a>
-                <a href="{{ route('blog.index') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('blog.*') ? '!text-wc-text' : '' }}">Blog</a>
-                <a href="{{ route('faq') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('faq') ? '!text-wc-text' : '' }}">FAQ</a>
-                <a href="{{ route('coaches') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('coaches*') ? '!text-wc-text' : '' }}">Coaches</a>
-                <a href="{{ route('presencial') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('presencial*') ? '!text-wc-text' : '' }}">Presencial</a>
+                <a href="{{ route('metodo') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('metodo') ? '!text-wc-text' : '' }}">{{ __('nav.metodo') }}</a>
+                <a href="{{ route('reto-rise') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('reto-rise') ? '!text-wc-text' : '' }}">{{ __('nav.rise') }}</a>
+                <a href="{{ route('nosotros') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('nosotros') ? '!text-wc-text' : '' }}">{{ __('nav.nosotros') }}</a>
+                <a href="{{ route('proceso') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('proceso') ? '!text-wc-text' : '' }}">{{ __('nav.proceso') }}</a>
+                <a href="{{ route('planes') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('planes') ? '!text-wc-text' : '' }}">{{ __('nav.planes') }}</a>
+                <a href="{{ route('blog.index') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('blog.*') ? '!text-wc-text' : '' }}">{{ __('nav.blog') }}</a>
+                <a href="{{ route('faq') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('faq') ? '!text-wc-text' : '' }}">{{ __('nav.faq') }}</a>
+                <a href="{{ route('coaches') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('coaches*') ? '!text-wc-text' : '' }}">{{ __('nav.coaches') }}</a>
+                <a href="{{ route('presencial') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('presencial*') ? '!text-wc-text' : '' }}">{{ __('nav.presencial') }}</a>
             </div>
 
             {{-- Right side --}}
@@ -62,7 +62,7 @@
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                     </svg>
-                    Mi Cuenta
+                    {{ __('nav.mi_cuenta') }}
                 </a>
 
                 {{-- Language Switcher --}}
@@ -72,7 +72,7 @@
                 <button
                     x-on:click="$dispatch('toggle-dark')"
                     class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text"
-                    title="Cambiar modo"
+                    title="{{ __('nav.cambiar_modo') }}"
                 >
                     {{-- Moon: visible in light mode, hidden in dark mode --}}
                     <svg class="h-[18px] w-[18px] dark:hidden" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -86,7 +86,7 @@
 
                 {{-- Empezar CTA --}}
                 <a href="{{ route('inscripcion') }}" class="hidden rounded-full bg-wc-accent px-5 py-2 text-sm font-semibold text-white hover:bg-wc-accent-hover sm:inline-flex">
-                    Empezar
+                    {{ __('nav.empezar') }}
                 </a>
 
                 {{-- Hamburger Menu Button --}}
@@ -117,18 +117,18 @@
              style="display: none;"
              class="border-t border-wc-border bg-wc-bg lg:hidden">
             <div class="space-y-1 px-4 py-4" x-on:click="mobileMenu = false">
-                <a href="{{ route('metodo') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('metodo') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Metodo</a>
-                <a href="{{ route('reto-rise') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('reto-rise') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">RISE</a>
-                <a href="{{ route('nosotros') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('nosotros') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Nosotros</a>
-                <a href="{{ route('proceso') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('proceso') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Proceso</a>
-                <a href="{{ route('planes') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('planes') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Planes</a>
-                <a href="{{ route('blog.index') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('blog.*') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Blog</a>
-                <a href="{{ route('faq') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('faq') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">FAQ</a>
-                <a href="{{ route('coaches') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('coaches*') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Coaches</a>
-                <a href="{{ route('presencial') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('presencial*') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Presencial</a>
+                <a href="{{ route('metodo') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('metodo') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">{{ __('nav.metodo') }}</a>
+                <a href="{{ route('reto-rise') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('reto-rise') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">{{ __('nav.rise') }}</a>
+                <a href="{{ route('nosotros') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('nosotros') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">{{ __('nav.nosotros') }}</a>
+                <a href="{{ route('proceso') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('proceso') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">{{ __('nav.proceso') }}</a>
+                <a href="{{ route('planes') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('planes') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">{{ __('nav.planes') }}</a>
+                <a href="{{ route('blog.index') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('blog.*') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">{{ __('nav.blog') }}</a>
+                <a href="{{ route('faq') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('faq') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">{{ __('nav.faq') }}</a>
+                <a href="{{ route('coaches') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('coaches*') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">{{ __('nav.coaches') }}</a>
+                <a href="{{ route('presencial') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('presencial*') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">{{ __('nav.presencial') }}</a>
                 <div class="flex gap-2 pt-3">
-                    <a href="{{ route('login') }}" class="flex-1 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-center text-sm font-medium text-wc-text hover:bg-wc-bg-tertiary">Mi Cuenta</a>
-                    <a href="{{ route('inscripcion') }}" class="flex-1 rounded-lg bg-wc-accent px-3 py-2.5 text-center text-sm font-medium text-white hover:bg-wc-accent-hover">Empezar</a>
+                    <a href="{{ route('login') }}" class="flex-1 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-center text-sm font-medium text-wc-text hover:bg-wc-bg-tertiary">{{ __('nav.mi_cuenta') }}</a>
+                    <a href="{{ route('inscripcion') }}" class="flex-1 rounded-lg bg-wc-accent px-3 py-2.5 text-center text-sm font-medium text-white hover:bg-wc-accent-hover">{{ __('nav.empezar') }}</a>
                 </div>
             </div>
         </div>
@@ -150,7 +150,7 @@
                     <img src="/images/logo-dark.png" alt="WellCore Fitness" class="h-10 dark:hidden">
                     <img src="/images/logo-light.png" alt="WellCore Fitness" class="hidden h-10 dark:block">
                     <p class="mt-4 max-w-md text-sm text-wc-text-secondary">
-                        Coaching online 1:1 basado en ciencia. La primera plataforma LATAM con estandares internacionales. Sin dogmas, sin atajos, sin suplementos obligatorios.
+                        {{ __('footer.brand_desc') }}
                     </p>
                     <div class="mt-4 flex gap-3">
                         <a href="https://www.instagram.com/wellcore.fitness/" target="_blank" class="group flex h-10 w-10 items-center justify-center rounded-full bg-wc-bg-secondary text-wc-text-secondary transition-all duration-300 hover:bg-gradient-to-br hover:from-purple-500 hover:to-pink-500 hover:text-white hover:shadow-lg hover:shadow-purple-500/20" aria-label="Instagram">
@@ -165,17 +165,17 @@
                     </div>
                 </div>
                 <div class="lg:text-right">
-                    <p class="text-sm font-semibold text-wc-text">Ciencia del ejercicio, cada semana.</p>
-                    <p class="mt-1 text-xs text-wc-text-tertiary">Contenido exclusivo sobre entrenamiento y nutricion basada en evidencia.</p>
+                    <p class="text-sm font-semibold text-wc-text">{{ __('footer.newsletter_title') }}</p>
+                    <p class="mt-1 text-xs text-wc-text-tertiary">{{ __('footer.newsletter_desc') }}</p>
                     <form class="mt-4 flex flex-wrap items-center gap-2 lg:justify-end"
                           x-data="{ email: '', success: false, error: '', submitting: false }"
                           x-on:submit.prevent="submitting=true; fetch('/api/newsletter', { method: 'POST', headers: {'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({email}) }).then(r=>r.json()).then(d=>{ success=true; email=''; error=''; submitting=false; }).catch(e=>{ error='Error, intenta de nuevo'; submitting=false; })">
                         <input type="email" x-model="email" placeholder="tu@email.com" required class="w-full max-w-xs rounded-full border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                         <button type="submit" x-show="!success" :disabled="submitting" class="btn-press rounded-full bg-wc-accent px-5 py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover disabled:opacity-50">
-                            <span x-show="!submitting">Suscribirse</span>
+                            <span x-show="!submitting">{{ __('footer.suscribirse') }}</span>
                             <span x-show="submitting" x-cloak class="flex items-center gap-1.5">
                                 <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-                                Enviando
+                                {{ __('footer.enviando') }}
                             </span>
                         </button>
                         {{-- Success animation --}}
@@ -185,7 +185,7 @@
                               x-transition:enter-end="scale-100 opacity-100"
                               class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                            Suscrito!
+                            {{ __('footer.suscrito') }}
                         </span>
                         <span x-show="error" x-cloak class="w-full text-xs text-red-500 lg:text-right" x-text="error"></span>
                     </form>
@@ -195,47 +195,47 @@
             {{-- Middle: Links grid --}}
             <div class="grid grid-cols-2 gap-8 py-10 sm:grid-cols-4">
                 <div>
-                    <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">Programa</h4>
+                    <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">{{ __('footer.programa') }}</h4>
                     <ul class="mt-4 space-y-2.5">
-                        <li><a href="{{ route('metodo') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">El Metodo</a></li>
-                        <li><a href="{{ route('proceso') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Proceso</a></li>
-                        <li><a href="{{ route('planes') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Planes</a></li>
-                        <li><a href="{{ route('coaches') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Coaches</a></li>
-                        <li><a href="{{ route('presencial') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Presencial</a></li>
+                        <li><a href="{{ route('metodo') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('footer.el_metodo') }}</a></li>
+                        <li><a href="{{ route('proceso') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.proceso') }}</a></li>
+                        <li><a href="{{ route('planes') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.planes') }}</a></li>
+                        <li><a href="{{ route('coaches') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.coaches') }}</a></li>
+                        <li><a href="{{ route('presencial') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.presencial') }}</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">Recursos</h4>
+                    <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">{{ __('footer.recursos') }}</h4>
                     <ul class="mt-4 space-y-2.5">
-                        <li><a href="{{ route('blog.index') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Blog</a></li>
-                        <li><a href="{{ route('faq') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">FAQ</a></li>
-                        <li><a href="{{ route('nosotros') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Nosotros</a></li>
-                        <li><a href="{{ route('reto-rise') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">RISE</a></li>
+                        <li><a href="{{ route('blog.index') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.blog') }}</a></li>
+                        <li><a href="{{ route('faq') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.faq') }}</a></li>
+                        <li><a href="{{ route('nosotros') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.nosotros') }}</a></li>
+                        <li><a href="{{ route('reto-rise') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.rise') }}</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">Cuenta</h4>
+                    <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">{{ __('footer.cuenta') }}</h4>
                     <ul class="mt-4 space-y-2.5">
-                        <li><a href="{{ route('login') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Mi Cuenta</a></li>
-                        <li><a href="{{ route('inscripcion') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Empezar</a></li>
-                        <li><a href="{{ route('privacidad') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Privacidad</a></li>
-                        <li><a href="{{ route('terminos') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Terminos</a></li>
+                        <li><a href="{{ route('login') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.mi_cuenta') }}</a></li>
+                        <li><a href="{{ route('inscripcion') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.empezar') }}</a></li>
+                        <li><a href="{{ route('privacidad') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('footer.privacidad') }}</a></li>
+                        <li><a href="{{ route('terminos') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('footer.terminos') }}</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">Contacto</h4>
+                    <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">{{ __('footer.contacto') }}</h4>
                     <ul class="mt-4 space-y-2.5">
                         <li><a href="mailto:info@wellcorefitness.com" class="text-sm text-wc-text-tertiary hover:text-wc-text">info@wellcorefitness.com</a></li>
-                        <li><a href="{{ route('cookies') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Cookies</a></li>
-                        <li><a href="{{ route('reembolsos') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">Reembolsos</a></li>
+                        <li><a href="{{ route('cookies') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('footer.cookies') }}</a></li>
+                        <li><a href="{{ route('reembolsos') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('footer.reembolsos') }}</a></li>
                     </ul>
                 </div>
             </div>
 
             {{-- Bottom bar --}}
             <div class="flex flex-col items-center justify-between gap-4 border-t border-wc-border py-6 sm:flex-row">
-                <p class="text-xs text-wc-text-tertiary">&copy; {{ date('Y') }} WellCore Fitness. Todos los derechos reservados.</p>
-                <p class="text-xs text-wc-text-tertiary">Colombia &middot; info@wellcorefitness.com</p>
+                <p class="text-xs text-wc-text-tertiary">&copy; {{ date('Y') }} WellCore Fitness. {{ __('footer.derechos') }}</p>
+                <p class="text-xs text-wc-text-tertiary">{{ __('common.colombia') }} &middot; info@wellcorefitness.com</p>
             </div>
         </div>
     </footer>

@@ -1,5 +1,5 @@
 <x-layouts.public>
-    <x-slot:title>Nosotros - WellCore Fitness</x-slot:title>
+    <x-slot:title>{{ __('nosotros.title') }}</x-slot:title>
 
     <x-json-ld :data="[
         '@context' => 'https://schema.org',
@@ -47,10 +47,10 @@
         </div>
         <div class="relative mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 sm:py-28 lg:px-8" data-animate="fadeInUp">
             <h1 class="font-display text-5xl tracking-wide text-wc-text sm:text-6xl lg:text-7xl">
-                <span class="text-gradient-accent">NOSOTROS</span>
+                <span class="text-gradient-accent">{{ __('nosotros.hero_h1') }}</span>
             </h1>
             <p class="mx-auto mt-6 max-w-2xl text-lg text-wc-text-secondary sm:text-xl">
-                Coaching fitness basado en ciencia, no en tendencias. Resultados sostenibles, no milagros.
+                {{ __('nosotros.hero_sub') }}
             </p>
             {{-- Animated accent divider --}}
             <div class="mx-auto mt-8 flex justify-center">
@@ -67,8 +67,8 @@
     <section class="bg-wc-bg">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
             <div class="text-center" data-animate="fadeInUp">
-                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NUESTRA ESENCIA</h2>
-                <p class="mt-2 text-wc-text-secondary">Lo que nos mueve y hacia donde vamos.</p>
+                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('nosotros.essence_h2') }}</h2>
+                <p class="mt-2 text-wc-text-secondary">{{ __('nosotros.essence_sub') }}</p>
             </div>
 
             <div class="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-2">
@@ -82,17 +82,13 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.468 5.99 5.99 0 00-1.925 3.547 5.975 5.975 0 01-2.133-1.001A3.75 3.75 0 0012 18z" />
                             </svg>
                         </div>
-                        <h3 class="font-display text-2xl tracking-wide text-wc-text">NUESTRA MISION</h3>
+                        <h3 class="font-display text-2xl tracking-wide text-wc-text">{{ __('nosotros.mision_h3') }}</h3>
                     </div>
                     <p class="mt-6 leading-relaxed text-wc-text-secondary">
-                        Brindar coaching fitness de la mas alta calidad, combinando ciencia del ejercicio,
-                        nutricion basada en datos y seguimiento constante. Cada cliente recibe un programa
-                        completamente personalizado para alcanzar resultados sostenibles.
+                        {{ __('nosotros.mision_p1') }}
                     </p>
                     <p class="mt-4 leading-relaxed text-wc-text-secondary">
-                        No vendemos transformaciones magicas ni promesas de resultados rapidos. Ofrecemos un
-                        sistema probado, respaldado por evidencia cientifica, que funciona cuando te comprometes
-                        con el proceso.
+                        {{ __('nosotros.mision_p2') }}
                     </p>
                 </div>
 
@@ -106,17 +102,13 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
                         </div>
-                        <h3 class="font-display text-2xl tracking-wide text-wc-text">NUESTRA VISION</h3>
+                        <h3 class="font-display text-2xl tracking-wide text-wc-text">{{ __('nosotros.vision_h3') }}</h3>
                     </div>
                     <p class="mt-6 leading-relaxed text-wc-text-secondary">
-                        Ser la plataforma de coaching fitness numero uno en Latinoamerica. Creemos que el acceso
-                        a coaching de calidad no deberia ser un privilegio, sino una oportunidad disponible para
-                        cualquier persona comprometida con su salud.
+                        {{ __('nosotros.vision_p1') }}
                     </p>
                     <p class="mt-4 leading-relaxed text-wc-text-secondary">
-                        Democratizar el acceso a coaching personalizado, basado en ciencia, con tecnologia que
-                        conecta a coaches certificados con personas que buscan transformar su vida de forma real
-                        y sostenible.
+                        {{ __('nosotros.vision_p2') }}
                     </p>
                 </div>
             </div>
@@ -129,8 +121,8 @@
     <section class="bg-wc-bg-tertiary">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
             <div class="text-center" data-animate="fadeInUp">
-                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NUESTRO EQUIPO</h2>
-                <p class="mt-4 text-wc-text-secondary">Las personas detras de WellCore.</p>
+                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('nosotros.team_h2') }}</h2>
+                <p class="mt-4 text-wc-text-secondary">{{ __('nosotros.team_sub') }}</p>
             </div>
 
             {{-- Founder - Full Feature Card --}}
@@ -143,20 +135,16 @@
                         </div>
                     </div>
                     <div class="flex-1 text-center md:text-left">
-                        <h3 class="font-display text-2xl tracking-wide text-wc-text">DANIEL ESPARZA</h3>
-                        <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">Fundador y Head Coach</p>
+                        <h3 class="font-display text-2xl tracking-wide text-wc-text">{{ __('nosotros.founder_name') }}</h3>
+                        <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">{{ __('nosotros.founder_role') }}</p>
                         <p class="mt-4 leading-relaxed text-wc-text-secondary">
-                            Especialista en fisiologia del ejercicio y nutricion deportiva con mas de 8 años de
-                            experiencia en coaching personalizado. Certificado NSCA (National Strength and
-                            Conditioning Association). Ha trabajado con cientos de clientes en Latinoamerica,
-                            desarrollando un metodo basado en ciencia que prioriza resultados sostenibles sobre
-                            soluciones rapidas.
+                            {{ __('nosotros.founder_bio') }}
                         </p>
                         <div class="mt-6 flex flex-wrap justify-center gap-3 md:justify-start">
-                            <span class="inline-flex items-center rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1 text-xs font-medium text-wc-text-secondary">8+ años experiencia</span>
-                            <span class="inline-flex items-center rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1 text-xs font-medium text-wc-text-secondary">Certificado NSCA</span>
-                            <span class="inline-flex items-center rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1 text-xs font-medium text-wc-text-secondary">Fisiologia del ejercicio</span>
-                            <span class="inline-flex items-center rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1 text-xs font-medium text-wc-text-secondary">Nutricion deportiva</span>
+                            <span class="inline-flex items-center rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1 text-xs font-medium text-wc-text-secondary">{{ __('nosotros.founder_tag1') }}</span>
+                            <span class="inline-flex items-center rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1 text-xs font-medium text-wc-text-secondary">{{ __('nosotros.founder_tag2') }}</span>
+                            <span class="inline-flex items-center rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1 text-xs font-medium text-wc-text-secondary">{{ __('nosotros.founder_tag3') }}</span>
+                            <span class="inline-flex items-center rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1 text-xs font-medium text-wc-text-secondary">{{ __('nosotros.founder_tag4') }}</span>
                         </div>
                     </div>
                 </div>
@@ -174,17 +162,15 @@
                     <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-wc-accent/30 bg-wc-accent/10">
                         <span class="font-display text-2xl text-wc-accent">NC</span>
                     </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">Nutricion Coach</h3>
-                    <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">Nutricionista</p>
+                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('nosotros.coach2_name') }}</h3>
+                    <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">{{ __('nosotros.coach2_role') }}</p>
                     <p class="mt-4 text-sm leading-relaxed text-wc-text-secondary">
-                        Profesional en nutricion clinica y deportiva. Responsable de los protocolos nutricionales
-                        basados en evidencia cientifica de WellCore. Disenador de planes alimenticios personalizados
-                        segun la fisiologia individual de cada cliente.
+                        {{ __('nosotros.coach2_bio') }}
                     </p>
                     {{-- Hover overlay --}}
                     <div class="absolute inset-0 flex items-end justify-center rounded-xl bg-gradient-to-t from-wc-accent/10 to-transparent pb-6 opacity-0 transition-opacity duration-300"
                          :class="{ 'opacity-100': hovered }">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-wc-accent">Nutricion Clinica · Deportiva</span>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-wc-accent">{{ __('nosotros.coach2_hover') }}</span>
                     </div>
                 </div>
 
@@ -198,17 +184,15 @@
                     <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-wc-accent/30 bg-wc-accent/10">
                         <span class="font-display text-2xl text-wc-accent">SC</span>
                     </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">Strength Coach</h3>
-                    <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">Entrenamiento de Fuerza</p>
+                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('nosotros.coach3_name') }}</h3>
+                    <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">{{ __('nosotros.coach3_role') }}</p>
                     <p class="mt-4 text-sm leading-relaxed text-wc-text-secondary">
-                        Certificado CSCS (Certified Strength and Conditioning Specialist). Especialista en
-                        periodizacion de entrenamiento y programacion de fuerza. Responsable de la estructura
-                        de los programas de entrenamiento de WellCore.
+                        {{ __('nosotros.coach3_bio') }}
                     </p>
                     {{-- Hover overlay --}}
                     <div class="absolute inset-0 flex items-end justify-center rounded-xl bg-gradient-to-t from-wc-accent/10 to-transparent pb-6 opacity-0 transition-opacity duration-300"
                          :class="{ 'opacity-100': hovered }">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-wc-accent">Certificado CSCS · Periodizacion</span>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-wc-accent">{{ __('nosotros.coach3_hover') }}</span>
                     </div>
                 </div>
 
@@ -222,17 +206,15 @@
                     <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-wc-accent/30 bg-wc-accent/10">
                         <span class="font-display text-2xl text-wc-accent">MC</span>
                     </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">Coach Mindset</h3>
-                    <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">Psicologia Deportiva</p>
+                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('nosotros.coach4_name') }}</h3>
+                    <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">{{ __('nosotros.coach4_role') }}</p>
                     <p class="mt-4 text-sm leading-relaxed text-wc-text-secondary">
-                        Especialista en psicologia deportiva, adherencia y construccion de habitos sostenibles.
-                        Trabaja con cada cliente para desarrollar la mentalidad necesaria para mantener la
-                        consistencia y alcanzar objetivos a largo plazo.
+                        {{ __('nosotros.coach4_bio') }}
                     </p>
                     {{-- Hover overlay --}}
                     <div class="absolute inset-0 flex items-end justify-center rounded-xl bg-gradient-to-t from-wc-accent/10 to-transparent pb-6 opacity-0 transition-opacity duration-300"
                          :class="{ 'opacity-100': hovered }">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-wc-accent">Psicologia Deportiva · Habitos</span>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-wc-accent">{{ __('nosotros.coach4_hover') }}</span>
                     </div>
                 </div>
             </div>
@@ -245,8 +227,8 @@
     <section class="bg-wc-bg">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
             <div class="text-center" data-animate="fadeInUp">
-                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NUESTRA HISTORIA</h2>
-                <p class="mt-4 text-wc-text-secondary">El camino de WellCore desde 2024.</p>
+                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('nosotros.history_h2') }}</h2>
+                <p class="mt-4 text-wc-text-secondary">{{ __('nosotros.history_sub') }}</p>
             </div>
 
             <div class="relative mx-auto mt-14 max-w-3xl">
@@ -258,22 +240,20 @@
                 {{-- 2024 Q1 — odd: slideInLeft --}}
                 <div class="scroll-reveal relative mb-12 flex items-start gap-6 sm:gap-0" data-animate="slideInLeft">
                     <div class="hidden sm:block sm:w-1/2 sm:pr-12 sm:text-right">
-                        <span class="font-data text-sm font-semibold text-wc-accent">2024 - Q1</span>
-                        <h3 class="mt-1 text-lg font-semibold text-wc-text">Fundacion de WellCore</h3>
+                        <span class="font-data text-sm font-semibold text-wc-accent">{{ __('nosotros.tl1_date') }}</span>
+                        <h3 class="mt-1 text-lg font-semibold text-wc-text">{{ __('nosotros.tl1_title') }}</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
-                            Nace WellCore con la mision de ofrecer coaching fitness basado en ciencia.
-                            Primeros 10 clientes con programas completamente personalizados.
+                            {{ __('nosotros.tl1_desc') }}
                         </p>
                     </div>
                     <div class="relative z-10 flex h-8 w-8 flex-shrink-0 cursor-pointer items-center justify-center rounded-full border-2 border-wc-accent bg-wc-bg transition-transform duration-300 hover:scale-110 sm:absolute sm:left-1/2 sm:-translate-x-1/2">
                         <div class="h-3 w-3 rounded-full bg-wc-accent"></div>
                     </div>
                     <div class="flex-1 sm:hidden">
-                        <span class="font-data text-sm font-semibold text-wc-accent">2024 - Q1</span>
-                        <h3 class="mt-1 text-lg font-semibold text-wc-text">Fundacion de WellCore</h3>
+                        <span class="font-data text-sm font-semibold text-wc-accent">{{ __('nosotros.tl1_date') }}</span>
+                        <h3 class="mt-1 text-lg font-semibold text-wc-text">{{ __('nosotros.tl1_title') }}</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
-                            Nace WellCore con la mision de ofrecer coaching fitness basado en ciencia.
-                            Primeros 10 clientes con programas completamente personalizados.
+                            {{ __('nosotros.tl1_desc') }}
                         </p>
                     </div>
                     <div class="hidden sm:block sm:w-1/2 sm:pl-12"></div>
@@ -286,11 +266,10 @@
                         <div class="h-3 w-3 rounded-full bg-wc-accent"></div>
                     </div>
                     <div class="flex-1 sm:w-1/2 sm:pl-12">
-                        <span class="font-data text-sm font-semibold text-wc-accent">2024 - Q3</span>
-                        <h3 class="mt-1 text-lg font-semibold text-wc-text">Plataforma Digital</h3>
+                        <span class="font-data text-sm font-semibold text-wc-accent">{{ __('nosotros.tl2_date') }}</span>
+                        <h3 class="mt-1 text-lg font-semibold text-wc-text">{{ __('nosotros.tl2_title') }}</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
-                            Lanzamiento de la plataforma digital para gestion de clientes, seguimiento de
-                            progreso y comunicacion coach-cliente. Superamos los 50 clientes activos.
+                            {{ __('nosotros.tl2_desc') }}
                         </p>
                     </div>
                 </div>
@@ -298,22 +277,20 @@
                 {{-- 2025 Q1 — odd: slideInLeft --}}
                 <div class="scroll-reveal relative mb-12 flex items-start gap-6 sm:gap-0" data-animate="slideInLeft">
                     <div class="hidden sm:block sm:w-1/2 sm:pr-12 sm:text-right">
-                        <span class="font-data text-sm font-semibold text-wc-accent">2025 - Q1</span>
-                        <h3 class="mt-1 text-lg font-semibold text-wc-text">Programa RISE</h3>
+                        <span class="font-data text-sm font-semibold text-wc-accent">{{ __('nosotros.tl3_date') }}</span>
+                        <h3 class="mt-1 text-lg font-semibold text-wc-text">{{ __('nosotros.tl3_title') }}</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
-                            Lanzamiento del programa RISE, nuestro metodo insignia de transformacion integral.
-                            Expansion a 5 paises de Latinoamerica.
+                            {{ __('nosotros.tl3_desc') }}
                         </p>
                     </div>
                     <div class="relative z-10 flex h-8 w-8 flex-shrink-0 cursor-pointer items-center justify-center rounded-full border-2 border-wc-accent bg-wc-bg transition-transform duration-300 hover:scale-110 sm:absolute sm:left-1/2 sm:-translate-x-1/2">
                         <div class="h-3 w-3 rounded-full bg-wc-accent"></div>
                     </div>
                     <div class="flex-1 sm:hidden">
-                        <span class="font-data text-sm font-semibold text-wc-accent">2025 - Q1</span>
-                        <h3 class="mt-1 text-lg font-semibold text-wc-text">Programa RISE</h3>
+                        <span class="font-data text-sm font-semibold text-wc-accent">{{ __('nosotros.tl3_date') }}</span>
+                        <h3 class="mt-1 text-lg font-semibold text-wc-text">{{ __('nosotros.tl3_title') }}</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
-                            Lanzamiento del programa RISE, nuestro metodo insignia de transformacion integral.
-                            Expansion a 5 paises de Latinoamerica.
+                            {{ __('nosotros.tl3_desc') }}
                         </p>
                     </div>
                     <div class="hidden sm:block sm:w-1/2 sm:pl-12"></div>
@@ -326,11 +303,10 @@
                         <div class="h-3 w-3 rounded-full bg-wc-accent"></div>
                     </div>
                     <div class="flex-1 sm:w-1/2 sm:pl-12">
-                        <span class="font-data text-sm font-semibold text-wc-accent">2025 - Q3</span>
-                        <h3 class="mt-1 text-lg font-semibold text-wc-text">App Movil</h3>
+                        <span class="font-data text-sm font-semibold text-wc-accent">{{ __('nosotros.tl4_date') }}</span>
+                        <h3 class="mt-1 text-lg font-semibold text-wc-text">{{ __('nosotros.tl4_title') }}</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
-                            Lanzamiento de la aplicacion movil para acceso a entrenamientos, nutricion y
-                            seguimiento en tiempo real. Superamos los 200 clientes activos.
+                            {{ __('nosotros.tl4_desc') }}
                         </p>
                     </div>
                 </div>
@@ -338,11 +314,10 @@
                 {{-- 2026 Q1 — odd: slideInLeft — current/final milestone --}}
                 <div class="scroll-reveal relative flex items-start gap-6 sm:gap-0" data-animate="slideInLeft">
                     <div class="hidden sm:block sm:w-1/2 sm:pr-12 sm:text-right">
-                        <span class="font-data text-sm font-semibold text-wc-accent">2026 - Q1</span>
-                        <h3 class="mt-1 text-lg font-semibold text-wc-text">Presencial Bucaramanga</h3>
+                        <span class="font-data text-sm font-semibold text-wc-accent">{{ __('nosotros.tl5_date') }}</span>
+                        <h3 class="mt-1 text-lg font-semibold text-wc-text">{{ __('nosotros.tl5_title') }}</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
-                            Lanzamiento del plan presencial en Bucaramanga, Colombia. WellCore supera los 500 clientes
-                            activos en toda Latinoamerica.
+                            {{ __('nosotros.tl5_desc') }}
                         </p>
                     </div>
                     {{-- pulse-glow on the current/final dot --}}
@@ -350,11 +325,10 @@
                         <div class="h-3 w-3 rounded-full bg-white"></div>
                     </div>
                     <div class="flex-1 sm:hidden">
-                        <span class="font-data text-sm font-semibold text-wc-accent">2026 - Q1</span>
-                        <h3 class="mt-1 text-lg font-semibold text-wc-text">Presencial Bucaramanga</h3>
+                        <span class="font-data text-sm font-semibold text-wc-accent">{{ __('nosotros.tl5_date') }}</span>
+                        <h3 class="mt-1 text-lg font-semibold text-wc-text">{{ __('nosotros.tl5_title') }}</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
-                            Lanzamiento del plan presencial en Bucaramanga, Colombia. WellCore supera los 500 clientes
-                            activos en toda Latinoamerica.
+                            {{ __('nosotros.tl5_desc') }}
                         </p>
                     </div>
                     <div class="hidden sm:block sm:w-1/2 sm:pl-12"></div>
@@ -369,8 +343,8 @@
     <section class="bg-wc-bg-tertiary">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
             <div class="text-center" data-animate="fadeInUp">
-                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">EN NUMEROS</h2>
-                <p class="mt-2 text-wc-text-secondary">WellCore en cifras.</p>
+                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('nosotros.stats_h2') }}</h2>
+                <p class="mt-2 text-wc-text-secondary">{{ __('nosotros.stats_sub') }}</p>
             </div>
 
             <div class="stagger-grid mt-14 grid grid-cols-2 gap-8 lg:grid-cols-4">
@@ -378,28 +352,28 @@
                 <div class="text-center" data-animate="fadeInUp" data-animate-delay="100">
                     <p class="counter-highlight font-data text-4xl font-bold text-wc-accent sm:text-5xl"
                        data-counter="500" data-counter-suffix="+">500+</p>
-                    <p class="mt-2 text-sm font-medium text-wc-text-secondary">Clientes activos</p>
+                    <p class="mt-2 text-sm font-medium text-wc-text-secondary">{{ __('nosotros.stat_clients') }}</p>
                 </div>
 
                 {{-- Paises --}}
                 <div class="text-center" data-animate="fadeInUp" data-animate-delay="200">
                     <p class="counter-highlight font-data text-4xl font-bold text-wc-accent sm:text-5xl"
                        data-counter="5" data-counter-suffix="">5</p>
-                    <p class="mt-2 text-sm font-medium text-wc-text-secondary">Paises</p>
+                    <p class="mt-2 text-sm font-medium text-wc-text-secondary">{{ __('nosotros.stat_countries') }}</p>
                 </div>
 
                 {{-- Coaches --}}
                 <div class="text-center" data-animate="fadeInUp" data-animate-delay="300">
                     <p class="counter-highlight font-data text-4xl font-bold text-wc-accent sm:text-5xl"
                        data-counter="15" data-counter-suffix="+">15+</p>
-                    <p class="mt-2 text-sm font-medium text-wc-text-secondary">Coaches certificados</p>
+                    <p class="mt-2 text-sm font-medium text-wc-text-secondary">{{ __('nosotros.stat_coaches') }}</p>
                 </div>
 
                 {{-- Adherencia --}}
                 <div class="text-center" data-animate="fadeInUp" data-animate-delay="400">
                     <p class="counter-highlight font-data text-4xl font-bold text-wc-accent sm:text-5xl"
                        data-counter="94" data-counter-suffix="%">94%</p>
-                    <p class="mt-2 text-sm font-medium text-wc-text-secondary">Tasa de adherencia</p>
+                    <p class="mt-2 text-sm font-medium text-wc-text-secondary">{{ __('nosotros.stat_adherence') }}</p>
                 </div>
             </div>
         </div>
@@ -411,8 +385,8 @@
     <section class="bg-wc-bg">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
             <div class="text-center" data-animate="fadeInUp">
-                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NUESTROS VALORES</h2>
-                <p class="mt-4 text-wc-text-secondary">Los principios que guian todo lo que hacemos.</p>
+                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('nosotros.values_h2') }}</h2>
+                <p class="mt-4 text-wc-text-secondary">{{ __('nosotros.values_sub') }}</p>
             </div>
 
             <div class="stagger-grid mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
@@ -425,9 +399,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
                         </svg>
                     </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">Ciencia</h3>
+                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('nosotros.val1_title') }}</h3>
                     <p class="mt-2 text-sm text-wc-text-secondary">
-                        Cada decision esta respaldada por evidencia cientifica. No seguimos modas, seguimos la investigacion.
+                        {{ __('nosotros.val1_desc') }}
                     </p>
                 </div>
 
@@ -440,9 +414,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                         </svg>
                     </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">Transparencia</h3>
+                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('nosotros.val2_title') }}</h3>
                     <p class="mt-2 text-sm text-wc-text-secondary">
-                        Comunicacion clara y directa, sin promesas falsas. Honestidad sobre lo que funciona y lo que no.
+                        {{ __('nosotros.val2_desc') }}
                     </p>
                 </div>
 
@@ -456,9 +430,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">Personalizacion</h3>
+                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('nosotros.val3_title') }}</h3>
                     <p class="mt-2 text-sm text-wc-text-secondary">
-                        Cada programa es unico. No usamos plantillas genericas. Tu plan se adapta a tu fisiologia y objetivos.
+                        {{ __('nosotros.val3_desc') }}
                     </p>
                 </div>
 
@@ -471,9 +445,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
                         </svg>
                     </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">Comunidad</h3>
+                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('nosotros.val4_title') }}</h3>
                     <p class="mt-2 text-sm text-wc-text-secondary">
-                        Crecimiento colectivo. La comunidad WellCore es un pilar fundamental del metodo y del proceso.
+                        {{ __('nosotros.val4_desc') }}
                     </p>
                 </div>
 
@@ -486,9 +460,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
                         </svg>
                     </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">Resultados</h3>
+                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('nosotros.val5_title') }}</h3>
                     <p class="mt-2 text-sm text-wc-text-secondary">
-                        Datos reales, progreso medible. El progreso se rastrea con metricas objetivas, no con percepciones subjetivas.
+                        {{ __('nosotros.val5_desc') }}
                     </p>
                 </div>
             </div>
@@ -506,14 +480,14 @@
             <div class="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-wc-accent/3 blur-3xl"></div>
         </div>
         <div class="relative mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8" data-animate="fadeInUp">
-            <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">FORMA PARTE DE WELLCORE</h2>
+            <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('nosotros.cta_h2') }}</h2>
             <p class="mx-auto mt-4 max-w-lg text-wc-text-secondary">
-                Conoce nuestros planes y comienza tu proceso con un equipo que prioriza la ciencia y los resultados.
+                {{ __('nosotros.cta_sub') }}
             </p>
             <div class="mt-8">
                 <a href="{{ route('planes') }}"
                    class="btn-press pulse-glow inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20 transition-all duration-200 hover:bg-wc-accent/90 hover:shadow-xl hover:shadow-wc-accent/30">
-                    Ver Planes
+                    {{ __('nosotros.cta_button') }}
                 </a>
             </div>
         </div>

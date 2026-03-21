@@ -1,0 +1,22 @@
+<?php
+return [
+    'comenzar_ahora' => 'Comenzar Ahora',
+    'ver_planes' => 'Ver Planes',
+    'ver_mas' => 'Ver mas',
+    'leer_mas' => 'Leer mas',
+    'cerrar' => 'Cerrar',
+    'enviar' => 'Enviar',
+    'guardar' => 'Guardar',
+    'cancelar' => 'Cancelar',
+    'aceptar' => 'Aceptar',
+    'rechazar' => 'Rechazar',
+    'siguiente' => 'Siguiente',
+    'anterior' => 'Anterior',
+    'buscar' => 'Buscar',
+    'cargando' => 'Cargando...',
+    'cop_mes' => 'COP/mes',
+    'pago_unico' => 'Pago unico',
+    'sin_tarjeta' => 'Sin tarjeta · 100% sin compromiso',
+    'inscribirme' => 'Inscribirme',
+    'colombia' => 'Colombia',
+];

@@ -1,0 +1,22 @@
+<?php
+return [
+    'comenzar_ahora' => 'Get Started',
+    'ver_planes' => 'View Plans',
+    'ver_mas' => 'See more',
+    'leer_mas' => 'Read more',
+    'cerrar' => 'Close',
+    'enviar' => 'Send',
+    'guardar' => 'Save',
+    'cancelar' => 'Cancel',
+    'aceptar' => 'Accept',
+    'rechazar' => 'Decline',
+    'siguiente' => 'Next',
+    'anterior' => 'Previous',
+    'buscar' => 'Search',
+    'cargando' => 'Loading...',
+    'cop_mes' => 'COP/month',
+    'pago_unico' => 'One-time payment',
+    'sin_tarjeta' => 'No credit card · 100% commitment-free',
+    'inscribirme' => 'Sign Up',
+    'colombia' => 'Colombia',
+];
