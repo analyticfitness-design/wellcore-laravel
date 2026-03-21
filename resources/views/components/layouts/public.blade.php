@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" x-data="{ darkMode: localStorage.getItem('darkMode') !== 'false' }" x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))" :class="{ 'dark': darkMode }">
+<html lang="es" x-data="{ darkMode: localStorage.getItem('darkMode') !== 'false' }" x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))" x-on:toggle-dark.window="darkMode = !darkMode" :class="{ 'dark': darkMode }">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -55,7 +55,7 @@
 
                 {{-- Dark Mode Toggle (CSS-based, no Alpine flash) --}}
                 <button
-                    x-on:click="darkMode = !darkMode"
+                    x-on:click="$dispatch('toggle-dark')"
                     class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text"
                     title="Cambiar modo"
                 >
