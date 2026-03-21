@@ -47,4 +47,9 @@ return [
         'model' => env('ANTHROPIC_MODEL', 'claude-haiku-4-5-20251001'),
     ],
 
+    'terra' => [
+        'api_key' => env('TERRA_API_KEY', ''),
+        'dev_id' => env('TERRA_DEV_ID', ''),
+    ],
+
 ];
