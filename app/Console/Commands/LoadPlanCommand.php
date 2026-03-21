@@ -13,7 +13,7 @@ class LoadPlanCommand extends Command
         {--file= : Path to JSON file}
         {--list : List all plans for the client}
         {--coach= : Coach ID (optional, defaults to 1)}
-        {--version= : Plan version (optional, auto-increments)}';
+        {--plan-version= : Plan version (optional, auto-increments)}';
 
     protected $description = 'Load a training/nutrition plan JSON into assigned_plans (replaces manual-load.php)';
 
@@ -76,7 +76,7 @@ class LoadPlanCommand extends Command
         $this->info("JSON valid. Size: " . strlen($json) . " bytes");
 
         // Get version
-        $version = $this->option('version');
+        $version = $this->option('plan-version');
         if (!$version) {
             $lastVersion = DB::table('assigned_plans')
                 ->where('client_id', $client->id)
@@ -101,14 +101,13 @@ class LoadPlanCommand extends Command
 
         $planId = DB::table('assigned_plans')->insertGetId([
             'client_id' => $client->id,
-            'coach_id' => $coachId,
+            'assigned_by' => $coachId,
             'plan_type' => $type,
             'content' => $json,
             'version' => $version,
             'active' => 1,
             'valid_from' => now(),
             'created_at' => now(),
-            'updated_at' => now(),
         ]);
 
         $this->newLine();
