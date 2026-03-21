@@ -415,7 +415,7 @@
                             <p class="text-sm text-wc-text-secondary">
                                 Garantia de 7 dias para nuevos clientes. Despues de ese periodo, no hay reembolso
                                 pero mantienes acceso hasta el fin del periodo pagado. Consulta nuestra
-                                <a href="{{ route('legal.reembolso') }}" class="text-wc-accent hover:underline">politica de reembolso</a>
+                                <a href="{{ route('reembolsos') }}" class="text-wc-accent hover:underline">politica de reembolso</a>
                                 completa.
                             </p>
                         </div>
