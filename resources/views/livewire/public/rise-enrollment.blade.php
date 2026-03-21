@@ -123,9 +123,9 @@
                                     <label class="block text-sm font-medium text-wc-text">Experiencia *</label>
                                     <select wire:model="experiencia" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-2 text-sm text-wc-text focus:border-red-500 focus:ring-1 focus:ring-red-500">
                                         <option value="">Selecciona</option>
-                                        <option value="principiante">Principiante (0-1 ano)</option>
-                                        <option value="intermedio">Intermedio (1-3 anos)</option>
-                                        <option value="avanzado">Avanzado (3+ anos)</option>
+                                        <option value="principiante">Principiante (0-1 año)</option>
+                                        <option value="intermedio">Intermedio (1-3 años)</option>
+                                        <option value="avanzado">Avanzado (3+ años)</option>
                                     </select>
                                     @error('experiencia') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                                 </div>

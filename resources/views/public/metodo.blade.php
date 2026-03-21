@@ -213,7 +213,7 @@
                     </div>
                     <h3 class="mt-5 text-lg font-semibold text-wc-text">Recuperacion Optimizada</h3>
                     <p class="mt-3 text-sm leading-relaxed text-wc-text-secondary">
-                        El crecimiento ocurre en la recuperacion, no en el entrenamiento. Protocolos de sueno, gestion del estres y descanso activo integrados al programa.
+                        El crecimiento ocurre en la recuperacion, no en el entrenamiento. Protocolos de sueño, gestion del estres y descanso activo integrados al programa.
                     </p>
                 </div>
 
@@ -420,7 +420,7 @@
                     <div x-show="active === 1" x-collapse x-cloak>
                         <div class="pb-5">
                             <p class="text-sm leading-relaxed text-wc-text-secondary">
-                                No. El diagnostico inicial determina exactamente tu nivel de partida. El programa se construye desde ahi. Tenemos clientes sin experiencia previa y clientes con anos de entrenamiento. El protocolo se adapta a donde estas, no a donde deberia estar alguien generico.
+                                No. El diagnostico inicial determina exactamente tu nivel de partida. El programa se construye desde ahi. Tenemos clientes sin experiencia previa y clientes con años de entrenamiento. El protocolo se adapta a donde estas, no a donde deberia estar alguien generico.
                             </p>
                         </div>
                     </div>
@@ -454,7 +454,7 @@
                     <div x-show="active === 3" x-collapse x-cloak>
                         <div class="pb-5">
                             <p class="text-sm leading-relaxed text-wc-text-secondary">
-                                Los cambios en composicion corporal comienzan a verse entre las semanas 6 y 10, dependiendo del punto de partida y el objetivo. Antes de eso, los resultados son internos: mas energia, mejor sueno, mayor fuerza. Los resultados visibles requieren tiempo. El promedio en WellCore es 8-12 semanas para cambios fotografiables.
+                                Los cambios en composicion corporal comienzan a verse entre las semanas 6 y 10, dependiendo del punto de partida y el objetivo. Antes de eso, los resultados son internos: mas energia, mejor sueño, mayor fuerza. Los resultados visibles requieren tiempo. El promedio en WellCore es 8-12 semanas para cambios fotografiables.
                             </p>
                         </div>
                     </div>
@@ -471,7 +471,7 @@
                     <div x-show="active === 4" x-collapse x-cloak>
                         <div class="pb-5">
                             <p class="text-sm leading-relaxed text-wc-text-secondary">
-                                Las lesiones y limitaciones se documentan en el diagnostico y el programa las incorpora desde el principio. No ignoramos los problemas: los integramos al diseno. Si durante el programa aparece una lesion nueva, el plan se ajusta de inmediato sin costo adicional.
+                                Las lesiones y limitaciones se documentan en el diagnostico y el programa las incorpora desde el principio. No ignoramos los problemas: los integramos al diseño. Si durante el programa aparece una lesion nueva, el plan se ajusta de inmediato sin costo adicional.
                             </p>
                         </div>
                     </div>

@@ -10,7 +10,7 @@
                 ENTRENAMIENTO<br>PRESENCIAL
             </h1>
             <p class="mx-auto mt-6 max-w-2xl text-lg text-wc-text-secondary">
-                Coaching 1:1 en persona. El mismo metodo basado en ciencia de WellCore, con la ventaja del acompanamiento presencial.
+                Coaching 1:1 en persona. El mismo metodo basado en ciencia de WellCore, con la ventaja del acompañamiento presencial.
             </p>
             <div class="mt-8">
                 <a href="{{ route('presencial.form') }}" class="rounded-full bg-wc-accent px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover">

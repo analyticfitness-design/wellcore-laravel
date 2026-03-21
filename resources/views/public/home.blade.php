@@ -455,7 +455,7 @@
                             [true, 'Macros y calorias ajustadas'],
                             [true, 'Recetas adaptadas'],
                             [true, 'Guia de habitos y estilo de vida'],
-                            [true, 'Seguimiento de sueno y estres'],
+                            [true, 'Seguimiento de sueño y estres'],
                             [true, 'Reporte mensual de progreso'],
                             [true, 'Ajuste quincenal'],
                             [true, 'Soporte — respuesta 24h'],

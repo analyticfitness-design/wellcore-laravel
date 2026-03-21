@@ -179,7 +179,7 @@
                 <span class="font-data text-sm font-semibold text-wc-accent">FASE 02</span>
                 <span class="text-xs font-medium text-wc-text-tertiary">48-72h</span>
             </div>
-            <h2 class="text-center font-display text-3xl tracking-wide text-wc-text sm:text-4xl">DISENO DEL PROGRAMA</h2>
+            <h2 class="text-center font-display text-3xl tracking-wide text-wc-text sm:text-4xl">DISEÑO DEL PROGRAMA</h2>
             <p class="mt-2 text-center text-lg text-wc-text-secondary">Construccion basada en tus datos</p>
 
             <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-5">
@@ -211,7 +211,7 @@
                         </li>
                         <li class="flex items-start gap-3 text-sm text-wc-text-secondary">
                             <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                            Protocolo de habitos (plan Elite) — rutinas de sueno, hidratacion y gestion del estres
+                            Protocolo de habitos (plan Elite) — rutinas de sueño, hidratacion y gestion del estres
                         </li>
                         <li class="flex items-start gap-3 text-sm text-wc-text-secondary">
                             <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
@@ -346,7 +346,7 @@
                         </li>
                         <li class="flex items-start gap-3 text-sm text-wc-text-secondary">
                             <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-wc-accent/10 text-xs font-bold text-wc-accent">2</span>
-                            Respondes el check-in con tus datos: entrenamientos, alimentacion, sueno, energia
+                            Respondes el check-in con tus datos: entrenamientos, alimentacion, sueño, energia
                         </li>
                         <li class="flex items-start gap-3 text-sm text-wc-text-secondary">
                             <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-wc-accent/10 text-xs font-bold text-wc-accent">3</span>

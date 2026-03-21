@@ -18,7 +18,7 @@
                     <div class="mt-6 flex flex-wrap gap-6 text-sm text-wc-text-secondary">
                         <div class="flex items-center gap-2">
                             <span class="font-data text-2xl font-bold text-emerald-400">6+</span>
-                            <span>anos de<br>experiencia</span>
+                            <span>años de<br>experiencia</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="font-data text-2xl font-bold text-emerald-400">120+</span>
@@ -56,14 +56,14 @@
                 <h2 class="font-display text-3xl tracking-wide text-wc-text">MI HISTORIA</h2>
                 <div class="mt-6 space-y-4 text-wc-text-secondary">
                     <p>
-                        Comence mi camino en el fitness hace mas de 6 anos, cuando descubri que el entrenamiento de fuerza
+                        Comence mi camino en el fitness hace mas de 6 años, cuando descubri que el entrenamiento de fuerza
                         era mucho mas que estetica — era una herramienta de empoderamiento. Desde entonces, me he
                         especializado en ayudar a mujeres a construir una relacion saludable con el ejercicio y la nutricion.
                     </p>
                     <p>
                         Soy licenciada en Ciencias del Deporte con especializacion en Fisiologia del Ejercicio.
                         Certificada NSCA-CPT y Precision Nutrition Level 1. Mi enfoque combina periodizacion
-                        inteligente, nutricion basada en evidencia y un acompanamiento constante que se adapta a tu vida real.
+                        inteligente, nutricion basada en evidencia y un acompañamiento constante que se adapta a tu vida real.
                     </p>
                     <p>
                         No creo en dietas restrictivas ni en entrenar hasta el agotamiento. Creo en procesos sostenibles
@@ -113,7 +113,7 @@
                     $testimonials = [
                         ['name' => 'Camila R.', 'months' => '8 meses', 'text' => 'Silvia cambio mi relacion con el entrenamiento. Antes odiaba el gym, ahora es mi momento favorito del dia. Perdi 12kg de grasa y gane confianza en mi misma.'],
                         ['name' => 'Laura M.', 'months' => '5 meses', 'text' => 'Lo que mas valoro es que Silvia entiende la vida real. No me juzga si un dia no puedo entrenar, me ayuda a adaptar. Mi fuerza se duplico en 5 meses.'],
-                        ['name' => 'Valentina G.', 'months' => '1 ano', 'text' => 'Empece sin saber nada de nutricion. Hoy manejo mis macros con confianza y mi rendimiento en el gym es otro nivel. La mejor inversion que he hecho.'],
+                        ['name' => 'Valentina G.', 'months' => '1 año', 'text' => 'Empece sin saber nada de nutricion. Hoy manejo mis macros con confianza y mi rendimiento en el gym es otro nivel. La mejor inversion que he hecho.'],
                     ];
                 @endphp
                 @foreach($testimonials as $t)

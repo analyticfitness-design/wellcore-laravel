@@ -17,7 +17,7 @@
             {{-- Section heading --}}
             <div class="mb-12 text-center">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NUESTROS PLANES</h2>
-                <p class="mx-auto mt-3 max-w-lg text-wc-text-secondary">Cada plan incluye acceso completo a la plataforma. Elige el nivel de acompanamiento que necesitas.</p>
+                <p class="mx-auto mt-3 max-w-lg text-wc-text-secondary">Cada plan incluye acceso completo a la plataforma. Elige el nivel de acompañamiento que necesitas.</p>
             </div>
 
             @php
@@ -35,7 +35,7 @@
                     'Macros y calorias ajustadas',
                     'Recetas adaptadas a preferencias',
                     'Guia de habitos y estilo de vida',
-                    'Seguimiento de sueno y estres',
+                    'Seguimiento de sueño y estres',
                     'Reporte mensual de progreso',
                     'Ajuste quincenal del programa',
                     'Soporte — respuesta 24h',

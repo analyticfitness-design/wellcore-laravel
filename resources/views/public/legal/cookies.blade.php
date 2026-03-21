@@ -38,17 +38,17 @@
                                 <tr>
                                     <td class="px-4 py-3 font-medium text-wc-text">Preferencias</td>
                                     <td class="px-4 py-3">Recordar configuraciones como modo oscuro/claro y preferencias de idioma</td>
-                                    <td class="px-4 py-3">1 ano</td>
+                                    <td class="px-4 py-3">1 año</td>
                                 </tr>
                                 <tr>
                                     <td class="px-4 py-3 font-medium text-wc-text">Analiticas</td>
                                     <td class="px-4 py-3">Google Analytics (GA4) para entender el uso de la plataforma de forma agregada y anonimizada</td>
-                                    <td class="px-4 py-3">2 anos</td>
+                                    <td class="px-4 py-3">2 años</td>
                                 </tr>
                                 <tr>
                                     <td class="px-4 py-3 font-medium text-wc-text">Funcionales</td>
                                     <td class="px-4 py-3">Consentimiento de cookies, suscripcion a notificaciones push</td>
-                                    <td class="px-4 py-3">1 ano</td>
+                                    <td class="px-4 py-3">1 año</td>
                                 </tr>
                             </tbody>
                         </table>

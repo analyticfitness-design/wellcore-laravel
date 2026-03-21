@@ -90,14 +90,14 @@
                         <h3 class="font-display text-2xl tracking-wide text-wc-text">DANIEL ESPARZA</h3>
                         <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">Fundador y Head Coach</p>
                         <p class="mt-4 text-wc-text-secondary leading-relaxed">
-                            Especialista en fisiologia del ejercicio y nutricion deportiva con mas de 8 anos de
+                            Especialista en fisiologia del ejercicio y nutricion deportiva con mas de 8 años de
                             experiencia en coaching personalizado. Certificado NSCA (National Strength and
                             Conditioning Association). Ha trabajado con cientos de clientes en Latinoamerica,
                             desarrollando un metodo basado en ciencia que prioriza resultados sostenibles sobre
                             soluciones rapidas.
                         </p>
                         <div class="mt-6 flex flex-wrap justify-center gap-3 md:justify-start">
-                            <span class="inline-flex items-center rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1 text-xs font-medium text-wc-text-secondary">8+ anos experiencia</span>
+                            <span class="inline-flex items-center rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1 text-xs font-medium text-wc-text-secondary">8+ años experiencia</span>
                             <span class="inline-flex items-center rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1 text-xs font-medium text-wc-text-secondary">Certificado NSCA</span>
                             <span class="inline-flex items-center rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1 text-xs font-medium text-wc-text-secondary">Fisiologia del ejercicio</span>
                             <span class="inline-flex items-center rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1 text-xs font-medium text-wc-text-secondary">Nutricion deportiva</span>

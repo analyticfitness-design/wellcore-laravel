@@ -115,10 +115,10 @@
                                 class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-2 text-sm text-wc-text focus:border-red-500 focus:ring-1 focus:ring-red-500 focus:outline-none"
                             >
                                 <option value="">Seleccionar...</option>
-                                <option value="1-2">1-2 anos</option>
-                                <option value="3-5">3-5 anos</option>
-                                <option value="5-10">5-10 anos</option>
-                                <option value="10+">10+ anos</option>
+                                <option value="1-2">1-2 años</option>
+                                <option value="3-5">3-5 años</option>
+                                <option value="5-10">5-10 años</option>
+                                <option value="10+">10+ años</option>
                             </select>
                             @error('experience') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                         </div>

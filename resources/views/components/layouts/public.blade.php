@@ -40,6 +40,7 @@
                 <a href="{{ route('blog.index') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('blog.*') ? '!text-wc-text' : '' }}">Blog</a>
                 <a href="{{ route('faq') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('faq') ? '!text-wc-text' : '' }}">FAQ</a>
                 <a href="{{ route('coaches') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('coaches*') ? '!text-wc-text' : '' }}">Coaches</a>
+                <a href="{{ route('presencial') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('presencial*') ? '!text-wc-text' : '' }}">Presencial</a>
             </div>
 
             {{-- Right side --}}
@@ -109,6 +110,7 @@
                 <a href="{{ route('blog.index') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('blog.*') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Blog</a>
                 <a href="{{ route('faq') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('faq') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">FAQ</a>
                 <a href="{{ route('coaches') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('coaches*') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Coaches</a>
+                <a href="{{ route('presencial') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('presencial*') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">Presencial</a>
                 <div class="flex gap-2 pt-3">
                     <a href="{{ route('login') }}" class="flex-1 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-center text-sm font-medium text-wc-text hover:bg-wc-bg-tertiary">Mi Cuenta</a>
                     <a href="{{ route('inscripcion') }}" class="flex-1 rounded-lg bg-wc-accent px-3 py-2.5 text-center text-sm font-medium text-white hover:bg-wc-accent-hover">Empezar</a>

@@ -249,7 +249,7 @@
                                     <div class="flex h-4 w-4 shrink-0 items-center justify-center rounded bg-emerald-400/20">
                                         <svg class="h-3 w-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
                                     </div>
-                                    <span class="text-[11px] text-wc-text-secondary">8h sueno</span>
+                                    <span class="text-[11px] text-wc-text-secondary">8h sueño</span>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <div class="h-4 w-4 shrink-0 rounded border border-wc-border"></div>
@@ -421,7 +421,7 @@
                         </div>
                         <div class="flex items-center gap-2 text-xs text-wc-text-tertiary">
                             <div class="h-1 w-1 rounded-full bg-wc-accent"></div>
-                            Consumo de agua y sueno
+                            Consumo de agua y sueño
                         </div>
                         <div class="flex items-center gap-2 text-xs text-wc-text-tertiary">
                             <div class="h-1 w-1 rounded-full bg-wc-accent"></div>

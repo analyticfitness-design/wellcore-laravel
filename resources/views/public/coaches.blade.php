@@ -118,7 +118,7 @@
                             </svg>
                         </div>
                         <div>
-                            <h4 class="text-sm font-semibold text-wc-text">2+ anos de experiencia en coaching</h4>
+                            <h4 class="text-sm font-semibold text-wc-text">2+ años de experiencia en coaching</h4>
                             <p class="mt-1 text-sm text-wc-text-tertiary">Experiencia demostrable trabajando con clientes en entrenamiento y/o nutricion.</p>
                         </div>
                     </div>
