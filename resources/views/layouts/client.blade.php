@@ -334,6 +334,69 @@
         </main>
     </div>
 
+    {{-- Quick Actions FAB --}}
+    <div x-data="{ fabOpen: false }"
+         x-on:click.outside="fabOpen = false"
+         x-on:keydown.escape.window="fabOpen = false"
+         class="fixed bottom-24 right-6 z-40 flex flex-col items-end gap-3">
+
+        {{-- Action buttons (shown when open) --}}
+        <template x-if="fabOpen">
+            <div class="flex flex-col items-end gap-2">
+                {{-- 1. Log Peso --}}
+                <a href="{{ route('client.metrics') }}"
+                   class="fab-action-enter flex items-center gap-2 rounded-full border border-wc-border bg-wc-bg-tertiary px-4 py-2 shadow-lg hover:bg-wc-bg-secondary transition-colors"
+                   style="animation-delay: 100ms">
+                    <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.589-1.202L18.75 4.97Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.589-1.202L5.25 4.97Z" />
+                    </svg>
+                    <span class="text-sm font-medium text-wc-text">Log Peso</span>
+                </a>
+
+                {{-- 2. Check-in --}}
+                <a href="{{ route('client.checkin') }}"
+                   class="fab-action-enter flex items-center gap-2 rounded-full border border-wc-border bg-wc-bg-tertiary px-4 py-2 shadow-lg hover:bg-wc-bg-secondary transition-colors"
+                   style="animation-delay: 200ms">
+                    <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z" />
+                    </svg>
+                    <span class="text-sm font-medium text-wc-text">Check-in</span>
+                </a>
+
+                {{-- 3. Entrenar --}}
+                <a href="{{ route('client.training') }}"
+                   class="fab-action-enter flex items-center gap-2 rounded-full border border-wc-border bg-wc-bg-tertiary px-4 py-2 shadow-lg hover:bg-wc-bg-secondary transition-colors"
+                   style="animation-delay: 300ms">
+                    <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+                    </svg>
+                    <span class="text-sm font-medium text-wc-text">Entrenar</span>
+                </a>
+
+                {{-- 4. Foto --}}
+                <a href="{{ route('client.photos') }}"
+                   class="fab-action-enter flex items-center gap-2 rounded-full border border-wc-border bg-wc-bg-tertiary px-4 py-2 shadow-lg hover:bg-wc-bg-secondary transition-colors"
+                   style="animation-delay: 400ms">
+                    <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                    </svg>
+                    <span class="text-sm font-medium text-wc-text">Foto</span>
+                </a>
+            </div>
+        </template>
+
+        {{-- Main FAB button --}}
+        <button x-on:click="fabOpen = !fabOpen"
+                class="flex h-12 w-12 items-center justify-center rounded-full bg-wc-accent shadow-lg shadow-wc-accent/30 hover:bg-wc-accent-hover transition-all duration-200"
+                :class="{ 'rotate-45': fabOpen }"
+                aria-label="Acciones rapidas">
+            <svg class="h-6 w-6 text-white transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+        </button>
+    </div>
+
     @livewireScripts
 </body>
 </html>

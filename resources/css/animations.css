@@ -50,11 +50,69 @@
 [data-animate-delay="500"] { transition-delay: 500ms; }
 [data-animate-delay="600"] { transition-delay: 600ms; }
 
+/* ─── Progress Ring Animation ─── */
+@keyframes progressRing {
+    from { stroke-dashoffset: 251; }
+}
+.progress-ring-circle {
+    animation: progressRing 1.5s ease-out forwards;
+    transform: rotate(-90deg);
+    transform-origin: center;
+}
+
+/* ─── Streak Flame Animation ─── */
+@keyframes flameGlow {
+    0%, 100% { filter: drop-shadow(0 0 4px rgba(220,38,38,0.4)); transform: scale(1); }
+    50% { filter: drop-shadow(0 0 12px rgba(220,38,38,0.7)); transform: scale(1.1); }
+}
+.flame-active {
+    animation: flameGlow 1.5s ease-in-out infinite;
+}
+
+/* ─── Confetti Animation ─── */
+@keyframes confettiFall {
+    0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+.confetti-particle {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    top: -10px;
+    z-index: 9999;
+    border-radius: 2px;
+}
+
+/* ─── FAB Slide-in Animation ─── */
+@keyframes fabSlideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.fab-action-enter {
+    animation: fabSlideIn 0.25s ease-out forwards;
+}
+
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
     [data-animate] {
         opacity: 1;
         transform: none;
         transition: none;
+    }
+    .progress-ring-circle {
+        animation: none;
+    }
+    .flame-active {
+        animation: none;
+    }
+    .confetti-particle {
+        animation: none;
+        display: none;
+    }
+    .fab-action-enter {
+        animation: none;
+        opacity: 1;
+        transform: none;
     }
 }

@@ -65,13 +65,13 @@
 
     {{-- Stats cards --}}
     <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        {{-- Streak --}}
+        {{-- Streak with Flame Animation --}}
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Racha</span>
-                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10">
-                    <svg class="h-4 w-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10 {{ $streakDays >= 3 ? 'flame-active' : '' }}">
+                    <svg class="h-4 w-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.963 2.286a.75.75 0 0 0-1.071-.136 9.742 9.742 0 0 0-3.539 6.176A7.547 7.547 0 0 1 6.648 6.61a.75.75 0 0 0-1.152.082A9 9 0 1 0 15.68 4.534a7.46 7.46 0 0 1-2.717-2.248ZM15.75 14.25a3.75 3.75 0 1 1-7.313-1.172c.628.465 1.35.81 2.133 1a5.99 5.99 0 0 1 1.925-3.546 3.75 3.75 0 0 1 3.255 3.718Z" clip-rule="evenodd" />
                     </svg>
                 </div>
             </div>
@@ -117,18 +117,45 @@
             </div>
         </div>
 
-        {{-- Days trained this week --}}
+        {{-- Days trained this week — Progress Ring --}}
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Esta semana</span>
-                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/10">
-                    <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                    </svg>
+            </div>
+            <div class="mt-3 flex items-center gap-3">
+                {{-- SVG Progress Ring ~60px --}}
+                @php
+                    $circumference = 251;
+                    $progressOffset = $circumference - ($circumference * min($trainedThisWeek, 7) / 7);
+                @endphp
+                <svg width="60" height="60" viewBox="0 0 86 86" class="shrink-0">
+                    {{-- Background track --}}
+                    <circle cx="43" cy="43" r="40"
+                            fill="none"
+                            stroke="var(--color-wc-border)"
+                            stroke-width="6" />
+                    {{-- Animated progress arc --}}
+                    <circle cx="43" cy="43" r="40"
+                            fill="none"
+                            stroke="#DC2626"
+                            stroke-width="6"
+                            stroke-linecap="round"
+                            stroke-dasharray="{{ $circumference }}"
+                            stroke-dashoffset="{{ $progressOffset }}"
+                            class="progress-ring-circle" />
+                    {{-- Center text --}}
+                    <text x="43" y="43"
+                          text-anchor="middle"
+                          dominant-baseline="central"
+                          fill="var(--color-wc-text)"
+                          font-family="var(--font-data)"
+                          font-size="18"
+                          font-weight="700">{{ $trainedThisWeek }}/7</text>
+                </svg>
+                <div>
+                    <p class="text-xs text-wc-text-tertiary">dias entrenados</p>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ $trainedThisWeek }}</p>
-            <p class="mt-0.5 text-xs text-wc-text-tertiary">dias entrenados</p>
         </div>
     </div>
 

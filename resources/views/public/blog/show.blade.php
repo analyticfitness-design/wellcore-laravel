@@ -2,9 +2,16 @@
     <x-slot:title>{{ $article['title'] }} - WellCore Blog</x-slot:title>
     <x-slot:description>{{ $article['excerpt'] }}</x-slot:description>
 
-    {{-- Article Header --}}
-    <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    {{-- Hero Gradient Header --}}
+    <section class="relative overflow-hidden bg-gradient-to-br {{ $article['gradient'] ?? 'from-wc-accent/20 to-wc-bg-tertiary' }}">
+        {{-- Pattern overlay --}}
+        <div class="absolute inset-0" style="background-image: radial-gradient(circle, currentColor 0.5px, transparent 0.5px); background-size: 16px 16px; opacity: 0.03;"></div>
+        {{-- Decorative circles --}}
+        <div class="absolute -right-16 -top-16 h-64 w-64 rounded-full border border-current opacity-[0.05]"></div>
+        <div class="absolute -right-8 -top-8 h-48 w-48 rounded-full border border-current opacity-[0.07]"></div>
+        <div class="absolute -left-12 bottom-0 h-40 w-40 rounded-full border border-current opacity-[0.04]"></div>
+
+        <div class="relative mx-auto max-w-7xl px-4 pb-12 pt-8 sm:px-6 lg:px-8">
             {{-- Back Link --}}
             <a href="{{ route('blog.index') }}" class="mb-8 inline-flex items-center gap-2 text-sm text-wc-text-secondary transition-colors hover:text-wc-accent">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -15,7 +22,7 @@
 
             <div class="mx-auto max-w-3xl pt-4">
                 {{-- Category --}}
-                <span class="inline-flex rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-wc-accent">
+                <span class="inline-flex rounded-full bg-wc-bg/80 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-wc-accent ring-1 ring-wc-border/50 backdrop-blur-sm">
                     {{ $article['category'] }}
                 </span>
 
@@ -79,15 +86,20 @@
 
             <div class="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
                 @foreach ($related as $relatedArticle)
-                    <article class="group flex flex-col overflow-hidden rounded-xl border border-wc-border bg-wc-bg transition-colors hover:border-wc-accent/30">
-                        <div class="flex flex-1 flex-col p-6">
-                            <div class="mb-3">
-                                <span class="inline-flex rounded-full bg-wc-accent/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-accent">
+                    <article class="group relative flex flex-col overflow-hidden rounded-xl border border-wc-border bg-wc-bg transition-colors hover:border-wc-accent/30">
+                        {{-- Gradient Header --}}
+                        <div class="relative h-24 overflow-hidden bg-gradient-to-br {{ $relatedArticle['gradient'] ?? 'from-wc-accent/20 to-wc-bg-tertiary' }}">
+                            <div class="absolute inset-0" style="background-image: radial-gradient(circle, currentColor 0.5px, transparent 0.5px); background-size: 12px 12px; opacity: 0.04;"></div>
+                            <div class="absolute -right-4 -top-4 h-20 w-20 rounded-full border border-current opacity-[0.06]"></div>
+                            <div class="absolute bottom-3 left-4">
+                                <span class="inline-flex rounded-full bg-wc-bg/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-accent backdrop-blur-sm ring-1 ring-wc-border/50">
                                     {{ $relatedArticle['category'] }}
                                 </span>
                             </div>
+                        </div>
+                        <div class="flex flex-1 flex-col p-6">
                             <h3 class="mb-2 text-base font-semibold text-wc-text transition-colors group-hover:text-wc-accent">
-                                <a href="{{ route('blog.show', $relatedArticle['slug']) }}">
+                                <a href="{{ route('blog.show', $relatedArticle['slug']) }}" class="after:absolute after:inset-0">
                                     {{ $relatedArticle['title'] }}
                                 </a>
                             </h3>

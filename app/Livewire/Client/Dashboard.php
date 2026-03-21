@@ -2,9 +2,12 @@
 
 namespace App\Livewire\Client;
 
+use App\Models\Admin;
 use App\Models\AssignedPlan;
+use App\Models\BiometricLog;
 use App\Models\Checkin;
 use App\Models\ClientXp;
+use App\Models\CoachMessage;
 use App\Models\Payment;
 use App\Models\TrainingLog;
 use App\Models\WeightLog;
@@ -47,6 +50,29 @@ class Dashboard extends Component
     public ?string $planPhase = null;
     public int $planDaysActive = 0;
 
+    // Check-in countdown
+    public int $daysUntilCheckin = 0;
+    public string $nextCheckinDate = '';
+
+    // ITEM 2: Weekly Summary
+    public int $lastWeekWorkouts = 0;
+    public int $lastWeekCheckins = 0;
+    public ?string $lastWeekWeight = null;
+    public bool $hasLastWeekData = false;
+
+    // ITEM 3: Coach Avatar
+    public string $coachName = 'Tu Coach WellCore';
+    public string $coachInitials = 'WC';
+
+    // ITEM 4: Motivational Quote
+    public string $dailyQuote = '';
+
+    // ITEM 5: Plan Progress Timeline
+    public int $weeksActive = 0;
+    public int $totalWeeks = 12;
+    public int $progressPercent = 0;
+    public ?string $startDate = null;
+
     public function mount(): void
     {
         $client = auth('wellcore')->user();
@@ -69,6 +95,13 @@ class Dashboard extends Component
         $this->loadRecentActivity($client);
         $this->loadPlanInfo($client);
         $this->loadDailyMissions($client);
+        $this->loadCheckinCountdown($client);
+        $this->loadWeeklySummary($client);
+        $this->loadCoachInfo($client);
+        $this->loadPlanProgress($client);
+
+        // ITEM 4: Daily quote
+        $this->dailyQuote = $this->getDailyQuote();
     }
 
     protected function loadStats($client): void
@@ -265,6 +298,23 @@ class Dashboard extends Component
                 'icon'      => 'nutrition',
             ],
         ];
+    }
+
+    protected function loadCheckinCountdown($client): void
+    {
+        $lastCheckin = Checkin::where('client_id', $client->id)
+            ->orderByDesc('checkin_date')
+            ->first();
+
+        if ($lastCheckin) {
+            $nextDate = Carbon::parse($lastCheckin->checkin_date)->addDays(7);
+            $this->daysUntilCheckin = (int) now()->startOfDay()->diffInDays($nextDate->startOfDay(), false);
+            $this->nextCheckinDate = $nextDate->translatedFormat('l j M');
+        } else {
+            // No checkins yet — due today
+            $this->daysUntilCheckin = 0;
+            $this->nextCheckinDate = now()->translatedFormat('l j M');
+        }
     }
 
     public function render()
