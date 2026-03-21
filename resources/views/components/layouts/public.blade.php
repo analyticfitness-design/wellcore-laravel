@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
 
     <x-ga-tracking />
     <x-pwa-meta />
@@ -192,5 +193,6 @@
     <x-cookie-consent />
     <x-toast-notifications />
 
+    @livewireScripts
 </body>
 </html>
