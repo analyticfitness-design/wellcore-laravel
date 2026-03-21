@@ -98,9 +98,9 @@
             <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
                 @php
                     $plans = [
-                        ['name' => '3 Sesiones/Semana', 'price' => '450.000', 'features' => ['12 sesiones presenciales/mes', 'Programa en app', 'Plan nutricional', 'Check-in semanal']],
-                        ['name' => '4 Sesiones/Semana', 'price' => '550.000', 'popular' => true, 'features' => ['16 sesiones presenciales/mes', 'Programa en app', 'Plan nutricional', 'Check-in semanal', 'Video analisis tecnica']],
-                        ['name' => '5 Sesiones/Semana', 'price' => '650.000', 'features' => ['20 sesiones presenciales/mes', 'Programa en app', 'Plan nutricional + suplementacion', 'Check-in semanal', 'Video analisis tecnica', 'Soporte prioritario']],
+                        ['name' => '3 Sesiones/Semana', 'price' => '450.000', 'features' => ['12 sesiones presenciales/mes', 'Supervision de tecnica en vivo', 'Programa personalizado en plataforma', 'Plan nutricional basico', 'Check-in semanal', 'Acceso al portal de cliente 24/7']],
+                        ['name' => '4 Sesiones/Semana', 'price' => '550.000', 'popular' => true, 'features' => ['16 sesiones presenciales/mes', 'Supervision de tecnica en vivo', 'Programa personalizado en plataforma', 'Plan nutricional completo + macros', 'Check-in semanal', 'Acceso al portal de cliente 24/7', 'Mediciones corporales semanales', 'Ajuste quincenal del programa']],
+                        ['name' => '5 Sesiones/Semana', 'price' => '650.000', 'features' => ['20 sesiones presenciales/mes', 'Supervision de tecnica en vivo', 'Programa personalizado en plataforma', 'Plan nutricional completo + suplementacion', 'Check-in semanal', 'Acceso al portal de cliente 24/7', 'Mediciones corporales semanales', 'Ajuste semanal del programa', 'Soporte prioritario WhatsApp']],
                     ];
                 @endphp
                 @foreach($plans as $plan)
