@@ -4,6 +4,13 @@
         messages: [
             { role: 'assistant', text: 'Hola! Soy el asistente de WellCore. Puedo ayudarte con informacion sobre nuestros planes, el metodo, precios o cualquier duda que tengas. Como puedo ayudarte?' }
         ],
+        quickReplies: [
+            'Cuanto cuestan los planes?',
+            'Como funciona el metodo?',
+            'Que incluye el programa RISE?',
+            'Como contacto un coach?'
+        ],
+        showQuickReplies: true,
         newMessage: '',
         loading: false,
         sessionId: '',
@@ -19,6 +26,11 @@
         generateId() {
             return 'wc_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 10);
         },
+        sendQuickReply(text) {
+            this.newMessage = text;
+            this.showQuickReplies = false;
+            this.sendMessage();
+        },
         async sendMessage() {
             if (!this.newMessage.trim() || this.loading) return;
 
@@ -26,6 +38,7 @@
             this.messages.push({ role: 'user', text: userMsg });
             this.newMessage = '';
             this.loading = true;
+            this.showQuickReplies = false;
 
             this.$nextTick(() => this.scrollToBottom());
 
@@ -73,16 +86,23 @@
          class="absolute bottom-16 right-0 mb-2 w-80 overflow-hidden rounded-2xl border border-wc-border bg-wc-bg shadow-2xl sm:w-96">
 
         {{-- Header --}}
-        <div class="flex items-center justify-between border-b border-wc-border bg-wc-bg-secondary px-4 py-3">
+        <div class="flex items-center justify-between border-b border-wc-border bg-wc-accent px-4 py-3">
             <div class="flex items-center gap-3">
-                <img src="/images/logo-icon-dark.png" alt="WellCore" class="h-12 w-12 rounded-full object-contain dark:hidden" loading="lazy" decoding="async">
-                <img src="/images/logo-icon-light.png" alt="WellCore" class="hidden h-12 w-12 rounded-full object-contain dark:block" loading="lazy" decoding="async">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
+                    <img src="/images/logo-icon-light.png" alt="WellCore" class="h-8 w-8 rounded-full object-contain" loading="lazy" decoding="async">
+                </div>
                 <div>
-                    <p class="text-sm font-semibold text-wc-text">WellCore</p>
-                    <p class="text-[11px] text-wc-text-tertiary">Asistente de Fitness</p>
+                    <p class="text-sm font-semibold text-white">WellCore</p>
+                    <div class="flex items-center gap-1.5">
+                        <span class="relative flex h-1.5 w-1.5">
+                            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75"></span>
+                            <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-300"></span>
+                        </span>
+                        <p class="text-[11px] text-white/70">En linea</p>
+                    </div>
                 </div>
             </div>
-            <button x-on:click="chatOpen = false" class="flex h-8 w-8 items-center justify-center rounded-lg text-wc-text-tertiary hover:bg-wc-bg-tertiary hover:text-wc-text">
+            <button x-on:click="chatOpen = false" class="flex h-8 w-8 items-center justify-center rounded-lg text-white/60 hover:bg-white/10 hover:text-white">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
@@ -108,16 +128,32 @@
                 </div>
             </template>
 
-            {{-- Loading indicator --}}
+            {{-- Quick Reply Buttons --}}
+            <div x-show="showQuickReplies && messages.length <= 1 && !loading" x-transition class="space-y-2 pt-1">
+                <p class="text-[11px] text-wc-text-tertiary">Preguntas frecuentes:</p>
+                <div class="flex flex-wrap gap-1.5">
+                    <template x-for="(reply, i) in quickReplies" :key="i">
+                        <button
+                            x-on:click="sendQuickReply(reply)"
+                            x-text="reply"
+                            class="rounded-full border border-wc-accent/30 bg-wc-accent/5 px-3 py-1.5 text-xs font-medium text-wc-accent transition-all hover:border-wc-accent hover:bg-wc-accent/10 active:scale-95">
+                        </button>
+                    </template>
+                </div>
+            </div>
+
+            {{-- Loading indicator with typing animation --}}
             <div x-show="loading" class="flex gap-2">
-                <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
-                    <span class="text-[10px] font-bold text-wc-accent">W</span>
+                <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
+                    <img src="/images/logo-icon-dark.png" alt="W" class="h-6 w-6 rounded-full object-contain dark:hidden" loading="lazy">
+                    <img src="/images/logo-icon-light.png" alt="W" class="hidden h-6 w-6 rounded-full object-contain dark:block" loading="lazy">
                 </div>
                 <div class="rounded-xl rounded-tl-sm bg-wc-bg-tertiary px-4 py-3">
-                    <div class="flex items-center gap-1">
-                        <span class="inline-block h-1.5 w-1.5 animate-bounce rounded-full bg-wc-text-tertiary" style="animation-delay: 0ms;"></span>
-                        <span class="inline-block h-1.5 w-1.5 animate-bounce rounded-full bg-wc-text-tertiary" style="animation-delay: 150ms;"></span>
-                        <span class="inline-block h-1.5 w-1.5 animate-bounce rounded-full bg-wc-text-tertiary" style="animation-delay: 300ms;"></span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[11px] text-wc-text-tertiary">Escribiendo</span>
+                        <span class="inline-block h-1.5 w-1.5 animate-bounce rounded-full bg-wc-accent/60" style="animation-delay: 0ms;"></span>
+                        <span class="inline-block h-1.5 w-1.5 animate-bounce rounded-full bg-wc-accent/60" style="animation-delay: 150ms;"></span>
+                        <span class="inline-block h-1.5 w-1.5 animate-bounce rounded-full bg-wc-accent/60" style="animation-delay: 300ms;"></span>
                     </div>
                 </div>
             </div>
