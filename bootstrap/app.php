@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectUsersTo('/client');
 
         $middleware->web(append: [
+            \App\Http\Middleware\SetLocale::class,
             \App\Http\Middleware\TrackReferral::class,
             \App\Http\Middleware\ContentSecurityPolicy::class,
         ]);

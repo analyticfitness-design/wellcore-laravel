@@ -27,6 +27,7 @@
     @livewireStyles
 
     <x-seo-meta :title="$title ?? 'WellCore Fitness'" :description="$description ?? 'Coaching fitness basado en ciencia.'" />
+    <x-hreflang />
     <x-ga-tracking />
     <x-pwa-meta />
 </head>
@@ -63,6 +64,9 @@
                     </svg>
                     Mi Cuenta
                 </a>
+
+                {{-- Language Switcher --}}
+                <x-language-switcher />
 
                 {{-- Dark Mode Toggle (CSS-based, no Alpine flash) --}}
                 <button
