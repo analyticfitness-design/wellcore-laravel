@@ -294,6 +294,31 @@
                 </div>
             </div>
 
+                {{-- Training completion sound --}}
+                <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4"
+                     x-data="{ soundEnabled: localStorage.getItem('wc_sound_enabled') !== 'false' }"
+                     x-init="$watch('soundEnabled', val => localStorage.setItem('wc_sound_enabled', val ? 'true' : 'false'))"
+                >
+                    <div>
+                        <p class="text-sm font-medium text-wc-text">Sonido al completar entrenamiento</p>
+                        <p class="mt-0.5 text-xs text-wc-text-tertiary">Reproduce un sonido sutil cuando completas tu entrenamiento</p>
+                    </div>
+                    <button
+                        type="button"
+                        @click="soundEnabled = !soundEnabled"
+                        :class="soundEnabled ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
+                        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none"
+                        role="switch"
+                        :aria-checked="soundEnabled.toString()"
+                    >
+                        <span
+                            :class="soundEnabled ? 'translate-x-5' : 'translate-x-0'"
+                            class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
+                        ></span>
+                    </button>
+                </div>
+            </div>
+
             <p class="mt-4 text-xs text-wc-text-tertiary">Las preferencias se guardan automaticamente en este dispositivo.</p>
         </div>
     </div>

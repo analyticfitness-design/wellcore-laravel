@@ -397,6 +397,33 @@
         </button>
     </div>
 
+    {{-- Training Completion Sound --}}
+    <script>
+        function playCompletionSound() {
+            if (localStorage.getItem('wc_sound_enabled') === 'false') return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = 880;
+                gain.gain.value = 0.1;
+                osc.start();
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+                osc.stop(ctx.currentTime + 0.3);
+            } catch (e) {
+                // Web Audio API not supported or blocked
+            }
+        }
+
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('training-completed', () => {
+                playCompletionSound();
+            });
+        });
+    </script>
+
     @livewireScripts
 </body>
 </html>

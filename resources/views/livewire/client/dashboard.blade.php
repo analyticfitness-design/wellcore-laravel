@@ -1,5 +1,146 @@
 <div class="space-y-6">
 
+    {{-- ITEM 1: Welcome Onboarding Modal --}}
+    <div x-data="{
+            showOnboarding: !localStorage.getItem('wc_onboarding_done'),
+            currentSlide: 0,
+            totalSlides: 3,
+            next() { if (this.currentSlide < this.totalSlides - 1) this.currentSlide++ },
+            prev() { if (this.currentSlide > 0) this.currentSlide-- },
+            finish() {
+                localStorage.setItem('wc_onboarding_done', '1');
+                this.showOnboarding = false;
+            }
+         }"
+         x-cloak>
+
+        {{-- Overlay --}}
+        <template x-if="showOnboarding">
+            <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0">
+
+                {{-- Modal --}}
+                <div class="relative w-full max-w-lg rounded-2xl border border-wc-border bg-wc-bg-secondary p-6 sm:p-8 shadow-2xl"
+                     @click.away="finish()">
+
+                    {{-- Close button --}}
+                    <button @click="finish()" class="absolute top-4 right-4 text-wc-text-tertiary hover:text-wc-text transition-colors">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+
+                    {{-- Slide 1: Bienvenido --}}
+                    <div x-show="currentSlide === 0" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-wc-accent/10 mb-5">
+                                <svg class="h-8 w-8 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
+                                </svg>
+                            </div>
+                            <h2 class="font-display text-2xl tracking-wide text-wc-text">Bienvenido a WellCore</h2>
+                            <p class="mt-3 text-sm text-wc-text-tertiary leading-relaxed max-w-sm">
+                                Tu plataforma de coaching fitness basada en ciencia. Aqui encontraras todo lo que necesitas para transformar tu salud y rendimiento.
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- Slide 2: Tu Dashboard --}}
+                    <div x-show="currentSlide === 1" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-500/10 mb-5">
+                                <svg class="h-8 w-8 text-violet-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6Z" />
+                                </svg>
+                            </div>
+                            <h2 class="font-display text-2xl tracking-wide text-wc-text">Tu Dashboard</h2>
+                            <p class="mt-3 text-sm text-wc-text-tertiary leading-relaxed max-w-sm">
+                                Completa <span class="font-semibold text-wc-text">misiones diarias</span> para ganar XP, revisa tu <span class="font-semibold text-wc-text">semana de entrenamiento</span> y sube de nivel con cada logro.
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- Slide 3: Primeros Pasos --}}
+                    <div x-show="currentSlide === 2" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10 mb-5">
+                                <svg class="h-8 w-8 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+                                </svg>
+                            </div>
+                            <h2 class="font-display text-2xl tracking-wide text-wc-text">Primeros Pasos</h2>
+                            <div class="mt-4 space-y-3 text-left w-full max-w-xs">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
+                                        <span class="text-xs font-bold text-wc-accent">1</span>
+                                    </div>
+                                    <span class="text-sm text-wc-text">Completa tu primer check-in</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
+                                        <span class="text-xs font-bold text-wc-accent">2</span>
+                                    </div>
+                                    <span class="text-sm text-wc-text">Contacta a tu coach</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
+                                        <span class="text-xs font-bold text-wc-accent">3</span>
+                                    </div>
+                                    <span class="text-sm text-wc-text">Explora tu plan de entrenamiento</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Navigation dots + buttons --}}
+                    <div class="mt-8 flex items-center justify-between">
+                        <button @click="prev()" x-show="currentSlide > 0"
+                                class="inline-flex items-center gap-1.5 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2 text-sm font-medium text-wc-text hover:bg-wc-bg-secondary transition-colors">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                            </svg>
+                            Anterior
+                        </button>
+                        <div x-show="currentSlide === 0" class="w-20"></div>
+
+                        {{-- Dots --}}
+                        <div class="flex items-center gap-2">
+                            <template x-for="i in totalSlides" :key="i">
+                                <button @click="currentSlide = i - 1"
+                                        :class="currentSlide === i - 1 ? 'bg-wc-accent w-6' : 'bg-wc-border w-2'"
+                                        class="h-2 rounded-full transition-all duration-300"></button>
+                            </template>
+                        </div>
+
+                        <template x-if="currentSlide < totalSlides - 1">
+                            <button @click="next()"
+                                    class="inline-flex items-center gap-1.5 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors shadow-lg shadow-wc-accent/20">
+                                Siguiente
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                </svg>
+                            </button>
+                        </template>
+                        <template x-if="currentSlide === totalSlides - 1">
+                            <button @click="finish()"
+                                    class="inline-flex items-center gap-1.5 rounded-full bg-wc-accent px-6 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors shadow-lg shadow-wc-accent/20">
+                                Empezar
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+                                </svg>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+
     {{-- Greeting section --}}
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -29,6 +170,18 @@
                 Hacer check-in
             </a>
         </div>
+    </div>
+
+    {{-- ITEM 4: Daily Motivational Quote --}}
+    <div class="flex items-start gap-3 rounded-xl border border-wc-border/50 bg-wc-bg-tertiary/50 px-4 py-3">
+        <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 mt-0.5">
+            <svg class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+            </svg>
+        </div>
+        <p class="text-sm italic text-wc-text-tertiary leading-relaxed">
+            &ldquo;{{ $dailyQuote }}&rdquo;
+        </p>
     </div>
 
     {{-- Plan alert --}}
@@ -158,6 +311,220 @@
             </div>
         </div>
     </div>
+
+    {{-- ITEM 5: Plan Progress Timeline --}}
+    <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="font-display text-lg tracking-wide text-wc-text">Tu Progreso</h2>
+            <span class="text-xs text-wc-text-tertiary">Semana {{ min($weeksActive, $totalWeeks) }} de {{ $totalWeeks }}</span>
+        </div>
+
+        {{-- Progress bar with week markers --}}
+        <div class="relative">
+            {{-- Background bar --}}
+            <div class="h-2.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
+                <div class="h-full rounded-full bg-gradient-to-r from-wc-accent to-red-400 transition-all duration-700 ease-out"
+                     style="width: {{ $progressPercent }}%"></div>
+            </div>
+
+            {{-- Current position dot --}}
+            <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-700"
+                 style="left: {{ $progressPercent }}%">
+                <div class="h-5 w-5 rounded-full border-[3px] border-wc-accent bg-wc-bg-tertiary shadow-lg shadow-wc-accent/30"></div>
+            </div>
+        </div>
+
+        {{-- Week markers --}}
+        <div class="mt-3 flex items-center justify-between">
+            <div class="text-left">
+                <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Inicio</p>
+                <p class="text-xs font-data text-wc-text">{{ $startDate }}</p>
+            </div>
+            <div class="hidden sm:flex items-center gap-0 flex-1 mx-4">
+                @for($i = 1; $i <= $totalWeeks; $i++)
+                    <div class="flex-1 flex flex-col items-center">
+                        @if($i <= $weeksActive)
+                            <div class="h-1.5 w-1.5 rounded-full bg-wc-accent/60"></div>
+                        @else
+                            <div class="h-1 w-1 rounded-full bg-wc-border"></div>
+                        @endif
+                        @if($i % 3 === 0)
+                            <span class="mt-1 text-[9px] text-wc-text-tertiary">{{ $i }}</span>
+                        @endif
+                    </div>
+                @endfor
+            </div>
+            <div class="text-right">
+                <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ $weeksActive >= $totalWeeks ? 'Continuo' : 'Semana 12' }}</p>
+                <p class="text-xs font-data text-wc-text">{{ $progressPercent }}%</p>
+            </div>
+        </div>
+    </div>
+
+    {{-- ITEM 3: Coach Avatar Card --}}
+    <div class="flex items-center gap-4 rounded-card border border-wc-border bg-wc-bg-tertiary p-4">
+        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
+            <span class="font-display text-sm tracking-wide text-wc-accent">{{ $coachInitials }}</span>
+        </div>
+        <div class="min-w-0 flex-1">
+            <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Tu Coach</p>
+            <p class="text-sm font-semibold text-wc-text truncate">{{ $coachName }}</p>
+        </div>
+        <a href="{{ route('client.chat') }}"
+           class="inline-flex items-center gap-1.5 rounded-full bg-wc-accent px-4 py-2 text-xs font-medium text-white hover:bg-wc-accent-hover transition-colors shadow-lg shadow-wc-accent/20">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+            </svg>
+            Enviar mensaje
+        </a>
+    </div>
+
+    {{-- Check-in countdown --}}
+    <a href="{{ route('client.checkin') }}"
+       class="group block rounded-card border p-4 sm:p-5 transition-colors
+              @if($daysUntilCheckin <= 0)
+                  border-wc-accent/40 bg-wc-accent/10 hover:bg-wc-accent/15
+              @elseif($daysUntilCheckin <= 2)
+                  border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/15
+              @else
+                  border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10
+              @endif"
+       x-data="{
+           targetDate: '{{ $daysUntilCheckin <= 0 ? now()->toIso8601String() : now()->addDays($daysUntilCheckin)->startOfDay()->toIso8601String() }}',
+           hours: '00',
+           minutes: '00',
+           seconds: '00',
+           isUrgent: {{ $daysUntilCheckin <= 0 ? 'true' : 'false' }},
+           showTimer: {{ $daysUntilCheckin >= 0 && $daysUntilCheckin <= 1 ? 'true' : 'false' }},
+           tick() {
+               if (!this.showTimer || this.isUrgent) return;
+               const now = new Date();
+               const target = new Date(this.targetDate);
+               let diff = Math.max(0, Math.floor((target - now) / 1000));
+               this.hours = String(Math.floor(diff / 3600)).padStart(2, '0');
+               this.minutes = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+               this.seconds = String(diff % 60).padStart(2, '0');
+           },
+           init() {
+               this.tick();
+               if (this.showTimer && !this.isUrgent) setInterval(() => this.tick(), 1000);
+           }
+       }">
+        <div class="flex items-center gap-4">
+            {{-- Icon --}}
+            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl
+                        @if($daysUntilCheckin <= 0) bg-wc-accent/20 @elseif($daysUntilCheckin <= 2) bg-amber-500/20 @else bg-emerald-500/15 @endif">
+                @if($daysUntilCheckin <= 0)
+                    <svg class="h-5 w-5 text-wc-accent animate-pulse" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                    </svg>
+                @elseif($daysUntilCheckin <= 2)
+                    <svg class="h-5 w-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                @else
+                    <svg class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                    </svg>
+                @endif
+            </div>
+
+            {{-- Text --}}
+            <div class="min-w-0 flex-1">
+                @if($daysUntilCheckin <= 0)
+                    <p class="text-sm font-semibold text-wc-accent uppercase tracking-wide">Check-in pendiente</p>
+                    <p class="mt-0.5 text-xs text-wc-text-tertiary">Tu check-in semanal esta listo para completar</p>
+                @elseif($daysUntilCheckin <= 2)
+                    <p class="text-sm font-semibold text-amber-600 dark:text-amber-400">Check-in en {{ $daysUntilCheckin }} {{ $daysUntilCheckin === 1 ? 'dia' : 'dias' }}</p>
+                    <p class="mt-0.5 text-xs text-wc-text-tertiary capitalize">{{ $nextCheckinDate }}</p>
+                @else
+                    <p class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">Proximo check-in en {{ $daysUntilCheckin }} dias</p>
+                    <p class="mt-0.5 text-xs text-wc-text-tertiary capitalize">{{ $nextCheckinDate }}</p>
+                @endif
+            </div>
+
+            {{-- Live countdown timer (if < 24h) --}}
+            <template x-if="showTimer && !isUrgent">
+                <div class="hidden sm:flex items-center gap-1 font-data text-lg font-bold tabular-nums
+                            @if($daysUntilCheckin <= 2) text-amber-600 dark:text-amber-400 @else text-emerald-600 dark:text-emerald-400 @endif">
+                    <span x-text="hours"></span><span class="text-wc-text-tertiary">:</span>
+                    <span x-text="minutes"></span><span class="text-wc-text-tertiary">:</span>
+                    <span x-text="seconds"></span>
+                </div>
+            </template>
+
+            {{-- Arrow --}}
+            <svg class="h-4 w-4 shrink-0 text-wc-text-tertiary group-hover:text-wc-text transition-colors" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+        </div>
+    </a>
+
+    {{-- ITEM 2: Weekly Summary Card --}}
+    @if($hasLastWeekData)
+        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+            <div class="flex items-center gap-2 mb-4">
+                <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-500/10">
+                    <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+                    </svg>
+                </div>
+                <h2 class="font-display text-lg tracking-wide text-wc-text">Resumen Semana Anterior</h2>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {{-- Workouts --}}
+                <div class="rounded-xl bg-wc-bg-secondary px-4 py-3 text-center">
+                    <p class="font-data text-2xl font-bold text-wc-text">{{ $lastWeekWorkouts }}</p>
+                    <p class="mt-0.5 text-[11px] text-wc-text-tertiary">entrenamientos</p>
+                </div>
+                {{-- Check-ins --}}
+                <div class="rounded-xl bg-wc-bg-secondary px-4 py-3 text-center">
+                    <p class="font-data text-2xl font-bold text-wc-text">{{ $lastWeekCheckins }}</p>
+                    <p class="mt-0.5 text-[11px] text-wc-text-tertiary">check-ins</p>
+                </div>
+                {{-- Weight --}}
+                <div class="rounded-xl bg-wc-bg-secondary px-4 py-3 text-center col-span-2 sm:col-span-1">
+                    <p class="font-data text-2xl font-bold text-wc-text">{{ $lastWeekWeight ?? '--' }}</p>
+                    <p class="mt-0.5 text-[11px] text-wc-text-tertiary">{{ $lastWeekWeight ? 'kg actual' : 'sin registro' }}</p>
+                </div>
+            </div>
+
+            {{-- Motivational text based on performance --}}
+            <div class="mt-4 rounded-xl bg-wc-accent/5 border border-wc-accent/10 px-4 py-2.5">
+                <p class="text-xs text-wc-text-tertiary">
+                    @if($lastWeekWorkouts >= 5)
+                        <span class="font-semibold text-emerald-600 dark:text-emerald-400">Semana excepcional.</span> {{ $lastWeekWorkouts }} entrenamientos completados. Sigue asi, la consistencia es tu superpoder.
+                    @elseif($lastWeekWorkouts >= 3)
+                        <span class="font-semibold text-sky-600 dark:text-sky-400">Buen ritmo.</span> {{ $lastWeekWorkouts }} entrenamientos la semana pasada. Estas construyendo habitos solidos.
+                    @elseif($lastWeekWorkouts >= 1)
+                        <span class="font-semibold text-amber-600 dark:text-amber-400">Vas por buen camino.</span> Cada entrenamiento cuenta. Esta semana, apunta a uno mas.
+                    @else
+                        <span class="font-semibold text-wc-accent">Nueva semana, nueva oportunidad.</span> El mejor momento para empezar es ahora. Tu coach esta aqui para apoyarte.
+                    @endif
+                </p>
+            </div>
+        </div>
+    @else
+        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+            <div class="flex items-center gap-2 mb-3">
+                <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-500/10">
+                    <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+                    </svg>
+                </div>
+                <h2 class="font-display text-lg tracking-wide text-wc-text">Resumen Semana Anterior</h2>
+            </div>
+            <div class="flex items-center gap-3 rounded-xl bg-wc-accent/5 border border-wc-accent/10 px-4 py-3">
+                <svg class="h-5 w-5 shrink-0 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+                </svg>
+                <p class="text-sm text-wc-text-tertiary">
+                    <span class="font-semibold text-wc-text">Esta es tu primera semana</span> &mdash; vamos! Completa tu primer entrenamiento y check-in para ver tu resumen aqui.
+                </p>
+            </div>
+        </div>
+    @endif
 
     {{-- Daily missions --}}
     <div>

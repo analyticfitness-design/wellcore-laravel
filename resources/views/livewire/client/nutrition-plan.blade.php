@@ -19,6 +19,66 @@
             </div>
         @endif
 
+        {{-- Macros Donut Chart --}}
+        @if($hasMacros)
+            <div class="mb-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-5"
+                 x-data
+                 x-init="
+                    $nextTick(() => {
+                        const canvas = document.getElementById('macrosChart');
+                        if (canvas && window.Chart) {
+                            new Chart(canvas, {
+                                type: 'doughnut',
+                                data: {
+                                    labels: ['Proteina', 'Carbohidratos', 'Grasas'],
+                                    datasets: [{
+                                        data: [{{ $proteinGrams }}, {{ $carbGrams }}, {{ $fatGrams }}],
+                                        backgroundColor: ['#DC2626', '#3B82F6', '#FBBF24'],
+                                        borderColor: '#18181B',
+                                        borderWidth: 3,
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    plugins: {
+                                        legend: {
+                                            position: 'bottom',
+                                            labels: {
+                                                color: '#FAFAFA',
+                                                padding: 16,
+                                                font: { size: 12 },
+                                                generateLabels: function(chart) {
+                                                    const data = chart.data;
+                                                    return data.labels.map((label, i) => ({
+                                                        text: label + ' (' + data.datasets[0].data[i] + 'g)',
+                                                        fillStyle: data.datasets[0].backgroundColor[i],
+                                                        strokeStyle: data.datasets[0].backgroundColor[i],
+                                                        lineWidth: 0,
+                                                        hidden: false,
+                                                        index: i
+                                                    }));
+                                                }
+                                            }
+                                        }
+                                    },
+                                    cutout: '65%',
+                                }
+                            });
+                        }
+                    });
+                 "
+            >
+                <h3 class="mb-4 text-center font-display text-lg tracking-wide text-wc-text">DISTRIBUCION DE MACROS</h3>
+                <div class="mx-auto max-w-xs">
+                    <canvas id="macrosChart" width="200" height="200"></canvas>
+                </div>
+            </div>
+        @else
+            <div class="mb-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 text-center">
+                <p class="text-sm text-wc-text-secondary">Sin datos de macros. Tu coach asignara tu plan.</p>
+            </div>
+        @endif
+
         {{-- Meals --}}
         @if(isset($plan['comidas']))
             <div class="space-y-4">

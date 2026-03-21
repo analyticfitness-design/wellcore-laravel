@@ -536,48 +536,8 @@
                     ['AP', 'Andrea P.', '-9kg grasa', '12 semanas', 'Plan Metodo', 'La guia de habitos fue lo que cambio todo. Ahora entreno por conviccion, no por obligacion.'],
                 ] as [$initials, $name, $stat, $duration, $plan, $quote])
                 <div class="rounded-xl border border-wc-border bg-wc-bg p-8">
-                    {{-- Before/After visual placeholder --}}
-                    <div class="relative h-44 overflow-hidden rounded-lg">
-                        {{-- Split background --}}
-                        <div class="absolute inset-0 flex">
-                            {{-- ANTES side --}}
-                            <div class="relative flex-1 bg-gradient-to-br from-zinc-400/10 to-zinc-500/5">
-                                <div class="absolute inset-0" style="background-image: radial-gradient(circle, currentColor 0.5px, transparent 0.5px); background-size: 10px 10px; opacity: 0.04;"></div>
-                                {{-- Body silhouette shape --}}
-                                <div class="absolute bottom-0 left-1/2 -translate-x-1/2">
-                                    <div class="relative">
-                                        <div class="mx-auto h-7 w-7 rounded-full bg-zinc-400/15"></div>
-                                        <div class="mx-auto -mt-0.5 h-14 w-10 rounded-t-lg rounded-b-2xl bg-zinc-400/10" style="border-radius: 40% 40% 50% 50%;"></div>
-                                        <div class="mx-auto -mt-1 h-12 w-14 rounded-b-xl bg-zinc-400/8" style="border-radius: 30% 30% 45% 45%;"></div>
-                                    </div>
-                                </div>
-                                <span class="absolute left-3 top-3 font-display text-xs tracking-wider text-wc-text-tertiary/60">ANTES</span>
-                            </div>
-                            {{-- DESPUES side --}}
-                            <div class="relative flex-1 bg-gradient-to-br from-wc-accent/8 to-wc-accent/3">
-                                <div class="absolute inset-0" style="background-image: radial-gradient(circle, currentColor 0.5px, transparent 0.5px); background-size: 10px 10px; opacity: 0.04;"></div>
-                                {{-- Body silhouette shape (leaner) --}}
-                                <div class="absolute bottom-0 left-1/2 -translate-x-1/2">
-                                    <div class="relative">
-                                        <div class="mx-auto h-7 w-7 rounded-full bg-wc-accent/12"></div>
-                                        <div class="mx-auto -mt-0.5 h-14 w-8 rounded-t-lg rounded-b-2xl bg-wc-accent/8" style="border-radius: 40% 40% 45% 45%;"></div>
-                                        <div class="mx-auto -mt-1 h-12 w-11 rounded-b-xl bg-wc-accent/6" style="border-radius: 30% 30% 45% 45%;"></div>
-                                    </div>
-                                </div>
-                                <span class="absolute right-3 top-3 font-display text-xs tracking-wider text-wc-accent/60">DESPUES</span>
-                            </div>
-                        </div>
-                        {{-- Center slider line --}}
-                        <div class="absolute inset-y-0 left-1/2 -translate-x-1/2 flex flex-col items-center justify-center">
-                            <div class="h-full w-px bg-gradient-to-b from-transparent via-wc-accent/40 to-transparent"></div>
-                            {{-- Slider handle --}}
-                            <div class="absolute top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-wc-bg shadow-lg shadow-black/10 ring-2 ring-wc-accent/30">
-                                <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
+                    {{-- Before/After interactive slider --}}
+                    <x-before-after-slider height="h-44" />
                     {{-- Stat badges --}}
                     <div class="mt-4 flex flex-wrap gap-2">
                         <span class="rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-semibold text-wc-accent">{{ $stat }}</span>

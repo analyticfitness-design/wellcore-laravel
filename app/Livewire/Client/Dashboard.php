@@ -317,6 +317,114 @@ class Dashboard extends Component
         }
     }
 
+    // ITEM 2: Weekly Summary — load last week's data
+    protected function loadWeeklySummary($client): void
+    {
+        $lastIsoWeek = now()->subWeek()->isoWeek();
+        $lastIsoYear = now()->subWeek()->isoWeekYear;
+        $lastWeekStart = now()->subWeek()->startOfWeek();
+        $lastWeekEnd = now()->subWeek()->endOfWeek();
+
+        $this->lastWeekWorkouts = TrainingLog::where('client_id', $client->id)
+            ->where('year_num', $lastIsoYear)
+            ->where('week_num', $lastIsoWeek)
+            ->where('completed', true)
+            ->count();
+
+        $this->lastWeekCheckins = Checkin::where('client_id', $client->id)
+            ->whereBetween('checkin_date', [
+                $lastWeekStart->toDateString(),
+                $lastWeekEnd->toDateString(),
+            ])
+            ->count();
+
+        // Get most recent weight from biometric_logs
+        $latestWeight = BiometricLog::where('client_id', $client->id)
+            ->whereNotNull('weight_kg')
+            ->where('weight_kg', '>', 0)
+            ->orderByDesc('log_date')
+            ->first();
+
+        $this->lastWeekWeight = $latestWeight ? number_format($latestWeight->weight_kg, 1) : null;
+
+        $this->hasLastWeekData = ($this->lastWeekWorkouts > 0 || $this->lastWeekCheckins > 0);
+    }
+
+    // ITEM 3: Coach Info
+    protected function loadCoachInfo($client): void
+    {
+        $coachId = AssignedPlan::where('client_id', $client->id)
+            ->whereNotNull('assigned_by')
+            ->orderByDesc('valid_from')
+            ->value('assigned_by');
+
+        if (! $coachId) {
+            $coachId = CoachMessage::where('client_id', $client->id)
+                ->whereNotNull('coach_id')
+                ->orderByDesc('created_at')
+                ->value('coach_id');
+        }
+
+        if ($coachId) {
+            $coach = Admin::find($coachId);
+            if ($coach && $coach->name) {
+                $this->coachName = $coach->name;
+                $parts = explode(' ', trim($coach->name));
+                $initials = strtoupper(substr($parts[0] ?? '', 0, 1) . substr($parts[1] ?? '', 0, 1));
+                $this->coachInitials = $initials ?: 'WC';
+            }
+        }
+    }
+
+    // ITEM 4: Daily Motivational Quote
+    private function getDailyQuote(): string
+    {
+        $quotes = [
+            'La disciplina es el puente entre tus metas y tus logros.',
+            'No entrenas para ser perfecto, entrenas para ser mejor.',
+            'Tu cuerpo puede soportar casi todo. Es tu mente la que debes convencer.',
+            'El dolor de hoy es la fuerza de manana.',
+            'No se trata de ser el mejor. Se trata de ser mejor que ayer.',
+            'La constancia supera al talento cuando el talento no es constante.',
+            'Cada repeticion cuenta. Cada decision cuenta.',
+            'El exito no se mide en kilos, se mide en habitos.',
+            'Entrena porque amas tu cuerpo, no porque lo odies.',
+            'El progreso no siempre es lineal, pero siempre vale la pena.',
+            'Hoy es un buen dia para entrenar.',
+            'Tu version futura te agradecera lo que hagas hoy.',
+            'No hay atajos. Solo hay proceso.',
+            'La ciencia no miente. La consistencia no falla.',
+            'Menos excusas, mas evidencia.',
+            'El metodo funciona cuando tu funcionas con el.',
+            'Descansa, pero no renuncies.',
+            'Cada check-in es un paso hacia tu mejor version.',
+            'La transformacion empieza cuando dejas de buscar la perfeccion.',
+            'Confiar en el proceso es parte del proceso.',
+            'Tu coach esta aqui. Tu comunidad esta aqui. Solo falta tu decision.',
+            'No necesitas motivacion. Necesitas un sistema.',
+            'El gym no te cambia. Los habitos si.',
+            'Lo que mides, mejora.',
+            'Sin prisa, pero sin pausa.',
+            'Hoy es dia de construir.',
+            'Cada gota de sudor es una inversion.',
+            'La ciencia respalda tu esfuerzo.',
+            'No es sobre el peso en la barra. Es sobre el peso que cargas menos.',
+            'Esto no es una dieta. Es tu nueva forma de vivir.',
+        ];
+
+        return $quotes[now()->dayOfYear % count($quotes)];
+    }
+
+    // ITEM 5: Plan Progress Timeline
+    protected function loadPlanProgress($client): void
+    {
+        $createdAt = $client->created_at ?? $client->fecha_inicio ?? now();
+        $this->startDate = Carbon::parse($createdAt)->format('d M Y');
+        $this->weeksActive = (int) max(1, ceil(Carbon::parse($createdAt)->diffInWeeks(now())));
+        $this->totalWeeks = 12;
+        $this->progressPercent = (int) min(100, ($this->weeksActive / $this->totalWeeks) * 100);
+    }
+
     public function render()
     {
         return view('livewire.client.dashboard');
