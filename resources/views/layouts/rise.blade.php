@@ -45,13 +45,9 @@
     >
         {{-- Logo with RISE branding --}}
         <div class="flex h-16 items-center gap-3 border-b border-wc-border px-5">
-            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-amber-600">
-                <span class="font-display text-base leading-none text-white">R</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="font-display text-xl tracking-wider text-wc-text">RISE</span>
-                <span class="rounded-full bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-widest text-amber-500">12W</span>
-            </div>
+            <img src="/images/logo-dark.png" alt="WellCore" class="h-8 dark:hidden">
+            <img src="/images/logo-light.png" alt="WellCore" class="hidden h-8 dark:block">
+            <span class="rounded-full bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-widest text-amber-500">RISE</span>
         </div>
 
         {{-- Navigation --}}

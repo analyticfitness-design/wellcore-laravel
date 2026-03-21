@@ -44,11 +44,9 @@
         class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col bg-wc-bg-secondary border-r border-wc-border transition-transform duration-300 ease-in-out lg:translate-x-0"
     >
         {{-- Logo --}}
-        <div class="flex h-16 items-center gap-3 border-b border-wc-border px-5">
-            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-wc-accent">
-                <span class="font-display text-base leading-none text-white">W</span>
-            </div>
-            <span class="font-display text-xl tracking-wider text-wc-text">WELLCORE</span>
+        <div class="flex h-16 items-center border-b border-wc-border px-5">
+            <img src="/images/logo-dark.png" alt="WellCore" class="h-8 dark:hidden">
+            <img src="/images/logo-light.png" alt="WellCore" class="hidden h-8 dark:block">
         </div>
 
         {{-- Navigation --}}
@@ -242,6 +240,23 @@
                     </li>
                 </ul>
             </div>
+
+            {{-- RISE (conditional) --}}
+            @if($client && $client->plan === 'rise')
+            <div>
+                <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">RISE</p>
+                <ul class="space-y-0.5">
+                    <li>
+                        <a href="{{ route('rise.dashboard') }}" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-wc-accent hover:bg-wc-bg-tertiary">
+                            <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                            </svg>
+                            Dashboard RISE
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            @endif
         </nav>
 
         {{-- Sidebar footer / Logout --}}

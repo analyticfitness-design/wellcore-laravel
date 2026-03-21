@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Admin\AdminSettings;
 use App\Livewire\Admin\AdminTools;
 use App\Livewire\Admin\AIPlanGenerator;
 use App\Livewire\Admin\ChatAnalytics;
@@ -199,6 +200,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/tickets', \App\Livewire\Admin\TicketManager::class)->name('tickets');
         Route::get('/chat', ChatAnalytics::class)->name('chat');
         Route::get('/tools', AdminTools::class)->name('tools');
+        Route::get('/settings', AdminSettings::class)->name('settings');
     });
 
     // Coach portal routes
