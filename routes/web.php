@@ -187,6 +187,8 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/plan', PlanViewer::class)->name('plan');
         Route::get('/checkin', CheckinForm::class)->name('checkin');
         Route::get('/training', TrainingView::class)->name('training');
+        Route::get('/workout/{day?}', \App\Livewire\Client\WorkoutPlayer::class)->name('workout');
+        Route::get('/workout-summary/{session}', \App\Livewire\Client\WorkoutSummary::class)->name('workout.summary');
         Route::get('/metrics', MetricsTracker::class)->name('metrics');
         Route::get('/nutrition', NutritionPlan::class)->name('nutrition');
         Route::get('/ai-nutrition', AINutrition::class)->name('ai-nutrition');
@@ -195,6 +197,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/chat', ChatWidget::class)->name('chat');
         Route::get('/profile', ProfileEditor::class)->name('profile');
         Route::get('/habits', HabitTracker::class)->name('habits');
+        Route::get('/supplements', \App\Livewire\Client\SupplementTracker::class)->name('supplements');
         Route::get('/academia', \App\Livewire\Client\Academia::class)->name('academia')->lazy();
         Route::get('/timer', \App\Livewire\Client\WorkoutTimer::class)->name('timer');
         Route::get('/mindfulness', \App\Livewire\Client\Mindfulness::class)->name('mindfulness');
