@@ -87,12 +87,27 @@ return [
         'sec_sistema' => 'Sistema',
     ],
 
-    // Mobile bottom nav (client)
+    // Mobile bottom nav (all variants)
     'mobile' => [
-        'inicio' => 'Inicio',
-        'entreno' => 'Entreno',
-        'plan' => 'Plan',
-        'chat' => 'Chat',
-        'perfil' => 'Perfil',
+        // Client
+        'inicio'    => 'Inicio',
+        'entreno'   => 'Entreno',
+        'entrena'   => 'Entrena',
+        'plan'      => 'Plan',
+        'checkin'   => 'Check-in',
+        'chat'      => 'Chat',
+        'perfil'    => 'Perfil',
+        // Coach
+        'clientes'  => 'Clientes',
+        'checkins'  => 'Check-ins',
+        'mensajes'  => 'Mensajes',
+        'features'  => 'Tools',
+        // Admin
+        'pagos'       => 'Pagos',
+        'feed'        => 'Feed',
+        'herramientas' => 'Tools',
+        // Shared
+        'pending'   => 'pendientes',
+        'nav_aria'  => 'Navegación principal',
     ],
 ];

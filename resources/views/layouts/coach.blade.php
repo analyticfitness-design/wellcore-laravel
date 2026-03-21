@@ -283,10 +283,13 @@
         </header>
 
         {{-- Page content --}}
-        <main class="px-4 py-6 sm:px-6 lg:px-8">
+        <main class="px-4 py-6 pb-20 sm:px-6 lg:px-8 lg:pb-6">
             {{ $slot }}
         </main>
     </div>
+
+    {{-- Premium Mobile Bottom Navigation --}}
+    <x-mobile-bottom-nav variant="coach" />
 
     <x-toast-notifications />
     <x-ga-tracking />

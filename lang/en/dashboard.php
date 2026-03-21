@@ -81,10 +81,25 @@ return [
     ],
 
     'mobile' => [
-        'inicio' => 'Home',
-        'entreno' => 'Train',
-        'plan' => 'Plan',
-        'chat' => 'Chat',
-        'perfil' => 'Profile',
+        // Client
+        'inicio'    => 'Home',
+        'entreno'   => 'Train',
+        'entrena'   => 'Train',
+        'plan'      => 'Plan',
+        'checkin'   => 'Check-in',
+        'chat'      => 'Chat',
+        'perfil'    => 'Profile',
+        // Coach
+        'clientes'  => 'Clients',
+        'checkins'  => 'Check-ins',
+        'mensajes'  => 'Messages',
+        'features'  => 'Tools',
+        // Admin
+        'pagos'        => 'Payments',
+        'feed'         => 'Feed',
+        'herramientas' => 'Tools',
+        // Shared
+        'pending'   => 'pending',
+        'nav_aria'  => 'Main navigation',
     ],
 ];
