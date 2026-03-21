@@ -56,7 +56,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">General</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('admin.dashboard') }}"
+                        <a wire:navigate href="{{ route('admin.dashboard') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('admin.dashboard') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -66,7 +66,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.feed') }}"
+                        <a wire:navigate href="{{ route('admin.feed') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('admin.feed') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -80,7 +80,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.clients') }}"
+                        <a wire:navigate href="{{ route('admin.clients') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('admin.clients') || request()->routeIs('admin.client-detail') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -90,7 +90,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.coaches') }}"
+                        <a wire:navigate href="{{ route('admin.coaches') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('admin.coaches') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -107,7 +107,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Planes</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('admin.plans') }}"
+                        <a wire:navigate href="{{ route('admin.plans') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('admin.plans') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -117,7 +117,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.ai-generator') }}"
+                        <a wire:navigate href="{{ route('admin.ai-generator') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('admin.ai-generator') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -134,7 +134,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Programas</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('admin.rise') }}"
+                        <a wire:navigate href="{{ route('admin.rise') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('admin.rise') ? 'border-l-2 border-emerald-500 bg-emerald-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -152,7 +152,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Financiero</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('admin.payments') }}"
+                        <a wire:navigate href="{{ route('admin.payments') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('admin.payments') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -162,7 +162,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.inscriptions') }}"
+                        <a wire:navigate href="{{ route('admin.inscriptions') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('admin.inscriptions') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -179,7 +179,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Sistema</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('admin.invitations') }}"
+                        <a wire:navigate href="{{ route('admin.invitations') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('admin.invitations') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -189,7 +189,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.chat') }}"
+                        <a wire:navigate href="{{ route('admin.chat') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('admin.chat') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -199,7 +199,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.tools') }}"
+                        <a wire:navigate href="{{ route('admin.tools') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('admin.tools') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -209,7 +209,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.tickets') }}"
+                        <a wire:navigate href="{{ route('admin.tickets') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('admin.tickets') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -219,7 +219,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.settings') }}"
+                        <a wire:navigate href="{{ route('admin.settings') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('admin.settings') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

@@ -54,7 +54,7 @@
                         {{-- File preview --}}
                         <div class="space-y-2">
                             @if($mediaType === 'image')
-                                <img src="{{ $mediaFile->temporaryUrl() }}" alt="Preview" class="mx-auto max-h-48 rounded-lg object-contain" />
+                                <img src="{{ $mediaFile->temporaryUrl() }}" alt="Preview" class="mx-auto max-h-48 rounded-lg object-contain" loading="lazy" decoding="async" />
                             @else
                                 <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-wc-accent/10">
                                     <svg class="h-10 w-10 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

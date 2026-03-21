@@ -679,7 +679,7 @@
                                                     Tu navegador no soporta video.
                                                 </video>
                                             @else
-                                                <img src="{{ $ci['media_url'] }}" alt="Check-in" class="w-full rounded-lg object-cover max-h-64">
+                                                <img src="{{ $ci['media_url'] }}" alt="Check-in" class="w-full rounded-lg object-cover max-h-64" loading="lazy" decoding="async">
                                             @endif
                                         </div>
 

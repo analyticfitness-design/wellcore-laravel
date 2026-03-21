@@ -56,7 +56,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Coach</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('coach.dashboard') }}"
+                        <a wire:navigate href="{{ route('coach.dashboard') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('coach.dashboard') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -66,7 +66,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('coach.clients') }}"
+                        <a wire:navigate href="{{ route('coach.clients') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('coach.clients') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -83,7 +83,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Comunicacion</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('coach.messages') }}"
+                        <a wire:navigate href="{{ route('coach.messages') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('coach.messages') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -93,7 +93,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('coach.notes') }}"
+                        <a wire:navigate href="{{ route('coach.notes') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('coach.notes') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -103,7 +103,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('coach.broadcast') }}"
+                        <a wire:navigate href="{{ route('coach.broadcast') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('coach.broadcast') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -120,7 +120,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Seguimiento</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('coach.checkins') }}"
+                        <a wire:navigate href="{{ route('coach.checkins') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('coach.checkins') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -130,7 +130,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('coach.plans') }}"
+                        <a wire:navigate href="{{ route('coach.plans') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('coach.plans') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -140,7 +140,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('coach.analytics') }}"
+                        <a wire:navigate href="{{ route('coach.analytics') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('coach.analytics') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -157,7 +157,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Herramientas</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('coach.resources') }}"
+                        <a wire:navigate href="{{ route('coach.resources') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('coach.resources') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -167,7 +167,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('coach.features') }}"
+                        <a wire:navigate href="{{ route('coach.features') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('coach.features') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -184,7 +184,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Cuenta</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('coach.profile') }}"
+                        <a wire:navigate href="{{ route('coach.profile') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('coach.profile') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -194,7 +194,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('coach.brand') }}"
+                        <a wire:navigate href="{{ route('coach.brand') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('coach.brand') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

@@ -56,7 +56,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Entrenamiento</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('client.dashboard') }}"
+                        <a wire:navigate href="{{ route('client.dashboard') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.dashboard') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -66,7 +66,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('client.plan') }}"
+                        <a wire:navigate href="{{ route('client.plan') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.plan') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -76,7 +76,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('client.checkin') }}"
+                        <a wire:navigate href="{{ route('client.checkin') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.checkin') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -86,7 +86,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('client.photos') }}"
+                        <a wire:navigate href="{{ route('client.photos') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.photos') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -103,7 +103,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Progreso</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('client.photos') }}"
+                        <a wire:navigate href="{{ route('client.photos') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.photos') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -113,7 +113,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('client.metrics') }}"
+                        <a wire:navigate href="{{ route('client.metrics') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.metrics') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -123,7 +123,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('client.video-checkin') }}"
+                        <a wire:navigate href="{{ route('client.video-checkin') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.video-checkin') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -140,7 +140,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Social</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('client.community') }}"
+                        <a wire:navigate href="{{ route('client.community') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.community') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -150,7 +150,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('client.challenges') }}"
+                        <a wire:navigate href="{{ route('client.challenges') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.challenges') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -161,7 +161,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('client.chat') }}"
+                        <a wire:navigate href="{{ route('client.chat') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.chat') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -171,7 +171,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('client.referrals') }}"
+                        <a wire:navigate href="{{ route('client.referrals') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.referrals') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -181,7 +181,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('client.coach.feedback') }}"
+                        <a wire:navigate href="{{ route('client.coach.feedback') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.coach.feedback') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -198,7 +198,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Herramientas</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('client.nutrition') }}"
+                        <a wire:navigate href="{{ route('client.nutrition') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.nutrition') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -208,7 +208,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('client.ai-nutrition') }}"
+                        <a wire:navigate href="{{ route('client.ai-nutrition') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.ai-nutrition') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -218,7 +218,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('client.settings') }}"
+                        <a wire:navigate href="{{ route('client.settings') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.settings') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -229,7 +229,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('client.profile') }}"
+                        <a wire:navigate href="{{ route('client.profile') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('client.profile') ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -247,7 +247,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">RISE</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('rise.dashboard') }}" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-wc-accent hover:bg-wc-bg-tertiary">
+                        <a wire:navigate href="{{ route('rise.dashboard') }}" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-wc-accent hover:bg-wc-bg-tertiary">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                             </svg>
@@ -344,7 +344,7 @@
         <template x-if="fabOpen">
             <div class="flex flex-col items-end gap-2">
                 {{-- 1. Log Peso --}}
-                <a href="{{ route('client.metrics') }}"
+                <a wire:navigate href="{{ route('client.metrics') }}"
                    class="fab-action-enter flex items-center gap-2 rounded-full border border-wc-border bg-wc-bg-tertiary px-4 py-2 shadow-lg hover:bg-wc-bg-secondary transition-colors"
                    style="animation-delay: 100ms">
                     <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -354,7 +354,7 @@
                 </a>
 
                 {{-- 2. Check-in --}}
-                <a href="{{ route('client.checkin') }}"
+                <a wire:navigate href="{{ route('client.checkin') }}"
                    class="fab-action-enter flex items-center gap-2 rounded-full border border-wc-border bg-wc-bg-tertiary px-4 py-2 shadow-lg hover:bg-wc-bg-secondary transition-colors"
                    style="animation-delay: 200ms">
                     <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -364,7 +364,7 @@
                 </a>
 
                 {{-- 3. Entrenar --}}
-                <a href="{{ route('client.training') }}"
+                <a wire:navigate href="{{ route('client.training') }}"
                    class="fab-action-enter flex items-center gap-2 rounded-full border border-wc-border bg-wc-bg-tertiary px-4 py-2 shadow-lg hover:bg-wc-bg-secondary transition-colors"
                    style="animation-delay: 300ms">
                     <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -374,7 +374,7 @@
                 </a>
 
                 {{-- 4. Foto --}}
-                <a href="{{ route('client.photos') }}"
+                <a wire:navigate href="{{ route('client.photos') }}"
                    class="fab-action-enter flex items-center gap-2 rounded-full border border-wc-border bg-wc-bg-tertiary px-4 py-2 shadow-lg hover:bg-wc-bg-secondary transition-colors"
                    style="animation-delay: 400ms">
                     <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

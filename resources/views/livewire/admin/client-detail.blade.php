@@ -555,7 +555,7 @@
                             <div class="rounded-lg border border-wc-border bg-wc-bg-secondary overflow-hidden">
                                 <div class="aspect-square bg-wc-bg flex items-center justify-center">
                                     @if($photo->filename)
-                                        <img src="{{ asset('storage/' . $photo->filename) }}" alt="Progreso" class="h-full w-full object-cover" loading="lazy">
+                                        <img src="{{ asset('storage/' . $photo->filename) }}" alt="Progreso" class="h-full w-full object-cover" loading="lazy" decoding="async">
                                     @else
                                         <svg class="h-6 w-6 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75Z" />

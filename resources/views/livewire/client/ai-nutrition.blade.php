@@ -213,7 +213,7 @@
 
                 @if($photo)
                     <div class="space-y-3">
-                        <img src="{{ $photo->temporaryUrl() }}" alt="Preview" class="mx-auto max-h-48 rounded-lg object-cover" />
+                        <img src="{{ $photo->temporaryUrl() }}" alt="Preview" class="mx-auto max-h-48 rounded-lg object-cover" loading="lazy" decoding="async" />
                         <button wire:click="removePhoto" class="text-xs text-wc-accent hover:underline">Quitar foto</button>
                     </div>
                 @else

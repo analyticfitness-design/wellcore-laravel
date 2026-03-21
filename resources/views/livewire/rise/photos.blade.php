@@ -21,7 +21,7 @@
                     @endphp
                     <div class="aspect-[3/4] overflow-hidden rounded-lg border border-wc-border bg-wc-bg-secondary">
                         @if($firstPhotos && $firstPhotos['frente'])
-                            <img src="/uploads/photos/{{ $firstPhotos['frente'] }}" alt="Foto inicial" class="h-full w-full object-cover">
+                            <img src="/uploads/photos/{{ $firstPhotos['frente'] }}" alt="Foto inicial" class="h-full w-full object-cover" loading="lazy" decoding="async">
                         @else
                             <div class="flex h-full w-full flex-col items-center justify-center text-wc-text-tertiary">
                                 <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
@@ -41,7 +41,7 @@
                     @endphp
                     <div class="aspect-[3/4] overflow-hidden rounded-lg border border-wc-border bg-wc-bg-secondary">
                         @if($latestPhotos && $latestPhotos['frente'])
-                            <img src="/uploads/photos/{{ $latestPhotos['frente'] }}" alt="Foto actual" class="h-full w-full object-cover">
+                            <img src="/uploads/photos/{{ $latestPhotos['frente'] }}" alt="Foto actual" class="h-full w-full object-cover" loading="lazy" decoding="async">
                         @else
                             <div class="flex h-full w-full flex-col items-center justify-center text-wc-text-tertiary">
                                 <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
@@ -72,7 +72,7 @@
                     <p class="text-center text-[10px] font-medium uppercase tracking-wider text-wc-text-tertiary">Frente</p>
                     <div class="aspect-[3/4] overflow-hidden rounded-lg border border-wc-border bg-wc-bg-secondary">
                         @if($group['frente'])
-                            <img src="/uploads/photos/{{ $group['frente'] }}" alt="Frente" class="h-full w-full object-cover">
+                            <img src="/uploads/photos/{{ $group['frente'] }}" alt="Frente" class="h-full w-full object-cover" loading="lazy" decoding="async">
                         @else
                             <div class="flex h-full w-full flex-col items-center justify-center text-wc-text-tertiary">
                                 <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
@@ -89,7 +89,7 @@
                     <p class="text-center text-[10px] font-medium uppercase tracking-wider text-wc-text-tertiary">Perfil</p>
                     <div class="aspect-[3/4] overflow-hidden rounded-lg border border-wc-border bg-wc-bg-secondary">
                         @if($group['perfil'])
-                            <img src="/uploads/photos/{{ $group['perfil'] }}" alt="Perfil" class="h-full w-full object-cover">
+                            <img src="/uploads/photos/{{ $group['perfil'] }}" alt="Perfil" class="h-full w-full object-cover" loading="lazy" decoding="async">
                         @else
                             <div class="flex h-full w-full flex-col items-center justify-center text-wc-text-tertiary">
                                 <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
@@ -106,7 +106,7 @@
                     <p class="text-center text-[10px] font-medium uppercase tracking-wider text-wc-text-tertiary">Espalda</p>
                     <div class="aspect-[3/4] overflow-hidden rounded-lg border border-wc-border bg-wc-bg-secondary">
                         @if($group['espalda'])
-                            <img src="/uploads/photos/{{ $group['espalda'] }}" alt="Espalda" class="h-full w-full object-cover">
+                            <img src="/uploads/photos/{{ $group['espalda'] }}" alt="Espalda" class="h-full w-full object-cover" loading="lazy" decoding="async">
                         @else
                             <div class="flex h-full w-full flex-col items-center justify-center text-wc-text-tertiary">
                                 <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">

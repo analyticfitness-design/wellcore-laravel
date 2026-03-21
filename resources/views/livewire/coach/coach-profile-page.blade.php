@@ -224,7 +224,7 @@
                         <div class="-mt-8 flex h-16 w-16 items-center justify-center rounded-full border-4 border-wc-bg-tertiary bg-wc-bg-secondary"
                              style="border-color: {{ $color_primary }}20">
                             @if($photo_url)
-                                <img src="{{ $photo_url }}" alt="" class="h-full w-full rounded-full object-cover">
+                                <img src="{{ $photo_url }}" alt="" class="h-full w-full rounded-full object-cover" loading="lazy" decoding="async">
                             @else
                                 <span class="font-display text-2xl" style="color: {{ $color_primary }}">{{ substr($coachName, 0, 1) }}</span>
                             @endif

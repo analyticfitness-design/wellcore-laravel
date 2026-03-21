@@ -57,7 +57,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-amber-500/70">RISE</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('rise.dashboard') }}"
+                        <a wire:navigate href="{{ route('rise.dashboard') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('rise.dashboard') ? 'border-l-2 border-amber-500 bg-amber-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -67,7 +67,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('rise.program') }}"
+                        <a wire:navigate href="{{ route('rise.program') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('rise.program') ? 'border-l-2 border-amber-500 bg-amber-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -77,7 +77,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('rise.tracking') }}"
+                        <a wire:navigate href="{{ route('rise.tracking') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('rise.tracking') ? 'border-l-2 border-amber-500 bg-amber-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -94,7 +94,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-amber-500/70">Mediciones</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('rise.measurements') }}"
+                        <a wire:navigate href="{{ route('rise.measurements') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('rise.measurements') ? 'border-l-2 border-amber-500 bg-amber-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -104,7 +104,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('rise.photos') }}"
+                        <a wire:navigate href="{{ route('rise.photos') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('rise.photos') ? 'border-l-2 border-amber-500 bg-amber-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -121,7 +121,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-amber-500/70">Habitos</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('rise.habits') }}"
+                        <a wire:navigate href="{{ route('rise.habits') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('rise.habits') ? 'border-l-2 border-amber-500 bg-amber-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -139,7 +139,7 @@
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-amber-500/70">General</p>
                 <ul class="space-y-0.5">
                     <li>
-                        <a href="{{ route('rise.chat') }}"
+                        <a wire:navigate href="{{ route('rise.chat') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('rise.chat') ? 'border-l-2 border-amber-500 bg-amber-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -149,7 +149,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('rise.profile') }}"
+                        <a wire:navigate href="{{ route('rise.profile') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
                                   {{ request()->routeIs('rise.profile') ? 'border-l-2 border-amber-500 bg-amber-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
                             <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

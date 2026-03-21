@@ -20,6 +20,11 @@ class CoachFeatures extends Component
     // ─── Tab state ──────────────────────────────────────────
     public string $activeTab = 'pods';
 
+    public function placeholder()
+    {
+        return view('livewire.placeholders.loading-skeleton');
+    }
+
     // ─── Pods ───────────────────────────────────────────────
     public bool $showCreatePodModal = false;
     public string $podName = '';

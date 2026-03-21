@@ -18,6 +18,11 @@ class AIPlanGenerator extends Component
     // ── Wizard state ──
     public int $currentStep = 1;
 
+    public function placeholder()
+    {
+        return view('livewire.placeholders.loading-skeleton');
+    }
+
     // ── Step 1: Client selection ──
     public string $clientSearch = '';
     public ?int $selectedClientId = null;

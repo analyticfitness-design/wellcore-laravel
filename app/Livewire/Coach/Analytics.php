@@ -17,6 +17,11 @@ class Analytics extends Component
 {
     public string $dateRange = 'month';
 
+    public function placeholder()
+    {
+        return view('livewire.placeholders.loading-skeleton');
+    }
+
     // Client Overview
     public int $totalClients = 0;
     public int $activeClients = 0;

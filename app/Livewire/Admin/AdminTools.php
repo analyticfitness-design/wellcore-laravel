@@ -18,6 +18,11 @@ class AdminTools extends Component
     #[Url]
     public string $tab = 'revenue';
 
+    public function placeholder()
+    {
+        return view('livewire.placeholders.loading-skeleton');
+    }
+
     /* ───── Revenue data ───── */
     public string $mrr = '0';
     public string $monthTotal = '0';

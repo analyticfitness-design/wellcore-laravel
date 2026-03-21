@@ -33,7 +33,7 @@
                 <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-wc-accent/20">
                     @if($coach->photo_url)
                         <img src="{{ $coach->photo_url }}" alt="{{ $coach->name }}"
-                             class="h-14 w-14 rounded-full object-cover">
+                             class="h-14 w-14 rounded-full object-cover" loading="lazy" decoding="async">
                     @else
                         <span class="font-display text-2xl text-wc-accent">{{ substr($coach->name, 0, 1) }}</span>
                     @endif

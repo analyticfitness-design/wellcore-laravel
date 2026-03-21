@@ -160,11 +160,11 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/chat', ChatWidget::class)->name('chat');
         Route::get('/profile', ProfileEditor::class)->name('profile');
         Route::get('/habits', HabitTracker::class)->name('habits');
-        Route::get('/academia', \App\Livewire\Client\Academia::class)->name('academia');
+        Route::get('/academia', \App\Livewire\Client\Academia::class)->name('academia')->lazy();
         Route::get('/timer', \App\Livewire\Client\WorkoutTimer::class)->name('timer');
         Route::get('/mindfulness', \App\Livewire\Client\Mindfulness::class)->name('mindfulness');
-        Route::get('/videos', \App\Livewire\Client\VideoLibrary::class)->name('videos');
-        Route::get('/recetas', \App\Livewire\Client\RecipeDatabase::class)->name('recipes');
+        Route::get('/videos', \App\Livewire\Client\VideoLibrary::class)->name('videos')->lazy();
+        Route::get('/recetas', \App\Livewire\Client\RecipeDatabase::class)->name('recipes')->lazy();
         Route::get('/records', \App\Livewire\Client\PersonalRecords::class)->name('records');
         Route::get('/community', CommunityFeed::class)->name('community');
         Route::get('/video-checkin', VideoCheckinUpload::class)->name('video-checkin');
@@ -199,11 +199,11 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/invitations', InvitationManager::class)->name('invitations');
         Route::get('/coaches', CoachManagement::class)->name('coaches');
         Route::get('/plans', PlanManagement::class)->name('plans');
-        Route::get('/ai-generator', AIPlanGenerator::class)->name('ai-generator');
+        Route::get('/ai-generator', AIPlanGenerator::class)->name('ai-generator')->lazy();
         Route::get('/rise', RiseManagement::class)->name('rise');
         Route::get('/tickets', \App\Livewire\Admin\TicketManager::class)->name('tickets');
         Route::get('/chat', ChatAnalytics::class)->name('chat');
-        Route::get('/tools', AdminTools::class)->name('tools');
+        Route::get('/tools', AdminTools::class)->name('tools')->lazy();
         Route::get('/settings', AdminSettings::class)->name('settings');
     });
 
@@ -216,11 +216,11 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/broadcast', BroadcastCenter::class)->name('broadcast');
         Route::get('/notes', CoachNotesPage::class)->name('notes');
         Route::get('/plans', PlansManager::class)->name('plans');
-        Route::get('/analytics', Analytics::class)->name('analytics');
+        Route::get('/analytics', Analytics::class)->name('analytics')->lazy();
         Route::get('/profile', CoachProfilePage::class)->name('profile');
         Route::get('/brand', MyBrand::class)->name('brand');
-        Route::get('/resources', CoachResources::class)->name('resources');
-        Route::get('/features', CoachFeatures::class)->name('features');
+        Route::get('/resources', CoachResources::class)->name('resources')->lazy();
+        Route::get('/features', CoachFeatures::class)->name('features')->lazy();
     });
 
     // Logout

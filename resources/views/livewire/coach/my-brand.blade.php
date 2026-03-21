@@ -207,14 +207,14 @@
                     {{-- Color banner --}}
                     <div class="h-20 relative" style="background: linear-gradient(135deg, {{ $color_primary }}, {{ $color_primary }}99);">
                         @if($logo_url)
-                            <img src="{{ $logo_url }}" alt="Logo" class="absolute bottom-2 left-4 h-10 w-10 rounded-lg bg-white/20 p-1 object-contain">
+                            <img src="{{ $logo_url }}" alt="Logo" class="absolute bottom-2 left-4 h-10 w-10 rounded-lg bg-white/20 p-1 object-contain" loading="lazy" decoding="async">
                         @endif
                     </div>
                     {{-- Info --}}
                     <div class="p-4 space-y-2">
                         <div class="flex items-center gap-2">
                             @if($photo_url)
-                                <img src="{{ $photo_url }}" alt="Foto" class="h-10 w-10 rounded-full object-cover border-2" style="border-color: {{ $color_primary }};">
+                                <img src="{{ $photo_url }}" alt="Foto" class="h-10 w-10 rounded-full object-cover border-2" style="border-color: {{ $color_primary }};" loading="lazy" decoding="async">
                             @else
                                 <div class="flex h-10 w-10 items-center justify-center rounded-full text-white text-sm font-bold" style="background-color: {{ $color_primary }};">
                                     {{ substr($coachName, 0, 1) }}
@@ -395,7 +395,7 @@
                     <div class="flex flex-col items-center gap-2">
                         <div class="flex h-16 w-16 items-center justify-center rounded-2xl shadow-lg" style="background-color: {{ $pwa_color }};">
                             @if($pwa_icon_url)
-                                <img src="{{ $pwa_icon_url }}" alt="App Icon" class="h-12 w-12 rounded-xl object-contain">
+                                <img src="{{ $pwa_icon_url }}" alt="App Icon" class="h-12 w-12 rounded-xl object-contain" loading="lazy" decoding="async">
                             @else
                                 <span class="font-display text-2xl text-white">{{ substr($pwa_app_name ?: 'W', 0, 1) }}</span>
                             @endif
@@ -454,7 +454,7 @@
                 <div class="relative px-5 pb-16 pt-6" style="background: linear-gradient(180deg, {{ $color_primary }}, {{ $color_primary }}CC);">
                     {{-- Logo --}}
                     @if($logo_url)
-                        <img src="{{ $logo_url }}" alt="Logo" class="h-8 w-auto mb-3 opacity-90">
+                        <img src="{{ $logo_url }}" alt="Logo" class="h-8 w-auto mb-3 opacity-90" loading="lazy" decoding="async">
                     @else
                         <div class="flex items-center gap-2 mb-3">
                             <div class="h-6 w-6 rounded bg-white/20 flex items-center justify-center">
@@ -470,7 +470,7 @@
                 {{-- Coach photo overlay --}}
                 <div class="flex justify-center -mt-10 relative z-10">
                     @if($photo_url)
-                        <img src="{{ $photo_url }}" alt="{{ $coachName }}" class="h-20 w-20 rounded-full object-cover border-4 shadow-lg" style="border-color: {{ $color_primary }};">
+                        <img src="{{ $photo_url }}" alt="{{ $coachName }}" class="h-20 w-20 rounded-full object-cover border-4 shadow-lg" style="border-color: {{ $color_primary }};" loading="lazy" decoding="async">
                     @else
                         <div class="flex h-20 w-20 items-center justify-center rounded-full text-white text-2xl font-bold border-4 shadow-lg" style="background-color: {{ $color_primary }}; border-color: {{ $color_primary }}44;">
                             {{ substr($coachName, 0, 1) }}

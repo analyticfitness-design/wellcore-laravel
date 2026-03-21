@@ -186,6 +186,7 @@
                                         alt="{{ $related['image_alt'] ?? $related['name'] }}"
                                         class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                         loading="lazy"
+                                        decoding="async"
                                     >
                                 @else
                                     <div class="flex h-full w-full items-center justify-center">

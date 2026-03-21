@@ -56,7 +56,7 @@
                         {{-- Thumbnail --}}
                         <div class="h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-wc-border bg-wc-bg-tertiary">
                             @if($item['image'])
-                                <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="h-full w-full object-cover">
+                                <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="h-full w-full object-cover" loading="lazy" decoding="async">
                             @else
                                 <div class="flex h-full w-full items-center justify-center">
                                     <svg class="h-6 w-6 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">

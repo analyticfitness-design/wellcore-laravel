@@ -4,7 +4,7 @@
     {{-- After image (full width, behind) --}}
     <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-emerald-500/5">
         @if($after)
-            <img src="{{ $after }}" alt="Despues" class="h-full w-full object-cover">
+            <img src="{{ $after }}" alt="Despues" class="h-full w-full object-cover" loading="lazy" decoding="async">
         @else
             <div class="flex h-full items-center justify-center">
                 <span class="font-display text-lg text-emerald-400/60">DESPUES</span>
@@ -15,7 +15,7 @@
     {{-- Before image (clipped by slider position) --}}
     <div class="absolute inset-0 bg-gradient-to-br from-zinc-500/20 to-zinc-500/5" :style="'clip-path: inset(0 ' + (100 - position) + '% 0 0)'">
         @if($before)
-            <img src="{{ $before }}" alt="Antes" class="h-full w-full object-cover">
+            <img src="{{ $before }}" alt="Antes" class="h-full w-full object-cover" loading="lazy" decoding="async">
         @else
             <div class="flex h-full items-center justify-center">
                 <span class="font-display text-lg text-wc-text-tertiary/60">ANTES</span>

@@ -15,6 +15,11 @@ class Resources extends Component
     // ---- Navigation ----
     public string $activeModule = 'guides';
 
+    public function placeholder()
+    {
+        return view('livewire.placeholders.loading-skeleton');
+    }
+
     // ---- Academy CRUD ----
     public bool $showAcademyModal = false;
     public bool $isEditing = false;
