@@ -2,12 +2,14 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\WeeklySummary;
 use App\Models\Client;
 use App\Models\TrainingLog;
 use App\Models\Checkin;
 use App\Models\HabitLog;
 use App\Models\WellcoreNotification;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Mail;
 
 class WeeklySummaryCommand extends Command
 {
@@ -38,6 +40,14 @@ class WeeklySummaryCommand extends Command
                     ->where('value', true)
                     ->count();
 
+                $summaryData = [
+                    'train_days'   => $trainDays,
+                    'has_checkin'  => $hasCheckin,
+                    'habit_count'  => $habitCount,
+                    'week_start'   => $weekStart->toDateString(),
+                    'week_end'     => $weekEnd->toDateString(),
+                ];
+
                 WellcoreNotification::create([
                     'user_type' => 'client',
                     'user_id' => $client->id,
@@ -48,6 +58,11 @@ class WeeklySummaryCommand extends Command
                               " y registraste {$habitCount} habitos. " .
                               ($trainDays >= 4 ? 'Excelente semana!' : 'La proxima semana sera mejor!'),
                 ]);
+
+                if ($client->email) {
+                    Mail::to($client->email)->queue(new WeeklySummary($client, $summaryData));
+                }
+
                 $generated++;
             }
         });

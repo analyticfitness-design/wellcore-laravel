@@ -40,7 +40,7 @@ return [
 
     // ── QUE INCLUYE ──────────────────────────────────────────────────────────
     'includes_h2'       => 'QUE INCLUYE',
-    'includes_sub'      => '4 pilares. 1 metodo.',
+    'includes_sub'      => '5 pilares. 1 metodo.',
     'includes_desc'     => 'Todo lo que necesitas para transformar tu cuerpo en 30 dias.',
     'pillar1_title'     => 'Entrenamiento',
     'pillar1_desc'      => 'Programa 1:1 disenado para ti. Gym o casa. Sin importar tu nivel.',
@@ -50,6 +50,8 @@ return [
     'pillar3_desc'      => 'Sistema diario de habitos para garantizar tu constancia.',
     'pillar4_title'     => 'Seguimiento',
     'pillar4_desc'      => 'Revision de tu progreso durante los 30 dias del reto.',
+    'pillar5_title'     => 'Suplementacion',
+    'pillar5_desc'      => 'Protocolo basico de suplementacion basado en evidencia para maximizar tus resultados en 30 dias.',
 
     // ── TU DASHBOARD RISE ────────────────────────────────────────────────────
     'dashboard_badge'   => 'Experiencia',

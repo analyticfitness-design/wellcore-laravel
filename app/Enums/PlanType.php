@@ -9,6 +9,7 @@ enum PlanType: string
     case Elite = 'elite';
     case Rise = 'rise';
     case Presencial = 'presencial';
+    case Trial = 'trial';
 
     public function label(): string
     {
@@ -18,6 +19,7 @@ enum PlanType: string
             self::Elite => 'Elite',
             self::Rise => 'Rise',
             self::Presencial => 'Presencial',
+            self::Trial => 'Trial',
         };
     }
 }

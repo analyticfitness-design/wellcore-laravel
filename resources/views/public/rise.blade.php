@@ -52,7 +52,7 @@
                     </div>
 
                     <div class="mt-8">
-                        <a href="{{ route('planes') }}" class="btn-press pulse-glow inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
+                        <a href="{{ route('rise.enroll') }}" class="btn-press pulse-glow inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
                             {{ __('rise.cta_join') }}
                             <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                         </a>
@@ -181,7 +181,7 @@
                 <p class="mt-1 text-sm text-wc-text-tertiary">{{ __('rise.includes_desc') }}</p>
             </div>
 
-            <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 stagger-grid">
+            <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5 stagger-grid">
                 <div class="scroll-reveal-scale card-hover-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-animate="scaleIn" data-delay="100">
                     <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-wc-accent/10">
                         <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -220,6 +220,16 @@
                     </div>
                     <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('rise.pillar4_title') }}</h3>
                     <p class="mt-2 text-sm text-wc-text-secondary">{{ __('rise.pillar4_desc') }}</p>
+                </div>
+
+                <div class="scroll-reveal-scale card-hover-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-animate="scaleIn" data-delay="500">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-wc-accent/10">
+                        <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 1-6.23-.693L4.2 13.9m15.6 1.4-1.57.393M4.2 13.9l-1.57.393m0 0a48.667 48.667 0 0 1-.014-4.337m.014 4.337a48.667 48.667 0 0 0 4.918 2.048M18.43 14.293a48.667 48.667 0 0 0 4.918-2.048m-4.918 2.048 1.57.393" />
+                        </svg>
+                    </div>
+                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('rise.pillar5_title') }}</h3>
+                    <p class="mt-2 text-sm text-wc-text-secondary">{{ __('rise.pillar5_desc') }}</p>
                 </div>
             </div>
         </div>
@@ -677,7 +687,7 @@
                         </li>
                     </ul>
 
-                    <a href="{{ route('planes') }}" class="btn-press pulse-glow mt-8 flex w-full items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
+                    <a href="{{ route('rise.enroll') }}" class="btn-press pulse-glow mt-8 flex w-full items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
                         {{ __('rise.cta_join2') }}
                         <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                     </a>
@@ -710,7 +720,7 @@
                         {{ __('rise.urgency_desc') }}
                     </p>
                     <div class="mt-8">
-                        <a href="{{ route('planes') }}" class="btn-press pulse-glow inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
+                        <a href="{{ route('rise.enroll') }}" class="btn-press pulse-glow inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
                             {{ __('rise.cta_join3') }}
                             <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                         </a>

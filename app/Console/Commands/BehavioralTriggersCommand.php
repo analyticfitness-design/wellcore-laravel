@@ -2,12 +2,14 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\CheckinReminder;
 use App\Models\AutoMessageLog;
 use App\Models\Client;
 use App\Models\Checkin;
 use App\Models\TrainingLog;
 use App\Models\WellcoreNotification;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Mail;
 
 class BehavioralTriggersCommand extends Command
 {
@@ -72,6 +74,10 @@ class BehavioralTriggersCommand extends Command
                         'title' => 'No olvides tu check-in semanal',
                         'body' => 'Tu coach necesita saber como va tu semana. Completa tu check-in.',
                     ]);
+
+                    if ($client->email) {
+                        Mail::to($client->email)->queue(new CheckinReminder($client));
+                    }
 
                     AutoMessageLog::create([
                         'client_id' => $client->id,

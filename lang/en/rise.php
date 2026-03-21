@@ -40,7 +40,7 @@ return [
 
     // -- WHAT'S INCLUDED ------------------------------------------------------
     'includes_h2'       => 'WHAT\'S INCLUDED',
-    'includes_sub'      => '4 pillars. 1 method.',
+    'includes_sub'      => '5 pillars. 1 method.',
     'includes_desc'     => 'Everything you need to transform your body in 30 days.',
     'pillar1_title'     => 'Training',
     'pillar1_desc'      => 'Custom 1:1 program built for you. Gym or home. Any experience level.',
@@ -50,6 +50,8 @@ return [
     'pillar3_desc'      => 'Daily behavioral system designed to build sustainable consistency.',
     'pillar4_title'     => 'Tracking',
     'pillar4_desc'      => 'Real-time progress tracking throughout the entire 30-day challenge.',
+    'pillar5_title'     => 'Supplementation',
+    'pillar5_desc'      => 'Evidence-based basic supplement protocol to maximize your 30-day results.',
 
     // -- YOUR RISE DASHBOARD --------------------------------------------------
     'dashboard_badge'   => 'Experience',

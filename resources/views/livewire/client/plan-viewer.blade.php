@@ -5,20 +5,37 @@
     </div>
 
     {{-- Tabs --}}
-    <div class="mb-6 flex gap-1 overflow-x-auto rounded-xl border border-wc-border bg-wc-bg-secondary p-1">
-        @foreach([
+    @php
+        $canAccessNutricion = in_array($clientPlanType, ['metodo', 'elite', 'presencial', 'rise']);
+        $canAccessElite     = in_array($clientPlanType, ['elite']);
+        $tabs = [
             'entrenamiento' => 'Entrenamiento',
-            'nutricion' => 'Nutricion',
-            'suplementacion' => 'Suplementos',
-            'habitos' => 'Habitos',
-            'ciclo' => 'Ciclo',
-            'bloodwork' => 'Bloodwork',
-        ] as $key => $label)
+            'habitos'       => 'Habitos',
+            'nutricion'     => 'Nutricion',
+            'suplementacion'=> 'Suplementos',
+            'ciclo'         => 'Ciclo',
+            'bloodwork'     => 'Bloodwork',
+        ];
+    @endphp
+    <div class="mb-6 flex gap-1 overflow-x-auto rounded-xl border border-wc-border bg-wc-bg-secondary p-1">
+        @foreach($tabs as $key => $label)
+            @php
+                $locked = (in_array($key, ['nutricion','suplementacion']) && !$canAccessNutricion)
+                       || (in_array($key, ['ciclo','bloodwork']) && !$canAccessElite);
+            @endphp
             <button
-                wire:click="setTab('{{ $key }}')"
-                class="shrink-0 flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors whitespace-nowrap {{ $activeTab === $key ? 'bg-wc-bg-tertiary text-wc-text shadow-sm' : 'text-wc-text-tertiary hover:text-wc-text-secondary' }}"
+                wire:click="{{ $locked ? '' : \"setTab('$key')\" }}"
+                @class([
+                    'shrink-0 flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors whitespace-nowrap',
+                    'bg-wc-bg-tertiary text-wc-text shadow-sm' => $activeTab === $key,
+                    'text-wc-text-tertiary hover:text-wc-text-secondary' => $activeTab !== $key && !$locked,
+                    'cursor-not-allowed opacity-40' => $locked,
+                ])
             >
                 {{ $label }}
+                @if($locked)
+                    <span class="ml-1 text-[10px]">&#128274;</span>
+                @endif
             </button>
         @endforeach
     </div>
@@ -76,22 +93,38 @@
 
     {{-- ==================== TAB: NUTRICION ==================== --}}
     @elseif($activeTab === 'nutricion')
-        @if($nutritionPlan)
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
-                <pre class="text-sm text-wc-text-secondary whitespace-pre-wrap">{{ json_encode($nutritionPlan, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
-            </div>
+        @if($canAccessNutricion)
+            @if($nutritionPlan)
+                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
+                    <pre class="text-sm text-wc-text-secondary whitespace-pre-wrap">{{ json_encode($nutritionPlan, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                </div>
+            @else
+                <x-empty-state title="SIN PLAN DE NUTRICION" message="Tu coach aun no ha asignado un plan de nutricion." />
+            @endif
         @else
-            <x-empty-state title="SIN PLAN DE NUTRICION" message="Tu coach aun no ha asignado un plan de nutricion." />
+            <div class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-8 text-center">
+                <p class="font-display text-xl text-wc-text">Nutricion Premium</p>
+                <p class="mt-2 text-sm text-wc-text-secondary">Disponible en planes Metodo y Elite.</p>
+                <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">Upgrade</a>
+            </div>
         @endif
 
     {{-- ==================== TAB: SUPLEMENTACION ==================== --}}
     @elseif($activeTab === 'suplementacion')
-        @if($supplementPlan)
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
-                <pre class="text-sm text-wc-text-secondary whitespace-pre-wrap">{{ json_encode($supplementPlan, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
-            </div>
+        @if($canAccessNutricion)
+            @if($supplementPlan)
+                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
+                    <pre class="text-sm text-wc-text-secondary whitespace-pre-wrap">{{ json_encode($supplementPlan, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                </div>
+            @else
+                <x-empty-state title="SIN PLAN DE SUPLEMENTACION" message="Tu coach aun no ha asignado un plan de suplementacion." />
+            @endif
         @else
-            <x-empty-state title="SIN PLAN DE SUPLEMENTACION" message="Tu coach aun no ha asignado un plan de suplementacion." />
+            <div class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-8 text-center">
+                <p class="font-display text-xl text-wc-text">Suplementacion Premium</p>
+                <p class="mt-2 text-sm text-wc-text-secondary">Disponible en planes Metodo y Elite.</p>
+                <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">Upgrade</a>
+            </div>
         @endif
 
     {{-- ==================== TAB: HABITOS ==================== --}}
@@ -168,6 +201,13 @@
 
     {{-- ==================== TAB: CICLO HORMONAL ==================== --}}
     @elseif($activeTab === 'ciclo')
+        @if(!$canAccessElite)
+            <div class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-8 text-center">
+                <p class="font-display text-xl text-wc-text">Ciclo Hormonal Personalizado</p>
+                <p class="mt-2 text-sm text-wc-text-secondary">Disponible exclusivamente en el plan Elite.</p>
+                <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">Upgrade a Elite</a>
+            </div>
+        @else
         <div
             x-data="{
                 startDate: localStorage.getItem('wc_cycle_start') || '',
@@ -308,9 +348,17 @@
                 </div>
             </div>
         </div>
+        @endif
 
     {{-- ==================== TAB: BLOODWORK ==================== --}}
     @elseif($activeTab === 'bloodwork')
+        @if(!$canAccessElite)
+            <div class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-8 text-center">
+                <p class="font-display text-xl text-wc-text">Bloodwork &amp; Analisis Laboratorio</p>
+                <p class="mt-2 text-sm text-wc-text-secondary">Disponible exclusivamente en el plan Elite.</p>
+                <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">Upgrade a Elite</a>
+            </div>
+        @else
         <div class="space-y-6">
             {{-- Add result form --}}
             <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
@@ -452,5 +500,6 @@
                 @endif
             </div>
         </div>
+        @endif
     @endif
 </div>

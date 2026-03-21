@@ -16,6 +16,7 @@ class PlanViewer extends Component
     public ?array $nutritionPlan = null;
     public ?array $supplementPlan = null;
     public string $activeTab = 'entrenamiento';
+    public string $clientPlanType = 'esencial';
 
     // Habits
     public array $habitData = [];
@@ -32,7 +33,9 @@ class PlanViewer extends Component
 
     public function mount(): void
     {
-        $clientId = auth('wellcore')->id();
+        $user = auth('wellcore')->user();
+        $clientId = $user?->id ?? auth('wellcore')->id();
+        $this->clientPlanType = strtolower($user->plan ?? 'esencial');
 
         $plans = AssignedPlan::where('client_id', $clientId)
             ->where('active', true)

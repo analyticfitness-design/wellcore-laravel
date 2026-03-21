@@ -131,8 +131,11 @@
                     __('planes.feat_29'),
                 ];
 
-                $esencialFeatures = array_slice($allFeatures, 0, 9);
-                $metodoFeatures   = array_slice($allFeatures, 0, 19);
+                // Esencial: feat_01–feat_14 (Entrenamiento + Habitos)
+                // Metodo:   feat_01–feat_25 (adds Nutricion + Suplementacion)
+                // Elite:    all 29 features (adds Ciclo Hormonal + Bloodwork + Premium)
+                $esencialFeatures = array_slice($allFeatures, 0, 14);
+                $metodoFeatures   = array_slice($allFeatures, 0, 25);
                 $eliteFeatures    = $allFeatures;
             @endphp
 

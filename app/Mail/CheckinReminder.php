@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Client;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -13,10 +14,13 @@ class CheckinReminder extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
+    public string $clientName;
+
     public function __construct(
-        public string $clientName,
-        public int $daysSinceLastCheckin,
-    ) {}
+        public Client $client,
+    ) {
+        $this->clientName = $client->name ?? $client->first_name ?? 'Cliente';
+    }
 
     public function envelope(): Envelope
     {

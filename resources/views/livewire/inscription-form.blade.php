@@ -15,11 +15,11 @@
                     </div>
                     <div class="flex items-start gap-3 text-sm text-wc-text-secondary">
                         <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                        Recibiras tus credenciales de acceso al portal dentro de 6 horas
+                        Nuestro equipo revisara tu solicitud y te contactara dentro de 24 horas para activar tu cuenta y comenzar tu plan.
                     </div>
                     <div class="flex items-start gap-3 text-sm text-wc-text-secondary">
                         <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                        Tu programa estara listo en 5-48 horas dependiendo de la cola
+                        Tu coach comenzara a disenar tu programa personalizado una vez actives tu cuenta.
                     </div>
                 </div>
                 <a href="{{ route('home') }}" class="mt-8 inline-flex items-center justify-center rounded-lg bg-wc-accent px-6 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover">
@@ -52,11 +52,17 @@
                 <div>
                     <h2 class="font-display text-xl tracking-wide text-wc-text">SELECCIONA TU PLAN</h2>
                     <p class="mt-1 text-sm text-wc-text-secondary">Elige el plan que mejor se adapte a tus objetivos.</p>
-                    <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                        @foreach(['esencial' => ['Esencial', '$149.900/mes', 'Entrenamiento personalizado'], 'metodo' => ['Metodo', '$199.900/mes', 'Entreno + Nutricion + Seguimiento'], 'elite' => ['Elite', '$249.900/mes', 'Todo incluido + Check-ins 1:1']] as $key => [$name, $price, $desc])
+                    <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        @foreach([
+                            'esencial'   => ['Esencial',   '$299,000/mes',          'Entrenamiento personalizado',               false],
+                            'metodo'     => ['Metodo',     '$399,000/mes',          'Entreno + Nutricion + Seguimiento',          true],
+                            'elite'      => ['Elite',      '$549,000/mes',          'Todo incluido + Check-ins 1:1',             false],
+                            'rise'       => ['RISE',       '$99,900 pago unico',    'Programa grupal de 8 semanas',              false],
+                            'presencial' => ['Presencial', '$450,000–$650,000/mes', 'Coaching 1:1 presencial en Bogota',         false],
+                        ] as $key => [$name, $price, $desc, $popular])
                         <button type="button" wire:click="selectPlan('{{ $key }}')"
                             class="rounded-xl border-2 p-6 text-left transition-all {{ $plan === $key ? 'border-wc-accent bg-wc-accent/5' : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-accent/40' }}">
-                            @if($key === 'metodo')
+                            @if($popular)
                                 <span class="mb-2 inline-block rounded-full bg-wc-accent px-2 py-0.5 text-[10px] font-semibold text-white">MAS POPULAR</span>
                             @endif
                             <h3 class="font-display text-lg tracking-wide text-wc-text">{{ strtoupper($name) }}</h3>
