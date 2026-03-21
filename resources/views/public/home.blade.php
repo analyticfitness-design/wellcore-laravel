@@ -50,12 +50,12 @@
                         </div>
                     </div>
 
-                    <div class="mt-8 flex flex-col gap-4 sm:flex-row">
-                        <a href="{{ route('inscripcion') }}" class="inline-flex w-full items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover sm:w-auto">
+                    <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                        <a href="{{ route('inscripcion') }}" class="inline-flex w-full items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover sm:w-auto">
                             Comenzar Ahora
                             <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                         </a>
-                        <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-lg border border-wc-border px-8 py-3 text-base font-medium text-wc-text hover:bg-wc-bg-secondary">
+                        <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-full px-8 py-3.5 text-base font-semibold text-wc-text hover:bg-wc-bg-secondary">
                             Ver Planes
                         </a>
                     </div>
@@ -724,9 +724,12 @@
     {{-- ================================================================== --}}
     <section class="bg-wc-bg" x-data="{ active: null }">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-            <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">PREGUNTAS FRECUENTES</h2>
+            <div class="text-center">
+                <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">FAQ</p>
+                <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">PREGUNTAS FRECUENTES</h2>
+            </div>
 
-            <div class="mt-12 max-w-3xl space-y-3">
+            <div class="mx-auto mt-12 max-w-3xl divide-y divide-wc-border">
                 @foreach([
                     ['Necesito experiencia previa?', 'No. Trabajamos con todos los niveles, desde personas que nunca han hecho ejercicio hasta atletas avanzados. El plan se construye desde cero segun tu historial, tu condicion actual y tus metas especificas.'],
                     ['Como funciona el seguimiento?', 'Cada semana nos envias tu check-in: peso, fotos opcionales, nivel de energia, como se sintio el entrenamiento y cualquier novedad. Con esa informacion ajustamos el plan para la semana siguiente.'],
@@ -737,13 +740,13 @@
                     ['Que pasa si viajo o tengo un evento?', 'Tu coach ajusta el plan con anticipacion. Tenemos protocolos para viajes, eventos sociales y periodos de alta carga laboral. Nada se rompe por una semana diferente.'],
                     ['Los precios incluyen IVA?', 'Si. Todos los precios publicados son finales. No hay cargos adicionales, sorpresas ni letras pequenas.'],
                 ] as $index => [$question, $answer])
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary">
-                    <button x-on:click="active = active === {{ $index }} ? null : {{ $index }}" class="flex w-full items-center justify-between px-6 py-4 text-left">
+                <div>
+                    <button x-on:click="active = active === {{ $index }} ? null : {{ $index }}" class="flex w-full items-center justify-between py-5 text-left">
                         <span class="text-sm font-semibold text-wc-text">{{ $question }}</span>
-                        <svg class="h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-200" :class="{ 'rotate-45': active === {{ $index }} }" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                        <svg class="ml-4 h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-200" :class="{ 'rotate-180': active === {{ $index }} }" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
                     </button>
                     <div x-show="active === {{ $index }}" x-collapse x-cloak>
-                        <div class="border-t border-wc-border px-6 pb-4 pt-3">
+                        <div class="pb-5">
                             <p class="text-sm leading-relaxed text-wc-text-secondary">{{ $answer }}</p>
                         </div>
                     </div>
@@ -751,12 +754,6 @@
                 @endforeach
             </div>
 
-            <div class="mt-8">
-                <a href="{{ route('faq') }}" class="inline-flex items-center gap-2 text-sm font-medium text-wc-accent hover:text-wc-accent-hover">
-                    Ver todas las preguntas
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
-                </a>
-            </div>
         </div>
     </section>
 
