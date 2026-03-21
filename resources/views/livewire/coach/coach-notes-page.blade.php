@@ -559,7 +559,10 @@
 
                     {{-- Note text --}}
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-wc-text">Nota</label>
+                        <div class="mb-1 flex items-center justify-between">
+                            <label class="block text-sm font-medium text-wc-text">Nota</label>
+                            <x-template-selector context="notes" target="noteText" position="bottom" />
+                        </div>
                         <textarea
                             wire:model="noteText"
                             rows="4"
@@ -678,7 +681,10 @@
 
                     {{-- Description --}}
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-wc-text">Descripcion</label>
+                        <div class="mb-1 flex items-center justify-between">
+                            <label class="block text-sm font-medium text-wc-text">Descripcion</label>
+                            <x-template-selector context="ticket" target="ticketDescription" position="top" />
+                        </div>
                         <textarea
                             wire:model="ticketDescription"
                             rows="4"

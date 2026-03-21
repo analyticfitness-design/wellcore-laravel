@@ -146,6 +146,10 @@
                             @if(!$vc['coach_response'])
                                 @if($videoReplyingTo === $vc['id'])
                                     <div class="space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <label class="text-xs font-medium text-wc-text-secondary">Tu feedback</label>
+                                            <x-template-selector context="video" target="videoReplyText" position="bottom" />
+                                        </div>
                                         <textarea
                                             wire:model="videoReplyText"
                                             rows="3"
@@ -303,6 +307,10 @@
                         @if(!$checkin['coach_reply'])
                             @if($replyingTo === $checkin['id'])
                                 <div class="mt-4 space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-xs font-medium text-wc-text-secondary">Tu respuesta</label>
+                                        <x-template-selector context="checkin" target="replyText" position="bottom" />
+                                    </div>
                                     <textarea
                                         wire:model="replyText"
                                         rows="3"

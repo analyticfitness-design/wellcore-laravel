@@ -107,6 +107,7 @@
                 {{-- Message input --}}
                 <div class="border-t border-wc-border px-4 py-3">
                     <form wire:submit="sendMessage" class="flex items-center gap-2">
+                        <x-template-selector context="message" target="newMessage" position="top" />
                         <input
                             type="text"
                             wire:model="newMessage"

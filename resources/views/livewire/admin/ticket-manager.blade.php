@@ -271,9 +271,12 @@
 
                     {{-- Response text --}}
                     <div>
-                        <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">
-                            Respuesta <span class="text-wc-accent">*</span>
-                        </label>
+                        <div class="mb-1.5 flex items-center justify-between">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">
+                                Respuesta <span class="text-wc-accent">*</span>
+                            </label>
+                            <x-template-selector context="ticket" target="responseText" position="bottom" />
+                        </div>
                         <textarea wire:model="responseText"
                                   rows="6"
                                   placeholder="Escribe tu respuesta al cliente..."

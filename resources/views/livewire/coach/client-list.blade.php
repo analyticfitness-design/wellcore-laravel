@@ -7,6 +7,16 @@
             <p class="mt-1 text-sm text-wc-text-tertiary">{{ $totalClients }} cliente{{ $totalClients !== 1 ? 's' : '' }} activo{{ $totalClients !== 1 ? 's' : '' }}</p>
         </div>
 
+        <div class="flex items-center gap-3">
+        {{-- Kanban toggle --}}
+        <a wire:navigate href="{{ route('coach.kanban') }}"
+           class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text transition-colors"
+           title="Vista Kanban">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125C3.504 4.5 3 5.004 3 5.625v12.75c0 .621.504 1.125 1.125 1.125Z" />
+            </svg>
+        </a>
+
         {{-- Search --}}
         <div class="relative w-full sm:w-72">
             <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -18,6 +28,7 @@
                 placeholder="Buscar por nombre..."
                 class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary py-2 pl-10 pr-4 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
             >
+        </div>
         </div>
     </div>
 
