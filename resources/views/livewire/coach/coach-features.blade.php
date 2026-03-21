@@ -255,7 +255,13 @@
 
                             <div class="flex gap-3 pt-2">
                                 <button wire:click="closeCreatePod" class="flex-1 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2.5 text-sm font-medium text-wc-text hover:bg-wc-bg transition-colors">Cancelar</button>
-                                <button wire:click="savePod" class="flex-1 rounded-lg bg-wc-accent px-4 py-2.5 text-sm font-medium text-white hover:bg-wc-accent/90 transition-colors">Crear Pod</button>
+                                <button wire:click="savePod" wire:loading.attr="disabled" class="btn-press flex-1 rounded-lg bg-wc-accent px-4 py-2.5 text-sm font-medium text-white hover:bg-wc-accent/90 transition-colors disabled:opacity-50">
+                                    <span wire:loading.remove wire:target="savePod">Crear Pod</span>
+                                    <span wire:loading wire:target="savePod" class="inline-flex items-center justify-center gap-2">
+                                        <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                                        Creando...
+                                    </span>
+                                </button>
                             </div>
                         </div>
                     </div>

@@ -40,7 +40,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ $activeClients }}</p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $activeClients }}">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">asignados a ti</p>
         </div>
 
@@ -54,7 +54,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text {{ $pendingCheckins > 0 ? 'text-orange-500' : '' }}">{{ $pendingCheckins }}</p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text {{ $pendingCheckins > 0 ? 'text-orange-500' : '' }}"><span data-counter="{{ $pendingCheckins }}">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">sin responder</p>
         </div>
 
@@ -68,7 +68,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text {{ $unreadMessages > 0 ? 'text-wc-accent' : '' }}">{{ $unreadMessages }}</p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text {{ $unreadMessages > 0 ? 'text-wc-accent' : '' }}"><span data-counter="{{ $unreadMessages }}">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">no leidos</p>
         </div>
 
@@ -82,7 +82,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ $plansThisMonth }}</p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $plansThisMonth }}">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">asignados este mes</p>
         </div>
     </div>

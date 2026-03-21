@@ -257,10 +257,13 @@
                             Cancelar
                         </button>
                         <button type="submit"
-                                class="flex-1 rounded-lg bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover transition-colors"
+                                class="btn-press flex-1 rounded-lg bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover transition-colors"
                                 wire:loading.attr="disabled" wire:loading.class="opacity-70 cursor-not-allowed">
                             <span wire:loading.remove wire:target="createCoach">Crear Coach</span>
-                            <span wire:loading wire:target="createCoach">Creando...</span>
+                            <span wire:loading wire:target="createCoach" class="inline-flex items-center justify-center gap-2">
+                                <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                                Creando...
+                            </span>
                         </button>
                     </div>
                 </form>
@@ -354,10 +357,13 @@
                             Cancelar
                         </button>
                         <button type="submit"
-                                class="flex-1 rounded-lg bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover transition-colors"
+                                class="btn-press flex-1 rounded-lg bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover transition-colors"
                                 wire:loading.attr="disabled" wire:loading.class="opacity-70 cursor-not-allowed">
                             <span wire:loading.remove wire:target="saveProfile">Guardar Perfil</span>
-                            <span wire:loading wire:target="saveProfile">Guardando...</span>
+                            <span wire:loading wire:target="saveProfile" class="inline-flex items-center justify-center gap-2">
+                                <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                                Guardando...
+                            </span>
                         </button>
                     </div>
                 </form>

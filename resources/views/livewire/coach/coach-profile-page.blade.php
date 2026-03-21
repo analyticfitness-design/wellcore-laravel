@@ -199,11 +199,14 @@
             {{-- Save --}}
             <div class="flex items-center gap-3">
                 <button wire:click="saveProfile"
-                        class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-6 py-2.5 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        wire:loading.attr="disabled"
+                        class="btn-press inline-flex items-center gap-2 rounded-lg bg-wc-accent px-6 py-2.5 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors disabled:opacity-50">
+                    <svg wire:loading.remove wire:target="saveProfile" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                     </svg>
-                    Guardar perfil
+                    <svg wire:loading wire:target="saveProfile" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                    <span wire:loading.remove wire:target="saveProfile">Guardar perfil</span>
+                    <span wire:loading wire:target="saveProfile">Guardando...</span>
                 </button>
                 @if($saved)
                     <span class="text-sm font-medium text-emerald-500" wire:transition>Guardado correctamente</span>

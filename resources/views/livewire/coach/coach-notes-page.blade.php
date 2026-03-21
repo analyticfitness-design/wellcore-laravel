@@ -582,13 +582,15 @@
                     </button>
                     <button
                         wire:click="saveNote"
-                        class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700 transition-colors"
+                        wire:loading.attr="disabled"
+                        class="btn-press inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700 transition-colors disabled:opacity-50"
                     >
                         <svg wire:loading wire:target="saveNote" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                         </svg>
-                        {{ $editingNoteId ? 'Actualizar' : 'Guardar' }}
+                        <span wire:loading.remove wire:target="saveNote">{{ $editingNoteId ? 'Actualizar' : 'Guardar' }}</span>
+                        <span wire:loading wire:target="saveNote">Guardando...</span>
                     </button>
                 </div>
             </div>
@@ -699,13 +701,15 @@
                     </button>
                     <button
                         wire:click="createTicket"
-                        class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700 transition-colors"
+                        wire:loading.attr="disabled"
+                        class="btn-press inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700 transition-colors disabled:opacity-50"
                     >
                         <svg wire:loading wire:target="createTicket" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                         </svg>
-                        Crear Ticket
+                        <span wire:loading.remove wire:target="createTicket">Crear Ticket</span>
+                        <span wire:loading wire:target="createTicket">Creando...</span>
                     </button>
                 </div>
             </div>

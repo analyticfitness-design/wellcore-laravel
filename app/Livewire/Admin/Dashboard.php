@@ -6,6 +6,7 @@ use App\Models\Checkin;
 use App\Models\Client;
 use App\Models\Inscription;
 use App\Models\Payment;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
@@ -31,11 +32,29 @@ class Dashboard extends Component
     public array $recentInscriptions = [];
     public array $recentPayments = [];
 
+    // Polling / refresh tracking
+    public string $lastRefresh = '';
+
     public function mount(): void
+    {
+        $this->loadAllData();
+    }
+
+    /**
+     * Called by wire:poll.30s — refreshes all dashboard data.
+     */
+    public function refreshStats(): void
+    {
+        Cache::forget('admin_dashboard_stats');
+        $this->loadAllData();
+    }
+
+    protected function loadAllData(): void
     {
         $this->loadStats();
         $this->loadClientBreakdown();
         $this->loadRecentActivity();
+        $this->lastRefresh = now()->format('h:i:s A');
     }
 
     protected function loadStats(): void

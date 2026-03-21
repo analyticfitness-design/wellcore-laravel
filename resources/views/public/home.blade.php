@@ -172,22 +172,22 @@
             {{-- Stats grid --}}
             <div class="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
                 <div class="rounded-xl border border-wc-accent/30 bg-wc-accent/5 p-5 text-center">
-                    <p class="font-data text-3xl font-bold text-wc-accent">94%</p>
+                    <p class="font-data text-3xl font-bold text-wc-accent"><span data-counter="94" data-counter-suffix="%">0%</span></p>
                     <p class="mt-1 text-sm font-semibold text-wc-text">Adherencia</p>
                     <p class="mt-1 text-xs text-wc-text-tertiary">Nuestros clientes mantienen el plan semana a semana.</p>
                 </div>
                 <div class="rounded-xl border border-wc-border bg-wc-bg p-5 text-center">
-                    <p class="font-data text-3xl font-bold text-wc-text">20+</p>
+                    <p class="font-data text-3xl font-bold text-wc-text"><span data-counter="20" data-counter-suffix="+">0</span></p>
                     <p class="mt-1 text-sm font-semibold text-wc-text">Clientes</p>
                     <p class="mt-1 text-xs text-wc-text-tertiary">Activos con planes personalizados en ejecucion.</p>
                 </div>
                 <div class="rounded-xl border border-wc-border bg-wc-bg p-5 text-center">
-                    <p class="font-data text-3xl font-bold text-wc-text">8sem</p>
+                    <p class="font-data text-3xl font-bold text-wc-text"><span data-counter="8" data-counter-suffix="sem">0</span></p>
                     <p class="mt-1 text-sm font-semibold text-wc-text">Resultados</p>
                     <p class="mt-1 text-xs text-wc-text-tertiary">Cambios visibles y medibles en composicion corporal.</p>
                 </div>
                 <div class="rounded-xl border border-wc-border bg-wc-bg p-5 text-center">
-                    <p class="font-data text-3xl font-bold text-wc-text">100%</p>
+                    <p class="font-data text-3xl font-bold text-wc-text"><span data-counter="100" data-counter-suffix="%">0%</span></p>
                     <p class="mt-1 text-sm font-semibold text-wc-text">Personalizado</p>
                     <p class="mt-1 text-xs text-wc-text-tertiary">Nada generico. Tu plan es tuyo y solo tuyo.</p>
                 </div>
@@ -227,16 +227,16 @@
             {{-- Community stats --}}
             <div class="mt-8 flex flex-wrap gap-6">
                 <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                    <span class="font-data text-lg font-bold text-wc-accent">20+</span> Miembros
+                    <span class="font-data text-lg font-bold text-wc-accent" data-counter="20" data-counter-suffix="+">0</span> Miembros
                 </div>
                 <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                    <span class="font-data text-lg font-bold text-wc-accent">3</span> Retos activos
+                    <span class="font-data text-lg font-bold text-wc-accent" data-counter="3">0</span> Retos activos
                 </div>
                 <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                    <span class="font-data text-lg font-bold text-wc-accent">94%</span> Adherencia
+                    <span class="font-data text-lg font-bold text-wc-accent" data-counter="94" data-counter-suffix="%">0%</span> Adherencia
                 </div>
                 <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                    <span class="font-data text-lg font-bold text-wc-accent">500+</span> Logros
+                    <span class="font-data text-lg font-bold text-wc-accent" data-counter="500" data-counter-suffix="+">0</span> Logros
                 </div>
             </div>
 

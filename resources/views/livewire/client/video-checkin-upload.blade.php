@@ -132,7 +132,7 @@
             <div class="flex items-center gap-3">
                 <button
                     type="submit"
-                    class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-5 py-2.5 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors disabled:opacity-50"
+                    class="btn-press inline-flex items-center gap-2 rounded-lg bg-wc-accent px-5 py-2.5 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors disabled:opacity-50"
                     wire:loading.attr="disabled"
                     wire:target="submitCheckin"
                 >

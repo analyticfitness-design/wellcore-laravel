@@ -183,11 +183,14 @@
             {{-- Save Brand --}}
             <div class="flex items-center gap-4">
                 <button wire:click="saveBrand"
-                        class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-wc-accent/90 active:scale-95">
-                    <svg class="h-4 w-4" wire:loading.class="animate-spin" wire:target="saveBrand" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        wire:loading.attr="disabled"
+                        class="btn-press inline-flex items-center gap-2 rounded-lg bg-wc-accent px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-wc-accent/90 active:scale-95 disabled:opacity-50">
+                    <svg wire:loading.remove wire:target="saveBrand" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                     </svg>
-                    Guardar Marca
+                    <svg wire:loading wire:target="saveBrand" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                    <span wire:loading.remove wire:target="saveBrand">Guardar Marca</span>
+                    <span wire:loading wire:target="saveBrand">Guardando...</span>
                 </button>
                 @if($brandSaved)
                     <span class="text-sm font-medium text-emerald-400" x-data x-init="setTimeout(() => $wire.set('brandSaved', false), 3000)">

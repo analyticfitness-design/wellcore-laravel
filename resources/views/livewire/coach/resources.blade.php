@@ -606,9 +606,12 @@
                                         Cancelar
                                     </button>
                                     <button type="submit"
-                                            class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-wc-accent/90 transition-colors">
-                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                                        {{ $isEditing ? 'Guardar Cambios' : 'Crear Contenido' }}
+                                            wire:loading.attr="disabled"
+                                            class="btn-press inline-flex items-center gap-2 rounded-lg bg-wc-accent px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-wc-accent/90 transition-colors disabled:opacity-50">
+                                        <svg wire:loading.remove class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                        <svg wire:loading class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                                        <span wire:loading.remove>{{ $isEditing ? 'Guardar Cambios' : 'Crear Contenido' }}</span>
+                                        <span wire:loading>Guardando...</span>
                                     </button>
                                 </div>
                             </form>

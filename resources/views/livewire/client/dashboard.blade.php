@@ -217,7 +217,14 @@
     @endif
 
     {{-- Stats cards --}}
-    <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+    {{-- Skeleton: Stats cards (shown during Livewire loading) --}}
+    <div wire:loading.delay class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        <x-skeleton :card="true" />
+        <x-skeleton :card="true" />
+        <x-skeleton :card="true" />
+        <x-skeleton :card="true" />
+    </div>
+    <div wire:loading.remove class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {{-- Streak with Flame Animation --}}
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
             <div class="flex items-center justify-between">
@@ -228,7 +235,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ $streakDays }}</p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $streakDays }}">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">dias consecutivos</p>
         </div>
 
@@ -242,7 +249,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ $checkinsThisMonth }}</p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $checkinsThisMonth }}">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">este mes</p>
         </div>
 
@@ -256,7 +263,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ number_format($xpTotal) }}</p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $xpTotal }}">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">XP total</p>
             {{-- XP Progress bar --}}
             <div class="mt-3">
@@ -361,6 +368,91 @@
         </div>
     </div>
 
+    {{-- Streak Calendar — 90-day GitHub-style heatmap --}}
+    <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
+        <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+                <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-orange-500/10">
+                    <svg class="h-4 w-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.963 2.286a.75.75 0 0 0-1.071-.136 9.742 9.742 0 0 0-3.539 6.176A7.547 7.547 0 0 1 6.648 6.61a.75.75 0 0 0-1.152.082A9 9 0 1 0 15.68 4.534a7.46 7.46 0 0 1-2.717-2.248ZM15.75 14.25a3.75 3.75 0 1 1-7.313-1.172c.628.465 1.35.81 2.133 1a5.99 5.99 0 0 1 1.925-3.546 3.75 3.75 0 0 1 3.255 3.718Z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <h3 class="text-sm font-semibold text-wc-text">Racha de Entrenamiento</h3>
+                @if($calendarStreak > 0)
+                    <span class="inline-flex items-center gap-1 rounded-full bg-orange-500/10 px-2 py-0.5 text-xs font-bold text-orange-500">
+                        {{ $calendarStreak }} {{ $calendarStreak === 1 ? 'dia' : 'dias' }} seguidos
+                    </span>
+                @endif
+            </div>
+            <span class="text-xs text-wc-text-tertiary hidden sm:inline">Ultimos 90 dias</span>
+        </div>
+
+        {{-- Calendar grid --}}
+        <div class="flex gap-0.5 overflow-x-auto pb-1">
+            {{-- Day labels --}}
+            <div class="flex flex-col gap-0.5 pr-1 shrink-0">
+                <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">L</span>
+                <span class="h-2.5 w-4 sm:h-3">&nbsp;</span>
+                <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">M</span>
+                <span class="h-2.5 w-4 sm:h-3">&nbsp;</span>
+                <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">V</span>
+                <span class="h-2.5 w-4 sm:h-3">&nbsp;</span>
+                <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">D</span>
+            </div>
+
+            {{-- Grid: columns = weeks, rows = 7 days --}}
+            <div class="grid grid-flow-col grid-rows-7 gap-0.5 flex-1">
+                @php
+                    $today = now();
+                    // Start from 90 days ago, aligned to start of that week (Monday)
+                    $startDate = $today->copy()->subDays(90)->startOfWeek(\Carbon\Carbon::MONDAY);
+                    $endDate = $today->copy()->endOfWeek(\Carbon\Carbon::MONDAY);
+                @endphp
+
+                @for($date = $startDate->copy(); $date->lte($endDate); $date->addDay())
+                    @php
+                        $dateStr = $date->format('Y-m-d');
+                        $count = $streakCalendar[$dateStr] ?? 0;
+                        $isFuture = $date->gt($today);
+                        $isBeforeRange = $date->lt($today->copy()->subDays(90));
+
+                        if ($isFuture || $isBeforeRange) {
+                            $colorClass = 'bg-wc-bg-secondary/30';
+                        } elseif ($count >= 3) {
+                            $colorClass = 'bg-wc-accent';
+                        } elseif ($count === 2) {
+                            $colorClass = 'bg-wc-accent/70';
+                        } elseif ($count === 1) {
+                            $colorClass = 'bg-wc-accent/40';
+                        } else {
+                            $colorClass = 'bg-wc-bg-secondary';
+                        }
+
+                        $isToday = $date->isSameDay($today);
+                    @endphp
+                    <div
+                        class="h-2.5 w-2.5 rounded-[2px] {{ $colorClass }} sm:h-3 sm:w-3 sm:rounded-sm transition-colors {{ $isToday ? 'ring-1 ring-wc-text/30' : '' }}"
+                        title="{{ $date->translatedFormat('D j M Y') }}{{ $count ? ' — ' . $count . ' sesion(es)' : '' }}"
+                        @if($isFuture) style="opacity: 0.2" @endif
+                    ></div>
+                @endfor
+            </div>
+        </div>
+
+        {{-- Legend + mobile label --}}
+        <div class="mt-2 flex items-center justify-between">
+            <span class="text-[10px] text-wc-text-tertiary sm:hidden">Ultimos 90 dias</span>
+            <div class="flex items-center gap-1 text-[10px] text-wc-text-tertiary ml-auto">
+                <span>Menos</span>
+                <div class="h-2 w-2 rounded-[2px] bg-wc-bg-secondary sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
+                <div class="h-2 w-2 rounded-[2px] bg-wc-accent/40 sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
+                <div class="h-2 w-2 rounded-[2px] bg-wc-accent/70 sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
+                <div class="h-2 w-2 rounded-[2px] bg-wc-accent sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
+                <span>Mas</span>
+            </div>
+        </div>
+    </div>
+
     {{-- ITEM 3: Coach Avatar Card --}}
     <div class="flex items-center gap-4 rounded-card border border-wc-border bg-wc-bg-tertiary p-4">
         <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
@@ -461,6 +553,11 @@
     </a>
 
     {{-- ITEM 2: Weekly Summary Card --}}
+    {{-- Skeleton: Weekly Summary (shown during Livewire loading) --}}
+    <div wire:loading.delay>
+        <x-skeleton :card="true" />
+    </div>
+    <div wire:loading.remove>
     @if($hasLastWeekData)
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
             <div class="flex items-center gap-2 mb-4">
@@ -475,12 +572,12 @@
             <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {{-- Workouts --}}
                 <div class="rounded-xl bg-wc-bg-secondary px-4 py-3 text-center">
-                    <p class="font-data text-2xl font-bold text-wc-text">{{ $lastWeekWorkouts }}</p>
+                    <p class="font-data text-2xl font-bold text-wc-text"><span data-counter="{{ $lastWeekWorkouts }}">0</span></p>
                     <p class="mt-0.5 text-[11px] text-wc-text-tertiary">entrenamientos</p>
                 </div>
                 {{-- Check-ins --}}
                 <div class="rounded-xl bg-wc-bg-secondary px-4 py-3 text-center">
-                    <p class="font-data text-2xl font-bold text-wc-text">{{ $lastWeekCheckins }}</p>
+                    <p class="font-data text-2xl font-bold text-wc-text"><span data-counter="{{ $lastWeekCheckins }}">0</span></p>
                     <p class="mt-0.5 text-[11px] text-wc-text-tertiary">check-ins</p>
                 </div>
                 {{-- Weight --}}
@@ -525,6 +622,7 @@
             </div>
         </div>
     @endif
+    </div>
 
     {{-- Daily missions --}}
     <div>
@@ -593,7 +691,14 @@
     </div>
 
     {{-- Weekly overview + Recent activity --}}
-    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+    {{-- Skeleton: Weekly overview + Recent activity (shown during Livewire loading) --}}
+    <div wire:loading.delay class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div class="lg:col-span-2">
+            <x-skeleton :chart="true" />
+        </div>
+        <x-skeleton :avatar="true" :lines="4" />
+    </div>
+    <div wire:loading.remove class="grid grid-cols-1 gap-4 lg:grid-cols-3">
 
         {{-- Weekly training overview --}}
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 lg:col-span-2">

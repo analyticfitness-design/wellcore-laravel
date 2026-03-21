@@ -131,11 +131,14 @@
         {{-- Submit --}}
         <button
             type="submit"
-            class="w-full rounded-[--radius-button] bg-wc-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg disabled:opacity-50"
+            class="btn-press w-full rounded-[--radius-button] bg-wc-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg disabled:opacity-50"
             wire:loading.attr="disabled"
         >
             <span wire:loading.remove wire:target="submit">Enviar Check-in</span>
-            <span wire:loading wire:target="submit">Enviando...</span>
+            <span wire:loading wire:target="submit" class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                Enviando...
+            </span>
         </button>
     </form>
 

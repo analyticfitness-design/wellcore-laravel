@@ -1,10 +1,22 @@
-<div class="space-y-6">
+<div wire:poll.30s="refreshStats" class="space-y-6">
 
     {{-- Header --}}
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">Panel de Administracion</h1>
-            <p class="mt-1 text-sm text-wc-text-tertiary">Resumen general de WellCore Fitness</p>
+            <div class="mt-1 flex items-center gap-3">
+                <p class="text-sm text-wc-text-tertiary">Resumen general de WellCore Fitness</p>
+                <div class="flex items-center gap-1.5 text-xs text-wc-text-tertiary">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+                    </span>
+                    <span>En vivo</span>
+                    @if($lastRefresh)
+                        <span class="text-wc-text-tertiary/60">&middot; {{ $lastRefresh }}</span>
+                    @endif
+                </div>
+            </div>
         </div>
         <div class="flex items-center gap-2">
             <a href="{{ route('admin.clients') }}"
@@ -33,7 +45,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ $activeClients }}</p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $activeClients }}">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">en total</p>
         </div>
 
@@ -47,7 +59,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text">${{ $monthlyRevenue }}</p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $monthlyRevenue }}" data-counter-prefix="$">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">COP este mes</p>
         </div>
 
@@ -61,7 +73,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ $pendingCheckins }}</p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $pendingCheckins }}">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">sin responder</p>
         </div>
 
@@ -75,7 +87,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ $newInscriptions }}</p>
+            <p class="mt-3 font-data text-3xl font-bold text-wc-text"><span data-counter="{{ $newInscriptions }}">0</span></p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">nuevas este mes</p>
         </div>
     </div>

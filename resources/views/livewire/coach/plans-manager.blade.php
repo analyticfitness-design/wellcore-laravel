@@ -762,8 +762,13 @@
                         Cancelar
                     </button>
                     <button wire:click="saveTemplate"
-                            class="rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors">
-                        {{ $editingTemplate ? 'Actualizar' : 'Crear' }}
+                            wire:loading.attr="disabled"
+                            class="btn-press rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors disabled:opacity-50">
+                        <span wire:loading.remove wire:target="saveTemplate">{{ $editingTemplate ? 'Actualizar' : 'Crear' }}</span>
+                        <span wire:loading wire:target="saveTemplate" class="inline-flex items-center gap-2">
+                            <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                            Guardando...
+                        </span>
                     </button>
                 </div>
             </div>

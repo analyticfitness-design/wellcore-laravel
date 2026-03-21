@@ -73,6 +73,10 @@ class Dashboard extends Component
     public int $progressPercent = 0;
     public ?string $startDate = null;
 
+    // Streak Calendar (90 days)
+    public array $streakCalendar = [];
+    public int $calendarStreak = 0;
+
     public function mount(): void
     {
         $client = auth('wellcore')->user();
@@ -99,6 +103,7 @@ class Dashboard extends Component
         $this->loadWeeklySummary($client);
         $this->loadCoachInfo($client);
         $this->loadPlanProgress($client);
+        $this->loadStreakCalendar($client);
 
         // ITEM 4: Daily quote
         $this->dailyQuote = $this->getDailyQuote();
@@ -423,6 +428,36 @@ class Dashboard extends Component
         $this->weeksActive = (int) max(1, ceil(Carbon::parse($createdAt)->diffInWeeks(now())));
         $this->totalWeeks = 12;
         $this->progressPercent = (int) min(100, ($this->weeksActive / $this->totalWeeks) * 100);
+    }
+
+    // Streak Calendar — 90-day GitHub-style heatmap
+    protected function loadStreakCalendar($client): void
+    {
+        $logs = TrainingLog::where('client_id', $client->id)
+            ->where('completed', true)
+            ->where('log_date', '>=', now()->subDays(90)->toDateString())
+            ->selectRaw('DATE(log_date) as date, COUNT(*) as count')
+            ->groupBy('date')
+            ->pluck('count', 'date')
+            ->toArray();
+
+        $this->streakCalendar = $logs;
+
+        // Calculate consecutive days streak (counting back from today)
+        $streak = 0;
+        $checkDate = now()->copy();
+
+        // If today has no log yet, start checking from yesterday
+        if (! isset($logs[$checkDate->format('Y-m-d')])) {
+            $checkDate->subDay();
+        }
+
+        while (isset($logs[$checkDate->format('Y-m-d')])) {
+            $streak++;
+            $checkDate->subDay();
+        }
+
+        $this->calendarStreak = $streak;
     }
 
     public function render()
