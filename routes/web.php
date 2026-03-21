@@ -2,6 +2,7 @@
 
 use App\Livewire\Admin\AdminTools;
 use App\Livewire\Admin\AIPlanGenerator;
+use App\Livewire\Admin\ChatAnalytics;
 use App\Livewire\Admin\ClientDetail;
 use App\Livewire\Admin\ClientTable;
 use App\Livewire\Admin\CoachManagement;
@@ -55,8 +56,12 @@ use App\Livewire\Public\PresencialForm;
 use App\Livewire\Public\RiseEnrollment;
 use App\Livewire\TestDashboard;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
+
+// Chatbot API (public, no auth required)
+Route::post('/api/chat', [ChatController::class, 'send'])->name('api.chat');
 
 // Public marketing pages
 Route::get('/', function () {
@@ -192,6 +197,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/ai-generator', AIPlanGenerator::class)->name('ai-generator');
         Route::get('/rise', RiseManagement::class)->name('rise');
         Route::get('/tickets', \App\Livewire\Admin\TicketManager::class)->name('tickets');
+        Route::get('/chat', ChatAnalytics::class)->name('chat');
         Route::get('/tools', AdminTools::class)->name('tools');
     });
 

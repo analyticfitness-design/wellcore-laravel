@@ -1,5 +1,65 @@
-{{-- WellCore Chat Widget (matches production chatbot) --}}
-<div x-data="{ chatOpen: false }" class="fixed bottom-6 right-6 z-50">
+{{-- WellCore Chat Widget --}}
+<div x-data="{
+        chatOpen: false,
+        messages: [
+            { role: 'assistant', text: 'Hola! Soy el asistente de WellCore. Puedo ayudarte con informacion sobre nuestros planes, el metodo, precios o cualquier duda que tengas. Como puedo ayudarte?' }
+        ],
+        newMessage: '',
+        loading: false,
+        sessionId: '',
+        init() {
+            let stored = sessionStorage.getItem('wc_chat_session');
+            if (stored) {
+                this.sessionId = stored;
+            } else {
+                this.sessionId = this.generateId();
+                sessionStorage.setItem('wc_chat_session', this.sessionId);
+            }
+        },
+        generateId() {
+            return 'wc_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 10);
+        },
+        async sendMessage() {
+            if (!this.newMessage.trim() || this.loading) return;
+
+            const userMsg = this.newMessage.trim();
+            this.messages.push({ role: 'user', text: userMsg });
+            this.newMessage = '';
+            this.loading = true;
+
+            this.$nextTick(() => this.scrollToBottom());
+
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: userMsg,
+                        session_id: this.sessionId,
+                        page_url: window.location.pathname,
+                    }),
+                });
+
+                const data = await res.json();
+                this.messages.push({ role: 'assistant', text: data.message });
+            } catch (e) {
+                this.messages.push({ role: 'assistant', text: 'Lo siento, hubo un error. Por favor intenta de nuevo o escribenos a info@wellcorefitness.com' });
+            }
+
+            this.loading = false;
+            this.$nextTick(() => this.scrollToBottom());
+        },
+        scrollToBottom() {
+            const container = this.$refs.chatMessages;
+            if (container) {
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+     }"
+     class="fixed bottom-6 right-6 z-50">
 
     {{-- Chat Dialog --}}
     <div x-show="chatOpen"
@@ -31,22 +91,55 @@
         </div>
 
         {{-- Messages area --}}
-        <div class="h-64 overflow-y-auto px-4 py-4">
-            <div class="flex gap-2">
+        <div x-ref="chatMessages" class="h-72 overflow-y-auto px-4 py-4 space-y-3">
+            <template x-for="(msg, index) in messages" :key="index">
+                <div>
+                    {{-- Assistant message --}}
+                    <div x-show="msg.role === 'assistant'" class="flex gap-2">
+                        <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
+                            <span class="text-[10px] font-bold text-wc-accent">W</span>
+                        </div>
+                        <div class="max-w-[85%] rounded-xl rounded-tl-sm bg-wc-bg-tertiary px-3 py-2 text-sm text-wc-text-secondary" x-text="msg.text"></div>
+                    </div>
+                    {{-- User message --}}
+                    <div x-show="msg.role === 'user'" class="flex justify-end">
+                        <div class="max-w-[85%] rounded-xl rounded-tr-sm bg-wc-accent px-3 py-2 text-sm text-white" x-text="msg.text"></div>
+                    </div>
+                </div>
+            </template>
+
+            {{-- Loading indicator --}}
+            <div x-show="loading" class="flex gap-2">
                 <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
                     <span class="text-[10px] font-bold text-wc-accent">W</span>
                 </div>
-                <div class="rounded-xl rounded-tl-sm bg-wc-bg-tertiary px-3 py-2 text-sm text-wc-text-secondary">
-                    Hola! Soy el asistente de WellCore. Puedo ayudarte con informacion sobre nuestros planes, el metodo, precios o cualquier duda que tengas. Como puedo ayudarte?
+                <div class="rounded-xl rounded-tl-sm bg-wc-bg-tertiary px-4 py-3">
+                    <div class="flex items-center gap-1">
+                        <span class="inline-block h-1.5 w-1.5 animate-bounce rounded-full bg-wc-text-tertiary" style="animation-delay: 0ms;"></span>
+                        <span class="inline-block h-1.5 w-1.5 animate-bounce rounded-full bg-wc-text-tertiary" style="animation-delay: 150ms;"></span>
+                        <span class="inline-block h-1.5 w-1.5 animate-bounce rounded-full bg-wc-text-tertiary" style="animation-delay: 300ms;"></span>
+                    </div>
                 </div>
             </div>
         </div>
 
         {{-- Input --}}
         <div class="border-t border-wc-border px-3 py-3">
-            <form class="flex gap-2" onsubmit="event.preventDefault();">
-                <input type="text" placeholder="Escribe tu pregunta..." class="flex-1 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
-                <button type="submit" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-wc-accent text-white hover:bg-wc-accent-hover">
+            <form class="flex gap-2" x-on:submit.prevent="sendMessage()">
+                <input
+                    type="text"
+                    x-model="newMessage"
+                    placeholder="Escribe tu pregunta..."
+                    maxlength="500"
+                    class="flex-1 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
+                    x-on:keydown.enter.prevent="sendMessage()"
+                    :disabled="loading"
+                >
+                <button
+                    type="submit"
+                    class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-wc-accent text-white hover:bg-wc-accent-hover disabled:opacity-50"
+                    :disabled="loading || !newMessage.trim()"
+                >
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                     </svg>
