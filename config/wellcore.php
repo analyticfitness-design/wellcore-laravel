@@ -80,4 +80,58 @@ return [
         'private_key' => env('VAPID_PRIVATE_KEY', ''),
         'subject' => env('VAPID_SUBJECT', 'mailto:info@wellcorefitness.com'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Push Notifications (alias kept for WompiService / PushNotificationService)
+    |--------------------------------------------------------------------------
+    */
+    'push' => [
+        'public_key' => env('VAPID_PUBLIC_KEY', ''),
+        'private_key' => env('VAPID_PRIVATE_KEY', ''),
+        'subject' => env('VAPID_SUBJECT', 'mailto:info@wellcorefitness.com'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Error Tracking (Sentry)
+    |--------------------------------------------------------------------------
+    */
+    'error_tracking' => [
+        'enabled' => env('ERROR_TRACKING_ENABLED', false),
+        'dsn' => env('SENTRY_DSN', ''),
+        'sample_rate' => env('SENTRY_SAMPLE_RATE', 0.1),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Performance Tuning
+    |--------------------------------------------------------------------------
+    */
+    'performance' => [
+        'cache_ttl' => env('WC_CACHE_TTL', 300),
+        'query_log' => env('WC_QUERY_LOG', false),
+        'slow_query_threshold' => env('WC_SLOW_QUERY_MS', 500),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Limits
+    |--------------------------------------------------------------------------
+    */
+    'limits' => [
+        'max_upload_size' => env('WC_MAX_UPLOAD_MB', 10),
+        'max_chat_message_length' => 500,
+        'max_bio_length' => 1000,
+        'refund_window_days' => 7,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Identity
+    |--------------------------------------------------------------------------
+    */
+    'name' => 'WellCore Fitness',
+    'version' => '2.0.0',
+    'environment' => env('APP_ENV', 'production'),
 ];

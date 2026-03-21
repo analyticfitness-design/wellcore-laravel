@@ -1,32 +1,38 @@
-FROM dunglas/frankenphp:latest-php8.4
+FROM php:8.4-fpm-alpine
+
+# Install system dependencies
+RUN apk add --no-cache \
+    git curl zip unzip libpng-dev libjpeg-turbo-dev freetype-dev \
+    oniguruma-dev libxml2-dev icu-dev linux-headers \
+    nodejs npm supervisor nginx
 
 # Install PHP extensions
-RUN install-php-extensions pdo_mysql mbstring bcmath gd intl opcache redis
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl opcache
+
+# Install Redis extension
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && apk del .build-deps
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
-WORKDIR /app
-
-# Copy composer files first for cache
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+WORKDIR /var/www/html
 
 # Copy application
 COPY . .
 
-# Run post-install scripts
-RUN composer run-script post-autoload-dump
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction \
+    && npm ci && npm run build && rm -rf node_modules
 
-# Build frontend assets
-RUN npm ci && npm run build && rm -rf node_modules
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Storage and cache setup
-RUN php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
+# Expose port
+EXPOSE 8000
 
-# Create storage symlink
-RUN php artisan storage:link || true
-
-EXPOSE 8080
-
-ENTRYPOINT ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
