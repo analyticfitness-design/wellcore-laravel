@@ -2,8 +2,10 @@
 
 namespace App\Livewire\Client;
 
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
+#[Layout('layouts.client')]
 class AudioPlayer extends Component
 {
     public function render()

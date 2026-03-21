@@ -86,7 +86,7 @@ class VideoCheckinUpload extends Component
     private function getCoachId(string $clientId): ?string
     {
         return \App\Models\AssignedPlan::where('client_id', $clientId)
-            ->orderByDesc('assigned_at')
+            ->orderByDesc('created_at')
             ->value('assigned_by');
     }
 

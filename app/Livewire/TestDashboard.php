@@ -40,7 +40,7 @@ class TestDashboard extends Component
         $this->totalPayments = Payment::count();
         $this->totalCheckins = Checkin::count();
         $this->dbVersion = DB::selectOne('SELECT VERSION() as v')->v ?? 'N/A';
-        $this->tableCount = count(DB::select("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'wellcore_fitness'"));
+        $this->tableCount = count(DB::select("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()"));
     }
 
     public function updatedSearch(): void

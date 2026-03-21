@@ -3,8 +3,10 @@
 namespace App\Livewire\Client;
 
 use App\Models\PersonalRecord;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
+#[Layout('layouts.client')]
 class PersonalRecords extends Component
 {
     public string $category = 'all';
