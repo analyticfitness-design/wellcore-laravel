@@ -179,9 +179,12 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
             </svg>
         </div>
-        <p class="text-sm italic text-wc-text-tertiary leading-relaxed">
-            &ldquo;{{ $dailyQuote }}&rdquo;
-        </p>
+        <div class="min-w-0 flex-1">
+            <p class="text-sm italic text-wc-text-tertiary leading-relaxed">
+                &ldquo;{{ $dailyQuote }}&rdquo;
+            </p>
+            <p class="mt-1 text-[10px] font-medium uppercase tracking-wider text-wc-text-tertiary/60">— Tu coach</p>
+        </div>
     </div>
 
     {{-- Plan alert --}}

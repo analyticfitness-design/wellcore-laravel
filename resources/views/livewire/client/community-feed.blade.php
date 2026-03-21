@@ -77,10 +77,10 @@
                     <div class="flex items-center gap-3">
                         {{-- Avatar --}}
                         <div class="flex h-9 w-9 items-center justify-center rounded-full bg-wc-accent/20 text-sm font-semibold text-wc-accent">
-                            {{ strtoupper(substr($post->client->name ?? 'U', 0, 1)) }}
+                            {{ strtoupper(substr($post->client->name ?? 'M', 0, 1)) }}
                         </div>
                         <div>
-                            <p class="text-sm font-semibold text-wc-text">{{ $post->client->name ?? 'Usuario' }}</p>
+                            <p class="text-sm font-semibold text-wc-text">{{ $post->client->name ?? 'Miembro' }}</p>
                             <div class="flex items-center gap-2">
                                 <span class="text-[11px] text-wc-text-tertiary">{{ $post->created_at->diffForHumans() }}</span>
                                 {{-- Post type badge --}}
@@ -104,7 +104,7 @@
                     {{-- Delete button (own posts only) --}}
                     @if($post->client_id === $clientId)
                         <button wire:click="deletePost({{ $post->id }})"
-                            wire:confirm="Seguro que quieres eliminar esta publicacion?"
+                            wire:confirm="¿Seguro que quieres eliminar esta publicación?"
                             class="rounded-lg p-1.5 text-wc-text-tertiary hover:bg-wc-bg hover:text-red-400 transition-colors"
                             title="Eliminar">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -162,11 +162,11 @@
                             @foreach($post->comments->sortByDesc('created_at')->take(5) as $comment)
                                 <div class="flex gap-2.5" wire:key="comment-{{ $comment->id }}">
                                     <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-wc-accent/10 text-[10px] font-semibold text-wc-accent">
-                                        {{ strtoupper(substr($comment->client->name ?? 'U', 0, 1)) }}
+                                        {{ strtoupper(substr($comment->client->name ?? 'M', 0, 1)) }}
                                     </div>
                                     <div class="min-w-0 flex-1">
                                         <div class="flex items-baseline gap-2">
-                                            <span class="text-xs font-semibold text-wc-text">{{ $comment->client->name ?? 'Usuario' }}</span>
+                                            <span class="text-xs font-semibold text-wc-text">{{ $comment->client->name ?? 'Miembro' }}</span>
                                             <span class="text-[10px] text-wc-text-tertiary">{{ $comment->created_at?->diffForHumans() }}</span>
                                         </div>
                                         <p class="mt-0.5 text-xs leading-relaxed text-wc-text-secondary">{{ $comment->content }}</p>
@@ -176,7 +176,7 @@
 
                             @if($post->comments_count > 5)
                                 <p class="text-[11px] text-wc-text-tertiary">
-                                    y {{ $post->comments_count - 5 }} {{ ($post->comments_count - 5) === 1 ? 'comentario mas' : 'comentarios mas' }}...
+                                    y {{ $post->comments_count - 5 }} {{ ($post->comments_count - 5) === 1 ? 'comentario más' : 'comentarios más' }}...
                                 </p>
                             @endif
                         </div>

@@ -2,8 +2,8 @@
 
     {{-- Header --}}
     <div>
-        <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">AI NUTRICION</h1>
-        <p class="mt-1 text-sm text-wc-text-secondary">Registra tus comidas y analiza macros. Funcion de IA proximamente.</p>
+        <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">REGISTRO NUTRICIONAL</h1>
+        <p class="mt-1 text-sm text-wc-text-secondary">Registra tus comidas y lleva el control de tus macros diarios.</p>
     </div>
 
     {{-- Daily Summary Cards --}}
@@ -91,12 +91,13 @@
         <button wire:click="setTab('ai')"
                 class="rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors opacity-50 cursor-not-allowed bg-wc-bg-tertiary text-wc-text-secondary"
                 {{ $aiAvailable ? '' : 'disabled' }}
-                title="{{ $aiAvailable ? '' : 'Proximamente' }}">
+                title="{{ $aiAvailable ? '' : 'Proximamente disponible' }}">
             <span class="flex items-center gap-2">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
                 </svg>
-                Foto IA
+                Analisis por Foto
             </span>
         </button>
     </div>
@@ -237,31 +238,33 @@
             {{-- Analyze button (disabled) --}}
             <button disabled
                     class="w-full rounded-lg bg-wc-accent py-2.5 text-sm font-semibold text-white opacity-50 cursor-not-allowed"
-                    title="Proximamente">
+                    title="Proximamente disponible">
                 <span class="flex items-center justify-center gap-2">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
                     </svg>
-                    Analizar con IA
+                    Analizar foto
                 </span>
             </button>
 
-            <p class="text-xs text-wc-text-tertiary text-center">Proximamente: sube una foto de tu comida y la IA estimara los macronutrientes automaticamente.</p>
+            <p class="text-xs text-wc-text-tertiary text-center">Sube una foto de tu comida y tu coach analizara los macronutrientes de tu plato. Disponible proximamente.</p>
         </div>
     @endif
 
-    {{-- AI not available message (shown when on manual tab or no key) --}}
+    {{-- Photo analysis coming soon (shown when not available) --}}
     @if(!$aiAvailable)
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
             <div class="flex items-start gap-4">
                 <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
                     <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm font-semibold text-wc-text">Analisis con IA</p>
-                    <p class="mt-1 text-xs text-wc-text-tertiary">La funcion de analisis con IA estara disponible proximamente. Mientras tanto, puedes registrar tus comidas manualmente.</p>
+                    <p class="text-sm font-semibold text-wc-text">Analisis por foto</p>
+                    <p class="mt-1 text-xs text-wc-text-tertiary">Proximamente podras subir una foto de tu comida para que tu coach analice los macronutrientes de tu plato. Mientras tanto, registra tus comidas manualmente.</p>
                 </div>
             </div>
         </div>
@@ -286,7 +289,7 @@
                                 <div class="flex items-center gap-2">
                                     <p class="text-sm font-semibold text-wc-text truncate">{{ $entry->food_name }}</p>
                                     <span class="shrink-0 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider {{ $entry->source === 'ai' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-wc-bg-secondary text-wc-text-tertiary' }}">
-                                        {{ $entry->source === 'ai' ? 'IA' : 'Manual' }}
+                                        {{ $entry->source === 'ai' ? 'Foto' : 'Manual' }}
                                     </span>
                                 </div>
 

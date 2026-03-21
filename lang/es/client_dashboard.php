@@ -29,20 +29,20 @@ return [
     // Daily quote (no text, dynamic)
 
     // No active plan
-    'no_active_plan' => 'No tienes un plan activo',
-    'no_active_plan_desc' => 'Contacta a tu coach para que te asigne un plan de entrenamiento o nutricion.',
+    'no_active_plan' => 'Tu coach está preparando tu plan',
+    'no_active_plan_desc' => 'Tu coach está trabajando en tu plan personalizado. Te notificaremos cuando esté listo.',
     'plan_active_label' => 'activo',
     'plan_active_day' => 'dia',
 
     // Stat cards
     'streak' => 'Racha',
-    'consecutive_days' => 'dias consecutivos',
+    'consecutive_days' => 'días consecutivos',
     'checkins' => 'Check-ins',
     'this_month' => 'este mes',
     'level' => 'Nivel :level',
     'xp_total' => 'XP total',
     'this_week' => 'Esta semana',
-    'days_trained' => 'dias entrenados',
+    'days_trained' => 'días entrenados',
 
     // Plan progress
     'your_progress' => 'Tu Progreso',
@@ -54,7 +54,7 @@ return [
     // Streak calendar
     'training_streak' => 'Racha de Entrenamiento',
     'days_in_row' => ':count dia seguido|:count dias seguidos',
-    'last_90_days' => 'Ultimos 90 dias',
+    'last_90_days' => 'Últimos 90 días',
     'less' => 'Menos',
     'more' => 'Mas',
     'session_count' => ':count sesion(es)',
@@ -102,7 +102,7 @@ return [
 
     // Weekly training
     'training_week' => 'Semana de entrenamiento',
-    'week_of_year' => 'Semana :week del :year',
+    'week_of_year' => 'Semana :week de :year',
     'completed_legend' => 'Completado',
     'pending_legend' => 'Pendiente',
     'today' => 'Hoy',

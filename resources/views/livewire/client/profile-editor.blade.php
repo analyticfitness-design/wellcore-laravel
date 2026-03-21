@@ -30,7 +30,7 @@
     {{-- Header --}}
     <div class="mb-8">
         <h1 class="font-display text-3xl tracking-wide text-wc-text">MI PERFIL</h1>
-        <p class="mt-1 text-sm text-wc-text-secondary">Actualiza tu informacion personal y datos de entrenamiento</p>
+        <p class="mt-1 text-sm text-wc-text-secondary">Actualiza tu información personal y datos de entrenamiento</p>
     </div>
 
     <form wire:submit="save">
@@ -46,7 +46,7 @@
                     </div>
                     <div>
                         <h2 class="font-display text-xl tracking-wide text-wc-text">DATOS PERSONALES</h2>
-                        <p class="text-xs text-wc-text-tertiary">Informacion basica de tu cuenta</p>
+                        <p class="text-xs text-wc-text-tertiary">Información básica de tu cuenta</p>
                     </div>
                 </div>
 
@@ -123,7 +123,7 @@
                             id="bio"
                             rows="3"
                             class="block w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
-                            placeholder="Cuentanos sobre ti..."
+                            placeholder="Cuéntanos sobre ti..."
                         ></textarea>
                         @error('bio') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                     </div>
@@ -140,7 +140,7 @@
                     </div>
                     <div>
                         <h2 class="font-display text-xl tracking-wide text-wc-text">DATOS FITNESS</h2>
-                        <p class="text-xs text-wc-text-tertiary">Tu informacion de entrenamiento</p>
+                        <p class="text-xs text-wc-text-tertiary">Tu información de entrenamiento</p>
                     </div>
                 </div>
 
@@ -181,7 +181,7 @@
                             type="text"
                             id="objetivo"
                             class="block w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
-                            placeholder="Ej: Perder grasa, ganar musculo..."
+                            placeholder="Ej: Perder grasa, ganar músculo..."
                         >
                         @error('objetivo') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                     </div>
@@ -222,7 +222,7 @@
                     <div>
                         <label class="mb-2 block text-sm font-medium text-wc-text-secondary">Dias disponibles</label>
                         <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                            @foreach(['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'] as $dia)
+                            @foreach(['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as $dia)
                                 <label class="flex cursor-pointer items-center gap-2 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm transition-colors hover:border-wc-accent/50">
                                     <input
                                         type="checkbox"

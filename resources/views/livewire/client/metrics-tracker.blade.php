@@ -2,7 +2,7 @@
     {{-- Title --}}
     <div>
         <h1 class="font-display text-3xl tracking-wide text-wc-text">METRICAS CORPORALES</h1>
-        <p class="mt-1 text-sm text-wc-text-secondary">Registra y monitorea tu composicion corporal</p>
+        <p class="mt-1 text-sm text-wc-text-secondary">Registra y monitorea tu composición corporal</p>
     </div>
 
     {{-- Stat Cards --}}
@@ -46,7 +46,7 @@
                 <svg class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                 </svg>
-                <span class="text-sm font-medium text-emerald-400">Metrica registrada correctamente.</span>
+                <span class="text-sm font-medium text-emerald-400">Métrica registrada correctamente.</span>
             </div>
             <button wire:click="dismissSuccess" class="text-wc-text-tertiary hover:text-wc-text">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -202,11 +202,11 @@
         {{-- 1. Weight Trend (Line) --}}
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
             <h3 class="font-display text-lg tracking-wide text-wc-text">Peso Corporal</h3>
-            <p class="text-xs text-wc-text-secondary">Ultimos 90 dias</p>
+            <p class="text-xs text-wc-text-secondary">Últimos 90 días</p>
             <div class="relative mt-4" style="height:180px">
                 <canvas x-ref="weightChart"></canvas>
                 <p x-show="!hasWeight" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
-                    Sin datos de peso aun
+                    Sin datos de peso aún
                 </p>
             </div>
         </div>
@@ -225,12 +225,12 @@
 
         {{-- 3. Body Composition (Doughnut) --}}
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-            <h3 class="font-display text-lg tracking-wide text-wc-text">Composicion Corporal</h3>
+            <h3 class="font-display text-lg tracking-wide text-wc-text">Composición Corporal</h3>
             <p class="text-xs text-wc-text-secondary">Ultima medicion</p>
             <div class="relative mt-4 mx-auto flex items-center justify-center" style="height:180px;max-width:260px">
                 <canvas x-ref="compositionChart"></canvas>
                 <p x-show="!hasComposition" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
-                    Sin datos de composicion
+                    Sin datos de composición
                 </p>
             </div>
         </div>

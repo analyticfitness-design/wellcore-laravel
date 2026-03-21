@@ -74,7 +74,7 @@
 
         {{-- Nutricion --}}
         <div>
-            <label for="nutricion" class="mb-2 block text-sm font-medium text-wc-text">Nutricion</label>
+            <label for="nutricion" class="mb-2 block text-sm font-medium text-wc-text">Nutrición</label>
             <select
                 id="nutricion"
                 wire:model="nutricion"
@@ -105,7 +105,7 @@
                 class="w-full accent-wc-accent"
             >
             <div class="mt-1 flex justify-between text-xs text-wc-text-tertiary">
-                <span>1 - Muy facil</span>
+                <span>1 - Muy fácil</span>
                 <span>10 - Maximo esfuerzo</span>
             </div>
             @error('rpe')
@@ -120,7 +120,7 @@
                 id="comentario"
                 wire:model="comentario"
                 rows="3"
-                placeholder="Como te sentiste esta semana? Alguna molestia o logro?"
+                placeholder="¿Cómo te sentiste esta semana? ¿Alguna molestia o logro?"
                 class="w-full rounded-[--radius-button] border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
             ></textarea>
             @error('comentario')
@@ -174,7 +174,7 @@
                                 <p class="font-data text-sm font-semibold text-wc-text">{{ $checkin->dias_entrenados }}/7</p>
                             </div>
                             <div>
-                                <p class="text-xs text-wc-text-tertiary">Nutricion</p>
+                                <p class="text-xs text-wc-text-tertiary">Nutrición</p>
                                 <p class="text-sm font-medium capitalize text-wc-text">{{ $checkin->nutricion }}</p>
                             </div>
                             <div>

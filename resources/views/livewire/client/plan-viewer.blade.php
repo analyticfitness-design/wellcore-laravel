@@ -1,7 +1,7 @@
 <div>
     <div class="mb-8">
         <h1 class="font-display text-3xl tracking-wide text-wc-text">MI PLAN</h1>
-        <p class="mt-1 text-sm text-wc-text-secondary">Tu programacion personalizada asignada por tu coach</p>
+        <p class="mt-1 text-sm text-wc-text-secondary">Tu programación personalizada, diseñada por tu coach</p>
     </div>
 
     {{-- Tabs --}}
@@ -10,8 +10,8 @@
         $canAccessElite     = in_array($clientPlanType, ['elite']);
         $tabs = [
             'entrenamiento' => 'Entrenamiento',
-            'habitos'       => 'Habitos',
-            'nutricion'     => 'Nutricion',
+            'habitos'       => 'Hábitos',
+            'nutricion'     => 'Nutrición',
             'suplementacion'=> 'Suplementos',
             'ciclo'         => 'Ciclo',
             'bloodwork'     => 'Bloodwork',
@@ -88,7 +88,7 @@
                 @endif
             </div>
         @else
-            <x-empty-state title="SIN PLAN DE ENTRENAMIENTO" message="Tu coach aun no ha asignado un plan de entrenamiento." />
+            <x-empty-state title="PLAN EN PREPARACIÓN" message="Tu coach está diseñando tu plan de entrenamiento. Te notificaremos cuando esté listo." />
         @endif
 
     {{-- ==================== TAB: NUTRICION ==================== --}}
@@ -99,12 +99,12 @@
                     <pre class="text-sm text-wc-text-secondary whitespace-pre-wrap">{{ json_encode($nutritionPlan, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
                 </div>
             @else
-                <x-empty-state title="SIN PLAN DE NUTRICION" message="Tu coach aun no ha asignado un plan de nutricion." />
+                <x-empty-state title="PLAN EN PREPARACIÓN" message="Tu coach está preparando tu plan de nutrición. Te notificaremos cuando esté listo." />
             @endif
         @else
             <div class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-8 text-center">
-                <p class="font-display text-xl text-wc-text">Nutricion Premium</p>
-                <p class="mt-2 text-sm text-wc-text-secondary">Disponible en planes Metodo y Elite.</p>
+                <p class="font-display text-xl text-wc-text">Nutrición Premium</p>
+                <p class="mt-2 text-sm text-wc-text-secondary">Disponible en planes Método y Elite.</p>
                 <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">Upgrade</a>
             </div>
         @endif
@@ -117,12 +117,12 @@
                     <pre class="text-sm text-wc-text-secondary whitespace-pre-wrap">{{ json_encode($supplementPlan, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
                 </div>
             @else
-                <x-empty-state title="SIN PLAN DE SUPLEMENTACION" message="Tu coach aun no ha asignado un plan de suplementacion." />
+                <x-empty-state title="PLAN EN PREPARACIÓN" message="Tu coach está preparando tu plan de suplementación. Te notificaremos cuando esté listo." />
             @endif
         @else
             <div class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-8 text-center">
-                <p class="font-display text-xl text-wc-text">Suplementacion Premium</p>
-                <p class="mt-2 text-sm text-wc-text-secondary">Disponible en planes Metodo y Elite.</p>
+                <p class="font-display text-xl text-wc-text">Suplementación Premium</p>
+                <p class="mt-2 text-sm text-wc-text-secondary">Disponible en planes Método y Elite.</p>
                 <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">Upgrade</a>
             </div>
         @endif
@@ -193,8 +193,8 @@
 
             @if(empty($habitData) || collect($habitData)->every(fn($h) => $h['streak'] === 0 && $h['average'] == 0))
                 <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center">
-                    <p class="text-sm text-wc-text-secondary">Aun no tienes habitos registrados en los ultimos 30 dias.</p>
-                    <p class="mt-1 text-xs text-wc-text-tertiary">Registra tus habitos diarios desde la pantalla principal.</p>
+                    <p class="text-sm text-wc-text-secondary">Aún no tienes hábitos registrados en los últimos 30 días.</p>
+                    <p class="mt-1 text-xs text-wc-text-tertiary">Registra tus hábitos diarios desde la pantalla principal.</p>
                 </div>
             @endif
         </div>
@@ -280,7 +280,7 @@
 
             {{-- Configuration form --}}
             <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-                <h3 class="font-display text-lg tracking-wide text-wc-text">CONFIGURACION</h3>
+                <h3 class="font-display text-lg tracking-wide text-wc-text">CONFIGURACIÓN</h3>
                 <div class="mt-4 grid gap-4 sm:grid-cols-2">
                     <div>
                         <label class="block text-xs font-medium text-wc-text-tertiary mb-1">Fecha inicio del ultimo ciclo</label>
@@ -322,7 +322,7 @@
 
                     {{-- Training recommendation --}}
                     <div class="mt-4 rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-                        <h4 class="font-display text-sm tracking-wide text-wc-accent">RECOMENDACION DE ENTRENAMIENTO</h4>
+                        <h4 class="font-display text-sm tracking-wide text-wc-accent">RECOMENDACIÓN DE ENTRENAMIENTO</h4>
                         <p class="mt-2 text-sm text-wc-text-secondary" x-text="recommendation"></p>
                     </div>
                 </div>

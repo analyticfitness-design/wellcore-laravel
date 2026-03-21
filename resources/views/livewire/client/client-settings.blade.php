@@ -60,12 +60,12 @@
         <svg class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
         </svg>
-        <span class="text-sm font-medium text-green-400">Contrasena actualizada correctamente</span>
+        <span class="text-sm font-medium text-green-400">Contraseña actualizada correctamente</span>
     </div>
 
     {{-- Header --}}
     <div class="mb-8">
-        <h1 class="font-display text-3xl tracking-wide text-wc-text">CONFIGURACION</h1>
+        <h1 class="font-display text-3xl tracking-wide text-wc-text">CONFIGURACIÓN</h1>
         <p class="mt-1 text-sm text-wc-text-secondary">Gestiona tu cuenta, preferencias y seguridad</p>
     </div>
 
@@ -132,7 +132,7 @@
                 </div>
                 <div>
                     <h2 class="font-display text-lg tracking-wide text-wc-text">DATOS DE PERFIL</h2>
-                    <p class="text-xs text-wc-text-tertiary">Actualiza tu informacion personal</p>
+                    <p class="text-xs text-wc-text-tertiary">Actualiza tu información personal</p>
                 </div>
             </div>
 
@@ -152,7 +152,7 @@
 
                 {{-- Email --}}
                 <div>
-                    <label for="settings-email" class="block text-xs font-medium text-wc-text-tertiary mb-1">Correo electronico</label>
+                    <label for="settings-email" class="block text-xs font-medium text-wc-text-tertiary mb-1">Correo electrónico</label>
                     <input
                         wire:model="email"
                         type="email"
@@ -306,7 +306,7 @@
                         </svg>
                     </div>
                     <div>
-                        <h2 class="font-display text-lg tracking-wide text-wc-text">PREFERENCIAS DE NOTIFICACION</h2>
+                        <h2 class="font-display text-lg tracking-wide text-wc-text">PREFERENCIAS DE NOTIFICACIÓN</h2>
                         <p class="text-xs text-wc-text-tertiary">Elige que notificaciones deseas recibir</p>
                     </div>
                 </div>
