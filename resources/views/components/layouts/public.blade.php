@@ -24,12 +24,10 @@
     {{-- Navigation --}}
     <nav x-data="{ mobileMenu: false }" x-on:click.outside="mobileMenu = false" class="sticky top-0 z-50 border-b border-wc-border bg-wc-bg/80 backdrop-blur-xl">
         <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            {{-- Logo --}}
-            <a href="{{ route('home') }}" class="flex shrink-0 items-center gap-2.5">
-                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-wc-accent">
-                    <span class="font-display text-base leading-none text-white">W</span>
-                </div>
-                <span class="font-display text-xl tracking-wider text-wc-text">WELLCORE</span>
+            {{-- Logo (switches between dark/light versions) --}}
+            <a href="{{ route('home') }}" class="flex shrink-0 items-center">
+                <img src="/images/logo-dark.png" alt="WellCore Fitness" class="h-10 dark:hidden">
+                <img src="/images/logo-light.png" alt="WellCore Fitness" class="hidden h-10 dark:block">
             </a>
 
             {{-- Desktop Nav Links (8 links — need lg breakpoint) --}}
@@ -130,11 +128,9 @@
             <div class="grid grid-cols-1 gap-8 md:grid-cols-4">
                 {{-- Brand --}}
                 <div class="md:col-span-1">
-                    <div class="flex items-center gap-3">
-                        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-wc-accent">
-                            <span class="font-display text-lg leading-none text-white">W</span>
-                        </div>
-                        <span class="font-display text-xl tracking-wider text-wc-text">WELLCORE</span>
+                    <div>
+                        <img src="/images/logo-dark.png" alt="WellCore Fitness" class="h-9 dark:hidden">
+                        <img src="/images/logo-light.png" alt="WellCore Fitness" class="hidden h-9 dark:block">
                     </div>
                     <p class="mt-4 text-sm text-wc-text-tertiary">Coaching fitness basado en ciencia, no en tendencias.</p>
                 </div>
