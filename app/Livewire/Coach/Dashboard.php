@@ -6,8 +6,10 @@ use App\Models\AssignedPlan;
 use App\Models\Checkin;
 use App\Models\Client;
 use App\Models\CoachMessage;
+use App\Models\TrainingLog;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -28,6 +30,10 @@ class Dashboard extends Component
 
     // Recent messages
     public array $recentMessages = [];
+
+    // Chart data
+    public array $clientProgressData = [];
+    public array $checkinFrequencyData = [];
 
     public function mount(): void
     {
@@ -76,6 +82,7 @@ class Dashboard extends Component
 
         $this->loadAttentionClients($clientIds);
         $this->loadRecentMessages($coachId);
+        $this->loadChartData($clientIds);
     }
 
     protected function loadAttentionClients($clientIds): void
@@ -127,6 +134,42 @@ class Dashboard extends Component
                 'is_read' => $msg->read_at !== null,
             ];
         }
+    }
+
+    protected function loadChartData($clientIds): void
+    {
+        // Client progress: training sessions per client (last 4 weeks)
+        $this->clientProgressData = TrainingLog::whereIn('client_id', $clientIds)
+            ->where('completed', true)
+            ->where('log_date', '>=', now()->subWeeks(4)->toDateString())
+            ->join('clients', 'training_logs.client_id', '=', 'clients.id')
+            ->selectRaw('clients.name, COUNT(*) as sessions')
+            ->groupBy('clients.name', 'training_logs.client_id')
+            ->orderByDesc('sessions')
+            ->limit(10)
+            ->get()
+            ->map(fn ($row) => [
+                'name' => explode(' ', $row->name)[0],
+                'sessions' => (int) $row->sessions,
+            ])
+            ->toArray();
+
+        // Check-in frequency: check-ins per week (last 8 weeks)
+        $this->checkinFrequencyData = Checkin::whereIn('client_id', $clientIds)
+            ->where('checkin_date', '>=', now()->subWeeks(8)->toDateString())
+            ->selectRaw("YEARWEEK(checkin_date, 1) as yw, COUNT(*) as count")
+            ->groupBy('yw')
+            ->orderBy('yw')
+            ->get()
+            ->map(function ($row) {
+                $year = substr($row->yw, 0, 4);
+                $week = substr($row->yw, 4);
+                return [
+                    'week' => 'Sem ' . $week,
+                    'count' => (int) $row->count,
+                ];
+            })
+            ->toArray();
     }
 
     public function render()

@@ -421,10 +421,25 @@
                     </div>
                 @endif
 
-                {{-- JSON Content --}}
-                <div class="rounded-lg border border-wc-border bg-wc-bg-tertiary p-4">
-                    <h4 class="mb-2 text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Contenido JSON</h4>
-                    <pre class="max-h-96 overflow-auto rounded-lg bg-wc-bg p-4 font-mono text-xs text-wc-text leading-relaxed">{{ is_array($viewingPlan->content_json) ? json_encode($viewingPlan->content_json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : $viewingPlan->content_json }}</pre>
+                {{-- Plan Content (with drag-and-drop reordering) --}}
+                <div class="rounded-lg border border-wc-border bg-wc-bg-tertiary p-4"
+                     x-data="{ showJson: false }">
+                    <div class="mb-2 flex items-center justify-between">
+                        <h4 class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Contenido del Plan</h4>
+                        <button @click="showJson = !showJson"
+                                class="text-xs text-wc-text-tertiary hover:text-wc-text transition-colors"
+                                x-text="showJson ? 'Vista interactiva' : 'Ver JSON'"></button>
+                    </div>
+                    <div x-show="!showJson">
+                        @if ($viewingContent)
+                            @include('livewire.coach._plan-preview', ['plan' => $viewingContent, 'reorderable' => true, 'wirePrefix' => ''])
+                        @else
+                            <p class="text-sm text-wc-text-tertiary">Sin contenido estructurado</p>
+                        @endif
+                    </div>
+                    <div x-show="showJson" x-cloak>
+                        <pre class="max-h-96 overflow-auto rounded-lg bg-wc-bg p-4 font-mono text-xs text-wc-text leading-relaxed">{{ is_array($viewingPlan->content_json) ? json_encode($viewingPlan->content_json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : $viewingPlan->content_json }}</pre>
+                    </div>
                 </div>
             </div>
         </div>

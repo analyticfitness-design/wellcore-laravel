@@ -1,5 +1,20 @@
 {{-- Shared plan content preview partial --}}
-@php $plan = $plan ?? []; @endphp
+{{-- Supports drag-and-drop reordering when $reorderable is true --}}
+@php
+    $plan = $plan ?? [];
+    $reorderable = $reorderable ?? false;
+    // Wire method prefixes differ by context:
+    //   '' => reorderExercise, moveExercise, etc. (generated plan / admin view)
+    //   'preview' => reorderPreviewExercise, movePreviewExercise, etc. (coach preview modal)
+    $wirePrefix = $wirePrefix ?? '';
+    // Build actual method names
+    $fnReorderEx = $wirePrefix ? 'reorder' . ucfirst($wirePrefix) . 'Exercise' : 'reorderExercise';
+    $fnMoveEx = $wirePrefix ? 'move' . ucfirst($wirePrefix) . 'Exercise' : 'moveExercise';
+    $fnReorderFood = $wirePrefix ? 'reorder' . ucfirst($wirePrefix) . 'Food' : 'reorderFood';
+    $fnMoveFood = $wirePrefix ? 'move' . ucfirst($wirePrefix) . 'Food' : 'moveFood';
+    $fnReorderHabit = $wirePrefix ? 'reorder' . ucfirst($wirePrefix) . 'Habit' : 'reorderHabit';
+    $fnMoveHabit = $wirePrefix ? 'move' . ucfirst($wirePrefix) . 'Habit' : 'moveHabit';
+@endphp
 
 <div class="space-y-4 text-sm">
     {{-- Plan type header --}}
@@ -25,6 +40,14 @@
             @if (isset($plan['frequency']))
                 <span class="text-xs text-wc-text-tertiary">{{ $plan['frequency'] }} dias/sem</span>
             @endif
+            @if ($reorderable)
+                <span class="ml-auto inline-flex items-center gap-1 rounded-full bg-wc-accent/10 px-2 py-0.5 text-[10px] font-medium text-wc-accent">
+                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                    Arrastra para reordenar
+                </span>
+            @endif
         </div>
     @endif
 
@@ -37,7 +60,7 @@
             </div>
         @endif
 
-        @foreach ($plan['weeks'] as $week)
+        @foreach ($plan['weeks'] as $weekIdx => $week)
             <div class="rounded-lg border border-wc-border p-3">
                 <h4 class="font-medium text-wc-text">Semana {{ $week['week'] ?? '?' }}</h4>
                 @if (isset($week['focus']))
@@ -46,7 +69,7 @@
 
                 @if (!empty($week['sessions']))
                     <div class="mt-2 space-y-2">
-                        @foreach ($week['sessions'] as $session)
+                        @foreach ($week['sessions'] as $sessionIdx => $session)
                             <div class="rounded bg-wc-bg-secondary/50 p-2">
                                 <p class="font-medium text-wc-text text-xs">
                                     Dia {{ $session['day'] ?? '?' }} — {{ $session['name'] ?? 'Sesion' }}
@@ -55,16 +78,113 @@
                                     <p class="text-xs text-wc-text-tertiary">{{ implode(', ', $session['muscle_groups']) }}</p>
                                 @endif
                                 @if (!empty($session['exercises']))
-                                    <div class="mt-1 space-y-0.5">
-                                        @foreach ($session['exercises'] as $ex)
-                                            <p class="text-xs text-wc-text-secondary">
-                                                <span class="text-wc-text">{{ $ex['name'] ?? '?' }}</span>
-                                                — {{ $ex['sets'] ?? '?' }}x{{ $ex['reps'] ?? '?' }}
-                                                @if (isset($ex['rest'])) ({{ $ex['rest'] }}) @endif
-                                                @if (isset($ex['rpe'])) RPE {{ $ex['rpe'] }} @endif
-                                            </p>
-                                        @endforeach
-                                    </div>
+                                    @if ($reorderable)
+                                        {{-- Drag-and-drop exercise list --}}
+                                        <div class="mt-1.5 space-y-0.5"
+                                             x-data="{
+                                                 dragging: null,
+                                                 dragOver: null,
+                                                 handleDragStart(e, index) {
+                                                     this.dragging = index;
+                                                     e.dataTransfer.effectAllowed = 'move';
+                                                     e.dataTransfer.setData('text/plain', index);
+                                                     e.target.closest('[data-exercise-item]').classList.add('opacity-50');
+                                                 },
+                                                 handleDragOver(e, index) {
+                                                     e.preventDefault();
+                                                     e.dataTransfer.dropEffect = 'move';
+                                                     this.dragOver = index;
+                                                 },
+                                                 handleDrop(e, index) {
+                                                     e.preventDefault();
+                                                     if (this.dragging !== null && this.dragging !== index) {
+                                                         $wire.{{ $fnReorderEx }}({{ $weekIdx }}, {{ $sessionIdx }}, this.dragging, index);
+                                                     }
+                                                     this.dragging = null;
+                                                     this.dragOver = null;
+                                                 },
+                                                 handleDragEnd(e) {
+                                                     e.target.closest('[data-exercise-item]').classList.remove('opacity-50');
+                                                     this.dragging = null;
+                                                     this.dragOver = null;
+                                                 }
+                                             }">
+                                            @foreach ($session['exercises'] as $exIdx => $ex)
+                                                <div data-exercise-item
+                                                     class="group flex items-center gap-1.5 rounded-md px-1.5 py-1 transition-all duration-150"
+                                                     :class="{
+                                                         'border-t-2 border-wc-accent': dragOver === {{ $exIdx }} && dragging !== null && dragging !== {{ $exIdx }} && dragging > {{ $exIdx }},
+                                                         'border-b-2 border-wc-accent': dragOver === {{ $exIdx }} && dragging !== null && dragging !== {{ $exIdx }} && dragging < {{ $exIdx }},
+                                                         'bg-wc-bg-tertiary/50': dragOver === {{ $exIdx }} && dragging !== null && dragging !== {{ $exIdx }},
+                                                     }"
+                                                     @dragover="handleDragOver($event, {{ $exIdx }})"
+                                                     @drop="handleDrop($event, {{ $exIdx }})"
+                                                     @dragleave="if (dragOver === {{ $exIdx }}) dragOver = null">
+
+                                                    {{-- Drag handle (desktop) --}}
+                                                    <div class="hidden md:flex shrink-0 cursor-grab active:cursor-grabbing text-wc-text-tertiary hover:text-wc-text-secondary opacity-0 group-hover:opacity-100 transition-opacity"
+                                                         draggable="true"
+                                                         @dragstart="handleDragStart($event, {{ $exIdx }})"
+                                                         @dragend="handleDragEnd($event)"
+                                                         role="img"
+                                                         aria-label="Arrastrar para reordenar {{ $ex['name'] ?? 'ejercicio' }}">
+                                                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path d="M7 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+                                                        </svg>
+                                                    </div>
+
+                                                    {{-- Mobile up/down arrows --}}
+                                                    <div class="flex flex-col gap-0.5 md:hidden shrink-0">
+                                                        <button wire:click="{{ $fnMoveEx }}({{ $weekIdx }}, {{ $sessionIdx }}, {{ $exIdx }}, 'up')"
+                                                                class="text-wc-text-tertiary hover:text-wc-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                                                @if($exIdx === 0) disabled @endif
+                                                                aria-label="Mover arriba {{ $ex['name'] ?? 'ejercicio' }}"
+                                                                title="Mover arriba">
+                                                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                                            </svg>
+                                                        </button>
+                                                        <button wire:click="{{ $fnMoveEx }}({{ $weekIdx }}, {{ $sessionIdx }}, {{ $exIdx }}, 'down')"
+                                                                class="text-wc-text-tertiary hover:text-wc-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                                                @if($exIdx === count($session['exercises']) - 1) disabled @endif
+                                                                aria-label="Mover abajo {{ $ex['name'] ?? 'ejercicio' }}"
+                                                                title="Mover abajo">
+                                                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+
+                                                    {{-- Exercise info --}}
+                                                    <div class="flex-1 min-w-0">
+                                                        <p class="text-xs text-wc-text-secondary">
+                                                            <span class="font-medium text-wc-text">{{ $ex['name'] ?? '?' }}</span>
+                                                            — {{ $ex['sets'] ?? '?' }}x{{ $ex['reps'] ?? '?' }}
+                                                            @if (isset($ex['rest'])) ({{ $ex['rest'] }}) @endif
+                                                            @if (isset($ex['rpe'])) RPE {{ $ex['rpe'] }} @endif
+                                                        </p>
+                                                    </div>
+
+                                                    {{-- Position badge --}}
+                                                    <span class="shrink-0 rounded bg-wc-bg-tertiary px-1.5 py-0.5 text-[10px] font-data text-wc-text-tertiary">
+                                                        {{ $exIdx + 1 }}
+                                                    </span>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        {{-- Read-only exercise list --}}
+                                        <div class="mt-1 space-y-0.5">
+                                            @foreach ($session['exercises'] as $ex)
+                                                <p class="text-xs text-wc-text-secondary">
+                                                    <span class="text-wc-text">{{ $ex['name'] ?? '?' }}</span>
+                                                    — {{ $ex['sets'] ?? '?' }}x{{ $ex['reps'] ?? '?' }}
+                                                    @if (isset($ex['rest'])) ({{ $ex['rest'] }}) @endif
+                                                    @if (isset($ex['rpe'])) RPE {{ $ex['rpe'] }} @endif
+                                                </p>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 @endif
                             </div>
                         @endforeach
@@ -104,7 +224,7 @@
         @endif
 
         @if (!empty($plan['meal_plan']))
-            @foreach ($plan['meal_plan'] as $meal)
+            @foreach ($plan['meal_plan'] as $mealIdx => $meal)
                 <div class="rounded-lg border border-wc-border p-3">
                     <div class="flex items-center justify-between">
                         <h4 class="font-medium text-wc-text text-xs">{{ $meal['name'] ?? 'Comida' }}</h4>
@@ -114,14 +234,108 @@
                         </div>
                     </div>
                     @if (!empty($meal['foods']))
-                        <div class="mt-1 space-y-0.5">
-                            @foreach ($meal['foods'] as $food)
-                                <p class="text-xs text-wc-text-secondary">
-                                    {{ $food['name'] ?? '?' }} — {{ $food['quantity'] ?? '?' }}
-                                    <span class="text-wc-text-tertiary">(P:{{ $food['protein'] ?? 0 }} C:{{ $food['carbs'] ?? 0 }} G:{{ $food['fat'] ?? 0 }})</span>
-                                </p>
-                            @endforeach
-                        </div>
+                        @if ($reorderable)
+                            {{-- Drag-and-drop food list --}}
+                            <div class="mt-1.5 space-y-0.5"
+                                 x-data="{
+                                     dragging: null,
+                                     dragOver: null,
+                                     handleDragStart(e, index) {
+                                         this.dragging = index;
+                                         e.dataTransfer.effectAllowed = 'move';
+                                         e.dataTransfer.setData('text/plain', index);
+                                         e.target.closest('[data-food-item]').classList.add('opacity-50');
+                                     },
+                                     handleDragOver(e, index) {
+                                         e.preventDefault();
+                                         e.dataTransfer.dropEffect = 'move';
+                                         this.dragOver = index;
+                                     },
+                                     handleDrop(e, index) {
+                                         e.preventDefault();
+                                         if (this.dragging !== null && this.dragging !== index) {
+                                             $wire.{{ $fnReorderFood }}({{ $mealIdx }}, this.dragging, index);
+                                         }
+                                         this.dragging = null;
+                                         this.dragOver = null;
+                                     },
+                                     handleDragEnd(e) {
+                                         e.target.closest('[data-food-item]').classList.remove('opacity-50');
+                                         this.dragging = null;
+                                         this.dragOver = null;
+                                     }
+                                 }">
+                                @foreach ($meal['foods'] as $foodIdx => $food)
+                                    <div data-food-item
+                                         class="group flex items-center gap-1.5 rounded-md px-1.5 py-1 transition-all duration-150"
+                                         :class="{
+                                             'border-t-2 border-wc-accent': dragOver === {{ $foodIdx }} && dragging !== null && dragging !== {{ $foodIdx }} && dragging > {{ $foodIdx }},
+                                             'border-b-2 border-wc-accent': dragOver === {{ $foodIdx }} && dragging !== null && dragging !== {{ $foodIdx }} && dragging < {{ $foodIdx }},
+                                             'bg-wc-bg-tertiary/50': dragOver === {{ $foodIdx }} && dragging !== null && dragging !== {{ $foodIdx }},
+                                         }"
+                                         @dragover="handleDragOver($event, {{ $foodIdx }})"
+                                         @drop="handleDrop($event, {{ $foodIdx }})"
+                                         @dragleave="if (dragOver === {{ $foodIdx }}) dragOver = null">
+
+                                        {{-- Drag handle (desktop) --}}
+                                        <div class="hidden md:flex shrink-0 cursor-grab active:cursor-grabbing text-wc-text-tertiary hover:text-wc-text-secondary opacity-0 group-hover:opacity-100 transition-opacity"
+                                             draggable="true"
+                                             @dragstart="handleDragStart($event, {{ $foodIdx }})"
+                                             @dragend="handleDragEnd($event)"
+                                             role="img"
+                                             aria-label="Arrastrar para reordenar {{ $food['name'] ?? 'alimento' }}">
+                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M7 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+                                            </svg>
+                                        </div>
+
+                                        {{-- Mobile up/down arrows --}}
+                                        <div class="flex flex-col gap-0.5 md:hidden shrink-0">
+                                            <button wire:click="{{ $fnMoveFood }}({{ $mealIdx }}, {{ $foodIdx }}, 'up')"
+                                                    class="text-wc-text-tertiary hover:text-wc-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                                    @if($foodIdx === 0) disabled @endif
+                                                    aria-label="Mover arriba {{ $food['name'] ?? 'alimento' }}"
+                                                    title="Mover arriba">
+                                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                                </svg>
+                                            </button>
+                                            <button wire:click="{{ $fnMoveFood }}({{ $mealIdx }}, {{ $foodIdx }}, 'down')"
+                                                    class="text-wc-text-tertiary hover:text-wc-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                                    @if($foodIdx === count($meal['foods']) - 1) disabled @endif
+                                                    aria-label="Mover abajo {{ $food['name'] ?? 'alimento' }}"
+                                                    title="Mover abajo">
+                                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        {{-- Food info --}}
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs text-wc-text-secondary">
+                                                {{ $food['name'] ?? '?' }} — {{ $food['quantity'] ?? '?' }}
+                                                <span class="text-wc-text-tertiary">(P:{{ $food['protein'] ?? 0 }} C:{{ $food['carbs'] ?? 0 }} G:{{ $food['fat'] ?? 0 }})</span>
+                                            </p>
+                                        </div>
+
+                                        {{-- Position badge --}}
+                                        <span class="shrink-0 rounded bg-wc-bg-tertiary px-1.5 py-0.5 text-[10px] font-data text-wc-text-tertiary">
+                                            {{ $foodIdx + 1 }}
+                                        </span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="mt-1 space-y-0.5">
+                                @foreach ($meal['foods'] as $food)
+                                    <p class="text-xs text-wc-text-secondary">
+                                        {{ $food['name'] ?? '?' }} — {{ $food['quantity'] ?? '?' }}
+                                        <span class="text-wc-text-tertiary">(P:{{ $food['protein'] ?? 0 }} C:{{ $food['carbs'] ?? 0 }} G:{{ $food['fat'] ?? 0 }})</span>
+                                    </p>
+                                @endforeach
+                            </div>
+                        @endif
                     @endif
                 </div>
             @endforeach
@@ -145,26 +359,134 @@
         @endif
 
         @if (!empty($plan['habits']))
-            @foreach ($plan['habits'] as $habit)
-                <div class="rounded-lg border border-wc-border p-3">
-                    <div class="flex items-start justify-between">
-                        <div>
-                            <h4 class="font-medium text-wc-text text-xs">{{ $habit['habit'] ?? '?' }}</h4>
-                            <p class="text-xs text-wc-text-tertiary">{{ $habit['area'] ?? '' }} — {{ $habit['frequency'] ?? '' }}</p>
+            @if ($reorderable)
+                {{-- Drag-and-drop habits list --}}
+                <div class="space-y-2"
+                     x-data="{
+                         dragging: null,
+                         dragOver: null,
+                         handleDragStart(e, index) {
+                             this.dragging = index;
+                             e.dataTransfer.effectAllowed = 'move';
+                             e.dataTransfer.setData('text/plain', index);
+                             e.target.closest('[data-habit-item]').classList.add('opacity-50');
+                         },
+                         handleDragOver(e, index) {
+                             e.preventDefault();
+                             e.dataTransfer.dropEffect = 'move';
+                             this.dragOver = index;
+                         },
+                         handleDrop(e, index) {
+                             e.preventDefault();
+                             if (this.dragging !== null && this.dragging !== index) {
+                                 $wire.{{ $fnReorderHabit }}(this.dragging, index);
+                             }
+                             this.dragging = null;
+                             this.dragOver = null;
+                         },
+                         handleDragEnd(e) {
+                             e.target.closest('[data-habit-item]').classList.remove('opacity-50');
+                             this.dragging = null;
+                             this.dragOver = null;
+                         }
+                     }">
+                    @foreach ($plan['habits'] as $habitIdx => $habit)
+                        <div data-habit-item
+                             class="group rounded-lg border border-wc-border p-3 transition-all duration-150"
+                             :class="{
+                                 'border-t-2 border-wc-accent': dragOver === {{ $habitIdx }} && dragging !== null && dragging !== {{ $habitIdx }} && dragging > {{ $habitIdx }},
+                                 'border-b-2 border-wc-accent': dragOver === {{ $habitIdx }} && dragging !== null && dragging !== {{ $habitIdx }} && dragging < {{ $habitIdx }},
+                                 'bg-wc-bg-tertiary/50': dragOver === {{ $habitIdx }} && dragging !== null && dragging !== {{ $habitIdx }},
+                             }"
+                             @dragover="handleDragOver($event, {{ $habitIdx }})"
+                             @drop="handleDrop($event, {{ $habitIdx }})"
+                             @dragleave="if (dragOver === {{ $habitIdx }}) dragOver = null">
+
+                            <div class="flex items-start gap-2">
+                                {{-- Drag handle (desktop) --}}
+                                <div class="hidden md:flex mt-0.5 shrink-0 cursor-grab active:cursor-grabbing text-wc-text-tertiary hover:text-wc-text-secondary opacity-0 group-hover:opacity-100 transition-opacity"
+                                     draggable="true"
+                                     @dragstart="handleDragStart($event, {{ $habitIdx }})"
+                                     @dragend="handleDragEnd($event)"
+                                     role="img"
+                                     aria-label="Arrastrar para reordenar {{ $habit['habit'] ?? 'habito' }}">
+                                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M7 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+                                    </svg>
+                                </div>
+
+                                {{-- Mobile up/down arrows --}}
+                                <div class="flex flex-col gap-0.5 md:hidden shrink-0 mt-0.5">
+                                    <button wire:click="{{ $fnMoveHabit }}({{ $habitIdx }}, 'up')"
+                                            class="text-wc-text-tertiary hover:text-wc-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                            @if($habitIdx === 0) disabled @endif
+                                            aria-label="Mover arriba {{ $habit['habit'] ?? 'habito' }}"
+                                            title="Mover arriba">
+                                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                    <button wire:click="{{ $fnMoveHabit }}({{ $habitIdx }}, 'down')"
+                                            class="text-wc-text-tertiary hover:text-wc-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                            @if($habitIdx === count($plan['habits']) - 1) disabled @endif
+                                            aria-label="Mover abajo {{ $habit['habit'] ?? 'habito' }}"
+                                            title="Mover abajo">
+                                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                {{-- Habit content --}}
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-start justify-between">
+                                        <div>
+                                            <h4 class="font-medium text-wc-text text-xs">{{ $habit['habit'] ?? '?' }}</h4>
+                                            <p class="text-xs text-wc-text-tertiary">{{ $habit['area'] ?? '' }} — {{ $habit['frequency'] ?? '' }}</p>
+                                        </div>
+                                        <div class="flex items-center gap-1.5 shrink-0">
+                                            @if (isset($habit['target']))
+                                                <span class="rounded bg-wc-bg-secondary px-2 py-0.5 text-xs text-wc-text-secondary">{{ $habit['target'] }}</span>
+                                            @endif
+                                            <span class="rounded bg-wc-bg-tertiary px-1.5 py-0.5 text-[10px] font-data text-wc-text-tertiary">
+                                                {{ $habitIdx + 1 }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @if (!empty($habit['weeks_progression']))
+                                        <div class="mt-2 flex flex-wrap gap-1">
+                                            @foreach ($habit['weeks_progression'] as $wp)
+                                                <span class="rounded bg-wc-bg-secondary px-1.5 py-0.5 text-xs text-wc-text-tertiary">S{{ $wp['week'] ?? '?' }}: {{ $wp['goal'] ?? '' }}</span>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
-                        @if (isset($habit['target']))
-                            <span class="shrink-0 rounded bg-wc-bg-secondary px-2 py-0.5 text-xs text-wc-text-secondary">{{ $habit['target'] }}</span>
+                    @endforeach
+                </div>
+            @else
+                @foreach ($plan['habits'] as $habit)
+                    <div class="rounded-lg border border-wc-border p-3">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <h4 class="font-medium text-wc-text text-xs">{{ $habit['habit'] ?? '?' }}</h4>
+                                <p class="text-xs text-wc-text-tertiary">{{ $habit['area'] ?? '' }} — {{ $habit['frequency'] ?? '' }}</p>
+                            </div>
+                            @if (isset($habit['target']))
+                                <span class="shrink-0 rounded bg-wc-bg-secondary px-2 py-0.5 text-xs text-wc-text-secondary">{{ $habit['target'] }}</span>
+                            @endif
+                        </div>
+                        @if (!empty($habit['weeks_progression']))
+                            <div class="mt-2 flex flex-wrap gap-1">
+                                @foreach ($habit['weeks_progression'] as $wp)
+                                    <span class="rounded bg-wc-bg-secondary px-1.5 py-0.5 text-xs text-wc-text-tertiary">S{{ $wp['week'] ?? '?' }}: {{ $wp['goal'] ?? '' }}</span>
+                                @endforeach
+                            </div>
                         @endif
                     </div>
-                    @if (!empty($habit['weeks_progression']))
-                        <div class="mt-2 flex flex-wrap gap-1">
-                            @foreach ($habit['weeks_progression'] as $wp)
-                                <span class="rounded bg-wc-bg-secondary px-1.5 py-0.5 text-xs text-wc-text-tertiary">S{{ $wp['week'] ?? '?' }}: {{ $wp['goal'] ?? '' }}</span>
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
-            @endforeach
+                @endforeach
+            @endif
         @endif
 
         @if (!empty($plan['daily_routine']))

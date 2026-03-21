@@ -639,7 +639,7 @@
                                           class="w-full rounded border-0 bg-transparent font-mono text-xs text-wc-text focus:outline-none resize-y"></textarea>
                             @else
                                 @if ($generatedPlan)
-                                    @include('livewire.coach._plan-preview', ['plan' => $generatedPlan])
+                                    @include('livewire.coach._plan-preview', ['plan' => $generatedPlan, 'reorderable' => true, 'wirePrefix' => ''])
                                 @endif
                             @endif
                         </div>
@@ -789,7 +789,7 @@
                 </div>
                 <div class="rounded-lg bg-wc-bg-tertiary p-4 max-h-[70vh] overflow-y-auto">
                     @if ($previewContent)
-                        @include('livewire.coach._plan-preview', ['plan' => $previewContent])
+                        @include('livewire.coach._plan-preview', ['plan' => $previewContent, 'reorderable' => true, 'wirePrefix' => 'preview'])
                     @else
                         <p class="text-sm text-wc-text-tertiary">Sin contenido</p>
                     @endif
@@ -812,7 +812,7 @@
                 </div>
                 <div class="rounded-lg bg-wc-bg-tertiary p-4 max-h-[70vh] overflow-y-auto">
                     @if ($assignedContentPreview)
-                        @include('livewire.coach._plan-preview', ['plan' => $assignedContentPreview])
+                        @include('livewire.coach._plan-preview', ['plan' => $assignedContentPreview, 'reorderable' => false, 'wirePrefix' => ''])
                     @else
                         <p class="text-sm text-wc-text-tertiary">Sin contenido</p>
                     @endif

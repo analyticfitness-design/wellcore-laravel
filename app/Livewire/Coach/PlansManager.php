@@ -475,6 +475,180 @@ class PlansManager extends Component
         $this->showRawJson = !$this->showRawJson;
     }
 
+    // ── Exercise reorder (drag-and-drop) in generated plan ──
+
+    public function reorderExercise(int $weekIdx, int $sessionIdx, int $fromIndex, int $toIndex): void
+    {
+        if (!$this->generatedPlan || !isset($this->generatedPlan['weeks'][$weekIdx]['sessions'][$sessionIdx]['exercises'])) {
+            return;
+        }
+
+        $exercises = $this->generatedPlan['weeks'][$weekIdx]['sessions'][$sessionIdx]['exercises'];
+        if ($fromIndex < 0 || $fromIndex >= count($exercises) || $toIndex < 0 || $toIndex >= count($exercises)) {
+            return;
+        }
+
+        $item = array_splice($exercises, $fromIndex, 1);
+        array_splice($exercises, $toIndex, 0, $item);
+
+        $this->generatedPlan['weeks'][$weekIdx]['sessions'][$sessionIdx]['exercises'] = array_values($exercises);
+        $this->generatedPlanJson = json_encode($this->generatedPlan, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    }
+
+    public function moveExercise(int $weekIdx, int $sessionIdx, int $exerciseIdx, string $direction): void
+    {
+        $newIdx = $direction === 'up' ? $exerciseIdx - 1 : $exerciseIdx + 1;
+        $this->reorderExercise($weekIdx, $sessionIdx, $exerciseIdx, $newIdx);
+    }
+
+    public function reorderFood(int $mealIdx, int $fromIndex, int $toIndex): void
+    {
+        if (!$this->generatedPlan || !isset($this->generatedPlan['meal_plan'][$mealIdx]['foods'])) {
+            return;
+        }
+
+        $foods = $this->generatedPlan['meal_plan'][$mealIdx]['foods'];
+        if ($fromIndex < 0 || $fromIndex >= count($foods) || $toIndex < 0 || $toIndex >= count($foods)) {
+            return;
+        }
+
+        $item = array_splice($foods, $fromIndex, 1);
+        array_splice($foods, $toIndex, 0, $item);
+
+        $this->generatedPlan['meal_plan'][$mealIdx]['foods'] = array_values($foods);
+        $this->generatedPlanJson = json_encode($this->generatedPlan, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    }
+
+    public function moveFood(int $mealIdx, int $foodIdx, string $direction): void
+    {
+        $newIdx = $direction === 'up' ? $foodIdx - 1 : $foodIdx + 1;
+        $this->reorderFood($mealIdx, $foodIdx, $newIdx);
+    }
+
+    public function reorderHabit(int $fromIndex, int $toIndex): void
+    {
+        if (!$this->generatedPlan || !isset($this->generatedPlan['habits'])) {
+            return;
+        }
+
+        $habits = $this->generatedPlan['habits'];
+        if ($fromIndex < 0 || $fromIndex >= count($habits) || $toIndex < 0 || $toIndex >= count($habits)) {
+            return;
+        }
+
+        $item = array_splice($habits, $fromIndex, 1);
+        array_splice($habits, $toIndex, 0, $item);
+
+        $this->generatedPlan['habits'] = array_values($habits);
+        $this->generatedPlanJson = json_encode($this->generatedPlan, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    }
+
+    public function moveHabit(int $habitIdx, string $direction): void
+    {
+        $newIdx = $direction === 'up' ? $habitIdx - 1 : $habitIdx + 1;
+        $this->reorderHabit($habitIdx, $newIdx);
+    }
+
+    // ── Exercise reorder in preview content (template/assigned previews) ──
+
+    public function reorderPreviewExercise(int $weekIdx, int $sessionIdx, int $fromIndex, int $toIndex): void
+    {
+        if (!$this->previewContent || !isset($this->previewContent['weeks'][$weekIdx]['sessions'][$sessionIdx]['exercises'])) {
+            return;
+        }
+
+        $exercises = $this->previewContent['weeks'][$weekIdx]['sessions'][$sessionIdx]['exercises'];
+        if ($fromIndex < 0 || $fromIndex >= count($exercises) || $toIndex < 0 || $toIndex >= count($exercises)) {
+            return;
+        }
+
+        $item = array_splice($exercises, $fromIndex, 1);
+        array_splice($exercises, $toIndex, 0, $item);
+
+        $this->previewContent['weeks'][$weekIdx]['sessions'][$sessionIdx]['exercises'] = array_values($exercises);
+
+        // Persist back to the template
+        if ($this->showPreviewModal && $this->previewContent) {
+            $this->persistPreviewContent();
+        }
+    }
+
+    public function movePreviewExercise(int $weekIdx, int $sessionIdx, int $exerciseIdx, string $direction): void
+    {
+        $newIdx = $direction === 'up' ? $exerciseIdx - 1 : $exerciseIdx + 1;
+        $this->reorderPreviewExercise($weekIdx, $sessionIdx, $exerciseIdx, $newIdx);
+    }
+
+    public function reorderPreviewFood(int $mealIdx, int $fromIndex, int $toIndex): void
+    {
+        if (!$this->previewContent || !isset($this->previewContent['meal_plan'][$mealIdx]['foods'])) {
+            return;
+        }
+
+        $foods = $this->previewContent['meal_plan'][$mealIdx]['foods'];
+        if ($fromIndex < 0 || $fromIndex >= count($foods) || $toIndex < 0 || $toIndex >= count($foods)) {
+            return;
+        }
+
+        $item = array_splice($foods, $fromIndex, 1);
+        array_splice($foods, $toIndex, 0, $item);
+
+        $this->previewContent['meal_plan'][$mealIdx]['foods'] = array_values($foods);
+
+        if ($this->showPreviewModal && $this->previewContent) {
+            $this->persistPreviewContent();
+        }
+    }
+
+    public function movePreviewFood(int $mealIdx, int $foodIdx, string $direction): void
+    {
+        $newIdx = $direction === 'up' ? $foodIdx - 1 : $foodIdx + 1;
+        $this->reorderPreviewFood($mealIdx, $foodIdx, $newIdx);
+    }
+
+    public function reorderPreviewHabit(int $fromIndex, int $toIndex): void
+    {
+        if (!$this->previewContent || !isset($this->previewContent['habits'])) {
+            return;
+        }
+
+        $habits = $this->previewContent['habits'];
+        if ($fromIndex < 0 || $fromIndex >= count($habits) || $toIndex < 0 || $toIndex >= count($habits)) {
+            return;
+        }
+
+        $item = array_splice($habits, $fromIndex, 1);
+        array_splice($habits, $toIndex, 0, $item);
+
+        $this->previewContent['habits'] = array_values($habits);
+
+        if ($this->showPreviewModal && $this->previewContent) {
+            $this->persistPreviewContent();
+        }
+    }
+
+    public function movePreviewHabit(int $habitIdx, string $direction): void
+    {
+        $newIdx = $direction === 'up' ? $habitIdx - 1 : $habitIdx + 1;
+        $this->reorderPreviewHabit($habitIdx, $newIdx);
+    }
+
+    /**
+     * Save preview content changes back to the PlanTemplate.
+     */
+    protected function persistPreviewContent(): void
+    {
+        // Find which template is being previewed by matching the previewTitle
+        $coachId = auth('wellcore')->id();
+        $tpl = PlanTemplate::where('coach_id', $coachId)
+            ->where('name', $this->previewTitle)
+            ->first();
+
+        if ($tpl) {
+            $tpl->update(['content_json' => $this->previewContent]);
+        }
+    }
+
     public function updateGeneratedJson(): void
     {
         $decoded = json_decode($this->generatedPlanJson, true);

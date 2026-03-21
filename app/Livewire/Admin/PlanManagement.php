@@ -150,9 +150,15 @@ class PlanManagement extends Component
 
     // --- View ---
 
+    public ?array $viewingContent = null;
+
     public function openView(int $id): void
     {
         $this->viewingId    = $id;
+        $plan = PlanTemplate::find($id);
+        $this->viewingContent = $plan
+            ? (is_array($plan->content_json) ? $plan->content_json : json_decode($plan->content_json ?? '{}', true))
+            : null;
         $this->showViewModal = true;
     }
 
@@ -160,6 +166,88 @@ class PlanManagement extends Component
     {
         $this->showViewModal = false;
         $this->viewingId     = null;
+        $this->viewingContent = null;
+    }
+
+    // --- Exercise reorder (drag-and-drop) ---
+
+    public function reorderExercise(int $weekIdx, int $sessionIdx, int $fromIndex, int $toIndex): void
+    {
+        if (!$this->viewingContent || !isset($this->viewingContent['weeks'][$weekIdx]['sessions'][$sessionIdx]['exercises'])) {
+            return;
+        }
+
+        $exercises = $this->viewingContent['weeks'][$weekIdx]['sessions'][$sessionIdx]['exercises'];
+        if ($fromIndex < 0 || $fromIndex >= count($exercises) || $toIndex < 0 || $toIndex >= count($exercises)) {
+            return;
+        }
+
+        $item = array_splice($exercises, $fromIndex, 1);
+        array_splice($exercises, $toIndex, 0, $item);
+
+        $this->viewingContent['weeks'][$weekIdx]['sessions'][$sessionIdx]['exercises'] = array_values($exercises);
+        $this->persistViewingContent();
+    }
+
+    public function moveExercise(int $weekIdx, int $sessionIdx, int $exerciseIdx, string $direction): void
+    {
+        $newIdx = $direction === 'up' ? $exerciseIdx - 1 : $exerciseIdx + 1;
+        $this->reorderExercise($weekIdx, $sessionIdx, $exerciseIdx, $newIdx);
+    }
+
+    public function reorderFood(int $mealIdx, int $fromIndex, int $toIndex): void
+    {
+        if (!$this->viewingContent || !isset($this->viewingContent['meal_plan'][$mealIdx]['foods'])) {
+            return;
+        }
+
+        $foods = $this->viewingContent['meal_plan'][$mealIdx]['foods'];
+        if ($fromIndex < 0 || $fromIndex >= count($foods) || $toIndex < 0 || $toIndex >= count($foods)) {
+            return;
+        }
+
+        $item = array_splice($foods, $fromIndex, 1);
+        array_splice($foods, $toIndex, 0, $item);
+
+        $this->viewingContent['meal_plan'][$mealIdx]['foods'] = array_values($foods);
+        $this->persistViewingContent();
+    }
+
+    public function moveFood(int $mealIdx, int $foodIdx, string $direction): void
+    {
+        $newIdx = $direction === 'up' ? $foodIdx - 1 : $foodIdx + 1;
+        $this->reorderFood($mealIdx, $foodIdx, $newIdx);
+    }
+
+    public function reorderHabit(int $fromIndex, int $toIndex): void
+    {
+        if (!$this->viewingContent || !isset($this->viewingContent['habits'])) {
+            return;
+        }
+
+        $habits = $this->viewingContent['habits'];
+        if ($fromIndex < 0 || $fromIndex >= count($habits) || $toIndex < 0 || $toIndex >= count($habits)) {
+            return;
+        }
+
+        $item = array_splice($habits, $fromIndex, 1);
+        array_splice($habits, $toIndex, 0, $item);
+
+        $this->viewingContent['habits'] = array_values($habits);
+        $this->persistViewingContent();
+    }
+
+    public function moveHabit(int $habitIdx, string $direction): void
+    {
+        $newIdx = $direction === 'up' ? $habitIdx - 1 : $habitIdx + 1;
+        $this->reorderHabit($habitIdx, $newIdx);
+    }
+
+    protected function persistViewingContent(): void
+    {
+        if ($this->viewingId && $this->viewingContent) {
+            PlanTemplate::where('id', $this->viewingId)->update(['content_json' => json_encode($this->viewingContent)]);
+        }
     }
 
     // --- Delete ---

@@ -77,6 +77,9 @@ class Dashboard extends Component
     public array $streakCalendar = [];
     public int $calendarStreak = 0;
 
+    // Weight/Metrics Chart
+    public array $weightChartData = [];
+
     public function mount(): void
     {
         $client = auth('wellcore')->user();
@@ -104,6 +107,7 @@ class Dashboard extends Component
         $this->loadCoachInfo($client);
         $this->loadPlanProgress($client);
         $this->loadStreakCalendar($client);
+        $this->loadWeightChart($client);
 
         // ITEM 4: Daily quote
         $this->dailyQuote = $this->getDailyQuote();
@@ -458,6 +462,23 @@ class Dashboard extends Component
         }
 
         $this->calendarStreak = $streak;
+    }
+
+    // Weight/Metrics Trend Chart — last 90 days from biometric_logs
+    protected function loadWeightChart($client): void
+    {
+        $this->weightChartData = BiometricLog::where('client_id', $client->id)
+            ->whereNotNull('weight_kg')
+            ->where('weight_kg', '>', 0)
+            ->where('log_date', '>=', now()->subDays(90)->toDateString())
+            ->orderBy('log_date')
+            ->get()
+            ->map(fn ($log) => [
+                'date' => Carbon::parse($log->log_date)->format('d M'),
+                'weight' => round((float) $log->weight_kg, 1),
+                'bodyFat' => $log->body_fat_pct ? round((float) $log->body_fat_pct, 1) : null,
+            ])
+            ->toArray();
     }
 
     public function render()

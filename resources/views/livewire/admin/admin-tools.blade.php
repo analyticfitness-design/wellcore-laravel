@@ -5,6 +5,35 @@
         <p class="mt-1 text-sm text-wc-text-secondary">Revenue, logs del sistema y estado de salud</p>
     </div>
 
+    {{-- CSV Export Panel --}}
+    <div class="rounded-[--radius-card] border border-wc-border bg-wc-bg-tertiary p-5">
+        <h3 class="mb-3 text-sm font-semibold uppercase tracking-wider text-wc-text-secondary">Exportar Datos (CSV)</h3>
+        <p class="mb-4 text-xs text-wc-text-tertiary">Descarga datos en formato CSV compatible con Excel. Los archivos incluyen todos los registros.</p>
+        <div class="flex flex-wrap gap-2">
+            <a href="{{ route('admin.export.clients') }}"
+               class="btn-press inline-flex items-center gap-2 rounded-lg bg-wc-bg-secondary px-4 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-tertiary border border-wc-border transition-colors">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                Exportar Clientes
+            </a>
+            <a href="{{ route('admin.export.payments') }}"
+               class="btn-press inline-flex items-center gap-2 rounded-lg bg-wc-bg-secondary px-4 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-tertiary border border-wc-border transition-colors">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                Exportar Pagos
+            </a>
+            <a href="{{ route('admin.export.checkins') }}"
+               class="btn-press inline-flex items-center gap-2 rounded-lg bg-wc-bg-secondary px-4 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-tertiary border border-wc-border transition-colors">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                Exportar Check-ins
+            </a>
+        </div>
+    </div>
+
     {{-- Tab Navigation --}}
     <div class="flex gap-1 rounded-[--radius-card] border border-wc-border bg-wc-bg-secondary p-1">
         <button

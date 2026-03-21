@@ -87,6 +87,132 @@
         </div>
     </div>
 
+    {{-- Charts: Client Progress + Check-in Frequency --}}
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+
+        {{-- Client Progress (Horizontal Bar) --}}
+        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5"
+             x-data="{
+                 chart: null,
+                 init() {
+                     const data = @js($clientProgressData);
+                     if (!data.length) return;
+                     const ctx = this.$refs.progressCanvas.getContext('2d');
+                     this.chart = new Chart(ctx, {
+                         type: 'bar',
+                         data: {
+                             labels: data.map(d => d.name),
+                             datasets: [{
+                                 label: 'Sesiones',
+                                 data: data.map(d => d.sessions),
+                                 backgroundColor: 'rgba(220, 38, 38, 0.7)',
+                                 hoverBackgroundColor: '#DC2626',
+                                 borderRadius: 4,
+                                 borderSkipped: false,
+                             }]
+                         },
+                         options: {
+                             indexAxis: 'y',
+                             responsive: true,
+                             maintainAspectRatio: false,
+                             plugins: { legend: { display: false } },
+                             scales: {
+                                 x: {
+                                     beginAtZero: true,
+                                     grid: { color: 'rgba(63, 63, 70, 0.15)' },
+                                     ticks: { stepSize: 1, precision: 0 }
+                                 },
+                                 y: { grid: { display: false } }
+                             }
+                         }
+                     });
+                 },
+                 destroy() { this.chart?.destroy(); }
+             }"
+             x-init="init()"
+             @before-livewire-snapshot.window="destroy()">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-semibold text-wc-text">Progreso de Clientes</h3>
+                <span class="text-xs text-wc-text-tertiary">Ultimas 4 semanas</span>
+            </div>
+            @if(count($clientProgressData) > 0)
+                <div class="relative h-52">
+                    <canvas x-ref="progressCanvas"></canvas>
+                </div>
+            @else
+                <div class="flex flex-col items-center justify-center h-52 text-center">
+                    <svg class="h-8 w-8 text-wc-text-tertiary/40" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+                    </svg>
+                    <p class="mt-2 text-sm text-wc-text-tertiary">Sin datos de entrenamiento</p>
+                </div>
+            @endif
+        </div>
+
+        {{-- Check-in Frequency (Line Chart) --}}
+        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5"
+             x-data="{
+                 chart: null,
+                 init() {
+                     const data = @js($checkinFrequencyData);
+                     if (!data.length) return;
+                     const ctx = this.$refs.checkinCanvas.getContext('2d');
+                     this.chart = new Chart(ctx, {
+                         type: 'line',
+                         data: {
+                             labels: data.map(d => d.week),
+                             datasets: [{
+                                 label: 'Check-ins',
+                                 data: data.map(d => d.count),
+                                 borderColor: '#8B5CF6',
+                                 backgroundColor: 'rgba(139, 92, 246, 0.08)',
+                                 fill: true,
+                                 tension: 0.4,
+                                 pointRadius: 4,
+                                 pointHoverRadius: 7,
+                                 pointBackgroundColor: '#8B5CF6',
+                                 pointBorderColor: '#8B5CF6',
+                                 borderWidth: 2.5,
+                             }]
+                         },
+                         options: {
+                             responsive: true,
+                             maintainAspectRatio: false,
+                             plugins: { legend: { display: false } },
+                             scales: {
+                                 y: {
+                                     beginAtZero: true,
+                                     grid: { color: 'rgba(63, 63, 70, 0.15)' },
+                                     ticks: { stepSize: 1, precision: 0 }
+                                 },
+                                 x: { grid: { display: false } }
+                             }
+                         }
+                     });
+                 },
+                 destroy() { this.chart?.destroy(); }
+             }"
+             x-init="init()"
+             @before-livewire-snapshot.window="destroy()">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-semibold text-wc-text">Frecuencia de Check-ins</h3>
+                <span class="text-xs text-wc-text-tertiary">Ultimas 8 semanas</span>
+            </div>
+            @if(count($checkinFrequencyData) > 0)
+                <div class="relative h-52">
+                    <canvas x-ref="checkinCanvas"></canvas>
+                </div>
+            @else
+                <div class="flex flex-col items-center justify-center h-52 text-center">
+                    <svg class="h-8 w-8 text-wc-text-tertiary/40" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    <p class="mt-2 text-sm text-wc-text-tertiary">Sin datos de check-ins</p>
+                </div>
+            @endif
+        </div>
+    </div>
+
     {{-- Clients needing attention + Recent messages --}}
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
 

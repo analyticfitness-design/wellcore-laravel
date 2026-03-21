@@ -453,6 +453,115 @@
         </div>
     </div>
 
+    {{-- Weight/Metrics Trend Chart --}}
+    <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5"
+         x-data="{
+             chart: null,
+             init() {
+                 const data = @js($weightChartData);
+                 if (!data.length) return;
+                 const datasets = [{
+                     label: 'Peso (kg)',
+                     data: data.map(d => d.weight),
+                     borderColor: '#DC2626',
+                     backgroundColor: 'rgba(220, 38, 38, 0.08)',
+                     fill: true,
+                     tension: 0.4,
+                     pointRadius: 3,
+                     pointHoverRadius: 6,
+                     pointBackgroundColor: '#DC2626',
+                     pointBorderColor: '#DC2626',
+                     borderWidth: 2.5,
+                     yAxisID: 'y',
+                 }];
+                 // Add body fat % if data exists
+                 const hasBodyFat = data.some(d => d.bodyFat !== null);
+                 if (hasBodyFat) {
+                     datasets.push({
+                         label: 'Grasa corporal (%)',
+                         data: data.map(d => d.bodyFat),
+                         borderColor: '#8B5CF6',
+                         backgroundColor: 'transparent',
+                         borderDash: [5, 5],
+                         tension: 0.4,
+                         pointRadius: 2,
+                         pointHoverRadius: 5,
+                         pointBackgroundColor: '#8B5CF6',
+                         pointBorderColor: '#8B5CF6',
+                         borderWidth: 2,
+                         yAxisID: 'y1',
+                         spanGaps: true,
+                     });
+                 }
+                 const ctx = this.$refs.weightCanvas.getContext('2d');
+                 this.chart = new Chart(ctx, {
+                     type: 'line',
+                     data: {
+                         labels: data.map(d => d.date),
+                         datasets: datasets
+                     },
+                     options: {
+                         responsive: true,
+                         maintainAspectRatio: false,
+                         interaction: { mode: 'index', intersect: false },
+                         plugins: {
+                             legend: {
+                                 display: hasBodyFat,
+                                 position: 'top',
+                                 labels: { padding: 12, usePointStyle: true, pointStyleWidth: 8, font: { size: 11 } }
+                             },
+                             tooltip: {
+                                 callbacks: {
+                                     label: ctx => {
+                                         if (ctx.raw === null) return null;
+                                         return ctx.dataset.label + ': ' + ctx.raw + (ctx.datasetIndex === 0 ? ' kg' : '%');
+                                     }
+                                 }
+                             }
+                         },
+                         scales: {
+                             y: {
+                                 type: 'linear',
+                                 display: true,
+                                 position: 'left',
+                                 grid: { color: 'rgba(63, 63, 70, 0.15)' },
+                                 title: { display: true, text: 'Peso (kg)', font: { size: 11 } },
+                             },
+                             y1: hasBodyFat ? {
+                                 type: 'linear',
+                                 display: true,
+                                 position: 'right',
+                                 grid: { drawOnChartArea: false },
+                                 title: { display: true, text: 'Grasa (%)', font: { size: 11 } },
+                             } : undefined,
+                             x: { grid: { display: false } }
+                         }
+                     }
+                 });
+             },
+             destroy() { this.chart?.destroy(); }
+         }"
+         x-init="init()"
+         @before-livewire-snapshot.window="destroy()">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-semibold text-wc-text">Tendencia de Peso</h3>
+            <span class="text-xs text-wc-text-tertiary">Ultimos 90 dias</span>
+        </div>
+        @if(count($weightChartData) > 0)
+            <div class="relative h-56">
+                <canvas x-ref="weightCanvas"></canvas>
+            </div>
+        @else
+            <div class="flex flex-col items-center justify-center h-48 text-center">
+                <svg class="h-8 w-8 text-wc-text-tertiary/40" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
+                </svg>
+                <p class="mt-2 text-sm text-wc-text-tertiary">Sin datos de peso registrados</p>
+                <a href="{{ route('client.metrics') }}" class="mt-2 text-xs font-medium text-wc-accent hover:underline">Registrar peso</a>
+            </div>
+        @endif
+    </div>
+
     {{-- ITEM 3: Coach Avatar Card --}}
     <div class="flex items-center gap-4 rounded-card border border-wc-border bg-wc-bg-tertiary p-4">
         <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
