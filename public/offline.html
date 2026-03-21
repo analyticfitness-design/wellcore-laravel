@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sin Conexion - WellCore Fitness</title>
+    <meta name="theme-color" content="#DC2626">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #09090B;
+            color: #FAFAFA;
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            padding: 24px;
+            text-align: center;
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 32px;
+            opacity: 0.9;
+        }
+        .icon-offline {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 24px;
+            color: #DC2626;
+        }
+        h1 {
+            font-family: 'Bebas Neue', Impact, sans-serif;
+            font-size: 2rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+            color: #FAFAFA;
+        }
+        p {
+            font-size: 0.938rem;
+            line-height: 1.6;
+            color: #A1A1AA;
+            max-width: 360px;
+            margin-bottom: 32px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #DC2626;
+            color: #fff;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 9999px;
+            font-size: 0.938rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn:hover { background: #B91C1C; }
+        .btn:active { background: #991B1B; }
+        .btn svg { width: 18px; height: 18px; }
+        .footer-text {
+            position: absolute;
+            bottom: 24px;
+            font-size: 0.75rem;
+            color: #3F3F46;
+        }
+    </style>
+</head>
+<body>
+    <!-- WellCore "W" Logo -->
+    <svg class="logo" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="512" height="512" rx="96" fill="#DC2626"/>
+        <path d="M128 160L192 352L256 224L320 352L384 160" stroke="#FAFAFA" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+
+    <!-- Offline Icon -->
+    <svg class="icon-offline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1 1l22 22"/>
+        <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
+        <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
+        <path d="M10.71 5.05A16 16 0 0 1 22.56 9"/>
+        <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+        <line x1="12" y1="20" x2="12.01" y2="20"/>
+    </svg>
+
+    <h1>SIN CONEXION</h1>
+    <p>Parece que no tienes conexion a internet. Verifica tu red e intenta de nuevo.</p>
+
+    <button class="btn" onclick="window.location.reload();">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"/>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+        Reintentar
+    </button>
+
+    <span class="footer-text">WellCore Fitness</span>
+</body>
+</html>

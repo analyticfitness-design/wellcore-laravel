@@ -8,6 +8,11 @@
     <title>{{ $title ?? 'WellCore Fitness' }}</title>
     <meta name="description" content="{{ $description ?? 'Coaching fitness basado en ciencia. Entrenamiento personalizado, nutricion y seguimiento para alcanzar tu mejor version.' }}">
 
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -152,9 +157,13 @@
                 <div class="lg:text-right">
                     <p class="text-sm font-semibold text-wc-text">Ciencia del ejercicio, cada semana.</p>
                     <p class="mt-1 text-xs text-wc-text-tertiary">Contenido exclusivo sobre entrenamiento y nutricion basada en evidencia.</p>
-                    <form class="mt-4 flex gap-2 lg:justify-end" onsubmit="event.preventDefault();">
-                        <input type="email" placeholder="tu@email.com" class="w-full max-w-xs rounded-full border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
-                        <button type="submit" class="rounded-full bg-wc-accent px-5 py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover">Suscribirse</button>
+                    <form class="mt-4 flex flex-wrap items-center gap-2 lg:justify-end"
+                          x-data="{ email: '', success: false, error: '' }"
+                          x-on:submit.prevent="fetch('/api/newsletter', { method: 'POST', headers: {'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({email}) }).then(r=>r.json()).then(d=>{ success=true; email=''; error=''; }).catch(e=>{ error='Error, intenta de nuevo'; })">
+                        <input type="email" x-model="email" placeholder="tu@email.com" required class="w-full max-w-xs rounded-full border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
+                        <button type="submit" x-show="!success" class="rounded-full bg-wc-accent px-5 py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover">Suscribirse</button>
+                        <span x-show="success" x-cloak class="rounded-full bg-green-600 px-5 py-2.5 text-sm font-semibold text-white">Suscrito!</span>
+                        <span x-show="error" x-cloak class="w-full text-xs text-red-500 lg:text-right" x-text="error"></span>
                     </form>
                 </div>
             </div>

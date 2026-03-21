@@ -4,7 +4,7 @@
     {{-- 1. HERO --}}
     <section class="relative overflow-hidden bg-wc-bg-tertiary">
         <div class="absolute inset-0 bg-gradient-to-br from-[#DC3C64]/5 via-transparent to-transparent"></div>
-        <div class="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
+        <div class="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8" data-animate="fadeInUp">
             <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
                 {{-- Left column --}}
                 <div>
@@ -128,7 +128,7 @@
 
     {{-- 2. BIO --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mx-auto max-w-3xl">
                 <h2 class="text-center font-display text-3xl tracking-wide text-wc-text">MI HISTORIA</h2>
                 <div class="mx-auto mt-2 h-1 w-12 rounded-full bg-[#DC3C64]"></div>
@@ -155,7 +155,7 @@
 
     {{-- 3. SPECIALTIES --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <h2 class="text-center font-display text-3xl tracking-wide text-wc-text">ESPECIALIDADES</h2>
             <div class="mx-auto mt-2 h-1 w-12 rounded-full bg-[#DC3C64]"></div>
             <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -186,7 +186,7 @@
 
     {{-- 4. DASHBOARD PREVIEW --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="text-center">
                 <span class="inline-flex rounded-full bg-[#DC3C64]/10 px-4 py-1.5 text-xs font-semibold text-[#DC3C64]">Tu Experiencia</span>
                 <h2 class="mt-4 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">AS&Iacute; SE VE TU PROGRAMA</h2>
@@ -353,7 +353,7 @@
 
     {{-- 5. TESTIMONIALS --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <h2 class="text-center font-display text-3xl tracking-wide text-wc-text">TESTIMONIOS</h2>
             <div class="mx-auto mt-2 h-1 w-12 rounded-full bg-[#DC3C64]"></div>
             <div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -389,7 +389,7 @@
 
     {{-- 6. CTA --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8" data-animate="fadeInUp">
             <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">&iquest;LISTA PARA EMPEZAR?</h2>
             <div class="mx-auto mt-2 h-1 w-12 rounded-full bg-[#DC3C64]"></div>
             <p class="mx-auto mt-6 max-w-lg text-wc-text-secondary">

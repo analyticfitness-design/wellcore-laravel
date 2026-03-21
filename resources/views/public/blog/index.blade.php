@@ -22,16 +22,25 @@
 
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 @foreach ($articles as $article)
-                    <article class="group flex flex-col overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary transition-colors hover:border-wc-accent/30">
-                        {{-- Card Body --}}
-                        <div class="flex flex-1 flex-col p-6">
-                            {{-- Category Badge --}}
-                            <div class="mb-3">
-                                <span class="inline-flex rounded-full bg-wc-accent/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-accent">
+                    <article class="group relative flex flex-col overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary transition-colors hover:border-wc-accent/30">
+                        {{-- Gradient Header --}}
+                        <div class="relative h-32 overflow-hidden bg-gradient-to-br {{ $article['gradient'] ?? 'from-wc-accent/20 to-wc-bg-tertiary' }}">
+                            {{-- Dot pattern overlay --}}
+                            <div class="absolute inset-0" style="background-image: radial-gradient(circle, currentColor 0.5px, transparent 0.5px); background-size: 12px 12px; opacity: 0.04;"></div>
+                            {{-- Decorative lines --}}
+                            <div class="absolute -right-4 -top-4 h-24 w-24 rounded-full border border-current opacity-[0.06]"></div>
+                            <div class="absolute -right-2 -top-2 h-16 w-16 rounded-full border border-current opacity-[0.08]"></div>
+                            <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-wc-border to-transparent"></div>
+                            {{-- Category Badge overlaid --}}
+                            <div class="absolute bottom-3 left-4">
+                                <span class="inline-flex rounded-full bg-wc-bg/80 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-accent backdrop-blur-sm ring-1 ring-wc-border/50">
                                     {{ $article['category'] }}
                                 </span>
                             </div>
+                        </div>
 
+                        {{-- Card Body --}}
+                        <div class="flex flex-1 flex-col p-6">
                             {{-- Title --}}
                             <h2 class="mb-2 text-lg font-semibold text-wc-text transition-colors group-hover:text-wc-accent">
                                 <a href="{{ route('blog.show', $article['slug']) }}" class="after:absolute after:inset-0">

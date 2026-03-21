@@ -3,7 +3,7 @@
 
     {{-- 1. HERO --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 sm:py-28 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 sm:py-28 lg:px-8" data-animate="fadeInUp">
             <h1 class="font-display text-5xl tracking-wide text-wc-text sm:text-6xl lg:text-7xl">NOSOTROS</h1>
             <p class="mx-auto mt-6 max-w-2xl text-lg text-wc-text-secondary sm:text-xl">
                 Coaching fitness basado en ciencia, no en tendencias. Resultados sostenibles, no milagros.
@@ -14,7 +14,7 @@
 
     {{-- 2. MISSION / VISION --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="text-center">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NUESTRA ESENCIA</h2>
                 <p class="mt-2 text-wc-text-secondary">Lo que nos mueve y hacia donde vamos.</p>
@@ -72,7 +72,7 @@
 
     {{-- 3. TEAM --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="text-center">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NUESTRO EQUIPO</h2>
                 <p class="mt-4 text-wc-text-secondary">Las personas detras de WellCore.</p>
@@ -155,7 +155,7 @@
 
     {{-- 4. TIMELINE 2024-2026 --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="text-center">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NUESTRA HISTORIA</h2>
                 <p class="mt-4 text-wc-text-secondary">El camino de WellCore desde 2024.</p>
@@ -274,7 +274,7 @@
 
     {{-- 5. STATS GRID --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="text-center">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">EN NUMEROS</h2>
                 <p class="mt-2 text-wc-text-secondary">WellCore en cifras.</p>
@@ -310,7 +310,7 @@
 
     {{-- 6. VALUES GRID --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="text-center">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NUESTROS VALORES</h2>
                 <p class="mt-4 text-wc-text-secondary">Los principios que guian todo lo que hacemos.</p>
@@ -388,7 +388,7 @@
 
     {{-- 7. CTA --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8" data-animate="fadeInUp">
             <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">FORMA PARTE DE WELLCORE</h2>
             <p class="mx-auto mt-4 max-w-lg text-wc-text-secondary">
                 Conoce nuestros planes y comienza tu proceso con un equipo que prioriza la ciencia y los resultados.

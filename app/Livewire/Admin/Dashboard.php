@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\Inscription;
 use App\Models\Payment;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -39,19 +40,25 @@ class Dashboard extends Component
 
     protected function loadStats(): void
     {
-        $this->activeClients = Client::where('status', 'activo')->count();
+        $stats = Cache::remember('admin_dashboard_stats', 300, function () {
+            return [
+                'activeClients' => Client::where('status', 'activo')->count(),
+                'monthlyRevenue' => number_format(
+                    (float) Payment::where('status', 'approved')
+                        ->whereMonth('created_at', now()->month)
+                        ->whereYear('created_at', now()->year)
+                        ->sum('amount'),
+                    0, ',', '.'
+                ),
+                'pendingCheckins' => Checkin::whereNull('coach_reply')->count(),
+                'newInscriptions' => Inscription::where('created_at', '>=', now()->startOfMonth())->count(),
+            ];
+        });
 
-        $this->monthlyRevenue = number_format(
-            (float) Payment::where('status', 'approved')
-                ->whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)
-                ->sum('amount'),
-            0, ',', '.'
-        );
-
-        $this->pendingCheckins = Checkin::whereNull('coach_reply')->count();
-
-        $this->newInscriptions = Inscription::where('created_at', '>=', now()->startOfMonth())->count();
+        $this->activeClients = $stats['activeClients'];
+        $this->monthlyRevenue = $stats['monthlyRevenue'];
+        $this->pendingCheckins = $stats['pendingCheckins'];
+        $this->newInscriptions = $stats['newInscriptions'];
     }
 
     protected function loadClientBreakdown(): void

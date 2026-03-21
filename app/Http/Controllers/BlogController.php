@@ -15,6 +15,7 @@ class BlogController extends Controller
             'date' => '2025-08-12',
             'author' => 'WellCore Team',
             'reading_time' => '8 min',
+            'gradient' => 'from-red-500/20 to-orange-500/10',
             'content' => '<h3>Que es la Sobrecarga Progresiva</h3>
 <p>La sobrecarga progresiva es el principio fundamental del entrenamiento de fuerza. Establecido por Thomas Delorme en la decada de 1940, este principio dicta que para generar adaptaciones musculares continuas, el estimulo de entrenamiento debe incrementarse de manera sistematica con el tiempo. Sin esta progresion, el cuerpo se adapta al estimulo actual y el crecimiento muscular se detiene — un fenomeno conocido como acomodacion.</p>
 
@@ -46,6 +47,7 @@ class BlogController extends Controller
             'date' => '2025-09-03',
             'author' => 'WellCore Team',
             'reading_time' => '10 min',
+            'gradient' => 'from-blue-500/20 to-cyan-500/10',
             'content' => '<h3>Fundamentos de la Periodizacion</h3>
 <p>La periodizacion es la organizacion sistematica del entrenamiento en bloques temporales con objetivos especificos. Este concepto, desarrollado inicialmente por el cientifico sovietico Lev Matveyev y refinado por Tudor Bompa, se basa en el Sindrome General de Adaptacion de Hans Selye: el cuerpo responde al estres con alarma, resistencia y eventualmente agotamiento. La periodizacion manipula estrategicamente estas fases para maximizar la adaptacion y minimizar el riesgo de sobreentrenamiento.</p>
 
@@ -76,6 +78,7 @@ class BlogController extends Controller
             'date' => '2025-10-18',
             'author' => 'WellCore Team',
             'reading_time' => '7 min',
+            'gradient' => 'from-emerald-500/20 to-teal-500/10',
             'content' => '<h3>Que es el TDEE</h3>
 <p>El TDEE (Total Daily Energy Expenditure) o Gasto Energetico Total Diario es la cantidad total de calorias que tu cuerpo quema en un dia. Compuesto por cuatro elementos principales: tu metabolismo basal (BMR, 60-70% del total), el efecto termico de los alimentos (TEF, 8-15%), la actividad fisica programada (EAT, 5-10%), y la termogenesis por actividad no programada (NEAT, 15-30%). Entender y calcular tu TDEE es el punto de partida para cualquier objetivo de composicion corporal, ya sea perder grasa, ganar musculo o mantener tu peso.</p>
 
@@ -104,6 +107,7 @@ class BlogController extends Controller
             'date' => '2025-11-25',
             'author' => 'WellCore Team',
             'reading_time' => '9 min',
+            'gradient' => 'from-violet-500/20 to-purple-500/10',
             'content' => '<h3>Es Posible la Recomposicion Corporal</h3>
 <p>La recomposicion corporal — ganar musculo mientras se pierde grasa — fue considerada imposible durante anos por la comunidad fitness. Sin embargo, la investigacion actual demuestra que es no solo posible sino predecible bajo condiciones especificas. Estudios publicados en <em>Medicine & Science in Sports & Exercise</em> han documentado recomposicion exitosa en principiantes, personas con sobrepeso, atletas que retoman el entrenamiento despues de un descanso, y personas que optimizan su nutricion por primera vez. La clave esta en la distribucion correcta de macronutrientes.</p>
 
@@ -134,6 +138,7 @@ class BlogController extends Controller
             'date' => '2026-01-08',
             'author' => 'WellCore Team',
             'reading_time' => '6 min',
+            'gradient' => 'from-amber-500/20 to-yellow-500/10',
             'content' => '<h3>El Debate Resuelto por la Ciencia</h3>
 <p>La pregunta "cardio o pesas?" es una de las mas frecuentes en el fitness, y la respuesta basada en evidencia es clara: depende de tu objetivo, pero para la mayoria de las personas que buscan mejorar su composicion corporal, el entrenamiento de fuerza deberia ser la prioridad. Un meta-analisis de Westcott (2012) publicado en <em>Current Sports Medicine Reports</em> demostro que el entrenamiento de fuerza no solo aumenta la masa muscular sino que incrementa el metabolismo basal, mejora la sensibilidad a la insulina y reduce la grasa visceral de manera comparable al cardio.</p>
 
@@ -161,6 +166,7 @@ class BlogController extends Controller
             'date' => '2026-01-22',
             'author' => 'WellCore Team',
             'reading_time' => '7 min',
+            'gradient' => 'from-sky-500/20 to-indigo-500/10',
             'content' => '<h3>El Sueno Como Anabolico Natural</h3>
 <p>Mientras duermes, tu cuerpo ejecuta procesos criticos para la ganancia muscular que no ocurren (o ocurren de manera suboptima) durante la vigilia. La hormona de crecimiento (GH), uno de los principales mediadores de la reparacion y crecimiento muscular, alcanza su pico de secrecion durante las fases de sueno profundo (ondas lentas), especialmente en el primer ciclo de sueno. Estudios de Van Cauter et al. publicados en <em>JAMA</em> demostraron que la restriccion de sueno a 4-5 horas reduce la secrecion de GH hasta un 70%.</p>
 
@@ -188,6 +194,7 @@ class BlogController extends Controller
             'date' => '2026-02-05',
             'author' => 'WellCore Team',
             'reading_time' => '6 min',
+            'gradient' => 'from-rose-500/20 to-pink-500/10',
             'content' => '<h3>El Problema de Depender de la Motivacion</h3>
 <p>La motivacion es una emocion, y como toda emocion, es transitoria. La psicologia del comportamiento ha demostrado consistentemente que la motivacion fluctua segun factores como el sueno, el estres, el estado de animo, y hasta la hora del dia. Construir un fisico o mejorar tu salud requiere consistencia durante meses y anos — un periodo en el que la motivacion inevitablemente desaparecera multiples veces. Estudios de Duckworth et al. sobre el "grit" (perseverancia) muestran que la consistencia a largo plazo es un predictor mas fuerte de exito que el talento o la motivacion inicial.</p>
 
@@ -215,6 +222,7 @@ class BlogController extends Controller
             'date' => '2026-02-20',
             'author' => 'WellCore Team',
             'reading_time' => '5 min',
+            'gradient' => 'from-cyan-500/20 to-blue-500/10',
             'content' => '<h3>Mas Alla de los 8 Vasos</h3>
 <p>La recomendacion de "8 vasos de agua al dia" no tiene base cientifica solida. El requerimiento hidrico real depende de tu peso corporal, nivel de actividad, temperatura ambiental, composicion de la dieta, y tasa de sudoracion individual. El Instituto de Medicina recomienda aproximadamente 3.7 litros diarios para hombres y 2.7 litros para mujeres de ingesta total de agua (incluyendo la proveniente de alimentos, que representa un 20-30% del total). Para personas fisicamente activas, estos valores aumentan significativamente.</p>
 
@@ -243,6 +251,7 @@ class BlogController extends Controller
             'date' => '2026-03-10',
             'author' => 'WellCore Team',
             'reading_time' => '8 min',
+            'gradient' => 'from-fuchsia-500/20 to-violet-500/10',
             'content' => '<h3>Fisiologia del Ciclo y Entrenamiento</h3>
 <p>El ciclo menstrual dura en promedio 28 dias (con variaciones normales de 24-35 dias) y se divide en dos fases principales: la fase folicular (dias 1-14, desde la menstruacion hasta la ovulacion) y la fase lutea (dias 15-28, desde la ovulacion hasta la siguiente menstruacion). Cada fase presenta un perfil hormonal distinto que influye en el metabolismo energetico, la fuerza, la recuperacion y la tolerancia al ejercicio. Investigacion publicada en <em>Sports Medicine</em> ha comenzado a documentar como estos cambios hormonales afectan el rendimiento atletico.</p>
 

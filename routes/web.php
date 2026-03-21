@@ -58,6 +58,7 @@ use App\Livewire\Public\RiseEnrollment;
 use App\Livewire\TestDashboard;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -128,6 +129,9 @@ Route::prefix('tienda')->name('shop.')->group(function () {
     Route::get('/{slug}', ProductDetail::class)->name('product');
 });
 
+// Newsletter API (public, no auth required)
+Route::post('/api/newsletter', [NewsletterController::class, 'subscribe'])->name('api.newsletter');
+
 // Webhook routes (excluded from CSRF via bootstrap/app.php)
 Route::post('/webhooks/wompi', [WebhookController::class, 'wompi'])->name('webhooks.wompi');
 
@@ -185,7 +189,7 @@ Route::middleware('auth:wellcore')->group(function () {
     });
 
     // Admin dashboard routes
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('admin')->name('admin.')->middleware('role:superadmin,admin,coach,jefe')->group(function () {
         Route::get('/', AdminDashboard::class)->name('dashboard');
         Route::get('/feed', LiveFeed::class)->name('feed');
         Route::get('/clients', ClientTable::class)->name('clients');
@@ -204,7 +208,7 @@ Route::middleware('auth:wellcore')->group(function () {
     });
 
     // Coach portal routes
-    Route::prefix('coach')->name('coach.')->group(function () {
+    Route::prefix('coach')->name('coach.')->middleware('role:superadmin,admin,coach,jefe')->group(function () {
         Route::get('/', CoachDashboard::class)->name('dashboard');
         Route::get('/clients', CoachClientList::class)->name('clients');
         Route::get('/checkins', CheckinReview::class)->name('checkins');

@@ -5,7 +5,7 @@
     {{-- Hero Section --}}
     <section class="relative overflow-hidden bg-wc-bg-tertiary">
         <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
-        <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
+        <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36" data-animate="fadeInUp">
             <div class="mx-auto max-w-3xl text-center">
                 <p class="text-sm font-semibold uppercase tracking-widest text-wc-accent">Tu camino hacia los resultados</p>
                 <h1 class="mt-4 font-display text-5xl leading-none tracking-wide text-wc-text sm:text-6xl lg:text-8xl">
@@ -21,7 +21,7 @@
 
     {{-- Stats Bar --}}
     <section class="border-y border-wc-border bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="grid grid-cols-2 gap-6 sm:grid-cols-4">
                 <div class="text-center">
                     <p class="font-data text-3xl font-bold text-wc-accent">4</p>
@@ -45,7 +45,7 @@
 
     {{-- Phase Navigation Pills --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                 <a href="#fase-01" class="flex shrink-0 items-center gap-3 rounded-full border border-wc-border bg-wc-bg px-5 py-3 transition-colors hover:border-wc-accent/40">
                     <span class="font-data text-xs font-bold text-wc-accent">F01</span>
@@ -81,7 +81,7 @@
 
     {{-- FASE 01: Diagnostico --}}
     <section id="fase-01" class="bg-wc-bg scroll-mt-20">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-4 flex items-center justify-center gap-3">
                 <span class="font-data text-sm font-semibold text-wc-accent">FASE 01</span>
                 <span class="text-xs font-medium text-wc-text-tertiary">Semanas 1-2</span>
@@ -174,7 +174,7 @@
 
     {{-- FASE 02: Diseno --}}
     <section id="fase-02" class="bg-wc-bg-tertiary scroll-mt-20">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-4 flex items-center justify-center gap-3">
                 <span class="font-data text-sm font-semibold text-wc-accent">FASE 02</span>
                 <span class="text-xs font-medium text-wc-text-tertiary">48-72h</span>
@@ -253,7 +253,7 @@
 
     {{-- FASE 03: Ejecucion --}}
     <section id="fase-03" class="bg-wc-bg scroll-mt-20">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-4 flex items-center justify-center gap-3">
                 <span class="font-data text-sm font-semibold text-wc-accent">FASE 03</span>
                 <span class="text-xs font-medium text-wc-text-tertiary">9 semanas</span>
@@ -374,7 +374,7 @@
 
     {{-- FASE 04: Resultados --}}
     <section id="fase-04" class="bg-wc-bg-tertiary scroll-mt-20">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-4 flex items-center justify-center gap-3">
                 <span class="font-data text-sm font-semibold text-wc-accent">FASE 04</span>
                 <span class="text-xs font-medium text-wc-text-tertiary">Semana 12+</span>
@@ -456,7 +456,7 @@
 
     {{-- FAQ --}}
     <section class="bg-wc-bg" x-data="{ active: null }">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <h2 class="text-center font-display text-3xl tracking-wide text-wc-text sm:text-4xl">PREGUNTAS FRECUENTES</h2>
             <p class="mt-2 text-center text-lg text-wc-text-secondary">Lo que mas preguntan.</p>
 
@@ -514,7 +514,7 @@
 
     {{-- Final CTA --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg p-10 sm:p-16">
                 <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
                 <div class="relative text-center">

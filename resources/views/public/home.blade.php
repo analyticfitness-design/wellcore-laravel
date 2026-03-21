@@ -19,7 +19,7 @@
     {{-- ================================================================== --}}
     <section class="relative overflow-hidden bg-wc-bg-tertiary">
         <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
-        <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
+        <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36" data-animate="fadeInUp">
             <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
                 {{-- Left --}}
                 <div class="max-w-3xl">
@@ -144,7 +144,7 @@
     {{-- 3. SOCIAL PROOF BAR                                                --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <p class="text-center text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Basado en ciencia, no en promesas</p>
             <div class="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-semibold uppercase tracking-widest text-wc-text-tertiary">
                 <span>NSCA</span>
@@ -164,7 +164,7 @@
     {{-- 4. WHY WELLCORE                                                    --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Por que WellCore</p>
             <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">RESULTADOS QUE SE SOSTIENEN.</h2>
             <p class="mt-4 max-w-2xl text-sm text-wc-text-tertiary">No contamos con trucos rapidos. Contamos con metodo, seguimiento y ciencia aplicada a tu cuerpo. Cada decision tiene una razon.</p>
@@ -219,7 +219,7 @@
     {{-- 5. COMMUNITY                                                       --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Comunidad</p>
             <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NO ENTRENAS SOLO. JAMAS.</h2>
             <p class="mt-4 max-w-2xl text-sm text-wc-text-tertiary">Una comunidad real de personas comprometidas con su transformacion. Retos, logros y soporte mutuo — no likes vacios.</p>
@@ -353,7 +353,7 @@
     {{-- 6. COMO FUNCIONA                                                   --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Como funciona</p>
             <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">TU TRANSFORMACION EN 4 FASES.</h2>
             <p class="mt-4 max-w-2xl text-sm text-wc-text-tertiary">Un proceso estructurado donde cada semana tiene un proposito. Sin improvisacion, sin recetas genericas.</p>
@@ -391,7 +391,7 @@
     {{-- 7. PLANS                                                           --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Planes</p>
             <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">ELIGE TU PLAN</h2>
             <p class="mt-4 max-w-2xl text-sm text-wc-text-tertiary">Sin contratos de permanencia. Cancela cuando quieras.</p>
@@ -524,7 +524,7 @@
     {{-- 8. RESULTS / TESTIMONIALS                                          --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Casos Reales</p>
             <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">RESULTADOS REALES</h2>
             <p class="mt-4 max-w-2xl text-sm text-wc-text-tertiary">Sin filtros, sin edicion. Clientes reales con planes WellCore que transformaron su cuerpo y sus habitos.</p>
@@ -582,7 +582,7 @@
     {{-- 9. COACHES                                                         --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
                 {{-- Left --}}
                 <div>
@@ -675,7 +675,7 @@
         $articles = array_slice(\App\Http\Controllers\BlogController::getArticles(), 0, 3);
     @endphp
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="flex items-end justify-between">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Conocimiento</p>
@@ -723,7 +723,7 @@
     {{-- 11. FAQ                                                            --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg" x-data="{ active: null }">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="text-center">
                 <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">FAQ</p>
                 <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">PREGUNTAS FRECUENTES</h2>
@@ -761,7 +761,7 @@
     {{-- 12. FINAL CTA                                                      --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg p-10 sm:p-16">
                 <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
                 <div class="relative text-center">

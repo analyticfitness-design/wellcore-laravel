@@ -7,7 +7,7 @@
     {{-- ================================================================== --}}
     <section class="relative overflow-hidden bg-wc-bg-tertiary">
         <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/8 via-transparent to-transparent"></div>
-        <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
+        <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36" data-animate="fadeInUp">
             <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
                 {{-- Left — Text --}}
                 <div class="max-w-3xl">
@@ -141,7 +141,7 @@
     {{-- 2. QUE INCLUYE (existing)                                          --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="text-center">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">QUE INCLUYE</h2>
                 <p class="mt-2 text-lg text-wc-text-secondary">4 pilares. 1 metodo.</p>
@@ -196,7 +196,7 @@
     {{-- 3. TU DASHBOARD RISE (NEW — phone + desktop mockups)               --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="text-center">
                 <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Experiencia</p>
                 <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">TU DASHBOARD RISE</h2>
@@ -393,7 +393,7 @@
     {{-- 4. SEGUIMIENTO EN TIEMPO REAL (NEW — tracking features)            --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="text-center">
                 <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Tecnologia</p>
                 <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">SEGUIMIENTO EN TIEMPO REAL</h2>
@@ -491,7 +491,7 @@
     {{-- 5. PARA QUIEN ES (existing)                                        --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <h2 class="text-center font-display text-3xl tracking-wide text-wc-text sm:text-4xl">PARA QUIEN ES</h2>
 
             <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
@@ -524,7 +524,7 @@
     {{-- 6. TESTIMONIOS (existing)                                          --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <h2 class="text-center font-display text-3xl tracking-wide text-wc-text sm:text-4xl">QUIENES YA LO VIVIERON</h2>
 
             <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -595,7 +595,7 @@
     {{-- 7. PRICING (existing)                                              --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="text-center">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">INVERSION</h2>
                 <p class="mt-2 text-lg text-wc-text-secondary">Una sola inversion.</p>
@@ -649,7 +649,7 @@
     {{-- 8. URGENCY CTA (existing)                                          --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="relative overflow-hidden rounded-2xl border border-wc-accent/30 bg-wc-bg-tertiary p-10 sm:p-16">
                 <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/8 via-transparent to-transparent"></div>
                 <div class="relative text-center">

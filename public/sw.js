@@ -1,12 +1,14 @@
 /**
  * WellCore Service Worker
  * Cache-first for static assets, network-first for API/pages
+ * Offline fallback for navigation requests
  */
-const CACHE_NAME = 'wellcore-v1';
+const CACHE_NAME = 'wellcore-v2';
 const STATIC_ASSETS = [
     '/manifest.json',
     '/icons/icon-192x192.png',
     '/icons/icon-512x512.png',
+    '/offline.html',
 ];
 
 // Install — pre-cache static assets
@@ -69,6 +71,12 @@ self.addEventListener('fetch', (event) => {
                 }
                 return response;
             })
-            .catch(() => caches.match(request))
+            .catch(() => {
+                // For navigation requests that fail, show offline page
+                if (request.mode === 'navigate') {
+                    return caches.match('/offline.html');
+                }
+                return caches.match(request);
+            })
     );
 });

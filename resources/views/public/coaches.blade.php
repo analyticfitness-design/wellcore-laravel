@@ -4,7 +4,7 @@
 
     {{-- Hero --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 sm:py-28 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 sm:py-28 lg:px-8" data-animate="fadeInUp">
             <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-wc-accent/10">
                 <svg class="h-8 w-8 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
@@ -29,7 +29,7 @@
 
     {{-- Benefits --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="text-center">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">POR QUÉ SER COACH WELLCORE</h2>
                 <p class="mt-4 text-wc-text-secondary">Beneficios de formar parte de nuestro equipo.</p>
@@ -93,7 +93,7 @@
 
     {{-- Tu Portal de Coach — Dashboard Mockups --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
 
                 {{-- Left — Description --}}
@@ -286,7 +286,7 @@
 
     {{-- Requirements --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mx-auto max-w-3xl">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">REQUISITOS</h2>
                 <p class="mt-4 text-wc-text-secondary">Lo que buscamos en un coach WellCore.</p>
@@ -358,7 +358,7 @@
 
     {{-- Process --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="text-center">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">PROCESO DE SELECCIÓN</h2>
                 <p class="mt-4 text-wc-text-secondary">Tres pasos sencillos para unirte al equipo.</p>
@@ -397,7 +397,7 @@
 
     {{-- CTA --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8" data-animate="fadeInUp">
             <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">LISTO PARA COMENZAR?</h2>
             <p class="mx-auto mt-4 max-w-lg text-wc-text-secondary">
                 Si cumples con los requisitos y quieres formar parte de un equipo basado en ciencia, aplica hoy.

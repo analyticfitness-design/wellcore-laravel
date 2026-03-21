@@ -5,7 +5,7 @@
     {{-- Hero Section --}}
     <section class="relative overflow-hidden bg-wc-bg-tertiary">
         <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
-        <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
+        <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36" data-animate="fadeInUp">
             <div class="mx-auto max-w-3xl text-center">
                 <p class="text-sm font-semibold uppercase tracking-widest text-wc-accent">Protocolo de Entrenamiento Basado en Evidencia</p>
                 <h1 class="mt-4 font-display text-5xl leading-none tracking-wide text-wc-text sm:text-6xl lg:text-8xl">
@@ -23,7 +23,7 @@
 
     {{-- Stats Bar --}}
     <section class="border-y border-wc-border bg-wc-bg">
-        <div class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
                 <div class="text-center">
                     <p class="font-data text-4xl font-bold text-wc-accent">87%</p>
@@ -43,7 +43,7 @@
 
     {{-- Section 01: El Problema --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-4 flex items-center gap-3">
                 <span class="font-data text-sm font-semibold text-wc-accent">01</span>
                 <div class="h-px flex-1 bg-wc-border"></div>
@@ -141,7 +141,7 @@
 
     {{-- Section 02: Los 5 Pilares --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-4 flex items-center gap-3">
                 <span class="font-data text-sm font-semibold text-wc-accent">02</span>
                 <div class="h-px flex-1 bg-wc-border"></div>
@@ -238,7 +238,7 @@
 
     {{-- Section 03: Comparativa --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-4 flex items-center gap-3">
                 <span class="font-data text-sm font-semibold text-wc-accent">03</span>
                 <div class="h-px flex-1 bg-wc-border"></div>
@@ -398,7 +398,7 @@
 
     {{-- Section 04: FAQ --}}
     <section class="bg-wc-bg" x-data="{ active: null }">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-4 flex items-center gap-3">
                 <span class="font-data text-sm font-semibold text-wc-accent">04</span>
                 <div class="h-px flex-1 bg-wc-border"></div>
@@ -491,7 +491,7 @@
 
     {{-- Final CTA --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg p-10 sm:p-16">
                 <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
                 <div class="relative text-center">

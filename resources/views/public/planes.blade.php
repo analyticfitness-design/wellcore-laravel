@@ -4,7 +4,7 @@
 
     {{-- Hero --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8" data-animate="fadeInUp">
             <h1 class="font-display text-4xl tracking-wide text-wc-text sm:text-5xl lg:text-6xl">ELIGE TU PLAN</h1>
             <p class="mx-auto mt-4 max-w-xl text-lg text-wc-text-secondary">Sin contratos de permanencia. Cancela cuando quieras. Invierte en lo que funciona.</p>
         </div>
@@ -12,7 +12,7 @@
 
     {{-- Plans Grid --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
 
             {{-- Section heading --}}
             <div class="mb-12 text-center">
@@ -194,7 +194,7 @@
 
     {{-- Trust --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-10 text-center">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">SIN LETRA PEQUENA</h2>
                 <p class="mx-auto mt-3 max-w-md text-wc-text-secondary">Transparencia total. Asi trabajamos.</p>
@@ -223,7 +223,7 @@
 
     {{-- FAQ --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-10 text-center">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">PREGUNTAS FRECUENTES</h2>
                 <p class="mx-auto mt-3 max-w-md text-wc-text-secondary">Resolvemos tus dudas antes de empezar.</p>
@@ -259,7 +259,7 @@
 
     {{-- CTA --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg p-10 sm:p-16">
                 <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
                 <div class="relative text-center">

@@ -11,7 +11,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->validateCsrfTokens(except: ['webhooks/*', 'api/chat']);
+        $middleware->validateCsrfTokens(except: ['webhooks/*', 'api/chat', 'api/newsletter']);
 
         $middleware->redirectGuestsTo('/login');
         $middleware->redirectUsersTo('/client');
@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth' => \App\Http\Middleware\EnsureAuthenticated::class,
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+            'role' => \App\Http\Middleware\EnsureRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
