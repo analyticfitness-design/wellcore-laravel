@@ -2,33 +2,45 @@
     <x-slot:title>Nosotros - WellCore Fitness</x-slot:title>
 
     {{-- 1. HERO --}}
-    <section class="relative overflow-hidden bg-wc-bg-tertiary">
+    <section class="hero-gradient relative overflow-hidden bg-wc-bg-tertiary">
         {{-- Parallax decorative orbs --}}
         <div class="parallax-hero" aria-hidden="true">
             <div class="parallax-orb parallax-orb-1" data-parallax-speed="0.2"></div>
             <div class="parallax-orb parallax-orb-2" data-parallax-speed="0.35"></div>
             <div class="parallax-orb parallax-orb-3" data-parallax-speed="0.15"></div>
+            <div class="parallax-orb parallax-orb-4" data-parallax-speed="0.25"></div>
+            <div class="parallax-orb parallax-orb-5" data-parallax-speed="0.1"></div>
         </div>
         <div class="relative mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 sm:py-28 lg:px-8" data-animate="fadeInUp">
-            <h1 class="font-display text-5xl tracking-wide text-wc-text sm:text-6xl lg:text-7xl">NOSOTROS</h1>
+            <h1 class="font-display text-5xl tracking-wide text-wc-text sm:text-6xl lg:text-7xl">
+                <span class="text-gradient-accent">NOSOTROS</span>
+            </h1>
             <p class="mx-auto mt-6 max-w-2xl text-lg text-wc-text-secondary sm:text-xl">
                 Coaching fitness basado en ciencia, no en tendencias. Resultados sostenibles, no milagros.
             </p>
-            <div class="mx-auto mt-8 h-1 w-16 rounded-full bg-wc-accent"></div>
+            {{-- Animated accent divider --}}
+            <div class="mx-auto mt-8 flex justify-center">
+                <div class="section-divider-hero h-1 w-16 rounded-full bg-wc-accent transition-all duration-700 ease-out"
+                     x-data
+                     x-intersect.once="$el.style.width = '80px'"></div>
+            </div>
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- 2. MISSION / VISION --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
-            <div class="text-center">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+            <div class="text-center" data-animate="fadeInUp">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NUESTRA ESENCIA</h2>
                 <p class="mt-2 text-wc-text-secondary">Lo que nos mueve y hacia donde vamos.</p>
             </div>
 
             <div class="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-2">
                 {{-- Mision --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8">
+                <div class="card-hover-lift card-glow scroll-reveal-left rounded-xl border border-wc-border bg-wc-bg-tertiary p-8"
+                     data-animate="slideInLeft">
                     <div class="flex items-center gap-3">
                         <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-wc-accent/10">
                             <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -38,12 +50,12 @@
                         </div>
                         <h3 class="font-display text-2xl tracking-wide text-wc-text">NUESTRA MISION</h3>
                     </div>
-                    <p class="mt-6 text-wc-text-secondary leading-relaxed">
+                    <p class="mt-6 leading-relaxed text-wc-text-secondary">
                         Brindar coaching fitness de la mas alta calidad, combinando ciencia del ejercicio,
                         nutricion basada en datos y seguimiento constante. Cada cliente recibe un programa
                         completamente personalizado para alcanzar resultados sostenibles.
                     </p>
-                    <p class="mt-4 text-wc-text-secondary leading-relaxed">
+                    <p class="mt-4 leading-relaxed text-wc-text-secondary">
                         No vendemos transformaciones magicas ni promesas de resultados rapidos. Ofrecemos un
                         sistema probado, respaldado por evidencia cientifica, que funciona cuando te comprometes
                         con el proceso.
@@ -51,7 +63,8 @@
                 </div>
 
                 {{-- Vision --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8">
+                <div class="card-hover-lift card-glow scroll-reveal-right rounded-xl border border-wc-border bg-wc-bg-tertiary p-8"
+                     data-animate="slideInRight">
                     <div class="flex items-center gap-3">
                         <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-wc-accent/10">
                             <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -61,12 +74,12 @@
                         </div>
                         <h3 class="font-display text-2xl tracking-wide text-wc-text">NUESTRA VISION</h3>
                     </div>
-                    <p class="mt-6 text-wc-text-secondary leading-relaxed">
+                    <p class="mt-6 leading-relaxed text-wc-text-secondary">
                         Ser la plataforma de coaching fitness numero uno en Latinoamerica. Creemos que el acceso
                         a coaching de calidad no deberia ser un privilegio, sino una oportunidad disponible para
                         cualquier persona comprometida con su salud.
                     </p>
-                    <p class="mt-4 text-wc-text-secondary leading-relaxed">
+                    <p class="mt-4 leading-relaxed text-wc-text-secondary">
                         Democratizar el acceso a coaching personalizado, basado en ciencia, con tecnologia que
                         conecta a coaches certificados con personas que buscan transformar su vida de forma real
                         y sostenible.
@@ -76,26 +89,29 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- 3. TEAM --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
-            <div class="text-center">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+            <div class="text-center" data-animate="fadeInUp">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NUESTRO EQUIPO</h2>
                 <p class="mt-4 text-wc-text-secondary">Las personas detras de WellCore.</p>
             </div>
 
             {{-- Founder - Full Feature Card --}}
-            <div class="mt-14 rounded-xl border border-wc-border bg-wc-bg p-8 sm:p-10">
+            <div class="card-hover-lift mt-14 rounded-xl border border-wc-border bg-wc-bg p-8 transition-all duration-300 hover:border-wc-accent/40 sm:p-10"
+                 data-animate="scaleIn">
                 <div class="flex flex-col items-center gap-8 md:flex-row md:items-start">
                     <div class="flex-shrink-0">
-                        <div class="flex h-28 w-28 items-center justify-center rounded-full border-2 border-wc-accent bg-wc-accent/10">
+                        <div class="flex h-28 w-28 items-center justify-center rounded-full border-2 border-wc-accent bg-wc-accent/10 transition-all duration-300 hover:shadow-lg hover:shadow-wc-accent/20">
                             <span class="font-display text-4xl text-wc-accent">DE</span>
                         </div>
                     </div>
                     <div class="flex-1 text-center md:text-left">
                         <h3 class="font-display text-2xl tracking-wide text-wc-text">DANIEL ESPARZA</h3>
                         <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">Fundador y Head Coach</p>
-                        <p class="mt-4 text-wc-text-secondary leading-relaxed">
+                        <p class="mt-4 leading-relaxed text-wc-text-secondary">
                             Especialista en fisiologia del ejercicio y nutricion deportiva con mas de 8 años de
                             experiencia en coaching personalizado. Certificado NSCA (National Strength and
                             Conditioning Association). Ha trabajado con cientos de clientes en Latinoamerica,
@@ -113,66 +129,100 @@
             </div>
 
             {{-- Other Coaches - Compact Cards --}}
-            <div class="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="stagger-grid mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 {{-- Coach 2: Nutricionista --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg p-8 text-center">
+                <div x-data="{ hovered: false }"
+                     @mouseenter="hovered = true"
+                     @mouseleave="hovered = false"
+                     class="card-hover-lift relative overflow-hidden rounded-xl border border-wc-border bg-wc-bg p-8 text-center"
+                     data-animate="fadeInUp"
+                     data-animate-delay="100">
                     <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-wc-accent/30 bg-wc-accent/10">
                         <span class="font-display text-2xl text-wc-accent">NC</span>
                     </div>
                     <h3 class="mt-5 text-lg font-semibold text-wc-text">Nutricion Coach</h3>
                     <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">Nutricionista</p>
-                    <p class="mt-4 text-sm text-wc-text-secondary leading-relaxed">
+                    <p class="mt-4 text-sm leading-relaxed text-wc-text-secondary">
                         Profesional en nutricion clinica y deportiva. Responsable de los protocolos nutricionales
                         basados en evidencia cientifica de WellCore. Disenador de planes alimenticios personalizados
                         segun la fisiologia individual de cada cliente.
                     </p>
+                    {{-- Hover overlay --}}
+                    <div class="absolute inset-0 flex items-end justify-center rounded-xl bg-gradient-to-t from-wc-accent/10 to-transparent pb-6 opacity-0 transition-opacity duration-300"
+                         :class="{ 'opacity-100': hovered }">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-wc-accent">Nutricion Clinica · Deportiva</span>
+                    </div>
                 </div>
 
                 {{-- Coach 3: Strength Coach --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg p-8 text-center">
+                <div x-data="{ hovered: false }"
+                     @mouseenter="hovered = true"
+                     @mouseleave="hovered = false"
+                     class="card-hover-lift relative overflow-hidden rounded-xl border border-wc-border bg-wc-bg p-8 text-center"
+                     data-animate="fadeInUp"
+                     data-animate-delay="200">
                     <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-wc-accent/30 bg-wc-accent/10">
                         <span class="font-display text-2xl text-wc-accent">SC</span>
                     </div>
                     <h3 class="mt-5 text-lg font-semibold text-wc-text">Strength Coach</h3>
                     <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">Entrenamiento de Fuerza</p>
-                    <p class="mt-4 text-sm text-wc-text-secondary leading-relaxed">
+                    <p class="mt-4 text-sm leading-relaxed text-wc-text-secondary">
                         Certificado CSCS (Certified Strength and Conditioning Specialist). Especialista en
                         periodizacion de entrenamiento y programacion de fuerza. Responsable de la estructura
                         de los programas de entrenamiento de WellCore.
                     </p>
+                    {{-- Hover overlay --}}
+                    <div class="absolute inset-0 flex items-end justify-center rounded-xl bg-gradient-to-t from-wc-accent/10 to-transparent pb-6 opacity-0 transition-opacity duration-300"
+                         :class="{ 'opacity-100': hovered }">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-wc-accent">Certificado CSCS · Periodizacion</span>
+                    </div>
                 </div>
 
                 {{-- Coach 4: Mindset Coach --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg p-8 text-center">
+                <div x-data="{ hovered: false }"
+                     @mouseenter="hovered = true"
+                     @mouseleave="hovered = false"
+                     class="card-hover-lift relative overflow-hidden rounded-xl border border-wc-border bg-wc-bg p-8 text-center"
+                     data-animate="fadeInUp"
+                     data-animate-delay="300">
                     <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-wc-accent/30 bg-wc-accent/10">
                         <span class="font-display text-2xl text-wc-accent">MC</span>
                     </div>
                     <h3 class="mt-5 text-lg font-semibold text-wc-text">Coach Mindset</h3>
                     <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">Psicologia Deportiva</p>
-                    <p class="mt-4 text-sm text-wc-text-secondary leading-relaxed">
+                    <p class="mt-4 text-sm leading-relaxed text-wc-text-secondary">
                         Especialista en psicologia deportiva, adherencia y construccion de habitos sostenibles.
                         Trabaja con cada cliente para desarrollar la mentalidad necesaria para mantener la
                         consistencia y alcanzar objetivos a largo plazo.
                     </p>
+                    {{-- Hover overlay --}}
+                    <div class="absolute inset-0 flex items-end justify-center rounded-xl bg-gradient-to-t from-wc-accent/10 to-transparent pb-6 opacity-0 transition-opacity duration-300"
+                         :class="{ 'opacity-100': hovered }">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-wc-accent">Psicologia Deportiva · Habitos</span>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- 4. TIMELINE 2024-2026 --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
-            <div class="text-center">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+            <div class="text-center" data-animate="fadeInUp">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NUESTRA HISTORIA</h2>
                 <p class="mt-4 text-wc-text-secondary">El camino de WellCore desde 2024.</p>
             </div>
 
             <div class="relative mx-auto mt-14 max-w-3xl">
-                {{-- Vertical Line --}}
-                <div class="absolute left-4 top-0 h-full w-px bg-wc-border sm:left-1/2 sm:-translate-x-px"></div>
+                {{-- Vertical Line with scroll-driven drawing --}}
+                <div class="absolute left-4 top-0 h-full w-px bg-wc-border sm:left-1/2 sm:-translate-x-px">
+                    <div class="line-draw-scroll h-full w-full origin-top bg-wc-accent/40 transition-transform duration-1000"></div>
+                </div>
 
-                {{-- 2024 Q1 --}}
-                <div class="relative mb-12 flex items-start gap-6 sm:gap-0">
+                {{-- 2024 Q1 — odd: slideInLeft --}}
+                <div class="scroll-reveal relative mb-12 flex items-start gap-6 sm:gap-0" data-animate="slideInLeft">
                     <div class="hidden sm:block sm:w-1/2 sm:pr-12 sm:text-right">
                         <span class="font-data text-sm font-semibold text-wc-accent">2024 - Q1</span>
                         <h3 class="mt-1 text-lg font-semibold text-wc-text">Fundacion de WellCore</h3>
@@ -181,7 +231,7 @@
                             Primeros 10 clientes con programas completamente personalizados.
                         </p>
                     </div>
-                    <div class="relative z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 border-wc-accent bg-wc-bg sm:absolute sm:left-1/2 sm:-translate-x-1/2">
+                    <div class="relative z-10 flex h-8 w-8 flex-shrink-0 cursor-pointer items-center justify-center rounded-full border-2 border-wc-accent bg-wc-bg transition-transform duration-300 hover:scale-110 sm:absolute sm:left-1/2 sm:-translate-x-1/2">
                         <div class="h-3 w-3 rounded-full bg-wc-accent"></div>
                     </div>
                     <div class="flex-1 sm:hidden">
@@ -195,10 +245,10 @@
                     <div class="hidden sm:block sm:w-1/2 sm:pl-12"></div>
                 </div>
 
-                {{-- 2024 Q3 --}}
-                <div class="relative mb-12 flex items-start gap-6 sm:gap-0">
+                {{-- 2024 Q3 — even: slideInRight --}}
+                <div class="scroll-reveal relative mb-12 flex items-start gap-6 sm:gap-0" data-animate="slideInRight">
                     <div class="hidden sm:block sm:w-1/2 sm:pr-12"></div>
-                    <div class="relative z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 border-wc-accent bg-wc-bg sm:absolute sm:left-1/2 sm:-translate-x-1/2">
+                    <div class="relative z-10 flex h-8 w-8 flex-shrink-0 cursor-pointer items-center justify-center rounded-full border-2 border-wc-accent bg-wc-bg transition-transform duration-300 hover:scale-110 sm:absolute sm:left-1/2 sm:-translate-x-1/2">
                         <div class="h-3 w-3 rounded-full bg-wc-accent"></div>
                     </div>
                     <div class="flex-1 sm:w-1/2 sm:pl-12">
@@ -211,8 +261,8 @@
                     </div>
                 </div>
 
-                {{-- 2025 Q1 --}}
-                <div class="relative mb-12 flex items-start gap-6 sm:gap-0">
+                {{-- 2025 Q1 — odd: slideInLeft --}}
+                <div class="scroll-reveal relative mb-12 flex items-start gap-6 sm:gap-0" data-animate="slideInLeft">
                     <div class="hidden sm:block sm:w-1/2 sm:pr-12 sm:text-right">
                         <span class="font-data text-sm font-semibold text-wc-accent">2025 - Q1</span>
                         <h3 class="mt-1 text-lg font-semibold text-wc-text">Programa RISE</h3>
@@ -221,7 +271,7 @@
                             Expansion a 5 paises de Latinoamerica.
                         </p>
                     </div>
-                    <div class="relative z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 border-wc-accent bg-wc-bg sm:absolute sm:left-1/2 sm:-translate-x-1/2">
+                    <div class="relative z-10 flex h-8 w-8 flex-shrink-0 cursor-pointer items-center justify-center rounded-full border-2 border-wc-accent bg-wc-bg transition-transform duration-300 hover:scale-110 sm:absolute sm:left-1/2 sm:-translate-x-1/2">
                         <div class="h-3 w-3 rounded-full bg-wc-accent"></div>
                     </div>
                     <div class="flex-1 sm:hidden">
@@ -235,10 +285,10 @@
                     <div class="hidden sm:block sm:w-1/2 sm:pl-12"></div>
                 </div>
 
-                {{-- 2025 Q3 --}}
-                <div class="relative mb-12 flex items-start gap-6 sm:gap-0">
+                {{-- 2025 Q3 — even: slideInRight --}}
+                <div class="scroll-reveal relative mb-12 flex items-start gap-6 sm:gap-0" data-animate="slideInRight">
                     <div class="hidden sm:block sm:w-1/2 sm:pr-12"></div>
-                    <div class="relative z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 border-wc-accent bg-wc-bg sm:absolute sm:left-1/2 sm:-translate-x-1/2">
+                    <div class="relative z-10 flex h-8 w-8 flex-shrink-0 cursor-pointer items-center justify-center rounded-full border-2 border-wc-accent bg-wc-bg transition-transform duration-300 hover:scale-110 sm:absolute sm:left-1/2 sm:-translate-x-1/2">
                         <div class="h-3 w-3 rounded-full bg-wc-accent"></div>
                     </div>
                     <div class="flex-1 sm:w-1/2 sm:pl-12">
@@ -251,8 +301,8 @@
                     </div>
                 </div>
 
-                {{-- 2026 Q1 --}}
-                <div class="relative flex items-start gap-6 sm:gap-0">
+                {{-- 2026 Q1 — odd: slideInLeft — current/final milestone --}}
+                <div class="scroll-reveal relative flex items-start gap-6 sm:gap-0" data-animate="slideInLeft">
                     <div class="hidden sm:block sm:w-1/2 sm:pr-12 sm:text-right">
                         <span class="font-data text-sm font-semibold text-wc-accent">2026 - Q1</span>
                         <h3 class="mt-1 text-lg font-semibold text-wc-text">Presencial Bucaramanga</h3>
@@ -261,7 +311,8 @@
                             activos en toda Latinoamerica.
                         </p>
                     </div>
-                    <div class="relative z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 border-wc-accent bg-wc-accent sm:absolute sm:left-1/2 sm:-translate-x-1/2">
+                    {{-- pulse-glow on the current/final dot --}}
+                    <div class="pulse-glow relative z-10 flex h-8 w-8 flex-shrink-0 cursor-pointer items-center justify-center rounded-full border-2 border-wc-accent bg-wc-accent transition-transform duration-300 hover:scale-110 sm:absolute sm:left-1/2 sm:-translate-x-1/2">
                         <div class="h-3 w-3 rounded-full bg-white"></div>
                     </div>
                     <div class="flex-1 sm:hidden">
@@ -278,53 +329,63 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- 5. STATS GRID --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
-            <div class="text-center">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+            <div class="text-center" data-animate="fadeInUp">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">EN NUMEROS</h2>
                 <p class="mt-2 text-wc-text-secondary">WellCore en cifras.</p>
             </div>
 
-            <div class="mt-14 grid grid-cols-2 gap-8 lg:grid-cols-4">
+            <div class="stagger-grid mt-14 grid grid-cols-2 gap-8 lg:grid-cols-4">
                 {{-- Clientes --}}
-                <div class="text-center">
-                    <p class="font-data text-4xl font-bold text-wc-accent sm:text-5xl">500+</p>
+                <div class="text-center" data-animate="fadeInUp" data-animate-delay="100">
+                    <p class="counter-highlight font-data text-4xl font-bold text-wc-accent sm:text-5xl"
+                       data-counter="500" data-counter-suffix="+">500+</p>
                     <p class="mt-2 text-sm font-medium text-wc-text-secondary">Clientes activos</p>
                 </div>
 
                 {{-- Paises --}}
-                <div class="text-center">
-                    <p class="font-data text-4xl font-bold text-wc-accent sm:text-5xl">5</p>
+                <div class="text-center" data-animate="fadeInUp" data-animate-delay="200">
+                    <p class="counter-highlight font-data text-4xl font-bold text-wc-accent sm:text-5xl"
+                       data-counter="5" data-counter-suffix="">5</p>
                     <p class="mt-2 text-sm font-medium text-wc-text-secondary">Paises</p>
                 </div>
 
                 {{-- Coaches --}}
-                <div class="text-center">
-                    <p class="font-data text-4xl font-bold text-wc-accent sm:text-5xl">15+</p>
+                <div class="text-center" data-animate="fadeInUp" data-animate-delay="300">
+                    <p class="counter-highlight font-data text-4xl font-bold text-wc-accent sm:text-5xl"
+                       data-counter="15" data-counter-suffix="+">15+</p>
                     <p class="mt-2 text-sm font-medium text-wc-text-secondary">Coaches certificados</p>
                 </div>
 
                 {{-- Adherencia --}}
-                <div class="text-center">
-                    <p class="font-data text-4xl font-bold text-wc-accent sm:text-5xl">94%</p>
+                <div class="text-center" data-animate="fadeInUp" data-animate-delay="400">
+                    <p class="counter-highlight font-data text-4xl font-bold text-wc-accent sm:text-5xl"
+                       data-counter="94" data-counter-suffix="%">94%</p>
                     <p class="mt-2 text-sm font-medium text-wc-text-secondary">Tasa de adherencia</p>
                 </div>
             </div>
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- 6. VALUES GRID --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
-            <div class="text-center">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+            <div class="text-center" data-animate="fadeInUp">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">NUESTROS VALORES</h2>
                 <p class="mt-4 text-wc-text-secondary">Los principios que guian todo lo que hacemos.</p>
             </div>
 
-            <div class="mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            <div class="stagger-grid mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                 {{-- Ciencia --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center">
+                <div class="card-hover-lift scroll-reveal-scale rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center"
+                     data-animate="scaleIn"
+                     data-animate-delay="100">
                     <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-lg bg-wc-accent/10">
                         <svg class="h-7 w-7 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
@@ -337,7 +398,9 @@
                 </div>
 
                 {{-- Transparencia --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center">
+                <div class="card-hover-lift scroll-reveal-scale rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center"
+                     data-animate="scaleIn"
+                     data-animate-delay="200">
                     <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-lg bg-wc-accent/10">
                         <svg class="h-7 w-7 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
@@ -350,7 +413,9 @@
                 </div>
 
                 {{-- Personalizacion --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center">
+                <div class="card-hover-lift scroll-reveal-scale rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center"
+                     data-animate="scaleIn"
+                     data-animate-delay="300">
                     <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-lg bg-wc-accent/10">
                         <svg class="h-7 w-7 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
@@ -364,7 +429,9 @@
                 </div>
 
                 {{-- Comunidad --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center">
+                <div class="card-hover-lift scroll-reveal-scale rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center"
+                     data-animate="scaleIn"
+                     data-animate-delay="400">
                     <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-lg bg-wc-accent/10">
                         <svg class="h-7 w-7 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
@@ -377,7 +444,9 @@
                 </div>
 
                 {{-- Resultados --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center">
+                <div class="card-hover-lift scroll-reveal-scale rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center"
+                     data-animate="scaleIn"
+                     data-animate-delay="500">
                     <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-lg bg-wc-accent/10">
                         <svg class="h-7 w-7 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
@@ -392,19 +461,27 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- 7. CTA --}}
-    <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8" data-animate="fadeInUp">
+    <section class="relative overflow-hidden bg-wc-bg-tertiary">
+        {{-- Decorative gradient orbs --}}
+        <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
+            <div class="absolute -left-32 -top-32 h-64 w-64 rounded-full bg-wc-accent/5 blur-3xl"></div>
+            <div class="absolute -bottom-32 -right-32 h-80 w-80 rounded-full bg-wc-accent/8 blur-3xl"></div>
+            <div class="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-wc-accent/3 blur-3xl"></div>
+        </div>
+        <div class="relative mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8" data-animate="fadeInUp">
             <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">FORMA PARTE DE WELLCORE</h2>
             <p class="mx-auto mt-4 max-w-lg text-wc-text-secondary">
                 Conoce nuestros planes y comienza tu proceso con un equipo que prioriza la ciencia y los resultados.
             </p>
             <div class="mt-8">
-                <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
+                <a href="{{ route('planes') }}"
+                   class="btn-press pulse-glow inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20 transition-all duration-200 hover:bg-wc-accent/90 hover:shadow-xl hover:shadow-wc-accent/30">
                     Ver Planes
                 </a>
             </div>
         </div>
     </section>
-
 </x-layouts.public>

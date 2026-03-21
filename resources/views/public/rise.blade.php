@@ -3,15 +3,17 @@
     <x-slot:description>RISE: el reto de transformacion real de WellCore. 30 dias, personalizado, con ciencia. Entrenamiento 1:1, nutricion, habitos y seguimiento. $99.900 COP pago unico.</x-slot:description>
 
     {{-- ================================================================== --}}
-    {{-- 1. HERO (upgraded with dashboard mockup)                           --}}
+    {{-- 1. HERO (remastered — hero-gradient, extra orbs, pulse-glow)        --}}
     {{-- ================================================================== --}}
-    <section class="relative overflow-hidden bg-wc-bg-tertiary">
+    <section class="relative overflow-hidden hero-gradient">
         <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/8 via-transparent to-transparent"></div>
         {{-- Parallax decorative orbs --}}
         <div class="parallax-hero" aria-hidden="true">
             <div class="parallax-orb parallax-orb-1" data-parallax-speed="0.2"></div>
             <div class="parallax-orb parallax-orb-2" data-parallax-speed="0.35"></div>
             <div class="parallax-orb parallax-orb-3" data-parallax-speed="0.15"></div>
+            <div class="parallax-orb parallax-orb-4" data-parallax-speed="0.25"></div>
+            <div class="parallax-orb parallax-orb-5" data-parallax-speed="0.1"></div>
         </div>
         <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36" data-animate="fadeInUp">
             <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
@@ -20,37 +22,37 @@
                     <p class="text-sm font-semibold uppercase tracking-widest text-wc-accent">Reto Activo &middot; Marzo 2026</p>
                     <h1 class="mt-4 font-display text-6xl leading-none tracking-wide text-wc-text sm:text-7xl lg:text-9xl">
                         RISE.<br>
-                        <span class="text-wc-accent">30 DIAS.</span>
+                        <span class="text-gradient-accent">30 DIAS.</span>
                     </h1>
                     <p class="mt-6 max-w-xl text-lg text-wc-text-secondary">
                         El reto de transformacion real de WellCore. Personalizado, con ciencia, sin atajos. Todos los niveles. Gym o casa.
                     </p>
 
                     {{-- Countdown Timer --}}
-                    <div class="mt-8" x-data="countdown('2026-03-31T23:59:59')" x-init="start()">
+                    <div class="mt-8 pulse-glow inline-block rounded-xl p-1" x-data="countdown('2026-03-31T23:59:59')" x-init="start()">
                         <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Cierra inscripcion en:</p>
                         <div class="flex gap-3">
                             <div class="rounded-lg border border-wc-accent/20 bg-wc-accent/5 px-4 py-3 text-center">
-                                <p class="font-data text-2xl font-bold text-wc-accent" x-text="days">00</p>
+                                <p class="font-data text-3xl sm:text-4xl font-bold text-wc-accent" x-text="days">00</p>
                                 <p class="text-[10px] uppercase text-wc-text-tertiary">Dias</p>
                             </div>
                             <div class="rounded-lg border border-wc-accent/20 bg-wc-accent/5 px-4 py-3 text-center">
-                                <p class="font-data text-2xl font-bold text-wc-accent" x-text="hours">00</p>
+                                <p class="font-data text-3xl sm:text-4xl font-bold text-wc-accent" x-text="hours">00</p>
                                 <p class="text-[10px] uppercase text-wc-text-tertiary">Horas</p>
                             </div>
                             <div class="rounded-lg border border-wc-accent/20 bg-wc-accent/5 px-4 py-3 text-center">
-                                <p class="font-data text-2xl font-bold text-wc-accent" x-text="minutes">00</p>
+                                <p class="font-data text-3xl sm:text-4xl font-bold text-wc-accent" x-text="minutes">00</p>
                                 <p class="text-[10px] uppercase text-wc-text-tertiary">Min</p>
                             </div>
                             <div class="rounded-lg border border-wc-accent/20 bg-wc-accent/5 px-4 py-3 text-center">
-                                <p class="font-data text-2xl font-bold text-wc-accent" x-text="seconds">00</p>
+                                <p class="font-data text-3xl sm:text-4xl font-bold text-wc-accent" x-text="seconds">00</p>
                                 <p class="text-[10px] uppercase text-wc-text-tertiary">Seg</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-8">
-                        <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
+                        <a href="{{ route('planes') }}" class="btn-press pulse-glow inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
                             Unirme al Reto RISE
                             <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                         </a>
@@ -60,7 +62,7 @@
 
                 {{-- Right — RISE Dashboard Mockup --}}
                 <div class="hidden lg:block">
-                    <div class="rounded-xl border border-wc-border bg-wc-bg shadow-2xl shadow-black/10">
+                    <div class="animate-float-slow rounded-xl border border-wc-border bg-wc-bg shadow-2xl shadow-black/10">
                         {{-- Browser chrome --}}
                         <div class="flex items-center gap-2 border-b border-wc-border px-4 py-3">
                             <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
@@ -144,7 +146,32 @@
     </section>
 
     {{-- ================================================================== --}}
-    {{-- 2. QUE INCLUYE (existing)                                          --}}
+    {{-- 1B. SOCIAL PROOF COUNTER (NEW)                                      --}}
+    {{-- ================================================================== --}}
+    <section class="border-y border-wc-border bg-wc-bg">
+        <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap items-center justify-center gap-8 text-center">
+                <div class="flex items-center gap-2">
+                    <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="text-sm text-wc-text-secondary"><span class="font-data font-bold text-wc-text counter-highlight" data-counter="47" data-counter-suffix="+">0+</span> personas se inscribieron esta semana</span>
+                </div>
+                <div class="hidden h-4 w-px bg-wc-border sm:block"></div>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm text-wc-text-secondary">Cupos restantes: <span class="font-data font-bold text-wc-accent">12</span></span>
+                </div>
+                <div class="hidden h-4 w-px bg-wc-border sm:block"></div>
+                <div class="flex items-center gap-2">
+                    <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                    <span class="text-sm text-wc-text-secondary">Verificado por <span class="font-semibold text-wc-text">WellCore</span></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    {{-- ================================================================== --}}
+    {{-- 2. QUE INCLUYE (remastered — stagger-grid, card-hover-lift)         --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
@@ -154,8 +181,8 @@
                 <p class="mt-1 text-sm text-wc-text-tertiary">Todo lo que necesitas para transformar tu cuerpo en 30 dias.</p>
             </div>
 
-            <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40">
+            <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 stagger-grid">
+                <div class="scroll-reveal-scale card-hover-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-animate="scaleIn" data-delay="100">
                     <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-wc-accent/10">
                         <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
@@ -165,7 +192,7 @@
                     <p class="mt-2 text-sm text-wc-text-secondary">Programa 1:1 disenado para ti. Gym o casa. Sin importar tu nivel.</p>
                 </div>
 
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40">
+                <div class="scroll-reveal-scale card-hover-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-animate="scaleIn" data-delay="200">
                     <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-wc-accent/10">
                         <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
@@ -175,7 +202,7 @@
                     <p class="mt-2 text-sm text-wc-text-secondary">Guia de alimentacion real para los 30 dias. Sin dietas extremas.</p>
                 </div>
 
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40">
+                <div class="scroll-reveal-scale card-hover-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-animate="scaleIn" data-delay="300">
                     <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-wc-accent/10">
                         <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.745 3.745 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
@@ -185,7 +212,7 @@
                     <p class="mt-2 text-sm text-wc-text-secondary">Sistema diario de habitos para garantizar tu constancia.</p>
                 </div>
 
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40">
+                <div class="scroll-reveal-scale card-hover-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-animate="scaleIn" data-delay="400">
                     <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-wc-accent/10">
                         <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
@@ -198,11 +225,13 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- ================================================================== --}}
-    {{-- 3. TU DASHBOARD RISE (NEW — phone + desktop mockups)               --}}
+    {{-- 3. TU DASHBOARD RISE (remastered — animate-float, animate-float-slow) --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
             <div class="text-center">
                 <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Experiencia</p>
                 <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">TU DASHBOARD RISE</h2>
@@ -214,7 +243,7 @@
             <div class="mt-16 grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
                 {{-- LEFT — Phone mockup --}}
                 <div class="flex justify-center">
-                    <div class="mx-auto w-[280px] rounded-[2.5rem] border-[6px] border-wc-border bg-wc-bg-tertiary p-2 shadow-2xl">
+                    <div class="animate-float mx-auto w-[280px] rounded-[2.5rem] border-[6px] border-wc-border bg-wc-bg-tertiary p-2 shadow-2xl shadow-wc-accent/10">
                         {{-- Notch --}}
                         <div class="mx-auto mb-2 h-5 w-24 rounded-full bg-wc-bg-secondary"></div>
                         {{-- Screen content --}}
@@ -280,7 +309,7 @@
 
                 {{-- RIGHT — Desktop/Tablet mockup --}}
                 <div>
-                    <div class="rounded-xl border border-wc-border bg-wc-bg shadow-2xl shadow-black/10">
+                    <div class="animate-float-slow rounded-xl border border-wc-border bg-wc-bg shadow-2xl shadow-black/10">
                         {{-- Browser chrome --}}
                         <div class="flex items-center gap-2 border-b border-wc-border px-4 py-3">
                             <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
@@ -395,11 +424,13 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- ================================================================== --}}
-    {{-- 4. SEGUIMIENTO EN TIEMPO REAL (NEW — tracking features)            --}}
+    {{-- 4. SEGUIMIENTO EN TIEMPO REAL (remastered — stagger-grid, card-glow) --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeIn">
             <div class="text-center">
                 <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">Tecnologia</p>
                 <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">SEGUIMIENTO EN TIEMPO REAL</h2>
@@ -408,9 +439,9 @@
                 </p>
             </div>
 
-            <div class="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div class="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3 stagger-grid">
                 {{-- Tracking Diario --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40">
+                <div class="card-hover-lift card-glow rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-delay="100">
                     <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-wc-accent/10">
                         <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 0 1 9 9v.375M10.125 2.25A3.375 3.375 0 0 1 13.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 0 1 3.375 3.375M9 15l2.25 2.25L15 12" />
@@ -437,7 +468,7 @@
                 </div>
 
                 {{-- Mediciones Semanales --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40">
+                <div class="card-hover-lift card-glow rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-delay="200">
                     <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-wc-accent/10">
                         <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
@@ -464,7 +495,7 @@
                 </div>
 
                 {{-- Analisis de Progreso --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40">
+                <div class="card-hover-lift card-glow rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-delay="300">
                     <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-wc-accent/10">
                         <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
@@ -493,30 +524,32 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- ================================================================== --}}
-    {{-- 5. PARA QUIEN ES (existing)                                        --}}
+    {{-- 5. PARA QUIEN ES (remastered — scroll-reveal, counter-highlight)    --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInRight">
             <h2 class="text-center font-display text-3xl tracking-wide text-wc-text sm:text-4xl">PARA QUIEN ES</h2>
 
             <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
-                <div class="flex gap-4">
-                    <span class="font-data text-4xl font-bold text-wc-accent/20">01</span>
+                <div class="scroll-reveal flex gap-4" data-delay="100">
+                    <span class="counter-highlight font-data text-4xl font-bold text-wc-accent/20">01</span>
                     <div>
                         <h3 class="text-lg font-semibold text-wc-text">Todos los niveles</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">Principiante, intermedio o avanzado. El reto se adapta a ti, no al reves.</p>
                     </div>
                 </div>
-                <div class="flex gap-4">
-                    <span class="font-data text-4xl font-bold text-wc-accent/20">02</span>
+                <div class="scroll-reveal flex gap-4" data-delay="200">
+                    <span class="counter-highlight font-data text-4xl font-bold text-wc-accent/20">02</span>
                     <div>
                         <h3 class="text-lg font-semibold text-wc-text">Gym o casa</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">Sin equipamiento especial requerido. Tu espacio, tu ritmo.</p>
                     </div>
                 </div>
-                <div class="flex gap-4">
-                    <span class="font-data text-4xl font-bold text-wc-accent/20">03</span>
+                <div class="scroll-reveal flex gap-4" data-delay="300">
+                    <span class="counter-highlight font-data text-4xl font-bold text-wc-accent/20">03</span>
                     <div>
                         <h3 class="text-lg font-semibold text-wc-text">30 dias reales</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">Un compromiso de un mes. Resultados medibles. Sin promesas vacias.</p>
@@ -526,15 +559,17 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- ================================================================== --}}
-    {{-- 6. TESTIMONIOS (existing)                                          --}}
+    {{-- 6. TESTIMONIOS (remastered — card-hover-lift, scroll-reveal, stagger) --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <h2 class="text-center font-display text-3xl tracking-wide text-wc-text sm:text-4xl">QUIENES YA LO VIVIERON</h2>
 
             <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8">
+                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-8" data-delay="100">
                     <div class="flex gap-1">
                         @for ($i = 0; $i < 5; $i++)
                             <svg class="h-4 w-4 text-wc-accent" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
@@ -554,7 +589,7 @@
                     </div>
                 </div>
 
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8">
+                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-8" data-delay="200">
                     <div class="flex gap-1">
                         @for ($i = 0; $i < 5; $i++)
                             <svg class="h-4 w-4 text-wc-accent" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
@@ -574,7 +609,7 @@
                     </div>
                 </div>
 
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8">
+                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-8" data-delay="300">
                     <div class="flex gap-1">
                         @for ($i = 0; $i < 5; $i++)
                             <svg class="h-4 w-4 text-wc-accent" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
@@ -597,11 +632,13 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- ================================================================== --}}
-    {{-- 7. PRICING (existing)                                              --}}
+    {{-- 7. PRICING (remastered — card-glow, pulse-glow, badge-shine)        --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="scaleIn">
             <div class="text-center">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">INVERSION</h2>
                 <p class="mt-2 text-lg text-wc-text-secondary">Una sola inversion.</p>
@@ -609,8 +646,8 @@
             </div>
 
             <div class="mx-auto mt-12 max-w-md">
-                <div class="rounded-2xl border-2 border-wc-accent bg-wc-bg p-8 text-center">
-                    <span class="inline-block rounded-full bg-wc-accent/10 px-4 py-1 text-xs font-semibold text-wc-accent">Precio especial Marzo 2026</span>
+                <div class="card-glow pulse-glow rounded-2xl border-2 border-wc-accent bg-wc-bg p-8 text-center">
+                    <span class="badge-shine inline-block rounded-full bg-wc-accent/10 px-4 py-1 text-xs font-semibold text-wc-accent">Precio especial Marzo 2026</span>
 
                     <div class="mt-6">
                         <span class="font-data text-5xl font-bold text-wc-text">$99.900</span>
@@ -640,7 +677,7 @@
                         </li>
                     </ul>
 
-                    <a href="{{ route('planes') }}" class="mt-8 flex w-full items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
+                    <a href="{{ route('planes') }}" class="btn-press pulse-glow mt-8 flex w-full items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
                         Quiero unirme al RISE
                         <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                     </a>
@@ -651,23 +688,29 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     {{-- ================================================================== --}}
-    {{-- 8. URGENCY CTA (existing)                                          --}}
+    {{-- 8. URGENCY CTA (remastered — gradient bg, orbs, btn-press, badge-shine) --}}
     {{-- ================================================================== --}}
     <section class="bg-wc-bg">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="relative overflow-hidden rounded-2xl border border-wc-accent/30 bg-wc-bg-tertiary p-10 sm:p-16">
-                <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/8 via-transparent to-transparent"></div>
+                {{-- Gradient background --}}
+                <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/10 via-transparent to-wc-accent/5"></div>
+                {{-- Decorative orbs --}}
+                <div aria-hidden="true" class="pointer-events-none absolute -left-16 -top-16 h-64 w-64 rounded-full bg-wc-accent/5 blur-3xl"></div>
+                <div aria-hidden="true" class="pointer-events-none absolute -bottom-16 -right-16 h-64 w-64 rounded-full bg-wc-accent/8 blur-3xl"></div>
                 <div class="relative text-center">
                     <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-5xl">CUPOS LIMITADOS</h2>
                     <p class="mt-4 text-lg text-wc-text-secondary">
-                        Cierra el <span class="font-semibold text-wc-accent">31 de Marzo 2026</span>
+                        Cierra el <span class="badge-shine font-semibold text-wc-accent">31 de Marzo 2026</span>
                     </p>
                     <p class="mx-auto mt-2 max-w-md text-sm text-wc-text-tertiary">
                         No esperes al ultimo dia. Los cupos del RISE son limitados.
                     </p>
                     <div class="mt-8">
-                        <a href="{{ route('planes') }}" class="inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
+                        <a href="{{ route('planes') }}" class="btn-press pulse-glow inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 font-semibold text-white shadow-lg shadow-wc-accent/20">
                             Inscribirme ahora
                             <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                         </a>

@@ -20,6 +20,8 @@
         </div>
     </section>
 
+    <x-social-proof-bar />
+
     <div class="section-divider"></div>
 
     {{-- Plans Grid --}}
