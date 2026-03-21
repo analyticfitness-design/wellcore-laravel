@@ -249,9 +249,9 @@
                 <div class="relative flex items-start gap-6 sm:gap-0">
                     <div class="hidden sm:block sm:w-1/2 sm:pr-12 sm:text-right">
                         <span class="font-data text-sm font-semibold text-wc-accent">2026 - Q1</span>
-                        <h3 class="mt-1 text-lg font-semibold text-wc-text">Presencial Bogota</h3>
+                        <h3 class="mt-1 text-lg font-semibold text-wc-text">Presencial Bucaramanga</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
-                            Lanzamiento del plan presencial en Bogota, Colombia. WellCore supera los 500 clientes
+                            Lanzamiento del plan presencial en Bucaramanga, Colombia. WellCore supera los 500 clientes
                             activos en toda Latinoamerica.
                         </p>
                     </div>
@@ -260,9 +260,9 @@
                     </div>
                     <div class="flex-1 sm:hidden">
                         <span class="font-data text-sm font-semibold text-wc-accent">2026 - Q1</span>
-                        <h3 class="mt-1 text-lg font-semibold text-wc-text">Presencial Bogota</h3>
+                        <h3 class="mt-1 text-lg font-semibold text-wc-text">Presencial Bucaramanga</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
-                            Lanzamiento del plan presencial en Bogota, Colombia. WellCore supera los 500 clientes
+                            Lanzamiento del plan presencial en Bucaramanga, Colombia. WellCore supera los 500 clientes
                             activos en toda Latinoamerica.
                         </p>
                     </div>

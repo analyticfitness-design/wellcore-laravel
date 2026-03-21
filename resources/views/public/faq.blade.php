@@ -227,7 +227,7 @@
                                 <strong>Metodo</strong> ($95/mes, seguimiento semanal + comunidad) y
                                 <strong>Elite</strong> ($150/mes, coaching 1:1 + video check-ins). Tambien ofrecemos
                                 <strong>RISE</strong> (programa intensivo de 12 semanas) y <strong>Presencial</strong>
-                                (solo en Bogota).
+                                (solo en Bucaramanga).
                             </p>
                         </div>
                     </div>

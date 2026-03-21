@@ -1,11 +1,11 @@
 <x-layouts.public>
-    <x-slot:title>Entrenamiento Presencial Bogota - WellCore Fitness</x-slot:title>
+    <x-slot:title>Entrenamiento Presencial Bucaramanga - WellCore Fitness</x-slot:title>
 
     {{-- Hero --}}
     <section class="relative overflow-hidden bg-wc-bg-tertiary">
         <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
         <div class="relative mx-auto max-w-7xl px-4 py-24 text-center sm:px-6 sm:py-32 lg:px-8">
-            <span class="inline-flex rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-semibold text-wc-accent">Bogota, Colombia</span>
+            <span class="inline-flex rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-semibold text-wc-accent">Bucaramanga, Colombia</span>
             <h1 class="mt-4 font-display text-5xl tracking-wide text-wc-text sm:text-6xl lg:text-7xl">
                 ENTRENAMIENTO<br>PRESENCIAL
             </h1>
@@ -27,7 +27,7 @@
                 <div>
                     <h2 class="font-display text-3xl tracking-wide text-wc-text">COMO FUNCIONA</h2>
                     <div class="mt-6 space-y-4 text-wc-text-secondary">
-                        <p>El plan presencial te da acceso a sesiones de entrenamiento 1:1 con tu coach en Bogota. Cada sesion es personalizada y supervisada para garantizar tecnica perfecta y progresion optima.</p>
+                        <p>El plan presencial te da acceso a sesiones de entrenamiento 1:1 con tu coach en Bucaramanga. Cada sesion es personalizada y supervisada para garantizar tecnica perfecta y progresion optima.</p>
                         <p>Ademas de las sesiones presenciales, recibes tu programa completo en la plataforma WellCore para los dias que entrenas solo, mas plan nutricional y seguimiento semanal.</p>
                     </div>
                 </div>
@@ -66,24 +66,24 @@
                     </thead>
                     <tbody class="divide-y divide-wc-border">
                         <tr>
-                            <td class="px-6 py-3 text-wc-text">6:00 - 8:00 AM</td>
+                            <td class="px-6 py-3 text-wc-text">8:00 - 10:00 AM</td>
                             <td class="px-6 py-3 text-wc-text-secondary">Lun - Vie</td>
                             <td class="px-6 py-3"><span class="inline-flex rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">Disponible</span></td>
                         </tr>
                         <tr>
-                            <td class="px-6 py-3 text-wc-text">9:00 - 11:00 AM</td>
+                            <td class="px-6 py-3 text-wc-text">2:00 - 4:00 PM</td>
                             <td class="px-6 py-3 text-wc-text-secondary">Lun - Vie</td>
                             <td class="px-6 py-3"><span class="inline-flex rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">Disponible</span></td>
                         </tr>
                         <tr>
-                            <td class="px-6 py-3 text-wc-text">5:00 - 8:00 PM</td>
+                            <td class="px-6 py-3 text-wc-text">Otros horarios</td>
                             <td class="px-6 py-3 text-wc-text-secondary">Lun - Vie</td>
                             <td class="px-6 py-3"><span class="inline-flex rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-400">Limitado</span></td>
                         </tr>
                         <tr>
-                            <td class="px-6 py-3 text-wc-text">8:00 - 12:00 PM</td>
-                            <td class="px-6 py-3 text-wc-text-secondary">Sabados</td>
-                            <td class="px-6 py-3"><span class="inline-flex rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">Disponible</span></td>
+                            <td class="px-6 py-3 text-wc-text">Sabados</td>
+                            <td class="px-6 py-3 text-wc-text-secondary">—</td>
+                            <td class="px-6 py-3"><span class="inline-flex rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] font-semibold text-red-400">No disponible</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -127,7 +127,7 @@
                     </div>
                 @endforeach
             </div>
-            <p class="mt-6 text-center text-xs text-wc-text-tertiary">Ubicacion: Zona norte de Bogota. Direccion exacta se comparte al confirmar inscripcion.</p>
+            <p class="mt-6 text-center text-xs text-wc-text-tertiary">Ubicacion: Zona norte de Bucaramanga. Direccion exacta se comparte al confirmar inscripcion.</p>
         </div>
     </section>
 </x-layouts.public>
