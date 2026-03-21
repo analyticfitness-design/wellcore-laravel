@@ -2,8 +2,26 @@
     <x-slot:title>{{ $article['title'] }} - WellCore Blog</x-slot:title>
     <x-slot:description>{{ $article['excerpt'] }}</x-slot:description>
 
+    {{-- Scroll Progress Bar --}}
+    <div
+        x-data="{
+            progress: 0,
+            update() {
+                const scrollTop = window.scrollY;
+                const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                this.progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            }
+        }"
+        x-init="update(); window.addEventListener('scroll', () => update())"
+        class="scroll-progress fixed top-0 left-0 z-50 h-1 bg-wc-accent transition-all duration-100"
+        :style="`width: ${progress}%`"
+        aria-hidden="true">
+    </div>
+
     {{-- Hero Gradient Header --}}
     <section class="relative overflow-hidden bg-gradient-to-br {{ $article['gradient'] ?? 'from-wc-accent/20 to-wc-bg-tertiary' }}">
+        {{-- Shimmer overlay --}}
+        <div class="shimmer absolute inset-0 pointer-events-none"></div>
         {{-- Pattern overlay --}}
         <div class="absolute inset-0" style="background-image: radial-gradient(circle, currentColor 0.5px, transparent 0.5px); background-size: 16px 16px; opacity: 0.03;"></div>
         {{-- Decorative circles --}}
@@ -56,10 +74,13 @@
         </div>
     </section>
 
+    {{-- Section Divider --}}
+    <div class="section-divider" aria-hidden="true"></div>
+
     {{-- Article Content --}}
     <section class="bg-wc-bg">
         <div class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-            <div class="article-content space-y-6 text-base leading-relaxed text-wc-text-secondary
+            <div class="scroll-reveal article-content space-y-6 text-base leading-relaxed text-wc-text-secondary
                 [&>h3]:font-display [&>h3]:text-xl [&>h3]:tracking-wide [&>h3]:text-wc-text [&>h3]:mt-10 [&>h3]:mb-4
                 [&>p]:text-wc-text-secondary
                 [&>ul]:my-4 [&>ul]:space-y-2 [&>ul]:pl-0
@@ -70,6 +91,9 @@
             </div>
         </div>
     </section>
+
+    {{-- Section Divider --}}
+    <div class="section-divider" aria-hidden="true"></div>
 
     {{-- Related Articles --}}
     <section class="border-t border-wc-border bg-wc-bg-tertiary">
@@ -84,15 +108,20 @@
                     ->take(3);
             @endphp
 
-            <div class="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-                @foreach ($related as $relatedArticle)
-                    <article class="group relative flex flex-col overflow-hidden rounded-xl border border-wc-border bg-wc-bg transition-colors hover:border-wc-accent/30">
+            <div class="stagger-grid mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+                @foreach ($related as $relatedIndex => $relatedArticle)
+                    @php $relatedDelay = (($relatedIndex % 3) + 1) * 100; @endphp
+                    <article
+                        class="card-hover-lift group relative flex flex-col overflow-hidden rounded-xl border border-wc-border bg-wc-bg transition-colors hover:border-wc-accent/30"
+                        data-animate="fadeInUp"
+                        data-delay="{{ $relatedDelay }}">
+
                         {{-- Gradient Header --}}
-                        <div class="relative h-24 overflow-hidden bg-gradient-to-br {{ $relatedArticle['gradient'] ?? 'from-wc-accent/20 to-wc-bg-tertiary' }}">
+                        <div class="shimmer relative h-24 overflow-hidden bg-gradient-to-br {{ $relatedArticle['gradient'] ?? 'from-wc-accent/20 to-wc-bg-tertiary' }}">
                             <div class="absolute inset-0" style="background-image: radial-gradient(circle, currentColor 0.5px, transparent 0.5px); background-size: 12px 12px; opacity: 0.04;"></div>
                             <div class="absolute -right-4 -top-4 h-20 w-20 rounded-full border border-current opacity-[0.06]"></div>
                             <div class="absolute bottom-3 left-4">
-                                <span class="inline-flex rounded-full bg-wc-bg/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-accent backdrop-blur-sm ring-1 ring-wc-border/50">
+                                <span class="badge-shine inline-flex rounded-full bg-wc-bg/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-accent backdrop-blur-sm ring-1 ring-wc-border/50">
                                     {{ $relatedArticle['category'] }}
                                 </span>
                             </div>
@@ -117,13 +146,20 @@
         </div>
     </section>
 
+    {{-- Section Divider --}}
+    <div class="section-divider" aria-hidden="true"></div>
+
     {{-- CTA --}}
-    <section class="border-t border-wc-border bg-wc-bg">
-        <div class="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
+    <section class="relative overflow-hidden border-t border-wc-border bg-wc-bg">
+        {{-- Gradient orbs --}}
+        <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent pointer-events-none"></div>
+        <div class="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-wc-accent/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
+        <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-wc-accent/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
+        <div class="relative mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
             <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">LISTO PARA TRANSFORMARTE?</h2>
             <p class="mx-auto mt-3 max-w-lg text-sm text-wc-text-secondary">El conocimiento sin accion no produce resultados. Da el primer paso con coaching personalizado basado en ciencia.</p>
             <div class="mt-8">
-                <a href="{{ route('inscripcion') }}" class="inline-flex items-center rounded-lg bg-wc-accent px-6 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover">
+                <a href="{{ route('inscripcion') }}" class="btn-press pulse-glow inline-flex items-center rounded-lg bg-wc-accent px-6 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover">
                     Comenzar Ahora
                     <svg class="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
