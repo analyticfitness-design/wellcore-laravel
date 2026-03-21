@@ -40,6 +40,7 @@ use App\Livewire\Coach\Dashboard as CoachDashboard;
 use App\Livewire\Coach\CoachNotesPage;
 use App\Livewire\Coach\MessageCenter;
 use App\Livewire\Coach\MyBrand;
+use App\Livewire\Coach\CoachFeatures;
 use App\Livewire\Coach\Resources as CoachResources;
 use App\Livewire\Rise\DailyTracking;
 use App\Livewire\Rise\Dashboard as RiseDashboard;
@@ -175,6 +176,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/profile', CoachProfilePage::class)->name('profile');
         Route::get('/brand', MyBrand::class)->name('brand');
         Route::get('/resources', CoachResources::class)->name('resources');
+        Route::get('/features', CoachFeatures::class)->name('features');
     });
 
     // Logout
