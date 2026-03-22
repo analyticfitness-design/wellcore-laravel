@@ -255,16 +255,11 @@ class WorkoutPlayer extends Component
         $clientId = auth('wellcore')->id();
 
         $session = WorkoutSession::create([
-            'client_id' => $clientId,
-            'plan_id' => $this->planId,
-            'day_name' => $this->dayName,
+            'client_id'    => $clientId,
+            'plan_id'      => $this->planId,
+            'day_name'     => $this->dayName,
             'session_date' => now()->toDateString(),
-            'completed' => false,
-            'duration_sec' => 0,
-            'total_volume_kg' => 0,
-            'total_reps' => 0,
-            'total_sets' => 0,
-            'xp_earned' => 0,
+            'completed'    => false,
         ]);
 
         $this->sessionId = $session->id;
@@ -467,10 +462,10 @@ class WorkoutPlayer extends Component
         $durationSec = (int) $startTime->diffInSeconds(now());
 
         $session->update([
-            'completed' => true,
-            'duration_sec' => $durationSec,
-            'feeling' => $feeling,
-            'notes' => $notes,
+            'completed'        => true,
+            'duration_minutes' => (int) ($durationSec / 60),
+            'feeling'          => $feeling,
+            'notes'            => $notes,
         ]);
 
         // Calculate totals from logs

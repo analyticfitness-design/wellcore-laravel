@@ -14,15 +14,13 @@ class WorkoutSession extends Model
         'client_id',
         'plan_id',
         'day_name',
+        'day_index',
         'session_date',
-        'duration_sec',
+        'duration_minutes',
         'feeling',
         'notes',
         'completed',
-        'total_volume_kg',
-        'total_reps',
-        'total_sets',
-        'xp_earned',
+        'total_volume',
     ];
 
     protected $casts = [
@@ -43,9 +41,7 @@ class WorkoutSession extends Model
     public function calculateTotals(): void
     {
         $logs = $this->logs()->where('completed', true)->get();
-        $this->total_sets = $logs->count();
-        $this->total_reps = $logs->sum('reps');
-        $this->total_volume_kg = (int) $logs->sum(fn ($l) => ($l->weight_kg ?? 0) * ($l->reps ?? 0));
+        $this->total_volume = (int) $logs->sum(fn ($l) => ($l->weight_kg ?? 0) * ($l->reps ?? 0));
         $this->save();
     }
 
@@ -54,16 +50,15 @@ class WorkoutSession extends Model
         $base = 40;
         $allWeightsLogged = $this->logs()->where('completed', true)->whereNull('weight_kg')->doesntExist();
         $bonus = $allWeightsLogged ? 25 : 0;
-        $this->xp_earned = $base + $bonus;
-        $this->save();
 
-        return $this->xp_earned;
+        return $base + $bonus;
     }
 
     public function formattedDuration(): string
     {
-        $m = intdiv($this->duration_sec, 60);
-        $s = $this->duration_sec % 60;
+        $totalSec = ($this->duration_minutes ?? 0) * 60;
+        $m = intdiv($totalSec, 60);
+        $s = $totalSec % 60;
 
         return sprintf('%d:%02d', $m, $s);
     }
