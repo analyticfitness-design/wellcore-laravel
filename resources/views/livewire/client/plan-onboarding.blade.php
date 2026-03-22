@@ -6,7 +6,7 @@
             total: {{ count($slides) }},
             next() { if (this.current < this.total - 1) this.current++ },
             prev() { if (this.current > 0) this.current-- },
-            finish() { $wire.dismissOnboarding() }
+            finish() { $wire.completeOnboarding() }
         }"
         class="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
         x-transition:enter="transition ease-out duration-300"

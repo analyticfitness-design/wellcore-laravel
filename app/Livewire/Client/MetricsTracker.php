@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Client;
 
+use App\Models\BiometricLog;
 use App\Models\Checkin;
 use App\Models\Metric;
 use App\Models\TrainingLog;
@@ -33,14 +34,31 @@ class MetricsTracker extends Component
 
         $clientId = auth('wellcore')->id();
 
+        $logDate = now()->toDateString();
+
         Metric::create([
             'client_id' => $clientId,
-            'log_date' => now()->toDateString(),
+            'log_date' => $logDate,
             'peso' => $this->peso,
             'porcentaje_musculo' => $this->porcentajeMusculo !== '' ? $this->porcentajeMusculo : null,
             'porcentaje_grasa' => $this->porcentajeGrasa !== '' ? $this->porcentajeGrasa : null,
             'notas' => $this->notas !== '' ? $this->notas : null,
         ]);
+
+        // Sync weight to biometric_logs so Dashboard reads the same value
+        if ((float) $this->peso > 0) {
+            BiometricLog::updateOrCreate(
+                [
+                    'client_id' => $clientId,
+                    'log_date'  => $logDate,
+                ],
+                ['weight_kg' => (float) $this->peso]
+            );
+        }
+
+        // Invalidate cached render data so next render reflects the new entry
+        Cache::forget("metrics_charts_{$clientId}");
+        Cache::forget("metrics_render_{$clientId}");
 
         $this->reset(['peso', 'porcentajeMusculo', 'porcentajeGrasa', 'notas']);
         $this->showSuccess = true;
@@ -55,36 +73,45 @@ class MetricsTracker extends Component
     {
         $clientId = auth('wellcore')->id();
 
-        $history = Metric::where('client_id', $clientId)
-            ->orderByDesc('log_date')
-            ->limit(20)
-            ->get();
+        // All render data cached together for 5 minutes (TTL 300s).
+        // Cache is busted immediately in saveMetric() on every write.
+        $renderKey = "metrics_render_{$clientId}";
 
-        // Last 10 weight entries for the chart (reversed so oldest is first)
-        $chartData = Metric::where('client_id', $clientId)
-            ->whereNotNull('peso')
-            ->orderByDesc('log_date')
-            ->limit(10)
-            ->get()
-            ->reverse()
-            ->values();
+        $renderData = Cache::remember($renderKey, 300, function () use ($clientId) {
+            // Recent history table — last 20 entries
+            $history = Metric::where('client_id', $clientId)
+                ->orderByDesc('log_date')
+                ->limit(20)
+                ->get();
 
-        // Stats
-        $currentWeight = $history->first()?->peso;
-        $monthAgoWeight = Metric::where('client_id', $clientId)
-            ->whereNotNull('peso')
-            ->where('log_date', '<=', now()->subMonth()->toDateString())
-            ->orderByDesc('log_date')
-            ->first()?->peso;
+            // Last 10 weight entries for the inline mini-chart (oldest first)
+            $chartData = Metric::where('client_id', $clientId)
+                ->whereNotNull('peso')
+                ->orderByDesc('log_date')
+                ->limit(10)
+                ->get()
+                ->reverse()
+                ->values();
 
-        $weightChange = ($currentWeight && $monthAgoWeight)
-            ? round((float) $currentWeight - (float) $monthAgoWeight, 2)
-            : null;
+            // Stats: weight one month ago for the delta indicator
+            $currentWeight  = $history->first()?->peso;
+            $monthAgoWeight = Metric::where('client_id', $clientId)
+                ->whereNotNull('peso')
+                ->where('log_date', '<=', now()->subMonth()->toDateString())
+                ->orderByDesc('log_date')
+                ->value('peso');
 
-        // --- Chart.js data (cached 5 minutes) ---
-        $cacheKey = "metrics_charts_{$clientId}";
+            $weightChange = ($currentWeight && $monthAgoWeight)
+                ? round((float) $currentWeight - (float) $monthAgoWeight, 2)
+                : null;
 
-        $charts = Cache::remember($cacheKey, 300, function () use ($clientId) {
+            return compact('history', 'chartData', 'currentWeight', 'weightChange');
+        });
+
+        // Chart.js data has a separate cache key so it can be invalidated independently
+        $chartsKey = "metrics_charts_{$clientId}";
+
+        $charts = Cache::remember($chartsKey, 300, function () use ($clientId) {
             // 1. Weight trend — last 90 days (Line chart)
             $weightTrend = Metric::where('client_id', $clientId)
                 ->whereNotNull('peso')
@@ -139,14 +166,14 @@ class MetricsTracker extends Component
         });
 
         return view('livewire.client.metrics-tracker', [
-            'history'         => $history,
-            'chartData'       => $chartData,
-            'currentWeight'   => $currentWeight,
-            'weightChange'    => $weightChange,
-            'weightTrend'     => $charts['weightTrend'],
-            'weeklyCheckins'  => $charts['weeklyCheckins'],
+            'history'           => $renderData['history'],
+            'chartData'         => $renderData['chartData'],
+            'currentWeight'     => $renderData['currentWeight'],
+            'weightChange'      => $renderData['weightChange'],
+            'weightTrend'       => $charts['weightTrend'],
+            'weeklyCheckins'    => $charts['weeklyCheckins'],
             'latestComposition' => $charts['composition'],
-            'trainingVolume'  => $charts['trainingVolume'],
+            'trainingVolume'    => $charts['trainingVolume'],
         ]);
     }
 }

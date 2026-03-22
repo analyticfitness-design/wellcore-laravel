@@ -74,18 +74,20 @@ class PlanViewer extends Component
             ->orderBy('log_date', 'desc')
             ->get();
 
-        $habitTypes = ['agua', 'sueno', 'nutricion', 'estres'];
+        $habitTypes = ['agua', 'sueno', 'entrenamiento', 'nutricion', 'suplementos'];
         $habitLabels = [
-            'agua' => 'Agua',
-            'sueno' => 'Sueno',
-            'nutricion' => 'Nutricion',
-            'estres' => 'Estres',
+            'agua'          => 'Agua',
+            'sueno'         => 'Sueño',
+            'entrenamiento' => 'Entrenamiento',
+            'nutricion'     => 'Nutrición',
+            'suplementos'   => 'Suplementos',
         ];
         $habitIcons = [
-            'agua' => 'droplet',
-            'sueno' => 'moon',
-            'nutricion' => 'utensils',
-            'estres' => 'brain',
+            'agua'          => 'droplet',
+            'sueno'         => 'moon',
+            'entrenamiento' => 'dumbbell',
+            'nutricion'     => 'utensils',
+            'suplementos'   => 'pill',
         ];
 
         $this->habitData = [];

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Client;
 
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class PlanOnboarding extends Component
@@ -19,11 +20,14 @@ class PlanOnboarding extends Component
         $this->planType = strtolower($plan instanceof \App\Enums\PlanType ? $plan->value : (string) $plan);
 
         $this->slides = $this->getSlidesForPlan($this->planType);
-        $this->showOnboarding = true;
+        $cacheKey = 'onboarding_seen:' . ($user->id ?? 0);
+        $this->showOnboarding = ! Cache::has($cacheKey);
     }
 
-    public function dismissOnboarding(): void
+    public function completeOnboarding(): void
     {
+        $user = auth('wellcore')->user();
+        Cache::put('onboarding_seen:' . ($user->id ?? 0), true, now()->addYear());
         $this->showOnboarding = false;
     }
 

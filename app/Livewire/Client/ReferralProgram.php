@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Client;
 
+use App\Mail\ReferralInvitation;
 use App\Models\Referral;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -52,9 +54,19 @@ class ReferralProgram extends Component
             'created_at'     => now(),
         ]);
 
-        $this->inviteEmail   = '';
-        $this->showSuccess   = true;
-        $this->successMessage = 'Invitación enviada correctamente.';
+        $referralCode = base64_encode($user->id . ':' . substr(md5($user->id . $user->email), 0, 8));
+        $referralLink = config('app.url') . '/inscripcion?ref=' . urlencode($referralCode);
+
+        Mail::to($this->inviteEmail)
+            ->queue(new ReferralInvitation(
+                referrerName: $user->name ?? 'Tu amigo en WellCore',
+                referralLink: $referralLink,
+            ));
+
+        $sentTo               = $this->inviteEmail;
+        $this->inviteEmail    = '';
+        $this->showSuccess    = true;
+        $this->successMessage = "Invitación enviada a {$sentTo}";
     }
 
     public function dismissSuccess(): void
@@ -82,7 +94,8 @@ class ReferralProgram extends Component
             'tasa'      => $tasa,
         ];
 
-        $referralLink = 'https://wellcorefitness.com/inscripcion?ref=' . $user->id;
+        $referralCode = base64_encode($user->id . ':' . substr(md5($user->id . $user->email), 0, 8));
+        $referralLink = config('app.url') . '/inscripcion?ref=' . urlencode($referralCode);
 
         return view('livewire.client.referral-program', [
             'referrals'    => $referrals,

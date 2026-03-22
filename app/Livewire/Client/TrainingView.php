@@ -32,6 +32,14 @@ class TrainingView extends Component
 
     public function nextWeek(): void
     {
+        // Do not allow navigating beyond the current ISO week
+        $currentYear = (int) now()->isoFormat('GGGG');
+        $currentWeek = (int) now()->isoFormat('W');
+
+        if ($this->year === $currentYear && $this->week === $currentWeek) {
+            return;
+        }
+
         $date = Carbon::now()
             ->setISODate($this->year, $this->week)
             ->addWeek();
@@ -48,6 +56,11 @@ class TrainingView extends Component
 
     public function toggleDay(string $date): void
     {
+        // Silently block future dates — the blade already disables those buttons
+        if ($date > today()->toDateString()) {
+            return;
+        }
+
         $clientId = auth('wellcore')->id();
 
         $log = TrainingLog::where('client_id', $clientId)

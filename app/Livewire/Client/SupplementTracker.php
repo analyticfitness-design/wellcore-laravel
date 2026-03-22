@@ -40,6 +40,11 @@ class SupplementTracker extends Component
 
     public function toggleSupplement(string $supplementName, string $timing): void
     {
+        // Silently block logging on future dates
+        if ($this->selectedDate > today()->toDateString()) {
+            return;
+        }
+
         $clientId = auth('wellcore')->id();
 
         $log = SupplementLog::where('client_id', $clientId)
@@ -63,10 +68,16 @@ class SupplementTracker extends Component
 
     public function goToDate(string $direction): void
     {
-        $date = Carbon::parse($this->selectedDate);
-        $this->selectedDate = $direction === 'next'
-            ? $date->addDay()->toDateString()
-            : $date->subDay()->toDateString();
+        if ($direction === 'next') {
+            // Do not allow navigating beyond today
+            if ($this->selectedDate >= today()->toDateString()) {
+                return;
+            }
+
+            $this->selectedDate = Carbon::parse($this->selectedDate)->addDay()->toDateString();
+        } else {
+            $this->selectedDate = Carbon::parse($this->selectedDate)->subDay()->toDateString();
+        }
     }
 
     public function goToToday(): void

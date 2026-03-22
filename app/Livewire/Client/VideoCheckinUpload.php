@@ -53,6 +53,14 @@ class VideoCheckinUpload extends Component
 
         $clientId = auth('wellcore')->id();
 
+        // Guard: enforce monthly upload limit before storing the file
+        $maxPerMonth  = 4;
+        $monthlyCount = $this->getMonthlyCount($clientId);
+        if ($monthlyCount >= $maxPerMonth) {
+            $this->addError('mediaFile', "Has alcanzado el límite de {$maxPerMonth} video check-ins este mes.");
+            return;
+        }
+
         $path = $this->mediaFile->store('checkins/' . $clientId, 'public');
 
         VideoCheckin::create([
@@ -104,6 +112,7 @@ class VideoCheckinUpload extends Component
 
         $checkins = VideoCheckin::where('client_id', $clientId)
             ->orderByDesc('created_at')
+            ->limit(20)
             ->get();
 
         return view('livewire.client.video-checkin-upload', [

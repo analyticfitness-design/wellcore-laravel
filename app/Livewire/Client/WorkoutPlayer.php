@@ -684,7 +684,8 @@ class WorkoutPlayer extends Component
     }
 
     /**
-     * Abandon the current workout without saving completion.
+     * Abandon the current workout — preserves partial progress, marks session incomplete.
+     * Does NOT delete logs so the client retains credit for completed sets.
      */
     public function abandonWorkout(): void
     {
@@ -692,17 +693,23 @@ class WorkoutPlayer extends Component
             return;
         }
 
-        // Delete the session and its logs
         $session = WorkoutSession::find($this->sessionId);
-        if ($session) {
-            $session->logs()->delete();
-            $session->delete();
+
+        if (! $session) {
+            $this->redirect(route('client.dashboard'));
+            return;
         }
+
+        // Mark as incomplete (partial) — never delete logs or the session row.
+        // The client keeps credit for every set they already completed.
+        $session->update(['completed' => false]);
 
         $this->sessionId = null;
         $this->isActive = false;
         $this->startTime = null;
         $this->setData = [];
+
+        $this->redirect(route('client.dashboard'));
     }
 
     public function render()

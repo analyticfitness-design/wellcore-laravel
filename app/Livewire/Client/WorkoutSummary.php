@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Client;
 
+use App\Models\CommunityPost;
 use App\Models\WorkoutSession;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -95,7 +96,30 @@ class WorkoutSummary extends Component
 
     public function shareToCommunity(): void
     {
-        $this->dispatch('share-workout', sessionId: $this->session->id);
+        $clientId = auth('wellcore')->id();
+
+        // Guard against duplicate shares for the same session
+        $alreadyShared = CommunityPost::where('client_id', $clientId)
+            ->where('content', 'like', '%[session:' . $this->session->id . ']%')
+            ->exists();
+
+        if ($alreadyShared) {
+            $this->dispatch('toast', message: 'Este entreno ya fue compartido', type: 'info');
+            return;
+        }
+
+        $setsCompleted = $this->stats['sets_completed'] ?? 0;
+        $volume        = $this->stats['volume'] ?? 0;
+        $dayName       = $this->session->day_name ?? 'Entrenamiento';
+
+        CommunityPost::create([
+            'client_id' => $clientId,
+            'content'   => "¡Completé mi entrenamiento: {$dayName}! 💪 {$setsCompleted} series | {$volume} kg de volumen. [session:{$this->session->id}]",
+            'post_type' => 'achievement',
+            'visible'   => true,
+        ]);
+
+        $this->dispatch('toast', message: '¡Compartido en la comunidad!', type: 'success');
     }
 
     public function render()

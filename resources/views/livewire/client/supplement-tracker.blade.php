@@ -25,7 +25,13 @@
                 @endif
             </div>
 
-            <button wire:click="goToDate('next')" class="btn-press flex h-8 w-8 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text transition-colors">
+            <button
+                wire:click="goToDate('next')"
+                @disabled($isToday)
+                class="btn-press flex h-8 w-8 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-secondary transition-colors
+                    {{ $isToday ? 'opacity-30 cursor-not-allowed' : 'hover:text-wc-text' }}"
+                @if($isToday) title="Ya estás en el día de hoy" @endif
+            >
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
             </button>
         </div>
@@ -86,6 +92,8 @@
             }
         @endphp
 
+        @php $isFutureDate = $selectedDate > today()->toDateString(); @endphp
+
         @foreach($timingOrder as $timingKey => $timingLabel)
             @if(isset($grouped[$timingKey]))
                 <div data-animate="fadeInUp" data-animate-delay="{{ $loop->index * 100 + 300 }}">
@@ -98,11 +106,15 @@
                     <div class="space-y-2">
                         @foreach($grouped[$timingKey] as $supp)
                             <button
-                                wire:click="toggleSupplement('{{ $supp['name'] }}', '{{ $timingKey }}')"
+                                @if(!$isFutureDate) wire:click="toggleSupplement('{{ $supp['name'] }}', '{{ $timingKey }}')" @endif
+                                @disabled($isFutureDate)
                                 class="w-full flex items-center gap-3 rounded-[--radius-card] border p-4 transition-all btn-press
-                                    {{ $supp['currentTiming']['taken']
-                                        ? 'border-emerald-500/30 bg-emerald-500/5'
-                                        : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-text-tertiary' }}"
+                                    {{ $isFutureDate
+                                        ? 'border-wc-border bg-wc-bg-tertiary opacity-40 cursor-not-allowed'
+                                        : ($supp['currentTiming']['taken']
+                                            ? 'border-emerald-500/30 bg-emerald-500/5'
+                                            : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-text-tertiary') }}"
+                                @if($isFutureDate) title="No puedes registrar suplementos en fechas futuras" aria-disabled="true" @endif
                             >
                                 {{-- Pill icon --}}
                                 <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-300
@@ -148,8 +160,17 @@
             <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-wc-text-secondary">Adherencia semanal</h2>
             <div class="grid grid-cols-7 gap-2">
                 @foreach($dailyAdherence as $day)
-                    <button wire:click="$set('selectedDate', '{{ \Carbon\Carbon::parse($selectedDate)->subDays(6 - $loop->index)->format('Y-m-d') }}')"
-                        class="flex flex-col items-center gap-1.5 rounded-lg p-2 transition-colors {{ $day['isSelected'] ? 'bg-wc-accent/10 border border-wc-accent/20' : 'hover:bg-wc-bg-secondary' }}">
+                    @php
+                        $sparkDate = \Carbon\Carbon::parse($selectedDate)->subDays(6 - $loop->index)->format('Y-m-d');
+                        $sparkIsFuture = $sparkDate > today()->toDateString();
+                    @endphp
+                    <button
+                        @if(!$sparkIsFuture) wire:click="$set('selectedDate', '{{ $sparkDate }}')" @endif
+                        @disabled($sparkIsFuture)
+                        class="flex flex-col items-center gap-1.5 rounded-lg p-2 transition-colors
+                            {{ $day['isSelected'] ? 'bg-wc-accent/10 border border-wc-accent/20' : ($sparkIsFuture ? 'opacity-30 cursor-not-allowed' : 'hover:bg-wc-bg-secondary') }}"
+                        @if($sparkIsFuture) title="Fecha futura" @endif
+                    >
                         <span class="text-[10px] font-medium uppercase text-wc-text-tertiary">{{ $day['day'] }}</span>
                         <div class="flex h-8 w-8 items-center justify-center rounded-full
                             {{ $day['pct'] >= 100 ? 'bg-emerald-500 text-white' : ($day['pct'] > 0 ? 'bg-wc-bg-secondary text-wc-text' : 'bg-wc-bg-secondary/50 text-wc-text-tertiary') }}">
