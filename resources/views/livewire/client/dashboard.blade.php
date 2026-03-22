@@ -640,7 +640,15 @@
            },
            init() {
                this.tick();
-               if (this.showTimer && !this.isUrgent) setInterval(() => this.tick(), 1000);
+               if (this.showTimer && !this.isUrgent) {
+                   this._intervalId = setInterval(() => this.tick(), 1000);
+               }
+           },
+           destroy() {
+               if (this._intervalId) {
+                   clearInterval(this._intervalId);
+                   this._intervalId = null;
+               }
            }
        }">
         <div class="flex items-center gap-4">

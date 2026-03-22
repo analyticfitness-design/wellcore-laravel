@@ -27,6 +27,12 @@ class HabitTracker extends Component
             return;
         }
 
+        // Water is managed exclusively by NutritionPlan::toggleWater()
+        // to preserve the ml-accumulation contract (value = integer ml, not bool).
+        if ($habitType === 'agua') {
+            return;
+        }
+
         $clientId = auth('wellcore')->id();
         $today = now()->toDateString();
 
@@ -49,10 +55,11 @@ class HabitTracker extends Component
             ]);
         }
 
-        // Check if all habits completed
+        // Check if all habits completed.
+        // Water uses value >= 1 (ml); all others use value == 1 (bool cast to int).
         $completedCount = HabitLog::where('client_id', $clientId)
             ->where('log_date', $today)
-            ->where('value', true)
+            ->where('value', '>=', 1)
             ->count();
 
         if ($completedCount >= count(self::HABITS)) {
@@ -71,19 +78,20 @@ class HabitTracker extends Component
             ->get()
             ->keyBy('habit_type');
 
-        // Last 30 days logs for streaks and rings
-        $last30Logs = HabitLog::where('client_id', $clientId)
-            ->where('log_date', '>=', now()->subDays(30)->toDateString())
-            ->where('value', true)
+        // Last 90 days logs for streaks (streak loop iterates up to 90 days).
+        // Fetch all logs without a value filter so water logs (value = ml int) are included.
+        $last90Logs = HabitLog::where('client_id', $clientId)
+            ->where('log_date', '>=', now()->subDays(90)->toDateString())
+            ->where('value', '>=', 1)
             ->get();
 
         $todayHabits = [];
         foreach (self::HABITS as $type => $meta) {
-            // Streak calculation
+            // Streak calculation — runs up to 90 days, backed by 90-day data.
             $streak = 0;
             $checkDate = now()->copy();
             for ($i = 0; $i < 90; $i++) {
-                $hasLog = $last30Logs->contains(fn ($l) =>
+                $hasLog = $last90Logs->contains(fn ($l) =>
                     $l->habit_type === $type &&
                     $l->log_date->format('Y-m-d') === $checkDate->format('Y-m-d')
                 );
@@ -96,15 +104,23 @@ class HabitTracker extends Component
                 }
             }
 
-            // 30-day compliance
-            $daysCompleted = $last30Logs->where('habit_type', $type)->count();
+            // 30-day compliance (uses the 90-day collection, filtered to last 30 days).
+            $thirtyDaysAgo = now()->subDays(30)->toDateString();
+            $daysCompleted = $last90Logs
+                ->where('habit_type', $type)
+                ->filter(fn ($l) => $l->log_date->toDateString() >= $thirtyDaysAgo)
+                ->count();
             $compliance = min(100, round(($daysCompleted / 30) * 100));
+
+            // "completed" check: water uses value >= 1 (ml); others use value == 1.
+            $logEntry = $todayLogs[$type] ?? null;
+            $completed = $logEntry !== null && (int) $logEntry->value >= 1;
 
             $todayHabits[$type] = [
                 'label' => $meta['label'],
                 'icon' => $meta['icon'],
                 'tip' => $meta['tip'],
-                'completed' => isset($todayLogs[$type]) && $todayLogs[$type]->value,
+                'completed' => $completed,
                 'streak' => $streak,
                 'compliance' => $compliance,
             ];
@@ -129,7 +145,7 @@ class HabitTracker extends Component
             $day = $startOfWeek->copy()->addDays($i);
             $dateKey = $day->format('Y-m-d');
             $dayLogs = $weekLogs->get($dateKey, collect());
-            $dayCompleted = $dayLogs->where('value', true)->count();
+            $dayCompleted = $dayLogs->filter(fn ($l) => (int) $l->value >= 1)->count();
 
             $weeklyData[] = [
                 'date' => $dateKey,
@@ -141,15 +157,19 @@ class HabitTracker extends Component
             ];
         }
 
-        // Monthly heatmap (last 30 days)
+        // Monthly heatmap (last 30 days) — single query with GROUP BY
+        $heatmapCounts = HabitLog::where('client_id', $clientId)
+            ->where('log_date', '>=', now()->subDays(29)->toDateString())
+            ->where('value', '>=', 1)
+            ->selectRaw('DATE(log_date) as date_key, COUNT(*) as cnt')
+            ->groupBy('date_key')
+            ->pluck('cnt', 'date_key');
+
         $heatmapData = [];
         for ($i = 29; $i >= 0; $i--) {
             $date = now()->subDays($i);
             $dateKey = $date->format('Y-m-d');
-            $dayLogs = HabitLog::where('client_id', $clientId)
-                ->where('log_date', $dateKey)
-                ->where('value', true)
-                ->count();
+            $dayLogs = $heatmapCounts->get($dateKey, 0);
 
             $heatmapData[] = [
                 'date' => $dateKey,

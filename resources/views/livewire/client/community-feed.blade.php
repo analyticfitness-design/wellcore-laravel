@@ -11,12 +11,12 @@
             </div>
             <div class="hidden sm:flex items-center gap-4">
                 <div class="text-center">
-                    <p class="font-display text-2xl text-wc-accent">{{ \App\Models\CommunityPost::where('visible', true)->count() }}</p>
+                    <p class="font-display text-2xl text-wc-accent">{{ $communityStats['total_posts'] }}</p>
                     <p class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Posts</p>
                 </div>
                 <div class="h-8 w-px bg-wc-border"></div>
                 <div class="text-center">
-                    <p class="font-display text-2xl text-wc-accent">{{ \App\Models\Client::where('active', true)->count() }}</p>
+                    <p class="font-display text-2xl text-wc-accent">{{ $communityStats['active_members'] }}</p>
                     <p class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Miembros</p>
                 </div>
             </div>
@@ -107,7 +107,7 @@
                 ];
                 $ptc = $postTypeColors[$post->post_type] ?? $postTypeColors['text'];
                 $postReactions = $myReactions->get($post->id, []);
-                $reactionCounts = $post->reactions->groupBy('reaction_type')->map->count();
+                $reactionCounts = $reactionCountsAll->get($post->id, collect());
                 $initials = strtoupper(substr($post->client->name ?? 'M', 0, 2));
             @endphp
 
@@ -203,7 +203,7 @@
                             {{-- Add comment --}}
                             <div class="mt-2 flex gap-2 pt-2 border-t border-wc-border/40">
                                 <input type="text"
-                                    wire:model.defer="commentTexts.{{ $post->id }}"
+                                    wire:model="commentTexts.{{ $post->id }}"
                                     wire:keydown.enter="addComment({{ $post->id }})"
                                     placeholder="Comentar..."
                                     maxlength="500"

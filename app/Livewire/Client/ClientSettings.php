@@ -4,6 +4,7 @@ namespace App\Livewire\Client;
 
 use App\Models\Client;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -15,7 +16,7 @@ class ClientSettings extends Component
     #[Validate('required|string|max:255')]
     public string $name = '';
 
-    #[Validate('required|email|max:255')]
+    // No #[Validate] on email — uniqueness requires Rule::unique()->ignore() in updateProfile()
     public string $email = '';
 
     #[Validate('nullable|string|max:30')]
@@ -44,12 +45,14 @@ class ClientSettings extends Component
 
     public function updateProfile(): void
     {
-        $this->validateOnly('name');
-        $this->validateOnly('email');
-        $this->validateOnly('phone');
-
         /** @var Client $client */
         $client = auth('wellcore')->user();
+
+        $this->validate([
+            'name'  => 'required|string|max:255',
+            'email' => ['required', 'email', 'max:255', Rule::unique('clients', 'email')->ignore($client->id)],
+            'phone' => 'nullable|string|max:30',
+        ]);
 
         $data = [
             'name'  => $this->name,

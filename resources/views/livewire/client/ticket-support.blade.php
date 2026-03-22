@@ -50,9 +50,9 @@
         </div>
     </div>
 
-    {{-- Status filter tabs --}}
+    {{-- Status filter tabs (ENUM: open, in_progress, closed) --}}
     <div class="flex flex-wrap gap-2">
-        @foreach(['all' => 'Todos', 'open' => 'Abiertos', 'in_progress' => 'En Progreso', 'closed' => 'Cerrados', 'resolved' => 'Resueltos'] as $key => $label)
+        @foreach(['all' => 'Todos', 'open' => 'Abiertos', 'in_progress' => 'En Progreso', 'closed' => 'Cerrados'] as $key => $label)
             <button wire:click="$set('statusFilter', '{{ $key }}')"
                     class="rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors
                            {{ $statusFilter === $key
@@ -73,13 +73,11 @@
                     $statusColors = [
                         'open'        => 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30',
                         'in_progress' => 'bg-blue-500/10 text-blue-400 border-blue-500/30',
-                        'resolved'    => 'bg-green-500/10 text-green-400 border-green-500/30',
                         'closed'      => 'bg-green-500/10 text-green-400 border-green-500/30',
                     ];
                     $statusLabels = [
                         'open'        => 'Abierto',
                         'in_progress' => 'En progreso',
-                        'resolved'    => 'Resuelto',
                         'closed'      => 'Cerrado',
                     ];
                     $typeLabels = [

@@ -4,6 +4,7 @@ namespace App\Livewire\Client;
 
 use App\Models\Client;
 use App\Models\ClientProfile;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -15,7 +16,7 @@ class ProfileEditor extends Component
     #[Validate('required|string|max:255')]
     public string $name = '';
 
-    #[Validate('required|email|max:255')]
+    // No #[Validate] on email — uniqueness requires Rule::unique()->ignore() in save()
     public string $email = '';
 
     #[Validate('nullable|string|max:100')]
@@ -80,10 +81,23 @@ class ProfileEditor extends Component
 
     public function save(): void
     {
-        $this->validate();
-
         /** @var Client $client */
         $client = auth('wellcore')->user();
+
+        $this->validate([
+            'name'          => 'required|string|max:255',
+            'email'         => ['required', 'email', 'max:255', Rule::unique('clients', 'email')->ignore($client->id)],
+            'city'          => 'nullable|string|max:100',
+            'bio'           => 'nullable|string|max:1000',
+            'birthDate'     => 'nullable|date',
+            'peso'          => 'nullable|numeric|min:30|max:300',
+            'altura'        => 'nullable|numeric|min:100|max:250',
+            'objetivo'      => 'nullable|string|max:500',
+            'whatsapp'      => 'nullable|string|max:20',
+            'nivel'         => 'nullable|in:principiante,intermedio,avanzado',
+            'lugarEntreno'  => 'nullable|in:gym,casa,ambos',
+            'restricciones' => 'nullable|string|max:1000',
+        ]);
 
         $client->update([
             'name' => $this->name,

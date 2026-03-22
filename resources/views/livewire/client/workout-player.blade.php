@@ -38,10 +38,14 @@
                     @endphp
                     <button
                         wire:click="switchDay({{ $index }})"
-                        class="btn-press shrink-0 flex flex-col items-center gap-0.5 rounded-xl px-4 py-2.5 transition-all
-                            {{ $currentDayIndex === $index
-                                ? 'bg-wc-accent text-white shadow-lg shadow-wc-accent/25'
-                                : 'bg-wc-bg-tertiary border border-wc-border text-wc-text-secondary hover:text-wc-text hover:border-wc-text-tertiary' }}"
+                        @click="clearRestTimer()"
+                        @class([
+                            'btn-press shrink-0 flex flex-col items-center gap-0.5 rounded-xl px-4 py-2.5 transition-all',
+                            'bg-wc-accent text-white shadow-lg shadow-wc-accent/25' => $currentDayIndex === $index,
+                            'bg-wc-bg-tertiary border border-wc-border text-wc-text-secondary hover:text-wc-text hover:border-wc-text-tertiary' => $currentDayIndex !== $index && !$isActive,
+                            'bg-wc-bg-tertiary border border-wc-border text-wc-text-tertiary opacity-50 cursor-not-allowed' => $currentDayIndex !== $index && $isActive,
+                        ])
+                        @if($currentDayIndex !== $index && $isActive) title="No puedes cambiar de día con un entrenamiento en curso" @endif
                     >
                         <span class="font-display text-base tracking-wider leading-none">DIA {{ $index + 1 }}</span>
                         @if($dayMuscle)
@@ -837,8 +841,12 @@
                 },
 
                 initAnimations() {
+                    if (!this._observers) this._observers = [];
+
                     const observeNew = () => {
                         const elements = document.querySelectorAll('[data-animate]:not(.animate-in)');
+                        if (!elements.length) return;
+
                         const observer = new IntersectionObserver((entries) => {
                             entries.forEach(entry => {
                                 if (entry.isIntersecting) {
@@ -849,17 +857,34 @@
                         }, { threshold: 0.05, rootMargin: '0px 0px 0px 0px' });
 
                         elements.forEach(el => observer.observe(el));
+                        this._observers.push(observer);
                     };
 
                     this.$nextTick(observeNew);
 
-                    // Re-observe new elements after every Livewire DOM update
-                    document.addEventListener('livewire:updated', () => this.$nextTick(observeNew));
+                    // Remove any previous livewire:updated listener before adding a new one
+                    if (this._liveListener) {
+                        document.removeEventListener('livewire:updated', this._liveListener);
+                    }
+                    this._liveListener = () => this.$nextTick(observeNew);
+                    document.addEventListener('livewire:updated', this._liveListener);
                 },
 
                 destroy() {
                     this.stopTimer();
                     this.clearRestTimer();
+
+                    // Disconnect all IntersectionObservers
+                    if (this._observers) {
+                        this._observers.forEach(obs => obs.disconnect());
+                        this._observers = [];
+                    }
+
+                    // Remove the livewire:updated listener
+                    if (this._liveListener) {
+                        document.removeEventListener('livewire:updated', this._liveListener);
+                        this._liveListener = null;
+                    }
                 }
             };
         }

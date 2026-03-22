@@ -2,9 +2,11 @@
 
 namespace App\Livewire\Client;
 
+use App\Models\Client;
 use App\Models\CommunityPost;
 use App\Models\PostComment;
 use App\Models\PostReaction;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -111,23 +113,53 @@ class CommunityFeed extends Component
     {
         $clientId = auth('wellcore')->id();
 
+        // L2 cache: community stats — recomputed at most every 5 minutes.
+        // Avoids two bare Eloquent queries firing on every Livewire re-render
+        // (including every keystroke in the textarea).
+        $communityStats = Cache::remember('community:stats', 300, function () {
+            return [
+                'total_posts'    => CommunityPost::where('visible', true)->count(),
+                'active_members' => Client::where('active', true)->count(),
+            ];
+        });
+
         $posts = CommunityPost::where('visible', true)
-            ->with(['client:id,name', 'reactions', 'comments.client:id,name'])
             ->withCount(['reactions', 'comments'])
+            ->with([
+                'client:id,name',
+                'comments.client:id,name',
+                // Only load the authenticated user's own reactions per post
+                // instead of every reaction from every user (N+1 reduction).
+                'reactions' => fn ($q) => $q->where('client_id', $clientId),
+            ])
             ->orderByDesc('created_at')
             ->paginate($this->perPage);
 
-        // Build a lookup of current user's reactions per post
-        $myReactions = PostReaction::where('client_id', $clientId)
-            ->whereIn('post_id', $posts->pluck('id'))
+        $postIds = $posts->pluck('id');
+
+        // Per-type reaction counts for all users — one query, not N queries.
+        // Grouped in PHP to avoid issuing one COUNT per post per reaction type.
+        $reactionCountsAll = PostReaction::whereIn('post_id', $postIds)
+            ->selectRaw('post_id, reaction_type, COUNT(*) as total')
+            ->groupBy('post_id', 'reaction_type')
             ->get()
             ->groupBy('post_id')
-            ->map(fn ($group) => $group->pluck('reaction_type')->toArray());
+            ->map(fn ($rows) => $rows->pluck('total', 'reaction_type'));
+
+        // Build a per-post lookup of the current user's reaction types.
+        // The eager load above is already constrained to $clientId, so no
+        // additional query is needed here.
+        $myReactions = $posts->getCollection()
+            ->mapWithKeys(fn ($post) => [
+                $post->id => $post->reactions->pluck('reaction_type')->toArray(),
+            ]);
 
         return view('livewire.client.community-feed', [
-            'posts' => $posts,
-            'myReactions' => $myReactions,
-            'clientId' => $clientId,
+            'posts'            => $posts,
+            'myReactions'      => $myReactions,
+            'reactionCountsAll' => $reactionCountsAll,
+            'clientId'         => $clientId,
+            'communityStats'   => $communityStats,
         ]);
     }
 }

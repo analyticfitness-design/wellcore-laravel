@@ -5,6 +5,8 @@ namespace App\Livewire\Client;
 use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
 use App\Models\Ticket;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -62,12 +64,13 @@ class TicketSupport extends Component
     {
         $this->validate();
 
-        $user = auth('wellcore')->user();
+        $user     = auth('wellcore')->user();
+        $coachId  = $this->resolveCoachId($user->id);
 
         Ticket::create([
-            'id'          => uniqid('tkt_', true),
+            'id'          => (string) Str::uuid(),
             'client_name' => $user->name,
-            'coach_id'    => $user->coach_id ?? '',
+            'coach_id'    => $coachId,
             'ticket_type' => $this->ticketType,
             'description' => $this->description,
             'priority'    => $this->priority,
@@ -76,7 +79,7 @@ class TicketSupport extends Component
         ]);
 
         $this->resetForm();
-        $this->showForm = false;
+        $this->showForm    = false;
         $this->showSuccess = true;
     }
 
@@ -97,8 +100,27 @@ class TicketSupport extends Component
         $this->priority    = 'normal';
     }
 
+    /**
+     * Resolve the admin/coach ID for this client by checking coach_messages.
+     * The clients table has no coach_id column; the relationship is inferred
+     * from the most recent coach_messages exchange.
+     * coach_id in tickets is varchar(60) NOT NULL, so we return '' as fallback.
+     */
+    private function resolveCoachId(int $clientId): string
+    {
+        $coachId = DB::table('coach_messages')
+            ->where('client_id', $clientId)
+            ->orderByDesc('created_at')
+            ->value('coach_id');
+
+        return $coachId !== null ? (string) $coachId : '';
+    }
+
     public function render()
     {
+        // tickets table has no client_id column; client_name is the only
+        // client identifier. It is always read from the authenticated user,
+        // so the filter is scoped to the session owner and is safe.
         $clientName = auth('wellcore')->user()->name;
 
         $query = Ticket::where('client_name', $clientName)
@@ -110,11 +132,19 @@ class TicketSupport extends Component
 
         $tickets = $query->get();
 
+        // Single query replacing 4 separate COUNT queries.
+        // status ENUM values: 'open', 'in_progress', 'closed'
+        $statsRaw = Ticket::where('client_name', $clientName)
+            ->selectRaw('status, COUNT(*) as cnt')
+            ->groupBy('status')
+            ->pluck('cnt', 'status')
+            ->toArray();
+
         $stats = [
-            'open'        => Ticket::where('client_name', $clientName)->where('status', 'open')->count(),
-            'in_progress' => Ticket::where('client_name', $clientName)->where('status', 'in_progress')->count(),
-            'closed'      => Ticket::where('client_name', $clientName)->whereIn('status', ['closed', 'resolved'])->count(),
-            'total'       => Ticket::where('client_name', $clientName)->count(),
+            'total'       => (int) array_sum($statsRaw),
+            'open'        => (int) ($statsRaw['open'] ?? 0),
+            'in_progress' => (int) ($statsRaw['in_progress'] ?? 0),
+            'closed'      => (int) ($statsRaw['closed'] ?? 0),
         ];
 
         return view('livewire.client.ticket-support', [
