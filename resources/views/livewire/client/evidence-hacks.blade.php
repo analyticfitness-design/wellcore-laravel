@@ -159,6 +159,7 @@
     </div>
 </div>
 
+@script
 <script>
 function evidenceHacks() {
     return {
@@ -384,3 +385,4 @@ function evidenceHacks() {
     };
 }
 </script>
+@endscript

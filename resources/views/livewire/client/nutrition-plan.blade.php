@@ -59,11 +59,9 @@
             <div class="h-full bg-wc-accent transition-all duration-700 delay-100"
                  :style="{ width: animateBars ? '{{ $macroPercentages['protein'] }}%' : '0%' }"></div>
             <div class="h-full transition-all duration-700 delay-200"
-                 style="background:#3B82F6;"
-                 :style="{ width: animateBars ? '{{ $macroPercentages['carbs'] }}%' : '0%' }"></div>
+                 :style="{ background: '#3B82F6', width: animateBars ? '{{ $macroPercentages['carbs'] }}%' : '0%' }"></div>
             <div class="h-full transition-all duration-700 delay-300"
-                 style="background:#F59E0B;"
-                 :style="{ width: animateBars ? '{{ $macroPercentages['fat'] }}%' : '0%' }"></div>
+                 :style="{ background: '#F59E0B', width: animateBars ? '{{ $macroPercentages['fat'] }}%' : '0%' }"></div>
         </div>
         @endif
 

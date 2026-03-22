@@ -88,17 +88,22 @@ class HabitTracker extends Component
         $todayHabits = [];
         foreach (self::HABITS as $type => $meta) {
             // Streak calculation — runs up to 90 days, backed by 90-day data.
+            // If today is not yet logged, start counting from yesterday so that
+            // an unlogged today does not break an otherwise intact streak.
+            $todayLogged = $last90Logs->contains(fn ($l) =>
+                $l->habit_type === $type &&
+                $l->log_date->format('Y-m-d') === $today
+            );
             $streak = 0;
-            $checkDate = now()->copy();
+            $checkDate = $todayLogged ? now()->copy() : now()->subDay();
             for ($i = 0; $i < 90; $i++) {
                 $hasLog = $last90Logs->contains(fn ($l) =>
                     $l->habit_type === $type &&
                     $l->log_date->format('Y-m-d') === $checkDate->format('Y-m-d')
                 );
-                if ($hasLog || ($i === 0 && ! Carbon::parse($today)->isPast())) {
-                    if ($hasLog) $streak++;
+                if ($hasLog) {
+                    $streak++;
                     $checkDate->subDay();
-                    if (! $hasLog) break;
                 } else {
                     break;
                 }

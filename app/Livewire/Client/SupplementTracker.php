@@ -163,7 +163,7 @@ class SupplementTracker extends Component
         $dailyAdherence = [];
         for ($i = 6; $i >= 0; $i--) {
             $date = Carbon::parse($this->selectedDate)->subDays($i);
-            $dayLogs = $weekLogs->where('log_date', $date->toDateString());
+            $dayLogs = $weekLogs->filter(fn ($l) => $l->log_date->toDateString() === $date->toDateString());
             $expectedPerDay = 0;
             if ($this->supplementPlan && isset($this->supplementPlan['suplementos'])) {
                 foreach ($this->supplementPlan['suplementos'] as $supp) {
