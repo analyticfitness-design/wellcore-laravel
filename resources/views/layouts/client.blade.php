@@ -11,6 +11,12 @@
 
     <title>{{ $title ?? 'Dashboard' }} — WellCore</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/logo-icon-dark.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo-icon-dark.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo-icon-dark.png') }}">
+    <link rel="shortcut icon" href="{{ asset('images/logo-icon-dark.png') }}">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
