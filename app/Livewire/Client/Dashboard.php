@@ -114,11 +114,15 @@ class Dashboard extends Component
             $streakDays    = $xp?->streak_days ?? 0;
             $xpTotal       = $xp?->xp_total ?? 0;
             $level         = $xp?->level ?? 1;
-            $levelCap      = $level * 500;
-            $xpForNext     = $levelCap;
-            $xpProgress    = $levelCap > 0
-                ? (int) round(($xpTotal % $levelCap) / $levelCap * 100)
-                : 0;
+            // XP formula (must match WorkoutPlayer): level = floor(xp / 200) + 1
+            // Recompute level from raw XP so the progress bar is always consistent,
+            // even if the cached $level column is stale.
+            $currentLevel     = (int) floor($xpTotal / 200) + 1;
+            $xpForCurrentLevel = ($currentLevel - 1) * 200; // XP at start of this level
+            $xpForNext        = $currentLevel * 200;         // XP at start of next level
+            $xpProgress       = ($xpForNext > $xpForCurrentLevel)
+                ? (int) round(($xpTotal - $xpForCurrentLevel) / ($xpForNext - $xpForCurrentLevel) * 100)
+                : 100;
             $checkinsMonth = Checkin::where('client_id', $clientId)
                 ->whereYear('checkin_date', now()->year)
                 ->whereMonth('checkin_date', now()->month)

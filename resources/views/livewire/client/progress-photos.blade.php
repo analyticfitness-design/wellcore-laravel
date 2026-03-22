@@ -203,7 +203,7 @@
                                     <div class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary">
                                         @if($photo && $photo->filename && Storage::disk('public')->exists($photo->filename))
                                             <img
-                                                src="{{ Storage::url($photo->filename) }}"
+                                                src="{{ Storage::disk('public')->url($photo->filename) }}"
                                                 alt="{{ $labels[$tipo] }}"
                                                 class="aspect-[3/4] w-full object-cover"
                                             >

@@ -1,322 +1,315 @@
 <div class="space-y-6">
+
+    {{-- Page header --}}
     <div>
         <h1 class="font-display text-3xl tracking-wide text-wc-text">ACADEMIA</h1>
-        <p class="mt-1 text-sm text-wc-text-secondary">6 calculadoras cientificas para optimizar tu entrenamiento y nutricion.</p>
+        <p class="mt-1 text-sm text-wc-text-secondary">Contenido educativo seleccionado para potenciar tu entrenamiento.</p>
     </div>
 
-    {{-- Calculator Tabs --}}
-    <div x-data="{ tab: 'tdee' }">
-        <div class="flex flex-wrap gap-2">
-            @foreach(['tdee' => 'TDEE', 'macros' => 'Macros', '1rm' => '1RM', 'imc' => 'IMC', 'hidratacion' => 'Hidratacion', 'volumen' => 'Volumen'] as $key => $label)
-                <button x-on:click="tab = '{{ $key }}'" :class="tab === '{{ $key }}' ? 'bg-wc-accent text-white' : 'bg-wc-bg-tertiary text-wc-text-secondary hover:text-wc-text'" class="rounded-lg border border-wc-border px-4 py-2 text-sm font-medium transition-colors">{{ $label }}</button>
-            @endforeach
+    {{-- Search + category filter --}}
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+
+        {{-- Search --}}
+        <div class="relative flex-1">
+            <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+            <input
+                type="text"
+                wire:model.live.debounce.300ms="search"
+                placeholder="Buscar contenido..."
+                class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary py-2.5 pl-10 pr-4 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none"
+                aria-label="Buscar contenido de academia"
+            />
+            {{-- Loading indicator --}}
+            <div wire:loading wire:target="search" class="absolute right-3 top-1/2 -translate-y-1/2">
+                <svg class="h-4 w-4 animate-spin text-wc-accent" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+            </div>
         </div>
 
-        {{-- TDEE Calculator --}}
-        <div x-show="tab === 'tdee'" x-data="tdeeCalc()" class="mt-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
-            <h2 class="font-display text-xl tracking-wide text-wc-text">CALCULADORA TDEE</h2>
-            <p class="mt-1 text-xs text-wc-text-tertiary">Formula Mifflin-St Jeor — la mas precisa para estimar gasto calorico diario.</p>
-            <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Peso (kg)</label>
-                    <input type="number" x-model.number="peso" step="0.1" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" placeholder="70">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Estatura (cm)</label>
-                    <input type="number" x-model.number="estatura" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" placeholder="170">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Edad</label>
-                    <input type="number" x-model.number="edad" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" placeholder="25">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Genero</label>
-                    <select x-model="genero" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none">
-                        <option value="m">Masculino</option>
-                        <option value="f">Femenino</option>
-                    </select>
-                </div>
-                <div class="col-span-2">
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Nivel de actividad</label>
-                    <select x-model.number="actividad" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none">
-                        <option value="1.2">Sedentario (escritorio, sin ejercicio)</option>
-                        <option value="1.375">Ligero (1-3 dias/semana)</option>
-                        <option value="1.55">Moderado (3-5 dias/semana)</option>
-                        <option value="1.725">Activo (6-7 dias/semana)</option>
-                        <option value="1.9">Muy activo (doble sesion)</option>
-                    </select>
-                </div>
-            </div>
-            <button x-on:click="calcular()" class="mt-4 rounded-lg bg-wc-accent px-6 py-2 text-sm font-semibold text-white hover:bg-wc-accent-hover">Calcular TDEE</button>
-            <template x-if="resultado > 0">
-                <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-                    <div class="rounded-lg border border-wc-border bg-wc-bg p-4 text-center">
-                        <p class="text-xs text-wc-text-tertiary">BMR</p>
-                        <p class="mt-1 font-data text-xl font-bold text-wc-text" x-text="bmr + ' kcal'"></p>
-                    </div>
-                    <div class="rounded-lg border border-wc-accent/30 bg-wc-accent/5 p-4 text-center">
-                        <p class="text-xs text-wc-text-tertiary">TDEE</p>
-                        <p class="mt-1 font-data text-xl font-bold text-wc-accent" x-text="resultado + ' kcal'"></p>
-                    </div>
-                    <div class="rounded-lg border border-wc-border bg-wc-bg p-4 text-center">
-                        <p class="text-xs text-wc-text-tertiary">Deficit (-400)</p>
-                        <p class="mt-1 font-data text-xl font-bold text-wc-text" x-text="(resultado - 400) + ' kcal'"></p>
-                    </div>
-                    <div class="rounded-lg border border-wc-border bg-wc-bg p-4 text-center">
-                        <p class="text-xs text-wc-text-tertiary">Superavit (+300)</p>
-                        <p class="mt-1 font-data text-xl font-bold text-wc-text" x-text="(resultado + 300) + ' kcal'"></p>
-                    </div>
-                </div>
-            </template>
-        </div>
+        {{-- Category filter --}}
+        @if($categories->isNotEmpty())
+            <select
+                wire:model.live="categoryFilter"
+                class="rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
+                aria-label="Filtrar por categoria"
+            >
+                <option value="">Todas las categorias</option>
+                @foreach($categories as $cat)
+                    <option value="{{ $cat }}">{{ $cat }}</option>
+                @endforeach
+            </select>
+        @endif
+    </div>
 
-        {{-- Macros Calculator --}}
-        <div x-show="tab === 'macros'" x-data="macrosCalc()" class="mt-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
-            <h2 class="font-display text-xl tracking-wide text-wc-text">CALCULADORA DE MACROS</h2>
-            <p class="mt-1 text-xs text-wc-text-tertiary">Calcula proteina, carbohidratos y grasas segun tu TDEE y objetivo.</p>
-            <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Calorias objetivo</label>
-                    <input type="number" x-model.number="calorias" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" placeholder="2200">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Peso corporal (kg)</label>
-                    <input type="number" x-model.number="peso" step="0.1" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" placeholder="70">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Proteina (g/kg)</label>
-                    <select x-model.number="protRatio" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none">
-                        <option value="1.6">1.6 g/kg (mantenimiento)</option>
-                        <option value="2.0">2.0 g/kg (recomposicion)</option>
-                        <option value="2.2">2.2 g/kg (deficit)</option>
-                    </select>
-                </div>
-            </div>
-            <button x-on:click="calcular()" class="mt-4 rounded-lg bg-wc-accent px-6 py-2 text-sm font-semibold text-white hover:bg-wc-accent-hover">Calcular Macros</button>
-            <template x-if="proteina > 0">
-                <div class="mt-6 grid grid-cols-3 gap-4">
-                    <div class="rounded-lg border border-red-500/30 bg-red-500/5 p-4 text-center">
-                        <p class="text-xs text-wc-text-tertiary">Proteina</p>
-                        <p class="mt-1 font-data text-2xl font-bold text-red-500" x-text="proteina + 'g'"></p>
-                        <p class="text-xs text-wc-text-tertiary" x-text="protKcal + ' kcal'"></p>
-                    </div>
-                    <div class="rounded-lg border border-yellow-500/30 bg-yellow-500/5 p-4 text-center">
-                        <p class="text-xs text-wc-text-tertiary">Carbohidratos</p>
-                        <p class="mt-1 font-data text-2xl font-bold text-yellow-500" x-text="carbs + 'g'"></p>
-                        <p class="text-xs text-wc-text-tertiary" x-text="carbsKcal + ' kcal'"></p>
-                    </div>
-                    <div class="rounded-lg border border-indigo-500/30 bg-indigo-500/5 p-4 text-center">
-                        <p class="text-xs text-wc-text-tertiary">Grasas</p>
-                        <p class="mt-1 font-data text-2xl font-bold text-indigo-400" x-text="grasas + 'g'"></p>
-                        <p class="text-xs text-wc-text-tertiary" x-text="grasasKcal + ' kcal'"></p>
-                    </div>
-                </div>
-            </template>
+    {{-- Active filters summary --}}
+    @if($search || $categoryFilter)
+        <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs text-wc-text-tertiary">Filtrando por:</span>
+            @if($search)
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-medium text-wc-accent">
+                    "{{ $search }}"
+                    <button wire:click="$set('search', '')" aria-label="Eliminar filtro de busqueda" class="hover:text-wc-accent-hover">
+                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </span>
+            @endif
+            @if($categoryFilter)
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-wc-bg-tertiary px-3 py-1 text-xs font-medium text-wc-text-secondary border border-wc-border">
+                    {{ $categoryFilter }}
+                    <button wire:click="$set('categoryFilter', '')" aria-label="Eliminar filtro de categoria" class="hover:text-wc-text">
+                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </span>
+            @endif
         </div>
+    @endif
 
-        {{-- 1RM Calculator --}}
-        <div x-show="tab === '1rm'" x-data="rmCalc()" class="mt-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
-            <h2 class="font-display text-xl tracking-wide text-wc-text">CALCULADORA 1RM</h2>
-            <p class="mt-1 text-xs text-wc-text-tertiary">Formula Brzycki — estima tu repeticion maxima sin arriesgar lesion.</p>
-            <div class="mt-6 grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Peso levantado (kg)</label>
-                    <input type="number" x-model.number="pesoLevantado" step="0.5" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" placeholder="80">
+    {{-- Two-column layout when content is selected --}}
+    <div class="{{ $selectedContent ? 'grid grid-cols-1 gap-6 lg:grid-cols-2' : '' }}">
+
+        {{-- Content grid --}}
+        <div>
+            @if($contents->isEmpty())
+                {{-- Empty state --}}
+                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-12 text-center">
+                    <svg class="mx-auto h-12 w-12 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.966 8.966 0 0 0-6 2.292m0-14.25v14.25" />
+                    </svg>
+                    <p class="mt-3 text-sm font-medium text-wc-text-secondary">
+                        @if($search || $categoryFilter)
+                            Sin resultados para tu busqueda.
+                        @else
+                            No hay contenido disponible aun.
+                        @endif
+                    </p>
+                    @if($search || $categoryFilter)
+                        <p class="mt-1 text-xs text-wc-text-tertiary">Intenta cambiar los filtros o la busqueda.</p>
+                        <button
+                            wire:click="$set('search', ''); $set('categoryFilter', '')"
+                            class="mt-4 rounded-lg bg-wc-accent px-4 py-2 text-xs font-semibold text-white hover:bg-wc-accent/90"
+                        >
+                            Limpiar filtros
+                        </button>
+                    @endif
                 </div>
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Repeticiones realizadas</label>
-                    <input type="number" x-model.number="reps" min="1" max="15" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" placeholder="5">
-                </div>
-            </div>
-            <button x-on:click="calcular()" class="mt-4 rounded-lg bg-wc-accent px-6 py-2 text-sm font-semibold text-white hover:bg-wc-accent-hover">Calcular 1RM</button>
-            <template x-if="rm > 0">
-                <div class="mt-6">
-                    <div class="mb-4 rounded-lg border border-wc-accent/30 bg-wc-accent/5 p-4 text-center">
-                        <p class="text-xs text-wc-text-tertiary">Tu 1RM estimado</p>
-                        <p class="font-data text-3xl font-bold text-wc-accent" x-text="rm + ' kg'"></p>
-                    </div>
-                    <div class="grid grid-cols-3 gap-3 sm:grid-cols-5">
-                        <template x-for="pct in [90, 85, 80, 75, 70]" :key="pct">
-                            <div class="rounded-lg border border-wc-border bg-wc-bg p-3 text-center">
-                                <p class="text-xs text-wc-text-tertiary" x-text="pct + '%'"></p>
-                                <p class="mt-1 font-data text-lg font-bold text-wc-text" x-text="Math.round(rm * pct / 100) + ' kg'"></p>
+            @else
+                {{-- Results count --}}
+                <p class="mb-4 text-xs text-wc-text-tertiary" wire:loading.class="opacity-50" aria-live="polite">
+                    {{ $contents->count() }} {{ $contents->count() === 1 ? 'resultado' : 'resultados' }}
+                </p>
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 {{ $selectedContent ? 'lg:grid-cols-1' : 'lg:grid-cols-3' }}">
+                    @foreach($contents as $content)
+                        @php
+                            $isSelected = $selectedContent && $selectedContent->id === $content->id;
+                            $isVideo = $content->content_type === 'video';
+                        @endphp
+                        <button
+                            wire:click="selectContent({{ $content->id }})"
+                            class="group w-full cursor-pointer rounded-xl border text-left transition-all focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg
+                                {{ $isSelected
+                                    ? 'border-wc-accent bg-wc-accent/5'
+                                    : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-accent/40' }}"
+                            aria-expanded="{{ $isSelected ? 'true' : 'false' }}"
+                            aria-label="Ver contenido: {{ $content->title }}"
+                        >
+                            {{-- Thumbnail / type indicator --}}
+                            <div class="relative aspect-video overflow-hidden rounded-t-xl bg-wc-bg-secondary">
+                                @if($content->thumbnail_url)
+                                    <img
+                                        src="{{ $content->thumbnail_url }}"
+                                        alt="{{ $content->title }}"
+                                        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                        loading="lazy"
+                                    />
+                                @else
+                                    <div class="flex h-full items-center justify-center">
+                                        @if($isVideo)
+                                            <svg class="h-10 w-10 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+                                            </svg>
+                                        @else
+                                            <svg class="h-10 w-10 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.966 8.966 0 0 0-6 2.292m0-14.25v14.25" />
+                                            </svg>
+                                        @endif
+                                    </div>
+                                @endif
+
+                                {{-- Play overlay for video --}}
+                                @if($isVideo)
+                                    <div class="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100">
+                                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-wc-accent/90 shadow-lg">
+                                            <svg class="ml-0.5 h-5 w-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M8 5v14l11-7z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                {{-- Content type badge --}}
+                                <span class="absolute left-2 top-2 rounded-full px-2 py-0.5 text-[10px] font-semibold
+                                    {{ $isVideo ? 'bg-purple-500/20 text-purple-300' : 'bg-blue-500/20 text-blue-300' }}">
+                                    {{ strtoupper($content->content_type ?? 'ARTICULO') }}
+                                </span>
+
+                                {{-- Selected indicator --}}
+                                @if($isSelected)
+                                    <div class="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-wc-accent">
+                                        <svg class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                        </svg>
+                                    </div>
+                                @endif
                             </div>
-                        </template>
-                    </div>
+
+                            {{-- Info --}}
+                            <div class="p-4">
+                                @if($content->category)
+                                    <span class="text-[10px] font-semibold uppercase tracking-wider text-wc-accent">{{ $content->category }}</span>
+                                @endif
+                                <h3 class="mt-1 text-sm font-semibold leading-snug text-wc-text">{{ $content->title }}</h3>
+                                @if($content->description)
+                                    <p class="mt-1.5 line-clamp-2 text-xs text-wc-text-tertiary">{{ $content->description }}</p>
+                                @endif
+                            </div>
+                        </button>
+                    @endforeach
                 </div>
-            </template>
+            @endif
         </div>
 
-        {{-- IMC Calculator --}}
-        <div x-show="tab === 'imc'" x-data="imcCalc()" class="mt-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
-            <h2 class="font-display text-xl tracking-wide text-wc-text">CALCULADORA IMC</h2>
-            <p class="mt-1 text-xs text-wc-text-tertiary">Indice de Masa Corporal — referencia general, no indicador definitivo.</p>
-            <div class="mt-6 grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Peso (kg)</label>
-                    <input type="number" x-model.number="peso" step="0.1" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" placeholder="70">
+        {{-- Content detail panel (shown when a card is selected) --}}
+        @if($selectedContent)
+            <div
+                class="sticky top-4 h-fit rounded-xl border border-wc-accent/30 bg-wc-bg-secondary"
+                wire:transition
+                id="content-detail"
+                aria-live="polite"
+            >
+                {{-- Panel header --}}
+                <div class="flex items-start justify-between border-b border-wc-border px-5 py-4">
+                    <div class="flex-1 pr-4">
+                        @if($selectedContent->category)
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-wc-accent">{{ $selectedContent->category }}</span>
+                        @endif
+                        <h2 class="mt-0.5 font-display text-xl tracking-wide text-wc-text">{{ $selectedContent->title }}</h2>
+                    </div>
+                    <button
+                        wire:click="$set('selectedContentId', null)"
+                        class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-wc-text-secondary transition-colors hover:bg-wc-bg-tertiary hover:text-wc-text focus:outline-none focus:ring-2 focus:ring-wc-accent"
+                        aria-label="Cerrar panel de contenido"
+                    >
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Estatura (cm)</label>
-                    <input type="number" x-model.number="estatura" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" placeholder="170">
-                </div>
-            </div>
-            <button x-on:click="calcular()" class="mt-4 rounded-lg bg-wc-accent px-6 py-2 text-sm font-semibold text-white hover:bg-wc-accent-hover">Calcular IMC</button>
-            <template x-if="imc > 0">
-                <div class="mt-6 rounded-lg border border-wc-border bg-wc-bg p-4 text-center">
-                    <p class="text-xs text-wc-text-tertiary">Tu IMC</p>
-                    <p class="font-data text-3xl font-bold" :class="imc < 18.5 ? 'text-yellow-500' : imc < 25 ? 'text-green-500' : imc < 30 ? 'text-yellow-500' : 'text-red-500'" x-text="imc"></p>
-                    <p class="mt-1 text-sm font-medium" :class="imc < 18.5 ? 'text-yellow-500' : imc < 25 ? 'text-green-500' : imc < 30 ? 'text-yellow-500' : 'text-red-500'" x-text="categoria"></p>
-                </div>
-            </template>
-        </div>
 
-        {{-- Hidratacion Calculator --}}
-        <div x-show="tab === 'hidratacion'" x-data="hidratCalc()" class="mt-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
-            <h2 class="font-display text-xl tracking-wide text-wc-text">CALCULADORA DE HIDRATACION</h2>
-            <p class="mt-1 text-xs text-wc-text-tertiary">Calcula tu ingesta diaria de agua recomendada.</p>
-            <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Peso (kg)</label>
-                    <input type="number" x-model.number="peso" step="0.1" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" placeholder="70">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Minutos ejercicio/dia</label>
-                    <input type="number" x-model.number="ejercicio" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" placeholder="60">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Clima</label>
-                    <select x-model.number="clima" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none">
-                        <option value="0">Templado</option>
-                        <option value="500">Caliente/humedo</option>
-                    </select>
-                </div>
-            </div>
-            <button x-on:click="calcular()" class="mt-4 rounded-lg bg-wc-accent px-6 py-2 text-sm font-semibold text-white hover:bg-wc-accent-hover">Calcular</button>
-            <template x-if="litros > 0">
-                <div class="mt-6 grid grid-cols-2 gap-4">
-                    <div class="rounded-lg border border-blue-500/30 bg-blue-500/5 p-4 text-center">
-                        <p class="text-xs text-wc-text-tertiary">Agua diaria</p>
-                        <p class="font-data text-3xl font-bold text-blue-400" x-text="litros + ' L'"></p>
-                    </div>
-                    <div class="rounded-lg border border-wc-border bg-wc-bg p-4 text-center">
-                        <p class="text-xs text-wc-text-tertiary">Equivale a</p>
-                        <p class="font-data text-3xl font-bold text-wc-text" x-text="vasos + ' vasos'"></p>
-                        <p class="text-xs text-wc-text-tertiary">(250ml c/u)</p>
-                    </div>
-                </div>
-            </template>
-        </div>
+                {{-- Panel body --}}
+                <div class="max-h-[75vh] overflow-y-auto px-5 py-5 space-y-5">
 
-        {{-- Volumen Calculator --}}
-        <div x-show="tab === 'volumen'" x-data="volumenCalc()" class="mt-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
-            <h2 class="font-display text-xl tracking-wide text-wc-text">CALCULADORA DE VOLUMEN</h2>
-            <p class="mt-1 text-xs text-wc-text-tertiary">Volumen total de entrenamiento por grupo muscular (series x reps x peso).</p>
-            <div class="mt-6 grid grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Series</label>
-                    <input type="number" x-model.number="series" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" placeholder="4">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Reps por serie</label>
-                    <input type="number" x-model.number="reps" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" placeholder="10">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-wc-text-tertiary">Peso (kg)</label>
-                    <input type="number" x-model.number="peso" step="0.5" class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" placeholder="60">
+                    {{-- Video embed --}}
+                    @if($selectedContent->content_type === 'video' && $selectedContent->content_url)
+                        @php
+                            $videoUrl = $selectedContent->content_url;
+                            $isYoutube = str_contains($videoUrl, 'youtube.com') || str_contains($videoUrl, 'youtu.be');
+
+                            if ($isYoutube) {
+                                // Normalize to embed URL
+                                if (str_contains($videoUrl, 'youtu.be/')) {
+                                    $ytId = explode('youtu.be/', $videoUrl)[1];
+                                    $ytId = explode('?', $ytId)[0];
+                                } elseif (preg_match('/[?&]v=([^&]+)/', $videoUrl, $m)) {
+                                    $ytId = $m[1];
+                                } elseif (str_contains($videoUrl, '/embed/')) {
+                                    $ytId = explode('/embed/', $videoUrl)[1];
+                                    $ytId = explode('?', $ytId)[0];
+                                } else {
+                                    $ytId = null;
+                                }
+                                $embedUrl = $ytId ? "https://www.youtube.com/embed/{$ytId}?rel=0&modestbranding=1" : null;
+                            }
+                        @endphp
+
+                        @if($isYoutube && isset($embedUrl))
+                            <div class="aspect-video overflow-hidden rounded-xl">
+                                <iframe
+                                    src="{{ $embedUrl }}"
+                                    title="{{ $selectedContent->title }}"
+                                    class="h-full w-full"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen
+                                ></iframe>
+                            </div>
+                        @else
+                            <div class="aspect-video overflow-hidden rounded-xl bg-wc-bg">
+                                <video
+                                    src="{{ $videoUrl }}"
+                                    class="h-full w-full rounded-xl"
+                                    controls
+                                    preload="metadata"
+                                    title="{{ $selectedContent->title }}"
+                                ></video>
+                            </div>
+                        @endif
+
+                    {{-- Thumbnail for non-video types --}}
+                    @elseif($selectedContent->thumbnail_url)
+                        <img
+                            src="{{ $selectedContent->thumbnail_url }}"
+                            alt="{{ $selectedContent->title }}"
+                            class="w-full rounded-xl object-cover"
+                        />
+                    @endif
+
+                    {{-- Description --}}
+                    @if($selectedContent->description)
+                        <p class="text-sm text-wc-text-secondary leading-relaxed">{{ $selectedContent->description }}</p>
+                    @endif
+
+                    {{-- Rich HTML body --}}
+                    @if($selectedContent->body_html)
+                        <div class="prose prose-sm max-w-none
+                            prose-headings:font-display prose-headings:text-wc-text prose-headings:tracking-wide
+                            prose-p:text-wc-text-secondary prose-p:leading-relaxed
+                            prose-strong:text-wc-text
+                            prose-a:text-wc-accent prose-a:no-underline hover:prose-a:underline
+                            prose-ul:text-wc-text-secondary prose-ol:text-wc-text-secondary
+                            prose-li:marker:text-wc-accent
+                            prose-blockquote:border-l-wc-accent prose-blockquote:text-wc-text-tertiary
+                            prose-code:text-wc-accent prose-code:bg-wc-bg-tertiary prose-code:rounded prose-code:px-1">
+                            {!! $selectedContent->body_html !!}
+                        </div>
+                    @elseif(!$selectedContent->content_url && !$selectedContent->body_html)
+                        <p class="text-sm italic text-wc-text-tertiary">Contenido no disponible aun.</p>
+                    @endif
+
+                    {{-- External link --}}
+                    @if($selectedContent->content_type !== 'video' && $selectedContent->content_url)
+                        <a
+                            href="{{ $selectedContent->content_url }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wc-accent/90 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2"
+                        >
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                            </svg>
+                            Ver recurso completo
+                        </a>
+                    @endif
                 </div>
             </div>
-            <button x-on:click="calcular()" class="mt-4 rounded-lg bg-wc-accent px-6 py-2 text-sm font-semibold text-white hover:bg-wc-accent-hover">Calcular Volumen</button>
-            <template x-if="volumen > 0">
-                <div class="mt-6 grid grid-cols-3 gap-4">
-                    <div class="rounded-lg border border-wc-accent/30 bg-wc-accent/5 p-4 text-center">
-                        <p class="text-xs text-wc-text-tertiary">Volumen total</p>
-                        <p class="font-data text-2xl font-bold text-wc-accent" x-text="volumen.toLocaleString() + ' kg'"></p>
-                    </div>
-                    <div class="rounded-lg border border-wc-border bg-wc-bg p-4 text-center">
-                        <p class="text-xs text-wc-text-tertiary">Reps totales</p>
-                        <p class="font-data text-2xl font-bold text-wc-text" x-text="totalReps"></p>
-                    </div>
-                    <div class="rounded-lg border border-wc-border bg-wc-bg p-4 text-center">
-                        <p class="text-xs text-wc-text-tertiary">Tonelaje</p>
-                        <p class="font-data text-2xl font-bold text-wc-text" x-text="(volumen/1000).toFixed(2) + ' ton'"></p>
-                    </div>
-                </div>
-            </template>
-        </div>
+        @endif
     </div>
-
-    {{-- Alpine calculators --}}
-    <script>
-        function tdeeCalc() {
-            return {
-                peso: null, estatura: null, edad: null, genero: 'm', actividad: 1.55, bmr: 0, resultado: 0,
-                calcular() {
-                    if (!this.peso || !this.estatura || !this.edad) return;
-                    this.bmr = Math.round(this.genero === 'm'
-                        ? (10 * this.peso) + (6.25 * this.estatura) - (5 * this.edad) + 5
-                        : (10 * this.peso) + (6.25 * this.estatura) - (5 * this.edad) - 161);
-                    this.resultado = Math.round(this.bmr * this.actividad);
-                }
-            };
-        }
-        function macrosCalc() {
-            return {
-                calorias: null, peso: null, protRatio: 2.0, proteina: 0, carbs: 0, grasas: 0, protKcal: 0, carbsKcal: 0, grasasKcal: 0,
-                calcular() {
-                    if (!this.calorias || !this.peso) return;
-                    this.proteina = Math.round(this.peso * this.protRatio);
-                    this.protKcal = this.proteina * 4;
-                    this.grasas = Math.round(this.peso * 0.9);
-                    this.grasasKcal = this.grasas * 9;
-                    this.carbsKcal = this.calorias - this.protKcal - this.grasasKcal;
-                    this.carbs = Math.round(this.carbsKcal / 4);
-                    if (this.carbs < 0) this.carbs = 0;
-                    if (this.carbsKcal < 0) this.carbsKcal = 0;
-                }
-            };
-        }
-        function rmCalc() {
-            return {
-                pesoLevantado: null, reps: null, rm: 0,
-                calcular() {
-                    if (!this.pesoLevantado || !this.reps || this.reps < 1) return;
-                    if (this.reps === 1) { this.rm = this.pesoLevantado; return; }
-                    this.rm = Math.round(this.pesoLevantado / (1.0278 - 0.0278 * this.reps));
-                }
-            };
-        }
-        function imcCalc() {
-            return {
-                peso: null, estatura: null, imc: 0, categoria: '',
-                calcular() {
-                    if (!this.peso || !this.estatura) return;
-                    const h = this.estatura / 100;
-                    this.imc = (this.peso / (h * h)).toFixed(1);
-                    this.categoria = this.imc < 18.5 ? 'Bajo peso' : this.imc < 25 ? 'Peso normal' : this.imc < 30 ? 'Sobrepeso' : 'Obesidad';
-                }
-            };
-        }
-        function hidratCalc() {
-            return {
-                peso: null, ejercicio: 0, clima: 0, litros: 0, vasos: 0,
-                calcular() {
-                    if (!this.peso) return;
-                    const ml = (this.peso * 35) + (this.ejercicio * 12) + this.clima;
-                    this.litros = (ml / 1000).toFixed(1);
-                    this.vasos = Math.ceil(ml / 250);
-                }
-            };
-        }
-        function volumenCalc() {
-            return {
-                series: null, reps: null, peso: null, volumen: 0, totalReps: 0,
-                calcular() {
-                    if (!this.series || !this.reps || !this.peso) return;
-                    this.totalReps = this.series * this.reps;
-                    this.volumen = this.totalReps * this.peso;
-                }
-            };
-        }
-    </script>
 </div>

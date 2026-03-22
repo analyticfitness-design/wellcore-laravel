@@ -2,19 +2,50 @@
 
 namespace App\Livewire\Client;
 
+use App\Models\AcademyContent;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('layouts.client')]
+#[Layout('layouts.client', ['title' => 'Academia — WellCore'])]
 class Academia extends Component
 {
-    public function placeholder()
+    public string $search = '';
+    public string $categoryFilter = '';
+    public ?int $selectedContentId = null;
+
+    public function selectContent(int $id): void
     {
-        return view('livewire.placeholders.loading-skeleton');
+        $this->selectedContentId = $this->selectedContentId === $id ? null : $id;
     }
 
     public function render()
     {
-        return view('livewire.client.academia');
+        $query = AcademyContent::where('active', true)
+            ->orderBy('sort_order');
+
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->where('title', 'like', "%{$this->search}%")
+                  ->orWhere('description', 'like', "%{$this->search}%");
+            });
+        }
+
+        if ($this->categoryFilter) {
+            $query->where('category', $this->categoryFilter);
+        }
+
+        $contents = $query->get();
+
+        $categories = AcademyContent::where('active', true)
+            ->distinct()
+            ->pluck('category')
+            ->filter()
+            ->values();
+
+        $selectedContent = $this->selectedContentId
+            ? $contents->firstWhere('id', $this->selectedContentId)
+            : null;
+
+        return view('livewire.client.academia', compact('contents', 'categories', 'selectedContent'));
     }
 }

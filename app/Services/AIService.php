@@ -72,6 +72,72 @@ class AIService
         return ['raw_content' => $response];
     }
 
+    /**
+     * Analyze an image using Claude's vision capabilities.
+     *
+     * @param string $base64Image Base64-encoded image data
+     * @param string $mediaType   MIME type: 'image/jpeg', 'image/png', 'image/webp'
+     * @param string $systemPrompt
+     * @param string $userMessage
+     * @param int    $maxTokens
+     */
+    public function analyzeImage(
+        string $base64Image,
+        string $mediaType,
+        string $systemPrompt,
+        string $userMessage,
+        int $maxTokens = 1024
+    ): ?string {
+        if (empty($this->apiKey)) {
+            Log::warning('AI Service: API key not configured for image analysis');
+            return null;
+        }
+
+        try {
+            $response = Http::withHeaders([
+                'x-api-key'         => $this->apiKey,
+                'anthropic-version' => '2023-06-01',
+                'content-type'      => 'application/json',
+            ])->timeout(60)->post("{$this->baseUrl}/v1/messages", [
+                'model'      => $this->model,
+                'max_tokens' => $maxTokens,
+                'system'     => $systemPrompt,
+                'messages'   => [
+                    [
+                        'role'    => 'user',
+                        'content' => [
+                            [
+                                'type'   => 'image',
+                                'source' => [
+                                    'type'       => 'base64',
+                                    'media_type' => $mediaType,
+                                    'data'       => $base64Image,
+                                ],
+                            ],
+                            [
+                                'type' => 'text',
+                                'text' => $userMessage,
+                            ],
+                        ],
+                    ],
+                ],
+            ]);
+
+            if ($response->successful()) {
+                return $response->json('content.0.text');
+            }
+
+            Log::error('AI Service image analysis error', [
+                'status' => $response->status(),
+                'body'   => $response->body(),
+            ]);
+            return null;
+        } catch (\Exception $e) {
+            Log::error('AI Service image exception', ['message' => $e->getMessage()]);
+            return null;
+        }
+    }
+
     protected function getPlanSystemPrompt(string $planType): string
     {
         return match($planType) {

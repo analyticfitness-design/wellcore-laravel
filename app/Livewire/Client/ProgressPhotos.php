@@ -44,6 +44,7 @@ class ProgressPhotos extends Component
 
         $this->photos = ProgressPhoto::where('client_id', $clientId)
             ->orderByDesc('photo_date')
+            ->limit(60) // 20 semanas × 3 ángulos
             ->get()
             ->groupBy(fn ($photo) => $photo->photo_date->format('Y-m-d'));
     }
@@ -77,7 +78,7 @@ class ProgressPhotos extends Component
                 continue;
             }
 
-            $filename = sprintf(
+            $relativePath = sprintf(
                 'progress/%d/%s_%s.%s',
                 $clientId,
                 $this->uploadDate,
@@ -85,13 +86,18 @@ class ProgressPhotos extends Component
                 $photo->getClientOriginalExtension()
             );
 
-            $photo->storeAs('public', $filename);
+            // Store inside the 'public' disk so Storage::disk('public')->url() resolves correctly
+            $photo->storeAs(
+                dirname($relativePath),
+                basename($relativePath),
+                'public'
+            );
 
             ProgressPhoto::create([
-                'client_id' => $clientId,
+                'client_id'  => $clientId,
                 'photo_date' => $this->uploadDate,
-                'tipo' => $tipo,
-                'filename' => $filename,
+                'tipo'       => $tipo,
+                'filename'   => $relativePath, // path relative to public disk root
             ]);
         }
 

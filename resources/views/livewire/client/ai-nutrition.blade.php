@@ -89,7 +89,7 @@
             Registro Manual
         </button>
         <button wire:click="setTab('ai')"
-                class="rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors opacity-50 cursor-not-allowed bg-wc-bg-tertiary text-wc-text-secondary"
+                class="rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors {{ $activeTab === 'ai' ? 'bg-wc-accent text-white' : 'bg-wc-bg-tertiary text-wc-text-secondary hover:text-wc-text' }} {{ !$aiAvailable ? 'opacity-50 cursor-not-allowed' : '' }}"
                 {{ $aiAvailable ? '' : 'disabled' }}
                 title="{{ $aiAvailable ? '' : 'Proximamente disponible' }}">
             <span class="flex items-center gap-2">
@@ -235,20 +235,63 @@
                 @error('photo') <p class="mt-2 text-xs text-wc-accent">{{ $message }}</p> @enderror
             </div>
 
-            {{-- Analyze button (disabled) --}}
-            <button disabled
-                    class="w-full rounded-lg bg-wc-accent py-2.5 text-sm font-semibold text-white opacity-50 cursor-not-allowed"
-                    title="Proximamente disponible">
+            {{-- Analyze button --}}
+            <button wire:click="analyzePhoto"
+                    wire:loading.attr="disabled"
+                    wire:loading.class="opacity-50 cursor-not-allowed"
+                    :disabled="$wire.isAnalyzing"
+                    class="w-full rounded-lg bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 <span class="flex items-center justify-center gap-2">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <svg wire:loading.remove wire:target="analyzePhoto" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
                     </svg>
-                    Analizar foto
+                    <svg wire:loading wire:target="analyzePhoto" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                    <span wire:loading.remove wire:target="analyzePhoto">Analizar con IA</span>
+                    <span wire:loading wire:target="analyzePhoto">Analizando...</span>
                 </span>
             </button>
 
-            <p class="text-xs text-wc-text-tertiary text-center">Sube una foto de tu comida y tu coach analizara los macronutrientes de tu plato. Disponible proximamente.</p>
+            {{-- Analysis result --}}
+            @if($analysisResult)
+                <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 space-y-2">
+                    <div class="flex items-center gap-2">
+                        <svg class="h-4 w-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                        <p class="text-sm font-semibold text-emerald-400">Resultado del analisis</p>
+                        @if(!empty($analysisResult['confidence']))
+                            <span class="ml-auto text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full
+                                {{ $analysisResult['confidence'] === 'high' ? 'bg-emerald-500/20 text-emerald-400' : ($analysisResult['confidence'] === 'medium' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400') }}">
+                                {{ $analysisResult['confidence'] === 'high' ? 'Alta confianza' : ($analysisResult['confidence'] === 'medium' ? 'Confianza media' : 'Baja confianza') }}
+                            </span>
+                        @endif
+                    </div>
+                    <p class="text-sm font-medium text-wc-text">{{ $analysisResult['food_name'] ?? 'Alimento detectado' }}</p>
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                        <span class="text-wc-text/70">Calorias: <strong class="text-wc-text">{{ $analysisResult['calories'] ?? 0 }} kcal</strong></span>
+                        <span class="text-wc-text/70">Proteina: <strong class="text-wc-text">{{ $analysisResult['protein_g'] ?? 0 }}g</strong></span>
+                        <span class="text-wc-text/70">Carbohidratos: <strong class="text-wc-text">{{ $analysisResult['carbs_g'] ?? 0 }}g</strong></span>
+                        <span class="text-wc-text/70">Grasa: <strong class="text-wc-text">{{ $analysisResult['fat_g'] ?? 0 }}g</strong></span>
+                    </div>
+                    @if(!empty($analysisResult['notes']))
+                        <p class="text-xs text-wc-text/50 italic">{{ $analysisResult['notes'] }}</p>
+                    @endif
+                    <p class="text-[11px] text-wc-text/40 border-t border-wc-border pt-2">Los datos fueron pre-llenados en el formulario manual. Verifica y guarda.</p>
+                </div>
+            @endif
+
+            {{-- Analysis error --}}
+            @if($analysisError)
+                <div class="rounded-lg border border-red-500/30 bg-red-500/10 p-3">
+                    <p class="text-xs text-red-400">{{ $analysisError }}</p>
+                </div>
+            @endif
+
+            <p class="text-xs text-wc-text-tertiary text-center">Sube una foto de tu comida para que la IA estime los macronutrientes. Generado con Claude AI.</p>
         </div>
     @endif
 

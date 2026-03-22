@@ -81,7 +81,14 @@ class PersonalRecords extends Component
 
         if ($this->editingId) {
             $pr = PersonalRecord::where('client_id', $clientId)->findOrFail($this->editingId);
+            $oldExercise = $pr->exercise;
             $pr->update($data);
+
+            // If the exercise name changed, recalculate is_current for the old exercise too.
+            $exercisesToRecalc = array_unique([$oldExercise, $this->exercise]);
+            foreach ($exercisesToRecalc as $exerciseName) {
+                $this->recalculateCurrentPr($clientId, $exerciseName);
+            }
         } else {
             // Mark previous records for this exercise as not current
             PersonalRecord::where('client_id', $clientId)
@@ -128,6 +135,30 @@ class PersonalRecords extends Component
     {
         $this->showForm = false;
         $this->resetForm();
+    }
+
+    private function recalculateCurrentPr(int $clientId, string $exerciseName): void
+    {
+        // Determine the best PR for this exercise.
+        // Priority: highest weight → highest reps → longest duration_sec → longest distance_km.
+        // This covers all category types (fuerza, calistenia, cardio, flexibilidad).
+        $bestPr = PersonalRecord::where('client_id', $clientId)
+            ->where('exercise', $exerciseName)
+            ->orderByRaw('COALESCE(weight, 0) DESC')
+            ->orderByRaw('COALESCE(reps, 0) DESC')
+            ->orderByRaw('COALESCE(duration_sec, 0) DESC')
+            ->orderByRaw('COALESCE(distance_km, 0) DESC')
+            ->orderByDesc('achieved_at')
+            ->first();
+
+        // Reset all records for this exercise, then mark the winner.
+        PersonalRecord::where('client_id', $clientId)
+            ->where('exercise', $exerciseName)
+            ->update(['is_current' => false]);
+
+        if ($bestPr) {
+            $bestPr->update(['is_current' => true]);
+        }
     }
 
     private function resetForm(): void
