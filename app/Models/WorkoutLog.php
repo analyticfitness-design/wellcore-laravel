@@ -9,6 +9,9 @@ class WorkoutLog extends Model
 {
     protected $table = 'workout_logs';
 
+    // vanilla PHP schema has created_at but no updated_at
+    const UPDATED_AT = null;
+
     protected $fillable = [
         'session_id',
         'exercise_name',
