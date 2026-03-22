@@ -361,7 +361,7 @@
                                             <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                             </svg>
-                                            {{ $exRestDisplay }}s descanso
+                                            {{ is_numeric($exRestDisplay) ? $exRestDisplay . 's' : $exRestDisplay }} descanso
                                         </span>
                                     @endif
 
@@ -425,7 +425,8 @@
                     {{-- Set grid --}}
                     <div class="border-t border-wc-border">
                         {{-- Table header --}}
-                        <div class="grid grid-cols-[40px_72px_1fr_1fr_48px] gap-1 px-3 py-2 bg-wc-bg-secondary/50">
+                        <div class="grid gap-1 px-3 py-2 bg-wc-bg-secondary/50"
+                             style="grid-template-columns: 40px 72px 1fr 1fr 48px">
                             <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Set</span>
                             <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Anterior</span>
                             <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Peso (kg)</span>
@@ -436,19 +437,25 @@
                         {{-- Set rows --}}
                         @for($setNum = 1; $setNum <= $totalSets; $setNum++)
                             @php
-                                $currentSet = $exSetData[$setNum] ?? [];
-                                $isCompleted = !empty($currentSet['completed']);
-                                $isPr = !empty($currentSet['is_pr']);
-                                $setWeight = $currentSet['weight'] ?? $currentSet['weight_kg'] ?? '';
-                                $setReps = $currentSet['reps'] ?? '';
+                                $currentSet   = $exSetData[$setNum] ?? [];
+                                $isCompleted  = !empty($currentSet['completed']);
+                                $isPr         = !empty($currentSet['is_pr']);
+                                $setWeight    = $currentSet['weight'] ?? $currentSet['weight_kg'] ?? '';
+                                $setReps      = $currentSet['reps'] ?? '';
+
+                                // Parse reps: "8-10" → 8, "12" → 12, empty → exercise target first number
+                                $repsRaw      = $setReps !== '' ? $setReps : ($exercise['repeticiones'] ?? $exercise['reps'] ?? 10);
+                                preg_match('/\d+/', (string) $repsRaw, $_m);
+                                $repsInitial  = isset($_m[0]) ? (int) $_m[0] : 10;
                             @endphp
                             <div
-                                class="grid grid-cols-[40px_72px_1fr_1fr_48px] gap-1 items-center px-3 py-2 transition-colors
+                                class="grid gap-1 items-center px-3 py-2 transition-colors
                                     {{ $isCompleted ? 'bg-emerald-500/5' : '' }}
                                     {{ $setNum < $totalSets ? 'border-b border-wc-border/50' : '' }}"
+                                style="grid-template-columns: 40px 72px 1fr 1fr 48px"
                                 x-data="{
-                                    weight: {{ $setWeight ?: 0 }},
-                                    reps: {{ $setReps ?: ($exercise['repeticiones'] ?? $exercise['reps'] ?? 10) }},
+                                    weight: {{ (float)($setWeight ?: 0) }},
+                                    reps: {{ $repsInitial }},
                                     completed: {{ $isCompleted ? 'true' : 'false' }},
                                     isPr: {{ $isPr ? 'true' : 'false' }},
                                     justCompleted: false
