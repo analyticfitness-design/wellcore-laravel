@@ -138,9 +138,9 @@ class WorkoutPlayer extends Component
             return;
         }
 
-        $this->dayName = $day['nombre'] ?? 'Día ' . ($this->currentDayIndex + 1);
-        $this->muscleGroup = $day['grupo_muscular'] ?? '';
-        $this->exercises = $day['ejercicios'] ?? [];
+        $this->dayName = $day['nombre'] ?? $day['name'] ?? $day['dia'] ?? 'Día ' . ($this->currentDayIndex + 1);
+        $this->muscleGroup = $day['grupo_muscular'] ?? $day['muscle_group'] ?? $day['musculo'] ?? '';
+        $this->exercises = $day['ejercicios'] ?? $day['exercises'] ?? $day['ejercicios_dia'] ?? [];
 
         $this->buildBlockGroups();
 

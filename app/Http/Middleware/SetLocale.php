@@ -10,12 +10,8 @@ class SetLocale
     public function handle(Request $request, Closure $next)
     {
         // Read raw cookie (JS sets it unencrypted, so bypass Laravel's cookie decryption)
-        $locale = $_COOKIE['wc_locale'] ?? null;
-
-        // Fallback to Accept-Language header
-        if (!$locale) {
-            $locale = substr($request->header('Accept-Language', 'es'), 0, 2);
-        }
+        // Default to Spanish — English only if the user explicitly sets the cookie
+        $locale = $_COOKIE['wc_locale'] ?? 'es';
 
         if (in_array($locale, ['es', 'en'])) {
             app()->setLocale($locale);
