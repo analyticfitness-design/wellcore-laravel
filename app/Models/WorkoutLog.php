@@ -14,6 +14,7 @@ class WorkoutLog extends Model
 
     protected $fillable = [
         'session_id',
+        'client_id',
         'exercise_name',
         'block_type',
         'block_order',

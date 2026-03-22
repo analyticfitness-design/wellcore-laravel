@@ -502,6 +502,7 @@ class WorkoutPlayer extends Component
             // Create new log
             WorkoutLog::create([
                 'session_id' => $this->sessionId,
+                'client_id' => $clientId,
                 'exercise_name' => $exerciseName,
                 'block_type' => 'normal',
                 'block_order' => $exerciseIndex,
