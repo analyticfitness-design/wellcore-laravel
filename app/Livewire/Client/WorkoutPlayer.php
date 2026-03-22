@@ -188,7 +188,8 @@ class WorkoutPlayer extends Component
         $planId = $this->planId;
         $dayName = $this->dayName;
 
-        $existingSession = Cache::remember(
+        // Cache only the integer ID — never cache Eloquent models (unserialize fails on file cache).
+        $existingSessionId = Cache::remember(
             "wp:session:{$clientId}:{$today}",
             60,
             function () use ($clientId, $planId, $dayName, $today) {
@@ -198,15 +199,18 @@ class WorkoutPlayer extends Component
                     ->where('session_date', $today)
                     ->where('completed', false)
                     ->latest('id')
-                    ->first();
+                    ->value('id'); // scalar, safe to cache
             }
         );
 
-        if ($existingSession) {
-            $this->sessionId = $existingSession->id;
-            $this->isActive = true;
-            $this->startTime = $existingSession->created_at->toIso8601String();
-            $this->rebuildSetDataFromLogs($existingSession);
+        if ($existingSessionId) {
+            $existingSession = WorkoutSession::find($existingSessionId);
+            if ($existingSession) {
+                $this->sessionId = $existingSession->id;
+                $this->isActive = true;
+                $this->startTime = $existingSession->created_at->toIso8601String();
+                $this->rebuildSetDataFromLogs($existingSession);
+            }
         }
     }
 
