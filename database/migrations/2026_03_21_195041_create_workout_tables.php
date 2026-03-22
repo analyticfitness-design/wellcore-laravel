@@ -8,24 +8,29 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('workout_sessions', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('client_id')->index();
-            $table->unsignedBigInteger('plan_id')->nullable();
-            $table->string('day_name', 100)->nullable();
-            $table->date('session_date');
-            $table->unsignedInteger('duration_sec')->default(0);
-            $table->unsignedTinyInteger('feeling')->nullable();
-            $table->text('notes')->nullable();
-            $table->boolean('completed')->default(false);
-            $table->unsignedInteger('total_volume_kg')->default(0);
-            $table->unsignedInteger('total_reps')->default(0);
-            $table->unsignedInteger('total_sets')->default(0);
-            $table->unsignedInteger('xp_earned')->default(0);
-            $table->timestamps();
+        // workout_sessions may already exist in the vanilla PHP app
+        if (! Schema::hasTable('workout_sessions')) {
+            Schema::create('workout_sessions', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('client_id')->index();
+                $table->unsignedBigInteger('plan_id')->nullable();
+                $table->string('day_name', 100)->nullable();
+                $table->unsignedSmallInteger('day_index')->nullable();
+                $table->date('session_date');
+                $table->unsignedInteger('duration_minutes')->default(0);
+                $table->unsignedTinyInteger('feeling')->nullable();
+                $table->text('notes')->nullable();
+                $table->boolean('completed')->default(false);
+                $table->unsignedInteger('total_volume')->default(0);
+                $table->timestamps();
 
-            $table->index(['client_id', 'session_date']);
-        });
+                $table->index(['client_id', 'session_date']);
+            });
+        }
+
+        if (Schema::hasTable('workout_logs')) {
+            return;
+        }
 
         Schema::create('workout_logs', function (Blueprint $table) {
             $table->id();

@@ -38,16 +38,16 @@ class WorkoutSummary extends Component
 
         $this->stats = [
             'duration' => $this->session->formattedDuration(),
-            'duration_sec' => $this->session->duration_sec ?? 0,
-            'volume' => $this->session->total_volume_kg ?? (int) $completedLogs->sum(fn ($l) => ($l->weight_kg ?? 0) * ($l->reps ?? 0)),
-            'reps' => $this->session->total_reps ?? $completedLogs->sum('reps'),
+            'duration_sec' => ($this->session->duration_minutes ?? 0) * 60,
+            'volume' => $this->session->total_volume ?? (int) $completedLogs->sum(fn ($l) => ($l->weight_kg ?? 0) * ($l->reps ?? 0)),
+            'reps' => (int) $completedLogs->sum('reps'),
             'sets_completed' => $completedLogs->count(),
             'sets_total' => $targetSets,
             'exercises_count' => $exerciseCount,
         ];
 
         // XP earned this session
-        $this->xpEarned = $this->session->xp_earned ?? 0;
+        $this->xpEarned = $this->session->awardXp();
 
         // PR achievements from this session's logs
         $prLogs = $completedLogs->where('is_pr', true);
@@ -73,7 +73,7 @@ class WorkoutSummary extends Component
                 'date' => $s->session_date?->format('d M') ?? '-',
                 'day_name' => $s->day_name ?? '-',
                 'duration' => $s->formattedDuration(),
-                'volume' => $s->total_volume_kg ?? 0,
+                'volume' => $s->total_volume ?? 0,
             ])
             ->toArray();
     }

@@ -59,8 +59,10 @@ class NutritionPlan extends Component
             $this->parseExtras();
         }
 
-        $this->loadWaterData($clientId);
-        $this->loadWeightData($clientId);
+        if ($clientId) {
+            $this->loadWaterData($clientId);
+            $this->loadWeightData($clientId);
+        }
     }
 
     // ─── Data parsing ─────────────────────────────────────────────────────────

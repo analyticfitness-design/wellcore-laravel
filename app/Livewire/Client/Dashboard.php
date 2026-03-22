@@ -237,15 +237,26 @@ class Dashboard extends Component
         // Cache only a plain array (never the Eloquent model) to avoid
         // "incomplete object" errors after deploys when the cached serialized
         // model can no longer be deserialized into the current class.
+        // v3: force valid_from to string so Carbon objects never reach the cache
         $planData = CacheFacade::remember(
-            "client_plan_v2_{$client->id}",
+            "client_plan_v3_{$client->id}",
             now()->addMinutes(5),
-            fn () => AssignedPlan::where('client_id', $client->id)
-                ->where('active', 1)
-                ->orderByDesc('valid_from')
-                ->select('plan_type', 'valid_from')
-                ->first()
-                ?->only(['plan_type', 'valid_from']) // plain array, never the model
+            function () use ($client) {
+                $plan = AssignedPlan::where('client_id', $client->id)
+                    ->where('active', 1)
+                    ->orderByDesc('valid_from')
+                    ->select('plan_type', 'valid_from')
+                    ->first();
+
+                if (! $plan) {
+                    return null;
+                }
+
+                return [
+                    'plan_type'  => (string) $plan->plan_type,
+                    'valid_from' => (string) $plan->getRawOriginal('valid_from'),
+                ];
+            }
         );
 
         if ($planData && isset($planData['plan_type'])) {

@@ -26,8 +26,8 @@ class ChatAnalytics extends Component
         $messagesToday = ChatMessage::whereDate('created_at', today())->count();
 
         $topQuestions = ChatMessage::where('role', 'user')
-            ->select('message', DB::raw('COUNT(*) as count'))
-            ->groupBy('message')
+            ->select('content', DB::raw('COUNT(*) as count'))
+            ->groupBy('content')
             ->orderByDesc('count')
             ->limit(5)
             ->get();
@@ -35,7 +35,7 @@ class ChatAnalytics extends Component
         // Conversations table
         $conversationsQuery = ChatMessage::select(
                 'session_id',
-                DB::raw('MIN(CASE WHEN role = \'user\' THEN message END) as first_message'),
+                DB::raw('MIN(CASE WHEN role = \'user\' THEN content END) as first_message'),
                 DB::raw('COUNT(*) as message_count'),
                 DB::raw('MAX(page_url) as page_url'),
                 DB::raw('MIN(created_at) as started_at'),
@@ -49,7 +49,7 @@ class ChatAnalytics extends Component
             $conversationsQuery->whereIn('session_id', function ($query) use ($search) {
                 $query->select('session_id')
                     ->from('chat_messages')
-                    ->where('message', 'like', '%' . $search . '%');
+                    ->where('content', 'like', '%' . $search . '%');
             });
         }
 

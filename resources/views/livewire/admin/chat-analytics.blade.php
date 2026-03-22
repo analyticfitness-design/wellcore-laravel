@@ -58,7 +58,7 @@
                 <div class="min-w-0">
                     <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Top Pregunta</p>
                     <p class="mt-1 truncate text-sm font-semibold text-wc-text">
-                        {{ $topQuestions->first()?->message ?? 'Sin datos' }}
+                        {{ $topQuestions->first()?->content ?? 'Sin datos' }}
                     </p>
                     @if($topQuestions->first())
                         <p class="text-xs text-wc-text-tertiary">{{ $topQuestions->first()->count }} veces</p>
@@ -80,7 +80,7 @@
             <div class="space-y-2">
                 @foreach($topQuestions as $q)
                     <div class="flex items-center justify-between rounded-lg bg-wc-bg-secondary px-3 py-2">
-                        <span class="truncate text-sm text-wc-text-secondary">{{ $q->message }}</span>
+                        <span class="truncate text-sm text-wc-text-secondary">{{ $q->content }}</span>
                         <span class="ml-3 shrink-0 rounded-full bg-wc-accent/10 px-2 py-0.5 text-xs font-semibold text-wc-accent">{{ $q->count }}</span>
                     </div>
                 @endforeach
@@ -166,7 +166,7 @@
                                                         </div>
                                                         <div>
                                                             <div class="rounded-lg rounded-tl-sm bg-wc-bg-tertiary px-3 py-2 text-sm text-wc-text-secondary">
-                                                                {{ $msg->message }}
+                                                                {{ $msg->content }}
                                                             </div>
                                                             <p class="mt-0.5 text-[10px] text-wc-text-tertiary">{{ $msg->created_at->format('H:i') }}</p>
                                                         </div>
@@ -174,7 +174,7 @@
                                                 @else
                                                     <div class="max-w-[85%]">
                                                         <div class="rounded-lg rounded-tr-sm bg-wc-accent px-3 py-2 text-sm text-white">
-                                                            {{ $msg->message }}
+                                                            {{ $msg->content }}
                                                         </div>
                                                         <p class="mt-0.5 text-right text-[10px] text-wc-text-tertiary">{{ $msg->created_at->format('H:i') }}</p>
                                                     </div>

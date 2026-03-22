@@ -21,7 +21,7 @@ class ChatController extends Controller
         ChatMessage::create([
             'session_id' => $request->session_id,
             'role' => 'user',
-            'message' => $request->message,
+            'content' => $request->message,
             'page_url' => $request->page_url,
             'ip_hash' => hash('sha256', $request->ip()),
             'user_agent' => substr($request->userAgent() ?? '', 0, 255),
@@ -34,7 +34,7 @@ class ChatController extends Controller
         ChatMessage::create([
             'session_id' => $request->session_id,
             'role' => 'assistant',
-            'message' => $response,
+            'content' => $response,
             'page_url' => $request->page_url,
             'ip_hash' => hash('sha256', $request->ip()),
         ]);
