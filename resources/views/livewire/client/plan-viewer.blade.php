@@ -45,64 +45,238 @@
     {{-- ==================== TAB: ENTRENAMIENTO ==================== --}}
     @if($activeTab === 'entrenamiento')
         @if($trainingPlan)
-            {{-- CTA Principal --}}
+            @php
+                $dias = $trainingPlan['dias'] ?? [];
+                $planObjetivoE = $trainingPlan['objetivo'] ?? $trainingPlan['objetivo_general'] ?? null;
+                $totalExercises = 0;
+                foreach ($dias as $d) {
+                    $totalExercises += count($d['ejercicios'] ?? []);
+                }
+                $estimatedWeeklyMin = max(count($dias) * 45, 20);
+
+                // Muscle group color map (partial match)
+                $mgPalette = [
+                    'pecho'      => ['bg' => 'bg-rose-500/10',    'text' => 'text-rose-400'],
+                    'espalda'    => ['bg' => 'bg-sky-500/10',     'text' => 'text-sky-400'],
+                    'pierna'     => ['bg' => 'bg-emerald-500/10', 'text' => 'text-emerald-400'],
+                    'cuadricep'  => ['bg' => 'bg-emerald-500/10', 'text' => 'text-emerald-400'],
+                    'isquio'     => ['bg' => 'bg-teal-500/10',    'text' => 'text-teal-400'],
+                    'glut'       => ['bg' => 'bg-lime-500/10',    'text' => 'text-lime-400'],
+                    'hombro'     => ['bg' => 'bg-amber-500/10',   'text' => 'text-amber-400'],
+                    'brazo'      => ['bg' => 'bg-violet-500/10',  'text' => 'text-violet-400'],
+                    'bicep'      => ['bg' => 'bg-violet-500/10',  'text' => 'text-violet-400'],
+                    'tricep'     => ['bg' => 'bg-purple-500/10',  'text' => 'text-purple-400'],
+                    'core'       => ['bg' => 'bg-cyan-500/10',    'text' => 'text-cyan-400'],
+                    'full'       => ['bg' => 'bg-orange-500/10',  'text' => 'text-orange-400'],
+                    'funcional'  => ['bg' => 'bg-orange-500/10',  'text' => 'text-orange-400'],
+                    'cardio'     => ['bg' => 'bg-pink-500/10',    'text' => 'text-pink-400'],
+                ];
+                $getMgColor = function(?string $mg) use ($mgPalette): array {
+                    if (!$mg) return ['bg' => 'bg-wc-bg-secondary', 'text' => 'text-wc-text-tertiary'];
+                    $lower = mb_strtolower($mg);
+                    foreach ($mgPalette as $key => $colors) {
+                        if (str_contains($lower, $key)) return $colors;
+                    }
+                    return ['bg' => 'bg-wc-bg-secondary', 'text' => 'text-wc-text-secondary'];
+                };
+            @endphp
+
+            {{-- Plan summary stats --}}
+            <div class="mb-5 grid grid-cols-3 gap-3">
+                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3 text-center">
+                    <p class="font-data text-2xl font-bold text-wc-text">{{ count($dias) }}</p>
+                    <p class="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-wc-text-tertiary">días/sem</p>
+                </div>
+                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3 text-center">
+                    <p class="font-data text-2xl font-bold text-wc-text">{{ $totalExercises }}</p>
+                    <p class="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-wc-text-tertiary">ejercicios</p>
+                </div>
+                <div class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-3 text-center">
+                    <p class="font-data text-2xl font-bold text-wc-accent">~{{ $estimatedWeeklyMin }}</p>
+                    <p class="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-wc-accent/70">min/sem</p>
+                </div>
+            </div>
+
+            {{-- Objetivo --}}
+            @if($planObjetivoE)
+                <div class="mb-4 flex items-start gap-3 rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
+                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
+                        <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Objetivo</p>
+                        <p class="mt-0.5 text-sm text-wc-text">{{ $planObjetivoE }}</p>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Main CTA --}}
             <a wire:navigate href="{{ route('client.workout') }}"
-                class="btn-press mb-4 flex items-center justify-center gap-2 rounded-xl bg-wc-accent px-6 py-3.5 font-display text-lg tracking-wider text-white shadow-lg shadow-wc-accent/20 transition-all hover:bg-wc-accent-hover">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" /></svg>
+                class="btn-press mb-5 flex items-center justify-center gap-2 rounded-xl bg-wc-accent px-6 py-3.5 font-display text-lg tracking-wider text-white shadow-lg shadow-wc-accent/20 transition-all hover:bg-wc-accent-hover">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+                </svg>
                 INICIAR ENTRENAMIENTO
             </a>
 
-            <div class="space-y-4">
-                @if(isset($trainingPlan['dias']))
-                    @foreach($trainingPlan['dias'] as $diaIndex => $dia)
-                        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h3 class="font-display text-lg tracking-wide text-wc-accent">
-                                        {{ strtoupper($dia['nombre'] ?? $dia['dia'] ?? 'DIA') }}
-                                    </h3>
-                                    @if(isset($dia['grupo_muscular']))
-                                        <p class="text-sm text-wc-text-secondary">{{ $dia['grupo_muscular'] }}</p>
-                                    @endif
+            {{-- Accordion day cards --}}
+            @if(count($dias) > 0)
+                <div class="space-y-3" x-data="{ openDay: 0 }">
+                    @foreach($dias as $diaIndex => $dia)
+                        @php
+                            $ejercicios  = $dia['ejercicios'] ?? [];
+                            $dayName     = $dia['nombre'] ?? $dia['name'] ?? $dia['dia'] ?? 'Día ' . ($diaIndex + 1);
+                            $muscleGroup = $dia['grupo_muscular'] ?? $dia['muscle_group'] ?? null;
+                            $mgColors    = $getMgColor($muscleGroup);
+                            $dayMin      = max(count($ejercicios) * 6, 15);
+                            $dayNotes    = $dia['notas'] ?? $dia['notes'] ?? null;
+                        @endphp
+
+                        <div class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary">
+
+                            {{-- Header (always visible) --}}
+                            <button
+                                type="button"
+                                @click="openDay = openDay === {{ $diaIndex }} ? -1 : {{ $diaIndex }}"
+                                class="flex w-full items-center gap-4 p-4 text-left transition-colors hover:bg-wc-bg-secondary/40"
+                            >
+                                {{-- Day number badge --}}
+                                <div class="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-xl bg-wc-accent/10">
+                                    <span class="text-[9px] font-bold uppercase tracking-widest text-wc-accent/70">DÍA</span>
+                                    <span class="font-display text-xl leading-none text-wc-accent">{{ $diaIndex + 1 }}</span>
                                 </div>
-                                <a wire:navigate href="{{ route('client.workout', ['day' => $diaIndex + 1]) }}"
-                                    class="btn-press inline-flex items-center gap-1.5 rounded-lg bg-wc-accent/10 px-3 py-1.5 text-xs font-semibold text-wc-accent hover:bg-wc-accent/20 transition-colors">
-                                    <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                    Entrenar
-                                </a>
-                            </div>
-                            @if(isset($dia['ejercicios']))
-                                <div class="mt-3 space-y-2">
-                                    @foreach($dia['ejercicios'] as $ej)
-                                        <div class="flex items-center justify-between rounded-lg bg-wc-bg-secondary px-4 py-2.5">
-                                            <span class="text-sm font-medium text-wc-text">
-                                                {{ is_array($ej) ? ($ej['nombre'] ?? $ej['ejercicio'] ?? '') : $ej }}
+
+                                {{-- Name + meta --}}
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <h3 class="font-display text-lg tracking-wide text-wc-text">
+                                            {{ strtoupper($dayName) }}
+                                        </h3>
+                                        @if($muscleGroup)
+                                            <span class="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide {{ $mgColors['bg'] }} {{ $mgColors['text'] }}">
+                                                {{ $muscleGroup }}
                                             </span>
-                                            <div class="flex items-center gap-2">
-                                                @if(is_array($ej) && isset($ej['series']))
-                                                    <span class="font-data text-sm text-wc-text-secondary">
-                                                        {{ $ej['series'] }}x{{ $ej['repeticiones'] ?? $ej['reps'] ?? '' }}
-                                                    </span>
-                                                @endif
-                                                <button wire:click="$dispatch('open-rest-timer', {seconds: 90})"
-                                                    class="btn-press inline-flex items-center gap-1 rounded-lg bg-wc-bg-tertiary px-2 py-1 text-xs text-wc-text-secondary hover:bg-wc-accent/10 hover:text-wc-accent transition-colors"
-                                                    title="Timer de descanso">
-                                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                    <span class="hidden sm:inline">Descanso</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    @endforeach
+                                        @endif
+                                    </div>
+                                    <p class="mt-0.5 text-xs text-wc-text-tertiary">
+                                        {{ count($ejercicios) }} ejercicios
+                                        <span class="mx-1">·</span>
+                                        ~{{ $dayMin }} min
+                                    </p>
                                 </div>
-                            @endif
+
+                                {{-- Chevron --}}
+                                <svg
+                                    class="h-4 w-4 shrink-0 text-wc-text-tertiary transition-transform duration-200"
+                                    :class="{ 'rotate-180': openDay === {{ $diaIndex }} }"
+                                    fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"
+                                >
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            {{-- Collapsible exercise list --}}
+                            <div
+                                x-show="openDay === {{ $diaIndex }}"
+                                x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="opacity-0 -translate-y-1"
+                                x-transition:enter-end="opacity-100 translate-y-0"
+                                x-transition:leave="transition ease-in duration-150"
+                                x-transition:leave-start="opacity-100 translate-y-0"
+                                x-transition:leave-end="opacity-0 -translate-y-1"
+                                x-cloak
+                            >
+                                <div class="border-t border-wc-border">
+
+                                    {{-- Day notes --}}
+                                    @if($dayNotes)
+                                        <div class="border-b border-wc-border bg-wc-bg-secondary/40 px-4 py-2.5">
+                                            <p class="text-xs text-wc-text-secondary">{{ $dayNotes }}</p>
+                                        </div>
+                                    @endif
+
+                                    {{-- Exercise rows --}}
+                                    <div class="divide-y divide-wc-border">
+                                        @forelse($ejercicios as $ejIdx => $ej)
+                                            @php
+                                                $ejName    = is_array($ej) ? ($ej['nombre'] ?? $ej['name'] ?? $ej['ejercicio'] ?? 'Ejercicio') : (string) $ej;
+                                                $ejSeries  = is_array($ej) ? ($ej['series']      ?? $ej['sets']  ?? null) : null;
+                                                $ejReps    = is_array($ej) ? ($ej['repeticiones'] ?? $ej['reps']  ?? null) : null;
+                                                $ejRest    = is_array($ej) ? ($ej['descanso']     ?? $ej['rest']  ?? $ej['rest_seconds'] ?? null) : null;
+                                                $ejRir     = is_array($ej) ? ($ej['rir']          ?? null) : null;
+                                                $ejNotas   = is_array($ej) ? ($ej['notas']        ?? $ej['notes'] ?? null) : null;
+                                                $rirClass  = $ejRir !== null
+                                                    ? ($ejRir >= 3 ? 'bg-emerald-500/10 text-emerald-400' : ($ejRir >= 2 ? 'bg-amber-500/10 text-amber-400' : 'bg-red-500/10 text-red-400'))
+                                                    : '';
+                                            @endphp
+                                            <div class="flex items-center gap-3 px-4 py-3">
+                                                {{-- Index --}}
+                                                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-wc-bg-secondary font-data text-[11px] font-bold text-wc-text-tertiary">
+                                                    {{ $ejIdx + 1 }}
+                                                </span>
+
+                                                {{-- Name + notes --}}
+                                                <div class="min-w-0 flex-1">
+                                                    <p class="text-sm font-medium leading-snug text-wc-text">{{ $ejName }}</p>
+                                                    @if($ejNotas)
+                                                        <p class="mt-0.5 text-xs text-wc-text-tertiary">{{ $ejNotas }}</p>
+                                                    @endif
+                                                </div>
+
+                                                {{-- Chips --}}
+                                                <div class="flex shrink-0 items-center gap-1.5">
+                                                    @if($ejSeries && $ejReps)
+                                                        <span class="rounded-lg bg-wc-bg-secondary px-2 py-1 font-data text-xs font-bold text-wc-text">
+                                                            {{ $ejSeries }}<span class="text-wc-text-tertiary">×</span>{{ $ejReps }}
+                                                        </span>
+                                                    @elseif($ejSeries)
+                                                        <span class="rounded-lg bg-wc-bg-secondary px-2 py-1 font-data text-xs font-bold text-wc-text">
+                                                            {{ $ejSeries }} sets
+                                                        </span>
+                                                    @endif
+
+                                                    @if($ejRest)
+                                                        <span class="hidden items-center gap-1 rounded-full bg-wc-bg-secondary px-2 py-0.5 text-[10px] text-wc-text-tertiary sm:inline-flex">
+                                                            <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                            </svg>
+                                                            {{ $ejRest }}
+                                                        </span>
+                                                    @endif
+
+                                                    @if($ejRir !== null)
+                                                        <span class="hidden rounded-full px-2 py-0.5 text-[10px] font-bold sm:inline {{ $rirClass }}">
+                                                            RIR {{ $ejRir }}
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <p class="px-4 py-3 text-xs text-wc-text-tertiary">Sin ejercicios registrados.</p>
+                                        @endforelse
+                                    </div>
+
+                                    {{-- Entrenar este día CTA --}}
+                                    <div class="border-t border-wc-border p-3">
+                                        <a wire:navigate href="{{ route('client.workout', ['day' => $diaIndex + 1]) }}"
+                                            class="btn-press flex w-full items-center justify-center gap-2 rounded-lg bg-wc-accent/10 py-2.5 text-sm font-semibold text-wc-accent transition-colors hover:bg-wc-accent hover:text-white">
+                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M8 5v14l11-7z"/>
+                                            </svg>
+                                            ENTRENAR DÍA {{ $diaIndex + 1 }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     @endforeach
-                @else
-                    <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
-                        <pre class="text-sm text-wc-text-secondary whitespace-pre-wrap">{{ json_encode($trainingPlan, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
-                    </div>
-                @endif
-            </div>
+                </div>
+            @else
+                <x-empty-state title="PLAN EN PREPARACIÓN" message="Tu coach está diseñando tu plan de entrenamiento. Te notificaremos cuando esté listo." />
+            @endif
+
         @else
             <x-empty-state title="PLAN EN PREPARACIÓN" message="Tu coach está diseñando tu plan de entrenamiento. Te notificaremos cuando esté listo." />
         @endif
