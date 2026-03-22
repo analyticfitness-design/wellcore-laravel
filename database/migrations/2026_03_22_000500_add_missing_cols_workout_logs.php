@@ -5,16 +5,23 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Add columns used by Laravel WorkoutPlayer that may not exist in the
- * vanilla-PHP workout_logs table:
- *   block_type    VARCHAR(50)  DEFAULT 'normal'
- *   block_order   INT          DEFAULT 0
- *   target_reps   VARCHAR(20)  NULLABLE
- *   target_weight DECIMAL(6,2) NULLABLE
- *   is_pr         BOOLEAN      DEFAULT false
+ * Add columns used by the Laravel WorkoutPlayer that are missing from the
+ * vanilla-PHP workout_logs schema.
  *
- * Each column is guarded with hasColumn() so this migration is safe to run
- * on both fresh and existing databases.
+ * Actual vanilla columns: id, session_id, client_id, exercise_name,
+ *   block_type, block_order, exercise_index, set_number, weight_kg,
+ *   reps_done, rpe_actual, completed, notes, created_at
+ *
+ * Missing columns (added here):
+ *   reps         INT          DEFAULT 0  (Laravel uses 'reps'; vanilla uses 'reps_done')
+ *   target_reps  VARCHAR(20)  NULLABLE
+ *   target_weight DECIMAL(6,2) NULLABLE
+ *   is_pr        BOOLEAN      DEFAULT false
+ *
+ * Columns that already exist and do NOT need adding:
+ *   block_type, block_order (already present)
+ *
+ * All additions are guarded with hasColumn() — safe on any environment.
  */
 return new class extends Migration
 {
@@ -25,12 +32,10 @@ return new class extends Migration
         }
 
         Schema::table('workout_logs', function (Blueprint $table) {
-            if (! Schema::hasColumn('workout_logs', 'block_type')) {
-                $table->string('block_type', 50)->default('normal')->after('exercise_name');
-            }
-
-            if (! Schema::hasColumn('workout_logs', 'block_order')) {
-                $table->integer('block_order')->default(0)->after('block_type');
+            // 'reps' — Laravel name; vanilla uses 'reps_done'. Add 'reps' so
+            // Eloquent writes can use the same key without touching vanilla data.
+            if (! Schema::hasColumn('workout_logs', 'reps')) {
+                $table->integer('reps')->default(0)->after('weight_kg');
             }
 
             if (! Schema::hasColumn('workout_logs', 'target_reps')) {
@@ -54,8 +59,7 @@ return new class extends Migration
         }
 
         Schema::table('workout_logs', function (Blueprint $table) {
-            $cols = ['block_type', 'block_order', 'target_reps', 'target_weight', 'is_pr'];
-            foreach ($cols as $col) {
+            foreach (['reps', 'target_reps', 'target_weight', 'is_pr'] as $col) {
                 if (Schema::hasColumn('workout_logs', $col)) {
                     $table->dropColumn($col);
                 }
