@@ -109,15 +109,6 @@
                 </div>
             @endif
 
-            {{-- Main CTA --}}
-            <a wire:navigate href="{{ route('client.workout') }}"
-                class="btn-press group mb-6 flex items-center justify-center gap-3 rounded-2xl bg-wc-accent px-6 py-4 font-display text-xl tracking-widest text-white shadow-xl shadow-wc-accent/30 transition-all hover:bg-red-600 active:scale-95">
-                <svg class="h-5 w-5 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z"/>
-                </svg>
-                INICIAR ENTRENAMIENTO
-            </a>
-
             {{-- Accordion day cards --}}
             @if(count($dias) > 0)
                 <div class="space-y-2" x-data="{ openDay: 0 }">

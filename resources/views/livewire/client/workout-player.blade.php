@@ -72,7 +72,8 @@
                         </span>
                         <span class="text-xs font-semibold uppercase tracking-wider text-wc-accent">En curso</span>
                     </div>
-                    <span class="font-data text-lg font-bold text-wc-accent tabular-nums" x-text="elapsedDisplay"></span>
+                    <span class="font-data text-lg font-bold text-wc-accent tabular-nums"
+                          x-text="(elapsed >= 3600 ? String(Math.floor(elapsed / 3600)) + ':' : '') + String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0') + ':' + String(elapsed % 60).padStart(2, '0')"></span>
                 </div>
             @endif
         </div>
@@ -800,22 +801,10 @@
                     this.restTotal   = 0;
                 },
 
-                // ── Session elapsed timer ─────────────────────────────────────
-                get elapsedDisplay() {
-                    const h = Math.floor(this.elapsed / 3600);
-                    const m = Math.floor((this.elapsed % 3600) / 60);
-                    const s = this.elapsed % 60;
-                    const mm = String(m).padStart(2, '0');
-                    const ss = String(s).padStart(2, '0');
-                    return h > 0
-                        ? String(h) + ':' + mm + ':' + ss
-                        : mm + ':' + ss;
-                },
-
                 init() {
                     // Start timer if workout is active
                     @if($isActive && $startTime)
-                        this.elapsed = Math.floor((Date.now() - new Date({{ json_encode($startTime) }}).getTime()) / 1000);
+                        this.elapsed = Math.floor((Date.now() - new Date({!! json_encode($startTime) !!}).getTime()) / 1000);
                         if (this.elapsed < 0) this.elapsed = 0;
                         this.startTimer();
                     @endif
