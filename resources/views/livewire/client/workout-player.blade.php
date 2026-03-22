@@ -439,7 +439,7 @@
                                 $currentSet = $exSetData[$setNum] ?? [];
                                 $isCompleted = !empty($currentSet['completed']);
                                 $isPr = !empty($currentSet['is_pr']);
-                                $setWeight = $currentSet['weight_kg'] ?? '';
+                                $setWeight = $currentSet['weight'] ?? $currentSet['weight_kg'] ?? '';
                                 $setReps = $currentSet['reps'] ?? '';
                             @endphp
                             <div
@@ -830,8 +830,8 @@
                 },
 
                 initAnimations() {
-                    this.$nextTick(() => {
-                        const elements = document.querySelectorAll('[data-animate]');
+                    const observeNew = () => {
+                        const elements = document.querySelectorAll('[data-animate]:not(.animate-in)');
                         const observer = new IntersectionObserver((entries) => {
                             entries.forEach(entry => {
                                 if (entry.isIntersecting) {
@@ -839,10 +839,15 @@
                                     observer.unobserve(entry.target);
                                 }
                             });
-                        }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+                        }, { threshold: 0.05, rootMargin: '0px 0px 0px 0px' });
 
                         elements.forEach(el => observer.observe(el));
-                    });
+                    };
+
+                    this.$nextTick(observeNew);
+
+                    // Re-observe new elements after every Livewire DOM update
+                    document.addEventListener('livewire:updated', () => this.$nextTick(observeNew));
                 },
 
                 destroy() {
