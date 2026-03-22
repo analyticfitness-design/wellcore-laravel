@@ -651,7 +651,7 @@
                     </svg>
                     {{-- Countdown display --}}
                     <div class="absolute inset-0 flex flex-col items-center justify-center">
-                        <span class="font-data text-4xl font-black tabular-nums leading-none text-wc-text" x-text="restDisplay"></span>
+                        <span class="font-data text-4xl font-black tabular-nums leading-none text-wc-text" x-text="String(Math.floor(restSeconds / 60)).padStart(2, '0') + ':' + String(restSeconds % 60).padStart(2, '0')"></span>
                         <span class="mt-1 text-[10px] font-medium uppercase tracking-widest text-wc-text-tertiary">seg</span>
                     </div>
                 </div>
@@ -764,12 +764,6 @@
                 restTotal: 0,
                 restInterval: null,
 
-                get restDisplay() {
-                    const m = Math.floor(this.restSeconds / 60);
-                    const s = this.restSeconds % 60;
-                    return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-                },
-
                 startRestTimer(seconds) {
                     this.clearRestTimer();
                     this.restSeconds = parseInt(seconds) || 60;
@@ -821,7 +815,8 @@
                 init() {
                     // Start timer if workout is active
                     @if($isActive && $startTime)
-                        this.elapsed = Math.floor((Date.now() / 1000) - {{ $startTime }});
+                        this.elapsed = Math.floor((Date.now() - new Date({{ json_encode($startTime) }}).getTime()) / 1000);
+                        if (this.elapsed < 0) this.elapsed = 0;
                         this.startTimer();
                     @endif
                 },
