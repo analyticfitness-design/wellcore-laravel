@@ -532,139 +532,236 @@
             x-data="{
                 startDate: localStorage.getItem('wc_cycle_start') || '',
                 cycleLength: parseInt(localStorage.getItem('wc_cycle_length')) || 28,
+                showConfig: !localStorage.getItem('wc_cycle_start'),
                 get currentDay() {
                     if (!this.startDate) return null;
                     const start = new Date(this.startDate + 'T00:00:00');
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    const diff = Math.floor((today - start) / (1000 * 60 * 60 * 24));
-                    const dayInCycle = (diff % this.cycleLength) + 1;
-                    return dayInCycle > 0 ? dayInCycle : null;
-                },
-                get phaseName() {
-                    const day = this.currentDay;
-                    if (!day) return '';
-                    if (day <= 5) return 'Menstrual';
-                    if (day <= 13) return 'Folicular';
-                    if (day <= 16) return 'Ovulatoria';
-                    return 'Lutea';
+                    const today = new Date(); today.setHours(0,0,0,0);
+                    const diff = Math.floor((today - start) / 86400000);
+                    const d = (diff % this.cycleLength) + 1;
+                    return d > 0 ? d : null;
                 },
                 get phaseKey() {
-                    const day = this.currentDay;
-                    if (!day) return '';
-                    if (day <= 5) return 'menstrual';
-                    if (day <= 13) return 'folicular';
-                    if (day <= 16) return 'ovulatoria';
+                    const d = this.currentDay;
+                    if (!d) return '';
+                    if (d <= 5) return 'menstrual';
+                    if (d <= 13) return 'folicular';
+                    if (d <= 16) return 'ovulatoria';
                     return 'lutea';
                 },
-                get phaseColor() {
-                    const colors = { menstrual: 'text-red-400', folicular: 'text-green-400', ovulatoria: 'text-amber-400', lutea: 'text-purple-400' };
-                    return colors[this.phaseKey] || 'text-wc-text';
-                },
-                get phaseBg() {
-                    const colors = { menstrual: 'bg-red-400/10 border-red-400/30', folicular: 'bg-green-400/10 border-green-400/30', ovulatoria: 'bg-amber-400/10 border-amber-400/30', lutea: 'bg-purple-400/10 border-purple-400/30' };
-                    return colors[this.phaseKey] || 'bg-wc-bg-tertiary border-wc-border';
-                },
-                get recommendation() {
-                    const recs = {
-                        menstrual: 'Prioriza el descanso y recuperacion. Ejercicios de baja intensidad como yoga, caminata o estiramientos suaves. Escucha a tu cuerpo.',
-                        folicular: 'Tu energia sube. Buen momento para aumentar intensidad y probar nuevos ejercicios. Entrenamiento de fuerza e intervalos son ideales.',
-                        ovulatoria: 'Pico de energia y rendimiento. Aprovecha para entrenamientos de alta intensidad, PRs y sesiones exigentes.',
-                        lutea: 'La energia comienza a bajar. Mantiene entrenamientos moderados. Enfocate en tecnica y trabajo de estabilidad.'
+                get phaseData() {
+                    const map = {
+                        menstrual:  { name: 'Menstrual',  emoji: '🌑', ring: '#f87171', bg: 'bg-red-500/10',    border: 'border-red-500/25',    text: 'text-red-400',    train: 'Ejercicio de baja intensidad: yoga, caminata ligera, estiramientos. Reduce cargas y escucha tu cuerpo.', nutrition: 'Aumenta hierro y magnesio. Prioriza alimentos anti-inflamatorios: salmon, nueces, verduras de hoja.', energy: 3 },
+                        folicular:  { name: 'Folicular',  emoji: '🌱', ring: '#4ade80', bg: 'bg-green-500/10',  border: 'border-green-500/25',  text: 'text-green-400',  train: 'Tu energia aumenta. Ideal para fuerza, HIIT y aumentar cargas. Aprovecha la ventana anabolica.', nutrition: 'Soporta la sintesis de estrogeno con zinc y B6. Proteina moderada-alta para soportar el volumen.', energy: 7 },
+                        ovulatoria: { name: 'Ovulatoria', emoji: '✨', ring: '#fbbf24', bg: 'bg-amber-500/10',  border: 'border-amber-500/25',  text: 'text-amber-400',  train: 'Pico maximo de energia y fuerza. Momento ideal para PRs, sesiones de alta intensidad y nuevos records.', nutrition: 'Mantiene proteina alta. Antioxidantes para reducir inflamacion post-esfuerzo. Hidratacion optima.', energy: 10 },
+                        lutea:      { name: 'Lutea',      emoji: '🌙', ring: '#c084fc', bg: 'bg-purple-500/10', border: 'border-purple-500/25', text: 'text-purple-400', train: 'Energia moderada. Enfocate en tecnica, estabilidad y recuperacion activa. Reduce intensidad al final.', nutrition: 'Sube el apetito, es normal. Prioriza fibra, magnesio y calcio para reducir sintomas de SPM.', energy: 6 },
                     };
-                    return recs[this.phaseKey] || '';
+                    return map[this.phaseKey] || null;
+                },
+                get progressPct() {
+                    if (!this.currentDay) return 0;
+                    return Math.round((this.currentDay / this.cycleLength) * 100);
                 },
                 get daysUntilNext() {
                     if (!this.currentDay) return null;
                     return this.cycleLength - this.currentDay + 1;
                 },
+                get ringDasharray() {
+                    const r = 54; const circ = 2 * Math.PI * r;
+                    return circ.toFixed(1);
+                },
+                get ringDashoffset() {
+                    const r = 54; const circ = 2 * Math.PI * r;
+                    const pct = this.currentDay ? (this.currentDay / this.cycleLength) : 0;
+                    return (circ * (1 - pct)).toFixed(1);
+                },
                 save() {
                     localStorage.setItem('wc_cycle_start', this.startDate);
                     localStorage.setItem('wc_cycle_length', this.cycleLength);
+                    this.showConfig = false;
                 },
-                phases: [
-                    { name: 'Menstrual', days: '1-5', color: 'bg-red-400' },
-                    { name: 'Folicular', days: '6-13', color: 'bg-green-400' },
-                    { name: 'Ovulatoria', days: '14-16', color: 'bg-amber-400' },
-                    { name: 'Lutea', days: '17-28', color: 'bg-purple-400' },
-                ]
             }"
-            class="space-y-6"
+            class="space-y-5"
         >
-            {{-- Info note --}}
-            <div class="rounded-xl border border-wc-border bg-wc-bg-secondary p-4">
-                <p class="text-xs text-wc-text-tertiary">
-                    Esta herramienta es opcional y esta disponible para quienes la necesiten. Los datos se guardan localmente en tu navegador.
-                </p>
+            {{-- Hero: Circular ring + phase display --}}
+            <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary p-6"
+                :class="phaseData ? phaseData.bg + ' ' + phaseData.border : 'bg-wc-bg-tertiary border-wc-border'">
+
+                <template x-if="currentDay && phaseData">
+                    <div class="flex flex-col items-center sm:flex-row sm:items-center sm:gap-8">
+                        {{-- Ring --}}
+                        <div class="relative shrink-0">
+                            <svg width="140" height="140" viewBox="0 0 140 140" class="-rotate-90">
+                                {{-- Track --}}
+                                <circle cx="70" cy="70" r="54" fill="none" stroke="currentColor" stroke-width="10" class="text-wc-bg-secondary opacity-60"/>
+                                {{-- Progress arc --}}
+                                <circle
+                                    cx="70" cy="70" r="54" fill="none" stroke-width="10"
+                                    stroke-linecap="round"
+                                    :stroke="phaseData.ring"
+                                    :stroke-dasharray="ringDasharray"
+                                    :stroke-dashoffset="ringDashoffset"
+                                    style="transition: stroke-dashoffset 1s ease;"
+                                />
+                            </svg>
+                            {{-- Center text --}}
+                            <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                <span class="text-2xl" x-text="phaseData.emoji"></span>
+                                <span class="font-data text-2xl font-black leading-none" :class="phaseData.text" x-text="currentDay"></span>
+                                <span class="text-[10px] text-wc-text-tertiary font-medium uppercase tracking-wide">día</span>
+                            </div>
+                        </div>
+
+                        {{-- Info --}}
+                        <div class="mt-4 sm:mt-0 text-center sm:text-left flex-1">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary mb-1">Fase actual</p>
+                            <h2 class="font-display text-4xl tracking-wide leading-none" :class="phaseData.text" x-text="phaseData.name"></h2>
+                            <p class="mt-2 font-data text-sm text-wc-text-secondary">
+                                Día <span class="font-bold text-wc-text" x-text="currentDay"></span>
+                                de <span x-text="cycleLength"></span>
+                            </p>
+                            <p class="mt-1 text-xs text-wc-text-tertiary">
+                                Próximo ciclo en <span x-text="daysUntilNext" class="font-semibold text-wc-text-secondary"></span> días
+                            </p>
+
+                            {{-- Energy dots --}}
+                            <div class="mt-3 flex items-center gap-1.5">
+                                <span class="text-[10px] font-medium text-wc-text-tertiary uppercase tracking-wider">Energía</span>
+                                <div class="flex gap-0.5">
+                                    <template x-for="i in 10">
+                                        <div class="h-2 w-2 rounded-full transition-colors"
+                                            :class="i <= phaseData.energy ? phaseData.text.replace('text-','bg-') : 'bg-wc-bg-secondary'"></div>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <button @click="showConfig = !showConfig" class="mt-3 text-[11px] text-wc-text-tertiary hover:text-wc-text-secondary transition-colors flex items-center gap-1">
+                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                                Ajustar configuración
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="!currentDay">
+                    <div class="py-4 text-center">
+                        <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-wc-bg-secondary">
+                            <svg class="h-7 w-7 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" /></svg>
+                        </div>
+                        <p class="font-display text-lg tracking-wide text-wc-text">CONFIGURA TU CICLO</p>
+                        <p class="mt-1 text-sm text-wc-text-secondary">Ingresa la fecha del inicio de tu último ciclo para ver tu fase actual.</p>
+                    </div>
+                </template>
             </div>
 
-            {{-- Configuration form --}}
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-                <h3 class="font-display text-lg tracking-wide text-wc-text">CONFIGURACIÓN</h3>
-                <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            {{-- Config form (collapsible) --}}
+            <div x-show="showConfig"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 -translate-y-2"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-end="opacity-0 -translate-y-2"
+                class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5"
+            >
+                <h3 class="font-display text-base tracking-wide text-wc-text mb-4">CONFIGURACIÓN DEL CICLO</h3>
+                <div class="grid gap-4 sm:grid-cols-2">
                     <div>
-                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1">Fecha inicio del ultimo ciclo</label>
+                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">
+                            📅 Fecha de inicio del último ciclo
+                        </label>
                         <input
                             type="date"
                             x-model="startDate"
-                            @change="save()"
-                            class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
+                            class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
                         />
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1">Duracion del ciclo (dias)</label>
+                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">
+                            🔄 Duración del ciclo (días)
+                        </label>
                         <input
                             type="number"
                             x-model.number="cycleLength"
-                            @change="save()"
-                            min="21"
-                            max="40"
-                            class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
+                            min="21" max="40"
+                            class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
                         />
                     </div>
                 </div>
+                <div class="mt-4 flex items-center gap-3">
+                    <button
+                        @click="save()"
+                        class="btn-press rounded-lg bg-wc-accent px-5 py-2 text-sm font-medium text-white hover:bg-wc-accent/90 transition-colors"
+                    >Guardar</button>
+                    <p class="text-xs text-wc-text-tertiary">Los datos se guardan localmente en tu dispositivo.</p>
+                </div>
             </div>
 
-            {{-- Current phase display --}}
-            <template x-if="currentDay">
-                <div>
-                    <div :class="phaseBg" class="rounded-xl border p-6 text-center">
-                        <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Fase actual</p>
-                        <h2 :class="phaseColor" class="font-display text-3xl tracking-wide mt-1" x-text="phaseName"></h2>
-                        <p class="mt-2 font-data text-lg text-wc-text">
-                            Dia <span x-text="currentDay" class="font-bold text-wc-accent"></span>
-                            de <span x-text="cycleLength"></span>
-                        </p>
-                        <p class="mt-1 text-xs text-wc-text-tertiary">
-                            Proximo ciclo en <span x-text="daysUntilNext" class="font-semibold"></span> dias
-                        </p>
-                    </div>
-
-                    {{-- Training recommendation --}}
-                    <div class="mt-4 rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-                        <h4 class="font-display text-sm tracking-wide text-wc-accent">RECOMENDACIÓN DE ENTRENAMIENTO</h4>
-                        <p class="mt-2 text-sm text-wc-text-secondary" x-text="recommendation"></p>
-                    </div>
-                </div>
-            </template>
-
-            <template x-if="!currentDay">
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center">
-                    <p class="text-sm text-wc-text-secondary">Ingresa la fecha de inicio de tu ultimo ciclo para ver tu fase actual.</p>
-                </div>
-            </template>
-
-            {{-- Phase reference --}}
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-                <h3 class="font-display text-sm tracking-wide text-wc-text mb-3">FASES DEL CICLO</h3>
-                <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                    <template x-for="phase in phases" :key="phase.name">
-                        <div class="rounded-lg bg-wc-bg-secondary p-3 text-center">
-                            <div :class="phase.color" class="mx-auto mb-2 h-2 w-8 rounded-full"></div>
-                            <p class="text-xs font-medium text-wc-text" x-text="phase.name"></p>
-                            <p class="text-[10px] text-wc-text-tertiary">Dias <span x-text="phase.days"></span></p>
+            {{-- Recommendations cards --}}
+            <template x-if="currentDay && phaseData">
+                <div class="grid gap-4 sm:grid-cols-2">
+                    {{-- Training --}}
+                    <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-lg"
+                                :class="phaseData.bg">🏋️</span>
+                            <h4 class="font-display text-sm tracking-wide text-wc-text">ENTRENAMIENTO</h4>
                         </div>
-                    </template>
+                        <p class="text-sm leading-relaxed text-wc-text-secondary" x-text="phaseData.train"></p>
+                    </div>
+                    {{-- Nutrition --}}
+                    <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-lg"
+                                :class="phaseData.bg">🥗</span>
+                            <h4 class="font-display text-sm tracking-wide text-wc-text">NUTRICIÓN</h4>
+                        </div>
+                        <p class="text-sm leading-relaxed text-wc-text-secondary" x-text="phaseData.nutrition"></p>
+                    </div>
+                </div>
+            </template>
+
+            {{-- Phase timeline reference --}}
+            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+                <h3 class="font-display text-sm tracking-wide text-wc-text mb-4">FASES DEL CICLO</h3>
+                <div class="mb-4 flex h-3 w-full overflow-hidden rounded-full">
+                    <div class="h-full transition-all" style="width: 18%; background:#f87171;" title="Menstrual"></div>
+                    <div class="h-full transition-all" style="width: 32%; background:#4ade80;" title="Folicular"></div>
+                    <div class="h-full transition-all" style="width: 11%; background:#fbbf24;" title="Ovulatoria"></div>
+                    <div class="h-full flex-1" style="background:#c084fc;" title="Lutea"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    <div class="rounded-xl bg-red-500/10 border border-red-500/20 p-3">
+                        <div class="flex items-center gap-2 mb-1.5">
+                            <div class="h-2 w-2 rounded-full bg-red-400 shrink-0"></div>
+                            <p class="text-xs font-semibold text-red-400">Menstrual</p>
+                        </div>
+                        <p class="text-[10px] text-wc-text-tertiary">Días 1–5</p>
+                        <p class="text-[10px] text-wc-text-tertiary mt-0.5">Descanso activo</p>
+                    </div>
+                    <div class="rounded-xl bg-green-500/10 border border-green-500/20 p-3">
+                        <div class="flex items-center gap-2 mb-1.5">
+                            <div class="h-2 w-2 rounded-full bg-green-400 shrink-0"></div>
+                            <p class="text-xs font-semibold text-green-400">Folicular</p>
+                        </div>
+                        <p class="text-[10px] text-wc-text-tertiary">Días 6–13</p>
+                        <p class="text-[10px] text-wc-text-tertiary mt-0.5">Fuerza e intensidad</p>
+                    </div>
+                    <div class="rounded-xl bg-amber-500/10 border border-amber-500/20 p-3">
+                        <div class="flex items-center gap-2 mb-1.5">
+                            <div class="h-2 w-2 rounded-full bg-amber-400 shrink-0"></div>
+                            <p class="text-xs font-semibold text-amber-400">Ovulatoria</p>
+                        </div>
+                        <p class="text-[10px] text-wc-text-tertiary">Días 14–16</p>
+                        <p class="text-[10px] text-wc-text-tertiary mt-0.5">Pico de rendimiento</p>
+                    </div>
+                    <div class="rounded-xl bg-purple-500/10 border border-purple-500/20 p-3">
+                        <div class="flex items-center gap-2 mb-1.5">
+                            <div class="h-2 w-2 rounded-full bg-purple-400 shrink-0"></div>
+                            <p class="text-xs font-semibold text-purple-400">Lútea</p>
+                        </div>
+                        <p class="text-[10px] text-wc-text-tertiary">Días 17–28</p>
+                        <p class="text-[10px] text-wc-text-tertiary mt-0.5">Técnica y estabilidad</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -679,143 +776,263 @@
                 <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">Upgrade a Elite</a>
             </div>
         @else
+        @php
+            // ── Latest-per-test summary cards ──────────────────────────
+            $latestByTest = [];
+            foreach (array_reverse($bloodworkResults) as $r) {
+                if (!isset($latestByTest[$r['test_name']])) {
+                    $latestByTest[$r['test_name']] = $r;
+                }
+            }
+            // Helper: determine status from reference_range string "lo-hi unit"
+            $bwStatus = function(array $r): string {
+                $range = $r['reference_range'] ?? '';
+                $val   = (float) ($r['value'] ?? 0);
+                if (!$range || $val <= 0) return 'neutral';
+                preg_match('/(\d+[\.,]?\d*)\s*[-–]\s*(\d+[\.,]?\d*)/', $range, $m);
+                if (!isset($m[1], $m[2])) return 'neutral';
+                $lo = (float) str_replace(',', '.', $m[1]);
+                $hi = (float) str_replace(',', '.', $m[2]);
+                if ($val >= $lo && $val <= $hi) return 'ok';
+                return 'flag';
+            };
+        @endphp
+
         <div class="space-y-6">
+
+            {{-- Latest values summary (only if we have results) --}}
+            @if(count($latestByTest) > 0)
+                <div>
+                    <h3 class="font-display text-sm tracking-wide text-wc-text-secondary mb-3">ÚLTIMOS VALORES</h3>
+                    <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                        @foreach($latestByTest as $testName => $r)
+                            @php $status = $bwStatus($r); @endphp
+                            <div class="rounded-xl border bg-wc-bg-tertiary p-3.5
+                                {{ $status === 'ok'   ? 'border-emerald-500/25' : ($status === 'flag' ? 'border-amber-500/30' : 'border-wc-border') }}">
+                                <div class="flex items-start justify-between gap-1 mb-2">
+                                    <p class="text-[11px] font-medium text-wc-text-secondary leading-tight">{{ $testName }}</p>
+                                    @if($status === 'ok')
+                                        <span class="shrink-0 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/20">
+                                            <svg class="h-2.5 w-2.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                                        </span>
+                                    @elseif($status === 'flag')
+                                        <span class="shrink-0 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500/20">
+                                            <svg class="h-2.5 w-2.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+                                        </span>
+                                    @endif
+                                </div>
+                                <div class="flex items-baseline gap-1">
+                                    <span class="font-data text-xl font-black text-wc-text tabular-nums">{{ $r['value'] }}</span>
+                                    <span class="text-[10px] text-wc-text-tertiary">{{ $r['unit'] }}</span>
+                                </div>
+                                @if(!empty($r['reference_range']))
+                                    <p class="mt-1 text-[9px] text-wc-text-tertiary">Ref: {{ $r['reference_range'] }}</p>
+                                @endif
+                                <p class="mt-0.5 text-[9px] text-wc-text-tertiary">{{ \Carbon\Carbon::parse($r['test_date'])->format('d/m/Y') }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
             {{-- Add result form --}}
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-                <h3 class="font-display text-lg tracking-wide text-wc-text">AGREGAR RESULTADO</h3>
+            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5"
+                x-data="{ open: {{ count($bloodworkResults) === 0 ? 'true' : 'false' }} }">
+                <button
+                    @click="open = !open"
+                    class="flex w-full items-center justify-between"
+                >
+                    <h3 class="font-display text-base tracking-wide text-wc-text">AGREGAR RESULTADO</h3>
+                    <svg class="h-5 w-5 text-wc-text-tertiary transition-transform" :class="open && 'rotate-180'"
+                        fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
 
-                @if($bwShowSuccess)
-                    <div class="mt-3 rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-2.5 text-sm text-green-400">
-                        Resultado guardado correctamente.
-                    </div>
-                @endif
+                <div x-show="open"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100">
 
-                <form wire:submit="saveBloodwork" class="mt-4 space-y-4">
-                    <div class="grid gap-4 sm:grid-cols-2">
-                        <div>
-                            <label class="block text-xs font-medium text-wc-text-tertiary mb-1">Prueba</label>
-                            <select
-                                wire:model="bwTestName"
-                                class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
-                            >
-                                <option value="">Seleccionar prueba...</option>
-                                <option value="Glucosa">Glucosa</option>
-                                <option value="Hemoglobina">Hemoglobina</option>
-                                <option value="Colesterol Total">Colesterol Total</option>
-                                <option value="HDL">HDL</option>
-                                <option value="LDL">LDL</option>
-                                <option value="Trigliceridos">Trigliceridos</option>
-                                <option value="TSH">TSH</option>
-                                <option value="Testosterona">Testosterona</option>
-                                <option value="Vitamina D">Vitamina D</option>
-                                <option value="Hierro">Hierro</option>
-                            </select>
-                            @error('bwTestName') <span class="text-xs text-red-400">{{ $message }}</span> @enderror
+                    @if($bwShowSuccess)
+                        <div class="mt-4 flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-sm text-emerald-400">
+                            <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                            Resultado guardado correctamente.
+                        </div>
+                    @endif
+
+                    <form wire:submit="saveBloodwork" class="mt-4 space-y-4">
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            <div>
+                                <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">🧪 Prueba</label>
+                                <select
+                                    wire:model="bwTestName"
+                                    class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
+                                >
+                                    <option value="">Seleccionar prueba...</option>
+                                    <optgroup label="Metabolismo">
+                                        <option>Glucosa</option>
+                                        <option>HbA1c</option>
+                                        <option>Insulina</option>
+                                    </optgroup>
+                                    <optgroup label="Lípidos">
+                                        <option>Colesterol Total</option>
+                                        <option>HDL</option>
+                                        <option>LDL</option>
+                                        <option>Trigliceridos</option>
+                                    </optgroup>
+                                    <optgroup label="Hormonas">
+                                        <option>Testosterona</option>
+                                        <option>TSH</option>
+                                        <option>T3 Libre</option>
+                                        <option>T4 Libre</option>
+                                        <option>Cortisol</option>
+                                        <option>DHEA-S</option>
+                                    </optgroup>
+                                    <optgroup label="Hematología">
+                                        <option>Hemoglobina</option>
+                                        <option>Hematocrito</option>
+                                        <option>Ferritina</option>
+                                        <option>Hierro</option>
+                                    </optgroup>
+                                    <optgroup label="Vitaminas y Minerales">
+                                        <option>Vitamina D</option>
+                                        <option>Vitamina B12</option>
+                                        <option>Zinc</option>
+                                        <option>Magnesio</option>
+                                    </optgroup>
+                                    <optgroup label="Función Renal/Hepática">
+                                        <option>Creatinina</option>
+                                        <option>ALT/TGP</option>
+                                        <option>AST/TGO</option>
+                                    </optgroup>
+                                </select>
+                                @error('bwTestName') <span class="mt-1 block text-xs text-red-400">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">📅 Fecha</label>
+                                <input
+                                    type="date"
+                                    wire:model="bwTestDate"
+                                    class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
+                                />
+                                @error('bwTestDate') <span class="mt-1 block text-xs text-red-400">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">📊 Valor</label>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    wire:model="bwValue"
+                                    placeholder="ej: 95.5"
+                                    class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
+                                />
+                                @error('bwValue') <span class="mt-1 block text-xs text-red-400">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">🔬 Unidad</label>
+                                <input
+                                    type="text"
+                                    wire:model="bwUnit"
+                                    placeholder="ej: mg/dL"
+                                    class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
+                                />
+                                @error('bwUnit') <span class="mt-1 block text-xs text-red-400">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">📋 Rango de referencia <span class="font-normal text-wc-text-tertiary">(opcional — ej: 70-100)</span></label>
+                                <input
+                                    type="text"
+                                    wire:model="bwReferenceRange"
+                                    placeholder="ej: 70-100 mg/dL"
+                                    class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
+                                />
+                            </div>
                         </div>
 
-                        <div>
-                            <label class="block text-xs font-medium text-wc-text-tertiary mb-1">Fecha</label>
-                            <input
-                                type="date"
-                                wire:model="bwTestDate"
-                                class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
-                            />
-                            @error('bwTestDate') <span class="text-xs text-red-400">{{ $message }}</span> @enderror
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-medium text-wc-text-tertiary mb-1">Valor</label>
-                            <input
-                                type="number"
-                                step="0.01"
-                                wire:model="bwValue"
-                                placeholder="ej: 95.5"
-                                class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
-                            />
-                            @error('bwValue') <span class="text-xs text-red-400">{{ $message }}</span> @enderror
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-medium text-wc-text-tertiary mb-1">Unidad</label>
-                            <input
-                                type="text"
-                                wire:model="bwUnit"
-                                placeholder="ej: mg/dL"
-                                class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
-                            />
-                            @error('bwUnit') <span class="text-xs text-red-400">{{ $message }}</span> @enderror
-                        </div>
-
-                        <div class="sm:col-span-2">
-                            <label class="block text-xs font-medium text-wc-text-tertiary mb-1">Rango de referencia (opcional)</label>
-                            <input
-                                type="text"
-                                wire:model="bwReferenceRange"
-                                placeholder="ej: 70-100 mg/dL"
-                                class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
-                            />
-                        </div>
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="btn-press rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent/90 transition-colors"
-                        wire:loading.attr="disabled"
-                    >
-                        <span wire:loading.remove>Guardar Resultado</span>
-                        <span wire:loading class="inline-flex items-center gap-2">
-                            <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-                            Guardando...
-                        </span>
-                    </button>
-                </form>
+                        <button
+                            type="submit"
+                            class="btn-press rounded-xl bg-wc-accent px-5 py-2.5 text-sm font-medium text-white hover:bg-wc-accent/90 transition-colors"
+                            wire:loading.attr="disabled"
+                        >
+                            <span wire:loading.remove>Guardar Resultado</span>
+                            <span wire:loading class="inline-flex items-center gap-2">
+                                <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                                Guardando...
+                            </span>
+                        </button>
+                    </form>
+                </div>
             </div>
 
-            {{-- Results table --}}
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary">
-                <div class="p-5">
-                    <h3 class="font-display text-lg tracking-wide text-wc-text">HISTORIAL DE RESULTADOS</h3>
+            {{-- Results list --}}
+            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-wc-border">
+                    <h3 class="font-display text-base tracking-wide text-wc-text">HISTORIAL</h3>
+                    @if(count($bloodworkResults) > 0)
+                        <span class="rounded-full bg-wc-bg-secondary px-2.5 py-0.5 text-xs font-medium text-wc-text-secondary">
+                            {{ count($bloodworkResults) }} registros
+                        </span>
+                    @endif
                 </div>
 
                 @if(count($bloodworkResults) > 0)
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm">
-                            <thead>
-                                <tr class="border-t border-wc-border">
-                                    <th class="px-5 py-3 text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Prueba</th>
-                                    <th class="px-5 py-3 text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Valor</th>
-                                    <th class="px-5 py-3 text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Unidad</th>
-                                    <th class="hidden px-5 py-3 text-xs font-medium uppercase tracking-wider text-wc-text-tertiary sm:table-cell">Referencia</th>
-                                    <th class="px-5 py-3 text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Fecha</th>
-                                    <th class="px-5 py-3 text-xs font-medium uppercase tracking-wider text-wc-text-tertiary"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($bloodworkResults as $result)
-                                    <tr class="border-t border-wc-border">
-                                        <td class="px-5 py-3 font-medium text-wc-text">{{ $result['test_name'] }}</td>
-                                        <td class="px-5 py-3 font-data text-wc-text">{{ $result['value'] }}</td>
-                                        <td class="px-5 py-3 text-wc-text-secondary">{{ $result['unit'] }}</td>
-                                        <td class="hidden px-5 py-3 text-wc-text-tertiary sm:table-cell">{{ $result['reference_range'] ?? '-' }}</td>
-                                        <td class="px-5 py-3 text-wc-text-secondary">{{ \Carbon\Carbon::parse($result['test_date'])->format('d/m/Y') }}</td>
-                                        <td class="px-5 py-3">
-                                            <button
-                                                wire:click="deleteBloodwork({{ $result['id'] }})"
-                                                wire:confirm="Eliminar este resultado?"
-                                                class="text-xs text-red-400 hover:text-red-300 transition-colors"
-                                            >
-                                                Eliminar
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                    <div class="divide-y divide-wc-border/60">
+                        @foreach(array_reverse($bloodworkResults) as $result)
+                            @php $status = $bwStatus($result); @endphp
+                            <div class="flex items-center gap-4 px-5 py-3.5">
+                                {{-- Status dot --}}
+                                <div class="shrink-0 flex h-8 w-8 items-center justify-center rounded-full
+                                    {{ $status === 'ok'   ? 'bg-emerald-500/15' : ($status === 'flag' ? 'bg-amber-500/15' : 'bg-wc-bg-secondary') }}">
+                                    @if($status === 'ok')
+                                        <svg class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                                    @elseif($status === 'flag')
+                                        <svg class="h-4 w-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+                                    @else
+                                        <svg class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                                    @endif
+                                </div>
+
+                                {{-- Test name + date --}}
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm font-medium text-wc-text truncate">{{ $result['test_name'] }}</p>
+                                    <p class="text-[11px] text-wc-text-tertiary">{{ \Carbon\Carbon::parse($result['test_date'])->format('d M Y') }}</p>
+                                </div>
+
+                                {{-- Value + unit --}}
+                                <div class="shrink-0 text-right">
+                                    <p class="font-data text-base font-bold text-wc-text tabular-nums">
+                                        {{ $result['value'] }}
+                                        <span class="text-xs font-normal text-wc-text-tertiary">{{ $result['unit'] }}</span>
+                                    </p>
+                                    @if(!empty($result['reference_range']))
+                                        <p class="text-[10px] text-wc-text-tertiary">{{ $result['reference_range'] }}</p>
+                                    @endif
+                                </div>
+
+                                {{-- Delete --}}
+                                <button
+                                    wire:click="deleteBloodwork({{ $result['id'] }})"
+                                    wire:confirm="¿Eliminar este resultado?"
+                                    class="shrink-0 flex h-7 w-7 items-center justify-center rounded-lg text-wc-text-tertiary hover:bg-red-500/10 hover:text-red-400 transition-colors"
+                                    title="Eliminar"
+                                >
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
+                                </button>
+                            </div>
+                        @endforeach
                     </div>
                 @else
-                    <div class="border-t border-wc-border p-6 text-center">
-                        <p class="text-sm text-wc-text-secondary">Aun no tienes resultados de laboratorio registrados.</p>
-                        <p class="mt-1 text-xs text-wc-text-tertiary">Agrega tus resultados para llevar un seguimiento de tu salud.</p>
+                    <div class="py-10 text-center">
+                        <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-wc-bg-secondary">
+                            <svg class="h-7 w-7 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 1-6.23-.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/></svg>
+                        </div>
+                        <p class="font-display text-base tracking-wide text-wc-text">SIN RESULTADOS AÚN</p>
+                        <p class="mt-1 text-sm text-wc-text-secondary">Agrega tus resultados de laboratorio para llevar un seguimiento de tu salud.</p>
                     </div>
                 @endif
             </div>

@@ -31,6 +31,10 @@
             {{-- Day pills --}}
             <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none -mx-1 px-1">
                 @foreach($days as $index => $day)
+                    @php
+                        $dayMuscle = $day['grupo_muscular'] ?? $day['muscle_group'] ?? null;
+                        $dayLabel  = $day['nombre'] ?? $day['name'] ?? $day['dia'] ?? null;
+                    @endphp
                     <button
                         wire:click="switchDay({{ $index }})"
                         class="btn-press shrink-0 flex flex-col items-center gap-0.5 rounded-xl px-4 py-2.5 transition-all
@@ -39,9 +43,13 @@
                                 : 'bg-wc-bg-tertiary border border-wc-border text-wc-text-secondary hover:text-wc-text hover:border-wc-text-tertiary' }}"
                     >
                         <span class="font-display text-base tracking-wider leading-none">DIA {{ $index + 1 }}</span>
-                        @if(!empty($day['muscle_group']))
+                        @if($dayMuscle)
                             <span class="text-[9px] font-medium uppercase tracking-wider leading-none opacity-75 max-w-[80px] truncate">
-                                {{ $day['muscle_group'] }}
+                                {{ $dayMuscle }}
+                            </span>
+                        @elseif($dayLabel)
+                            <span class="text-[9px] font-medium uppercase tracking-wider leading-none opacity-75 max-w-[80px] truncate">
+                                {{ $dayLabel }}
                             </span>
                         @endif
                     </button>
@@ -92,72 +100,106 @@
             {{-- Exercise preview cards --}}
             @foreach($exercises as $exIndex => $exercise)
                 @php
-                    $blockType = $exercise['block_type'] ?? null;
-                    $isFirstInBlock = $blockType && ($exIndex === 0 || ($exercises[$exIndex - 1]['block_type'] ?? null) !== $blockType || ($exercises[$exIndex - 1]['block_id'] ?? null) !== ($exercise['block_id'] ?? null));
-                    $isInBlock = $blockType && in_array($blockType, ['superset', 'circuito']);
+                    // ── Key normalization (handles both Spanish and English JSON keys) ──
+                    $exName     = $exercise['nombre']      ?? $exercise['name']         ?? $exercise['ejercicio']    ?? 'Ejercicio';
+                    $exSeries   = $exercise['series']      ?? $exercise['sets']          ?? null;
+                    $exReps     = $exercise['repeticiones']?? $exercise['reps']          ?? null;
+                    $exDescanso = $exercise['descanso']    ?? $exercise['rest']          ?? $exercise['rest_seconds'] ?? null;
+                    $exRir      = $exercise['rir']         ?? null;
+                    $exNotas    = $exercise['notas']       ?? $exercise['notes']         ?? null;
+                    $exEquip    = $exercise['equipo']      ?? $exercise['equipment']     ?? null;
+                    $exMuscle   = $exercise['musculo']     ?? $exercise['muscle_group']  ?? null;
+
+                    // Block type
+                    $blockType      = strtolower($exercise['bloque'] ?? $exercise['block_type'] ?? 'normal');
+                    $isInBlock      = in_array($blockType, ['superset', 'circuito']);
+                    $blockGroupId   = $exercise['grupo_id'] ?? $exercise['group_id'] ?? null;
+                    $prevBlock      = $exIndex > 0 ? (strtolower($exercises[$exIndex - 1]['bloque'] ?? $exercises[$exIndex - 1]['block_type'] ?? 'normal')) : null;
+                    $prevGroupId    = $exIndex > 0 ? ($exercises[$exIndex - 1]['grupo_id'] ?? $exercises[$exIndex - 1]['group_id'] ?? null) : null;
+                    $isFirstInBlock = $isInBlock && (!$prevBlock || !in_array($prevBlock, ['superset','circuito']) || $prevGroupId !== $blockGroupId);
+
+                    // RIR color
+                    $rirClass = '';
+                    if ($exRir !== null) {
+                        $rirClass = $exRir >= 3 ? 'bg-emerald-500/10 text-emerald-400' : ($exRir >= 2 ? 'bg-amber-500/10 text-amber-400' : 'bg-red-500/10 text-red-400');
+                    }
                 @endphp
 
                 {{-- Block label (superset/circuit) --}}
-                @if($isFirstInBlock && $isInBlock)
-                    <div class="flex items-center gap-2 mt-2" data-animate="fadeInUp" data-animate-delay="{{ min(($exIndex + 1) * 100, 600) }}">
-                        <span class="rounded-full bg-wc-accent/15 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-wc-accent">
-                            {{ $blockType === 'superset' ? 'SUPERSET' : 'CIRCUITO' }}
+                @if($isFirstInBlock)
+                    <div class="flex items-center gap-3" data-animate="fadeInUp">
+                        <span class="rounded-full border border-wc-accent/30 bg-wc-accent/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-wc-accent">
+                            {{ $blockType === 'superset' ? '⚡ SUPERSET' : '🔄 CIRCUITO' }}
                         </span>
                         <div class="h-px flex-1 bg-wc-accent/15"></div>
                     </div>
                 @endif
 
+                {{-- Exercise card --}}
                 <div
-                    class="rounded-2xl border bg-wc-bg-tertiary p-4 transition-all
-                        {{ $isInBlock ? 'border-l-2 border-l-wc-accent border-wc-border ml-2' : 'border-wc-border' }}"
+                    class="overflow-hidden rounded-2xl border bg-wc-bg-tertiary transition-all
+                        {{ $isInBlock ? 'ml-3 border-l-[3px] border-l-wc-accent border-wc-border/70' : 'border-wc-border' }}"
                     data-animate="fadeInUp"
-                    data-animate-delay="{{ min(($exIndex + 1) * 100, 600) }}"
+                    data-animate-delay="{{ min(($exIndex + 1) * 80, 500) }}"
                 >
-                    <div class="flex items-start gap-3">
-                        {{-- Exercise number --}}
-                        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-wc-bg-secondary">
-                            <span class="font-data text-sm font-bold text-wc-text-secondary">{{ $exIndex + 1 }}</span>
+                    <div class="flex items-stretch gap-0">
+                        {{-- Number badge column --}}
+                        <div class="flex w-14 shrink-0 flex-col items-center justify-center border-r border-wc-border bg-wc-bg-secondary/50 py-4">
+                            <span class="font-data text-2xl font-black leading-none text-wc-accent">{{ str_pad($exIndex + 1, 2, '0', STR_PAD_LEFT) }}</span>
                         </div>
 
-                        <div class="min-w-0 flex-1">
-                            {{-- Exercise name --}}
-                            <h3 class="font-display text-lg tracking-wide leading-tight text-wc-text uppercase">
-                                {{ $exercise['name'] ?? 'Ejercicio' }}
-                            </h3>
+                        {{-- Content --}}
+                        <div class="min-w-0 flex-1 p-4">
+                            {{-- Name + muscle group --}}
+                            <div class="flex flex-wrap items-start justify-between gap-2">
+                                <h3 class="font-display text-xl tracking-wide leading-tight text-wc-text uppercase">
+                                    {{ $exName }}
+                                </h3>
+                                @if($exMuscle)
+                                    <span class="shrink-0 rounded-full bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-medium text-wc-text-tertiary">
+                                        {{ $exMuscle }}
+                                    </span>
+                                @endif
+                            </div>
 
-                            {{-- Meta row --}}
-                            <div class="mt-1.5 flex flex-wrap items-center gap-1.5">
-                                {{-- Sets x Reps --}}
-                                <span class="inline-flex items-center rounded-lg bg-wc-bg-secondary px-2 py-0.5 text-xs font-medium text-wc-text-secondary">
-                                    <span class="font-data font-semibold text-wc-text">{{ $exercise['sets'] ?? 3 }}</span>
-                                    <span class="mx-0.5 text-wc-text-tertiary">&times;</span>
-                                    <span class="font-data font-semibold text-wc-text">{{ $exercise['reps'] ?? 10 }}</span>
-                                </span>
+                            {{-- Coach notes --}}
+                            @if($exNotas)
+                                <p class="mt-1 text-xs leading-relaxed text-wc-text-tertiary">{{ $exNotas }}</p>
+                            @endif
 
-                                {{-- Equipment --}}
-                                @if(!empty($exercise['equipment']))
-                                    <span class="inline-flex items-center rounded-full bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-medium text-wc-text-tertiary">
-                                        {{ $exercise['equipment'] }}
+                            {{-- Chips row --}}
+                            <div class="mt-3 flex flex-wrap items-center gap-2">
+                                {{-- Sets × Reps — most prominent --}}
+                                @if($exSeries || $exReps)
+                                    <span class="inline-flex items-center gap-1 rounded-lg bg-wc-accent/10 px-3 py-1.5">
+                                        <span class="font-data text-sm font-black text-wc-accent">{{ $exSeries ?? '?' }}</span>
+                                        <span class="text-xs text-wc-accent/60">&times;</span>
+                                        <span class="font-data text-sm font-black text-wc-accent">{{ $exReps ?? '?' }}</span>
+                                        <span class="text-[10px] text-wc-accent/60 ml-0.5">reps</span>
                                     </span>
                                 @endif
 
                                 {{-- Rest --}}
-                                @if(!empty($exercise['rest_seconds']))
-                                    <span class="inline-flex items-center gap-1 rounded-lg bg-wc-bg-secondary px-2 py-0.5 text-[10px] font-medium text-wc-text-tertiary">
-                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                @if($exDescanso)
+                                    <span class="inline-flex items-center gap-1.5 rounded-lg bg-wc-bg-secondary px-2.5 py-1.5 text-xs text-wc-text-secondary">
+                                        <svg class="h-3 w-3 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                         </svg>
-                                        {{ $exercise['rest_seconds'] }}s
+                                        {{ $exDescanso }}
                                     </span>
                                 @endif
 
                                 {{-- RIR --}}
-                                @if(isset($exercise['rir']))
-                                    @php
-                                        $rirColor = $exercise['rir'] >= 3 ? 'text-emerald-400' : ($exercise['rir'] >= 2 ? 'text-yellow-400' : 'text-red-400');
-                                    @endphp
-                                    <span class="inline-flex items-center rounded-lg bg-wc-bg-secondary px-2 py-0.5 text-[10px] font-bold {{ $rirColor }}">
-                                        RIR {{ $exercise['rir'] }}
+                                @if($exRir !== null)
+                                    <span class="rounded-lg px-2.5 py-1.5 text-[11px] font-bold {{ $rirClass }}">
+                                        RIR {{ $exRir }}
+                                    </span>
+                                @endif
+
+                                {{-- Equipment --}}
+                                @if($exEquip)
+                                    <span class="rounded-full bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] text-wc-text-tertiary">
+                                        {{ $exEquip }}
                                     </span>
                                 @endif
                             </div>
@@ -195,7 +237,7 @@
                     foreach ($exercises as $ei => $ex) {
                         $allSetsForEx = $setData[$ei] ?? [];
                         $setsCompleted = collect($allSetsForEx)->where('completed', true)->count();
-                        $totalSets = $ex['sets'] ?? 3;
+                        $totalSets = $ex['series'] ?? $ex['sets'] ?? 3;
                         if ($setsCompleted >= $totalSets) $completedExercises++;
                     }
                     $totalExercises = count($exercises);
@@ -218,7 +260,7 @@
             {{-- Exercise cards --}}
             @foreach($exercises as $exIndex => $exercise)
                 @php
-                    $totalSets = $exercise['sets'] ?? 3;
+                    $totalSets = $exercise['series'] ?? $exercise['sets'] ?? 3;
                     $exSetData = $setData[$exIndex] ?? [];
                     $setsCompletedCount = collect($exSetData)->where('completed', true)->count();
                     $allComplete = $setsCompletedCount >= $totalSets;
@@ -256,16 +298,17 @@
                                         {{ $exIndex + 1 }}
                                     </span>
                                     <h3 class="font-display text-lg tracking-wide leading-tight text-wc-text uppercase">
-                                        {{ $exercise['name'] ?? 'Ejercicio' }}
+                                        {{ $exercise['nombre'] ?? $exercise['name'] ?? $exercise['ejercicio'] ?? 'Ejercicio' }}
                                     </h3>
                                 </div>
 
                                 {{-- Badges row --}}
                                 <div class="mt-2 flex flex-wrap items-center gap-1.5">
                                     {{-- Equipment --}}
-                                    @if(!empty($exercise['equipment']))
+                                    @php $exEquipDisplay = $exercise['equipo'] ?? $exercise['equipment'] ?? null; @endphp
+                                    @if(!empty($exEquipDisplay))
                                         <span class="inline-flex items-center rounded-full bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-medium text-wc-text-tertiary">
-                                            {{ $exercise['equipment'] }}
+                                            {{ $exEquipDisplay }}
                                         </span>
                                     @endif
 
@@ -280,12 +323,13 @@
                                     @endif
 
                                     {{-- Rest --}}
-                                    @if(!empty($exercise['rest_seconds']))
+                                    @php $exRestDisplay = $exercise['descanso'] ?? $exercise['rest'] ?? $exercise['rest_seconds'] ?? null; @endphp
+                                    @if(!empty($exRestDisplay))
                                         <span class="inline-flex items-center gap-1 rounded-full bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-medium text-wc-text-tertiary">
                                             <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                             </svg>
-                                            {{ $exercise['rest_seconds'] }}s descanso
+                                            {{ $exRestDisplay }}s descanso
                                         </span>
                                     @endif
 
@@ -317,7 +361,8 @@
                         </div>
 
                         {{-- Coach notes (collapsible) --}}
-                        @if(!empty($exercise['notes']))
+                        @php $exNotesDisplay = $exercise['notas'] ?? $exercise['notes'] ?? null; @endphp
+                        @if(!empty($exNotesDisplay))
                             <div x-data="{ open: false }" class="mt-3">
                                 <button
                                     @click="open = !open"
@@ -339,7 +384,7 @@
                                     class="mt-1.5 rounded-lg bg-wc-bg-secondary px-3 py-2 text-xs leading-relaxed text-wc-text-tertiary"
                                     x-cloak
                                 >
-                                    {{ $exercise['notes'] }}
+                                    {{ $exNotesDisplay }}
                                 </div>
                             </div>
                         @endif
@@ -370,7 +415,7 @@
                                     {{ $setNum < $totalSets ? 'border-b border-wc-border/50' : '' }}"
                                 x-data="{
                                     weight: {{ $setWeight ?: 0 }},
-                                    reps: {{ $setReps ?: ($exercise['reps'] ?? 10) }},
+                                    reps: {{ $setReps ?: ($exercise['repeticiones'] ?? $exercise['reps'] ?? 10) }},
                                     completed: {{ $isCompleted ? 'true' : 'false' }},
                                     isPr: {{ $isPr ? 'true' : 'false' }},
                                     justCompleted: false
@@ -508,7 +553,7 @@
 
             foreach ($exercises as $ei => $ex) {
                 $exSets = $setData[$ei] ?? [];
-                $totalSetsAll += $ex['sets'] ?? 3;
+                $totalSetsAll += $ex['series'] ?? $ex['sets'] ?? 3;
                 $exHasOne = false;
                 foreach ($exSets as $sn => $sd) {
                     if (!empty($sd['completed'])) {
