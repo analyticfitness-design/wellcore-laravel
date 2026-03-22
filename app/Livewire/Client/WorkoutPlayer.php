@@ -71,27 +71,29 @@ class WorkoutPlayer extends Component
     {
         $clientId = auth('wellcore')->id();
 
-        // Fix 2 + 3: Cache the plan fetch (300s TTL) and select only needed columns.
-        $plan = Cache::remember("wp:plan:{$clientId}", 300, function () use ($clientId) {
-            return AssignedPlan::select(['id', 'content', 'valid_from', 'client_id', 'created_at'])
+        // Cache only a plain array — never cache Eloquent models (unserialize fails on file cache).
+        $planData = Cache::remember("wp:plan:{$clientId}", 300, function () use ($clientId) {
+            $row = AssignedPlan::select(['id', 'content', 'valid_from', 'client_id', 'created_at'])
                 ->where('client_id', $clientId)
                 ->where('plan_type', 'entrenamiento')
                 ->where('active', true)
                 ->latest('id')
                 ->first();
+
+            return $row ? $row->toArray() : null;
         });
 
-        if (! $plan) {
+        if (! $planData) {
             $this->hasPlan = false;
             return;
         }
 
         $this->hasPlan = true;
-        $this->planId = $plan->id;
+        $this->planId = $planData['id'];
 
-        $content = is_array($plan->content)
-            ? $plan->content
-            : json_decode($plan->content, true);
+        $content = is_array($planData['content'])
+            ? $planData['content']
+            : json_decode($planData['content'], true);
 
         // Normalize top-level key variants: 'days' | 'weeks' → 'dias'
         if (! isset($content['dias'])) {
