@@ -28,6 +28,11 @@ return new class extends Migration
             return;
         }
 
+        // is_current column may not exist in vanilla PHP DB — skip silently
+        if (! Schema::hasColumn('workout_prs', 'is_current')) {
+            return;
+        }
+
         $existingKeys = collect(DB::select('SHOW INDEX FROM workout_prs'))
             ->pluck('Key_name')
             ->unique()
