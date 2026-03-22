@@ -56,6 +56,11 @@ class TrainingView extends Component
 
     public function toggleDay(string $date): void
     {
+        // Only real clients can log training days
+        if (! auth('wellcore')->isClient()) {
+            return;
+        }
+
         // Silently block future dates — the blade already disables those buttons
         if ($date > today()->toDateString()) {
             return;
