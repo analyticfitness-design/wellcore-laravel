@@ -18,19 +18,19 @@ return new class extends Migration
 
         Schema::table('personal_records', function (Blueprint $table) {
             if (! Schema::hasColumn('personal_records', 'category')) {
-                $table->string('category', 50)->default('fuerza')->after('exercise');
+                $table->string('category', 50)->default('fuerza');
             }
 
             if (! Schema::hasColumn('personal_records', 'duration_sec')) {
-                $table->unsignedSmallInteger('duration_sec')->nullable()->after('reps');
+                $table->unsignedSmallInteger('duration_sec')->nullable();
             }
 
             if (! Schema::hasColumn('personal_records', 'distance_km')) {
-                $table->decimal('distance_km', 6, 2)->nullable()->after('duration_sec');
+                $table->decimal('distance_km', 6, 2)->nullable();
             }
 
             if (! Schema::hasColumn('personal_records', 'is_current')) {
-                $table->boolean('is_current')->default(true)->after('achieved_at');
+                $table->boolean('is_current')->default(true);
             }
         });
     }
