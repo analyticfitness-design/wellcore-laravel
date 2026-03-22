@@ -12,10 +12,11 @@
     <title>{{ $title ?? 'Dashboard' }} — WellCore</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/logo-icon-dark.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo-icon-dark.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('images/logo-icon-dark.png') }}">
-    <link rel="shortcut icon" href="{{ asset('images/logo-icon-dark.png') }}">
+    <link rel="icon" type="image/jpeg" sizes="512x512" href="{{ asset('images/favicon-wc.jpg') }}">
+    <link rel="icon" type="image/jpeg" sizes="192x192" href="{{ asset('images/favicon-wc.jpg') }}">
+    <link rel="icon" type="image/jpeg" sizes="32x32" href="{{ asset('images/favicon-wc.jpg') }}">
+    <link rel="shortcut icon" href="{{ asset('images/favicon-wc.jpg') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/favicon-wc-touch.png') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html lang="es"
-      x-data="{ darkMode: localStorage.getItem('darkMode') !== 'false', sidebarOpen: false }"
-      x-init="$watch('darkMode', val => { localStorage.setItem('darkMode', val); val ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark') })"
+      x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', sidebarOpen: false }"
+      x-init="$watch('darkMode', val => { localStorage.setItem('darkMode', String(val)); val ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark') })"
       :class="{ 'dark': darkMode }">
-<script>if(localStorage.getItem('darkMode')!=='false')document.documentElement.classList.add('dark')</script>
+<script>if(localStorage.getItem('darkMode')==='true')document.documentElement.classList.add('dark')</script>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $title ?? 'Coach Portal' }} — WellCore</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" sizes="512x512" href="{{ asset('images/favicon-wc.jpg') }}">
+    <link rel="icon" type="image/jpeg" sizes="192x192" href="{{ asset('images/favicon-wc.jpg') }}">
+    <link rel="icon" type="image/jpeg" sizes="32x32" href="{{ asset('images/favicon-wc.jpg') }}">
+    <link rel="shortcut icon" href="{{ asset('images/favicon-wc.jpg') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/favicon-wc-touch.png') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
