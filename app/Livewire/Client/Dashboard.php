@@ -8,6 +8,7 @@ use App\Models\BiometricLog;
 use App\Models\Checkin;
 use App\Models\ClientXp;
 use App\Models\CoachMessage;
+use App\Models\HabitLog;
 use App\Models\Payment;
 use App\Models\TrainingLog;
 use App\Models\WeightLog;
@@ -82,9 +83,10 @@ class Dashboard extends Component
 
     public function mount(): void
     {
-        $client = auth('wellcore')->user();
+        $client   = auth('wellcore')->user();
+        $clientId = $client->id;
 
-        // Greeting based on time of day
+        // Greeting based on time of day (not cached — depends on current hour)
         $hour = (int) now()->format('H');
         if ($hour < 12) {
             $this->greeting = 'Buenos dias';
@@ -95,141 +97,303 @@ class Dashboard extends Component
         }
 
         $this->clientName = explode(' ', $client->name ?? 'Usuario')[0];
-        $this->planLabel = $client->plan?->label();
-
-        $this->loadStats($client);
-        $this->loadWeeklyOverview($client);
-        $this->loadRecentActivity($client);
-        $this->loadPlanInfo($client);
-        $this->loadDailyMissions($client);
-        $this->loadCheckinCountdown($client);
-        $this->loadWeeklySummary($client);
-        $this->loadCoachInfo($client);
-        $this->loadPlanProgress($client);
-        $this->loadStreakCalendar($client);
-        $this->loadWeightChart($client);
-
-        // ITEM 4: Daily quote
-        $this->dailyQuote = $this->getDailyQuote();
-    }
-
-    protected function loadStats($client): void
-    {
-        // Streak from client_xp table
-        $xp = ClientXp::where('client_id', $client->id)->first();
-        if ($xp) {
-            $this->streakDays = $xp->streak_days ?? 0;
-            $this->xpTotal = $xp->xp_total ?? 0;
-            $this->level = $xp->level ?? 1;
-        } else {
-            $this->streakDays = 0;
-            $this->xpTotal = 0;
-            $this->level = 1;
+        try {
+            $this->planLabel = $client->plan?->label();
+        } catch (\ValueError) {
+            $this->planLabel = 'Plan';
         }
 
-        // XP progress bar
-        $levelCap = $this->level * 500;
-        $this->xpForNextLevel = $levelCap;
-        $this->xpProgress = $levelCap > 0
-            ? (int) round(($this->xpTotal % $levelCap) / $levelCap * 100)
-            : 0;
+        // ---------- L2 cache: all DB-heavy data, 5-minute TTL ----------
+        // loadPlanInfo()     → excluded: has its own Cache::remember (client_plan_v3_*)
+        // loadPlanProgress() → excluded: reads client->created_at only, zero DB queries
+        // getDailyQuote()    → excluded: pure computation, deterministic per day-of-year
+        $cached = CacheFacade::remember("dashboard:{$clientId}", 300, function () use ($clientId, $client) {
 
-        // Check-ins this month
-        $this->checkinsThisMonth = Checkin::where('client_id', $client->id)
-            ->whereYear('checkin_date', now()->year)
-            ->whereMonth('checkin_date', now()->month)
-            ->count();
+            // --- Stats ---
+            $xp            = ClientXp::where('client_id', $clientId)->first();
+            $streakDays    = $xp?->streak_days ?? 0;
+            $xpTotal       = $xp?->xp_total ?? 0;
+            $level         = $xp?->level ?? 1;
+            $levelCap      = $level * 500;
+            $xpForNext     = $levelCap;
+            $xpProgress    = $levelCap > 0
+                ? (int) round(($xpTotal % $levelCap) / $levelCap * 100)
+                : 0;
+            $checkinsMonth = Checkin::where('client_id', $clientId)
+                ->whereYear('checkin_date', now()->year)
+                ->whereMonth('checkin_date', now()->month)
+                ->count();
+            $trainedWeek   = TrainingLog::where('client_id', $clientId)
+                ->where('year_num', now()->year)
+                ->where('week_num', now()->isoWeek())
+                ->where('completed', true)
+                ->count();
 
-        // Days trained this week
-        $this->trainedThisWeek = TrainingLog::where('client_id', $client->id)
-            ->where('year_num', now()->year)
-            ->where('week_num', now()->isoWeek())
-            ->where('completed', true)
-            ->count();
-    }
+            // --- Weekly overview ---
+            $logs = TrainingLog::where('client_id', $clientId)
+                ->where('year_num', now()->year)
+                ->where('week_num', now()->isoWeek())
+                ->where('completed', true)
+                ->pluck('log_date')
+                ->map(fn ($d) => Carbon::parse($d)->dayOfWeekIso)
+                ->toArray();
 
-    protected function loadWeeklyOverview($client): void
-    {
-        // Get training logs for current ISO week
-        $logs = TrainingLog::where('client_id', $client->id)
-            ->where('year_num', now()->year)
-            ->where('week_num', now()->isoWeek())
-            ->where('completed', true)
-            ->pluck('log_date')
-            ->map(fn ($d) => Carbon::parse($d)->dayOfWeekIso) // 1=Mon, 7=Sun
-            ->toArray();
+            $dayLabels   = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
+            $today       = now()->dayOfWeekIso;
+            $weekDays    = [];
+            for ($i = 1; $i <= 7; $i++) {
+                $weekDays[] = [
+                    'label'     => $dayLabels[$i - 1],
+                    'completed' => in_array($i, $logs),
+                    'isToday'   => $i === $today,
+                ];
+            }
 
-        $dayLabels = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
-        $today = now()->dayOfWeekIso;
+            // --- Recent activity ---
+            $activities = new Collection();
 
-        $this->weekDays = [];
-        for ($i = 1; $i <= 7; $i++) {
-            $this->weekDays[] = [
-                'label' => $dayLabels[$i - 1],
-                'completed' => in_array($i, $logs),
-                'isToday' => $i === $today,
+            $trainingLogs = TrainingLog::where('client_id', $clientId)
+                ->where('completed', true)
+                ->orderByDesc('log_date')
+                ->limit(5)
+                ->get();
+            foreach ($trainingLogs as $log) {
+                $activities->push([
+                    'type'        => 'training',
+                    'description' => 'Entrenamiento completado',
+                    'date'        => Carbon::parse($log->log_date),
+                ]);
+            }
+
+            $checkins = Checkin::where('client_id', $clientId)
+                ->orderByDesc('checkin_date')
+                ->limit(5)
+                ->get();
+            foreach ($checkins as $checkin) {
+                $activities->push([
+                    'type'        => 'checkin',
+                    'description' => 'Check-in semanal enviado',
+                    'date'        => Carbon::parse($checkin->checkin_date),
+                ]);
+            }
+
+            $payments = Payment::where('client_id', $clientId)
+                ->orderByDesc('created_at')
+                ->limit(3)
+                ->get();
+            foreach ($payments as $payment) {
+                $activities->push([
+                    'type'        => 'payment',
+                    'description' => 'Pago registrado — ' . ($payment->plan?->label() ?? 'Plan'),
+                    'date'        => Carbon::parse($payment->created_at),
+                ]);
+            }
+
+            $recentActivity = $activities
+                ->sortByDesc('date')
+                ->take(5)
+                ->map(fn ($item) => [
+                    'type'        => $item['type'],
+                    'description' => $item['description'],
+                    'timeAgo'     => $item['date']->diffForHumans(),
+                ])
+                ->values()
+                ->toArray();
+
+            // --- Daily missions ---
+            $trainedToday    = TrainingLog::where('client_id', $clientId)
+                ->where('log_date', now()->toDateString())
+                ->where('completed', true)
+                ->exists();
+            $checkinThisWeek = Checkin::where('client_id', $clientId)
+                ->whereBetween('checkin_date', [
+                    now()->startOfWeek()->toDateString(),
+                    now()->endOfWeek()->toDateString(),
+                ])
+                ->exists();
+            $weightThisWeek  = WeightLog::where('client_id', $clientId)
+                ->where('week_number', now()->isoWeek())
+                ->where('year', now()->year)
+                ->exists();
+            $nutritionToday  = HabitLog::where('client_id', $clientId)
+                ->where('habit_type', 'nutricion')
+                ->whereDate('log_date', today())
+                ->where('value', '>=', 1)
+                ->exists();
+
+            $dailyMissions = [
+                [
+                    'key'       => 'training',
+                    'title'     => 'Completar entrenamiento',
+                    'completed' => $trainedToday,
+                    'route'     => route('client.training'),
+                    'icon'      => 'dumbbell',
+                ],
+                [
+                    'key'       => 'checkin',
+                    'title'     => 'Hacer check-in semanal',
+                    'completed' => $checkinThisWeek,
+                    'route'     => route('client.checkin'),
+                    'icon'      => 'checkin',
+                ],
+                [
+                    'key'       => 'weight',
+                    'title'     => 'Registrar peso',
+                    'completed' => $weightThisWeek,
+                    'route'     => route('client.metrics'),
+                    'icon'      => 'scale',
+                ],
+                [
+                    'key'       => 'nutrition',
+                    'title'     => 'Revisar plan de nutricion',
+                    'completed' => $nutritionToday,
+                    'route'     => route('client.nutrition'),
+                    'icon'      => 'nutrition',
+                ],
             ];
-        }
-    }
 
-    protected function loadRecentActivity($client): void
-    {
-        $activities = new Collection();
+            // --- Check-in countdown ---
+            $lastCheckin = Checkin::where('client_id', $clientId)
+                ->orderByDesc('checkin_date')
+                ->first();
+            if ($lastCheckin) {
+                $nextDate       = Carbon::parse($lastCheckin->checkin_date)->addDays(7);
+                $daysUntil      = (int) now()->startOfDay()->diffInDays($nextDate->copy()->startOfDay(), false);
+                $nextCheckinStr = $nextDate->translatedFormat('l j M');
+            } else {
+                $daysUntil      = 0;
+                $nextCheckinStr = now()->translatedFormat('l j M');
+            }
 
-        // Recent training logs
-        $trainingLogs = TrainingLog::where('client_id', $client->id)
-            ->where('completed', true)
-            ->orderByDesc('log_date')
-            ->limit(5)
-            ->get();
+            // --- Weekly summary (last week) ---
+            $lastIsoWeek    = now()->subWeek()->isoWeek();
+            $lastIsoYear    = now()->subWeek()->isoWeekYear;
+            $lastWeekStart  = now()->subWeek()->startOfWeek()->toDateString();
+            $lastWeekEnd    = now()->subWeek()->endOfWeek()->toDateString();
 
-        foreach ($trainingLogs as $log) {
-            $activities->push([
-                'type' => 'training',
-                'description' => 'Entrenamiento completado',
-                'date' => Carbon::parse($log->log_date),
-            ]);
-        }
+            $lastWeekWorkouts = TrainingLog::where('client_id', $clientId)
+                ->where('year_num', $lastIsoYear)
+                ->where('week_num', $lastIsoWeek)
+                ->where('completed', true)
+                ->count();
+            $lastWeekCheckins = Checkin::where('client_id', $clientId)
+                ->whereBetween('checkin_date', [$lastWeekStart, $lastWeekEnd])
+                ->count();
+            $latestWeight = BiometricLog::where('client_id', $clientId)
+                ->whereNotNull('weight_kg')
+                ->where('weight_kg', '>', 0)
+                ->orderByDesc('log_date')
+                ->value('weight_kg');
+            $lastWeekWeight = $latestWeight ? number_format((float) $latestWeight, 1) : null;
 
-        // Recent check-ins
-        $checkins = Checkin::where('client_id', $client->id)
-            ->orderByDesc('checkin_date')
-            ->limit(5)
-            ->get();
+            // --- Coach info ---
+            $coachName     = 'Tu Coach WellCore';
+            $coachInitials = 'WC';
+            $coachId       = AssignedPlan::where('client_id', $clientId)
+                ->whereNotNull('assigned_by')
+                ->orderByDesc('valid_from')
+                ->value('assigned_by');
+            if (! $coachId) {
+                $coachId = CoachMessage::where('client_id', $clientId)
+                    ->whereNotNull('coach_id')
+                    ->orderByDesc('created_at')
+                    ->value('coach_id');
+            }
+            if ($coachId) {
+                $coach = Admin::find($coachId);
+                if ($coach && $coach->name) {
+                    $coachName = $coach->name;
+                    $parts     = explode(' ', trim($coach->name));
+                    $initials  = strtoupper(substr($parts[0] ?? '', 0, 1) . substr($parts[1] ?? '', 0, 1));
+                    $coachInitials = $initials ?: 'WC';
+                }
+            }
 
-        foreach ($checkins as $checkin) {
-            $activities->push([
-                'type' => 'checkin',
-                'description' => 'Check-in semanal enviado',
-                'date' => Carbon::parse($checkin->checkin_date),
-            ]);
-        }
+            // --- Streak calendar (90 days) ---
+            $calendarLogs = TrainingLog::where('client_id', $clientId)
+                ->where('completed', true)
+                ->where('log_date', '>=', now()->subDays(90)->toDateString())
+                ->selectRaw('DATE(log_date) as date, COUNT(*) as count')
+                ->groupBy('date')
+                ->pluck('count', 'date')
+                ->toArray();
 
-        // Recent payments
-        $payments = Payment::where('client_id', $client->id)
-            ->orderByDesc('created_at')
-            ->limit(3)
-            ->get();
+            $streak    = 0;
+            $checkDate = now()->copy();
+            if (! isset($calendarLogs[$checkDate->format('Y-m-d')])) {
+                $checkDate->subDay();
+            }
+            while (isset($calendarLogs[$checkDate->format('Y-m-d')])) {
+                $streak++;
+                $checkDate->subDay();
+            }
 
-        foreach ($payments as $payment) {
-            $activities->push([
-                'type' => 'payment',
-                'description' => 'Pago registrado — ' . ($payment->plan?->label() ?? 'Plan'),
-                'date' => Carbon::parse($payment->created_at),
-            ]);
-        }
+            // --- Weight chart (90 days) ---
+            $weightChartData = BiometricLog::where('client_id', $clientId)
+                ->whereNotNull('weight_kg')
+                ->where('weight_kg', '>', 0)
+                ->where('log_date', '>=', now()->subDays(90)->toDateString())
+                ->orderBy('log_date')
+                ->get()
+                ->map(fn ($log) => [
+                    'date'    => Carbon::parse($log->log_date)->format('d M'),
+                    'weight'  => round((float) $log->weight_kg, 1),
+                    'bodyFat' => $log->body_fat_pct ? round((float) $log->body_fat_pct, 1) : null,
+                ])
+                ->toArray();
 
-        // Sort by date descending and take top 5
-        $this->recentActivity = $activities
-            ->sortByDesc('date')
-            ->take(5)
-            ->map(fn ($item) => [
-                'type' => $item['type'],
-                'description' => $item['description'],
-                'timeAgo' => $item['date']->diffForHumans(),
-            ])
-            ->values()
-            ->toArray();
+            return [
+                'streakDays'       => $streakDays,
+                'xpTotal'          => $xpTotal,
+                'level'            => $level,
+                'xpForNextLevel'   => $xpForNext,
+                'xpProgress'       => $xpProgress,
+                'checkinsThisMonth'=> $checkinsMonth,
+                'trainedThisWeek'  => $trainedWeek,
+                'weekDays'         => $weekDays,
+                'recentActivity'   => $recentActivity,
+                'dailyMissions'    => $dailyMissions,
+                'daysUntilCheckin' => $daysUntil,
+                'nextCheckinDate'  => $nextCheckinStr,
+                'lastWeekWorkouts' => $lastWeekWorkouts,
+                'lastWeekCheckins' => $lastWeekCheckins,
+                'lastWeekWeight'   => $lastWeekWeight,
+                'coachName'        => $coachName,
+                'coachInitials'    => $coachInitials,
+                'streakCalendar'   => $calendarLogs,
+                'calendarStreak'   => $streak,
+                'weightChartData'  => $weightChartData,
+            ];
+        });
+
+        // Assign cached scalars and arrays to component properties
+        $this->streakDays        = $cached['streakDays'];
+        $this->xpTotal           = $cached['xpTotal'];
+        $this->level             = $cached['level'];
+        $this->xpForNextLevel    = $cached['xpForNextLevel'];
+        $this->xpProgress        = $cached['xpProgress'];
+        $this->checkinsThisMonth = $cached['checkinsThisMonth'];
+        $this->trainedThisWeek   = $cached['trainedThisWeek'];
+        $this->weekDays          = $cached['weekDays'];
+        $this->recentActivity    = $cached['recentActivity'];
+        $this->dailyMissions     = $cached['dailyMissions'];
+        $this->daysUntilCheckin  = $cached['daysUntilCheckin'];
+        $this->nextCheckinDate   = $cached['nextCheckinDate'];
+        $this->lastWeekWorkouts  = $cached['lastWeekWorkouts'];
+        $this->lastWeekCheckins  = $cached['lastWeekCheckins'];
+        $this->lastWeekWeight    = $cached['lastWeekWeight'];
+        $this->hasLastWeekData   = ($cached['lastWeekWorkouts'] > 0 || $cached['lastWeekCheckins'] > 0);
+        $this->coachName         = $cached['coachName'];
+        $this->coachInitials     = $cached['coachInitials'];
+        $this->streakCalendar    = $cached['streakCalendar'];
+        $this->calendarStreak    = $cached['calendarStreak'];
+        $this->weightChartData   = $cached['weightChartData'];
+        // ---------- end L2 cache ----------
+
+        // These run outside the cache (no DB queries or already cached separately)
+        $this->loadPlanInfo($client);    // has its own cache: client_plan_v3_{id}
+        $this->loadPlanProgress($client); // reads client->created_at only
+        $this->dailyQuote = $this->getDailyQuote(); // pure computation
     }
 
     protected function loadPlanInfo($client): void
@@ -267,137 +431,6 @@ class Dashboard extends Component
             $this->hasActivePlan = false;
             $this->planPhase = null;
             $this->planDaysActive = 0;
-        }
-    }
-
-    protected function loadDailyMissions($client): void
-    {
-        // Mission 1: completar entrenamiento hoy
-        $trainedToday = TrainingLog::where('client_id', $client->id)
-            ->where('log_date', now()->toDateString())
-            ->where('completed', true)
-            ->exists();
-
-        // Mission 2: check-in esta semana
-        $checkinThisWeek = Checkin::where('client_id', $client->id)
-            ->whereBetween('checkin_date', [
-                now()->startOfWeek()->toDateString(),
-                now()->endOfWeek()->toDateString(),
-            ])
-            ->exists();
-
-        // Mission 3: registrar peso esta semana
-        $weightThisWeek = WeightLog::where('client_id', $client->id)
-            ->where('week_number', now()->isoWeek())
-            ->where('year', now()->year)
-            ->exists();
-
-        // Mission 4: revisar plan de nutricion (always available)
-        $this->dailyMissions = [
-            [
-                'key'       => 'training',
-                'title'     => 'Completar entrenamiento',
-                'completed' => $trainedToday,
-                'route'     => route('client.training'),
-                'icon'      => 'dumbbell',
-            ],
-            [
-                'key'       => 'checkin',
-                'title'     => 'Hacer check-in semanal',
-                'completed' => $checkinThisWeek,
-                'route'     => route('client.checkin'),
-                'icon'      => 'checkin',
-            ],
-            [
-                'key'       => 'weight',
-                'title'     => 'Registrar peso',
-                'completed' => $weightThisWeek,
-                'route'     => route('client.metrics'),
-                'icon'      => 'scale',
-            ],
-            [
-                'key'       => 'nutrition',
-                'title'     => 'Revisar plan de nutricion',
-                'completed' => false,
-                'route'     => route('client.nutrition'),
-                'icon'      => 'nutrition',
-            ],
-        ];
-    }
-
-    protected function loadCheckinCountdown($client): void
-    {
-        $lastCheckin = Checkin::where('client_id', $client->id)
-            ->orderByDesc('checkin_date')
-            ->first();
-
-        if ($lastCheckin) {
-            $nextDate = Carbon::parse($lastCheckin->checkin_date)->addDays(7);
-            $this->daysUntilCheckin = (int) now()->startOfDay()->diffInDays($nextDate->startOfDay(), false);
-            $this->nextCheckinDate = $nextDate->translatedFormat('l j M');
-        } else {
-            // No checkins yet — due today
-            $this->daysUntilCheckin = 0;
-            $this->nextCheckinDate = now()->translatedFormat('l j M');
-        }
-    }
-
-    // ITEM 2: Weekly Summary — load last week's data
-    protected function loadWeeklySummary($client): void
-    {
-        $lastIsoWeek = now()->subWeek()->isoWeek();
-        $lastIsoYear = now()->subWeek()->isoWeekYear;
-        $lastWeekStart = now()->subWeek()->startOfWeek();
-        $lastWeekEnd = now()->subWeek()->endOfWeek();
-
-        $this->lastWeekWorkouts = TrainingLog::where('client_id', $client->id)
-            ->where('year_num', $lastIsoYear)
-            ->where('week_num', $lastIsoWeek)
-            ->where('completed', true)
-            ->count();
-
-        $this->lastWeekCheckins = Checkin::where('client_id', $client->id)
-            ->whereBetween('checkin_date', [
-                $lastWeekStart->toDateString(),
-                $lastWeekEnd->toDateString(),
-            ])
-            ->count();
-
-        // Get most recent weight from biometric_logs
-        $latestWeight = BiometricLog::where('client_id', $client->id)
-            ->whereNotNull('weight_kg')
-            ->where('weight_kg', '>', 0)
-            ->orderByDesc('log_date')
-            ->first();
-
-        $this->lastWeekWeight = $latestWeight ? number_format($latestWeight->weight_kg, 1) : null;
-
-        $this->hasLastWeekData = ($this->lastWeekWorkouts > 0 || $this->lastWeekCheckins > 0);
-    }
-
-    // ITEM 3: Coach Info
-    protected function loadCoachInfo($client): void
-    {
-        $coachId = AssignedPlan::where('client_id', $client->id)
-            ->whereNotNull('assigned_by')
-            ->orderByDesc('valid_from')
-            ->value('assigned_by');
-
-        if (! $coachId) {
-            $coachId = CoachMessage::where('client_id', $client->id)
-                ->whereNotNull('coach_id')
-                ->orderByDesc('created_at')
-                ->value('coach_id');
-        }
-
-        if ($coachId) {
-            $coach = Admin::find($coachId);
-            if ($coach && $coach->name) {
-                $this->coachName = $coach->name;
-                $parts = explode(' ', trim($coach->name));
-                $initials = strtoupper(substr($parts[0] ?? '', 0, 1) . substr($parts[1] ?? '', 0, 1));
-                $this->coachInitials = $initials ?: 'WC';
-            }
         }
     }
 
@@ -448,53 +481,6 @@ class Dashboard extends Component
         $this->weeksActive = (int) max(1, ceil(Carbon::parse($createdAt)->diffInWeeks(now())));
         $this->totalWeeks = 12;
         $this->progressPercent = (int) min(100, ($this->weeksActive / $this->totalWeeks) * 100);
-    }
-
-    // Streak Calendar — 90-day GitHub-style heatmap
-    protected function loadStreakCalendar($client): void
-    {
-        $logs = TrainingLog::where('client_id', $client->id)
-            ->where('completed', true)
-            ->where('log_date', '>=', now()->subDays(90)->toDateString())
-            ->selectRaw('DATE(log_date) as date, COUNT(*) as count')
-            ->groupBy('date')
-            ->pluck('count', 'date')
-            ->toArray();
-
-        $this->streakCalendar = $logs;
-
-        // Calculate consecutive days streak (counting back from today)
-        $streak = 0;
-        $checkDate = now()->copy();
-
-        // If today has no log yet, start checking from yesterday
-        if (! isset($logs[$checkDate->format('Y-m-d')])) {
-            $checkDate->subDay();
-        }
-
-        while (isset($logs[$checkDate->format('Y-m-d')])) {
-            $streak++;
-            $checkDate->subDay();
-        }
-
-        $this->calendarStreak = $streak;
-    }
-
-    // Weight/Metrics Trend Chart — last 90 days from biometric_logs
-    protected function loadWeightChart($client): void
-    {
-        $this->weightChartData = BiometricLog::where('client_id', $client->id)
-            ->whereNotNull('weight_kg')
-            ->where('weight_kg', '>', 0)
-            ->where('log_date', '>=', now()->subDays(90)->toDateString())
-            ->orderBy('log_date')
-            ->get()
-            ->map(fn ($log) => [
-                'date' => Carbon::parse($log->log_date)->format('d M'),
-                'weight' => round((float) $log->weight_kg, 1),
-                'bodyFat' => $log->body_fat_pct ? round((float) $log->body_fat_pct, 1) : null,
-            ])
-            ->toArray();
     }
 
     public function render()

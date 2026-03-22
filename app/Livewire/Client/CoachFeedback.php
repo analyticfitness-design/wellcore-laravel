@@ -42,6 +42,17 @@ class CoachFeedback extends Component
             return;
         }
 
+        $recentRating = CoachRating::where('client_id', $client->id)
+            ->where('coach_id', $coachId)
+            ->where('created_at', '>=', now()->subDays(7))
+            ->first();
+
+        if ($recentRating) {
+            $nextAllowed = $recentRating->created_at->addDays(7)->format('d/m/Y');
+            $this->addError('rating', "Ya calificaste a tu coach esta semana. Podrás calificar nuevamente el {$nextAllowed}.");
+            return;
+        }
+
         CoachRating::create([
             'client_id' => $client->id,
             'coach_id'  => $coachId,

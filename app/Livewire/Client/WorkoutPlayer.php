@@ -8,6 +8,7 @@ use App\Models\WorkoutLog;
 use App\Models\WorkoutPr;
 use App\Models\WorkoutSession;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -81,6 +82,57 @@ class WorkoutPlayer extends Component
             ? $plan->content
             : json_decode($plan->content, true);
 
+        // Normalize top-level key variants: 'days' | 'weeks' → 'dias'
+        if (! isset($content['dias'])) {
+            $fallback = $content['days'] ?? $content['weeks'] ?? null;
+            if ($fallback !== null) {
+                $content['dias'] = $fallback;
+            }
+        }
+
+        // Normalize exercises inside each day before storing
+        if (isset($content['dias']) && is_array($content['dias'])) {
+            foreach ($content['dias'] as &$dia) {
+                if (! is_array($dia)) {
+                    continue;
+                }
+                // Day name: 'name' → 'nombre'
+                if (! isset($dia['nombre']) && isset($dia['name'])) {
+                    $dia['nombre'] = $dia['name'];
+                }
+                // Exercises list: 'exercises' | 'sessions' → 'ejercicios'
+                if (! isset($dia['ejercicios'])) {
+                    $exFallback = $dia['exercises'] ?? $dia['sessions'] ?? null;
+                    if ($exFallback !== null) {
+                        $dia['ejercicios'] = $exFallback;
+                        unset($dia['exercises'], $dia['sessions']);
+                    }
+                }
+                // Normalize each exercise
+                if (isset($dia['ejercicios']) && is_array($dia['ejercicios'])) {
+                    foreach ($dia['ejercicios'] as &$ej) {
+                        if (! is_array($ej)) {
+                            continue;
+                        }
+                        if (! isset($ej['nombre'])) {
+                            $ej['nombre'] = $ej['name'] ?? $ej['exercise'] ?? $ej['ejercicio'] ?? '';
+                        }
+                        if (! isset($ej['series']) && isset($ej['sets'])) {
+                            $ej['series'] = $ej['sets'];
+                        }
+                        if (! isset($ej['repeticiones']) && isset($ej['reps'])) {
+                            $ej['repeticiones'] = $ej['reps'];
+                        }
+                        if (! isset($ej['descanso'])) {
+                            $ej['descanso'] = $ej['rest'] ?? $ej['rest_seconds'] ?? '90s';
+                        }
+                    }
+                    unset($ej);
+                }
+            }
+            unset($dia);
+        }
+
         // Elite plans may have weekly progressions: { "semanas": [{ "semana": 1, "dias": [...] }, ...] }
         if (isset($content['semanas']) && is_array($content['semanas'])) {
             $this->hasProgressions = true;
@@ -91,7 +143,8 @@ class WorkoutPlayer extends Component
             $this->currentWeek = min($weeksActive, $this->totalWeeks);
 
             $weekData = $content['semanas'][$this->currentWeek - 1] ?? $content['semanas'][0];
-            $this->days = $weekData['dias'] ?? [];
+            // Normalize week-level key too
+            $this->days = $weekData['dias'] ?? $weekData['days'] ?? [];
         } else {
             $this->days = $content['dias'] ?? [];
         }
@@ -271,28 +324,70 @@ class WorkoutPlayer extends Component
 
     /**
      * Build the setData structure for each exercise's sets.
-     * Pre-fills target weight from the client's last session.
+     * Pre-fills target weight from the client's last completed session.
+     *
+     * Uses a single batch query for all exercise names (eliminates N+1).
      */
     protected function buildSetData(): void
     {
         $clientId = auth('wellcore')->id();
         $this->setData = [];
 
+        // Collect all distinct exercise names up front so we can batch-load
+        // the previous weights in ONE query instead of one per exercise.
+        $exerciseNames = collect($this->exercises)
+            ->pluck('nombre')
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
+
+        // ONE query replaces N individual getLastWeight() calls.
+        // Subquery joins workout_logs → workout_sessions to scope by client
+        // and picks the highest-id (most recent) completed log per exercise.
+        $lastWeights = [];
+        if (! empty($exerciseNames)) {
+            $lastWeights = WorkoutLog::select('workout_logs.exercise_name', 'workout_logs.weight_kg')
+                ->join(
+                    DB::raw('(
+                        SELECT wl2.exercise_name, MAX(wl2.id) as max_id
+                        FROM workout_logs wl2
+                        INNER JOIN workout_sessions ws2 ON ws2.id = wl2.session_id
+                        WHERE ws2.client_id = ?
+                          AND ws2.completed = 1
+                          AND wl2.completed = 1
+                          AND wl2.weight_kg IS NOT NULL
+                        GROUP BY wl2.exercise_name
+                    ) latest'),
+                    function ($join) {
+                        $join->on('workout_logs.exercise_name', '=', 'latest.exercise_name')
+                             ->on('workout_logs.id', '=', 'latest.max_id');
+                    }
+                )
+                ->whereIn('workout_logs.exercise_name', $exerciseNames)
+                ->addBinding($clientId, 'join')
+                ->pluck('workout_logs.weight_kg', 'workout_logs.exercise_name')
+                ->map(fn ($w) => $w !== null ? (float) $w : null)
+                ->toArray();
+        }
+
         foreach ($this->exercises as $exIndex => $exercise) {
             $seriesCount = (int) ($exercise['series'] ?? 4);
-            $lastWeight = $this->getLastWeight($clientId, $exercise['nombre'] ?? '');
+            $exerciseName = $exercise['nombre'] ?? '';
+            // Resolved from the pre-loaded map — no query executed here.
+            $lastWeight = $lastWeights[$exerciseName] ?? null;
             $targetReps = $exercise['repeticiones'] ?? '8-10';
 
             $sets = [];
             for ($s = 1; $s <= $seriesCount; $s++) {
                 $sets[$s] = [
-                    'set_number' => $s,
-                    'target_reps' => $targetReps,
+                    'set_number'    => $s,
+                    'target_reps'   => $targetReps,
                     'target_weight' => $lastWeight,
-                    'weight' => $lastWeight,
-                    'reps' => '',
-                    'completed' => false,
-                    'is_pr' => false,
+                    'weight'        => $lastWeight,
+                    'reps'          => '',
+                    'completed'     => false,
+                    'is_pr'         => false,
                 ];
             }
 
@@ -305,50 +400,27 @@ class WorkoutPlayer extends Component
      */
     protected function rebuildSetDataFromLogs(WorkoutSession $session): void
     {
-        $clientId = auth('wellcore')->id();
         $logs = $session->logs()->get();
 
-        // First, build fresh setData
+        // Build fresh setData first (already uses the batched weight query).
         $this->buildSetData();
 
-        // Then overlay completed logs
+        // Overlay completed logs on top.
         foreach ($logs as $log) {
             $exIndex = $log->block_order;
 
             if (isset($this->setData[$exIndex][$log->set_number])) {
                 $this->setData[$exIndex][$log->set_number] = [
-                    'set_number' => $log->set_number,
-                    'target_reps' => $log->target_reps ?? $this->setData[$exIndex][$log->set_number]['target_reps'],
+                    'set_number'    => $log->set_number,
+                    'target_reps'   => $log->target_reps ?? $this->setData[$exIndex][$log->set_number]['target_reps'],
                     'target_weight' => $log->target_weight,
-                    'weight' => $log->weight_kg,
-                    'reps' => $log->reps,
-                    'completed' => (bool) $log->completed,
-                    'is_pr' => (bool) $log->is_pr,
+                    'weight'        => $log->weight_kg,
+                    'reps'          => $log->reps,
+                    'completed'     => (bool) $log->completed,
+                    'is_pr'         => (bool) $log->is_pr,
                 ];
             }
         }
-    }
-
-    /**
-     * Query the last logged weight for a given exercise name for this client.
-     */
-    protected function getLastWeight(int $clientId, string $exerciseName): ?float
-    {
-        if (empty($exerciseName)) {
-            return null;
-        }
-
-        $lastLog = WorkoutLog::whereHas('session', function ($q) use ($clientId) {
-                $q->where('client_id', $clientId)
-                    ->where('completed', true);
-            })
-            ->where('exercise_name', $exerciseName)
-            ->where('completed', true)
-            ->whereNotNull('weight_kg')
-            ->latest('id')
-            ->first();
-
-        return $lastLog?->weight_kg ? (float) $lastLog->weight_kg : null;
     }
 
     /**

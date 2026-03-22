@@ -198,13 +198,13 @@ class NutritionPlan extends Component
 
     private function loadWeightData(int $clientId): void
     {
+        // Single query — reused for both weight goal and current weight fallback
+        $profile = ClientProfile::where('client_id', $clientId)->first();
+
         if ($this->plan && isset($this->plan['peso_objetivo'])) {
             $this->weightGoalKg = (float) $this->plan['peso_objetivo'];
-        } else {
-            $profile = ClientProfile::where('client_id', $clientId)->first();
-            if ($profile && is_numeric($profile->objetivo ?? null)) {
-                $this->weightGoalKg = (float) $profile->objetivo;
-            }
+        } elseif ($profile && is_numeric($profile->objetivo ?? null)) {
+            $this->weightGoalKg = (float) $profile->objetivo;
         }
 
         $latest = BiometricLog::where('client_id', $clientId)
@@ -215,11 +215,8 @@ class NutritionPlan extends Component
 
         if ($latest) {
             $this->currentWeightKg = (float) $latest->weight_kg;
-        } else {
-            $profile ??= ClientProfile::where('client_id', $clientId)->first();
-            if ($profile && $profile->peso) {
-                $this->currentWeightKg = (float) $profile->peso;
-            }
+        } elseif ($profile && $profile->peso) {
+            $this->currentWeightKg = (float) $profile->peso;
         }
     }
 

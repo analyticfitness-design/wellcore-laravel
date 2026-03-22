@@ -3,6 +3,7 @@
 namespace App\Livewire\Client;
 
 use App\Models\PersonalRecord;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -92,6 +93,9 @@ class PersonalRecords extends Component
             PersonalRecord::create($data);
         }
 
+        // Bust the global stats cache so the unfiltered view reflects the new record.
+        Cache::forget("pr:stats:{$clientId}");
+
         $this->showForm = false;
         $this->resetForm();
         $this->dispatch('pr-saved');
@@ -105,9 +109,12 @@ class PersonalRecords extends Component
     public function delete(): void
     {
         if ($this->deletingId) {
-            PersonalRecord::where('client_id', auth('wellcore')->id())
+            $clientId = auth('wellcore')->id();
+            PersonalRecord::where('client_id', $clientId)
                 ->where('id', $this->deletingId)
                 ->delete();
+            // Bust the global stats cache after deletion.
+            Cache::forget("pr:stats:{$clientId}");
             $this->deletingId = null;
         }
     }
@@ -139,7 +146,10 @@ class PersonalRecords extends Component
     public function render()
     {
         $clientId = auth('wellcore')->id();
+        $hasFilters = $this->category !== 'all' || strlen($this->search) > 1;
 
+        // Single base query — fetch up to 500 rows ordered once.
+        // Filters applied here so the collection is already scoped.
         $query = PersonalRecord::where('client_id', $clientId)
             ->orderByDesc('achieved_at')
             ->orderByDesc('id');
@@ -152,27 +162,47 @@ class PersonalRecords extends Component
             $query->where('exercise', 'like', '%' . $this->search . '%');
         }
 
-        $records = $query->get();
+        // ONE query — replaces the previous $records + $currentPrs queries
+        // when filters are active.
+        $records = $query->limit(500)->get();
 
-        // Group current PRs by exercise for trophy display
-        $currentPrs = PersonalRecord::where('client_id', $clientId)
-            ->where('is_current', true)
-            ->get()
-            ->keyBy('exercise');
+        // Group current PRs by exercise for trophy display — derived in PHP,
+        // no extra query.
+        $currentPrs = $records->where('is_current', true)->keyBy('exercise');
 
-        // Stats
-        $totalPrs = PersonalRecord::where('client_id', $clientId)->where('is_current', true)->count();
-        $totalExercises = PersonalRecord::where('client_id', $clientId)->distinct('exercise')->count('exercise');
-        $thisMonth = PersonalRecord::where('client_id', $clientId)
-            ->where('achieved_at', '>=', now()->startOfMonth())
-            ->count();
+        if ($hasFilters) {
+            // Derive stats from the already-loaded (filtered) collection.
+            // These numbers reflect the current filter scope, which is the
+            // most useful value to show while the user is searching.
+            $totalPrs       = $records->where('is_current', true)->count();
+            $totalExercises = $records->where('is_current', true)->unique('exercise')->count();
+            $thisMonth      = $records->where('achieved_at', '>=', now()->startOfMonth())->count();
+        } else {
+            // No active filters: serve global aggregate stats from a single
+            // cached query (TTL 60 s).  Cache is invalidated on save/delete
+            // via the 'pr-saved' event pathway; we bust it manually there.
+            $stats = Cache::remember("pr:stats:{$clientId}", 60, function () use ($clientId) {
+                return PersonalRecord::where('client_id', $clientId)
+                    ->selectRaw(
+                        'COUNT(DISTINCT exercise) as total_exercises,
+                         SUM(CASE WHEN is_current = 1 THEN 1 ELSE 0 END) as total_prs,
+                         SUM(CASE WHEN achieved_at >= ? THEN 1 ELSE 0 END) as this_month',
+                        [now()->startOfMonth()]
+                    )
+                    ->first();
+            });
+
+            $totalPrs       = (int) ($stats->total_prs ?? 0);
+            $totalExercises = (int) ($stats->total_exercises ?? 0);
+            $thisMonth      = (int) ($stats->this_month ?? 0);
+        }
 
         return view('livewire.client.personal-records', [
-            'records' => $records,
-            'currentPrs' => $currentPrs,
-            'totalPrs' => $totalPrs,
+            'records'        => $records,
+            'currentPrs'     => $currentPrs,
+            'totalPrs'       => $totalPrs,
             'totalExercises' => $totalExercises,
-            'thisMonth' => $thisMonth,
+            'thisMonth'      => $thisMonth,
         ]);
     }
 }

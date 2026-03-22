@@ -36,8 +36,17 @@ class CheckinForm extends Component
     {
         $this->validate();
 
-        $clientId = auth('wellcore')->id();
+        $clientId  = auth('wellcore')->id();
         $weekLabel = now()->isoFormat('GGGG') . '-W' . str_pad(now()->isoFormat('W'), 2, '0', STR_PAD_LEFT);
+
+        $alreadySubmitted = Checkin::where('client_id', $clientId)
+            ->where('week_label', $weekLabel)
+            ->exists();
+
+        if ($alreadySubmitted) {
+            $this->addError('submit', 'Ya enviaste tu check-in esta semana. El próximo estará disponible el lunes.');
+            return;
+        }
 
         Checkin::create([
             'client_id' => $clientId,
