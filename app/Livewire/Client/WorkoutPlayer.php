@@ -8,6 +8,7 @@ use App\Models\WorkoutLog;
 use App\Models\WorkoutPr;
 use App\Models\WorkoutSession;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -57,6 +58,12 @@ class WorkoutPlayer extends Component
     /** Whether the plan has weekly progressions (Elite plans) */
     public bool $hasProgressions = false;
 
+    /**
+     * All weeks' normalized days indexed by week number (1-based).
+     * Populated in mount() for Elite plans so switchWeek() never re-fetches DB.
+     */
+    public array $allWeeksDays = [];
+
     /** Block groups for superset/circuit display */
     public array $blockGroups = [];
 
@@ -64,11 +71,15 @@ class WorkoutPlayer extends Component
     {
         $clientId = auth('wellcore')->id();
 
-        $plan = AssignedPlan::where('client_id', $clientId)
-            ->where('plan_type', 'entrenamiento')
-            ->where('active', true)
-            ->latest('id')
-            ->first();
+        // Fix 2 + 3: Cache the plan fetch (300s TTL) and select only needed columns.
+        $plan = Cache::remember("wp:plan:{$clientId}", 300, function () use ($clientId) {
+            return AssignedPlan::select(['id', 'content', 'valid_from', 'client_id', 'created_at'])
+                ->where('client_id', $clientId)
+                ->where('plan_type', 'entrenamiento')
+                ->where('active', true)
+                ->latest('id')
+                ->first();
+        });
 
         if (! $plan) {
             $this->hasPlan = false;
@@ -138,13 +149,18 @@ class WorkoutPlayer extends Component
             $this->hasProgressions = true;
             $this->totalWeeks = count($content['semanas']);
 
+            // Fix 1: Pre-normalize and store ALL weeks in memory now, so switchWeek()
+            // can derive the days array directly without a DB round-trip.
+            foreach ($content['semanas'] as $weekIndex => $weekData) {
+                $weekNumber = $weekIndex + 1;
+                $this->allWeeksDays[$weekNumber] = $weekData['dias'] ?? $weekData['days'] ?? [];
+            }
+
             // Determine current week based on plan start date
             $weeksActive = max(1, (int) ceil(Carbon::parse($plan->valid_from ?? $plan->created_at)->diffInWeeks(now())) + 1);
             $this->currentWeek = min($weeksActive, $this->totalWeeks);
 
-            $weekData = $content['semanas'][$this->currentWeek - 1] ?? $content['semanas'][0];
-            // Normalize week-level key too
-            $this->days = $weekData['dias'] ?? $weekData['days'] ?? [];
+            $this->days = $this->allWeeksDays[$this->currentWeek] ?? [];
         } else {
             $this->days = $content['dias'] ?? [];
         }
@@ -163,14 +179,26 @@ class WorkoutPlayer extends Component
 
         $this->loadDay();
 
-        // Check for an in-progress session for today + this day
-        $existingSession = WorkoutSession::where('client_id', $clientId)
-            ->where('plan_id', $this->planId)
-            ->where('day_name', $this->dayName)
-            ->where('session_date', now()->toDateString())
-            ->where('completed', false)
-            ->latest('id')
-            ->first();
+        // Fix 4: Cache the active-session resume check for 60 seconds.
+        // This avoids a DB hit on every Livewire re-mount (e.g. page refresh)
+        // when no active session exists. The cache key is invalidated in startWorkout().
+        $today = now()->toDateString();
+        $planId = $this->planId;
+        $dayName = $this->dayName;
+
+        $existingSession = Cache::remember(
+            "wp:session:{$clientId}:{$today}",
+            60,
+            function () use ($clientId, $planId, $dayName, $today) {
+                return WorkoutSession::where('client_id', $clientId)
+                    ->where('plan_id', $planId)
+                    ->where('day_name', $dayName)
+                    ->where('session_date', $today)
+                    ->where('completed', false)
+                    ->latest('id')
+                    ->first();
+            }
+        );
 
         if ($existingSession) {
             $this->sessionId = $existingSession->id;
@@ -217,13 +245,9 @@ class WorkoutPlayer extends Component
 
         $this->currentWeek = $week;
 
-        // Reload the plan content for the new week
-        $plan = AssignedPlan::find($this->planId);
-        if (!$plan) return;
-
-        $content = is_array($plan->content) ? $plan->content : json_decode($plan->content, true);
-        $weekData = $content['semanas'][$this->currentWeek - 1] ?? $content['semanas'][0];
-        $this->days = $weekData['dias'] ?? [];
+        // Fix 1: Derive days from the in-memory allWeeksDays map populated in mount().
+        // This eliminates the AssignedPlan::find() DB round-trip entirely.
+        $this->days = $this->allWeeksDays[$week] ?? [];
         $this->currentDayIndex = 0;
         $this->loadDay();
         $this->setData = [];
@@ -314,6 +338,10 @@ class WorkoutPlayer extends Component
             'session_date' => now()->toDateString(),
             'completed'    => false,
         ]);
+
+        // Fix 4: Bust the session resume cache so a subsequent mount() finds
+        // the newly created session instead of returning null from cache.
+        Cache::forget("wp:session:{$clientId}:" . now()->toDateString());
 
         $this->sessionId = $session->id;
         $this->isActive = true;

@@ -427,10 +427,10 @@
                     </div>
 
                     {{-- Set grid --}}
-                    <div class="border-t border-wc-border">
+                    <div class="border-t border-wc-border overflow-x-auto scrollbar-none">
                         {{-- Table header --}}
                         <div class="grid gap-1 px-3 py-2 bg-wc-bg-secondary/50"
-                             style="grid-template-columns: 40px 72px 1fr 1fr 48px">
+                             style="grid-template-columns: 40px 72px 1fr 1fr 48px; min-width: 380px">
                             <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Set</span>
                             <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Anterior</span>
                             <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Peso (kg)</span>
@@ -456,7 +456,7 @@
                                 class="grid gap-1 items-center px-3 py-2 transition-colors
                                     {{ $isCompleted ? 'bg-emerald-500/5' : '' }}
                                     {{ $setNum < $totalSets ? 'border-b border-wc-border/50' : '' }}"
-                                style="grid-template-columns: 40px 72px 1fr 1fr 48px"
+                                style="grid-template-columns: 40px 72px 1fr 1fr 48px; min-width: 380px"
                                 x-data="{
                                     weight: {{ (float)($setWeight ?: 0) }},
                                     reps: {{ $repsInitial }},
