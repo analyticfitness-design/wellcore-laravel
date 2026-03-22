@@ -81,49 +81,46 @@
                 };
             @endphp
 
-            {{-- Plan summary stats --}}
-            <div class="mb-5 grid grid-cols-3 gap-3">
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3 text-center">
-                    <p class="font-data text-2xl font-bold text-wc-text">{{ count($dias) }}</p>
-                    <p class="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-wc-text-tertiary">días/sem</p>
+            {{-- Plan summary stats — horizontal with icon accent --}}
+            <div class="mb-5 grid grid-cols-3 gap-2">
+                <div class="flex flex-col items-center gap-1 rounded-2xl border border-wc-border bg-wc-bg-tertiary p-3">
+                    <span class="font-data text-3xl font-black text-wc-text">{{ count($dias) }}</span>
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Días/sem</span>
                 </div>
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3 text-center">
-                    <p class="font-data text-2xl font-bold text-wc-text">{{ $totalExercises }}</p>
-                    <p class="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-wc-text-tertiary">ejercicios</p>
+                <div class="flex flex-col items-center gap-1 rounded-2xl border border-wc-border bg-wc-bg-tertiary p-3">
+                    <span class="font-data text-3xl font-black text-wc-text">{{ $totalExercises }}</span>
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Ejercicios</span>
                 </div>
-                <div class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-3 text-center">
-                    <p class="font-data text-2xl font-bold text-wc-accent">~{{ $estimatedWeeklyMin }}</p>
-                    <p class="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-wc-accent/70">min/sem</p>
+                <div class="flex flex-col items-center gap-1 rounded-2xl border border-wc-accent/25 bg-wc-accent/8 p-3">
+                    <span class="font-data text-3xl font-black text-wc-accent">~{{ $estimatedWeeklyMin }}</span>
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-wc-accent/60">Min/sem</span>
                 </div>
             </div>
 
-            {{-- Objetivo --}}
+            {{-- Objetivo banner --}}
             @if($planObjetivoE)
-                <div class="mb-4 flex items-start gap-3 rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
-                        <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <div class="mb-4 flex items-center gap-3 rounded-xl border border-wc-accent/20 bg-gradient-to-r from-wc-accent/8 to-transparent px-4 py-3">
+                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-wc-accent/15">
+                        <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/>
                         </svg>
                     </div>
-                    <div>
-                        <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Objetivo</p>
-                        <p class="mt-0.5 text-sm text-wc-text">{{ $planObjetivoE }}</p>
-                    </div>
+                    <p class="text-sm font-medium text-wc-text">{{ $planObjetivoE }}</p>
                 </div>
             @endif
 
             {{-- Main CTA --}}
             <a wire:navigate href="{{ route('client.workout') }}"
-                class="btn-press mb-5 flex items-center justify-center gap-2 rounded-xl bg-wc-accent px-6 py-3.5 font-display text-lg tracking-wider text-white shadow-lg shadow-wc-accent/20 transition-all hover:bg-wc-accent-hover">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+                class="btn-press group mb-6 flex items-center justify-center gap-3 rounded-2xl bg-wc-accent px-6 py-4 font-display text-xl tracking-widest text-white shadow-xl shadow-wc-accent/30 transition-all hover:bg-red-600 active:scale-95">
+                <svg class="h-5 w-5 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
                 </svg>
                 INICIAR ENTRENAMIENTO
             </a>
 
             {{-- Accordion day cards --}}
             @if(count($dias) > 0)
-                <div class="space-y-3" x-data="{ openDay: 0 }">
+                <div class="space-y-2" x-data="{ openDay: 0 }">
                     @foreach($dias as $diaIndex => $dia)
                         @php
                             $ejercicios  = $dia['ejercicios'] ?? [];
@@ -132,47 +129,57 @@
                             $mgColors    = $getMgColor($muscleGroup);
                             $dayMin      = max(count($ejercicios) * 6, 15);
                             $dayNotes    = $dia['notas'] ?? $dia['notes'] ?? null;
+                            // Left accent color from muscle group text class
+                            $borderColor = match(true) {
+                                str_contains($mgColors['text'], 'rose')    => '#f43f5e',
+                                str_contains($mgColors['text'], 'sky')     => '#38bdf8',
+                                str_contains($mgColors['text'], 'emerald') => '#34d399',
+                                str_contains($mgColors['text'], 'teal')    => '#2dd4bf',
+                                str_contains($mgColors['text'], 'lime')    => '#a3e635',
+                                str_contains($mgColors['text'], 'amber')   => '#fbbf24',
+                                str_contains($mgColors['text'], 'violet')  => '#a78bfa',
+                                str_contains($mgColors['text'], 'purple')  => '#c084fc',
+                                str_contains($mgColors['text'], 'cyan')    => '#22d3ee',
+                                str_contains($mgColors['text'], 'orange')  => '#fb923c',
+                                str_contains($mgColors['text'], 'pink')    => '#f472b6',
+                                default                                    => '#dc2626',
+                            };
                         @endphp
 
-                        <div class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary">
+                        <div class="overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary"
+                             style="border-left: 3px solid {{ $borderColor }}">
 
-                            {{-- Header (always visible) --}}
+                            {{-- Header --}}
                             <button
                                 type="button"
                                 @click="openDay = openDay === {{ $diaIndex }} ? -1 : {{ $diaIndex }}"
-                                class="flex w-full items-center gap-4 p-4 text-left transition-colors hover:bg-wc-bg-secondary/40"
+                                class="flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-wc-bg-secondary/30"
                             >
-                                {{-- Day number badge --}}
-                                <div class="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-xl bg-wc-accent/10">
-                                    <span class="text-[9px] font-bold uppercase tracking-widest text-wc-accent/70">DÍA</span>
-                                    <span class="font-display text-xl leading-none text-wc-accent">{{ $diaIndex + 1 }}</span>
+                                {{-- Day badge --}}
+                                <div class="flex h-10 w-10 shrink-0 flex-col items-center justify-center rounded-xl"
+                                     style="background: {{ $borderColor }}1a">
+                                    <span class="text-[8px] font-bold uppercase leading-none tracking-widest"
+                                          style="color: {{ $borderColor }}99">DÍA</span>
+                                    <span class="font-display text-lg leading-none" style="color: {{ $borderColor }}">{{ $diaIndex + 1 }}</span>
                                 </div>
 
                                 {{-- Name + meta --}}
                                 <div class="min-w-0 flex-1">
-                                    <div class="flex flex-wrap items-center gap-2">
-                                        <h3 class="font-display text-lg tracking-wide text-wc-text">
-                                            {{ strtoupper($dayName) }}
-                                        </h3>
+                                    <p class="font-display text-base tracking-wide text-wc-text">{{ strtoupper($dayName) }}</p>
+                                    <div class="mt-0.5 flex items-center gap-2">
+                                        <span class="text-[11px] text-wc-text-tertiary">{{ count($ejercicios) }} ejercicios · ~{{ $dayMin }} min</span>
                                         @if($muscleGroup)
-                                            <span class="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide {{ $mgColors['bg'] }} {{ $mgColors['text'] }}">
+                                            <span class="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide {{ $mgColors['bg'] }} {{ $mgColors['text'] }}">
                                                 {{ $muscleGroup }}
                                             </span>
                                         @endif
                                     </div>
-                                    <p class="mt-0.5 text-xs text-wc-text-tertiary">
-                                        {{ count($ejercicios) }} ejercicios
-                                        <span class="mx-1">·</span>
-                                        ~{{ $dayMin }} min
-                                    </p>
                                 </div>
 
                                 {{-- Chevron --}}
-                                <svg
-                                    class="h-4 w-4 shrink-0 text-wc-text-tertiary transition-transform duration-200"
-                                    :class="{ 'rotate-180': openDay === {{ $diaIndex }} }"
-                                    fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"
-                                >
+                                <svg class="h-4 w-4 shrink-0 text-wc-text-tertiary transition-transform duration-200"
+                                     :class="{ 'rotate-180': openDay === {{ $diaIndex }} }"
+                                     fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7" />
                                 </svg>
                             </button>
@@ -181,93 +188,108 @@
                             <div
                                 x-show="openDay === {{ $diaIndex }}"
                                 x-transition:enter="transition ease-out duration-200"
-                                x-transition:enter-start="opacity-0 -translate-y-1"
+                                x-transition:enter-start="opacity-0 -translate-y-2"
                                 x-transition:enter-end="opacity-100 translate-y-0"
                                 x-transition:leave="transition ease-in duration-150"
                                 x-transition:leave-start="opacity-100 translate-y-0"
-                                x-transition:leave-end="opacity-0 -translate-y-1"
+                                x-transition:leave-end="opacity-0 -translate-y-2"
                                 x-cloak
                             >
-                                <div class="border-t border-wc-border">
+                                {{-- Day notes --}}
+                                @if($dayNotes)
+                                    <div class="border-t border-wc-border bg-wc-bg-secondary/30 px-4 py-2">
+                                        <p class="text-xs italic text-wc-text-tertiary">{{ $dayNotes }}</p>
+                                    </div>
+                                @endif
 
-                                    {{-- Day notes --}}
-                                    @if($dayNotes)
-                                        <div class="border-b border-wc-border bg-wc-bg-secondary/40 px-4 py-2.5">
-                                            <p class="text-xs text-wc-text-secondary">{{ $dayNotes }}</p>
-                                        </div>
-                                    @endif
-
-                                    {{-- Exercise rows --}}
-                                    <div class="divide-y divide-wc-border">
-                                        @forelse($ejercicios as $ejIdx => $ej)
-                                            @php
-                                                $ejName    = is_array($ej) ? ($ej['nombre'] ?? $ej['name'] ?? $ej['ejercicio'] ?? 'Ejercicio') : (string) $ej;
-                                                $ejSeries  = is_array($ej) ? ($ej['series']      ?? $ej['sets']  ?? null) : null;
-                                                $ejReps    = is_array($ej) ? ($ej['repeticiones'] ?? $ej['reps']  ?? null) : null;
-                                                $ejRest    = is_array($ej) ? ($ej['descanso']     ?? $ej['rest']  ?? $ej['rest_seconds'] ?? null) : null;
-                                                $ejRir     = is_array($ej) ? ($ej['rir']          ?? null) : null;
-                                                $ejNotas   = is_array($ej) ? ($ej['notas']        ?? $ej['notes'] ?? null) : null;
-                                                $rirClass  = $ejRir !== null
-                                                    ? ($ejRir >= 3 ? 'bg-emerald-500/10 text-emerald-400' : ($ejRir >= 2 ? 'bg-amber-500/10 text-amber-400' : 'bg-red-500/10 text-red-400'))
-                                                    : '';
-                                            @endphp
-                                            <div class="flex items-center gap-3 px-4 py-3">
+                                {{-- Exercise rows --}}
+                                <div class="divide-y divide-wc-border/50 border-t border-wc-border">
+                                    @forelse($ejercicios as $ejIdx => $ej)
+                                        @php
+                                            $ejName   = is_array($ej) ? ($ej['nombre'] ?? $ej['name'] ?? $ej['ejercicio'] ?? 'Ejercicio') : (string) $ej;
+                                            $ejSeries = is_array($ej) ? ($ej['series']      ?? $ej['sets']  ?? null) : null;
+                                            $ejReps   = is_array($ej) ? ($ej['repeticiones'] ?? $ej['reps']  ?? null) : null;
+                                            $ejRest   = is_array($ej) ? ($ej['descanso']     ?? $ej['rest']  ?? $ej['rest_seconds'] ?? null) : null;
+                                            $ejRir    = is_array($ej) ? ($ej['rir']          ?? null) : null;
+                                            $ejNotas  = is_array($ej) ? ($ej['notas']        ?? $ej['notes'] ?? null) : null;
+                                            $rirClass = $ejRir !== null
+                                                ? ($ejRir >= 3 ? 'bg-emerald-500/15 text-emerald-400' : ($ejRir >= 2 ? 'bg-amber-500/15 text-amber-400' : 'bg-red-500/15 text-red-400'))
+                                                : '';
+                                            $hasNotes = !empty($ejNotas);
+                                        @endphp
+                                        <div x-data="{ showNote: false }">
+                                            {{-- Main row --}}
+                                            <div class="flex items-center gap-3 px-4 py-2.5">
                                                 {{-- Index --}}
-                                                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-wc-bg-secondary font-data text-[11px] font-bold text-wc-text-tertiary">
+                                                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary font-data text-[11px] font-black text-wc-text-tertiary">
                                                     {{ $ejIdx + 1 }}
                                                 </span>
 
-                                                {{-- Name + notes --}}
-                                                <div class="min-w-0 flex-1">
-                                                    <p class="text-sm font-medium leading-snug text-wc-text">{{ $ejName }}</p>
-                                                    @if($ejNotas)
-                                                        <p class="mt-0.5 text-xs text-wc-text-tertiary">{{ $ejNotas }}</p>
-                                                    @endif
-                                                </div>
+                                                {{-- Name --}}
+                                                <p class="min-w-0 flex-1 text-sm font-semibold leading-snug text-wc-text">{{ $ejName }}</p>
 
-                                                {{-- Chips --}}
-                                                <div class="flex shrink-0 items-center gap-1.5">
-                                                    @if($ejSeries && $ejReps)
-                                                        <span class="rounded-lg bg-wc-bg-secondary px-2 py-1 font-data text-xs font-bold text-wc-text">
-                                                            {{ $ejSeries }}<span class="text-wc-text-tertiary">×</span>{{ $ejReps }}
-                                                        </span>
-                                                    @elseif($ejSeries)
-                                                        <span class="rounded-lg bg-wc-bg-secondary px-2 py-1 font-data text-xs font-bold text-wc-text">
-                                                            {{ $ejSeries }} sets
+                                                {{-- Right chips --}}
+                                                <div class="flex shrink-0 items-center gap-1">
+                                                    @if($ejSeries || $ejReps)
+                                                        <span class="rounded-lg bg-wc-bg px-2.5 py-1 font-data text-xs font-black text-wc-text tabular-nums">
+                                                            @if($ejSeries && $ejReps){{ $ejSeries }}<span class="text-wc-text-tertiary">×</span>{{ $ejReps }}
+                                                            @elseif($ejSeries){{ $ejSeries }}s
+                                                            @else{{ $ejReps }}r
+                                                            @endif
                                                         </span>
                                                     @endif
 
                                                     @if($ejRest)
-                                                        <span class="hidden items-center gap-1 rounded-full bg-wc-bg-secondary px-2 py-0.5 text-[10px] text-wc-text-tertiary sm:inline-flex">
+                                                        <span class="flex items-center gap-0.5 rounded-lg bg-wc-bg px-2 py-1 text-[10px] font-medium text-wc-text-tertiary">
                                                             <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                                             </svg>
-                                                            {{ $ejRest }}
+                                                            {{ is_numeric($ejRest) ? $ejRest.'s' : $ejRest }}
                                                         </span>
                                                     @endif
 
                                                     @if($ejRir !== null)
-                                                        <span class="hidden rounded-full px-2 py-0.5 text-[10px] font-bold sm:inline {{ $rirClass }}">
-                                                            RIR {{ $ejRir }}
-                                                        </span>
+                                                        <span class="rounded-lg px-2 py-1 text-[10px] font-black {{ $rirClass }}">RIR{{ $ejRir }}</span>
+                                                    @endif
+
+                                                    @if($hasNotes)
+                                                        <button @click="showNote = !showNote"
+                                                                class="flex h-6 w-6 items-center justify-center rounded-lg bg-wc-bg text-wc-text-tertiary transition-colors hover:text-wc-text"
+                                                                :class="showNote ? 'text-wc-accent' : ''">
+                                                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7" />
+                                                            </svg>
+                                                        </button>
                                                     @endif
                                                 </div>
                                             </div>
-                                        @empty
-                                            <p class="px-4 py-3 text-xs text-wc-text-tertiary">Sin ejercicios registrados.</p>
-                                        @endforelse
-                                    </div>
 
-                                    {{-- Entrenar este día CTA --}}
-                                    <div class="border-t border-wc-border p-3">
-                                        <a wire:navigate href="{{ route('client.workout', ['day' => $diaIndex + 1]) }}"
-                                            class="btn-press flex w-full items-center justify-center gap-2 rounded-lg bg-wc-accent/10 py-2.5 text-sm font-semibold text-wc-accent transition-colors hover:bg-wc-accent hover:text-white">
-                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M8 5v14l11-7z"/>
-                                            </svg>
-                                            ENTRENAR DÍA {{ $diaIndex + 1 }}
-                                        </a>
-                                    </div>
+                                            {{-- Coach note (collapsible) --}}
+                                            @if($hasNotes)
+                                                <div x-show="showNote" x-cloak
+                                                     x-transition:enter="transition ease-out duration-150"
+                                                     x-transition:enter-start="opacity-0 -translate-y-1"
+                                                     x-transition:enter-end="opacity-100 translate-y-0"
+                                                     class="mx-4 mb-2.5 rounded-lg bg-wc-bg-secondary/50 px-3 py-2 text-xs leading-relaxed text-wc-text-secondary">
+                                                    {{ $ejNotas }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @empty
+                                        <p class="px-4 py-3 text-xs text-wc-text-tertiary">Sin ejercicios registrados.</p>
+                                    @endforelse
+                                </div>
+
+                                {{-- Per-day CTA --}}
+                                <div class="border-t border-wc-border px-4 py-3">
+                                    <a wire:navigate href="{{ route('client.workout', ['day' => $diaIndex + 1]) }}"
+                                        class="btn-press flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold tracking-wide transition-all"
+                                        style="background: {{ $borderColor }}18; color: {{ $borderColor }}">
+                                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M8 5v14l11-7z"/>
+                                        </svg>
+                                        ENTRENAR DÍA {{ $diaIndex + 1 }}
+                                    </a>
                                 </div>
                             </div>
                         </div>
