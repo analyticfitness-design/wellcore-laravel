@@ -2,6 +2,7 @@
     class="min-h-screen pb-32"
     x-data="workoutPlayer()"
     x-init="initAnimations()"
+    x-on:open-rest-timer.window="startRestTimer($event.detail.seconds)"
 >
     {{-- ============================================================ --}}
     {{-- EMPTY STATE — No plan assigned                               --}}
@@ -123,6 +124,16 @@
                     if ($exRir !== null) {
                         $rirClass = $exRir >= 3 ? 'bg-emerald-500/10 text-emerald-400' : ($exRir >= 2 ? 'bg-amber-500/10 text-amber-400' : 'bg-red-500/10 text-red-400');
                     }
+
+                    // Video / image support
+                    $exVideoUrl   = $exercise['video_url'] ?? $exercise['video'] ?? null;
+                    $exImageUrl   = $exercise['image_url'] ?? $exercise['imagen'] ?? $exercise['thumbnail_url'] ?? null;
+                    $exThumb      = null;
+                    if ($exImageUrl) {
+                        $exThumb = $exImageUrl;
+                    } elseif ($exVideoUrl && preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $exVideoUrl, $_ytm)) {
+                        $exThumb = 'https://img.youtube.com/vi/' . $_ytm[1] . '/mqdefault.jpg';
+                    }
                 @endphp
 
                 {{-- Block label (superset/circuit) --}}
@@ -142,14 +153,35 @@
                     data-animate="fadeInUp"
                     data-animate-delay="{{ min(($exIndex + 1) * 80, 500) }}"
                 >
-                    <div class="flex items-stretch gap-0">
-                        {{-- Number badge column --}}
-                        <div class="flex w-14 shrink-0 flex-col items-center justify-center border-r border-wc-border bg-wc-bg-secondary/50 py-4">
-                            <span class="font-data text-2xl font-black leading-none text-wc-accent">{{ str_pad($exIndex + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                    <div class="flex items-stretch">
+                        {{-- Thumbnail column with number overlay --}}
+                        <div class="relative w-20 shrink-0 overflow-hidden bg-wc-bg-secondary">
+                            @if($exThumb)
+                                <img src="{{ $exThumb }}" alt="{{ $exName }}"
+                                    class="h-full w-full object-cover opacity-90"/>
+                            @else
+                                <div class="flex h-full w-full min-h-[80px] flex-col items-center justify-center bg-gradient-to-b from-wc-bg-secondary to-wc-bg">
+                                    <svg class="h-7 w-7 text-wc-text-tertiary/40" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                                    </svg>
+                                </div>
+                            @endif
+                            {{-- Number overlay --}}
+                            <div class="absolute bottom-2 left-2 flex h-6 w-6 items-center justify-center rounded-lg bg-wc-bg/80 backdrop-blur-sm border border-wc-border/30">
+                                <span class="font-data text-xs font-black leading-none text-wc-accent">{{ $exIndex + 1 }}</span>
+                            </div>
+                            {{-- Video play icon if has video --}}
+                            @if($exVideoUrl)
+                                <div class="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-wc-bg/80 backdrop-blur-sm">
+                                    <svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            @endif
                         </div>
 
                         {{-- Content --}}
-                        <div class="min-w-0 flex-1 p-4">
+                        <div class="min-w-0 flex-1 p-3">
                             {{-- Name + muscle group --}}
                             <div class="flex flex-wrap items-start justify-between gap-2">
                                 <h3 class="font-display text-xl tracking-wide leading-tight text-wc-text uppercase">
@@ -393,8 +425,9 @@
                     {{-- Set grid --}}
                     <div class="border-t border-wc-border">
                         {{-- Table header --}}
-                        <div class="grid grid-cols-[44px_1fr_1fr_48px] gap-1 px-4 py-2 bg-wc-bg-secondary/50">
+                        <div class="grid grid-cols-[40px_72px_1fr_1fr_48px] gap-1 px-3 py-2 bg-wc-bg-secondary/50">
                             <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Set</span>
+                            <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Anterior</span>
                             <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Peso (kg)</span>
                             <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Reps</span>
                             <span class="sr-only">Completar</span>
@@ -410,7 +443,7 @@
                                 $setReps = $currentSet['reps'] ?? '';
                             @endphp
                             <div
-                                class="grid grid-cols-[44px_1fr_1fr_48px] gap-1 items-center px-4 py-2 transition-colors
+                                class="grid grid-cols-[40px_72px_1fr_1fr_48px] gap-1 items-center px-3 py-2 transition-colors
                                     {{ $isCompleted ? 'bg-emerald-500/5' : '' }}
                                     {{ $setNum < $totalSets ? 'border-b border-wc-border/50' : '' }}"
                                 x-data="{
@@ -422,14 +455,33 @@
                                 }"
                             >
                                 {{-- Set number --}}
-                                <div class="flex items-center justify-center">
+                                <div class="flex flex-col items-center justify-center gap-0.5">
                                     <span class="font-data text-sm font-bold {{ $isCompleted ? 'text-emerald-400' : 'text-wc-text-tertiary' }}">
                                         {{ $setNum }}
                                     </span>
                                     @if($isPr)
-                                        <span class="badge-shine ml-0.5 rounded bg-gradient-to-r from-yellow-500 to-amber-400 px-1 py-0.5 text-[8px] font-black text-black leading-none">
-                                            PR!
+                                        <span
+                                            class="inline-flex items-center gap-0.5 rounded-md px-1 py-0.5 text-[8px] font-black leading-none text-black"
+                                            style="background: linear-gradient(135deg, #facc15, #f59e0b); animation: prPulse 1s ease-out;"
+                                        >
+                                            ★ PR
                                         </span>
+                                    @endif
+                                </div>
+
+                                {{-- ANTERIOR (target from last session) --}}
+                                <div class="flex items-center justify-center">
+                                    @php
+                                        $prevWeight = $currentSet['target_weight'] ?? null;
+                                        $prevReps   = $currentSet['target_reps']   ?? null;
+                                    @endphp
+                                    @if($prevWeight || $prevReps)
+                                        <span class="text-center font-data text-[11px] font-medium text-wc-text/30 tabular-nums leading-tight">
+                                            {{ $prevWeight ? number_format($prevWeight, 1).'kg' : '—' }}<br>
+                                            <span class="text-[9px]">× {{ $prevReps ?? '?' }}</span>
+                                        </span>
+                                    @else
+                                        <span class="font-data text-[11px] text-wc-text/20">—</span>
                                     @endif
                                 </div>
 
@@ -541,6 +593,82 @@
     </div>
 
     {{-- ============================================================ --}}
+    {{-- REST TIMER BOTTOM SHEET                                      --}}
+    {{-- ============================================================ --}}
+    <div
+        x-show="restActive"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="translate-y-full opacity-0"
+        x-transition:enter-end="translate-y-0 opacity-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="translate-y-0 opacity-100"
+        x-transition:leave-end="translate-y-full opacity-0"
+        class="fixed bottom-0 inset-x-0 z-50 rounded-t-3xl border-t border-wc-border bg-wc-bg-secondary shadow-2xl"
+        x-cloak
+    >
+        {{-- Backdrop --}}
+        <div
+            class="fixed inset-0 -z-10 bg-black/40 backdrop-blur-sm"
+            @click="skipRest()"
+        ></div>
+
+        <div class="px-6 pt-4 pb-6 safe-area-pb">
+            {{-- Handle --}}
+            <div class="mx-auto mb-3 h-1 w-10 rounded-full bg-wc-border"></div>
+
+            {{-- Label --}}
+            <p class="text-center text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary mb-5">Tiempo de Descanso</p>
+
+            {{-- SVG Ring with countdown --}}
+            <div class="flex justify-center mb-5">
+                <div class="relative">
+                    <svg width="148" height="148" viewBox="0 0 148 148" class="-rotate-90">
+                        {{-- Track circle --}}
+                        <circle cx="74" cy="74" r="58" fill="none" stroke-width="6"
+                            class="text-wc-border" style="stroke: currentColor; opacity: 0.25"/>
+                        {{-- Draining progress circle --}}
+                        <circle
+                            cx="74" cy="74" r="58"
+                            fill="none"
+                            stroke="#DC2626"
+                            stroke-width="6"
+                            stroke-linecap="round"
+                            :stroke-dasharray="2 * Math.PI * 58"
+                            :stroke-dashoffset="restTotal > 0 ? (2 * Math.PI * 58) * (restSeconds / restTotal) : 0"
+                            style="transition: stroke-dashoffset 0.95s linear;"
+                        />
+                    </svg>
+                    {{-- Countdown display --}}
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span class="font-data text-4xl font-black tabular-nums leading-none text-wc-text" x-text="restDisplay"></span>
+                        <span class="mt-1 text-[10px] font-medium uppercase tracking-widest text-wc-text-tertiary">seg</span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Adjust +/- buttons --}}
+            <div class="mb-4 flex items-center justify-center gap-4">
+                <button
+                    @click="adjustRest(-15)"
+                    class="btn-press flex h-11 w-24 items-center justify-center rounded-xl border border-wc-border bg-wc-bg font-data text-sm font-bold text-wc-text-secondary hover:text-wc-text transition-colors"
+                >−15s</button>
+                <button
+                    @click="adjustRest(15)"
+                    class="btn-press flex h-11 w-24 items-center justify-center rounded-xl border border-wc-border bg-wc-bg font-data text-sm font-bold text-wc-text-secondary hover:text-wc-text transition-colors"
+                >+15s</button>
+            </div>
+
+            {{-- Skip button --}}
+            <button
+                @click="skipRest()"
+                class="btn-press w-full rounded-2xl bg-wc-accent py-4 text-center font-display text-xl tracking-widest text-white shadow-lg shadow-wc-accent/25 hover:bg-wc-accent-hover transition-colors"
+            >
+                SALTAR DESCANSO
+            </button>
+        </div>
+    </div>
+
+    {{-- ============================================================ --}}
     {{-- STICKY BOTTOM BAR (active workout)                           --}}
     {{-- ============================================================ --}}
     @if($isActive)
@@ -619,6 +747,55 @@
                 elapsed: 0,
                 timerInterval: null,
 
+                // ── Rest Timer state ──────────────────────────────────────────
+                restActive: false,
+                restSeconds: 0,
+                restTotal: 0,
+                restInterval: null,
+
+                get restDisplay() {
+                    const m = Math.floor(this.restSeconds / 60);
+                    const s = this.restSeconds % 60;
+                    return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+                },
+
+                startRestTimer(seconds) {
+                    this.clearRestTimer();
+                    this.restSeconds = parseInt(seconds) || 60;
+                    this.restTotal   = this.restSeconds;
+                    this.restActive  = true;
+                    this.restInterval = setInterval(() => {
+                        if (this.restSeconds > 0) {
+                            this.restSeconds--;
+                        } else {
+                            this.clearRestTimer();
+                        }
+                    }, 1000);
+                },
+
+                skipRest() {
+                    this.clearRestTimer();
+                },
+
+                adjustRest(delta) {
+                    const newVal = this.restSeconds + delta;
+                    this.restSeconds = Math.max(5, newVal);
+                    if (this.restSeconds > this.restTotal) {
+                        this.restTotal = this.restSeconds;
+                    }
+                },
+
+                clearRestTimer() {
+                    if (this.restInterval) {
+                        clearInterval(this.restInterval);
+                        this.restInterval = null;
+                    }
+                    this.restActive  = false;
+                    this.restSeconds = 0;
+                    this.restTotal   = 0;
+                },
+
+                // ── Session elapsed timer ─────────────────────────────────────
                 get elapsedDisplay() {
                     const h = Math.floor(this.elapsed / 3600);
                     const m = Math.floor((this.elapsed % 3600) / 60);
@@ -670,6 +847,7 @@
 
                 destroy() {
                     this.stopTimer();
+                    this.clearRestTimer();
                 }
             };
         }
@@ -692,6 +870,13 @@
 
         /* Safe area padding for iOS bottom bar */
         .safe-area-pb { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+        /* PR badge pulse animation */
+        @keyframes prPulse {
+            0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(250,204,21,0.5); }
+            50%  { transform: scale(1.15); box-shadow: 0 0 0 4px rgba(250,204,21,0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250,204,21,0); }
+        }
 
         /* PR badge golden shimmer */
         @keyframes prShine {

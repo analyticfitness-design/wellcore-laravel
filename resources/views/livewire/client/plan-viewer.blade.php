@@ -566,14 +566,27 @@
                     if (!this.currentDay) return null;
                     return this.cycleLength - this.currentDay + 1;
                 },
-                get ringDasharray() {
+                get phaseArcs() {
                     const r = 54; const circ = 2 * Math.PI * r;
-                    return circ.toFixed(1);
+                    const cl = this.cycleLength; const gap = 2.5;
+                    return [
+                        { color: '#f87171', start: 0,       days: 5        },
+                        { color: '#4ade80', start: 5,        days: 8        },
+                        { color: '#fbbf24', start: 13,       days: 3        },
+                        { color: '#c084fc', start: 16,       days: cl - 16  },
+                    ].map(p => {
+                        const arcLen = Math.max(0, (p.days / cl) * circ - gap);
+                        return {
+                            color: p.color,
+                            dasharray: arcLen.toFixed(1) + ' ' + (circ * 2).toFixed(1),
+                            dashoffset: (-(p.start / cl) * circ).toFixed(1),
+                        };
+                    });
                 },
-                get ringDashoffset() {
+                get dotOffset() {
+                    if (!this.currentDay) return null;
                     const r = 54; const circ = 2 * Math.PI * r;
-                    const pct = this.currentDay ? (this.currentDay / this.cycleLength) : 0;
-                    return (circ * (1 - pct)).toFixed(1);
+                    return (-(((this.currentDay - 0.5) / this.cycleLength) * circ)).toFixed(1);
                 },
                 save() {
                     localStorage.setItem('wc_cycle_start', this.startDate);
@@ -593,16 +606,33 @@
                         <div class="relative shrink-0">
                             <svg width="140" height="140" viewBox="0 0 140 140" class="-rotate-90">
                                 {{-- Track --}}
-                                <circle cx="70" cy="70" r="54" fill="none" stroke="currentColor" stroke-width="10" class="text-wc-bg-secondary opacity-60"/>
-                                {{-- Progress arc --}}
-                                <circle
-                                    cx="70" cy="70" r="54" fill="none" stroke-width="10"
-                                    stroke-linecap="round"
-                                    :stroke="phaseData.ring"
-                                    :stroke-dasharray="ringDasharray"
-                                    :stroke-dashoffset="ringDashoffset"
-                                    style="transition: stroke-dashoffset 1s ease;"
-                                />
+                                <circle cx="70" cy="70" r="54" fill="none" stroke-width="10"
+                                    style="stroke: currentColor; opacity: 0.12;" class="text-wc-text"/>
+                                {{-- Phase arcs (always visible) --}}
+                                <template x-for="arc in phaseArcs" :key="arc.color">
+                                    <circle
+                                        cx="70" cy="70" r="54"
+                                        fill="none"
+                                        :stroke="arc.color"
+                                        stroke-width="10"
+                                        stroke-linecap="butt"
+                                        :stroke-dasharray="arc.dasharray"
+                                        :stroke-dashoffset="arc.dashoffset"
+                                    />
+                                </template>
+                                {{-- Current day dot marker --}}
+                                <template x-if="currentDay">
+                                    <circle
+                                        cx="70" cy="70" r="54"
+                                        fill="none"
+                                        stroke="white"
+                                        stroke-width="4"
+                                        stroke-linecap="round"
+                                        :stroke-dasharray="'4 ' + (2 * Math.PI * 54)"
+                                        :stroke-dashoffset="dotOffset"
+                                        style="filter: drop-shadow(0 0 4px rgba(255,255,255,0.9));"
+                                    />
+                                </template>
                             </svg>
                             {{-- Center text --}}
                             <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
@@ -729,39 +759,54 @@
                     <div class="h-full transition-all" style="width: 11%; background:#fbbf24;" title="Ovulatoria"></div>
                     <div class="h-full flex-1" style="background:#c084fc;" title="Lutea"></div>
                 </div>
-                <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                    <div class="rounded-xl bg-red-500/10 border border-red-500/20 p-3">
-                        <div class="flex items-center gap-2 mb-1.5">
-                            <div class="h-2 w-2 rounded-full bg-red-400 shrink-0"></div>
-                            <p class="text-xs font-semibold text-red-400">Menstrual</p>
+                <p class="text-[9px] font-medium text-wc-text-tertiary mb-3 text-center uppercase tracking-widest">Toca una fase para ver detalle</p>
+                @php
+                    $phaseCards = [
+                        ['dot' => 'bg-red-400',    'text' => 'text-red-400',    'border' => 'border-red-500/25',    'bg_f' => 'bg-red-500/10',    'bg_b' => 'bg-red-500/20',    'name' => 'Menstrual',  'days' => '1–5',  'sub' => 'Descanso activo',    'train' => 'Yoga, caminata, movilidad. Reduce cargas. Recuperación activa prioritaria.', 'nutr' => 'Hierro, magnesio, omega-3 y alimentos anti-inflamatorios.'],
+                        ['dot' => 'bg-green-400',  'text' => 'text-green-400',  'border' => 'border-green-500/25',  'bg_f' => 'bg-green-500/10',  'bg_b' => 'bg-green-500/20',  'name' => 'Folicular',  'days' => '6–13', 'sub' => 'Fuerza e intensidad',  'train' => 'Fuerza máxima, HIIT, aumentar cargas. Ventana anabólica óptima.', 'nutr' => 'Proteína alta, zinc, vitamina B6 para síntesis de estrógeno.'],
+                        ['dot' => 'bg-amber-400',  'text' => 'text-amber-400',  'border' => 'border-amber-500/25',  'bg_f' => 'bg-amber-500/10',  'bg_b' => 'bg-amber-500/20',  'name' => 'Ovulatoria', 'days' => '14–16','sub' => 'Pico de rendimiento', 'train' => 'Pico de fuerza y energía. Ideal para PRs y nuevos récords.', 'nutr' => 'Antioxidantes, proteína alta, hidratación óptima.'],
+                        ['dot' => 'bg-purple-400', 'text' => 'text-purple-400', 'border' => 'border-purple-500/25', 'bg_f' => 'bg-purple-500/10', 'bg_b' => 'bg-purple-500/20', 'name' => 'Lútea',      'days' => '17–28','sub' => 'Técnica y estabilidad', 'train' => 'Técnica, estabilidad, recuperación activa. Reduce intensidad al final.', 'nutr' => 'Fibra, magnesio y calcio. El apetito sube — es normal.'],
+                    ];
+                @endphp
+                <div class="grid grid-cols-2 gap-3">
+                    @foreach($phaseCards as $pc)
+                        <div
+                            x-data="{ flipped: false }"
+                            @click="flipped = !flipped"
+                            class="cursor-pointer select-none"
+                            style="perspective: 700px; height: 130px;"
+                        >
+                            <div
+                                style="position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.45s cubic-bezier(.4,0,.2,1);"
+                                :style="flipped ? 'transform:rotateY(180deg)' : 'transform:rotateY(0deg)'"
+                            >
+                                {{-- Front --}}
+                                <div class="absolute inset-0 rounded-xl p-3 {{ $pc['border'] }} {{ $pc['bg_f'] }}"
+                                    style="backface-visibility:hidden;">
+                                    <div class="flex items-center gap-1.5 mb-1.5">
+                                        <div class="h-2 w-2 shrink-0 rounded-full {{ $pc['dot'] }}"></div>
+                                        <p class="text-xs font-semibold {{ $pc['text'] }}">{{ $pc['name'] }}</p>
+                                    </div>
+                                    <p class="text-[10px] text-wc-text-tertiary">Días {{ $pc['days'] }}</p>
+                                    <p class="text-[10px] text-wc-text-tertiary mt-0.5">{{ $pc['sub'] }}</p>
+                                    <div class="mt-3 flex items-center gap-1 {{ $pc['text'] }} opacity-50">
+                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 1 0-4.773-4.773 3.375 3.375 0 0 0 4.774 4.774ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                                        <span class="text-[9px] font-medium">Ver detalle</span>
+                                    </div>
+                                </div>
+                                {{-- Back --}}
+                                <div class="absolute inset-0 overflow-y-auto rounded-xl p-3 {{ $pc['border'] }} {{ $pc['bg_b'] }}"
+                                    style="backface-visibility:hidden; transform:rotateY(180deg);">
+                                    <p class="text-[10px] font-bold {{ $pc['text'] }} mb-1">🏋️ Entreno</p>
+                                    <p class="text-[10px] text-wc-text-secondary leading-relaxed">{{ $pc['train'] }}</p>
+                                    <div class="mt-2 border-t {{ $pc['border'] }} pt-2">
+                                        <p class="text-[10px] font-bold {{ $pc['text'] }} mb-1">🥗 Nutrición</p>
+                                        <p class="text-[10px] text-wc-text-secondary leading-relaxed">{{ $pc['nutr'] }}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <p class="text-[10px] text-wc-text-tertiary">Días 1–5</p>
-                        <p class="text-[10px] text-wc-text-tertiary mt-0.5">Descanso activo</p>
-                    </div>
-                    <div class="rounded-xl bg-green-500/10 border border-green-500/20 p-3">
-                        <div class="flex items-center gap-2 mb-1.5">
-                            <div class="h-2 w-2 rounded-full bg-green-400 shrink-0"></div>
-                            <p class="text-xs font-semibold text-green-400">Folicular</p>
-                        </div>
-                        <p class="text-[10px] text-wc-text-tertiary">Días 6–13</p>
-                        <p class="text-[10px] text-wc-text-tertiary mt-0.5">Fuerza e intensidad</p>
-                    </div>
-                    <div class="rounded-xl bg-amber-500/10 border border-amber-500/20 p-3">
-                        <div class="flex items-center gap-2 mb-1.5">
-                            <div class="h-2 w-2 rounded-full bg-amber-400 shrink-0"></div>
-                            <p class="text-xs font-semibold text-amber-400">Ovulatoria</p>
-                        </div>
-                        <p class="text-[10px] text-wc-text-tertiary">Días 14–16</p>
-                        <p class="text-[10px] text-wc-text-tertiary mt-0.5">Pico de rendimiento</p>
-                    </div>
-                    <div class="rounded-xl bg-purple-500/10 border border-purple-500/20 p-3">
-                        <div class="flex items-center gap-2 mb-1.5">
-                            <div class="h-2 w-2 rounded-full bg-purple-400 shrink-0"></div>
-                            <p class="text-xs font-semibold text-purple-400">Lútea</p>
-                        </div>
-                        <p class="text-[10px] text-wc-text-tertiary">Días 17–28</p>
-                        <p class="text-[10px] text-wc-text-tertiary mt-0.5">Técnica y estabilidad</p>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -806,7 +851,26 @@
                     <h3 class="font-display text-sm tracking-wide text-wc-text-secondary mb-3">ÚLTIMOS VALORES</h3>
                     <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                         @foreach($latestByTest as $testName => $r)
-                            @php $status = $bwStatus($r); @endphp
+                            @php
+                                $status = $bwStatus($r);
+                                // Compute spectrum bar position
+                                $specPct = null;
+                                $rangeStr = $r['reference_range'] ?? '';
+                                $bwVal = (float) ($r['value'] ?? 0);
+                                if ($rangeStr && $bwVal > 0) {
+                                    preg_match('/(\d+[\.,]?\d*)\s*[-–]\s*(\d+[\.,]?\d*)/', $rangeStr, $sm);
+                                    if (isset($sm[1], $sm[2])) {
+                                        $smLo = (float) str_replace(',', '.', $sm[1]);
+                                        $smHi = (float) str_replace(',', '.', $sm[2]);
+                                        $smRange = $smHi - $smLo;
+                                        if ($smRange > 0) {
+                                            $visMin = $smLo - $smRange * 0.4;
+                                            $visMax = $smHi + $smRange * 0.4;
+                                            $specPct = max(2, min(98, ($bwVal - $visMin) / ($visMax - $visMin) * 100));
+                                        }
+                                    }
+                                }
+                            @endphp
                             <div class="rounded-xl border bg-wc-bg-tertiary p-3.5
                                 {{ $status === 'ok'   ? 'border-emerald-500/25' : ($status === 'flag' ? 'border-amber-500/30' : 'border-wc-border') }}">
                                 <div class="flex items-start justify-between gap-1 mb-2">
@@ -825,10 +889,16 @@
                                     <span class="font-data text-xl font-black text-wc-text tabular-nums">{{ $r['value'] }}</span>
                                     <span class="text-[10px] text-wc-text-tertiary">{{ $r['unit'] }}</span>
                                 </div>
-                                @if(!empty($r['reference_range']))
+                                @if($specPct !== null)
+                                    <div class="mt-2 relative h-1.5 w-full overflow-hidden rounded-full"
+                                        style="background: linear-gradient(to right, #ef4444 0%, #fbbf24 20%, #4ade80 32%, #4ade80 68%, #fbbf24 80%, #ef4444 100%);">
+                                        <div class="absolute top-0 h-full w-0.5 rounded-full bg-white shadow"
+                                            style="left: {{ round($specPct, 1) }}%; transform: translateX(-50%);"></div>
+                                    </div>
+                                @elseif(!empty($r['reference_range']))
                                     <p class="mt-1 text-[9px] text-wc-text-tertiary">Ref: {{ $r['reference_range'] }}</p>
                                 @endif
-                                <p class="mt-0.5 text-[9px] text-wc-text-tertiary">{{ \Carbon\Carbon::parse($r['test_date'])->format('d/m/Y') }}</p>
+                                <p class="mt-1 text-[9px] text-wc-text-tertiary">{{ \Carbon\Carbon::parse($r['test_date'])->format('d/m/Y') }}</p>
                             </div>
                         @endforeach
                     </div>
@@ -981,10 +1051,29 @@
                 </div>
 
                 @if(count($bloodworkResults) > 0)
-                    <div class="divide-y divide-wc-border/60">
+                    <div>
                         @foreach(array_reverse($bloodworkResults) as $result)
-                            @php $status = $bwStatus($result); @endphp
-                            <div class="flex items-center gap-4 px-5 py-3.5">
+                            @php
+                                $status = $bwStatus($result);
+                                $histSpecPct = null;
+                                $histRange = $result['reference_range'] ?? '';
+                                $histVal = (float) ($result['value'] ?? 0);
+                                if ($histRange && $histVal > 0) {
+                                    preg_match('/(\d+[\.,]?\d*)\s*[-–]\s*(\d+[\.,]?\d*)/', $histRange, $hm);
+                                    if (isset($hm[1], $hm[2])) {
+                                        $hLo = (float) str_replace(',', '.', $hm[1]);
+                                        $hHi = (float) str_replace(',', '.', $hm[2]);
+                                        $hRange = $hHi - $hLo;
+                                        if ($hRange > 0) {
+                                            $hVisMin = $hLo - $hRange * 0.4;
+                                            $hVisMax = $hHi + $hRange * 0.4;
+                                            $histSpecPct = max(2, min(98, ($histVal - $hVisMin) / ($hVisMax - $hVisMin) * 100));
+                                        }
+                                    }
+                                }
+                            @endphp
+                            <div class="px-5 py-3.5 {{ $result !== end($bloodworkResults) ? 'border-b border-wc-border/60' : '' }}">
+                            <div class="flex items-center gap-4">
                                 {{-- Status dot --}}
                                 <div class="shrink-0 flex h-8 w-8 items-center justify-center rounded-full
                                     {{ $status === 'ok'   ? 'bg-emerald-500/15' : ($status === 'flag' ? 'bg-amber-500/15' : 'bg-wc-bg-secondary') }}">
@@ -1023,7 +1112,16 @@
                                 >
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
                                 </button>
-                            </div>
+                            </div>{{-- end flex row --}}
+                            {{-- Spectrum bar (below the row) --}}
+                            @if($histSpecPct !== null)
+                                <div class="mt-2 px-12 relative h-1.5 w-full overflow-hidden rounded-full"
+                                    style="background: linear-gradient(to right, #ef4444 0%, #fbbf24 20%, #4ade80 32%, #4ade80 68%, #fbbf24 80%, #ef4444 100%);">
+                                    <div class="absolute top-0 h-full w-0.5 rounded-full bg-white shadow"
+                                        style="left: {{ round($histSpecPct, 1) }}%; transform: translateX(-50%);"></div>
+                                </div>
+                            @endif
+                            </div>{{-- end outer row wrapper --}}
                         @endforeach
                     </div>
                 @else
