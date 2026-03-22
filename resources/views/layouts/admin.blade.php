@@ -1,9 +1,20 @@
 <!DOCTYPE html>
+<script>
+    if (localStorage.getItem('darkMode') === 'true') document.documentElement.classList.add('dark');
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('darkMode', {
+            on: localStorage.getItem('darkMode') === 'true',
+            toggle() {
+                this.on = !this.on;
+                localStorage.setItem('darkMode', String(this.on));
+                document.documentElement.classList.toggle('dark', this.on);
+            }
+        });
+    });
+</script>
 <html lang="es"
-      x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', sidebarOpen: false }"
-      x-init="$watch('darkMode', val => { localStorage.setItem('darkMode', String(val)); val ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark') })"
-      :class="{ 'dark': darkMode }">
-<script>if(localStorage.getItem('darkMode')==='true')document.documentElement.classList.add('dark')</script>
+      x-data="{ sidebarOpen: false }"
+      :class="{ 'dark': $store.darkMode?.on }">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,12 +22,17 @@
 
     <title>{{ $title ?? 'Admin' }} — WellCore Admin</title>
 
-    <!-- Favicon -->
+    <!-- Favicon & PWA -->
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
     <link rel="icon" type="image/jpeg" sizes="512x512" href="{{ asset('images/favicon-wc.jpg') }}">
     <link rel="icon" type="image/jpeg" sizes="192x192" href="{{ asset('images/favicon-wc.jpg') }}">
     <link rel="icon" type="image/jpeg" sizes="32x32" href="{{ asset('images/favicon-wc.jpg') }}">
     <link rel="shortcut icon" href="{{ asset('images/favicon-wc.jpg') }}">
     <link rel="apple-touch-icon" href="{{ asset('images/favicon-wc-touch.png') }}">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="WellCore">
+    <meta name="theme-color" content="#DC2626">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -278,7 +294,7 @@
                 <x-language-switcher />
                 {{-- Dark Mode Toggle --}}
                 <button
-                    x-on:click="darkMode = !darkMode"
+                    x-on:click="$store.darkMode.toggle()"
                     class="btn-press flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text"
                     title="{{ __('dashboard.cambiar_modo') }}"
                 >
