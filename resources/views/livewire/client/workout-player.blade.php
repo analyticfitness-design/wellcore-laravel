@@ -512,7 +512,7 @@
                                         step="0.5"
                                         min="0"
                                         x-model.number="weight"
-                                        wire:model.live.debounce.500ms="setData.{{ $exIndex }}.{{ $setNum }}.weight_kg"
+                                        wire:model="setData.{{ $exIndex }}.{{ $setNum }}.weight_kg"
                                         class="h-8 w-16 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-sm font-semibold text-wc-text focus:border-wc-accent focus:outline-none tabular-nums
                                             {{ $isCompleted ? 'opacity-60' : '' }}"
                                         :disabled="completed"
@@ -544,7 +544,7 @@
                                         type="number"
                                         min="0"
                                         x-model.number="reps"
-                                        wire:model.live.debounce.500ms="setData.{{ $exIndex }}.{{ $setNum }}.reps"
+                                        wire:model="setData.{{ $exIndex }}.{{ $setNum }}.reps"
                                         class="h-8 w-14 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-sm font-semibold text-wc-text focus:border-wc-accent focus:outline-none tabular-nums
                                             {{ $isCompleted ? 'opacity-60' : '' }}"
                                         :disabled="completed"

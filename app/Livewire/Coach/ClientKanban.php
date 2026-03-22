@@ -10,6 +10,7 @@ use App\Models\CoachMessage;
 use App\Models\CoachNote;
 use App\Models\TrainingLog;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -34,10 +35,46 @@ class ClientKanban extends Component
         $this->loadBoard();
     }
 
+    // -------------------------------------------------------------------------
+    // Cache helpers
+    // -------------------------------------------------------------------------
+
+    private function boardCacheKey(int $coachId): string
+    {
+        $searchSlug = $this->search !== '' ? md5($this->search) : 'all';
+        $today      = now()->toDateString();          // date boundary prevents stale column labels
+
+        return "kanban:coach:{$coachId}:search:{$searchSlug}:date:{$today}";
+    }
+
+    private function invalidateBoardCache(int $coachId): void
+    {
+        // Bust every cached search variant for this coach by iterating the
+        // known date key. Cache::tags() would be cleaner but requires a
+        // taggable driver; the date-keyed pattern is driver-agnostic and
+        // naturally expires at midnight anyway.
+        $today = now()->toDateString();
+        Cache::forget("kanban:coach:{$coachId}:search:all:date:{$today}");
+        if ($this->search !== '') {
+            Cache::forget($this->boardCacheKey($coachId));
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Board load (cached 60 s)
+    // -------------------------------------------------------------------------
+
     public function loadBoard(): void
     {
         $coachId = auth('wellcore')->id();
+        $cacheKey = $this->boardCacheKey($coachId);
 
+        ['columns' => $this->columns, 'totalClients' => $this->totalClients]
+            = Cache::remember($cacheKey, 60, fn () => $this->buildBoard($coachId));
+    }
+
+    private function buildBoard(int $coachId): array
+    {
         // Get all client IDs assigned to this coach via assigned_plans
         $clientIds = AssignedPlan::where('assigned_by', $coachId)
             ->pluck('client_id')
@@ -51,7 +88,6 @@ class ClientKanban extends Component
         }
 
         $clients = $query->orderBy('name')->get();
-        $this->totalClients = $clients->count();
 
         // Get last activity dates for all clients in one batch
         $lastCheckins = Checkin::whereIn('client_id', $clientIds)
@@ -79,8 +115,7 @@ class ClientKanban extends Component
             ->groupBy('client_id')
             ->pluck('cnt', 'client_id');
 
-        // Initialize columns
-        $this->columns = [
+        $columns = [
             'nuevo' => [
                 'title' => 'Nuevos',
                 'icon' => 'sparkles',
@@ -133,7 +168,6 @@ class ClientKanban extends Component
                 ? (int) Carbon::parse($client->fecha_inicio)->diffInDays($now)
                 : null;
 
-            // Classify client into column
             $column = $this->classifyClient($client, $daysSinceActivity, $daysSinceStart);
 
             $clientData = [
@@ -153,8 +187,10 @@ class ClientKanban extends Component
                 'unread_messages' => $unreadMessages[$client->id] ?? 0,
             ];
 
-            $this->columns[$column]['clients'][] = $clientData;
+            $columns[$column]['clients'][] = $clientData;
         }
+
+        return ['columns' => $columns, 'totalClients' => $clients->count()];
     }
 
     /**
@@ -228,7 +264,8 @@ class ClientKanban extends Component
         if ($dbClient) {
             if ($targetColumn === 'inactivo' && $dbClient->status?->value !== 'inactivo') {
                 $dbClient->update(['status' => 'inactivo']);
-            } elseif (in_array($targetColumn, ['activo', 'nuevo', 'riesgo']) && $dbClient->status?->value === 'inactivo') {
+            } elseif (in_array($targetColumn, ['activo', 'nuevo', 'riesgo']) &&
+                in_array($dbClient->status?->value, ['inactivo', 'congelado'])) {
                 $dbClient->update(['status' => 'activo']);
             }
         }
@@ -249,6 +286,8 @@ class ClientKanban extends Component
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        $this->invalidateBoardCache($coachId);
 
         $this->dispatch('notify', type: 'success', message: 'Cliente movido a ' . ($columnLabels[$targetColumn] ?? $targetColumn));
     }

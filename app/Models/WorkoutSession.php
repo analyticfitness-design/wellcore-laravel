@@ -40,8 +40,11 @@ class WorkoutSession extends Model
 
     public function calculateTotals(): void
     {
-        $logs = $this->logs()->where('completed', true)->get();
-        $this->total_volume = (int) $logs->sum(fn ($l) => ($l->weight_kg ?? 0) * ($l->reps ?? 0));
+        $this->total_volume = (int) $this->logs()
+            ->where('completed', true)
+            ->selectRaw('SUM(COALESCE(weight_kg, 0) * COALESCE(reps, 0)) as volume')
+            ->value('volume');
+
         $this->save();
     }
 
