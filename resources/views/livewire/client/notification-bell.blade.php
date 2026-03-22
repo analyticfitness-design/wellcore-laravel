@@ -1,4 +1,12 @@
-<div wire:poll.30s x-data="{ showNotifs: false }" class="relative">
+<div
+    @if($unreadCount === 0)
+        wire:poll.120s.keep-alive="pollNotifications"
+    @else
+        wire:poll.30s.keep-alive="pollNotifications"
+    @endif
+    x-data="{ showNotifs: false }"
+    class="relative"
+>
 
     {{-- Bell button --}}
     <button

@@ -4,6 +4,7 @@ namespace App\Livewire\Client;
 
 use App\Models\CommunityPost;
 use App\Models\WorkoutSession;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -47,8 +48,11 @@ class WorkoutSummary extends Component
             'exercises_count' => $exerciseCount,
         ];
 
-        // XP earned this session
-        $this->xpEarned = $this->session->awardXp();
+        // XP earned this session — cached so the number never changes across page reloads
+        $cacheKey = "workout_summary_xp:{$this->session->id}";
+        $this->xpEarned = Cache::remember($cacheKey, 86400 * 30, function () {
+            return $this->session->awardXp();
+        });
 
         // PR achievements from this session's logs
         $prLogs = $completedLogs->where('is_pr', true);

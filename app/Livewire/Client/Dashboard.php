@@ -204,57 +204,10 @@ class Dashboard extends Component
                 ->values()
                 ->toArray();
 
-            // --- Daily missions ---
-            $trainedToday    = TrainingLog::where('client_id', $clientId)
-                ->where('log_date', now()->toDateString())
-                ->where('completed', true)
-                ->exists();
-            $checkinThisWeek = Checkin::where('client_id', $clientId)
-                ->whereBetween('checkin_date', [
-                    now()->startOfWeek()->toDateString(),
-                    now()->endOfWeek()->toDateString(),
-                ])
-                ->exists();
-            $weightThisWeek  = WeightLog::where('client_id', $clientId)
-                ->where('week_number', now()->isoWeek())
-                ->where('year', now()->year)
-                ->exists();
-            $nutritionToday  = HabitLog::where('client_id', $clientId)
-                ->where('habit_type', 'nutricion')
-                ->whereDate('log_date', today())
-                ->where('value', '>=', 1)
-                ->exists();
-
-            $dailyMissions = [
-                [
-                    'key'       => 'training',
-                    'title'     => 'Completar entrenamiento',
-                    'completed' => $trainedToday,
-                    'route'     => route('client.training'),
-                    'icon'      => 'dumbbell',
-                ],
-                [
-                    'key'       => 'checkin',
-                    'title'     => 'Hacer check-in semanal',
-                    'completed' => $checkinThisWeek,
-                    'route'     => route('client.checkin'),
-                    'icon'      => 'checkin',
-                ],
-                [
-                    'key'       => 'weight',
-                    'title'     => 'Registrar peso',
-                    'completed' => $weightThisWeek,
-                    'route'     => route('client.metrics'),
-                    'icon'      => 'scale',
-                ],
-                [
-                    'key'       => 'nutrition',
-                    'title'     => 'Revisar plan de nutricion',
-                    'completed' => $nutritionToday,
-                    'route'     => route('client.nutrition'),
-                    'icon'      => 'nutrition',
-                ],
-            ];
+            // Daily missions are intentionally excluded from this cache block.
+            // They are computed fresh on every mount() call below so that
+            // toggling a habit or completing a workout reflects immediately.
+            $dailyMissions = [];
 
             // --- Check-in countdown ---
             $lastCheckin = Checkin::where('client_id', $clientId)
@@ -398,6 +351,10 @@ class Dashboard extends Component
         $this->loadPlanInfo($client);    // has its own cache: client_plan_v3_{id}
         $this->loadPlanProgress($client); // reads client->created_at only
         $this->dailyQuote = $this->getDailyQuote(); // pure computation
+
+        // Daily missions: always fresh — never cached so completion states
+        // (training today, nutrition habit, weight log) reflect immediately.
+        $this->dailyMissions = $this->loadDailyMissions($clientId);
     }
 
     protected function loadPlanInfo($client): void
@@ -475,6 +432,63 @@ class Dashboard extends Component
         ];
 
         return $quotes[now()->dayOfYear % count($quotes)];
+    }
+
+    protected function loadDailyMissions(int $clientId): array
+    {
+        $trainedToday = TrainingLog::where('client_id', $clientId)
+            ->where('log_date', now()->toDateString())
+            ->where('completed', true)
+            ->exists();
+
+        $checkinThisWeek = Checkin::where('client_id', $clientId)
+            ->whereBetween('checkin_date', [
+                now()->startOfWeek()->toDateString(),
+                now()->endOfWeek()->toDateString(),
+            ])
+            ->exists();
+
+        $weightThisWeek = WeightLog::where('client_id', $clientId)
+            ->where('week_number', now()->isoWeek())
+            ->where('year', now()->year)
+            ->exists();
+
+        $nutritionToday = HabitLog::where('client_id', $clientId)
+            ->where('habit_type', 'nutricion')
+            ->whereDate('log_date', today())
+            ->where('value', '>=', 1)
+            ->exists();
+
+        return [
+            [
+                'key'       => 'training',
+                'title'     => 'Completar entrenamiento',
+                'completed' => $trainedToday,
+                'route'     => route('client.training'),
+                'icon'      => 'dumbbell',
+            ],
+            [
+                'key'       => 'checkin',
+                'title'     => 'Hacer check-in semanal',
+                'completed' => $checkinThisWeek,
+                'route'     => route('client.checkin'),
+                'icon'      => 'checkin',
+            ],
+            [
+                'key'       => 'weight',
+                'title'     => 'Registrar peso',
+                'completed' => $weightThisWeek,
+                'route'     => route('client.metrics'),
+                'icon'      => 'scale',
+            ],
+            [
+                'key'       => 'nutrition',
+                'title'     => 'Revisar plan de nutricion',
+                'completed' => $nutritionToday,
+                'route'     => route('client.nutrition'),
+                'icon'      => 'nutrition',
+            ],
+        ];
     }
 
     // ITEM 5: Plan Progress Timeline

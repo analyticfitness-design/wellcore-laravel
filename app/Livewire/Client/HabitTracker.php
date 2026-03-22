@@ -132,6 +132,8 @@ class HabitTracker extends Component
         // Weekly overview
         $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY);
         $weeklyData = [];
+        $weeklyPossibleDays = 0;
+        $weeklyCompletedHabits = 0;
 
         $weekLogs = HabitLog::where('client_id', $clientId)
             ->whereBetween('log_date', [
@@ -141,21 +143,38 @@ class HabitTracker extends Component
             ->get()
             ->groupBy(fn ($log) => $log->log_date->format('Y-m-d'));
 
+        $todayDate = Carbon::today();
+
         for ($i = 0; $i < 7; $i++) {
             $day = $startOfWeek->copy()->addDays($i);
             $dateKey = $day->format('Y-m-d');
+            $isFutureDay = $day->gt($todayDate);
             $dayLogs = $weekLogs->get($dateKey, collect());
             $dayCompleted = $dayLogs->filter(fn ($l) => (int) $l->value >= 1)->count();
+
+            // Only past days and today count toward the weekly compliance denominator
+            if (! $isFutureDay) {
+                $weeklyPossibleDays++;
+                $weeklyCompletedHabits += $dayCompleted;
+            }
 
             $weeklyData[] = [
                 'date' => $dateKey,
                 'dayName' => $day->locale('es')->isoFormat('dd'),
                 'dayNumber' => $day->format('d'),
                 'isToday' => $day->isToday(),
+                'isFuture' => $isFutureDay,
                 'completed' => $dayCompleted,
                 'total' => $totalHabits,
             ];
         }
+
+        // Weekly compliance: completed habits over possible habit-days (excludes future days).
+        // Max possible = $weeklyPossibleDays * $totalHabits.
+        $weeklyComplianceMax = $weeklyPossibleDays * $totalHabits;
+        $weeklyCompliance = $weeklyComplianceMax > 0
+            ? min(100, (int) round(($weeklyCompletedHabits / $weeklyComplianceMax) * 100))
+            : 0;
 
         // Monthly heatmap (last 30 days) — single query with GROUP BY
         $heatmapCounts = HabitLog::where('client_id', $clientId)
@@ -185,6 +204,8 @@ class HabitTracker extends Component
             'completedToday' => $completedToday,
             'totalHabits' => $totalHabits,
             'weeklyData' => $weeklyData,
+            'weeklyCompliance' => $weeklyCompliance,
+            'weeklyPossibleDays' => $weeklyPossibleDays,
             'heatmapData' => $heatmapData,
         ]);
     }

@@ -152,10 +152,10 @@
 
         <div class="grid grid-cols-7 gap-2">
             @foreach ($weeklyData as $day)
-                <div class="flex flex-col items-center gap-2">
+                <div class="flex flex-col items-center gap-2 {{ $day['isFuture'] ? 'opacity-35' : '' }}">
                     <span class="text-[10px] font-medium uppercase text-wc-text-tertiary">{{ $day['dayName'] }}</span>
                     @php
-                        $pct = $day['total'] > 0 ? ($day['completed'] / $day['total']) : 0;
+                        $pct = (!$day['isFuture'] && $day['total'] > 0) ? ($day['completed'] / $day['total']) : 0;
                     @endphp
                     <div class="relative flex h-10 w-10 items-center justify-center rounded-full border-2 transition-colors
                         {{ $day['isToday'] ? 'border-wc-accent' : 'border-wc-border' }}
@@ -165,7 +165,11 @@
                         </span>
                     </div>
                     <span class="font-data text-[10px] {{ $pct >= 1 ? 'text-emerald-500 font-semibold' : 'text-wc-text-tertiary' }}">
-                        {{ $day['completed'] }}/{{ $day['total'] }}
+                        @if($day['isFuture'])
+                            &mdash;
+                        @else
+                            {{ $day['completed'] }}/{{ $day['total'] }}
+                        @endif
                     </span>
                 </div>
             @endforeach
