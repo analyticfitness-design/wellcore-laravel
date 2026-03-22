@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <script>
+    // FOUC: aplicar clase dark antes de que Alpine cargue
     if (localStorage.getItem('darkMode') === 'true') document.documentElement.classList.add('dark');
+    // Alpine store — toggle controlado por usuario
     document.addEventListener('alpine:init', () => {
         Alpine.store('darkMode', {
             on: localStorage.getItem('darkMode') === 'true',
@@ -11,10 +13,13 @@
             }
         });
     });
+    // Re-aplicar después de cada wire:navigate (morphdom elimina la clase del <html>)
+    document.addEventListener('livewire:navigated', () => {
+        document.documentElement.classList.toggle('dark', localStorage.getItem('darkMode') === 'true');
+    });
 </script>
 <html lang="es"
-      x-data="{ mobileMenu: false }"
-      :class="{ 'dark': $store.darkMode?.on }">
+      x-data="{ mobileMenu: false }">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
