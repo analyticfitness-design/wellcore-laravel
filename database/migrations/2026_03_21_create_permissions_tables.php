@@ -8,21 +8,25 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('permissions', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique(); // e.g., 'manage-clients', 'view-analytics'
-            $table->string('display_name');
-            $table->string('group')->default('general'); // group for UI
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('permissions')) {
+            Schema::create('permissions', function (Blueprint $table) {
+                $table->id();
+                $table->string('name')->unique();
+                $table->string('display_name');
+                $table->string('group')->default('general');
+                $table->timestamps();
+            });
+        }
 
-        Schema::create('role_permissions', function (Blueprint $table) {
-            $table->id();
-            $table->string('role'); // 'superadmin', 'admin', 'coach', 'client'
-            $table->foreignId('permission_id')->constrained()->cascadeOnDelete();
-            $table->timestamps();
-            $table->unique(['role', 'permission_id']);
-        });
+        if (! Schema::hasTable('role_permissions')) {
+            Schema::create('role_permissions', function (Blueprint $table) {
+                $table->id();
+                $table->string('role');
+                $table->foreignId('permission_id')->constrained()->cascadeOnDelete();
+                $table->timestamps();
+                $table->unique(['role', 'permission_id']);
+            });
+        }
     }
 
     public function down(): void

@@ -13,8 +13,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('clients', function (Blueprint $table) {
-            $table->string('google_id', 255)->nullable()->after('email');
-            $table->index('google_id');
+            if (! Schema::hasColumn('clients', 'google_id')) {
+                $table->string('google_id', 255)->nullable()->after('email');
+            }
+            if (! collect(Schema::getIndexes('clients'))->pluck('name')->contains('clients_google_id_index')) {
+                $table->index('google_id');
+            }
         });
     }
 
