@@ -110,13 +110,7 @@
     {{-- ==================== TAB: NUTRICION ==================== --}}
     @elseif($activeTab === 'nutricion')
         @if($canAccessNutricion)
-            @if($nutritionPlan)
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
-                    <pre class="text-sm text-wc-text-secondary whitespace-pre-wrap">{{ json_encode($nutritionPlan, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
-                </div>
-            @else
-                <x-empty-state title="PLAN EN PREPARACIÓN" message="Tu coach está preparando tu plan de nutrición. Te notificaremos cuando esté listo." />
-            @endif
+            @livewire('client.nutrition-plan')
         @else
             <div class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-8 text-center">
                 <p class="font-display text-xl text-wc-text">Nutrición Premium</p>
@@ -129,8 +123,144 @@
     @elseif($activeTab === 'suplementacion')
         @if($canAccessNutricion)
             @if($supplementPlan)
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
-                    <pre class="text-sm text-wc-text-secondary whitespace-pre-wrap">{{ json_encode($supplementPlan, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                @php
+                    // Normalize: support multiple key conventions
+                    $supObjetivo     = $supplementPlan['objetivo'] ?? $supplementPlan['objetivo_general'] ?? null;
+                    $supCoachNotes   = $supplementPlan['notas_coach'] ?? $supplementPlan['coach_notes'] ?? $supplementPlan['notas'] ?? null;
+                    $supList         = $supplementPlan['suplementos'] ?? $supplementPlan['supplements'] ?? $supplementPlan['protocolo'] ?? [];
+                    $supTimingGroups = $supplementPlan['timing'] ?? $supplementPlan['horarios'] ?? null;
+
+                    // Timing icon map
+                    $timingIcons = [
+                        'mañana'            => '🌅',
+                        'manana'            => '🌅',
+                        'morning'           => '🌅',
+                        'pre-entrenamiento' => '⚡',
+                        'pre entreno'       => '⚡',
+                        'pre-workout'       => '⚡',
+                        'preworkout'        => '⚡',
+                        'post-entrenamiento'=> '🔄',
+                        'post entreno'      => '🔄',
+                        'post-workout'      => '🔄',
+                        'postworkout'       => '🔄',
+                        'con comidas'       => '🍽️',
+                        'con comida'        => '🍽️',
+                        'with meals'        => '🍽️',
+                        'noche'             => '🌙',
+                        'night'             => '🌙',
+                        'antes de dormir'   => '🌙',
+                        'bedtime'           => '🌙',
+                        'diario'            => '📅',
+                        'daily'             => '📅',
+                        'cualquier momento' => '📅',
+                    ];
+                    $getTimingIcon = fn($timing) => $timingIcons[mb_strtolower(trim($timing ?? ''))] ?? '💊';
+                @endphp
+
+                <div class="space-y-5">
+                    {{-- Objetivo --}}
+                    @if($supObjetivo)
+                        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+                            <div class="flex items-start gap-3">
+                                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
+                                    <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Objetivo del protocolo</p>
+                                    <p class="mt-0.5 text-sm font-medium text-wc-text">{{ $supObjetivo }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Supplement list --}}
+                    @if(count($supList) > 0)
+                        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
+                            <div class="flex items-center justify-between border-b border-wc-border px-5 py-4">
+                                <h3 class="font-display text-lg tracking-wide text-wc-text">SUPLEMENTOS</h3>
+                                <span class="rounded-full bg-wc-accent/10 px-2.5 py-0.5 text-xs font-semibold text-wc-accent">
+                                    {{ count($supList) }} suplementos
+                                </span>
+                            </div>
+                            <div class="divide-y divide-wc-border">
+                                @foreach($supList as $idx => $sup)
+                                    @php
+                                        $supName   = is_array($sup) ? ($sup['nombre'] ?? $sup['name'] ?? $sup['suplemento'] ?? "Suplemento " . ($idx + 1)) : $sup;
+                                        $supDosis  = is_array($sup) ? ($sup['dosis'] ?? $sup['dose'] ?? $sup['cantidad'] ?? null) : null;
+                                        $supMom    = is_array($sup) ? ($sup['momento'] ?? $sup['timing'] ?? $sup['horario'] ?? $sup['cuando'] ?? null) : null;
+                                        $supNotas  = is_array($sup) ? ($sup['notas'] ?? $sup['notes'] ?? $sup['beneficio'] ?? $sup['benefit'] ?? null) : null;
+                                        $timingIcon = $getTimingIcon($supMom);
+                                    @endphp
+                                    <div class="flex items-start gap-4 px-5 py-4">
+                                        {{-- Index badge --}}
+                                        <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-wc-border bg-wc-bg-secondary">
+                                            <span class="font-data text-xs font-bold text-wc-accent">{{ $idx + 1 }}</span>
+                                        </div>
+
+                                        <div class="min-w-0 flex-1">
+                                            <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                                                <span class="font-semibold text-wc-text">{{ $supName }}</span>
+                                                @if($supDosis)
+                                                    <span class="rounded bg-wc-bg-secondary px-2 py-0.5 font-data text-xs font-semibold text-wc-accent">{{ $supDosis }}</span>
+                                                @endif
+                                            </div>
+
+                                            <div class="mt-1.5 flex flex-wrap items-center gap-2">
+                                                @if($supMom)
+                                                    <span class="inline-flex items-center gap-1 rounded-full bg-wc-bg-secondary px-2.5 py-1 text-xs text-wc-text-secondary">
+                                                        <span>{{ $timingIcon }}</span>
+                                                        <span>{{ $supMom }}</span>
+                                                    </span>
+                                                @endif
+                                                @if($supNotas)
+                                                    <span class="text-xs text-wc-text-tertiary">{{ $supNotas }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Timing groups (if structured as timing/horarios) --}}
+                    @if($supTimingGroups && is_array($supTimingGroups))
+                        <div class="space-y-3">
+                            <h3 class="font-display text-sm tracking-wider text-wc-text-tertiary uppercase px-1">PROTOCOLO POR MOMENTO</h3>
+                            @foreach($supTimingGroups as $moment => $items)
+                                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
+                                    <p class="mb-3 font-display text-sm tracking-wide text-wc-text">
+                                        {{ $getTimingIcon($moment) }} {{ strtoupper($moment) }}
+                                    </p>
+                                    <ul class="space-y-1.5">
+                                        @foreach((array) $items as $item)
+                                            <li class="flex items-center gap-2 text-sm text-wc-text-secondary">
+                                                <span class="h-1.5 w-1.5 rounded-full bg-wc-accent shrink-0"></span>
+                                                {{ is_array($item) ? ($item['nombre'] ?? $item['name'] ?? json_encode($item)) : $item }}
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    {{-- Coach notes --}}
+                    @if($supCoachNotes)
+                        <div class="rounded-xl border-l-4 border-wc-accent bg-wc-bg-tertiary p-5">
+                            <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-wc-accent">Notas del coach</p>
+                            <p class="text-sm leading-relaxed text-wc-text-secondary">{{ $supCoachNotes }}</p>
+                        </div>
+                    @endif
+
+                    {{-- Empty list fallback --}}
+                    @if(count($supList) === 0 && !$supTimingGroups)
+                        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center">
+                            <p class="text-sm text-wc-text-secondary">Tu coach está preparando tu protocolo de suplementación.</p>
+                        </div>
+                    @endif
                 </div>
             @else
                 <x-empty-state title="PLAN EN PREPARACIÓN" message="Tu coach está preparando tu plan de suplementación. Te notificaremos cuando esté listo." />

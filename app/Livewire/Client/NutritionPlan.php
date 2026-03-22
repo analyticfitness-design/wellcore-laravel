@@ -13,28 +13,29 @@ use Livewire\Component;
 class NutritionPlan extends Component
 {
     public ?array $plan = null;
-    public string $planType = 'nutricion';
 
     // Macro data
     public int $proteinGrams = 0;
     public int $carbGrams = 0;
     public int $fatGrams = 0;
-    public bool $hasMacros = false;
-
-    // Calculated fields
     public int $totalCalories = 0;
+    public bool $hasMacros = false;
     public array $macroPercentages = ['protein' => 0, 'carbs' => 0, 'fat' => 0];
 
     // Water tracker
     public int $waterGoalMl = 2500;
     public int $waterConsumedMl = 0;
 
-    // Weight goal
+    // Weight
     public ?float $weightGoalKg = null;
     public ?float $currentWeightKg = null;
 
-    // Meal log
+    // Meals + extras
     public array $mealLog = [];
+    public ?string $coachNotes = null;
+    public ?string $planObjetivo = null;
+    public ?array $restDayInfo = null;
+    public ?string $hydrationNote = null;
 
     public function mount(): void
     {
@@ -52,93 +53,139 @@ class NutritionPlan extends Component
                 : json_decode($assignedPlan->content, true);
         }
 
-        // Extract macro data
-        if ($this->plan && isset($this->plan['macros'])) {
-            $macros = $this->plan['macros'];
-            $this->proteinGrams = (int) ($macros['proteina'] ?? 0);
-            $this->carbGrams = (int) ($macros['carbohidratos'] ?? 0);
-            $this->fatGrams = (int) ($macros['grasas'] ?? 0);
-            $this->hasMacros = ($this->proteinGrams + $this->carbGrams + $this->fatGrams) > 0;
+        if ($this->plan) {
+            $this->parseMacros();
+            $this->parseMeals();
+            $this->parseExtras();
         }
 
-        // Fallback example values when no real macro data exists
-        if (! $this->hasMacros && $this->plan) {
-            $this->proteinGrams = 130;
-            $this->carbGrams = 200;
-            $this->fatGrams = 65;
-            $this->hasMacros = true;
-        }
-
-        // Calculate total calories from macros (protein*4 + carbs*4 + fat*9)
-        if ($this->hasMacros) {
-            $planCalories = isset($this->plan['macros']) ? (int) ($this->plan['macros']['calorias'] ?? 0) : 0;
-            $calculatedCalories = ($this->proteinGrams * 4) + ($this->carbGrams * 4) + ($this->fatGrams * 9);
-            $this->totalCalories = ($planCalories > 0) ? $planCalories : $calculatedCalories;
-        }
-
-        // Calculate macro percentages
-        $this->macroPercentages = $this->calculateMacroPercentages();
-
-        // Water tracker
         $this->loadWaterData($clientId);
-
-        // Weight goal
         $this->loadWeightData($clientId);
+    }
 
-        // Meal log from plan
-        if ($this->plan && isset($this->plan['comidas'])) {
-            $this->mealLog = $this->plan['comidas'];
+    // ─── Data parsing ─────────────────────────────────────────────────────────
+
+    private function parseMacros(): void
+    {
+        $macros = $this->plan['macros'] ?? [];
+
+        // Support multiple key conventions: proteina_g | proteina | protein
+        $this->proteinGrams = (int) ($macros['proteina_g'] ?? $macros['proteina'] ?? $macros['protein'] ?? 0);
+        $this->carbGrams    = (int) ($macros['carbohidratos_g'] ?? $macros['carbs_g'] ?? $macros['carbohidratos'] ?? $macros['carbs'] ?? 0);
+        $this->fatGrams     = (int) ($macros['grasas_g'] ?? $macros['grasas'] ?? $macros['fat'] ?? 0);
+        $this->hasMacros    = ($this->proteinGrams + $this->carbGrams + $this->fatGrams) > 0;
+
+        // Calories: explicit in plan > calculated from macros
+        $planCalories = (int) ($this->plan['calorias_diarias']
+            ?? $this->plan['calorias']
+            ?? $macros['calorias']
+            ?? 0);
+
+        $this->totalCalories = $planCalories > 0
+            ? $planCalories
+            : ($this->proteinGrams * 4) + ($this->carbGrams * 4) + ($this->fatGrams * 9);
+
+        $this->macroPercentages = $this->calculateMacroPercentages();
+    }
+
+    private function parseMeals(): void
+    {
+        // Try: root['comidas'] → plan_dia_entrenamiento['comidas'] → meals
+        $raw = $this->plan['comidas']
+            ?? $this->plan['plan_dia_entrenamiento']['comidas']
+            ?? $this->plan['meals']
+            ?? [];
+
+        $this->mealLog = array_map([$this, 'normalizeMeal'], $raw);
+    }
+
+    private function normalizeMeal(array $meal): array
+    {
+        $macros = $meal['macros'] ?? [];
+        return [
+            'nombre'    => $meal['nombre'] ?? $meal['name'] ?? 'Comida',
+            'calorias'  => (int) ($meal['calorias'] ?? $meal['calories'] ?? $meal['kcal'] ?? 0),
+            'alimentos' => $meal['alimentos'] ?? $meal['foods'] ?? $meal['items'] ?? [],
+            'notas'     => $meal['notas'] ?? $meal['notes'] ?? null,
+            'macros'    => [
+                'proteina'     => (int) ($macros['proteina_g'] ?? $macros['proteina'] ?? $macros['protein_g'] ?? $macros['protein'] ?? 0),
+                'carbohidratos'=> (int) ($macros['carbs_g'] ?? $macros['carbohidratos_g'] ?? $macros['carbohidratos'] ?? $macros['carbs'] ?? 0),
+                'grasas'       => (int) ($macros['grasas_g'] ?? $macros['grasas'] ?? $macros['fat_g'] ?? $macros['fat'] ?? 0),
+            ],
+        ];
+    }
+
+    private function parseExtras(): void
+    {
+        $this->coachNotes   = $this->plan['notas_coach'] ?? $this->plan['coach_notes'] ?? null;
+        $this->planObjetivo = $this->plan['objetivo'] ?? $this->plan['objetivo_general'] ?? null;
+
+        // Rest day summary
+        if (isset($this->plan['plan_dia_descanso'])) {
+            $rest = $this->plan['plan_dia_descanso'];
+            $this->restDayInfo = [
+                'descripcion'       => $rest['descripcion'] ?? null,
+                'calorias_objetivo' => (int) ($rest['calorias_objetivo'] ?? 0),
+                'ajustes'           => $rest['ajustes'] ?? [],
+            ];
+        }
+
+        // Hydration note
+        if (isset($this->plan['hidratacion'])) {
+            $h = $this->plan['hidratacion'];
+            $liters = (float) ($h['agua_minima_litros'] ?? 0);
+            if ($liters > 0) {
+                $this->waterGoalMl = (int) ($liters * 1000);
+            }
+            $this->hydrationNote = $h['electrolitos'] ?? null;
         }
     }
+
+    // ─── Actions ──────────────────────────────────────────────────────────────
 
     public function toggleWater(int $amount = 250): void
     {
         $clientId = auth('wellcore')->id();
-        $today = now()->toDateString();
+        $today    = now()->toDateString();
 
-        // Find or create today's water log
         $log = HabitLog::where('client_id', $clientId)
             ->where('habit_type', 'agua')
             ->where('log_date', $today)
             ->first();
 
         if ($log) {
-            $log->value = $log->value + $amount;
+            $log->value += $amount;
             $log->save();
         } else {
             HabitLog::create([
-                'client_id' => $clientId,
-                'log_date' => $today,
+                'client_id'  => $clientId,
+                'log_date'   => $today,
                 'habit_type' => 'agua',
-                'value' => $amount,
+                'value'      => $amount,
             ]);
         }
 
-        $this->waterConsumedMl = $this->waterConsumedMl + $amount;
+        $this->waterConsumedMl += $amount;
     }
+
+    // ─── Helpers ──────────────────────────────────────────────────────────────
 
     private function calculateMacroPercentages(): array
     {
-        $totalGrams = $this->proteinGrams + $this->carbGrams + $this->fatGrams;
-        if ($totalGrams === 0) {
+        $total = $this->proteinGrams + $this->carbGrams + $this->fatGrams;
+        if ($total === 0) {
             return ['protein' => 0, 'carbs' => 0, 'fat' => 0];
         }
 
         return [
-            'protein' => (int) round(($this->proteinGrams / $totalGrams) * 100),
-            'carbs' => (int) round(($this->carbGrams / $totalGrams) * 100),
-            'fat' => (int) round(($this->fatGrams / $totalGrams) * 100),
+            'protein' => (int) round(($this->proteinGrams / $total) * 100),
+            'carbs'   => (int) round(($this->carbGrams / $total) * 100),
+            'fat'     => (int) round(($this->fatGrams / $total) * 100),
         ];
     }
 
     private function loadWaterData(int $clientId): void
     {
-        // Water goal from plan or default
-        if ($this->plan && isset($this->plan['agua_ml'])) {
-            $this->waterGoalMl = (int) $this->plan['agua_ml'];
-        }
-
-        // Today's water consumption from habit_logs
         $todayWater = HabitLog::where('client_id', $clientId)
             ->where('habit_type', 'agua')
             ->where('log_date', now()->toDateString())
@@ -149,28 +196,25 @@ class NutritionPlan extends Component
 
     private function loadWeightData(int $clientId): void
     {
-        // Goal from plan or profile
         if ($this->plan && isset($this->plan['peso_objetivo'])) {
             $this->weightGoalKg = (float) $this->plan['peso_objetivo'];
         } else {
             $profile = ClientProfile::where('client_id', $clientId)->first();
-            if ($profile && isset($profile->objetivo) && is_numeric($profile->objetivo)) {
+            if ($profile && is_numeric($profile->objetivo ?? null)) {
                 $this->weightGoalKg = (float) $profile->objetivo;
             }
         }
 
-        // Current weight from latest biometric log
-        $latestBiometric = BiometricLog::where('client_id', $clientId)
+        $latest = BiometricLog::where('client_id', $clientId)
             ->whereNotNull('weight_kg')
             ->where('weight_kg', '>', 0)
             ->latest('log_date')
             ->first();
 
-        if ($latestBiometric) {
-            $this->currentWeightKg = (float) $latestBiometric->weight_kg;
+        if ($latest) {
+            $this->currentWeightKg = (float) $latest->weight_kg;
         } else {
-            // Fallback to profile weight
-            $profile = $profile ?? ClientProfile::where('client_id', $clientId)->first();
+            $profile ??= ClientProfile::where('client_id', $clientId)->first();
             if ($profile && $profile->peso) {
                 $this->currentWeightKg = (float) $profile->peso;
             }
