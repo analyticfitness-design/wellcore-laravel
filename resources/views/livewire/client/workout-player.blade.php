@@ -27,7 +27,7 @@
     {{-- ============================================================ --}}
     {{-- HEADER — Day selector pills                                  --}}
     {{-- ============================================================ --}}
-    <div class="sticky top-0 z-30 bg-wc-bg/95 backdrop-blur-md border-b border-wc-border" data-animate="fadeInDown">
+    <div class="sticky top-0 z-30 bg-wc-bg/95 backdrop-blur-md border-b border-wc-border">
         <div class="px-4 py-3">
             {{-- Day pills --}}
             <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none -mx-1 px-1">
