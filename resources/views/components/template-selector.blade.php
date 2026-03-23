@@ -3,10 +3,10 @@
 
     Usage:
     <x-template-selector
-        context="checkin"           {{-- checkin, video, ticket, message, notes --}}
-        target="replyText"          {{-- Livewire property name to fill --}}
-        :contexts="['checkin','video']"  {{-- Optional: show multiple categories --}}
-        position="bottom"           {{-- Optional: bottom (default) or top --}}
+        context="checkin"           (checkin, video, ticket, message, notes)
+        target="replyText"          (Livewire property name to fill)
+        :contexts="['checkin','video']"  (Optional: show multiple categories)
+        position="bottom"           (Optional: bottom (default) or top)
     />
 
     The 'target' is the Livewire property that will be set when a template is selected.
