@@ -556,15 +556,24 @@ class WorkoutPlayer extends Component
         // Check for PR
         $isPr = false;
         if ($weight > 0) {
-            $pr = WorkoutPr::checkAndAward($clientId, $exerciseName, $weight, $reps);
-            if ($pr) {
-                $isPr = true;
-                // Mark the log as PR
-                WorkoutLog::where('session_id', $this->sessionId)
-                    ->where('exercise_name', $exerciseName)
-                    ->where('set_number', $setNumber)
-                    ->where('block_order', $exerciseIndex)
-                    ->update(['is_pr' => true]);
+            try {
+                $pr = WorkoutPr::checkAndAward($clientId, $exerciseName, $weight, $reps);
+                if ($pr) {
+                    $isPr = true;
+                    // Mark the log as PR
+                    WorkoutLog::where('session_id', $this->sessionId)
+                        ->where('exercise_name', $exerciseName)
+                        ->where('set_number', $setNumber)
+                        ->where('block_order', $exerciseIndex)
+                        ->update(['is_pr' => true]);
+                }
+            } catch (\Throwable $e) {
+                // PR check failure should never block set completion
+                \Log::warning('WorkoutPr::checkAndAward failed', [
+                    'client_id' => $clientId,
+                    'exercise'  => $exerciseName,
+                    'error'     => $e->getMessage(),
+                ]);
             }
         }
 

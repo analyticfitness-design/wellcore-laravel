@@ -83,20 +83,27 @@ class NutritionPlan extends Component
         $macros = $this->plan['macros'] ?? [];
         $day0macros = $this->plan['dias'][0]['macros'] ?? [];
 
-        // Support multiple key conventions: proteina_g | proteina | protein | proteina_g_dia
-        $this->proteinGrams = (int) ($macros['proteina_g'] ?? $macros['proteina'] ?? $macros['protein'] ?? $macros['proteina_g_dia']
-            ?? $day0macros['proteina_g'] ?? $day0macros['proteina'] ?? $day0macros['protein'] ?? 0);
+        // Support multiple key conventions across AI-generated plan formats:
+        // Spanish (proteina_g/carbohidratos_g/grasas_g), English (protein_g/carbs_g/fat_g),
+        // short names (proteina/carbs/fat), root-level flat macros (Jairo plan format)
+        $this->proteinGrams = (int) ($macros['proteina_g'] ?? $macros['proteina'] ?? $macros['protein_g'] ?? $macros['protein'] ?? $macros['proteina_g_dia']
+            ?? $day0macros['proteina_g'] ?? $day0macros['proteina'] ?? $day0macros['protein']
+            ?? $this->plan['proteina_g'] ?? 0);
         $this->carbGrams    = (int) ($macros['carbohidratos_g'] ?? $macros['carbs_g'] ?? $macros['carbohidratos'] ?? $macros['carbs']
-            ?? $day0macros['carbohidratos_g'] ?? $day0macros['carbs_g'] ?? $day0macros['carbohidratos'] ?? $day0macros['carbs'] ?? 0);
-        $this->fatGrams     = (int) ($macros['grasas_g'] ?? $macros['grasas'] ?? $macros['fat']
-            ?? $day0macros['grasas_g'] ?? $day0macros['grasas'] ?? $day0macros['fat'] ?? 0);
+            ?? $day0macros['carbohidratos_g'] ?? $day0macros['carbs_g'] ?? $day0macros['carbohidratos'] ?? $day0macros['carbs']
+            ?? $this->plan['carbohidratos_g'] ?? 0);
+        $this->fatGrams     = (int) ($macros['grasas_g'] ?? $macros['grasas'] ?? $macros['fat_g'] ?? $macros['fat']
+            ?? $day0macros['grasas_g'] ?? $day0macros['grasas'] ?? $day0macros['fat']
+            ?? $this->plan['grasas_g'] ?? 0);
         $this->hasMacros    = ($this->proteinGrams + $this->carbGrams + $this->fatGrams) > 0;
 
         // Calories: explicit in plan > calculated from macros
-        // Also handle objetivo_cal (carb-cycling plans) and per-day kcal_total
+        // Also handle objetivo_cal (carb-cycling), calorias_objetivo (Jairo), calories_target (Tatis/Lizeth)
         $planCalories = (int) ($this->plan['calorias_diarias']
             ?? $this->plan['calorias']
             ?? $this->plan['objetivo_cal']
+            ?? $this->plan['calorias_objetivo']
+            ?? $this->plan['calories_target']
             ?? $macros['calorias']
             ?? ($this->plan['dias'][0]['kcal_total'] ?? 0));
 
@@ -134,8 +141,8 @@ class NutritionPlan extends Component
     {
         $macros = $meal['macros'] ?? [];
         return [
-            'nombre'    => $meal['nombre'] ?? $meal['name'] ?? 'Comida',
-            'calorias'  => (int) ($meal['calorias'] ?? $meal['calories'] ?? $meal['kcal'] ?? 0),
+            'nombre'    => $meal['nombre'] ?? $meal['name'] ?? $meal['label'] ?? 'Comida',
+            'calorias'  => (int) ($meal['calorias'] ?? $meal['calories'] ?? $meal['kcal'] ?? $meal['cal'] ?? 0),
             'alimentos' => $meal['alimentos'] ?? $meal['foods'] ?? $meal['items'] ?? [],
             'notas'     => $meal['notas'] ?? $meal['notes'] ?? null,
             'macros'    => [
