@@ -199,9 +199,16 @@
                                 @foreach($comida['alimentos'] as $alimento)
                                 <li class="flex items-start gap-2.5">
                                     <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
-                                    <span class="text-sm leading-relaxed text-wc-text-secondary">
-                                        {{ is_array($alimento) ? ($alimento['nombre'] ?? '') . (isset($alimento['cantidad']) ? ' — ' . $alimento['cantidad'] : '') : $alimento }}
-                                    </span>
+                                    @php
+                                        if (is_array($alimento)) {
+                                            $aName = $alimento['nombre'] ?? $alimento['alimento'] ?? $alimento['name'] ?? '';
+                                            $aQty  = $alimento['cantidad'] ?? $alimento['quantity'] ?? $alimento['amount'] ?? '';
+                                            $aText = $aName && $aQty ? "$aName — $aQty" : ($aName ?: $aQty);
+                                        } else {
+                                            $aText = (string) $alimento;
+                                        }
+                                    @endphp
+                                    <span class="text-sm leading-relaxed text-wc-text-secondary">{{ $aText }}</span>
                                 </li>
                                 @endforeach
                             </ul>
