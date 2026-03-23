@@ -84,7 +84,7 @@
             this.$nextTick(() => start());
             this.$watch('duration', val => { this.remaining = val; if (!this.running) this.start(); });
         "
-        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm"
+        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80"
         @keydown.escape.window="$wire.closeTimer()"
     >
         {{-- Timer Card --}}

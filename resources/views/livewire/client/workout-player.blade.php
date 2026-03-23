@@ -3,7 +3,6 @@
     :class="{ 'pb-[280px]': workoutStarted }"
     x-data="workoutPlayer()"
     x-init="initAnimations()"
-    x-on:open-rest-timer.window="startRestTimer($event.detail.seconds)"
 >
     {{-- ============================================================ --}}
     {{-- EMPTY STATE — No plan assigned                               --}}
@@ -628,82 +627,6 @@
     </div>
 
     {{-- ============================================================ --}}
-    {{-- REST TIMER BOTTOM SHEET                                      --}}
-    {{-- ============================================================ --}}
-    <div
-        x-show="restActive"
-        x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="translate-y-full opacity-0"
-        x-transition:enter-end="translate-y-0 opacity-100"
-        x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="translate-y-0 opacity-100"
-        x-transition:leave-end="translate-y-full opacity-0"
-        class="fixed bottom-0 inset-x-0 z-50 rounded-t-3xl border-t border-wc-border bg-wc-bg-secondary shadow-2xl"
-        wire:ignore
-    >
-        {{-- Backdrop --}}
-        <div
-            class="fixed inset-0 -z-10 bg-black/50"
-            @click="skipRest()"
-        ></div>
-
-        <div class="px-6 pt-4 pb-6 safe-area-pb">
-            {{-- Handle --}}
-            <div class="mx-auto mb-3 h-1 w-10 rounded-full bg-wc-border"></div>
-
-            {{-- Label --}}
-            <p class="text-center text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary mb-5">Tiempo de Descanso</p>
-
-            {{-- SVG Ring with countdown --}}
-            <div class="flex justify-center mb-5">
-                <div class="relative">
-                    <svg width="148" height="148" viewBox="0 0 148 148" class="-rotate-90">
-                        {{-- Track circle --}}
-                        <circle cx="74" cy="74" r="58" fill="none" stroke-width="6"
-                            class="text-wc-border" style="stroke: currentColor; opacity: 0.25"/>
-                        {{-- Draining progress circle --}}
-                        <circle
-                            cx="74" cy="74" r="58"
-                            fill="none"
-                            stroke="#DC2626"
-                            stroke-width="6"
-                            stroke-linecap="round"
-                            :stroke-dasharray="2 * Math.PI * 58"
-                            :stroke-dashoffset="restTotal > 0 ? (2 * Math.PI * 58) * (restSeconds / restTotal) : 0"
-                            style="transition: stroke-dashoffset 0.95s linear;"
-                        />
-                    </svg>
-                    {{-- Countdown display --}}
-                    <div class="absolute inset-0 flex flex-col items-center justify-center">
-                        <span class="font-data text-4xl font-black tabular-nums leading-none text-wc-text" x-text="String(Math.floor(restSeconds / 60)).padStart(2, '0') + ':' + String(restSeconds % 60).padStart(2, '0')"></span>
-                        <span class="mt-1 text-[10px] font-medium uppercase tracking-widest text-wc-text-tertiary">seg</span>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Adjust +/- buttons --}}
-            <div class="mb-4 flex items-center justify-center gap-4">
-                <button
-                    @click="adjustRest(-15)"
-                    class="btn-press flex h-11 w-24 items-center justify-center rounded-xl border border-wc-border bg-wc-bg font-data text-sm font-bold text-wc-text-secondary hover:text-wc-text transition-colors"
-                >−15s</button>
-                <button
-                    @click="adjustRest(15)"
-                    class="btn-press flex h-11 w-24 items-center justify-center rounded-xl border border-wc-border bg-wc-bg font-data text-sm font-bold text-wc-text-secondary hover:text-wc-text transition-colors"
-                >+15s</button>
-            </div>
-
-            {{-- Skip button --}}
-            <button
-                @click="skipRest()"
-                class="btn-press w-full rounded-2xl bg-wc-accent py-4 text-center font-display text-xl tracking-widest text-white shadow-lg shadow-wc-accent/25 hover:bg-wc-accent-hover transition-colors"
-            >
-                SALTAR DESCANSO
-            </button>
-        </div>
-    </div>
-
-    {{-- ============================================================ --}}
     {{-- STICKY BOTTOM BAR (active workout)                           --}}
     {{-- ============================================================ --}}
     <div x-show="workoutStarted" @if(!$isActive) style="display:none" @endif>
@@ -782,48 +705,6 @@
                 workoutStarted: {{ $isActive ? 'true' : 'false' }},
                 elapsed: 0,
                 timerInterval: null,
-
-                // ── Rest Timer state ──────────────────────────────────────────
-                restActive: false,
-                restSeconds: 0,
-                restTotal: 0,
-                restInterval: null,
-
-                startRestTimer(seconds) {
-                    this.clearRestTimer();
-                    this.restSeconds = parseInt(seconds) || 60;
-                    this.restTotal   = this.restSeconds;
-                    this.restActive  = true;
-                    this.restInterval = setInterval(() => {
-                        if (this.restSeconds > 0) {
-                            this.restSeconds--;
-                        } else {
-                            this.clearRestTimer();
-                        }
-                    }, 1000);
-                },
-
-                skipRest() {
-                    this.clearRestTimer();
-                },
-
-                adjustRest(delta) {
-                    const newVal = this.restSeconds + delta;
-                    this.restSeconds = Math.max(5, newVal);
-                    if (this.restSeconds > this.restTotal) {
-                        this.restTotal = this.restSeconds;
-                    }
-                },
-
-                clearRestTimer() {
-                    if (this.restInterval) {
-                        clearInterval(this.restInterval);
-                        this.restInterval = null;
-                    }
-                    this.restActive  = false;
-                    this.restSeconds = 0;
-                    this.restTotal   = 0;
-                },
 
                 init() {
                     // Start timer if workout is active
