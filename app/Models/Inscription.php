@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\PlanType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
@@ -39,8 +40,15 @@ class Inscription extends Model
     protected function casts(): array
     {
         return [
-            'plan' => PlanType::class,
             'created_at' => 'datetime',
         ];
+    }
+
+    // Use tryFrom() so rows with empty/invalid plan values don't throw ValueError
+    protected function plan(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ($value !== null && $value !== '') ? PlanType::tryFrom($value) : null,
+        );
     }
 }
