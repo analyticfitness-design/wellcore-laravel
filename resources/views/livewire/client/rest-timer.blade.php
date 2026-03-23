@@ -97,6 +97,7 @@
         }
     }"
     x-on:open-rest-timer.window="openTimer($event.detail.seconds)"
+    x-on:close-rest-timer.window="closeTimer()"
 >
     {{-- Overlay: x-show keeps DOM intact → no morphdom → no iOS scroll jump --}}
     <div

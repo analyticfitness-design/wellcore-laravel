@@ -791,6 +791,10 @@
                     }
                 },
 
+                clearRestTimer() {
+                    window.dispatchEvent(new Event('close-rest-timer'));
+                },
+
                 initAnimations() {
                     if (!this._observers) this._observers = [];
 
