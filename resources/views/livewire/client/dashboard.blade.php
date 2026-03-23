@@ -481,6 +481,7 @@
          x-data="{
              chart: null,
              init() {
+                 if (this.chart) { this.chart.destroy(); this.chart = null; }
                  const data = @js($weightChartData);
                  if (!data.length) return;
                  const datasets = [{
@@ -551,27 +552,11 @@
                                  }
                              }
                          },
-                         scales: {
-                             y: {
-                                 type: 'linear',
-                                 display: true,
-                                 position: 'left',
-                                 grid: { color: 'rgba(63, 63, 70, 0.15)' },
-                                 title: { display: true, text: '{{ __('client_dashboard.weight_kg') }}', font: { size: 11 } },
-                             },
-                             y1: hasBodyFat ? {
-                                 type: 'linear',
-                                 display: true,
-                                 position: 'right',
-                                 grid: { drawOnChartArea: false },
-                                 title: { display: true, text: '{{ __('client_dashboard.fat_pct_axis') }}', font: { size: 11 } },
-                             } : undefined,
-                             x: { grid: { display: false } }
-                         }
+                         scales: (() => { const s = { y: { type: 'linear', display: true, position: 'left', grid: { color: 'rgba(63, 63, 70, 0.15)' }, title: { display: true, text: '{{ __('client_dashboard.weight_kg') }}', font: { size: 11 } } }, x: { grid: { display: false } } }; if (hasBodyFat) { s.y1 = { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: '{{ __('client_dashboard.fat_pct_axis') }}', font: { size: 11 } } }; } return s; })()
                      }
                  });
              },
-             destroy() { this.chart?.destroy(); }
+             destroy() { if (this.chart) { this.chart.destroy(); this.chart = null; } }
          }"
          x-init="init()"
          @before-livewire-snapshot.window="destroy()">
