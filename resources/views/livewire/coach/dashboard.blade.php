@@ -98,6 +98,7 @@
                      const data = @js($clientProgressData);
                      if (!data.length) return;
                      const ctx = this.$refs.progressCanvas.getContext('2d');
+                     Chart.getChart(ctx)?.destroy();
                      this.chart = new Chart(ctx, {
                          type: 'bar',
                          data: {
@@ -157,6 +158,7 @@
                      const data = @js($checkinFrequencyData);
                      if (!data.length) return;
                      const ctx = this.$refs.checkinCanvas.getContext('2d');
+                     Chart.getChart(ctx)?.destroy();
                      this.chart = new Chart(ctx, {
                          type: 'line',
                          data: {
