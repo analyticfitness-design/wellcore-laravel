@@ -90,7 +90,7 @@
         <div x-show="!workoutStarted">
 
             {{-- Progress summary --}}
-            <div class="flex items-center justify-between rounded-xl border border-wc-border bg-wc-bg-tertiary px-4 py-3" data-animate="fadeInUp">
+            <div class="flex items-center justify-between rounded-xl border border-wc-border bg-wc-bg-tertiary px-4 py-3">
                 <div class="flex items-center gap-2">
                     <svg class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
@@ -143,7 +143,7 @@
 
                 {{-- Block label (superset/circuit) --}}
                 @if($isFirstInBlock)
-                    <div class="flex items-center gap-3" data-animate="fadeInUp">
+                    <div class="flex items-center gap-3">
                         <span class="rounded-full border border-wc-accent/30 bg-wc-accent/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-wc-accent">
                             {{ $blockType === 'superset' ? '⚡ SUPERSET' : '🔄 CIRCUITO' }}
                         </span>
@@ -155,8 +155,6 @@
                 <div
                     class="overflow-hidden rounded-2xl border bg-wc-bg-tertiary transition-all
                         {{ $isInBlock ? 'ml-3 border-l-[3px] border-l-wc-accent border-wc-border/70' : 'border-wc-border' }}"
-                    data-animate="fadeInUp"
-                    data-animate-delay="{{ min(($exIndex + 1) * 80, 500) }}"
                 >
                     <div class="flex items-stretch">
                         {{-- Thumbnail column with number overlay --}}
@@ -246,7 +244,7 @@
             @endforeach
 
             {{-- START WORKOUT CTA --}}
-            <div class="pt-2 pb-4" data-animate="fadeInUp" data-animate-delay="400">
+            <div class="pt-2 pb-4">
                 <button
                     @click="workoutStarted = true; $nextTick(() => window.scrollTo(0, 0)); startTimer(); $wire.startWorkout()"
                     class="btn-press w-full rounded-2xl bg-wc-accent py-4 text-center shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover transition-colors"
