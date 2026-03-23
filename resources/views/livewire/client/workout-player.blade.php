@@ -673,23 +673,87 @@
                     </div>
                 </div>
 
-                {{-- Complete session button --}}
-                <button
-                    wire:click="completeWorkout()"
-                    @if(!$hasAtLeastOnePerExercise) disabled @endif
-                    class="btn-press w-full rounded-2xl py-3.5 text-center font-display text-lg tracking-widest transition-all
-                        {{ $hasAtLeastOnePerExercise
-                            ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/25 hover:bg-emerald-500'
-                            : 'bg-wc-bg-secondary text-wc-text-tertiary cursor-not-allowed' }}"
-                    wire:loading.attr="disabled"
-                    wire:loading.class="opacity-75"
+                {{-- Action row: Abandon (secondary) + Complete (primary) --}}
+                <div
+                    x-data="{ confirmAbandon: false }"
+                    class="flex items-center gap-2"
                 >
-                    <span wire:loading.remove>COMPLETAR SESION</span>
-                    <span wire:loading class="inline-flex items-center gap-2">
-                        <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-                        GUARDANDO...
-                    </span>
-                </button>
+                    {{-- Abandon button — opens inline confirm dialog --}}
+                    <button
+                        @click="confirmAbandon = true"
+                        class="btn-press shrink-0 flex items-center gap-1.5 rounded-xl border border-red-600/40 px-4 py-3 text-sm font-medium text-wc-text-secondary hover:border-red-600/70 hover:text-red-400 transition-all focus:outline-none focus:ring-2 focus:ring-wc-accent"
+                        aria-label="Abandonar sesion"
+                        type="button"
+                    >
+                        <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                        Abandonar
+                    </button>
+
+                    {{-- Complete session button --}}
+                    <button
+                        wire:click="completeWorkout()"
+                        @if($completedSetsAll <= 0) disabled @endif
+                        class="btn-press flex-1 rounded-2xl py-3.5 text-center font-display text-lg tracking-widest transition-all
+                            {{ $completedSetsAll > 0
+                                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/25 hover:bg-emerald-500'
+                                : 'bg-wc-bg-secondary text-wc-text-tertiary cursor-not-allowed' }}"
+                        wire:loading.attr="disabled"
+                        wire:loading.class="opacity-75"
+                        wire:target="completeWorkout"
+                    >
+                        <span wire:loading.remove wire:target="completeWorkout">COMPLETAR SESION</span>
+                        <span wire:loading wire:target="completeWorkout" class="inline-flex items-center gap-2">
+                            <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                            GUARDANDO...
+                        </span>
+                    </button>
+
+                    {{-- Inline confirm dialog for abandon --}}
+                    <div
+                        x-show="confirmAbandon"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 scale-95"
+                        x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 scale-100"
+                        x-transition:leave-end="opacity-0 scale-95"
+                        class="fixed inset-0 z-[60] flex items-end justify-center bg-black/60 px-4 pb-8 backdrop-blur-sm"
+                        @keydown.escape.window="confirmAbandon = false"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="abandon-dialog-title"
+                        style="display: none"
+                    >
+                        <div class="w-full max-w-sm rounded-2xl border border-wc-border bg-wc-bg p-6 shadow-2xl">
+                            <h3 id="abandon-dialog-title" class="font-display text-xl tracking-wide text-wc-text">ABANDONAR SESION</h3>
+                            <p class="mt-2 text-sm text-wc-text-secondary">Tu progreso parcial se conservara. Los sets completados ya estan guardados.</p>
+                            <div class="mt-5 flex gap-3">
+                                <button
+                                    @click="confirmAbandon = false"
+                                    class="flex-1 rounded-xl border border-wc-border bg-wc-bg-secondary py-3 text-sm font-medium text-wc-text-secondary hover:text-wc-text transition-colors focus:outline-none focus:ring-2 focus:ring-wc-accent"
+                                    type="button"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    @click="confirmAbandon = false; $wire.abandonWorkout()"
+                                    class="flex-1 rounded-xl border border-red-600/60 bg-red-600/10 py-3 text-sm font-semibold text-red-400 hover:bg-red-600/20 hover:border-red-600/80 transition-all focus:outline-none focus:ring-2 focus:ring-red-500"
+                                    type="button"
+                                    wire:loading.attr="disabled"
+                                    wire:target="abandonWorkout"
+                                >
+                                    <span wire:loading.remove wire:target="abandonWorkout">Si, abandonar</span>
+                                    <span wire:loading wire:target="abandonWorkout" class="inline-flex items-center gap-2">
+                                        <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                                        Saliendo...
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>{{-- end sticky bottom bar --}}
