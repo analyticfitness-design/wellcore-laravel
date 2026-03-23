@@ -40,6 +40,14 @@ applyChartTheme();
 // Expose globally for Alpine.js components
 window.Chart = Chart;
 
+// Guard Chart.prototype.draw against null ctx — prevents rAF-after-destroy crash
+// when SPA navigation (wire:navigate) destroys charts while an animation frame is queued.
+const _origDraw = Chart.prototype.draw;
+Chart.prototype.draw = function () {
+    if (!this.ctx) return this;
+    return _origDraw.call(this);
+};
+
 // Cleanup + re-init on Livewire navigation
 document.addEventListener('livewire:navigated', () => {
     // Charts re-init via Alpine x-init automatically
