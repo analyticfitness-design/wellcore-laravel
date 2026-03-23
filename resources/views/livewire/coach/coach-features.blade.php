@@ -29,7 +29,7 @@
             'video_checkins' => 'Video Check-ins',
         ] as $key => $label)
             <button wire:click="switchTab('{{ $key }}')"
-                    class="flex-1 min-w-[120px] rounded-lg px-4 py-2.5 text-sm font-medium transition-all whitespace-nowrap
+                    class="flex-1 min-w-[80px] sm:min-w-[120px] rounded-lg px-2 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium transition-all whitespace-nowrap
                            {{ $activeTab === $key ? 'bg-wc-accent text-white shadow-lg shadow-wc-accent/25' : 'text-wc-text-secondary hover:text-wc-text hover:bg-wc-bg-tertiary' }}">
                 {{ $label }}
             </button>
