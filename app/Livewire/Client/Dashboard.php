@@ -182,7 +182,6 @@ class Dashboard extends Component
             }
 
             $payments = Payment::where('client_id', $clientId)
-                ->with('plan')   // eager load to prevent N+1 on $payment->plan->label()
                 ->orderByDesc('created_at')
                 ->limit(3)
                 ->get();

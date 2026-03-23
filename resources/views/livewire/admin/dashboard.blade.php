@@ -99,13 +99,13 @@
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 lg:col-span-2"
              x-data="{ chart: null }"
              x-init="
-                 (function(component) {
+                 (function() {
                      var data = @js($revenueChartData);
                      if (!data.length) return;
-                     var canvas = component.$refs.revenueCanvas;
+                     var canvas = $refs.revenueCanvas;
                      var existing = Chart.getChart(canvas);
                      if (existing) existing.destroy();
-                     component.chart = new Chart(canvas, {
+                     chart = new Chart(canvas, {
                          type: 'line',
                          data: {
                              labels: data.map(function(d) {
@@ -150,7 +150,7 @@
                              }
                          }
                      });
-                 })(this)
+                 })()
              "
              @before-livewire-snapshot.window="if (chart) { chart.destroy(); chart = null; }">
             <div class="flex items-center justify-between mb-4">
@@ -175,14 +175,14 @@
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5"
              x-data="{ chart: null }"
              x-init="
-                 (function(component) {
+                 (function() {
                      var data = @js($planDistributionData);
                      if (!data.length) return;
                      var colors = ['#DC2626', '#8B5CF6', '#F59E0B', '#10B981', '#0EA5E9', '#EC4899'];
-                     var canvas = component.$refs.planCanvas;
+                     var canvas = $refs.planCanvas;
                      var existing = Chart.getChart(canvas);
                      if (existing) existing.destroy();
-                     component.chart = new Chart(canvas, {
+                     chart = new Chart(canvas, {
                          type: 'doughnut',
                          data: {
                              labels: data.map(function(d) { return d.name; }),
@@ -204,13 +204,13 @@
                                          padding: 12,
                                          usePointStyle: true,
                                          pointStyleWidth: 8,
-                                         font: { size: 11, family: \"'Barlow', sans-serif\" }
+                                         font: { size: 11, family: 'Barlow, sans-serif' }
                                      }
                                  }
                              }
                          }
                      });
-                 })(this)
+                 })()
              "
              @before-livewire-snapshot.window="if (chart) { chart.destroy(); chart = null; }">
             <h3 class="text-sm font-semibold text-wc-text mb-4">Distribucion de Planes</h3>
@@ -234,13 +234,13 @@
     <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5"
          x-data="{ chart: null }"
          x-init="
-             (function(component) {
+             (function() {
                  var data = @js($clientGrowthData);
                  if (!data.length) return;
-                 var canvas = component.$refs.growthCanvas;
+                 var canvas = $refs.growthCanvas;
                  var existing = Chart.getChart(canvas);
                  if (existing) existing.destroy();
-                 component.chart = new Chart(canvas, {
+                 chart = new Chart(canvas, {
                      type: 'bar',
                      data: {
                          labels: data.map(function(d) {
@@ -274,7 +274,7 @@
                          }
                      }
                  });
-             })(this)
+             })()
          "
          @before-livewire-snapshot.window="if (chart) { chart.destroy(); chart = null; }">
         <div class="flex items-center justify-between mb-4">
