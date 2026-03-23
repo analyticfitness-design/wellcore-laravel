@@ -78,19 +78,27 @@ class NutritionPlan extends Component
 
     private function parseMacros(): void
     {
+        // Top-level macros first; fall back to first day's macros (carb-cycling plans store
+        // per-day macros under dias[0]['macros'] with standard keys proteina_g / carbohidratos_g / grasas_g)
         $macros = $this->plan['macros'] ?? [];
+        $day0macros = $this->plan['dias'][0]['macros'] ?? [];
 
-        // Support multiple key conventions: proteina_g | proteina | protein
-        $this->proteinGrams = (int) ($macros['proteina_g'] ?? $macros['proteina'] ?? $macros['protein'] ?? 0);
-        $this->carbGrams    = (int) ($macros['carbohidratos_g'] ?? $macros['carbs_g'] ?? $macros['carbohidratos'] ?? $macros['carbs'] ?? 0);
-        $this->fatGrams     = (int) ($macros['grasas_g'] ?? $macros['grasas'] ?? $macros['fat'] ?? 0);
+        // Support multiple key conventions: proteina_g | proteina | protein | proteina_g_dia
+        $this->proteinGrams = (int) ($macros['proteina_g'] ?? $macros['proteina'] ?? $macros['protein'] ?? $macros['proteina_g_dia']
+            ?? $day0macros['proteina_g'] ?? $day0macros['proteina'] ?? $day0macros['protein'] ?? 0);
+        $this->carbGrams    = (int) ($macros['carbohidratos_g'] ?? $macros['carbs_g'] ?? $macros['carbohidratos'] ?? $macros['carbs']
+            ?? $day0macros['carbohidratos_g'] ?? $day0macros['carbs_g'] ?? $day0macros['carbohidratos'] ?? $day0macros['carbs'] ?? 0);
+        $this->fatGrams     = (int) ($macros['grasas_g'] ?? $macros['grasas'] ?? $macros['fat']
+            ?? $day0macros['grasas_g'] ?? $day0macros['grasas'] ?? $day0macros['fat'] ?? 0);
         $this->hasMacros    = ($this->proteinGrams + $this->carbGrams + $this->fatGrams) > 0;
 
         // Calories: explicit in plan > calculated from macros
+        // Also handle objetivo_cal (carb-cycling plans) and per-day kcal_total
         $planCalories = (int) ($this->plan['calorias_diarias']
             ?? $this->plan['calorias']
+            ?? $this->plan['objetivo_cal']
             ?? $macros['calorias']
-            ?? 0);
+            ?? ($this->plan['dias'][0]['kcal_total'] ?? 0));
 
         $this->totalCalories = $planCalories > 0
             ? $planCalories
@@ -102,9 +110,21 @@ class NutritionPlan extends Component
     private function parseMeals(): void
     {
         // Try: root['comidas'] → plan_dia_entrenamiento['comidas'] → meals
+        // Carb-cycling plans: meals are nested inside dias[n]['comidas']; use first day as representative
+        $diasComidas = null;
+        if (isset($this->plan['dias']) && is_array($this->plan['dias'])) {
+            foreach ($this->plan['dias'] as $dia) {
+                if (!empty($dia['comidas'])) {
+                    $diasComidas = $dia['comidas'];
+                    break;
+                }
+            }
+        }
+
         $raw = $this->plan['comidas']
             ?? $this->plan['plan_dia_entrenamiento']['comidas']
             ?? $this->plan['meals']
+            ?? $diasComidas
             ?? [];
 
         $this->mealLog = array_map([$this, 'normalizeMeal'], $raw);
