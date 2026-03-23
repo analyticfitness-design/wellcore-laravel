@@ -188,7 +188,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/checkin', CheckinForm::class)->name('checkin');
         Route::get('/training', TrainingView::class)->name('training');
         Route::get('/workout/{day?}', \App\Livewire\Client\WorkoutPlayer::class)->name('workout');
-        Route::get('/workout-summary/{session}', \App\Livewire\Client\WorkoutSummary::class)->name('workout.summary');
+        Route::get('/workout-summary/{sessionId}', \App\Livewire\Client\WorkoutSummary::class)->name('workout.summary');
         Route::get('/metrics', MetricsTracker::class)->name('metrics');
         Route::get('/nutrition', NutritionPlan::class)->name('nutrition');
         Route::get('/ai-nutrition', AINutrition::class)->name('ai-nutrition');

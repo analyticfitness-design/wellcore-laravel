@@ -25,13 +25,13 @@ class WorkoutSummary extends Component
 
     public array $sessionHistory = [];
 
-    public function mount(int $session): void
+    public function mount(int $sessionId): void
     {
         $clientId = auth('wellcore')->id();
 
         $this->session = WorkoutSession::with('logs')
             ->where('client_id', $clientId)
-            ->findOrFail($session);
+            ->findOrFail($sessionId);
 
         // Build stats
         $completedLogs = $this->session->logs->where('completed', true);

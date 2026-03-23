@@ -337,13 +337,17 @@ class WorkoutPlayer extends Component
 
         $clientId = auth('wellcore')->id();
 
-        $session = WorkoutSession::create([
-            'client_id'    => $clientId,
-            'plan_id'      => $this->planId,
-            'day_name'     => $this->dayName,
-            'session_date' => now()->toDateString(),
-            'completed'    => false,
-        ]);
+        $session = WorkoutSession::firstOrCreate(
+            [
+                'client_id'    => $clientId,
+                'day_name'     => $this->dayName,
+                'session_date' => now()->toDateString(),
+            ],
+            [
+                'plan_id'   => $this->planId,
+                'completed' => false,
+            ]
+        );
 
         // Fix 4: Bust the session resume cache so a subsequent mount() finds
         // the newly created session instead of returning null from cache.
@@ -588,7 +592,7 @@ class WorkoutPlayer extends Component
 
         // Redirect to workout summary
         $this->redirect(
-            route('client.workout.summary', ['session' => $session->id]),
+            route('client.workout.summary', ['sessionId' => $session->id]),
             navigate: true
         );
     }
