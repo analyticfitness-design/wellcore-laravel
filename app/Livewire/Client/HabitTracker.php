@@ -21,6 +21,22 @@ class HabitTracker extends Component
 
     public bool $showConfetti = false;
 
+    /** Show habits onboarding tutorial for first-time users */
+    public bool $showTutorial = false;
+
+    public function mount(): void
+    {
+        $clientId = auth('wellcore')->id();
+
+        // Show tutorial if client has never logged a habit
+        $this->showTutorial = !HabitLog::where('client_id', $clientId)->exists();
+    }
+
+    public function dismissTutorial(): void
+    {
+        $this->showTutorial = false;
+    }
+
     public function toggleHabit(string $habitType): void
     {
         if (! array_key_exists($habitType, self::HABITS)) {

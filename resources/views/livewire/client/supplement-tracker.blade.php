@@ -195,4 +195,66 @@
             <p class="mt-1 text-xs text-wc-text-tertiary">Cuando esté listo, podrás hacer seguimiento diario aquí</p>
         </div>
     @endif
+
+    {{-- ===== ONBOARDING TUTORIAL: SUPLEMENTOS ===== --}}
+    @if($showTutorial)
+    <div
+        x-data="{ step: 1, total: 3 }"
+        class="fixed inset-0 z-[80] flex items-end justify-center bg-black/70 px-4 pb-6"
+        @keydown.escape.window="$wire.dismissTutorial()"
+    >
+        <div class="w-full max-w-sm rounded-2xl border border-wc-border bg-wc-bg p-6 shadow-2xl">
+
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-display text-lg tracking-widest text-wc-text">SUPLEMENTACIÓN</h3>
+                <button @click="$wire.dismissTutorial()" class="text-wc-text-tertiary hover:text-wc-text transition-colors" aria-label="Cerrar">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <div x-show="step === 1">
+                <div class="flex items-start gap-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-white font-bold text-sm">1</div>
+                    <div>
+                        <p class="font-semibold text-wc-text text-sm">Solo lo que necesitas</p>
+                        <p class="mt-1 text-xs text-wc-text-secondary leading-relaxed">Tu coach seleccionó únicamente suplementos con evidencia científica sólida. Sin ventas, sin obligaciones — solo lo que realmente funciona para tus metas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="step === 2">
+                <div class="flex items-start gap-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-white font-bold text-sm">2</div>
+                    <div>
+                        <p class="font-semibold text-wc-text text-sm">Horarios importan</p>
+                        <p class="mt-1 text-xs text-wc-text-secondary leading-relaxed">Cada suplemento tiene un horario recomendado (mañana, pre-entrenamiento, noche). Respetar el timing maximiza la absorción y el efecto.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="step === 3">
+                <div class="flex items-start gap-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-white font-bold text-sm">3</div>
+                    <div>
+                        <p class="font-semibold text-wc-text text-sm">Marca lo que tomaste</p>
+                        <p class="mt-1 text-xs text-wc-text-secondary leading-relaxed">Toca cada suplemento para marcarlo como tomado. El tracking te ayuda a mantener consistencia — la clave para ver resultados reales.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 flex justify-center gap-1.5">
+                <template x-for="i in total" :key="i">
+                    <div class="h-1.5 rounded-full transition-all" :class="i === step ? 'bg-wc-accent w-4' : 'bg-wc-bg-tertiary w-1.5'"></div>
+                </template>
+            </div>
+
+            <div class="mt-5 flex gap-3">
+                <button x-show="step > 1" @click="step--" class="flex-1 rounded-xl border border-wc-border bg-wc-bg-secondary py-2.5 text-sm font-medium text-wc-text-secondary hover:text-wc-text transition-colors" type="button">Atrás</button>
+                <button x-show="step < total" @click="step++" class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover transition-colors" type="button">Siguiente</button>
+                <button x-show="step === total" @click="$wire.dismissTutorial()" class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover transition-colors" type="button">¡Entendido!</button>
+            </div>
+        </div>
+    </div>
+    @endif
+    {{-- ===== /ONBOARDING TUTORIAL: SUPLEMENTOS ===== --}}
 </div>

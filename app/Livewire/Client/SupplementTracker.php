@@ -15,10 +15,17 @@ class SupplementTracker extends Component
     public string $selectedDate = '';
     public bool $showHistory = false;
 
+    /** Show supplements onboarding tutorial for first-time users */
+    public bool $showTutorial = false;
+
     public function mount(): void
     {
         $this->selectedDate = now()->toDateString();
         $this->loadPlan();
+
+        // Show tutorial if client has never logged a supplement
+        $clientId = auth('wellcore')->id();
+        $this->showTutorial = !SupplementLog::where('client_id', $clientId)->exists();
     }
 
     protected function loadPlan(): void
@@ -83,6 +90,11 @@ class SupplementTracker extends Component
     public function goToToday(): void
     {
         $this->selectedDate = now()->toDateString();
+    }
+
+    public function dismissTutorial(): void
+    {
+        $this->showTutorial = false;
     }
 
     public function render()

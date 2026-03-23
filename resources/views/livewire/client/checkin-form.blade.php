@@ -217,4 +217,66 @@
             </div>
         </div>
     @endif
+
+    {{-- ===== ONBOARDING TUTORIAL: CHECK-IN ===== --}}
+    @if($showTutorial)
+    <div
+        x-data="{ step: 1, total: 3 }"
+        class="fixed inset-0 z-[80] flex items-end justify-center bg-black/70 px-4 pb-6"
+        @keydown.escape.window="$wire.dismissTutorial()"
+    >
+        <div class="w-full max-w-sm rounded-2xl border border-wc-border bg-wc-bg p-6 shadow-2xl">
+
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-display text-lg tracking-widest text-wc-text">CHECK-IN SEMANAL</h3>
+                <button @click="$wire.dismissTutorial()" class="text-wc-text-tertiary hover:text-wc-text transition-colors" aria-label="Cerrar" type="button">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <div x-show="step === 1">
+                <div class="flex items-start gap-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-white font-bold text-sm">1</div>
+                    <div>
+                        <p class="font-semibold text-wc-text text-sm">¿Qué es el check-in?</p>
+                        <p class="mt-1 text-xs text-wc-text-secondary leading-relaxed">Es tu reporte semanal al coach. Con esta información tu coach ajusta tu plan de entrenamiento y nutrición para maximizar tus resultados semana a semana.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="step === 2">
+                <div class="flex items-start gap-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-white font-bold text-sm">2</div>
+                    <div>
+                        <p class="font-semibold text-wc-text text-sm">Sé honesto</p>
+                        <p class="mt-1 text-xs text-wc-text-secondary leading-relaxed">No hay respuestas malas. Si tuviste una semana difícil, dilo. Tu coach solo puede ayudarte si conoce tu realidad — no la versión perfecta.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="step === 3">
+                <div class="flex items-start gap-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-white font-bold text-sm">3</div>
+                    <div>
+                        <p class="font-semibold text-wc-text text-sm">Hazlo cada semana</p>
+                        <p class="mt-1 text-xs text-wc-text-secondary leading-relaxed">Los clientes que completan su check-in semanalmente progresan 3x más rápido. El seguimiento constante es lo que diferencia los resultados promedio de los extraordinarios.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 flex justify-center gap-1.5">
+                <template x-for="i in total" :key="i">
+                    <div class="h-1.5 rounded-full transition-all" :class="i === step ? 'bg-wc-accent w-4' : 'bg-wc-bg-tertiary w-1.5'"></div>
+                </template>
+            </div>
+
+            <div class="mt-5 flex gap-3">
+                <button x-show="step > 1" @click="step--" class="flex-1 rounded-xl border border-wc-border bg-wc-bg-secondary py-2.5 text-sm font-medium text-wc-text-secondary hover:text-wc-text transition-colors" type="button">Atrás</button>
+                <button x-show="step < total" @click="step++" class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover transition-colors" type="button">Siguiente</button>
+                <button x-show="step === total" @click="$wire.dismissTutorial()" class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover transition-colors" type="button">¡Listo, comenzar!</button>
+            </div>
+        </div>
+    </div>
+    @endif
+    {{-- ===== /ONBOARDING TUTORIAL: CHECK-IN ===== --}}
 </div>

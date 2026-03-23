@@ -37,6 +37,9 @@ class NutritionPlan extends Component
     public ?array $restDayInfo = null;
     public ?string $hydrationNote = null;
 
+    /** Show nutrition onboarding tutorial for first-time users */
+    public bool $showTutorial = false;
+
     public function mount(): void
     {
         $clientId = auth('wellcore')->id();
@@ -62,6 +65,12 @@ class NutritionPlan extends Component
         if ($clientId) {
             $this->loadWaterData($clientId);
             $this->loadWeightData($clientId);
+
+            // Show tutorial if client has never logged a biometric weight
+            $this->showTutorial = !BiometricLog::where('client_id', $clientId)
+                ->whereNotNull('weight_kg')
+                ->where('weight_kg', '>', 0)
+                ->exists();
         }
     }
 
@@ -218,6 +227,11 @@ class NutritionPlan extends Component
         } elseif ($profile && $profile->peso) {
             $this->currentWeightKg = (float) $profile->peso;
         }
+    }
+
+    public function dismissTutorial(): void
+    {
+        $this->showTutorial = false;
     }
 
     public function render()

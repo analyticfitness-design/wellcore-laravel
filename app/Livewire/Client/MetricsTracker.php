@@ -28,6 +28,22 @@ class MetricsTracker extends Component
 
     public bool $showSuccess = false;
 
+    /** Show metrics onboarding tutorial for first-time users */
+    public bool $showTutorial = false;
+
+    public function mount(): void
+    {
+        $clientId = auth('wellcore')->id();
+        $this->showTutorial = !BiometricLog::where('client_id', $clientId)
+            ->whereNotNull('weight_kg')
+            ->exists();
+    }
+
+    public function dismissTutorial(): void
+    {
+        $this->showTutorial = false;
+    }
+
     public function saveMetric(): void
     {
         $this->validate();

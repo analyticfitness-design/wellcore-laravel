@@ -28,6 +28,21 @@ class CheckinForm extends Component
 
     public bool $showSuccess = false;
 
+    /** Show check-in onboarding tutorial for first-time users */
+    public bool $showTutorial = false;
+
+    public function mount(): void
+    {
+        $clientId = auth('wellcore')->id();
+        // Show tutorial if client has never submitted a check-in
+        $this->showTutorial = !Checkin::where('client_id', $clientId)->exists();
+    }
+
+    public function dismissTutorial(): void
+    {
+        $this->showTutorial = false;
+    }
+
     public function setBienestar(int $value): void
     {
         $this->bienestar = $value;

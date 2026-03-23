@@ -484,4 +484,66 @@
             </div>
         </div>
     @endif
+
+    {{-- ===== ONBOARDING TUTORIAL: MÉTRICAS ===== --}}
+    @if($showTutorial)
+    <div
+        x-data="{ step: 1, total: 3 }"
+        class="fixed inset-0 z-[80] flex items-end justify-center bg-black/70 px-4 pb-6"
+        @keydown.escape.window="$wire.dismissTutorial()"
+    >
+        <div class="w-full max-w-sm rounded-2xl border border-wc-border bg-wc-bg p-6 shadow-2xl">
+
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-display text-lg tracking-widest text-wc-text">TUS MÉTRICAS</h3>
+                <button @click="$wire.dismissTutorial()" class="text-wc-text-tertiary hover:text-wc-text transition-colors" aria-label="Cerrar">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <div x-show="step === 1">
+                <div class="flex items-start gap-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-white font-bold text-sm">1</div>
+                    <div>
+                        <p class="font-semibold text-wc-text text-sm">Registra tu peso</p>
+                        <p class="mt-1 text-xs text-wc-text-secondary leading-relaxed">Pésate en ayunas, después de ir al baño y antes de desayunar. Siempre a la misma hora para tener datos comparables semana a semana.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="step === 2">
+                <div class="flex items-start gap-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-white font-bold text-sm">2</div>
+                    <div>
+                        <p class="font-semibold text-wc-text text-sm">Las fluctuaciones son normales</p>
+                        <p class="mt-1 text-xs text-wc-text-secondary leading-relaxed">El peso puede variar 1-3 kg en un día por agua, comida y sal. Lo que importa es la tendencia de semanas, no el número de un día específico.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="step === 3">
+                <div class="flex items-start gap-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-white font-bold text-sm">3</div>
+                    <div>
+                        <p class="font-semibold text-wc-text text-sm">El peso no es todo</p>
+                        <p class="mt-1 text-xs text-wc-text-secondary leading-relaxed">La escala no distingue músculo de grasa. Registra también tus medidas y fotos de progreso — la transformación visual siempre supera a los números.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 flex justify-center gap-1.5">
+                <template x-for="i in total" :key="i">
+                    <div class="h-1.5 rounded-full transition-all" :class="i === step ? 'bg-wc-accent w-4' : 'bg-wc-bg-tertiary w-1.5'"></div>
+                </template>
+            </div>
+
+            <div class="mt-5 flex gap-3">
+                <button x-show="step > 1" @click="step--" class="flex-1 rounded-xl border border-wc-border bg-wc-bg-secondary py-2.5 text-sm font-medium text-wc-text-secondary hover:text-wc-text transition-colors" type="button">Atrás</button>
+                <button x-show="step < total" @click="step++" class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover transition-colors" type="button">Siguiente</button>
+                <button x-show="step === total" @click="$wire.dismissTutorial()" class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover transition-colors" type="button">¡Entendido!</button>
+            </div>
+        </div>
+    </div>
+    @endif
+    {{-- ===== /ONBOARDING TUTORIAL: MÉTRICAS ===== --}}
 </div>
