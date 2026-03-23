@@ -82,7 +82,7 @@
     {{-- ============================================================ --}}
     {{-- MAIN CONTENT                                                 --}}
     {{-- ============================================================ --}}
-    <div class="px-4 mt-4 space-y-4">
+    <div class="mt-4 space-y-4">
 
         {{-- ======================================================== --}}
         {{-- PRE-WORKOUT STATE                                        --}}
@@ -436,7 +436,7 @@
                     <div class="border-t border-wc-border overflow-x-auto scrollbar-none">
                         {{-- Table header --}}
                         <div class="grid gap-1 px-3 py-2 bg-wc-bg-secondary/50"
-                             style="grid-template-columns: 40px 72px 1fr 1fr 48px; min-width: 380px">
+                             style="grid-template-columns: 32px 50px 1fr 1fr 36px">
                             <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Set</span>
                             <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Anterior</span>
                             <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Peso (kg)</span>
@@ -462,7 +462,7 @@
                                 class="grid gap-1 items-center px-3 py-2 transition-colors
                                     {{ $isCompleted ? 'bg-emerald-500/5' : '' }}
                                     {{ $setNum < $totalSets ? 'border-b border-wc-border/50' : '' }}"
-                                style="grid-template-columns: 40px 72px 1fr 1fr 48px; min-width: 380px"
+                                style="grid-template-columns: 32px 50px 1fr 1fr 36px"
                                 x-data="{
                                     weight: {{ (float)($setWeight ?: 0) }},
                                     reps: {{ $repsInitial }},
@@ -503,10 +503,10 @@
                                 </div>
 
                                 {{-- Weight input with +/- --}}
-                                <div class="flex items-center justify-center gap-1">
+                                <div class="flex items-center justify-center gap-px">
                                     <button
                                         @click="weight = Math.max(0, weight - 2.5)"
-                                        class="btn-press flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
+                                        class="btn-press flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
                                         :disabled="completed"
                                         :class="completed && 'opacity-30 pointer-events-none'"
                                         aria-label="Reducir peso"
@@ -518,14 +518,14 @@
                                         step="0.5"
                                         min="0"
                                         x-model.number="weight"
-                                        class="h-8 w-16 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-sm font-semibold text-wc-text focus:border-wc-accent focus:outline-none tabular-nums
+                                        class="h-7 w-10 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-xs font-semibold text-wc-text focus:border-wc-accent focus:outline-none tabular-nums
                                             {{ $isCompleted ? 'opacity-60' : '' }}"
                                         :disabled="completed"
                                         placeholder="0"
                                     />
                                     <button
                                         @click="weight += 2.5"
-                                        class="btn-press flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
+                                        class="btn-press flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
                                         :disabled="completed"
                                         :class="completed && 'opacity-30 pointer-events-none'"
                                         aria-label="Aumentar peso"
@@ -535,10 +535,10 @@
                                 </div>
 
                                 {{-- Reps input with +/- --}}
-                                <div class="flex items-center justify-center gap-1">
+                                <div class="flex items-center justify-center gap-px">
                                     <button
                                         @click="reps = Math.max(0, reps - 1)"
-                                        class="btn-press flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
+                                        class="btn-press flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
                                         :disabled="completed"
                                         :class="completed && 'opacity-30 pointer-events-none'"
                                         aria-label="Reducir reps"
@@ -549,14 +549,14 @@
                                         type="number"
                                         min="0"
                                         x-model.number="reps"
-                                        class="h-8 w-14 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-sm font-semibold text-wc-text focus:border-wc-accent focus:outline-none tabular-nums
+                                        class="h-7 w-9 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-xs font-semibold text-wc-text focus:border-wc-accent focus:outline-none tabular-nums
                                             {{ $isCompleted ? 'opacity-60' : '' }}"
                                         :disabled="completed"
                                         placeholder="0"
                                     />
                                     <button
                                         @click="reps += 1"
-                                        class="btn-press flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
+                                        class="btn-press flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
                                         :disabled="completed"
                                         :class="completed && 'opacity-30 pointer-events-none'"
                                         aria-label="Aumentar reps"
@@ -577,7 +577,7 @@
                                                 setTimeout(() => justCompleted = false, 800);
                                             }
                                         "
-                                        class="btn-press flex h-9 w-9 items-center justify-center rounded-xl border-2 border-wc-border text-wc-text-tertiary hover:border-emerald-500 hover:text-emerald-400 transition-all"
+                                        class="btn-press flex h-8 w-8 items-center justify-center rounded-xl border-2 border-wc-border text-wc-text-tertiary hover:border-emerald-500 hover:text-emerald-400 transition-all"
                                         :class="reps <= 0 && 'opacity-30 cursor-not-allowed'"
                                         aria-label="Completar serie"
                                     >

@@ -48,7 +48,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="min-h-screen bg-wc-bg text-wc-text">
+<body class="min-h-screen bg-wc-bg text-wc-text overflow-x-hidden">
 
     @php
         $client = auth('wellcore')->user();
