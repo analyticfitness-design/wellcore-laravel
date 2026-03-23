@@ -248,7 +248,7 @@
             {{-- START WORKOUT CTA --}}
             <div class="pt-2 pb-4" data-animate="fadeInUp" data-animate-delay="400">
                 <button
-                    @click="workoutStarted = true; startTimer(); $wire.startWorkout()"
+                    @click="workoutStarted = true; $nextTick(() => window.scrollTo(0, 0)); startTimer(); $wire.startWorkout()"
                     class="btn-press w-full rounded-2xl bg-wc-accent py-4 text-center shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover transition-colors"
                     wire:loading.attr="disabled"
                     wire:loading.class="opacity-75"
