@@ -1,5 +1,6 @@
 <div
-    class="min-h-screen pb-[280px]"
+    class="min-h-screen"
+    :class="{ 'pb-[280px]': workoutStarted }"
     x-data="workoutPlayer()"
     x-init="initAnimations()"
     x-on:open-rest-timer.window="startRestTimer($event.detail.seconds)"
@@ -62,7 +63,7 @@
             </div>
 
             {{-- Active session timer (only when workout is active) --}}
-            <div x-show="workoutStarted" x-cloak>
+            <div x-show="workoutStarted" @if(!$isActive) style="display:none" @endif>
                 <div class="mt-2 flex items-center justify-between rounded-lg bg-wc-accent/10 border border-wc-accent/20 px-3 py-2">
                     <div class="flex items-center gap-2">
                         {{-- Pulsing dot --}}
@@ -270,7 +271,7 @@
         {{-- ======================================================== --}}
         {{-- ACTIVE WORKOUT STATE                                     --}}
         {{-- ======================================================== --}}
-        <div x-show="workoutStarted" x-cloak>
+        <div x-show="workoutStarted" @if(!$isActive) style="display:none" @endif>
 
             {{-- Progress bar --}}
             <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3" data-animate="fadeInUp">
@@ -424,7 +425,6 @@
                                     x-transition:leave-start="opacity-100"
                                     x-transition:leave-end="opacity-0 -translate-y-1"
                                     class="mt-1.5 rounded-lg bg-wc-bg-secondary px-3 py-2 text-xs leading-relaxed text-wc-text-tertiary"
-                                    x-cloak
                                 >
                                     {{ $exNotesDisplay }}
                                 </div>
@@ -601,6 +601,26 @@
                             </div>
                         @endfor
                     </div>
+
+                    {{-- Manual rest timer button --}}
+                    @if(!empty($exRestDisplay))
+                        @php
+                            preg_match('/(\d+)/', (string) $exRestDisplay, $_rm);
+                            $_rn = (int) ($_rm[1] ?? 90);
+                            $restSecs = stripos($exRestDisplay, 'min') !== false ? $_rn * 60 : ($_rn ?: 90);
+                        @endphp
+                        <div class="border-t border-wc-border/30 px-3 py-2">
+                            <button
+                                @click="window.dispatchEvent(new CustomEvent('open-rest-timer', { detail: { seconds: {{ $restSecs }} } }))"
+                                class="btn-press flex w-full items-center justify-center gap-2 rounded-xl border border-wc-border bg-wc-bg-secondary py-2.5 text-xs font-medium text-wc-text-secondary hover:border-wc-accent/40 hover:text-wc-accent transition-all"
+                            >
+                                <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                                <span>Descanso · {{ $exRestDisplay }}</span>
+                            </button>
+                        </div>
+                    @endif
                 </div>
             @endforeach
 
@@ -619,7 +639,7 @@
         x-transition:leave-start="translate-y-0 opacity-100"
         x-transition:leave-end="translate-y-full opacity-0"
         class="fixed bottom-0 inset-x-0 z-50 rounded-t-3xl border-t border-wc-border bg-wc-bg-secondary shadow-2xl"
-        x-cloak
+        wire:ignore
     >
         {{-- Backdrop --}}
         <div
@@ -686,7 +706,7 @@
     {{-- ============================================================ --}}
     {{-- STICKY BOTTOM BAR (active workout)                           --}}
     {{-- ============================================================ --}}
-    <div x-show="workoutStarted" x-cloak>
+    <div x-show="workoutStarted" @if(!$isActive) style="display:none" @endif>
         @php
             $totalSetsAll = 0;
             $completedSetsAll = 0;

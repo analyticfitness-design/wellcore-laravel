@@ -587,11 +587,6 @@ class WorkoutPlayer extends Component
             'is_pr' => $isPr,
         ];
 
-        // Parse rest seconds from exercise data (e.g. "90s", "120s", "2min")
-        $restSeconds = $this->parseRestSeconds($exercise['descanso'] ?? '90s');
-
-        // Dispatch the rest timer event
-        $this->dispatch('open-rest-timer', seconds: $restSeconds);
     }
 
     /**
