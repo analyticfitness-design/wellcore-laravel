@@ -329,7 +329,7 @@
         </header>
 
         {{-- Page content --}}
-        <main class="px-4 py-6 pb-20 sm:px-6 lg:px-8 lg:pb-6">
+        <main class="px-4 py-6 pb-24 sm:px-6 lg:px-8 lg:pb-6">
             {{ $slot }}
         </main>
     </div>

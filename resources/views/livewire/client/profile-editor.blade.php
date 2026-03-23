@@ -18,7 +18,7 @@
         x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 translate-y-2"
-        class="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-xl border border-green-500/30 bg-green-500/10 px-5 py-3 shadow-lg backdrop-blur-sm"
+        class="fixed bottom-24 right-4 z-50 flex items-center gap-3 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 shadow-lg backdrop-blur-sm lg:bottom-6 lg:right-6"
         x-cloak
     >
         <svg class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -146,7 +146,7 @@
 
                 <div class="space-y-4">
                     {{-- Peso + Altura (inline) --}}
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 gap-4 xs:grid-cols-2 sm:grid-cols-2">
                         <div>
                             <label for="peso" class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Peso (kg)</label>
                             <input
@@ -257,7 +257,7 @@
             <button
                 type="submit"
                 wire:loading.attr="disabled"
-                class="btn-press flex items-center gap-2 rounded-xl bg-wc-accent px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-wc-accent-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+                class="btn-press flex w-full items-center justify-center gap-2 rounded-xl bg-wc-accent px-8 py-3.5 text-sm font-semibold text-white transition-all hover:bg-wc-accent-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:py-3"
             >
                 <svg wire:loading wire:target="save" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

@@ -6,7 +6,7 @@
     </div>
 
     {{-- Stat Cards --}}
-    <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+    <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {{-- Current Weight --}}
         <div class="rounded-[--radius-card] border border-wc-border bg-wc-bg-tertiary p-4">
             <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Peso actual</p>
@@ -451,29 +451,30 @@
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="border-b border-wc-border text-left text-xs uppercase tracking-wider text-wc-text-tertiary">
-                            <th class="px-5 py-3 font-medium">Fecha</th>
-                            <th class="px-5 py-3 font-medium">Peso</th>
-                            <th class="px-5 py-3 font-medium">Musculo%</th>
-                            <th class="px-5 py-3 font-medium">Grasa%</th>
-                            <th class="px-5 py-3 font-medium">Notas</th>
+                            <th class="px-3 py-3 font-medium sm:px-5">Fecha</th>
+                            <th class="px-3 py-3 font-medium sm:px-5">Peso</th>
+                            <th class="px-3 py-3 font-medium sm:px-5">Musc%</th>
+                            <th class="px-3 py-3 font-medium sm:px-5">Grasa%</th>
+                            <th class="hidden px-3 py-3 font-medium sm:table-cell sm:px-5">Notas</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-wc-border">
                         @foreach ($history as $entry)
                             <tr class="hover:bg-wc-bg-secondary/50">
-                                <td class="whitespace-nowrap px-5 py-3 font-data text-wc-text">
+                                <td class="whitespace-nowrap px-3 py-3 font-data text-wc-text sm:px-5">
                                     {{ $entry->log_date->format('d/m/Y') }}
                                 </td>
-                                <td class="whitespace-nowrap px-5 py-3 font-data font-semibold text-wc-text">
+                                <td class="whitespace-nowrap px-3 py-3 font-data font-semibold text-wc-text sm:px-5">
                                     {{ $entry->peso ? number_format((float) $entry->peso, 1) . ' kg' : '--' }}
                                 </td>
-                                <td class="whitespace-nowrap px-5 py-3 font-data text-wc-text">
+                                <td class="whitespace-nowrap px-3 py-3 font-data text-wc-text sm:px-5">
                                     {{ $entry->porcentaje_musculo ? number_format((float) $entry->porcentaje_musculo, 1) . '%' : '--' }}
                                 </td>
-                                <td class="whitespace-nowrap px-5 py-3 font-data text-wc-text">
+                                <td class="whitespace-nowrap px-3 py-3 font-data text-wc-text sm:px-5">
                                     {{ $entry->porcentaje_grasa ? number_format((float) $entry->porcentaje_grasa, 1) . '%' : '--' }}
                                 </td>
-                                <td class="max-w-[200px] truncate px-5 py-3 text-wc-text-secondary">
+                                <td class="hidden max-w-[200px] truncate px-3 py-3 text-wc-text-secondary sm:table-cell sm:px-5"
+                                    title="{{ $entry->notas ?? '' }}">
                                     {{ $entry->notas ?? '--' }}
                                 </td>
                             </tr>
