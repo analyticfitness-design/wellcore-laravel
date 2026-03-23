@@ -558,8 +558,7 @@
              },
              destroy() { const c = this.chart || Chart.getChart(this.$refs.weightCanvas); if (c) { c.stop(); c.destroy(); } this.chart = null; }
          }"
-         x-init="init()"
-         @before-livewire-snapshot.window="destroy()">
+         x-init="init()">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-sm font-semibold text-wc-text">{{ __('client_dashboard.weight_trend') }}</h3>
             <span class="text-xs text-wc-text-tertiary">{{ __('client_dashboard.last_90_days') }}</span>
