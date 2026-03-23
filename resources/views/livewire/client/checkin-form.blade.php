@@ -80,10 +80,9 @@
                 wire:model="nutricion"
                 class="w-full rounded-[--radius-button] border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
             >
-                <option value="excelente">Excelente</option>
-                <option value="buena">Buena</option>
-                <option value="regular">Regular</option>
-                <option value="mala">Mala</option>
+                <option value="Si">Sí, la seguí bien</option>
+                <option value="Parcial">Parcialmente</option>
+                <option value="No">No la seguí</option>
             </select>
             @error('nutricion')
                 <p class="mt-1 text-xs text-red-500">{{ $message }}</p>

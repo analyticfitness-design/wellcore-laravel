@@ -17,8 +17,8 @@ class CheckinForm extends Component
     #[Validate('required|integer|min:0|max:7')]
     public int $diasEntrenados = 0;
 
-    #[Validate('required|in:excelente,buena,regular,mala')]
-    public string $nutricion = 'regular';
+    #[Validate('required|in:Si,No,Parcial')]
+    public string $nutricion = 'Si';
 
     #[Validate('required|integer|min:1|max:10')]
     public int $rpe = 5;
@@ -63,7 +63,7 @@ class CheckinForm extends Component
         $this->reset(['bienestar', 'diasEntrenados', 'nutricion', 'rpe', 'comentario']);
         $this->bienestar = 3;
         $this->diasEntrenados = 0;
-        $this->nutricion = 'regular';
+        $this->nutricion = 'Si';
         $this->rpe = 5;
 
         $this->showSuccess = true;
