@@ -6,17 +6,24 @@
         running: false,
         interval: null,
 
+        _savedScrollY: 0,
+
         openTimer(seconds) {
             this.setDuration(seconds);
             this.show = true;
-            document.body.style.overflow = 'hidden';
+            // iOS-safe scroll lock: position:fixed preserves scroll position
+            this._savedScrollY = window.scrollY;
+            document.body.style.cssText = `position:fixed;top:-${this._savedScrollY}px;width:100%;overflow:hidden;`;
             this.$nextTick(() => this.start());
         },
 
         closeTimer() {
             this.pause();
             this.show = false;
-            document.body.style.overflow = '';
+            // Restore body + scroll position atomically
+            document.body.style.cssText = '';
+            window.scrollTo(0, this._savedScrollY);
+            this._savedScrollY = 0;
         },
 
         start() {

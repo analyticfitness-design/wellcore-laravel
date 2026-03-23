@@ -697,7 +697,7 @@
                         @if($completedSetsAll <= 0) disabled @endif
                         class="btn-press flex-1 rounded-2xl py-3.5 text-center font-display text-lg tracking-widest transition-all
                             {{ $completedSetsAll > 0
-                                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/25 hover:bg-emerald-500'
+                                ? 'bg-wc-accent text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover'
                                 : 'bg-wc-bg-secondary text-wc-text-tertiary cursor-not-allowed' }}"
                         wire:loading.attr="disabled"
                         wire:loading.class="opacity-75"
