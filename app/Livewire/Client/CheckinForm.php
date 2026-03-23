@@ -3,6 +3,7 @@
 namespace App\Livewire\Client;
 
 use App\Models\Checkin;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -66,6 +67,9 @@ class CheckinForm extends Component
         $this->rpe = 5;
 
         $this->showSuccess = true;
+
+        // Bust the cached checkin history so the new entry appears immediately.
+        Cache::forget("checkin:recent:{$clientId}");
     }
 
     public function dismissSuccess(): void
@@ -77,10 +81,19 @@ class CheckinForm extends Component
     {
         $clientId = auth('wellcore')->id();
 
-        $recentCheckins = Checkin::where('client_id', $clientId)
-            ->orderByDesc('checkin_date')
-            ->limit(10)
-            ->get();
+        // Cache recent check-ins for 5 minutes. The list only changes when
+        // submit() creates a new record (which busts this key). This prevents
+        // a DB hit on every bienestar rating click or RPE slider adjustment.
+        // Store as a plain array to avoid PHP-serialization issues with stale
+        // Eloquent models in the cache after schema migrations.
+        $cached = Cache::remember("checkin:recent:{$clientId}", 300, function () use ($clientId) {
+            return Checkin::where('client_id', $clientId)
+                ->orderByDesc('checkin_date')
+                ->limit(10)
+                ->get()
+                ->toArray();
+        });
+        $recentCheckins = Checkin::hydrate($cached);
 
         return view('livewire.client.checkin-form', [
             'recentCheckins' => $recentCheckins,
