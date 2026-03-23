@@ -31,6 +31,9 @@ class WorkoutPlayer extends Component
     /** Whether the workout has been started */
     public bool $isActive = false;
 
+    /** Show onboarding tutorial for first-time users */
+    public bool $showTutorial = false;
+
     /** Timestamp when workout was started */
     public ?string $startTime = null;
 
@@ -88,6 +91,11 @@ class WorkoutPlayer extends Component
     public function mount(?int $day = null): void
     {
         $clientId = auth('wellcore')->id();
+
+        // Show tutorial if client has never completed a workout
+        $this->showTutorial = !WorkoutSession::where('client_id', $clientId)
+            ->where('completed', true)
+            ->exists();
 
         // Cache only a plain array — never cache Eloquent models (unserialize fails on file cache).
         $planData = Cache::remember("wp:plan:{$clientId}", 300, function () use ($clientId) {
@@ -785,6 +793,11 @@ class WorkoutPlayer extends Component
         $this->setData = [];
 
         $this->redirect(route('client.dashboard'));
+    }
+
+    public function dismissTutorial(): void
+    {
+        $this->showTutorial = false;
     }
 
     public function render()
