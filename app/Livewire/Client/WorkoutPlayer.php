@@ -132,47 +132,25 @@ class WorkoutPlayer extends Component
             }
         }
 
-        // Normalize exercises inside each day before storing
+        // Normalize exercises inside each flat day
         if (isset($content['dias']) && is_array($content['dias'])) {
-            foreach ($content['dias'] as &$dia) {
-                if (! is_array($dia)) {
-                    continue;
-                }
-                // Day name: 'name' → 'nombre'
-                if (! isset($dia['nombre']) && isset($dia['name'])) {
-                    $dia['nombre'] = $dia['name'];
-                }
-                // Exercises list: 'exercises' | 'sessions' → 'ejercicios'
-                if (! isset($dia['ejercicios'])) {
-                    $exFallback = $dia['exercises'] ?? $dia['sessions'] ?? null;
-                    if ($exFallback !== null) {
-                        $dia['ejercicios'] = $exFallback;
-                        unset($dia['exercises'], $dia['sessions']);
-                    }
-                }
-                // Normalize each exercise
-                if (isset($dia['ejercicios']) && is_array($dia['ejercicios'])) {
-                    foreach ($dia['ejercicios'] as &$ej) {
-                        if (! is_array($ej)) {
-                            continue;
-                        }
-                        if (! isset($ej['nombre'])) {
-                            $ej['nombre'] = $ej['name'] ?? $ej['exercise'] ?? $ej['ejercicio'] ?? '';
-                        }
-                        if (! isset($ej['series']) && isset($ej['sets'])) {
-                            $ej['series'] = $ej['sets'];
-                        }
-                        if (! isset($ej['repeticiones']) && isset($ej['reps'])) {
-                            $ej['repeticiones'] = $ej['reps'];
-                        }
-                        if (! isset($ej['descanso'])) {
-                            $ej['descanso'] = $ej['rest'] ?? $ej['rest_seconds'] ?? '90s';
-                        }
-                    }
-                    unset($ej);
-                }
+            $content['dias'] = array_values(array_map(
+                fn($d) => is_array($d) ? $this->normalizeDay($d) : $d,
+                $content['dias']
+            ));
+        }
+
+        // Format: { "plan": [{ "week": N, "days": [...] }] } → semanas
+        // Some AI-generated plans use this week-keyed structure instead of 'semanas'.
+        if (! isset($content['semanas']) && isset($content['plan']) && is_array($content['plan'])) {
+            $first = reset($content['plan']);
+            if (is_array($first) && (isset($first['days']) || isset($first['week']))) {
+                $content['semanas'] = array_values(array_map(fn($w) => [
+                    'semana' => $w['week'] ?? 1,
+                    'dias'   => $w['days'] ?? [],
+                ], $content['plan']));
+                unset($content['plan']);
             }
-            unset($dia);
         }
 
         // Elite plans may have weekly progressions: { "semanas": [{ "semana": 1, "dias": [...] }, ...] }
@@ -180,11 +158,14 @@ class WorkoutPlayer extends Component
             $this->hasProgressions = true;
             $this->totalWeeks = count($content['semanas']);
 
-            // Fix 1: Pre-normalize and store ALL weeks in memory now, so switchWeek()
-            // can derive the days array directly without a DB round-trip.
+            // Pre-normalize and store ALL weeks so switchWeek() never re-fetches DB.
             foreach ($content['semanas'] as $weekIndex => $weekData) {
                 $weekNumber = $weekIndex + 1;
-                $this->allWeeksDays[$weekNumber] = $weekData['dias'] ?? $weekData['days'] ?? [];
+                $dias = $weekData['dias'] ?? $weekData['days'] ?? [];
+                $this->allWeeksDays[$weekNumber] = array_values(array_map(
+                    fn($d) => is_array($d) ? $this->normalizeDay($d) : $d,
+                    $dias
+                ));
             }
 
             // Determine current week based on plan start date
@@ -810,5 +791,47 @@ class WorkoutPlayer extends Component
             'totalSets' => $this->getTotalSetsCount(),
             'currentVolume' => $this->getCurrentVolume(),
         ]);
+    }
+
+    /**
+     * Normalize a single training day array to the keys the blade view expects.
+     * Maps English keys → Spanish: exercises→ejercicios, name→nombre, sets→series, reps→repeticiones.
+     */
+    private function normalizeDay(array $dia): array
+    {
+        if (! isset($dia['nombre']) && isset($dia['name'])) {
+            $dia['nombre'] = $dia['name'];
+        }
+
+        if (! isset($dia['ejercicios'])) {
+            $exFallback = $dia['exercises'] ?? $dia['sessions'] ?? null;
+            if ($exFallback !== null) {
+                $dia['ejercicios'] = $exFallback;
+                unset($dia['exercises'], $dia['sessions']);
+            }
+        }
+
+        if (isset($dia['ejercicios']) && is_array($dia['ejercicios'])) {
+            foreach ($dia['ejercicios'] as &$ej) {
+                if (! is_array($ej)) {
+                    continue;
+                }
+                if (! isset($ej['nombre'])) {
+                    $ej['nombre'] = $ej['name'] ?? $ej['exercise'] ?? $ej['ejercicio'] ?? '';
+                }
+                if (! isset($ej['series']) && isset($ej['sets'])) {
+                    $ej['series'] = $ej['sets'];
+                }
+                if (! isset($ej['repeticiones']) && isset($ej['reps'])) {
+                    $ej['repeticiones'] = $ej['reps'];
+                }
+                if (! isset($ej['descanso'])) {
+                    $ej['descanso'] = $ej['rest'] ?? $ej['rest_seconds'] ?? '90s';
+                }
+            }
+            unset($ej);
+        }
+
+        return $dia;
     }
 }

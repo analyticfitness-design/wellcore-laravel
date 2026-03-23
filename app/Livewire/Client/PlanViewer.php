@@ -214,6 +214,16 @@ class PlanViewer extends Component
             return null;
         }
 
+        // Format: { "plan": [{ "week": N, "days": [...] }] } → use first week's days for display
+        if (! isset($content['dias']) && ! isset($content['days']) &&
+            isset($content['plan']) && is_array($content['plan'])) {
+            $first = reset($content['plan']);
+            if (is_array($first) && isset($first['days']) && is_array($first['days'])) {
+                $content['dias'] = array_values($first['days']);
+                unset($content['plan']);
+            }
+        }
+
         // Top-level: 'weeks' or 'days' → 'dias'
         // Only accept array values — 'weeks' may be an integer (plan duration) in some plan formats
         if (! isset($content['dias']) || ! is_array($content['dias'])) {
