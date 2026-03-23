@@ -62,7 +62,7 @@
             </div>
 
             {{-- Active session timer (only when workout is active) --}}
-            <div x-show="workoutStarted" @if(!$isActive) style="display:none" @endif>
+            <div x-show="workoutStarted">
                 <div class="mt-2 flex items-center justify-between rounded-lg bg-wc-accent/10 border border-wc-accent/20 px-3 py-2">
                     <div class="flex items-center gap-2">
                         {{-- Pulsing dot --}}
@@ -244,22 +244,17 @@
             @endforeach
 
             {{-- START WORKOUT CTA --}}
+            {{-- Alpine sets workoutStarted=true immediately (optimistic UI) so the active
+                 view appears in <200ms. $wire.startWorkout() runs in background to create
+                 the session and load previous weights. No wire:loading on this button —
+                 the pre-workout section hides via x-show the moment Alpine state changes. --}}
             <div class="pt-2 pb-4">
                 <button
                     @click="workoutStarted = true; $nextTick(() => window.scrollTo(0, 0)); startTimer(); $wire.startWorkout()"
                     class="btn-press w-full rounded-2xl bg-wc-accent py-4 text-center shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover transition-colors"
-                    wire:loading.attr="disabled"
-                    wire:loading.class="opacity-75"
-                    wire:target="startWorkout"
+                    type="button"
                 >
-                    <span wire:loading.remove wire:target="startWorkout" class="font-display text-xl tracking-widest text-white">INICIAR ENTRENAMIENTO</span>
-                    <span wire:loading wire:target="startWorkout" class="inline-flex items-center justify-center gap-2 text-white">
-                        <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                        </svg>
-                        <span class="font-display text-xl tracking-widest">CARGANDO PLAN...</span>
-                    </span>
+                    <span class="font-display text-xl tracking-widest text-white">INICIAR ENTRENAMIENTO</span>
                 </button>
             </div>
 
@@ -268,7 +263,7 @@
         {{-- ======================================================== --}}
         {{-- ACTIVE WORKOUT STATE                                     --}}
         {{-- ======================================================== --}}
-        <div x-show="workoutStarted" @if(!$isActive) style="display:none" @endif>
+        <div x-show="workoutStarted">
 
             {{-- Progress bar --}}
             <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3">
@@ -625,7 +620,7 @@
     {{-- ============================================================ --}}
     {{-- STICKY BOTTOM BAR (active workout)                           --}}
     {{-- ============================================================ --}}
-    <div x-show="workoutStarted" @if(!$isActive) style="display:none" @endif>
+    <div x-show="workoutStarted">
         @php
             $totalSetsAll = 0;
             $completedSetsAll = 0;
