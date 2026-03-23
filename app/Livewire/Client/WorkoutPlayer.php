@@ -159,7 +159,7 @@ class WorkoutPlayer extends Component
             }
 
             // Determine current week based on plan start date
-            $weeksActive = max(1, (int) ceil(Carbon::parse($plan->valid_from ?? $plan->created_at)->diffInWeeks(now())) + 1);
+            $weeksActive = max(1, (int) ceil(Carbon::parse($planData['valid_from'] ?? $planData['created_at'])->diffInWeeks(now())) + 1);
             $this->currentWeek = min($weeksActive, $this->totalWeeks);
 
             $this->days = $this->allWeeksDays[$this->currentWeek] ?? [];

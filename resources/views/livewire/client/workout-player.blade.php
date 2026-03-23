@@ -611,7 +611,7 @@
                                     <button
                                         x-show="!completed"
                                         @click="
-                                            if (weight > 0 && reps > 0) {
+                                            if (reps > 0) {
                                                 $wire.completeSet({{ $exIndex }}, {{ $setNum }}, weight, reps);
                                                 completed = true;
                                                 justCompleted = true;
@@ -619,7 +619,7 @@
                                             }
                                         "
                                         class="btn-press flex h-9 w-9 items-center justify-center rounded-xl border-2 border-wc-border text-wc-text-tertiary hover:border-emerald-500 hover:text-emerald-400 transition-all"
-                                        :class="(weight <= 0 || reps <= 0) && 'opacity-30 cursor-not-allowed'"
+                                        :class="reps <= 0 && 'opacity-30 cursor-not-allowed'"
                                         aria-label="Completar serie"
                                     >
                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
