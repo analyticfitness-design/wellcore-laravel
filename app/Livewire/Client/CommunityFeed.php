@@ -119,7 +119,7 @@ class CommunityFeed extends Component
         $communityStats = Cache::remember('community:stats', 300, function () {
             return [
                 'total_posts'    => CommunityPost::where('visible', true)->count(),
-                'active_members' => Client::where('active', true)->count(),
+                'active_members' => Client::where('status', 'activo')->count(),
             ];
         });
 
