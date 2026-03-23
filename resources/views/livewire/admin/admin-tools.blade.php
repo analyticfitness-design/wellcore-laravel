@@ -404,8 +404,7 @@
 
     @script
     <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('revenueCharts', () => ({
+        Alpine.data('revenueCharts', () => ({
                 charts: {},
 
                 init() {
@@ -570,7 +569,6 @@
                     Object.values(this.charts).forEach(c => c?.destroy());
                 }
             }));
-        });
     </script>
     @endscript
 </div>
