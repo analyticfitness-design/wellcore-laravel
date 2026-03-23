@@ -177,7 +177,7 @@ class PersonalRecords extends Component
     public function render()
     {
         $clientId = auth('wellcore')->id();
-        $hasFilters = $this->category !== 'all' || strlen($this->search) > 1;
+        $hasFilters = $this->category !== 'all' || strlen($this->search) > 0;
 
         // Single base query — fetch up to 500 rows ordered once.
         // Filters applied here so the collection is already scoped.
@@ -189,7 +189,7 @@ class PersonalRecords extends Component
             $query->where('category', $this->category);
         }
 
-        if (strlen($this->search) > 1) {
+        if (strlen($this->search) > 0) {
             $query->where('exercise', 'like', '%' . $this->search . '%');
         }
 
@@ -212,8 +212,10 @@ class PersonalRecords extends Component
             // No active filters: serve global aggregate stats from a single
             // cached query (TTL 60 s).  Cache is invalidated on save/delete
             // via the 'pr-saved' event pathway; we bust it manually there.
+            // Store as array, never as an Eloquent model — PHP serialization of models
+            // breaks across deployments that add new columns (incomplete object error).
             $stats = Cache::remember("pr:stats:{$clientId}", 60, function () use ($clientId) {
-                return PersonalRecord::where('client_id', $clientId)
+                $row = PersonalRecord::where('client_id', $clientId)
                     ->selectRaw(
                         'COUNT(DISTINCT exercise) as total_exercises,
                          SUM(CASE WHEN is_current = 1 THEN 1 ELSE 0 END) as total_prs,
@@ -221,11 +223,13 @@ class PersonalRecords extends Component
                         [now()->startOfMonth()]
                     )
                     ->first();
+
+                return $row ? $row->toArray() : ['total_exercises' => 0, 'total_prs' => 0, 'this_month' => 0];
             });
 
-            $totalPrs       = (int) ($stats->total_prs ?? 0);
-            $totalExercises = (int) ($stats->total_exercises ?? 0);
-            $thisMonth      = (int) ($stats->this_month ?? 0);
+            $totalPrs       = (int) ($stats['total_prs'] ?? 0);
+            $totalExercises = (int) ($stats['total_exercises'] ?? 0);
+            $thisMonth      = (int) ($stats['this_month'] ?? 0);
         }
 
         return view('livewire.client.personal-records', [
