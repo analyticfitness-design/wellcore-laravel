@@ -62,7 +62,7 @@
             </div>
 
             {{-- Active session timer (only when workout is active) --}}
-            @if($isActive)
+            <div x-show="workoutStarted" x-cloak>
                 <div class="mt-2 flex items-center justify-between rounded-lg bg-wc-accent/10 border border-wc-accent/20 px-3 py-2">
                     <div class="flex items-center gap-2">
                         {{-- Pulsing dot --}}
@@ -75,7 +75,7 @@
                     <span class="font-data text-lg font-bold text-wc-accent tabular-nums"
                           x-text="(elapsed >= 3600 ? String(Math.floor(elapsed / 3600)) + ':' : '') + String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0') + ':' + String(elapsed % 60).padStart(2, '0')"></span>
                 </div>
-            @endif
+            </div>
         </div>
     </div>
 
@@ -87,7 +87,7 @@
         {{-- ======================================================== --}}
         {{-- PRE-WORKOUT STATE                                        --}}
         {{-- ======================================================== --}}
-        @if(!$isActive)
+        <div x-show="!workoutStarted">
 
             {{-- Progress summary --}}
             <div class="flex items-center justify-between rounded-xl border border-wc-border bg-wc-bg-tertiary px-4 py-3" data-animate="fadeInUp">
@@ -248,7 +248,7 @@
             {{-- START WORKOUT CTA --}}
             <div class="pt-2 pb-4" data-animate="fadeInUp" data-animate-delay="400">
                 <button
-                    wire:click="startWorkout()"
+                    @click="workoutStarted = true; startTimer(); $wire.startWorkout()"
                     class="btn-press w-full rounded-2xl bg-wc-accent py-4 text-center shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover transition-colors"
                     wire:loading.attr="disabled"
                     wire:loading.class="opacity-75"
@@ -265,50 +265,12 @@
                 </button>
             </div>
 
-            {{-- Skeleton — visible SOLO mientras Livewire procesa startWorkout --}}
-            <div wire:loading wire:target="startWorkout" class="space-y-3 mt-2">
-                {{-- Skeleton progress bar --}}
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3 animate-pulse">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="h-3 w-32 rounded-full bg-wc-bg-secondary"></div>
-                        <div class="h-3 w-8 rounded-full bg-wc-bg-secondary"></div>
-                    </div>
-                    <div class="h-1.5 w-full rounded-full bg-wc-bg-secondary"></div>
-                </div>
-                {{-- Skeleton exercise cards (3 placeholder cards) --}}
-                @for($sk = 0; $sk < 3; $sk++)
-                    <div class="rounded-2xl border border-wc-border bg-wc-bg-tertiary overflow-hidden animate-pulse">
-                        <div class="flex items-stretch">
-                            <div class="w-20 shrink-0 bg-wc-bg-secondary min-h-[80px]"></div>
-                            <div class="flex-1 p-3 space-y-2">
-                                <div class="h-4 w-3/4 rounded-lg bg-wc-bg-secondary"></div>
-                                <div class="flex gap-2">
-                                    <div class="h-6 w-16 rounded-lg bg-wc-bg-secondary"></div>
-                                    <div class="h-6 w-20 rounded-lg bg-wc-bg-secondary"></div>
-                                </div>
-                            </div>
-                        </div>
-                        {{-- Skeleton set rows --}}
-                        <div class="border-t border-wc-border px-3 py-2 space-y-2">
-                            @for($sr = 0; $sr < 3; $sr++)
-                                <div class="flex items-center gap-2 py-1">
-                                    <div class="h-5 w-6 rounded bg-wc-bg-secondary"></div>
-                                    <div class="h-5 w-16 rounded bg-wc-bg-secondary"></div>
-                                    <div class="h-8 w-20 rounded-lg bg-wc-bg-secondary"></div>
-                                    <div class="h-8 w-16 rounded-lg bg-wc-bg-secondary"></div>
-                                    <div class="h-8 w-8 rounded-xl bg-wc-bg-secondary"></div>
-                                </div>
-                            @endfor
-                        </div>
-                    </div>
-                @endfor
-            </div>
-
-        @else
+        </div>{{-- end pre-workout --}}
 
         {{-- ======================================================== --}}
         {{-- ACTIVE WORKOUT STATE                                     --}}
         {{-- ======================================================== --}}
+        <div x-show="workoutStarted" x-cloak>
 
             {{-- Progress bar --}}
             <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3" data-animate="fadeInUp">
@@ -556,7 +518,6 @@
                                         step="0.5"
                                         min="0"
                                         x-model.number="weight"
-                                        wire:model="setData.{{ $exIndex }}.{{ $setNum }}.weight"
                                         class="h-8 w-16 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-sm font-semibold text-wc-text focus:border-wc-accent focus:outline-none tabular-nums
                                             {{ $isCompleted ? 'opacity-60' : '' }}"
                                         :disabled="completed"
@@ -588,7 +549,6 @@
                                         type="number"
                                         min="0"
                                         x-model.number="reps"
-                                        wire:model="setData.{{ $exIndex }}.{{ $setNum }}.reps"
                                         class="h-8 w-14 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-sm font-semibold text-wc-text focus:border-wc-accent focus:outline-none tabular-nums
                                             {{ $isCompleted ? 'opacity-60' : '' }}"
                                         :disabled="completed"
@@ -644,7 +604,7 @@
                 </div>
             @endforeach
 
-        @endif
+        </div>{{-- end active workout --}}
     </div>
 
     {{-- ============================================================ --}}
@@ -726,7 +686,7 @@
     {{-- ============================================================ --}}
     {{-- STICKY BOTTOM BAR (active workout)                           --}}
     {{-- ============================================================ --}}
-    @if($isActive)
+    <div x-show="workoutStarted" x-cloak>
         @php
             $totalSetsAll = 0;
             $completedSetsAll = 0;
@@ -789,7 +749,7 @@
                 </button>
             </div>
         </div>
-    @endif
+    </div>{{-- end sticky bottom bar --}}
 
     @endif {{-- end of !empty($days) --}}
 
@@ -799,6 +759,7 @@
     <script>
         function workoutPlayer() {
             return {
+                workoutStarted: {{ $isActive ? 'true' : 'false' }},
                 elapsed: 0,
                 timerInterval: null,
 

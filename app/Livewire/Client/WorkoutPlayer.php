@@ -61,11 +61,29 @@ class WorkoutPlayer extends Component
     /**
      * All weeks' normalized days indexed by week number (1-based).
      * Populated in mount() for Elite plans so switchWeek() never re-fetches DB.
+     * Protected so Livewire does NOT serialize this into the snapshot payload.
      */
-    public array $allWeeksDays = [];
+    protected array $allWeeksDays = [];
 
     /** Block groups for superset/circuit display */
     public array $blockGroups = [];
+
+    /**
+     * Re-hydrate the protected $allWeeksDays from cache on every subsequent request.
+     * This keeps Elite plan week-switching working while removing the array from the
+     * Livewire snapshot (reducing payload by ~180 KB per request).
+     */
+    public function hydrate(): void
+    {
+        if (! $this->hasProgressions) {
+            return;
+        }
+
+        $clientId = auth('wellcore')->id();
+        if ($clientId) {
+            $this->allWeeksDays = Cache::get("wp:weekdays:{$clientId}", []);
+        }
+    }
 
     public function mount(?int $day = null): void
     {
@@ -163,6 +181,9 @@ class WorkoutPlayer extends Component
             $this->currentWeek = min($weeksActive, $this->totalWeeks);
 
             $this->days = $this->allWeeksDays[$this->currentWeek] ?? [];
+
+            // Cache the normalized weeks map so hydrate() can restore it without re-fetching the plan.
+            Cache::put("wp:weekdays:{$clientId}", $this->allWeeksDays, 300);
         } else {
             $this->days = $content['dias'] ?? [];
         }
