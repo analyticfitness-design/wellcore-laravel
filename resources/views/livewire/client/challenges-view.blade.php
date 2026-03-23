@@ -63,7 +63,7 @@
                     $participation = $participations->get($challenge->id);
                     $isJoined    = $participation !== null;
                     $isCompleted = $participation?->completed ?? false;
-                    $progressPct = $this->getProgressPercentage($challenge->id);
+                    $progressPct = $challenge->my_progress_pct;
                     $daysLeft    = now()->diffInDays($challenge->end_date, false);
                     $isExpired   = $daysLeft < 0;
 
