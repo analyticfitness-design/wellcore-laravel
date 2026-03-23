@@ -122,10 +122,13 @@ class WorkoutPlayer extends Component
             : json_decode($planData['content'], true);
 
         // Normalize top-level key variants: 'days' | 'weeks' → 'dias'
-        if (! isset($content['dias'])) {
+        // Only accept array values — 'weeks' may be an integer (plan duration) in some plan formats
+        if (! isset($content['dias']) || ! is_array($content['dias'])) {
             $fallback = $content['days'] ?? $content['weeks'] ?? null;
-            if ($fallback !== null) {
+            if (is_array($fallback)) {
                 $content['dias'] = $fallback;
+            } elseif (! is_array($content['dias'] ?? null)) {
+                unset($content['dias']); // Remove non-array dias so the empty check below handles it
             }
         }
 
@@ -193,7 +196,7 @@ class WorkoutPlayer extends Component
             // Cache the normalized weeks map so hydrate() can restore it without re-fetching the plan.
             Cache::put("wp:weekdays:{$clientId}", $this->allWeeksDays, 300);
         } else {
-            $this->days = $content['dias'] ?? [];
+            $this->days = is_array($content['dias'] ?? null) ? $content['dias'] : [];
         }
 
         if (empty($this->days)) {

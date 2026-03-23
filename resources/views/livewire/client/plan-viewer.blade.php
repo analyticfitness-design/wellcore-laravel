@@ -46,7 +46,7 @@
     @if($activeTab === 'entrenamiento')
         @if($trainingPlan)
             @php
-                $dias = $trainingPlan['dias'] ?? [];
+                $dias = is_array($trainingPlan['dias'] ?? null) ? $trainingPlan['dias'] : [];
                 $planObjetivoE = $trainingPlan['objetivo'] ?? $trainingPlan['objetivo_general'] ?? null;
                 $totalExercises = 0;
                 foreach ($dias as $d) {

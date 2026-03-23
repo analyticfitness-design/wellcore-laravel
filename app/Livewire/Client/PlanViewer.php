@@ -215,11 +215,14 @@ class PlanViewer extends Component
         }
 
         // Top-level: 'weeks' or 'days' → 'dias'
-        if (! isset($content['dias'])) {
-            $days = $content['weeks'] ?? $content['days'] ?? null;
-            if ($days !== null) {
+        // Only accept array values — 'weeks' may be an integer (plan duration) in some plan formats
+        if (! isset($content['dias']) || ! is_array($content['dias'])) {
+            $days = $content['days'] ?? $content['weeks'] ?? null;
+            if (is_array($days)) {
                 $content['dias'] = $days;
                 unset($content['weeks'], $content['days']);
+            } else {
+                unset($content['dias']); // Remove non-array dias to prevent foreach errors
             }
         }
 
