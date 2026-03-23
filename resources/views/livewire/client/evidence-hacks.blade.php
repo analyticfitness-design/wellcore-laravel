@@ -161,8 +161,8 @@
 
 @script
 <script>
-function evidenceHacks() {
-    return {
+document.addEventListener('alpine:init', () => {
+Alpine.data('evidenceHacks', () => ({
         category: 'all',
         search: '',
         selectedHack: null,
@@ -382,7 +382,7 @@ function evidenceHacks() {
         openHack(hack) {
             this.selectedHack = hack;
         }
-    };
-}
+    }));
+});
 </script>
 @endscript
