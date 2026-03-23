@@ -481,7 +481,7 @@
          x-data="{
              chart: null,
              init() {
-                 if (this.chart) { this.chart.destroy(); this.chart = null; }
+                 const existing = this.chart || Chart.getChart(this.$refs.weightCanvas); if (existing) { existing.stop(); existing.destroy(); } this.chart = null;
                  const data = @js($weightChartData);
                  if (!data.length) return;
                  const datasets = [{
@@ -556,7 +556,7 @@
                      }
                  });
              },
-             destroy() { if (this.chart) { this.chart.destroy(); this.chart = null; } }
+             destroy() { const c = this.chart || Chart.getChart(this.$refs.weightCanvas); if (c) { c.stop(); c.destroy(); } this.chart = null; }
          }"
          x-init="init()"
          @before-livewire-snapshot.window="destroy()">
