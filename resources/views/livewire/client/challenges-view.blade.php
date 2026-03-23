@@ -64,7 +64,7 @@
                     $isJoined    = $participation !== null;
                     $isCompleted = $participation?->completed ?? false;
                     $progressPct = $challenge->my_progress_pct;
-                    $daysLeft    = now()->diffInDays($challenge->end_date, false);
+                    $daysLeft    = (int) now()->diffInDays($challenge->end_date, false);
                     $isExpired   = $daysLeft < 0;
 
                     // Color by type
