@@ -98,8 +98,7 @@
 
         {{-- Charts --}}
         <div
-            x-data="revenueCharts()"
-            x-init="initCharts()"
+            x-data="revenueCharts"
             data-monthly='@json($monthlyRevenue)'
             data-plans='@json($planBreakdown)'
             data-methods='@json($methodBreakdown)'
@@ -195,181 +194,7 @@
                 </div>
             </div>
 
-            {{-- Chart.js Initialization Script --}}
-            <template x-if="false">
-                <div></div>
-            </template>
         </div>
-
-        <script>
-            function revenueCharts() {
-                return {
-                    charts: {},
-
-                    initCharts() {
-                        this.$nextTick(() => {
-                            const isDark = document.documentElement.classList.contains('dark');
-                            const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-                            const textColor = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)';
-
-                            this.initMonthlyChart(gridColor, textColor);
-                            this.initPlanChart(textColor);
-                            this.initMethodChart(gridColor, textColor);
-                        });
-                    },
-
-                    initMonthlyChart(gridColor, textColor) {
-                        const raw = this.$el.dataset.monthly;
-                        const data = raw ? JSON.parse(raw) : [];
-                        if (!data.length || !this.$refs.monthlyChart) return;
-
-                        this.charts.monthly = new Chart(this.$refs.monthlyChart, {
-                            type: 'bar',
-                            data: {
-                                labels: data.map(d => d.label),
-                                datasets: [{
-                                    label: 'Revenue (COP)',
-                                    data: data.map(d => d.total),
-                                    backgroundColor: 'rgba(220, 38, 38, 0.7)',
-                                    borderColor: 'rgba(220, 38, 38, 1)',
-                                    borderWidth: 1,
-                                    borderRadius: 4,
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: {
-                                    legend: { display: false },
-                                    tooltip: {
-                                        callbacks: {
-                                            label: ctx => '$' + new Intl.NumberFormat('es-CO').format(ctx.raw) + ' COP'
-                                        }
-                                    }
-                                },
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        grid: { color: gridColor },
-                                        ticks: {
-                                            color: textColor,
-                                            callback: v => '$' + new Intl.NumberFormat('es-CO', { notation: 'compact' }).format(v)
-                                        }
-                                    },
-                                    x: {
-                                        grid: { display: false },
-                                        ticks: { color: textColor, maxRotation: 45 }
-                                    }
-                                }
-                            }
-                        });
-                    },
-
-                    initPlanChart(textColor) {
-                        const raw = this.$el.dataset.plans;
-                        const data = raw ? JSON.parse(raw) : [];
-                        if (!data.length || !this.$refs.planChart) return;
-
-                        const colors = [
-                            'rgba(220, 38, 38, 0.8)',   // red — esencial
-                            'rgba(14, 165, 233, 0.8)',  // sky — metodo
-                            'rgba(168, 85, 247, 0.8)',  // purple — elite
-                            'rgba(16, 185, 129, 0.8)',  // emerald — rise
-                            'rgba(245, 158, 11, 0.8)',  // amber — presencial
-                            'rgba(107, 114, 128, 0.8)', // gray — otro
-                        ];
-
-                        this.charts.plan = new Chart(this.$refs.planChart, {
-                            type: 'doughnut',
-                            data: {
-                                labels: data.map(d => d.plan),
-                                datasets: [{
-                                    data: data.map(d => d.total),
-                                    backgroundColor: colors.slice(0, data.length),
-                                    borderWidth: 0,
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                cutout: '60%',
-                                plugins: {
-                                    legend: {
-                                        position: 'bottom',
-                                        labels: { color: textColor, padding: 12, usePointStyle: true, pointStyle: 'circle' }
-                                    },
-                                    tooltip: {
-                                        callbacks: {
-                                            label: ctx => ctx.label + ': $' + new Intl.NumberFormat('es-CO').format(ctx.raw) + ' COP'
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                    },
-
-                    initMethodChart(gridColor, textColor) {
-                        const raw = this.$el.dataset.methods;
-                        const data = raw ? JSON.parse(raw) : [];
-                        if (!data.length || !this.$refs.methodChart) return;
-
-                        const methodColors = [
-                            'rgba(14, 165, 233, 0.7)',  // sky
-                            'rgba(168, 85, 247, 0.7)',  // purple
-                            'rgba(16, 185, 129, 0.7)',  // emerald
-                            'rgba(245, 158, 11, 0.7)',  // amber
-                            'rgba(220, 38, 38, 0.7)',   // red
-                            'rgba(107, 114, 128, 0.7)', // gray
-                        ];
-
-                        this.charts.method = new Chart(this.$refs.methodChart, {
-                            type: 'bar',
-                            data: {
-                                labels: data.map(d => d.method),
-                                datasets: [{
-                                    label: 'Revenue (COP)',
-                                    data: data.map(d => d.total),
-                                    backgroundColor: methodColors.slice(0, data.length),
-                                    borderWidth: 0,
-                                    borderRadius: 4,
-                                }]
-                            },
-                            options: {
-                                indexAxis: 'y',
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: {
-                                    legend: { display: false },
-                                    tooltip: {
-                                        callbacks: {
-                                            label: ctx => '$' + new Intl.NumberFormat('es-CO').format(ctx.raw) + ' COP'
-                                        }
-                                    }
-                                },
-                                scales: {
-                                    x: {
-                                        beginAtZero: true,
-                                        grid: { color: gridColor },
-                                        ticks: {
-                                            color: textColor,
-                                            callback: v => '$' + new Intl.NumberFormat('es-CO', { notation: 'compact' }).format(v)
-                                        }
-                                    },
-                                    y: {
-                                        grid: { display: false },
-                                        ticks: { color: textColor }
-                                    }
-                                }
-                            }
-                        });
-                    },
-
-                    destroy() {
-                        Object.values(this.charts).forEach(c => c?.destroy());
-                    }
-                };
-            }
-        </script>
     @endif
 
     {{-- ═══════════════════════════════════════════════════════════════
@@ -576,4 +401,176 @@
             </div>
         </div>
     @endif
+
+    @script
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('revenueCharts', () => ({
+                charts: {},
+
+                init() {
+                    this.$nextTick(() => {
+                        const isDark = document.documentElement.classList.contains('dark');
+                        const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+                        const textColor = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)';
+
+                        this.initMonthlyChart(gridColor, textColor);
+                        this.initPlanChart(textColor);
+                        this.initMethodChart(gridColor, textColor);
+                    });
+                },
+
+                initMonthlyChart(gridColor, textColor) {
+                    const raw = this.$el.dataset.monthly;
+                    const data = raw ? JSON.parse(raw) : [];
+                    if (!data.length || !this.$refs.monthlyChart) return;
+
+                    this.charts.monthly = new Chart(this.$refs.monthlyChart, {
+                        type: 'bar',
+                        data: {
+                            labels: data.map(d => d.label),
+                            datasets: [{
+                                label: 'Revenue (COP)',
+                                data: data.map(d => d.total),
+                                backgroundColor: 'rgba(220, 38, 38, 0.7)',
+                                borderColor: 'rgba(220, 38, 38, 1)',
+                                borderWidth: 1,
+                                borderRadius: 4,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    callbacks: {
+                                        label: ctx => '$' + new Intl.NumberFormat('es-CO').format(ctx.raw) + ' COP'
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: { color: gridColor },
+                                    ticks: {
+                                        color: textColor,
+                                        callback: v => '$' + new Intl.NumberFormat('es-CO', { notation: 'compact' }).format(v)
+                                    }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: { color: textColor, maxRotation: 45 }
+                                }
+                            }
+                        }
+                    });
+                },
+
+                initPlanChart(textColor) {
+                    const raw = this.$el.dataset.plans;
+                    const data = raw ? JSON.parse(raw) : [];
+                    if (!data.length || !this.$refs.planChart) return;
+
+                    const colors = [
+                        'rgba(220, 38, 38, 0.8)',   // red — esencial
+                        'rgba(14, 165, 233, 0.8)',  // sky — metodo
+                        'rgba(168, 85, 247, 0.8)',  // purple — elite
+                        'rgba(16, 185, 129, 0.8)',  // emerald — rise
+                        'rgba(245, 158, 11, 0.8)',  // amber — presencial
+                        'rgba(107, 114, 128, 0.8)', // gray — otro
+                    ];
+
+                    this.charts.plan = new Chart(this.$refs.planChart, {
+                        type: 'doughnut',
+                        data: {
+                            labels: data.map(d => d.plan),
+                            datasets: [{
+                                data: data.map(d => d.total),
+                                backgroundColor: colors.slice(0, data.length),
+                                borderWidth: 0,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: '60%',
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: { color: textColor, padding: 12, usePointStyle: true, pointStyle: 'circle' }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: ctx => ctx.label + ': $' + new Intl.NumberFormat('es-CO').format(ctx.raw) + ' COP'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                },
+
+                initMethodChart(gridColor, textColor) {
+                    const raw = this.$el.dataset.methods;
+                    const data = raw ? JSON.parse(raw) : [];
+                    if (!data.length || !this.$refs.methodChart) return;
+
+                    const methodColors = [
+                        'rgba(14, 165, 233, 0.7)',  // sky
+                        'rgba(168, 85, 247, 0.7)',  // purple
+                        'rgba(16, 185, 129, 0.7)',  // emerald
+                        'rgba(245, 158, 11, 0.7)',  // amber
+                        'rgba(220, 38, 38, 0.7)',   // red
+                        'rgba(107, 114, 128, 0.7)', // gray
+                    ];
+
+                    this.charts.method = new Chart(this.$refs.methodChart, {
+                        type: 'bar',
+                        data: {
+                            labels: data.map(d => d.method),
+                            datasets: [{
+                                label: 'Revenue (COP)',
+                                data: data.map(d => d.total),
+                                backgroundColor: methodColors.slice(0, data.length),
+                                borderWidth: 0,
+                                borderRadius: 4,
+                            }]
+                        },
+                        options: {
+                            indexAxis: 'y',
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    callbacks: {
+                                        label: ctx => '$' + new Intl.NumberFormat('es-CO').format(ctx.raw) + ' COP'
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    beginAtZero: true,
+                                    grid: { color: gridColor },
+                                    ticks: {
+                                        color: textColor,
+                                        callback: v => '$' + new Intl.NumberFormat('es-CO', { notation: 'compact' }).format(v)
+                                    }
+                                },
+                                y: {
+                                    grid: { display: false },
+                                    ticks: { color: textColor }
+                                }
+                            }
+                        }
+                    });
+                },
+
+                destroy() {
+                    Object.values(this.charts).forEach(c => c?.destroy());
+                }
+            }));
+        });
+    </script>
+    @endscript
 </div>
