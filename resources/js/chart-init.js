@@ -22,9 +22,9 @@ const applyChartTheme = () => {
     Chart.defaults.plugins.tooltip.borderColor = isDark ? '#3F3F46' : '#E4E4E7';
     Chart.defaults.plugins.tooltip.borderWidth = 1;
 
-    // Re-render active charts
+    // Re-render active charts (guard against null ctx during SPA navigation)
     Chart.instances && Object.values(Chart.instances).forEach(chart => {
-        if (chart && chart.canvas) {
+        if (chart && chart.canvas && chart.ctx) {
             chart.update('none');
         }
     });
@@ -43,4 +43,13 @@ window.Chart = Chart;
 // Cleanup + re-init on Livewire navigation
 document.addEventListener('livewire:navigated', () => {
     // Charts re-init via Alpine x-init automatically
+});
+
+// Stop all chart animations before SPA navigation to prevent rAF-after-destroy race
+document.addEventListener('livewire:navigating', () => {
+    Chart.instances && Object.values(Chart.instances).forEach(chart => {
+        if (chart) {
+            chart.stop();
+        }
+    });
 });
