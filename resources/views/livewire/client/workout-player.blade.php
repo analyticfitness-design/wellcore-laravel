@@ -643,7 +643,7 @@
     >
         {{-- Backdrop --}}
         <div
-            class="fixed inset-0 -z-10 bg-black/40 backdrop-blur-sm"
+            class="fixed inset-0 -z-10 bg-black/50"
             @click="skipRest()"
         ></div>
 
