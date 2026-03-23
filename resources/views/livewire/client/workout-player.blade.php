@@ -273,7 +273,7 @@
         <div x-show="workoutStarted" @if(!$isActive) style="display:none" @endif>
 
             {{-- Progress bar --}}
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3" data-animate="fadeInUp">
+            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3">
                 @php
                     $completedExercises = 0;
                     foreach ($exercises as $ei => $ex) {
@@ -313,7 +313,7 @@
 
                 {{-- Block label --}}
                 @if($isFirstInBlock && $isInBlock)
-                    <div class="flex items-center gap-2 mt-3" data-animate="fadeInUp" data-animate-delay="{{ min(($exIndex + 1) * 100, 600) }}">
+                    <div class="flex items-center gap-2 mt-3">
                         <span class="rounded-full bg-wc-accent/15 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-wc-accent">
                             {{ $blockType === 'superset' ? 'SUPERSET' : 'CIRCUITO' }}
                         </span>
@@ -328,8 +328,6 @@
                         {{ $allComplete
                             ? 'border-l-[3px] border-l-emerald-500 border-emerald-500/20'
                             : 'border-wc-border' }}"
-                    data-animate="fadeInUp"
-                    data-animate-delay="{{ min(($exIndex + 1) * 100, 600) }}"
                 >
                     {{-- Exercise header --}}
                     <div class="p-4 pb-3">
