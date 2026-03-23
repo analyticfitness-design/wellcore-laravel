@@ -337,7 +337,15 @@ class WorkoutPlayer extends Component
      */
     public function startWorkout(): void
     {
-        if ($this->isActive || empty($this->exercises)) {
+        if ($this->isActive) {
+            return;
+        }
+
+        // Always re-derive exercises from the days array to guard against
+        // Livewire snapshot deserialization issues with large/complex plans.
+        $this->loadDay();
+
+        if (empty($this->exercises)) {
             return;
         }
 
@@ -391,28 +399,34 @@ class WorkoutPlayer extends Component
         // and picks the highest-id (most recent) completed log per exercise.
         $lastWeights = [];
         if (! empty($exerciseNames)) {
-            $lastWeights = WorkoutLog::select('workout_logs.exercise_name', 'workout_logs.weight_kg')
-                ->join(
-                    DB::raw('(
-                        SELECT wl2.exercise_name, MAX(wl2.id) as max_id
-                        FROM workout_logs wl2
-                        INNER JOIN workout_sessions ws2 ON ws2.id = wl2.session_id
-                        WHERE ws2.client_id = ?
-                          AND ws2.completed = 1
-                          AND wl2.completed = 1
-                          AND wl2.weight_kg IS NOT NULL
-                        GROUP BY wl2.exercise_name
-                    ) latest'),
-                    function ($join) {
-                        $join->on('workout_logs.exercise_name', '=', 'latest.exercise_name')
-                             ->on('workout_logs.id', '=', 'latest.max_id');
-                    }
-                )
-                ->whereIn('workout_logs.exercise_name', $exerciseNames)
-                ->addBinding($clientId, 'join')
-                ->pluck('workout_logs.weight_kg', 'workout_logs.exercise_name')
-                ->map(fn ($w) => $w !== null ? (float) $w : null)
-                ->toArray();
+            try {
+                $lastWeights = WorkoutLog::select('workout_logs.exercise_name', 'workout_logs.weight_kg')
+                    ->join(
+                        DB::raw('(
+                            SELECT wl2.exercise_name, MAX(wl2.id) as max_id
+                            FROM workout_logs wl2
+                            INNER JOIN workout_sessions ws2 ON ws2.id = wl2.session_id
+                            WHERE ws2.client_id = ?
+                              AND ws2.completed = 1
+                              AND wl2.completed = 1
+                              AND wl2.weight_kg IS NOT NULL
+                            GROUP BY wl2.exercise_name
+                        ) latest'),
+                        function ($join) {
+                            $join->on('workout_logs.exercise_name', '=', 'latest.exercise_name')
+                                 ->on('workout_logs.id', '=', 'latest.max_id');
+                        }
+                    )
+                    ->whereIn('workout_logs.exercise_name', $exerciseNames)
+                    ->addBinding($clientId, 'join')
+                    ->pluck('workout_logs.weight_kg', 'workout_logs.exercise_name')
+                    ->map(fn ($w) => $w !== null ? (float) $w : null)
+                    ->toArray();
+            } catch (\Throwable $e) {
+                // If the weight-lookup query fails, proceed without previous weights.
+                // Exercises will still render; only the "Anterior" column will be empty.
+                $lastWeights = [];
+            }
         }
 
         foreach ($this->exercises as $exIndex => $exercise) {

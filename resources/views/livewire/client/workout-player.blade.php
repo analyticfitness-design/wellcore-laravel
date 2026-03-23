@@ -249,16 +249,59 @@
             <div class="pt-2 pb-4" data-animate="fadeInUp" data-animate-delay="400">
                 <button
                     wire:click="startWorkout()"
-                    class="btn-press btn-ripple w-full rounded-2xl bg-wc-accent py-4 text-center shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover transition-colors pulse-glow"
+                    class="btn-press w-full rounded-2xl bg-wc-accent py-4 text-center shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover transition-colors"
                     wire:loading.attr="disabled"
                     wire:loading.class="opacity-75"
+                    wire:target="startWorkout"
                 >
-                    <span wire:loading.remove class="font-display text-xl tracking-widest text-white">INICIAR ENTRENAMIENTO</span>
-                    <span wire:loading class="inline-flex items-center gap-2 text-white">
-                        <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-                        <span class="font-display text-xl tracking-widest">PREPARANDO...</span>
+                    <span wire:loading.remove wire:target="startWorkout" class="font-display text-xl tracking-widest text-white">INICIAR ENTRENAMIENTO</span>
+                    <span wire:loading wire:target="startWorkout" class="inline-flex items-center justify-center gap-2 text-white">
+                        <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                        <span class="font-display text-xl tracking-widest">CARGANDO PLAN...</span>
                     </span>
                 </button>
+            </div>
+
+            {{-- Skeleton — visible SOLO mientras Livewire procesa startWorkout --}}
+            <div wire:loading wire:target="startWorkout" class="space-y-3 mt-2">
+                {{-- Skeleton progress bar --}}
+                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3 animate-pulse">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="h-3 w-32 rounded-full bg-wc-bg-secondary"></div>
+                        <div class="h-3 w-8 rounded-full bg-wc-bg-secondary"></div>
+                    </div>
+                    <div class="h-1.5 w-full rounded-full bg-wc-bg-secondary"></div>
+                </div>
+                {{-- Skeleton exercise cards (3 placeholder cards) --}}
+                @for($sk = 0; $sk < 3; $sk++)
+                    <div class="rounded-2xl border border-wc-border bg-wc-bg-tertiary overflow-hidden animate-pulse">
+                        <div class="flex items-stretch">
+                            <div class="w-20 shrink-0 bg-wc-bg-secondary min-h-[80px]"></div>
+                            <div class="flex-1 p-3 space-y-2">
+                                <div class="h-4 w-3/4 rounded-lg bg-wc-bg-secondary"></div>
+                                <div class="flex gap-2">
+                                    <div class="h-6 w-16 rounded-lg bg-wc-bg-secondary"></div>
+                                    <div class="h-6 w-20 rounded-lg bg-wc-bg-secondary"></div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- Skeleton set rows --}}
+                        <div class="border-t border-wc-border px-3 py-2 space-y-2">
+                            @for($sr = 0; $sr < 3; $sr++)
+                                <div class="flex items-center gap-2 py-1">
+                                    <div class="h-5 w-6 rounded bg-wc-bg-secondary"></div>
+                                    <div class="h-5 w-16 rounded bg-wc-bg-secondary"></div>
+                                    <div class="h-8 w-20 rounded-lg bg-wc-bg-secondary"></div>
+                                    <div class="h-8 w-16 rounded-lg bg-wc-bg-secondary"></div>
+                                    <div class="h-8 w-8 rounded-xl bg-wc-bg-secondary"></div>
+                                </div>
+                            @endfor
+                        </div>
+                    </div>
+                @endfor
             </div>
 
         @else
@@ -267,6 +310,7 @@
         {{-- ACTIVE WORKOUT STATE                                     --}}
         {{-- ======================================================== --}}
 
+            <div wire:loading.remove wire:target="startWorkout">
             {{-- Progress bar --}}
             <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3" data-animate="fadeInUp">
                 @php
@@ -600,6 +644,7 @@
                     </div>
                 </div>
             @endforeach
+            </div>{{-- end wire:loading.remove wrapper --}}
 
         @endif
     </div>
