@@ -1,5 +1,5 @@
 <div
-    class="min-h-screen pb-32"
+    class="min-h-screen pb-[280px]"
     x-data="workoutPlayer()"
     x-init="initAnimations()"
     x-on:open-rest-timer.window="startRestTimer($event.detail.seconds)"
@@ -513,7 +513,7 @@
                                         step="0.5"
                                         min="0"
                                         x-model.number="weight"
-                                        wire:model="setData.{{ $exIndex }}.{{ $setNum }}.weight_kg"
+                                        wire:model="setData.{{ $exIndex }}.{{ $setNum }}.weight"
                                         class="h-8 w-16 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-sm font-semibold text-wc-text focus:border-wc-accent focus:outline-none tabular-nums
                                             {{ $isCompleted ? 'opacity-60' : '' }}"
                                         :disabled="completed"
@@ -699,7 +699,7 @@
                     if (!empty($sd['completed'])) {
                         $completedSetsAll++;
                         $totalRepsAll += (int)($sd['reps'] ?? 0);
-                        $totalVolumeAll += ((float)($sd['weight_kg'] ?? 0)) * ((int)($sd['reps'] ?? 0));
+                        $totalVolumeAll += ((float)($sd['weight'] ?? 0)) * ((int)($sd['reps'] ?? 0));
                         $exHasOne = true;
                     }
                 }
@@ -707,7 +707,7 @@
             }
         @endphp
 
-        <div class="fixed bottom-0 inset-x-0 z-40 border-t border-wc-border bg-wc-bg/95 backdrop-blur-md safe-area-pb">
+        <div class="fixed bottom-16 inset-x-0 z-[55] border-t border-wc-border bg-wc-bg/95 backdrop-blur-md safe-area-pb">
             <div class="px-4 py-3">
                 {{-- Session stats --}}
                 <div class="mb-2.5 flex items-center justify-center gap-4 text-center">

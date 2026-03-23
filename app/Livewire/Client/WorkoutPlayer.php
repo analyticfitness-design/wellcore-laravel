@@ -206,10 +206,16 @@ class WorkoutPlayer extends Component
         if ($existingSessionId) {
             $existingSession = WorkoutSession::find($existingSessionId);
             if ($existingSession) {
-                $this->sessionId = $existingSession->id;
-                $this->isActive = true;
-                $this->startTime = $existingSession->created_at->toIso8601String();
-                $this->rebuildSetDataFromLogs($existingSession);
+                // Auto-abandon sessions older than 3 hours (stale / user couldn't complete)
+                if ($existingSession->created_at->diffInHours(now()) >= 3) {
+                    Cache::forget("wp:session:{$clientId}:{$today}");
+                    // Don't resume — fall through to pre-workout state
+                } else {
+                    $this->sessionId = $existingSession->id;
+                    $this->isActive = true;
+                    $this->startTime = $existingSession->created_at->toIso8601String();
+                    $this->rebuildSetDataFromLogs($existingSession);
+                }
             }
         }
     }
