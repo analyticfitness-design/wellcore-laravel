@@ -64,6 +64,7 @@ class GoogleAuthController extends Controller
             'token' => $token,
             'ip_address' => request()->ip(),
             'expires_at' => now()->addDays(30),
+            'created_at' => now(),
         ]);
 
         // 5. Store token in session (matching Login.php mechanism)

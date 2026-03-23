@@ -3,11 +3,12 @@
     <div
         x-data="{
             duration: @entangle('duration'),
-            remaining: @entangle('duration'),
+            remaining: {{ $duration }},
             running: false,
             interval: null,
 
             start() {
+                if (this.remaining <= 0) this.remaining = this.duration;
                 this.running = true;
                 this.interval = setInterval(() => {
                     this.remaining--;
@@ -78,7 +79,11 @@
                 return this.circumference - (this.progress / 100) * this.circumference;
             }
         }"
-        x-init="$nextTick(() => start())"
+        x-init="
+            this.remaining = this.duration;
+            this.$nextTick(() => start());
+            this.$watch('duration', val => { this.remaining = val; if (!this.running) this.start(); });
+        "
         class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm"
         @keydown.escape.window="$wire.closeTimer()"
     >

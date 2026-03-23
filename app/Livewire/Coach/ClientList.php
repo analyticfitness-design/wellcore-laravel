@@ -40,28 +40,44 @@ class ClientList extends Component
 
         $clients = $query->orderBy('name')->get();
 
+        // Pre-load all related data with whereIn to avoid N+1
+        $clientIds = $clients->pluck('id');
+
+        $lastCheckins = Checkin::whereIn('client_id', $clientIds)
+            ->orderByDesc('checkin_date')
+            ->get()
+            ->keyBy('client_id');
+
+        $lastMessages = CoachMessage::whereIn('client_id', $clientIds)
+            ->where('coach_id', $coachId)
+            ->orderByDesc('created_at')
+            ->get()
+            ->keyBy('client_id');
+
+        $xpRecords = ClientXp::whereIn('client_id', $clientIds)
+            ->get()
+            ->keyBy('client_id');
+
+        $activePlans = AssignedPlan::whereIn('client_id', $clientIds)
+            ->where('assigned_by', $coachId)
+            ->where('active', true)
+            ->orderByDesc('created_at')
+            ->get()
+            ->keyBy('client_id');
+
+        $pendingCounts = Checkin::whereIn('client_id', $clientIds)
+            ->whereNull('coach_reply')
+            ->selectRaw('client_id, COUNT(*) as cnt')
+            ->groupBy('client_id')
+            ->pluck('cnt', 'client_id');
+
         // Enrich clients with extra data
-        $clientData = $clients->map(function ($client) use ($coachId) {
-            $lastCheckin = Checkin::where('client_id', $client->id)
-                ->orderByDesc('checkin_date')
-                ->first();
-
-            $lastMessage = CoachMessage::where('client_id', $client->id)
-                ->where('coach_id', $coachId)
-                ->orderByDesc('created_at')
-                ->first();
-
-            $xp = ClientXp::where('client_id', $client->id)->first();
-
-            $activePlan = AssignedPlan::where('client_id', $client->id)
-                ->where('assigned_by', $coachId)
-                ->where('active', true)
-                ->orderByDesc('created_at')
-                ->first();
-
-            $pendingCheckins = Checkin::where('client_id', $client->id)
-                ->whereNull('coach_reply')
-                ->count();
+        $clientData = $clients->map(function ($client) use ($lastCheckins, $lastMessages, $xpRecords, $activePlans, $pendingCounts) {
+            $lastCheckin = $lastCheckins->get($client->id);
+            $lastMessage = $lastMessages->get($client->id);
+            $xp = $xpRecords->get($client->id);
+            $activePlan = $activePlans->get($client->id);
+            $pendingCheckins = $pendingCounts->get($client->id, 0);
 
             return [
                 'id' => $client->id,

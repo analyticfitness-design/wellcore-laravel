@@ -7,6 +7,7 @@ use App\Models\Admin;
 use App\Models\AssignedPlan;
 use App\Models\CoachProfile;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -86,7 +87,7 @@ class CoachManagement extends Component
             'newName'     => 'required|string|max:100',
             'newUsername'  => 'required|string|max:50|unique:admins,username',
             'newPassword'  => 'required|string|min:8|max:255',
-            'newRole'      => 'required|in:superadmin,admin,coach,jefe',
+            'newRole'      => ['required', Rule::in(array_column(UserRole::cases(), 'value'))],
         ], [
             'newName.required'     => 'El nombre es obligatorio.',
             'newUsername.required'  => 'El usuario es obligatorio.',

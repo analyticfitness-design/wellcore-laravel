@@ -53,7 +53,8 @@ class VideoCheckinUpload extends Component
 
         $clientId = auth('wellcore')->id();
 
-        // Guard: enforce monthly upload limit before storing the file
+        // Guard: enforce monthly upload limit before storing the file.
+        // Count resolved once and reused to avoid issuing two identical COUNT queries.
         $maxPerMonth  = 4;
         $monthlyCount = $this->getMonthlyCount($clientId);
         if ($monthlyCount >= $maxPerMonth) {
@@ -72,7 +73,7 @@ class VideoCheckinUpload extends Component
             'notes' => trim($this->notes) ?: null,
             'status' => 'pending',
             'ai_used' => false,
-            'plan_uses_this_month' => $this->getMonthlyCount($clientId) + 1,
+            'plan_uses_this_month' => $monthlyCount + 1,  // reuse cached count — no second query
             'created_at' => now(),
         ]);
 

@@ -73,13 +73,18 @@ class ClientDetail extends Component
 
     public function assignCoach(): void
     {
-        if ($this->selectedCoachId === 0) {
+        $this->validate([
+            'selectedCoachId' => 'required|integer|min:1',
+        ]);
+
+        try {
+            $coach = Admin::where('id', $this->selectedCoachId)
+                ->where('role', 'coach')
+                ->firstOrFail();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
+            $this->addError('selectedCoachId', 'Coach no encontrado.');
             return;
         }
-
-        $coach = Admin::where('id', $this->selectedCoachId)
-            ->where('role', 'coach')
-            ->firstOrFail();
 
         // Deactivate existing active plan of same type for this client
         AssignedPlan::where('client_id', $this->clientId)

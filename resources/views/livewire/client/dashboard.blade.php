@@ -2,7 +2,7 @@
 
     {{-- ITEM 1: Plan-Specific Onboarding (Livewire component) --}}
     <div x-data="{ showOnboarding: !localStorage.getItem('wc_onboarding_plan_done') }"
-         x-init="if (showOnboarding) { $wire.$parent?.dispatch('trigger-onboarding'); localStorage.setItem('wc_onboarding_plan_done', '1'); }"
+         x-init="if (showOnboarding) { localStorage.setItem('wc_onboarding_plan_done', '1'); }"
          x-cloak>
         <livewire:client.plan-onboarding />
     </div>

@@ -130,9 +130,13 @@ class CheckinReview extends Component
 
         $checkins = $query->orderByDesc('checkin_date')->get();
 
+        // Pre-load clients for checkins to avoid N+1
+        $checkinClientIds = $checkins->pluck('client_id')->unique();
+        $checkinClientsById = Client::whereIn('id', $checkinClientIds)->get()->keyBy('id');
+
         // Enrich with client info
-        $checkinData = $checkins->map(function ($checkin) {
-            $client = Client::find($checkin->client_id);
+        $checkinData = $checkins->map(function ($checkin) use ($checkinClientsById) {
+            $client = $checkinClientsById->get($checkin->client_id);
             return [
                 'id' => $checkin->id,
                 'client_name' => $client->name ?? 'Cliente',
@@ -160,8 +164,12 @@ class CheckinReview extends Component
         }
         $videoCheckins = $videoQuery->orderByDesc('created_at')->get();
 
-        $videoCheckinData = $videoCheckins->map(function ($vc) {
-            $client = Client::find($vc->client_id);
+        // Pre-load clients for video check-ins to avoid N+1
+        $videoClientIds = $videoCheckins->pluck('client_id')->unique();
+        $videoClientsById = Client::whereIn('id', $videoClientIds)->get()->keyBy('id');
+
+        $videoCheckinData = $videoCheckins->map(function ($vc) use ($videoClientsById) {
+            $client = $videoClientsById->get($vc->client_id);
             return [
                 'id' => $vc->id,
                 'client_name' => $client->name ?? 'Cliente',

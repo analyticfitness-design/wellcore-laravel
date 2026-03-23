@@ -159,7 +159,7 @@
     </div>
 
     {{-- Photo Gallery --}}
-    @if($photos->isEmpty())
+    @if(empty($photos))
         {{-- Empty State --}}
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-12 text-center">
             <svg class="mx-auto h-16 w-16 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
@@ -182,7 +182,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                             </svg>
                             <span class="font-display text-lg tracking-wide text-wc-text">{{ \Carbon\Carbon::parse($date)->format('d M Y') }}</span>
-                            <span class="rounded-full bg-wc-bg-secondary px-2 py-0.5 text-xs text-wc-text-tertiary">{{ $datePhotos->count() }} {{ $datePhotos->count() === 1 ? 'foto' : 'fotos' }}</span>
+                            <span class="rounded-full bg-wc-bg-secondary px-2 py-0.5 text-xs text-wc-text-tertiary">{{ count($datePhotos) }} {{ count($datePhotos) === 1 ? 'foto' : 'fotos' }}</span>
                         </div>
                         <svg class="h-5 w-5 text-wc-text-tertiary transition-transform {{ $selectedDate === $date ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
@@ -199,11 +199,14 @@
                                 @endphp
 
                                 @foreach($tipos as $tipo)
-                                    @php $photo = $datePhotos->firstWhere('tipo', $tipo); @endphp
+                                    @php
+                                        // $datePhotos is now a plain array — use array_filter to find by tipo.
+                                        $photo = collect($datePhotos)->firstWhere('tipo', $tipo);
+                                    @endphp
                                     <div class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary">
-                                        @if($photo && $photo->filename && Storage::disk('public')->exists($photo->filename))
+                                        @if($photo && ($photo['filename'] ?? null) && Storage::disk('public')->exists($photo['filename']))
                                             <img
-                                                src="{{ Storage::disk('public')->url($photo->filename) }}"
+                                                src="{{ Storage::disk('public')->url($photo['filename']) }}"
                                                 alt="{{ $labels[$tipo] }}"
                                                 class="aspect-[3/4] w-full object-cover"
                                             >

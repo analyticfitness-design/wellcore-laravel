@@ -56,16 +56,45 @@ Fitness coaching platform serving LATAM market with personalized training, nutri
 - Fonts: font-display (Bebas Neue), font-sans (Inter), font-data (Barlow), font-mono (JetBrains Mono)
 - Dark mode: .dark class on html, managed by Alpine.js + localStorage
 
-## Laravel Agent Team (wellcore-agents plugin)
-Use these specialized agents for complex tasks in this project:
-- **la-01-architect** — Architecture decisions, service layers, design patterns
-- **la-02-backend** — Eloquent advanced, business logic, form requests, enums
-- **la-03-livewire-blade** — Livewire components, Blade views, Alpine.js integration
-- **la-04-tailwind-ds** — Tailwind CSS 4, WellCore design tokens, dark mode
-- **la-05-security** — Auth, CSRF, OWASP, input validation, middleware
-- **la-06-database** — Migrations, schema design, query optimization
-- **la-10-performance** — Caching, N+1 prevention, Redis, OPcache
-- **la-11-ai-architect** — Claude API integration, SSE streaming, image analysis
+## Laravel Agent Team — MANDATORY DELEGATION
+
+IMPORTANT: This is a Laravel project. You MUST delegate tasks to the specialized agents below. Do NOT solve Laravel tasks yourself when a specialized agent exists. Always use the Agent tool to dispatch the correct agent.
+
+### Dispatch Rules (ALWAYS apply in this project)
+
+| Task type | MUST use agent |
+|-----------|---------------|
+| Architecture, DDD, patterns, service layers | **la-01-architect** |
+| Eloquent, models, business logic, Actions, DTOs | **la-02-backend** |
+| Livewire components, Blade views, Alpine.js, .blade.php | **la-03-livewire-blade** |
+| Tailwind CSS, design tokens, dark mode, UI styling | **la-04-tailwind-ds** |
+| Auth, CSRF, security, validation, middleware, permissions | **la-05-security** |
+| Migrations, schema, queries, optimization, indexes | **la-06-database** |
+| CI/CD, Docker, deploy, EasyPanel, server config | **la-07-devops** |
+| i18n, translations, locale, multi-country | **la-08-i18n** |
+| Payments, Wompi, Stripe, subscriptions | **la-09-payments** |
+| Performance, caching, Redis, N+1, OPcache, profiling | **la-10-performance** |
+| Claude API, AI features, SSE streaming, image analysis | **la-11-ai-architect** |
+| WebSockets, real-time, Laravel Reverb, broadcasting | **la-12-realtime** |
+| Analytics, dashboards, metrics, reporting | **la-13-analytics** |
+| PHPUnit, Pest, Feature tests, component testing | **la-14-testing** |
+| REST API, resources, API auth, OAuth2 | **la-15-api** |
+| PWA, mobile optimization, responsive | **la-16-mobile** |
+| SEO, meta tags, sitemap, schema markup | **la-17-seo-growth** |
+| Multi-tenancy, SaaS, enterprise patterns | **la-18-enterprise** |
+
+### How to dispatch
+```
+// Simple task → one agent
+Agent(subagent_type="la-03-livewire-blade", prompt="...")
+
+// Complex task → parallel agents
+Agent(la-02-backend) + Agent(la-03-livewire-blade) simultaneously
+
+// Explicit user request
+"Usa la-09-payments para integrar Wompi"
+"Lanza la-14-testing para crear tests"
+```
 
 ## Rules
 - NEVER modify C:\Users\GODSF\Herd\wellcorefitness (vanilla PHP app)

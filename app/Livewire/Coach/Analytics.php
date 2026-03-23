@@ -118,6 +118,7 @@ class Analytics extends Component
 
     public function mount(): void
     {
+        $this->coachClientIds = collect();
         $this->loadMetrics();
         $this->loadMyClientsList();
     }

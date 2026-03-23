@@ -161,7 +161,6 @@
 
 @script
 <script>
-document.addEventListener('alpine:init', () => {
 Alpine.data('evidenceHacks', () => ({
         category: 'all',
         search: '',
@@ -383,6 +382,5 @@ Alpine.data('evidenceHacks', () => ({
             this.selectedHack = hack;
         }
     }));
-});
 </script>
 @endscript

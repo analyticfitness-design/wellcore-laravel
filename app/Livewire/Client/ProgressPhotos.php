@@ -3,7 +3,6 @@
 namespace App\Livewire\Client;
 
 use App\Models\ProgressPhoto;
-use Illuminate\Support\Collection;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -14,7 +13,14 @@ class ProgressPhotos extends Component
 {
     use WithFileUploads;
 
-    public Collection $photos;
+    /**
+     * Stored as a plain array (not an Eloquent Collection) so Livewire's
+     * snapshot serialization remains small. Each upload or selectDate action
+     * would otherwise serialize up to 60 Eloquent models over the wire.
+     *
+     * @var array<string, array<int, array<string, mixed>>>
+     */
+    public array $photos = [];
 
     #[Validate('nullable|date')]
     public string $uploadDate = '';
@@ -42,11 +48,21 @@ class ProgressPhotos extends Component
     {
         $clientId = auth('wellcore')->id();
 
+        // Convert to a plain array grouped by date string.
+        // This keeps the Livewire serialization payload minimal compared to
+        // storing a Collection of Eloquent models as a public property.
         $this->photos = ProgressPhoto::where('client_id', $clientId)
             ->orderByDesc('photo_date')
             ->limit(60) // 20 semanas × 3 ángulos
-            ->get()
-            ->groupBy(fn ($photo) => $photo->photo_date->format('Y-m-d'));
+            ->get(['id', 'photo_date', 'tipo', 'filename'])
+            ->groupBy(fn ($photo) => $photo->photo_date->format('Y-m-d'))
+            ->map(fn ($group) => $group->map(fn ($p) => [
+                'id'         => $p->id,
+                'photo_date' => $p->photo_date->format('Y-m-d'),
+                'tipo'       => $p->tipo,
+                'filename'   => $p->filename,
+            ])->toArray())
+            ->toArray();
     }
 
     public function selectDate(string $date): void

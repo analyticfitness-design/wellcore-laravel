@@ -97,23 +97,25 @@
 
         {{-- Revenue Trend (Line Chart) --}}
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 lg:col-span-2"
-             x-data="{
-                 chart: null,
-                 init() {
-                     const data = @js($revenueChartData);
+             x-data="{ chart: null }"
+             x-init="
+                 (function(component) {
+                     var data = @js($revenueChartData);
                      if (!data.length) return;
-                     const ctx = this.$refs.revenueCanvas.getContext('2d');
-                     this.chart = new Chart(ctx, {
+                     var canvas = component.$refs.revenueCanvas;
+                     var existing = Chart.getChart(canvas);
+                     if (existing) existing.destroy();
+                     component.chart = new Chart(canvas, {
                          type: 'line',
                          data: {
-                             labels: data.map(d => {
-                                 const [y, m] = d.month.split('-');
-                                 const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-                                 return months[parseInt(m) - 1] + ' ' + y.slice(2);
+                             labels: data.map(function(d) {
+                                 var parts = d.month.split('-');
+                                 var months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+                                 return months[parseInt(parts[1]) - 1] + ' ' + parts[0].slice(2);
                              }),
                              datasets: [{
                                  label: 'Ingresos (COP)',
-                                 data: data.map(d => d.total),
+                                 data: data.map(function(d) { return d.total; }),
                                  borderColor: '#DC2626',
                                  backgroundColor: 'rgba(220, 38, 38, 0.08)',
                                  fill: true,
@@ -132,7 +134,7 @@
                                  legend: { display: false },
                                  tooltip: {
                                      callbacks: {
-                                         label: ctx => '$' + new Intl.NumberFormat('es-CO').format(ctx.raw)
+                                         label: function(ctx) { return '$' + new Intl.NumberFormat('es-CO').format(ctx.raw); }
                                      }
                                  }
                              },
@@ -141,18 +143,16 @@
                                      beginAtZero: true,
                                      grid: { color: 'rgba(63, 63, 70, 0.15)' },
                                      ticks: {
-                                         callback: v => '$' + new Intl.NumberFormat('es-CO', {notation:'compact'}).format(v)
+                                         callback: function(v) { return '$' + new Intl.NumberFormat('es-CO', {notation:'compact'}).format(v); }
                                      }
                                  },
                                  x: { grid: { display: false } }
                              }
                          }
                      });
-                 },
-                 destroy() { this.chart?.destroy(); }
-             }"
-             x-init="init()"
-             @before-livewire-snapshot.window="destroy()">
+                 })(this)
+             "
+             @before-livewire-snapshot.window="if (chart) { chart.destroy(); chart = null; }">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-sm font-semibold text-wc-text">Ingresos Mensuales</h3>
                 <span class="text-xs text-wc-text-tertiary">Ultimos 6 meses</span>
@@ -173,19 +173,21 @@
 
         {{-- Plan Distribution (Doughnut Chart) --}}
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5"
-             x-data="{
-                 chart: null,
-                 init() {
-                     const data = @js($planDistributionData);
+             x-data="{ chart: null }"
+             x-init="
+                 (function(component) {
+                     var data = @js($planDistributionData);
                      if (!data.length) return;
-                     const colors = ['#DC2626', '#8B5CF6', '#F59E0B', '#10B981', '#0EA5E9', '#EC4899'];
-                     const ctx = this.$refs.planCanvas.getContext('2d');
-                     this.chart = new Chart(ctx, {
+                     var colors = ['#DC2626', '#8B5CF6', '#F59E0B', '#10B981', '#0EA5E9', '#EC4899'];
+                     var canvas = component.$refs.planCanvas;
+                     var existing = Chart.getChart(canvas);
+                     if (existing) existing.destroy();
+                     component.chart = new Chart(canvas, {
                          type: 'doughnut',
                          data: {
-                             labels: data.map(d => d.name),
+                             labels: data.map(function(d) { return d.name; }),
                              datasets: [{
-                                 data: data.map(d => d.count),
+                                 data: data.map(function(d) { return d.count; }),
                                  backgroundColor: colors.slice(0, data.length),
                                  borderWidth: 0,
                                  hoverOffset: 6,
@@ -208,11 +210,9 @@
                              }
                          }
                      });
-                 },
-                 destroy() { this.chart?.destroy(); }
-             }"
-             x-init="init()"
-             @before-livewire-snapshot.window="destroy()">
+                 })(this)
+             "
+             @before-livewire-snapshot.window="if (chart) { chart.destroy(); chart = null; }">
             <h3 class="text-sm font-semibold text-wc-text mb-4">Distribucion de Planes</h3>
             @if(count($planDistributionData) > 0)
                 <div class="chart-container relative h-52">
@@ -232,23 +232,25 @@
 
     {{-- Client Growth (Bar Chart) — full width --}}
     <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5"
-         x-data="{
-             chart: null,
-             init() {
-                 const data = @js($clientGrowthData);
+         x-data="{ chart: null }"
+         x-init="
+             (function(component) {
+                 var data = @js($clientGrowthData);
                  if (!data.length) return;
-                 const ctx = this.$refs.growthCanvas.getContext('2d');
-                 this.chart = new Chart(ctx, {
+                 var canvas = component.$refs.growthCanvas;
+                 var existing = Chart.getChart(canvas);
+                 if (existing) existing.destroy();
+                 component.chart = new Chart(canvas, {
                      type: 'bar',
                      data: {
-                         labels: data.map(d => {
-                             const [y, m] = d.month.split('-');
-                             const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-                             return months[parseInt(m) - 1] + ' ' + y.slice(2);
+                         labels: data.map(function(d) {
+                             var parts = d.month.split('-');
+                             var months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+                             return months[parseInt(parts[1]) - 1] + ' ' + parts[0].slice(2);
                          }),
                          datasets: [{
                              label: 'Nuevos clientes',
-                             data: data.map(d => d.count),
+                             data: data.map(function(d) { return d.count; }),
                              backgroundColor: 'rgba(220, 38, 38, 0.7)',
                              hoverBackgroundColor: '#DC2626',
                              borderRadius: 6,
@@ -272,11 +274,9 @@
                          }
                      }
                  });
-             },
-             destroy() { this.chart?.destroy(); }
-         }"
-         x-init="init()"
-         @before-livewire-snapshot.window="destroy()">
+             })(this)
+         "
+         @before-livewire-snapshot.window="if (chart) { chart.destroy(); chart = null; }">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-sm font-semibold text-wc-text">Crecimiento de Clientes</h3>
             <span class="text-xs text-wc-text-tertiary">Ultimos 6 meses</span>

@@ -34,6 +34,11 @@ class TicketManager extends Component
         $this->resetPage();
     }
 
+    public function updatingPriorityFilter(): void
+    {
+        $this->resetPage();
+    }
+
     public function sortByColumn(string $column): void
     {
         if ($this->sortBy === $column) {
@@ -75,7 +80,7 @@ class TicketManager extends Component
         $ticket = Ticket::findOrFail($this->respondingId);
         $ticket->response    = $this->responseText;
         $ticket->status      = $this->newStatus;
-        $ticket->assigned_to = auth('wellcore')->user()->name ?? 'Admin';
+        $ticket->assigned_to = auth('wellcore')->user()?->name ?? 'Admin';
 
         if (in_array($this->newStatus, ['resolved', 'closed'])) {
             $ticket->resolved_at = now();

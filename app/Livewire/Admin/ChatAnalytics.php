@@ -6,12 +6,20 @@ use App\Models\ChatMessage;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 #[Layout('layouts.admin', ['title' => 'Chat Analytics'])]
 class ChatAnalytics extends Component
 {
+    use WithPagination;
+
     public string $search = '';
     public ?string $expandedSession = null;
+
+    public function updatingSearch(): void
+    {
+        $this->resetPage();
+    }
 
     public function toggleSession(string $sessionId): void
     {

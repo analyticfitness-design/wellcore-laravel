@@ -151,10 +151,10 @@ class BroadcastCenter extends Component
                 ->pluck('id')
                 ->toArray(),
 
-            'individual' => array_intersect(
-                $this->selectedClientIds,
-                $allClientIds->toArray()
-            ),
+            'individual' => array_values(array_intersect(
+                array_map('intval', $this->selectedClientIds),
+                array_map('intval', $allClientIds->toArray())
+            )),
 
             default => [],
         };

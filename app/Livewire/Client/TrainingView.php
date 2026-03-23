@@ -4,6 +4,7 @@ namespace App\Livewire\Client;
 
 use App\Models\TrainingLog;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -84,6 +85,9 @@ class TrainingView extends Component
                 'week_num' => (int) $parsed->isoFormat('W'),
             ]);
         }
+
+        // Bust the monthly sessions cache so the stat reflects the change immediately.
+        Cache::forget("training:month_sessions:{$clientId}:" . now()->format('Y-m'));
     }
 
     public function render()
@@ -113,16 +117,19 @@ class TrainingView extends Component
 
         $completedCount = collect($days)->where('completed', true)->count();
 
-        // Monthly stats
-        $monthStart = now()->startOfMonth()->toDateString();
-        $monthEnd = now()->endOfMonth()->toDateString();
-        $monthSessions = TrainingLog::where('client_id', $clientId)
-            ->where('completed', true)
-            ->whereBetween('log_date', [$monthStart, $monthEnd])
-            ->count();
-
         $isCurrentWeek = $this->year === (int) now()->isoFormat('GGGG')
             && $this->week === (int) now()->isoFormat('W');
+
+        // Monthly sessions counter is cached for 5 minutes (TTL 300s).
+        // It only changes when toggleDay() is called, which busts the cache key.
+        // This avoids an extra COUNT query on every week-navigation click.
+        $monthCacheKey = "training:month_sessions:{$clientId}:" . now()->format('Y-m');
+        $monthSessions = Cache::remember($monthCacheKey, 300, function () use ($clientId) {
+            return TrainingLog::where('client_id', $clientId)
+                ->where('completed', true)
+                ->whereBetween('log_date', [now()->startOfMonth()->toDateString(), now()->endOfMonth()->toDateString()])
+                ->count();
+        });
 
         return view('livewire.client.training-view', [
             'days' => $days,

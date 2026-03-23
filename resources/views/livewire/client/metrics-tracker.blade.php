@@ -277,6 +277,7 @@
                 this.hasWeight = data.length > 0;
                 if (!this.hasWeight) return;
 
+                Chart.getChart(this.$refs.weightChart)?.destroy();
                 new Chart(this.$refs.weightChart, {
                     type: 'line',
                     data: {
@@ -326,6 +327,7 @@
                     return `S${week}`;
                 });
 
+                Chart.getChart(this.$refs.checkinChart)?.destroy();
                 new Chart(this.$refs.checkinChart, {
                     type: 'bar',
                     data: {
@@ -357,6 +359,7 @@
                 this.hasComposition = !!comp;
                 if (!this.hasComposition) return;
 
+                Chart.getChart(this.$refs.compositionChart)?.destroy();
                 new Chart(this.$refs.compositionChart, {
                     type: 'doughnut',
                     data: {
@@ -401,6 +404,7 @@
                     return `S${week}`;
                 });
 
+                Chart.getChart(this.$refs.trainingChart)?.destroy();
                 new Chart(this.$refs.trainingChart, {
                     type: 'line',
                     data: {

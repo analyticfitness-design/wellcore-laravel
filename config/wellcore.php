@@ -66,7 +66,7 @@ return [
     */
     'ai' => [
         'api_key' => env('CLAUDE_API_KEY', ''),
-        'model' => env('CLAUDE_MODEL', 'claude-haiku-4-5-20251001'),
+        'model' => env('CLAUDE_MODEL', 'claude-3-5-haiku-20241022'),
         'base_url' => env('CLAUDE_BASE_URL', 'https://api.anthropic.com'),
     ],
 

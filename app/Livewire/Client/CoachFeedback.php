@@ -14,6 +14,12 @@ class CoachFeedback extends Component
     public string $comment = '';
     public bool $showSuccess = false;
 
+    /**
+     * Resolved once in mount() so render() and submitRating() do not each
+     * issue a separate DB::table('coach_messages') query.
+     */
+    public ?int $resolvedCoachId = null;
+
     protected function rules(): array
     {
         return [
@@ -31,12 +37,19 @@ class CoachFeedback extends Component
         ];
     }
 
+    public function mount(): void
+    {
+        // Resolve coach once at mount time. Stored in a public int so Livewire
+        // survives hydration without issuing the query again on every render.
+        $this->resolvedCoachId = $this->resolveCoachId(auth('wellcore')->id());
+    }
+
     public function submitRating(): void
     {
         $this->validate();
 
         $client  = auth('wellcore')->user();
-        $coachId = $this->getCoachId($client->id);
+        $coachId = $this->resolvedCoachId;
 
         if (! $coachId) {
             return;
@@ -72,10 +85,9 @@ class CoachFeedback extends Component
 
     /**
      * Resolve the coach assigned to this client.
-     * We look in coach_messages (most recent exchange) since clients
-     * table has no coach_id column.
+     * Called only from mount() — not on every render().
      */
-    private function getCoachId(int $clientId): ?int
+    private function resolveCoachId(int $clientId): ?int
     {
         $row = DB::table('coach_messages')
             ->where('client_id', $clientId)
@@ -88,13 +100,13 @@ class CoachFeedback extends Component
     public function render()
     {
         $client  = auth('wellcore')->user();
-        $coachId = $this->getCoachId($client->id);
+        $coachId = $this->resolvedCoachId;
 
         $coach   = null;
         $ratings = collect();
 
         if ($coachId) {
-            // Fetch coach name from coach_profiles + admins join
+            // Fetch coach profile — acceptable single query per page render.
             $coach = DB::table('coach_profiles')
                 ->join('admins', 'admins.id', '=', 'coach_profiles.admin_id')
                 ->where('coach_profiles.admin_id', $coachId)

@@ -204,7 +204,7 @@ class LiveFeed extends Component
             ->toArray();
     }
 
-    public function loadStats(): void
+    protected function loadStats(): void
     {
         $today = Carbon::today();
 

@@ -6,6 +6,7 @@ use App\Enums\UserType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\ChatMessage;
 
 #[Fillable([
     'chat_message_id',
@@ -30,6 +31,6 @@ class ChatMessageReaction extends Model
 
     public function chatMessage(): BelongsTo
     {
-        return $this->belongsTo(CoachMessage::class, 'chat_message_id');
+        return $this->belongsTo(ChatMessage::class, 'chat_message_id');
     }
 }

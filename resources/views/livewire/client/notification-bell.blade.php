@@ -1,8 +1,8 @@
 <div
     @if($unreadCount === 0)
-        wire:poll.120s.keep-alive="pollNotifications"
+        wire:poll.120s.visible="pollNotifications"
     @else
-        wire:poll.30s.keep-alive="pollNotifications"
+        wire:poll.60s.visible="pollNotifications"
     @endif
     x-data="{ showNotifs: false }"
     class="relative"
@@ -52,20 +52,20 @@
             @endif
         </div>
 
-        {{-- Notification list --}}
+        {{-- Notification list — $notifications is now a plain array --}}
         <div class="max-h-96 overflow-y-auto">
             @forelse($notifications as $notification)
                 <div
-                    wire:key="notif-{{ $notification->id }}"
-                    wire:click="markAsRead({{ $notification->id }})"
-                    @if($notification->link)
-                        x-on:click.once="setTimeout(() => window.location.href = '{{ $notification->link }}', 100)"
+                    wire:key="notif-{{ $notification['id'] }}"
+                    wire:click="markAsRead({{ $notification['id'] }})"
+                    @if($notification['link'])
+                        x-on:click="setTimeout(() => window.location.href = '{{ $notification['link'] }}', 100)"
                     @endif
                     class="flex items-start gap-3 border-b border-wc-border px-4 py-3 hover:bg-wc-bg-tertiary cursor-pointer transition-colors last:border-b-0"
                 >
                     {{-- Unread indicator dot --}}
                     <div class="mt-1.5 shrink-0">
-                        @if(is_null($notification->read_at))
+                        @if(is_null($notification['read_at']))
                             <span class="block h-2 w-2 rounded-full bg-wc-accent"></span>
                         @else
                             <span class="block h-2 w-2 rounded-full bg-wc-border"></span>
@@ -74,17 +74,17 @@
 
                     {{-- Content --}}
                     <div class="min-w-0 flex-1">
-                        <p class="text-sm font-medium text-wc-text leading-snug {{ is_null($notification->read_at) ? '' : 'opacity-60' }}">
-                            {{ $notification->title }}
+                        <p class="text-sm font-medium text-wc-text leading-snug {{ is_null($notification['read_at']) ? '' : 'opacity-60' }}">
+                            {{ $notification['title'] }}
                         </p>
-                        @if($notification->body)
+                        @if($notification['body'])
                             <p class="mt-0.5 text-xs text-wc-text-secondary line-clamp-2 leading-relaxed">
-                                {{ $notification->body }}
+                                {{ $notification['body'] }}
                             </p>
                         @endif
-                        @if($notification->created_at)
+                        @if($notification['created_at'])
                             <p class="mt-1 text-[10px] text-wc-text-tertiary font-data">
-                                {{ $notification->created_at->diffForHumans() }}
+                                {{ $notification['created_at'] }}
                             </p>
                         @endif
                     </div>
@@ -100,7 +100,7 @@
         </div>
 
         {{-- Footer --}}
-        @if($notifications->count() > 0)
+        @if(count($notifications) > 0)
             <div class="border-t border-wc-border px-4 py-2.5 text-center">
                 <a href="{{ route('client.dashboard') }}"
                    class="text-xs font-medium text-wc-accent hover:text-wc-accent/80 transition-colors">

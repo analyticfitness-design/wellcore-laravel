@@ -71,6 +71,7 @@ class Login extends Component
             'token' => $token,
             'ip_address' => request()->ip(),
             'expires_at' => now()->addDays(30),
+            'created_at' => now(),
         ]);
 
         // Store token in session for Laravel web auth

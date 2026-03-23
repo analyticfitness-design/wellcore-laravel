@@ -104,11 +104,15 @@ class Dashboard extends Component
 
     protected function loadClientBreakdown(): void
     {
-        $this->clientsActivo = Client::where('status', 'activo')->count();
-        $this->clientsInactivo = Client::where('status', 'inactivo')->count();
-        $this->clientsPendiente = Client::where('status', 'pendiente')->count();
-        $this->clientsSuspendido = Client::where('status', 'suspendido')->count();
-        $this->totalClients = Client::count();
+        $breakdown = Client::selectRaw('status, COUNT(*) as cnt')
+            ->groupBy('status')
+            ->pluck('cnt', 'status');
+
+        $this->clientsActivo     = $breakdown->get('activo', 0);
+        $this->clientsInactivo   = $breakdown->get('inactivo', 0);
+        $this->clientsPendiente  = $breakdown->get('pendiente', 0);
+        $this->clientsSuspendido = $breakdown->get('suspendido', 0);
+        $this->totalClients      = $breakdown->sum();
     }
 
     protected function loadRecentActivity(): void
@@ -125,17 +129,34 @@ class Dashboard extends Component
             ])
             ->toArray();
 
-        $this->recentPayments = Payment::where('status', 'approved')
+        $this->recentPayments = Payment::with('client')
+            ->where('status', 'approved')
             ->latest('created_at')
             ->take(5)
             ->get()
-            ->map(fn ($p) => [
-                'buyerName' => $p->buyer_name ?? $p->email ?? '-',
-                'plan' => $p->plan?->label() ?? '-',
-                'amount' => number_format((float) $p->amount, 0, ',', '.'),
-                'method' => $p->payment_method ?? '-',
-                'timeAgo' => $p->created_at?->diffForHumans() ?? '-',
-            ])
+            ->map(function ($p) {
+                // buyer_name / email may be NULL; fall back to the related client name
+                $buyerName = $p->buyer_name
+                    ?? $p->email
+                    ?? $p->client?->name
+                    ?? 'Sin nombre';
+
+                // plan is cast to PlanType enum; if the stored value is unknown the
+                // cast silently returns null — handle both cases defensively
+                $planLabel = $p->plan instanceof \App\Enums\PlanType
+                    ? $p->plan->label()
+                    : (filled($p->getRawOriginal('plan'))
+                        ? ucfirst($p->getRawOriginal('plan'))
+                        : '-');
+
+                return [
+                    'buyerName' => $buyerName,
+                    'plan'      => $planLabel,
+                    'amount'    => number_format((float) $p->amount, 0, ',', '.'),
+                    'method'    => $p->payment_method ?? '-',
+                    'timeAgo'   => $p->created_at?->diffForHumans() ?? '-',
+                ];
+            })
             ->toArray();
     }
 

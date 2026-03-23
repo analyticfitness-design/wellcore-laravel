@@ -3,6 +3,7 @@
 namespace App\Livewire\Client;
 
 use App\Models\AcademyContent;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -34,13 +35,17 @@ class Academia extends Component
             $query->where('category', $this->categoryFilter);
         }
 
-        $contents = $query->get();
+        $contents = $query->limit(100)->get(['id', 'title', 'category', 'description', 'content_type', 'sort_order', 'active']);
 
-        $categories = AcademyContent::where('active', true)
-            ->distinct()
-            ->pluck('category')
-            ->filter()
-            ->values();
+        // Categories are nearly static data — cache for 1 hour (TTL 3600s).
+        // This eliminates a second query on every keystroke in the search field.
+        $categories = Cache::remember('academia:categories', 3600, function () {
+            return AcademyContent::where('active', true)
+                ->distinct()
+                ->pluck('category')
+                ->filter()
+                ->values();
+        });
 
         $selectedContent = $this->selectedContentId
             ? $contents->firstWhere('id', $this->selectedContentId)
