@@ -13,7 +13,7 @@
         @foreach (['my_templates' => 'Mis Templates', 'assigned' => 'Asignados', 'generate' => 'Generar con IA'] as $tab => $label)
             <button
                 wire:click="switchTab('{{ $tab }}')"
-                class="flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors
+                class="flex-1 rounded-md px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition-colors
                        {{ $activeTab === $tab
                            ? 'bg-wc-accent text-white shadow-sm'
                            : 'text-wc-text-secondary hover:text-wc-text hover:bg-wc-bg-tertiary' }}"
