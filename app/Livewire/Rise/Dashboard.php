@@ -70,7 +70,7 @@ class Dashboard extends Component
     protected function loadProgram($client): void
     {
         $program = RiseProgram::where('client_id', $client->id)
-            ->where('status', 'active')
+            ->whereIn('status', ['active', 'activo'])
             ->first();
 
         if (! $program) {
@@ -108,7 +108,7 @@ class Dashboard extends Component
 
         // Habits from rise_daily_logs
         $program = RiseProgram::where('client_id', $client->id)
-            ->where('status', 'active')
+            ->whereIn('status', ['active', 'activo'])
             ->first();
 
         if ($program) {

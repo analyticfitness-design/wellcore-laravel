@@ -53,7 +53,7 @@ class Habits extends Component
         $client = auth('wellcore')->user();
 
         $riseProgram = RiseProgram::where('client_id', $client->id)
-            ->where('status', 'active')
+            ->whereIn('status', ['active', 'activo'])
             ->latest('id')
             ->first();
 
