@@ -533,7 +533,8 @@
     {{-- Premium Mobile Bottom Navigation --}}
     <x-mobile-bottom-nav variant="client" />
 
-    {{-- Quick Actions FAB --}}
+    {{-- Quick Actions FAB — hidden on form-heavy pages where it would overlap inputs --}}
+    @unless(request()->routeIs('client.metrics', 'client.checkin', 'client.profile', 'client.settings', 'client.video-checkin'))
     <div x-data="{ fabOpen: false }"
          x-on:click.outside="fabOpen = false"
          x-on:keydown.escape.window="fabOpen = false"
@@ -595,6 +596,7 @@
             </svg>
         </button>
     </div>
+    @endunless
 
     {{-- Rest Timer (global overlay) --}}
     <livewire:client.rest-timer />
