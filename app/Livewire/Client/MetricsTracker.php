@@ -36,14 +36,15 @@ class MetricsTracker extends Component
 
         $logDate = now()->toDateString();
 
-        Metric::create([
-            'client_id' => $clientId,
-            'log_date' => $logDate,
-            'peso' => $this->peso,
-            'porcentaje_musculo' => $this->porcentajeMusculo !== '' ? $this->porcentajeMusculo : null,
-            'porcentaje_grasa' => $this->porcentajeGrasa !== '' ? $this->porcentajeGrasa : null,
-            'notas' => $this->notas !== '' ? $this->notas : null,
-        ]);
+        Metric::updateOrCreate(
+            ['client_id' => $clientId, 'log_date' => $logDate],
+            [
+                'peso' => $this->peso,
+                'porcentaje_musculo' => $this->porcentajeMusculo !== '' ? $this->porcentajeMusculo : null,
+                'porcentaje_grasa' => $this->porcentajeGrasa !== '' ? $this->porcentajeGrasa : null,
+                'notas' => $this->notas !== '' ? $this->notas : null,
+            ]
+        );
 
         // Sync weight to biometric_logs so Dashboard reads the same value
         if ((float) $this->peso > 0) {
