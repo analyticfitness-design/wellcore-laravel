@@ -310,7 +310,6 @@
         {{-- ACTIVE WORKOUT STATE                                     --}}
         {{-- ======================================================== --}}
 
-            <div wire:loading.remove wire:target="startWorkout">
             {{-- Progress bar --}}
             <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3" data-animate="fadeInUp">
                 @php
@@ -644,7 +643,6 @@
                     </div>
                 </div>
             @endforeach
-            </div>{{-- end wire:loading.remove wrapper --}}
 
         @endif
     </div>
