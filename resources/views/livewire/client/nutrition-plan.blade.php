@@ -202,7 +202,7 @@
                                     @php
                                         if (is_array($alimento)) {
                                             $aName = $alimento['nombre'] ?? $alimento['alimento'] ?? $alimento['name'] ?? '';
-                                            $aQty  = $alimento['cantidad'] ?? $alimento['quantity'] ?? $alimento['amount'] ?? '';
+                                            $aQty  = $alimento['cantidad'] ?? $alimento['porcion'] ?? $alimento['quantity'] ?? $alimento['amount'] ?? '';
                                             $aText = $aName && $aQty ? "$aName — $aQty" : ($aName ?: $aQty);
                                         } else {
                                             $aText = (string) $alimento;
