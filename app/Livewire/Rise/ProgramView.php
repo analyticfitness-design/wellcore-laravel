@@ -10,7 +10,7 @@ use Livewire\Component;
 #[Layout('layouts.rise', ['title' => 'Mi Programa'])]
 class ProgramView extends Component
 {
-    // Program info
+    // Program meta
     public bool $hasProgram = false;
     public ?string $startDate = null;
     public ?string $endDate = null;
@@ -19,10 +19,16 @@ class ProgramView extends Component
     public ?string $gender = null;
     public ?string $status = null;
     public int $currentWeek = 1;
+    public int $totalWeeks = 12;
     public float $progressPct = 0;
 
-    // Personalized program content
-    public ?array $program = null;
+    // Separated program sections (new JSON format)
+    public ?array $trainingPlan = null;
+    public ?array $nutritionPlan = null;
+    public array $habitsPlan = [];
+
+    // Active tab: training | nutrition | habits
+    public string $activeTab = 'training';
 
     public function mount(): void
     {
@@ -43,18 +49,35 @@ class ProgramView extends Component
         $this->trainingLocation = $riseProgram->training_location;
         $this->gender = $riseProgram->gender;
         $this->status = $riseProgram->status;
-        $this->program = $riseProgram->personalized_program;
 
+        $program = $riseProgram->personalized_program ?? [];
+
+        // Extract sections from new JSON format
+        $this->trainingPlan = $program['plan_entrenamiento'] ?? null;
+        $this->nutritionPlan = $program['plan_nutricion'] ?? null;
+        $this->habitsPlan = $program['plan_habitos'] ?? [];
+
+        // Calculate week and progress
         $totalDays = $riseProgram->start_date && $riseProgram->end_date
             ? Carbon::parse($riseProgram->start_date)->diffInDays($riseProgram->end_date)
             : 84;
+
         $daysElapsed = $riseProgram->start_date
             ? max(0, Carbon::parse($riseProgram->start_date)->diffInDays(now()))
             : 0;
-        $this->currentWeek = min(12, (int) ceil(max(1, $daysElapsed) / 7));
+
+        $this->totalWeeks = $this->trainingPlan['duracion_semanas'] ?? 12;
+        $this->currentWeek = min($this->totalWeeks, (int) ceil(max(1, $daysElapsed) / 7));
         $this->progressPct = $totalDays > 0
             ? min(100, round(($daysElapsed / $totalDays) * 100, 1))
             : 0;
+    }
+
+    public function setTab(string $tab): void
+    {
+        if (in_array($tab, ['training', 'nutrition', 'habits'])) {
+            $this->activeTab = $tab;
+        }
     }
 
     public function render()
