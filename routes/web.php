@@ -60,6 +60,7 @@ use App\Livewire\TestDashboard;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\ImpersonateController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\WebhookController;
@@ -248,6 +249,11 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/export/clients', [ExportController::class, 'clients'])->name('export.clients');
         Route::get('/export/payments', [ExportController::class, 'payments'])->name('export.payments');
         Route::get('/export/checkins', [ExportController::class, 'checkins'])->name('export.checkins');
+
+        // Impersonation — stop must be declared before {clientId} to avoid routing ambiguity.
+        // stop has no role middleware: the user is already authenticated as a client at that point.
+        Route::post('/impersonate/stop', [ImpersonateController::class, 'stop'])->name('impersonate.stop');
+        Route::post('/impersonate/{clientId}', [ImpersonateController::class, 'start'])->name('impersonate.start')->middleware('role:superadmin,admin');
     });
 
     // Coach portal routes
