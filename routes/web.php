@@ -250,7 +250,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/export/payments', [ExportController::class, 'payments'])->name('export.payments');
         Route::get('/export/checkins', [ExportController::class, 'checkins'])->name('export.checkins');
 
-        Route::post('/impersonate/{clientId}', [ImpersonateController::class, 'start'])->name('impersonate.start')->middleware('role:superadmin,admin');
+        Route::post('/impersonate/{clientId}', [ImpersonateController::class, 'start'])->name('impersonate.start')->middleware('role:superadmin,admin')->whereNumber('clientId');
     });
 
     // Impersonation stop — outside the admin role group: when stopping, the session is a client session.
