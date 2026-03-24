@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Admin;
 
+use App\Enums\ClientStatus;
+use App\Enums\UserRole;
 use App\Models\Client;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
@@ -24,6 +26,11 @@ class ClientTable extends Component
 
     public string $sortBy = 'created_at';
     public string $sortDir = 'desc';
+
+    // Deactivate confirmation state
+    public bool    $showDeactivateModal  = false;
+    public ?int    $deactivateClientId   = null;
+    public string  $deactivateClientName = '';
 
     public function updatingSearch(): void
     {
@@ -58,6 +65,68 @@ class ClientTable extends Component
         $this->resetPage();
     }
 
+    // --- Deactivate client (superadmin only) ---
+
+    public function confirmDeactivate(int $clientId): void
+    {
+        $admin = auth('wellcore')->user();
+
+        if (! $admin || $admin->role !== UserRole::Superadmin) {
+            $this->dispatch('toast', type: 'error', message: 'No tienes permisos para realizar esta accion.');
+            return;
+        }
+
+        $client = Client::find($clientId);
+
+        if (! $client) {
+            $this->dispatch('toast', type: 'error', message: 'Cliente no encontrado.');
+            return;
+        }
+
+        $this->deactivateClientId   = $clientId;
+        $this->deactivateClientName = $client->name ?? 'Cliente';
+        $this->showDeactivateModal  = true;
+    }
+
+    public function cancelDeactivate(): void
+    {
+        $this->showDeactivateModal  = false;
+        $this->deactivateClientId   = null;
+        $this->deactivateClientName = '';
+    }
+
+    public function deactivateClient(): void
+    {
+        $admin = auth('wellcore')->user();
+
+        if (! $admin || $admin->role !== UserRole::Superadmin) {
+            $this->dispatch('toast', type: 'error', message: 'No tienes permisos para realizar esta accion.');
+            $this->cancelDeactivate();
+            return;
+        }
+
+        if (! $this->deactivateClientId) {
+            $this->cancelDeactivate();
+            return;
+        }
+
+        $client = Client::find($this->deactivateClientId);
+
+        if (! $client) {
+            $this->dispatch('toast', type: 'error', message: 'Cliente no encontrado.');
+            $this->cancelDeactivate();
+            return;
+        }
+
+        $name = $client->name ?? 'Cliente';
+
+        $client->update(['status' => ClientStatus::Inactivo->value]);
+
+        $this->cancelDeactivate();
+
+        $this->dispatch('toast', type: 'success', message: "Cliente \"{$name}\" marcado como inactivo.");
+    }
+
     public function render()
     {
         $query = Client::query();
@@ -87,8 +156,12 @@ class ClientTable extends Component
 
         $clients = $query->paginate(25);
 
+        $isSuperadmin = auth('wellcore')->check()
+            && auth('wellcore')->user()->role === UserRole::Superadmin;
+
         return view('livewire.admin.client-table', [
-            'clients' => $clients,
+            'clients'      => $clients,
+            'isSuperadmin' => $isSuperadmin,
         ]);
     }
 }
