@@ -120,7 +120,7 @@
         ];
 
     // ── Admin nav items ───────────────────────────────────────────────
-    } else {
+    } elseif ($variant === 'admin') {
         $items = [
             [
                 'label'  => __('dashboard.admin.dashboard'),
