@@ -324,10 +324,16 @@
         </header>
 
         {{-- Page content --}}
-        <main class="px-4 py-6 sm:px-6 lg:px-8">
+        <main class="px-4 py-6 sm:px-6 lg:px-8 pb-24 lg:pb-6">
             {{ $slot }}
         </main>
     </div>
+
+    {{-- Mobile bottom navigation (RISE) --}}
+    <x-mobile-bottom-nav variant="rise" />
+
+    {{-- Rest timer modal (shared with workout player) --}}
+    <livewire:client.rest-timer />
 
     @livewireScripts
 </body>

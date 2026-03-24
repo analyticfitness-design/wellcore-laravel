@@ -31,7 +31,7 @@ return [
         'recetas' => 'Recetas',
         'mindfulness' => 'Mindfulness',
         'audio' => 'Audio',
-        'hacks' => 'Evidence Hacks',
+        'hacks' => 'Registro Nutricional',
         'timer' => 'Timer Descanso',
         // Sections
         'sec_entrenamiento' => 'Entrenamiento',

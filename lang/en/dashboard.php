@@ -29,7 +29,7 @@ return [
         'recetas' => 'Recipes',
         'mindfulness' => 'Mindfulness',
         'audio' => 'Audio',
-        'hacks' => 'Evidence Hacks',
+        'hacks' => 'Registro Nutricional',
         'timer' => 'Rest Timer',
         'sec_entrenamiento' => 'Training',
         'sec_progreso' => 'Progress',
