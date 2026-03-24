@@ -250,11 +250,11 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/export/payments', [ExportController::class, 'payments'])->name('export.payments');
         Route::get('/export/checkins', [ExportController::class, 'checkins'])->name('export.checkins');
 
-        // Impersonation — stop must be declared before {clientId} to avoid routing ambiguity.
-        // stop has no role middleware: the user is already authenticated as a client at that point.
-        Route::post('/impersonate/stop', [ImpersonateController::class, 'stop'])->name('impersonate.stop');
         Route::post('/impersonate/{clientId}', [ImpersonateController::class, 'start'])->name('impersonate.start')->middleware('role:superadmin,admin');
     });
+
+    // Impersonation stop — outside the admin role group: when stopping, the session is a client session.
+    Route::post('/admin/impersonate/stop', [ImpersonateController::class, 'stop'])->name('admin.impersonate.stop');
 
     // Coach portal routes
     Route::prefix('coach')->name('coach.')->middleware('role:superadmin,admin,coach,jefe')->group(function () {
