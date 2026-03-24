@@ -13,8 +13,8 @@
         {{-- Racha actual --}}
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
             <div class="flex items-center gap-2">
-                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/15">
-                    <svg class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-wc-accent/15">
+                    <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
                     </svg>
                 </div>
@@ -78,23 +78,23 @@
 
         <div class="mt-5 grid grid-cols-7 gap-2 sm:gap-3">
             @foreach($weekDays as $day)
-                <div class="flex flex-col items-center gap-1.5 rounded-lg p-2 {{ $day['isToday'] ? 'bg-amber-500/5 ring-1 ring-amber-500/20' : '' }}">
-                    <span class="text-[11px] font-medium {{ $day['isToday'] ? 'text-amber-500 font-semibold' : 'text-wc-text-tertiary' }}">
+                <div class="flex flex-col items-center gap-1.5 rounded-lg p-2 {{ $day['isToday'] ? 'bg-wc-accent/5 ring-1 ring-wc-accent/20' : '' }}">
+                    <span class="text-[11px] font-medium {{ $day['isToday'] ? 'text-wc-accent font-semibold' : 'text-wc-text-tertiary' }}">
                         {{ $day['label'] }}
                     </span>
 
                     @if($day['hasEntry'])
                         @php
                             $pct = $day['total'] > 0 ? round(($day['habitCount'] / $day['total']) * 100) : 0;
-                            $color = $pct >= 80 ? 'bg-emerald-500/15 text-emerald-500' : ($pct >= 40 ? 'bg-amber-500/15 text-amber-500' : 'bg-wc-accent/10 text-wc-accent');
+                            $color = $pct >= 80 ? 'bg-emerald-500/15 text-emerald-500' : ($pct >= 40 ? 'bg-wc-accent/15 text-wc-accent' : 'bg-wc-accent/10 text-wc-accent');
                         @endphp
                         <div class="flex h-9 w-9 items-center justify-center rounded-full {{ $color }}">
                             <span class="text-xs font-bold">{{ $day['habitCount'] }}</span>
                         </div>
                     @else
-                        <div class="flex h-9 w-9 items-center justify-center rounded-full border border-wc-border {{ $day['isToday'] ? '!border-amber-500/30' : '' }}">
+                        <div class="flex h-9 w-9 items-center justify-center rounded-full border border-wc-border {{ $day['isToday'] ? '!border-wc-accent/30' : '' }}">
                             @if($day['isToday'])
-                                <div class="h-1.5 w-1.5 rounded-full bg-amber-500"></div>
+                                <div class="h-1.5 w-1.5 rounded-full bg-wc-accent"></div>
                             @endif
                         </div>
                     @endif
@@ -170,11 +170,11 @@
 
                 {{-- Nutrition --}}
                 <label class="flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition-colors
-                              {{ $nutrition ? 'border-amber-500/30 bg-amber-500/5' : 'border-wc-border hover:border-wc-text-tertiary' }}">
+                              {{ $nutrition ? 'border-wc-accent/30 bg-wc-accent/5' : 'border-wc-border hover:border-wc-text-tertiary' }}">
                     <input type="checkbox" wire:model.live="nutrition" class="sr-only">
-                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg {{ $nutrition ? 'bg-amber-500/15' : 'bg-wc-bg-secondary' }}">
+                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg {{ $nutrition ? 'bg-wc-accent/15' : 'bg-wc-bg-secondary' }}">
                         @if($nutrition)
-                            <svg class="h-4.5 w-4.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <svg class="h-4.5 w-4.5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                             </svg>
                         @else
@@ -218,7 +218,7 @@
                     <input type="number" step="0.1" min="0" max="10" id="water"
                            wire:model="water"
                            placeholder="Ej: 2.5"
-                           class="mt-1.5 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                           class="mt-1.5 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                     @error('water')
                         <p class="mt-1 text-xs text-wc-accent">{{ $message }}</p>
                     @enderror
@@ -229,7 +229,7 @@
                     <input type="number" step="0.5" min="0" max="24" id="sleep"
                            wire:model="sleep"
                            placeholder="Ej: 7.5"
-                           class="mt-1.5 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                           class="mt-1.5 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                     @error('sleep')
                         <p class="mt-1 text-xs text-wc-accent">{{ $message }}</p>
                     @enderror
@@ -240,7 +240,7 @@
                     <input type="number" min="0" max="100000" id="steps"
                            wire:model="steps"
                            placeholder="Ej: 8000"
-                           class="mt-1.5 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                           class="mt-1.5 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                     @error('steps')
                         <p class="mt-1 text-xs text-wc-accent">{{ $message }}</p>
                     @enderror
@@ -254,7 +254,7 @@
                           wire:model="notes"
                           rows="3"
                           placeholder="Como te sentiste hoy? Algo que destacar?"
-                          class="mt-1.5 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 resize-none"></textarea>
+                          class="mt-1.5 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent resize-none"></textarea>
                 @error('notes')
                     <p class="mt-1 text-xs text-wc-accent">{{ $message }}</p>
                 @enderror

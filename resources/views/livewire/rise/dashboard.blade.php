@@ -7,14 +7,14 @@
                 {{ $greeting }}, {{ $clientName }}
             </h1>
             <div class="mt-2 flex items-center gap-2">
-                <span class="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-500/15 to-amber-400/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-500">
+                <span class="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-wc-accent/15 to-amber-400/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-wc-accent">
                     <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                     </svg>
                     Programa RISE
                 </span>
                 @if($hasProgram)
-                    <span class="text-xs text-wc-text-tertiary">Semana {{ $currentWeek }} de 12</span>
+                    <span class="text-xs text-wc-text-tertiary">Semana {{ $currentWeek }} de {{ $totalWeeks }}</span>
                 @endif
             </div>
         </div>
@@ -22,7 +22,7 @@
         {{-- Quick actions (desktop) --}}
         <div class="hidden sm:flex items-center gap-2">
             <a href="{{ route('rise.tracking') }}"
-               class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-sm font-medium text-white hover:from-amber-600 hover:to-amber-700 transition-all">
+               class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-wc-accent to-wc-accent px-4 py-2 text-sm font-medium text-white hover:from-wc-accent hover:to-amber-700 transition-all">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
@@ -37,10 +37,10 @@
 
     {{-- Program progress banner --}}
     @if($hasProgram)
-        <div class="relative overflow-hidden rounded-card border border-amber-500/20 bg-gradient-to-r from-amber-500/5 via-amber-400/5 to-transparent p-5 sm:p-6">
+        <div class="relative overflow-hidden rounded-card border border-wc-accent/20 bg-gradient-to-r from-wc-accent/5 via-amber-400/5 to-transparent p-5 sm:p-6">
             {{-- Decorative element --}}
-            <div class="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-amber-500/5"></div>
-            <div class="absolute -right-2 -top-2 h-12 w-12 rounded-full bg-amber-500/10"></div>
+            <div class="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-wc-accent/5"></div>
+            <div class="absolute -right-2 -top-2 h-12 w-12 rounded-full bg-wc-accent/10"></div>
 
             <div class="relative">
                 <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -52,7 +52,7 @@
                     </div>
                     <div class="flex items-center gap-4">
                         <div class="text-right">
-                            <p class="font-data text-3xl font-bold text-amber-500">{{ number_format($progressPct, 0) }}%</p>
+                            <p class="font-data text-3xl font-bold text-wc-accent">{{ number_format($progressPct, 0) }}%</p>
                             <p class="text-xs text-wc-text-tertiary">completado</p>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                 {{-- Progress bar --}}
                 <div class="mt-4">
                     <div class="h-2.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
-                        <div class="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all duration-500"
+                        <div class="h-full rounded-full bg-gradient-to-r from-wc-accent to-amber-400 transition-all duration-500"
                              style="width: {{ $progressPct }}%"></div>
                     </div>
                     <div class="mt-2 flex items-center justify-between text-xs text-wc-text-tertiary">
@@ -72,8 +72,8 @@
             </div>
         </div>
     @else
-        <div class="rounded-card border border-amber-500/20 bg-amber-500/5 p-6 text-center">
-            <svg class="mx-auto h-10 w-10 text-amber-500/50" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <div class="rounded-card border border-wc-accent/20 bg-wc-accent/5 p-6 text-center">
+            <svg class="mx-auto h-10 w-10 text-wc-accent/50" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
             </svg>
             <p class="mt-3 text-sm font-medium text-wc-text">No tienes un programa RISE activo</p>
@@ -87,8 +87,8 @@
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Racha</span>
-                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10">
-                    <svg class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-wc-accent/10">
+                    <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
                     </svg>
                 </div>
@@ -163,7 +163,7 @@
             <div class="mt-5 flex items-center justify-between gap-2 sm:justify-start sm:gap-4">
                 @foreach($weekDays as $day)
                     <div class="flex flex-col items-center gap-2">
-                        <span class="text-[11px] font-medium text-wc-text-tertiary {{ $day['isToday'] ? '!text-amber-500 font-semibold' : '' }}">
+                        <span class="text-[11px] font-medium text-wc-text-tertiary {{ $day['isToday'] ? '!text-wc-accent font-semibold' : '' }}">
                             {{ $day['label'] }}
                         </span>
                         @if($day['trainingDone'])
@@ -173,9 +173,9 @@
                                 </svg>
                             </div>
                         @else
-                            <div class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-wc-border sm:h-12 sm:w-12 {{ $day['isToday'] ? '!border-amber-500/40' : '' }}">
+                            <div class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-wc-border sm:h-12 sm:w-12 {{ $day['isToday'] ? '!border-wc-accent/40' : '' }}">
                                 @if($day['isToday'])
-                                    <div class="h-2 w-2 rounded-full bg-amber-500"></div>
+                                    <div class="h-2 w-2 rounded-full bg-wc-accent"></div>
                                 @endif
                             </div>
                         @endif
@@ -199,7 +199,7 @@
                     Pendiente
                 </div>
                 <div class="flex items-center gap-1.5">
-                    <div class="h-2.5 w-2.5 rounded-full bg-amber-500"></div>
+                    <div class="h-2.5 w-2.5 rounded-full bg-wc-accent"></div>
                     Hoy
                 </div>
             </div>
@@ -228,7 +228,7 @@
                         <span class="font-data text-sm font-semibold text-wc-text">{{ $nutritionDaysThisWeek }}/7</span>
                     </div>
                     <div class="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
-                        <div class="h-full rounded-full bg-amber-500 transition-all" style="width: {{ min(100, ($nutritionDaysThisWeek / 7) * 100) }}%"></div>
+                        <div class="h-full rounded-full bg-wc-accent transition-all" style="width: {{ min(100, ($nutritionDaysThisWeek / 7) * 100) }}%"></div>
                     </div>
                 </div>
 
@@ -247,7 +247,7 @@
                 <div class="mt-4 border-t border-wc-border pt-4">
                     <div class="flex items-center justify-between">
                         <span class="text-xs text-wc-text-tertiary">Dias registrados (total)</span>
-                        <span class="font-data text-sm font-semibold text-amber-500">{{ $totalTrackingDays }}</span>
+                        <span class="font-data text-sm font-semibold text-wc-accent">{{ $totalTrackingDays }}</span>
                     </div>
                 </div>
             </div>
@@ -257,7 +257,7 @@
     {{-- Quick actions (mobile) --}}
     <div class="grid grid-cols-1 gap-3 sm:hidden">
         <a href="{{ route('rise.tracking') }}"
-           class="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-3 text-sm font-medium text-white hover:from-amber-600 hover:to-amber-700 transition-all">
+           class="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-wc-accent to-wc-accent px-4 py-3 text-sm font-medium text-white hover:from-wc-accent hover:to-amber-700 transition-all">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>

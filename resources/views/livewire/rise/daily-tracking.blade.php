@@ -13,8 +13,8 @@
 
         <div class="mt-5 grid grid-cols-7 gap-2 sm:gap-3">
             @foreach($weekDays as $day)
-                <div class="flex flex-col items-center gap-1.5 rounded-lg p-2 {{ $day['isToday'] ? 'bg-amber-500/5 ring-1 ring-amber-500/20' : '' }}">
-                    <span class="text-[11px] font-medium {{ $day['isToday'] ? 'text-amber-500 font-semibold' : 'text-wc-text-tertiary' }}">
+                <div class="flex flex-col items-center gap-1.5 rounded-lg p-2 {{ $day['isToday'] ? 'bg-wc-accent/5 ring-1 ring-wc-accent/20' : '' }}">
+                    <span class="text-[11px] font-medium {{ $day['isToday'] ? 'text-wc-accent font-semibold' : 'text-wc-text-tertiary' }}">
                         {{ $day['label'] }}
                     </span>
 
@@ -32,9 +32,9 @@
                             </svg>
                         </div>
                     @else
-                        <div class="flex h-9 w-9 items-center justify-center rounded-full border border-wc-border {{ $day['isToday'] ? '!border-amber-500/30' : '' }}">
+                        <div class="flex h-9 w-9 items-center justify-center rounded-full border border-wc-border {{ $day['isToday'] ? '!border-wc-accent/30' : '' }}">
                             @if($day['isToday'])
-                                <div class="h-1.5 w-1.5 rounded-full bg-amber-500"></div>
+                                <div class="h-1.5 w-1.5 rounded-full bg-wc-accent"></div>
                             @endif
                         </div>
                     @endif
@@ -111,11 +111,11 @@
 
                 {{-- Nutrition done --}}
                 <label class="flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition-colors
-                              {{ $nutritionDone ? 'border-amber-500/30 bg-amber-500/5' : 'border-wc-border hover:border-wc-text-tertiary' }}">
+                              {{ $nutritionDone ? 'border-wc-accent/30 bg-wc-accent/5' : 'border-wc-border hover:border-wc-text-tertiary' }}">
                     <input type="checkbox" wire:model.live="nutritionDone" class="sr-only">
-                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg {{ $nutritionDone ? 'bg-amber-500/15' : 'bg-wc-bg-secondary' }}">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg {{ $nutritionDone ? 'bg-wc-accent/15' : 'bg-wc-bg-secondary' }}">
                         @if($nutritionDone)
-                            <svg class="h-5 w-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                             </svg>
                         @else
@@ -138,7 +138,7 @@
                     <input type="number" step="0.1" min="0" max="10" id="waterLiters"
                            wire:model="waterLiters"
                            placeholder="Ej: 2.5"
-                           class="mt-1.5 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                           class="mt-1.5 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                     @error('waterLiters')
                         <p class="mt-1 text-xs text-wc-accent">{{ $message }}</p>
                     @enderror
@@ -149,7 +149,7 @@
                     <input type="number" step="0.5" min="0" max="24" id="sleepHours"
                            wire:model="sleepHours"
                            placeholder="Ej: 7.5"
-                           class="mt-1.5 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                           class="mt-1.5 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                     @error('sleepHours')
                         <p class="mt-1 text-xs text-wc-accent">{{ $message }}</p>
                     @enderror
@@ -163,7 +163,7 @@
                           wire:model="note"
                           rows="3"
                           placeholder="Como te sentiste hoy? Algo que destacar?"
-                          class="mt-1.5 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 resize-none"></textarea>
+                          class="mt-1.5 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent resize-none"></textarea>
                 @error('note')
                     <p class="mt-1 text-xs text-wc-accent">{{ $message }}</p>
                 @enderror
@@ -172,7 +172,7 @@
             {{-- Submit --}}
             <div class="flex items-center gap-3 pt-2">
                 <button type="submit"
-                        class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-5 py-2.5 text-sm font-medium text-white hover:from-amber-600 hover:to-amber-700 transition-all">
+                        class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-wc-accent to-wc-accent px-5 py-2.5 text-sm font-medium text-white hover:from-wc-accent hover:to-amber-700 transition-all">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                     </svg>

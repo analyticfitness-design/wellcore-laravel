@@ -26,6 +26,7 @@ class Dashboard extends Component
     public int $daysRemaining = 0;
     public float $progressPct = 0;
     public int $currentWeek = 1;
+    public int $totalWeeks = 4;
 
     // Weekly summary
     public int $workoutsThisWeek = 0;
@@ -90,7 +91,11 @@ class Dashboard extends Component
         $this->progressPct = $this->totalDays > 0
             ? min(100, round(($this->daysElapsed / $this->totalDays) * 100, 1))
             : 0;
-        $this->currentWeek = min(12, (int) ceil(max(1, $this->daysElapsed) / 7));
+        // Load totalWeeks from the personalized program JSON
+        $programJson = $program->personalized_program ?? [];
+        $this->totalWeeks = $programJson['plan_entrenamiento']['duracion_semanas'] ?? 4;
+
+        $this->currentWeek = min($this->totalWeeks, (int) ceil(max(1, $this->daysElapsed) / 7));
     }
 
     protected function loadWeeklySummary($client): void

@@ -7,7 +7,7 @@
             <p class="mt-1 text-sm text-wc-text-tertiary">Registra y monitorea tus mediciones corporales.</p>
         </div>
         <button wire:click="toggleForm"
-                class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-sm font-medium text-white hover:from-amber-600 hover:to-amber-700 transition-all">
+                class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-wc-accent to-wc-accent px-4 py-2 text-sm font-medium text-white hover:from-wc-accent hover:to-amber-700 transition-all">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
@@ -29,7 +29,7 @@
 
     {{-- Measurement form (collapsible) --}}
     @if($showForm)
-        <div class="rounded-card border border-amber-500/20 bg-wc-bg-tertiary p-5 sm:p-6">
+        <div class="rounded-card border border-wc-accent/20 bg-wc-bg-tertiary p-5 sm:p-6">
             <h2 class="font-display text-lg tracking-wide text-wc-text">Nueva medicion — {{ now()->format('d M Y') }}</h2>
 
             <form wire:submit="save" class="mt-5 space-y-5">
@@ -41,7 +41,7 @@
                     <input type="number" step="0.1" id="weight_kg"
                            wire:model="weight_kg"
                            placeholder="Ej: 75.5"
-                           class="mt-1.5 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 sm:max-w-xs">
+                           class="mt-1.5 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent sm:max-w-xs">
                     @error('weight_kg')
                         <p class="mt-1 text-xs text-wc-accent">{{ $message }}</p>
                     @enderror
@@ -54,27 +54,27 @@
                         <div>
                             <label for="chest_cm" class="block text-xs text-wc-text-tertiary">Pecho</label>
                             <input type="number" step="0.1" id="chest_cm" wire:model="chest_cm" placeholder="--"
-                                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                         </div>
                         <div>
                             <label for="waist_cm" class="block text-xs text-wc-text-tertiary">Cintura</label>
                             <input type="number" step="0.1" id="waist_cm" wire:model="waist_cm" placeholder="--"
-                                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                         </div>
                         <div>
                             <label for="hips_cm" class="block text-xs text-wc-text-tertiary">Cadera</label>
                             <input type="number" step="0.1" id="hips_cm" wire:model="hips_cm" placeholder="--"
-                                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                         </div>
                         <div>
                             <label for="thigh_cm" class="block text-xs text-wc-text-tertiary">Muslo</label>
                             <input type="number" step="0.1" id="thigh_cm" wire:model="thigh_cm" placeholder="--"
-                                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                         </div>
                         <div>
                             <label for="arm_cm" class="block text-xs text-wc-text-tertiary">Brazo</label>
                             <input type="number" step="0.1" id="arm_cm" wire:model="arm_cm" placeholder="--"
-                                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                         </div>
                     </div>
                 </div>
@@ -86,12 +86,12 @@
                         <div>
                             <label for="muscle_pct" class="block text-xs text-wc-text-tertiary">Musculo</label>
                             <input type="number" step="0.1" id="muscle_pct" wire:model="muscle_pct" placeholder="--"
-                                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                         </div>
                         <div>
                             <label for="fat_pct" class="block text-xs text-wc-text-tertiary">Grasa</label>
                             <input type="number" step="0.1" id="fat_pct" wire:model="fat_pct" placeholder="--"
-                                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                         </div>
                     </div>
                 </div>
@@ -99,7 +99,7 @@
                 {{-- Actions --}}
                 <div class="flex items-center gap-3 border-t border-wc-border pt-4">
                     <button type="submit"
-                            class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-5 py-2.5 text-sm font-medium text-white hover:from-amber-600 hover:to-amber-700 transition-all">
+                            class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-wc-accent to-wc-accent px-5 py-2.5 text-sm font-medium text-white hover:from-wc-accent hover:to-amber-700 transition-all">
                         Guardar medicion
                     </button>
                     <button type="button" wire:click="toggleForm"
@@ -188,11 +188,11 @@
                     </thead>
                     <tbody class="divide-y divide-wc-border">
                         @foreach($history as $index => $row)
-                            <tr class="{{ $index === 0 ? 'bg-amber-500/5' : '' }}">
+                            <tr class="{{ $index === 0 ? 'bg-wc-accent/5' : '' }}">
                                 <td class="whitespace-nowrap py-3 pr-4 font-medium text-wc-text">
                                     {{ $row['date'] }}
                                     @if($index === 0)
-                                        <span class="ml-1 text-[10px] font-semibold text-amber-500">ULTIMO</span>
+                                        <span class="ml-1 text-[10px] font-semibold text-wc-accent">ULTIMO</span>
                                     @endif
                                 </td>
                                 <td class="whitespace-nowrap py-3 pr-4 font-data text-wc-text">{{ $row['weight_kg'] ? $row['weight_kg'] . ' kg' : '--' }}</td>
@@ -216,7 +216,7 @@
                 <p class="mt-3 text-sm font-medium text-wc-text">Sin mediciones registradas</p>
                 <p class="mt-1 text-xs text-wc-text-tertiary">Registra tu primera medicion para comenzar a monitorear tu progreso.</p>
                 <button wire:click="toggleForm"
-                        class="mt-4 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-sm font-medium text-white hover:from-amber-600 hover:to-amber-700 transition-all">
+                        class="mt-4 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-wc-accent to-wc-accent px-4 py-2 text-sm font-medium text-white hover:from-wc-accent hover:to-amber-700 transition-all">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>

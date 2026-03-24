@@ -66,7 +66,7 @@ class ProgramView extends Component
             ? max(0, Carbon::parse($riseProgram->start_date)->diffInDays(now()))
             : 0;
 
-        $this->totalWeeks = $this->trainingPlan['duracion_semanas'] ?? 12;
+        $this->totalWeeks = $this->trainingPlan['duracion_semanas'] ?? 4;
         $this->currentWeek = min($this->totalWeeks, (int) ceil(max(1, $daysElapsed) / 7));
         $this->progressPct = $totalDays > 0
             ? min(100, round(($daysElapsed / $totalDays) * 100, 1))

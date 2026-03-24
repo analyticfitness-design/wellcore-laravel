@@ -61,7 +61,7 @@
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
             <div class="flex items-center justify-between">
                 <h2 class="font-display text-base tracking-wide text-wc-text">{{ $group['formatted'] }}</h2>
-                <span class="rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-500">
+                <span class="rounded-full bg-wc-accent/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-wc-accent">
                     {{ collect([$group['frente'], $group['perfil'], $group['espalda']])->filter()->count() }}/3 fotos
                 </span>
             </div>
@@ -133,9 +133,9 @@
     @endforelse
 
     {{-- Upload area (visual placeholder) --}}
-    <div class="rounded-xl border-2 border-dashed border-wc-border bg-wc-bg-tertiary p-8 text-center transition-colors hover:border-amber-500/30">
-        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/10">
-            <svg class="h-7 w-7 text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <div class="rounded-xl border-2 border-dashed border-wc-border bg-wc-bg-tertiary p-8 text-center transition-colors hover:border-wc-accent/30">
+        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-wc-accent/10">
+            <svg class="h-7 w-7 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
             </svg>
         </div>
@@ -150,6 +150,6 @@
             Seleccionar fotos
             <input type="file" class="hidden" accept="image/*" multiple disabled>
         </label>
-        <p class="mt-2 text-[11px] text-amber-500/70">Proximamente: subida de fotos desde el navegador</p>
+        <p class="mt-2 text-[11px] text-wc-accent/70">Proximamente: subida de fotos desde el navegador</p>
     </div>
 </div>

@@ -221,6 +221,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/tracking', DailyTracking::class)->name('tracking');
         Route::get('/measurements', RiseMeasurements::class)->name('measurements');
         Route::get('/program', ProgramView::class)->name('program');
+        Route::get('/workout/{day?}', \App\Livewire\Rise\WorkoutPlayer::class)->name('workout');
         Route::get('/habits', \App\Livewire\Rise\Habits::class)->name('habits');
         Route::get('/photos', \App\Livewire\Rise\Photos::class)->name('photos');
         Route::get('/chat', \App\Livewire\Rise\Chat::class)->name('chat');

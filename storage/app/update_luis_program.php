@@ -199,70 +199,34 @@ $planEntrenamiento = [
 // TDEE estimado ~2500 kcal; déficit moderado de ~500 kcal/día.
 // Macros: 160g proteína | 195g carbohidratos | 65g grasas = ~2005 kcal
 $planNutricion = [
-    'objetivo'         => 'Déficit calórico moderado (~500 kcal/día) con alta proteína para preservar y construir músculo mientras se pierde grasa. Carbohidratos estratégicos: máximos alrededor del entrenamiento, mínimos en reposo.',
+    'objetivo'         => 'Guía nutricional de muestra — una vista previa de lo que recibirías en el Plan Método con un plan 100% personalizado. Objetivo estimado: ~2000 kcal/día con alta proteína para tu composición corporal.',
     'calorias_diarias' => 2000,
     'proteina_g'       => 160,
     'carbohidratos_g'  => 195,
     'grasas_g'         => 65,
     'tips'             => [
-        'PROTEÍNA PRIMERO: Distribuye los 160g en 4-5 comidas. Apunta a 35-40g por toma para maximizar la síntesis proteica muscular. La proteína es intocable — es la que construye el músculo mientras pierdes grasa.',
-        'TIMING DE CARBOS: Pre-entrenamiento (60-90 min antes) come 40-50g de carbohidratos + 30g proteína. Post-entrenamiento (primeros 45 min) come 40g carbos rápidos + 35g proteína. Así combustible llega cuando más lo necesitas.',
-        'DÍAS DE CARDIO (Miér y Sáb): Reduce los carbohidratos en 30-40g y compensa con 10g más de grasas saludables (aguacate, frutos secos). La intensidad baja del cardio Zona 2 no requiere tanta glucosa.',
-        'HIDRATACIÓN = rendimiento: 3-3.5 litros de agua al día. Empieza con 500 ml en ayunas antes del desayuno. La deshidratación del 2% reduce la fuerza un 20% — es el suplemento gratuito más poderoso.',
-        'GRASAS SALUDABLES EN CADA COMIDA: Aguacate, huevo entero (las yemas importan), aceite de oliva, nueces. Las grasas regulan las hormonas que controlan el metabolismo y la composición corporal.',
-        'FIBRA 30g MÍNIMO: Verduras sin almidón en almuerzo y cena (brócoli, espinaca, pepino, tomate). Crean volumen, alimentan la microbiota, y mejoran la saciedad sin sumar calorías significativas.',
-        'ELIMINA EL ALCOHOL 30 días: Interfiere con la recuperación muscular, desplaza el metabolismo graso por 24-48h, y arruina el sueño profundo. Un shot = 100 kcal vacías + 24h de recuperación reducida.',
-        'SUPLEMENTACIÓN BÁSICA: Whey proteína (1-2 batidos/día para cubrir los 160g), Creatina monohidratada 5g/día con agua (mejora la fuerza y la recuperación), Omega-3 1-2g/día con la cena (anti-inflamatorio).',
-        'CONSISTENCIA > PERFECCIÓN: Si un día no comes perfecto, no lo "compensas" con ayunos ni reducción extrema. Vuelve al plan normal en la siguiente comida. El déficit es semanal, no diario.',
-        'BÁSCULA: Pésate cada mañana en ayunas, después de ir al baño. Saca el PROMEDIO de la semana. Semana a semana deberías bajar 0.5-1 kg. Fluctuaciones de 1-2 kg diarios son normales (agua, comida en tránsito).',
+        'Prioriza la proteína: apunta a ~160g diarios distribuidos en 4-5 comidas. La proteína preserva el músculo mientras pierdes grasa.',
+        'Hidratación: 2.5-3 litros de agua al día. Empieza cada mañana con un vaso grande antes de desayunar.',
+        'Consistencia ante todo: un día imperfecto no arruina el proceso. Vuelve al plan en la siguiente comida.',
+        'Quieres un plan nutricional completo con opciones detalladas, seguimiento de macros y ajustes semanales? El Plan Método incluye nutrición personalizada con tu coach.',
     ],
     'comidas_sugeridas' => [
         [
             'nombre'   => 'Desayuno',
             'opciones' => [
-                'Opción A: 4 huevos revueltos con vegetales + 80g avena con agua + 1 banana + café negro',
-                'Opción B: 150g yogur griego 0% + 40g granola + 200g frutas + 2 huevos duros',
-                'Opción C: Tortilla de 3 huevos + 2 tostadas de pan integral + 1/2 aguacate + 1 fruta',
+                '3-4 huevos revueltos con vegetales + 60g avena cocida + 1 fruta',
             ],
         ],
         [
-            'nombre'   => 'Pre-entrenamiento (60-90 min antes)',
+            'nombre'   => 'Almuerzo',
             'opciones' => [
-                'Opción A: 150g arroz blanco cocido + 150g pechuga de pollo + vegetales salteados',
-                'Opción B: 60g avena + 1 scoop whey + 1 banana + 15g mantequilla de maní',
-                'Opción C: 2 tostadas de pan integral + 120g atún en agua + 1 fruta mediana',
-            ],
-        ],
-        [
-            'nombre'   => 'Post-entrenamiento (0-45 min después)',
-            'opciones' => [
-                'Opción A: 1 scoop whey + 1 banana grande + 100g arroz blanco',
-                'Opción B: 200g pechuga de pollo + 150g papa cocida sin piel + ensalada verde',
-                'Opción C: 250g carne magra (lomo de cerdo o res) + 150g arroz blanco + tomate',
-            ],
-        ],
-        [
-            'nombre'   => 'Almuerzo / Comida principal',
-            'opciones' => [
-                'Opción A: 200-250g proteína magra (pollo, pavo, tilapia o salmón) + 120g arroz integral + vegetales sin almidón ilimitados',
-                'Opción B: 200g salmón a la plancha + 150g papa cocida + ensalada grande con aceite de oliva y limón',
-                'Opción C: 200g pechuga de pollo + lentejas o frijoles (100g cocidos) + vegetales al vapor',
-            ],
-        ],
-        [
-            'nombre'   => 'Merienda / Snack',
-            'opciones' => [
-                'Opción A: 150g queso cottage o yogur griego + 20g nueces o almendras',
-                'Opción B: 1 scoop proteína con agua + 1 manzana o pera',
-                'Opción C: 2 huevos duros + 30g frutos secos + 1 fruta pequeña',
+                '200g proteína magra (pollo, res o tilapia) + 100g arroz o papa + ensalada de vegetales',
             ],
         ],
         [
             'nombre'   => 'Cena',
             'opciones' => [
-                'Opción A: 200g proteína magra (pollo, res o cerdo) + vegetales al vapor ilimitados + 1/2 aguacate',
-                'Opción B: 4 claras + 2 huevos enteros revueltos con espinaca y tomate + vegetales a la plancha',
-                'Opción C: 200g tilapia o pechuga + brócoli + espárragos salteados con aceite de oliva y ajo',
+                '200g proteína magra + vegetales al vapor o a la plancha + 1/2 aguacate',
             ],
         ],
     ],
