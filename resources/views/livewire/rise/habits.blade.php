@@ -101,27 +101,30 @@
 
                     {{-- Micro indicators --}}
                     <div class="flex items-center gap-0.5">
-                        <div class="h-1 w-1 rounded-full {{ $day['training'] ? 'bg-emerald-500' : 'bg-wc-border' }}"></div>
-                        <div class="h-1 w-1 rounded-full {{ $day['nutrition'] ? 'bg-amber-400' : 'bg-wc-border' }}"></div>
-                        <div class="h-1 w-1 rounded-full {{ $day['meditation'] ? 'bg-violet-400' : 'bg-wc-border' }}"></div>
+                        <div class="h-1 w-1 rounded-full {{ ($day['habit_0'] ?? false) ? 'bg-emerald-500' : 'bg-wc-border' }}"></div>
+                        <div class="h-1 w-1 rounded-full {{ ($day['habit_1'] ?? false) ? 'bg-amber-400' : 'bg-wc-border' }}"></div>
+                        <div class="h-1 w-1 rounded-full {{ ($day['habit_2'] ?? false) ? 'bg-violet-400' : 'bg-wc-border' }}"></div>
                     </div>
                 </div>
             @endforeach
         </div>
 
+        {{-- Micro indicators legend --}}
         <div class="mt-4 flex flex-wrap items-center gap-4 text-[11px] text-wc-text-tertiary">
-            <div class="flex items-center gap-1.5">
-                <div class="h-2 w-2 rounded-full bg-emerald-500/50"></div>
-                Entreno
-            </div>
-            <div class="flex items-center gap-1.5">
-                <div class="h-2 w-2 rounded-full bg-amber-400"></div>
-                Nutricion
-            </div>
-            <div class="flex items-center gap-1.5">
-                <div class="h-2 w-2 rounded-full bg-violet-400"></div>
-                Meditacion
-            </div>
+            @foreach(array_slice($habitsPlan, 0, 3) as $i => $habito)
+                @php
+                    $dotColors = ['bg-emerald-500/50', 'bg-amber-400', 'bg-violet-400'];
+                @endphp
+                <div class="flex items-center gap-1.5">
+                    <div class="h-2 w-2 rounded-full {{ $dotColors[$i] ?? 'bg-wc-accent' }}"></div>
+                    {{ $habito['nombre'] ?? 'Habito '.($i+1) }}
+                </div>
+            @endforeach
+            @if(empty($habitsPlan))
+                <div class="flex items-center gap-1.5"><div class="h-2 w-2 rounded-full bg-emerald-500/50"></div>Entreno</div>
+                <div class="flex items-center gap-1.5"><div class="h-2 w-2 rounded-full bg-amber-400"></div>Nutricion</div>
+                <div class="flex items-center gap-1.5"><div class="h-2 w-2 rounded-full bg-violet-400"></div>Meditacion</div>
+            @endif
         </div>
     </div>
 
@@ -144,72 +147,75 @@
             @endif
         </div>
 
-        <form wire:submit="save" class="mt-6 space-y-5">
-            {{-- Checkboxes: Training + Nutrition + Meditation --}}
-            <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                {{-- Training --}}
-                <label class="flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition-colors
-                              {{ $training ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-wc-border hover:border-wc-text-tertiary' }}">
-                    <input type="checkbox" wire:model.live="training" class="sr-only">
-                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg {{ $training ? 'bg-emerald-500/15' : 'bg-wc-bg-secondary' }}">
-                        @if($training)
-                            <svg class="h-4.5 w-4.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                            </svg>
-                        @else
-                            <svg class="h-4.5 w-4.5 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                            </svg>
-                        @endif
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-wc-text">Entrenamiento</p>
-                        <p class="text-xs text-wc-text-tertiary">{{ $training ? 'Completado' : 'Pendiente' }}</p>
-                    </div>
-                </label>
-
-                {{-- Nutrition --}}
-                <label class="flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition-colors
-                              {{ $nutrition ? 'border-wc-accent/30 bg-wc-accent/5' : 'border-wc-border hover:border-wc-text-tertiary' }}">
-                    <input type="checkbox" wire:model.live="nutrition" class="sr-only">
-                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg {{ $nutrition ? 'bg-wc-accent/15' : 'bg-wc-bg-secondary' }}">
-                        @if($nutrition)
-                            <svg class="h-4.5 w-4.5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                            </svg>
-                        @else
-                            <svg class="h-4.5 w-4.5 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.379a48.474 48.474 0 0 0-6-.371c-2.032 0-4.034.126-6 .371m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Z" />
-                            </svg>
-                        @endif
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-wc-text">Nutricion</p>
-                        <p class="text-xs text-wc-text-tertiary">{{ $nutrition ? 'Plan seguido' : 'Pendiente' }}</p>
-                    </div>
-                </label>
-
-                {{-- Meditation --}}
-                <label class="flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition-colors
-                              {{ $meditation ? 'border-violet-500/30 bg-violet-500/5' : 'border-wc-border hover:border-wc-text-tertiary' }}">
-                    <input type="checkbox" wire:model.live="meditation" class="sr-only">
-                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg {{ $meditation ? 'bg-violet-500/15' : 'bg-wc-bg-secondary' }}">
-                        @if($meditation)
-                            <svg class="h-4.5 w-4.5 text-violet-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                            </svg>
-                        @else
-                            <svg class="h-4.5 w-4.5 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
-                            </svg>
-                        @endif
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-wc-text">Meditacion</p>
-                        <p class="text-xs text-wc-text-tertiary">{{ $meditation ? 'Completada' : 'Pendiente' }}</p>
-                    </div>
-                </label>
+        {{-- Progress indicator --}}
+        @if(!empty($habitsPlan))
+            @php
+                $completedCount = count(array_filter($habitsDone));
+                $totalHabits = count($habitsPlan);
+                $pct = $totalHabits > 0 ? round(($completedCount / $totalHabits) * 100) : 0;
+            @endphp
+            <div class="flex items-center justify-between text-xs text-wc-text-tertiary mb-2 mt-5">
+                <span>{{ $completedCount }}/{{ $totalHabits }} habitos</span>
+                <span>{{ $pct }}%</span>
             </div>
+            <div class="h-1.5 w-full rounded-full bg-wc-border overflow-hidden mb-4">
+                <div class="h-full rounded-full bg-wc-accent transition-all duration-300" style="width: {{ $pct }}%"></div>
+            </div>
+        @endif
+
+        <form wire:submit="save" class="mt-6 space-y-5">
+            {{-- Dynamic habits from program --}}
+            @if(!empty($habitsPlan))
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    @foreach($habitsPlan as $index => $habito)
+                        @php
+                            $done = !empty($habitsDone[$index]);
+                            $nombre = $habito['nombre'] ?? 'Habito';
+                            $frecuencia = $habito['frecuencia'] ?? null;
+                            $colorClasses = [
+                                0 => ['border' => 'border-emerald-500/30', 'bg' => 'bg-emerald-500/5', 'icon_bg' => 'bg-emerald-500/15', 'icon' => 'text-emerald-500'],
+                                1 => ['border' => 'border-wc-accent/30', 'bg' => 'bg-wc-accent/5', 'icon_bg' => 'bg-wc-accent/15', 'icon' => 'text-wc-accent'],
+                                2 => ['border' => 'border-violet-500/30', 'bg' => 'bg-violet-500/5', 'icon_bg' => 'bg-violet-500/15', 'icon' => 'text-violet-500'],
+                                3 => ['border' => 'border-sky-500/30', 'bg' => 'bg-sky-500/5', 'icon_bg' => 'bg-sky-500/15', 'icon' => 'text-sky-500'],
+                                4 => ['border' => 'border-amber-500/30', 'bg' => 'bg-amber-500/5', 'icon_bg' => 'bg-amber-500/15', 'icon' => 'text-amber-500'],
+                                5 => ['border' => 'border-orange-500/30', 'bg' => 'bg-orange-500/5', 'icon_bg' => 'bg-orange-500/15', 'icon' => 'text-orange-500'],
+                            ];
+                            $c = $colorClasses[$index % 6];
+                        @endphp
+                        <label class="flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition-colors
+                                      {{ $done ? $c['border'].' '.$c['bg'] : 'border-wc-border hover:border-wc-text-tertiary' }}">
+                            <input type="checkbox"
+                                   wire:model.live="habitsDone.{{ $index }}"
+                                   value="1"
+                                   class="sr-only">
+                            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg {{ $done ? $c['icon_bg'] : 'bg-wc-bg-secondary' }}">
+                                @if($done)
+                                    <svg class="h-4.5 w-4.5 {{ $c['icon'] }}" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                    </svg>
+                                @else
+                                    <svg class="h-4.5 w-4.5 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                @endif
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-wc-text">{{ $nombre }}</p>
+                                <p class="text-xs text-wc-text-tertiary">
+                                    {{ $done ? 'Completado' : 'Pendiente' }}
+                                    @if($frecuencia) · {{ $frecuencia }} @endif
+                                </p>
+                            </div>
+                        </label>
+                    @endforeach
+                </div>
+            @else
+                {{-- No habits defined in program yet --}}
+                <div class="rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-6 text-center">
+                    <p class="text-sm text-wc-text-tertiary">Tu coach esta definiendo tus habitos personalizados. Apareceran aqui pronto.</p>
+                    <p class="mt-2 text-xs text-wc-text-tertiary">Por ahora, registra agua, sueno y pasos abajo.</p>
+                </div>
+            @endif
 
             {{-- Water + Sleep + Steps --}}
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
