@@ -55,7 +55,7 @@ class ProgramView extends Component
         // Extract sections from new JSON format
         $this->trainingPlan = $program['plan_entrenamiento'] ?? null;
         $this->nutritionPlan = $program['plan_nutricion'] ?? null;
-        $this->habitsPlan = $program['plan_habitos'] ?? [];
+        $this->habitsPlan = $program['plan_habitos']['habitos'] ?? $program['plan_habitos'] ?? [];
 
         // Calculate week and progress
         $totalDays = $riseProgram->start_date && $riseProgram->end_date
