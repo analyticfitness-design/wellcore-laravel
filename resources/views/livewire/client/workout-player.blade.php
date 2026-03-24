@@ -644,7 +644,7 @@
             }
         @endphp
 
-        <div class="fixed bottom-16 inset-x-0 z-[55] border-t border-wc-border bg-wc-bg/95 backdrop-blur-md safe-area-pb">
+        <div class="fixed bottom-0 inset-x-0 z-[55] border-t border-wc-border bg-wc-bg/95 backdrop-blur-md safe-area-pb">
             <div class="px-4 py-3">
                 {{-- Session stats --}}
                 <div class="mb-2.5 flex items-center justify-center gap-4 text-center">

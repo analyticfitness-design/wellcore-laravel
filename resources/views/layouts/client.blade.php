@@ -217,6 +217,8 @@
             <div>
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">{{ __('dashboard.client.sec_recursos') }}</p>
                 <ul class="space-y-0.5">
+                    {{-- Registro Nutricional — hidden for plan esencial --}}
+                    @if(!$client || $client->plan?->value !== 'esencial')
                     <li>
                         <a wire:navigate href="{{ route('client.ai-nutrition') }}" data-nav-order="12"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
@@ -227,6 +229,7 @@
                             {{ __('dashboard.client.hacks') }}
                         </a>
                     </li>
+                    @endif
                     <li>
                         <a wire:navigate href="{{ route('client.settings') }}" data-nav-order="13"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
