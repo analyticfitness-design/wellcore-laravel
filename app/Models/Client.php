@@ -25,6 +25,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
     'birth_date',
     'referral_code',
     'referred_by',
+    'onboarding_completed',
 ])]
 #[Hidden(['password_hash'])]
 class Client extends Authenticatable
