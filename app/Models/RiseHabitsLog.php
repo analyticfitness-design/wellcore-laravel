@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'training_completed',
     'nutrition_followed',
     'notes',
+    'habits_json',
 ])]
 class RiseHabitsLog extends Model
 {
@@ -34,6 +35,7 @@ class RiseHabitsLog extends Model
             'meditation' => 'boolean',
             'training_completed' => 'boolean',
             'nutrition_followed' => 'boolean',
+            'habits_json' => 'array',
         ];
     }
 

@@ -12,7 +12,7 @@ use Livewire\Component;
 #[Layout('layouts.rise', ['title' => 'Habitos RISE'])]
 class Habits extends Component
 {
-    // Form fields
+    // Universal metrics
     #[Validate('nullable|numeric|min:0|max:10')]
     public ?float $water = null;
 
@@ -22,17 +22,14 @@ class Habits extends Component
     #[Validate('nullable|integer|min:0|max:100000')]
     public ?int $steps = null;
 
-    #[Validate('boolean')]
-    public bool $meditation = false;
-
-    #[Validate('boolean')]
-    public bool $training = false;
-
-    #[Validate('boolean')]
-    public bool $nutrition = false;
-
     #[Validate('nullable|string|max:500')]
     public ?string $notes = null;
+
+    // Program-driven habits: keyed by string index → bool
+    public array $habitsDone = [];
+
+    // Habits plan from the client's personalized_program['plan_habitos']
+    public array $habitsPlan = [];
 
     // State
     public bool $todaySaved = false;
@@ -59,7 +56,11 @@ class Habits extends Component
 
         $this->riseProgramId = $riseProgram?->id;
 
-        // Load today's entry
+        // Load habits plan from the personalized program JSON
+        $programJson = $riseProgram?->personalized_program ?? [];
+        $this->habitsPlan = $programJson['plan_habitos'] ?? [];
+
+        // Load today's log entry
         if ($this->riseProgramId) {
             $today = RiseHabitsLog::where('rise_program_id', $this->riseProgramId)
                 ->where('client_id', $client->id)
@@ -70,12 +71,21 @@ class Habits extends Component
                 $this->water = $today->water_liters ? (float) $today->water_liters : null;
                 $this->sleep = $today->sleep_hours ? (float) $today->sleep_hours : null;
                 $this->steps = $today->steps;
-                $this->meditation = (bool) $today->meditation;
-                $this->training = (bool) $today->training_completed;
-                $this->nutrition = (bool) $today->nutrition_followed;
                 $this->notes = $today->notes;
                 $this->todaySaved = true;
                 $this->savedAt = $today->updated_at?->format('H:i');
+
+                // Load dynamic habits_json; fall back to legacy boolean columns
+                if ($today->habits_json !== null) {
+                    $this->habitsDone = $today->habits_json;
+                } else {
+                    // Backwards compatibility: map old booleans into indexed slots
+                    $this->habitsDone = [
+                        '0' => (bool) $today->training_completed,
+                        '1' => (bool) $today->nutrition_followed,
+                        '2' => (bool) $today->meditation,
+                    ];
+                }
             }
         }
 
@@ -106,10 +116,12 @@ class Habits extends Component
                 'water_liters' => $this->water,
                 'sleep_hours' => $this->sleep,
                 'steps' => $this->steps,
-                'meditation' => $this->meditation,
-                'training_completed' => $this->training,
-                'nutrition_followed' => $this->nutrition,
                 'notes' => $this->notes,
+                'habits_json' => $this->habitsDone,
+                // Maintain backwards compatibility with legacy boolean columns
+                'training_completed' => (bool) ($this->habitsDone['0'] ?? false),
+                'nutrition_followed' => (bool) ($this->habitsDone['1'] ?? false),
+                'meditation' => (bool) ($this->habitsDone['2'] ?? false),
             ]
         );
 
@@ -128,25 +140,42 @@ class Habits extends Component
         $logs = $this->riseProgramId
             ? RiseHabitsLog::where('rise_program_id', $this->riseProgramId)
                 ->where('client_id', $client->id)
-                ->whereBetween('log_date', [$startOfWeek->toDateString(), $startOfWeek->copy()->addDays(6)->toDateString()])
+                ->whereBetween('log_date', [
+                    $startOfWeek->toDateString(),
+                    $startOfWeek->copy()->addDays(6)->toDateString(),
+                ])
                 ->get()
                 ->keyBy(fn ($item) => Carbon::parse($item->log_date)->dayOfWeekIso)
             : collect();
 
         $dayLabels = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
         $today = now()->dayOfWeekIso;
+        $totalHabits = count($this->habitsPlan) + 3; // program habits + water + sleep + steps
 
         $this->weekDays = [];
         for ($i = 1; $i <= 7; $i++) {
             $entry = $logs->get($i);
             $habitCount = 0;
+
             if ($entry) {
-                if ($entry->training_completed) $habitCount++;
-                if ($entry->nutrition_followed) $habitCount++;
-                if ($entry->meditation) $habitCount++;
-                if ($entry->water_liters >= 2) $habitCount++;
-                if ($entry->sleep_hours >= 7) $habitCount++;
-                if ($entry->steps >= 5000) $habitCount++;
+                // Count dynamic program habits completed
+                $habitsJson = $entry->habits_json ?? [];
+                foreach ($habitsJson as $done) {
+                    if ($done) {
+                        $habitCount++;
+                    }
+                }
+
+                // Count universal metrics as achieved
+                if ($entry->water_liters >= 2) {
+                    $habitCount++;
+                }
+                if ($entry->sleep_hours >= 7) {
+                    $habitCount++;
+                }
+                if ($entry->steps >= 5000) {
+                    $habitCount++;
+                }
             }
 
             $this->weekDays[] = [
@@ -154,10 +183,8 @@ class Habits extends Component
                 'isToday' => $i === $today,
                 'hasEntry' => $entry !== null,
                 'habitCount' => $habitCount,
-                'total' => 6,
-                'training' => (bool) ($entry?->training_completed ?? false),
-                'nutrition' => (bool) ($entry?->nutrition_followed ?? false),
-                'meditation' => (bool) ($entry?->meditation ?? false),
+                'total' => $totalHabits > 0 ? $totalHabits : 6,
+                'habitsJson' => $entry?->habits_json ?? [],
                 'water' => $entry?->water_liters ? (float) $entry->water_liters : null,
                 'sleep' => $entry?->sleep_hours ? (float) $entry->sleep_hours : null,
                 'steps' => $entry?->steps,
@@ -167,7 +194,9 @@ class Habits extends Component
 
     protected function loadStats($client): void
     {
-        if (! $this->riseProgramId) return;
+        if (! $this->riseProgramId) {
+            return;
+        }
 
         $allLogs = RiseHabitsLog::where('rise_program_id', $this->riseProgramId)
             ->where('client_id', $client->id)
