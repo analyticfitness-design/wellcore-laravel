@@ -120,6 +120,9 @@
                         <th class="hidden px-4 py-3 text-left xl:table-cell">
                             <span class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Usado por</span>
                         </th>
+                        <th class="hidden px-4 py-3 text-left xl:table-cell">
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Link de registro</span>
+                        </th>
                         <th class="px-4 py-3 text-right">
                             <span class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Acciones</span>
                         </th>
@@ -222,6 +225,36 @@
                                 @endif
                             </td>
 
+                            {{-- Link de registro --}}
+                            <td class="hidden px-4 py-3 xl:table-cell">
+                                @if($statusVal === 'pending')
+                                    @php $intakeUrl = route('invite.intake', ['code' => $inv->code]); @endphp
+                                    <div class="flex items-center gap-1.5"
+                                         x-data="{ copiedLink: false }">
+                                        <span class="max-w-[180px] truncate font-mono text-[10px] text-wc-text-tertiary" title="{{ $intakeUrl }}">
+                                            /unirse/{{ $inv->code }}
+                                        </span>
+                                        <button
+                                            x-on:click="navigator.clipboard.writeText('{{ $intakeUrl }}'); copiedLink = true; setTimeout(() => copiedLink = false, 2500)"
+                                            class="flex h-6 w-6 shrink-0 items-center justify-center rounded border border-wc-border text-wc-text-tertiary hover:border-wc-accent hover:text-wc-accent transition-colors"
+                                            title="Copiar link de registro">
+                                            <template x-if="!copiedLink">
+                                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+                                                </svg>
+                                            </template>
+                                            <template x-if="copiedLink">
+                                                <svg class="h-3 w-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                                </svg>
+                                            </template>
+                                        </button>
+                                    </div>
+                                @else
+                                    <span class="text-xs text-wc-text-tertiary">—</span>
+                                @endif
+                            </td>
+
                             {{-- Actions --}}
                             <td class="px-4 py-3 text-right">
                                 @if($statusVal === 'pending')
@@ -240,7 +273,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="px-4 py-16 text-center">
+                            <td colspan="10" class="px-4 py-16 text-center">
                                 <div class="flex flex-col items-center gap-3">
                                     <svg class="h-10 w-10 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
@@ -293,7 +326,50 @@
                     </button>
                 </div>
 
-                <form wire:submit="createInvitation" class="space-y-4">
+                {{-- Link generated after creation --}}
+                @if($createdCode)
+                <div class="mb-5 rounded-xl border border-emerald-500/30 bg-emerald-500/8 p-4"
+                     x-data="{ copiedModal: false }">
+                    <div class="mb-2 flex items-center gap-2">
+                        <svg class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                        <span class="text-sm font-semibold text-emerald-300">Invitacion creada — codigo: <span class="font-mono">{{ $createdCode }}</span></span>
+                    </div>
+                    <p class="mb-3 text-xs text-wc-text-secondary">Comparte este link con el cliente para que complete su registro:</p>
+                    <div class="flex items-center gap-2 rounded-lg border border-emerald-500/20 bg-wc-bg-tertiary px-3 py-2.5">
+                        <span class="flex-1 truncate font-mono text-xs text-wc-text">{{ $createdIntakeUrl }}</span>
+                        <button type="button"
+                                x-on:click="navigator.clipboard.writeText('{{ $createdIntakeUrl }}'); copiedModal = true; setTimeout(() => copiedModal = false, 2500)"
+                                class="flex shrink-0 items-center gap-1.5 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1 text-xs font-medium text-wc-text-secondary hover:border-wc-accent hover:text-wc-accent transition-colors">
+                            <template x-if="!copiedModal">
+                                <span class="flex items-center gap-1.5">
+                                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9.75a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184" />
+                                    </svg>
+                                    Copiar
+                                </span>
+                            </template>
+                            <template x-if="copiedModal">
+                                <span class="flex items-center gap-1.5 text-emerald-400">
+                                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                    </svg>
+                                    Copiado!
+                                </span>
+                            </template>
+                        </button>
+                    </div>
+                    <div class="mt-3">
+                        <button type="button" wire:click="closeCreateModal"
+                                class="w-full rounded-lg bg-emerald-600 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors">
+                            Listo, cerrar
+                        </button>
+                    </div>
+                </div>
+                @endif
+
+                <form wire:submit="createInvitation" class="space-y-4" x-show="!$wire.createdCode">
                     {{-- Plan --}}
                     <div>
                         <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">

@@ -26,6 +26,10 @@ class InvitationManager extends Component
     public string $newNote       = '';
     public string $newExpiresAt  = '';
 
+    // After creation: show the generated link
+    public ?string $createdCode    = null;
+    public ?string $createdIntakeUrl = null;
+
     public function updatingSearch(): void
     {
         $this->resetPage();
@@ -56,6 +60,8 @@ class InvitationManager extends Component
     public function closeCreateModal(): void
     {
         $this->showCreateModal = false;
+        $this->createdCode     = null;
+        $this->createdIntakeUrl = null;
         $this->resetValidation();
     }
 
@@ -88,7 +94,12 @@ class InvitationManager extends Component
             'expires_at' => $this->newExpiresAt ?: null,
         ]);
 
-        $this->closeCreateModal();
+        // Store the link to display after creation
+        $this->createdCode     = $code;
+        $this->createdIntakeUrl = route('invite.intake', ['code' => $code]);
+
+        $this->reset(['newPlan', 'newEmailHint', 'newNote', 'newExpiresAt']);
+        $this->newPlan = 'esencial';
     }
 
     public function deleteInvitation(int $id): void

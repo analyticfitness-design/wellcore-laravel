@@ -53,6 +53,7 @@ use App\Livewire\Rise\Measurements as RiseMeasurements;
 use App\Livewire\Rise\ProgramView;
 use App\Livewire\Shop\ProductCatalog;
 use App\Livewire\Shop\ProductDetail;
+use App\Livewire\Public\ClientIntakeForm;
 use App\Livewire\Public\CoachApplication;
 use App\Livewire\Public\PresencialForm;
 use App\Livewire\Public\RiseEnrollment;
@@ -145,6 +146,11 @@ Route::get('/presencial/inscripcion', PresencialForm::class)->name('presencial.f
 
 // RISE Enrollment
 Route::get('/rise-enroll', RiseEnrollment::class)->name('rise.enroll');
+
+// Invitation intake form — public, guest-only
+Route::get('/unirse/{code}', ClientIntakeForm::class)
+    ->name('invite.intake')
+    ->middleware('guest:wellcore');
 
 Route::get('/inscripcion', \App\Livewire\InscriptionForm::class)->name('inscripcion')->middleware('throttle:inscription');
 Route::get('/pagar', \App\Livewire\Checkout::class)->name('pagar');
