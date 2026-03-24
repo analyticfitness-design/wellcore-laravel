@@ -155,17 +155,21 @@
 
                     {{-- Reaction bar --}}
                     <div class="mt-4 flex flex-wrap items-center gap-1.5">
-                        @foreach(['like' => ['emoji' => '👍', 'label' => ''], 'fire' => ['emoji' => '🔥', 'label' => ''], 'muscle' => ['emoji' => '💪', 'label' => ''], 'clap' => ['emoji' => '👏', 'label' => '']] as $type => $data)
+                        @foreach(['like' => ['emoji' => '👍', 'label' => 'Genial'], 'fire' => ['emoji' => '🔥', 'label' => 'Fuego'], 'muscle' => ['emoji' => '💪', 'label' => 'Fuerza'], 'clap' => ['emoji' => '👏', 'label' => 'Bravo']] as $type => $data)
                             @php
                                 $isActive = in_array($type, $postReactions);
                                 $count = $reactionCounts->get($type, 0);
                             @endphp
                             <button wire:click="toggleReaction({{ $post->id }}, '{{ $type }}')"
-                                class="btn-press flex items-center gap-1 rounded-full px-2.5 py-1 text-xs border transition-all
-                                {{ $isActive ? 'bg-wc-accent/10 border-wc-accent/40 text-wc-text scale-105' : 'border-wc-border text-wc-text-secondary hover:border-wc-accent/30 hover:bg-wc-accent/5' }}">
-                                <span>{{ $data['emoji'] }}</span>
+                                title="{{ $data['label'] }}"
+                                class="btn-press flex items-center gap-1.5 rounded-full px-3 py-2 text-xs border transition-all duration-200
+                                {{ $isActive
+                                    ? 'bg-wc-accent border-wc-accent text-white shadow-sm scale-110'
+                                    : 'bg-wc-bg-tertiary border-wc-border text-wc-text-secondary hover:border-wc-accent/40 hover:scale-105' }}">
+                                <span aria-hidden="true">{{ $data['emoji'] }}</span>
+                                <span class="font-sans text-[10px] font-medium hidden sm:inline">{{ $data['label'] }}</span>
                                 @if($count > 0)
-                                    <span class="font-data tabular-nums font-semibold">{{ $count }}</span>
+                                    <span class="font-data tabular-nums font-bold">{{ $count }}</span>
                                 @endif
                             </button>
                         @endforeach

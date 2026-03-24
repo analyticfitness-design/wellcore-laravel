@@ -31,11 +31,18 @@ class CheckinForm extends Component
     /** Show check-in onboarding tutorial for first-time users */
     public bool $showTutorial = false;
 
+    /** Whether today is a valid check-in day (Friday or Saturday, Bogotá time) */
+    public bool $isCheckinAvailable = true;
+
     public function mount(): void
     {
         $clientId = auth('wellcore')->id();
         // Show tutorial if client has never submitted a check-in
         $this->showTutorial = !Checkin::where('client_id', $clientId)->exists();
+
+        // Check-in only allowed on Fridays (5) and Saturdays (6) in Bogotá timezone
+        $dayOfWeek = now()->timezone('America/Bogota')->dayOfWeek;
+        $this->isCheckinAvailable = in_array($dayOfWeek, [\Carbon\Carbon::FRIDAY, \Carbon\Carbon::SATURDAY]);
     }
 
     public function dismissTutorial(): void
@@ -50,6 +57,11 @@ class CheckinForm extends Component
 
     public function submit(): void
     {
+        if (!$this->isCheckinAvailable) {
+            $this->addError('submit', 'El check-in semanal solo está disponible los viernes y sábados.');
+            return;
+        }
+
         $this->validate();
 
         $clientId  = auth('wellcore')->id();

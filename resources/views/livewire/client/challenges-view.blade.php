@@ -105,9 +105,25 @@
                     <div class="flex flex-1 flex-col p-5">
                         {{-- Icon + title --}}
                         <div class="mb-4 flex items-start gap-3">
-                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-wc-accent/10 border border-wc-accent/20">
+                            @php
+                                $iconMap = [
+                                    'fire'      => '🔥',
+                                    'medal'     => '🏅',
+                                    'star'      => '⭐',
+                                    'trophy'    => '🏆',
+                                    'muscle'    => '💪',
+                                    'lightning' => '⚡',
+                                    'target'    => '🎯',
+                                    'crown'     => '👑',
+                                    'diamond'   => '💎',
+                                    'rocket'    => '🚀',
+                                ];
+                                $iconEmoji = $iconMap[$challenge->badge_icon ?? ''] ?? '🏅';
+                            @endphp
+                            <div class="flex shrink-0 items-center justify-center rounded-full border border-wc-accent/20"
+                                 style="width:56px;height:56px;background:radial-gradient(circle at 40% 40%,rgba(220,38,38,0.18),rgba(220,38,38,0.05));">
                                 @if($challenge->badge_icon)
-                                    <span class="text-2xl">{{ $challenge->badge_icon }}</span>
+                                    <span class="text-3xl leading-none" aria-label="{{ $challenge->badge_icon }}">{{ $iconEmoji }}</span>
                                 @else
                                     <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497" />
@@ -119,8 +135,17 @@
                                     {{ strtoupper($challenge->title) }}
                                 </h3>
                                 @if($challenge->challenge_type)
-                                    <span class="mt-0.5 inline-block text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">
-                                        {{ $typeConfig['label'] }}
+                                    @php
+                                        $typeBadgeColors = match($challenge->challenge_type) {
+                                            'fuerza'    => 'bg-red-500/15 border-red-500/30 text-red-400',
+                                            'cardio'    => 'bg-orange-500/15 border-orange-500/30 text-orange-400',
+                                            'nutricion' => 'bg-green-500/15 border-green-500/30 text-green-400',
+                                            'habitos'   => 'bg-blue-500/15 border-blue-500/30 text-blue-400',
+                                            default     => 'bg-wc-accent/10 border-wc-accent/20 text-wc-accent',
+                                        };
+                                    @endphp
+                                    <span class="mt-1 inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider {{ $typeBadgeColors }}">
+                                        {{ strtoupper($typeConfig['label']) }}
                                     </span>
                                 @endif
                             </div>

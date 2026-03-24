@@ -40,7 +40,8 @@ class AINutrition extends Component
 
     public function mount(): void
     {
-        $this->aiAvailable = !empty(config('wellcore.ai.api_key'));
+        $apiKey = config('wellcore.ai.api_key', '');
+        $this->aiAvailable = str_starts_with($apiKey, 'sk-ant') || strlen($apiKey) > 20;
     }
 
     protected function rules(): array
@@ -117,21 +118,36 @@ class AINutrition extends Component
 
             $aiService = app(AIService::class);
 
-            $systemPrompt = 'Eres un nutricionista experto. Analiza imágenes de alimentos y devuelve SOLO un JSON válido con la información nutricional estimada. No incluyas texto adicional fuera del JSON.';
+            $systemPrompt = 'Eres un nutricionista deportivo experto con 20 años de experiencia analizando comidas para atletas. Tu especialidad es estimar macronutrientes con alta precisión basándote en el tamaño visual de las porciones, la densidad de los alimentos y las preparaciones culinarias típicas de Latinoamérica. Siempre devuelves ÚNICAMENTE JSON válido, sin texto adicional ni markdown.';
 
-            $userMessage = 'Analiza esta imagen de comida y devuelve un JSON con este formato exacto:
+            $userMessage = 'Analiza con detalle esta imagen de comida para un atleta de fitness. Identifica cada componente del plato y estima los macronutrientes para la porción visible.
+
+Responde EXACTAMENTE con este JSON (sin texto adicional):
 {
-  "food_name": "Nombre del alimento o plato",
-  "calories": 350,
-  "protein_g": 25.5,
-  "carbs_g": 30.0,
-  "fat_g": 12.0,
-  "confidence": "high|medium|low",
-  "notes": "Nota opcional sobre la estimación"
+  "food_name": "nombre descriptivo del plato completo",
+  "ingredients": [
+    {"name": "ingrediente", "grams": 150, "calories": 165, "protein_g": 31, "carbs_g": 0, "fat_g": 3.6}
+  ],
+  "calories": 500,
+  "protein_g": 45.0,
+  "carbs_g": 35.0,
+  "fat_g": 15.0,
+  "fiber_g": 5.0,
+  "confidence": "high",
+  "confidence_reason": "breve explicación de la confianza",
+  "notes": "observaciones relevantes para el atleta",
+  "meal_type": "desayuno|almuerzo|cena|merienda|snack"
 }
-Estima para una porción estándar visible en la imagen.';
 
-            $rawResponse = $aiService->analyzeImage($base64, $mimeType, $systemPrompt, $userMessage, 512);
+Guías para estimación:
+- Plato estándar (25cm) = aprox 600-900 kcal para comida principal
+- Palm de proteína = aprox 150g de carne cocida = 30-35g proteína
+- Puño de carbohidratos cocidos = aprox 150-200g = 40-55g carbs
+- Usa referencias visuales del plato/cubiertos para calibrar porciones
+- Para comidas latinas típicas: arroz+pollo+ensalada = aprox 650-850 kcal
+- Confidence: "high" si alimentos claramente identificables, "medium" si hay dudas de cocción/cantidad, "low" si imagen poco clara';
+
+            $rawResponse = $aiService->analyzeImage($base64, $mimeType, $systemPrompt, $userMessage, 1024);
 
             if (!$rawResponse) {
                 $this->analysisError = 'No se pudo analizar la imagen. Intenta de nuevo.';
@@ -149,6 +165,12 @@ Estima para una porción estándar visible en la imagen.';
                 $this->isAnalyzing   = false;
                 return;
             }
+
+            // Normalize optional enriched fields so the view always has consistent keys
+            $data['fiber_g']           = isset($data['fiber_g']) ? (float) $data['fiber_g'] : null;
+            $data['ingredients']       = isset($data['ingredients']) && is_array($data['ingredients']) ? $data['ingredients'] : [];
+            $data['confidence_reason'] = $data['confidence_reason'] ?? '';
+            $data['meal_type']         = $data['meal_type'] ?? '';
 
             $this->analysisResult = $data;
 

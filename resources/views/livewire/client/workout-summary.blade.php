@@ -57,30 +57,86 @@
         </div>
     </template>
 
-    {{-- ─── Celebration Header ─── --}}
-    <div class="text-center" data-animate="fadeInUp">
-        <div class="inline-flex items-center gap-2 rounded-full bg-wc-accent/10 px-4 py-1.5 mb-3">
-            <svg class="h-4 w-4 text-wc-accent" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
-            </svg>
-            <span class="text-xs font-semibold text-wc-accent uppercase tracking-wider">Completada</span>
+    {{-- ─── Motivational Hero ─── --}}
+    <style>
+        @keyframes confettiFall {
+            0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+        .confetti-particle {
+            position: absolute;
+            top: -10px;
+            width: 10px;
+            height: 10px;
+        }
+        @keyframes heroTrophyBounce {
+            0%, 100% { transform: scale(1) rotate(-3deg); }
+            50%       { transform: scale(1.15) rotate(3deg); }
+        }
+        .hero-trophy { animation: heroTrophyBounce 2s ease-in-out infinite; display: inline-block; }
+    </style>
+
+    @php
+        $setsCompleted = $stats['sets_completed'] ?? 0;
+        $motivationalPhrase = match(true) {
+            $setsCompleted >= 15 => '¡BESTIA ABSOLUTA! SESIÓN ÉPICA.',
+            $setsCompleted >= 10 => '¡MÁQUINA! HOY GANASTE.',
+            $setsCompleted >= 5  => '¡ASÍ SE HACE! SIGUE ADELANTE.',
+            default              => '¡COMPLETADO! CADA REP CUENTA.',
+        };
+        $heroEmoji = $setsCompleted >= 10 ? '🏆' : '💥';
+    @endphp
+
+    <div class="relative overflow-hidden rounded-2xl"
+         style="min-height: 220px; background: linear-gradient(135deg, #0f0f0f 0%, #1a0000 50%, #DC2626 100%);"
+         data-animate="fadeInUp">
+        {{-- Decorative radial glow --}}
+        <div class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse at 50% 0%, rgba(220,38,38,0.4) 0%, transparent 70%);"></div>
+
+        {{-- Grid lines decoration --}}
+        <div class="pointer-events-none absolute inset-0 opacity-10"
+             style="background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.15) 0px, transparent 1px, transparent 40px, rgba(255,255,255,0.15) 41px), repeating-linear-gradient(90deg, rgba(255,255,255,0.15) 0px, transparent 1px, transparent 40px, rgba(255,255,255,0.15) 41px);"></div>
+
+        <div class="relative z-10 flex flex-col items-center justify-center px-6 py-10 text-center">
+            {{-- Trophy / Fire emoji --}}
+            <span class="hero-trophy text-6xl sm:text-7xl mb-4" aria-hidden="true">{{ $heroEmoji }}</span>
+
+            {{-- WellCore brand --}}
+            <div class="flex items-center gap-2 mb-3">
+                <span class="font-display text-2xl tracking-[0.25em] text-white/80 sm:text-3xl">WELLCORE</span>
+                <span class="inline-block h-3 w-3 rounded-full bg-wc-accent shadow-lg shadow-wc-accent/60" aria-hidden="true"></span>
+            </div>
+
+            {{-- Motivational phrase --}}
+            <p class="font-display text-3xl tracking-widest text-white sm:text-4xl drop-shadow-lg">
+                {{ $motivationalPhrase }}
+            </p>
+
+            {{-- Session label --}}
+            <div class="mt-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5">
+                <svg class="h-4 w-4 text-wc-accent" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+                </svg>
+                <span class="text-xs font-semibold uppercase tracking-wider text-white/80">Sesión Completada</span>
+            </div>
+
+            @if($session->day_name)
+                <p class="mt-3 text-base font-medium text-white/70">
+                    {{ $session->day_name }}
+                </p>
+            @endif
+
+            @if($session->session_date)
+                <p class="mt-1 text-sm text-white/50">
+                    {{ $session->session_date->locale('es')->isoFormat('dddd, D [de] MMMM') }}
+                </p>
+            @endif
         </div>
+    </div>
 
-        <h1 class="font-display text-4xl tracking-wide text-gradient-accent sm:text-5xl">
-            SESIÓN COMPLETADA
-        </h1>
-
-        @if($session->day_name)
-            <p class="mt-2 text-base text-wc-text-secondary">
-                {{ $session->day_name }}
-            </p>
-        @endif
-
-        @if($session->session_date)
-            <p class="mt-1 text-sm text-wc-text-tertiary">
-                {{ $session->session_date->locale('es')->isoFormat('dddd, D [de] MMMM') }}
-            </p>
-        @endif
+    {{-- ─── Celebration Header (kept for fallback accessibility) ─── --}}
+    <div class="sr-only">
+        <h1>SESIÓN COMPLETADA — {{ $motivationalPhrase }}</h1>
     </div>
 
     {{-- ─── Stats Grid (2x3, Ladder-inspired) ─── --}}

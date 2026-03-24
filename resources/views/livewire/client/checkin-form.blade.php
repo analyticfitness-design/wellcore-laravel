@@ -7,6 +7,28 @@
         </p>
     </div>
 
+    {{-- ─── Day-restriction banner ─── --}}
+    @if (!$isCheckinAvailable)
+        <div class="flex items-start gap-4 rounded-xl border border-wc-accent/30 bg-wc-accent/10 px-5 py-4">
+            <div class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent/20">
+                <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                </svg>
+            </div>
+            <div>
+                <p class="text-sm font-bold text-wc-accent">Check-in no disponible hoy</p>
+                <p class="mt-0.5 text-sm text-wc-text-secondary">
+                    El check-in semanal estará disponible el próximo <span class="font-semibold text-wc-text">viernes o sábado</span>.
+                    Sigue entrenando — ¡la consistencia es tu superpoder!
+                </p>
+            </div>
+        </div>
+    @endif
+
+    @error('submit')
+        <p class="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">{{ $message }}</p>
+    @enderror
+
     {{-- Success Message --}}
     @if ($showSuccess)
         <div class="flex items-center justify-between rounded-[--radius-card] border border-emerald-500/30 bg-emerald-500/10 p-4">
@@ -140,14 +162,24 @@
         {{-- Submit --}}
         <button
             type="submit"
-            class="btn-press w-full rounded-[--radius-button] bg-wc-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg disabled:opacity-50"
+            class="btn-press w-full rounded-[--radius-button] bg-wc-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg disabled:opacity-40 disabled:cursor-not-allowed"
             wire:loading.attr="disabled"
+            @if(!$isCheckinAvailable) disabled aria-disabled="true" title="Solo disponible viernes y sábado" @endif
         >
-            <span wire:loading.remove wire:target="submit">Enviar Check-in</span>
-            <span wire:loading wire:target="submit" class="inline-flex items-center gap-2">
-                <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-                Enviando...
-            </span>
+            @if(!$isCheckinAvailable)
+                <span class="inline-flex items-center gap-2">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                    </svg>
+                    Disponible el viernes
+                </span>
+            @else
+                <span wire:loading.remove wire:target="submit">Enviar Check-in</span>
+                <span wire:loading wire:target="submit" class="inline-flex items-center gap-2">
+                    <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                    Enviando...
+                </span>
+            @endif
         </button>
     </form>
 
