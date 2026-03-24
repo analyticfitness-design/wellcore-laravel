@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PlanType;
 use App\Enums\UserType;
 use App\Models\AuthToken;
 use App\Models\Client;
@@ -60,7 +61,11 @@ class ImpersonateController extends Controller
             'wc_user_id'   => $clientId,
         ]);
 
-        return redirect('/client');
+        // Redirect to the correct portal based on the client's plan type.
+        $plan = $client->plan instanceof PlanType ? $client->plan : PlanType::tryFrom((string) $client->plan);
+        $destination = $plan === PlanType::Rise ? '/rise' : '/client';
+
+        return redirect($destination);
     }
 
     /**
