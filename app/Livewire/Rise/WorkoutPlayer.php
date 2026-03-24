@@ -159,4 +159,46 @@ class WorkoutPlayer extends BaseWorkoutPlayer
             'currentVolume' => $this->getCurrentVolume(),
         ]);
     }
+
+    /**
+     * Override explicitly so OPcache stale-bytecode on the parent class
+     * never causes "method does not exist" via Livewire's __call interceptor.
+     */
+    protected function normalizeDay(array $dia): array
+    {
+        if (! isset($dia['nombre']) && isset($dia['name'])) {
+            $dia['nombre'] = $dia['name'];
+        }
+
+        if (! isset($dia['ejercicios'])) {
+            $exFallback = $dia['exercises'] ?? $dia['sessions'] ?? null;
+            if ($exFallback !== null) {
+                $dia['ejercicios'] = $exFallback;
+                unset($dia['exercises'], $dia['sessions']);
+            }
+        }
+
+        if (isset($dia['ejercicios']) && is_array($dia['ejercicios'])) {
+            foreach ($dia['ejercicios'] as &$ej) {
+                if (! is_array($ej)) {
+                    continue;
+                }
+                if (! isset($ej['nombre'])) {
+                    $ej['nombre'] = $ej['name'] ?? $ej['exercise'] ?? $ej['ejercicio'] ?? '';
+                }
+                if (! isset($ej['series']) && isset($ej['sets'])) {
+                    $ej['series'] = $ej['sets'];
+                }
+                if (! isset($ej['repeticiones']) && isset($ej['reps'])) {
+                    $ej['repeticiones'] = $ej['reps'];
+                }
+                if (! isset($ej['descanso'])) {
+                    $ej['descanso'] = $ej['rest'] ?? $ej['rest_seconds'] ?? '90s';
+                }
+            }
+            unset($ej);
+        }
+
+        return $dia;
+    }
 }
