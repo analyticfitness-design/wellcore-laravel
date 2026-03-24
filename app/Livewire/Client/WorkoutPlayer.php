@@ -806,7 +806,7 @@ class WorkoutPlayer extends Component
      * Normalize a single training day array to the keys the blade view expects.
      * Maps English keys → Spanish: exercises→ejercicios, name→nombre, sets→series, reps→repeticiones.
      */
-    private function normalizeDay(array $dia): array
+    protected function normalizeDay(array $dia): array
     {
         if (! isset($dia['nombre']) && isset($dia['name'])) {
             $dia['nombre'] = $dia['name'];
