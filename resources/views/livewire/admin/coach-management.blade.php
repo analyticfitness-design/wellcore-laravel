@@ -175,6 +175,25 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                         </svg>
                                     </button>
+                                    {{-- Ver Portal del Coach (solo superadmin) --}}
+                                    @php
+                                        $currentAdmin = auth('wellcore')->user();
+                                        $isSuperAdmin = $currentAdmin instanceof \App\Models\Admin &&
+                                            (($currentAdmin->role instanceof \App\Enums\UserRole && $currentAdmin->role->value === 'superadmin') ||
+                                             $currentAdmin->role === 'superadmin');
+                                    @endphp
+                                    @if($isSuperAdmin && in_array($roleVal, ['coach', 'admin']))
+                                        <form method="POST" action="{{ route('coach.impersonate.start', $admin->id) }}" class="inline">
+                                            @csrf
+                                            <button type="submit"
+                                                    class="rounded-lg border border-wc-border bg-wc-bg-secondary px-2.5 py-1.5 text-xs font-medium text-wc-text-secondary hover:border-violet-500 hover:text-violet-400 transition-colors"
+                                                    title="Ver portal del coach">
+                                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H9" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    @endif
                                     @if($profile || $roleVal === 'coach')
                                         <button wire:click="openEdit({{ $admin->id }})"
                                                 class="rounded-lg border border-wc-border bg-wc-bg-secondary px-2.5 py-1.5 text-xs font-medium text-wc-text-secondary hover:border-wc-accent hover:text-wc-accent transition-colors"

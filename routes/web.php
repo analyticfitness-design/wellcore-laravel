@@ -61,6 +61,7 @@ use App\Livewire\TestDashboard;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\CoachImpersonateController;
 use App\Http\Controllers\ImpersonateController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\SitemapController;
@@ -262,6 +263,14 @@ Route::middleware('auth:wellcore')->group(function () {
 
     // Impersonation stop — outside the admin role group: when stopping, the session is a client session.
     Route::post('/admin/impersonate/stop', [ImpersonateController::class, 'stop'])->name('admin.impersonate.stop');
+
+    // Coach portal impersonation (superadmin only)
+    Route::post('/admin/coach-impersonate/{adminId}', [CoachImpersonateController::class, 'start'])
+        ->name('coach.impersonate.start')
+        ->middleware('role:superadmin')
+        ->whereNumber('adminId');
+    Route::post('/admin/coach-impersonate/stop', [CoachImpersonateController::class, 'stop'])
+        ->name('coach.impersonate.stop');
 
     // Coach portal routes
     Route::prefix('coach')->name('coach.')->middleware('role:superadmin,admin,coach,jefe')->group(function () {
