@@ -666,10 +666,9 @@ class WorkoutPlayer extends Component
 
         $this->isActive = false;
 
-        // Redirect to workout summary
+        // Redirect to workout summary — full page load (navigate:true causa blank screen)
         $this->redirect(
-            route('client.workout.summary', ['sessionId' => $session->id]),
-            navigate: true
+            route('client.workout.summary', ['sessionId' => $session->id])
         );
     }
 
