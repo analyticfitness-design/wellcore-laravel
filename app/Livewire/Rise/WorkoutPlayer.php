@@ -144,7 +144,7 @@ class WorkoutPlayer extends BaseWorkoutPlayer
 
         $this->isActive = false;
 
-        $this->redirect(route('rise.dashboard'), navigate: true);
+        $this->redirect(route('rise.workout.summary', ['sessionId' => $session->id]));
     }
 
     public function abandonWorkout(): void
