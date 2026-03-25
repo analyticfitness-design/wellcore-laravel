@@ -28,6 +28,10 @@ class CheckinForm extends Component
 
     public bool $showSuccess = false;
 
+    /** Saved values displayed in the success overlay after form reset */
+    public int $lastDiasEntrenados = 0;
+    public int $lastBienestar = 3;
+
     /** Show check-in onboarding tutorial for first-time users */
     public bool $showTutorial = false;
 
@@ -86,6 +90,10 @@ class CheckinForm extends Component
             'comentario' => $this->comentario,
             'rpe' => $this->rpe,
         ]);
+
+        // Capture values for the overlay before resetting the form
+        $this->lastDiasEntrenados = $this->diasEntrenados;
+        $this->lastBienestar = $this->bienestar;
 
         $this->reset(['bienestar', 'diasEntrenados', 'nutricion', 'rpe', 'comentario']);
         $this->bienestar = 3;

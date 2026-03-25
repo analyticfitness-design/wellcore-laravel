@@ -124,6 +124,11 @@ class ProgressPhotos extends Component
         $this->dispatch('photos-uploaded');
     }
 
+    public function dismissSuccess(): void
+    {
+        $this->showSuccess = false;
+    }
+
     public function render()
     {
         return view('livewire.client.progress-photos');

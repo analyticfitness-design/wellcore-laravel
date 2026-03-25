@@ -15,17 +15,7 @@
         </button>
     </div>
 
-    {{-- Success message --}}
-    @if($saved)
-        <div class="rounded-card border border-emerald-500/20 bg-emerald-500/5 p-4">
-            <div class="flex items-center gap-3">
-                <svg class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
-                <p class="text-sm font-medium text-emerald-500">Medicion guardada exitosamente.</p>
-            </div>
-        </div>
-    @endif
+    {{-- Success overlay handled by fullscreen achievement modal below --}}
 
     {{-- Measurement form (collapsible) --}}
     @if($showForm)
@@ -165,6 +155,96 @@
             </div>
         </div>
     @endif
+
+    {{-- ===== ACHIEVEMENT OVERLAY: MEDIDAS RISE ===== --}}
+    <style>
+        @keyframes wc-confetti-fall {
+            0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+        .wc-confetti { position: absolute; top: -10px; width: 10px; height: 10px; }
+        @keyframes wc-emoji-bounce {
+            0%, 100% { transform: scale(1) rotate(-3deg); }
+            50%       { transform: scale(1.15) rotate(3deg); }
+        }
+        .wc-emoji-bounce { animation: wc-emoji-bounce 2s ease-in-out infinite; display: inline-block; }
+    </style>
+    <div
+        x-data="{
+            show: @entangle('showSuccess'),
+            confetti: false,
+            init() {
+                this.$watch('show', v => { if (v) { this.confetti = true; setTimeout(() => this.confetti = false, 4000); } });
+            }
+        }"
+        x-show="show"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        style="background: rgba(0,0,0,0.85);"
+        @keydown.escape.window="$wire.dismissSuccess()"
+        x-cloak
+    >
+        {{-- Confetti --}}
+        <div x-show="confetti" class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+            <div class="wc-confetti" style="left:8%;background:#DC2626;animation:wc-confetti-fall 2.8s ease-in forwards 0.1s;"></div>
+            <div class="wc-confetti" style="left:22%;background:#F59E0B;animation:wc-confetti-fall 3.2s ease-in forwards 0.3s;border-radius:50%;"></div>
+            <div class="wc-confetti" style="left:38%;background:#10B981;animation:wc-confetti-fall 2.5s ease-in forwards 0s;"></div>
+            <div class="wc-confetti" style="left:52%;background:#DC2626;animation:wc-confetti-fall 3s ease-in forwards 0.5s;border-radius:50%;"></div>
+            <div class="wc-confetti" style="left:65%;background:#8B5CF6;animation:wc-confetti-fall 2.7s ease-in forwards 0.2s;"></div>
+            <div class="wc-confetti" style="left:78%;background:#F59E0B;animation:wc-confetti-fall 3.4s ease-in forwards 0.4s;border-radius:50%;"></div>
+            <div class="wc-confetti" style="left:90%;background:#10B981;animation:wc-confetti-fall 2.6s ease-in forwards 0.15s;"></div>
+            <div class="wc-confetti" style="left:45%;background:#8B5CF6;animation:wc-confetti-fall 3.1s ease-in forwards 0.6s;"></div>
+        </div>
+
+        {{-- Card --}}
+        <div
+            class="relative w-full max-w-sm overflow-hidden rounded-2xl text-center"
+            style="background: linear-gradient(160deg, #0C1015 0%, #131F2B 50%, #0C1015 100%);"
+            x-transition:enter="transition ease-out duration-400"
+            x-transition:enter-start="opacity-0 scale-90"
+            x-transition:enter-end="opacity-100 scale-100"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="measurements-success-title"
+        >
+            <div class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse at 50% -5%, rgba(255,255,255,0.08) 0%, transparent 60%);" aria-hidden="true"></div>
+
+            <div class="relative z-10 p-8">
+                <span class="wc-emoji-bounce block text-6xl mb-4" aria-hidden="true">📏</span>
+
+                <div class="mb-3 flex items-center justify-center gap-2">
+                    <span class="font-display text-xl tracking-[0.25em] text-white/90">WELLCORE</span>
+                    <span class="h-2 w-2 rounded-full bg-white/30" aria-hidden="true"></span>
+                </div>
+
+                <h2 id="measurements-success-title" class="font-sans text-2xl font-bold text-white mb-2">¡Medidas guardadas!</h2>
+
+                @if ($lastWeight !== '' && (float) $lastWeight > 0)
+                    <div class="my-5 rounded-xl border border-white/10 bg-white/[0.06] px-5 py-4">
+                        <p class="font-data text-3xl font-bold text-white">{{ number_format((float) $lastWeight, 1) }} <span class="text-lg font-normal text-white/50">kg</span></p>
+                        <p class="mt-0.5 text-xs text-white/50">peso registrado</p>
+                    </div>
+                @else
+                    <div class="my-5"></div>
+                @endif
+
+                <p class="mb-6 text-sm text-white/70">Cada medida es evidencia de tu transformación.</p>
+
+                <button
+                    wire:click="dismissSuccess"
+                    class="w-full rounded-xl bg-wc-accent px-6 py-3 font-display text-lg tracking-wider text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-black"
+                >
+                    ¡LISTO!
+                </button>
+            </div>
+        </div>
+    </div>
+    {{-- ===== /ACHIEVEMENT OVERLAY: MEDIDAS RISE ===== --}}
 
     {{-- History table --}}
     <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">

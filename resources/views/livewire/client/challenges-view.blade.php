@@ -224,11 +224,31 @@
                                 Reto completado
                             </div>
                         @elseif($isJoined)
-                            <div class="flex items-center justify-center gap-2 rounded-xl bg-wc-bg-secondary border border-wc-border py-2.5 text-sm text-wc-text-secondary">
-                                <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
-                                </svg>
-                                En progreso
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-center gap-2 rounded-xl bg-wc-bg-secondary border border-wc-border py-2 text-sm text-wc-text-secondary">
+                                    <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+                                    </svg>
+                                    En progreso
+                                </div>
+                                @if($participation)
+                                    <button
+                                        wire:click="markComplete({{ $participation->id }})"
+                                        wire:loading.attr="disabled"
+                                        wire:target="markComplete({{ $participation->id }})"
+                                        class="btn-press w-full flex items-center justify-center gap-2 rounded-xl border border-green-500/30 bg-green-500/10 py-2 text-xs font-semibold text-green-400 transition-all hover:bg-green-500/20 disabled:opacity-60"
+                                    >
+                                        <svg wire:loading.remove wire:target="markComplete({{ $participation->id }})" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                        </svg>
+                                        <svg wire:loading wire:target="markComplete({{ $participation->id }})" class="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                        </svg>
+                                        <span wire:loading.remove wire:target="markComplete({{ $participation->id }})">Marcar completado</span>
+                                        <span wire:loading wire:target="markComplete({{ $participation->id }})">Guardando...</span>
+                                    </button>
+                                @endif
                             </div>
                         @elseif(!$isExpired)
                             <button
@@ -256,4 +276,94 @@
             @endforeach
         </div>
     @endif
+
+    {{-- ===== ACHIEVEMENT OVERLAY: RETO COMPLETADO ===== --}}
+    <style>
+        @keyframes wc-confetti-fall {
+            0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+        .wc-confetti { position: absolute; top: -10px; width: 10px; height: 10px; }
+        @keyframes wc-emoji-bounce {
+            0%, 100% { transform: scale(1) rotate(-3deg); }
+            50%       { transform: scale(1.15) rotate(3deg); }
+        }
+        .wc-emoji-bounce { animation: wc-emoji-bounce 2s ease-in-out infinite; display: inline-block; }
+    </style>
+    <div
+        x-data="{
+            show: @entangle('showSuccess'),
+            confetti: false,
+            init() {
+                this.$watch('show', v => { if (v) { this.confetti = true; setTimeout(() => this.confetti = false, 4000); } });
+            }
+        }"
+        x-show="show"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        style="background: rgba(0,0,0,0.85);"
+        @keydown.escape.window="$wire.dismissSuccess()"
+        x-cloak
+    >
+        {{-- Confetti --}}
+        <div x-show="confetti" class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+            <div class="wc-confetti" style="left:8%;background:#DC2626;animation:wc-confetti-fall 2.8s ease-in forwards 0.1s;"></div>
+            <div class="wc-confetti" style="left:22%;background:#F59E0B;animation:wc-confetti-fall 3.2s ease-in forwards 0.3s;border-radius:50%;"></div>
+            <div class="wc-confetti" style="left:38%;background:#10B981;animation:wc-confetti-fall 2.5s ease-in forwards 0s;"></div>
+            <div class="wc-confetti" style="left:52%;background:#DC2626;animation:wc-confetti-fall 3s ease-in forwards 0.5s;border-radius:50%;"></div>
+            <div class="wc-confetti" style="left:65%;background:#8B5CF6;animation:wc-confetti-fall 2.7s ease-in forwards 0.2s;"></div>
+            <div class="wc-confetti" style="left:78%;background:#F59E0B;animation:wc-confetti-fall 3.4s ease-in forwards 0.4s;border-radius:50%;"></div>
+            <div class="wc-confetti" style="left:90%;background:#10B981;animation:wc-confetti-fall 2.6s ease-in forwards 0.15s;"></div>
+            <div class="wc-confetti" style="left:45%;background:#8B5CF6;animation:wc-confetti-fall 3.1s ease-in forwards 0.6s;"></div>
+        </div>
+
+        {{-- Card --}}
+        <div
+            class="relative w-full max-w-sm overflow-hidden rounded-2xl text-center"
+            style="background: linear-gradient(160deg, #0C1015 0%, #131F2B 50%, #0C1015 100%);"
+            x-transition:enter="transition ease-out duration-400"
+            x-transition:enter-start="opacity-0 scale-90"
+            x-transition:enter-end="opacity-100 scale-100"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="challenge-success-title"
+        >
+            <div class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse at 50% -5%, rgba(255,255,255,0.08) 0%, transparent 60%);" aria-hidden="true"></div>
+
+            <div class="relative z-10 p-8">
+                <span class="wc-emoji-bounce block text-6xl mb-4" aria-hidden="true">🎯</span>
+
+                <div class="mb-3 flex items-center justify-center gap-2">
+                    <span class="font-display text-xl tracking-[0.25em] text-white/90">WELLCORE</span>
+                    <span class="h-2 w-2 rounded-full bg-white/30" aria-hidden="true"></span>
+                </div>
+
+                <h2 id="challenge-success-title" class="font-sans text-2xl font-bold text-white mb-2">¡Reto completado!</h2>
+
+                @if ($lastChallengeName)
+                    <div class="my-5 rounded-xl border border-white/10 bg-white/[0.06] px-5 py-4">
+                        <p class="font-display text-lg tracking-wide text-white">{{ strtoupper($lastChallengeName) }}</p>
+                        <p class="mt-0.5 text-xs text-white/50">reto superado</p>
+                    </div>
+                @else
+                    <div class="my-5"></div>
+                @endif
+
+                <p class="mb-6 text-sm text-white/70">¡Felicidades! Cada reto completado te hace más fuerte.</p>
+
+                <button
+                    wire:click="dismissSuccess"
+                    class="w-full rounded-xl bg-wc-accent px-6 py-3 font-display text-lg tracking-wider text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-black"
+                >
+                    ¡INCREÍBLE!
+                </button>
+            </div>
+        </div>
+    </div>
+    {{-- ===== /ACHIEVEMENT OVERLAY: RETO COMPLETADO ===== --}}
 </div>

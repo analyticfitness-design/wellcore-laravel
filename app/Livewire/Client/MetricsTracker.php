@@ -28,6 +28,9 @@ class MetricsTracker extends Component
 
     public bool $showSuccess = false;
 
+    /** Saved value displayed in the success overlay after form reset */
+    public string $lastPeso = '';
+
     /** Show metrics onboarding tutorial for first-time users */
     public bool $showTutorial = false;
 
@@ -76,6 +79,9 @@ class MetricsTracker extends Component
         // Invalidate cached render data so next render reflects the new entry
         Cache::forget("metrics_charts_{$clientId}");
         Cache::forget("metrics_render_{$clientId}");
+
+        // Capture peso for the overlay before resetting the form
+        $this->lastPeso = $this->peso;
 
         $this->reset(['peso', 'porcentajeMusculo', 'porcentajeGrasa', 'notas']);
         $this->showSuccess = true;

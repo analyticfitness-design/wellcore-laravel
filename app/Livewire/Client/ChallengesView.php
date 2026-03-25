@@ -10,6 +10,36 @@ use Livewire\Component;
 #[Layout('layouts.client')]
 class ChallengesView extends Component
 {
+    public bool $showSuccess = false;
+    public string $lastChallengeName = '';
+
+    public function markComplete(int $participantId): void
+    {
+        $clientId = auth('wellcore')->id();
+
+        $participant = ChallengeParticipant::where('id', $participantId)
+            ->where('client_id', $clientId)
+            ->first();
+
+        if (! $participant) {
+            return;
+        }
+
+        $this->lastChallengeName = $participant->challenge->title ?? '';
+
+        $participant->update([
+            'completed'    => true,
+            'completed_at' => now(),
+        ]);
+
+        $this->showSuccess = true;
+    }
+
+    public function dismissSuccess(): void
+    {
+        $this->showSuccess = false;
+    }
+
     public function join(int $challengeId): void
     {
         $clientId = auth('wellcore')->id();

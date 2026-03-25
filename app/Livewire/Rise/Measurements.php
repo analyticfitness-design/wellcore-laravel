@@ -38,6 +38,8 @@ class Measurements extends Component
     // State
     public bool $showForm = false;
     public bool $saved = false;
+    public bool $showSuccess = false;
+    public string $lastWeight = '';
 
     // Comparison data
     public ?array $firstMeasurement = null;
@@ -109,6 +111,11 @@ class Measurements extends Component
         $this->saved = false;
     }
 
+    public function dismissSuccess(): void
+    {
+        $this->showSuccess = false;
+    }
+
     public function save(): void
     {
         $this->validate();
@@ -128,9 +135,13 @@ class Measurements extends Component
             'fat_pct' => $this->fat_pct,
         ]);
 
+        // Capture weight for the overlay before resetting the form
+        $this->lastWeight = $this->weight_kg !== null ? (string) $this->weight_kg : '';
+
         // Reset form
         $this->reset(['weight_kg', 'chest_cm', 'waist_cm', 'hips_cm', 'thigh_cm', 'arm_cm', 'muscle_pct', 'fat_pct']);
         $this->saved = true;
+        $this->showSuccess = true;
         $this->showForm = false;
         $this->loadData();
     }
