@@ -15,6 +15,7 @@ class PlanViewer extends Component
     public ?array $trainingPlan = null;
     public ?array $nutritionPlan = null;
     public ?array $supplementPlan = null;
+    public ?array $cicloPlan = null;
     public string $activeTab = 'entrenamiento';
     public string $clientPlanType = 'esencial';
 
@@ -48,10 +49,11 @@ class PlanViewer extends Component
                 : json_decode($plan->content, true);
 
             match ($plan->plan_type) {
-                'entrenamiento' => $this->trainingPlan = $this->normalizeTrainingPlan($content),
-                'nutricion'     => $this->nutritionPlan = $content,
+                'entrenamiento'  => $this->trainingPlan = $this->normalizeTrainingPlan($content),
+                'nutricion'      => $this->nutritionPlan = $content,
                 'suplementacion' => $this->supplementPlan = $content,
-                default => null,
+                'ciclo_hormonal' => $this->cicloPlan = $content,
+                default          => null,
             };
         }
 

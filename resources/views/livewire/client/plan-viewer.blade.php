@@ -311,100 +311,203 @@
         @if($canAccessNutricion)
             @if($supplementPlan)
                 @php
-                    // Normalize: support multiple key conventions
-                    $supObjetivo     = $supplementPlan['objetivo'] ?? $supplementPlan['objetivo_general'] ?? null;
-                    $supCoachNotes   = $supplementPlan['notas_coach'] ?? $supplementPlan['coach_notes'] ?? $supplementPlan['notas'] ?? null;
-                    $supList         = $supplementPlan['suplementos'] ?? $supplementPlan['supplements'] ?? $supplementPlan['protocolo'] ?? [];
-                    $supTimingGroups = $supplementPlan['timing'] ?? $supplementPlan['horarios'] ?? null;
+                    $supDescripcion     = $supplementPlan['descripcion_protocolo'] ?? $supplementPlan['descripcion'] ?? null;
+                    $supPerfilCliente   = $supplementPlan['perfil_cliente'] ?? null;
+                    $supAdvertencia     = $supplementPlan['advertencia'] ?? null;
+                    $supCoachNotes      = $supplementPlan['notas_coach'] ?? $supplementPlan['coach_notes'] ?? $supplementPlan['notas'] ?? null;
+                    $supMensajeFinal    = $supplementPlan['mensaje_final'] ?? null;
 
-                    // Timing icon map
+                    // Estructura 1: categorias[].suplementos (formato Jairo/IA)
+                    $supCategorias = $supplementPlan['categorias'] ?? null;
+
+                    // Estructura 2: lista plana de suplementos
+                    $supList = $supplementPlan['suplementos'] ?? $supplementPlan['supplements'] ?? $supplementPlan['protocolo'] ?? [];
+
+                    // Timing — acepta tanto 'timing_diario' como 'timing' o 'horarios'
+                    $supTimingDiario    = $supplementPlan['timing_diario'] ?? null;
+                    $supTimingGroups    = $supplementPlan['timing'] ?? $supplementPlan['horarios'] ?? null;
+
+                    // Sinergias
+                    $supSinergias = $supplementPlan['sinergias'] ?? null;
+
                     $timingIcons = [
-                        'mañana'            => '🌅',
-                        'manana'            => '🌅',
-                        'morning'           => '🌅',
-                        'pre-entrenamiento' => '⚡',
-                        'pre entreno'       => '⚡',
-                        'pre-workout'       => '⚡',
-                        'preworkout'        => '⚡',
-                        'post-entrenamiento'=> '🔄',
-                        'post entreno'      => '🔄',
-                        'post-workout'      => '🔄',
-                        'postworkout'       => '🔄',
-                        'con comidas'       => '🍽️',
-                        'con comida'        => '🍽️',
-                        'with meals'        => '🍽️',
-                        'noche'             => '🌙',
-                        'night'             => '🌙',
-                        'antes de dormir'   => '🌙',
-                        'bedtime'           => '🌙',
-                        'diario'            => '📅',
-                        'daily'             => '📅',
-                        'cualquier momento' => '📅',
+                        'mañana' => '🌅', 'manana' => '🌅', 'morning' => '🌅',
+                        'pre-entreno' => '⚡', 'pre entreno' => '⚡', 'pre-workout' => '⚡',
+                        'post-entreno' => '🔄', 'post entreno' => '🔄', 'post-workout' => '🔄',
+                        'con comidas' => '🍽️', 'con comida' => '🍽️',
+                        'noche' => '🌙', 'night' => '🌙', 'antes de dormir' => '🌙',
+                        'diario' => '📅', 'daily' => '📅',
                     ];
-                    $getTimingIcon = fn($timing) => $timingIcons[mb_strtolower(trim($timing ?? ''))] ?? '💊';
+                    $getTimingIcon = fn($timing) => collect($timingIcons)->first(
+                        fn($v, $k) => str_contains(mb_strtolower($timing ?? ''), $k), '💊'
+                    );
+
+                    $prioridadColor = fn($p) => match(mb_strtolower($p ?? '')) {
+                        'esencial' => ['bg' => 'bg-wc-accent/10', 'text' => 'text-wc-accent', 'border' => 'border-wc-accent/30'],
+                        'recomendado' => ['bg' => 'bg-amber-500/10', 'text' => 'text-amber-400', 'border' => 'border-amber-500/25'],
+                        default => ['bg' => 'bg-wc-bg-secondary', 'text' => 'text-wc-text-tertiary', 'border' => 'border-wc-border'],
+                    };
                 @endphp
 
                 <div class="space-y-5">
-                    {{-- Objetivo --}}
-                    @if($supObjetivo)
+                    {{-- Descripción / perfil del cliente --}}
+                    @if($supDescripcion)
                         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
                             <div class="flex items-start gap-3">
                                 <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
-                                    <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/>
-                                    </svg>
+                                    <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Objetivo del protocolo</p>
-                                    <p class="mt-0.5 text-sm font-medium text-wc-text">{{ $supObjetivo }}</p>
+                                    <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Protocolo</p>
+                                    <p class="mt-0.5 text-sm font-medium text-wc-text">{{ $supDescripcion }}</p>
+                                    @if($supPerfilCliente)
+                                        <p class="mt-1 text-xs text-wc-text-tertiary">{{ $supPerfilCliente }}</p>
+                                    @endif
                                 </div>
                             </div>
                         </div>
                     @endif
 
-                    {{-- Supplement list --}}
-                    @if(count($supList) > 0)
+                    {{-- Advertencia --}}
+                    @if($supAdvertencia)
+                        <div class="rounded-xl border border-amber-500/30 bg-amber-500/8 p-4">
+                            <div class="flex items-start gap-2">
+                                <svg class="mt-0.5 h-4 w-4 shrink-0 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+                                <p class="text-xs leading-relaxed text-amber-300">{{ $supAdvertencia }}</p>
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- ESTRUCTURA A: Categorías (formato IA nuevo) --}}
+                    @if($supCategorias && is_array($supCategorias))
+                        @php
+                            $catIconMap = [
+                                'rendimiento'  => ['icon' => '⚡', 'color' => 'text-amber-400', 'bg' => 'bg-amber-500/10', 'border' => 'border-amber-500/20'],
+                                'protección'   => ['icon' => '🛡️', 'color' => 'text-emerald-400', 'bg' => 'bg-emerald-500/10', 'border' => 'border-emerald-500/20'],
+                                'proteccion'   => ['icon' => '🛡️', 'color' => 'text-emerald-400', 'bg' => 'bg-emerald-500/10', 'border' => 'border-emerald-500/20'],
+                                'salud'        => ['icon' => '❤️', 'color' => 'text-sky-400',     'bg' => 'bg-sky-500/10',     'border' => 'border-sky-500/20'],
+                                'recuperación' => ['icon' => '🔄', 'color' => 'text-purple-400',  'bg' => 'bg-purple-500/10',  'border' => 'border-purple-500/20'],
+                                'recuperacion' => ['icon' => '🔄', 'color' => 'text-purple-400',  'bg' => 'bg-purple-500/10',  'border' => 'border-purple-500/20'],
+                            ];
+                            $getCatStyle = function(string $nombre) use ($catIconMap): array {
+                                $lower = mb_strtolower($nombre);
+                                foreach ($catIconMap as $key => $style) {
+                                    if (str_contains($lower, $key)) return $style;
+                                }
+                                return ['icon' => '💊', 'color' => 'text-wc-text-secondary', 'bg' => 'bg-wc-bg-secondary', 'border' => 'border-wc-border'];
+                            };
+                        @endphp
+
+                        <div class="space-y-4">
+                            @foreach($supCategorias as $categoria)
+                                @php
+                                    $catNombre = $categoria['nombre'] ?? 'Suplementos';
+                                    $catStyle  = $getCatStyle($catNombre);
+                                    $catSups   = $categoria['suplementos'] ?? [];
+                                @endphp
+                                <div class="overflow-hidden rounded-xl border {{ $catStyle['border'] }} bg-wc-bg-tertiary">
+                                    {{-- Category header --}}
+                                    <div class="flex items-center gap-2 border-b {{ $catStyle['border'] }} px-5 py-3 {{ $catStyle['bg'] }}">
+                                        <span class="text-base">{{ $catStyle['icon'] }}</span>
+                                        <h3 class="font-display text-sm tracking-wider {{ $catStyle['color'] }}">{{ strtoupper($catNombre) }}</h3>
+                                        <span class="ml-auto rounded-full bg-wc-bg-secondary px-2 py-0.5 text-[10px] font-semibold text-wc-text-tertiary">
+                                            {{ count($catSups) }} item{{ count($catSups) !== 1 ? 's' : '' }}
+                                        </span>
+                                    </div>
+                                    {{-- Supplements in category --}}
+                                    <div class="divide-y divide-wc-border">
+                                        @foreach($catSups as $idx => $sup)
+                                            @php
+                                                $supNombre    = is_array($sup) ? ($sup['nombre'] ?? $sup['name'] ?? "Suplemento " . ($idx+1)) : $sup;
+                                                $supDosis     = is_array($sup) ? ($sup['dosis'] ?? $sup['dose'] ?? null) : null;
+                                                $supTiming    = is_array($sup) ? ($sup['timing'] ?? $sup['momento'] ?? $sup['horario'] ?? null) : null;
+                                                $supNotas     = is_array($sup) ? ($sup['notas'] ?? $sup['notes'] ?? null) : null;
+                                                $supPrioridad = is_array($sup) ? ($sup['prioridad'] ?? null) : null;
+                                                $prioStyle    = $prioridadColor($supPrioridad);
+                                                $timIcon      = $getTimingIcon($supTiming);
+                                            @endphp
+                                            <div class="px-5 py-4">
+                                                <div class="flex flex-wrap items-start gap-x-3 gap-y-1">
+                                                    <span class="font-semibold text-wc-text">{{ $supNombre }}</span>
+                                                    @if($supDosis)
+                                                        <span class="rounded bg-wc-bg-secondary px-2 py-0.5 font-data text-xs font-bold text-wc-accent">{{ $supDosis }}</span>
+                                                    @endif
+                                                    @if($supPrioridad)
+                                                        <span class="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide {{ $prioStyle['text'] }} {{ $prioStyle['bg'] }}">
+                                                            {{ $supPrioridad }}
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                                @if($supTiming)
+                                                    <p class="mt-1.5 inline-flex items-center gap-1 text-xs text-wc-text-secondary">
+                                                        <span>{{ $timIcon }}</span>
+                                                        <span>{{ $supTiming }}</span>
+                                                    </p>
+                                                @endif
+                                                @if($supNotas)
+                                                    <p class="mt-1 text-xs leading-relaxed text-wc-text-tertiary">{{ $supNotas }}</p>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                    {{-- ESTRUCTURA B: Lista plana --}}
+                    @elseif(count($supList) > 0)
                         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
                             <div class="flex items-center justify-between border-b border-wc-border px-5 py-4">
                                 <h3 class="font-display text-lg tracking-wide text-wc-text">SUPLEMENTOS</h3>
-                                <span class="rounded-full bg-wc-accent/10 px-2.5 py-0.5 text-xs font-semibold text-wc-accent">
-                                    {{ count($supList) }} suplementos
-                                </span>
+                                <span class="rounded-full bg-wc-accent/10 px-2.5 py-0.5 text-xs font-semibold text-wc-accent">{{ count($supList) }}</span>
                             </div>
                             <div class="divide-y divide-wc-border">
                                 @foreach($supList as $idx => $sup)
                                     @php
-                                        $supName   = is_array($sup) ? ($sup['nombre'] ?? $sup['name'] ?? $sup['suplemento'] ?? "Suplemento " . ($idx + 1)) : $sup;
-                                        $supDosis  = is_array($sup) ? ($sup['dosis'] ?? $sup['dose'] ?? $sup['cantidad'] ?? null) : null;
-                                        $supMom    = is_array($sup) ? ($sup['momento'] ?? $sup['timing'] ?? $sup['horario'] ?? $sup['cuando'] ?? null) : null;
-                                        $supNotas  = is_array($sup) ? ($sup['notas'] ?? $sup['notes'] ?? $sup['beneficio'] ?? $sup['benefit'] ?? null) : null;
-                                        $timingIcon = $getTimingIcon($supMom);
+                                        $supNombre = is_array($sup) ? ($sup['nombre'] ?? $sup['name'] ?? "Suplemento ".($idx+1)) : $sup;
+                                        $supDosis  = is_array($sup) ? ($sup['dosis'] ?? $sup['dose'] ?? null) : null;
+                                        $supMom    = is_array($sup) ? ($sup['momento'] ?? $sup['timing'] ?? $sup['horario'] ?? null) : null;
+                                        $supNotas  = is_array($sup) ? ($sup['notas'] ?? $sup['notes'] ?? null) : null;
                                     @endphp
                                     <div class="flex items-start gap-4 px-5 py-4">
-                                        {{-- Index badge --}}
                                         <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-wc-border bg-wc-bg-secondary">
                                             <span class="font-data text-xs font-bold text-wc-accent">{{ $idx + 1 }}</span>
                                         </div>
-
                                         <div class="min-w-0 flex-1">
-                                            <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                                                <span class="font-semibold text-wc-text">{{ $supName }}</span>
-                                                @if($supDosis)
-                                                    <span class="rounded bg-wc-bg-secondary px-2 py-0.5 font-data text-xs font-semibold text-wc-accent">{{ $supDosis }}</span>
-                                                @endif
+                                            <div class="flex flex-wrap items-baseline gap-2">
+                                                <span class="font-semibold text-wc-text">{{ $supNombre }}</span>
+                                                @if($supDosis)<span class="rounded bg-wc-bg-secondary px-2 py-0.5 font-data text-xs font-semibold text-wc-accent">{{ $supDosis }}</span>@endif
                                             </div>
+                                            @if($supMom)<p class="mt-1 text-xs text-wc-text-secondary">{{ $getTimingIcon($supMom) }} {{ $supMom }}</p>@endif
+                                            @if($supNotas)<p class="mt-1 text-xs text-wc-text-tertiary">{{ $supNotas }}</p>@endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @else
+                        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center">
+                            <p class="text-sm text-wc-text-secondary">Tu coach está preparando tu protocolo de suplementación.</p>
+                        </div>
+                    @endif
 
-                                            <div class="mt-1.5 flex flex-wrap items-center gap-2">
-                                                @if($supMom)
-                                                    <span class="inline-flex items-center gap-1 rounded-full bg-wc-bg-secondary px-2.5 py-1 text-xs text-wc-text-secondary">
-                                                        <span>{{ $timingIcon }}</span>
-                                                        <span>{{ $supMom }}</span>
-                                                    </span>
-                                                @endif
-                                                @if($supNotas)
-                                                    <span class="text-xs text-wc-text-tertiary">{{ $supNotas }}</span>
-                                                @endif
-                                            </div>
+                    {{-- Timing Diario (nuevo formato: timing_diario[]) --}}
+                    @if($supTimingDiario && is_array($supTimingDiario))
+                        <div class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary">
+                            <div class="border-b border-wc-border px-5 py-4">
+                                <h3 class="font-display text-sm tracking-wider text-wc-text">PROTOCOLO DIARIO</h3>
+                            </div>
+                            <div class="divide-y divide-wc-border">
+                                @foreach($supTimingDiario as $momento)
+                                    @php
+                                        $momentoLabel = is_array($momento) ? ($momento['momento'] ?? '') : '';
+                                        $momentoSups  = is_array($momento) ? ($momento['suplementos'] ?? '') : $momento;
+                                    @endphp
+                                    <div class="flex items-start gap-4 px-5 py-3.5">
+                                        <span class="mt-0.5 shrink-0 text-base">{{ $getTimingIcon($momentoLabel) }}</span>
+                                        <div class="min-w-0 flex-1">
+                                            <p class="text-xs font-semibold text-wc-text">{{ $momentoLabel }}</p>
+                                            <p class="mt-0.5 text-xs text-wc-text-secondary">{{ $momentoSups }}</p>
                                         </div>
                                     </div>
                                 @endforeach
@@ -412,15 +515,13 @@
                         </div>
                     @endif
 
-                    {{-- Timing groups (if structured as timing/horarios) --}}
+                    {{-- Timing Groups (formato antiguo) --}}
                     @if($supTimingGroups && is_array($supTimingGroups))
                         <div class="space-y-3">
                             <h3 class="font-display text-sm tracking-wider text-wc-text-tertiary uppercase px-1">PROTOCOLO POR MOMENTO</h3>
                             @foreach($supTimingGroups as $moment => $items)
                                 <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-                                    <p class="mb-3 font-display text-sm tracking-wide text-wc-text">
-                                        {{ $getTimingIcon($moment) }} {{ strtoupper($moment) }}
-                                    </p>
+                                    <p class="mb-3 font-display text-sm tracking-wide text-wc-text">{{ $getTimingIcon($moment) }} {{ strtoupper($moment) }}</p>
                                     <ul class="space-y-1.5">
                                         @foreach((array) $items as $item)
                                             <li class="flex items-center gap-2 text-sm text-wc-text-secondary">
@@ -434,18 +535,31 @@
                         </div>
                     @endif
 
+                    {{-- Sinergias --}}
+                    @if($supSinergias && is_array($supSinergias))
+                        <div class="overflow-hidden rounded-xl border border-sky-500/20 bg-sky-500/5">
+                            <div class="border-b border-sky-500/20 px-5 py-3">
+                                <h3 class="font-display text-sm tracking-wider text-sky-400">SINERGIAS CLAVE</h3>
+                            </div>
+                            <div class="divide-y divide-sky-500/10">
+                                @foreach($supSinergias as $sinergia)
+                                    <div class="px-5 py-4">
+                                        <p class="text-sm font-semibold text-sky-300">{{ $sinergia['titulo'] ?? '' }}</p>
+                                        <p class="mt-1 text-xs leading-relaxed text-wc-text-secondary">{{ $sinergia['explicacion'] ?? '' }}</p>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
                     {{-- Coach notes --}}
                     @if($supCoachNotes)
                         <div class="rounded-xl border-l-4 border-wc-accent bg-wc-bg-tertiary p-5">
                             <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-wc-accent">Notas del coach</p>
                             <p class="text-sm leading-relaxed text-wc-text-secondary">{{ $supCoachNotes }}</p>
-                        </div>
-                    @endif
-
-                    {{-- Empty list fallback --}}
-                    @if(count($supList) === 0 && !$supTimingGroups)
-                        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center">
-                            <p class="text-sm text-wc-text-secondary">Tu coach está preparando tu protocolo de suplementación.</p>
+                            @if($supMensajeFinal)
+                                <p class="mt-3 text-xs italic text-wc-text-tertiary">{{ $supMensajeFinal }}</p>
+                            @endif
                         </div>
                     @endif
                 </div>
@@ -540,7 +654,332 @@
                 <p class="mt-2 text-sm text-wc-text-secondary">Disponible exclusivamente en el plan Elite.</p>
                 <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">Upgrade a Elite</a>
             </div>
+        @elseif($cicloPlan && isset($cicloPlan['compounds']))
+        {{-- ═══════════════════════════════════════════════════════════
+             CICLO MASCULINO — Protocolo de Ciclo de Esteroides / AE
+             ═══════════════════════════════════════════════════════════ --}}
+        @php
+            $cicloNombre      = $cicloPlan['name'] ?? $cicloPlan['nombre'] ?? 'Protocolo Hormonal';
+            $cicloDuracion    = $cicloPlan['duration'] ?? $cicloPlan['duracion'] ?? null;
+            $cicloDescripcion = $cicloPlan['descripcion_protocolo'] ?? $cicloPlan['descripcion'] ?? null;
+            $cicloWarning     = $cicloPlan['warning'] ?? $cicloPlan['advertencia'] ?? null;
+            $cicloMetricas    = $cicloPlan['metricas'] ?? null;
+            $cicloCompounds   = $cicloPlan['compounds'] ?? [];
+            $cicloPhases      = $cicloPlan['phases'] ?? $cicloPlan['fases'] ?? [];
+            $cicloPct         = $cicloPlan['pct'] ?? [];
+            $cicloLabs        = $cicloPlan['labs'] ?? [];
+            $cicloEfectos     = $cicloPlan['efectos_secundarios'] ?? [];
+            $cicloMonitoreo   = $cicloPlan['monitoreo_diario'] ?? [];
+            $cicloEmergencia  = $cicloPlan['emergencia'] ?? [];
+            $cicloCoachNotes  = $cicloPlan['notas_coach'] ?? null;
+
+            $phaseColors = [
+                'iniciación'  => ['bg' => 'bg-sky-500/10',     'border' => 'border-sky-500/25',    'text' => 'text-sky-400',     'dot' => 'bg-sky-400'],
+                'iniciacion'  => ['bg' => 'bg-sky-500/10',     'border' => 'border-sky-500/25',    'text' => 'text-sky-400',     'dot' => 'bg-sky-400'],
+                'pico'        => ['bg' => 'bg-wc-accent/8',    'border' => 'border-wc-accent/25',  'text' => 'text-wc-accent',   'dot' => 'bg-wc-accent'],
+                'tapering'    => ['bg' => 'bg-amber-500/10',   'border' => 'border-amber-500/25',  'text' => 'text-amber-400',   'dot' => 'bg-amber-400'],
+                'pct'         => ['bg' => 'bg-emerald-500/10', 'border' => 'border-emerald-500/25','text' => 'text-emerald-400', 'dot' => 'bg-emerald-400'],
+                'post'        => ['bg' => 'bg-emerald-500/10', 'border' => 'border-emerald-500/25','text' => 'text-emerald-400', 'dot' => 'bg-emerald-400'],
+            ];
+            $getPhaseColor = function(string $nombre) use ($phaseColors): array {
+                $lower = mb_strtolower($nombre);
+                foreach ($phaseColors as $key => $color) {
+                    if (str_contains($lower, $key)) return $color;
+                }
+                return ['bg' => 'bg-wc-bg-secondary', 'border' => 'border-wc-border', 'text' => 'text-wc-text-secondary', 'dot' => 'bg-wc-text-tertiary'];
+            };
+        @endphp
+
+        <div class="space-y-5">
+
+            {{-- Warning médico --}}
+            @if($cicloWarning)
+                <div class="rounded-xl border border-amber-500/30 bg-amber-500/8 p-4">
+                    <div class="flex items-start gap-3">
+                        <svg class="mt-0.5 h-5 w-5 shrink-0 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+                        <p class="text-xs leading-relaxed text-amber-300">{{ $cicloWarning }}</p>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Header del protocolo --}}
+            <div class="rounded-2xl border border-wc-border bg-wc-bg-tertiary p-5">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary">Protocolo Activo</p>
+                        <h2 class="mt-1 font-display text-2xl tracking-wide text-wc-text">{{ strtoupper($cicloNombre) }}</h2>
+                        @if($cicloDuracion)
+                            <p class="mt-1 text-sm text-wc-text-secondary">Duración: <span class="font-semibold text-wc-text">{{ $cicloDuracion }}</span></p>
+                        @endif
+                        @if($cicloDescripcion)
+                            <p class="mt-2 text-xs leading-relaxed text-wc-text-tertiary">{{ $cicloDescripcion }}</p>
+                        @endif
+                    </div>
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-wc-accent/10">
+                        <svg class="h-7 w-7 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 1-6.23-.693L5 14.5m14.8.8 1.402 1.402c1 1 .03 2.798-1.421 2.798H4.062c-1.451 0-2.42-1.798-1.42-2.798L4 14.5" /></svg>
+                    </div>
+                </div>
+
+                {{-- Metrics strip --}}
+                @if($cicloMetricas)
+                    <div class="mt-4 grid grid-cols-4 gap-2 border-t border-wc-border pt-4">
+                        @if(isset($cicloMetricas['duracion']))
+                            <div class="text-center"><p class="font-data text-lg font-black text-wc-accent">{{ $cicloMetricas['duracion'] }}</p><p class="text-[9px] uppercase tracking-wider text-wc-text-tertiary">Duración</p></div>
+                        @endif
+                        @if(isset($cicloMetricas['compuestos']))
+                            <div class="text-center"><p class="font-data text-lg font-black text-wc-text">{{ $cicloMetricas['compuestos'] }}</p><p class="text-[9px] uppercase tracking-wider text-wc-text-tertiary">Compuestos</p></div>
+                        @endif
+                        @if(isset($cicloMetricas['fases']))
+                            <div class="text-center"><p class="font-data text-lg font-black text-wc-text">{{ $cicloMetricas['fases'] }}</p><p class="text-[9px] uppercase tracking-wider text-wc-text-tertiary">Fases</p></div>
+                        @endif
+                        @if(isset($cicloMetricas['labs_requeridos']))
+                            <div class="text-center"><p class="font-data text-lg font-black text-wc-text">{{ $cicloMetricas['labs_requeridos'] }}</p><p class="text-[9px] uppercase tracking-wider text-wc-text-tertiary">Labs req.</p></div>
+                        @endif
+                    </div>
+                @endif
+            </div>
+
+            {{-- Compounds Table --}}
+            @if(count($cicloCompounds) > 0)
+                <div class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary">
+                    <div class="border-b border-wc-border px-5 py-4">
+                        <h3 class="font-display text-sm tracking-wider text-wc-text">COMPUESTOS</h3>
+                    </div>
+                    <div class="divide-y divide-wc-border">
+                        @foreach($cicloCompounds as $compound)
+                            @php
+                                $cNombre = is_array($compound) ? ($compound['nombre'] ?? $compound['name'] ?? '') : $compound;
+                                $cDosis  = is_array($compound) ? ($compound['dosis'] ?? $compound['dose'] ?? null) : null;
+                                $cFreq   = is_array($compound) ? ($compound['frecuencia'] ?? $compound['frequency'] ?? null) : null;
+                                $cSems   = is_array($compound) ? ($compound['semanas'] ?? $compound['weeks'] ?? null) : null;
+                                $cNotas  = is_array($compound) ? ($compound['notas'] ?? $compound['notes'] ?? null) : null;
+                            @endphp
+                            <div class="px-5 py-4">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="font-semibold text-wc-text">{{ $cNombre }}</span>
+                                    @if($cDosis)
+                                        <span class="rounded bg-wc-accent/10 px-2 py-0.5 font-data text-xs font-bold text-wc-accent">{{ $cDosis }}</span>
+                                    @endif
+                                    @if($cSems)
+                                        <span class="rounded-full border border-wc-border px-2 py-0.5 text-[10px] text-wc-text-tertiary">Sem {{ $cSems }}</span>
+                                    @endif
+                                </div>
+                                @if($cFreq)
+                                    <p class="mt-1 text-xs text-wc-text-secondary">🗓️ {{ $cFreq }}</p>
+                                @endif
+                                @if($cNotas)
+                                    <p class="mt-1 text-xs leading-relaxed text-wc-text-tertiary">{{ $cNotas }}</p>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            {{-- Phase timeline --}}
+            @if(count($cicloPhases) > 0)
+                <div>
+                    <h3 class="mb-3 font-display text-sm tracking-wider text-wc-text-tertiary uppercase px-1">FASES DEL CICLO</h3>
+                    {{-- Visual timeline bar --}}
+                    @php $totalPhases = count($cicloPhases); @endphp
+                    <div class="mb-4 flex h-2.5 w-full overflow-hidden rounded-full">
+                        @foreach($cicloPhases as $pi => $phase)
+                            @php
+                                $pc = $getPhaseColor($phase['nombre'] ?? $phase['name'] ?? '');
+                                $dotBg = $pc['dot'];
+                            @endphp
+                            <div class="h-full flex-1 {{ $dotBg }}" style="opacity: {{ 0.5 + ($pi / $totalPhases) * 0.5 }};"></div>
+                        @endforeach
+                    </div>
+                    <div class="grid gap-3 sm:grid-cols-2">
+                        @foreach($cicloPhases as $phase)
+                            @php
+                                $pNombre = is_array($phase) ? ($phase['nombre'] ?? $phase['name'] ?? '') : $phase;
+                                $pSems   = is_array($phase) ? ($phase['semanas'] ?? $phase['weeks'] ?? null) : null;
+                                $pDesc   = is_array($phase) ? ($phase['descripcion'] ?? $phase['description'] ?? null) : null;
+                                $pc      = $getPhaseColor($pNombre);
+                            @endphp
+                            <div class="rounded-xl border {{ $pc['border'] }} {{ $pc['bg'] }} p-4">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <div class="h-2 w-2 rounded-full {{ $pc['dot'] }} shrink-0"></div>
+                                    <p class="font-display text-sm tracking-wide {{ $pc['text'] }}">{{ strtoupper($pNombre) }}</p>
+                                    @if($pSems)
+                                        <span class="ml-auto text-[10px] text-wc-text-tertiary">Sem {{ $pSems }}</span>
+                                    @endif
+                                </div>
+                                @if($pDesc)
+                                    <p class="text-xs leading-relaxed text-wc-text-secondary">{{ $pDesc }}</p>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            {{-- PCT --}}
+            @if(count($cicloPct) > 0)
+                <div class="overflow-hidden rounded-xl border border-emerald-500/20 bg-emerald-500/5">
+                    <div class="border-b border-emerald-500/20 px-5 py-3">
+                        <h3 class="font-display text-sm tracking-wider text-emerald-400">POST CYCLE THERAPY (PCT)</h3>
+                    </div>
+                    <div class="divide-y divide-emerald-500/10">
+                        @foreach($cicloPct as $pct)
+                            @php
+                                $pctNombre = is_array($pct) ? ($pct['nombre'] ?? $pct['name'] ?? '') : $pct;
+                                $pctDosis  = is_array($pct) ? ($pct['dosis'] ?? $pct['dose'] ?? null) : null;
+                                $pctSems   = is_array($pct) ? ($pct['semanas'] ?? $pct['weeks'] ?? null) : null;
+                            @endphp
+                            <div class="flex items-center gap-4 px-5 py-3.5">
+                                <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
+                                    <svg class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="font-semibold text-wc-text text-sm">{{ $pctNombre }}</p>
+                                    @if($pctDosis)<p class="text-xs text-emerald-400 font-data font-bold mt-0.5">{{ $pctDosis }}</p>@endif
+                                    @if($pctSems)<p class="text-[11px] text-wc-text-tertiary mt-0.5">{{ $pctSems }}</p>@endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            {{-- Laboratorios requeridos --}}
+            @if(count($cicloLabs) > 0)
+                <div class="overflow-hidden rounded-xl border border-sky-500/20 bg-sky-500/5">
+                    <div class="border-b border-sky-500/20 px-5 py-3">
+                        <h3 class="font-display text-sm tracking-wider text-sky-400">ANÁLISIS DE LABORATORIO</h3>
+                    </div>
+                    <div class="divide-y divide-sky-500/10">
+                        @foreach($cicloLabs as $lab)
+                            @php
+                                $labNombre    = is_array($lab) ? ($lab['nombre'] ?? $lab['name'] ?? '') : $lab;
+                                $labCuando    = is_array($lab) ? ($lab['cuando'] ?? $lab['when'] ?? null) : null;
+                                $labMarcadores = is_array($lab) ? ($lab['marcadores'] ?? $lab['markers'] ?? null) : null;
+                            @endphp
+                            <div class="px-5 py-4">
+                                <div class="flex items-center justify-between gap-2">
+                                    <p class="font-semibold text-sky-300 text-sm">{{ $labNombre }}</p>
+                                    @if($labCuando)
+                                        <span class="shrink-0 rounded-full bg-sky-500/15 px-2.5 py-0.5 text-[10px] font-bold text-sky-400 uppercase tracking-wide">{{ $labCuando }}</span>
+                                    @endif
+                                </div>
+                                @if($labMarcadores)
+                                    <p class="mt-1.5 text-xs leading-relaxed text-wc-text-tertiary">{{ $labMarcadores }}</p>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            {{-- Monitoreo diario --}}
+            @if(count($cicloMonitoreo) > 0)
+                <div class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary">
+                    <div class="border-b border-wc-border px-5 py-4">
+                        <h3 class="font-display text-sm tracking-wider text-wc-text">MONITOREO DIARIO</h3>
+                    </div>
+                    <div class="divide-y divide-wc-border">
+                        @foreach($cicloMonitoreo as $item)
+                            @php
+                                $mItem       = is_array($item) ? ($item['item'] ?? '') : $item;
+                                $mFrecuencia = is_array($item) ? ($item['frecuencia'] ?? null) : null;
+                                $mDetalle    = is_array($item) ? ($item['detalle'] ?? null) : null;
+                            @endphp
+                            <div class="flex items-start gap-3 px-5 py-3.5">
+                                <div class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border border-wc-accent/40 bg-wc-accent/10">
+                                    <svg class="h-3 w-3 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75"/></svg>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-sm font-medium text-wc-text">{{ $mItem }}</p>
+                                        @if($mFrecuencia)
+                                            <span class="text-[10px] text-wc-text-tertiary">· {{ $mFrecuencia }}</span>
+                                        @endif
+                                    </div>
+                                    @if($mDetalle)
+                                        <p class="mt-0.5 text-xs text-wc-text-tertiary">{{ $mDetalle }}</p>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            {{-- Efectos secundarios y manejo --}}
+            @if(count($cicloEfectos) > 0)
+                <div x-data="{ openEfecto: null }" class="space-y-2">
+                    <h3 class="font-display text-sm tracking-wider text-wc-text-tertiary uppercase px-1">EFECTOS SECUNDARIOS & MANEJO</h3>
+                    @foreach($cicloEfectos as $idx => $efecto)
+                        @php
+                            $eEfecto = is_array($efecto) ? ($efecto['efecto'] ?? '') : $efecto;
+                            $eManejo = is_array($efecto) ? ($efecto['manejo'] ?? $efecto['management'] ?? null) : null;
+                        @endphp
+                        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
+                            <button
+                                @click="openEfecto = openEfecto === {{ $idx }} ? null : {{ $idx }}"
+                                class="flex w-full items-center justify-between px-5 py-3.5 text-left"
+                            >
+                                <span class="text-sm font-medium text-wc-text">{{ $eEfecto }}</span>
+                                <svg class="h-4 w-4 shrink-0 text-wc-text-tertiary transition-transform"
+                                    :class="openEfecto === {{ $idx }} ? 'rotate-180' : ''"
+                                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/>
+                                </svg>
+                            </button>
+                            <div x-show="openEfecto === {{ $idx }}"
+                                x-transition:enter="transition ease-out duration-150"
+                                x-transition:enter-start="opacity-0 -translate-y-1"
+                                x-transition:enter-end="opacity-100 translate-y-0"
+                                class="border-t border-wc-border px-5 py-3.5 bg-wc-bg-secondary">
+                                <p class="text-xs leading-relaxed text-wc-text-secondary">{{ $eManejo }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
+            {{-- Emergencias --}}
+            @if(count($cicloEmergencia) > 0)
+                <div class="overflow-hidden rounded-xl border border-red-500/30 bg-red-500/5">
+                    <div class="border-b border-red-500/30 px-5 py-3">
+                        <div class="flex items-center gap-2">
+                            <svg class="h-4 w-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z"/></svg>
+                            <h3 class="font-display text-sm tracking-wider text-red-400">SEÑALES DE EMERGENCIA</h3>
+                        </div>
+                    </div>
+                    <div class="divide-y divide-red-500/15">
+                        @foreach($cicloEmergencia as $emerg)
+                            @php
+                                $eSintoma = is_array($emerg) ? ($emerg['sintoma'] ?? '') : $emerg;
+                                $eAccion  = is_array($emerg) ? ($emerg['accion'] ?? null) : null;
+                            @endphp
+                            <div class="px-5 py-4">
+                                <p class="text-sm font-semibold text-red-300">⚠️ {{ $eSintoma }}</p>
+                                @if($eAccion)
+                                    <p class="mt-1.5 text-xs leading-relaxed text-wc-text-secondary">{{ $eAccion }}</p>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            {{-- Coach notes --}}
+            @if($cicloCoachNotes)
+                <div class="rounded-xl border-l-4 border-wc-accent bg-wc-bg-tertiary p-5">
+                    <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-wc-accent">Notas del coach</p>
+                    <p class="text-sm leading-relaxed text-wc-text-secondary">{{ $cicloCoachNotes }}</p>
+                </div>
+            @endif
+
+        </div>
+
         @else
+        {{-- ═══════════════════════════════════════════════════════════
+             CICLO FEMENINO — Tracker de ciclo menstrual (sin cambios)
+             ═══════════════════════════════════════════════════════════ --}}
         <div
             x-data="{
                 startDate: localStorage.getItem('wc_cycle_start') || '',
@@ -583,10 +1022,10 @@
                     const r = 54; const circ = 2 * Math.PI * r;
                     const cl = this.cycleLength; const gap = 2.5;
                     return [
-                        { color: '#f87171', start: 0,       days: 5        },
-                        { color: '#4ade80', start: 5,        days: 8        },
-                        { color: '#fbbf24', start: 13,       days: 3        },
-                        { color: '#c084fc', start: 16,       days: cl - 16  },
+                        { color: '#f87171', start: 0,  days: 5       },
+                        { color: '#4ade80', start: 5,  days: 8       },
+                        { color: '#fbbf24', start: 13, days: 3       },
+                        { color: '#c084fc', start: 16, days: cl - 16 },
                     ].map(p => {
                         const arcLen = Math.max(0, (p.days / cl) * circ - gap);
                         return {
@@ -615,69 +1054,35 @@
 
                 <template x-if="currentDay && phaseData">
                     <div class="flex flex-col items-center sm:flex-row sm:items-center sm:gap-8">
-                        {{-- Ring --}}
                         <div class="relative shrink-0">
                             <svg width="140" height="140" viewBox="0 0 140 140" class="-rotate-90">
-                                {{-- Track --}}
-                                <circle cx="70" cy="70" r="54" fill="none" stroke-width="10"
-                                    style="stroke: currentColor; opacity: 0.12;" class="text-wc-text"/>
-                                {{-- Phase arcs (always visible) --}}
+                                <circle cx="70" cy="70" r="54" fill="none" stroke-width="10" style="stroke: currentColor; opacity: 0.12;" class="text-wc-text"/>
                                 <template x-for="arc in phaseArcs" :key="arc.color">
-                                    <circle
-                                        cx="70" cy="70" r="54"
-                                        fill="none"
-                                        :stroke="arc.color"
-                                        stroke-width="10"
-                                        stroke-linecap="butt"
-                                        :stroke-dasharray="arc.dasharray"
-                                        :stroke-dashoffset="arc.dashoffset"
-                                    />
+                                    <circle cx="70" cy="70" r="54" fill="none" :stroke="arc.color" stroke-width="10" stroke-linecap="butt" :stroke-dasharray="arc.dasharray" :stroke-dashoffset="arc.dashoffset"/>
                                 </template>
-                                {{-- Current day dot marker --}}
                                 <template x-if="currentDay">
-                                    <circle
-                                        cx="70" cy="70" r="54"
-                                        fill="none"
-                                        stroke="white"
-                                        stroke-width="4"
-                                        stroke-linecap="round"
-                                        :stroke-dasharray="'4 ' + (2 * Math.PI * 54)"
-                                        :stroke-dashoffset="dotOffset"
-                                        style="filter: drop-shadow(0 0 4px rgba(255,255,255,0.9));"
-                                    />
+                                    <circle cx="70" cy="70" r="54" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" :stroke-dasharray="'4 ' + (2 * Math.PI * 54)" :stroke-dashoffset="dotOffset" style="filter: drop-shadow(0 0 4px rgba(255,255,255,0.9));"/>
                                 </template>
                             </svg>
-                            {{-- Center text --}}
                             <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
                                 <span class="text-2xl" x-text="phaseData.emoji"></span>
                                 <span class="font-data text-2xl font-black leading-none" :class="phaseData.text" x-text="currentDay"></span>
                                 <span class="text-[10px] text-wc-text-tertiary font-medium uppercase tracking-wide">día</span>
                             </div>
                         </div>
-
-                        {{-- Info --}}
                         <div class="mt-4 sm:mt-0 text-center sm:text-left flex-1">
                             <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary mb-1">Fase actual</p>
                             <h2 class="font-display text-4xl tracking-wide leading-none" :class="phaseData.text" x-text="phaseData.name"></h2>
-                            <p class="mt-2 font-data text-sm text-wc-text-secondary">
-                                Día <span class="font-bold text-wc-text" x-text="currentDay"></span>
-                                de <span x-text="cycleLength"></span>
-                            </p>
-                            <p class="mt-1 text-xs text-wc-text-tertiary">
-                                Próximo ciclo en <span x-text="daysUntilNext" class="font-semibold text-wc-text-secondary"></span> días
-                            </p>
-
-                            {{-- Energy dots --}}
+                            <p class="mt-2 font-data text-sm text-wc-text-secondary">Día <span class="font-bold text-wc-text" x-text="currentDay"></span> de <span x-text="cycleLength"></span></p>
+                            <p class="mt-1 text-xs text-wc-text-tertiary">Próximo ciclo en <span x-text="daysUntilNext" class="font-semibold text-wc-text-secondary"></span> días</p>
                             <div class="mt-3 flex items-center gap-1.5">
                                 <span class="text-[10px] font-medium text-wc-text-tertiary uppercase tracking-wider">Energía</span>
                                 <div class="flex gap-0.5">
                                     <template x-for="i in 10">
-                                        <div class="h-2 w-2 rounded-full transition-colors"
-                                            :class="i <= phaseData.energy ? phaseData.text.replace('text-','bg-') : 'bg-wc-bg-secondary'"></div>
+                                        <div class="h-2 w-2 rounded-full transition-colors" :class="i <= phaseData.energy ? phaseData.text.replace('text-','bg-') : 'bg-wc-bg-secondary'"></div>
                                     </template>
                                 </div>
                             </div>
-
                             <button @click="showConfig = !showConfig" class="mt-3 text-[11px] text-wc-text-tertiary hover:text-wc-text-secondary transition-colors flex items-center gap-1">
                                 <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
                                 Ajustar configuración
@@ -697,65 +1102,44 @@
                 </template>
             </div>
 
-            {{-- Config form (collapsible) --}}
+            {{-- Config form --}}
             <div x-show="showConfig"
                 x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0 -translate-y-2"
                 x-transition:enter-end="opacity-100 translate-y-0"
                 x-transition:leave="transition ease-in duration-150"
                 x-transition:leave-end="opacity-0 -translate-y-2"
-                class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5"
-            >
+                class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
                 <h3 class="font-display text-base tracking-wide text-wc-text mb-4">CONFIGURACIÓN DEL CICLO</h3>
                 <div class="grid gap-4 sm:grid-cols-2">
                     <div>
-                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">
-                            📅 Fecha de inicio del último ciclo
-                        </label>
-                        <input
-                            type="date"
-                            x-model="startDate"
-                            class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
-                        />
+                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">📅 Fecha de inicio del último ciclo</label>
+                        <input type="date" x-model="startDate" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"/>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">
-                            🔄 Duración del ciclo (días)
-                        </label>
-                        <input
-                            type="number"
-                            x-model.number="cycleLength"
-                            min="21" max="40"
-                            class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
-                        />
+                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">🔄 Duración del ciclo (días)</label>
+                        <input type="number" x-model.number="cycleLength" min="21" max="40" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"/>
                     </div>
                 </div>
                 <div class="mt-4 flex items-center gap-3">
-                    <button
-                        @click="save()"
-                        class="btn-press rounded-lg bg-wc-accent px-5 py-2 text-sm font-medium text-white hover:bg-wc-accent/90 transition-colors"
-                    >Guardar</button>
+                    <button @click="save()" class="btn-press rounded-lg bg-wc-accent px-5 py-2 text-sm font-medium text-white hover:bg-wc-accent/90 transition-colors">Guardar</button>
                     <p class="text-xs text-wc-text-tertiary">Los datos se guardan localmente en tu dispositivo.</p>
                 </div>
             </div>
 
-            {{-- Recommendations cards --}}
+            {{-- Recommendations --}}
             <template x-if="currentDay && phaseData">
                 <div class="grid gap-4 sm:grid-cols-2">
-                    {{-- Training --}}
                     <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
                         <div class="flex items-center gap-2 mb-3">
-                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-lg"
-                                :class="phaseData.bg">🏋️</span>
+                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-lg" :class="phaseData.bg">🏋️</span>
                             <h4 class="font-display text-sm tracking-wide text-wc-text">ENTRENAMIENTO</h4>
                         </div>
                         <p class="text-sm leading-relaxed text-wc-text-secondary" x-text="phaseData.train"></p>
                     </div>
-                    {{-- Nutrition --}}
                     <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
                         <div class="flex items-center gap-2 mb-3">
-                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-lg"
-                                :class="phaseData.bg">🥗</span>
+                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-lg" :class="phaseData.bg">🥗</span>
                             <h4 class="font-display text-sm tracking-wide text-wc-text">NUTRICIÓN</h4>
                         </div>
                         <p class="text-sm leading-relaxed text-wc-text-secondary" x-text="phaseData.nutrition"></p>
@@ -767,12 +1151,11 @@
             <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
                 <h3 class="font-display text-sm tracking-wide text-wc-text mb-4">FASES DEL CICLO</h3>
                 <div class="mb-4 flex h-3 w-full overflow-hidden rounded-full">
-                    <div class="h-full transition-all" style="width: 18%; background:#f87171;" title="Menstrual"></div>
-                    <div class="h-full transition-all" style="width: 32%; background:#4ade80;" title="Folicular"></div>
-                    <div class="h-full transition-all" style="width: 11%; background:#fbbf24;" title="Ovulatoria"></div>
-                    <div class="h-full flex-1" style="background:#c084fc;" title="Lutea"></div>
+                    <div class="h-full transition-all" style="width: 18%; background:#f87171;"></div>
+                    <div class="h-full transition-all" style="width: 32%; background:#4ade80;"></div>
+                    <div class="h-full transition-all" style="width: 11%; background:#fbbf24;"></div>
+                    <div class="h-full flex-1" style="background:#c084fc;"></div>
                 </div>
-                <p class="text-[9px] font-medium text-wc-text-tertiary mb-3 text-center uppercase tracking-widest">Toca una fase para ver detalle</p>
                 @php
                     $phaseCards = [
                         ['dot' => 'bg-red-400',    'text' => 'text-red-400',    'border' => 'border-red-500/25',    'bg_f' => 'bg-red-500/10',    'bg_b' => 'bg-red-500/20',    'name' => 'Menstrual',  'days' => '1–5',  'sub' => 'Descanso activo',    'train' => 'Yoga, caminata, movilidad. Reduce cargas. Recuperación activa prioritaria.', 'nutr' => 'Hierro, magnesio, omega-3 y alimentos anti-inflamatorios.'],
@@ -783,39 +1166,17 @@
                 @endphp
                 <div class="grid grid-cols-2 gap-3">
                     @foreach($phaseCards as $pc)
-                        <div
-                            x-data="{ flipped: false }"
-                            @click="flipped = !flipped"
-                            class="cursor-pointer select-none"
-                            style="perspective: 700px; height: 130px;"
-                        >
-                            <div
-                                style="position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.45s cubic-bezier(.4,0,.2,1);"
-                                :style="flipped ? 'transform:rotateY(180deg)' : 'transform:rotateY(0deg)'"
-                            >
-                                {{-- Front --}}
-                                <div class="absolute inset-0 rounded-xl p-3 {{ $pc['border'] }} {{ $pc['bg_f'] }}"
-                                    style="backface-visibility:hidden;">
-                                    <div class="flex items-center gap-1.5 mb-1.5">
-                                        <div class="h-2 w-2 shrink-0 rounded-full {{ $pc['dot'] }}"></div>
-                                        <p class="text-xs font-semibold {{ $pc['text'] }}">{{ $pc['name'] }}</p>
-                                    </div>
+                        <div x-data="{ flipped: false }" @click="flipped = !flipped" class="cursor-pointer select-none" style="perspective: 700px; height: 130px;">
+                            <div style="position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.45s cubic-bezier(.4,0,.2,1);" :style="flipped ? 'transform:rotateY(180deg)' : 'transform:rotateY(0deg)'">
+                                <div class="absolute inset-0 rounded-xl p-3 {{ $pc['border'] }} {{ $pc['bg_f'] }}" style="backface-visibility:hidden;">
+                                    <div class="flex items-center gap-1.5 mb-1.5"><div class="h-2 w-2 shrink-0 rounded-full {{ $pc['dot'] }}"></div><p class="text-xs font-semibold {{ $pc['text'] }}">{{ $pc['name'] }}</p></div>
                                     <p class="text-[10px] text-wc-text-tertiary">Días {{ $pc['days'] }}</p>
                                     <p class="text-[10px] text-wc-text-tertiary mt-0.5">{{ $pc['sub'] }}</p>
-                                    <div class="mt-3 flex items-center gap-1 {{ $pc['text'] }} opacity-50">
-                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 1 0-4.773-4.773 3.375 3.375 0 0 0 4.774 4.774ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-                                        <span class="text-[9px] font-medium">Ver detalle</span>
-                                    </div>
                                 </div>
-                                {{-- Back --}}
-                                <div class="absolute inset-0 overflow-y-auto rounded-xl p-3 {{ $pc['border'] }} {{ $pc['bg_b'] }}"
-                                    style="backface-visibility:hidden; transform:rotateY(180deg);">
+                                <div class="absolute inset-0 overflow-y-auto rounded-xl p-3 {{ $pc['border'] }} {{ $pc['bg_b'] }}" style="backface-visibility:hidden; transform:rotateY(180deg);">
                                     <p class="text-[10px] font-bold {{ $pc['text'] }} mb-1">🏋️ Entreno</p>
                                     <p class="text-[10px] text-wc-text-secondary leading-relaxed">{{ $pc['train'] }}</p>
-                                    <div class="mt-2 border-t {{ $pc['border'] }} pt-2">
-                                        <p class="text-[10px] font-bold {{ $pc['text'] }} mb-1">🥗 Nutrición</p>
-                                        <p class="text-[10px] text-wc-text-secondary leading-relaxed">{{ $pc['nutr'] }}</p>
-                                    </div>
+                                    <div class="mt-2 border-t {{ $pc['border'] }} pt-2"><p class="text-[10px] font-bold {{ $pc['text'] }} mb-1">🥗 Nutrición</p><p class="text-[10px] text-wc-text-secondary leading-relaxed">{{ $pc['nutr'] }}</p></div>
                                 </div>
                             </div>
                         </div>
