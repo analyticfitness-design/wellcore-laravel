@@ -3,9 +3,17 @@
     {{-- Greeting section --}}
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-            <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">
-                {{ $greeting }}, {{ $clientName }}
-            </h1>
+            <h1
+                x-data="{
+                    g: '',
+                    init() {
+                        const h = new Date().getHours();
+                        this.g = h < 12 ? 'Buenos días' : h < 18 ? 'Buenas tardes' : 'Buenas noches';
+                    }
+                }"
+                x-text="g + ', {{ $clientName }}'"
+                class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl"
+            >{{ $greeting }}, {{ $clientName }}</h1>
             <div class="mt-2 flex items-center gap-2">
                 <span class="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-wc-accent/15 to-amber-400/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-wc-accent">
                     <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
