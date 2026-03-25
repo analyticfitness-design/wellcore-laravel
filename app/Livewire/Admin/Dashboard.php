@@ -6,6 +6,7 @@ use App\Models\Checkin;
 use App\Models\Client;
 use App\Models\Inscription;
 use App\Models\Payment;
+use App\Models\Referral;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -322,6 +323,13 @@ class Dashboard extends Component
 
     public function render()
     {
-        return view('livewire.admin.dashboard');
+        $pendingRewards = Referral::where('reward_granted', false)
+            ->whereNotIn('status', ['denied'])
+            ->with('referrer:id,name,email')
+            ->latest('created_at')
+            ->take(5)
+            ->get();
+
+        return view('livewire.admin.dashboard', compact('pendingRewards'));
     }
 }

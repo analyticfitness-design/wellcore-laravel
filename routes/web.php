@@ -250,6 +250,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/ai-generator', AIPlanGenerator::class)->name('ai-generator')->lazy();
         Route::get('/rise', RiseManagement::class)->name('rise');
         Route::get('/tickets', \App\Livewire\Admin\TicketManager::class)->name('tickets');
+        Route::get('/referral-rewards', \App\Livewire\Admin\ReferralRewards::class)->name('referral-rewards')->middleware('role:superadmin');
         Route::get('/chat', ChatAnalytics::class)->name('chat');
         Route::get('/tools', AdminTools::class)->name('tools')->lazy();
         Route::get('/settings', AdminSettings::class)->name('settings');

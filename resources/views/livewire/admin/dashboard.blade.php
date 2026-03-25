@@ -92,6 +92,21 @@
         </div>
     </div>
 
+    {{-- Pending Rewards Alert --}}
+    @if($pendingRewards->count() > 0)
+    <div class="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4">
+        <div class="flex items-center justify-between mb-3">
+            <p class="font-semibold text-amber-500">{{ $pendingRewards->count() }} recompensa(s) de referidos pendiente(s)</p>
+            <a href="{{ route('admin.referral-rewards') }}" class="text-sm text-wc-accent hover:underline">Ver todas &rarr;</a>
+        </div>
+        <div class="space-y-1.5">
+            @foreach($pendingRewards as $r)
+                <p class="text-sm text-wc-text-secondary">{{ $r->referrer?->name ?? 'Desconocido' }} &rarr; {{ $r->referred_email }}</p>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
     {{-- Charts Section: Revenue + Client Growth + Plan Distribution --}}
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
 
