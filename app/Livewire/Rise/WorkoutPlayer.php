@@ -124,8 +124,24 @@ class WorkoutPlayer extends BaseWorkoutPlayer
             'notes'            => $notes,
         ]);
 
-        $session->calculateTotals();
-        $this->updateClientXp($session->awardXp());
+        try {
+            $session->calculateTotals();
+        } catch (\Throwable $e) {
+            \Log::warning('Rise\WorkoutPlayer: calculateTotals failed', [
+                'session_id' => $session->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $this->updateClientXp($session->awardXp());
+        } catch (\Throwable $e) {
+            \Log::warning('Rise\WorkoutPlayer: awardXp/updateClientXp failed', [
+                'session_id' => $session->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
         $this->isActive = false;
 
         $this->redirect(route('rise.dashboard'), navigate: true);

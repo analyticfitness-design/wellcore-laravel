@@ -575,18 +575,21 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                                         </svg>
                                     </button>
-                                    <div
+                                    <button
                                         x-show="completed"
-                                        class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500 text-white"
+                                        @click="$wire.uncompleteSet({{ $exIndex }}, {{ $setNum }}); completed = false"
+                                        class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500 text-white hover:bg-orange-500/80 hover:scale-90 transition-all"
                                         :class="justCompleted && 'animate-bounce'"
                                         x-transition:enter="transition ease-out duration-300"
                                         x-transition:enter-start="scale-50 opacity-0"
                                         x-transition:enter-end="scale-100 opacity-100"
+                                        title="Toca para desmarcar"
+                                        type="button"
                                     >
                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                                         </svg>
-                                    </div>
+                                    </button>
                                 </div>
                             </div>
                         @endfor

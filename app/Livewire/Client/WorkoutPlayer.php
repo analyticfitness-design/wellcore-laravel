@@ -591,6 +591,33 @@ class WorkoutPlayer extends Component
     }
 
     /**
+     * Unmark a set as completed — allows the user to correct weight/reps.
+     */
+    public function uncompleteSet(int $exerciseIndex, int $setNumber): void
+    {
+        if (! $this->isActive || ! $this->sessionId) {
+            return;
+        }
+
+        $exercise = $this->exercises[$exerciseIndex] ?? null;
+        if (! $exercise) {
+            return;
+        }
+
+        $exerciseName = $exercise['nombre'] ?? 'Ejercicio';
+
+        WorkoutLog::where('session_id', $this->sessionId)
+            ->where('exercise_name', $exerciseName)
+            ->where('set_number', $setNumber)
+            ->where('block_order', $exerciseIndex)
+            ->update(['completed' => false]);
+
+        if (isset($this->setData[$exerciseIndex][$setNumber])) {
+            $this->setData[$exerciseIndex][$setNumber]['completed'] = false;
+        }
+    }
+
+    /**
      * Complete the entire workout — finalize session, award XP, update streak.
      */
     public function completeWorkout(?string $feeling = null, ?string $notes = null): void
@@ -617,13 +644,25 @@ class WorkoutPlayer extends Component
         ]);
 
         // Calculate totals from logs
-        $session->calculateTotals();
+        try {
+            $session->calculateTotals();
+        } catch (\Throwable $e) {
+            \Log::warning('WorkoutPlayer: calculateTotals failed', [
+                'session_id' => $session->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
-        // Award XP
-        $xpEarned = $session->awardXp();
-
-        // Update client XP + streak
-        $this->updateClientXp($xpEarned);
+        // Award XP and update streak (non-critical — redirect happens regardless)
+        try {
+            $xpEarned = $session->awardXp();
+            $this->updateClientXp($xpEarned);
+        } catch (\Throwable $e) {
+            \Log::warning('WorkoutPlayer: awardXp/updateClientXp failed', [
+                'session_id' => $session->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         $this->isActive = false;
 
