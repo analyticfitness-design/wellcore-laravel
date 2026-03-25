@@ -186,6 +186,35 @@ class CoachManagement extends Component
         $this->closeEdit();
     }
 
+    // --- Delete Coach ---
+
+    public function deleteCoach(int $adminId): void
+    {
+        $current = auth('wellcore')->user();
+
+        // Prevent deleting yourself
+        if ($current->id === $adminId) {
+            return;
+        }
+
+        $admin = Admin::find($adminId);
+        if (! $admin) {
+            return;
+        }
+
+        // Prevent deleting superadmins
+        $roleVal = $admin->role instanceof \App\Enums\UserRole ? $admin->role->value : $admin->role;
+        if ($roleVal === 'superadmin') {
+            return;
+        }
+
+        // Clean up related records
+        \App\Models\AuthToken::where('user_id', $adminId)->where('user_type', 'admin')->delete();
+        \App\Models\CoachProfile::where('admin_id', $adminId)->delete();
+
+        $admin->delete();
+    }
+
     // --- Toggle visibility ---
 
     public function toggleVisibility(int $adminId): void
