@@ -5,7 +5,7 @@ namespace App\Livewire\Client;
 use App\Models\BiometricLog;
 use App\Models\Checkin;
 use App\Models\Metric;
-use App\Models\TrainingLog;
+use App\Models\WorkoutSession;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
@@ -167,10 +167,10 @@ class MetricsTracker extends Component
             ] : null;
 
             // 4. Training volume — last 12 weeks (Line chart)
-            $trainingVolume = TrainingLog::where('client_id', $clientId)
+            $trainingVolume = WorkoutSession::where('client_id', $clientId)
                 ->where('completed', true)
-                ->where('log_date', '>=', now()->subWeeks(12))
-                ->selectRaw('YEARWEEK(log_date, 1) as yw, COUNT(*) as sessions')
+                ->where('session_date', '>=', now()->subWeeks(12))
+                ->selectRaw('YEARWEEK(session_date, 1) as yw, COUNT(*) as sessions')
                 ->groupBy('yw')
                 ->orderBy('yw')
                 ->get()

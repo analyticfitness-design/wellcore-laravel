@@ -79,7 +79,7 @@
         </div>
 
         {{-- Navigation --}}
-        <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+        <nav class="flex-1 overflow-y-auto px-3 py-4 pb-8 space-y-6">
             {{-- General --}}
             <div>
                 <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">{{ __('dashboard.admin.sec_general') }}</p>
