@@ -30,17 +30,17 @@
             </div>
         </div>
 
-        {{-- Inscriptions Today --}}
+        {{-- Actions Today (training, checkins, habits, photos, biometrics) --}}
         <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
             <div class="flex items-center gap-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-sky-500/10">
-                    <svg class="h-5 w-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" />
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-500/10">
+                    <svg class="h-5 w-5 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 6.75 6.75 0 009 16.5a.75.75 0 01.75-.75h4.5a.75.75 0 01.75.75 6.75 6.75 0 003.362-11.286z" />
                     </svg>
                 </div>
                 <div>
-                    <p class="text-2xl font-bold font-data text-wc-text">{{ $inscriptionsToday }}</p>
-                    <p class="text-xs text-wc-text-tertiary">Inscripciones hoy</p>
+                    <p class="text-2xl font-bold font-data text-wc-text">{{ $actionsToday }}</p>
+                    <p class="text-xs text-wc-text-tertiary">Acciones hoy</p>
                 </div>
             </div>
         </div>
@@ -88,6 +88,10 @@
                 <option value="payments">Pagos</option>
                 <option value="checkins">Check-ins</option>
                 <option value="messages">Mensajes</option>
+                <option value="training">Entrenamientos</option>
+                <option value="photos">Fotos progreso</option>
+                <option value="habits">Habitos</option>
+                <option value="biometrics">Metricas</option>
                 <option value="community">Comunidad</option>
             </select>
         </div>
@@ -118,92 +122,40 @@
 
             <div class="space-y-1">
                 @foreach($feed as $index => $item)
+                    @php
+                        $colorMap = [
+                            'sky' => ['dot' => 'bg-sky-500 ring-sky-500/20', 'bg' => 'bg-sky-500/10', 'text' => 'text-sky-400'],
+                            'emerald' => ['dot' => 'bg-emerald-500 ring-emerald-500/20', 'bg' => 'bg-emerald-500/10', 'text' => 'text-emerald-400'],
+                            'orange' => ['dot' => 'bg-orange-500 ring-orange-500/20', 'bg' => 'bg-orange-500/10', 'text' => 'text-orange-400'],
+                            'violet' => ['dot' => 'bg-violet-500 ring-violet-500/20', 'bg' => 'bg-violet-500/10', 'text' => 'text-violet-400'],
+                            'red' => ['dot' => 'bg-red-500 ring-red-500/20', 'bg' => 'bg-red-500/10', 'text' => 'text-red-400'],
+                            'pink' => ['dot' => 'bg-pink-500 ring-pink-500/20', 'bg' => 'bg-pink-500/10', 'text' => 'text-pink-400'],
+                            'yellow' => ['dot' => 'bg-yellow-500 ring-yellow-500/20', 'bg' => 'bg-yellow-500/10', 'text' => 'text-yellow-400'],
+                            'cyan' => ['dot' => 'bg-cyan-500 ring-cyan-500/20', 'bg' => 'bg-cyan-500/10', 'text' => 'text-cyan-400'],
+                            'amber' => ['dot' => 'bg-amber-500 ring-amber-500/20', 'bg' => 'bg-amber-500/10', 'text' => 'text-amber-400'],
+                            'teal' => ['dot' => 'bg-teal-500 ring-teal-500/20', 'bg' => 'bg-teal-500/10', 'text' => 'text-teal-400'],
+                        ];
+                        $c = $colorMap[$item['color']] ?? $colorMap['sky'];
+                    @endphp
                     <div class="relative flex items-start gap-4 py-3 pl-12 pr-4 rounded-lg transition-colors hover:bg-wc-bg-tertiary/50 sm:pl-14"
                          wire:key="feed-{{ $index }}-{{ $item['type'] }}-{{ $item['timestamp'] ?? $index }}">
 
                         {{-- Colored dot --}}
                         <div class="absolute left-3.5 top-4 sm:left-4.5">
-                            @switch($item['color'])
-                                @case('sky')
-                                    <div class="h-3 w-3 rounded-full border-2 border-wc-bg bg-sky-500 ring-2 ring-sky-500/20"></div>
-                                    @break
-                                @case('emerald')
-                                    <div class="h-3 w-3 rounded-full border-2 border-wc-bg bg-emerald-500 ring-2 ring-emerald-500/20"></div>
-                                    @break
-                                @case('orange')
-                                    <div class="h-3 w-3 rounded-full border-2 border-wc-bg bg-orange-500 ring-2 ring-orange-500/20"></div>
-                                    @break
-                                @case('violet')
-                                    <div class="h-3 w-3 rounded-full border-2 border-wc-bg bg-violet-500 ring-2 ring-violet-500/20"></div>
-                                    @break
-                                @case('red')
-                                    <div class="h-3 w-3 rounded-full border-2 border-wc-bg bg-red-500 ring-2 ring-red-500/20"></div>
-                                    @break
-                                @case('pink')
-                                    <div class="h-3 w-3 rounded-full border-2 border-wc-bg bg-pink-500 ring-2 ring-pink-500/20"></div>
-                                    @break
-                            @endswitch
+                            <div class="h-3 w-3 rounded-full border-2 border-wc-bg {{ $c['dot'] }} ring-2"></div>
                         </div>
 
                         {{-- Icon circle --}}
                         <div class="shrink-0">
-                            @switch($item['color'])
-                                @case('sky')
-                                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-500/10">
-                                        @include('livewire.admin.live-feed-icon', ['icon' => $item['icon'], 'colorClass' => 'text-sky-400'])
-                                    </div>
-                                    @break
-                                @case('emerald')
-                                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10">
-                                        @include('livewire.admin.live-feed-icon', ['icon' => $item['icon'], 'colorClass' => 'text-emerald-400'])
-                                    </div>
-                                    @break
-                                @case('orange')
-                                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-orange-500/10">
-                                        @include('livewire.admin.live-feed-icon', ['icon' => $item['icon'], 'colorClass' => 'text-orange-400'])
-                                    </div>
-                                    @break
-                                @case('violet')
-                                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-500/10">
-                                        @include('livewire.admin.live-feed-icon', ['icon' => $item['icon'], 'colorClass' => 'text-violet-400'])
-                                    </div>
-                                    @break
-                                @case('red')
-                                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-red-500/10">
-                                        @include('livewire.admin.live-feed-icon', ['icon' => $item['icon'], 'colorClass' => 'text-red-400'])
-                                    </div>
-                                    @break
-                                @case('pink')
-                                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-pink-500/10">
-                                        @include('livewire.admin.live-feed-icon', ['icon' => $item['icon'], 'colorClass' => 'text-pink-400'])
-                                    </div>
-                                    @break
-                            @endswitch
+                            <div class="flex h-9 w-9 items-center justify-center rounded-lg {{ $c['bg'] }}">
+                                @include('livewire.admin.live-feed-icon', ['icon' => $item['icon'], 'colorClass' => $c['text']])
+                            </div>
                         </div>
 
                         {{-- Content --}}
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2">
-                                @switch($item['color'])
-                                    @case('sky')
-                                        <span class="inline-flex rounded-full bg-sky-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-sky-400">{{ $item['title'] }}</span>
-                                        @break
-                                    @case('emerald')
-                                        <span class="inline-flex rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-400">{{ $item['title'] }}</span>
-                                        @break
-                                    @case('orange')
-                                        <span class="inline-flex rounded-full bg-orange-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-orange-400">{{ $item['title'] }}</span>
-                                        @break
-                                    @case('violet')
-                                        <span class="inline-flex rounded-full bg-violet-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-violet-400">{{ $item['title'] }}</span>
-                                        @break
-                                    @case('red')
-                                        <span class="inline-flex rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-red-400">{{ $item['title'] }}</span>
-                                        @break
-                                    @case('pink')
-                                        <span class="inline-flex rounded-full bg-pink-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-pink-400">{{ $item['title'] }}</span>
-                                        @break
-                                @endswitch
+                                <span class="inline-flex rounded-full {{ $c['bg'] }} px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider {{ $c['text'] }}">{{ $item['title'] }}</span>
                                 <span class="text-xs text-wc-text-tertiary">{{ $item['time_ago'] }}</span>
                             </div>
                             <p class="mt-1 text-sm text-wc-text-secondary truncate">{{ $item['description'] }}</p>
