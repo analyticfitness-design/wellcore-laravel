@@ -57,14 +57,23 @@ class ForgotPassword extends Component
         $resetUrl = url('/reset-password/' . $token . '?email=' . urlencode($this->email));
         $clientName = $client->name;
 
-        Mail::send('emails.password-reset', [
-            'token' => $token,
-            'name' => $clientName,
-            'resetUrl' => $resetUrl,
-        ], function ($message) use ($clientName) {
-            $message->to($this->email, $clientName)
-                ->subject('Restablecer Contrasena — WellCore Fitness');
-        });
+        try {
+            Mail::send('emails.password-reset', [
+                'token' => $token,
+                'name' => $clientName,
+                'resetUrl' => $resetUrl,
+            ], function ($message) use ($clientName) {
+                $message->to($this->email, $clientName)
+                    ->subject('Restablecer Contrasena — WellCore Fitness');
+            });
+        } catch (\Exception $e) {
+            \Log::error('Password reset email failed', [
+                'email' => $this->email,
+                'error' => $e->getMessage(),
+            ]);
+            $this->errorMsg = 'No pudimos enviar el email. Intenta de nuevo en unos minutos.';
+            return;
+        }
 
         $this->sent = true;
     }
