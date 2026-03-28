@@ -255,6 +255,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/tools', AdminTools::class)->name('tools')->lazy();
         Route::get('/campaign-tracker', \App\Livewire\Admin\CampaignTracker::class)->name('campaign-tracker');
         Route::get('/settings', AdminSettings::class)->name('settings');
+        Route::get('/send-invitation', \App\Livewire\Admin\SendPlanInvitation::class)->name('send-invitation')->middleware('role:superadmin');
 
         // CSV Export routes
         Route::get('/export/clients', [ExportController::class, 'clients'])->name('export.clients');

@@ -219,6 +219,16 @@
                     </li>
                     @if($admin && $admin->role === \App\Enums\UserRole::Superadmin)
                     <li>
+                        <a wire:navigate href="{{ route('admin.send-invitation') }}"
+                           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
+                                  {{ request()->routeIs('admin.send-invitation') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
+                            <svg class="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                            </svg>
+                            Enviar Invitacion
+                        </a>
+                    </li>
+                    <li>
                         <a wire:navigate href="{{ route('admin.referral-rewards') }}"
                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('admin.referral-rewards') ? 'border-l-2 border-red-500 bg-red-500/10 text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text' }}">
