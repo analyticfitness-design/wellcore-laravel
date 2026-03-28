@@ -12,7 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->validateCsrfTokens(except: ['webhooks/*', 'api/chat', 'api/newsletter']);
-        $middleware->encryptCookies(except: ['wc_locale', 'wc_country', 'cookieConsent', 'wc_pwa_dismissed']);
+        $middleware->encryptCookies(except: ['wc_locale', 'wc_country', 'cookieConsent', 'wc_pwa_dismissed', 'wc_visitor_id']);
 
         $middleware->redirectGuestsTo('/login');
         $middleware->redirectUsersTo('/client');
@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,
             \App\Http\Middleware\TrackReferral::class,
+            \App\Http\Middleware\TrackUtmParameters::class,
             \App\Http\Middleware\ContentSecurityPolicy::class,
         ]);
 

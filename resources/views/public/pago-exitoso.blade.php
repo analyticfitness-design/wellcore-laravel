@@ -10,6 +10,20 @@
         $ref = $reference ?? request('ref', '');
     @endphp
 
+    {{-- Meta Pixel: Purchase event (only on approved payments) --}}
+    @if($estado === 'aprobado' && config('app.meta_pixel_id'))
+    <script>
+        if (typeof fbq === 'function') {
+            fbq('track', 'Purchase', {
+                value: {{ (float) preg_replace('/[^0-9.]/', '', $monto ?: '0') }},
+                currency: 'COP',
+                content_name: '{{ addslashes($planName ?? "Plan WellCore") }}',
+                content_type: 'product',
+            });
+        }
+    </script>
+    @endif
+
     <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
 
         @if($estado === 'aprobado')

@@ -14,6 +14,7 @@ use App\Models\WellcoreNotification;
 use App\Enums\PaymentStatus;
 use App\Enums\UserType;
 use App\Services\AuditService;
+use App\Services\MetaConversionsService;
 use App\Services\WellCoinsService;
 
 class WompiService
@@ -427,6 +428,25 @@ class WompiService
                 'client_id' => $payment->client_id,
                 'reference' => $payment->wompi_reference,
             ]);
+
+            // 6. Meta Conversions API: server-side Purchase event
+            if (MetaConversionsService::isConfigured()) {
+                app(MetaConversionsService::class)->trackPurchase($payment);
+            }
+
+            // 7. Update page visit conversion (UTM attribution)
+            $clientId = $payment->client_id;
+            if ($clientId) {
+                \App\Models\PageVisit::where('client_id', $clientId)
+                    ->whereNull('converted_at')
+                    ->latest()
+                    ->limit(1)
+                    ->update([
+                        'payment_id' => $payment->id,
+                        'converted_at' => now(),
+                        'conversion_type' => 'payment',
+                    ]);
+            }
         } catch (\Throwable $e) {
             Log::error('WompiService::runPostApprovalAutomation failed', [
                 'payment_id' => $payment->id,

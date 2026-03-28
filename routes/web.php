@@ -253,6 +253,7 @@ Route::middleware('auth:wellcore')->group(function () {
         Route::get('/referral-rewards', \App\Livewire\Admin\ReferralRewards::class)->name('referral-rewards')->middleware('role:superadmin');
         Route::get('/chat', ChatAnalytics::class)->name('chat');
         Route::get('/tools', AdminTools::class)->name('tools')->lazy();
+        Route::get('/campaign-tracker', \App\Livewire\Admin\CampaignTracker::class)->name('campaign-tracker');
         Route::get('/settings', AdminSettings::class)->name('settings');
 
         // CSV Export routes

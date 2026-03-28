@@ -52,4 +52,11 @@ return [
         'dev_id' => env('TERRA_DEV_ID', ''),
     ],
 
+    'meta' => [
+        'pixel_id' => env('META_PIXEL_ID'),
+        'access_token' => env('META_CONVERSIONS_TOKEN'),
+        'test_event_code' => env('META_TEST_EVENT_CODE'),
+        'api_version' => env('META_API_VERSION', 'v21.0'),
+    ],
+
 ];

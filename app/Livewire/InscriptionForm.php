@@ -201,6 +201,30 @@ class InscriptionForm extends Component
             session()->forget('referral_code');
         }
 
+        // Track UTM attribution
+        $utmData = session('utm_data');
+        if ($utmData) {
+            \App\Models\PageVisit::where('session_id', session()->getId())
+                ->whereNull('converted_at')
+                ->latest()
+                ->limit(1)
+                ->update([
+                    'inscription_id' => $inscription->id,
+                    'converted_at' => now(),
+                    'conversion_type' => 'inscription',
+                ]);
+        }
+
+        // Meta Conversions API: server-side Lead event
+        try {
+            $capi = app(\App\Services\MetaConversionsService::class);
+            if ($capi::isConfigured()) {
+                $capi->trackLead($inscription);
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Meta CAPI Lead event failed', ['error' => $e->getMessage()]);
+        }
+
         $this->submitted = true;
     }
 

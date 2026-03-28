@@ -1,5 +1,16 @@
 <div class="min-h-screen bg-wc-bg">
     @if($submitted)
+        {{-- Meta Pixel: Lead event --}}
+        @if(config('app.meta_pixel_id'))
+        <script>
+            if (typeof fbq === 'function') {
+                fbq('track', 'Lead', {
+                    content_name: '{{ $plan ?? "WellCore" }}',
+                    content_category: 'Inscription',
+                });
+            }
+        </script>
+        @endif
         {{-- Success --}}
         <div class="mx-auto max-w-2xl px-4 py-20 text-center sm:px-6 lg:px-8">
             <div class="rounded-2xl border border-wc-accent/30 bg-wc-bg-tertiary p-10 sm:p-16">
