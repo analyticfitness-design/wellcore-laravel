@@ -3,7 +3,7 @@
  * Cache-first for static assets, network-first for API/pages
  * Offline fallback for navigation requests
  */
-const CACHE_NAME = 'wellcore-v2';
+const CACHE_NAME = 'wellcore-v3';
 const STATIC_ASSETS = [
     '/manifest.json',
     '/icons/icon-192x192.png',
@@ -39,6 +39,14 @@ self.addEventListener('fetch', (event) => {
 
     // Skip chrome-extension and other non-http requests
     if (!url.protocol.startsWith('http')) return;
+
+    // Skip Livewire requests — they handle their own caching/routing
+    if (url.pathname.includes('/livewire')) return;
+
+    // Skip dynamic form routes that break with SW interception
+    if (url.pathname.startsWith('/unirse/')) return;
+    if (url.pathname.startsWith('/inscripcion')) return;
+    if (url.pathname.startsWith('/pagar')) return;
 
     // Cache-first for static assets (CSS, JS, images, fonts)
     if (
