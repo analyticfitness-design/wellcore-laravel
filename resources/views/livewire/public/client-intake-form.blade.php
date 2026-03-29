@@ -899,7 +899,7 @@
                         <div class="relative">
                             <input
                                 :type="showPassword ? 'text' : 'password'"
-                                wire:model="password"
+                                wire:model.live="password"
                                 x-model="password"
                                 autocomplete="new-password"
                                 placeholder="Minimo 8 caracteres"
@@ -960,7 +960,7 @@
                         <div class="relative">
                             <input
                                 :type="showConfirm ? 'text' : 'password'"
-                                wire:model="password_confirmation"
+                                wire:model.live="password_confirmation"
                                 x-model="passwordConfirm"
                                 autocomplete="new-password"
                                 placeholder="Repite tu contrasena"
@@ -1012,7 +1012,7 @@
                 @if($planType === 'rise')
                 <div class="rounded-2xl border border-orange-500/20 bg-orange-500/5 p-5">
                     <label class="flex cursor-pointer items-start gap-3">
-                        <input type="checkbox" wire:model="compromiso_30dias"
+                        <input type="checkbox" wire:model.live="compromiso_30dias"
                                class="mt-0.5 h-4 w-4 shrink-0 rounded border-wc-border bg-wc-bg-tertiary text-wc-accent focus:ring-wc-accent focus:ring-offset-wc-bg" />
                         <div>
                             <p class="text-sm font-semibold text-orange-300">Compromiso de 30 dias</p>
@@ -1026,7 +1026,7 @@
                 {{-- Terminos y condiciones --}}
                 <div class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-5">
                     <label class="flex cursor-pointer items-start gap-3">
-                        <input type="checkbox" wire:model="acepta_terminos"
+                        <input type="checkbox" wire:model.live="acepta_terminos"
                                class="mt-0.5 h-4 w-4 shrink-0 rounded border-wc-border bg-wc-bg-tertiary text-wc-accent focus:ring-wc-accent focus:ring-offset-wc-bg" />
                         <p class="text-sm text-wc-text-secondary">
                             He leido y acepto los
