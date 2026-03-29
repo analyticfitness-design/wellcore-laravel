@@ -30,6 +30,11 @@ class ClientTable extends Component
     // Deactivate confirmation state
     public bool    $showDeactivateModal  = false;
     public ?int    $deactivateClientId   = null;
+
+    // Delete confirmation state
+    public bool    $showDeleteModal  = false;
+    public ?int    $deleteClientId   = null;
+    public string  $deleteClientName = '';
     public string  $deactivateClientName = '';
 
     public function updatingSearch(): void
@@ -125,6 +130,71 @@ class ClientTable extends Component
         $this->cancelDeactivate();
 
         $this->dispatch('toast', type: 'success', message: "Cliente \"{$name}\" marcado como inactivo.");
+    }
+
+    // --- Delete client permanently (superadmin only) ---
+
+    public function confirmDelete(int $clientId): void
+    {
+        $admin = auth('wellcore')->user();
+
+        if (! $admin || $admin->role !== UserRole::Superadmin) {
+            $this->dispatch('toast', type: 'error', message: 'No tienes permisos para realizar esta accion.');
+            return;
+        }
+
+        $client = Client::find($clientId);
+
+        if (! $client) {
+            $this->dispatch('toast', type: 'error', message: 'Cliente no encontrado.');
+            return;
+        }
+
+        $this->deleteClientId   = $clientId;
+        $this->deleteClientName = $client->name ?? 'Cliente';
+        $this->showDeleteModal  = true;
+    }
+
+    public function cancelDelete(): void
+    {
+        $this->showDeleteModal  = false;
+        $this->deleteClientId   = null;
+        $this->deleteClientName = '';
+    }
+
+    public function deleteClient(): void
+    {
+        $admin = auth('wellcore')->user();
+
+        if (! $admin || $admin->role !== UserRole::Superadmin) {
+            $this->dispatch('toast', type: 'error', message: 'No tienes permisos para realizar esta accion.');
+            $this->cancelDelete();
+            return;
+        }
+
+        if (! $this->deleteClientId) {
+            $this->cancelDelete();
+            return;
+        }
+
+        $client = Client::find($this->deleteClientId);
+
+        if (! $client) {
+            $this->dispatch('toast', type: 'error', message: 'Cliente no encontrado.');
+            $this->cancelDelete();
+            return;
+        }
+
+        $name = $client->name ?? 'Cliente';
+
+        // Delete related records
+        \App\Models\ClientProfile::where('client_id', $client->id)->delete();
+        \App\Models\AuthToken::where('user_id', $client->id)->where('user_type', 'client')->delete();
+        $client->delete();
+
+        $this->cancelDelete();
+
+        $this->dispatch('toast', type: 'success', message: "Cliente \"{$name}\" eliminado permanentemente.");
     }
 
     public function render()
