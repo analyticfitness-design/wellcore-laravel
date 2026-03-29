@@ -52,6 +52,26 @@ class PlanInvitation extends Mailable implements ShouldQueue
     {
         $baseUrl = 'https://wellcorefitness.com';
 
+        $loginUrl = "{$baseUrl}/login";
+
+        // Flujo comun post-pago para todos los planes online
+        $onlineSteps = [
+            ['title' => 'Haz clic en el boton de abajo', 'desc' => 'Te lleva directo a la pagina de pago seguro. Completa tus datos personales.'],
+            ['title' => 'Paga con Wompi', 'desc' => 'Tarjeta de credito/debito, Nequi, PSE o Bancolombia. Pago 100% seguro. Recibiras confirmacion inmediata.'],
+            ['title' => 'Crea tu contrasena', 'desc' => 'Despues del pago, se crea tu cuenta. Establece tu contrasena para ingresar a la plataforma.'],
+            ['title' => 'Inicia sesion en wellcorefitness.com', 'desc' => 'Ingresa con tu email y contrasena en wellcorefitness.com/login'],
+            ['title' => 'Sube tus fotos y completa tus medidas', 'desc' => 'En tu dashboard, sube fotos de progreso (frente, lado, espalda) y registra tus medidas actuales.'],
+            ['title' => 'Tu coach revisa y te contacta', 'desc' => 'Tu coach asignado revisa tu perfil completo y te contacta por WhatsApp para comenzar.'],
+        ];
+
+        $presencialSteps = [
+            ['title' => 'Haz clic en el boton de abajo', 'desc' => 'Te lleva a la pagina de inscripcion. Completa tus datos y realiza el pago.'],
+            ['title' => 'Paga con Wompi', 'desc' => 'Tarjeta de credito/debito, Nequi, PSE o Bancolombia. Pago 100% seguro. Confirmacion inmediata.'],
+            ['title' => 'Crea tu contrasena e inicia sesion', 'desc' => 'Se crea tu cuenta. Ingresa en wellcorefitness.com/login con tu email y contrasena.'],
+            ['title' => 'Sube fotos y completa tus medidas', 'desc' => 'En tu dashboard, sube fotos de progreso y registra tus medidas para que tu coach te conozca.'],
+            ['title' => 'Tu coach te contacta para agendar', 'desc' => 'Tu coach te escribe por WhatsApp para coordinar horarios y ubicacion de tus sesiones presenciales.'],
+        ];
+
         return [
             'rise' => [
                 'name' => 'RISE',
@@ -60,9 +80,10 @@ class PlanInvitation extends Mailable implements ShouldQueue
                 'price' => '$99.900',
                 'priceSuffix' => 'COP',
                 'priceUsd' => '~$25 USD',
-                'billingNote' => 'Sin compromisos a largo plazo. Pago unico de $99.900 COP.',
-                'ctaText' => 'Comenzar mi programa RISE',
-                'ctaUrl' => "{$baseUrl}/rise-enroll",
+                'billingNote' => 'Pago unico de $99.900 COP. Sin suscripcion.',
+                'ctaText' => 'PAGAR Y COMENZAR RISE',
+                'ctaUrl' => "{$baseUrl}/pagar?plan=rise",
+                'loginUrl' => $loginUrl,
                 'intro' => 'Te invitamos a dar el primer paso hacia tu transformacion fisica con el programa RISE de WellCore Fitness — 30 dias disenados para cambiar tu cuerpo y tus habitos.',
                 'features' => [
                     'Plan de entrenamiento progresivo de 4 semanas',
@@ -72,12 +93,8 @@ class PlanInvitation extends Mailable implements ShouldQueue
                     'Acceso completo a la plataforma WellCore',
                     'Comunidad de apoyo y motivacion',
                 ],
-                'steps' => [
-                    ['title' => 'Inscribete y completa tu perfil', 'desc' => 'Registra tus objetivos, experiencia y medidas actuales para personalizar tu programa.'],
-                    ['title' => 'Recibe tu plan personalizado', 'desc' => 'Tu programa de entrenamiento y nutricion se adapta a ti — no es un plan generico.'],
-                    ['title' => 'Entrena, registra y transforma', 'desc' => 'Registra tus entrenamientos en la plataforma y observa tu progreso en tiempo real.'],
-                ],
-                'followUp' => 'En WellCore no te dejamos solo. Nuestro sistema de seguimiento incluye <strong style="color:#FAFAFA;">tracking de entrenamientos en tiempo real</strong>, <strong style="color:#FAFAFA;">metricas de progreso</strong> (peso, medidas, rendimiento), y <strong style="color:#FAFAFA;">check-ins periodicos</strong> donde evaluas tu bienestar y tu coach ajusta el plan. Todo basado en datos, no en suposiciones.',
+                'steps' => $onlineSteps,
+                'followUp' => 'En WellCore no te dejamos solo. Tu coach revisa tus <strong style="color:#FAFAFA;">entrenamientos registrados</strong> en la plataforma, analiza tus <strong style="color:#FAFAFA;">fotos de progreso</strong> y <strong style="color:#FAFAFA;">medidas</strong>, y te da retroalimentacion personalizada. Todo basado en datos, no en suposiciones.',
                 'isPremium' => false,
                 'locationNote' => null,
             ],
@@ -89,8 +106,9 @@ class PlanInvitation extends Mailable implements ShouldQueue
                 'priceSuffix' => 'COP/mes',
                 'priceUsd' => '~$65 USD',
                 'billingNote' => '$299.000 COP/mes. Cancela cuando quieras.',
-                'ctaText' => 'Comenzar plan Esencial',
+                'ctaText' => 'PAGAR Y COMENZAR ESENCIAL',
                 'ctaUrl' => "{$baseUrl}/pagar?plan=esencial",
+                'loginUrl' => $loginUrl,
                 'intro' => 'Te invitamos a comenzar tu viaje de transformacion con el plan Esencial de WellCore Fitness — coaching online personalizado con entrenamiento disenado para tus objetivos.',
                 'features' => [
                     'Entrenamiento 100% personalizado por tu coach',
@@ -100,12 +118,8 @@ class PlanInvitation extends Mailable implements ShouldQueue
                     'Acceso completo a la plataforma WellCore',
                     '11 funcionalidades de coaching incluidas',
                 ],
-                'steps' => [
-                    ['title' => 'Inscribete y completa tu perfil', 'desc' => 'Registra tus objetivos, nivel de experiencia y medidas actuales.'],
-                    ['title' => 'Tu coach crea tu plan personalizado', 'desc' => 'Un coach certificado disena tu rutina de entrenamiento especifica para tus metas.'],
-                    ['title' => 'Entrena, registra y avanza', 'desc' => 'Registra cada sesion en la plataforma y mide tu progreso semana a semana.'],
-                ],
-                'followUp' => 'Cada semana realizas un <strong style="color:#FAFAFA;">check-in</strong> donde reportas tu bienestar, fotos de progreso y sensaciones. Tu coach revisa tus <strong style="color:#FAFAFA;">entrenamientos registrados</strong> en la plataforma y te da retroalimentacion. Todo se mide: peso, rendimiento, adherencia. <strong style="color:#FAFAFA;">Datos reales, resultados reales.</strong>',
+                'steps' => $onlineSteps,
+                'followUp' => 'Cada semana realizas un <strong style="color:#FAFAFA;">check-in</strong> con fotos de progreso y reporte de bienestar. Tu coach revisa tus <strong style="color:#FAFAFA;">entrenamientos y medidas</strong> en la plataforma y ajusta tu plan. <strong style="color:#FAFAFA;">Datos reales, resultados reales.</strong>',
                 'isPremium' => false,
                 'locationNote' => null,
             ],
@@ -117,8 +131,9 @@ class PlanInvitation extends Mailable implements ShouldQueue
                 'priceSuffix' => 'COP/mes',
                 'priceUsd' => '~$95 USD',
                 'billingNote' => '$399.000 COP/mes. Sin permanencia minima.',
-                'ctaText' => 'Comenzar plan Metodo',
+                'ctaText' => 'PAGAR Y COMENZAR METODO',
                 'ctaUrl' => "{$baseUrl}/pagar?plan=metodo",
+                'loginUrl' => $loginUrl,
                 'intro' => 'Te invitamos a experimentar el coaching integral con el plan Metodo de WellCore Fitness — nuestro plan mas popular que combina entrenamiento, nutricion y ajustes semanales con tu coach.',
                 'features' => [
                     'Entrenamiento 100% personalizado por tu coach',
@@ -130,12 +145,8 @@ class PlanInvitation extends Mailable implements ShouldQueue
                     'Dashboard con metricas y analisis de rendimiento',
                     '21 funcionalidades de coaching incluidas',
                 ],
-                'steps' => [
-                    ['title' => 'Inscribete y completa tu perfil', 'desc' => 'Registra tus objetivos, historial de entrenamiento, preferencias alimenticias y medidas.'],
-                    ['title' => 'Tu coach disena entrenamiento + nutricion', 'desc' => 'Recibes un plan integral: rutinas de entreno + plan de comidas adaptado a tu estilo de vida.'],
-                    ['title' => 'Seguimiento semanal con ajustes', 'desc' => 'Cada semana tu coach revisa tu progreso y ajusta entreno y nutricion segun tus resultados.'],
-                ],
-                'followUp' => 'Con el plan Metodo, cada semana realizas un <strong style="color:#FAFAFA;">check-in completo</strong> con fotos de progreso y reporte de bienestar. Tu coach analiza tus <strong style="color:#FAFAFA;">datos de entrenamiento y nutricion</strong> registrados en la plataforma y realiza <strong style="color:#FAFAFA;">ajustes personalizados</strong> a tu plan. Entrenamiento y alimentacion trabajando juntos — ese es el metodo.',
+                'steps' => $onlineSteps,
+                'followUp' => 'Con el plan Metodo, cada semana haces un <strong style="color:#FAFAFA;">check-in completo</strong> con fotos y bienestar. Tu coach analiza <strong style="color:#FAFAFA;">entrenamiento y nutricion</strong> y realiza <strong style="color:#FAFAFA;">ajustes personalizados</strong>. Entrenamiento y alimentacion trabajando juntos — ese es el metodo.',
                 'isPremium' => false,
                 'locationNote' => null,
             ],
@@ -147,8 +158,9 @@ class PlanInvitation extends Mailable implements ShouldQueue
                 'priceSuffix' => 'COP/mes',
                 'priceUsd' => '~$150 USD',
                 'billingNote' => '$549.000 COP/mes. La inversion mas completa en tu transformacion.',
-                'ctaText' => 'Comenzar plan Elite',
+                'ctaText' => 'PAGAR Y COMENZAR ELITE',
                 'ctaUrl' => "{$baseUrl}/pagar?plan=elite",
+                'loginUrl' => $loginUrl,
                 'intro' => 'Te invitamos a vivir la experiencia definitiva de transformacion con el plan Elite de WellCore Fitness — nuestro plan premium con atencion 1:1, nutricion completa y analisis avanzados.',
                 'features' => [
                     'Entrenamiento 100% personalizado por tu coach',
@@ -162,12 +174,8 @@ class PlanInvitation extends Mailable implements ShouldQueue
                     'Prioridad maxima de atencion con tu coach',
                     '29 funcionalidades de coaching incluidas',
                 ],
-                'steps' => [
-                    ['title' => 'Inscribete y completa tu perfil avanzado', 'desc' => 'Objetivos, historial medico, laboratorios, ciclo hormonal y preferencias completas.'],
-                    ['title' => 'Plan integral personalizado al 100%', 'desc' => 'Entrenamiento + nutricion + suplementacion + habitos — todo adaptado a tu biologia.'],
-                    ['title' => 'Seguimiento 1:1 y ajustes semanales', 'desc' => 'Check-ins personalizados con tu coach, analisis de datos y ajustes basados en ciencia.'],
-                ],
-                'followUp' => 'El plan Elite incluye el nivel mas alto de atencion. Realizas <strong style="color:#FAFAFA;">check-ins 1:1</strong> con tu coach, quien analiza tus <strong style="color:#FAFAFA;">resultados de laboratorio</strong> y <strong style="color:#FAFAFA;">ciclo hormonal</strong> para optimizar tu plan. Cada dato importa: metricas de entrenamiento, composicion corporal, nutricion, sueno y estres. <strong style="color:#FAFAFA;">Ciencia aplicada a tu transformacion.</strong>',
+                'steps' => $onlineSteps,
+                'followUp' => 'El plan Elite incluye <strong style="color:#FAFAFA;">check-ins 1:1</strong>, analisis de <strong style="color:#FAFAFA;">laboratorios</strong> y <strong style="color:#FAFAFA;">ciclo hormonal</strong>. Cada dato importa: entrenamiento, composicion corporal, nutricion, sueno y estres. <strong style="color:#FAFAFA;">Ciencia aplicada a tu transformacion.</strong>',
                 'isPremium' => true,
                 'locationNote' => null,
             ],
@@ -179,9 +187,10 @@ class PlanInvitation extends Mailable implements ShouldQueue
                 'priceSuffix' => 'COP/mes',
                 'priceUsd' => 'segun frecuencia de sesiones',
                 'billingNote' => 'Desde $450.000 COP/mes segun frecuencia.',
-                'ctaText' => 'Inscribirme al plan Presencial',
+                'ctaText' => 'INSCRIBIRME Y PAGAR PRESENCIAL',
                 'ctaUrl' => "{$baseUrl}/presencial/inscripcion",
-                'intro' => 'Te invitamos a entrenar cara a cara con el plan Presencial de WellCore Fitness — sesiones en persona con tu coach en Bucaramanga, combinadas con el poder de nuestra plataforma digital.',
+                'loginUrl' => $loginUrl,
+                'intro' => 'Te invitamos a entrenar cara a cara con el plan Presencial de WellCore Fitness — sesiones en persona con tu coach en Bucaramanga, combinadas con nuestra plataforma digital.',
                 'features' => [
                     '<strong style="color:#FAFAFA;">Sesiones presenciales</strong> con tu coach en Bucaramanga',
                     'Plan nutricional personalizado completo',
@@ -191,14 +200,10 @@ class PlanInvitation extends Mailable implements ShouldQueue
                     'Seguimiento presencial + digital combinado',
                     'Correccion de tecnica en persona',
                 ],
-                'steps' => [
-                    ['title' => 'Inscribete y agenda tu primera sesion', 'desc' => 'Completa tu perfil con objetivos y experiencia. Tu coach te contacta para agendar.'],
-                    ['title' => 'Entrena con tu coach en persona', 'desc' => 'Sesiones presenciales donde tu coach corrige tecnica y supervisa cada movimiento.'],
-                    ['title' => 'Seguimiento digital entre sesiones', 'desc' => 'Registra tu nutricion y entrenamientos en la plataforma los dias que no ves a tu coach.'],
-                ],
-                'followUp' => 'El plan Presencial combina lo mejor de ambos mundos: <strong style="color:#FAFAFA;">sesiones cara a cara</strong> donde tu coach corrige tu tecnica en tiempo real, mas <strong style="color:#FAFAFA;">seguimiento digital</strong> a traves de la plataforma WellCore los dias restantes. Tu nutricion, habitos y suplementacion se monitorean digitalmente. <strong style="color:#FAFAFA;">Entrenamiento presencial + tecnologia = resultados maximos.</strong>',
+                'steps' => $presencialSteps,
+                'followUp' => 'Combinas <strong style="color:#FAFAFA;">sesiones cara a cara</strong> con <strong style="color:#FAFAFA;">seguimiento digital</strong>. Tu coach corrige tecnica en persona y monitorea nutricion, habitos y suplementacion digitalmente. <strong style="color:#FAFAFA;">Presencial + tecnologia = resultados maximos.</strong>',
                 'isPremium' => false,
-                'locationNote' => '&#128205; <strong style="color:#FAFAFA;">Ubicacion:</strong> Bucaramanga, Colombia. Contactanos por WhatsApp para coordinar horarios y ubicacion exacta.',
+                'locationNote' => '&#128205; <strong style="color:#FAFAFA;">Ubicacion:</strong> Bucaramanga, Colombia. Tu coach te contactara por WhatsApp para coordinar.',
             ],
         ];
     }

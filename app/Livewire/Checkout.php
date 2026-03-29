@@ -42,6 +42,7 @@ class Checkout extends Component
     public string $paymentError = '';
 
     protected array $plans = [
+        'rise' => ['name' => 'RISE', 'price' => 99900, 'desc' => 'Programa de 30 dias — entrenamiento + nutricion + habitos'],
         'esencial' => ['name' => 'Esencial', 'price' => 299000, 'desc' => 'Entrenamiento personalizado + guia nutricional basica'],
         'metodo' => ['name' => 'Metodo', 'price' => 399000, 'desc' => 'Entreno + Nutricion + Ajustes semanales con coach'],
         'elite' => ['name' => 'Elite', 'price' => 549000, 'desc' => 'Todo incluido + Check-ins 1:1 + Protocolo habitos'],

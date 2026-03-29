@@ -84,8 +84,9 @@
           </td></tr>
         </table>
 
-        {{-- ═══ COMO FUNCIONA ═══ --}}
-        <h3 style="color:#FAFAFA;font-size:16px;font-weight:bold;margin:0 0 16px 0;">Como funciona nuestra plataforma:</h3>
+        {{-- ═══ TU RUTA DE INSCRIPCION ═══ --}}
+        <h3 style="color:#FAFAFA;font-size:16px;font-weight:bold;margin:0 0 4px 0;">Tu ruta de inscripcion:</h3>
+        <p style="color:rgba(250,250,250,0.4);font-size:12px;margin:0 0 16px 0;">Sigue estos pasos — es rapido y seguro.</p>
         <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
           @foreach($plan['steps'] as $i => $step)
           <tr>
@@ -141,6 +142,36 @@
 
       </div>
     </div>
+  </td></tr>
+
+  {{-- ═══ REFERENCIA PERMANENTE ═══ --}}
+  <tr><td>
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+      <tr><td style="background:#18181B;border-radius:12px;padding:24px;border:1px solid rgba(255,255,255,0.06);">
+        <p style="color:#DC2626;font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;margin:0 0 16px 0;">&#128278; Guarda este correo como referencia</p>
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="padding:6px 0;color:rgba(250,250,250,0.5);font-size:13px;width:120px;vertical-align:top;">Tu plan:</td>
+            <td style="padding:6px 0;color:#FAFAFA;font-size:13px;font-weight:bold;">{{ $plan['name'] }} — {{ $plan['price'] }} {{ $plan['priceSuffix'] }}</td>
+          </tr>
+          <tr>
+            <td style="padding:6px 0;color:rgba(250,250,250,0.5);font-size:13px;vertical-align:top;">Link de pago:</td>
+            <td style="padding:6px 0;font-size:13px;"><a href="{{ $plan['ctaUrl'] }}" style="color:#DC2626;text-decoration:none;word-break:break-all;">{{ $plan['ctaUrl'] }}</a></td>
+          </tr>
+          <tr>
+            <td style="padding:6px 0;color:rgba(250,250,250,0.5);font-size:13px;vertical-align:top;">Login:</td>
+            <td style="padding:6px 0;font-size:13px;"><a href="{{ $plan['loginUrl'] }}" style="color:#DC2626;text-decoration:none;">wellcorefitness.com/login</a></td>
+          </tr>
+          <tr>
+            <td style="padding:6px 0;color:rgba(250,250,250,0.5);font-size:13px;vertical-align:top;">Soporte:</td>
+            <td style="padding:6px 0;font-size:13px;"><a href="mailto:info@wellcorefitness.com" style="color:#DC2626;text-decoration:none;">info@wellcorefitness.com</a></td>
+          </tr>
+        </table>
+        <p style="color:rgba(250,250,250,0.3);font-size:11px;margin:12px 0 0 0;line-height:1.5;">
+          Si pierdes conexion o cierras la pagina, vuelve a este correo y usa los links de arriba para retomar donde lo dejaste.
+        </p>
+      </td></tr>
+    </table>
   </td></tr>
 
   {{-- ═══ TRUST BAR ═══ --}}
