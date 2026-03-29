@@ -390,6 +390,7 @@ class ClientIntakeForm extends Component
                 'edad'            => $this->edad,
                 'peso'            => $this->peso,
                 'altura'          => $this->altura,
+                'genero'          => $this->genero,
                 'objetivo'        => $this->objetivo_principal,
                 'ciudad'          => $this->ciudad,
                 'whatsapp'        => $this->whatsapp,
