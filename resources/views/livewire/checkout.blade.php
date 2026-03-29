@@ -151,30 +151,28 @@
                     @if($wompiPublicKey && $paymentReference)
                         <div class="mt-8 rounded-xl border border-wc-border bg-wc-bg-tertiary p-6"
                              x-data="wompiCheckout()"
-                             x-init="initWidget()">
-                            {{-- Loading state --}}
-                            <div x-show="loading" class="py-8 text-center">
-                                <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-wc-accent border-t-transparent"></div>
-                                <p class="mt-4 text-sm text-wc-text-secondary">Cargando pasarela de pago...</p>
-                            </div>
+                             x-init="loadWompi()">
 
-                            {{-- Wompi widget mounts here --}}
-                            <div x-show="!loading">
-                                <form id="wompi-checkout-form">
-                                    <script
-                                        src="https://checkout.wompi.co/widget.js"
-                                        data-render="button"
-                                        data-public-key="{{ $wompiPublicKey }}"
-                                        data-currency="{{ $currency }}"
-                                        data-amount-in-cents="{{ $amountInCents }}"
-                                        data-reference="{{ $paymentReference }}"
-                                        data-signature:integrity="{{ $wompiSignature }}"
-                                        data-redirect-url="{{ $wompiRedirectUrl }}"
-                                        data-customer-data:email="{{ $email }}"
-                                        data-customer-data:full-name="{{ $nombre }}"
-                                        data-customer-data:phone-number="{{ $whatsapp }}"
-                                    ></script>
-                                </form>
+                            {{-- Pay button --}}
+                            <div class="text-center">
+                                <button type="button"
+                                        x-on:click="openWompi()"
+                                        x-bind:disabled="!ready"
+                                        class="inline-flex w-full items-center justify-center gap-3 rounded-xl bg-wc-accent px-8 py-4 text-lg font-bold text-white shadow-lg shadow-red-500/25 transition hover:bg-red-700 disabled:cursor-wait disabled:opacity-50">
+                                    <template x-if="!ready">
+                                        <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                        </svg>
+                                    </template>
+                                    <template x-if="ready">
+                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+                                        </svg>
+                                    </template>
+                                    <span x-text="ready ? 'Pagar ${{ number_format($total, 0, ',', '.') }} COP' : 'Cargando pasarela...'"></span>
+                                </button>
+                                <p class="mt-3 text-xs text-wc-text-tertiary">Se abrira la ventana segura de Wompi para completar tu pago.</p>
                             </div>
 
                             {{-- Payment info --}}
@@ -294,24 +292,55 @@
     @script
     <script>
         Alpine.data('wompiCheckout', () => ({
-            loading: true,
+            ready: false,
+            checkout: null,
 
-            initWidget() {
-                // Wait for Wompi script to load
-                this.loading = true;
-                const checkWidget = setInterval(() => {
-                    const btn = document.querySelector('#wompi-checkout-form button, #wompi-checkout-form .wompi-button');
-                    if (btn || document.querySelector('[data-render="button"]')) {
-                        this.loading = false;
-                        clearInterval(checkWidget);
+            loadWompi() {
+                // Load Wompi widget.js dynamically (works with Livewire)
+                if (window.WidgetCheckout) {
+                    this.ready = true;
+                    return;
+                }
+
+                const script = document.createElement('script');
+                script.src = 'https://checkout.wompi.co/widget.js';
+                script.onload = () => { this.ready = true; };
+                script.onerror = () => {
+                    console.error('Failed to load Wompi widget script');
+                    this.ready = true; // Let them click anyway to see error
+                };
+                document.head.appendChild(script);
+
+                // Safety timeout
+                setTimeout(() => { this.ready = true; }, 6000);
+            },
+
+            openWompi() {
+                if (!window.WidgetCheckout) {
+                    alert('La pasarela de pago no cargo correctamente. Recarga la pagina e intenta de nuevo.');
+                    return;
+                }
+
+                this.checkout = new WidgetCheckout({
+                    currency: @json($currency),
+                    amountInCents: @json($amountInCents),
+                    reference: @json($paymentReference),
+                    publicKey: @json($wompiPublicKey),
+                    signature: { integrity: @json($wompiSignature) },
+                    redirectUrl: @json($wompiRedirectUrl),
+                    customerData: {
+                        email: @json($email),
+                        fullName: @json($nombre),
+                        phoneNumber: @json($whatsapp),
+                    },
+                });
+
+                this.checkout.open(function(result) {
+                    var transaction = result.transaction;
+                    if (transaction && transaction.redirectUrl) {
+                        window.location.href = transaction.redirectUrl;
                     }
-                }, 500);
-
-                // Fallback: stop loading after 8 seconds
-                setTimeout(() => {
-                    this.loading = false;
-                    clearInterval(checkWidget);
-                }, 8000);
+                });
             },
         }));
     </script>
