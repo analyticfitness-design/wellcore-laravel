@@ -355,7 +355,7 @@ class ClientIntakeForm extends Component
                     'email'        => $this->email,
                     'password_hash' => Hash::make($this->password),
                     'plan'         => $this->planType,
-                    'status'       => 'active',
+                    'status'       => 'activo',
                     'fecha_inicio' => now()->toDateString(),
                     'city'         => $this->ciudad,
                     'onboarding_completed' => 0,
