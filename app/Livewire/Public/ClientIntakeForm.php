@@ -335,6 +335,14 @@ class ClientIntakeForm extends Component
     {
         $this->validatePassword();
 
+        // Re-check email uniqueness right before creating (prevent race condition / 500)
+        if (Client::where('email', $this->email)->exists()) {
+            $this->addError('email', 'Este email ya tiene una cuenta registrada. Intenta iniciar sesion en wellcorefitness.com/login');
+            $this->step = 2; // Go back to datos step to show the error
+            return;
+        }
+
+        try {
         DB::transaction(function () {
             // Generate unique client code
             do {
@@ -404,6 +412,14 @@ class ClientIntakeForm extends Component
         $this->submitted = true;
 
         $this->redirect(route('client.dashboard'), navigate: true);
+        } catch (\Illuminate\Database\QueryException $e) {
+            if (str_contains($e->getMessage(), 'Duplicate') || str_contains($e->getMessage(), 'unique')) {
+                $this->addError('email', 'Este email ya esta registrado. Inicia sesion en wellcorefitness.com/login');
+                $this->step = 2;
+            } else {
+                throw $e;
+            }
+        }
     }
 
     // ---------------------------------------------------------------------------
