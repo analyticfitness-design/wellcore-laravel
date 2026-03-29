@@ -900,7 +900,7 @@
                             <input
                                 :type="showPassword ? 'text' : 'password'"
                                 wire:model.live="password"
-                                x-model="password"
+                                x-on:input="password = $event.target.value"
                                 autocomplete="new-password"
                                 placeholder="Minimo 8 caracteres"
                                 class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-3 pr-12 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
@@ -961,7 +961,7 @@
                             <input
                                 :type="showConfirm ? 'text' : 'password'"
                                 wire:model.live="password_confirmation"
-                                x-model="passwordConfirm"
+                                x-on:input="passwordConfirm = $event.target.value"
                                 autocomplete="new-password"
                                 placeholder="Repite tu contrasena"
                                 class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-3 pr-12 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
