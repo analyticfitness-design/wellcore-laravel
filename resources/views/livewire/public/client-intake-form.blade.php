@@ -350,7 +350,7 @@
                             <div class="flex gap-3">
                                 @foreach(['hombre' => 'Hombre', 'mujer' => 'Mujer', 'otro' => 'Otro'] as $val => $label)
                                 <label class="flex flex-1 cursor-pointer items-center justify-center rounded-lg border py-2.5 text-xs font-medium transition-all
-                                    {{ $genero === $val ? 'border-wc-accent bg-wc-accent/10 text-wc-accent' : 'border-wc-border bg-wc-bg-tertiary text-wc-text-secondary hover:border-wc-accent/50' }}">
+                                    {{ $genero == $val ? 'border-wc-accent bg-wc-accent/10 text-wc-accent' : 'border-wc-border bg-wc-bg-tertiary text-wc-text-secondary hover:border-wc-accent/50' }}">
                                     <input type="radio" wire:model.live="genero" value="{{ $val }}" class="sr-only" />
                                     {{ $label }}
                                 </label>
@@ -432,11 +432,11 @@
                     <div class="grid gap-3 sm:grid-cols-2">
                         @foreach($objetivos as $val => [$titulo, $desc])
                         <label class="flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-all
-                            {{ $objetivo_principal === $val ? 'border-wc-accent bg-wc-accent/5' : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-accent/40' }}">
+                            {{ $objetivo_principal == $val ? 'border-wc-accent bg-wc-accent/5' : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-accent/40' }}">
                             <input type="radio" wire:model.live="objetivo_principal" value="{{ $val }}" class="sr-only" />
                             <span class="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors
-                                {{ $objetivo_principal === $val ? 'border-wc-accent' : 'border-wc-border' }}">
-                                @if($objetivo_principal === $val)
+                                {{ $objetivo_principal == $val ? 'border-wc-accent' : 'border-wc-border' }}">
+                                @if($objetivo_principal == $val)
                                 <span class="h-2 w-2 rounded-full bg-wc-accent"></span>
                                 @endif
                             </span>
@@ -465,7 +465,7 @@
                         @endphp
                         @foreach($niveles as $val => [$titulo, $desc])
                         <label class="flex cursor-pointer flex-col gap-2 rounded-xl border p-4 transition-all
-                            {{ $nivel_experiencia === $val ? 'border-wc-accent bg-wc-accent/5' : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-accent/40' }}">
+                            {{ $nivel_experiencia == $val ? 'border-wc-accent bg-wc-accent/5' : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-accent/40' }}">
                             <input type="radio" wire:model.live="nivel_experiencia" value="{{ $val }}" class="sr-only" />
                             <p class="text-sm font-bold text-wc-text">{{ $titulo }}</p>
                             <p class="text-xs leading-relaxed text-wc-text-secondary">{{ $desc }}</p>
@@ -494,7 +494,7 @@
                         <label class="cursor-pointer">
                             <input type="radio" wire:model.live="lugar_entreno" value="{{ $val }}" class="sr-only" />
                             <span class="inline-flex flex-col items-center gap-1 rounded-xl border px-4 py-3 text-center transition-all
-                                {{ $lugar_entreno === $val ? 'border-wc-accent bg-wc-accent/10 text-wc-accent' : 'border-wc-border bg-wc-bg-tertiary text-wc-text-secondary hover:border-wc-accent/40' }}">
+                                {{ $lugar_entreno == $val ? 'border-wc-accent bg-wc-accent/10 text-wc-accent' : 'border-wc-border bg-wc-bg-tertiary text-wc-text-secondary hover:border-wc-accent/40' }}">
                                 <span class="text-sm font-semibold">{{ $titulo }}</span>
                                 <span class="text-[10px]">{{ $desc }}</span>
                             </span>
@@ -537,7 +537,7 @@
                         <label class="cursor-pointer">
                             <input type="radio" wire:model.live="duracion_sesion" value="{{ $val }}" class="sr-only" />
                             <span class="inline-flex items-center justify-center rounded-xl border px-6 py-3 text-sm font-semibold transition-all
-                                {{ $duracion_sesion === $val ? 'border-wc-accent bg-wc-accent/10 text-wc-accent' : 'border-wc-border bg-wc-bg-tertiary text-wc-text-secondary hover:border-wc-accent/40' }}">
+                                {{ $duracion_sesion == $val ? 'border-wc-accent bg-wc-accent/10 text-wc-accent' : 'border-wc-border bg-wc-bg-tertiary text-wc-text-secondary hover:border-wc-accent/40' }}">
                                 {{ $label }}
                             </span>
                         </label>
@@ -555,15 +555,15 @@
                     <div class="flex gap-3">
                         @foreach(['no' => 'No tengo lesiones', 'si' => 'Si, tengo alguna'] as $val => $label)
                         <label class="flex flex-1 cursor-pointer items-center gap-2 rounded-xl border px-4 py-3 transition-all
-                            {{ $tiene_lesiones === $val ? 'border-wc-accent bg-wc-accent/5' : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-accent/40' }}">
+                            {{ $tiene_lesiones == $val ? 'border-wc-accent bg-wc-accent/5' : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-accent/40' }}">
                             <input type="radio" wire:model.live="tiene_lesiones" value="{{ $val }}" class="sr-only" />
                             <span class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors
-                                {{ $tiene_lesiones === $val ? 'border-wc-accent' : 'border-wc-border' }}">
-                                @if($tiene_lesiones === $val)
+                                {{ $tiene_lesiones == $val ? 'border-wc-accent' : 'border-wc-border' }}">
+                                @if($tiene_lesiones == $val)
                                 <span class="h-2 w-2 rounded-full bg-wc-accent"></span>
                                 @endif
                             </span>
-                            <span class="text-sm {{ $tiene_lesiones === $val ? 'font-semibold text-wc-text' : 'text-wc-text-secondary' }}">{{ $label }}</span>
+                            <span class="text-sm {{ $tiene_lesiones == $val ? 'font-semibold text-wc-text' : 'text-wc-text-secondary' }}">{{ $label }}</span>
                         </label>
                         @endforeach
                     </div>
@@ -633,7 +633,7 @@
                     <div class="grid gap-3 sm:grid-cols-3">
                         @foreach(['sedentario' => ['Sedentario', 'Trabajo de escritorio, poco movimiento'], 'moderado' => ['Moderado', 'Estoy de pie o me muevo parte del dia'], 'activo' => ['Activo', 'Trabajo fisico o en movimiento constante']] as $val => [$titulo, $desc])
                         <label class="flex cursor-pointer flex-col gap-2 rounded-xl border p-4 transition-all
-                            {{ $trabajo_tipo === $val ? 'border-wc-accent bg-wc-accent/5' : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-accent/40' }}">
+                            {{ $trabajo_tipo == $val ? 'border-wc-accent bg-wc-accent/5' : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-accent/40' }}">
                             <input type="radio" wire:model.live="trabajo_tipo" value="{{ $val }}" class="sr-only" />
                             <p class="text-sm font-bold text-wc-text">{{ $titulo }}</p>
                             <p class="text-xs text-wc-text-secondary">{{ $desc }}</p>
@@ -652,10 +652,10 @@
                             <div class="space-y-2">
                                 @foreach(['5_menos' => 'Menos de 5 horas', '6_7' => '6-7 horas', '8_mas' => '8 horas o mas'] as $val => $label)
                                 <label class="flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-2.5 transition-all
-                                    {{ $horas_sueno === $val ? 'border-wc-accent bg-wc-accent/5' : 'border-wc-border hover:border-wc-accent/40' }}">
+                                    {{ $horas_sueno == $val ? 'border-wc-accent bg-wc-accent/5' : 'border-wc-border hover:border-wc-accent/40' }}">
                                     <input type="radio" wire:model.live="horas_sueno" value="{{ $val }}" class="sr-only" />
-                                    <span class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 {{ $horas_sueno === $val ? 'border-wc-accent' : 'border-wc-border' }}">
-                                        @if($horas_sueno === $val)<span class="h-2 w-2 rounded-full bg-wc-accent"></span>@endif
+                                    <span class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 {{ $horas_sueno == $val ? 'border-wc-accent' : 'border-wc-border' }}">
+                                        @if($horas_sueno == $val)<span class="h-2 w-2 rounded-full bg-wc-accent"></span>@endif
                                     </span>
                                     <span class="text-sm text-wc-text">{{ $label }}</span>
                                 </label>
@@ -668,10 +668,10 @@
                             <div class="space-y-2">
                                 @foreach(['bajo' => 'Bajo — vivo tranquilo', 'moderado' => 'Moderado — algo de estres', 'alto' => 'Alto — estres frecuente', 'muy_alto' => 'Muy alto — estres constante'] as $val => $label)
                                 <label class="flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-2.5 transition-all
-                                    {{ $nivel_estres === $val ? 'border-wc-accent bg-wc-accent/5' : 'border-wc-border hover:border-wc-accent/40' }}">
+                                    {{ $nivel_estres == $val ? 'border-wc-accent bg-wc-accent/5' : 'border-wc-border hover:border-wc-accent/40' }}">
                                     <input type="radio" wire:model.live="nivel_estres" value="{{ $val }}" class="sr-only" />
-                                    <span class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 {{ $nivel_estres === $val ? 'border-wc-accent' : 'border-wc-border' }}">
-                                        @if($nivel_estres === $val)<span class="h-2 w-2 rounded-full bg-wc-accent"></span>@endif
+                                    <span class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 {{ $nivel_estres == $val ? 'border-wc-accent' : 'border-wc-border' }}">
+                                        @if($nivel_estres == $val)<span class="h-2 w-2 rounded-full bg-wc-accent"></span>@endif
                                     </span>
                                     <span class="text-sm text-wc-text">{{ $label }}</span>
                                 </label>
@@ -693,7 +693,7 @@
                             <label class="cursor-pointer">
                                 <input type="radio" wire:model.live="comidas_por_dia" value="{{ $val }}" class="sr-only" />
                                 <span class="inline-flex items-center rounded-xl border px-4 py-2.5 text-sm font-medium transition-all
-                                    {{ $comidas_por_dia === $val ? 'border-wc-accent bg-wc-accent/10 text-wc-accent' : 'border-wc-border bg-wc-bg-tertiary text-wc-text-secondary hover:border-wc-accent/40' }}">
+                                    {{ $comidas_por_dia == $val ? 'border-wc-accent bg-wc-accent/10 text-wc-accent' : 'border-wc-border bg-wc-bg-tertiary text-wc-text-secondary hover:border-wc-accent/40' }}">
                                     {{ $label }}
                                 </span>
                             </label>
@@ -812,7 +812,7 @@
                             <div class="flex gap-3">
                                 @foreach(['no' => 'No aplica', 'si' => 'Si, lo tengo'] as $val => $label)
                                 <label class="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border py-3 text-sm font-medium transition-all
-                                    {{ $ciclo_hormonal === $val ? 'border-wc-accent bg-wc-accent/10 text-wc-accent' : 'border-wc-border text-wc-text-secondary hover:border-wc-accent/40' }}">
+                                    {{ $ciclo_hormonal == $val ? 'border-wc-accent bg-wc-accent/10 text-wc-accent' : 'border-wc-border text-wc-text-secondary hover:border-wc-accent/40' }}">
                                     <input type="radio" wire:model.live="ciclo_hormonal" value="{{ $val }}" class="sr-only" />
                                     {{ $label }}
                                 </label>
@@ -824,7 +824,7 @@
                             <div class="flex gap-3">
                                 @foreach(['no' => 'No', 'si' => 'Si, los tengo'] as $val => $label)
                                 <label class="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border py-3 text-sm font-medium transition-all
-                                    {{ $bloodwork_disponible === $val ? 'border-wc-accent bg-wc-accent/10 text-wc-accent' : 'border-wc-border text-wc-text-secondary hover:border-wc-accent/40' }}">
+                                    {{ $bloodwork_disponible == $val ? 'border-wc-accent bg-wc-accent/10 text-wc-accent' : 'border-wc-border text-wc-text-secondary hover:border-wc-accent/40' }}">
                                     <input type="radio" wire:model.live="bloodwork_disponible" value="{{ $val }}" class="sr-only" />
                                     {{ $label }}
                                 </label>
@@ -998,7 +998,7 @@
                     <div class="grid gap-3 sm:grid-cols-3">
                         @foreach(['manana' => ['Manana', '6am - 12pm'], 'tarde' => ['Tarde', '12pm - 6pm'], 'noche' => ['Noche', '6pm - 10pm']] as $val => [$titulo, $hora])
                         <label class="flex cursor-pointer flex-col items-center gap-1 rounded-xl border p-4 transition-all
-                            {{ $horario_preferido === $val ? 'border-wc-accent bg-wc-accent/5' : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-accent/40' }}">
+                            {{ $horario_preferido == $val ? 'border-wc-accent bg-wc-accent/5' : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-accent/40' }}">
                             <input type="radio" wire:model.live="horario_preferido" value="{{ $val }}" class="sr-only" />
                             <span class="text-sm font-bold text-wc-text">{{ $titulo }}</span>
                             <span class="text-xs text-wc-text-secondary">{{ $hora }}</span>
