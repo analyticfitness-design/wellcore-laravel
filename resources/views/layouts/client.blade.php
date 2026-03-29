@@ -29,11 +29,12 @@
 
     <!-- Favicon & PWA -->
     <link rel="manifest" href="{{ asset('manifest.json') }}">
-    <link rel="icon" type="image/jpeg" sizes="512x512" href="{{ asset('images/favicon-wc.jpg') }}">
-    <link rel="icon" type="image/jpeg" sizes="192x192" href="{{ asset('images/favicon-wc.jpg') }}">
-    <link rel="icon" type="image/jpeg" sizes="32x32" href="{{ asset('images/favicon-wc.jpg') }}">
-    <link rel="shortcut icon" href="{{ asset('images/favicon-wc.jpg') }}">
-    <link rel="apple-touch-icon" href="{{ asset('images/favicon-wc-touch.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('icons/icon-192x192.png') }}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{{ asset('icons/icon-512x512.png') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
