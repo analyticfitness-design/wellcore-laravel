@@ -335,90 +335,100 @@ class ClientIntakeForm extends Component
     {
         $this->validatePassword();
 
-        // Re-check email uniqueness right before creating (prevent race condition / 500)
+        // Re-check email uniqueness right before creating
         if (Client::where('email', $this->email)->exists()) {
             $this->addError('email', 'Este email ya tiene una cuenta registrada. Intenta iniciar sesion en wellcorefitness.com/login');
-            $this->step = 2; // Go back to datos step to show the error
+            $this->step = 2;
             return;
         }
 
         try {
-        DB::transaction(function () {
-            // Generate unique client code
-            do {
-                $code = 'WC-' . strtoupper(Str::random(6));
-            } while (Client::where('client_code', $code)->exists());
+            $client = DB::transaction(function () {
+                // Generate unique client code
+                do {
+                    $code = 'WC-' . strtoupper(Str::random(6));
+                } while (Client::where('client_code', $code)->exists());
 
-            $client = Client::create([
-                'client_code'  => $code,
-                'name'         => trim($this->nombre . ' ' . $this->apellido),
-                'email'        => $this->email,
-                'password_hash' => Hash::make($this->password),
-                'plan'         => $this->planType,
-                'status'       => 'active',
-                'fecha_inicio' => now()->toDateString(),
-                'city'         => $this->ciudad,
-                'onboarding_completed' => 0,
-            ]);
-
-            // Build macros data structure for extra plan info
-            $macros = null;
-            if ($this->isStepForNutricion()) {
-                $macros = [
-                    'trabajo_tipo'         => $this->trabajo_tipo,
-                    'horas_sueno'          => $this->horas_sueno,
-                    'nivel_estres'         => $this->nivel_estres,
-                    'intolerancias'        => $this->intolerancias,
-                    'otras_intolerancias'  => $this->otras_intolerancias,
-                    'alimentos_evitar'     => $this->alimentos_evitar,
-                    'comidas_por_dia'      => $this->comidas_por_dia,
-                    'suplementos_actuales' => $this->suplementos_actuales,
-                ];
-            }
-
-            if ($this->isStepForAdvanced()) {
-                $macros = array_merge($macros ?? [], [
-                    'objetivo_composicion' => $this->objetivo_composicion,
-                    'historial_medico'     => $this->historial_medico,
-                    'ciclo_hormonal'       => $this->ciclo_hormonal,
-                    'bloodwork_disponible' => $this->bloodwork_disponible,
+                $client = Client::create([
+                    'client_code'  => $code,
+                    'name'         => trim($this->nombre . ' ' . $this->apellido),
+                    'email'        => $this->email,
+                    'password_hash' => Hash::make($this->password),
+                    'plan'         => $this->planType,
+                    'status'       => 'active',
+                    'fecha_inicio' => now()->toDateString(),
+                    'city'         => $this->ciudad,
+                    'onboarding_completed' => 0,
                 ]);
-            }
 
-            ClientProfile::create([
-                'client_id'       => $client->id,
-                'edad'            => $this->edad,
-                'peso'            => $this->peso,
-                'altura'          => $this->altura,
-                'genero'          => $this->genero,
-                'objetivo'        => $this->objetivo_principal,
-                'ciudad'          => $this->ciudad,
-                'whatsapp'        => $this->whatsapp,
-                'nivel'           => $this->nivel_experiencia,
-                'lugar_entreno'   => $this->lugar_entreno,
-                'dias_disponibles' => $this->dias_disponibles,
-                'restricciones'   => $this->detalle_lesiones ?: null,
-                'macros'          => $macros,
-            ]);
+                // Build macros data structure for extra plan info
+                $macros = null;
+                if ($this->isStepForNutricion()) {
+                    $macros = [
+                        'trabajo_tipo'         => $this->trabajo_tipo,
+                        'horas_sueno'          => $this->horas_sueno,
+                        'nivel_estres'         => $this->nivel_estres,
+                        'intolerancias'        => $this->intolerancias,
+                        'otras_intolerancias'  => $this->otras_intolerancias,
+                        'alimentos_evitar'     => $this->alimentos_evitar,
+                        'comidas_por_dia'      => $this->comidas_por_dia,
+                        'suplementos_actuales' => $this->suplementos_actuales,
+                    ];
+                }
 
-            Invitation::where('code', $this->invitationCode)->update([
-                'status'  => 'used',
-                'used_by' => $client->id,
-                'used_at' => now(),
-            ]);
+                if ($this->isStepForAdvanced()) {
+                    $macros = array_merge($macros ?? [], [
+                        'objetivo_composicion' => $this->objetivo_composicion,
+                        'historial_medico'     => $this->historial_medico,
+                        'ciclo_hormonal'       => $this->ciclo_hormonal,
+                        'bloodwork_disponible' => $this->bloodwork_disponible,
+                    ]);
+                }
+
+                ClientProfile::create([
+                    'client_id'        => $client->id,
+                    'edad'             => $this->edad,
+                    'peso'             => $this->peso,
+                    'altura'           => $this->altura,
+                    'genero'           => $this->genero,
+                    'objetivo'         => $this->objetivo_principal,
+                    'ciudad'           => $this->ciudad,
+                    'whatsapp'         => $this->whatsapp,
+                    'nivel'            => $this->nivel_experiencia,
+                    'lugar_entreno'    => $this->lugar_entreno,
+                    'dias_disponibles' => $this->dias_disponibles,
+                    'restricciones'    => $this->detalle_lesiones ?: null,
+                    'macros'           => $macros,
+                ]);
+
+                Invitation::where('code', $this->invitationCode)->update([
+                    'status'  => 'used',
+                    'used_by' => $client->id,
+                    'used_at' => now(),
+                ]);
+
+                return $client;
+            });
 
             auth('wellcore')->login($client);
-        });
+            $this->submitted = true;
+            $this->redirect(route('client.dashboard'), navigate: true);
 
-        $this->submitted = true;
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('ClientIntakeForm::submit FAILED', [
+                'error'   => $e->getMessage(),
+                'email'   => $this->email,
+                'plan'    => $this->planType,
+                'code'    => $this->invitationCode,
+                'class'   => get_class($e),
+            ]);
 
-        $this->redirect(route('client.dashboard'), navigate: true);
-        } catch (\Illuminate\Database\QueryException $e) {
             if (str_contains($e->getMessage(), 'Duplicate') || str_contains($e->getMessage(), 'unique')) {
                 $this->addError('email', 'Este email ya esta registrado. Inicia sesion en wellcorefitness.com/login');
                 $this->step = 2;
             } else {
-                throw $e;
+                $this->addError('email', 'Error al crear tu cuenta. Por favor intenta de nuevo o contactanos por WhatsApp.');
+                $this->step = $this->totalSteps;
             }
         }
     }
