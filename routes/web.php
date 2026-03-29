@@ -150,8 +150,7 @@ Route::get('/rise-enroll', RiseEnrollment::class)->name('rise.enroll');
 
 // Invitation intake form — public, guest-only
 Route::get('/unirse/{code}', ClientIntakeForm::class)
-    ->name('invite.intake')
-    ->middleware('guest:wellcore');
+    ->name('invite.intake');
 
 Route::get('/inscripcion', \App\Livewire\InscriptionForm::class)->name('inscripcion')->middleware('throttle:inscription');
 Route::get('/pagar', \App\Livewire\Checkout::class)->name('pagar');

@@ -30,7 +30,27 @@
     {{-- ===================================================================== --}}
     {{-- INVALID / EXPIRED CODE SCREENS                                        --}}
     {{-- ===================================================================== --}}
-    @if($invalidCode || $codeExpired)
+    @if($alreadyLoggedIn)
+        <div class="flex min-h-[80vh] items-center justify-center px-4">
+            <div class="w-full max-w-md text-center">
+                <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-amber-500/10 ring-1 ring-amber-500/20">
+                    <svg class="h-10 w-10 text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                    </svg>
+                </div>
+                <h1 class="font-display text-3xl tracking-wide text-wc-text">YA TIENES SESION ACTIVA</h1>
+                <p class="mt-3 text-wc-text-secondary">Para usar este link de invitacion, primero cierra tu sesion actual. Este formulario es para nuevos clientes.</p>
+                <div class="mt-6 flex flex-col gap-3">
+                    <a href="{{ route('client.dashboard') }}" wire:navigate class="inline-block rounded-lg bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700">
+                        Ir a mi Dashboard
+                    </a>
+                    <a href="{{ url('/login') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">
+                        Cerrar sesion e intentar de nuevo
+                    </a>
+                </div>
+            </div>
+        </div>
+    @elseif($invalidCode || $codeExpired)
         <div class="flex min-h-[80vh] items-center justify-center px-4">
             <div class="w-full max-w-md text-center">
                 <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red-500/10 ring-1 ring-red-500/20">

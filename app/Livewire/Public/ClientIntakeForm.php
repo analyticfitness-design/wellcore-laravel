@@ -93,8 +93,15 @@ class ClientIntakeForm extends Component
     // ---------------------------------------------------------------------------
     // Mount
     // ---------------------------------------------------------------------------
+    public bool $alreadyLoggedIn = false;
+
     public function mount(string $code): void
     {
+        // If user is already authenticated, flag it instead of crashing
+        if (auth('wellcore')->check()) {
+            $this->alreadyLoggedIn = true;
+        }
+
         $invitation = Invitation::where('code', strtoupper($code))->first();
 
         if (! $invitation) {
