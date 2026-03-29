@@ -410,9 +410,7 @@ class ClientIntakeForm extends Component
                 return $client;
             });
 
-            auth('wellcore')->login($client);
             $this->submitted = true;
-            $this->redirect(route('client.dashboard'), navigate: true);
 
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('ClientIntakeForm::submit FAILED', [

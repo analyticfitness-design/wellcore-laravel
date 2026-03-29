@@ -1066,22 +1066,52 @@
                 </button>
             </div>
 
-            {{-- Submitted fallback --}}
+            {{-- Success screen --}}
             @if($submitted)
-            <div class="mt-8 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-center">
-                <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/20">
-                    <svg class="h-7 w-7 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                    </svg>
+            <div class="mt-8 space-y-6">
+                <div class="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-8 text-center">
+                    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20">
+                        <svg class="h-8 w-8 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                    </div>
+                    <h2 class="font-display text-2xl tracking-wide text-wc-text">CUENTA CREADA</h2>
+                    <p class="mt-2 text-sm text-wc-text-secondary">Tu cuenta esta lista. Ahora inicia sesion con tu email y contrasena.</p>
                 </div>
-                <p class="text-base font-bold text-emerald-300">Cuenta creada correctamente</p>
-                <p class="mt-1 text-sm text-wc-text-secondary">Redirigiendo a tu dashboard...</p>
-                <a href="{{ route('client.dashboard') }}" wire:navigate
-                   class="mt-4 inline-flex items-center gap-2 text-sm font-medium text-wc-accent hover:underline">
-                    Ir al dashboard ahora
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+
+                <div class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-6">
+                    <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-wc-text-tertiary">Proximos pasos al iniciar sesion</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-wc-accent text-xs font-bold text-white">1</div>
+                            <div>
+                                <p class="text-sm font-bold text-wc-text">Sube tus fotos de progreso</p>
+                                <p class="text-xs text-wc-text-secondary">Fotos de frente, lado y espalda. Es obligatorio para que tu coach pueda evaluar tu punto de partida.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-wc-accent/20 text-xs font-bold text-wc-accent">2</div>
+                            <div>
+                                <p class="text-sm font-bold text-wc-text">Completa tus medidas (opcional)</p>
+                                <p class="text-xs text-wc-text-secondary">Pecho, cintura, cadera, brazo, pierna. Ayuda a tu coach a trackear tu progreso con precision.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-wc-accent/20 text-xs font-bold text-wc-accent">3</div>
+                            <div>
+                                <p class="text-sm font-bold text-wc-text">Tu coach revisa y te contacta</p>
+                                <p class="text-xs text-wc-text-secondary">Tu coach asignado revisara tu perfil y te escribira por WhatsApp para comenzar.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="{{ route('login') }}"
+                   class="flex w-full items-center justify-center gap-2 rounded-full bg-wc-accent py-4 text-sm font-bold text-white shadow-xl hover:bg-red-700 transition-all">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
                     </svg>
+                    Iniciar sesion
                 </a>
             </div>
             @endif
