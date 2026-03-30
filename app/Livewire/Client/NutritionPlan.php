@@ -117,8 +117,10 @@ class NutritionPlan extends Component
     private function parseMeals(): void
     {
         // Try: root['comidas'] → plan_dia_entrenamiento['comidas'] → meals
-        // Carb-cycling plans: meals are nested inside dias[n]['comidas']; use first day as representative
+        // Carb-cycling plans: meals are nested inside dias[n]['comidas'] or plan_semanal[n]['comidas']
         $diasComidas = null;
+
+        // Check dias[] array
         if (isset($this->plan['dias']) && is_array($this->plan['dias'])) {
             foreach ($this->plan['dias'] as $dia) {
                 if (!empty($dia['comidas'])) {
@@ -128,10 +130,22 @@ class NutritionPlan extends Component
             }
         }
 
+        // Check plan_semanal[] array (carb-cycling format with named days)
+        $planSemanalComidas = null;
+        if (isset($this->plan['plan_semanal']) && is_array($this->plan['plan_semanal'])) {
+            foreach ($this->plan['plan_semanal'] as $dia) {
+                if (!empty($dia['comidas'])) {
+                    $planSemanalComidas = $dia['comidas'];
+                    break;
+                }
+            }
+        }
+
         $raw = $this->plan['comidas']
             ?? $this->plan['plan_dia_entrenamiento']['comidas']
             ?? $this->plan['meals']
             ?? $diasComidas
+            ?? $planSemanalComidas
             ?? [];
 
         $this->mealLog = array_map([$this, 'normalizeMeal'], $raw);
