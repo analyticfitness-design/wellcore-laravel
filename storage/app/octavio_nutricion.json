@@ -1,0 +1,617 @@
+{
+  "plan_type": "nutricion",
+  "cliente": "Octavio Rodriguez",
+  "edad": 42,
+  "sexo": "masculino",
+  "peso_kg": 85,
+  "altura_cm": 165,
+  "imc": 31.2,
+  "clasificacion_imc": "Obesidad clase I",
+  "ciudad": "Millbrae, California",
+  "altitud_msnm": 0,
+  "ajuste_altitud": "Sin ajuste (nivel del mar)",
+  "plan_wellcore": "Metodo",
+  "nivel": "Intermedio",
+  "objetivo": "Perdida de grasa (deficit calorico)",
+  "metodologia_base": "Flexible Dieting / IIFYM",
+  "metodologia_overlay": "Carb Cycling (dias entreno vs descanso)",
+  "entrenamiento": "5 dias/semana (4 pesas + 1 cardio)",
+  "trabajo": "Activo",
+  "sueno_horas": "6-7",
+  "comidas_por_dia": 3,
+  "alimentos_evitar": ["Salmon", "Cerdo"],
+  "suplementos_actuales": ["Proteina whey", "Omega-3"],
+  "intolerancias": "Ninguna",
+  "calculos": {
+    "formula": "Mifflin-St Jeor",
+    "tmb_formula": "(10 x 85) + (6.25 x 165) - (5 x 42) + 5",
+    "tmb_desglose": "850 + 1031.25 - 210 + 5 = 1,676 kcal",
+    "tmb_kcal": 1676,
+    "factor_actividad": 1.55,
+    "factor_descripcion": "Moderadamente activo (gym 5x/sem + trabajo activo)",
+    "tdee_formula": "1,676 x 1.55",
+    "tdee_kcal": 2598,
+    "deficit_kcal": -498,
+    "deficit_tipo": "Moderado (-400 a -500 kcal)",
+    "justificacion_deficit": "IMC 31.2 (obeso clase I) permite un deficit moderado de ~500 kcal. Segun la tesis WellCore (seccion 9.2), individuos con >25% grasa corporal estimada pueden sostener una tasa de perdida de 0.7-1.0% peso/semana con deficit de -400 a -500 kcal sin riesgo significativo de perdida muscular, siempre que la proteina se mantenga alta (2.0-2.5 g/kg) y el entrenamiento de fuerza se preserve."
+  },
+  "tdee_estimado": 2600,
+  "objetivo_cal": 2100,
+  "macros": {
+    "proteina_g": 187,
+    "proteina_gkg": 2.2,
+    "proteina_kcal": 748,
+    "proteina_pct": 35.6,
+    "proteina_justificacion": "2.2 g/kg: rango alto para perdida de grasa (Helms et al., 2014). A los 42 anos existe resistencia anabolica, requiriendo mas leucina por comida (>2.5g) para activar mTOR y la sintesis proteica muscular. Cada comida debe aportar ~62g de proteina.",
+    "carbohidratos_g": 185,
+    "carbohidratos_kcal": 740,
+    "carbohidratos_pct": 35.2,
+    "carbohidratos_justificacion": "Resto despues de proteina y grasa. En dias de entreno se elevan a ~210g para soportar rendimiento y replecion de glucogeno. En dias de descanso bajan a ~110g para profundizar el deficit.",
+    "grasa_g": 68,
+    "grasa_gkg": 0.8,
+    "grasa_kcal": 612,
+    "grasa_pct": 29.1,
+    "grasa_justificacion": "0.8 g/kg: minimo funcional para salud hormonal. Despues de los 40, dietas con <20% de calorias en grasa reducen testosterona libre un 10-15% (Dorgan et al., 1996). Los 68g representan 29% de calorias totales, zona segura."
+  },
+  "hidratacion": {
+    "formula": "35 ml x peso_kg",
+    "base_ml": 2975,
+    "entrenamiento_ml": 500,
+    "total_ml": 3475,
+    "total_litros": 3.5,
+    "protocolo": "500ml al despertar, distribuir resto a lo largo del dia. 400-600ml durante el entrenamiento. Color de orina: amarillo palido = bien hidratado."
+  },
+  "carb_cycling": {
+    "descripcion": "Ciclado de carbohidratos simplificado a 2 niveles: dias de entrenamiento (carbs altos) y dias de descanso (carbs bajos). La proteina se mantiene CONSTANTE todos los dias. La grasa se invierte parcialmente respecto a los carbs para mantener saciedad en dias bajos.",
+    "dia_entreno": {
+      "calorias": 2200,
+      "proteina_g": 187,
+      "carbohidratos_g": 210,
+      "grasa_g": 60,
+      "descripcion": "Dias de pesas y cardio. Carbs mas altos para rendimiento y replecion de glucogeno."
+    },
+    "dia_descanso": {
+      "calorias": 1850,
+      "proteina_g": 187,
+      "carbohidratos_g": 110,
+      "grasa_g": 82,
+      "descripcion": "Dias sin entreno. Carbs reducidos, grasa mas alta para saciedad y salud hormonal."
+    },
+    "promedio_semanal": {
+      "calorias_promedio": 2100,
+      "formula": "(5 x 2200 + 2 x 1850) / 7 = 2100 kcal/dia"
+    }
+  },
+  "plan_semanal": [
+    {
+      "dia": "Lunes (Entreno Upper A - Pesas)",
+      "tipo_dia": "ENTRENO",
+      "calorias_objetivo": 2200,
+      "macros_dia": {"proteina_g": 187, "carbohidratos_g": 210, "grasa_g": 60},
+      "comidas": [
+        {
+          "nombre": "Desayuno",
+          "hora": "7:00 AM",
+          "alimentos": [
+            "Claras de huevo 200g (6-7 claras)",
+            "Huevo entero 1 unidad",
+            "Avena integral en hojuelas 80g",
+            "Banana mediana 1 unidad (120g)",
+            "Mantequilla de mani natural 10g (1 cdta)"
+          ],
+          "calorias": 620,
+          "proteina": 45,
+          "carbohidratos": 80,
+          "grasa": 13,
+          "notas": "Preparar la avena la noche anterior (overnight oats) con las claras mezcladas y calentar en microondas 2 min. La banana aporta potasio y energia rapida para la manana. Si prefieres, puedes sustituir las claras por 1 scoop de whey protein mezclado con la avena."
+        },
+        {
+          "nombre": "Almuerzo (Post-Entreno)",
+          "hora": "1:00 PM",
+          "alimentos": [
+            "Pechuga de pollo a la plancha 250g",
+            "Arroz integral cocido 200g (o arroz blanco)",
+            "Frijoles negros cocidos 100g",
+            "Ensalada verde (espinaca, tomate, pepino) con 5ml aceite de oliva",
+            "Limon al gusto"
+          ],
+          "calorias": 820,
+          "proteina": 68,
+          "carbohidratos": 85,
+          "grasa": 18,
+          "notas": "Esta es tu comida mas grande del dia. Idealmente comerla dentro de las 2 horas post-entreno para aprovechar la sensibilidad elevada a la proteina. El arroz blanco es aceptable post-entreno por su mayor velocidad de absorcion. Los frijoles aportan fibra, hierro y proteina vegetal complementaria. Puedes sustituir el pollo por lean ground turkey (pavo molido 93/7)."
+        },
+        {
+          "nombre": "Cena",
+          "hora": "7:30 PM",
+          "alimentos": [
+            "Carne de res magra (sirloin o flank steak) 200g",
+            "Batata/sweet potato al horno 150g",
+            "Brocoli al vapor 150g",
+            "Aguacate 40g (1/4 unidad)",
+            "1 scoop whey protein (30g polvo) mezclado con agua"
+          ],
+          "calorias": 760,
+          "proteina": 74,
+          "carbohidratos": 45,
+          "grasa": 29,
+          "notas": "El whey es para completar la proteina del dia. Si prefieres, puedes tomarlo como batido aparte 1 hora antes de dormir. La res magra aporta creatina natural, hierro heme y B12 que son criticos a los 42 anos. No cocines la res en exceso de aceite; a la plancha o grill es ideal. Si no consigues sirloin, usa eye of round o top round."
+        }
+      ]
+    },
+    {
+      "dia": "Martes (Entreno Lower A - Pesas)",
+      "tipo_dia": "ENTRENO",
+      "calorias_objetivo": 2200,
+      "macros_dia": {"proteina_g": 187, "carbohidratos_g": 210, "grasa_g": 60},
+      "comidas": [
+        {
+          "nombre": "Desayuno",
+          "hora": "7:00 AM",
+          "alimentos": [
+            "Huevos enteros 3 unidades",
+            "Tortilla integral de trigo 2 medianas (70g c/u)",
+            "Frijoles negros refritos 80g",
+            "Salsa pico de gallo al gusto",
+            "Queso fresco bajo en grasa 30g"
+          ],
+          "calorias": 650,
+          "proteina": 42,
+          "carbohidratos": 62,
+          "grasa": 25,
+          "notas": "Burritos de desayuno estilo California: rellenar las tortillas con los huevos revueltos, frijoles, queso y salsa. Puedes preparar 2 extras y congelarlos para dias que tengas prisa. Alternativa: usar egg whites de carton (250ml = ~25g proteina) en vez de huevos enteros si quieres reducir grasa."
+        },
+        {
+          "nombre": "Almuerzo (Post-Entreno)",
+          "hora": "1:00 PM",
+          "alimentos": [
+            "Lean ground turkey (pavo molido 93/7) 220g",
+            "Arroz blanco cocido 250g",
+            "Ensalada mixta (lechuga romana, zanahoria, cebolla morada) con 5ml aceite de oliva y limon",
+            "Tortilla de maiz 1 unidad (para taco opcional)"
+          ],
+          "calorias": 830,
+          "proteina": 62,
+          "carbohidratos": 98,
+          "grasa": 18,
+          "notas": "Dia de piernas: necesitas los carbohidratos para recuperar el glucogeno muscular depletado. El pavo molido es excelente alternativa al pollo, con menos grasa que la carne de res. Puedes sazonar con comino, ajo y chile en polvo. Si prefieres, sustituye por pechuga de pollo desmenuzada."
+        },
+        {
+          "nombre": "Cena",
+          "hora": "7:30 PM",
+          "alimentos": [
+            "Tilapia al horno 200g",
+            "Papa/potato al horno 200g",
+            "Espinaca salteada con ajo 100g",
+            "1 scoop whey protein (30g polvo) con agua"
+          ],
+          "calorias": 720,
+          "proteina": 83,
+          "carbohidratos": 50,
+          "grasa": 17,
+          "notas": "Tilapia es un pescado blanco magro y accesible en California. Sazonar con limon, ajo y paprika. Si no consigues tilapia, usa cod (bacalao) o mahi-mahi. La papa al horno es mas saciante que el arroz y ayuda a controlar el hambre antes de dormir."
+        }
+      ]
+    },
+    {
+      "dia": "Miercoles (Entreno Upper B - Pesas)",
+      "tipo_dia": "ENTRENO",
+      "calorias_objetivo": 2200,
+      "macros_dia": {"proteina_g": 187, "carbohidratos_g": 210, "grasa_g": 60},
+      "comidas": [
+        {
+          "nombre": "Desayuno",
+          "hora": "7:00 AM",
+          "alimentos": [
+            "Claras de huevo 200g",
+            "Avena integral 70g",
+            "Blueberries (arandanos) 80g",
+            "1 scoop whey protein (30g polvo) mezclado con la avena",
+            "Canela al gusto"
+          ],
+          "calorias": 580,
+          "proteina": 55,
+          "carbohidratos": 72,
+          "grasa": 8,
+          "notas": "Mezclar el whey con la avena cocida crea un 'proats' (protein + oats) que es denso en proteina y muy saciante. Los arandanos aportan antioxidantes sin exceso de calorias. Alternativa: sustituir arandanos por fresas (strawberries) o frambuesas (raspberries)."
+        },
+        {
+          "nombre": "Almuerzo (Post-Entreno)",
+          "hora": "1:00 PM",
+          "alimentos": [
+            "Pechuga de pollo a la plancha 250g",
+            "Arroz con frijoles negros 200g cocidos combinados",
+            "Platano maduro al horno 1 unidad (120g)",
+            "Ensalada de tomate y cebolla con limon"
+          ],
+          "calorias": 870,
+          "proteina": 63,
+          "carbohidratos": 105,
+          "grasa": 15,
+          "notas": "Comida latina clasica. El platano maduro al horno (no frito) aporta carbohidratos de calidad sin grasa extra. Si no consigues platano maduro en California, sustituir por 200g de batata/sweet potato. El arroz con frijoles es una combinacion proteica complementaria: los aminoacidos del arroz completan los de los frijoles."
+        },
+        {
+          "nombre": "Cena",
+          "hora": "7:30 PM",
+          "alimentos": [
+            "Atun fresco a la plancha 200g (o atun enlatado en agua 2 latas)",
+            "Quinoa cocida 120g",
+            "Brocoli y zucchini (calabacin) salteados 150g",
+            "Aguacate 50g (1/4 unidad)",
+            "Aceite de oliva 5ml para cocinar"
+          ],
+          "calorias": 750,
+          "proteina": 69,
+          "carbohidratos": 33,
+          "grasa": 37,
+          "notas": "Si usas atun enlatado, maximo 3 latas por semana por contenido de mercurio. El atun fresco no tiene esta restriccion. La quinoa es un pseudocereal con proteina completa (todos los aminoacidos esenciales). Si no la consigues, sustituye por arroz integral 150g cocido."
+        }
+      ]
+    },
+    {
+      "dia": "Jueves (Entreno Lower B - Pesas)",
+      "tipo_dia": "ENTRENO",
+      "calorias_objetivo": 2200,
+      "macros_dia": {"proteina_g": 187, "carbohidratos_g": 210, "grasa_g": 60},
+      "comidas": [
+        {
+          "nombre": "Desayuno",
+          "hora": "7:00 AM",
+          "alimentos": [
+            "Huevos enteros 2 unidades",
+            "Claras de huevo 150g (4-5 claras)",
+            "Pan integral tostado 2 rebanadas (60g)",
+            "Aguacate 30g",
+            "Banana mediana 1 unidad (120g)"
+          ],
+          "calorias": 610,
+          "proteina": 40,
+          "carbohidratos": 70,
+          "grasa": 20,
+          "notas": "Clasico desayuno americano con twist de proteina alta. El pan integral de Ezekiel o Dave's Killer Bread son excelentes opciones en USA. Si prefieres, sustituir el pan por 2 tortillas de maiz (opcion latina). Preparar los huevos revueltos o en omelette."
+        },
+        {
+          "nombre": "Almuerzo (Post-Entreno)",
+          "hora": "1:00 PM",
+          "alimentos": [
+            "Carne de res magra (93/7 ground beef) 200g",
+            "Arroz integral cocido 250g",
+            "Ensalada de espinaca, pepino y tomate cherry",
+            "Aceite de oliva 5ml",
+            "Tortilla de maiz 2 unidades (como taco)"
+          ],
+          "calorias": 870,
+          "proteina": 58,
+          "carbohidratos": 100,
+          "grasa": 25,
+          "notas": "Tacos de carne molida magra: sazonar con comino, ajo, cebolla en polvo y un toque de chile. La carne de res aporta hierro heme, B12 y creatina natural — nutrientes criticos que a los 42 anos se absorben menos eficientemente. Puedes agregar salsa verde o roja sin azucar."
+        },
+        {
+          "nombre": "Cena",
+          "hora": "7:30 PM",
+          "alimentos": [
+            "Pechuga de pollo al horno 220g",
+            "Batata/sweet potato 150g al horno",
+            "Ejotes/green beans al vapor 120g",
+            "1 scoop whey protein (30g polvo) con agua"
+          ],
+          "calorias": 720,
+          "proteina": 89,
+          "carbohidratos": 40,
+          "grasa": 15,
+          "notas": "Meal prep friendly: puedes preparar 4-5 pechugas y varias batatas el domingo para tener listo martes a jueves. Los ejotes (green beans) son bajos en calorias y altos en fibra. Calentar en microondas 3 min con un poco de limon y sal."
+        }
+      ]
+    },
+    {
+      "dia": "Viernes (Cardio / Acondicionamiento)",
+      "tipo_dia": "ENTRENO",
+      "calorias_objetivo": 2200,
+      "macros_dia": {"proteina_g": 187, "carbohidratos_g": 210, "grasa_g": 60},
+      "comidas": [
+        {
+          "nombre": "Desayuno",
+          "hora": "7:00 AM",
+          "alimentos": [
+            "Yogur griego 0% grasa 250g",
+            "Granola baja en azucar 40g",
+            "Fresas (strawberries) 100g",
+            "1 scoop whey protein (30g polvo) mezclado con el yogur",
+            "Miel 10g"
+          ],
+          "calorias": 550,
+          "proteina": 50,
+          "carbohidratos": 62,
+          "grasa": 10,
+          "notas": "Bowl de proteina rapido y sin cocinar. El yogur griego aporta caseina (proteina lenta) + probioticos. Fage 0% o Chobani 0% son buenas marcas en USA. Puedes sustituir las fresas por cualquier berry de temporada. La miel es opcional si prefieres menos dulce."
+        },
+        {
+          "nombre": "Almuerzo",
+          "hora": "12:30 PM",
+          "alimentos": [
+            "Lean ground turkey (pavo molido 93/7) 220g en bowl",
+            "Arroz blanco cocido 220g",
+            "Frijoles negros 100g",
+            "Pico de gallo fresco 60g",
+            "Lechuga romana picada 80g",
+            "Aguacate 40g"
+          ],
+          "calorias": 870,
+          "proteina": 60,
+          "carbohidratos": 100,
+          "grasa": 24,
+          "notas": "Burrito bowl estilo Chipotle pero hecho en casa (mas barato y controlado en macros). Preparar el pavo molido con especias mexicanas. Este formato de bowl es perfecto para meal prep: preparar los componentes por separado y armar al momento. Sin tortilla para mantener los carbs controlados."
+        },
+        {
+          "nombre": "Cena",
+          "hora": "7:30 PM",
+          "alimentos": [
+            "Pescado blanco (cod/bacalao o tilapia) 220g al horno",
+            "Papa al horno 200g",
+            "Ensalada de espinaca y champinones 120g con 5ml aceite de oliva",
+            "1 scoop whey protein (30g polvo) con agua"
+          ],
+          "calorias": 780,
+          "proteina": 77,
+          "carbohidratos": 48,
+          "grasa": 26,
+          "notas": "El pescado blanco es ultra-magro (~1g de grasa por 100g) y te permite completar la proteina sin pasarte en calorias. Sazonar con Old Bay seasoning o simplemente limon, ajo y perejil. Si prefieres, sustituir por 220g de pechuga de pollo."
+        }
+      ]
+    },
+    {
+      "dia": "Sabado (Descanso)",
+      "tipo_dia": "DESCANSO",
+      "calorias_objetivo": 1850,
+      "macros_dia": {"proteina_g": 187, "carbohidratos_g": 110, "grasa_g": 82},
+      "comidas": [
+        {
+          "nombre": "Desayuno",
+          "hora": "9:00 AM",
+          "alimentos": [
+            "Huevos enteros 3 unidades",
+            "Claras de huevo 100g (3 claras)",
+            "Aguacate 70g (1/3 unidad)",
+            "Tomate en rodajas 80g",
+            "1 rebanada pan integral (30g)"
+          ],
+          "calorias": 560,
+          "proteina": 42,
+          "carbohidratos": 25,
+          "grasa": 33,
+          "notas": "Dia de descanso: desayuno mas tarde, con mas grasa y menos carbs. Los huevos enteros aportan colina (esencial para funcion cerebral) y las yemas contienen vitamina D y K2. El aguacate es tu fuente principal de grasa monoinsaturada hoy. Puedes agregar salsa Tapatio o Cholula para darle sabor."
+        },
+        {
+          "nombre": "Almuerzo",
+          "hora": "1:30 PM",
+          "alimentos": [
+            "Pechuga de pollo a la plancha 250g",
+            "Ensalada grande: espinaca, pepino, tomate cherry, cebolla morada, champinones",
+            "Aceite de oliva extra virgen 15ml + vinagre balsamico",
+            "Almendras 20g (15 unidades aprox.)",
+            "Queso feta 30g"
+          ],
+          "calorias": 640,
+          "proteina": 63,
+          "carbohidratos": 15,
+          "grasa": 35,
+          "notas": "Ensalada grande y sustanciosa que te mantendra lleno. El aceite de oliva extra virgen es antiinflamatorio (MUFA). Las almendras aportan vitamina E y grasas saludables. Sin arroz ni papa hoy — eso lo reservas para dias de entreno donde los carbs tienen mas utilidad para replecion de glucogeno."
+        },
+        {
+          "nombre": "Cena",
+          "hora": "7:00 PM",
+          "alimentos": [
+            "Carne de res magra (filet o sirloin) 200g a la plancha",
+            "Brocoli al vapor 200g",
+            "Calabacin/zucchini grillado 100g",
+            "Aceite de oliva 5ml",
+            "1 scoop whey protein (30g polvo) con agua"
+          ],
+          "calorias": 650,
+          "proteina": 82,
+          "carbohidratos": 70,
+          "grasa": 14,
+          "notas": "Cena con res magra y batata/sweet potato como unica fuente significativa de carbs del dia. El brocoli tiene alto volumen y pocas calorias: ideal para sentirte lleno en deficit. Puedes sustituir la res por chicken thighs (muslo de pollo sin piel) — tienen un poco mas de grasa pero mas sabor. El whey antes de dormir aporta leucina para la sintesis proteica nocturna."
+        }
+      ]
+    },
+    {
+      "dia": "Domingo (Descanso)",
+      "tipo_dia": "DESCANSO",
+      "calorias_objetivo": 1850,
+      "macros_dia": {"proteina_g": 187, "carbohidratos_g": 110, "grasa_g": 82},
+      "comidas": [
+        {
+          "nombre": "Desayuno",
+          "hora": "9:00 AM",
+          "alimentos": [
+            "Omelette: 2 huevos enteros + 150g claras, con espinaca 50g, champinones 50g y queso mozzarella 30g",
+            "Aguacate 50g",
+            "Salsa roja (pico de gallo) 40g"
+          ],
+          "calorias": 510,
+          "proteina": 48,
+          "carbohidratos": 10,
+          "grasa": 30,
+          "notas": "Omelette grande y sustancioso. El queso mozzarella derretido aporta caseina (proteina de absorcion lenta) y calcio. Puedes agregar jalapeños si te gusta el picante. Dia perfecto para cocinar con calma y disfrutar el desayuno."
+        },
+        {
+          "nombre": "Almuerzo",
+          "hora": "2:00 PM",
+          "alimentos": [
+            "Pechuga de pollo al horno con especias 250g",
+            "Arroz integral cocido 120g (porcion pequena)",
+            "Frijoles negros 100g",
+            "Ensalada de repollo (coleslaw) con limon y aceite de oliva 10ml",
+            "Aguacate 30g"
+          ],
+          "calorias": 740,
+          "proteina": 65,
+          "carbohidratos": 68,
+          "grasa": 25,
+          "notas": "Aunque es dia de descanso, mantenemos una porcion moderada de arroz y frijoles para no sentir la restriccion como castigo. Recuerda la regla 80/20 de WellCore: no hace falta ser perfecto, hace falta ser consistente. Si quieres comer fuera hoy, elige un restaurante donde puedas pedir pollo con arroz y ensalada."
+        },
+        {
+          "nombre": "Cena",
+          "hora": "7:00 PM",
+          "alimentos": [
+            "Atun enlatado en agua 2 latas (160g escurrido)",
+            "Ensalada grande: lechuga romana, pepino, tomate, cebolla morada, aceitunas 20g",
+            "Aceite de oliva 10ml + limon",
+            "Almendras 15g",
+            "1 scoop whey protein (30g polvo) con agua"
+          ],
+          "calorias": 600,
+          "proteina": 74,
+          "carbohidratos": 32,
+          "grasa": 27,
+          "notas": "Cena ultra-simple y sin cocinar. El atun enlatado en agua es la proteina mas conveniente que existe. Mezcla todo como ensalada de atun con aceite de oliva y limon. Recuerda: maximo 3 latas de atun por semana por el mercurio. Las aceitunas aportan grasas monoinsaturadas y sodio natural."
+        }
+      ]
+    }
+  ],
+  "resumen_semanal": {
+    "dias_entreno": {
+      "cantidad": 5,
+      "calorias_por_dia": 2200,
+      "proteina_g": 187,
+      "carbohidratos_g": 210,
+      "grasa_g": 60,
+      "calorias_semana_parcial": 11000
+    },
+    "dias_descanso": {
+      "cantidad": 2,
+      "calorias_por_dia": 1850,
+      "proteina_g": 187,
+      "carbohidratos_g": 110,
+      "grasa_g": 82,
+      "calorias_semana_parcial": 3700
+    },
+    "total_semanal_kcal": 14700,
+    "promedio_diario_kcal": 2100,
+    "deficit_semanal_kcal": 3486,
+    "perdida_estimada_semanal_kg": "0.45-0.50 kg (basado en 7,700 kcal = 1 kg grasa)",
+    "perdida_estimada_mensual_kg": "1.8-2.0 kg"
+  },
+  "protocolo_refeed": {
+    "frecuencia": "Cada 2 semanas (dia sabado o domingo)",
+    "calorias": "Subir a TDEE (~2600 kcal)",
+    "como": "Aumentar SOLO carbohidratos (+150-200g). Proteina constante. Grasa moderada.",
+    "beneficios": "Elevar leptina (hormona de saciedad), reducir cortisol, restaurar glucogeno, bienestar psicologico.",
+    "timing": "Idealmente en un dia social para que se sienta como un dia normal, no como 'trampa'.",
+    "ejemplo": "Comer tus 3 comidas normales pero con porciones mas grandes de arroz, pasta, papa, pan, fruta. No es un 'cheat day' de comida basura — es un dia estrategico de carbohidratos."
+  },
+  "protocolo_suplementos": {
+    "tier": "Esencial + Rendimiento (Plan Metodo, nivel intermedio)",
+    "ya_toma": ["Proteina whey", "Omega-3"],
+    "suplementos": [
+      {
+        "nombre": "Creatina Monohidrato",
+        "dosis": "5g/dia",
+        "timing": "Cualquier momento del dia (con una comida es ideal)",
+        "obligatorio": true,
+        "nota": "Suplemento mas estudiado en la historia (500+ estudios). +5-10% fuerza, neuroproteccion a los 42 anos. No necesita fase de carga. Tomar con consistencia diaria."
+      },
+      {
+        "nombre": "Proteina Whey (ya la toma)",
+        "dosis": "1-2 scoops/dia segun macros (25-50g)",
+        "timing": "Incluido en las comidas del plan. Idealmente una toma cerca del entrenamiento.",
+        "obligatorio": true,
+        "nota": "No es un suplemento magico — es simplemente proteina de alta calidad en polvo. Conveniencia para alcanzar los 187g diarios."
+      },
+      {
+        "nombre": "Omega-3 EPA/DHA (ya lo toma)",
+        "dosis": "2-3g EPA+DHA combinados/dia",
+        "timing": "Con las comidas principales (almuerzo y cena)",
+        "obligatorio": true,
+        "nota": "Antiinflamatorio, salud cardiovascular, recuperacion muscular. A los 42 anos la inflamacion cronica de bajo grado aumenta. Verificar que el producto tenga al menos 500mg EPA + 500mg DHA por capsula."
+      },
+      {
+        "nombre": "Vitamina D3",
+        "dosis": "2,000-4,000 IU/dia",
+        "timing": "Con una comida que contenga grasa (liposoluble)",
+        "obligatorio": true,
+        "nota": "Aunque Millbrae tiene buen clima, si trabajas en interiores la deficiencia es comun. Funcion muscular, testosterona, inmunidad, salud osea. Nivel objetivo en sangre: 40-60 ng/mL."
+      },
+      {
+        "nombre": "Cafeina (opcional)",
+        "dosis": "255-510mg (3-6 mg/kg) pre-entreno",
+        "timing": "30-60 minutos antes de entrenar. NO despues de las 2:00 PM (proteger sueno)",
+        "obligatorio": false,
+        "nota": "Reduce percepcion de esfuerzo, +3-5% fuerza maxima. Puede ser como cafe negro (1 taza = ~95mg) o pre-workout. Con 6-7 horas de sueno, proteger la calidad del sueno es CRITICO. Si notas que no duermes bien, eliminar cafeina o reducir dosis."
+      },
+      {
+        "nombre": "Magnesio Glicinato",
+        "dosis": "200-400mg",
+        "timing": "Antes de dormir",
+        "obligatorio": false,
+        "nota": "Mejora calidad de sueno (critico con solo 6-7h). El glicinato tiene efecto relajante y no causa molestias gastrointestinales como el citrato. Soporta >600 reacciones enzimaticas incluyendo contraccion muscular."
+      }
+    ],
+    "disclaimer": "Consultar con medico antes de iniciar cualquier suplemento, especialmente si toma medicamentos. Estos son suplementos, no reemplazan una alimentacion completa."
+  },
+  "protocolo_reverse_diet": {
+    "cuando": "OBLIGATORIO al terminar la fase de deficit (despues de 12-16 semanas de este plan)",
+    "protocolo": [
+      "Semanas 1-6: Aumentar +100 kcal/semana via carbohidratos (+25g carbs/semana)",
+      "Semanas 7-8: Aumentar +50-100 kcal/semana segun tolerancia",
+      "Semanas 9-12: Estabilizar en nuevo TDEE de mantenimiento",
+      "Monitorear: peso promedio semanal, medidas de cintura, fotos cada 2 semanas",
+      "Si el peso sube >0.5 kg en una semana: mantener calorias actuales 1 semana mas",
+      "Objetivo: llegar a ~2400-2600 kcal/dia sin ganancia significativa de grasa"
+    ],
+    "importancia": "La reverse diet previene el efecto rebote. Sin ella, el cuerpo con metabolismo deprimido almacena el exceso calorico eficientemente como grasa. Es tan importante como el deficit mismo."
+  },
+  "tips": [
+    "Tu proteina esta a 2.2 g/kg (~187g/dia) porque a los 42 anos existe resistencia anabolica: tus musculos necesitan mas aminoacidos (especialmente leucina >2.5g por comida) para activar la sintesis proteica. Cada comida tiene ~62g de proteina de fuentes altas en leucina (pollo, res, huevos, whey). Esto es respaldado por Moore et al. (2015) y el ISSN Position Stand de Jager et al. (2017).",
+    "Ciclado de carbohidratos: comes 210g de carbs en dias de entreno (5 dias) y 110g en dias de descanso (2 dias). Promedio semanal = ~185g/dia. Esto maximiza tu rendimiento en el gym mientras profundizas el deficit los dias que no entrenas. La proteina NUNCA cambia: 187g todos los dias sin excepcion.",
+    "La grasa a 0.8 g/kg (68g promedio) protege tu produccion de testosterona. Despues de los 40, dietas con menos de 20% de calorias en grasa reducen testosterona libre un 10-15% (Whittaker & Harris, 2022). En dias de descanso la grasa sube a 82g para compensar los carbs bajos y mantener saciedad.",
+    "Hidratacion: 3.5 litros de agua al dia. Toma 500ml apenas te despiertes (pierdes ~500ml durante la noche por respiracion y sudor). Color de orina amarillo palido = bien hidratado. Con 2% de deshidratacion pierdes 10-20% de rendimiento fisico.",
+    "Refeed cada 2 semanas: un dia donde subes carbohidratos a nivel de mantenimiento (~2600 kcal). NO es un cheat day. Es una estrategia hormonal para elevar leptina (hormona de saciedad que cae en deficit), reducir cortisol y restaurar glucogeno. Come mas arroz, pasta, papa, fruta — no comida chatarra.",
+    "Creatina monohidrato 5g diarios: es el suplemento con mas evidencia cientifica en la historia (500+ estudios). Te da +5-10% de fuerza y a los 42 anos tiene beneficios neuroprotectores adicionales. Tomala todos los dias sin excepcion, incluso dias de descanso.",
+    "Manejo del hambre en deficit: la proteina alta (35% de tus calorias) es tu mejor herramienta porque tiene el mayor efecto termico (20-30% de las calorias de proteina se gastan en digerirla). Ademas, come vegetales de alto volumen (brocoli, espinaca, pepino) que llenan el estomago sin agregar calorias significativas.",
+    "Tu sueno de 6-7 horas es tu punto debil. Dormir menos de 7 horas reduce la capacidad de perder grasa en un 55% y aumenta la perdida de musculo en un 60% (Nedeltcheva et al., 2010). Trabaja en llegar a 7-8 horas: magnesio glicinato antes de dormir, no cafeina despues de las 2 PM, habitacion oscura y fria.",
+    "Tasa de perdida esperada: 0.45-0.5 kg por semana, ~1.8-2 kg por mes. Con tu IMC de 31.2, esta tasa es segura y sostenible. Pesate diario a la misma hora (manana, ayunas, post-bano), promedia los 7 dias. NO te obsesiones con el numero diario: puede fluctuar 1-2 kg por agua, sodio, comida no digerida.",
+    "Meal prep es tu mejor amigo: los domingos cocina 5-6 pechugas de pollo, varias batatas, arroz en olla arrocera y lava/corta verduras. Esto te ahorra 30-40 minutos diarios entre semana y elimina la excusa de 'no tengo tiempo'. En California tienes acceso a Costco: compra pechuga en bulk, huevos por 60, y arroz en saco de 20 lbs.",
+    "SIN salmon y SIN cerdo como solicitaste. Tus fuentes de proteina son: pechuga de pollo, lean ground turkey, carne de res magra (sirloin, flank, eye of round, ground beef 93/7), tilapia, cod/bacalao, atun (max 3 latas/semana), huevos, claras de huevo, yogur griego y whey protein. Variedad suficiente para nunca aburrirte.",
+    "Duracion maxima de este deficit: 12-16 semanas continuas. Despues de eso, la dieta inversa (reverse diet) es OBLIGATORIA: subir gradualmente +100 kcal/semana hasta llegar a mantenimiento. Esto previene el efecto rebote que destruye los resultados de la mayoria de las dietas."
+  ],
+  "notas_coach": "Octavio, tu plan esta disenado con precision para tu perfil: 42 anos, 85 kg, intermedio, objetivo de perdida de grasa. Con un IMC de 31.2, tienes un excelente potencial de transformacion porque tu nivel de entrenamiento (5 dias/semana) te permite mantener masa muscular mientras el deficit hace su trabajo. Los puntos clave son: 1) proteina alta siempre (187g, sin negociacion), 2) carbs ciclados segun entrenes o no, 3) nunca saltar comidas (tus 3 comidas son sagradas), 4) creatina 5g diarios, y 5) mejorar el sueno gradualmente hacia 7-8 horas. Si sigues el plan con 85% de adherencia o mas, en 12 semanas veras una transformacion significativa. Check-in cada 2 semanas con fotos + peso promedio + medidas de cintura y cadera. Vamos con todo. — Coach Dann, WellCore Fitness",
+  "check_in_protocol": {
+    "frecuencia": "Cada 2 semanas (Plan Metodo)",
+    "que_enviar": [
+      "Peso promedio de los ultimos 7 dias",
+      "Foto frontal, lateral y posterior (misma luz, misma hora, misma ropa)",
+      "Medida de cintura (a la altura del ombligo, relajado)",
+      "Medida de cadera (punto mas ancho)",
+      "Adherencia al plan (escala 1-10)",
+      "Calidad del sueno (escala 1-10)",
+      "Nivel de energia en el gym (escala 1-10)",
+      "Cualquier problema o duda"
+    ],
+    "ajustes_posibles": [
+      "Si peso baja >1 kg/semana consistentemente: subir 100 kcal en carbs",
+      "Si peso no baja en 2 semanas con adherencia >85%: bajar 100 kcal en carbs",
+      "Si rendimiento en gym cae >10%: diet break de 1 semana a mantenimiento",
+      "Si hambre es insoportable: agregar mas volumen de vegetales, verificar fibra >30g/dia"
+    ]
+  },
+  "metadata": {
+    "generado_por": "WellCore Nutrition Architect (zion-wellcore-nutrition)",
+    "fecha_generacion": "2026-03-30",
+    "metodologia_db_version": "1.0",
+    "tesis_referencia": "TESIS_NUTRICION_WELLCORE.md (Coach Dann, 2026)",
+    "referencias_clave": [
+      "Mifflin et al., 1990 — Formula Mifflin-St Jeor para TMB",
+      "Helms et al., 2014 — Proteina en deficit para atletas naturales",
+      "Morton et al., 2018 — Meta-analisis proteina y masa muscular",
+      "Moore et al., 2015 — Resistencia anabolica en adultos mayores",
+      "Kreider et al., 2017 — ISSN Position Stand Creatina",
+      "Jager et al., 2017 — ISSN Position Stand Proteina",
+      "Whittaker & Harris, 2022 — Grasa dietaria y testosterona",
+      "Byrne et al., 2018 — Estudio MATADOR (deficit intermitente)",
+      "Nedeltcheva et al., 2010 — Sueno y composicion corporal",
+      "Dorgan et al., 1996 — Grasa dietaria y hormonas"
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "objetivo": "Optimizar pérdida de grasa y preservar masa muscular durante el déficit calórico",
+  "suplementos": [
+    {
+      "nombre": "Creatina Monohidrato",
+      "dosis": "5g diarios (una cucharadita rasa)",
+      "momento": "Todos los días a la misma hora, preferiblemente post-entreno mezclada con tu batido de proteína. En días de descanso, tómala con el desayuno o el almuerzo.",
+      "evidencia": "Meta-análisis consistentes demuestran que la creatina preserva la fuerza y la masa muscular durante períodos de déficit calórico. También mejora el rendimiento en series de alta intensidad (3-15 reps), que es exactamente el rango donde entrenas para mantener músculo mientras pierdes grasa.",
+      "notas": "No necesitas fase de carga — 5g diarios alcanzan saturación muscular en 3-4 semanas. Puede causar retención de agua intramuscular de 1-2 kg al inicio; esto NO es grasa, es agua dentro del músculo. No te alarmes si la báscula sube ligeramente las primeras semanas."
+    },
+    {
+      "nombre": "Proteína Whey",
+      "dosis": "Según tus macros del plan nutricional (típicamente 25-40g por scoop, 1-2 scoops diarios para completar requerimiento proteico)",
+      "momento": "Post-entrenamiento dentro de los primeros 60 minutos como prioridad. Un segundo scoop puede usarse como snack entre comidas o antes de dormir si necesitas completar tu proteína del día.",
+      "evidencia": "En déficit calórico, el requerimiento proteico sube a 1.6-2.2 g/kg de peso corporal para preservar masa muscular. Para ti eso son 136-187g de proteína diaria. El whey es la forma más práctica y con mejor perfil de aminoácidos (alto en leucina) para alcanzar esa meta.",
+      "notas": "Ya la tienes en tu rutina — ahora el objetivo es optimizar el timing. Prioriza proteína de alimentos reales en tus comidas principales y usa el whey para completar. Si entrenas temprano, tu batido post-entreno es tu momento más importante de ingesta proteica del día."
+    },
+    {
+      "nombre": "Omega-3 (EPA/DHA)",
+      "dosis": "2-3g de EPA+DHA combinados al día (revisa la etiqueta: importa el contenido de EPA/DHA, no el total de aceite de pescado)",
+      "momento": "Con la comida que tenga más grasa del día para maximizar la absorción. Divide en 2 tomas si usas más de 1 cápsula — ejemplo: 1 en el almuerzo y 1 en la cena.",
+      "evidencia": "El omega-3 tiene efectos antiinflamatorios comprobados que aceleran la recuperación entre sesiones de entrenamiento. En contexto de pérdida de grasa, reduce la inflamación sistémica causada por el déficit calórico y el entrenamiento intenso, y hay evidencia emergente de que mejora la partición de nutrientes.",
+      "notas": "Ya lo tomas — verifica que tu producto aporte al menos 1g de EPA y 500mg de DHA por dosis diaria. Si tu marca actual tiene menos, considera subir la dosis o cambiar a una marca con mayor concentración. Guárdalo en el refrigerador para evitar oxidación."
+    },
+    {
+      "nombre": "Cafeína",
+      "dosis": "200-300mg, 30-45 minutos antes de entrenar (equivale a 2.3-3.5 mg/kg para tus 85 kg)",
+      "momento": "Exclusivamente pre-entrenamiento. NUNCA después de las 2:00 PM si entrenas por la tarde — tu sueño es tu prioridad número uno. Si tu sesión es vespertina, reduce a 100-150mg o sustitúyela por una caminata de calentamiento de 10 minutos.",
+      "evidencia": "La cafeína aumenta el gasto energético en reposo (termogénesis), mejora la oxidación de grasas durante el ejercicio, y reduce la percepción de esfuerzo — lo que te permite entrenar más duro en déficit calórico. El rango óptimo es 3-6 mg/kg de peso corporal.",
+      "notas": "Puedes obtenerla de café negro, un pre-entreno, o cápsulas de cafeína (las cápsulas permiten controlar la dosis exacta). Si notas que tu tolerancia sube, haz un ciclo: 5 días con cafeína, 2 sin (los fines de semana). Esto mantiene la sensibilidad y protege tu sueño."
+    },
+    {
+      "nombre": "Vitamina D3",
+      "dosis": "2000-4000 IU diarias",
+      "momento": "Con el desayuno o almuerzo, siempre acompañada de una comida que contenga grasa (es liposoluble y necesita grasa para absorberse correctamente).",
+      "evidencia": "Aunque vives en Millbrae, California, la mayoría de adultos tienen niveles subóptimos de vitamina D. Niveles adecuados de D3 están asociados con mejor función hormonal (testosterona), salud ósea, función inmune, y mejor composición corporal. En déficit calórico, mantener niveles hormonales óptimos es clave.",
+      "notas": "Lo ideal es hacer un análisis de sangre (25-hidroxivitamina D) para ajustar la dosis. Si tus niveles están por debajo de 30 ng/mL, tu médico podría recomendar dosis más altas temporalmente. Combínala con tu omega-3 en la misma comida para asegurar la absorción."
+    },
+    {
+      "nombre": "Magnesio Glicinato",
+      "dosis": "300-400mg de magnesio elemental antes de dormir",
+      "momento": "30-45 minutos antes de acostarte, todos los días. La forma glicinato es la que mejor se absorbe y tiene efecto calmante — el glicinato cruza la barrera hematoencefálica y actúa como relajante.",
+      "evidencia": "El magnesio participa en más de 300 reacciones enzimáticas incluyendo la síntesis de proteína muscular y la regulación del sistema nervioso. La forma glicinato específicamente mejora la calidad del sueño y reduce el tiempo para quedarse dormido. Dado que tu sueño actual es de 6-7 horas, este es probablemente el suplemento con mayor impacto inmediato en tu plan.",
+      "notas": "No confundas magnesio elemental con peso total de la cápsula — una cápsula de 500mg de magnesio glicinato puede contener solo 100mg de magnesio elemental. Lee la etiqueta con cuidado. Evita la forma óxido (mala absorción) y citrato antes de dormir (puede causar efecto laxante). Puedes notar mejoría en la calidad de sueño desde la primera semana."
+    }
+  ],
+  "interacciones": "No tomes la cafeína junto con el magnesio — la cafeína es estimulante y el magnesio es relajante, se contrarrestan. Mantén al menos 8 horas de separación (cafeína por la mañana, magnesio por la noche). La vitamina D3 y el omega-3 se potencian mutuamente: tómalos en la misma comida con grasa. La creatina y la proteína whey pueden mezclarse en el mismo batido post-entreno sin ningún problema. Si tomas algún medicamento recetado, consulta con tu médico antes de iniciar la cafeína y la vitamina D3 en estas dosis.",
+  "notas_coach": "Octavio, tu stack de suplementos está diseñado con un objetivo muy claro: proteger tu músculo mientras tu cuerpo quema grasa. Ya tienes proteína y omega en tu rutina, así que partimos con ventaja. Los 3 añadidos clave son: creatina para que no pierdas fuerza en déficit (vas a notar que mantienes tus cargas en el gym), magnesio glicinato para mejorar ese sueño de 6-7 horas que te está frenando (el impacto de dormir bien en la pérdida de grasa es enorme), y cafeína estratégica para que tu rendimiento en las sesiones se mantenga alto aunque estés comiendo menos. La vitamina D3 es tu seguro hormonal — con 42 años, mantener niveles óptimos de D3 apoya tu testosterona y recuperación. Recuerda: ningún suplemento reemplaza el déficit calórico consistente y el entrenamiento con pesas. Estos son el 5% que optimiza el otro 95% que ya estás haciendo."
+}
