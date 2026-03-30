@@ -6,7 +6,7 @@
 
     {{-- Tabs --}}
     @php
-        $canAccessNutricion = in_array($clientPlanType, ['metodo', 'elite', 'presencial', 'rise']);
+        $canAccessNutricion = in_array($clientPlanType, ['esencial', 'metodo', 'elite', 'presencial', 'rise']);
         $canAccessElite     = in_array($clientPlanType, ['elite']);
         $tabs = [
             'entrenamiento' => 'Entrenamiento',
