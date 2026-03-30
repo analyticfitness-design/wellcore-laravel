@@ -96,7 +96,11 @@ class Photos extends Component
             $extension = $photo->getClientOriginalExtension() ?: 'jpg';
             $filename = "{$client->id}_{$this->uploadDate}_{$tipo}_" . time() . ".{$extension}";
 
-            $photo->move($uploadDir, $filename);
+            // Livewire's TemporaryUploadedFile::getPathname() returns a tmpfile on /tmp
+            // (different filesystem from /code), so Symfony's move() via rename() fails
+            // with EXDEV. copy() works across filesystems; use it instead.
+            $destPath = $uploadDir . DIRECTORY_SEPARATOR . $filename;
+            copy($photo->getPathname(), $destPath);
 
             ProgressPhoto::where('client_id', $client->id)
                 ->where('photo_date', $this->uploadDate)
