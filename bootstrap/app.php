@@ -11,6 +11,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
+
         $middleware->validateCsrfTokens(except: ['webhooks/*', 'api/chat', 'api/newsletter']);
         $middleware->encryptCookies(except: ['wc_locale', 'wc_country', 'cookieConsent', 'wc_pwa_dismissed', 'wc_visitor_id']);
 
