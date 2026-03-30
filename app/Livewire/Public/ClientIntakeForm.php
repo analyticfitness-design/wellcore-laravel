@@ -425,7 +425,7 @@ class ClientIntakeForm extends Component
                 $this->addError('email', 'Este email ya esta registrado. Inicia sesion en wellcorefitness.com/login');
                 $this->step = 2;
             } else {
-                $this->addError('email', 'Error al crear tu cuenta. Por favor intenta de nuevo o contactanos por WhatsApp.');
+                $this->addError('submit', 'Error al crear tu cuenta. Por favor intenta de nuevo o contactanos por WhatsApp.');
                 $this->step = $this->totalSteps;
             }
         }

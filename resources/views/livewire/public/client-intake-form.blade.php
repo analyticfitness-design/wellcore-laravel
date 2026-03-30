@@ -1040,6 +1040,12 @@
                 </div>
             </div>
 
+            @error('submit')
+                <div class="rounded-lg bg-red-500/10 border border-red-500/30 p-3 text-sm text-red-400">
+                    {{ $message }}
+                </div>
+            @enderror
+
             <div class="mt-8 flex gap-3">
                 <button wire:click="prevStep"
                         class="flex items-center gap-2 rounded-full border border-wc-border bg-wc-bg-secondary px-6 py-3.5 text-sm font-medium text-wc-text-secondary hover:text-wc-text transition-colors">
