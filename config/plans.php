@@ -5,7 +5,7 @@ return [
         'name' => 'Esencial',
         'price_cop' => 299000,
         'price_usd' => 65,
-        'includes' => ['entrenamiento', 'habitos'],
+        'includes' => ['entrenamiento', 'nutricion', 'habitos'],
         'features_count' => 11,
     ],
     'metodo' => [
