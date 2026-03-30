@@ -1,0 +1,1106 @@
+{
+    "plan_entrenamiento": {
+        "objetivo": "Hipertrofia muscular - Ganancia de masa magra",
+        "frecuencia": "5 dias por semana (lunes, martes, jueves, viernes, domingo)",
+        "duracion_semanas": 4,
+        "semanas": [
+            {
+                "numero": 1,
+                "fase": "Adaptacion - RIR 3-4",
+                "dias": [
+                    {
+                        "nombre": "Lunes - Pecho + Triceps",
+                        "tipo": "empuje",
+                        "duracion": "55-65 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Press banca plano",
+                                "series": 4,
+                                "repeticiones": "8-10",
+                                "descanso": "120s",
+                                "notas": "Retrae las escapulas y aprieta el arco toracico antes de desanclar. Baja la barra con control hasta tocar el pecho a la altura de los pezones. RIR 3-4 esta semana para establecer tus cargas base."
+                            },
+                            {
+                                "nombre": "Press mancuernas inclinado",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "90s",
+                                "notas": "Banco a 30-35 grados. Desciende con los codos a 45 grados del torso para proteger el hombro. Busca un estiramiento profundo en la parte baja del movimiento y contrae arriba sin chocar las mancuernas."
+                            },
+                            {
+                                "nombre": "Aperturas mancuernas",
+                                "series": 3,
+                                "repeticiones": "12-15",
+                                "descanso": "75s",
+                                "notas": "Mantén una ligera flexion de codos constante durante todo el recorrido. Enfoca la tension en el estiramiento del pectoral en la fase excentrica. No bajes mas alla del plano del banco."
+                            },
+                            {
+                                "nombre": "Crossover en polea",
+                                "series": 3,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Poleas a la altura de los hombros. Lleva las manos hasta cruzarse ligeramente frente al pecho para maximizar la contraccion pico. Controla el regreso en 2-3 segundos."
+                            },
+                            {
+                                "nombre": "Extension en polea alta",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "75s",
+                                "notas": "Usa barra recta o V. Mantén los codos pegados al torso durante todo el movimiento. Extiende completamente sin bloquear la articulacion y resiste la fase excentrica."
+                            },
+                            {
+                                "nombre": "Press frances barra Z",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "75s",
+                                "notas": "Baja la barra hacia la frente con los codos apuntando al techo. No abras los codos. Usa un agarre que no te genere molestia en las munecas. Fase excentrica controlada de 3 segundos."
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "Martes - Espalda + Biceps",
+                        "tipo": "jale",
+                        "duracion": "55-65 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Dominadas",
+                                "series": 4,
+                                "repeticiones": "6-10",
+                                "descanso": "120s",
+                                "notas": "Agarre prono a la anchura de los hombros o ligeramente mas amplio. Inicia cada repeticion desde brazos extendidos y sube hasta que la barbilla supere la barra. Si no llegas a las repeticiones, usa banda elastica de asistencia."
+                            },
+                            {
+                                "nombre": "Remo con barra",
+                                "series": 4,
+                                "repeticiones": "8-10",
+                                "descanso": "90s",
+                                "notas": "Inclina el torso a 45 grados con la espalda neutra. Lleva la barra hacia el ombligo retrayendo las escapulas al final. No uses impulso ni balanceo; si necesitas hacerlo, reduce el peso."
+                            },
+                            {
+                                "nombre": "Remo en polea baja",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "90s",
+                                "notas": "Usa agarre triangulo o V. Manten el pecho elevado y evita redondear la espalda baja. Lleva el agarre hasta el abdomen y aprieta las escapulas 1 segundo en la contraccion pico."
+                            },
+                            {
+                                "nombre": "Face pull",
+                                "series": 3,
+                                "repeticiones": "15-20",
+                                "descanso": "60s",
+                                "notas": "Polea a la altura de la cara. Usa la cuerda y tira separando los extremos hacia las orejas con rotacion externa del hombro. Este ejercicio es clave para la salud de tus hombros y la postura."
+                            },
+                            {
+                                "nombre": "Curl barra Z",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "75s",
+                                "notas": "Manten los codos fijos al costado del cuerpo. Sube con intencion y baja controlando 2-3 segundos. No balancees el torso para subir el peso. Aprieta el biceps arriba medio segundo."
+                            },
+                            {
+                                "nombre": "Curl martillo",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "60s",
+                                "notas": "Agarre neutro con las palmas enfrentadas. Este agarre trabaja el braquial y el braquiorradial, dando grosor al brazo. Alterna brazos o hazlo simultaneo manteniendo los codos quietos."
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "Jueves - Piernas (Cuadriceps)",
+                        "tipo": "piernas",
+                        "duracion": "60-70 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Sentadilla con barra",
+                                "series": 4,
+                                "repeticiones": "8-10",
+                                "descanso": "150s",
+                                "notas": "Coloca la barra sobre los trapecios, no sobre el cuello. Pies a la anchura de hombros con las puntas ligeramente hacia afuera. Desciende hasta que el pliegue de la cadera quede por debajo de la rodilla. Manten el core apretado y la espalda neutra."
+                            },
+                            {
+                                "nombre": "Prensa de piernas",
+                                "series": 4,
+                                "repeticiones": "10-12",
+                                "descanso": "120s",
+                                "notas": "Coloca los pies a la anchura de hombros en la mitad inferior de la plataforma para enfatizar cuadriceps. Baja hasta que las rodillas formen 90 grados sin despegar el gluteo del asiento. No bloquees las rodillas arriba."
+                            },
+                            {
+                                "nombre": "Sentadilla bulgara",
+                                "series": 3,
+                                "repeticiones": "10-12 c\/pierna",
+                                "descanso": "90s",
+                                "notas": "Pie trasero sobre un banco a la altura de la rodilla. Inclina el torso ligeramente hacia adelante para mayor activacion del cuadriceps. Desciende hasta que la rodilla trasera casi toque el suelo. Usa mancuernas a los lados."
+                            },
+                            {
+                                "nombre": "Extension de piernas",
+                                "series": 3,
+                                "repeticiones": "12-15",
+                                "descanso": "75s",
+                                "notas": "Ajusta el respaldo para que la rodilla quede alineada con el eje de la maquina. Extiende completamente apretando el cuadriceps 1 segundo arriba. Baja con control en 3 segundos. No uses impulso."
+                            },
+                            {
+                                "nombre": "Zancadas con mancuernas",
+                                "series": 3,
+                                "repeticiones": "12 c\/pierna",
+                                "descanso": "75s",
+                                "notas": "Da un paso amplio y desciende verticalmente. La rodilla delantera no debe sobrepasar excesivamente la punta del pie. Empuja con el talon del pie delantero para volver a la posicion inicial."
+                            },
+                            {
+                                "nombre": "Elevacion de pantorrillas de pie",
+                                "series": 4,
+                                "repeticiones": "15-20",
+                                "descanso": "60s",
+                                "notas": "Usa una plataforma para lograr rango completo de movimiento. Baja el talon todo lo posible estirando el soleo y gastrocnemio, luego sube a la maxima dorsiflexion y manten la contraccion 1 segundo."
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "Viernes - Hombros + Brazos",
+                        "tipo": "empuje",
+                        "duracion": "55-65 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Press mancuernas sentado",
+                                "series": 4,
+                                "repeticiones": "8-10",
+                                "descanso": "120s",
+                                "notas": "Banco a 90 grados con respaldo. Lleva las mancuernas a la altura de las orejas al inicio. Presiona verticalmente sin bloquear los codos arriba. Baja con control hasta que los codos queden a 90 grados o ligeramente por debajo."
+                            },
+                            {
+                                "nombre": "Elevaciones laterales",
+                                "series": 4,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Ligera inclinacion del torso hacia adelante. Eleva hasta la altura de los hombros con los meniques ligeramente por encima de los pulgares. Controla la bajada sin dejar caer el peso. Usa un peso que puedas manejar con tecnica limpia."
+                            },
+                            {
+                                "nombre": "Pajaro mancuernas",
+                                "series": 3,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Inclinado a 90 grados sobre un banco o de pie. Abre los brazos hacia los lados con los codos ligeramente flexionados. Enfoca la contraccion en el deltoide posterior y aprieta las escapulas arriba."
+                            },
+                            {
+                                "nombre": "Curl mancuernas alterno",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "75s",
+                                "notas": "Inicia con agarre neutro y supina la muneca durante la subida para maximizar la activacion del biceps. Manten el codo fijo al costado. Completa todas las repeticiones de un brazo antes de alternar o hazlo alternadamente."
+                            },
+                            {
+                                "nombre": "Extension con cuerda",
+                                "series": 3,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Usa la cuerda en polea alta. Separa los extremos al final del movimiento para enfatizar la cabeza lateral del triceps. Mantén los codos pegados al cuerpo y extiende completamente."
+                            },
+                            {
+                                "nombre": "Curl en polea",
+                                "series": 3,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "La polea baja proporciona tension constante durante todo el rango de movimiento. Usa barra recta o cuerda. Manten los codos estables y enfoca la contraccion pico arriba por 1 segundo."
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "Domingo - Piernas (Isquios + Gluteos)",
+                        "tipo": "piernas",
+                        "duracion": "55-65 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Peso muerto rumano",
+                                "series": 4,
+                                "repeticiones": "8-10",
+                                "descanso": "120s",
+                                "notas": "Agarra la barra a la anchura de hombros. Empuja la cadera hacia atras manteniendo las piernas casi extendidas con ligera flexion de rodilla. Baja hasta sentir un estiramiento fuerte en los isquiotibiales. Espalda neutra siempre."
+                            },
+                            {
+                                "nombre": "Hip thrust",
+                                "series": 4,
+                                "repeticiones": "10-12",
+                                "descanso": "90s",
+                                "notas": "Apoya la espalda alta en un banco. Coloca la barra sobre la cadera con un pad. Pies a la anchura de hombros. Empuja la cadera hacia arriba apretando los gluteos al maximo en la parte superior. No hiperextiendas la lumbar."
+                            },
+                            {
+                                "nombre": "Curl femoral acostado",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "75s",
+                                "notas": "Ajusta la maquina para que el rodillo quede sobre los tobillos. Manten la cadera presionada contra el banco durante todo el movimiento. Flexiona las rodillas con fuerza y controla la fase excentrica en 3 segundos."
+                            },
+                            {
+                                "nombre": "Buenos dias",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "90s",
+                                "notas": "Barra sobre los trapecios como en una sentadilla. Flexiona la cadera empujandola hacia atras con las rodillas ligeramente dobladas. Baja hasta que el torso quede casi paralelo al suelo. Usa peso moderado y enfoca la tecnica."
+                            },
+                            {
+                                "nombre": "Abduccion en maquina",
+                                "series": 3,
+                                "repeticiones": "15-20",
+                                "descanso": "60s",
+                                "notas": "Sientate erguido y abre las piernas contra la resistencia. Manten la contraccion 1 segundo en la apertura maxima. Controla el retorno sin dejar que el peso jale tus piernas. Excelente finalizador para gluteo medio."
+                            },
+                            {
+                                "nombre": "Elevacion de pantorrillas sentado",
+                                "series": 4,
+                                "repeticiones": "15-20",
+                                "descanso": "60s",
+                                "notas": "Sentado enfatiza el soleo sobre el gastrocnemio. Baja el talon completamente por debajo de la plataforma y sube a la maxima contraccion. Manten 1 segundo arriba. Tempo lento y controlado."
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "numero": 2,
+                "fase": "Carga progresiva - RIR 2-3",
+                "dias": [
+                    {
+                        "nombre": "Lunes - Pecho + Triceps",
+                        "tipo": "empuje",
+                        "duracion": "55-65 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Press banca plano",
+                                "series": 4,
+                                "repeticiones": "8-10",
+                                "descanso": "120s",
+                                "notas": "Incrementa 2.5-5 kg respecto a la semana pasada si completaste todas las repeticiones con buena tecnica. Manten la retraccion escapular y el arco toracico. RIR 2-3 esta semana."
+                            },
+                            {
+                                "nombre": "Press mancuernas inclinado",
+                                "series": 4,
+                                "repeticiones": "10-12",
+                                "descanso": "90s",
+                                "notas": "Sube una serie respecto a semana 1 para incrementar el volumen. Banco a 30-35 grados. Si la semana pasada completaste 12 reps facil, sube 1-2 kg por mancuerna. Mantén el control excentrico."
+                            },
+                            {
+                                "nombre": "Aperturas inclinadas",
+                                "series": 3,
+                                "repeticiones": "12-15",
+                                "descanso": "75s",
+                                "notas": "Banco inclinado a 30 grados para enfatizar la porcion clavicular del pectoral. Mantén la ligera flexion de codos durante todo el recorrido. Estiramiento controlado en la fase baja, contraccion arriba."
+                            },
+                            {
+                                "nombre": "Crossover en polea",
+                                "series": 3,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Intenta aumentar 1-2 placas respecto a la semana anterior. Cruza ligeramente las manos frente al pecho. Mantén la tension constante y evita relajar en la posicion inicial."
+                            },
+                            {
+                                "nombre": "Extension en polea alta",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "75s",
+                                "notas": "Prioriza la conexion mente-musculo sobre el peso. Si completaste el rango de reps la semana pasada, incrementa 1 placa. Extension completa con codos pegados al torso."
+                            },
+                            {
+                                "nombre": "Extension mancuerna sobre cabeza",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "75s",
+                                "notas": "Sujeta una mancuerna con ambas manos detras de la cabeza. Extiende los codos hacia arriba sin mover los brazos. Este ejercicio enfatiza la cabeza larga del triceps por el estiramiento en la posicion baja."
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "Martes - Espalda + Biceps",
+                        "tipo": "jale",
+                        "duracion": "55-65 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Dominadas",
+                                "series": 4,
+                                "repeticiones": "6-10",
+                                "descanso": "120s",
+                                "notas": "Si la semana pasada alcanzaste 10 reps en todas las series, agrega peso con un cinturon o mancuerna entre los pies. Si no, busca sumar 1-2 repeticiones por serie respecto a la semana anterior."
+                            },
+                            {
+                                "nombre": "Remo con barra",
+                                "series": 4,
+                                "repeticiones": "8-10",
+                                "descanso": "90s",
+                                "notas": "Incrementa 2.5-5 kg si completaste las repeticiones la semana pasada. Mantén la inclinacion de torso consistente. Jala hacia el ombligo y retrae las escapulas al final."
+                            },
+                            {
+                                "nombre": "Remo mancuerna",
+                                "series": 3,
+                                "repeticiones": "10-12 c\/brazo",
+                                "descanso": "90s",
+                                "notas": "Apoya una rodilla y mano en el banco. Jala la mancuerna hacia la cadera, no hacia el pecho. Rota ligeramente el torso al subir para mayor rango de movimiento. Controla la bajada."
+                            },
+                            {
+                                "nombre": "Face pull",
+                                "series": 3,
+                                "repeticiones": "15-20",
+                                "descanso": "60s",
+                                "notas": "Aumenta 1 placa si la semana pasada fue facil. Tira hacia la cara separando la cuerda con rotacion externa. Pausa de 1 segundo en la contraccion. No sacrifiques tecnica por peso."
+                            },
+                            {
+                                "nombre": "Curl barra recta",
+                                "series": 3,
+                                "repeticiones": "8-10",
+                                "descanso": "75s",
+                                "notas": "La barra recta permite mayor supinacion que la Z. Mantén los codos fijos y el torso erguido. Sube con intencion explosiva y baja en 2-3 segundos. RIR 2-3."
+                            },
+                            {
+                                "nombre": "Curl concentrado",
+                                "series": 3,
+                                "repeticiones": "10-12 c\/brazo",
+                                "descanso": "60s",
+                                "notas": "Sentado con el codo apoyado en el muslo interno. Este ejercicio aisla el biceps eliminando cualquier impulso. Aprieta arriba 1 segundo y baja controlado. Excelente para el pico del biceps."
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "Jueves - Piernas (Cuadriceps)",
+                        "tipo": "piernas",
+                        "duracion": "60-70 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Sentadilla con barra",
+                                "series": 4,
+                                "repeticiones": "8-10",
+                                "descanso": "150s",
+                                "notas": "Agrega 2.5-5 kg respecto a la semana 1. Manten la tecnica impecable: pecho alto, core apretado, rodillas en linea con los pies. Profundidad completa o por debajo del paralelo. RIR 2-3."
+                            },
+                            {
+                                "nombre": "Sentadilla hack",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "120s",
+                                "notas": "Coloca los pies juntos y bajos en la plataforma para maximizar el enfasis en cuadriceps. Desciende profundo manteniendo la espalda contra el respaldo. No bloquees las rodillas arriba."
+                            },
+                            {
+                                "nombre": "Prensa de piernas",
+                                "series": 4,
+                                "repeticiones": "10-12",
+                                "descanso": "120s",
+                                "notas": "Incrementa peso respecto a la semana 1. Pies en la mitad inferior de la plataforma. Baja hasta 90 grados de flexion de rodilla. Empuja con toda la planta del pie."
+                            },
+                            {
+                                "nombre": "Extension de piernas",
+                                "series": 3,
+                                "repeticiones": "12-15",
+                                "descanso": "75s",
+                                "notas": "Agrega 1-2 placas respecto a semana 1. Mantén la contraccion completa arriba durante 1 segundo. Fase excentrica lenta de 3 segundos. Busca sentir cada fibra del cuadriceps."
+                            },
+                            {
+                                "nombre": "Sentadilla bulgara",
+                                "series": 3,
+                                "repeticiones": "10-12 c\/pierna",
+                                "descanso": "90s",
+                                "notas": "Incrementa 1-2 kg por mancuerna respecto a la semana anterior. Enfoca el peso en el pie delantero. Mantén la rodilla en linea con el pie y desciende profundo. El pie trasero solo estabiliza."
+                            },
+                            {
+                                "nombre": "Elevacion de pantorrillas de pie",
+                                "series": 4,
+                                "repeticiones": "15-20",
+                                "descanso": "60s",
+                                "notas": "Agrega peso si la semana pasada completaste 20 reps. Rango completo con pausa abajo en estiramiento y arriba en contraccion. Las pantorrillas responden bien a volumen alto y tempo lento."
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "Viernes - Hombros + Brazos",
+                        "tipo": "empuje",
+                        "duracion": "55-65 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Press militar barra",
+                                "series": 4,
+                                "repeticiones": "8-10",
+                                "descanso": "120s",
+                                "notas": "De pie con agarre ligeramente mas ancho que los hombros. Presiona la barra desde la clavícula hasta la extension completa sobre la cabeza. Aprieta el core y los gluteos para estabilizar. No inclines el torso."
+                            },
+                            {
+                                "nombre": "Elevaciones laterales",
+                                "series": 4,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Si la semana pasada fue facil, sube 1 kg por mancuerna. Mantén el mismo patron de movimiento: ligera inclinacion, codos ligeramente flexionados, meniques arriba. No subas mas alla de la linea de los hombros."
+                            },
+                            {
+                                "nombre": "Laterales en polea",
+                                "series": 3,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "La polea proporciona tension constante que las mancuernas no dan en la parte baja. Cruza la polea por detras del cuerpo para mayor rango. Control total en ambas fases del movimiento."
+                            },
+                            {
+                                "nombre": "Curl barra Z",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "75s",
+                                "notas": "El agarre en la barra Z reduce el estres en las munecas. Sube controlando y aprieta el biceps arriba. Si completaste las reps la semana pasada, agrega 1.25-2.5 kg."
+                            },
+                            {
+                                "nombre": "Patada de triceps",
+                                "series": 3,
+                                "repeticiones": "12-15 c\/brazo",
+                                "descanso": "60s",
+                                "notas": "Inclinado con el codo a 90 grados pegado al torso. Extiende la mancuerna hacia atras hasta la extension completa. Pausa de 1 segundo en la contraccion pico. Bajada controlada."
+                            },
+                            {
+                                "nombre": "Curl martillo",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "60s",
+                                "notas": "Agarre neutro para trabajar el braquial. Sube ambas mancuernas simultaneamente o alternas. Manten los codos fijos y enfoca la contraccion en la porcion externa del brazo."
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "Domingo - Piernas (Isquios + Gluteos)",
+                        "tipo": "piernas",
+                        "duracion": "55-65 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Peso muerto rumano",
+                                "series": 4,
+                                "repeticiones": "8-10",
+                                "descanso": "120s",
+                                "notas": "Incrementa 2.5-5 kg respecto a la semana anterior. Empuja la cadera atras con la barra pegada a las piernas. Siente el estiramiento en los isquiotibiales y sube apretando los gluteos al final. RIR 2-3."
+                            },
+                            {
+                                "nombre": "Hip thrust",
+                                "series": 4,
+                                "repeticiones": "10-12",
+                                "descanso": "90s",
+                                "notas": "Agrega peso respecto a la semana 1. Manten la barbilla hacia el pecho para evitar hiperextension lumbar. Aprieta los gluteos 2 segundos en la parte superior. Pies firmes en el suelo."
+                            },
+                            {
+                                "nombre": "Curl femoral sentado",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "75s",
+                                "notas": "Variamos a sentado esta semana para un estimulo diferente. Ajusta el respaldo para que el rodillo quede sobre los tobillos. Flexiona con fuerza y controla la extension en 3 segundos. No dejes que el peso rebote."
+                            },
+                            {
+                                "nombre": "Peso muerto convencional",
+                                "series": 3,
+                                "repeticiones": "6-8",
+                                "descanso": "120s",
+                                "notas": "Pies a la anchura de caderas, agarre mixto o doble prono. Inicia con la cadera mas baja que en el rumano. Pecho alto, core apretado. Empuja el suelo con los pies y bloquea arriba con los gluteos."
+                            },
+                            {
+                                "nombre": "Abduccion en maquina",
+                                "series": 3,
+                                "repeticiones": "15-20",
+                                "descanso": "60s",
+                                "notas": "Incrementa 1-2 placas. Inclinando el torso hacia adelante activas mas el gluteo mayor; sentado erguido activas mas el gluteo medio. Alterna entre series o elige una posicion."
+                            },
+                            {
+                                "nombre": "Elevacion de pantorrillas sentado",
+                                "series": 4,
+                                "repeticiones": "15-20",
+                                "descanso": "60s",
+                                "notas": "Agrega peso si completaste 20 reps la semana anterior. Fase excentrica de 3 segundos, pausa de 1 segundo en estiramiento maximo y contraccion maxima. No rebotes abajo."
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "numero": 3,
+                "fase": "Intensificacion - RIR 1-2",
+                "dias": [
+                    {
+                        "nombre": "Lunes - Pecho + Triceps",
+                        "tipo": "empuje",
+                        "duracion": "60-70 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Press banca plano",
+                                "series": 4,
+                                "repeticiones": "6-8",
+                                "descanso": "150s",
+                                "notas": "Semana de intensificacion. Reduce las repeticiones pero sube el peso. Busca tu maximo con RIR 1-2. Mantén tecnica impecable: retraccion escapular, arco toracico, pies firmes. Si necesitas un asegurador, pidelo."
+                            },
+                            {
+                                "nombre": "Press mancuernas inclinado",
+                                "series": 4,
+                                "repeticiones": "8-10",
+                                "descanso": "90s",
+                                "notas": "Sube peso respecto a la semana 2. Banco a 30-35 grados. Este es tu segundo movimiento compuesto asi que dale prioridad con cargas retadoras. RIR 1-2 en las ultimas dos series."
+                            },
+                            {
+                                "nombre": "Chest press maquina",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "75s",
+                                "notas": "La maquina te permite ir mas cerca del fallo con seguridad. Empuja con intencion explosiva y controla el regreso en 3 segundos. En la ultima serie puedes hacer una drop set reduciendo el peso 30%."
+                            },
+                            {
+                                "nombre": "Crossover en polea",
+                                "series": 3,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Incrementa peso. Cruza las manos y aprieta 2 segundos en la contraccion maxima. Variacion: alterna la posicion de las poleas entre series (alta, media, baja) para estimular diferentes fibras."
+                            },
+                            {
+                                "nombre": "Extension con cuerda",
+                                "series": 4,
+                                "repeticiones": "10-12",
+                                "descanso": "75s",
+                                "notas": "Sube una serie y el peso respecto a semana 2. Separa la cuerda al final del movimiento. Mantén los codos pegados. En la ultima serie busca RIR 1."
+                            },
+                            {
+                                "nombre": "Press cerrado",
+                                "series": 3,
+                                "repeticiones": "8-10",
+                                "descanso": "90s",
+                                "notas": "Agarre a la anchura de los hombros en banca plana. Los codos van pegados al cuerpo. Este movimiento compuesto permite usar mas peso que los ejercicios de aislamiento. Baja hasta el pecho y empuja con fuerza."
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "Martes - Espalda + Biceps",
+                        "tipo": "jale",
+                        "duracion": "60-70 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Dominadas",
+                                "series": 4,
+                                "repeticiones": "6-8",
+                                "descanso": "120s",
+                                "notas": "Agrega peso con cinturon si la semana pasada lograste 10 reps. Si no, busca llegar a 8 reps minimo en cada serie. Cada rep completa desde extension total hasta barbilla sobre la barra. RIR 1-2."
+                            },
+                            {
+                                "nombre": "Remo con barra",
+                                "series": 4,
+                                "repeticiones": "6-8",
+                                "descanso": "120s",
+                                "notas": "Sube peso respecto a la semana 2. Baja las repeticiones para cargar mas. Inclinacion de 45 grados, retraccion escapular completa al final. Si sientes que pierdes la postura, reduce el peso."
+                            },
+                            {
+                                "nombre": "Remo en polea baja",
+                                "series": 4,
+                                "repeticiones": "10-12",
+                                "descanso": "90s",
+                                "notas": "Sube una serie respecto a semana 2. Usa agarre triangulo. Lleva el agarre hasta el abdomen con pecho elevado. Pausa de 1 segundo en contraccion. Las ultimas 2 series a RIR 1."
+                            },
+                            {
+                                "nombre": "Pullover mancuerna",
+                                "series": 3,
+                                "repeticiones": "12-15",
+                                "descanso": "75s",
+                                "notas": "Acostado transversal sobre un banco con solo la parte alta de la espalda apoyada. Lleva la mancuerna por detras de la cabeza con los codos ligeramente flexionados. Gran estiramiento para el dorsal y serrato."
+                            },
+                            {
+                                "nombre": "Curl barra Z",
+                                "series": 4,
+                                "repeticiones": "8-10",
+                                "descanso": "75s",
+                                "notas": "Sube una serie y el peso respecto a semana 2. Movimiento estricto sin balanceo. Sube explosivo, baja en 3 segundos. Las ultimas 2 series a RIR 1-2. Si fallas, descarga y completa las reps."
+                            },
+                            {
+                                "nombre": "Curl martillo",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "60s",
+                                "notas": "Incrementa peso. Alterna brazos manteniendo la tension constante. Enfoca en el braquial para darle grosor al brazo. Codos fijos, sin balanceo. Ultima serie a RIR 1."
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "Jueves - Piernas (Cuadriceps)",
+                        "tipo": "piernas",
+                        "duracion": "60-70 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Sentadilla con barra",
+                                "series": 4,
+                                "repeticiones": "6-8",
+                                "descanso": "180s",
+                                "notas": "Semana mas pesada del mesociclo. Sube peso respecto a semana 2. Profundidad completa manteniendo la tecnica. Core apretado, pecho alto, rodillas en linea con los pies. RIR 1-2. Usa cinturon si lo tienes."
+                            },
+                            {
+                                "nombre": "Sentadilla frontal",
+                                "series": 3,
+                                "repeticiones": "8-10",
+                                "descanso": "120s",
+                                "notas": "Barra sobre los deltoides anteriores con agarre cruzado o limpio. La sentadilla frontal enfatiza mas los cuadriceps y requiere un core mas fuerte. Desciende profundo manteniendo el torso vertical."
+                            },
+                            {
+                                "nombre": "Prensa de piernas",
+                                "series": 4,
+                                "repeticiones": "8-10",
+                                "descanso": "120s",
+                                "notas": "Peso mas pesado que semana 2 con menos repeticiones. Pies en la mitad inferior de la plataforma. Rango completo. No bloquees rodillas. En la ultima serie puedes hacer 2-3 reps parciales extras."
+                            },
+                            {
+                                "nombre": "Extension de piernas",
+                                "series": 4,
+                                "repeticiones": "10-12",
+                                "descanso": "75s",
+                                "notas": "Sube una serie y el peso. Contraccion de 2 segundos arriba. Excentrica de 3 segundos. En la ultima serie puedes hacer una drop set reduciendo el peso 30% y haciendo repeticiones adicionales hasta el fallo."
+                            },
+                            {
+                                "nombre": "Step-up con mancuernas",
+                                "series": 3,
+                                "repeticiones": "10-12 c\/pierna",
+                                "descanso": "90s",
+                                "notas": "Usa un banco o cajon a la altura de la rodilla. Sube empujando con el talon de la pierna de arriba. No te impulses con la pierna de abajo. Mancuernas a los lados. Control total en la bajada."
+                            },
+                            {
+                                "nombre": "Elevacion de pantorrillas de pie",
+                                "series": 4,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Mas peso que semana 2, menos repeticiones. Rango completo con pausa en estiramiento y contraccion. Estas semanas pesadas construyen fuerza en las pantorrillas que necesitas para crecer."
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "Viernes - Hombros + Brazos",
+                        "tipo": "empuje",
+                        "duracion": "60-70 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Press Arnold",
+                                "series": 4,
+                                "repeticiones": "8-10",
+                                "descanso": "120s",
+                                "notas": "Inicia con las palmas hacia ti a la altura de la barbilla. Rota mientras presionas hacia arriba terminando con las palmas al frente. Este movimiento trabaja las tres cabezas del deltoide en un solo ejercicio. RIR 1-2."
+                            },
+                            {
+                                "nombre": "Elevaciones laterales",
+                                "series": 4,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Incrementa peso respecto a semana 2. En la ultima serie puedes hacer un drop set: al fallo baja el peso 30% y continua. Los deltoides laterales son clave para la amplitud visual de los hombros."
+                            },
+                            {
+                                "nombre": "Pajaro en polea",
+                                "series": 3,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Poleas cruzadas a la altura de la cara. Jala hacia atras con los brazos extendidos enfocando el deltoide posterior. La polea mantiene tension constante, superior a las mancuernas para este movimiento."
+                            },
+                            {
+                                "nombre": "Curl mancuernas alterno",
+                                "series": 4,
+                                "repeticiones": "8-10",
+                                "descanso": "75s",
+                                "notas": "Sube una serie y el peso. Supina la muneca al subir. Codos fijos. Sube explosivo, baja en 3 segundos. Las dos ultimas series a RIR 1. Si necesitas reducir peso en la ultima, hazlo."
+                            },
+                            {
+                                "nombre": "Extension en polea alta",
+                                "series": 4,
+                                "repeticiones": "10-12",
+                                "descanso": "75s",
+                                "notas": "Usa barra V o recta. Incrementa peso respecto a semana 2. Extension completa sin bloquear. Codos pegados al cuerpo. Contraccion pico de 1 segundo. Las ultimas 2 series a RIR 1."
+                            },
+                            {
+                                "nombre": "Curl predicador",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "60s",
+                                "notas": "El banco predicador elimina el impulso y aisla el biceps. Baja completamente estirando el brazo y sube apretando. No dejes que los codos se despeguen del banco. Usa barra Z o mancuerna."
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "Domingo - Piernas (Isquios + Gluteos)",
+                        "tipo": "piernas",
+                        "duracion": "60-70 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Peso muerto rumano",
+                                "series": 4,
+                                "repeticiones": "6-8",
+                                "descanso": "150s",
+                                "notas": "Tu peso mas pesado del mesociclo. Menos reps, mas carga. Empuja la cadera atras con la barra pegada a las piernas. Espalda neutra siempre. Si la espalda se redondea, reduces peso inmediatamente. RIR 1-2."
+                            },
+                            {
+                                "nombre": "Hip thrust",
+                                "series": 4,
+                                "repeticiones": "8-10",
+                                "descanso": "90s",
+                                "notas": "Incrementa peso respecto a semana 2. Menos reps pero mas carga. Contraccion de 2 segundos arriba apretando los gluteos al maximo. No hiperextiendas la lumbar. Mira hacia adelante, no al techo."
+                            },
+                            {
+                                "nombre": "Curl femoral acostado",
+                                "series": 4,
+                                "repeticiones": "10-12",
+                                "descanso": "75s",
+                                "notas": "Sube una serie respecto a semana 1. Incrementa peso. Cadera presionada contra el banco. Flexiona con fuerza y controla la fase excentrica en 3 segundos. No dejes que el peso caiga. Ultimas 2 series a RIR 1."
+                            },
+                            {
+                                "nombre": "Buenos dias",
+                                "series": 3,
+                                "repeticiones": "8-10",
+                                "descanso": "90s",
+                                "notas": "Incrementa peso respecto a semana 2. Mantén la tecnica perfecta: rodillas ligeramente flexionadas, cadera atras, torso hasta casi paralelo al suelo. Este es un ejercicio de patron de bisagra puro."
+                            },
+                            {
+                                "nombre": "Puente de gluteo",
+                                "series": 3,
+                                "repeticiones": "15-20",
+                                "descanso": "60s",
+                                "notas": "Acostado en el suelo con los pies apoyados. Empuja la cadera hacia arriba apretando los gluteos. Usa un disco o mancuerna sobre la cadera para agregar resistencia. Pausa de 2 segundos arriba."
+                            },
+                            {
+                                "nombre": "Elevacion de pantorrillas sentado",
+                                "series": 4,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Mas peso que semana 2. Rango completo con pausa de 2 segundos en el estiramiento maximo y en la contraccion maxima. Las pantorrillas necesitan tension prolongada para crecer."
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "numero": 4,
+                "fase": "Deload - Recuperacion activa",
+                "dias": [
+                    {
+                        "nombre": "Lunes - Pecho + Triceps",
+                        "tipo": "empuje",
+                        "duracion": "40-50 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Press banca plano",
+                                "series": 3,
+                                "repeticiones": "8-10",
+                                "descanso": "90s",
+                                "notas": "Semana de deload. Usa el 60% del peso de la semana 3. El objetivo es mantener el patron de movimiento y permitir que tu cuerpo se recupere para el siguiente mesociclo. No busques el fallo."
+                            },
+                            {
+                                "nombre": "Press mancuernas inclinado",
+                                "series": 2,
+                                "repeticiones": "10-12",
+                                "descanso": "90s",
+                                "notas": "60% del peso de semana 3. Enfoca en la tecnica perfecta y la conexion mente-musculo. Siente cada fibra del pectoral superior trabajando. Controla cada repeticion como si fuera una demostracion."
+                            },
+                            {
+                                "nombre": "Aperturas mancuernas",
+                                "series": 2,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Peso ligero, rango completo. Estira bien en la parte baja y contrae arriba. Esta semana es para que tu tejido conectivo, tendones y articulaciones se recuperen del estres acumulado."
+                            },
+                            {
+                                "nombre": "Crossover en polea",
+                                "series": 2,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Peso ligero. Practica la contraccion pico perfecta cruzando las manos al frente. El deload no significa no entrenar; significa entrenar inteligente para volver mas fuerte la proxima semana."
+                            },
+                            {
+                                "nombre": "Extension en polea alta",
+                                "series": 2,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "60% del peso de semana 3. Movimiento limpio con codos pegados. Disfruta la sesion liviana. Aprovecha para corregir cualquier compensacion que hayas notado en las semanas pesadas."
+                            },
+                            {
+                                "nombre": "Fondos en banco",
+                                "series": 2,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Solo peso corporal. Manos sobre un banco detras de ti, piernas extendidas al frente. Baja hasta que los codos formen 90 grados y sube con control. Mantén el torso erguido y cerca del banco."
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "Martes - Espalda + Biceps",
+                        "tipo": "jale",
+                        "duracion": "40-50 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Jalon al pecho",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "90s",
+                                "notas": "Reemplazamos dominadas por jalon para reducir el estres articular. 60% del peso habitual. Tira la barra hacia la clavícula retrayendo las escapulas. Controla la subida en 3 segundos."
+                            },
+                            {
+                                "nombre": "Remo con barra",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "90s",
+                                "notas": "60% del peso de semana 3. Perfecciona la posicion del torso a 45 grados. Retrae las escapulas al final. Sin impulso ni balanceo. Aprovecha para trabajar la conexion mente-musculo."
+                            },
+                            {
+                                "nombre": "Remo mancuerna",
+                                "series": 2,
+                                "repeticiones": "10-12 c\/brazo",
+                                "descanso": "75s",
+                                "notas": "Peso ligero. Enfoca en el recorrido completo y la contraccion de los dorsales. Jala hacia la cadera, no hacia el pecho. Esta es tu oportunidad de perfeccionar la tecnica sin fatiga."
+                            },
+                            {
+                                "nombre": "Face pull",
+                                "series": 3,
+                                "repeticiones": "15-20",
+                                "descanso": "60s",
+                                "notas": "Manten el mismo peso o ligeramente menos. Este ejercicio de salud articular es importante incluso en deload. Rotacion externa completa, pausa de 1 segundo en contraccion."
+                            },
+                            {
+                                "nombre": "Curl barra Z",
+                                "series": 2,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Peso ligero con tecnica perfecta. Cada rep cuenta como practica de movimiento. Codos fijos, subida controlada, bajada lenta. Siente el biceps en todo el rango."
+                            },
+                            {
+                                "nombre": "Curl martillo",
+                                "series": 2,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Peso ligero. Agarre neutro. Movimiento limpio sin compensaciones. El deload es tu mejor amigo para la hipertrofia a largo plazo; permite que la supercompensacion ocurra."
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "Jueves - Piernas (Cuadriceps)",
+                        "tipo": "piernas",
+                        "duracion": "45-55 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Sentadilla con barra",
+                                "series": 3,
+                                "repeticiones": "8-10",
+                                "descanso": "120s",
+                                "notas": "60% del peso de semana 3. Profundidad completa con tecnica perfecta. Enfoca en el patron de movimiento. Core apretado, pecho alto, rodillas en linea. Sin urgencia, sin fallo."
+                            },
+                            {
+                                "nombre": "Prensa de piernas",
+                                "series": 3,
+                                "repeticiones": "12-15",
+                                "descanso": "90s",
+                                "notas": "60% del peso de semana 3. Rango completo. Disfruta el movimiento sin el estres de las semanas pesadas. Esto permite que tus articulaciones de rodilla y cadera se recuperen."
+                            },
+                            {
+                                "nombre": "Extension de piernas",
+                                "series": 2,
+                                "repeticiones": "15-20",
+                                "descanso": "60s",
+                                "notas": "Peso ligero con contraccion perfecta de 2 segundos arriba. Fase excentrica de 4 segundos. Sin prisas. Siente como trabaja cada porcion del cuadriceps."
+                            },
+                            {
+                                "nombre": "Zancadas con mancuernas",
+                                "series": 2,
+                                "repeticiones": "12 c\/pierna",
+                                "descanso": "75s",
+                                "notas": "Mancuernas ligeras o solo peso corporal. Practica el equilibrio y la coordinacion. Paso amplio, descenso vertical, empuje con el talon. Movilidad de cadera importante esta semana."
+                            },
+                            {
+                                "nombre": "Sentadilla bulgara",
+                                "series": 2,
+                                "repeticiones": "10-12 c\/pierna",
+                                "descanso": "75s",
+                                "notas": "Solo peso corporal o mancuernas muy ligeras. Enfoca en el equilibrio, la estabilidad y la profundidad del movimiento. Pie trasero sobre banco. Baja controlado y sube sin prisa. Excelente movilidad para la cadera."
+                            },
+                            {
+                                "nombre": "Elevacion de pantorrillas de pie",
+                                "series": 3,
+                                "repeticiones": "15-20",
+                                "descanso": "60s",
+                                "notas": "Peso moderado. Rango completo con pausas largas de 2 segundos en estiramiento y contraccion. Las pantorrillas se recuperan rapido asi que puedes mantener algo de volumen."
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "Viernes - Hombros + Brazos",
+                        "tipo": "empuje",
+                        "duracion": "40-50 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Press mancuernas sentado",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "90s",
+                                "notas": "60% del peso de semana 3. Banco a 90 grados. Enfoca en el rango de movimiento completo y la posicion de las escapulas. Sin esfuerzo cercano al fallo. Mantén la sesion corta y productiva."
+                            },
+                            {
+                                "nombre": "Elevaciones laterales",
+                                "series": 3,
+                                "repeticiones": "15-20",
+                                "descanso": "60s",
+                                "notas": "Peso muy ligero, muchas repeticiones. Siente el bombeo en los deltoides laterales. Tecnica impecable: sin balanceo, sin impulso, sin encoger los hombros. Pura contraccion del deltoide."
+                            },
+                            {
+                                "nombre": "Pajaro mancuernas",
+                                "series": 2,
+                                "repeticiones": "15-20",
+                                "descanso": "60s",
+                                "notas": "Peso ligero. Gran oportunidad para trabajar la retraccion escapular y la conexion con el deltoide posterior. Inclinado a 90 grados, codos ligeramente flexionados, sube hasta la linea de los hombros."
+                            },
+                            {
+                                "nombre": "Curl en polea",
+                                "series": 2,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Peso ligero en polea baja. La tension constante de la polea te permite enfocarte en la contraccion sin preocuparte por el peso. Cada rep lenta y controlada."
+                            },
+                            {
+                                "nombre": "Extension con cuerda",
+                                "series": 2,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Peso ligero. Separa la cuerda al final. Enfoca en sentir la cabeza lateral del triceps. El deload prepara tus tendones y articulaciones para el siguiente mesociclo de mayor intensidad."
+                            },
+                            {
+                                "nombre": "Curl mancuernas alterno",
+                                "series": 2,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Peso ligero. Supina la muneca al subir. Practica la tecnica perfecta. Recuerda que el proximo mesociclo empezara con cargas superiores a tu semana 1, gracias a esta recuperacion."
+                            }
+                        ]
+                    },
+                    {
+                        "nombre": "Domingo - Piernas (Isquios + Gluteos)",
+                        "tipo": "piernas",
+                        "duracion": "40-50 min",
+                        "ejercicios": [
+                            {
+                                "nombre": "Peso muerto rumano",
+                                "series": 3,
+                                "repeticiones": "10-12",
+                                "descanso": "90s",
+                                "notas": "60% del peso de semana 3. Enfoca en el estiramiento de los isquiotibiales con la cadera empujada atras. Espalda neutra siempre. Sin prisa en ninguna fase del movimiento."
+                            },
+                            {
+                                "nombre": "Hip thrust",
+                                "series": 3,
+                                "repeticiones": "12-15",
+                                "descanso": "75s",
+                                "notas": "60% del peso de semana 3. Contraccion de 2 segundos arriba. Disfruta el bombeo en los gluteos sin el estres de las cargas pesadas. Manten la tecnica de barbilla al pecho."
+                            },
+                            {
+                                "nombre": "Curl femoral acostado",
+                                "series": 2,
+                                "repeticiones": "12-15",
+                                "descanso": "60s",
+                                "notas": "Peso ligero. Cadera contra el banco. Fase excentrica lenta de 4 segundos. Sin rebote. Siente el isquiotibial estirandose y contrayendose con cada repeticion."
+                            },
+                            {
+                                "nombre": "Abduccion en maquina",
+                                "series": 2,
+                                "repeticiones": "20-25",
+                                "descanso": "60s",
+                                "notas": "Peso ligero, muchas repeticiones. Busca el bombeo maximo en el gluteo medio. Manten cada apertura 1 segundo. Este es un buen momento para probar la variacion inclinada hacia adelante."
+                            },
+                            {
+                                "nombre": "Puente de gluteo",
+                                "series": 2,
+                                "repeticiones": "15-20",
+                                "descanso": "60s",
+                                "notas": "Solo peso corporal o con un disco ligero. Contraccion de 3 segundos arriba. Enfoca en sentir los gluteos trabajando, no los isquiotibiales ni la espalda baja. Aprieta al maximo arriba."
+                            },
+                            {
+                                "nombre": "Elevacion de pantorrillas sentado",
+                                "series": 3,
+                                "repeticiones": "20-25",
+                                "descanso": "60s",
+                                "notas": "Peso ligero con tempo super lento: 3 segundos subiendo, 2 segundos sosteniendo, 3 segundos bajando, 1 segundo en estiramiento. Cierra este mesociclo con calidad y preparate para el siguiente nivel."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "plan_nutricion": {
+        "calorias_diarias": 2900,
+        "proteina_g": 150,
+        "carbohidratos_g": 395,
+        "grasas_g": 80,
+        "objetivo": "Ganancia muscular con superávit calórico controlado. Tu composición corporal actual (68 kg a 176 cm) indica un perfil delgado con excelente potencial de crecimiento. La estrategia es un superávit moderado de +250-300 kcal sobre tu gasto diario para maximizar tejido magro y minimizar ganancia de grasa.",
+        "tips": [
+            "Tu prioridad número uno es la consistencia calórica: si no comes lo suficiente, no creces. Lleva un registro semanal de tu peso al despertar para confirmar que estás subiendo entre 0.3 y 0.5 kg por semana.",
+            "A los 41 años tu recuperación es más lenta que a los 25, por eso la proteína está en 2.2 g\/kg y las grasas saludables son altas: necesitas optimizar testosterona natural y reducir inflamación.",
+            "Nunca te saltes la comida post-entreno. Tienes una ventana de 60-90 minutos después del gym donde tu cuerpo absorbe nutrientes de forma más eficiente para reparar músculo.",
+            "Toma 5 g de creatina monohidrato todos los días con cualquier comida. Es el suplemento con más evidencia científica para ganar fuerza y masa muscular, especialmente efectivo en hombres mayores de 40.",
+            "Duerme mínimo 7-8 horas. A tu edad, la hormona de crecimiento se libera principalmente en el sueño profundo. Sin buen descanso, el superávit calórico se almacena como grasa en lugar de músculo.",
+            "Hidrátate con mínimo 2.5 litros de agua al día. La síntesis de proteína muscular requiere un estado de hidratación óptimo.",
+            "Si algún día no puedes completar las 4 comidas, prioriza siempre el desayuno y el post-entreno. Son las dos ventanas más importantes para tu objetivo.",
+            "Cada 8-10 semanas evalúa tu progreso con fotos y medidas. Si estás ganando más de 0.6 kg por semana, reduce 100 kcal de carbohidratos para evitar exceso de grasa. Con el plan de asesoría nutricional personalizada de WellCore puedes tener estos ajustes en tiempo real con tu coach."
+        ],
+        "comidas_sugeridas": [
+            {
+                "nombre": "Desayuno",
+                "opciones": [
+                    "3 huevos enteros revueltos + 3 rebanadas de pan integral + 1 banano grande + 1 cucharada de mantequilla de maní + 200ml de jugo natural (aprox. 720 kcal | 32g P | 90g C | 24g G)",
+                    "80g de avena en hojuelas + 300ml de leche entera + 1 scoop de whey protein + 1 banano picado + 15g de miel + 20g de pasas (aprox. 740 kcal | 42g P | 100g C | 14g G)",
+                    "2 arepas medianas (80g cada una) + 2 huevos enteros + 60g de queso fresco + 1 vaso de jugo de naranja natural 300ml + 1 banano (aprox. 730 kcal | 34g P | 96g C | 22g G)",
+                    "Tortilla de 3 huevos con 50g de jamón de pavo y 30g de queso mozzarella + 3 tostadas integrales + 1 fruta de temporada + 200ml de jugo (aprox. 720 kcal | 38g P | 88g C | 24g G)"
+                ]
+            },
+            {
+                "nombre": "Almuerzo",
+                "opciones": [
+                    "200g de pechuga de pollo a la plancha + 250g de arroz blanco cocido + 150g de frijoles negros + ensalada mixta con aguacate (50g) y aceite de oliva (aprox. 880 kcal | 52g P | 115g C | 18g G)",
+                    "200g de carne de res magra (lomo o solomo) + 280g de pasta integral cocida + salsa de tomate natural + ensalada verde con 1 cucharada de aceite de oliva (aprox. 870 kcal | 48g P | 110g C | 22g G)",
+                    "180g de salmón o trucha al horno + 250g de arroz cocido + 150g de papa cocida + vegetales salteados con 10ml de aceite de oliva (aprox. 880 kcal | 44g P | 116g C | 24g G)",
+                    "200g de pechuga de pollo desmechada + 2 tortillas grandes de trigo + 150g de frijoles refritos + 50g de aguacate + 30g de queso fresco + 100g de arroz (aprox. 880 kcal | 50g P | 108g C | 24g G)"
+                ]
+            },
+            {
+                "nombre": "Post-Entreno",
+                "opciones": [
+                    "1.5 scoops de whey protein + 1 banano grande + 80g de avena + 300ml de leche descremada + 15g de miel, todo licuado (aprox. 680 kcal | 45g P | 100g C | 8g G)",
+                    "150g de pechuga de pollo + 300g de arroz blanco cocido + 1 banano grande + 200ml de jugo natural (aprox. 700 kcal | 42g P | 110g C | 6g G)",
+                    "2 scoops de whey protein + 100g de granola + 200ml de yogur griego + 1 cucharada de miel + fresas picadas + 1 banano (aprox. 700 kcal | 48g P | 98g C | 12g G)",
+                    "Sandwich doble: 4 rebanadas de pan integral + 120g de atún en agua + 30g de queso + lechuga y tomate + 1 banano + 200ml de jugo natural (aprox. 670 kcal | 44g P | 94g C | 10g G)"
+                ]
+            },
+            {
+                "nombre": "Cena",
+                "opciones": [
+                    "180g de pollo al horno + 250g de batata\/camote cocida + 100g de brócoli al vapor + 1 cucharada de aceite de oliva + 30g de queso rallado (aprox. 740 kcal | 40g P | 82g C | 26g G)",
+                    "3 huevos enteros + 2 claras en omelette con 50g de espinaca y 40g de queso + 200g de arroz cocido + 1 banano con 15g de mantequilla de maní (aprox. 760 kcal | 42g P | 84g C | 28g G)",
+                    "180g de lomo de cerdo a la plancha + 250g de yuca cocida + ensalada con tomate, cebolla, aguacate (60g) y limón + 1 tajada de plátano maduro (aprox. 760 kcal | 38g P | 90g C | 26g G)",
+                    "150g de atún fresco sellado o filete de pescado + 250g de papa cocida + 100g de vegetales mixtos salteados con aceite de oliva + 1 porción de fruta + 50g de pan (aprox. 720 kcal | 40g P | 86g C | 22g G)"
+                ]
+            }
+        ]
+    },
+    "plan_habitos": [
+        {
+            "nombre": "Hidratación estratégica de 3+ litros",
+            "descripcion": "Lleva contigo una botella de al menos 1 litro y asegúrate de completar mínimo 3 litros de agua al día. Distribuye tu ingesta: 500 ml al despertar, 500 ml durante el entrenamiento, y el resto repartido entre comidas. En días de entrenamiento intenso, añade una pizca de sal y limón a uno de tus vasos para reponer electrolitos.",
+            "razon": "Viviendo en Tunja a 2,800 metros de altitud, tu cuerpo pierde más agua de lo normal por la respiración acelerada y la baja humedad. La deshidratación reduce tu rendimiento en el gym hasta un 20% y frena directamente la síntesis de proteína muscular. A tus 41 años, mantener una hidratación óptima también protege tus articulaciones y acelera la recuperación entre sesiones.",
+            "frecuencia": "Diario"
+        },
+        {
+            "nombre": "Sueño reparador de 7-8 horas",
+            "descripcion": "Establece una hora fija para acostarte que te garantice al menos 7 horas y media de sueño real. Apaga pantallas 30 minutos antes de dormir, mantén tu habitación fresca (el clima de Tunja te ayuda) y oscura. Si entrenas en la tarde, evita la cafeína después de las 2 pm para no comprometer tu descanso.",
+            "razon": "Después de los 40, tu producción natural de hormona de crecimiento y testosterona depende aún más de la calidad de tu sueño profundo. Estas hormonas son las responsables directas de reparar y construir el músculo que destruyes en el gym. Dormir menos de 7 horas puede reducir tu capacidad de ganar masa muscular hasta en un 60%, haciendo que todo tu esfuerzo en el entrenamiento rinda mucho menos.",
+            "frecuencia": "Diario"
+        },
+        {
+            "nombre": "Proteína en cada comida principal",
+            "descripcion": "Incluye una fuente de proteína de calidad en cada una de tus comidas y snacks: huevos en el desayuno, pollo o carne en el almuerzo, pescado o legumbres en la cena, y un batido de proteína post-entreno. Tu meta es alcanzar 150 gramos diarios (2.2 g por kg de peso), repartidos en 4 tomas de 35-40 g cada una para maximizar la absorción.",
+            "razon": "Con 68 kg y el objetivo de ganar masa muscular, necesitas un aporte constante de aminoácidos para mantener tu cuerpo en estado anabólico. A los 41 años, tu cuerpo es menos eficiente procesando la proteína de una sola vez (fenómeno llamado resistencia anabólica), por eso repartir la ingesta en varias comidas es mucho más efectivo que cargar todo en una o dos. Cada comida sin proteína es una oportunidad perdida de construir músculo.",
+            "frecuencia": "Diario"
+        },
+        {
+            "nombre": "Calentamiento y movilidad articular",
+            "descripcion": "Dedica 10 minutos antes de cada sesión de gym a un calentamiento progresivo: 3 minutos de activación cardiovascular suave, seguidos de movilidad articular dinámica de hombros, cadera y columna, y 2-3 series de activación con banda elástica de los músculos que vas a trabajar. Los domingos, haz una sesión de 15-20 minutos de movilidad completa con foam roller.",
+            "razon": "A los 41 años, tus tendones y ligamentos necesitan más tiempo para alcanzar su temperatura óptima y elasticidad. Entrenar 5 días por semana con pesos progresivos sin un calentamiento adecuado multiplica tu riesgo de lesiones en hombros, rodillas y espalda baja. Una lesión podría sacarte del gym semanas o meses, destruyendo todo tu progreso. Los 10 minutos de calentamiento son tu seguro contra retrocesos.",
+            "frecuencia": "Cada día de entrenamiento"
+        },
+        {
+            "nombre": "Cumplir las 5 sesiones semanales sin excusas",
+            "descripcion": "Bloquea tus 5 días de entrenamiento en tu calendario como citas inamovibles. Prepara tu ropa y bolso de gym la noche anterior. Si por alguna emergencia pierdes una sesión, recupérala al día siguiente sin negociación. Registra cada sesión completada en tu app para mantener el streak visible y motivarte.",
+            "razon": "Para alguien de 68 kg que quiere ganar masa muscular, la consistencia es más importante que la intensidad de un solo día. Tu programa está diseñado con 5 sesiones semanales porque tu volumen de entrenamiento necesita esa frecuencia para estimular cada grupo muscular al menos dos veces por semana. Faltar un día no solo pierdes esa sesión: reduces el estímulo semanal total y le mandas a tu cuerpo la señal de que no necesita adaptarse. La hipertrofia después de los 40 requiere disciplina inquebrantable.",
+            "frecuencia": "5 días por semana"
+        },
+        {
+            "nombre": "Pausa activa y gestión del estrés",
+            "descripcion": "Incorpora una técnica diaria de regulación: puede ser 5 minutos de respiración profunda tipo box breathing (4-4-4-4) al despertar o antes de dormir, una caminata de 15 minutos al aire libre después del almuerzo, o 10 minutos de estiramientos suaves en la noche. El fin de semana, regálate al menos una actividad recreativa que disfrutes y que no sea entrenamiento.",
+            "razon": "El cortisol elevado por estrés crónico es el enemigo número uno de la ganancia muscular: bloquea la síntesis proteica y promueve la acumulación de grasa abdominal. A los 41 años, tu capacidad de recuperación ya no es la de los 25, y si sumas estrés laboral o personal al estrés del entrenamiento intenso de 5 días, tu cuerpo puede entrar en sobreentrenamiento sin que te des cuenta. Estas pausas activas mantienen tu cortisol bajo control y permiten que tus músculos realmente crezcan entre sesiones.",
+            "frecuencia": "Diario"
+        }
+    ]
+}
