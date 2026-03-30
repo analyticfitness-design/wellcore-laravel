@@ -92,9 +92,9 @@ class NutritionPlan extends Component
         $this->carbGrams    = (int) ($macros['carbohidratos_g'] ?? $macros['carbs_g'] ?? $macros['carbohidratos'] ?? $macros['carbs']
             ?? $day0macros['carbohidratos_g'] ?? $day0macros['carbs_g'] ?? $day0macros['carbohidratos'] ?? $day0macros['carbs']
             ?? $this->plan['carbohidratos_g'] ?? 0);
-        $this->fatGrams     = (int) ($macros['grasas_g'] ?? $macros['grasas'] ?? $macros['fat_g'] ?? $macros['fat']
-            ?? $day0macros['grasas_g'] ?? $day0macros['grasas'] ?? $day0macros['fat']
-            ?? $this->plan['grasas_g'] ?? 0);
+        $this->fatGrams     = (int) ($macros['grasas_g'] ?? $macros['grasa_g'] ?? $macros['grasas'] ?? $macros['fat_g'] ?? $macros['fat']
+            ?? $day0macros['grasas_g'] ?? $day0macros['grasa_g'] ?? $day0macros['grasas'] ?? $day0macros['fat']
+            ?? $this->plan['grasas_g'] ?? $this->plan['grasa_g'] ?? 0);
         $this->hasMacros    = ($this->proteinGrams + $this->carbGrams + $this->fatGrams) > 0;
 
         // Calories: explicit in plan > calculated from macros
@@ -148,7 +148,7 @@ class NutritionPlan extends Component
             'macros'    => [
                 'proteina'     => (int) ($macros['proteina_g'] ?? $macros['proteina'] ?? $macros['protein_g'] ?? $macros['protein'] ?? 0),
                 'carbohidratos'=> (int) ($macros['carbs_g'] ?? $macros['carbohidratos_g'] ?? $macros['carbohidratos'] ?? $macros['carbs'] ?? 0),
-                'grasas'       => (int) ($macros['grasas_g'] ?? $macros['grasas'] ?? $macros['fat_g'] ?? $macros['fat'] ?? 0),
+                'grasas'       => (int) ($macros['grasas_g'] ?? $macros['grasa_g'] ?? $macros['grasas'] ?? $macros['fat_g'] ?? $macros['fat'] ?? 0),
             ],
         ];
     }
