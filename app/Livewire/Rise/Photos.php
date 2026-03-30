@@ -42,11 +42,14 @@ class Photos extends Component
         $this->photosByDate = [];
         foreach ($grouped as $date => $datePhotos) {
             $this->photosByDate[] = [
-                'date' => $date,
-                'formatted' => \Carbon\Carbon::parse($date)->translatedFormat('d M Y'),
-                'frente' => $datePhotos->firstWhere('tipo', 'frente')?->filename,
-                'perfil' => $datePhotos->firstWhere('tipo', 'perfil')?->filename,
-                'espalda' => $datePhotos->firstWhere('tipo', 'espalda')?->filename,
+                'date'       => $date,
+                'formatted'  => \Carbon\Carbon::parse($date)->translatedFormat('d M Y'),
+                'frente'     => $datePhotos->firstWhere('tipo', 'frente')?->filename,
+                'frente_id'  => $datePhotos->firstWhere('tipo', 'frente')?->id,
+                'perfil'     => $datePhotos->firstWhere('tipo', 'perfil')?->filename,
+                'perfil_id'  => $datePhotos->firstWhere('tipo', 'perfil')?->id,
+                'espalda'    => $datePhotos->firstWhere('tipo', 'espalda')?->filename,
+                'espalda_id' => $datePhotos->firstWhere('tipo', 'espalda')?->id,
             ];
         }
 
@@ -113,6 +116,27 @@ class Photos extends Component
         $this->photoEspalda = null;
         $this->uploadSuccess = true;
 
+        $this->loadPhotos();
+    }
+
+    public function deletePhoto(int $photoId): void
+    {
+        $client = auth('wellcore')->user();
+
+        $photo = ProgressPhoto::where('id', $photoId)
+            ->where('client_id', $client->id)
+            ->first();
+
+        if (! $photo) {
+            return;
+        }
+
+        $filePath = public_path('uploads/photos/' . $photo->filename);
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+
+        $photo->delete();
         $this->loadPhotos();
     }
 
