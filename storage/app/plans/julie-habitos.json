@@ -1,0 +1,94 @@
+{
+  "duracion_semanas": 4,
+  "pilares": [
+    {
+      "nombre": "Sueño reparador",
+      "meta": "7-8 horas por noche",
+      "acciones": [
+        "Pantallas apagadas a las 10:00 PM (teléfono, TV, computador)",
+        "Cuarto oscuro y fresco — usa cortinas gruesas si entra luz",
+        "Magnesio glicinato 30 min antes de dormir",
+        "No cafeína después de las 2:00 PM"
+      ],
+      "frecuencia": "Diario",
+      "tracking": "Registrar hora de acostarse y levantarse",
+      "razon": "El músculo NO crece en el gym — crece mientras duermes. Con 6 días de entrenamiento intenso, el sueño es tu herramienta #1 de recuperación. Dormir mal = perder músculo y ganar grasa."
+    },
+    {
+      "nombre": "Hidratación",
+      "meta": "Mínimo 2.5 litros de agua al día",
+      "acciones": [
+        "Tomar 500ml al despertar (antes del desayuno)",
+        "Llevar botella de agua al gym siempre",
+        "Pizca de sal en agua de entrenamiento (sesiones >1 hora)",
+        "1 vaso de agua antes de cada comida"
+      ],
+      "frecuencia": "Diario",
+      "tracking": "Contar vasos o usar botella de 1 litro marcada",
+      "razon": "Deshidratación del 2% reduce tu rendimiento un 20%. En el calor de Bucaramanga pierdes más líquido del que crees. El agua también ayuda a controlar el apetito."
+    },
+    {
+      "nombre": "Alimentación consistente",
+      "meta": "Comer las 5 comidas del plan todos los días",
+      "acciones": [
+        "Preparar comida el domingo para toda la semana (meal prep)",
+        "No saltarse el pre-entreno (banano + whey)",
+        "Comer proteína en CADA comida principal",
+        "Evitar comida chatarra entre semana — el fin de semana puedes ser flexible con 1 comida libre"
+      ],
+      "frecuencia": "Diario",
+      "tracking": "Marcar en la app cada comida que cumplas",
+      "razon": "La consistencia en la alimentación determina el 70% de tus resultados. No importa qué tan duro entrenes — si no comes bien, no verás cambios. El meal prep elimina la excusa de 'no tenía qué comer'."
+    },
+    {
+      "nombre": "Recuperación activa",
+      "meta": "10 minutos de estiramiento post-entreno + 1 día de descanso total (domingo)",
+      "acciones": [
+        "Estirar 10 min después de cada sesión de pesas (antes del cardio)",
+        "Domingo: caminata suave 20-30 min o yoga básico",
+        "Foam roller o pelota de tenis en puntos de tensión 2x/semana",
+        "No entrenar si hay dolor articular agudo (diferenciar del dolor muscular normal)"
+      ],
+      "frecuencia": "Diario (estiramiento) + Semanal (descanso activo)",
+      "tracking": "Registrar si hiciste estiramiento post-sesión",
+      "razon": "Entrenar 6 días es intenso. Sin recuperación adecuada tu cuerpo se desgasta en vez de mejorar. Los estiramientos previenen lesiones y el descanso dominical permite que tus músculos se reparen."
+    },
+    {
+      "nombre": "Manejo del estrés",
+      "meta": "5 minutos de respiración consciente al despertar",
+      "acciones": [
+        "Al despertar: 5 respiraciones profundas (inhala 4 seg, sostén 4, exhala 6)",
+        "Antes de dormir: escribir 3 cosas positivas del día",
+        "Si sientes ansiedad por comer: tomar agua y esperar 10 min antes de decidir",
+        "1 actividad de disfrute semanal que NO sea ejercicio (leer, salir, socializar)"
+      ],
+      "frecuencia": "Diario",
+      "tracking": "Marcar en la app si hiciste la respiración matutina",
+      "razon": "El cortisol (hormona del estrés) promueve acumulación de grasa abdominal y destruye músculo. 5 minutos de respiración consciente bajan el cortisol significativamente. Es gratis y funciona."
+    }
+  ],
+  "rutina_manana": [
+    "Despertar a las 6:00 AM",
+    "500ml de agua al despertar",
+    "5 respiraciones profundas (4-4-6)",
+    "Desayuno alto en proteína",
+    "Suplementos matutinos (Vitamina D + Creatina)"
+  ],
+  "rutina_noche": [
+    "Cena antes de las 8:00 PM",
+    "Pantallas off a las 10:00 PM",
+    "Magnesio glicinato",
+    "3 cosas positivas del día",
+    "Acostarse antes de las 10:30 PM"
+  ],
+  "checklist_diario": [
+    "Dormí mínimo 7 horas",
+    "Tomé 2.5L+ de agua",
+    "Comí 5 comidas con proteína",
+    "Hice mi entrenamiento completo",
+    "Estiré 10 min post-entreno",
+    "Respiración matutina 5 min",
+    "Tomé mis suplementos"
+  ],
+  "notas_coach": "Julie, los hábitos son el pegamento que une todo. Puedes tener el mejor plan de entrenamiento y la mejor nutrición del mundo, pero si duermes mal, no tomas agua y comes a deshoras, los resultados serán mínimos. Enfócate en el sueño y la hidratación las primeras 2 semanas — después los demás hábitos serán más fáciles de mantener."
+}

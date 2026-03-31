@@ -1,0 +1,52 @@
+{
+  "objetivo": "Optimizar recuperación muscular y rendimiento con suplementos esenciales y accesibles",
+  "descripcion_protocolo": "Protocolo básico de suplementación para recomposición corporal. Solo lo esencial — sin gastar de más en suplementos innecesarios.",
+  "perfil_cliente": "Mujer activa, 6 días/semana entrenamiento de fuerza + cardio, objetivo pérdida de grasa con mantenimiento muscular",
+  "advertencia": "Estos suplementos complementan una buena alimentación, NO la reemplazan. Si tu dieta está en orden, los suplementos aportan un 5-10% extra. Consulta con tu médico si tienes alguna condición de salud.",
+  "categorias": [
+    {
+      "nombre": "Rendimiento",
+      "suplementos": [
+        {
+          "nombre": "Proteína Whey",
+          "dosis": "1 scoop (30g) diario",
+          "timing": "Post-entreno o como snack para completar proteína",
+          "prioridad": "esencial",
+          "notas": "Es la forma más económica de llegar a tus 130g de proteína. Un scoop aporta ~25g. Preferir whey concentrate (más barata y suficiente). Marcas buenas en Colombia: Syntha-6, ON Gold Standard, Star Nutrition."
+        },
+        {
+          "nombre": "Creatina Monohidrato",
+          "dosis": "5g diarios (1 cucharadita rasa)",
+          "timing": "A cualquier hora del día, con agua. Consistencia > timing",
+          "prioridad": "esencial",
+          "notas": "El suplemento con más evidencia científica del mundo. Mejora fuerza, recuperación y volumen muscular. NO causa daño renal en personas sanas. NO necesita fase de carga. Tomar todos los días incluyendo descanso. ~$50,000 COP/mes."
+        }
+      ]
+    },
+    {
+      "nombre": "Salud",
+      "suplementos": [
+        {
+          "nombre": "Vitamina D3",
+          "dosis": "2000 UI diarias",
+          "timing": "Con el desayuno (se absorbe mejor con grasa)",
+          "prioridad": "recomendado",
+          "notas": "Aunque Bucaramanga tiene sol, la mayoría de personas tienen deficiencia. Ayuda con recuperación muscular, sistema inmune y estado de ánimo. ~$20,000 COP/mes."
+        },
+        {
+          "nombre": "Magnesio Glicinato",
+          "dosis": "200-400mg",
+          "timing": "Antes de dormir",
+          "prioridad": "recomendado",
+          "notas": "Mejora calidad del sueño, reduce calambres y ayuda con la recuperación muscular. El glicinato es la forma que mejor se absorbe y no causa problemas digestivos."
+        }
+      ]
+    }
+  ],
+  "timing_diario": [
+    {"momento": "Mañana (con desayuno)", "suplementos": "Vitamina D3 2000 UI + Creatina 5g"},
+    {"momento": "Post-entreno", "suplementos": "Whey Protein 1 scoop con agua"},
+    {"momento": "Noche (antes de dormir)", "suplementos": "Magnesio Glicinato 200-400mg"}
+  ],
+  "notas_coach": "Julie, solo necesitas estos 4 suplementos. La proteína whey y la creatina son los únicos con evidencia sólida para tus objetivos. No gastes dinero en quemadores de grasa, BCAAs, o glutamina — son innecesarios si tu dieta está bien. Inversión mensual total: ~$120,000-150,000 COP."
+}
