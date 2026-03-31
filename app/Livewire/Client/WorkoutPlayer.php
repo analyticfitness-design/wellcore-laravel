@@ -497,6 +497,77 @@ class WorkoutPlayer extends Component
     /**
      * Complete a single set — save to workout_logs, check PR, dispatch rest timer.
      */
+    public function completeCardioSet(int $exerciseIndex, int $setNumber, mixed $duration, mixed $speed, mixed $incline): void
+    {
+        if (! $this->isActive || ! $this->sessionId) {
+            return;
+        }
+
+        $duration = is_numeric($duration) ? (int) $duration : 0;
+        $speed = is_numeric($speed) ? (float) $speed : 0;
+        $incline = is_numeric($incline) ? (int) $incline : 0;
+
+        if ($duration <= 0) {
+            return;
+        }
+
+        $clientId = auth('wellcore')->id();
+        $exercise = $this->exercises[$exerciseIndex] ?? null;
+        if (! $exercise) {
+            return;
+        }
+
+        $exerciseName = $exercise['nombre'] ?? 'Ejercicio';
+
+        $existing = WorkoutLog::where('session_id', $this->sessionId)
+            ->where('exercise_name', $exerciseName)
+            ->where('set_number', $setNumber)
+            ->where('block_order', $exerciseIndex)
+            ->first();
+
+        $data = [
+            'weight_kg' => 0,
+            'reps' => $duration, // store duration in reps for backward compat
+            'is_cardio' => true,
+            'duration_minutes' => $duration,
+            'speed_kmh' => $speed,
+            'incline_percent' => $incline,
+            'completed' => true,
+        ];
+
+        if ($existing) {
+            $existing->update($data);
+        } else {
+            WorkoutLog::create(array_merge($data, [
+                'session_id' => $this->sessionId,
+                'client_id' => $clientId,
+                'exercise_name' => $exerciseName,
+                'block_type' => 'normal',
+                'block_order' => $exerciseIndex,
+                'set_number' => $setNumber,
+                'target_reps' => null,
+                'target_weight' => null,
+                'is_pr' => false,
+            ]));
+        }
+
+        $this->setData[$exerciseIndex][$setNumber] = [
+            'set_number' => $setNumber,
+            'target_reps' => null,
+            'target_weight' => null,
+            'weight' => 0,
+            'reps' => $duration,
+            'completed' => true,
+            'is_pr' => false,
+            'is_cardio' => true,
+            'duration_minutes' => $duration,
+            'speed_kmh' => $speed,
+            'incline_percent' => $incline,
+        ];
+
+        $this->updateProgress();
+    }
+
     public function completeSet(int $exerciseIndex, int $setNumber, mixed $weight, mixed $reps): void
     {
         if (! $this->isActive || ! $this->sessionId) {
@@ -875,10 +946,33 @@ class WorkoutPlayer extends Component
                 if (! isset($ej['descanso'])) {
                     $ej['descanso'] = $ej['rest'] ?? $ej['rest_seconds'] ?? '90s';
                 }
+
+                // Detect cardio exercises by keywords in name or type
+                $ej['is_cardio'] = $ej['is_cardio'] ?? $this->isCardioExercise($ej);
             }
             unset($ej);
         }
 
         return $dia;
+    }
+
+    protected function isCardioExercise(array $exercise): bool
+    {
+        $name = mb_strtolower($exercise['nombre'] ?? $exercise['name'] ?? '');
+        $type = mb_strtolower($exercise['tipo'] ?? $exercise['type'] ?? '');
+
+        $cardioKeywords = [
+            'caminadora', 'eliptica', 'elíptica', 'bicicleta', 'spinning', 'remo ergometro',
+            'cardio', 'miss', 'hiit', 'trote', 'correr', 'treadmill', 'elliptical',
+            'bike', 'rowing', 'caminata', 'estiramiento', 'descanso activo', 'recuperacion activa',
+        ];
+
+        foreach ($cardioKeywords as $keyword) {
+            if (str_contains($name, $keyword) || str_contains($type, $keyword)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

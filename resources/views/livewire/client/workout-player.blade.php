@@ -203,8 +203,23 @@
                             @endif
 
                             {{-- Chips row --}}
+                            @php $isCardioPreview = !empty($exercise['is_cardio']); @endphp
                             <div class="mt-3 flex flex-wrap items-center gap-2">
-                                {{-- Sets × Reps — most prominent --}}
+                                @if($isCardioPreview)
+                                    {{-- Cardio chip: duration --}}
+                                    @if($exReps)
+                                        <span class="inline-flex items-center gap-1.5 rounded-lg bg-sky-500/10 px-3 py-1.5">
+                                            <svg class="h-3.5 w-3.5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                            <span class="font-data text-sm font-black text-sky-400">{{ $exReps }}</span>
+                                        </span>
+                                    @endif
+                                    <span class="inline-flex items-center gap-1 rounded-lg bg-sky-500/10 px-2.5 py-1.5 text-[10px] font-semibold text-sky-400 uppercase tracking-wider">
+                                        Cardio
+                                    </span>
+                                @else
+                                {{-- Strength chip: Sets × Reps --}}
                                 @if($exSeries || $exReps)
                                     <span class="inline-flex items-center gap-1 rounded-lg bg-wc-accent/10 px-3 py-1.5">
                                         <span class="font-data text-sm font-black text-wc-accent">{{ $exSeries ?? '?' }}</span>
@@ -212,6 +227,7 @@
                                         <span class="font-data text-sm font-black text-wc-accent">{{ $exReps ?? '?' }}</span>
                                         <span class="text-[10px] text-wc-accent/60 ml-0.5">reps</span>
                                     </span>
+                                @endif
                                 @endif
 
                                 {{-- Rest --}}
@@ -423,8 +439,132 @@
                     </div>
 
                     {{-- Set grid --}}
+                    @php $isCardioExercise = !empty($exercise['is_cardio']); @endphp
                     <div class="border-t border-wc-border overflow-x-auto scrollbar-none">
-                        {{-- Table header --}}
+                        @if($isCardioExercise)
+                        {{-- ═══ CARDIO TABLE HEADER ═══ --}}
+                        <div class="grid gap-1 px-3 py-2 bg-sky-500/5"
+                             style="grid-template-columns: 32px 1fr 1fr 1fr 36px">
+                            <span class="text-center text-[9px] font-bold uppercase tracking-widest text-sky-400">Set</span>
+                            <span class="text-center text-[9px] font-bold uppercase tracking-widest text-sky-400">Duracion (min)</span>
+                            <span class="text-center text-[9px] font-bold uppercase tracking-widest text-sky-400">Velocidad</span>
+                            <span class="text-center text-[9px] font-bold uppercase tracking-widest text-sky-400">Inclinacion %</span>
+                            <span class="sr-only">Completar</span>
+                        </div>
+
+                        {{-- CARDIO Set rows --}}
+                        @for($setNum = 1; $setNum <= max($totalSets, 1); $setNum++)
+                            @php
+                                $currentSet  = $exSetData[$setNum] ?? [];
+                                $isCompleted = !empty($currentSet['completed']);
+                                $setDuration = $currentSet['duration_minutes'] ?? $currentSet['reps'] ?? '';
+                                $setSpeed    = $currentSet['speed_kmh'] ?? '';
+                                $setIncline  = $currentSet['incline_percent'] ?? '';
+
+                                // Parse duration from reps field (e.g. "30-40 min" → 30)
+                                $durationRaw = $setDuration !== '' ? $setDuration : ($exercise['repeticiones'] ?? $exercise['reps'] ?? 30);
+                                preg_match('/\d+/', (string) $durationRaw, $_m);
+                                $durationInitial = isset($_m[0]) ? (int) $_m[0] : 30;
+                            @endphp
+                            <div
+                                class="grid gap-1 items-center px-3 py-2.5 transition-colors
+                                    {{ $isCompleted ? 'bg-sky-500/5' : '' }}"
+                                style="grid-template-columns: 32px 1fr 1fr 1fr 36px"
+                                x-data="{
+                                    duration: {{ $durationInitial }},
+                                    speed: {{ (float)($setSpeed ?: 5.5) }},
+                                    incline: {{ (int)($setIncline ?: 3) }},
+                                    completed: {{ $isCompleted ? 'true' : 'false' }},
+                                    justCompleted: false
+                                }"
+                            >
+                                {{-- Set number --}}
+                                <div class="flex items-center justify-center">
+                                    <span class="font-data text-sm font-bold {{ $isCompleted ? 'text-sky-400' : 'text-wc-text-tertiary' }}">{{ $setNum }}</span>
+                                </div>
+
+                                {{-- Duration input --}}
+                                <div class="flex items-center justify-center gap-px">
+                                    <button @click="duration = Math.max(1, duration - 5)" :disabled="completed" :class="completed && 'opacity-30 pointer-events-none'"
+                                        class="btn-press flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text transition-colors">
+                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" /></svg>
+                                    </button>
+                                    <input type="number" min="1" x-model.number="duration" :disabled="completed" placeholder="30"
+                                        class="h-7 w-10 rounded-lg border border-sky-500/30 bg-wc-bg px-1 text-center font-data text-xs font-semibold text-wc-text focus:border-sky-400 focus:outline-none tabular-nums {{ $isCompleted ? 'opacity-60' : '' }}" />
+                                    <button @click="duration += 5" :disabled="completed" :class="completed && 'opacity-30 pointer-events-none'"
+                                        class="btn-press flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text transition-colors">
+                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                                    </button>
+                                </div>
+
+                                {{-- Speed input --}}
+                                <div class="flex items-center justify-center gap-px">
+                                    <button @click="speed = Math.max(0, +(speed - 0.5).toFixed(1))" :disabled="completed" :class="completed && 'opacity-30 pointer-events-none'"
+                                        class="btn-press flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text transition-colors">
+                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" /></svg>
+                                    </button>
+                                    <input type="number" step="0.5" min="0" x-model.number="speed" :disabled="completed" placeholder="5.5"
+                                        class="h-7 w-10 rounded-lg border border-sky-500/30 bg-wc-bg px-1 text-center font-data text-xs font-semibold text-wc-text focus:border-sky-400 focus:outline-none tabular-nums {{ $isCompleted ? 'opacity-60' : '' }}" />
+                                    <button @click="speed = +(speed + 0.5).toFixed(1)" :disabled="completed" :class="completed && 'opacity-30 pointer-events-none'"
+                                        class="btn-press flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text transition-colors">
+                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                                    </button>
+                                </div>
+
+                                {{-- Incline input --}}
+                                <div class="flex items-center justify-center gap-px">
+                                    <button @click="incline = Math.max(0, incline - 1)" :disabled="completed" :class="completed && 'opacity-30 pointer-events-none'"
+                                        class="btn-press flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text transition-colors">
+                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" /></svg>
+                                    </button>
+                                    <input type="number" min="0" max="15" x-model.number="incline" :disabled="completed" placeholder="3"
+                                        class="h-7 w-9 rounded-lg border border-sky-500/30 bg-wc-bg px-1 text-center font-data text-xs font-semibold text-wc-text focus:border-sky-400 focus:outline-none tabular-nums {{ $isCompleted ? 'opacity-60' : '' }}" />
+                                    <button @click="incline = Math.min(15, incline + 1)" :disabled="completed" :class="completed && 'opacity-30 pointer-events-none'"
+                                        class="btn-press flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text transition-colors">
+                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                                    </button>
+                                </div>
+
+                                {{-- Complete cardio set button --}}
+                                <div class="flex items-center justify-center">
+                                    <button
+                                        x-show="!completed"
+                                        @click="
+                                            if (duration > 0) {
+                                                $wire.completeCardioSet({{ $exIndex }}, {{ $setNum }}, duration, speed, incline);
+                                                completed = true;
+                                                justCompleted = true;
+                                                setTimeout(() => justCompleted = false, 800);
+                                            }
+                                        "
+                                        class="btn-press flex h-8 w-8 items-center justify-center rounded-xl border-2 border-sky-500/30 text-sky-400 hover:border-sky-400 hover:bg-sky-500/10 transition-all"
+                                        :class="duration <= 0 && 'opacity-30 cursor-not-allowed'"
+                                    >
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                        </svg>
+                                    </button>
+                                    <button
+                                        x-show="completed"
+                                        @click="$wire.uncompleteSet({{ $exIndex }}, {{ $setNum }}); completed = false"
+                                        class="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-500 text-white hover:bg-orange-500/80 hover:scale-90 transition-all"
+                                        :class="justCompleted && 'animate-bounce'"
+                                        x-transition:enter="transition ease-out duration-300"
+                                        x-transition:enter-start="scale-50 opacity-0"
+                                        x-transition:enter-end="scale-100 opacity-100"
+                                        title="Toca para desmarcar"
+                                        type="button"
+                                    >
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        @endfor
+
+                        @else
+                        {{-- ═══ STRENGTH TABLE HEADER (original) ═══ --}}
                         <div class="grid gap-1 px-3 py-2 bg-wc-bg-secondary/50"
                              style="grid-template-columns: 32px 50px 1fr 1fr 36px">
                             <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Set</span>
@@ -593,6 +733,7 @@
                                 </div>
                             </div>
                         @endfor
+                        @endif
                     </div>
 
                     {{-- Manual rest timer button --}}

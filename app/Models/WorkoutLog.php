@@ -25,13 +25,20 @@ class WorkoutLog extends Model
         'target_weight',
         'completed',
         'is_pr',
+        'is_cardio',
+        'duration_minutes',
+        'speed_kmh',
+        'incline_percent',
+        'heart_rate_avg',
     ];
 
     protected $casts = [
         'weight_kg' => 'decimal:2',
         'target_weight' => 'decimal:2',
+        'speed_kmh' => 'decimal:2',
         'completed' => 'boolean',
         'is_pr' => 'boolean',
+        'is_cardio' => 'boolean',
     ];
 
     public function session(): BelongsTo
