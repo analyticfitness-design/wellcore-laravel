@@ -17,27 +17,31 @@
             'bloodwork'     => 'Bloodwork',
         ];
     @endphp
-    <div class="mb-6 flex gap-1 overflow-x-auto rounded-xl border border-wc-border bg-wc-bg-secondary p-1">
-        @foreach($tabs as $key => $label)
-            @php
-                $locked = (in_array($key, ['nutricion','suplementacion']) && !$canAccessNutricion)
-                       || (in_array($key, ['ciclo','bloodwork']) && !$canAccessElite);
-            @endphp
-            <button
-                @if(!$locked) wire:click="setTab('{{ $key }}')" @endif
-                @class([
-                    'shrink-0 flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors whitespace-nowrap',
-                    'bg-wc-bg-tertiary text-wc-text shadow-sm' => $activeTab === $key,
-                    'text-wc-text-tertiary hover:text-wc-text-secondary' => $activeTab !== $key && !$locked,
-                    'cursor-not-allowed opacity-40' => $locked,
-                ])
-            >
-                {{ $label }}
-                @if($locked)
-                    <span class="ml-1 text-xs">🔒</span>
-                @endif
-            </button>
-        @endforeach
+    <div class="mb-6 rounded-card border border-wc-border bg-wc-bg-tertiary p-1" role="tablist" aria-label="Secciones del plan">
+        <div class="flex gap-1 overflow-x-auto">
+            @foreach($tabs as $key => $label)
+                @php
+                    $locked = (in_array($key, ['nutricion','suplementacion']) && !$canAccessNutricion)
+                           || (in_array($key, ['ciclo','bloodwork']) && !$canAccessElite);
+                @endphp
+                <button
+                    @if(!$locked) wire:click="setTab('{{ $key }}')" @endif
+                    role="tab"
+                    aria-selected="{{ $activeTab === $key ? 'true' : 'false' }}"
+                    @class([
+                        'shrink-0 flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-all whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-1',
+                        'bg-wc-accent text-white shadow-sm' => $activeTab === $key,
+                        'text-wc-text-secondary hover:text-wc-text hover:bg-wc-bg-secondary' => $activeTab !== $key && !$locked,
+                        'cursor-not-allowed opacity-40' => $locked,
+                    ])
+                >
+                    {{ $label }}
+                    @if($locked)
+                        <span class="ml-1 text-xs">🔒</span>
+                    @endif
+                </button>
+            @endforeach
+        </div>
     </div>
 
     {{-- Tab Content --}}
@@ -623,40 +627,54 @@
     {{-- ==================== TAB: HABITOS ==================== --}}
     @elseif($activeTab === 'habitos')
         <div class="space-y-6">
-            {{-- Compliance bar --}}
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-                <div class="flex items-center justify-between">
+            {{-- Compliance bar (premium) --}}
+            <div class="relative overflow-hidden rounded-card border border-wc-accent/20 bg-gradient-to-br from-wc-accent/8 via-wc-bg-tertiary to-transparent p-5">
+                <div class="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-wc-accent/6"></div>
+                <div class="pointer-events-none absolute -right-2 -top-2 h-12 w-12 rounded-full bg-wc-accent/10"></div>
+                <div class="relative flex items-center justify-between">
                     <div>
                         <h3 class="font-display text-lg tracking-wide text-wc-text">CUMPLIMIENTO MENSUAL</h3>
                         <p class="mt-0.5 text-sm text-wc-text-secondary">Dias con al menos 1 habito registrado este mes</p>
                     </div>
-                    <span class="font-data text-3xl font-bold text-wc-accent">{{ $habitCompliance }}%</span>
+                    <span class="font-data text-4xl font-bold tabular-nums text-wc-accent">{{ $habitCompliance }}%</span>
                 </div>
-                <div class="mt-3 h-2 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
-                    <div class="h-full rounded-full bg-wc-accent transition-all" style="width: {{ $habitCompliance }}%"></div>
+                <div class="relative mt-3 h-2 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
+                    <div class="h-full rounded-full bg-gradient-to-r from-wc-accent to-red-400 transition-all duration-700" style="width: {{ $habitCompliance }}%"></div>
                 </div>
             </div>
 
-            {{-- Habit Cards --}}
+            {{-- Habit Cards (premium with accent colors per type) --}}
+            @php
+                $habitAccents = [
+                    'agua'          => ['color' => 'blue',   'bg' => 'bg-blue-500/10',   'border' => 'border-blue-500/25',   'text' => 'text-blue-400',   'bar' => 'bg-blue-500'],
+                    'sueno'         => ['color' => 'indigo', 'bg' => 'bg-indigo-500/10', 'border' => 'border-indigo-500/25', 'text' => 'text-indigo-400', 'bar' => 'bg-indigo-500'],
+                    'entrenamiento' => ['color' => 'red',    'bg' => 'bg-wc-accent/10',  'border' => 'border-wc-accent/25',  'text' => 'text-wc-accent',  'bar' => 'bg-wc-accent'],
+                    'nutricion'     => ['color' => 'green',  'bg' => 'bg-emerald-500/10', 'border' => 'border-emerald-500/25', 'text' => 'text-emerald-400', 'bar' => 'bg-emerald-500'],
+                    'suplementos'   => ['color' => 'purple', 'bg' => 'bg-violet-500/10', 'border' => 'border-violet-500/25', 'text' => 'text-violet-400', 'bar' => 'bg-violet-500'],
+                ];
+            @endphp
             <div class="grid gap-4 sm:grid-cols-2">
                 @foreach($habitData as $habit)
-                    <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+                    @php $hAccent = $habitAccents[$habit['type']] ?? $habitAccents['entrenamiento']; @endphp
+                    <div class="rounded-card border {{ $hAccent['border'] }} {{ $hAccent['bg'] }} p-5">
                         <div class="flex items-start justify-between">
                             <div>
                                 <h4 class="font-display text-base tracking-wide text-wc-text">{{ strtoupper($habit['label']) }}</h4>
                                 <p class="mt-1 text-xs text-wc-text-tertiary">
-                                    Racha: <span class="font-data font-semibold text-wc-text">{{ $habit['streak'] }} dias</span>
+                                    Racha: <span class="font-data font-semibold {{ $hAccent['text'] }}">{{ $habit['streak'] }} dias</span>
                                 </p>
                             </div>
-                            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-wc-bg-secondary">
+                            <div class="flex h-10 w-10 items-center justify-center rounded-xl {{ $hAccent['bg'] }}">
                                 @if($habit['icon'] === 'droplet')
-                                    <svg class="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21c-4.97 0-9-4.03-9-9 0-3.87 4.5-9.5 7.68-12.38a1.74 1.74 0 012.64 0C16.5 2.5 21 8.13 21 12c0 4.97-4.03 9-9 9z"/></svg>
+                                    <svg class="h-5 w-5 {{ $hAccent['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21c-4.97 0-9-4.03-9-9 0-3.87 4.5-9.5 7.68-12.38a1.74 1.74 0 012.64 0C16.5 2.5 21 8.13 21 12c0 4.97-4.03 9-9 9z"/></svg>
                                 @elseif($habit['icon'] === 'moon')
-                                    <svg class="h-5 w-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
+                                    <svg class="h-5 w-5 {{ $hAccent['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
+                                @elseif($habit['icon'] === 'dumbbell')
+                                    <svg class="h-5 w-5 {{ $hAccent['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 0a1.5 1.5 0 0 1-1.5-1.5v-3a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v3m-4.5 0a1.5 1.5 0 0 0-1.5 1.5v3a1.5 1.5 0 0 0 1.5 1.5h1.5a1.5 1.5 0 0 0 1.5-1.5v-3m12-4.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5m3 0a1.5 1.5 0 0 1-1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5a1.5 1.5 0 0 1-1.5-1.5v-3m0-4.5a1.5 1.5 0 0 0-1.5-1.5h-1.5a1.5 1.5 0 0 0-1.5 1.5v3" /></svg>
                                 @elseif($habit['icon'] === 'utensils')
-                                    <svg class="h-5 w-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v6m0 0c1.66 0 3-1.34 3-3S13.66 2 12 2s-3 1.34-3 3 1.34 3 3 3zm0 0v14m6-20v8a2 2 0 01-2 2h-1v10"/></svg>
-                                @elseif($habit['icon'] === 'brain')
-                                    <svg class="h-5 w-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                                    <svg class="h-5 w-5 {{ $hAccent['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v6m0 0c1.66 0 3-1.34 3-3S13.66 2 12 2s-3 1.34-3 3 1.34 3 3 3zm0 0v14m6-20v8a2 2 0 01-2 2h-1v10"/></svg>
+                                @elseif($habit['icon'] === 'pill')
+                                    <svg class="h-5 w-5 {{ $hAccent['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m10.5 6 6.5 6.5-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364L10.5 6Z M17 6.5l-4.5 4.5" /></svg>
                                 @endif
                             </div>
                         </div>
@@ -667,13 +685,13 @@
                             </p>
                         </div>
 
-                        {{-- Last 7 days dots --}}
+                        {{-- Last 7 days bars --}}
                         <div class="mt-3 flex items-end gap-1.5">
                             @foreach($habit['last7'] as $day)
                                 <div class="flex flex-1 flex-col items-center gap-1">
                                     <div
-                                        class="h-6 w-full rounded-sm transition-all {{ $day['value'] > 0 ? '' : 'bg-wc-bg-secondary' }}"
-                                        style="{{ $day['value'] > 0 ? 'background-color: rgba(220, 38, 38, ' . min($day['value'] / 10, 1) . ');' : '' }}"
+                                        class="h-6 w-full rounded-sm transition-all duration-500 {{ $day['value'] > 0 ? $hAccent['bar'] : 'bg-wc-bg-secondary' }}"
+                                        style="{{ $day['value'] > 0 ? 'opacity: ' . max(0.3, min($day['value'] / 10, 1)) . ';' : '' }}"
                                         title="{{ $day['date'] }}: {{ $day['value'] }}/10"
                                     ></div>
                                     <span class="text-[10px] text-wc-text-tertiary">{{ $day['date'] }}</span>
