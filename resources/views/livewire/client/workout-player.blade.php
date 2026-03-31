@@ -821,7 +821,7 @@
             $totalSetsAll = 0;
             $completedSetsAll = 0;
             $totalRepsAll = 0;
-            $totalVolumeAll = 0;
+            $maxWeightAll = 0;
             $hasAtLeastOnePerExercise = true;
 
             foreach ($exercises as $ei => $ex) {
@@ -832,7 +832,8 @@
                     if (!empty($sd['completed'])) {
                         $completedSetsAll++;
                         $totalRepsAll += (int)($sd['reps'] ?? 0);
-                        $totalVolumeAll += ((float)($sd['weight'] ?? 0)) * ((int)($sd['reps'] ?? 0));
+                        $w = (float)($sd['weight'] ?? 0);
+                        if ($w > $maxWeightAll) $maxWeightAll = $w;
                         $exHasOne = true;
                     }
                 }
@@ -855,13 +856,8 @@
                     </div>
                     <div class="h-3 w-px bg-wc-border"></div>
                     <div>
-                        @if($totalVolumeAll >= 1000)
-                            <span class="font-data text-sm font-bold text-wc-text">{{ number_format($totalVolumeAll / 1000, 1) }}</span>
-                            <span class="text-[10px] text-wc-text-tertiary ml-0.5">ton</span>
-                        @else
-                            <span class="font-data text-sm font-bold text-wc-text">{{ number_format($totalVolumeAll, 0) }}</span>
-                            <span class="text-[10px] text-wc-text-tertiary ml-0.5">kg vol.</span>
-                        @endif
+                        <span class="font-data text-sm font-bold text-amber-400">{{ $maxWeightAll > 0 ? number_format($maxWeightAll, 1) : '—' }}</span>
+                        <span class="text-[10px] text-wc-text-tertiary ml-0.5">kg max</span>
                     </div>
                 </div>
 

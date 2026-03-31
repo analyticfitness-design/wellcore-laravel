@@ -154,7 +154,7 @@
             <p class="mt-0.5 text-xs text-wc-text-tertiary">min</p>
         </div>
 
-        {{-- Volumen Total --}}
+        {{-- Peso Máximo --}}
         <div class="relative overflow-hidden rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-center">
             <div class="pointer-events-none absolute -right-3 -top-3 h-12 w-12 rounded-full bg-amber-500/8"></div>
             <div class="mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/15">
@@ -162,9 +162,21 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                 </svg>
             </div>
-            <p class="text-[10px] font-bold uppercase tracking-widest text-amber-400">Volumen Total</p>
-            <p class="mt-1 font-data text-3xl font-bold text-wc-text sm:text-4xl">{{ $stats['volume_display'] }}</p>
-            <p class="mt-0.5 text-xs text-wc-text-tertiary">{{ $stats['volume_unit'] }}</p>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-amber-400">Peso Maximo</p>
+            <p class="mt-1 font-data text-3xl font-bold text-wc-text sm:text-4xl">
+                @if($stats['max_weight'] > 0)
+                    {{ number_format($stats['max_weight'], 1) }}
+                @else
+                    —
+                @endif
+            </p>
+            <p class="mt-0.5 text-xs text-wc-text-tertiary">
+                @if($stats['max_weight_exercise'])
+                    kg · {{ Str::limit($stats['max_weight_exercise'], 20) }}
+                @else
+                    kg
+                @endif
+            </p>
         </div>
 
         {{-- Reps Totales --}}
