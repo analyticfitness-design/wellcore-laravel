@@ -46,227 +46,287 @@
     @if($activeTab === 'entrenamiento')
         @if($trainingPlan)
             @php
-                $dias = is_array($trainingPlan['dias'] ?? null) ? $trainingPlan['dias'] : [];
+                $semanas = $trainingPlan['semanas'] ?? [];
                 $planObjetivoE = $trainingPlan['objetivo'] ?? $trainingPlan['objetivo_general'] ?? null;
+                $planFrecuencia = $trainingPlan['frecuencia'] ?? null;
+                $planSplit = $trainingPlan['split'] ?? $trainingPlan['metodologia'] ?? null;
+
+                // Count totals from first week (representative)
+                $firstWeekDias = !empty($semanas) ? ($semanas[0]['dias'] ?? []) : [];
+                $totalDaysPerWeek = count($firstWeekDias);
                 $totalExercises = 0;
-                foreach ($dias as $d) {
+                foreach ($firstWeekDias as $d) {
                     $totalExercises += count($d['ejercicios'] ?? []);
                 }
-                $estimatedWeeklyMin = max(count($dias) * 45, 20);
+                $estimatedWeeklyMin = max($totalDaysPerWeek * 45, 20);
 
-                // Muscle group color map (partial match)
-                $mgPalette = [
-                    'pecho'      => ['bg' => 'bg-rose-500/10',    'text' => 'text-rose-400'],
-                    'espalda'    => ['bg' => 'bg-sky-500/10',     'text' => 'text-sky-400'],
-                    'pierna'     => ['bg' => 'bg-emerald-500/10', 'text' => 'text-emerald-400'],
-                    'cuadricep'  => ['bg' => 'bg-emerald-500/10', 'text' => 'text-emerald-400'],
-                    'isquio'     => ['bg' => 'bg-teal-500/10',    'text' => 'text-teal-400'],
-                    'glut'       => ['bg' => 'bg-lime-500/10',    'text' => 'text-lime-400'],
-                    'hombro'     => ['bg' => 'bg-amber-500/10',   'text' => 'text-amber-400'],
-                    'brazo'      => ['bg' => 'bg-violet-500/10',  'text' => 'text-violet-400'],
-                    'bicep'      => ['bg' => 'bg-violet-500/10',  'text' => 'text-violet-400'],
-                    'tricep'     => ['bg' => 'bg-purple-500/10',  'text' => 'text-purple-400'],
-                    'core'       => ['bg' => 'bg-cyan-500/10',    'text' => 'text-cyan-400'],
-                    'full'       => ['bg' => 'bg-orange-500/10',  'text' => 'text-orange-400'],
-                    'funcional'  => ['bg' => 'bg-orange-500/10',  'text' => 'text-orange-400'],
-                    'cardio'     => ['bg' => 'bg-pink-500/10',    'text' => 'text-pink-400'],
-                ];
-                $getMgColor = function(?string $mg) use ($mgPalette): array {
-                    if (!$mg) return ['bg' => 'bg-wc-bg-secondary', 'text' => 'text-wc-text-tertiary'];
-                    $lower = mb_strtolower($mg);
-                    foreach ($mgPalette as $key => $colors) {
-                        if (str_contains($lower, $key)) return $colors;
-                    }
-                    return ['bg' => 'bg-wc-bg-secondary', 'text' => 'text-wc-text-secondary'];
+                // Type badge colors for day types
+                $tipoBadgeClass = function(?string $tipo): string {
+                    return match(strtolower($tipo ?? '')) {
+                        'empuje', 'push'    => 'bg-orange-500/10 text-orange-400',
+                        'jale', 'pull'      => 'bg-blue-500/10 text-blue-400',
+                        'piernas', 'legs', 'pierna' => 'bg-violet-500/10 text-violet-400',
+                        'full', 'full body' => 'bg-emerald-500/10 text-emerald-400',
+                        'cardio'            => 'bg-sky-500/10 text-sky-400',
+                        'upper', 'tren superior' => 'bg-rose-500/10 text-rose-400',
+                        'lower', 'tren inferior' => 'bg-teal-500/10 text-teal-400',
+                        default             => 'bg-wc-accent/10 text-wc-accent',
+                    };
                 };
             @endphp
 
-            {{-- Plan summary stats — horizontal with icon accent --}}
-            <div class="mb-5 grid grid-cols-3 gap-2">
-                <div class="flex flex-col items-center gap-1 rounded-2xl border border-wc-border bg-wc-bg-tertiary p-3">
-                    <span class="font-data text-3xl font-black text-wc-text">{{ count($dias) }}</span>
-                    <span class="text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Días/sem</span>
-                </div>
-                <div class="flex flex-col items-center gap-1 rounded-2xl border border-wc-border bg-wc-bg-tertiary p-3">
-                    <span class="font-data text-3xl font-black text-wc-text">{{ $totalExercises }}</span>
-                    <span class="text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Ejercicios</span>
-                </div>
-                <div class="flex flex-col items-center gap-1 rounded-2xl border border-wc-accent/25 bg-wc-accent/8 p-3">
-                    <span class="font-data text-3xl font-black text-wc-accent">~{{ $estimatedWeeklyMin }}</span>
-                    <span class="text-[9px] font-bold uppercase tracking-widest text-wc-accent/60">Min/sem</span>
+            {{-- ─── PROGRAM OVERVIEW CARD (premium) ──────────────────────── --}}
+            <div class="relative mb-6 overflow-hidden rounded-card border border-wc-accent/20 bg-gradient-to-br from-wc-accent/8 via-wc-bg-tertiary to-transparent p-5 sm:p-6">
+                {{-- Decorative orbs --}}
+                <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-wc-accent/6"></div>
+                <div class="pointer-events-none absolute -right-3 -top-3 h-16 w-16 rounded-full bg-wc-accent/10"></div>
+
+                <div class="relative">
+                    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                        <div class="flex-1">
+                            {{-- Plan badge --}}
+                            <div class="flex items-center gap-2">
+                                <span class="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-wc-accent/15 to-red-400/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-wc-accent">
+                                    <svg class="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    Plan {{ ucfirst($clientPlanType) }}
+                                </span>
+                                <span class="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-400">Activo</span>
+                            </div>
+
+                            {{-- Start date --}}
+                            @if($planStartDate)
+                                <p class="mt-2 text-sm text-wc-text-secondary">Inicio: {{ $planStartDate }}</p>
+                            @endif
+
+                            {{-- Program attributes --}}
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                @if($totalDaysPerWeek > 0)
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-wc-accent/10 px-2.5 py-1 text-xs font-medium text-wc-accent">
+                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                                        </svg>
+                                        {{ $planFrecuencia ?? $totalDaysPerWeek . ' dias/semana' }}
+                                    </span>
+                                @endif
+                                @if($planSplit)
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-wc-bg-secondary px-2.5 py-1 text-xs font-medium text-wc-text-secondary">
+                                        <svg class="h-3 w-3 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 0a1.5 1.5 0 0 1-1.5-1.5v-3a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v3m-4.5 0a1.5 1.5 0 0 0-1.5 1.5v3a1.5 1.5 0 0 0 1.5 1.5h1.5a1.5 1.5 0 0 0 1.5-1.5v-3m12-4.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5m3 0a1.5 1.5 0 0 1-1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5a1.5 1.5 0 0 1-1.5-1.5v-3m0-4.5a1.5 1.5 0 0 0-1.5-1.5h-1.5a1.5 1.5 0 0 0-1.5 1.5v3" />
+                                        </svg>
+                                        {{ $planSplit }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        {{-- Week counter --}}
+                        @if($totalWeeks > 1)
+                            <div class="flex shrink-0 flex-col items-end">
+                                <div class="flex items-baseline gap-1">
+                                    <span class="font-data text-4xl font-bold tabular-nums text-wc-accent">{{ $currentWeek }}</span>
+                                    <span class="text-sm text-wc-text-tertiary">/ {{ $totalWeeks }}</span>
+                                </div>
+                                <p class="text-[11px] uppercase tracking-wider text-wc-text-tertiary">Semana actual</p>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- Progress bar --}}
+                    @if($totalWeeks > 1)
+                        <div class="mt-5">
+                            <div class="flex items-center justify-between text-[11px] text-wc-text-tertiary mb-1.5">
+                                <span>Progreso del programa</span>
+                                <span class="font-data font-semibold text-wc-accent">{{ number_format($progressPct, 0) }}%</span>
+                            </div>
+                            <div class="h-2 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
+                                <div class="h-full rounded-full bg-gradient-to-r from-wc-accent to-red-400 transition-all duration-700"
+                                     style="width: {{ $progressPct }}%"></div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
 
-            {{-- Objetivo banner --}}
+            {{-- ─── OBJETIVO BANNER ──────────────────────────────────────── --}}
             @if($planObjetivoE)
-                <div class="mb-4 flex items-center gap-3 rounded-xl border border-wc-accent/20 bg-gradient-to-r from-wc-accent/8 to-transparent px-4 py-3">
+                <div class="mb-5 flex items-start gap-3 rounded-card border border-wc-accent/20 bg-wc-accent/5 p-4">
                     <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-wc-accent/15">
-                        <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/>
+                        <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
                         </svg>
                     </div>
-                    <p class="text-sm font-medium text-wc-text">{{ $planObjetivoE }}</p>
+                    <div>
+                        <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-accent/70">Objetivo del plan</p>
+                        <p class="mt-0.5 text-sm leading-relaxed text-wc-text-secondary">{{ $planObjetivoE }}</p>
+                    </div>
                 </div>
             @endif
 
-            {{-- Accordion day cards --}}
-            @if(count($dias) > 0)
-                <div class="space-y-2" x-data="{ openDay: 0 }">
-                    @foreach($dias as $diaIndex => $dia)
+            {{-- ─── WEEKS ACCORDION ──────────────────────────────────────── --}}
+            @if(!empty($semanas))
+                <div class="space-y-3">
+                    @foreach($semanas as $semana)
                         @php
-                            $ejercicios  = $dia['ejercicios'] ?? [];
-                            $dayName     = $dia['nombre'] ?? $dia['name'] ?? $dia['dia'] ?? 'Día ' . ($diaIndex + 1);
-                            $muscleGroup = $dia['grupo_muscular'] ?? $dia['muscle_group'] ?? null;
-                            $mgColors    = $getMgColor($muscleGroup);
-                            $dayMin      = max(count($ejercicios) * 6, 15);
-                            $dayNotes    = $dia['notas'] ?? $dia['notes'] ?? null;
-                            // Left accent color from muscle group text class
-                            $borderColor = match(true) {
-                                str_contains($mgColors['text'], 'rose')    => '#f43f5e',
-                                str_contains($mgColors['text'], 'sky')     => '#38bdf8',
-                                str_contains($mgColors['text'], 'emerald') => '#34d399',
-                                str_contains($mgColors['text'], 'teal')    => '#2dd4bf',
-                                str_contains($mgColors['text'], 'lime')    => '#a3e635',
-                                str_contains($mgColors['text'], 'amber')   => '#fbbf24',
-                                str_contains($mgColors['text'], 'violet')  => '#a78bfa',
-                                str_contains($mgColors['text'], 'purple')  => '#c084fc',
-                                str_contains($mgColors['text'], 'cyan')    => '#22d3ee',
-                                str_contains($mgColors['text'], 'orange')  => '#fb923c',
-                                str_contains($mgColors['text'], 'pink')    => '#f472b6',
-                                default                                    => '#dc2626',
-                            };
+                            $weekNum = $semana['numero'] ?? ($loop->iteration);
+                            $isCurrentWeek = $weekNum == $currentWeek;
+                            $fase = $semana['fase'] ?? null;
+                            $weekDias = $semana['dias'] ?? [];
                         @endphp
 
-                        <div class="overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary"
-                             style="border-left: 3px solid {{ $borderColor }}">
-
-                            {{-- Header --}}
+                        <div
+                            x-data="{ open: {{ $isCurrentWeek ? 'true' : 'false' }} }"
+                            class="overflow-hidden rounded-card border transition-colors {{ $isCurrentWeek ? 'border-wc-accent/30 bg-wc-accent/5' : 'border-wc-border bg-wc-bg-tertiary' }}"
+                        >
+                            {{-- Week header --}}
                             <button
-                                type="button"
-                                @click="openDay = openDay === {{ $diaIndex }} ? -1 : {{ $diaIndex }}"
-                                class="flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-wc-bg-secondary/30"
+                                x-on:click="open = !open"
+                                class="flex w-full items-center justify-between px-4 py-4 text-left transition-colors hover:bg-black/5 dark:hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-wc-accent"
+                                :aria-expanded="open ? 'true' : 'false'"
                             >
-                                {{-- Day badge --}}
-                                <div class="flex h-10 w-10 shrink-0 flex-col items-center justify-center rounded-xl"
-                                     style="background: {{ $borderColor }}1a">
-                                    <span class="text-[8px] font-bold uppercase leading-none tracking-widest"
-                                          style="color: {{ $borderColor }}99">DÍA</span>
-                                    <span class="font-display text-lg leading-none" style="color: {{ $borderColor }}">{{ $diaIndex + 1 }}</span>
-                                </div>
-
-                                {{-- Name + meta --}}
-                                <div class="min-w-0 flex-1">
-                                    <p class="font-display text-base tracking-wide text-wc-text">{{ strtoupper($dayName) }}</p>
-                                    <div class="mt-0.5 flex items-center gap-2">
-                                        <span class="text-[11px] text-wc-text-tertiary">{{ count($ejercicios) }} ejercicios · ~{{ $dayMin }} min</span>
-                                        @if($muscleGroup)
-                                            <span class="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide {{ $mgColors['bg'] }} {{ $mgColors['text'] }}">
-                                                {{ $muscleGroup }}
-                                            </span>
+                                <div class="flex items-center gap-3">
+                                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg font-data text-sm font-bold
+                                        {{ $isCurrentWeek ? 'bg-wc-accent text-white' : 'bg-wc-bg-secondary text-wc-text-tertiary' }}">
+                                        {{ $weekNum }}
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <span class="text-sm font-semibold text-wc-text">Semana {{ $weekNum }}</span>
+                                            @if($isCurrentWeek)
+                                                <span class="rounded-full bg-wc-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">Semana actual</span>
+                                            @endif
+                                            @if($fase)
+                                                <span class="rounded-full bg-wc-bg-secondary px-2 py-0.5 text-[10px] font-medium text-wc-text-tertiary">{{ $fase }}</span>
+                                            @endif
+                                        </div>
+                                        @if(!empty($weekDias))
+                                            <p class="mt-0.5 text-xs text-wc-text-tertiary">{{ count($weekDias) }} dia{{ count($weekDias) !== 1 ? 's' : '' }} de entrenamiento</p>
                                         @endif
                                     </div>
                                 </div>
 
-                                {{-- Chevron --}}
                                 <svg class="h-4 w-4 shrink-0 text-wc-text-tertiary transition-transform duration-200"
-                                     :class="{ 'rotate-180': openDay === {{ $diaIndex }} }"
-                                     fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7" />
+                                     :class="{ 'rotate-180': open }"
+                                     fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                                 </svg>
                             </button>
 
-                            {{-- Collapsible exercise list --}}
-                            <div
-                                x-show="openDay === {{ $diaIndex }}"
-                                x-transition:enter="transition ease-out duration-200"
-                                x-transition:enter-start="opacity-0 -translate-y-2"
-                                x-transition:enter-end="opacity-100 translate-y-0"
-                                x-transition:leave="transition ease-in duration-150"
-                                x-transition:leave-start="opacity-100 translate-y-0"
-                                x-transition:leave-end="opacity-0 -translate-y-2"
-                                x-cloak
-                            >
-                                {{-- Day notes --}}
-                                @if($dayNotes)
-                                    <div class="border-t border-wc-border bg-wc-bg-secondary/30 px-4 py-2">
-                                        <p class="text-xs italic text-wc-text-tertiary">{{ $dayNotes }}</p>
-                                    </div>
-                                @endif
-
-                                {{-- Exercise rows --}}
-                                <div class="divide-y divide-wc-border/50 border-t border-wc-border">
-                                    @forelse($ejercicios as $ejIdx => $ej)
+                            {{-- Week body with days --}}
+                            <div x-show="open" x-collapse>
+                                <div class="space-y-3 border-t border-wc-border/50 px-4 pb-4 pt-4">
+                                    @forelse($weekDias as $dia)
                                         @php
-                                            $ejName   = is_array($ej) ? ($ej['nombre'] ?? $ej['name'] ?? $ej['ejercicio'] ?? 'Ejercicio') : (string) $ej;
-                                            $ejSeries = is_array($ej) ? ($ej['series']      ?? $ej['sets']  ?? null) : null;
-                                            $ejReps   = is_array($ej) ? ($ej['repeticiones'] ?? $ej['reps']  ?? null) : null;
-                                            $ejRest   = is_array($ej) ? ($ej['descanso']     ?? $ej['rest']  ?? $ej['rest_seconds'] ?? null) : null;
-                                            $ejRir    = is_array($ej) ? ($ej['rir']          ?? null) : null;
-                                            $ejNotas  = is_array($ej) ? ($ej['notas']        ?? $ej['notes'] ?? null) : null;
-                                            $rirClass = $ejRir !== null
-                                                ? ($ejRir >= 3 ? 'bg-emerald-500/15 text-emerald-400' : ($ejRir >= 2 ? 'bg-amber-500/15 text-amber-400' : 'bg-red-500/15 text-red-400'))
-                                                : '';
+                                            $tipoDia = $dia['tipo'] ?? $dia['grupo_muscular'] ?? $dia['muscle_group'] ?? null;
+                                            $ejercicios = $dia['ejercicios'] ?? [];
+                                            $dayName = $dia['nombre'] ?? $dia['name'] ?? $dia['dia'] ?? ('Dia ' . ($loop->iteration));
+                                            $duracion = $dia['duracion'] ?? (count($ejercicios) > 0 ? '~' . max(count($ejercicios) * 6, 15) . ' min' : null);
                                         @endphp
-                                        <div>
-                                            {{-- Main row --}}
-                                            <div class="flex items-start gap-3 px-4 py-3">
-                                                {{-- Index --}}
-                                                <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-wc-accent/10 font-data text-[11px] font-bold text-wc-accent">
-                                                    {{ $ejIdx + 1 }}
-                                                </span>
 
-                                                {{-- Name + notes inline --}}
-                                                <div class="min-w-0 flex-1">
-                                                    <p class="text-sm font-semibold leading-snug text-wc-text">{{ $ejName }}</p>
-
-                                                    <div class="mt-1.5 flex flex-wrap items-center gap-1.5">
-                                                        @if($ejSeries || $ejReps)
-                                                            <span class="rounded-lg bg-wc-bg px-2.5 py-1 font-data text-xs font-black text-wc-text tabular-nums">
-                                                                @if($ejSeries && $ejReps){{ $ejSeries }}<span class="text-wc-text-tertiary">×</span>{{ $ejReps }}
-                                                                @elseif($ejSeries){{ $ejSeries }}s
-                                                                @else{{ $ejReps }}r
-                                                                @endif
-                                                            </span>
-                                                        @endif
-
-                                                        @if($ejRest)
-                                                            <span class="flex items-center gap-0.5 rounded-lg bg-wc-bg px-2 py-1 text-[10px] font-medium text-wc-text-tertiary">
-                                                                <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                                                                </svg>
-                                                                {{ is_numeric($ejRest) ? $ejRest.'s' : $ejRest }}
-                                                            </span>
-                                                        @endif
-
-                                                        @if($ejRir !== null)
-                                                            <span class="rounded-lg px-2 py-1 text-[10px] font-black {{ $rirClass }}">RIR{{ $ejRir }}</span>
+                                        <div class="rounded-xl border border-wc-border bg-wc-bg-secondary">
+                                            {{-- Day header --}}
+                                            <div class="flex items-center justify-between gap-3 px-4 py-3.5">
+                                                <div class="flex items-center gap-3 min-w-0">
+                                                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
+                                                        <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 0a1.5 1.5 0 0 1-1.5-1.5v-3a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v3m-4.5 0a1.5 1.5 0 0 0-1.5 1.5v3a1.5 1.5 0 0 0 1.5 1.5h1.5a1.5 1.5 0 0 0 1.5-1.5v-3m12-4.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5m3 0a1.5 1.5 0 0 1-1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5a1.5 1.5 0 0 1-1.5-1.5v-3m0-4.5a1.5 1.5 0 0 0-1.5-1.5h-1.5a1.5 1.5 0 0 0-1.5 1.5v3" />
+                                                        </svg>
+                                                    </div>
+                                                    <div class="min-w-0">
+                                                        <p class="truncate text-sm font-semibold text-wc-text">{{ $dayName }}</p>
+                                                        @if(!empty($ejercicios))
+                                                            <p class="text-xs text-wc-text-tertiary">{{ count($ejercicios) }} ejercicio{{ count($ejercicios) !== 1 ? 's' : '' }}</p>
                                                         @endif
                                                     </div>
-
-                                                    {{-- Execution tips — always visible --}}
-                                                    @if(!empty($ejNotas))
-                                                        <p class="mt-1.5 text-xs italic leading-relaxed text-wc-text-tertiary">
-                                                            {{ $ejNotas }}
-                                                        </p>
+                                                </div>
+                                                <div class="flex shrink-0 items-center gap-2">
+                                                    @if($tipoDia)
+                                                        <span class="rounded-full px-2.5 py-1 text-[10px] font-semibold {{ $tipoBadgeClass($tipoDia) }}">
+                                                            {{ $tipoDia }}
+                                                        </span>
+                                                    @endif
+                                                    @if($duracion)
+                                                        <span class="hidden rounded-full bg-wc-bg-tertiary px-2.5 py-1 text-[10px] font-medium text-wc-text-tertiary sm:inline-flex items-center gap-1">
+                                                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                            </svg>
+                                                            {{ $duracion }}
+                                                        </span>
                                                     @endif
                                                 </div>
                                             </div>
+
+                                            {{-- Workout launch button --}}
+                                            @if(!empty($ejercicios))
+                                                <div class="border-t border-wc-border/40 px-4 py-2.5">
+                                                    <a wire:navigate href="{{ route('client.workout', ['day' => $loop->iteration]) }}"
+                                                       class="flex w-full items-center justify-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 transition-colors">
+                                                        <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"/>
+                                                        </svg>
+                                                        Entrenar este dia
+                                                    </a>
+                                                </div>
+                                            @endif
+
+                                            {{-- Exercises list --}}
+                                            @if(!empty($ejercicios))
+                                                <div class="divide-y divide-wc-border/40 border-t border-wc-border/40">
+                                                    @foreach($ejercicios as $ejercicio)
+                                                        @php
+                                                            $ejName   = is_array($ejercicio) ? ($ejercicio['nombre'] ?? $ejercicio['name'] ?? $ejercicio['ejercicio'] ?? 'Ejercicio') : (string) $ejercicio;
+                                                            $ejSeries = is_array($ejercicio) ? ($ejercicio['series'] ?? $ejercicio['sets'] ?? null) : null;
+                                                            $ejReps   = is_array($ejercicio) ? ($ejercicio['repeticiones'] ?? $ejercicio['reps'] ?? null) : null;
+                                                            $ejRest   = is_array($ejercicio) ? ($ejercicio['descanso'] ?? $ejercicio['rest'] ?? $ejercicio['rest_seconds'] ?? null) : null;
+                                                            $ejRir    = is_array($ejercicio) ? ($ejercicio['rir'] ?? null) : null;
+                                                            $ejNotas  = is_array($ejercicio) ? ($ejercicio['notas'] ?? $ejercicio['notes'] ?? null) : null;
+                                                            $rirClass = $ejRir !== null
+                                                                ? ($ejRir >= 3 ? 'bg-emerald-500/15 text-emerald-400' : ($ejRir >= 2 ? 'bg-amber-500/15 text-amber-400' : 'bg-red-500/15 text-red-400'))
+                                                                : '';
+                                                        @endphp
+                                                        <div class="flex items-start gap-3 px-4 py-3">
+                                                            {{-- Exercise number --}}
+                                                            <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-wc-accent/10 font-data text-[11px] font-bold text-wc-accent">
+                                                                {{ $loop->iteration }}
+                                                            </span>
+                                                            <div class="flex-1 min-w-0">
+                                                                <p class="text-sm font-medium text-wc-text">{{ $ejName }}</p>
+                                                                <div class="mt-1.5 flex flex-wrap gap-1.5">
+                                                                    @if($ejSeries || $ejReps)
+                                                                        <span class="rounded-full bg-wc-bg-tertiary px-2 py-0.5 text-[11px] font-semibold text-wc-text-secondary">
+                                                                            @if($ejSeries && $ejReps){{ $ejSeries }} x {{ $ejReps }}
+                                                                            @elseif($ejSeries){{ $ejSeries }} series
+                                                                            @else{{ $ejReps }} reps
+                                                                            @endif
+                                                                        </span>
+                                                                    @endif
+                                                                    @if($ejRest)
+                                                                        <span class="inline-flex items-center gap-1 rounded-full bg-wc-bg-tertiary px-2 py-0.5 text-[11px] text-wc-text-tertiary">
+                                                                            <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                                            </svg>
+                                                                            {{ is_numeric($ejRest) ? $ejRest.'s' : $ejRest }}
+                                                                        </span>
+                                                                    @endif
+                                                                    @if($ejRir !== null)
+                                                                        <span class="rounded-full px-2 py-0.5 text-[10px] font-black {{ $rirClass }}">RIR{{ $ejRir }}</span>
+                                                                    @endif
+                                                                </div>
+                                                                @if(!empty($ejNotas))
+                                                                    <p class="mt-1.5 text-xs italic leading-relaxed text-wc-text-tertiary">{{ $ejNotas }}</p>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endif
                                         </div>
                                     @empty
-                                        <p class="px-4 py-3 text-xs text-wc-text-tertiary">Sin ejercicios registrados.</p>
+                                        <div class="rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-6 text-center">
+                                            <p class="text-sm text-wc-text-tertiary">Sin dias asignados esta semana.</p>
+                                        </div>
                                     @endforelse
-                                </div>
-
-                                {{-- Per-day CTA --}}
-                                <div class="border-t border-wc-border px-4 py-3">
-                                    <a wire:navigate href="{{ route('client.workout', ['day' => $diaIndex + 1]) }}"
-                                        class="btn-press flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold tracking-wide transition-all"
-                                        style="background: {{ $borderColor }}18; color: {{ $borderColor }}">
-                                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M8 5v14l11-7z"/>
-                                        </svg>
-                                        ENTRENAR DÍA {{ $diaIndex + 1 }}
-                                    </a>
                                 </div>
                             </div>
                         </div>

@@ -19,6 +19,12 @@ class PlanViewer extends Component
     public string $activeTab = 'entrenamiento';
     public string $clientPlanType = 'esencial';
 
+    // Week progression
+    public int $currentWeek = 1;
+    public int $totalWeeks = 1;
+    public float $progressPct = 0;
+    public ?string $planStartDate = null;
+
     // Habits
     public array $habitData = [];
     public float $habitCompliance = 0;
@@ -55,6 +61,21 @@ class PlanViewer extends Component
                 'ciclo_hormonal' => $this->cicloPlan = $content,
                 default          => null,
             };
+        }
+
+        // Calculate week progression from plan start date or client fecha_inicio
+        if ($this->trainingPlan) {
+            $this->totalWeeks = (int) ($this->trainingPlan['duracion_semanas'] ?? count($this->trainingPlan['semanas'] ?? []) ?: 1);
+            $startDate = $this->trainingPlan['fecha_inicio'] ?? $user?->fecha_inicio ?? null;
+
+            if ($startDate) {
+                $start = Carbon::parse($startDate);
+                $this->planStartDate = $start->format('d M Y');
+                $daysElapsed = max(0, $start->diffInDays(now()));
+                $this->currentWeek = min($this->totalWeeks, (int) ceil(max(1, $daysElapsed) / 7));
+                $totalDays = $this->totalWeeks * 7;
+                $this->progressPct = $totalDays > 0 ? min(100, round(($daysElapsed / $totalDays) * 100, 1)) : 0;
+            }
         }
 
         $this->loadHabits($clientId);
@@ -208,7 +229,8 @@ class PlanViewer extends Component
 
     /**
      * Normalize training plan JSON so English keys (weeks/days/exercises/name/sets/reps)
-     * are mapped to the Spanish keys the Blade view expects (dias/ejercicios/nombre/series).
+     * are mapped to the Spanish keys the Blade view expects.
+     * Preserves semanas[] structure if present; wraps flat dias[] into a single week.
      */
     private function normalizeTrainingPlan(?array $content): ?array
     {
@@ -216,47 +238,101 @@ class PlanViewer extends Component
             return null;
         }
 
-        // Format: { "plan": [{ "week": N, "days": [...] }] } → use first week's days for display
+        // ── Step 1: Ensure semanas[] exists ─────────────────────────────
+        if (isset($content['semanas']) && is_array($content['semanas'])) {
+            // Already has week structure — normalize each week's days
+            foreach ($content['semanas'] as &$semana) {
+                $semana['dias'] = $this->normalizeDays($semana['dias'] ?? $semana['days'] ?? []);
+                unset($semana['days']);
+                $semana['numero'] = $semana['numero'] ?? $semana['number'] ?? $semana['semana'] ?? null;
+                $semana['fase'] = $semana['fase'] ?? $semana['phase'] ?? $semana['nombre'] ?? null;
+            }
+            unset($semana);
+            return $content;
+        }
+
+        // ── Step 2: Extract flat dias from various formats ──────────────
+
+        // Format: { "plan": [{ "week": N, "days": [...] }] }
         if (! isset($content['dias']) && ! isset($content['days']) &&
             isset($content['plan']) && is_array($content['plan'])) {
-            $first = reset($content['plan']);
-            if (is_array($first) && isset($first['days']) && is_array($first['days'])) {
-                $content['dias'] = array_values($first['days']);
+            // Convert plan[] to semanas[]
+            $content['semanas'] = [];
+            foreach ($content['plan'] as $idx => $week) {
+                if (is_array($week) && (isset($week['days']) || isset($week['dias']))) {
+                    $content['semanas'][] = [
+                        'numero' => $week['week'] ?? $week['semana'] ?? ($idx + 1),
+                        'fase' => $week['phase'] ?? $week['fase'] ?? $week['name'] ?? null,
+                        'dias' => $this->normalizeDays($week['days'] ?? $week['dias'] ?? []),
+                    ];
+                }
+            }
+            if (! empty($content['semanas'])) {
                 unset($content['plan']);
+                return $content;
             }
         }
 
-        // Top-level: 'weeks' or 'days' → 'dias'
-        // Only accept array values — 'weeks' may be an integer (plan duration) in some plan formats
+        // Top-level: 'days' or 'weeks' (array) → 'dias'
         if (! isset($content['dias']) || ! is_array($content['dias'])) {
-            $days = $content['days'] ?? $content['weeks'] ?? null;
+            $days = $content['days'] ?? null;
+            // 'weeks' only if it's an array of days, not an integer
+            $weeks = $content['weeks'] ?? null;
             if (is_array($days)) {
                 $content['dias'] = $days;
-                unset($content['weeks'], $content['days']);
-            } else {
-                unset($content['dias']); // Remove non-array dias to prevent foreach errors
+            } elseif (is_array($weeks)) {
+                $content['dias'] = $weeks;
             }
+            unset($content['days']);
         }
 
         if (! isset($content['dias']) || ! is_array($content['dias'])) {
             return $content;
         }
 
-        foreach ($content['dias'] as &$dia) {
+        // Normalize the flat days
+        $content['dias'] = $this->normalizeDays($content['dias']);
+
+        // ── Step 3: Wrap flat dias[] into semanas[] ─────────────────────
+        // If duracion_semanas is set, split days across weeks; otherwise wrap in 1 week
+        $duracion = (int) ($content['duracion_semanas'] ?? 1);
+        if ($duracion > 1) {
+            $content['semanas'] = [];
+            for ($w = 1; $w <= $duracion; $w++) {
+                $content['semanas'][] = [
+                    'numero' => $w,
+                    'fase' => $content['fases'][$w - 1] ?? null,
+                    'dias' => $content['dias'], // same days repeat each week
+                ];
+            }
+        } else {
+            $content['semanas'] = [
+                [
+                    'numero' => 1,
+                    'fase' => $content['fase'] ?? null,
+                    'dias' => $content['dias'],
+                ],
+            ];
+        }
+
+        return $content;
+    }
+
+    private function normalizeDays(array $days): array
+    {
+        $normalized = [];
+        foreach ($days as $dia) {
             if (! is_array($dia)) {
                 continue;
             }
 
-            // Day name: 'name' → 'nombre'
             if (! isset($dia['nombre']) && isset($dia['name'])) {
                 $dia['nombre'] = $dia['name'];
             }
-            // Day identifier: 'day' → 'dia'
             if (! isset($dia['dia']) && isset($dia['day'])) {
                 $dia['dia'] = $dia['day'];
             }
 
-            // Exercises list: 'exercises' or 'sessions' → 'ejercicios'
             if (! isset($dia['ejercicios'])) {
                 $exercises = $dia['exercises'] ?? $dia['sessions'] ?? null;
                 if ($exercises !== null) {
@@ -270,14 +346,12 @@ class PlanViewer extends Component
                     if (! is_array($ej)) {
                         continue;
                     }
-                    // Exercise name
                     if (! isset($ej['nombre']) && isset($ej['name'])) {
                         $ej['nombre'] = $ej['name'];
                     }
                     if (! isset($ej['ejercicio']) && isset($ej['exercise'])) {
                         $ej['ejercicio'] = $ej['exercise'];
                     }
-                    // Sets / reps
                     if (! isset($ej['series']) && isset($ej['sets'])) {
                         $ej['series'] = $ej['sets'];
                     }
@@ -287,10 +361,11 @@ class PlanViewer extends Component
                 }
                 unset($ej);
             }
-        }
-        unset($dia);
 
-        return $content;
+            $normalized[] = $dia;
+        }
+
+        return $normalized;
     }
 
     public function render()
