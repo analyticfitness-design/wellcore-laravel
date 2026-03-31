@@ -280,10 +280,12 @@ class LiveFeed extends Component
 
     protected function getDateFrom(): ?Carbon
     {
+        // Use Colombia timezone (UTC-5) for date filters since clients are in LATAM
+        $tz = 'America/Bogota';
         return match ($this->dateFilter) {
-            'today' => Carbon::today(),
-            'week' => Carbon::now()->subWeek(),
-            'month' => Carbon::now()->subMonth(),
+            'today' => Carbon::today($tz)->utc(),
+            'week' => Carbon::now($tz)->subWeek()->startOfDay()->utc(),
+            'month' => Carbon::now($tz)->subMonth()->startOfDay()->utc(),
             default => null,
         };
     }

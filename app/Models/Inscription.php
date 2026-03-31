@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\PlanType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Models\Concerns\AutoCreatedAt;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
@@ -29,6 +30,8 @@ use Illuminate\Database\Eloquent\Model;
 ])]
 class Inscription extends Model
 {
+    use AutoCreatedAt;
+
     protected $table = 'inscriptions';
 
     public $incrementing = false;

@@ -89,6 +89,7 @@ class CheckinForm extends Component
             'nutricion' => $this->nutricion,
             'comentario' => $this->comentario,
             'rpe' => $this->rpe,
+            'created_at' => now(),
         ]);
 
         // Capture values for the overlay before resetting the form
