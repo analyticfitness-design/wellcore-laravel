@@ -1,5 +1,5 @@
 {
-  "objetivo": "Recomposición corporal: perder grasa manteniendo músculo. Con 6 días de entrenamiento intenso necesitas suficiente proteína para recuperar y un déficit calórico moderado para quemar grasa sin perder rendimiento. Cada comida tiene un propósito específico.",
+  "objetivo": "Recomposición corporal: perder grasa manteniendo músculo. Con 6 días de entrenamiento intenso necesitas suficiente proteína para recuperar y un déficit calórico moderado para quemar grasa sin perder rendimiento.",
   "calorias_diarias": 1800,
   "macros": {
     "proteina_g": 130,
@@ -15,112 +15,93 @@
         {"nombre": "Aguacate", "cantidad": "1/4 unidad (40g)"},
         {"nombre": "Café negro o té verde", "cantidad": "1 taza"}
       ],
-      "calorias": 420,
-      "macros": {"proteina_g": 25, "carbohidratos_g": 30, "grasas_g": 22}
-    },
-    {
-      "nombre": "Media Mañana (10:00 AM)",
-      "alimentos": [
-        {"nombre": "Yogurt griego sin azúcar", "cantidad": "150g"},
-        {"nombre": "Fresas o banano", "cantidad": "1/2 taza o 1/2 banano"},
-        {"nombre": "Granola sin azúcar", "cantidad": "2 cucharadas (20g)"}
-      ],
-      "calorias": 180,
-      "macros": {"proteina_g": 15, "carbohidratos_g": 20, "grasas_g": 4}
+      "calorias": 450,
+      "macros": {"proteina_g": 28, "carbohidratos_g": 35, "grasas_g": 22}
     },
     {
       "nombre": "Almuerzo (12:30 PM)",
       "alimentos": [
-        {"nombre": "Pechuga de pollo a la plancha", "cantidad": "150g"},
-        {"nombre": "Arroz blanco o integral", "cantidad": "150g cocido (3/4 taza)"},
+        {"nombre": "Pechuga de pollo a la plancha", "cantidad": "170g"},
+        {"nombre": "Arroz blanco o integral", "cantidad": "180g cocido (1 taza)"},
         {"nombre": "Ensalada verde (lechuga, tomate, pepino)", "cantidad": "1 plato"},
         {"nombre": "Frijoles o lentejas", "cantidad": "1/2 taza cocidos"},
         {"nombre": "Aceite de oliva para ensalada", "cantidad": "1 cucharadita"}
       ],
-      "calorias": 480,
-      "macros": {"proteina_g": 42, "carbohidratos_g": 50, "grasas_g": 10}
+      "calorias": 550,
+      "macros": {"proteina_g": 45, "carbohidratos_g": 58, "grasas_g": 12}
     },
     {
-      "nombre": "Pre-Entreno (3:00 PM)",
+      "nombre": "Media Tarde (3:30 PM)",
       "alimentos": [
+        {"nombre": "Yogurt griego sin azúcar", "cantidad": "200g"},
         {"nombre": "Banano", "cantidad": "1 unidad mediana"},
-        {"nombre": "Whey protein", "cantidad": "1 scoop (30g)"},
-        {"nombre": "Agua", "cantidad": "300ml"}
+        {"nombre": "Granola sin azúcar o avena", "cantidad": "2 cucharadas (25g)"}
       ],
-      "calorias": 230,
-      "macros": {"proteina_g": 25, "carbohidratos_g": 30, "grasas_g": 2}
+      "calorias": 300,
+      "macros": {"proteina_g": 20, "carbohidratos_g": 40, "grasas_g": 6}
     },
     {
-      "nombre": "Cena (7:30 PM — Post-Entreno)",
+      "nombre": "Cena (7:30 PM)",
       "alimentos": [
-        {"nombre": "Tilapia, salmón o atún", "cantidad": "150g"},
+        {"nombre": "Tilapia, salmón o atún", "cantidad": "170g"},
         {"nombre": "Papa cocida o yuca", "cantidad": "150g"},
         {"nombre": "Vegetales salteados (brócoli, zanahoria, calabacín)", "cantidad": "1 taza"},
         {"nombre": "Limón y especias al gusto", "cantidad": "libre"}
       ],
-      "calorias": 390,
-      "macros": {"proteina_g": 38, "carbohidratos_g": 40, "grasas_g": 8}
-    },
-    {
-      "nombre": "Snack Nocturno (9:00 PM — opcional)",
-      "alimentos": [
-        {"nombre": "Queso campesino bajo en grasa", "cantidad": "30g"},
-        {"nombre": "Galletas integrales", "cantidad": "3 unidades"}
-      ],
-      "calorias": 100,
-      "macros": {"proteina_g": 5, "carbohidratos_g": 10, "grasas_g": 4}
+      "calorias": 500,
+      "macros": {"proteina_g": 42, "carbohidratos_g": 47, "grasas_g": 12}
     }
   ],
   "tips": [
-    "Tu prioridad es alcanzar 130g de proteína diarios sin falta. Esto equivale a ~32g por comida principal. Fuentes económicas: huevos (6 huevos = 36g), pollo entero del mercado (más barato que pechuga), atún en agua, frijoles combinados con arroz.",
-    "El déficit calórico es moderado (~300 kcal debajo de mantenimiento). NO bajes más de 1800 kcal — con 6 días de entrenamiento intenso necesitas energía. Si sientes fatiga extrema, sube 100 kcal en carbohidratos.",
+    "Tu prioridad es alcanzar 130g de proteína diarios sin falta. Esto equivale a ~33g por comida. Fuentes económicas: huevos, pollo entero del mercado, atún en agua, frijoles combinados con arroz.",
+    "El déficit calórico es moderado (~300 kcal debajo de mantenimiento). NO bajes más de 1800 kcal — con 6 días de entrenamiento intenso necesitas energía.",
     "Toma mínimo 2.5 litros de agua al día. En Bucaramanga con el calor, probablemente necesitas 3 litros. Pizca de sal en el agua de entrenamiento si la sesión pasa de 1 hora.",
-    "El pre-entreno (banano + whey) es estratégico: los carbohidratos simples te dan energía inmediata para la sesión. Cómelo 30-45 min antes de entrenar.",
-    "Cocina batch los domingos: prepara arroz, pollo, frijoles y vegetales para toda la semana. Esto reduce costos y evita que comas por fuera.",
-    "Evita bebidas azucaradas, jugos de caja y gaseosas. Reemplaza por agua, agua con limón, o café negro. Un jugo de caja puede tener 150 kcal vacías.",
-    "Los días de más cardio (martes, jueves, sábado = 30 min) puedes agregar 1/2 banano extra al pre-entreno para no quedarte sin energía.",
-    "La proteína whey es la forma más económica de completar tu proteína diaria. Un scoop de 30g aporta ~25g de proteína por menos de $3,000 COP."
+    "La media tarde (yogurt + banano) te da energía para entrenar. Cómelo 1 hora antes de la sesión.",
+    "Cocina batch los domingos: prepara arroz, pollo, frijoles y vegetales para toda la semana. Reduce costos y evita comer por fuera.",
+    "Evita bebidas azucaradas, jugos de caja y gaseosas. Reemplaza por agua, agua con limón, o café negro.",
+    "Los días de más cardio (martes, jueves, sábado = 30 min) puedes agregar 1/2 banano extra en la media tarde.",
+    "La proteína whey es opcional: si no llegas a los 130g con comida sólida, un scoop al día te ayuda a completar."
   ],
   "comidas_sugeridas": [
     {
       "nombre": "Desayuno",
       "opciones": [
-        "3 huevos revueltos + 1 arepa + 1/4 aguacate + café (420 kcal | 25g P | 30g C | 22g G)",
-        "2 huevos + 2 claras + 2 tostadas integrales + 1 cucharada mantequilla de maní (400 kcal | 28g P | 28g C | 18g G)",
-        "Avena 50g + 1 scoop whey + 1/2 banano + canela (380 kcal | 30g P | 45g C | 5g G)",
-        "Arepa con queso campesino + 2 huevos + jugo de naranja natural sin azúcar (410 kcal | 22g P | 35g C | 20g G)"
+        "3 huevos revueltos + 1 arepa + 1/4 aguacate + café (450 kcal | 28g P | 35g C | 22g G)",
+        "2 huevos + 2 claras + 2 tostadas integrales + mantequilla de maní 1 cda (430 kcal | 30g P | 32g C | 18g G)",
+        "Avena 60g + 1 scoop whey + 1/2 banano + canela (420 kcal | 32g P | 50g C | 6g G)",
+        "Arepa con queso campesino + 3 huevos + café (460 kcal | 30g P | 30g C | 22g G)"
       ]
     },
     {
       "nombre": "Almuerzo",
       "opciones": [
-        "Pechuga 150g + arroz 3/4 taza + ensalada + frijoles 1/2 taza (480 kcal | 42g P | 50g C | 10g G)",
-        "Carne molida magra 150g + papa cocida 150g + ensalada + aguacate 1/4 (470 kcal | 35g P | 40g C | 16g G)",
-        "Atún en agua 2 latas + arroz 3/4 taza + vegetales salteados + limón (430 kcal | 40g P | 45g C | 6g G)",
-        "Pollo desmechado 150g + yuca cocida 150g + ensalada de repollo y zanahoria (460 kcal | 38g P | 48g C | 8g G)"
+        "Pechuga 170g + arroz 1 taza + ensalada + frijoles 1/2 taza (550 kcal | 45g P | 58g C | 12g G)",
+        "Carne molida magra 170g + papa cocida 180g + ensalada + aguacate 1/4 (540 kcal | 40g P | 48g C | 16g G)",
+        "Atún en agua 2 latas + arroz 1 taza + vegetales salteados + limón (500 kcal | 44g P | 52g C | 6g G)",
+        "Pollo desmechado 170g + yuca cocida 180g + ensalada de repollo y zanahoria (530 kcal | 42g P | 55g C | 8g G)"
       ]
     },
     {
-      "nombre": "Pre-Entreno",
+      "nombre": "Media Tarde",
       "opciones": [
-        "1 banano + 1 scoop whey con agua (230 kcal | 25g P | 30g C | 2g G)",
-        "2 tostadas integrales + 1 cucharada mermelada + 1 scoop whey (250 kcal | 26g P | 35g C | 3g G)",
-        "1 manzana + 15 almendras + 1 scoop whey (280 kcal | 27g P | 25g C | 10g G)"
+        "Yogurt griego 200g + 1 banano + granola 25g (300 kcal | 20g P | 40g C | 6g G)",
+        "1 manzana + 15 almendras + yogurt griego 150g (280 kcal | 16g P | 28g C | 12g G)",
+        "2 tostadas integrales + 1 cda mermelada + queso campesino 30g (270 kcal | 12g P | 35g C | 8g G)"
       ]
     },
     {
       "nombre": "Cena",
       "opciones": [
-        "Tilapia 150g + papa cocida 150g + vegetales salteados (390 kcal | 38g P | 40g C | 8g G)",
-        "Salmón 130g + arroz integral 1/2 taza + brócoli al vapor (400 kcal | 35g P | 30g C | 14g G)",
-        "Pollo a la plancha 150g + yuca 150g + ensalada verde (380 kcal | 40g P | 38g C | 6g G)",
-        "2 huevos + 2 claras en omelette + vegetales + 1 arepa pequeña (350 kcal | 28g P | 25g C | 14g G)"
+        "Tilapia 170g + papa cocida 150g + vegetales salteados (500 kcal | 42g P | 47g C | 12g G)",
+        "Salmón 150g + arroz integral 1/2 taza + brócoli al vapor (490 kcal | 38g P | 35g C | 16g G)",
+        "Pollo a la plancha 170g + yuca 150g + ensalada verde (480 kcal | 44g P | 42g C | 8g G)",
+        "Omelette 3 huevos + vegetales + 1 arepa + queso (470 kcal | 32g P | 30g C | 22g G)"
       ]
     }
   ],
   "hidratacion": {
     "agua_minima_litros": 2.5,
-    "electrolitos": "Pizca de sal rosada en el agua de entrenamiento si la sesión pasa de 1 hora. Agua de coco post-entreno es buena opción natural."
+    "electrolitos": "Pizca de sal rosada en el agua de entrenamiento si la sesión pasa de 1 hora."
   },
-  "notas_coach": "Julie, este plan está calculado para tu nivel de actividad (6 días/semana). Las 1800 kcal son un déficit moderado que te permite perder grasa sin perder fuerza. La proteína alta (130g) protege tu músculo mientras quemas grasa. Las comidas sugeridas te dan opciones para no aburrirte — elige la que más te guste cada día. Si algún día no entrenas, baja la porción de carbohidratos del pre-entreno a la mitad."
+  "notas_coach": "Julie, este plan tiene 4 comidas distribuidas para tu rutina. Las 1800 kcal son un déficit moderado que te permite perder grasa sin perder fuerza. La media tarde te da energía para entrenar. Si algún día no entrenas, puedes reducir la porción de carbohidratos de la media tarde a la mitad."
 }
