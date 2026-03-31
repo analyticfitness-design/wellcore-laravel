@@ -128,7 +128,7 @@
 
             <div class="relative z-10 px-6 pb-6 pt-8">
                 {{-- Title --}}
-                <h3 class="text-center font-display text-sm tracking-[0.2em] text-white/50 mb-6">DESCANSO</h3>
+                <h3 class="text-center font-display text-sm tracking-[0.2em] text-white/80 mb-6">DESCANSO</h3>
 
                 {{-- Circular Timer --}}
                 <div class="relative mx-auto h-56 w-56">
@@ -199,7 +199,7 @@
                             class="rounded-full px-3.5 py-2 text-xs font-bold tracking-wide transition-all"
                             :class="duration === preset
                                 ? 'bg-wc-accent text-white shadow-md shadow-wc-accent/20'
-                                : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08] hover:text-white/70 border border-white/[0.06]'"
+                                : 'bg-white/[0.08] text-white/60 hover:bg-white/[0.12] hover:text-white/80 border border-white/[0.10]'"
                             x-text="preset >= 120 ? (preset/60) + 'min' : preset + 's'">
                         </button>
                     </template>
