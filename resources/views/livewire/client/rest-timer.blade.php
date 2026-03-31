@@ -114,6 +114,7 @@
 
         {{-- Timer Card --}}
         <div class="relative mx-4 w-full max-w-sm overflow-hidden rounded-3xl border border-white/[0.06] shadow-2xl"
+             @click.stop
              style="background: linear-gradient(170deg, #111113 0%, #0d0d0f 50%, #111113 100%);">
 
             {{-- Decorative glow --}}
@@ -121,8 +122,8 @@
                  :style="remaining <= 0 ? 'background: radial-gradient(circle, rgba(34,197,94,0.15) 0%, transparent 70%)' : 'background: radial-gradient(circle, rgba(220,38,38,0.12) 0%, transparent 70%)'"></div>
 
             {{-- Close button --}}
-            <button @click="closeTimer()" class="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/70 transition-all" aria-label="Cerrar">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            <button @click.stop="closeTimer()" type="button" class="absolute right-3 top-3 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white/60 hover:bg-white/20 hover:text-white active:scale-95 transition-all" aria-label="Cerrar timer">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
 
             <div class="relative z-10 px-6 pb-6 pt-8">
