@@ -4,7 +4,9 @@ namespace App\Livewire\Admin;
 
 use App\Enums\ClientStatus;
 use App\Enums\UserRole;
+use App\Models\AuthToken;
 use App\Models\Client;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -199,7 +201,14 @@ class ClientTable extends Component
 
     public function render()
     {
-        $query = Client::query();
+        $query = Client::query()
+            ->addSelect([
+                'last_login_at' => AuthToken::select('created_at')
+                    ->whereColumn('user_id', 'clients.id')
+                    ->where('user_type', 'client')
+                    ->latest('created_at')
+                    ->limit(1),
+            ]);
 
         // Search
         if ($this->search !== '') {

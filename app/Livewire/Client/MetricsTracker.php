@@ -25,6 +25,22 @@ class MetricsTracker extends Component
     #[Validate('nullable|string|max:500')]
     public string $notas = '';
 
+    // Body measurements
+    #[Validate('nullable|numeric|min:30|max:200')]
+    public string $chest = '';
+
+    #[Validate('nullable|numeric|min:30|max:200')]
+    public string $waist = '';
+
+    #[Validate('nullable|numeric|min:30|max:200')]
+    public string $hip = '';
+
+    #[Validate('nullable|numeric|min:20|max:100')]
+    public string $thigh = '';
+
+    #[Validate('nullable|numeric|min:15|max:60')]
+    public string $arm = '';
+
     public bool $showSuccess = false;
 
     /** Saved value displayed in the success overlay after form reset */
@@ -64,21 +80,25 @@ class MetricsTracker extends Component
             ]
         );
 
-        // Sync weight to biometric_logs so Dashboard reads the same value
-        if ((float) $this->peso > 0) {
-            BiometricLog::updateOrCreate(
-                [
-                    'client_id' => $clientId,
-                    'log_date'  => $logDate,
-                ],
-                ['weight_kg' => (float) $this->peso]
-            );
-        }
+        // Sync to biometric_logs (weight + body measurements)
+        $bioData = ['weight_kg' => (float) $this->peso > 0 ? (float) $this->peso : null];
+        if ($this->porcentajeGrasa !== '') $bioData['body_fat_pct'] = (float) $this->porcentajeGrasa;
+        if ($this->porcentajeMusculo !== '') $bioData['muscle_pct'] = (float) $this->porcentajeMusculo;
+        if ($this->chest !== '') $bioData['chest_cm'] = (float) $this->chest;
+        if ($this->waist !== '') $bioData['waist_cm'] = (float) $this->waist;
+        if ($this->hip !== '') $bioData['hip_cm'] = (float) $this->hip;
+        if ($this->thigh !== '') $bioData['thigh_cm'] = (float) $this->thigh;
+        if ($this->arm !== '') $bioData['arm_cm'] = (float) $this->arm;
+
+        BiometricLog::updateOrCreate(
+            ['client_id' => $clientId, 'log_date' => $logDate],
+            $bioData
+        );
 
         // Capture peso for the overlay before resetting the form
         $this->lastPeso = $this->peso;
 
-        $this->reset(['peso', 'porcentajeMusculo', 'porcentajeGrasa', 'notas']);
+        $this->reset(['peso', 'porcentajeMusculo', 'porcentajeGrasa', 'notas', 'chest', 'waist', 'hip', 'thigh', 'arm']);
         $this->showSuccess = true;
     }
 

@@ -214,6 +214,9 @@
                                 @endif
                             </button>
                         </th>
+                        <th class="px-4 py-3 text-left">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Ultima sesion</span>
+                        </th>
                         <th class="px-4 py-3 text-right">
                             <span class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Acciones</span>
                         </th>
@@ -285,6 +288,25 @@
                             {{-- Fecha inicio --}}
                             <td class="px-4 py-3">
                                 <span class="font-data text-xs text-wc-text-secondary">{{ $client->fecha_inicio?->format('d/m/Y') ?? '-' }}</span>
+                            </td>
+
+                            {{-- Última sesión --}}
+                            <td class="px-4 py-3">
+                                @php
+                                    $lastLogin = $client->last_login_at ? \Carbon\Carbon::parse($client->last_login_at) : null;
+                                    $isOnline = $lastLogin && $lastLogin->diffInMinutes(now()) < 15;
+                                    $isRecent = $lastLogin && $lastLogin->diffInHours(now()) < 24;
+                                @endphp
+                                @if($lastLogin)
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="h-2 w-2 shrink-0 rounded-full {{ $isOnline ? 'bg-emerald-400 shadow-sm shadow-emerald-400/50' : ($isRecent ? 'bg-amber-400' : 'bg-wc-text-tertiary/30') }}"></span>
+                                        <span class="font-data text-[11px] {{ $isOnline ? 'text-emerald-400 font-semibold' : 'text-wc-text-tertiary' }}">
+                                            {{ $isOnline ? 'Online' : $lastLogin->locale('es')->diffForHumans() }}
+                                        </span>
+                                    </div>
+                                @else
+                                    <span class="text-xs text-wc-text-tertiary">-</span>
+                                @endif
                             </td>
 
                             {{-- Actions --}}

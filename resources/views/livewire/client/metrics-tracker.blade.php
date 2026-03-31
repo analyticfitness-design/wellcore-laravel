@@ -116,6 +116,72 @@
             </div>
         </div>
 
+        {{-- Body Measurements Section --}}
+        <div class="mt-6 border-t border-wc-border pt-5">
+            <div class="mb-4 flex items-center gap-3">
+                <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
+                    <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-wider text-wc-text-secondary">Mediciones corporales</h3>
+                    <p class="text-xs text-wc-text-tertiary">Mide con cinta metrica flexible, en la manana</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                {{-- Pecho --}}
+                <div>
+                    <label for="chest" class="mb-1 block text-xs font-medium text-wc-text">Pecho (cm)</label>
+                    <input type="number" id="chest" wire:model="chest" step="0.1" min="30" max="200" placeholder="95.0"
+                        class="w-full rounded-[--radius-button] border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
+                </div>
+                {{-- Cintura --}}
+                <div>
+                    <label for="waist" class="mb-1 block text-xs font-medium text-wc-text">Cintura (cm)</label>
+                    <input type="number" id="waist" wire:model="waist" step="0.1" min="30" max="200" placeholder="80.0"
+                        class="w-full rounded-[--radius-button] border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
+                </div>
+                {{-- Cadera --}}
+                <div>
+                    <label for="hip" class="mb-1 block text-xs font-medium text-wc-text">Cadera (cm)</label>
+                    <input type="number" id="hip" wire:model="hip" step="0.1" min="30" max="200" placeholder="95.0"
+                        class="w-full rounded-[--radius-button] border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
+                </div>
+                {{-- Muslo --}}
+                <div>
+                    <label for="thigh" class="mb-1 block text-xs font-medium text-wc-text">Muslo (cm)</label>
+                    <input type="number" id="thigh" wire:model="thigh" step="0.1" min="20" max="100" placeholder="55.0"
+                        class="w-full rounded-[--radius-button] border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
+                </div>
+                {{-- Brazo --}}
+                <div>
+                    <label for="arm" class="mb-1 block text-xs font-medium text-wc-text">Brazo (cm)</label>
+                    <input type="number" id="arm" wire:model="arm" step="0.1" min="15" max="60" placeholder="32.0"
+                        class="w-full rounded-[--radius-button] border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
+                </div>
+            </div>
+
+            {{-- Measurement guide --}}
+            <div class="mt-4 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4" x-data="{ showGuide: false }">
+                <button @click="showGuide = !showGuide" type="button" class="flex w-full items-center justify-between text-left">
+                    <span class="text-xs font-semibold text-amber-400">Como tomar las mediciones correctamente</span>
+                    <svg class="h-4 w-4 text-amber-400 transition-transform" :class="showGuide && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+                <div x-show="showGuide" x-collapse class="mt-3 space-y-2 text-xs text-wc-text-secondary">
+                    <p><strong class="text-wc-text">Pecho:</strong> Cinta alrededor del torso a la altura de los pezones. Brazos relajados a los lados. No inflar el pecho.</p>
+                    <p><strong class="text-wc-text">Cintura:</strong> En el punto mas estrecho del abdomen, generalmente 2-3 cm arriba del ombligo. Medir al exhalar normalmente.</p>
+                    <p><strong class="text-wc-text">Cadera:</strong> En el punto mas ancho de los gluteos. Pies juntos, de pie recto.</p>
+                    <p><strong class="text-wc-text">Muslo:</strong> En el punto mas grueso del muslo, generalmente justo debajo del gluteo. Pierna relajada sin flexionar.</p>
+                    <p><strong class="text-wc-text">Brazo:</strong> Brazo relajado a un lado. Medir en el punto mas grueso del biceps sin flexionar.</p>
+                    <p class="mt-2 text-amber-400/70">Medir siempre en las mismas condiciones: por la manana, antes de comer, mismo lado del cuerpo.</p>
+                </div>
+            </div>
+        </div>
+
         <div class="mt-5">
             <button
                 type="submit"

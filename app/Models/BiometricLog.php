@@ -18,6 +18,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'body_fat_pct',
     'waist_cm',
     'hip_cm',
+    'chest_cm',
+    'thigh_cm',
+    'arm_cm',
+    'muscle_pct',
     'energy_level',
     'notes',
 ])]
@@ -36,6 +40,10 @@ class BiometricLog extends Model
             'body_fat_pct' => 'decimal:1',
             'waist_cm' => 'decimal:1',
             'hip_cm' => 'decimal:1',
+            'chest_cm' => 'decimal:1',
+            'thigh_cm' => 'decimal:1',
+            'arm_cm' => 'decimal:1',
+            'muscle_pct' => 'decimal:1',
         ];
     }
 
