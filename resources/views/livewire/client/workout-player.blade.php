@@ -103,6 +103,24 @@
                 </div>
             </div>
 
+            {{-- Warmup card (pre-workout) --}}
+            @php $dayWarmup = $days[$currentDayIndex]['calentamiento'] ?? $days[$currentDayIndex]['warmup'] ?? null; @endphp
+            @if($dayWarmup)
+                <div class="overflow-hidden rounded-2xl border border-amber-500/25 bg-gradient-to-br from-amber-500/8 via-amber-400/4 to-transparent">
+                    <div class="flex items-start gap-3 px-4 py-4">
+                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/15">
+                            <svg class="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="font-display text-sm tracking-wide text-amber-400">CALENTAMIENTO</p>
+                            <p class="mt-1 text-sm leading-relaxed text-wc-text-secondary">{{ $dayWarmup }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             {{-- Exercise preview cards --}}
             @foreach($exercises as $exIndex => $exercise)
                 @php
@@ -307,6 +325,19 @@
                     ></div>
                 </div>
             </div>
+
+            {{-- Warmup reminder (during workout) --}}
+            @if($dayWarmup ?? false)
+                <div class="rounded-xl border border-amber-500/20 bg-amber-500/5 px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <svg class="h-4 w-4 text-amber-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+                        </svg>
+                        <span class="text-xs font-semibold text-amber-400">Calentamiento:</span>
+                        <span class="text-xs text-wc-text-secondary">{{ $dayWarmup }}</span>
+                    </div>
+                </div>
+            @endif
 
             {{-- Exercise cards --}}
             @foreach($exercises as $exIndex => $exercise)
