@@ -1,0 +1,299 @@
+{
+  "plan_entrenamiento": {
+    "duracion_semanas": 4,
+    "objetivo": "Recomposición corporal: tonificación de glúteos, piernas y tren superior. 5 días/semana con 15 min de cardio variado cada sesión. Progresión por volumen semanal.",
+    "frecuencia": "5 dias/semana (Lun-Vie) + 15 min cardio diario",
+    "semanas": [
+      {
+        "numero": 1,
+        "fase": "Volumen Base — Adaptación",
+        "dias": [
+          {
+            "nombre": "Lunes — Glúteo + Cuádriceps + Abs",
+            "tipo": "piernas",
+            "duracion": "1h 15min (1h pesas + 15min cardio)",
+            "calentamiento": "5 min caminadora inclinada + 2x15 sentadilla sin peso + activación glúteo con banda",
+            "ejercicios": [
+              {"nombre": "Hip Thrust con barra o mancuerna", "series": 4, "repeticiones": "12-15", "descanso": "90s", "rir": 3, "notas": "Aprieta glúteos 2 seg arriba. Pies a ancho de cadera. Controla la bajada 2 seg."},
+              {"nombre": "Sentadilla Goblet con mancuerna", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 3, "notas": "Profunda. Torso vertical para enfatizar cuádriceps. Rodillas siguen pies."},
+              {"nombre": "Prensa de pierna", "series": 3, "repeticiones": "12-15", "descanso": "90s", "rir": 3, "notas": "Pies a ancho de hombros, parte media de la plataforma. Baja hasta 90° de rodilla."},
+              {"nombre": "Extensión de cuádriceps en máquina", "series": 3, "repeticiones": "12-15", "descanso": "60s", "rir": 3, "notas": "Aprieta arriba 1 seg. Control en la bajada. Aislamiento puro de cuádriceps."},
+              {"nombre": "Zancada reversa con mancuernas", "series": 3, "repeticiones": "10 c/pierna", "descanso": "90s", "rir": 3, "notas": "Paso atrás controlado. Tronco erguido. Empuja con talón delantero."},
+              {"nombre": "Patada de glúteo en polea baja", "series": 3, "repeticiones": "12 c/pierna", "descanso": "60s", "rir": 3, "notas": "Sin arquear la espalda. Aprieta glúteo arriba 1 seg."},
+              {"nombre": "Crunch en máquina o polea", "series": 3, "repeticiones": "15-20", "descanso": "45s", "rir": 3, "notas": "Exhala al contraer. Sin jalar el cuello."},
+              {"nombre": "Plancha frontal", "series": 3, "repeticiones": "30 seg", "descanso": "45s", "rir": 3, "notas": "Cuerpo recto. Ombligo adentro. Respira continuo."}
+            ],
+            "vuelta_calma": "15 min cardio: caminadora inclinación 5%, velocidad 5.5 km/h (quema grasa zona 2)"
+          },
+          {
+            "nombre": "Martes — Tren Superior (Espalda + Brazos)",
+            "tipo": "jale",
+            "duracion": "1h 15min (1h pesas + 15min cardio)",
+            "calentamiento": "5 min elíptica + movilidad hombros + 2x12 jalón ligero",
+            "ejercicios": [
+              {"nombre": "Jalón al pecho en polea alta", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 3, "notas": "Agarre ancho. Junta omóplatos abajo. Ligera inclinación atrás."},
+              {"nombre": "Remo con mancuerna 1 brazo", "series": 3, "repeticiones": "10-12 c/lado", "descanso": "60s", "rir": 3, "notas": "Rodilla y mano en banco. Codo hacia la cadera. Espalda paralela."},
+              {"nombre": "Remo sentado en polea baja", "series": 3, "repeticiones": "10-12", "descanso": "90s", "rir": 3, "notas": "Pecho fuera. Codos hacia atrás. Sin inercia."},
+              {"nombre": "Face pull en polea alta", "series": 3, "repeticiones": "15", "descanso": "60s", "rir": 3, "notas": "Jala hacia la cara. Rotación externa al final. Excelente para postura."},
+              {"nombre": "Curl de bíceps alterno con mancuernas", "series": 3, "repeticiones": "12 c/brazo", "descanso": "60s", "rir": 3, "notas": "Codos fijos. Supina al subir. Sin impulso."},
+              {"nombre": "Extensión de tríceps en polea alta con cuerda", "series": 3, "repeticiones": "12-15", "descanso": "60s", "rir": 3, "notas": "Codos pegados. Separa la cuerda al final. Tensión constante."},
+              {"nombre": "Curl martillo con mancuernas", "series": 3, "repeticiones": "10-12", "descanso": "60s", "rir": 3, "notas": "Agarre neutro. Da grosor al brazo. Codos fijos."}
+            ],
+            "vuelta_calma": "15 min cardio: elíptica resistencia media, FC 120-140 bpm"
+          },
+          {
+            "nombre": "Miércoles — Glúteo + Abs",
+            "tipo": "piernas",
+            "duracion": "1h 15min (1h pesas + 15min cardio)",
+            "calentamiento": "5 min bicicleta + activación glúteo con banda (2x15 abducción + 2x15 puente)",
+            "ejercicios": [
+              {"nombre": "Hip Thrust con barra o mancuerna", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 3, "notas": "Segundo día de hip thrust. Puedes subir peso vs lunes. Pausa 2 seg arriba."},
+              {"nombre": "Sentadilla sumo con mancuerna", "series": 3, "repeticiones": "12-15", "descanso": "90s", "rir": 3, "notas": "Pies abiertos, puntas 45° afuera. Activa glúteos y aductores."},
+              {"nombre": "Abductora en máquina", "series": 3, "repeticiones": "15-20", "descanso": "60s", "rir": 3, "notas": "Inclinada ligeramente al frente activa más glúteo medio."},
+              {"nombre": "Kickback de glúteo en máquina o polea", "series": 3, "repeticiones": "12-15 c/pierna", "descanso": "60s", "rir": 3, "notas": "Pierna recta atrás. Aprieta glúteo arriba. Sin arquear lumbar."},
+              {"nombre": "Puente de glúteo con banda", "series": 3, "repeticiones": "20", "descanso": "45s", "rir": 3, "notas": "Banda arriba de rodillas. Finisher para quemar el glúteo."},
+              {"nombre": "Crunch en banco declinado", "series": 3, "repeticiones": "15-20", "descanso": "45s", "rir": 3, "notas": "Manos cruzadas al pecho. Exhala al subir."},
+              {"nombre": "Elevación de piernas en banco o colgada", "series": 3, "repeticiones": "12-15", "descanso": "45s", "rir": 3, "notas": "Piernas juntas. Control en la bajada. Abs inferior."},
+              {"nombre": "Dead Bug", "series": 3, "repeticiones": "8 c/lado", "descanso": "45s", "rir": 3, "notas": "Espalda pegada al suelo. Baja brazo y pierna opuestos lento (4 seg). Core profundo."}
+            ],
+            "vuelta_calma": "15 min cardio: HIIT en bicicleta (30s sprint / 60s recuperación × 8 rondas) + 3 min cool down"
+          },
+          {
+            "nombre": "Jueves — Espalda + Hombros",
+            "tipo": "empuje",
+            "duracion": "1h 15min (1h pesas + 15min cardio)",
+            "calentamiento": "5 min remo o elíptica + movilidad hombros + rotaciones con banda",
+            "ejercicios": [
+              {"nombre": "Press mancuernas sentada en banco", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 3, "notas": "Banco a 80-90°. Mancuernas a altura hombros. Empuja sin arquear."},
+              {"nombre": "Elevaciones laterales con mancuernas", "series": 4, "repeticiones": "12-15", "descanso": "60s", "rir": 3, "notas": "Ligera inclinación. Pulgares abajo. Peso ligero, técnica perfecta."},
+              {"nombre": "Remo con barra o mancuernas", "series": 3, "repeticiones": "10-12", "descanso": "90s", "rir": 3, "notas": "Inclinada 45°. Codos hacia la cadera. Junta omóplatos."},
+              {"nombre": "Pájaro con mancuernas inclinada", "series": 3, "repeticiones": "12-15", "descanso": "60s", "rir": 3, "notas": "Deltoides posterior + romboides. Brazos laterales."},
+              {"nombre": "Pullover con mancuerna en banco", "series": 3, "repeticiones": "12", "descanso": "60s", "rir": 3, "notas": "Estiramiento profundo del dorsal. Brazos casi rectos."},
+              {"nombre": "Elevación frontal alterna con mancuernas", "series": 3, "repeticiones": "10 c/brazo", "descanso": "45s", "rir": 3, "notas": "Sube hasta altura de hombros. Control. Deltoides anterior."},
+              {"nombre": "Encogimientos con mancuernas (trapecios)", "series": 3, "repeticiones": "12-15", "descanso": "45s", "rir": 3, "notas": "Sube hombros hacia orejas. Pausa arriba 2 seg."}
+            ],
+            "vuelta_calma": "15 min cardio: caminadora inclinación 6%, velocidad 5.5 km/h"
+          },
+          {
+            "nombre": "Viernes — Femoral + Patadas de Glúteo + Abs",
+            "tipo": "piernas",
+            "duracion": "1h 15min (1h pesas + 15min cardio)",
+            "calentamiento": "5 min caminadora + good morning sin peso + activación glúteo con banda",
+            "ejercicios": [
+              {"nombre": "Romanian Deadlift con barra o mancuernas", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 3, "notas": "Rodillas ligeramente flexionadas. Empuja cadera atrás. Espalda recta. Siente isquiotibiales."},
+              {"nombre": "Curl femoral acostada en máquina", "series": 4, "repeticiones": "12-15", "descanso": "60s", "rir": 3, "notas": "Aprieta glúteos al flexionar. No levantes la cadera. Control completo."},
+              {"nombre": "Patada de glúteo en máquina o polea", "series": 4, "repeticiones": "12-15 c/pierna", "descanso": "60s", "rir": 3, "notas": "Este es tu día fuerte de patadas. 4 series completas."},
+              {"nombre": "Good morning con barra o mancuerna", "series": 3, "repeticiones": "12", "descanso": "60s", "rir": 3, "notas": "Inclina desde la cadera. Siente estiramiento en isquiotibiales."},
+              {"nombre": "Clamshell con banda", "series": 3, "repeticiones": "20 c/lado", "descanso": "45s", "rir": 3, "notas": "Caderas a 90°. Abre rodilla como almeja. Glúteo medio."},
+              {"nombre": "Abducción de cadera con banda de pie", "series": 3, "repeticiones": "15 c/pierna", "descanso": "45s", "rir": 3, "notas": "De pie contra pared. Pierna lateral 45°. Glúteo medio."},
+              {"nombre": "Crunch con polea alta", "series": 3, "repeticiones": "15", "descanso": "45s", "rir": 3, "notas": "De rodillas. Cuerda detrás de la cabeza. Flexiona tronco."},
+              {"nombre": "Plancha lateral", "series": 3, "repeticiones": "20 seg c/lado", "descanso": "45s", "rir": 3, "notas": "Cuerpo recto. Cadera arriba. Oblicuos + core lateral."}
+            ],
+            "vuelta_calma": "15 min cardio: elíptica o escaladora resistencia baja (recuperación activa)"
+          }
+        ]
+      },
+      {
+        "numero": 2,
+        "fase": "Volumen Incrementado — +1 serie, tempo eccéntrico",
+        "dias": [
+          {"nombre": "Lunes — Glúteo + Cuádriceps + Abs", "tipo": "piernas", "duracion": "1h 15min", "calentamiento": "5 min caminadora + activación glúteo", "ejercicios": [
+            {"nombre": "Hip Thrust con barra o mancuerna", "series": 4, "repeticiones": "12-15", "descanso": "90s", "rir": 2, "notas": "Más peso. Eccéntrica 3 seg bajando."},
+            {"nombre": "Sentadilla Goblet con mancuerna", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 2, "notas": "Más peso. Pausa 1 seg abajo."},
+            {"nombre": "Prensa de pierna", "series": 4, "repeticiones": "12-15", "descanso": "90s", "rir": 2, "notas": "+1 serie. Más peso."},
+            {"nombre": "Extensión de cuádriceps", "series": 3, "repeticiones": "12-15", "descanso": "60s", "rir": 2, "notas": "Más peso. Pausa isométrica 2 seg arriba."},
+            {"nombre": "Zancada reversa con mancuernas", "series": 3, "repeticiones": "10 c/pierna", "descanso": "90s", "rir": 2, "notas": "Más peso."},
+            {"nombre": "Patada de glúteo en polea", "series": 4, "repeticiones": "12 c/pierna", "descanso": "60s", "rir": 2, "notas": "+1 serie. Más peso."},
+            {"nombre": "Crunch en máquina o polea", "series": 3, "repeticiones": "15-20", "descanso": "45s", "rir": 2, "notas": "Agrega peso si es fácil."},
+            {"nombre": "Plancha frontal", "series": 3, "repeticiones": "35 seg", "descanso": "45s", "rir": 2, "notas": "+5 seg."}
+          ], "vuelta_calma": "15 min cardio: caminadora inclinación 6%"},
+          {"nombre": "Martes — Tren Superior (Espalda + Brazos)", "tipo": "jale", "duracion": "1h 15min", "calentamiento": "5 min elíptica + movilidad", "ejercicios": [
+            {"nombre": "Jalón al pecho en polea alta", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 2, "notas": "Más peso. Eccéntrica 3 seg."},
+            {"nombre": "Remo con mancuerna 1 brazo", "series": 4, "repeticiones": "10-12 c/lado", "descanso": "60s", "rir": 2, "notas": "+1 serie. Más peso."},
+            {"nombre": "Remo sentado en polea baja", "series": 3, "repeticiones": "10-12", "descanso": "90s", "rir": 2, "notas": "Más peso."},
+            {"nombre": "Face pull", "series": 3, "repeticiones": "15", "descanso": "60s", "rir": 2, "notas": "Más peso."},
+            {"nombre": "Curl de bíceps alterno", "series": 3, "repeticiones": "12 c/brazo", "descanso": "60s", "rir": 2, "notas": "Más peso. Eccéntrica 3 seg."},
+            {"nombre": "Extensión de tríceps en polea", "series": 4, "repeticiones": "12-15", "descanso": "60s", "rir": 2, "notas": "+1 serie."},
+            {"nombre": "Curl martillo", "series": 3, "repeticiones": "10-12", "descanso": "60s", "rir": 2, "notas": "Más peso."}
+          ], "vuelta_calma": "15 min cardio: escaladora resistencia media"},
+          {"nombre": "Miércoles — Glúteo + Abs", "tipo": "piernas", "duracion": "1h 15min", "calentamiento": "5 min bicicleta + activación glúteo", "ejercicios": [
+            {"nombre": "Hip Thrust con barra o mancuerna", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 2, "notas": "Más peso. Pausa 2 seg arriba."},
+            {"nombre": "Sentadilla sumo", "series": 4, "repeticiones": "12-15", "descanso": "90s", "rir": 2, "notas": "+1 serie. Más peso."},
+            {"nombre": "Abductora en máquina", "series": 4, "repeticiones": "15-20", "descanso": "60s", "rir": 2, "notas": "+1 serie. Inclinada al frente."},
+            {"nombre": "Kickback de glúteo", "series": 3, "repeticiones": "12-15 c/pierna", "descanso": "60s", "rir": 2, "notas": "Más peso."},
+            {"nombre": "Puente de glúteo con banda", "series": 3, "repeticiones": "20", "descanso": "45s", "rir": 2, "notas": "Banda más gruesa."},
+            {"nombre": "Crunch en banco declinado", "series": 3, "repeticiones": "15-20", "descanso": "45s", "rir": 2, "notas": "Con mancuerna ligera al pecho si es fácil."},
+            {"nombre": "Elevación de piernas", "series": 3, "repeticiones": "12-15", "descanso": "45s", "rir": 2, "notas": "Más lento."},
+            {"nombre": "Dead Bug", "series": 3, "repeticiones": "10 c/lado", "descanso": "45s", "rir": 2, "notas": "+2 reps c/lado."}
+          ], "vuelta_calma": "15 min cardio: HIIT bicicleta (30s/60s × 10 rondas)"},
+          {"nombre": "Jueves — Espalda + Hombros", "tipo": "empuje", "duracion": "1h 15min", "calentamiento": "5 min remo + movilidad", "ejercicios": [
+            {"nombre": "Press mancuernas sentada", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 2, "notas": "Más peso."},
+            {"nombre": "Elevaciones laterales", "series": 4, "repeticiones": "12-15", "descanso": "60s", "rir": 2, "notas": "Más peso. Último set: drop set."},
+            {"nombre": "Remo con barra o mancuernas", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 2, "notas": "+1 serie."},
+            {"nombre": "Pájaro inclinada", "series": 3, "repeticiones": "12-15", "descanso": "60s", "rir": 2, "notas": "Más peso."},
+            {"nombre": "Pullover", "series": 3, "repeticiones": "12", "descanso": "60s", "rir": 2, "notas": "Más peso."},
+            {"nombre": "Elevación frontal alterna", "series": 3, "repeticiones": "10 c/brazo", "descanso": "45s", "rir": 2, "notas": "Más peso."},
+            {"nombre": "Encogimientos", "series": 3, "repeticiones": "12-15", "descanso": "45s", "rir": 2, "notas": "Pausa 3 seg arriba."}
+          ], "vuelta_calma": "15 min cardio: caminadora inclinación 6%"},
+          {"nombre": "Viernes — Femoral + Patadas de Glúteo + Abs", "tipo": "piernas", "duracion": "1h 15min", "calentamiento": "5 min caminadora + activación", "ejercicios": [
+            {"nombre": "Romanian Deadlift", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 2, "notas": "Más peso. Eccéntrica 3 seg."},
+            {"nombre": "Curl femoral acostada", "series": 4, "repeticiones": "12-15", "descanso": "60s", "rir": 2, "notas": "Más peso."},
+            {"nombre": "Patada de glúteo", "series": 4, "repeticiones": "12-15 c/pierna", "descanso": "60s", "rir": 2, "notas": "Más peso."},
+            {"nombre": "Good morning", "series": 3, "repeticiones": "12", "descanso": "60s", "rir": 2, "notas": "Más peso."},
+            {"nombre": "Clamshell con banda", "series": 3, "repeticiones": "20 c/lado", "descanso": "45s", "rir": 2, "notas": "Pausa 2 seg arriba."},
+            {"nombre": "Abducción de cadera de pie", "series": 3, "repeticiones": "15 c/pierna", "descanso": "45s", "rir": 2, "notas": "Banda más gruesa."},
+            {"nombre": "Crunch con polea", "series": 3, "repeticiones": "15", "descanso": "45s", "rir": 2, "notas": "Más peso."},
+            {"nombre": "Plancha lateral", "series": 3, "repeticiones": "25 seg c/lado", "descanso": "45s", "rir": 2, "notas": "+5 seg."}
+          ], "vuelta_calma": "15 min cardio: elíptica"}
+        ]
+      },
+      {
+        "numero": 3,
+        "fase": "Volumen Máximo — Drop sets selectivos",
+        "dias": [
+          {"nombre": "Lunes — Glúteo + Cuádriceps + Abs", "tipo": "piernas", "duracion": "1h 15min", "calentamiento": "5 min caminadora + activación", "ejercicios": [
+            {"nombre": "Hip Thrust", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 1, "notas": "Peso máximo. Último set: drop set (-30%, 8-10 reps más)."},
+            {"nombre": "Sentadilla Goblet", "series": 4, "repeticiones": "8-10", "descanso": "120s", "rir": 1, "notas": "Peso máximo. Pausa 2 seg abajo."},
+            {"nombre": "Prensa de pierna", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 1, "notas": "Peso máximo."},
+            {"nombre": "Extensión de cuádriceps", "series": 4, "repeticiones": "12", "descanso": "60s", "rir": 1, "notas": "+1 serie. Drop set último set."},
+            {"nombre": "Zancada reversa", "series": 4, "repeticiones": "10 c/pierna", "descanso": "90s", "rir": 1, "notas": "+1 serie. Más peso."},
+            {"nombre": "Patada de glúteo", "series": 4, "repeticiones": "12 c/pierna", "descanso": "60s", "rir": 1, "notas": "Más peso."},
+            {"nombre": "Crunch", "series": 3, "repeticiones": "15-20", "descanso": "45s", "rir": 1, "notas": "Con peso."},
+            {"nombre": "Plancha frontal", "series": 3, "repeticiones": "40 seg", "descanso": "45s", "rir": 1, "notas": "Máxima duración."}
+          ], "vuelta_calma": "15 min cardio: caminadora inclinación 7%"},
+          {"nombre": "Martes — Tren Superior", "tipo": "jale", "duracion": "1h 15min", "calentamiento": "5 min elíptica", "ejercicios": [
+            {"nombre": "Jalón al pecho", "series": 4, "repeticiones": "8-10", "descanso": "90s", "rir": 1, "notas": "Peso máximo."},
+            {"nombre": "Remo con mancuerna 1 brazo", "series": 4, "repeticiones": "8-10 c/lado", "descanso": "60s", "rir": 1, "notas": "Peso máximo. Eccéntrica 3 seg."},
+            {"nombre": "Remo sentado en polea", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 1, "notas": "+1 serie. Drop set último set."},
+            {"nombre": "Face pull", "series": 4, "repeticiones": "15", "descanso": "60s", "rir": 1, "notas": "+1 serie."},
+            {"nombre": "Curl de bíceps", "series": 4, "repeticiones": "10 c/brazo", "descanso": "60s", "rir": 1, "notas": "+1 serie. Drop set último set."},
+            {"nombre": "Extensión de tríceps", "series": 4, "repeticiones": "12-15", "descanso": "60s", "rir": 1, "notas": "Drop set último set."},
+            {"nombre": "Curl martillo", "series": 3, "repeticiones": "10-12", "descanso": "60s", "rir": 1, "notas": "Más peso."}
+          ], "vuelta_calma": "15 min cardio: escaladora alta intensidad"},
+          {"nombre": "Miércoles — Glúteo + Abs", "tipo": "piernas", "duracion": "1h 15min", "calentamiento": "5 min bicicleta + activación", "ejercicios": [
+            {"nombre": "Hip Thrust", "series": 5, "repeticiones": "10-12", "descanso": "90s", "rir": 1, "notas": "+1 serie. Peso máximo. Drop set último set."},
+            {"nombre": "Sentadilla sumo", "series": 4, "repeticiones": "12-15", "descanso": "90s", "rir": 1, "notas": "Más peso."},
+            {"nombre": "Abductora", "series": 4, "repeticiones": "15-20", "descanso": "60s", "rir": 1, "notas": "Drop set último set."},
+            {"nombre": "Kickback de glúteo", "series": 4, "repeticiones": "12 c/pierna", "descanso": "60s", "rir": 1, "notas": "+1 serie. Más peso."},
+            {"nombre": "Puente de glúteo con banda", "series": 4, "repeticiones": "20", "descanso": "45s", "rir": 1, "notas": "+1 serie. Banda gruesa."},
+            {"nombre": "Crunch declinado", "series": 3, "repeticiones": "15-20", "descanso": "45s", "rir": 1, "notas": "Con peso."},
+            {"nombre": "Elevación de piernas", "series": 3, "repeticiones": "15", "descanso": "45s", "rir": 1, "notas": "Lento."},
+            {"nombre": "Dead Bug", "series": 3, "repeticiones": "12 c/lado", "descanso": "45s", "rir": 1, "notas": "+4 reps."}
+          ], "vuelta_calma": "15 min cardio: HIIT bicicleta (25s/50s × 12 rondas)"},
+          {"nombre": "Jueves — Espalda + Hombros", "tipo": "empuje", "duracion": "1h 15min", "calentamiento": "5 min remo", "ejercicios": [
+            {"nombre": "Press mancuernas sentada", "series": 4, "repeticiones": "8-10", "descanso": "90s", "rir": 1, "notas": "Peso máximo."},
+            {"nombre": "Elevaciones laterales", "series": 4, "repeticiones": "12-15", "descanso": "60s", "rir": 1, "notas": "Drop set + partial reps último set."},
+            {"nombre": "Remo", "series": 4, "repeticiones": "8-10", "descanso": "90s", "rir": 1, "notas": "Peso máximo."},
+            {"nombre": "Pájaro inclinada", "series": 4, "repeticiones": "12-15", "descanso": "60s", "rir": 1, "notas": "+1 serie."},
+            {"nombre": "Pullover", "series": 3, "repeticiones": "10-12", "descanso": "60s", "rir": 1, "notas": "Más peso."},
+            {"nombre": "Elevación frontal", "series": 3, "repeticiones": "10 c/brazo", "descanso": "45s", "rir": 1, "notas": "Más peso."},
+            {"nombre": "Encogimientos", "series": 3, "repeticiones": "15", "descanso": "45s", "rir": 1, "notas": "Pausa 3 seg."}
+          ], "vuelta_calma": "15 min cardio: caminadora inclinación 7%"},
+          {"nombre": "Viernes — Femoral + Patadas + Abs", "tipo": "piernas", "duracion": "1h 15min", "calentamiento": "5 min caminadora + activación", "ejercicios": [
+            {"nombre": "Romanian Deadlift", "series": 4, "repeticiones": "8-10", "descanso": "90s", "rir": 1, "notas": "Peso máximo. Eccéntrica 4 seg."},
+            {"nombre": "Curl femoral", "series": 4, "repeticiones": "12", "descanso": "60s", "rir": 1, "notas": "Drop set último set."},
+            {"nombre": "Patada de glúteo", "series": 5, "repeticiones": "12 c/pierna", "descanso": "60s", "rir": 1, "notas": "+1 serie. Peso máximo."},
+            {"nombre": "Good morning", "series": 3, "repeticiones": "10-12", "descanso": "60s", "rir": 1, "notas": "Más peso."},
+            {"nombre": "Clamshell con banda", "series": 3, "repeticiones": "20 c/lado", "descanso": "45s", "rir": 1, "notas": "Pausa 3 seg."},
+            {"nombre": "Abducción de pie", "series": 3, "repeticiones": "15 c/pierna", "descanso": "45s", "rir": 1, "notas": "Banda gruesa."},
+            {"nombre": "Crunch con polea", "series": 4, "repeticiones": "15", "descanso": "45s", "rir": 1, "notas": "+1 serie."},
+            {"nombre": "Plancha lateral", "series": 3, "repeticiones": "30 seg c/lado", "descanso": "45s", "rir": 1, "notas": "+10 seg."}
+          ], "vuelta_calma": "15 min cardio: elíptica alta intensidad"}
+        ]
+      },
+      {
+        "numero": 4,
+        "fase": "Deload — Recuperación activa",
+        "dias": [
+          {"nombre": "Lunes — Glúteo + Cuádriceps + Abs (deload)", "tipo": "piernas", "duracion": "1h", "calentamiento": "5 min caminadora + movilidad", "ejercicios": [
+            {"nombre": "Hip Thrust", "series": 3, "repeticiones": "12-15", "descanso": "90s", "rir": 4, "notas": "60% del peso de sem3. Técnica perfecta."},
+            {"nombre": "Sentadilla Goblet", "series": 3, "repeticiones": "10-12", "descanso": "90s", "rir": 4, "notas": "60% peso. Rango completo."},
+            {"nombre": "Prensa de pierna", "series": 2, "repeticiones": "12", "descanso": "90s", "rir": 4, "notas": "Ligero."},
+            {"nombre": "Patada de glúteo", "series": 2, "repeticiones": "12 c/pierna", "descanso": "60s", "rir": 4, "notas": "Ligero."},
+            {"nombre": "Plancha", "series": 2, "repeticiones": "25 seg", "descanso": "45s", "rir": 4, "notas": "Recuperación."}
+          ], "vuelta_calma": "15 min cardio: caminata suave"},
+          {"nombre": "Martes — Tren Superior (deload)", "tipo": "jale", "duracion": "1h", "calentamiento": "5 min elíptica ligera", "ejercicios": [
+            {"nombre": "Jalón al pecho", "series": 3, "repeticiones": "10-12", "descanso": "90s", "rir": 4, "notas": "60% peso."},
+            {"nombre": "Remo con mancuerna", "series": 2, "repeticiones": "10 c/lado", "descanso": "60s", "rir": 4, "notas": "Ligero."},
+            {"nombre": "Face pull", "series": 2, "repeticiones": "15", "descanso": "60s", "rir": 4, "notas": "Ligero. Postura."},
+            {"nombre": "Curl bíceps", "series": 2, "repeticiones": "12", "descanso": "60s", "rir": 4, "notas": "Ligero."},
+            {"nombre": "Extensión tríceps", "series": 2, "repeticiones": "12", "descanso": "60s", "rir": 4, "notas": "Ligero."}
+          ], "vuelta_calma": "15 min cardio: bicicleta ligera"},
+          {"nombre": "Miércoles — Glúteo + Abs (deload)", "tipo": "piernas", "duracion": "1h", "calentamiento": "5 min bicicleta + movilidad", "ejercicios": [
+            {"nombre": "Hip Thrust", "series": 3, "repeticiones": "12-15", "descanso": "90s", "rir": 4, "notas": "60% peso. Conexión mente-músculo."},
+            {"nombre": "Sentadilla sumo", "series": 2, "repeticiones": "12", "descanso": "90s", "rir": 4, "notas": "Ligero."},
+            {"nombre": "Abductora", "series": 2, "repeticiones": "15", "descanso": "60s", "rir": 4, "notas": "Ligero."},
+            {"nombre": "Crunch", "series": 2, "repeticiones": "15", "descanso": "45s", "rir": 4, "notas": "Ligero."}
+          ], "vuelta_calma": "15 min cardio: caminata suave"},
+          {"nombre": "Jueves — Espalda + Hombros (deload)", "tipo": "empuje", "duracion": "1h", "calentamiento": "5 min remo ligero", "ejercicios": [
+            {"nombre": "Press mancuernas", "series": 3, "repeticiones": "10-12", "descanso": "90s", "rir": 4, "notas": "60% peso."},
+            {"nombre": "Elevaciones laterales", "series": 2, "repeticiones": "12", "descanso": "60s", "rir": 4, "notas": "Ligero."},
+            {"nombre": "Remo", "series": 2, "repeticiones": "10", "descanso": "90s", "rir": 4, "notas": "Ligero."},
+            {"nombre": "Pullover", "series": 2, "repeticiones": "12", "descanso": "60s", "rir": 4, "notas": "Ligero."}
+          ], "vuelta_calma": "15 min cardio: elíptica ligera"},
+          {"nombre": "Viernes — Femoral + Glúteo (deload)", "tipo": "piernas", "duracion": "1h", "calentamiento": "5 min caminadora + movilidad", "ejercicios": [
+            {"nombre": "Romanian Deadlift", "series": 3, "repeticiones": "10-12", "descanso": "90s", "rir": 4, "notas": "60% peso. Estiramiento profundo."},
+            {"nombre": "Curl femoral", "series": 2, "repeticiones": "12", "descanso": "60s", "rir": 4, "notas": "Ligero."},
+            {"nombre": "Patada de glúteo", "series": 2, "repeticiones": "12 c/pierna", "descanso": "60s", "rir": 4, "notas": "Ligero."},
+            {"nombre": "Clamshell", "series": 2, "repeticiones": "15 c/lado", "descanso": "45s", "rir": 4, "notas": "Ligero."}
+          ], "vuelta_calma": "15 min cardio: caminata suave (recuperación total)"}
+        ]
+      }
+    ],
+    "notas_coach": "Vanessa, este plan RISE de 4 semanas está diseñado para tu objetivo de recomposición. Los 15 minutos de cardio variado cada día (caminadora, elíptica, HIIT, escaladora) maximizan la quema de grasa sin comprometer tu recuperación muscular. La progresión de volumen asegura que cada semana sea más desafiante. En la semana 4 descansas activamente — es donde tu cuerpo se adapta y crece."
+  },
+  "plan_nutricion": {
+    "calorias_diarias": 1700,
+    "objetivo": "Pérdida de grasa con preservación muscular. Déficit moderado de ~350 kcal para perder 0.5 kg/semana sin perder fuerza ni energía en los entrenamientos.",
+    "macros": {
+      "proteina_g": 125,
+      "carbohidratos_g": 160,
+      "grasa_g": 50
+    },
+    "comidas": [
+      {"nombre": "Desayuno (7:00 AM)", "alimentos": [{"nombre": "Huevos enteros", "cantidad": "2 unidades"}, {"nombre": "Claras de huevo", "cantidad": "2 unidades"}, {"nombre": "Arepa mediana", "cantidad": "1 unidad"}, {"nombre": "Café negro", "cantidad": "1 taza"}], "calorias": 350, "macros": {"proteina_g": 24, "carbohidratos_g": 25, "grasas_g": 14}},
+      {"nombre": "Media Mañana (10:00 AM)", "alimentos": [{"nombre": "Yogurt griego sin azúcar", "cantidad": "150g"}, {"nombre": "Fresas", "cantidad": "1/2 taza"}, {"nombre": "Almendras", "cantidad": "10 unidades"}], "calorias": 200, "macros": {"proteina_g": 15, "carbohidratos_g": 15, "grasas_g": 8}},
+      {"nombre": "Almuerzo (12:30 PM)", "alimentos": [{"nombre": "Pechuga de pollo", "cantidad": "140g"}, {"nombre": "Arroz", "cantidad": "120g cocido"}, {"nombre": "Ensalada grande", "cantidad": "1 plato"}, {"nombre": "Frijoles", "cantidad": "1/3 taza"}], "calorias": 430, "macros": {"proteina_g": 38, "carbohidratos_g": 42, "grasas_g": 8}},
+      {"nombre": "Pre-Entreno (3:30 PM)", "alimentos": [{"nombre": "Banano", "cantidad": "1 unidad"}, {"nombre": "Whey protein", "cantidad": "1 scoop (30g)"}], "calorias": 220, "macros": {"proteina_g": 25, "carbohidratos_g": 28, "grasas_g": 2}},
+      {"nombre": "Cena (7:00 PM)", "alimentos": [{"nombre": "Pescado (tilapia o atún)", "cantidad": "140g"}, {"nombre": "Papa o yuca", "cantidad": "120g"}, {"nombre": "Vegetales al vapor", "cantidad": "1 taza"}], "calorias": 350, "macros": {"proteina_g": 35, "carbohidratos_g": 35, "grasas_g": 7}},
+      {"nombre": "Snack nocturno (opcional)", "alimentos": [{"nombre": "Queso campesino", "cantidad": "30g"}, {"nombre": "Galletas integrales", "cantidad": "2 unidades"}], "calorias": 100, "macros": {"proteina_g": 5, "carbohidratos_g": 10, "grasas_g": 4}}
+    ],
+    "tips": [
+      "Con 62 kg y 169 cm tienes un físico delgado con potencial. Las 1700 kcal son un déficit suave que te permite perder grasa sin sentirte sin energía para entrenar 5 días.",
+      "Tu prioridad es llegar a 125g de proteína diarios. Esto equivale a ~31g por comida principal. Fuentes accesibles: huevos, pollo, atún en agua, yogurt griego, whey.",
+      "NO saltes el pre-entreno (banano + whey). Los carbohidratos simples 30-45 min antes del gym son clave para rendir bien.",
+      "Toma mínimo 2.5 litros de agua al día. Un vaso grande antes de cada comida ayuda a controlar el apetito.",
+      "Cocina batch: prepara arroz, pollo y vegetales el domingo para toda la semana. Reduce costos y tentaciones.",
+      "1 comida libre por semana (sábado o domingo). Come lo que quieras en UNA comida — no todo el día.",
+      "Evita jugos de caja, gaseosas y snacks procesados. Reemplaza por agua, frutas enteras y frutos secos."
+    ],
+    "comidas_sugeridas": [
+      {"nombre": "Desayuno", "opciones": [
+        "2 huevos + 2 claras + 1 arepa + café (350 kcal | 24g P | 25g C | 14g G)",
+        "Avena 50g + 1 scoop whey + 1/2 banano (370 kcal | 30g P | 42g C | 5g G)",
+        "Tostadas integrales 2 + queso + 2 huevos (340 kcal | 22g P | 28g C | 14g G)"
+      ]},
+      {"nombre": "Almuerzo", "opciones": [
+        "Pollo 140g + arroz 120g + ensalada + frijoles (430 kcal | 38g P | 42g C | 8g G)",
+        "Atún 2 latas + arroz + vegetales (400 kcal | 38g P | 40g C | 5g G)",
+        "Carne molida 130g + papa 120g + ensalada (420 kcal | 32g P | 38g C | 12g G)"
+      ]},
+      {"nombre": "Cena", "opciones": [
+        "Tilapia 140g + papa 120g + vegetales (350 kcal | 35g P | 35g C | 7g G)",
+        "Pollo 140g + yuca 120g + ensalada (340 kcal | 36g P | 32g C | 6g G)",
+        "Omelette 3 huevos + vegetales + 1 arepa pequeña (320 kcal | 24g P | 22g C | 14g G)"
+      ]}
+    ],
+    "hidratacion": {"agua_minima_litros": 2.5, "electrolitos": "Pizca de sal en agua de entrenamiento."},
+    "notas_coach": "Vanessa, este plan está calibrado para tu peso y nivel de actividad. Las 1700 kcal con 125g de proteína te permiten perder grasa sin hambre extrema. Sigue las opciones de comidas sugeridas para variedad. Recuerda: la consistencia > la perfección."
+  },
+  "plan_habitos": {
+    "habitos": [
+      {"nombre": "Dormir 7-8 horas", "descripcion": "Acostarse antes de las 10:30 PM. Pantallas off a las 10 PM.", "frecuencia": "Diario", "razon": "El músculo crece mientras duermes. Sin sueño, el cortisol sube y acumulas grasa abdominal."},
+      {"nombre": "Tomar 2.5L+ de agua", "descripcion": "500ml al despertar. Botella al gym. 1 vaso antes de cada comida.", "frecuencia": "Diario", "razon": "Deshidratación del 2% baja tu rendimiento un 20%."},
+      {"nombre": "Comer 5 comidas con proteína", "descripcion": "Cada comida principal debe tener mínimo 25g de proteína.", "frecuencia": "Diario", "razon": "La proteína distribuida activa la síntesis muscular todo el día."},
+      {"nombre": "15 min cardio post-pesas", "descripcion": "Siempre después de las pesas, nunca antes. Variado cada día.", "frecuencia": "Diario (Lun-Vie)", "razon": "Cardio post-pesas quema más grasa porque ya agotaste el glucógeno."},
+      {"nombre": "Estirar 10 min post-entreno", "descripcion": "Estirar los músculos trabajados después de cada sesión.", "frecuencia": "Diario", "razon": "Previene lesiones y mejora recuperación."}
+    ]
+  }
+}
