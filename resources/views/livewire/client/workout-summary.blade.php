@@ -139,55 +139,89 @@
         <h1>SESIÓN COMPLETADA — {{ $motivationalPhrase }}</h1>
     </div>
 
-    {{-- ─── Stats Grid (2x3, Ladder-inspired) ─── --}}
-    <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 stagger-grid" data-animate="fadeInUp" data-animate-delay="200">
+    {{-- ─── Stats Grid (premium, icon-accented) ─── --}}
+    <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4" data-animate="fadeInUp" data-animate-delay="200">
         {{-- Duración --}}
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-            <p class="text-[11px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Duración</p>
-            <p class="mt-2 font-data text-3xl font-bold text-wc-text sm:text-4xl">{{ $stats['duration'] }}</p>
+        <div class="relative overflow-hidden rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 text-center">
+            <div class="pointer-events-none absolute -right-3 -top-3 h-12 w-12 rounded-full bg-emerald-500/8"></div>
+            <div class="mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/15">
+                <svg class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+            </div>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-emerald-400">Duracion</p>
+            <p class="mt-1 font-data text-3xl font-bold text-wc-text sm:text-4xl">{{ $stats['duration'] }}</p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">min</p>
         </div>
 
         {{-- Volumen Total --}}
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-            <p class="text-[11px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Volumen Total</p>
-            <p class="mt-2 font-data text-3xl font-bold text-wc-text sm:text-4xl">
-                <span data-counter="{{ $stats['volume'] }}">0</span>
-            </p>
-            <p class="mt-0.5 text-xs text-wc-text-tertiary">kg</p>
+        <div class="relative overflow-hidden rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-center">
+            <div class="pointer-events-none absolute -right-3 -top-3 h-12 w-12 rounded-full bg-amber-500/8"></div>
+            <div class="mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/15">
+                <svg class="h-4 w-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                </svg>
+            </div>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-amber-400">Volumen Total</p>
+            <p class="mt-1 font-data text-3xl font-bold text-wc-text sm:text-4xl">{{ $stats['volume_display'] }}</p>
+            <p class="mt-0.5 text-xs text-wc-text-tertiary">{{ $stats['volume_unit'] }}</p>
         </div>
 
         {{-- Reps Totales --}}
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-            <p class="text-[11px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Reps Totales</p>
-            <p class="mt-2 font-data text-3xl font-bold text-wc-text sm:text-4xl">
+        <div class="relative overflow-hidden rounded-xl border border-blue-500/20 bg-blue-500/5 p-4 text-center">
+            <div class="pointer-events-none absolute -right-3 -top-3 h-12 w-12 rounded-full bg-blue-500/8"></div>
+            <div class="mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/15">
+                <svg class="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h5.25m5.25-.75L17.25 9m0 0L21 12.75M17.25 9v12" />
+                </svg>
+            </div>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-blue-400">Reps Totales</p>
+            <p class="mt-1 font-data text-3xl font-bold text-wc-text sm:text-4xl">
                 <span data-counter="{{ $stats['reps'] }}">0</span>
             </p>
-            <p class="mt-0.5 text-xs text-wc-text-tertiary">reps</p>
+            <p class="mt-0.5 text-xs text-wc-text-tertiary">repeticiones</p>
         </div>
 
         {{-- Sets Completados --}}
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-            <p class="text-[11px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Sets</p>
-            <p class="mt-2 font-data text-3xl font-bold text-wc-text sm:text-4xl">
+        <div class="relative overflow-hidden rounded-xl border border-violet-500/20 bg-violet-500/5 p-4 text-center">
+            <div class="pointer-events-none absolute -right-3 -top-3 h-12 w-12 rounded-full bg-violet-500/8"></div>
+            <div class="mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/15">
+                <svg class="h-4 w-4 text-violet-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+            </div>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-violet-400">Sets</p>
+            <p class="mt-1 font-data text-3xl font-bold text-wc-text sm:text-4xl">
                 <span data-counter="{{ $stats['sets_completed'] }}">0</span><span class="text-lg text-wc-text-tertiary">/{{ $stats['sets_total'] }}</span>
             </p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">completados</p>
         </div>
 
         {{-- XP Ganados --}}
-        <div class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-4 text-center">
-            <p class="text-[11px] font-semibold uppercase tracking-widest text-wc-accent">XP Ganados</p>
-            <p class="mt-2 font-data text-3xl font-bold text-wc-accent sm:text-4xl">
+        <div class="relative overflow-hidden rounded-xl border border-wc-accent/25 bg-gradient-to-br from-wc-accent/10 to-transparent p-4 text-center">
+            <div class="pointer-events-none absolute -right-3 -top-3 h-12 w-12 rounded-full bg-wc-accent/8"></div>
+            <div class="mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-wc-accent/15">
+                <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+            </div>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-wc-accent">XP Ganados</p>
+            <p class="mt-1 font-data text-3xl font-bold text-wc-accent sm:text-4xl">
                 <span data-counter="{{ $xpEarned }}" data-counter-prefix="+">0</span>
             </p>
-            <p class="mt-0.5 text-xs text-wc-accent/70">XP</p>
+            <p class="mt-0.5 text-xs text-wc-accent/70">experiencia</p>
         </div>
 
         {{-- Ejercicios --}}
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-            <p class="text-[11px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Ejercicios</p>
-            <p class="mt-2 font-data text-3xl font-bold text-wc-text sm:text-4xl">
+        <div class="relative overflow-hidden rounded-xl border border-sky-500/20 bg-sky-500/5 p-4 text-center">
+            <div class="pointer-events-none absolute -right-3 -top-3 h-12 w-12 rounded-full bg-sky-500/8"></div>
+            <div class="mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/15">
+                <svg class="h-4 w-4 text-sky-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 0a1.5 1.5 0 0 1-1.5-1.5v-3a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v3m-4.5 0a1.5 1.5 0 0 0-1.5 1.5v3a1.5 1.5 0 0 0 1.5 1.5h1.5a1.5 1.5 0 0 0 1.5-1.5v-3m12-4.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5m3 0a1.5 1.5 0 0 1-1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5a1.5 1.5 0 0 1-1.5-1.5v-3m0-4.5a1.5 1.5 0 0 0-1.5-1.5h-1.5a1.5 1.5 0 0 0-1.5 1.5v3" />
+                </svg>
+            </div>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-sky-400">Ejercicios</p>
+            <p class="mt-1 font-data text-3xl font-bold text-wc-text sm:text-4xl">
                 <span data-counter="{{ $stats['exercises_count'] }}">0</span>
             </p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">completados</p>

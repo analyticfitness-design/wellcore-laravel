@@ -38,10 +38,26 @@ class WorkoutSummary extends Component
         $exerciseCount = $completedLogs->pluck('exercise_name')->unique()->count();
         $targetSets = $this->session->logs->count();
 
+        $rawVolume = $this->session->total_volume ?? (int) $completedLogs->sum(fn ($l) => ($l->weight_kg ?? 0) * ($l->reps ?? 0));
+
+        // Format volume rationally: show as tons if >= 1000, otherwise as kg
+        $volumeDisplay = $rawVolume >= 1000
+            ? number_format($rawVolume / 1000, 1)
+            : number_format($rawVolume);
+        $volumeUnit = $rawVolume >= 1000 ? 'toneladas' : 'kg';
+
+        // Average weight per set (useful metric)
+        $avgWeightPerSet = $completedLogs->count() > 0
+            ? round($completedLogs->avg('weight_kg'), 1)
+            : 0;
+
         $this->stats = [
             'duration' => $this->session->formattedDuration(),
             'duration_sec' => ($this->session->duration_minutes ?? 0) * 60,
-            'volume' => $this->session->total_volume ?? (int) $completedLogs->sum(fn ($l) => ($l->weight_kg ?? 0) * ($l->reps ?? 0)),
+            'volume_raw' => $rawVolume,
+            'volume_display' => $volumeDisplay,
+            'volume_unit' => $volumeUnit,
+            'avg_weight' => $avgWeightPerSet,
             'reps' => (int) $completedLogs->sum('reps'),
             'sets_completed' => $completedLogs->count(),
             'sets_total' => $targetSets,
@@ -73,13 +89,16 @@ class WorkoutSummary extends Component
             ->orderByDesc('session_date')
             ->limit(10)
             ->get()
-            ->map(fn ($s) => [
-                'id' => $s->id,
-                'date' => $s->session_date?->format('d M') ?? '-',
-                'day_name' => $s->day_name ?? '-',
-                'duration' => $s->formattedDuration(),
-                'volume' => $s->total_volume ?? 0,
-            ])
+            ->map(function ($s) {
+                $vol = $s->total_volume ?? 0;
+                return [
+                    'id' => $s->id,
+                    'date' => $s->session_date?->format('d M') ?? '-',
+                    'day_name' => $s->day_name ?? '-',
+                    'duration' => $s->formattedDuration(),
+                    'volume' => $vol >= 1000 ? number_format($vol / 1000, 1) . ' ton' : number_format($vol) . ' kg',
+                ];
+            })
             ->toArray();
     }
 

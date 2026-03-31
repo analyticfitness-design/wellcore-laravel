@@ -277,11 +277,31 @@
                 </div>
             @endforeach
 
+            {{-- Weight unit selector --}}
+            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4" x-data>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-semibold text-wc-text">Unidad de peso</p>
+                        <p class="mt-0.5 text-xs text-wc-text-tertiary">Selecciona la unidad que usa tu gimnasio</p>
+                    </div>
+                    <div class="flex rounded-lg border border-wc-border bg-wc-bg-secondary p-0.5">
+                        <button
+                            @click="weightUnit = 'kg'; localStorage.setItem('wc_weight_unit', 'kg')"
+                            :class="weightUnit === 'kg' ? 'bg-wc-accent text-white shadow-sm' : 'text-wc-text-tertiary hover:text-wc-text'"
+                            class="rounded-md px-4 py-1.5 text-sm font-bold transition-all"
+                            type="button"
+                        >KG</button>
+                        <button
+                            @click="weightUnit = 'lbs'; localStorage.setItem('wc_weight_unit', 'lbs')"
+                            :class="weightUnit === 'lbs' ? 'bg-wc-accent text-white shadow-sm' : 'text-wc-text-tertiary hover:text-wc-text'"
+                            class="rounded-md px-4 py-1.5 text-sm font-bold transition-all"
+                            type="button"
+                        >LBS</button>
+                    </div>
+                </div>
+            </div>
+
             {{-- START WORKOUT CTA --}}
-            {{-- Alpine sets workoutStarted=true immediately (optimistic UI) so the active
-                 view appears in <200ms. $wire.startWorkout() runs in background to create
-                 the session and load previous weights. No wire:loading on this button —
-                 the pre-workout section hides via x-show the moment Alpine state changes. --}}
             <div class="pt-2 pb-4">
                 <button
                     @click="workoutStarted = true; $nextTick(() => window.scrollTo(0, 0)); startTimer(); $wire.startWorkout()"
@@ -600,7 +620,7 @@
                              style="grid-template-columns: 32px 50px 1fr 1fr 36px">
                             <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Set</span>
                             <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Anterior</span>
-                            <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Peso (kg)</span>
+                            <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary" x-text="weightUnit === 'lbs' ? 'Peso (lbs)' : 'Peso (kg)'">Peso (kg)</span>
                             <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Reps</span>
                             <span class="sr-only">Completar</span>
                         </div>
@@ -666,7 +686,7 @@
                                 {{-- Weight input with +/- --}}
                                 <div class="flex items-center justify-center gap-px">
                                     <button
-                                        @click="weight = Math.max(0, weight - 2.5)"
+                                        @click="weight = Math.max(0, weight - (weightUnit === 'lbs' ? 5 : 2.5))"
                                         class="btn-press flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
                                         :disabled="completed"
                                         :class="completed && 'opacity-30 pointer-events-none'"
@@ -685,7 +705,7 @@
                                         placeholder="0"
                                     />
                                     <button
-                                        @click="weight += 2.5"
+                                        @click="weight += (weightUnit === 'lbs' ? 5 : 2.5)"
                                         class="btn-press flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
                                         :disabled="completed"
                                         :class="completed && 'opacity-30 pointer-events-none'"
@@ -732,7 +752,8 @@
                                         x-show="!completed"
                                         @click="
                                             if (reps > 0) {
-                                                $wire.completeSet({{ $exIndex }}, {{ $setNum }}, weight, reps);
+                                                let saveWeight = weightUnit === 'lbs' ? +(weight / 2.205).toFixed(2) : weight;
+                                                $wire.completeSet({{ $exIndex }}, {{ $setNum }}, saveWeight, reps);
                                                 completed = true;
                                                 justCompleted = true;
                                                 setTimeout(() => justCompleted = false, 800);
@@ -834,8 +855,13 @@
                     </div>
                     <div class="h-3 w-px bg-wc-border"></div>
                     <div>
-                        <span class="font-data text-sm font-bold text-wc-text">{{ number_format($totalVolumeAll, 0) }}</span>
-                        <span class="text-[10px] text-wc-text-tertiary ml-0.5">kg vol.</span>
+                        @if($totalVolumeAll >= 1000)
+                            <span class="font-data text-sm font-bold text-wc-text">{{ number_format($totalVolumeAll / 1000, 1) }}</span>
+                            <span class="text-[10px] text-wc-text-tertiary ml-0.5">ton</span>
+                        @else
+                            <span class="font-data text-sm font-bold text-wc-text">{{ number_format($totalVolumeAll, 0) }}</span>
+                            <span class="text-[10px] text-wc-text-tertiary ml-0.5">kg vol.</span>
+                        @endif
                     </div>
                 </div>
 
@@ -935,6 +961,7 @@
                 workoutStarted: {{ $isActive ? 'true' : 'false' }},
                 elapsed: 0,
                 timerInterval: null,
+                weightUnit: localStorage.getItem('wc_weight_unit') || 'kg',
 
                 init() {
                     // Start timer if workout is active
