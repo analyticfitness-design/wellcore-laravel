@@ -1,0 +1,277 @@
+{
+  "duracion_semanas": 4,
+  "objetivo": "Recomposición corporal con énfasis en glúteos, piernas y tren superior. Progresión por volumen: Sem1 volumen base (3 series) → Sem2 volumen incrementado (+1 serie, tempo eccéntrico) → Sem3 volumen máximo (+series, drop sets y rest-pause) → Sem4 Deload (60% volumen).",
+  "split": "Push/Pull/Legs personalizado 6x/semana",
+  "frecuencia": "6 dias/semana (Lun-Sáb)",
+  "metodologia": "Hipertrofia con progresión de volumen + métodos de intensidad selectivos",
+  "semanas": [
+    {
+      "numero": 1,
+      "fase": "Volumen Base — Técnica y adaptación",
+      "dias": [
+        {
+          "nombre": "Lunes — Glúteos y Piernas",
+          "tipo": "piernas",
+          "duracion": "1h 30min total (1h10 pesas + 20min cardio)",
+          "calentamiento": "5 min caminadora inclinada + 2x15 sentadilla sin peso + 2x15 activación glúteo con banda",
+          "ejercicios": [
+            {"nombre": "Hip Thrust con mancuerna en banco", "series": 4, "repeticiones": "12-15", "descanso": "90s", "rir": 3, "notas": "Mancuerna sobre la cadera con toalla. Pies separados al ancho de cadera. Aprieta glúteos 2 seg arriba. Controla la bajada."},
+            {"nombre": "Sentadilla Goblet con mancuerna", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 3, "notas": "Mancuerna vertical contra el pecho. Pies ancho de hombros, puntas ligeramente afuera. Baja hasta que muslos queden paralelos al suelo."},
+            {"nombre": "Zancada reversa con mancuernas", "series": 3, "repeticiones": "10 c/pierna", "descanso": "90s", "rir": 3, "notas": "Paso atrás controlado. Rodilla trasera casi toca el suelo. Empuja con talón de la pierna delantera. Tronco erguido."},
+            {"nombre": "Patada de glúteo en polea baja", "series": 3, "repeticiones": "12-15 c/pierna", "descanso": "60s", "rir": 3, "notas": "Tobillera en la polea baja. Pierna recta, empuja hacia atrás sin arquear la espalda. Aprieta glúteo arriba 1 seg."},
+            {"nombre": "Abductora en polea baja", "series": 3, "repeticiones": "15 c/pierna", "descanso": "60s", "rir": 3, "notas": "De pie lateral a la polea. Pierna externa hace la abducción. Control en el regreso. Trabaja glúteo medio."},
+            {"nombre": "Puente de glúteo con banda elástica", "series": 3, "repeticiones": "20", "descanso": "45s", "rir": 3, "notas": "Banda arriba de rodillas. Pies a ancho de cadera. Aprieta glúteos arriba 3 seg. Finisher para quemar."},
+            {"nombre": "Elevación de talones de pie con mancuerna", "series": 3, "repeticiones": "15-20", "descanso": "45s", "rir": 3, "notas": "Una mancuerna en mano, otra mano se apoya. Sube lento, baja lento estirando bien el gemelo."}
+          ],
+          "vuelta_calma": "20 min cardio: caminadora inclinación 4-6%, velocidad 5-6 km/h (zona 2, quema grasa)"
+        },
+        {
+          "nombre": "Martes — Hombro + Bícep + Trícep + Abdomen",
+          "tipo": "empuje",
+          "duracion": "1h 30min total (1h pesas + 30min cardio)",
+          "calentamiento": "5 min elíptica + 2x15 rotaciones de hombro con banda + 2x10 press ligero",
+          "ejercicios": [
+            {"nombre": "Press mancuernas sentado en banco", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 3, "notas": "Banco a 90° o ligeramente inclinado. Mancuernas a altura de hombros, palmas al frente. Empuja sin arquear lumbar."},
+            {"nombre": "Elevaciones laterales con mancuernas", "series": 4, "repeticiones": "12-15", "descanso": "60s", "rir": 3, "notas": "Ligera inclinación al frente. Sube hasta altura de hombros. Pulgares ligeramente abajo. Peso ligero, técnica perfecta."},
+            {"nombre": "Curl de bíceps alterno con mancuernas", "series": 3, "repeticiones": "12 c/brazo", "descanso": "60s", "rir": 3, "notas": "Codos pegados al cuerpo. Supina la muñeca al subir. Baja controlado 2 seg. Sin impulso."},
+            {"nombre": "Curl martillo con mancuernas", "series": 3, "repeticiones": "10-12", "descanso": "60s", "rir": 3, "notas": "Agarre neutro (palmas enfrentadas). Codos fijos. Trabaja bíceps braquial — da grosor al brazo."},
+            {"nombre": "Extensión de tríceps en polea alta con cuerda", "series": 3, "repeticiones": "12-15", "descanso": "60s", "rir": 3, "notas": "Codos pegados a los costados, fijos. Empuja hacia abajo y separa la cuerda al final. Tensión constante."},
+            {"nombre": "Extensión de tríceps sobre cabeza con mancuerna", "series": 3, "repeticiones": "12", "descanso": "60s", "rir": 3, "notas": "Sentada en banco. Una mancuerna con ambas manos detrás de la cabeza. Codos al techo, fijos. Extiende controlado."},
+            {"nombre": "Crunch en banco declinado", "series": 3, "repeticiones": "15-20", "descanso": "45s", "rir": 3, "notas": "Manos cruzadas sobre el pecho. Sube solo la parte superior del tronco. Exhala al subir. Sin jalar el cuello."},
+            {"nombre": "Plancha frontal", "series": 3, "repeticiones": "30 seg", "descanso": "45s", "rir": 3, "notas": "Cuerpo recto de cabeza a talones. Ombligo adentro. Respira continuo. Sem1→30s, Sem2→35s, Sem3→40s, Sem4→25s."}
+          ],
+          "vuelta_calma": "30 min cardio: elíptica resistencia media, FC 120-140 bpm (zona 2)"
+        },
+        {
+          "nombre": "Miércoles — Pierna (Cuádriceps)",
+          "tipo": "piernas",
+          "duracion": "1h 30min total (1h10 pesas + 20min cardio)",
+          "calentamiento": "5 min bicicleta + 2x15 sentadilla sin peso + movilidad caderas",
+          "ejercicios": [
+            {"nombre": "Sentadilla Goblet con mancuerna", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 3, "notas": "Énfasis en cuádriceps: pies a ancho de hombros, torso más vertical. Baja profundo controlado."},
+            {"nombre": "Sentadilla búlgara con mancuernas", "series": 4, "repeticiones": "10 c/pierna", "descanso": "90s", "rir": 3, "notas": "Pie trasero en banco. Torso ligeramente inclinado al frente. Rodilla delantera no pasa mucho la punta del pie."},
+            {"nombre": "Prensa de pierna en polea (hack squat adaptado)", "series": 3, "repeticiones": "12-15", "descanso": "90s", "rir": 3, "notas": "Si no hay prensa: zancada caminando con mancuernas. Paso largo, rodilla trasera casi al suelo."},
+            {"nombre": "Extensión de cuádriceps en polea baja", "series": 3, "repeticiones": "12-15 c/pierna", "descanso": "60s", "rir": 3, "notas": "Tobillera en polea baja, de espaldas a la máquina. Extiende la pierna hacia adelante. Aprieta cuádriceps arriba."},
+            {"nombre": "Sentadilla sumo con mancuerna", "series": 3, "repeticiones": "12-15", "descanso": "90s", "rir": 3, "notas": "Pies más abiertos que hombros, puntas 45° afuera. Mancuerna colgando al centro. Activa aductores y cuádriceps."},
+            {"nombre": "Step-up en banco con mancuernas", "series": 3, "repeticiones": "10 c/pierna", "descanso": "60s", "rir": 3, "notas": "Banco a altura de rodilla. Empuja con el talón de la pierna de arriba. No uses impulso con la pierna de abajo."},
+            {"nombre": "Elevación de talones sentada con mancuerna", "series": 3, "repeticiones": "15-20", "descanso": "45s", "rir": 3, "notas": "Sentada en banco, mancuerna sobre las rodillas. Sube talones lento, aprieta arriba, baja estirando."}
+          ],
+          "vuelta_calma": "20 min cardio: caminadora inclinación 5%, velocidad 5.5 km/h"
+        },
+        {
+          "nombre": "Jueves — Espalda + Abdomen",
+          "tipo": "jale",
+          "duracion": "1h 30min total (1h pesas + 30min cardio)",
+          "calentamiento": "5 min remo o elíptica + 2x15 retracción escapular con banda + movilidad hombros",
+          "ejercicios": [
+            {"nombre": "Remo con mancuerna 1 brazo en banco", "series": 4, "repeticiones": "10-12 c/lado", "descanso": "60s", "rir": 3, "notas": "Rodilla y mano apoyadas en banco. Espalda paralela al suelo. Codo hacia la cadera. Hombro estable."},
+            {"nombre": "Jalón al pecho en polea alta", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 3, "notas": "Agarre prono ancho. Ligeramente inclinada atrás. Barra hacia la clavícula. Junta omóplatos abajo."},
+            {"nombre": "Remo sentado en polea baja", "series": 3, "repeticiones": "10-12", "descanso": "90s", "rir": 3, "notas": "Espalda recta, pecho fuera. Codos hacia atrás juntando omóplatos. Sin usar inercia."},
+            {"nombre": "Face pull en polea alta con cuerda", "series": 3, "repeticiones": "15", "descanso": "60s", "rir": 3, "notas": "Jala hacia la cara, codos altos. Rota externamente al final. Excelente para postura y deltoides posterior."},
+            {"nombre": "Pullover con mancuerna en banco", "series": 3, "repeticiones": "12", "descanso": "60s", "rir": 3, "notas": "Acostada perpendicular al banco. Baja la mancuerna detrás de la cabeza con brazos casi rectos. Siente el estiramiento dorsal."},
+            {"nombre": "Crunch con polea alta (cable crunch)", "series": 3, "repeticiones": "15", "descanso": "45s", "rir": 3, "notas": "De rodillas frente a la polea. Cuerda detrás de la cabeza. Flexiona el tronco hacia las rodillas. Exhala al bajar."},
+            {"nombre": "Elevación de piernas colgada o en banco", "series": 3, "repeticiones": "12-15", "descanso": "45s", "rir": 3, "notas": "Piernas juntas, sube hasta 90°. Control en la bajada. Si colgada es difícil, hazlo en banco inclinado."}
+          ],
+          "vuelta_calma": "30 min cardio: elíptica o bicicleta estática, resistencia baja-media"
+        },
+        {
+          "nombre": "Viernes — Isquiotibiales + Glúteo",
+          "tipo": "piernas",
+          "duracion": "1h 30min total (1h10 pesas + 20min cardio)",
+          "calentamiento": "5 min caminadora + 2x15 good morning sin peso + activación glúteo con banda",
+          "ejercicios": [
+            {"nombre": "Romanian Deadlift con mancuernas", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 3, "notas": "Rodillas ligeramente flexionadas, fijas. Empuja cadera atrás mientras bajas mancuernas por las piernas. Espalda recta siempre."},
+            {"nombre": "Hip Thrust con mancuerna en banco", "series": 4, "repeticiones": "12-15", "descanso": "90s", "rir": 3, "notas": "Segundo día de glúteo de la semana. Aprieta arriba 2 seg. Controla la bajada. Puedes subir peso vs lunes."},
+            {"nombre": "Curl femoral en polea baja", "series": 3, "repeticiones": "12-15 c/pierna", "descanso": "60s", "rir": 3, "notas": "Tobillera en polea baja, boca abajo en banco o de pie. Flexiona la rodilla llevando el talón al glúteo."},
+            {"nombre": "Kickback de glúteo con banda", "series": 3, "repeticiones": "15 c/pierna", "descanso": "45s", "rir": 3, "notas": "En 4 puntos. Banda en los pies. Lleva el pie hacia el techo con rodilla a 90°. Aprieta glúteo arriba."},
+            {"nombre": "Good morning con mancuerna", "series": 3, "repeticiones": "12", "descanso": "60s", "rir": 3, "notas": "Mancuerna contra el pecho. Inclina el torso hacia adelante desde la cadera. Siente el estiramiento en isquiotibiales."},
+            {"nombre": "Abducción de cadera con banda de pie", "series": 3, "repeticiones": "15 c/pierna", "descanso": "45s", "rir": 3, "notas": "Banda arriba de rodillas. Apóyate en pared. Levanta pierna lateral 45°. Trabaja glúteo medio."},
+            {"nombre": "Clamshell con banda", "series": 3, "repeticiones": "20 c/lado", "descanso": "45s", "rir": 3, "notas": "Acostada de lado, caderas y rodillas a 90°. Abre rodilla superior como almeja. Cadera no se mueve."}
+          ],
+          "vuelta_calma": "20 min cardio: caminadora inclinación 5%, velocidad 5.5 km/h"
+        },
+        {
+          "nombre": "Sábado — Hombro + Bícep + Trícep",
+          "tipo": "empuje",
+          "duracion": "1h 15min total (45min pesas + 30min cardio)",
+          "calentamiento": "5 min elíptica + rotaciones de hombro con banda ligera",
+          "ejercicios": [
+            {"nombre": "Press Arnold con mancuernas sentada", "series": 3, "repeticiones": "10-12", "descanso": "90s", "rir": 3, "notas": "Inicia con palmas hacia ti, rota mientras subes. Trabaja las 3 cabezas del deltoides. Control total."},
+            {"nombre": "Elevaciones laterales en polea baja", "series": 3, "repeticiones": "12-15 c/brazo", "descanso": "45s", "rir": 3, "notas": "Polea del lado opuesto, pasa cable por detrás. Tensión constante — superior a mancuernas para laterales."},
+            {"nombre": "Pájaro con mancuernas inclinada", "series": 3, "repeticiones": "12-15", "descanso": "60s", "rir": 3, "notas": "Inclinada al frente 45°. Sube brazos lateralmente. Trabaja deltoides posterior y romboides."},
+            {"nombre": "Curl concentrado con mancuerna", "series": 3, "repeticiones": "12 c/brazo", "descanso": "45s", "rir": 3, "notas": "Sentada, codo apoyado en muslo interno. Curl puro sin impulso. Excelente para pico del bíceps."},
+            {"nombre": "Fondos en banco para tríceps", "series": 3, "repeticiones": "12-15", "descanso": "60s", "rir": 3, "notas": "Manos en banco detrás. Piernas extendidas. Baja flexionando codos hasta 90°. Empuja con tríceps."},
+            {"nombre": "Kickback de tríceps con mancuerna", "series": 3, "repeticiones": "12 c/brazo", "descanso": "45s", "rir": 3, "notas": "Inclinada al frente, codo fijo a 90°. Extiende el antebrazo hacia atrás. Aprieta tríceps al final."}
+          ],
+          "vuelta_calma": "30 min cardio: HIIT en bicicleta (30s sprint / 60s recuperación × 10 rondas) + 10 min cool down suave"
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "fase": "Volumen Incrementado — +1 serie, tempo eccéntrico 3s",
+      "dias": [
+        {"nombre": "Lunes — Glúteos y Piernas", "tipo": "piernas", "duracion": "1h 30min", "calentamiento": "5 min caminadora + activación glúteo", "ejercicios": [
+          {"nombre": "Hip Thrust con mancuerna en banco", "series": 4, "repeticiones": "12-15", "descanso": "90s", "rir": 2, "notas": "Sube peso 2-5 lbs vs semana 1. Misma técnica, más intensidad."},
+          {"nombre": "Sentadilla Goblet con mancuerna", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 2, "notas": "Sube peso. Baja profundo, pausa 1 seg abajo."},
+          {"nombre": "Zancada reversa con mancuernas", "series": 3, "repeticiones": "10 c/pierna", "descanso": "90s", "rir": 2, "notas": "Incrementa peso. Control en todo el rango."},
+          {"nombre": "Patada de glúteo en polea baja", "series": 4, "repeticiones": "12-15 c/pierna", "descanso": "60s", "rir": 2, "notas": "1 serie extra esta semana. Más peso en la polea."},
+          {"nombre": "Abductora en polea baja", "series": 3, "repeticiones": "15 c/pierna", "descanso": "60s", "rir": 2, "notas": "Sube peso. Mantén control."},
+          {"nombre": "Puente de glúteo con banda elástica", "series": 3, "repeticiones": "20", "descanso": "45s", "rir": 2, "notas": "Usa banda más gruesa si es fácil."},
+          {"nombre": "Elevación de talones de pie con mancuerna", "series": 3, "repeticiones": "15-20", "descanso": "45s", "rir": 2, "notas": "Pausa 2 seg arriba."}
+        ], "vuelta_calma": "20 min cardio: caminadora inclinación 5%, velocidad 5.5 km/h"},
+        {"nombre": "Martes — Hombro + Bícep + Trícep + Abdomen", "tipo": "empuje", "duracion": "1h 30min", "calentamiento": "5 min elíptica + movilidad hombros", "ejercicios": [
+          {"nombre": "Press mancuernas sentado en banco", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 2, "notas": "Sube 2-5 lbs. Misma técnica."},
+          {"nombre": "Elevaciones laterales con mancuernas", "series": 4, "repeticiones": "12-15", "descanso": "60s", "rir": 2, "notas": "Sube peso ligeramente. Último set: drop set."},
+          {"nombre": "Curl de bíceps alterno con mancuernas", "series": 3, "repeticiones": "12 c/brazo", "descanso": "60s", "rir": 2, "notas": "Más peso. Eccéntrica 3 seg."},
+          {"nombre": "Curl martillo con mancuernas", "series": 3, "repeticiones": "10-12", "descanso": "60s", "rir": 2, "notas": "Sube peso. Último set: drop set."},
+          {"nombre": "Extensión de tríceps en polea alta con cuerda", "series": 4, "repeticiones": "12-15", "descanso": "60s", "rir": 2, "notas": "1 serie extra. Más peso."},
+          {"nombre": "Extensión de tríceps sobre cabeza con mancuerna", "series": 3, "repeticiones": "12", "descanso": "60s", "rir": 2, "notas": "Sube peso. Control total."},
+          {"nombre": "Crunch en banco declinado", "series": 3, "repeticiones": "15-20", "descanso": "45s", "rir": 2, "notas": "Agrega mancuerna ligera al pecho si es fácil."},
+          {"nombre": "Plancha frontal", "series": 3, "repeticiones": "35 seg", "descanso": "45s", "rir": 2, "notas": "5 seg más que semana 1."}
+        ], "vuelta_calma": "30 min cardio: elíptica resistencia media"},
+        {"nombre": "Miércoles — Pierna (Cuádriceps)", "tipo": "piernas", "duracion": "1h 30min", "calentamiento": "5 min bicicleta + movilidad caderas", "ejercicios": [
+          {"nombre": "Sentadilla Goblet con mancuerna", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 2, "notas": "Más peso. Pausa 1 seg abajo."},
+          {"nombre": "Sentadilla búlgara con mancuernas", "series": 4, "repeticiones": "10 c/pierna", "descanso": "90s", "rir": 2, "notas": "Sube peso. Control eccéntrico 3 seg."},
+          {"nombre": "Zancada caminando con mancuernas", "series": 3, "repeticiones": "12 c/pierna", "descanso": "90s", "rir": 2, "notas": "Pasos largos. Rodilla trasera al suelo."},
+          {"nombre": "Extensión de cuádriceps en polea baja", "series": 3, "repeticiones": "12-15 c/pierna", "descanso": "60s", "rir": 2, "notas": "Más peso. Aprieta arriba 2 seg."},
+          {"nombre": "Sentadilla sumo con mancuerna", "series": 3, "repeticiones": "12-15", "descanso": "90s", "rir": 2, "notas": "Más peso. Pausa abajo."},
+          {"nombre": "Step-up en banco con mancuernas", "series": 3, "repeticiones": "10 c/pierna", "descanso": "60s", "rir": 2, "notas": "Sube peso. Sin impulso."},
+          {"nombre": "Elevación de talones sentada con mancuerna", "series": 3, "repeticiones": "15-20", "descanso": "45s", "rir": 2, "notas": "Pausa 2 seg arriba."}
+        ], "vuelta_calma": "20 min cardio: caminadora inclinación 6%, velocidad 5.5 km/h"},
+        {"nombre": "Jueves — Espalda + Abdomen", "tipo": "jale", "duracion": "1h 30min", "calentamiento": "5 min remo + movilidad", "ejercicios": [
+          {"nombre": "Remo con mancuerna 1 brazo en banco", "series": 4, "repeticiones": "10-12 c/lado", "descanso": "60s", "rir": 2, "notas": "Más peso. Eccéntrica 3 seg."},
+          {"nombre": "Jalón al pecho en polea alta", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 2, "notas": "Más peso. Junta omóplatos abajo 2 seg."},
+          {"nombre": "Remo sentado en polea baja", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 2, "notas": "1 serie extra. Más peso."},
+          {"nombre": "Face pull en polea alta con cuerda", "series": 3, "repeticiones": "15", "descanso": "60s", "rir": 2, "notas": "Más peso. Rotación externa completa."},
+          {"nombre": "Pullover con mancuerna en banco", "series": 3, "repeticiones": "12", "descanso": "60s", "rir": 2, "notas": "Más peso. Estiramiento profundo."},
+          {"nombre": "Crunch con polea alta", "series": 3, "repeticiones": "15", "descanso": "45s", "rir": 2, "notas": "Más peso. Control total."},
+          {"nombre": "Elevación de piernas colgada o en banco", "series": 3, "repeticiones": "12-15", "descanso": "45s", "rir": 2, "notas": "Intenta subir un poco más lento."}
+        ], "vuelta_calma": "30 min cardio: bicicleta estática resistencia media"},
+        {"nombre": "Viernes — Isquiotibiales + Glúteo", "tipo": "piernas", "duracion": "1h 30min", "calentamiento": "5 min caminadora + activación glúteo", "ejercicios": [
+          {"nombre": "Romanian Deadlift con mancuernas", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 2, "notas": "Más peso. Eccéntrica 3 seg. Estiramiento profundo."},
+          {"nombre": "Hip Thrust con mancuerna en banco", "series": 4, "repeticiones": "12-15", "descanso": "90s", "rir": 2, "notas": "Más peso vs semana 1 viernes."},
+          {"nombre": "Curl femoral en polea baja", "series": 4, "repeticiones": "12-15 c/pierna", "descanso": "60s", "rir": 2, "notas": "1 serie extra. Más peso."},
+          {"nombre": "Kickback de glúteo con banda", "series": 3, "repeticiones": "15 c/pierna", "descanso": "45s", "rir": 2, "notas": "Banda más gruesa."},
+          {"nombre": "Good morning con mancuerna", "series": 3, "repeticiones": "12", "descanso": "60s", "rir": 2, "notas": "Más peso. Control."},
+          {"nombre": "Abducción de cadera con banda de pie", "series": 3, "repeticiones": "15 c/pierna", "descanso": "45s", "rir": 2, "notas": "Banda más gruesa."},
+          {"nombre": "Clamshell con banda", "series": 3, "repeticiones": "20 c/lado", "descanso": "45s", "rir": 2, "notas": "Pausa arriba 2 seg."}
+        ], "vuelta_calma": "20 min cardio: caminadora inclinación 5%, velocidad 5.5 km/h"},
+        {"nombre": "Sábado — Hombro + Bícep + Trícep", "tipo": "empuje", "duracion": "1h 15min", "calentamiento": "5 min elíptica + rotaciones hombro", "ejercicios": [
+          {"nombre": "Press Arnold con mancuernas sentada", "series": 3, "repeticiones": "10-12", "descanso": "90s", "rir": 2, "notas": "Más peso."},
+          {"nombre": "Elevaciones laterales en polea baja", "series": 4, "repeticiones": "12-15 c/brazo", "descanso": "45s", "rir": 2, "notas": "1 serie extra. Más peso."},
+          {"nombre": "Pájaro con mancuernas inclinada", "series": 3, "repeticiones": "12-15", "descanso": "60s", "rir": 2, "notas": "Más peso."},
+          {"nombre": "Curl concentrado con mancuerna", "series": 3, "repeticiones": "12 c/brazo", "descanso": "45s", "rir": 2, "notas": "Más peso. Eccéntrica 3 seg."},
+          {"nombre": "Fondos en banco para tríceps", "series": 3, "repeticiones": "12-15", "descanso": "60s", "rir": 2, "notas": "Si fácil: pon mancuerna sobre muslos."},
+          {"nombre": "Kickback de tríceps con mancuerna", "series": 3, "repeticiones": "12 c/brazo", "descanso": "45s", "rir": 2, "notas": "Más peso. Aprieta al final 2 seg."}
+        ], "vuelta_calma": "30 min cardio: HIIT bicicleta (30s/60s × 12 rondas) + 6 min cool down"}
+      ]
+    },
+    {
+      "numero": 3,
+      "fase": "Volumen Máximo — Drop sets y rest-pause selectivos",
+      "dias": [
+        {"nombre": "Lunes — Glúteos y Piernas", "tipo": "piernas", "duracion": "1h 30min", "calentamiento": "5 min caminadora + activación", "ejercicios": [
+          {"nombre": "Hip Thrust con mancuerna en banco", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 1, "notas": "Peso más alto de las 3 semanas. Último set: drop set (quita 30% y saca 8-10 reps más)."},
+          {"nombre": "Sentadilla Goblet con mancuerna", "series": 4, "repeticiones": "8-10", "descanso": "120s", "rir": 1, "notas": "Peso más alto. Reps más bajas, más intensidad. Pausa 2 seg abajo."},
+          {"nombre": "Zancada reversa con mancuernas", "series": 4, "repeticiones": "10 c/pierna", "descanso": "90s", "rir": 1, "notas": "1 serie extra + más peso."},
+          {"nombre": "Patada de glúteo en polea baja", "series": 4, "repeticiones": "12 c/pierna", "descanso": "60s", "rir": 1, "notas": "Más peso. Último set: drop set."},
+          {"nombre": "Abductora en polea baja", "series": 3, "repeticiones": "15 c/pierna", "descanso": "60s", "rir": 1, "notas": "Más peso. Pausa arriba."},
+          {"nombre": "Puente de glúteo con banda elástica", "series": 4, "repeticiones": "20", "descanso": "45s", "rir": 1, "notas": "1 serie extra. Banda más gruesa. Finisher brutal."},
+          {"nombre": "Elevación de talones de pie con mancuerna", "series": 3, "repeticiones": "15-20", "descanso": "45s", "rir": 1, "notas": "Pausa 3 seg arriba."}
+        ], "vuelta_calma": "20 min cardio: caminadora inclinación 6%, velocidad 6 km/h"},
+        {"nombre": "Martes — Hombro + Bícep + Trícep + Abdomen", "tipo": "empuje", "duracion": "1h 30min", "calentamiento": "5 min elíptica + movilidad", "ejercicios": [
+          {"nombre": "Press mancuernas sentado en banco", "series": 4, "repeticiones": "8-10", "descanso": "90s", "rir": 1, "notas": "Peso máximo de las 3 semanas."},
+          {"nombre": "Elevaciones laterales con mancuernas", "series": 4, "repeticiones": "12-15", "descanso": "60s", "rir": 1, "notas": "Último set: drop set + partial reps."},
+          {"nombre": "Curl de bíceps alterno con mancuernas", "series": 4, "repeticiones": "10 c/brazo", "descanso": "60s", "rir": 1, "notas": "1 serie extra. Más peso."},
+          {"nombre": "Curl martillo con mancuernas", "series": 3, "repeticiones": "10-12", "descanso": "60s", "rir": 1, "notas": "Más peso. Drop set en último set."},
+          {"nombre": "Extensión de tríceps en polea alta con cuerda", "series": 4, "repeticiones": "12-15", "descanso": "60s", "rir": 1, "notas": "Más peso. Drop set último set."},
+          {"nombre": "Extensión de tríceps sobre cabeza con mancuerna", "series": 3, "repeticiones": "10-12", "descanso": "60s", "rir": 1, "notas": "Más peso."},
+          {"nombre": "Crunch en banco declinado", "series": 3, "repeticiones": "15-20", "descanso": "45s", "rir": 1, "notas": "Con mancuerna al pecho."},
+          {"nombre": "Plancha frontal", "series": 3, "repeticiones": "40 seg", "descanso": "45s", "rir": 1, "notas": "Máxima duración."}
+        ], "vuelta_calma": "30 min cardio: elíptica resistencia alta"},
+        {"nombre": "Miércoles — Pierna (Cuádriceps)", "tipo": "piernas", "duracion": "1h 30min", "calentamiento": "5 min bicicleta + movilidad", "ejercicios": [
+          {"nombre": "Sentadilla Goblet con mancuerna", "series": 4, "repeticiones": "8-10", "descanso": "120s", "rir": 1, "notas": "Peso máximo. Pausa 2 seg abajo."},
+          {"nombre": "Sentadilla búlgara con mancuernas", "series": 4, "repeticiones": "8-10 c/pierna", "descanso": "90s", "rir": 1, "notas": "Peso máximo. Eccéntrica 3 seg."},
+          {"nombre": "Zancada caminando con mancuernas", "series": 4, "repeticiones": "12 c/pierna", "descanso": "90s", "rir": 1, "notas": "1 serie extra. Más peso."},
+          {"nombre": "Extensión de cuádriceps en polea baja", "series": 4, "repeticiones": "12 c/pierna", "descanso": "60s", "rir": 1, "notas": "1 serie extra. Drop set último set."},
+          {"nombre": "Sentadilla sumo con mancuerna", "series": 3, "repeticiones": "12-15", "descanso": "90s", "rir": 1, "notas": "Más peso."},
+          {"nombre": "Step-up en banco con mancuernas", "series": 3, "repeticiones": "10 c/pierna", "descanso": "60s", "rir": 1, "notas": "Más peso."},
+          {"nombre": "Elevación de talones sentada con mancuerna", "series": 3, "repeticiones": "15-20", "descanso": "45s", "rir": 1, "notas": "Pausa 3 seg arriba."}
+        ], "vuelta_calma": "20 min cardio: caminadora inclinación 6%, velocidad 6 km/h"},
+        {"nombre": "Jueves — Espalda + Abdomen", "tipo": "jale", "duracion": "1h 30min", "calentamiento": "5 min remo + movilidad", "ejercicios": [
+          {"nombre": "Remo con mancuerna 1 brazo en banco", "series": 4, "repeticiones": "8-10 c/lado", "descanso": "60s", "rir": 1, "notas": "Peso máximo. Eccéntrica 3 seg."},
+          {"nombre": "Jalón al pecho en polea alta", "series": 4, "repeticiones": "8-10", "descanso": "90s", "rir": 1, "notas": "Peso máximo."},
+          {"nombre": "Remo sentado en polea baja", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 1, "notas": "Más peso. Drop set último set."},
+          {"nombre": "Face pull en polea alta con cuerda", "series": 4, "repeticiones": "15", "descanso": "60s", "rir": 1, "notas": "1 serie extra."},
+          {"nombre": "Pullover con mancuerna en banco", "series": 3, "repeticiones": "10-12", "descanso": "60s", "rir": 1, "notas": "Más peso."},
+          {"nombre": "Crunch con polea alta", "series": 4, "repeticiones": "15", "descanso": "45s", "rir": 1, "notas": "1 serie extra. Más peso."},
+          {"nombre": "Elevación de piernas colgada o en banco", "series": 3, "repeticiones": "15", "descanso": "45s", "rir": 1, "notas": "Intenta colgada esta semana."}
+        ], "vuelta_calma": "30 min cardio: bicicleta estática resistencia media-alta"},
+        {"nombre": "Viernes — Isquiotibiales + Glúteo", "tipo": "piernas", "duracion": "1h 30min", "calentamiento": "5 min caminadora + activación", "ejercicios": [
+          {"nombre": "Romanian Deadlift con mancuernas", "series": 4, "repeticiones": "8-10", "descanso": "90s", "rir": 1, "notas": "Peso máximo. Eccéntrica 4 seg."},
+          {"nombre": "Hip Thrust con mancuerna en banco", "series": 4, "repeticiones": "10-12", "descanso": "90s", "rir": 1, "notas": "Peso máximo. Drop set último set."},
+          {"nombre": "Curl femoral en polea baja", "series": 4, "repeticiones": "12 c/pierna", "descanso": "60s", "rir": 1, "notas": "Más peso. Drop set último set."},
+          {"nombre": "Kickback de glúteo con banda", "series": 4, "repeticiones": "15 c/pierna", "descanso": "45s", "rir": 1, "notas": "1 serie extra. Banda más gruesa."},
+          {"nombre": "Good morning con mancuerna", "series": 3, "repeticiones": "10-12", "descanso": "60s", "rir": 1, "notas": "Más peso."},
+          {"nombre": "Abducción de cadera con banda de pie", "series": 3, "repeticiones": "15 c/pierna", "descanso": "45s", "rir": 1, "notas": "Banda más gruesa. Pausa arriba."},
+          {"nombre": "Clamshell con banda", "series": 3, "repeticiones": "20 c/lado", "descanso": "45s", "rir": 1, "notas": "Pausa 3 seg arriba."}
+        ], "vuelta_calma": "20 min cardio: caminadora inclinación 6%, velocidad 6 km/h"},
+        {"nombre": "Sábado — Hombro + Bícep + Trícep", "tipo": "empuje", "duracion": "1h 15min", "calentamiento": "5 min elíptica + rotaciones", "ejercicios": [
+          {"nombre": "Press Arnold con mancuernas sentada", "series": 4, "repeticiones": "8-10", "descanso": "90s", "rir": 1, "notas": "1 serie extra. Peso máximo."},
+          {"nombre": "Elevaciones laterales en polea baja", "series": 4, "repeticiones": "12-15 c/brazo", "descanso": "45s", "rir": 1, "notas": "Drop set último set."},
+          {"nombre": "Pájaro con mancuernas inclinada", "series": 3, "repeticiones": "12-15", "descanso": "60s", "rir": 1, "notas": "Más peso."},
+          {"nombre": "Curl concentrado con mancuerna", "series": 3, "repeticiones": "10 c/brazo", "descanso": "45s", "rir": 1, "notas": "Más peso. Eccéntrica 4 seg."},
+          {"nombre": "Fondos en banco para tríceps", "series": 3, "repeticiones": "15+", "descanso": "60s", "rir": 1, "notas": "Con peso en muslos si posible."},
+          {"nombre": "Kickback de tríceps con mancuerna", "series": 3, "repeticiones": "12 c/brazo", "descanso": "45s", "rir": 1, "notas": "Más peso. Drop set último set."}
+        ], "vuelta_calma": "30 min cardio: HIIT bicicleta (25s/50s × 14 rondas) + 5 min cool down"}
+      ]
+    },
+    {
+      "numero": 4,
+      "fase": "Deload — Recuperación activa",
+      "dias": [
+        {"nombre": "Lunes — Glúteos y Piernas (deload)", "tipo": "piernas", "duracion": "1h 15min", "calentamiento": "5 min caminadora + movilidad", "ejercicios": [
+          {"nombre": "Hip Thrust con mancuerna en banco", "series": 3, "repeticiones": "12-15", "descanso": "90s", "rir": 4, "notas": "60% del peso de Sem3. Técnica perfecta. Recuperación."},
+          {"nombre": "Sentadilla Goblet con mancuerna", "series": 3, "repeticiones": "10-12", "descanso": "90s", "rir": 4, "notas": "60% del peso. Enfoque en técnica."},
+          {"nombre": "Zancada reversa con mancuernas", "series": 2, "repeticiones": "10 c/pierna", "descanso": "90s", "rir": 4, "notas": "Ligero. Movilidad."},
+          {"nombre": "Patada de glúteo en polea baja", "series": 2, "repeticiones": "12 c/pierna", "descanso": "60s", "rir": 4, "notas": "Peso ligero. Conexión mente-músculo."},
+          {"nombre": "Puente de glúteo con banda", "series": 2, "repeticiones": "15", "descanso": "45s", "rir": 4, "notas": "Banda ligera. Activación."}
+        ], "vuelta_calma": "20 min cardio: caminadora inclinación 3%, velocidad 5 km/h (recuperación activa)"},
+        {"nombre": "Martes — Hombro + Bícep + Trícep + Abdomen (deload)", "tipo": "empuje", "duracion": "1h 15min", "calentamiento": "5 min elíptica ligera", "ejercicios": [
+          {"nombre": "Press mancuernas sentado en banco", "series": 3, "repeticiones": "10-12", "descanso": "90s", "rir": 4, "notas": "60% del peso. Técnica."},
+          {"nombre": "Elevaciones laterales con mancuernas", "series": 3, "repeticiones": "12-15", "descanso": "60s", "rir": 4, "notas": "Ligero. Conexión."},
+          {"nombre": "Curl de bíceps alterno", "series": 2, "repeticiones": "12 c/brazo", "descanso": "60s", "rir": 4, "notas": "Ligero."},
+          {"nombre": "Extensión de tríceps en polea alta", "series": 2, "repeticiones": "12-15", "descanso": "60s", "rir": 4, "notas": "Ligero."},
+          {"nombre": "Plancha frontal", "series": 2, "repeticiones": "25 seg", "descanso": "45s", "rir": 4, "notas": "Reducido. Recuperación."}
+        ], "vuelta_calma": "30 min cardio: elíptica ligera, FC <130 bpm"},
+        {"nombre": "Miércoles — Pierna Cuádriceps (deload)", "tipo": "piernas", "duracion": "1h 15min", "calentamiento": "5 min bicicleta ligera", "ejercicios": [
+          {"nombre": "Sentadilla Goblet con mancuerna", "series": 3, "repeticiones": "10-12", "descanso": "90s", "rir": 4, "notas": "60% peso. Rango completo."},
+          {"nombre": "Sentadilla búlgara con mancuernas", "series": 2, "repeticiones": "10 c/pierna", "descanso": "90s", "rir": 4, "notas": "Ligero. Movilidad."},
+          {"nombre": "Sentadilla sumo con mancuerna", "series": 2, "repeticiones": "12", "descanso": "90s", "rir": 4, "notas": "Ligero."},
+          {"nombre": "Step-up en banco con mancuernas", "series": 2, "repeticiones": "10 c/pierna", "descanso": "60s", "rir": 4, "notas": "Ligero. Estabilidad."}
+        ], "vuelta_calma": "20 min cardio: caminadora inclinación 3%, velocidad 5 km/h"},
+        {"nombre": "Jueves — Espalda + Abdomen (deload)", "tipo": "jale", "duracion": "1h 15min", "calentamiento": "5 min remo ligero", "ejercicios": [
+          {"nombre": "Remo con mancuerna 1 brazo", "series": 3, "repeticiones": "10 c/lado", "descanso": "60s", "rir": 4, "notas": "60% peso. Técnica."},
+          {"nombre": "Jalón al pecho en polea alta", "series": 3, "repeticiones": "10-12", "descanso": "90s", "rir": 4, "notas": "Ligero. Omóplatos."},
+          {"nombre": "Face pull en polea alta", "series": 2, "repeticiones": "15", "descanso": "60s", "rir": 4, "notas": "Ligero. Postura."},
+          {"nombre": "Crunch con polea alta", "series": 2, "repeticiones": "12", "descanso": "45s", "rir": 4, "notas": "Ligero."}
+        ], "vuelta_calma": "30 min cardio: bicicleta ligera"},
+        {"nombre": "Viernes — Isquiotibiales + Glúteo (deload)", "tipo": "piernas", "duracion": "1h 15min", "calentamiento": "5 min caminadora + movilidad", "ejercicios": [
+          {"nombre": "Romanian Deadlift con mancuernas", "series": 3, "repeticiones": "10-12", "descanso": "90s", "rir": 4, "notas": "60% peso. Estiramiento profundo."},
+          {"nombre": "Hip Thrust con mancuerna", "series": 3, "repeticiones": "12-15", "descanso": "90s", "rir": 4, "notas": "Ligero. Conexión."},
+          {"nombre": "Curl femoral en polea baja", "series": 2, "repeticiones": "12 c/pierna", "descanso": "60s", "rir": 4, "notas": "Ligero."},
+          {"nombre": "Clamshell con banda", "series": 2, "repeticiones": "15 c/lado", "descanso": "45s", "rir": 4, "notas": "Banda ligera. Activación."}
+        ], "vuelta_calma": "20 min cardio: caminadora inclinación 3%, velocidad 5 km/h"},
+        {"nombre": "Sábado — Hombro + Bícep + Trícep (deload)", "tipo": "empuje", "duracion": "1h", "calentamiento": "5 min elíptica", "ejercicios": [
+          {"nombre": "Press Arnold con mancuernas", "series": 2, "repeticiones": "10-12", "descanso": "90s", "rir": 4, "notas": "60% peso."},
+          {"nombre": "Elevaciones laterales con mancuernas", "series": 2, "repeticiones": "12-15", "descanso": "45s", "rir": 4, "notas": "Ligero."},
+          {"nombre": "Curl concentrado", "series": 2, "repeticiones": "12 c/brazo", "descanso": "45s", "rir": 4, "notas": "Ligero."},
+          {"nombre": "Fondos en banco para tríceps", "series": 2, "repeticiones": "12", "descanso": "60s", "rir": 4, "notas": "Solo peso corporal."}
+        ], "vuelta_calma": "30 min cardio: caminata suave o bicicleta ligera (recuperación total)"}
+      ]
+    }
+  ],
+  "progresion_semanal": "Sem1 Volumen Base (3 series, aprender técnica) → Sem2 Volumen Incrementado (+1 serie en compuestos, tempo eccéntrico 3s, pausa isométrica 2s) → Sem3 Volumen Máximo (+1-2 series, drop sets y rest-pause en 1-2 ejercicios por sesión) → Sem4 Deload (60% volumen, peso moderado, recuperación activa)",
+  "notas_coach": "Julie, este plan está diseñado para 6 días con el equipo disponible en tu gym (mancuernas, polea, banco, bandas). Cada sesión incluye cardio después de las pesas para maximizar quema de grasa sin comprometer la fuerza. La progresión es automática: cada semana el RIR baja (más intensidad) y en la semana 4 descansas activamente para que tu cuerpo se recupere y crezca. No saltes el deload — es donde ocurre la magia de la adaptación."
+}
