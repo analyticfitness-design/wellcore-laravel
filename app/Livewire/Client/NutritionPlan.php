@@ -37,6 +37,10 @@ class NutritionPlan extends Component
     public ?array $restDayInfo = null;
     public ?string $hydrationNote = null;
 
+    // Tips + comidas sugeridas (RISE-level features)
+    public array $tips = [];
+    public array $comidasSugeridas = [];
+
     /** Show nutrition onboarding tutorial for first-time users */
     public bool $showTutorial = false;
 
@@ -180,6 +184,18 @@ class NutritionPlan extends Component
                 'calorias_objetivo' => (int) ($rest['calorias_objetivo'] ?? 0),
                 'ajustes'           => $rest['ajustes'] ?? [],
             ];
+        }
+
+        // Tips nutricionales
+        $this->tips = $this->plan['tips'] ?? $this->plan['tips_nutricionales'] ?? [];
+        if (!is_array($this->tips)) {
+            $this->tips = [];
+        }
+
+        // Comidas sugeridas (multiple options per meal, RISE-level feature)
+        $this->comidasSugeridas = $this->plan['comidas_sugeridas'] ?? [];
+        if (!is_array($this->comidasSugeridas)) {
+            $this->comidasSugeridas = [];
         }
 
         // Hydration note

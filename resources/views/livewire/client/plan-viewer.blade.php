@@ -206,65 +206,51 @@
                                             $rirClass = $ejRir !== null
                                                 ? ($ejRir >= 3 ? 'bg-emerald-500/15 text-emerald-400' : ($ejRir >= 2 ? 'bg-amber-500/15 text-amber-400' : 'bg-red-500/15 text-red-400'))
                                                 : '';
-                                            $hasNotes = !empty($ejNotas);
                                         @endphp
-                                        <div x-data="{ showNote: false }">
+                                        <div>
                                             {{-- Main row --}}
-                                            <div class="flex items-center gap-3 px-4 py-2.5">
+                                            <div class="flex items-start gap-3 px-4 py-3">
                                                 {{-- Index --}}
-                                                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary font-data text-[11px] font-black text-wc-text-tertiary">
+                                                <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-wc-accent/10 font-data text-[11px] font-bold text-wc-accent">
                                                     {{ $ejIdx + 1 }}
                                                 </span>
 
-                                                {{-- Name --}}
-                                                <p class="min-w-0 flex-1 text-sm font-semibold leading-snug text-wc-text">{{ $ejName }}</p>
+                                                {{-- Name + notes inline --}}
+                                                <div class="min-w-0 flex-1">
+                                                    <p class="text-sm font-semibold leading-snug text-wc-text">{{ $ejName }}</p>
 
-                                                {{-- Right chips --}}
-                                                <div class="flex shrink-0 items-center gap-1">
-                                                    @if($ejSeries || $ejReps)
-                                                        <span class="rounded-lg bg-wc-bg px-2.5 py-1 font-data text-xs font-black text-wc-text tabular-nums">
-                                                            @if($ejSeries && $ejReps){{ $ejSeries }}<span class="text-wc-text-tertiary">×</span>{{ $ejReps }}
-                                                            @elseif($ejSeries){{ $ejSeries }}s
-                                                            @else{{ $ejReps }}r
-                                                            @endif
-                                                        </span>
-                                                    @endif
+                                                    <div class="mt-1.5 flex flex-wrap items-center gap-1.5">
+                                                        @if($ejSeries || $ejReps)
+                                                            <span class="rounded-lg bg-wc-bg px-2.5 py-1 font-data text-xs font-black text-wc-text tabular-nums">
+                                                                @if($ejSeries && $ejReps){{ $ejSeries }}<span class="text-wc-text-tertiary">×</span>{{ $ejReps }}
+                                                                @elseif($ejSeries){{ $ejSeries }}s
+                                                                @else{{ $ejReps }}r
+                                                                @endif
+                                                            </span>
+                                                        @endif
 
-                                                    @if($ejRest)
-                                                        <span class="flex items-center gap-0.5 rounded-lg bg-wc-bg px-2 py-1 text-[10px] font-medium text-wc-text-tertiary">
-                                                            <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                                                            </svg>
-                                                            {{ is_numeric($ejRest) ? $ejRest.'s' : $ejRest }}
-                                                        </span>
-                                                    @endif
+                                                        @if($ejRest)
+                                                            <span class="flex items-center gap-0.5 rounded-lg bg-wc-bg px-2 py-1 text-[10px] font-medium text-wc-text-tertiary">
+                                                                <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                                                </svg>
+                                                                {{ is_numeric($ejRest) ? $ejRest.'s' : $ejRest }}
+                                                            </span>
+                                                        @endif
 
-                                                    @if($ejRir !== null)
-                                                        <span class="rounded-lg px-2 py-1 text-[10px] font-black {{ $rirClass }}">RIR{{ $ejRir }}</span>
-                                                    @endif
+                                                        @if($ejRir !== null)
+                                                            <span class="rounded-lg px-2 py-1 text-[10px] font-black {{ $rirClass }}">RIR{{ $ejRir }}</span>
+                                                        @endif
+                                                    </div>
 
-                                                    @if($hasNotes)
-                                                        <button @click="showNote = !showNote"
-                                                                class="flex h-6 w-6 items-center justify-center rounded-lg bg-wc-bg text-wc-text-tertiary transition-colors hover:text-wc-text"
-                                                                :class="showNote ? 'text-wc-accent' : ''">
-                                                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7" />
-                                                            </svg>
-                                                        </button>
+                                                    {{-- Execution tips — always visible --}}
+                                                    @if(!empty($ejNotas))
+                                                        <p class="mt-1.5 text-xs italic leading-relaxed text-wc-text-tertiary">
+                                                            {{ $ejNotas }}
+                                                        </p>
                                                     @endif
                                                 </div>
                                             </div>
-
-                                            {{-- Coach note (collapsible) --}}
-                                            @if($hasNotes)
-                                                <div x-show="showNote" x-cloak
-                                                     x-transition:enter="transition ease-out duration-150"
-                                                     x-transition:enter-start="opacity-0 -translate-y-1"
-                                                     x-transition:enter-end="opacity-100 translate-y-0"
-                                                     class="mx-4 mb-2.5 rounded-lg bg-wc-bg-secondary/50 px-3 py-2 text-xs leading-relaxed text-wc-text-secondary">
-                                                    {{ $ejNotas }}
-                                                </div>
-                                            @endif
                                         </div>
                                     @empty
                                         <p class="px-4 py-3 text-xs text-wc-text-tertiary">Sin ejercicios registrados.</p>

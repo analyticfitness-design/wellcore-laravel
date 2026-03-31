@@ -228,6 +228,94 @@
         </div>
         @endif
 
+        {{-- ─── TIPS NUTRICIONALES ────────────────────────────────────────── --}}
+        @if(count($tips) > 0)
+        <div class="mb-6 rounded-xl border border-wc-border bg-wc-bg-secondary p-5">
+            <h3 class="font-display text-xl tracking-wide text-wc-text">TIPS NUTRICIONALES</h3>
+            <ul class="mt-4 space-y-2.5">
+                @foreach($tips as $tip)
+                    <li class="flex items-start gap-3">
+                        <div class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-wc-accent/15">
+                            <svg class="h-3 w-3 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                            </svg>
+                        </div>
+                        <p class="text-sm leading-relaxed text-wc-text-secondary">{{ $tip }}</p>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+        {{-- ─── COMIDAS SUGERIDAS (opciones múltiples) ────────────────────── --}}
+        @if(count($comidasSugeridas) > 0)
+        <div class="mb-6 rounded-xl border border-wc-border bg-wc-bg-secondary p-5">
+            <h3 class="font-display text-xl tracking-wide text-wc-text">COMIDAS SUGERIDAS</h3>
+            <p class="mt-1 text-xs text-wc-text-tertiary">Opciones de alimentos por momento del día</p>
+
+            <div class="mt-4 space-y-2">
+                @foreach($comidasSugeridas as $comidaSug)
+                    @php
+                        $nombreCS = $comidaSug['nombre'] ?? 'Comida';
+                        $opcionesCS = $comidaSug['opciones'] ?? [];
+                        $nombreLowerCS = strtolower($nombreCS);
+                        $iconBgCS = match(true) {
+                            str_contains($nombreLowerCS, 'desayuno')       => 'bg-amber-500/10 text-amber-400',
+                            str_contains($nombreLowerCS, 'almuerzo')
+                                || str_contains($nombreLowerCS, 'comida') => 'bg-blue-500/10 text-blue-400',
+                            str_contains($nombreLowerCS, 'cena')          => 'bg-indigo-500/10 text-indigo-400',
+                            str_contains($nombreLowerCS, 'pre-entreno')
+                                || str_contains($nombreLowerCS, 'pre ')   => 'bg-emerald-500/10 text-emerald-400',
+                            str_contains($nombreLowerCS, 'post')          => 'bg-orange-500/10 text-orange-400',
+                            str_contains($nombreLowerCS, 'snack')
+                                || str_contains($nombreLowerCS, 'merienda') => 'bg-pink-500/10 text-pink-400',
+                            default                                       => 'bg-wc-accent/10 text-amber-400',
+                        };
+                    @endphp
+
+                    <div
+                        x-data="{ open: false }"
+                        class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary"
+                    >
+                        <button
+                            x-on:click="open = !open"
+                            class="flex w-full items-center gap-3 p-4 text-left transition hover:bg-wc-bg-secondary/50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-wc-accent"
+                            :aria-expanded="open ? 'true' : 'false'"
+                        >
+                            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg {{ $iconBgCS }}">
+                                <span class="font-data text-sm font-bold">{{ $loop->iteration }}</span>
+                            </div>
+
+                            <div class="flex-1">
+                                <p class="font-display text-sm tracking-wide text-wc-text">{{ strtoupper($nombreCS) }}</p>
+                                @if(!empty($opcionesCS))
+                                    <p class="text-[11px] text-wc-text-tertiary">{{ count($opcionesCS) }} opcion{{ count($opcionesCS) !== 1 ? 'es' : '' }}</p>
+                                @endif
+                            </div>
+
+                            <svg class="h-4 w-4 shrink-0 text-wc-text-tertiary transition-transform duration-200"
+                                 :class="{ 'rotate-180': open }"
+                                 fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </button>
+
+                        <div x-show="open" x-collapse class="border-t border-wc-border/50">
+                            <ul class="space-y-2 p-4">
+                                @foreach($opcionesCS as $opcion)
+                                    <li class="flex items-start gap-2.5">
+                                        <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                                        <span class="text-sm leading-relaxed text-wc-text-secondary">{{ $opcion }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
         {{-- ─── HIDRATACIÓN ────────────────────────────────────────────────── --}}
         <div class="mb-6 rounded-xl border border-wc-border bg-wc-bg-secondary p-5">
             <div class="mb-4 flex items-center justify-between">
