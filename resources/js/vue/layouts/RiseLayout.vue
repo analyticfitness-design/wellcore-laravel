@@ -9,6 +9,27 @@ const router = useRouter();
 
 const sidebarOpen = ref(false);
 const loggingOut = ref(false);
+const stoppingImpersonation = ref(false);
+
+const isImpersonating = computed(() => authStore.isImpersonating);
+
+function stopImpersonation() {
+    stoppingImpersonation.value = true;
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/admin/impersonate/stop';
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
+    if (csrf) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = '_token';
+        input.value = csrf;
+        form.appendChild(input);
+    }
+    authStore.clearAuth();
+    document.body.appendChild(form);
+    form.submit();
+}
 
 const userName = computed(() => {
     return localStorage.getItem('wc_user_name') || 'Usuario';
@@ -96,6 +117,22 @@ const bottomNav = [
 
 <template>
   <div class="min-h-screen bg-wc-bg text-wc-text">
+
+    <!-- Impersonation banner -->
+    <div v-if="isImpersonating" class="fixed top-0 left-0 right-0 z-[90] flex items-center justify-center gap-3 bg-amber-500 px-4 py-2 text-sm font-medium text-black">
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+      </svg>
+      Viendo portal como {{ userName }}
+      <button
+        @click="stopImpersonation"
+        :disabled="stoppingImpersonation"
+        class="rounded-md bg-black/20 px-3 py-1 text-xs font-semibold hover:bg-black/30 transition-colors"
+      >
+        {{ stoppingImpersonation ? 'Volviendo...' : 'Volver a Admin' }}
+      </button>
+    </div>
 
     <!-- Mobile sidebar overlay -->
     <Transition
@@ -203,11 +240,11 @@ const bottomNav = [
       </div>
     </aside>
 
-    <!-- Main wrapper (offset by sidebar on lg+) -->
-    <div class="lg:pl-60">
+    <!-- Main wrapper (offset by sidebar on lg+, + impersonation banner) -->
+    <div class="lg:pl-60" :class="{ 'pt-10': isImpersonating }">
 
       <!-- Top bar -->
-      <header class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-wc-border bg-wc-bg/80 px-4 backdrop-blur-xl sm:px-6">
+      <header class="sticky z-30 flex h-16 items-center justify-between border-b border-wc-border bg-wc-bg/80 px-4 backdrop-blur-xl sm:px-6" :class="isImpersonating ? 'top-10' : 'top-0'">
         <!-- Left: hamburger (mobile) -->
         <div class="flex items-center gap-3">
           <button
