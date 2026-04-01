@@ -7,14 +7,17 @@ export const useAuthStore = defineStore('auth', () => {
     // sync it to localStorage so the SPA uses the correct token.
     if (window.__WC_SESSION) {
         const s = window.__WC_SESSION;
-        if (s.token && s.token !== localStorage.getItem('wc_token')) {
+        // Always sync token from session if present
+        if (s.token) {
             localStorage.setItem('wc_token', s.token);
             localStorage.setItem('wc_user_type', s.userType || 'client');
             localStorage.setItem('wc_user_id', String(s.userId || ''));
-            if (s.impersonating) {
-                localStorage.setItem('wc_impersonating', 'true');
-                localStorage.setItem('wc_admin_token', localStorage.getItem('wc_token') || '');
-            }
+        }
+        // Always sync impersonation state from session (source of truth)
+        if (s.impersonating) {
+            localStorage.setItem('wc_impersonating', 'true');
+        } else {
+            localStorage.removeItem('wc_impersonating');
         }
     }
 
