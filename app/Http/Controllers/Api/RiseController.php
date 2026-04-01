@@ -98,10 +98,10 @@ class RiseController extends Controller
             $startDate  = $program->start_date?->format('d M Y');
             $endDate    = $program->end_date?->format('d M Y');
             $totalDays  = $program->start_date && $program->end_date
-                ? Carbon::parse($program->start_date)->diffInDays($program->end_date)
+                ? (int) Carbon::parse($program->start_date)->diffInDays($program->end_date)
                 : 84;
-            $daysElapsed   = $program->start_date ? max(0, Carbon::parse($program->start_date)->diffInDays(now())) : 0;
-            $daysRemaining = max(0, $totalDays - $daysElapsed);
+            $daysElapsed   = $program->start_date ? (int) max(0, Carbon::parse($program->start_date)->diffInDays(now())) : 0;
+            $daysRemaining = (int) max(0, $totalDays - $daysElapsed);
             $progressPct   = $totalDays > 0 ? min(100, round(($daysElapsed / $totalDays) * 100, 1)) : 0;
 
             $programJson = $program->personalized_program ?? [];
@@ -232,11 +232,11 @@ class RiseController extends Controller
         $habitsPlan    = $programJson['plan_habitos']['habitos'] ?? $programJson['plan_habitos'] ?? [];
 
         $totalDays = $riseProgram->start_date && $riseProgram->end_date
-            ? Carbon::parse($riseProgram->start_date)->diffInDays($riseProgram->end_date)
+            ? (int) Carbon::parse($riseProgram->start_date)->diffInDays($riseProgram->end_date)
             : 84;
 
         $daysElapsed = $riseProgram->start_date
-            ? max(0, Carbon::parse($riseProgram->start_date)->diffInDays(now()))
+            ? (int) max(0, Carbon::parse($riseProgram->start_date)->diffInDays(now()))
             : 0;
 
         $totalWeeks  = $trainingPlan['duracion_semanas'] ?? 4;
