@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\ClientStatus;
-use App\Enums\PlanType;
 use App\Enums\UserType;
 use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
@@ -23,7 +21,6 @@ use App\Models\CoachProfile;
 use App\Models\CoachPwaConfig;
 use App\Models\CoachVideoTip;
 use App\Models\Payment;
-use App\Models\PersonalRecord;
 use App\Models\PlanTemplate;
 use App\Models\PodMember;
 use App\Models\PodMessage;
@@ -35,8 +32,7 @@ use App\Services\AIService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -60,7 +56,7 @@ class CoachController extends Controller
         }
 
         $admin = $auth['user'];
-        $role  = $admin->role?->value ?? $admin->role ?? '';
+        $role = $admin->role?->value ?? $admin->role ?? '';
 
         if (! in_array($role, ['coach', 'admin', 'superadmin', 'jefe'])) {
             abort(403, 'No tienes permisos para acceder al portal de coach.');
@@ -72,7 +68,7 @@ class CoachController extends Controller
     /**
      * Get client IDs assigned to this coach via assigned_plans.
      */
-    protected function getCoachClientIds(int $coachId): \Illuminate\Support\Collection
+    protected function getCoachClientIds(int $coachId): Collection
     {
         return AssignedPlan::where('assigned_by', $coachId)
             ->pluck('client_id')
@@ -90,21 +86,21 @@ class CoachController extends Controller
      */
     public function dashboard(Request $request): JsonResponse
     {
-        $coach   = $this->resolveCoachOrFail($request);
+        $coach = $this->resolveCoachOrFail($request);
         $coachId = $coach->id;
 
         $hour = (int) now()->format('H');
         $greeting = match (true) {
             $hour < 12 => 'Buenos dias',
             $hour < 18 => 'Buenas tardes',
-            default    => 'Buenas noches',
+            default => 'Buenas noches',
         };
 
         $coachName = explode(' ', $coach->name ?? 'Coach')[0];
 
         $clientIds = $this->getCoachClientIds($coachId);
 
-        $clients       = Client::whereIn('id', $clientIds)->where('status', 'activo')->get();
+        $clients = Client::whereIn('id', $clientIds)->where('status', 'activo')->get();
         $activeClients = $clients->count();
 
         $pendingCheckins = Checkin::whereIn('client_id', $clientIds)
@@ -131,15 +127,15 @@ class CoachController extends Controller
         $chartData = $this->loadCoachChartData($coachId, $clientIds);
 
         return response()->json([
-            'greeting'            => $greeting,
-            'coachName'           => $coachName,
-            'activeClients'       => $activeClients,
-            'pendingCheckins'     => $pendingCheckins,
-            'unreadMessages'      => $unreadMessages,
-            'plansThisMonth'      => $plansThisMonth,
-            'attentionClients'    => $attentionClients,
-            'recentMessages'      => $recentMessages,
-            'clientProgressData'  => $chartData['clientProgressData'],
+            'greeting' => $greeting,
+            'coachName' => $coachName,
+            'activeClients' => $activeClients,
+            'pendingCheckins' => $pendingCheckins,
+            'unreadMessages' => $unreadMessages,
+            'plansThisMonth' => $plansThisMonth,
+            'attentionClients' => $attentionClients,
+            'recentMessages' => $recentMessages,
+            'clientProgressData' => $chartData['clientProgressData'],
             'checkinFrequencyData' => $chartData['checkinFrequencyData'],
         ]);
     }
@@ -154,8 +150,8 @@ class CoachController extends Controller
             ->limit(5)
             ->get();
 
-        $pendingClientIds    = $pendingByClient->pluck('client_id');
-        $clientsById         = Client::whereIn('id', $pendingClientIds)->get()->keyBy('id');
+        $pendingClientIds = $pendingByClient->pluck('client_id');
+        $clientsById = Client::whereIn('id', $pendingClientIds)->get()->keyBy('id');
         $lastMessagesByClient = CoachMessage::whereIn('client_id', $pendingClientIds)
             ->orderByDesc('created_at')
             ->get()
@@ -165,17 +161,19 @@ class CoachController extends Controller
         $result = [];
         foreach ($pendingByClient as $row) {
             $client = $clientsById->get($row->client_id);
-            if (! $client) continue;
+            if (! $client) {
+                continue;
+            }
 
             $lastMessage = $lastMessagesByClient->get($row->client_id);
 
             $result[] = [
-                'id'               => $client->id,
-                'name'             => $client->name,
-                'plan'             => $client->plan?->label() ?? 'Sin plan',
+                'id' => $client->id,
+                'name' => $client->name,
+                'plan' => $client->plan?->label() ?? 'Sin plan',
                 'pending_checkins' => $row->pending_count,
-                'oldest_checkin'   => Carbon::parse($row->oldest_checkin)->diffForHumans(),
-                'last_message'     => $lastMessage ? Carbon::parse($lastMessage->created_at)->diffForHumans() : 'Sin mensajes',
+                'oldest_checkin' => Carbon::parse($row->oldest_checkin)->diffForHumans(),
+                'last_message' => $lastMessage ? Carbon::parse($lastMessage->created_at)->diffForHumans() : 'Sin mensajes',
             ];
         }
 
@@ -191,16 +189,16 @@ class CoachController extends Controller
             ->get();
 
         $messageClientIds = $messages->pluck('client_id')->unique();
-        $clientsById      = Client::whereIn('id', $messageClientIds)->get()->keyBy('id');
+        $clientsById = Client::whereIn('id', $messageClientIds)->get()->keyBy('id');
 
         $result = [];
         foreach ($messages as $msg) {
-            $client   = $clientsById->get($msg->client_id);
+            $client = $clientsById->get($msg->client_id);
             $result[] = [
                 'client_name' => $client->name ?? 'Cliente',
-                'message'     => str()->limit($msg->message, 80),
-                'time_ago'    => Carbon::parse($msg->created_at)->diffForHumans(),
-                'is_read'     => $msg->read_at !== null,
+                'message' => str()->limit($msg->message, 80),
+                'time_ago' => Carbon::parse($msg->created_at)->diffForHumans(),
+                'is_read' => $msg->read_at !== null,
             ];
         }
 
@@ -219,19 +217,19 @@ class CoachController extends Controller
             ->limit(10)
             ->get()
             ->map(fn ($row) => [
-                'name'     => explode(' ', $row->name)[0],
+                'name' => explode(' ', $row->name)[0],
                 'sessions' => (int) $row->sessions,
             ])
             ->toArray();
 
         $checkinFrequencyData = Checkin::whereIn('client_id', $clientIds)
             ->where('checkin_date', '>=', now()->subWeeks(8)->toDateString())
-            ->selectRaw("YEARWEEK(checkin_date, 1) as yw, COUNT(*) as count")
+            ->selectRaw('YEARWEEK(checkin_date, 1) as yw, COUNT(*) as count')
             ->groupBy('yw')
             ->orderBy('yw')
             ->get()
             ->map(fn ($row) => [
-                'week'  => 'Sem ' . substr($row->yw, 4),
+                'week' => 'Sem '.substr($row->yw, 4),
                 'count' => (int) $row->count,
             ])
             ->toArray();
@@ -249,54 +247,122 @@ class CoachController extends Controller
      */
     public function clients(Request $request): JsonResponse
     {
-        $coach   = $this->resolveCoachOrFail($request);
+        $coach = $this->resolveCoachOrFail($request);
         $coachId = $coach->id;
-        $search  = $request->query('search', '');
+        $search = $request->query('search', '');
 
         $clientIds = $this->getCoachClientIds($coachId);
 
         $query = Client::whereIn('id', $clientIds)->where('status', 'activo');
         if ($search !== '') {
-            $query->where('name', 'like', '%' . $search . '%');
+            $query->where('name', 'like', '%'.$search.'%');
         }
 
-        $clients   = $query->orderBy('name')->get();
-        $cIds      = $clients->pluck('id');
+        $clients = $query->orderBy('name')->get();
+        $cIds = $clients->pluck('id');
 
-        $lastCheckins   = Checkin::whereIn('client_id', $cIds)->orderByDesc('checkin_date')->get()->keyBy('client_id');
-        $lastMessages   = CoachMessage::whereIn('client_id', $cIds)->where('coach_id', $coachId)->orderByDesc('created_at')->get()->keyBy('client_id');
-        $xpRecords      = ClientXp::whereIn('client_id', $cIds)->get()->keyBy('client_id');
-        $activePlans    = AssignedPlan::whereIn('client_id', $cIds)->where('assigned_by', $coachId)->where('active', true)->orderByDesc('created_at')->get()->keyBy('client_id');
-        $pendingCounts  = Checkin::whereIn('client_id', $cIds)->whereNull('coach_reply')->selectRaw('client_id, COUNT(*) as cnt')->groupBy('client_id')->pluck('cnt', 'client_id');
+        // Efficient: one row per client via MAX subquery
+        $lastCheckinDates = Checkin::whereIn('client_id', $cIds)
+            ->selectRaw('client_id, MAX(checkin_date) as last_checkin')
+            ->groupBy('client_id')
+            ->pluck('last_checkin', 'client_id');
 
-        $clientData = $clients->map(function ($client) use ($lastCheckins, $lastMessages, $xpRecords, $activePlans, $pendingCounts) {
-            $lastCheckin    = $lastCheckins->get($client->id);
-            $lastMessage    = $lastMessages->get($client->id);
-            $xp             = $xpRecords->get($client->id);
-            $activePlan     = $activePlans->get($client->id);
+        $lastMessageDates = CoachMessage::whereIn('client_id', $cIds)
+            ->where('coach_id', $coachId)
+            ->selectRaw('client_id, MAX(created_at) as last_msg')
+            ->groupBy('client_id')
+            ->pluck('last_msg', 'client_id');
+
+        $xpRecords = ClientXp::whereIn('client_id', $cIds)->get()->keyBy('client_id');
+        $activePlans = AssignedPlan::whereIn('client_id', $cIds)
+            ->where('assigned_by', $coachId)
+            ->where('active', true)
+            ->orderByDesc('created_at')
+            ->get()
+            ->unique('client_id')
+            ->keyBy('client_id');
+        $pendingCounts = Checkin::whereIn('client_id', $cIds)
+            ->whereNull('coach_reply')
+            ->selectRaw('client_id, COUNT(*) as cnt')
+            ->groupBy('client_id')
+            ->pluck('cnt', 'client_id');
+
+        // Last activity dates for days_since_activity
+        $lastTrainingDates = TrainingLog::whereIn('client_id', $cIds)
+            ->where('completed', true)
+            ->selectRaw('client_id, MAX(log_date) as last_training')
+            ->groupBy('client_id')
+            ->pluck('last_training', 'client_id');
+
+        // Adherence: completed sessions / expected (4 per week * 4 weeks = 16) over last 4 weeks
+        $fourWeeksAgo = now()->subWeeks(4)->toDateString();
+        $completedCounts = TrainingLog::whereIn('client_id', $cIds)
+            ->where('completed', true)
+            ->where('log_date', '>=', $fourWeeksAgo)
+            ->selectRaw('client_id, COUNT(*) as completed')
+            ->groupBy('client_id')
+            ->pluck('completed', 'client_id');
+
+        $now = Carbon::now();
+
+        $clientData = $clients->map(function ($client) use (
+            $lastCheckinDates, $lastMessageDates, $xpRecords, $activePlans,
+            $pendingCounts, $lastTrainingDates, $completedCounts, $now
+        ) {
+            $lastCheckinDate = $lastCheckinDates->get($client->id);
+            $lastMessageDate = $lastMessageDates->get($client->id);
+            $lastTrainingDate = $lastTrainingDates->get($client->id);
+            $xp = $xpRecords->get($client->id);
+            $activePlan = $activePlans->get($client->id);
             $pendingCheckins = $pendingCounts->get($client->id, 0);
 
+            // Days since most recent activity (checkin or training)
+            $lastActivity = null;
+            if ($lastCheckinDate && $lastTrainingDate) {
+                $lastActivity = max(Carbon::parse($lastCheckinDate), Carbon::parse($lastTrainingDate));
+            } elseif ($lastCheckinDate) {
+                $lastActivity = Carbon::parse($lastCheckinDate);
+            } elseif ($lastTrainingDate) {
+                $lastActivity = Carbon::parse($lastTrainingDate);
+            }
+            $daysSinceActivity = $lastActivity ? (int) $lastActivity->diffInDays($now) : null;
+
+            // Classify status for Vue filter: active / risk / inactive
+            $statusFilter = match (true) {
+                $daysSinceActivity === null => 'inactive',
+                $daysSinceActivity > 14 => 'inactive',
+                $daysSinceActivity > 7 => 'risk',
+                default => 'active',
+            };
+
+            // Adherence: completed sessions as percentage of expected (16 in 4 weeks)
+            $completed = $completedCounts->get($client->id, 0);
+            $adherence = min(100, (int) round(($completed / 16) * 100));
+
             return [
-                'id'               => $client->id,
-                'name'             => $client->name,
-                'email'            => $client->email,
-                'plan_label'       => $client->plan?->label() ?? 'Sin plan',
-                'status'           => $client->status?->label() ?? 'Activo',
-                'fecha_inicio'     => $client->fecha_inicio ? Carbon::parse($client->fecha_inicio)->format('d M Y') : 'N/A',
-                'last_checkin'     => $lastCheckin ? Carbon::parse($lastCheckin->checkin_date)->diffForHumans() : 'Nunca',
-                'last_checkin_date' => $lastCheckin ? Carbon::parse($lastCheckin->checkin_date)->format('d/m/Y') : null,
-                'last_message'     => $lastMessage ? Carbon::parse($lastMessage->created_at)->diffForHumans() : 'Sin mensajes',
-                'xp_level'         => $xp->level ?? 1,
-                'xp_total'         => $xp->xp_total ?? 0,
-                'streak_days'      => $xp->streak_days ?? 0,
+                'id' => $client->id,
+                'name' => $client->name,
+                'email' => $client->email,
+                'plan_label' => $client->plan?->label() ?? 'Sin plan',
+                'status' => $statusFilter,
+                'status_label' => $client->status?->label() ?? 'Activo',
+                'fecha_inicio' => $client->fecha_inicio ? Carbon::parse($client->fecha_inicio)->format('d M Y') : 'N/A',
+                'last_checkin' => $lastCheckinDate ? Carbon::parse($lastCheckinDate)->diffForHumans() : 'Nunca',
+                'last_checkin_date' => $lastCheckinDate ? Carbon::parse($lastCheckinDate)->format('d/m/Y') : null,
+                'last_message' => $lastMessageDate ? Carbon::parse($lastMessageDate)->diffForHumans() : 'Sin mensajes',
+                'days_since_activity' => $daysSinceActivity,
+                'adherence' => $adherence,
+                'xp_level' => $xp->level ?? 1,
+                'xp_total' => $xp->xp_total ?? 0,
+                'streak_days' => $xp->streak_days ?? 0,
                 'active_plan_type' => $activePlan->plan_type ?? null,
                 'pending_checkins' => $pendingCheckins,
-                'avatar_initial'   => substr($client->name ?? 'C', 0, 1),
+                'avatar_initial' => mb_strtoupper(mb_substr($client->name ?? 'C', 0, 1)),
             ];
         });
 
         return response()->json([
-            'clients'      => $clientData,
+            'clients' => $clientData,
             'totalClients' => $clientData->count(),
         ]);
     }
@@ -311,34 +377,34 @@ class CoachController extends Controller
      */
     public function kanban(Request $request): JsonResponse
     {
-        $coach   = $this->resolveCoachOrFail($request);
+        $coach = $this->resolveCoachOrFail($request);
         $coachId = $coach->id;
-        $search  = $request->query('search', '');
+        $search = $request->query('search', '');
 
         $clientIds = $this->getCoachClientIds($coachId);
 
         $query = Client::whereIn('id', $clientIds);
         if ($search !== '') {
-            $query->where('name', 'like', '%' . $search . '%');
+            $query->where('name', 'like', '%'.$search.'%');
         }
         $clients = $query->orderBy('name')->get();
 
-        $lastCheckins    = Checkin::whereIn('client_id', $clientIds)->selectRaw('client_id, MAX(checkin_date) as last_checkin')->groupBy('client_id')->pluck('last_checkin', 'client_id');
-        $lastTraining    = TrainingLog::whereIn('client_id', $clientIds)->where('completed', true)->selectRaw('client_id, MAX(log_date) as last_training')->groupBy('client_id')->pluck('last_training', 'client_id');
+        $lastCheckins = Checkin::whereIn('client_id', $clientIds)->selectRaw('client_id, MAX(checkin_date) as last_checkin')->groupBy('client_id')->pluck('last_checkin', 'client_id');
+        $lastTraining = TrainingLog::whereIn('client_id', $clientIds)->where('completed', true)->selectRaw('client_id, MAX(log_date) as last_training')->groupBy('client_id')->pluck('last_training', 'client_id');
         $pendingCheckins = Checkin::whereIn('client_id', $clientIds)->whereNull('coach_reply')->selectRaw('client_id, COUNT(*) as cnt')->groupBy('client_id')->pluck('cnt', 'client_id');
-        $unreadMessages  = CoachMessage::where('coach_id', $coachId)->where('direction', 'client_to_coach')->whereNull('read_at')->whereIn('client_id', $clientIds)->selectRaw('client_id, COUNT(*) as cnt')->groupBy('client_id')->pluck('cnt', 'client_id');
+        $unreadMessages = CoachMessage::where('coach_id', $coachId)->where('direction', 'client_to_coach')->whereNull('read_at')->whereIn('client_id', $clientIds)->selectRaw('client_id, COUNT(*) as cnt')->groupBy('client_id')->pluck('cnt', 'client_id');
 
         $columns = [
-            'nuevo'    => ['title' => 'Nuevos',     'icon' => 'sparkles',            'color' => 'blue',    'clients' => []],
-            'activo'   => ['title' => 'Activos',    'icon' => 'bolt',                'color' => 'emerald', 'clients' => []],
-            'riesgo'   => ['title' => 'En Riesgo',  'icon' => 'exclamation-triangle', 'color' => 'amber',   'clients' => []],
+            'nuevo' => ['title' => 'Nuevos',     'icon' => 'sparkles',            'color' => 'blue',    'clients' => []],
+            'activo' => ['title' => 'Activos',    'icon' => 'bolt',                'color' => 'emerald', 'clients' => []],
+            'riesgo' => ['title' => 'En Riesgo',  'icon' => 'exclamation-triangle', 'color' => 'amber',   'clients' => []],
             'inactivo' => ['title' => 'Inactivos',  'icon' => 'pause-circle',        'color' => 'red',     'clients' => []],
         ];
 
         $now = Carbon::now();
 
         foreach ($clients as $client) {
-            $lastCheckinDate  = isset($lastCheckins[$client->id]) ? Carbon::parse($lastCheckins[$client->id]) : null;
+            $lastCheckinDate = isset($lastCheckins[$client->id]) ? Carbon::parse($lastCheckins[$client->id]) : null;
             $lastTrainingDate = isset($lastTraining[$client->id]) ? Carbon::parse($lastTraining[$client->id]) : null;
 
             $lastActivity = null;
@@ -351,30 +417,30 @@ class CoachController extends Controller
             }
 
             $daysSinceActivity = $lastActivity ? (int) $lastActivity->diffInDays($now) : null;
-            $daysSinceStart    = $client->fecha_inicio ? (int) Carbon::parse($client->fecha_inicio)->diffInDays($now) : null;
+            $daysSinceStart = $client->fecha_inicio ? (int) Carbon::parse($client->fecha_inicio)->diffInDays($now) : null;
 
             $column = $this->classifyClient($client, $daysSinceActivity, $daysSinceStart);
 
             $columns[$column]['clients'][] = [
-                'id'                   => $client->id,
-                'name'                 => $client->name,
-                'avatar_initial'       => mb_strtoupper(mb_substr($client->name ?? 'C', 0, 1)),
-                'plan_label'           => $client->plan?->label() ?? 'Sin plan',
-                'plan_value'           => $client->plan?->value ?? '',
-                'status_label'         => $client->status?->label() ?? 'Desconocido',
-                'status_value'         => $client->status?->value ?? '',
-                'fecha_inicio'         => $client->fecha_inicio ? Carbon::parse($client->fecha_inicio)->format('d M Y') : null,
-                'days_since_activity'  => $daysSinceActivity,
-                'last_activity_human'  => $lastActivity ? $lastActivity->diffForHumans() : 'Sin actividad',
-                'last_checkin_date'    => $lastCheckinDate ? $lastCheckinDate->format('d/m') : null,
-                'last_training_date'   => $lastTrainingDate ? $lastTrainingDate->format('d/m') : null,
-                'pending_checkins'     => $pendingCheckins[$client->id] ?? 0,
-                'unread_messages'      => $unreadMessages[$client->id] ?? 0,
+                'id' => $client->id,
+                'name' => $client->name,
+                'avatar_initial' => mb_strtoupper(mb_substr($client->name ?? 'C', 0, 1)),
+                'plan_label' => $client->plan?->label() ?? 'Sin plan',
+                'plan_value' => $client->plan?->value ?? '',
+                'status_label' => $client->status?->label() ?? 'Desconocido',
+                'status_value' => $client->status?->value ?? '',
+                'fecha_inicio' => $client->fecha_inicio ? Carbon::parse($client->fecha_inicio)->format('d M Y') : null,
+                'days_since_activity' => $daysSinceActivity,
+                'last_activity_human' => $lastActivity ? $lastActivity->diffForHumans() : 'Sin actividad',
+                'last_checkin_date' => $lastCheckinDate ? $lastCheckinDate->format('d/m') : null,
+                'last_training_date' => $lastTrainingDate ? $lastTrainingDate->format('d/m') : null,
+                'pending_checkins' => $pendingCheckins[$client->id] ?? 0,
+                'unread_messages' => $unreadMessages[$client->id] ?? 0,
             ];
         }
 
         return response()->json([
-            'columns'      => $columns,
+            'columns' => $columns,
             'totalClients' => $clients->count(),
         ]);
     }
@@ -390,7 +456,7 @@ class CoachController extends Controller
         $coach = $this->resolveCoachOrFail($request);
 
         $validated = $request->validate([
-            'client_id'     => 'required|integer',
+            'client_id' => 'required|integer',
             'target_column' => 'required|in:nuevo,activo,riesgo,inactivo',
         ]);
 
@@ -414,10 +480,10 @@ class CoachController extends Controller
         ];
 
         CoachNote::create([
-            'coach_id'   => $coach->id,
-            'client_id'  => $validated['client_id'],
-            'note'       => 'Movido a columna "' . ($columnLabels[$targetColumn] ?? $targetColumn) . '" en el Kanban.',
-            'note_type'  => 'seguimiento',
+            'coach_id' => $coach->id,
+            'client_id' => $validated['client_id'],
+            'note' => 'Movido a columna "'.($columnLabels[$targetColumn] ?? $targetColumn).'" en el Kanban.',
+            'note_type' => 'seguimiento',
         ]);
 
         return response()->json(['moved' => true]);
@@ -431,7 +497,7 @@ class CoachController extends Controller
      */
     public function kanbanClientDetail(Request $request, int $id): JsonResponse
     {
-        $coach   = $this->resolveCoachOrFail($request);
+        $coach = $this->resolveCoachOrFail($request);
         $coachId = $coach->id;
 
         $client = Client::find($id);
@@ -456,7 +522,7 @@ class CoachController extends Controller
         $recentNotes = CoachNote::where('coach_id', $coachId)
             ->where('client_id', $id)
             ->orderByDesc('created_at')
-            ->limit(3)
+            ->limit(5)
             ->get()
             ->map(fn ($n) => [
                 'note' => Str::limit($n->note, 100),
@@ -473,20 +539,20 @@ class CoachController extends Controller
 
         return response()->json([
             'client' => [
-                'id'                     => $client->id,
-                'name'                   => $client->name,
-                'email'                  => $client->email,
-                'plan_label'             => $client->plan?->label() ?? 'Sin plan',
-                'status_label'           => $client->status?->label() ?? 'Desconocido',
-                'fecha_inicio'           => $client->fecha_inicio ? Carbon::parse($client->fecha_inicio)->format('d M Y') : 'N/A',
-                'avatar_initial'         => mb_strtoupper(mb_substr($client->name ?? 'C', 0, 1)),
-                'xp_level'               => $xp->level ?? 1,
-                'xp_total'               => $xp->xp_total ?? 0,
-                'streak_days'            => $xp->streak_days ?? 0,
-                'last_checkin'           => $lastCheckin ? Carbon::parse($lastCheckin->checkin_date)->diffForHumans() : 'Sin check-ins',
+                'id' => $client->id,
+                'name' => $client->name,
+                'email' => $client->email,
+                'plan_label' => $client->plan?->label() ?? 'Sin plan',
+                'status_label' => $client->status?->label() ?? 'Desconocido',
+                'fecha_inicio' => $client->fecha_inicio ? Carbon::parse($client->fecha_inicio)->format('d M Y') : 'N/A',
+                'avatar_initial' => mb_strtoupper(mb_substr($client->name ?? 'C', 0, 1)),
+                'xp_level' => $xp->level ?? 1,
+                'xp_total' => $xp->xp_total ?? 0,
+                'streak_days' => $xp->streak_days ?? 0,
+                'last_checkin' => $lastCheckin ? Carbon::parse($lastCheckin->checkin_date)->diffForHumans() : 'Sin check-ins',
                 'last_checkin_bienestar' => $lastCheckin?->bienestar,
-                'active_plan_type'       => $activePlan?->plan_type ?? 'N/A',
-                'recent_notes'           => $recentNotes,
+                'active_plan_type' => $activePlan?->plan_type ?? 'N/A',
+                'recent_notes' => $recentNotes,
             ],
         ]);
     }
@@ -508,6 +574,7 @@ class CoachController extends Controller
         if ($daysSinceActivity <= 21) {
             return 'riesgo';
         }
+
         return 'inactivo';
     }
 
@@ -521,9 +588,9 @@ class CoachController extends Controller
      */
     public function checkins(Request $request): JsonResponse
     {
-        $coach    = $this->resolveCoachOrFail($request);
-        $coachId  = $coach->id;
-        $showAll  = $request->boolean('show_replied', false);
+        $coach = $this->resolveCoachOrFail($request);
+        $coachId = $coach->id;
+        $showAll = $request->boolean('show_replied', false);
 
         $clientIds = $this->getCoachClientIds($coachId);
 
@@ -533,33 +600,34 @@ class CoachController extends Controller
         }
         $checkins = $query->orderByDesc('checkin_date')->get();
 
-        $checkinClientIds  = $checkins->pluck('client_id')->unique();
+        $checkinClientIds = $checkins->pluck('client_id')->unique();
         $checkinClientsById = Client::whereIn('id', $checkinClientIds)->get()->keyBy('id');
 
         $checkinData = $checkins->map(function ($checkin) use ($checkinClientsById) {
             $client = $checkinClientsById->get($checkin->client_id);
+
             return [
-                'id'              => $checkin->id,
-                'client_name'     => $client->name ?? 'Cliente',
-                'client_initial'  => substr($client->name ?? 'C', 0, 1),
-                'client_plan'     => $client->plan?->label() ?? 'Sin plan',
-                'week_label'      => $checkin->week_label,
-                'checkin_date'    => Carbon::parse($checkin->checkin_date)->format('d M Y'),
+                'id' => $checkin->id,
+                'client_name' => $client->name ?? 'Cliente',
+                'client_initial' => substr($client->name ?? 'C', 0, 1),
+                'client_plan' => $client->plan?->label() ?? 'Sin plan',
+                'week_label' => $checkin->week_label,
+                'checkin_date' => Carbon::parse($checkin->checkin_date)->format('d M Y'),
                 'checkin_date_ago' => Carbon::parse($checkin->checkin_date)->diffForHumans(),
-                'bienestar'       => $checkin->bienestar,
+                'bienestar' => $checkin->bienestar,
                 'dias_entrenados' => $checkin->dias_entrenados,
-                'nutricion'       => $checkin->nutricion,
-                'rpe'             => $checkin->rpe,
-                'comentario'      => $checkin->comentario,
-                'coach_reply'     => $checkin->coach_reply,
-                'replied_at'      => $checkin->replied_at ? Carbon::parse($checkin->replied_at)->diffForHumans() : null,
+                'nutricion' => $checkin->nutricion,
+                'rpe' => $checkin->rpe,
+                'comentario' => $checkin->comentario,
+                'coach_reply' => $checkin->coach_reply,
+                'replied_at' => $checkin->replied_at ? Carbon::parse($checkin->replied_at)->diffForHumans() : null,
             ];
         });
 
         $pendingCount = Checkin::whereIn('client_id', $clientIds)->whereNull('coach_reply')->count();
 
         return response()->json([
-            'checkins'     => $checkinData,
+            'checkins' => $checkinData,
             'pendingCount' => $pendingCount,
         ]);
     }
@@ -572,7 +640,7 @@ class CoachController extends Controller
      */
     public function checkinReply(Request $request, int $id): JsonResponse
     {
-        $coach   = $this->resolveCoachOrFail($request);
+        $coach = $this->resolveCoachOrFail($request);
         $coachId = $coach->id;
 
         $validated = $request->validate([
@@ -591,7 +659,7 @@ class CoachController extends Controller
 
         $checkin->update([
             'coach_reply' => trim($validated['reply']),
-            'replied_at'  => now(),
+            'replied_at' => now(),
         ]);
 
         return response()->json(['replied' => true]);
@@ -607,37 +675,44 @@ class CoachController extends Controller
      */
     public function messages(Request $request): JsonResponse
     {
-        $coach     = $this->resolveCoachOrFail($request);
-        $coachId   = $coach->id;
-        $clientId  = $request->integer('client_id');
+        $coach = $this->resolveCoachOrFail($request);
+        $coachId = $coach->id;
+        $clientId = $request->integer('client_id');
 
         $clientIds = $this->getCoachClientIds($coachId);
 
-        // Client list with unread counts
+        // Batch: unread counts per client (avoids N+1)
+        $unreadCounts = CoachMessage::where('coach_id', $coachId)
+            ->whereIn('client_id', $clientIds)
+            ->where('direction', 'client_to_coach')
+            ->whereNull('read_at')
+            ->selectRaw('client_id, COUNT(*) as cnt')
+            ->groupBy('client_id')
+            ->pluck('cnt', 'client_id');
+
+        // Batch: latest message per client (avoids N+1)
+        $lastMessages = CoachMessage::where('coach_id', $coachId)
+            ->whereIn('client_id', $clientIds)
+            ->orderByDesc('created_at')
+            ->get()
+            ->unique('client_id')
+            ->keyBy('client_id');
+
         $clientList = Client::whereIn('id', $clientIds)
             ->where('status', 'activo')
             ->orderBy('name')
             ->get()
-            ->map(function ($client) use ($coachId) {
-                $unreadCount = CoachMessage::where('coach_id', $coachId)
-                    ->where('client_id', $client->id)
-                    ->where('direction', 'client_to_coach')
-                    ->whereNull('read_at')
-                    ->count();
-
-                $lastMessage = CoachMessage::where('coach_id', $coachId)
-                    ->where('client_id', $client->id)
-                    ->orderByDesc('created_at')
-                    ->first();
+            ->map(function ($client) use ($unreadCounts, $lastMessages) {
+                $lastMessage = $lastMessages->get($client->id);
 
                 return [
-                    'id'                   => $client->id,
-                    'name'                 => $client->name,
-                    'initial'              => substr($client->name ?? 'C', 0, 1),
-                    'plan'                 => $client->plan?->label() ?? 'Sin plan',
-                    'unread_count'         => $unreadCount,
+                    'id' => $client->id,
+                    'name' => $client->name,
+                    'initial' => mb_strtoupper(mb_substr($client->name ?? 'C', 0, 1)),
+                    'plan' => $client->plan?->label() ?? 'Sin plan',
+                    'unread_count' => $unreadCounts->get($client->id, 0),
                     'last_message_preview' => $lastMessage ? str()->limit($lastMessage->message, 40) : 'Sin mensajes',
-                    'last_message_time'    => $lastMessage ? Carbon::parse($lastMessage->created_at)->diffForHumans() : null,
+                    'last_message_time' => $lastMessage ? Carbon::parse($lastMessage->created_at)->diffForHumans() : null,
                 ];
             });
 
@@ -656,17 +731,17 @@ class CoachController extends Controller
                 ->orderBy('created_at')
                 ->get()
                 ->map(fn ($msg) => [
-                    'id'        => $msg->id,
-                    'message'   => $msg->message,
+                    'id' => $msg->id,
+                    'message' => $msg->message,
                     'direction' => $msg->direction,
-                    'is_coach'  => $msg->direction === 'coach_to_client',
-                    'time'      => Carbon::parse($msg->created_at)->format('d/m H:i'),
-                    'time_ago'  => Carbon::parse($msg->created_at)->diffForHumans(),
+                    'is_coach' => $msg->direction === 'coach_to_client',
+                    'time' => Carbon::parse($msg->created_at)->format('d/m H:i'),
+                    'time_ago' => Carbon::parse($msg->created_at)->diffForHumans(),
                 ]);
         }
 
         return response()->json([
-            'clients'      => $clientList,
+            'clients' => $clientList,
             'conversation' => $conversation,
         ]);
     }
@@ -679,12 +754,12 @@ class CoachController extends Controller
      */
     public function sendMessage(Request $request): JsonResponse
     {
-        $coach   = $this->resolveCoachOrFail($request);
+        $coach = $this->resolveCoachOrFail($request);
         $coachId = $coach->id;
 
         $validated = $request->validate([
             'client_id' => 'required|integer',
-            'message'   => 'required|string|min:1|max:5000',
+            'message' => 'required|string|min:1|max:5000',
         ]);
 
         $clientIds = $this->getCoachClientIds($coachId);
@@ -693,9 +768,9 @@ class CoachController extends Controller
         }
 
         $msg = CoachMessage::create([
-            'coach_id'  => $coachId,
+            'coach_id' => $coachId,
             'client_id' => $validated['client_id'],
-            'message'   => trim($validated['message']),
+            'message' => trim($validated['message']),
             'direction' => 'coach_to_client',
         ]);
 
@@ -712,11 +787,11 @@ class CoachController extends Controller
      */
     public function broadcast(Request $request): JsonResponse
     {
-        $coach   = $this->resolveCoachOrFail($request);
+        $coach = $this->resolveCoachOrFail($request);
         $coachId = $coach->id;
 
         $validated = $request->validate([
-            'message'        => 'required|string|min:1|max:5000',
+            'message' => 'required|string|min:1|max:5000',
             'recipient_mode' => 'required|in:all,plan,status,individual',
             'selected_plans' => 'nullable|array',
             'selected_status' => 'nullable|string',
@@ -757,13 +832,13 @@ class CoachController extends Controller
         }
 
         $messageText = trim($validated['message']);
-        $count       = 0;
+        $count = 0;
 
         foreach ($recipientIds as $clientId) {
             CoachMessage::create([
-                'coach_id'  => $coachId,
+                'coach_id' => $coachId,
                 'client_id' => $clientId,
-                'message'   => $messageText,
+                'message' => $messageText,
                 'direction' => 'coach_to_client',
             ]);
             $count++;
@@ -782,30 +857,30 @@ class CoachController extends Controller
      */
     public function plans(Request $request): JsonResponse
     {
-        $coach   = $this->resolveCoachOrFail($request);
+        $coach = $this->resolveCoachOrFail($request);
         $coachId = $coach->id;
-        $search  = $request->query('search', '');
-        $type    = $request->query('type', '');
+        $search = $request->query('search', '');
+        $type = $request->query('type', '');
 
         $query = PlanTemplate::where('coach_id', $coachId);
 
         if ($search !== '') {
-            $query->where('name', 'like', '%' . $search . '%');
+            $query->where('name', 'like', '%'.$search.'%');
         }
         if ($type !== '') {
             $query->where('plan_type', $type);
         }
 
         $templates = $query->orderByDesc('created_at')->get()->map(fn ($tpl) => [
-            'id'           => $tpl->id,
-            'name'         => $tpl->name,
-            'plan_type'    => $tpl->plan_type,
-            'methodology'  => $tpl->methodology,
-            'description'  => $tpl->description,
-            'is_public'    => (bool) $tpl->is_public,
+            'id' => $tpl->id,
+            'name' => $tpl->name,
+            'plan_type' => $tpl->plan_type,
+            'methodology' => $tpl->methodology,
+            'description' => $tpl->description,
+            'is_public' => (bool) $tpl->is_public,
             'ai_generated' => (bool) $tpl->ai_generated,
             'content_json' => $tpl->content_json,
-            'created_at'   => $tpl->created_at?->format('d M Y'),
+            'created_at' => $tpl->created_at?->format('d M Y'),
         ]);
 
         return response()->json(['templates' => $templates]);
@@ -822,12 +897,12 @@ class CoachController extends Controller
         $coach = $this->resolveCoachOrFail($request);
 
         $validated = $request->validate([
-            'name'         => 'required|string|max:160',
-            'plan_type'    => 'required|in:entrenamiento,nutricion,habitos,suplementacion,ciclo',
-            'methodology'  => 'nullable|string|max:100',
-            'description'  => 'nullable|string|max:5000',
+            'name' => 'required|string|max:160',
+            'plan_type' => 'required|in:entrenamiento,nutricion,habitos,suplementacion,ciclo',
+            'methodology' => 'nullable|string|max:100',
+            'description' => 'nullable|string|max:5000',
             'content_json' => 'nullable',
-            'is_public'    => 'nullable|boolean',
+            'is_public' => 'nullable|boolean',
         ]);
 
         $contentArray = null;
@@ -835,7 +910,7 @@ class CoachController extends Controller
             if (is_string($validated['content_json'])) {
                 $contentArray = json_decode($validated['content_json'], true);
                 if (json_last_error() !== JSON_ERROR_NONE) {
-                    return response()->json(['error' => 'JSON invalido: ' . json_last_error_msg()], 422);
+                    return response()->json(['error' => 'JSON invalido: '.json_last_error_msg()], 422);
                 }
             } else {
                 $contentArray = $validated['content_json'];
@@ -843,13 +918,13 @@ class CoachController extends Controller
         }
 
         $template = PlanTemplate::create([
-            'coach_id'     => $coach->id,
-            'name'         => $validated['name'],
-            'plan_type'    => $validated['plan_type'],
-            'methodology'  => $validated['methodology'] ?? null,
-            'description'  => $validated['description'] ?? null,
+            'coach_id' => $coach->id,
+            'name' => $validated['name'],
+            'plan_type' => $validated['plan_type'],
+            'methodology' => $validated['methodology'] ?? null,
+            'description' => $validated['description'] ?? null,
             'content_json' => $contentArray,
-            'is_public'    => $validated['is_public'] ?? false,
+            'is_public' => $validated['is_public'] ?? false,
             'ai_generated' => false,
         ]);
 
@@ -872,12 +947,12 @@ class CoachController extends Controller
         }
 
         $validated = $request->validate([
-            'name'         => 'required|string|max:160',
-            'plan_type'    => 'required|in:entrenamiento,nutricion,habitos,suplementacion,ciclo',
-            'methodology'  => 'nullable|string|max:100',
-            'description'  => 'nullable|string|max:5000',
+            'name' => 'required|string|max:160',
+            'plan_type' => 'required|in:entrenamiento,nutricion,habitos,suplementacion,ciclo',
+            'methodology' => 'nullable|string|max:100',
+            'description' => 'nullable|string|max:5000',
             'content_json' => 'nullable',
-            'is_public'    => 'nullable|boolean',
+            'is_public' => 'nullable|boolean',
         ]);
 
         $contentArray = null;
@@ -885,7 +960,7 @@ class CoachController extends Controller
             if (is_string($validated['content_json'])) {
                 $contentArray = json_decode($validated['content_json'], true);
                 if (json_last_error() !== JSON_ERROR_NONE) {
-                    return response()->json(['error' => 'JSON invalido: ' . json_last_error_msg()], 422);
+                    return response()->json(['error' => 'JSON invalido: '.json_last_error_msg()], 422);
                 }
             } else {
                 $contentArray = $validated['content_json'];
@@ -893,12 +968,12 @@ class CoachController extends Controller
         }
 
         $tpl->update([
-            'name'         => $validated['name'],
-            'plan_type'    => $validated['plan_type'],
-            'methodology'  => $validated['methodology'] ?? null,
-            'description'  => $validated['description'] ?? null,
+            'name' => $validated['name'],
+            'plan_type' => $validated['plan_type'],
+            'methodology' => $validated['methodology'] ?? null,
+            'description' => $validated['description'] ?? null,
             'content_json' => $contentArray,
-            'is_public'    => $validated['is_public'] ?? $tpl->is_public,
+            'is_public' => $validated['is_public'] ?? $tpl->is_public,
         ]);
 
         return response()->json(['updated' => true]);
@@ -915,21 +990,21 @@ class CoachController extends Controller
         $coach = $this->resolveCoachOrFail($request);
 
         $validated = $request->validate([
-            'plan_type'         => 'required|in:entrenamiento,nutricion,habitos',
-            'methodology'       => 'nullable|string|max:100',
-            'duration_weeks'    => 'required|integer|min:1|max:52',
-            'frequency'         => 'nullable|integer|min:1|max:7',
-            'experience_level'  => 'nullable|in:principiante,intermedio,avanzado',
-            'training_goal'     => 'nullable|string|max:100',
-            'injuries'          => 'nullable|string|max:500',
-            'calorie_target'    => 'nullable|integer|min:800|max:10000',
-            'protein_pct'       => 'nullable|integer|min:0|max:100',
-            'carbs_pct'         => 'nullable|integer|min:0|max:100',
-            'fat_pct'           => 'nullable|integer|min:0|max:100',
-            'meals_per_day'     => 'nullable|integer|min:1|max:10',
+            'plan_type' => 'required|in:entrenamiento,nutricion,habitos',
+            'methodology' => 'nullable|string|max:100',
+            'duration_weeks' => 'required|integer|min:1|max:52',
+            'frequency' => 'nullable|integer|min:1|max:7',
+            'experience_level' => 'nullable|in:principiante,intermedio,avanzado',
+            'training_goal' => 'nullable|string|max:100',
+            'injuries' => 'nullable|string|max:500',
+            'calorie_target' => 'nullable|integer|min:800|max:10000',
+            'protein_pct' => 'nullable|integer|min:0|max:100',
+            'carbs_pct' => 'nullable|integer|min:0|max:100',
+            'fat_pct' => 'nullable|integer|min:0|max:100',
+            'meals_per_day' => 'nullable|integer|min:1|max:10',
             'dietary_restrictions' => 'nullable|string|max:500',
             'habit_focus_areas' => 'nullable|array',
-            'target_client_id'  => 'nullable|integer',
+            'target_client_id' => 'nullable|integer',
         ]);
 
         try {
@@ -941,14 +1016,15 @@ class CoachController extends Controller
 
             return response()->json([
                 'generated' => true,
-                'plan'      => $result,
-                'planJson'  => json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+                'plan' => $result,
+                'planJson' => json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
             ]);
         } catch (\Throwable $e) {
             Log::warning('Coach AI plan generation failed', ['error' => $e->getMessage()]);
+
             return response()->json([
                 'generated' => false,
-                'error'     => 'Error generando el plan: ' . $e->getMessage(),
+                'error' => 'Error generando el plan: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -957,14 +1033,28 @@ class CoachController extends Controller
     {
         $lines = [];
         $lines[] = "Genera un plan de {$params['plan_type']} profesional.";
-        if (! empty($params['methodology'])) $lines[] = "Metodologia: {$params['methodology']}";
+        if (! empty($params['methodology'])) {
+            $lines[] = "Metodologia: {$params['methodology']}";
+        }
         $lines[] = "Duracion: {$params['duration_weeks']} semanas";
-        if (! empty($params['frequency'])) $lines[] = "Frecuencia: {$params['frequency']} dias/semana";
-        if (! empty($params['experience_level'])) $lines[] = "Nivel: {$params['experience_level']}";
-        if (! empty($params['training_goal'])) $lines[] = "Objetivo: {$params['training_goal']}";
-        if (! empty($params['injuries'])) $lines[] = "Lesiones/restricciones: {$params['injuries']}";
-        if (! empty($params['calorie_target'])) $lines[] = "Calorias: {$params['calorie_target']}";
-        if (! empty($params['dietary_restrictions'])) $lines[] = "Restricciones dieteticas: {$params['dietary_restrictions']}";
+        if (! empty($params['frequency'])) {
+            $lines[] = "Frecuencia: {$params['frequency']} dias/semana";
+        }
+        if (! empty($params['experience_level'])) {
+            $lines[] = "Nivel: {$params['experience_level']}";
+        }
+        if (! empty($params['training_goal'])) {
+            $lines[] = "Objetivo: {$params['training_goal']}";
+        }
+        if (! empty($params['injuries'])) {
+            $lines[] = "Lesiones/restricciones: {$params['injuries']}";
+        }
+        if (! empty($params['calorie_target'])) {
+            $lines[] = "Calorias: {$params['calorie_target']}";
+        }
+        if (! empty($params['dietary_restrictions'])) {
+            $lines[] = "Restricciones dieteticas: {$params['dietary_restrictions']}";
+        }
 
         return implode("\n", $lines);
     }
@@ -979,9 +1069,9 @@ class CoachController extends Controller
      */
     public function analytics(Request $request): JsonResponse
     {
-        $coach   = $this->resolveCoachOrFail($request);
+        $coach = $this->resolveCoachOrFail($request);
         $coachId = $coach->id;
-        $range   = $request->query('range', 'month');
+        $range = $request->query('range', 'month');
 
         $clientIds = $this->getCoachClientIds($coachId);
 
@@ -990,60 +1080,60 @@ class CoachController extends Controller
         }
 
         $dateFrom = match ($range) {
-            'month'   => now()->subMonth(),
+            'month' => now()->subMonth(),
             'quarter' => now()->subMonths(3),
-            'year'    => now()->subYear(),
-            'all'     => null,
+            'year' => now()->subYear(),
+            'all' => null,
         };
 
         // Client overview
-        $allClients    = Client::whereIn('id', $clientIds)->get();
-        $totalClients  = $allClients->count();
+        $allClients = Client::whereIn('id', $clientIds)->get();
+        $totalClients = $allClients->count();
         $activeClients = $allClients->where('status', 'activo')->count();
         $retentionRate = $totalClients > 0 ? round(($activeClients / $totalClients) * 100, 1) : 0;
 
         // Checkin stats
-        $checkinQuery    = Checkin::whereIn('client_id', $clientIds)->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom));
-        $totalCheckins   = $checkinQuery->clone()->count();
+        $checkinQuery = Checkin::whereIn('client_id', $clientIds)->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom));
+        $totalCheckins = $checkinQuery->clone()->count();
         $repliedCheckins = $checkinQuery->clone()->whereNotNull('coach_reply')->count();
         $checkinReplyRate = $totalCheckins > 0 ? round(($repliedCheckins / $totalCheckins) * 100, 1) : 0;
 
         // Client progress averages
-        $avgBienestar     = round((float) $checkinQuery->clone()->whereNotNull('bienestar')->avg('bienestar'), 1);
+        $avgBienestar = round((float) $checkinQuery->clone()->whereNotNull('bienestar')->avg('bienestar'), 1);
         $avgDiasEntrenados = round((float) $checkinQuery->clone()->whereNotNull('dias_entrenados')->avg('dias_entrenados'), 1);
 
         // Messages
-        $messageQuery   = CoachMessage::where('coach_id', $coachId)->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom));
-        $messagesSent     = $messageQuery->clone()->where('direction', 'coach_to_client')->count();
+        $messageQuery = CoachMessage::where('coach_id', $coachId)->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom));
+        $messagesSent = $messageQuery->clone()->where('direction', 'coach_to_client')->count();
         $messagesReceived = $messageQuery->clone()->where('direction', 'client_to_coach')->count();
 
         // Revenue
-        $payments     = Payment::whereIn('client_id', $clientIds)->where('status', 'approved')->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom));
+        $payments = Payment::whereIn('client_id', $clientIds)->where('status', 'approved')->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom));
         $totalRevenue = (float) $payments->sum('amount');
 
         // Plan distribution
         $planDistribution = Client::whereIn('id', $clientIds)
             ->where('status', 'activo')
-            ->selectRaw("plan, COUNT(*) as count")
+            ->selectRaw('plan, COUNT(*) as count')
             ->groupBy('plan')
             ->get()
             ->map(fn ($row) => ['name' => ucfirst($row->plan ?? 'Sin plan'), 'count' => (int) $row->count])
             ->toArray();
 
         return response()->json([
-            'totalClients'      => $totalClients,
-            'activeClients'     => $activeClients,
-            'retentionRate'     => $retentionRate,
-            'totalCheckins'     => $totalCheckins,
-            'repliedCheckins'   => $repliedCheckins,
-            'checkinReplyRate'  => $checkinReplyRate,
-            'avgBienestar'      => $avgBienestar,
+            'totalClients' => $totalClients,
+            'activeClients' => $activeClients,
+            'retentionRate' => $retentionRate,
+            'totalCheckins' => $totalCheckins,
+            'repliedCheckins' => $repliedCheckins,
+            'checkinReplyRate' => $checkinReplyRate,
+            'avgBienestar' => $avgBienestar,
             'avgDiasEntrenados' => $avgDiasEntrenados,
-            'messagesSent'      => $messagesSent,
-            'messagesReceived'  => $messagesReceived,
-            'totalRevenue'      => $totalRevenue,
-            'planDistribution'  => $planDistribution,
-            'dateRange'         => $range,
+            'messagesSent' => $messagesSent,
+            'messagesReceived' => $messagesReceived,
+            'totalRevenue' => $totalRevenue,
+            'planDistribution' => $planDistribution,
+            'dateRange' => $range,
         ]);
     }
 
@@ -1063,10 +1153,10 @@ class CoachController extends Controller
 
         if (! $profile) {
             $profile = CoachProfile::create([
-                'admin_id'       => $coach->id,
-                'slug'           => Str::slug($coach->name) . '-' . Str::random(4),
-                'referral_code'  => strtoupper(Str::random(8)),
-                'color_primary'  => '#E31E24',
+                'admin_id' => $coach->id,
+                'slug' => Str::slug($coach->name).'-'.Str::random(4),
+                'referral_code' => strtoupper(Str::random(8)),
+                'color_primary' => '#E31E24',
                 'public_visible' => true,
             ]);
         }
@@ -1075,41 +1165,41 @@ class CoachController extends Controller
         $specializations = is_array($specs) ? $specs : [];
 
         // Referral stats
-        $referralCode   = $profile->referral_code ?? '';
-        $referralLink   = url('/inscripcion?ref=' . $referralCode);
-        $totalClicks    = ReferralStat::where('coach_id', $coach->id)->count();
+        $referralCode = $profile->referral_code ?? '';
+        $referralLink = url('/inscripcion?ref='.$referralCode);
+        $totalClicks = ReferralStat::where('coach_id', $coach->id)->count();
         $convertedClicks = ReferralStat::where('coach_id', $coach->id)->where('converted', true)->count();
 
-        $referrals       = Referral::where('referrer_id', $coach->id)->get();
-        $totalReferrals  = $referrals->count();
-        $pendingRefs     = $referrals->where('status', 'pending')->count();
-        $registeredRefs  = $referrals->where('status', 'registered')->count();
-        $convertedRefs   = $referrals->where('status', 'converted')->count();
+        $referrals = Referral::where('referrer_id', $coach->id)->get();
+        $totalReferrals = $referrals->count();
+        $pendingRefs = $referrals->where('status', 'pending')->count();
+        $registeredRefs = $referrals->where('status', 'registered')->count();
+        $convertedRefs = $referrals->where('status', 'converted')->count();
 
         return response()->json([
-            'coachName'           => $coach->name,
-            'coachId'             => $coach->id,
-            'profileId'           => $profile->id,
-            'slug'                => $profile->slug,
-            'bio'                 => $profile->bio ?? '',
-            'city'                => $profile->city ?? '',
-            'experience'          => $profile->experience ?? '',
-            'whatsapp'            => $profile->whatsapp ?? '',
-            'instagram'           => $profile->instagram ?? '',
-            'specializations'     => $specializations,
-            'color_primary'       => $profile->color_primary ?? '#E31E24',
-            'public_visible'      => (bool) $profile->public_visible,
-            'referral_code'       => $referralCode,
-            'referral_link'       => $referralLink,
-            'photo_url'           => $profile->photo_url ?? '',
-            'logo_url'            => $profile->logo_url ?? '',
-            'commissionRate'      => $profile->referral_commission ?? '5.00',
-            'totalClicks'         => $totalClicks,
-            'convertedClicks'     => $convertedClicks,
-            'totalReferrals'      => $totalReferrals,
-            'pendingReferrals'    => $pendingRefs,
+            'coachName' => $coach->name,
+            'coachId' => $coach->id,
+            'profileId' => $profile->id,
+            'slug' => $profile->slug,
+            'bio' => $profile->bio ?? '',
+            'city' => $profile->city ?? '',
+            'experience' => $profile->experience ?? '',
+            'whatsapp' => $profile->whatsapp ?? '',
+            'instagram' => $profile->instagram ?? '',
+            'specializations' => $specializations,
+            'color_primary' => $profile->color_primary ?? '#E31E24',
+            'public_visible' => (bool) $profile->public_visible,
+            'referral_code' => $referralCode,
+            'referral_link' => $referralLink,
+            'photo_url' => $profile->photo_url ?? '',
+            'logo_url' => $profile->logo_url ?? '',
+            'commissionRate' => $profile->referral_commission ?? '5.00',
+            'totalClicks' => $totalClicks,
+            'convertedClicks' => $convertedClicks,
+            'totalReferrals' => $totalReferrals,
+            'pendingReferrals' => $pendingRefs,
             'registeredReferrals' => $registeredRefs,
-            'convertedReferrals'  => $convertedRefs,
+            'convertedReferrals' => $convertedRefs,
         ]);
     }
 
@@ -1121,7 +1211,7 @@ class CoachController extends Controller
      */
     public function updateProfile(Request $request): JsonResponse
     {
-        $coach   = $this->resolveCoachOrFail($request);
+        $coach = $this->resolveCoachOrFail($request);
         $profile = CoachProfile::where('admin_id', $coach->id)->first();
 
         if (! $profile) {
@@ -1129,25 +1219,25 @@ class CoachController extends Controller
         }
 
         $validated = $request->validate([
-            'bio'             => 'nullable|string|max:2000',
-            'city'            => 'nullable|string|max:100',
-            'experience'      => 'nullable|string|max:100',
-            'whatsapp'        => 'nullable|string|max:20',
-            'instagram'       => 'nullable|string|max:100',
+            'bio' => 'nullable|string|max:2000',
+            'city' => 'nullable|string|max:100',
+            'experience' => 'nullable|string|max:100',
+            'whatsapp' => 'nullable|string|max:20',
+            'instagram' => 'nullable|string|max:100',
             'specializations' => 'nullable|array',
-            'color_primary'   => 'nullable|string|max:20',
-            'public_visible'  => 'nullable|boolean',
+            'color_primary' => 'nullable|string|max:20',
+            'public_visible' => 'nullable|boolean',
         ]);
 
         $profile->update([
-            'bio'             => $validated['bio'] ?? $profile->bio,
-            'city'            => $validated['city'] ?? $profile->city,
-            'experience'      => $validated['experience'] ?? $profile->experience,
-            'whatsapp'        => $validated['whatsapp'] ?? $profile->whatsapp,
-            'instagram'       => $validated['instagram'] ?? $profile->instagram,
+            'bio' => $validated['bio'] ?? $profile->bio,
+            'city' => $validated['city'] ?? $profile->city,
+            'experience' => $validated['experience'] ?? $profile->experience,
+            'whatsapp' => $validated['whatsapp'] ?? $profile->whatsapp,
+            'instagram' => $validated['instagram'] ?? $profile->instagram,
             'specializations' => isset($validated['specializations']) ? json_encode($validated['specializations']) : $profile->specializations,
-            'color_primary'   => $validated['color_primary'] ?? $profile->color_primary,
-            'public_visible'  => $validated['public_visible'] ?? $profile->public_visible,
+            'color_primary' => $validated['color_primary'] ?? $profile->color_primary,
+            'public_visible' => $validated['public_visible'] ?? $profile->public_visible,
         ]);
 
         return response()->json(['updated' => true]);
@@ -1163,16 +1253,16 @@ class CoachController extends Controller
      */
     public function notes(Request $request): JsonResponse
     {
-        $coach   = $this->resolveCoachOrFail($request);
+        $coach = $this->resolveCoachOrFail($request);
         $coachId = $coach->id;
-        $search  = $request->query('search', '');
-        $type    = $request->query('type', 'all');
+        $search = $request->query('search', '');
+        $type = $request->query('type', 'all');
         $clientFilter = $request->query('client_id', 'all');
 
         $notesQuery = CoachNote::where('coach_id', $coachId)->orderByDesc('created_at');
 
         if ($search !== '') {
-            $searchTerm = '%' . $search . '%';
+            $searchTerm = '%'.$search.'%';
             $notesQuery->where(function ($q) use ($searchTerm) {
                 $q->where('note', 'like', $searchTerm);
             });
@@ -1188,34 +1278,35 @@ class CoachController extends Controller
 
         $notes = $notesQuery->get()->map(function ($note) {
             $client = Client::find($note->client_id);
+
             return [
-                'id'              => $note->id,
-                'client_id'       => $note->client_id,
-                'client_name'     => $client->name ?? 'Cliente',
-                'client_initial'  => substr($client->name ?? 'C', 0, 1),
-                'note_type'       => $note->note_type ?? 'general',
-                'note'            => $note->note,
-                'created_at'      => Carbon::parse($note->created_at)->format('d M Y, H:i'),
-                'created_at_ago'  => Carbon::parse($note->created_at)->diffForHumans(),
+                'id' => $note->id,
+                'client_id' => $note->client_id,
+                'client_name' => $client->name ?? 'Cliente',
+                'client_initial' => substr($client->name ?? 'C', 0, 1),
+                'note_type' => $note->note_type ?? 'general',
+                'note' => $note->note,
+                'created_at' => Carbon::parse($note->created_at)->format('d M Y, H:i'),
+                'created_at_ago' => Carbon::parse($note->created_at)->diffForHumans(),
             ];
         });
 
         $noteStats = [
-            'total'       => CoachNote::where('coach_id', $coachId)->count(),
-            'general'     => CoachNote::where('coach_id', $coachId)->where('note_type', 'general')->count(),
+            'total' => CoachNote::where('coach_id', $coachId)->count(),
+            'general' => CoachNote::where('coach_id', $coachId)->where('note_type', 'general')->count(),
             'seguimiento' => CoachNote::where('coach_id', $coachId)->where('note_type', 'seguimiento')->count(),
-            'alerta'      => CoachNote::where('coach_id', $coachId)->where('note_type', 'alerta')->count(),
-            'logro'       => CoachNote::where('coach_id', $coachId)->where('note_type', 'logro')->count(),
+            'alerta' => CoachNote::where('coach_id', $coachId)->where('note_type', 'alerta')->count(),
+            'logro' => CoachNote::where('coach_id', $coachId)->where('note_type', 'logro')->count(),
         ];
 
         // Clients for dropdown
-        $clientIds    = $this->getCoachClientIds($coachId);
+        $clientIds = $this->getCoachClientIds($coachId);
         $clientsList = Client::whereIn('id', $clientIds)->where('status', 'activo')->orderBy('name')->get(['id', 'name']);
 
         return response()->json([
-            'notes'      => $notes,
-            'noteStats'  => $noteStats,
-            'clients'    => $clientsList,
+            'notes' => $notes,
+            'noteStats' => $noteStats,
+            'clients' => $clientsList,
         ]);
     }
 
@@ -1227,13 +1318,13 @@ class CoachController extends Controller
      */
     public function createNote(Request $request): JsonResponse
     {
-        $coach   = $this->resolveCoachOrFail($request);
+        $coach = $this->resolveCoachOrFail($request);
         $coachId = $coach->id;
 
         $validated = $request->validate([
             'client_id' => 'required|integer|exists:clients,id',
             'note_type' => 'required|in:general,seguimiento,alerta,logro',
-            'note'      => 'required|string|min:3|max:5000',
+            'note' => 'required|string|min:3|max:5000',
         ]);
 
         $clientIds = $this->getCoachClientIds($coachId);
@@ -1242,10 +1333,10 @@ class CoachController extends Controller
         }
 
         $note = CoachNote::create([
-            'coach_id'  => $coachId,
+            'coach_id' => $coachId,
             'client_id' => $validated['client_id'],
             'note_type' => $validated['note_type'],
-            'note'      => trim($validated['note']),
+            'note' => trim($validated['note']),
         ]);
 
         return response()->json(['created' => true, 'id' => $note->id], 201);
@@ -1268,13 +1359,13 @@ class CoachController extends Controller
         $validated = $request->validate([
             'client_id' => 'nullable|integer|exists:clients,id',
             'note_type' => 'nullable|in:general,seguimiento,alerta,logro',
-            'note'      => 'nullable|string|min:3|max:5000',
+            'note' => 'nullable|string|min:3|max:5000',
         ]);
 
         $note->update(array_filter([
             'client_id' => $validated['client_id'] ?? null,
             'note_type' => $validated['note_type'] ?? null,
-            'note'      => isset($validated['note']) ? trim($validated['note']) : null,
+            'note' => isset($validated['note']) ? trim($validated['note']) : null,
         ], fn ($v) => $v !== null));
 
         return response()->json(['updated' => true]);
@@ -1314,9 +1405,9 @@ class CoachController extends Controller
         $profile = CoachProfile::where('admin_id', $coach->id)->first();
         if (! $profile) {
             $profile = CoachProfile::create([
-                'admin_id'       => $coach->id,
-                'slug'           => Str::slug($coach->name) . '-' . Str::random(4),
-                'color_primary'  => '#E31E24',
+                'admin_id' => $coach->id,
+                'slug' => Str::slug($coach->name).'-'.Str::random(4),
+                'color_primary' => '#E31E24',
                 'public_visible' => true,
             ]);
         }
@@ -1324,24 +1415,24 @@ class CoachController extends Controller
         $pwa = CoachPwaConfig::where('coach_id', $coach->id)->first();
 
         return response()->json([
-            'coachName'       => $coach->name,
-            'profile'         => [
-                'id'              => $profile->id,
-                'slug'            => $profile->slug ?? '',
-                'bio'             => $profile->bio ?? '',
-                'color_primary'   => $profile->color_primary ?? '#E31E24',
-                'logo_url'        => $profile->logo_url ?? '',
-                'photo_url'       => $profile->photo_url ?? '',
-                'whatsapp'        => $profile->whatsapp ?? '',
-                'instagram'       => $profile->instagram ?? '',
-                'public_visible'  => (bool) $profile->public_visible,
+            'coachName' => $coach->name,
+            'profile' => [
+                'id' => $profile->id,
+                'slug' => $profile->slug ?? '',
+                'bio' => $profile->bio ?? '',
+                'color_primary' => $profile->color_primary ?? '#E31E24',
+                'logo_url' => $profile->logo_url ?? '',
+                'photo_url' => $profile->photo_url ?? '',
+                'whatsapp' => $profile->whatsapp ?? '',
+                'instagram' => $profile->instagram ?? '',
+                'public_visible' => (bool) $profile->public_visible,
             ],
             'pwa' => $pwa ? [
-                'id'          => $pwa->id,
-                'app_name'    => $pwa->app_name ?? 'Mi App Fitness',
-                'icon_url'    => $pwa->icon_url ?? '',
-                'color'       => $pwa->color ?? '#E31E24',
-                'subdomain'   => $pwa->subdomain ?? '',
+                'id' => $pwa->id,
+                'app_name' => $pwa->app_name ?? 'Mi App Fitness',
+                'icon_url' => $pwa->icon_url ?? '',
+                'color' => $pwa->color ?? '#E31E24',
+                'subdomain' => $pwa->subdomain ?? '',
             ] : null,
         ]);
     }
@@ -1357,30 +1448,30 @@ class CoachController extends Controller
         $coach = $this->resolveCoachOrFail($request);
 
         $validated = $request->validate([
-            'slug'            => 'nullable|string|max:100',
-            'bio'             => 'nullable|string|max:2000',
-            'color_primary'   => 'nullable|string|max:20',
-            'logo_url'        => 'nullable|string|max:500',
-            'photo_url'       => 'nullable|string|max:500',
-            'whatsapp'        => 'nullable|string|max:20',
-            'instagram'       => 'nullable|string|max:100',
-            'public_visible'  => 'nullable|boolean',
-            'pwa_app_name'    => 'nullable|string|max:100',
-            'pwa_icon_url'    => 'nullable|string|max:500',
-            'pwa_color'       => 'nullable|string|max:20',
-            'pwa_subdomain'   => 'nullable|string|max:100',
+            'slug' => 'nullable|string|max:100',
+            'bio' => 'nullable|string|max:2000',
+            'color_primary' => 'nullable|string|max:20',
+            'logo_url' => 'nullable|string|max:500',
+            'photo_url' => 'nullable|string|max:500',
+            'whatsapp' => 'nullable|string|max:20',
+            'instagram' => 'nullable|string|max:100',
+            'public_visible' => 'nullable|boolean',
+            'pwa_app_name' => 'nullable|string|max:100',
+            'pwa_icon_url' => 'nullable|string|max:500',
+            'pwa_color' => 'nullable|string|max:20',
+            'pwa_subdomain' => 'nullable|string|max:100',
         ]);
 
         $profile = CoachProfile::where('admin_id', $coach->id)->first();
         if ($profile) {
             $profile->update(array_filter([
-                'slug'           => $validated['slug'] ?? null,
-                'bio'            => $validated['bio'] ?? null,
-                'color_primary'  => $validated['color_primary'] ?? null,
-                'logo_url'       => $validated['logo_url'] ?? null,
-                'photo_url'      => $validated['photo_url'] ?? null,
-                'whatsapp'       => $validated['whatsapp'] ?? null,
-                'instagram'      => $validated['instagram'] ?? null,
+                'slug' => $validated['slug'] ?? null,
+                'bio' => $validated['bio'] ?? null,
+                'color_primary' => $validated['color_primary'] ?? null,
+                'logo_url' => $validated['logo_url'] ?? null,
+                'photo_url' => $validated['photo_url'] ?? null,
+                'whatsapp' => $validated['whatsapp'] ?? null,
+                'instagram' => $validated['instagram'] ?? null,
                 'public_visible' => $validated['public_visible'] ?? null,
             ], fn ($v) => $v !== null));
         }
@@ -1390,9 +1481,9 @@ class CoachController extends Controller
             CoachPwaConfig::updateOrCreate(
                 ['coach_id' => $coach->id],
                 array_filter([
-                    'app_name'  => $validated['pwa_app_name'] ?? null,
-                    'icon_url'  => $validated['pwa_icon_url'] ?? null,
-                    'color'     => $validated['pwa_color'] ?? null,
+                    'app_name' => $validated['pwa_app_name'] ?? null,
+                    'icon_url' => $validated['pwa_icon_url'] ?? null,
+                    'color' => $validated['pwa_color'] ?? null,
                     'subdomain' => $validated['pwa_subdomain'] ?? null,
                 ], fn ($v) => $v !== null)
             );
@@ -1411,7 +1502,7 @@ class CoachController extends Controller
      */
     public function features(Request $request): JsonResponse
     {
-        $coach   = $this->resolveCoachOrFail($request);
+        $coach = $this->resolveCoachOrFail($request);
         $coachId = $coach->id;
 
         // Pods
@@ -1419,29 +1510,30 @@ class CoachController extends Controller
             ->orderByDesc('created_at')
             ->get()
             ->map(function ($pod) {
-                $members     = PodMember::where('pod_id', $pod->id)->get();
-                $memberData  = $members->map(function ($m) {
+                $members = PodMember::where('pod_id', $pod->id)->get();
+                $memberData = $members->map(function ($m) {
                     $client = Client::find($m->client_id);
+
                     return [
-                        'id'        => $m->id,
+                        'id' => $m->id,
                         'client_id' => $m->client_id,
-                        'name'      => $client->name ?? 'Cliente',
-                        'initial'   => substr($client->name ?? 'C', 0, 1),
+                        'name' => $client->name ?? 'Cliente',
+                        'initial' => substr($client->name ?? 'C', 0, 1),
                     ];
                 });
 
                 $lastMessage = PodMessage::where('pod_id', $pod->id)->orderByDesc('created_at')->first();
 
                 return [
-                    'id'            => $pod->id,
-                    'name'          => $pod->name,
-                    'description'   => $pod->description,
-                    'max_members'   => $pod->max_members,
-                    'is_active'     => $pod->is_active,
-                    'member_count'  => $members->count(),
-                    'members'       => $memberData,
+                    'id' => $pod->id,
+                    'name' => $pod->name,
+                    'description' => $pod->description,
+                    'max_members' => $pod->max_members,
+                    'is_active' => $pod->is_active,
+                    'member_count' => $members->count(),
+                    'members' => $memberData,
                     'last_activity' => $lastMessage ? Carbon::parse($lastMessage->created_at)->diffForHumans() : 'Sin actividad',
-                    'created_at'    => Carbon::parse($pod->created_at)->format('d M Y'),
+                    'created_at' => Carbon::parse($pod->created_at)->format('d M Y'),
                 ];
             });
 
@@ -1451,11 +1543,11 @@ class CoachController extends Controller
             ->orderBy('time_start')
             ->get()
             ->map(fn ($slot) => [
-                'id'          => $slot->id,
+                'id' => $slot->id,
                 'day_of_week' => $slot->day_of_week,
-                'time_start'  => substr($slot->time_start, 0, 5),
-                'time_end'    => substr($slot->time_end, 0, 5),
-                'is_active'   => $slot->is_active,
+                'time_start' => substr($slot->time_start, 0, 5),
+                'time_end' => substr($slot->time_end, 0, 5),
+                'is_active' => $slot->is_active,
             ]);
 
         // Audio
@@ -1464,28 +1556,28 @@ class CoachController extends Controller
             ->orderByDesc('created_at')
             ->get()
             ->map(fn ($a) => [
-                'id'           => $a->id,
-                'title'        => $a->title,
-                'audio_url'    => $a->audio_url,
+                'id' => $a->id,
+                'title' => $a->title,
+                'audio_url' => $a->audio_url,
                 'duration_sec' => $a->duration_sec,
-                'category'     => $a->category,
-                'is_active'    => $a->is_active,
-                'created_at'   => $a->created_at?->format('d M Y'),
+                'category' => $a->category,
+                'is_active' => $a->is_active,
+                'created_at' => $a->created_at?->format('d M Y'),
             ]);
 
         // Video check-ins
         $checkinStats = [
-            'total'       => VideoCheckin::where('coach_id', $coachId)->count(),
-            'pending'     => VideoCheckin::where('coach_id', $coachId)->where('status', 'pending')->count(),
-            'reviewed'    => VideoCheckin::where('coach_id', $coachId)->where('status', 'coach_reviewed')->count(),
+            'total' => VideoCheckin::where('coach_id', $coachId)->count(),
+            'pending' => VideoCheckin::where('coach_id', $coachId)->where('status', 'pending')->count(),
+            'reviewed' => VideoCheckin::where('coach_id', $coachId)->where('status', 'coach_reviewed')->count(),
             'ai_reviewed' => VideoCheckin::where('coach_id', $coachId)->where('status', 'ai_reviewed')->count(),
         ];
 
         return response()->json([
-            'pods'          => $pods,
-            'slots'         => $slots,
-            'audios'        => $audios,
-            'checkinStats'  => $checkinStats,
+            'pods' => $pods,
+            'slots' => $slots,
+            'audios' => $audios,
+            'checkinStats' => $checkinStats,
         ]);
     }
 
@@ -1499,7 +1591,7 @@ class CoachController extends Controller
      */
     public function resources(Request $request): JsonResponse
     {
-        $coach   = $this->resolveCoachOrFail($request);
+        $coach = $this->resolveCoachOrFail($request);
         $coachId = $coach->id;
 
         $academyItems = AcademyContent::orderBy('sort_order')
@@ -1520,9 +1612,9 @@ class CoachController extends Controller
 
         return response()->json([
             'academyItems' => $academyItems,
-            'videoTips'    => $videoTips,
-            'articles'     => $articles,
-            'templates'    => $templates,
+            'videoTips' => $videoTips,
+            'articles' => $articles,
+            'templates' => $templates,
         ]);
     }
 }

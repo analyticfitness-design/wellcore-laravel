@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\PlanType;
 use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
 use App\Models\AssignedPlan;
+use App\Models\BloodworkResult;
 use App\Models\Checkin;
 use App\Models\ClientXp;
+use App\Models\HabitLog;
 use App\Models\TrainingLog;
 use App\Models\WorkoutLog;
 use App\Models\WorkoutPr;
@@ -31,17 +34,17 @@ class TrainingController extends Controller
      */
     public function plan(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $plans = AssignedPlan::where('client_id', $clientId)
             ->where('active', true)
             ->get();
 
-        $trainingPlan   = null;
-        $nutritionPlan  = null;
+        $trainingPlan = null;
+        $nutritionPlan = null;
         $supplementPlan = null;
-        $cicloPlan      = null;
+        $cicloPlan = null;
 
         foreach ($plans as $plan) {
             $content = is_array($plan->content)
@@ -49,31 +52,31 @@ class TrainingController extends Controller
                 : json_decode($plan->content, true);
 
             match ($plan->plan_type) {
-                'entrenamiento'  => $trainingPlan = $this->normalizeTrainingPlan($content),
-                'nutricion'      => $nutritionPlan = $content,
+                'entrenamiento' => $trainingPlan = $this->normalizeTrainingPlan($content),
+                'nutricion' => $nutritionPlan = $content,
                 'suplementacion' => $supplementPlan = $content,
                 'ciclo_hormonal' => $cicloPlan = $content,
-                default          => null,
+                default => null,
             };
         }
 
         // Week progression
-        $currentWeek  = 1;
-        $totalWeeks   = 1;
-        $progressPct  = 0;
+        $currentWeek = 1;
+        $totalWeeks = 1;
+        $progressPct = 0;
         $planStartDate = null;
 
         if ($trainingPlan) {
             $totalWeeks = (int) ($trainingPlan['duracion_semanas'] ?? count($trainingPlan['semanas'] ?? []) ?: 1);
-            $startDate  = $trainingPlan['fecha_inicio'] ?? $client->fecha_inicio ?? null;
+            $startDate = $trainingPlan['fecha_inicio'] ?? $client->fecha_inicio ?? null;
 
             if ($startDate) {
-                $start         = Carbon::parse($startDate);
+                $start = Carbon::parse($startDate);
                 $planStartDate = $start->format('d M Y');
-                $daysElapsed   = max(0, $start->diffInDays(now()));
-                $currentWeek   = min($totalWeeks, (int) ceil(max(1, $daysElapsed) / 7));
-                $totalDays     = $totalWeeks * 7;
-                $progressPct   = $totalDays > 0 ? min(100, round(($daysElapsed / $totalDays) * 100, 1)) : 0;
+                $daysElapsed = max(0, $start->diffInDays(now()));
+                $currentWeek = min($totalWeeks, (int) ceil(max(1, $daysElapsed) / 7));
+                $totalDays = $totalWeeks * 7;
+                $progressPct = $totalDays > 0 ? min(100, round(($daysElapsed / $totalDays) * 100, 1)) : 0;
             }
         }
 
@@ -81,26 +84,26 @@ class TrainingController extends Controller
         $habitData = $this->buildHabitData($clientId);
 
         // Bloodwork
-        $bloodwork = \App\Models\BloodworkResult::where('client_id', $clientId)
+        $bloodwork = BloodworkResult::where('client_id', $clientId)
             ->orderByDesc('test_date')
             ->get()
             ->toArray();
 
-        $planType = strtolower($client->plan instanceof \App\Enums\PlanType ? $client->plan->value : (string) ($client->plan ?? 'esencial'));
+        $planType = strtolower($client->plan instanceof PlanType ? $client->plan->value : (string) ($client->plan ?? 'esencial'));
 
         return response()->json([
-            'training_plan'   => $trainingPlan,
-            'nutrition_plan'  => $nutritionPlan,
+            'training_plan' => $trainingPlan,
+            'nutrition_plan' => $nutritionPlan,
             'supplement_plan' => $supplementPlan,
-            'ciclo_plan'      => $cicloPlan,
-            'plan_type'       => $planType,
-            'current_week'    => $currentWeek,
-            'total_weeks'     => $totalWeeks,
-            'progress_pct'    => $progressPct,
+            'ciclo_plan' => $cicloPlan,
+            'plan_type' => $planType,
+            'current_week' => $currentWeek,
+            'total_weeks' => $totalWeeks,
+            'progress_pct' => $progressPct,
             'plan_start_date' => $planStartDate,
-            'habit_data'      => $habitData['habits'],
+            'habit_data' => $habitData['habits'],
             'habit_compliance' => $habitData['compliance'],
-            'bloodwork'       => $bloodwork,
+            'bloodwork' => $bloodwork,
         ]);
     }
 
@@ -114,7 +117,7 @@ class TrainingController extends Controller
      */
     public function training(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $year = (int) $request->query('year', now()->isoFormat('GGGG'));
@@ -129,13 +132,13 @@ class TrainingController extends Controller
         $startOfWeek = Carbon::now()->setISODate($year, $week, 1);
         $days = [];
         for ($i = 0; $i < 7; $i++) {
-            $day     = $startOfWeek->copy()->addDays($i);
+            $day = $startOfWeek->copy()->addDays($i);
             $dateKey = $day->format('Y-m-d');
-            $days[]  = [
-                'date'      => $dateKey,
+            $days[] = [
+                'date' => $dateKey,
                 'dayNumber' => $day->format('d'),
-                'dayName'   => $day->locale('es')->isoFormat('ddd'),
-                'isToday'   => $day->isToday(),
+                'dayName' => $day->locale('es')->isoFormat('ddd'),
+                'isToday' => $day->isToday(),
                 'completed' => isset($logs[$dateKey]) && $logs[$dateKey]->completed,
             ];
         }
@@ -145,7 +148,7 @@ class TrainingController extends Controller
         $isCurrentWeek = $year === (int) now()->isoFormat('GGGG')
             && $week === (int) now()->isoFormat('W');
 
-        $monthCacheKey = "training:month_sessions:{$clientId}:" . now()->format('Y-m');
+        $monthCacheKey = "training:month_sessions:{$clientId}:".now()->format('Y-m');
         $monthSessions = Cache::remember($monthCacheKey, 300, function () use ($clientId) {
             return TrainingLog::where('client_id', $clientId)
                 ->where('completed', true)
@@ -154,9 +157,9 @@ class TrainingController extends Controller
         });
 
         return response()->json([
-            'year'           => $year,
-            'week'           => $week,
-            'days'           => $days,
+            'year' => $year,
+            'week' => $week,
+            'days' => $days,
             'completed_count' => $completedCount,
             'month_sessions' => $monthSessions,
             'is_current_week' => $isCurrentWeek,
@@ -171,7 +174,7 @@ class TrainingController extends Controller
      */
     public function toggleTrainingDay(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $request->validate([
@@ -191,18 +194,18 @@ class TrainingController extends Controller
             $parsed = Carbon::parse($date);
             TrainingLog::create([
                 'client_id' => $clientId,
-                'log_date'  => $date,
+                'log_date' => $date,
                 'completed' => true,
-                'year_num'  => (int) $parsed->isoFormat('GGGG'),
-                'week_num'  => (int) $parsed->isoFormat('W'),
+                'year_num' => (int) $parsed->isoFormat('GGGG'),
+                'week_num' => (int) $parsed->isoFormat('W'),
             ]);
             $completed = true;
         }
 
-        Cache::forget("training:month_sessions:{$clientId}:" . now()->format('Y-m'));
+        Cache::forget("training:month_sessions:{$clientId}:".now()->format('Y-m'));
 
         return response()->json([
-            'date'      => $date,
+            'date' => $date,
             'completed' => $completed,
         ]);
     }
@@ -217,7 +220,7 @@ class TrainingController extends Controller
      */
     public function workout(Request $request, ?int $day = null): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         // Check if first-time user
@@ -239,12 +242,12 @@ class TrainingController extends Controller
 
         if (! $planData) {
             return response()->json([
-                'has_plan'      => false,
-                'show_tutorial' => $showTutorial,
+                'hasPlan' => false,
+                'showTutorial' => $showTutorial,
             ]);
         }
 
-        $planId  = $planData['id'];
+        $planId = $planData['id'];
         $content = is_array($planData['content'])
             ? $planData['content']
             : json_decode($planData['content'], true);
@@ -272,26 +275,26 @@ class TrainingController extends Controller
             if (is_array($first) && (isset($first['days']) || isset($first['week']))) {
                 $content['semanas'] = array_values(array_map(fn ($w) => [
                     'semana' => $w['week'] ?? 1,
-                    'dias'   => $w['days'] ?? [],
+                    'dias' => $w['days'] ?? [],
                 ], $content['plan']));
                 unset($content['plan']);
             }
         }
 
         $hasProgressions = false;
-        $currentWeek     = 1;
-        $totalWeeks      = 1;
-        $allWeeksDays    = [];
-        $days            = [];
+        $currentWeek = 1;
+        $totalWeeks = 1;
+        $allWeeksDays = [];
+        $days = [];
 
         // Elite plans with weekly progressions
         if (isset($content['semanas']) && is_array($content['semanas'])) {
             $hasProgressions = true;
-            $totalWeeks      = count($content['semanas']);
+            $totalWeeks = count($content['semanas']);
 
             foreach ($content['semanas'] as $weekIndex => $weekData) {
                 $weekNumber = $weekIndex + 1;
-                $dias       = $weekData['dias'] ?? $weekData['days'] ?? [];
+                $dias = $weekData['dias'] ?? $weekData['days'] ?? [];
                 $allWeeksDays[$weekNumber] = array_values(array_map(
                     fn ($d) => is_array($d) ? $this->normalizeDay($d) : $d,
                     $dias
@@ -314,8 +317,8 @@ class TrainingController extends Controller
 
         if (empty($days)) {
             return response()->json([
-                'has_plan'      => false,
-                'show_tutorial' => $showTutorial,
+                'hasPlan' => false,
+                'showTutorial' => $showTutorial,
             ]);
         }
 
@@ -326,17 +329,17 @@ class TrainingController extends Controller
         }
 
         $currentDay = $days[$currentDayIndex] ?? null;
-        $dayName    = $currentDay['nombre'] ?? $currentDay['name'] ?? $currentDay['dia'] ?? 'Dia ' . ($currentDayIndex + 1);
+        $dayName = $currentDay['nombre'] ?? $currentDay['name'] ?? $currentDay['dia'] ?? 'Dia '.($currentDayIndex + 1);
         $muscleGroup = $currentDay['grupo_muscular'] ?? $currentDay['muscle_group'] ?? $currentDay['musculo'] ?? '';
-        $exercises   = $currentDay['ejercicios'] ?? $currentDay['exercises'] ?? $currentDay['ejercicios_dia'] ?? [];
+        $exercises = $currentDay['ejercicios'] ?? $currentDay['exercises'] ?? $currentDay['ejercicios_dia'] ?? [];
 
         // Build block groups
         $blockGroups = $this->buildBlockGroups($exercises);
 
         // Check for active session to auto-resume
         $activeSession = null;
-        $setData       = [];
-        $today         = now()->toDateString();
+        $setData = [];
+        $today = now()->toDateString();
 
         $existingSession = WorkoutSession::where('client_id', $clientId)
             ->where('plan_id', $planId)
@@ -347,32 +350,41 @@ class TrainingController extends Controller
             ->first();
 
         if ($existingSession && $existingSession->created_at->diffInHours(now()) < 3) {
-            $activeSession = [
-                'id'         => $existingSession->id,
-                'start_time' => $existingSession->created_at->toIso8601String(),
-            ];
             $setData = $this->buildSetDataWithLogs($clientId, $exercises, $existingSession);
+            $activeSession = [
+                'id' => $existingSession->id,
+                'startTime' => $existingSession->created_at->toIso8601String(),
+                'setData' => $setData,
+            ];
         }
 
+        // Enrich exercises with last_weight / last_reps from previous sessions
+        $exercises = $this->enrichExercisesWithHistory($clientId, $exercises);
+
+        // Build full days array including exercises so Vue can switch days client-side
+        $fullDays = array_map(fn ($d, $i) => [
+            'index' => $i,
+            'nombre' => $d['nombre'] ?? $d['name'] ?? $d['dia'] ?? 'Dia '.($i + 1),
+            'grupo_muscular' => $d['grupo_muscular'] ?? $d['muscle_group'] ?? '',
+            'ejercicios' => $d['ejercicios'] ?? $d['exercises'] ?? $d['ejercicios_dia'] ?? [],
+        ], $days, array_keys($days));
+
         return response()->json([
-            'has_plan'          => true,
-            'show_tutorial'     => $showTutorial,
-            'plan_id'           => $planId,
-            'has_progressions'  => $hasProgressions,
-            'current_week'      => $currentWeek,
-            'total_weeks'       => $totalWeeks,
-            'days'              => array_map(fn ($d, $i) => [
-                'index'        => $i,
-                'nombre'       => $d['nombre'] ?? $d['name'] ?? $d['dia'] ?? 'Dia ' . ($i + 1),
-                'grupo_muscular' => $d['grupo_muscular'] ?? $d['muscle_group'] ?? '',
-            ], $days, array_keys($days)),
-            'current_day_index' => $currentDayIndex,
-            'day_name'          => $dayName,
-            'muscle_group'      => $muscleGroup,
-            'exercises'         => $exercises,
-            'block_groups'      => $blockGroups,
-            'active_session'    => $activeSession,
-            'set_data'          => $setData,
+            // camelCase keys — matches Vue WorkoutPlayer expectations
+            'hasPlan' => true,
+            'showTutorial' => $showTutorial,
+            'planId' => $planId,
+            'hasProgressions' => $hasProgressions,
+            'currentWeek' => $currentWeek,
+            'totalWeeks' => $totalWeeks,
+            'days' => $fullDays,
+            'currentDayIndex' => $currentDayIndex,
+            'dayName' => $dayName,
+            'muscleGroup' => $muscleGroup,
+            'exercises' => $exercises,
+            'blockGroups' => $blockGroups,
+            'activeSession' => $activeSession,
+            'setData' => $setData,
         ]);
     }
 
@@ -383,27 +395,27 @@ class TrainingController extends Controller
      */
     public function startWorkout(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $request->validate([
-            'plan_id'  => 'required|integer',
+            'plan_id' => 'required|integer',
             'day_name' => 'required|string|max:255',
         ]);
 
         $session = WorkoutSession::firstOrCreate(
             [
-                'client_id'    => $clientId,
-                'day_name'     => $request->input('day_name'),
+                'client_id' => $clientId,
+                'day_name' => $request->input('day_name'),
                 'session_date' => now()->toDateString(),
             ],
             [
-                'plan_id'   => $request->input('plan_id'),
+                'plan_id' => $request->input('plan_id'),
                 'completed' => false,
             ]
         );
 
-        Cache::forget("wp:session:{$clientId}:" . now()->toDateString());
+        Cache::forget("wp:session:{$clientId}:".now()->toDateString());
 
         return response()->json([
             'session_id' => $session->id,
@@ -418,32 +430,32 @@ class TrainingController extends Controller
      */
     public function completeSet(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $request->validate([
-            'session_id'     => 'required|integer',
+            'session_id' => 'required|integer',
             'exercise_index' => 'required|integer|min:0',
-            'set_number'     => 'required|integer|min:1',
-            'exercise_name'  => 'required|string|max:255',
-            'weight'         => 'nullable|numeric|min:0',
-            'reps'           => 'required|integer|min:1',
-            'target_reps'    => 'nullable|string',
-            'target_weight'  => 'nullable|numeric',
+            'set_number' => 'required|integer|min:1',
+            'exercise_name' => 'required|string|max:255',
+            'weight' => 'nullable|numeric|min:0',
+            'reps' => 'required|integer|min:1',
+            'target_reps' => 'nullable|string',
+            'target_weight' => 'nullable|numeric',
             // Cardio fields
-            'is_cardio'          => 'nullable|boolean',
-            'duration_minutes'   => 'nullable|integer|min:0',
-            'speed_kmh'         => 'nullable|numeric|min:0',
-            'incline_percent'   => 'nullable|integer|min:0',
+            'is_cardio' => 'nullable|boolean',
+            'duration_minutes' => 'nullable|integer|min:0',
+            'speed_kmh' => 'nullable|numeric|min:0',
+            'incline_percent' => 'nullable|integer|min:0',
         ]);
 
-        $sessionId     = $request->input('session_id');
+        $sessionId = $request->input('session_id');
         $exerciseIndex = $request->input('exercise_index');
-        $setNumber     = $request->input('set_number');
-        $exerciseName  = $request->input('exercise_name');
-        $weight        = (float) ($request->input('weight', 0));
-        $reps          = (int) $request->input('reps');
-        $isCardio      = (bool) $request->input('is_cardio', false);
+        $setNumber = $request->input('set_number');
+        $exerciseName = $request->input('exercise_name');
+        $weight = (float) ($request->input('weight', 0));
+        $reps = (int) $request->input('reps');
+        $isCardio = (bool) $request->input('is_cardio', false);
 
         // Verify session belongs to client
         $session = WorkoutSession::where('id', $sessionId)
@@ -463,16 +475,16 @@ class TrainingController extends Controller
             ->first();
 
         $logData = $isCardio ? [
-            'weight_kg'        => 0,
-            'reps'             => $request->input('duration_minutes', 0),
-            'is_cardio'        => true,
+            'weight_kg' => 0,
+            'reps' => $request->input('duration_minutes', 0),
+            'is_cardio' => true,
             'duration_minutes' => $request->input('duration_minutes', 0),
-            'speed_kmh'        => $request->input('speed_kmh', 0),
-            'incline_percent'  => $request->input('incline_percent', 0),
-            'completed'        => true,
+            'speed_kmh' => $request->input('speed_kmh', 0),
+            'incline_percent' => $request->input('incline_percent', 0),
+            'completed' => true,
         ] : [
             'weight_kg' => $weight,
-            'reps'      => $reps,
+            'reps' => $reps,
             'completed' => true,
         ];
 
@@ -480,15 +492,15 @@ class TrainingController extends Controller
             $existing->update($logData);
         } else {
             WorkoutLog::create(array_merge($logData, [
-                'session_id'    => $sessionId,
-                'client_id'     => $clientId,
+                'session_id' => $sessionId,
+                'client_id' => $clientId,
                 'exercise_name' => $exerciseName,
-                'block_type'    => 'normal',
-                'block_order'   => $exerciseIndex,
-                'set_number'    => $setNumber,
-                'target_reps'   => $request->input('target_reps'),
+                'block_type' => 'normal',
+                'block_order' => $exerciseIndex,
+                'set_number' => $setNumber,
+                'target_reps' => $request->input('target_reps'),
                 'target_weight' => $request->input('target_weight'),
-                'is_pr'         => false,
+                'is_pr' => false,
             ]));
         }
 
@@ -508,15 +520,15 @@ class TrainingController extends Controller
             } catch (\Throwable $e) {
                 \Log::warning('WorkoutPr::checkAndAward failed', [
                     'client_id' => $clientId,
-                    'exercise'  => $exerciseName,
-                    'error'     => $e->getMessage(),
+                    'exercise' => $exerciseName,
+                    'error' => $e->getMessage(),
                 ]);
             }
         }
 
         return response()->json([
             'completed' => true,
-            'is_pr'     => $isPr,
+            'is_pr' => $isPr,
         ]);
     }
 
@@ -528,13 +540,13 @@ class TrainingController extends Controller
      */
     public function finishWorkout(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $request->validate([
             'session_id' => 'required|integer',
-            'feeling'    => 'nullable|integer|min:1|max:5',
-            'notes'      => 'nullable|string|max:1000',
+            'feeling' => 'nullable|integer|min:1|max:5',
+            'notes' => 'nullable|string|max:1000',
         ]);
 
         $session = WorkoutSession::where('id', $request->input('session_id'))
@@ -549,10 +561,10 @@ class TrainingController extends Controller
         $durationSec = (int) $session->created_at->diffInSeconds(now());
 
         $session->update([
-            'completed'        => true,
+            'completed' => true,
             'duration_minutes' => (int) ($durationSec / 60),
-            'feeling'          => $request->input('feeling'),
-            'notes'            => $request->input('notes'),
+            'feeling' => $request->input('feeling'),
+            'notes' => $request->input('notes'),
         ]);
 
         try {
@@ -560,7 +572,7 @@ class TrainingController extends Controller
         } catch (\Throwable $e) {
             \Log::warning('TrainingController: calculateTotals failed', [
                 'session_id' => $session->id,
-                'error'      => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
         }
 
@@ -571,7 +583,7 @@ class TrainingController extends Controller
         } catch (\Throwable $e) {
             \Log::warning('TrainingController: awardXp failed', [
                 'session_id' => $session->id,
-                'error'      => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
         }
 
@@ -583,9 +595,9 @@ class TrainingController extends Controller
 
         return response()->json([
             'session_id' => $session->id,
-            'xp_earned'  => $xpEarned,
-            'pr_count'   => $prCount,
-            'duration'   => $session->formattedDuration(),
+            'xp_earned' => $xpEarned,
+            'pr_count' => $prCount,
+            'duration' => $session->formattedDuration(),
         ]);
     }
 
@@ -598,7 +610,7 @@ class TrainingController extends Controller
      */
     public function workoutSummary(Request $request, int $sessionId): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $session = WorkoutSession::with('logs')
@@ -607,25 +619,25 @@ class TrainingController extends Controller
 
         $completedLogs = $session->logs->where('completed', true);
         $exerciseCount = $completedLogs->pluck('exercise_name')->unique()->count();
-        $targetSets    = $session->logs->count();
+        $targetSets = $session->logs->count();
 
-        $heaviestLog      = $completedLogs->sortByDesc('weight_kg')->first();
-        $maxWeight        = $heaviestLog ? (float) $heaviestLog->weight_kg : 0;
+        $heaviestLog = $completedLogs->sortByDesc('weight_kg')->first();
+        $maxWeight = $heaviestLog ? (float) $heaviestLog->weight_kg : 0;
         $maxWeightExercise = $heaviestLog ? $heaviestLog->exercise_name : null;
 
         $prCount = $completedLogs->where('is_pr', true)->count();
 
         $stats = [
-            'duration'            => $session->formattedDuration(),
-            'duration_sec'        => ($session->duration_minutes ?? 0) * 60,
-            'max_weight'          => $maxWeight,
+            'duration' => $session->formattedDuration(),
+            'duration_sec' => ($session->duration_minutes ?? 0) * 60,
+            'max_weight' => $maxWeight,
             'max_weight_exercise' => $maxWeightExercise,
-            'pr_count'            => $prCount,
-            'reps'                => (int) $completedLogs->sum('reps'),
-            'sets_completed'      => $completedLogs->count(),
-            'sets_total'          => $targetSets,
-            'exercises_count'     => $exerciseCount,
-            'total_volume'        => (float) ($session->total_volume ?? 0),
+            'pr_count' => $prCount,
+            'reps' => (int) $completedLogs->sum('reps'),
+            'sets_completed' => $completedLogs->count(),
+            'sets_total' => $targetSets,
+            'exercises_count' => $exerciseCount,
+            'total_volume' => (float) ($session->total_volume ?? 0),
         ];
 
         $cacheKey = "workout_summary_xp:{$session->id}";
@@ -635,8 +647,8 @@ class TrainingController extends Controller
 
         $prs = $completedLogs->where('is_pr', true)->map(fn ($log) => [
             'exercise' => $log->exercise_name,
-            'weight'   => (float) $log->weight_kg,
-            'reps'     => $log->reps,
+            'weight' => (float) $log->weight_kg,
+            'reps' => $log->reps,
         ])->values()->toArray();
 
         $sessionHistory = WorkoutSession::where('client_id', $clientId)
@@ -646,24 +658,25 @@ class TrainingController extends Controller
             ->limit(10)
             ->get()
             ->map(fn ($s) => [
-                'id'       => $s->id,
-                'date'     => $s->session_date?->format('d M') ?? '-',
+                'id' => $s->id,
+                'date' => $s->session_date?->format('d M') ?? '-',
                 'day_name' => $s->day_name ?? '-',
                 'duration' => $s->formattedDuration(),
+                'total_volume' => (float) ($s->total_volume ?? 0),
             ])
             ->toArray();
 
         return response()->json([
             'session' => [
-                'id'           => $session->id,
-                'day_name'     => $session->day_name,
+                'id' => $session->id,
+                'day_name' => $session->day_name,
                 'session_date' => $session->session_date?->format('Y-m-d'),
-                'feeling'      => $session->feeling,
-                'notes'        => $session->notes,
+                'feeling' => $session->feeling,
+                'notes' => $session->notes,
             ],
-            'stats'           => $stats,
-            'xp_earned'       => $xpEarned,
-            'prs'             => $prs,
+            'stats' => $stats,
+            'xp_earned' => $xpEarned,
+            'prs' => $prs,
             'session_history' => $sessionHistory,
         ]);
     }
@@ -675,19 +688,19 @@ class TrainingController extends Controller
      */
     public function saveWorkoutFeeling(Request $request, int $sessionId): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $request->validate([
             'feeling' => 'nullable|integer|min:1|max:5',
-            'notes'   => 'nullable|string|max:1000',
+            'notes' => 'nullable|string|max:1000',
         ]);
 
         $session = WorkoutSession::where('client_id', $clientId)->findOrFail($sessionId);
 
         $session->update([
             'feeling' => $request->input('feeling'),
-            'notes'   => $request->input('notes') ?: null,
+            'notes' => $request->input('notes') ?: null,
         ]);
 
         return response()->json(['saved' => true]);
@@ -702,7 +715,7 @@ class TrainingController extends Controller
      */
     public function checkin(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $showTutorial = ! Checkin::where('client_id', $clientId)->exists();
@@ -719,17 +732,17 @@ class TrainingController extends Controller
         });
 
         // Check if already submitted this week
-        $weekLabel = now()->isoFormat('GGGG') . '-W' . str_pad(now()->isoFormat('W'), 2, '0', STR_PAD_LEFT);
+        $weekLabel = now()->isoFormat('GGGG').'-W'.str_pad(now()->isoFormat('W'), 2, '0', STR_PAD_LEFT);
         $alreadySubmitted = Checkin::where('client_id', $clientId)
             ->where('week_label', $weekLabel)
             ->exists();
 
         return response()->json([
-            'show_tutorial'       => $showTutorial,
+            'show_tutorial' => $showTutorial,
             'is_checkin_available' => $isCheckinAvailable,
-            'already_submitted'   => $alreadySubmitted,
-            'week_label'          => $weekLabel,
-            'recent_checkins'     => $cached,
+            'already_submitted' => $alreadySubmitted,
+            'week_label' => $weekLabel,
+            'recent_checkins' => $cached,
         ]);
     }
 
@@ -740,15 +753,15 @@ class TrainingController extends Controller
      */
     public function submitCheckin(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $request->validate([
-            'bienestar'       => 'required|integer|min:1|max:5',
+            'bienestar' => 'required|integer|min:1|max:5',
             'dias_entrenados' => 'required|integer|min:0|max:7',
-            'nutricion'       => 'required|in:Si,No,Parcial',
-            'rpe'             => 'required|integer|min:1|max:10',
-            'comentario'      => 'nullable|string|max:1000',
+            'nutricion' => 'required|in:Si,No,Parcial',
+            'rpe' => 'required|integer|min:1|max:10',
+            'comentario' => 'nullable|string|max:1000',
         ]);
 
         $dayOfWeek = now()->timezone('America/Bogota')->dayOfWeek;
@@ -758,7 +771,7 @@ class TrainingController extends Controller
             ], 422);
         }
 
-        $weekLabel = now()->isoFormat('GGGG') . '-W' . str_pad(now()->isoFormat('W'), 2, '0', STR_PAD_LEFT);
+        $weekLabel = now()->isoFormat('GGGG').'-W'.str_pad(now()->isoFormat('W'), 2, '0', STR_PAD_LEFT);
 
         $alreadySubmitted = Checkin::where('client_id', $clientId)
             ->where('week_label', $weekLabel)
@@ -771,21 +784,21 @@ class TrainingController extends Controller
         }
 
         $checkin = Checkin::create([
-            'client_id'       => $clientId,
-            'week_label'      => $weekLabel,
-            'checkin_date'    => now()->toDateString(),
-            'bienestar'       => $request->input('bienestar'),
+            'client_id' => $clientId,
+            'week_label' => $weekLabel,
+            'checkin_date' => now()->toDateString(),
+            'bienestar' => $request->input('bienestar'),
             'dias_entrenados' => $request->input('dias_entrenados'),
-            'nutricion'       => $request->input('nutricion'),
-            'comentario'      => $request->input('comentario'),
-            'rpe'             => $request->input('rpe'),
-            'created_at'      => now(),
+            'nutricion' => $request->input('nutricion'),
+            'comentario' => $request->input('comentario'),
+            'rpe' => $request->input('rpe'),
+            'created_at' => now(),
         ]);
 
         Cache::forget("checkin:recent:{$clientId}");
 
         return response()->json([
-            'saved'     => true,
+            'saved' => true,
             'checkin_id' => $checkin->id,
         ]);
     }
@@ -798,27 +811,27 @@ class TrainingController extends Controller
     private function buildHabitData(int $clientId): array
     {
         $startDate = Carbon::now()->subDays(30);
-        $today     = Carbon::today();
+        $today = Carbon::today();
 
-        $logs = \App\Models\HabitLog::where('client_id', $clientId)
+        $logs = HabitLog::where('client_id', $clientId)
             ->where('log_date', '>=', $startDate)
             ->orderByDesc('log_date')
             ->get();
 
-        $habitTypes  = ['agua', 'sueno', 'entrenamiento', 'nutricion', 'suplementos'];
+        $habitTypes = ['agua', 'sueno', 'entrenamiento', 'nutricion', 'suplementos'];
         $habitLabels = [
-            'agua'          => 'Agua',
-            'sueno'         => 'Sueno',
+            'agua' => 'Agua',
+            'sueno' => 'Sueno',
             'entrenamiento' => 'Entrenamiento',
-            'nutricion'     => 'Nutricion',
-            'suplementos'   => 'Suplementos',
+            'nutricion' => 'Nutricion',
+            'suplementos' => 'Suplementos',
         ];
         $habitIcons = [
-            'agua'          => 'droplet',
-            'sueno'         => 'moon',
+            'agua' => 'droplet',
+            'sueno' => 'moon',
             'entrenamiento' => 'dumbbell',
-            'nutricion'     => 'utensils',
-            'suplementos'   => 'pill',
+            'nutricion' => 'utensils',
+            'suplementos' => 'pill',
         ];
 
         $habits = [];
@@ -828,7 +841,7 @@ class TrainingController extends Controller
 
             $avg = $typeLogs->count() > 0 ? round($typeLogs->avg('value'), 1) : 0;
 
-            $streak    = 0;
+            $streak = 0;
             $checkDate = $today->copy();
             for ($i = 0; $i < 30; $i++) {
                 $dayLog = $typeLogs->first(function ($log) use ($checkDate) {
@@ -844,28 +857,28 @@ class TrainingController extends Controller
 
             $last7 = [];
             for ($i = 6; $i >= 0; $i--) {
-                $date   = $today->copy()->subDays($i);
+                $date = $today->copy()->subDays($i);
                 $dayLog = $typeLogs->first(function ($log) use ($date) {
                     return $log->log_date->format('Y-m-d') === $date->format('Y-m-d');
                 });
                 $last7[] = [
-                    'date'  => $date->format('D'),
+                    'date' => $date->format('D'),
                     'value' => $dayLog ? $dayLog->value : 0,
                 ];
             }
 
             $habits[] = [
-                'type'    => $type,
-                'label'   => $habitLabels[$type],
-                'icon'    => $habitIcons[$type],
-                'streak'  => $streak,
+                'type' => $type,
+                'label' => $habitLabels[$type],
+                'icon' => $habitIcons[$type],
+                'streak' => $streak,
                 'average' => $avg,
-                'last7'   => $last7,
+                'last7' => $last7,
             ];
         }
 
-        $daysInMonth  = $today->day;
-        $monthStart   = $today->copy()->startOfMonth();
+        $daysInMonth = $today->day;
+        $monthStart = $today->copy()->startOfMonth();
         $daysWithLogs = $logs
             ->where('log_date', '>=', $monthStart)
             ->pluck('log_date')
@@ -876,7 +889,7 @@ class TrainingController extends Controller
         $compliance = $daysInMonth > 0 ? round(($daysWithLogs / $daysInMonth) * 100, 0) : 0;
 
         return [
-            'habits'     => $habits,
+            'habits' => $habits,
             'compliance' => $compliance,
         ];
     }
@@ -895,7 +908,7 @@ class TrainingController extends Controller
                 $semana['dias'] = $this->normalizeDays($semana['dias'] ?? $semana['days'] ?? []);
                 unset($semana['days']);
                 $semana['numero'] = $semana['numero'] ?? $semana['number'] ?? $semana['semana'] ?? null;
-                $semana['fase']   = $semana['fase'] ?? $semana['phase'] ?? $semana['nombre'] ?? null;
+                $semana['fase'] = $semana['fase'] ?? $semana['phase'] ?? $semana['nombre'] ?? null;
             }
             unset($semana);
 
@@ -909,8 +922,8 @@ class TrainingController extends Controller
                 if (is_array($week) && (isset($week['days']) || isset($week['dias']))) {
                     $content['semanas'][] = [
                         'numero' => $week['week'] ?? $week['semana'] ?? ($idx + 1),
-                        'fase'   => $week['phase'] ?? $week['fase'] ?? $week['name'] ?? null,
-                        'dias'   => $this->normalizeDays($week['days'] ?? $week['dias'] ?? []),
+                        'fase' => $week['phase'] ?? $week['fase'] ?? $week['name'] ?? null,
+                        'dias' => $this->normalizeDays($week['days'] ?? $week['dias'] ?? []),
                     ];
                 }
             }
@@ -922,7 +935,7 @@ class TrainingController extends Controller
         }
 
         if (! isset($content['dias']) || ! is_array($content['dias'])) {
-            $days  = $content['days'] ?? null;
+            $days = $content['days'] ?? null;
             $weeks = $content['weeks'] ?? null;
             if (is_array($days)) {
                 $content['dias'] = $days;
@@ -944,16 +957,16 @@ class TrainingController extends Controller
             for ($w = 1; $w <= $duracion; $w++) {
                 $content['semanas'][] = [
                     'numero' => $w,
-                    'fase'   => $content['fases'][$w - 1] ?? null,
-                    'dias'   => $content['dias'],
+                    'fase' => $content['fases'][$w - 1] ?? null,
+                    'dias' => $content['dias'],
                 ];
             }
         } else {
             $content['semanas'] = [
                 [
                     'numero' => 1,
-                    'fase'   => $content['fase'] ?? null,
-                    'dias'   => $content['dias'],
+                    'fase' => $content['fase'] ?? null,
+                    'dias' => $content['dias'],
                 ],
             ];
         }
@@ -1085,15 +1098,15 @@ class TrainingController extends Controller
      */
     private function buildBlockGroups(array $exercises): array
     {
-        $blockGroups  = [];
+        $blockGroups = [];
         $currentGroup = null;
-        $groupIndex   = 0;
+        $groupIndex = 0;
 
         foreach ($exercises as $exIndex => $exercise) {
             $blockType = strtolower($exercise['bloque'] ?? $exercise['block_type'] ?? 'normal');
 
             if ($blockType === 'superset' || $blockType === 'circuito') {
-                $groupId = $exercise['grupo_id'] ?? $exercise['group_id'] ?? $blockType . '_' . $groupIndex;
+                $groupId = $exercise['grupo_id'] ?? $exercise['group_id'] ?? $blockType.'_'.$groupIndex;
 
                 if ($currentGroup && $currentGroup['id'] === $groupId) {
                     $currentGroup['exercises'][] = $exIndex;
@@ -1102,10 +1115,10 @@ class TrainingController extends Controller
                         $blockGroups[] = $currentGroup;
                     }
                     $currentGroup = [
-                        'id'        => $groupId,
-                        'type'      => $blockType,
-                        'label'     => $blockType === 'superset' ? 'SUPERSET' : 'CIRCUITO',
-                        'rounds'    => (int) ($exercise['rondas'] ?? $exercise['rounds'] ?? 1),
+                        'id' => $groupId,
+                        'type' => $blockType,
+                        'label' => $blockType === 'superset' ? 'SUPERSET' : 'CIRCUITO',
+                        'rounds' => (int) ($exercise['rondas'] ?? $exercise['rounds'] ?? 1),
                         'exercises' => [$exIndex],
                     ];
                     $groupIndex++;
@@ -1113,12 +1126,12 @@ class TrainingController extends Controller
             } else {
                 if ($currentGroup) {
                     $blockGroups[] = $currentGroup;
-                    $currentGroup  = null;
+                    $currentGroup = null;
                 }
                 $blockGroups[] = [
-                    'id'        => 'single_' . $exIndex,
-                    'type'      => 'normal',
-                    'label'     => null,
+                    'id' => 'single_'.$exIndex,
+                    'type' => 'normal',
+                    'label' => null,
                     'exercises' => [$exIndex],
                 ];
             }
@@ -1161,7 +1174,7 @@ class TrainingController extends Controller
                         ) latest'),
                         function ($join) {
                             $join->on('workout_logs.exercise_name', '=', 'latest.exercise_name')
-                                 ->on('workout_logs.id', '=', 'latest.max_id');
+                                ->on('workout_logs.id', '=', 'latest.max_id');
                         }
                     )
                     ->whereIn('workout_logs.exercise_name', $exerciseNames)
@@ -1177,21 +1190,21 @@ class TrainingController extends Controller
         $setData = [];
 
         foreach ($exercises as $exIndex => $exercise) {
-            $seriesCount  = (int) ($exercise['series'] ?? 4);
+            $seriesCount = (int) ($exercise['series'] ?? 4);
             $exerciseName = $exercise['nombre'] ?? '';
-            $lastWeight   = $lastWeights[$exerciseName] ?? null;
-            $targetReps   = $exercise['repeticiones'] ?? '8-10';
+            $lastWeight = $lastWeights[$exerciseName] ?? null;
+            $targetReps = $exercise['repeticiones'] ?? '8-10';
 
             $sets = [];
             for ($s = 1; $s <= $seriesCount; $s++) {
                 $sets[$s] = [
-                    'set_number'    => $s,
-                    'target_reps'   => $targetReps,
+                    'set_number' => $s,
+                    'target_reps' => $targetReps,
                     'target_weight' => $lastWeight,
-                    'weight'        => $lastWeight,
-                    'reps'          => '',
-                    'completed'     => false,
-                    'is_pr'         => false,
+                    'weight' => $lastWeight,
+                    'reps' => '',
+                    'completed' => false,
+                    'is_pr' => false,
                 ];
             }
 
@@ -1205,19 +1218,74 @@ class TrainingController extends Controller
                 $exIndex = $log->block_order;
                 if (isset($setData[$exIndex][$log->set_number])) {
                     $setData[$exIndex][$log->set_number] = [
-                        'set_number'    => $log->set_number,
-                        'target_reps'   => $log->target_reps ?? $setData[$exIndex][$log->set_number]['target_reps'],
+                        'set_number' => $log->set_number,
+                        'target_reps' => $log->target_reps ?? $setData[$exIndex][$log->set_number]['target_reps'],
                         'target_weight' => $log->target_weight,
-                        'weight'        => $log->weight_kg,
-                        'reps'          => $log->reps,
-                        'completed'     => (bool) $log->completed,
-                        'is_pr'         => (bool) $log->is_pr,
+                        'weight' => $log->weight_kg,
+                        'reps' => $log->reps,
+                        'completed' => (bool) $log->completed,
+                        'is_pr' => (bool) $log->is_pr,
                     ];
                 }
             }
         }
 
         return $setData;
+    }
+
+    /**
+     * Enrich exercises with last_weight and last_reps from the client's
+     * most recent completed session. Single query, no N+1.
+     */
+    private function enrichExercisesWithHistory(int $clientId, array $exercises): array
+    {
+        $names = collect($exercises)
+            ->map(fn ($ex) => $ex['nombre'] ?? $ex['name'] ?? null)
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
+
+        if (empty($names)) {
+            return $exercises;
+        }
+
+        try {
+            $lastLogs = WorkoutLog::select('workout_logs.exercise_name', 'workout_logs.weight_kg', 'workout_logs.reps')
+                ->join(
+                    DB::raw('(
+                        SELECT wl2.exercise_name, MAX(wl2.id) as max_id
+                        FROM workout_logs wl2
+                        INNER JOIN workout_sessions ws2 ON ws2.id = wl2.session_id
+                        WHERE ws2.client_id = ?
+                          AND ws2.completed = 1
+                          AND wl2.completed = 1
+                          AND wl2.weight_kg IS NOT NULL
+                        GROUP BY wl2.exercise_name
+                    ) latest'),
+                    function ($join) {
+                        $join->on('workout_logs.exercise_name', '=', 'latest.exercise_name')
+                            ->on('workout_logs.id', '=', 'latest.max_id');
+                    }
+                )
+                ->whereIn('workout_logs.exercise_name', $names)
+                ->addBinding($clientId, 'join')
+                ->get()
+                ->keyBy('exercise_name');
+        } catch (\Throwable) {
+            return $exercises;
+        }
+
+        foreach ($exercises as &$ex) {
+            $exName = $ex['nombre'] ?? $ex['name'] ?? '';
+            $lastLog = $lastLogs[$exName] ?? null;
+
+            $ex['last_weight'] = $lastLog ? (float) $lastLog->weight_kg : null;
+            $ex['last_reps'] = $lastLog ? (int) $lastLog->reps : null;
+        }
+        unset($ex);
+
+        return $exercises;
     }
 
     /**
@@ -1228,9 +1296,9 @@ class TrainingController extends Controller
         $clientXp = ClientXp::firstOrCreate(
             ['client_id' => $clientId],
             [
-                'xp_total'         => 0,
-                'level'            => 1,
-                'streak_days'      => 0,
+                'xp_total' => 0,
+                'level' => 1,
+                'streak_days' => 0,
                 'streak_last_date' => null,
                 'streak_protected' => false,
             ]
@@ -1239,7 +1307,7 @@ class TrainingController extends Controller
         $clientXp->xp_total += $xpEarned;
         $clientXp->level = max(1, (int) floor($clientXp->xp_total / 200) + 1);
 
-        $today     = now()->toDateString();
+        $today = now()->toDateString();
         $yesterday = now()->subDay()->toDateString();
 
         if ($clientXp->streak_last_date === null) {
