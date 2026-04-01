@@ -45,8 +45,12 @@ async function fetchClients() {
             },
         });
         clients.value = response.data.data || response.data.clients || [];
+        const p = response.data.pagination;
         if (response.data.meta) {
             meta.value = { ...meta.value, ...response.data.meta };
+        } else if (p) {
+            meta.value.total = p.total;
+            meta.value.lastPage = p.last_page ?? Math.ceil(p.total / meta.value.perPage);
         } else if (response.data.total !== undefined) {
             meta.value.total = response.data.total;
             meta.value.lastPage = response.data.last_page || Math.ceil(response.data.total / meta.value.perPage);

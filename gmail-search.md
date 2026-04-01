@@ -1,0 +1,303 @@
+- generic [active] [ref=e1]:
+  - iframe [ref=e2]:
+    
+  - generic [ref=e1329]: No se seleccionó ningún elemento
+  - generic [ref=e10]:
+    - generic [ref=e12]:
+      - generic [ref=e13]:
+        - link "Ir al contenido" [ref=e14] [cursor=pointer]:
+          - /url: ""
+        - link "Cómo usar Gmail con lectores de pantalla" [ref=e15] [cursor=pointer]:
+          - /url: ""
+      - heading [level=1] [ref=e17]:
+        - banner [ref=e18]:
+          - generic [ref=e19]:
+            - generic [ref=e20]:
+              - button "Menú principal" [expanded] [ref=e21] [cursor=pointer]:
+                - img [ref=e22]
+              - link "Gmail" [ref=e26] [cursor=pointer]:
+                - /url: "#inbox"
+                - img [ref=e27]
+            - generic [ref=e28]:
+              - search [ref=e30]:
+                - heading "Búsqueda" [level=2] [ref=e31]
+                - table [ref=e1313]:
+                  - rowgroup [ref=e1314]:
+                    - row "from:github sudo verification" [ref=e2113]:
+                      - cell "from:github sudo verification" [ref=e2114]:
+                        - textbox "Buscar en el correo electrónico" [ref=e1317]: from:github sudo verification
+                - button "Opciones de búsqueda avanzada" [ref=e34] [cursor=pointer]:
+                  - img [ref=e35]
+                - button "Borrar búsqueda" [ref=e2115] [cursor=pointer]:
+                  - img [ref=e2116]
+                - button "Buscar en el correo electrónico" [disabled] [ref=e37] [cursor=pointer]:
+                  - img [ref=e38]
+              - generic [ref=e41]:
+                - button "Asistencia" [ref=e1319] [cursor=pointer]:
+                  - img [ref=e1320]
+                - button "Configuración" [ref=e45] [cursor=pointer]:
+                  - img [ref=e46]
+                - generic [ref=e50]:
+                  - generic:
+                    - button "Probar Gemini" [ref=e53] [cursor=pointer]:
+                      - img [ref=e56]
+                    - tooltip [ref=e59]: Probar Gemini
+                - generic [ref=e62]:
+                  - button "Actualizar" [ref=e64] [cursor=pointer]:
+                    - generic [ref=e66]: Actualizar
+                  - tooltip [ref=e67]: Actualizar y obtener funciones premium
+            - generic [ref=e69]:
+              - button "Apps de Google" [ref=e73] [cursor=pointer]:
+                - img [ref=e74]
+              - 'button "Cuenta de Google: Analytic Fitness Online (analyticfitness@gmail.com)" [ref=e79] [cursor=pointer]':
+                - img [ref=e81]
+      - alert [ref=e84]:
+        - generic [ref=e85]:
+          - generic [ref=e86]: Habilita las notificaciones de escritorio para Gmail.
+          - generic [ref=e87]:
+            - link "Aceptar" [ref=e88] [cursor=pointer]
+            - link "No, gracias" [ref=e89] [cursor=pointer]
+          - button "Cerrar" [ref=e90] [cursor=pointer]
+    - generic [ref=e92]:
+      - navigation [ref=e93]:
+        - button "Redactar" [ref=e96] [cursor=pointer]
+        - generic [ref=e102]:
+          - generic "Etiquetas" [ref=e104]:
+            - heading "Etiquetas" [level=2] [ref=e105]
+            - generic [ref=e106]:
+              - generic [ref=e107]:
+                - generic [ref=e109]:
+                  - generic [ref=e1334]:
+                    - link "Recibidos 5009 no leídos" [ref=e1336] [cursor=pointer]:
+                      - /url: https://mail.google.com/mail/u/0/#inbox
+                      - text: Recibidos
+                    - generic [ref=e1337]: 5,009
+                  - link "Destacados" [ref=e124] [cursor=pointer]:
+                    - /url: https://mail.google.com/mail/u/0/#starred
+                  - link "Pospuestos" [ref=e131] [cursor=pointer]:
+                    - /url: https://mail.google.com/mail/u/0/#snoozed
+                  - link "Enviados" [ref=e138] [cursor=pointer]:
+                    - /url: https://mail.google.com/mail/u/0/#sent
+                  - generic [ref=e143]:
+                    - link "Borradores 28 no leídos" [ref=e145] [cursor=pointer]:
+                      - /url: https://mail.google.com/mail/u/0/#drafts
+                      - text: Borradores
+                    - generic [ref=e146]: "28"
+                - generic [ref=e153]:
+                  - link "Compras 108 no leídos tiene un menú" [ref=e155] [cursor=pointer]:
+                    - /url: https://mail.google.com/mail/u/0/#category/purchases
+                    - text: Compras
+                  - generic [ref=e156]: "108"
+              - button "Más etiquetas" [ref=e158] [cursor=pointer]:
+                - generic [ref=e159]: Más
+          - generic [ref=e162]:
+            - heading "Etiquetas" [ref=e163]
+            - button "Crear etiqueta nueva" [ref=e164] [cursor=pointer]
+          - generic "Etiquetas" [ref=e166]:
+            - heading "Etiquetas" [level=2] [ref=e167]
+            - link "Notes tiene un menú" [ref=e178] [cursor=pointer]:
+              - /url: https://mail.google.com/mail/u/0/#label/Notes
+              - text: Notes
+      - main [ref=e2153]:
+        - generic [ref=e2154]:
+          - toolbar "refinamiento de búsqueda" [ref=e2155]:
+            - generic [ref=e2159]:
+              - button "Cualquier momento" [ref=e2161] [cursor=pointer]:
+                - generic [ref=e2163]:
+                  - generic [ref=e2164]: Cualquier momento
+                  - img [ref=e2165]
+              - button "Contiene archivos adjuntos" [ref=e2168] [cursor=pointer]:
+                - generic [ref=e2171]: Contiene archivos adjuntos
+              - button "Para" [ref=e2173] [cursor=pointer]:
+                - generic [ref=e2175]:
+                  - generic [ref=e2176]: Para
+                  - img [ref=e2177]
+              - button "No leídos" [ref=e2180] [cursor=pointer]:
+                - generic [ref=e2183]: No leídos
+              - button "Búsqueda avanzada" [ref=e2184] [cursor=pointer]:
+                - generic [ref=e2187]: Búsqueda avanzada
+          - generic [ref=e2188]:
+            - generic [ref=e2191]:
+              - button "Seleccionar" [ref=e2193] [cursor=pointer]:
+                - checkbox [ref=e2195]
+              - button "Actualizar" [ref=e2198] [cursor=pointer]
+              - button "Más opciones de correo electrónico" [ref=e2202] [cursor=pointer]
+            - generic [ref=e2205]:
+              - button "Más relevantes" [ref=e2208] [cursor=pointer]:
+                - generic [ref=e2209]: Más relevantes
+              - generic [ref=e2212]:
+                - button "Mostrar más mensajes" [ref=e2213] [cursor=pointer]:
+                  - generic [ref=e2214]:
+                    - generic [ref=e2215]: 1–7
+                    - text: de 7
+                - button "Resultados anteriores" [disabled] [ref=e2216]
+                - button "Resultados siguientes" [disabled] [ref=e2217]
+        - heading "Conversaciones" [level=2] [ref=e2219]
+        - grid [ref=e2223]:
+          - rowgroup [ref=e2224]:
+            - 'row "no leída, GitHub, [GitHub] Sudo email verification code, 9:44 p.m., Here is your GitHub sudo authentication code: 56678466. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2225] [cursor=pointer]':
+              - gridcell [ref=e2226]
+              - 'gridcell "no leída, GitHub, [GitHub] Sudo email verification code, 9:44 p.m., Here is your GitHub sudo authentication code: 56678466. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2227]':
+                - 'checkbox "no leída, GitHub, [GitHub] Sudo email verification code, 9:44 p.m., Here is your GitHub sudo authentication code: 56678466. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2228]'
+              - gridcell "Sin destacar" [ref=e2229]:
+                - button "Sin destacar" [ref=e2230]
+              - gridcell "GitHub" [ref=e2231]:
+                - generic [ref=e2233]: GitHub
+              - 'gridcell "Recibidos [GitHub] Sudo email verification code - Here is your GitHub sudo authentication code: 56678466. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ..." [ref=e2234]':
+                - 'link "Recibidos [GitHub] Sudo email verification code - Here is your GitHub sudo authentication code: 56678466. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ..." [ref=e2235]':
+                  - generic [ref=e2236]:
+                    - generic "Recibidos" [ref=e2239]:
+                      - generic [ref=e2241]: Recibidos
+                    - generic [ref=e2244]: "[GitHub] Sudo email verification code"
+                    - generic [ref=e2245]:
+                      - generic [ref=e2246]: "-"
+                      - text: "Here is your GitHub sudo authentication code: 56678466. This code is valid for 15 minutes and can only be used once. Please don't share this code with ..."
+              - gridcell [ref=e2247]
+              - gridcell "dom, 22 mar 2026, 9:44 p.m." [ref=e2248]:
+                - generic "dom, 22 mar 2026, 9:44 p.m." [ref=e2249]: 9:44 p.m.
+              - gridcell
+            - 'row "GitHub, [GitHub] Sudo email verification code, 19 mar, Here is your GitHub sudo authentication code: 31737507. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2250] [cursor=pointer]':
+              - gridcell [ref=e2251]
+              - 'gridcell "GitHub, [GitHub] Sudo email verification code, 19 mar, Here is your GitHub sudo authentication code: 31737507. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2252]':
+                - 'checkbox "GitHub, [GitHub] Sudo email verification code, 19 mar, Here is your GitHub sudo authentication code: 31737507. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2253]'
+              - gridcell "Sin destacar" [ref=e2254]:
+                - button "Sin destacar" [ref=e2255]
+              - gridcell "GitHub" [ref=e2256]:
+                - generic [ref=e2258]: GitHub
+              - 'gridcell "Recibidos [GitHub] Sudo email verification code - Here is your GitHub sudo authentication code: 31737507. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ..." [ref=e2259]':
+                - 'link "Recibidos [GitHub] Sudo email verification code - Here is your GitHub sudo authentication code: 31737507. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ..." [ref=e2260]':
+                  - generic [ref=e2261]:
+                    - generic "Recibidos" [ref=e2264]:
+                      - generic [ref=e2266]: Recibidos
+                    - generic [ref=e2269]: "[GitHub] Sudo email verification code"
+                    - generic [ref=e2270]:
+                      - generic [ref=e2271]: "-"
+                      - text: "Here is your GitHub sudo authentication code: 31737507. This code is valid for 15 minutes and can only be used once. Please don't share this code with ..."
+              - gridcell [ref=e2272]
+              - gridcell "jue, 19 mar 2026, 9:47 p.m." [ref=e2273]:
+                - generic "jue, 19 mar 2026, 9:47 p.m." [ref=e2274]: 19 mar
+              - gridcell
+            - 'row "GitHub 2, [GitHub] Sudo email verification code, 10 mar, Here is your GitHub sudo authentication code: 61194541. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2275] [cursor=pointer]':
+              - gridcell [ref=e2276]
+              - 'gridcell "GitHub 2, [GitHub] Sudo email verification code, 10 mar, Here is your GitHub sudo authentication code: 61194541. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2277]':
+                - 'checkbox "GitHub 2, [GitHub] Sudo email verification code, 10 mar, Here is your GitHub sudo authentication code: 61194541. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2278]'
+              - gridcell "Sin destacar" [ref=e2279]:
+                - button "Sin destacar" [ref=e2280]
+              - gridcell "GitHub 2" [ref=e2281]:
+                - generic [ref=e2282]:
+                  - generic [ref=e2283]: GitHub
+                  - generic [ref=e2284]: "2"
+              - 'gridcell "Recibidos [GitHub] Sudo email verification code - Here is your GitHub sudo authentication code: 61194541. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ..." [ref=e2285]':
+                - 'link "Recibidos [GitHub] Sudo email verification code - Here is your GitHub sudo authentication code: 61194541. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ..." [ref=e2286]':
+                  - generic [ref=e2287]:
+                    - generic "Recibidos" [ref=e2290]:
+                      - generic [ref=e2292]: Recibidos
+                    - generic [ref=e2295]: "[GitHub] Sudo email verification code"
+                    - generic [ref=e2296]:
+                      - generic [ref=e2297]: "-"
+                      - text: "Here is your GitHub sudo authentication code: 61194541. This code is valid for 15 minutes and can only be used once. Please don't share this code with ..."
+              - gridcell [ref=e2298]:
+                - toolbar [ref=e2299]:
+                  - listitem [ref=e2300]
+                  - listitem [ref=e2301]
+                  - listitem [ref=e2302]
+                  - listitem [ref=e2303]
+              - gridcell
+            - 'row "GitHub, [GitHub] Sudo email verification code, 3 mar, Here is your GitHub sudo authentication code: 45947934. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2304] [cursor=pointer]':
+              - gridcell [ref=e2305]
+              - 'gridcell "GitHub, [GitHub] Sudo email verification code, 3 mar, Here is your GitHub sudo authentication code: 45947934. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2306]':
+                - 'checkbox "GitHub, [GitHub] Sudo email verification code, 3 mar, Here is your GitHub sudo authentication code: 45947934. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2307]'
+              - gridcell "Sin destacar" [ref=e2308]:
+                - button "Sin destacar" [ref=e2309]
+              - gridcell "GitHub" [ref=e2310]:
+                - generic [ref=e2312]: GitHub
+              - 'gridcell "Recibidos [GitHub] Sudo email verification code - Here is your GitHub sudo authentication code: 45947934. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ..." [ref=e2313]':
+                - 'link "Recibidos [GitHub] Sudo email verification code - Here is your GitHub sudo authentication code: 45947934. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ..." [ref=e2314]':
+                  - generic [ref=e2315]:
+                    - generic "Recibidos" [ref=e2318]:
+                      - generic [ref=e2320]: Recibidos
+                    - generic [ref=e2323]: "[GitHub] Sudo email verification code"
+                    - generic [ref=e2324]:
+                      - generic [ref=e2325]: "-"
+                      - text: "Here is your GitHub sudo authentication code: 45947934. This code is valid for 15 minutes and can only be used once. Please don't share this code with ..."
+              - gridcell [ref=e2326]
+              - gridcell "mar, 3 mar 2026, 6:18 p.m." [ref=e2327]:
+                - generic "mar, 3 mar 2026, 6:18 p.m." [ref=e2328]: 3 mar
+              - gridcell
+            - 'row "no leída, GitHub 2, [GitHub] Sudo email verification code, 28 feb, Here is your GitHub sudo authentication code: 32863638. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2329] [cursor=pointer]':
+              - gridcell [ref=e2330]
+              - 'gridcell "no leída, GitHub 2, [GitHub] Sudo email verification code, 28 feb, Here is your GitHub sudo authentication code: 32863638. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2331]':
+                - 'checkbox "no leída, GitHub 2, [GitHub] Sudo email verification code, 28 feb, Here is your GitHub sudo authentication code: 32863638. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2332]'
+              - gridcell "Sin destacar" [ref=e2333]:
+                - button "Sin destacar" [ref=e2334]
+              - gridcell "GitHub 2" [ref=e2335]:
+                - generic [ref=e2336]:
+                  - generic [ref=e2337]: GitHub
+                  - generic [ref=e2338]: "2"
+              - 'gridcell "Recibidos [GitHub] Sudo email verification code - Here is your GitHub sudo authentication code: 32863638. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ..." [ref=e2339]':
+                - 'link "Recibidos [GitHub] Sudo email verification code - Here is your GitHub sudo authentication code: 32863638. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ..." [ref=e2340]':
+                  - generic [ref=e2341]:
+                    - generic "Recibidos" [ref=e2344]:
+                      - generic [ref=e2346]: Recibidos
+                    - generic [ref=e2349]: "[GitHub] Sudo email verification code"
+                    - generic [ref=e2350]:
+                      - generic [ref=e2351]: "-"
+                      - text: "Here is your GitHub sudo authentication code: 32863638. This code is valid for 15 minutes and can only be used once. Please don't share this code with ..."
+              - gridcell [ref=e2352]
+              - gridcell "sáb, 28 feb 2026, 1:02 p.m." [ref=e2353]:
+                - generic "sáb, 28 feb 2026, 1:02 p.m." [ref=e2354]: 28 feb
+              - gridcell
+            - 'row "GitHub, [GitHub] Sudo email verification code, 18 feb, Here is your GitHub sudo authentication code: 52097650. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2355] [cursor=pointer]':
+              - gridcell [ref=e2356]
+              - 'gridcell "GitHub, [GitHub] Sudo email verification code, 18 feb, Here is your GitHub sudo authentication code: 52097650. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2357]':
+                - 'checkbox "GitHub, [GitHub] Sudo email verification code, 18 feb, Here is your GitHub sudo authentication code: 52097650. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2358]'
+              - gridcell "Sin destacar" [ref=e2359]:
+                - button "Sin destacar" [ref=e2360]
+              - gridcell "GitHub" [ref=e2361]:
+                - generic [ref=e2363]: GitHub
+              - 'gridcell "Recibidos [GitHub] Sudo email verification code - Here is your GitHub sudo authentication code: 52097650. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ..." [ref=e2364]':
+                - 'link "Recibidos [GitHub] Sudo email verification code - Here is your GitHub sudo authentication code: 52097650. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ..." [ref=e2365]':
+                  - generic [ref=e2366]:
+                    - generic "Recibidos" [ref=e2369]:
+                      - generic [ref=e2371]: Recibidos
+                    - generic [ref=e2374]: "[GitHub] Sudo email verification code"
+                    - generic [ref=e2375]:
+                      - generic [ref=e2376]: "-"
+                      - text: "Here is your GitHub sudo authentication code: 52097650. This code is valid for 15 minutes and can only be used once. Please don't share this code with ..."
+              - gridcell [ref=e2377]
+              - gridcell "mié, 18 feb 2026, 4:00 p.m." [ref=e2378]:
+                - generic "mié, 18 feb 2026, 4:00 p.m." [ref=e2379]: 18 feb
+              - gridcell
+            - 'row "GitHub, [GitHub] Sudo email verification code, 19 feb, Here is your GitHub sudo authentication code: 97725552. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2380] [cursor=pointer]':
+              - gridcell [ref=e2381]
+              - 'gridcell "GitHub, [GitHub] Sudo email verification code, 19 feb, Here is your GitHub sudo authentication code: 97725552. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2382]':
+                - 'checkbox "GitHub, [GitHub] Sudo email verification code, 19 feb, Here is your GitHub sudo authentication code: 97725552. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ...." [ref=e2383]'
+              - gridcell "Sin destacar" [ref=e2384]:
+                - button "Sin destacar" [ref=e2385]
+              - gridcell "GitHub" [ref=e2386]:
+                - generic [ref=e2388]: GitHub
+              - 'gridcell "Recibidos [GitHub] Sudo email verification code - Here is your GitHub sudo authentication code: 97725552. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ..." [ref=e2389]':
+                - 'link "Recibidos [GitHub] Sudo email verification code - Here is your GitHub sudo authentication code: 97725552. This code is valid for 15 minutes and can only be used once. Please don''t share this code with ..." [ref=e2390]':
+                  - generic [ref=e2391]:
+                    - generic "Recibidos" [ref=e2394]:
+                      - generic [ref=e2396]: Recibidos
+                    - generic [ref=e2399]: "[GitHub] Sudo email verification code"
+                    - generic [ref=e2400]:
+                      - generic [ref=e2401]: "-"
+                      - text: "Here is your GitHub sudo authentication code: 97725552. This code is valid for 15 minutes and can only be used once. Please don't share this code with ..."
+              - gridcell [ref=e2402]
+              - gridcell "jue, 19 feb 2026, 9:48 p.m." [ref=e2403]:
+                - generic "jue, 19 feb 2026, 9:48 p.m." [ref=e2404]: 19 feb
+              - gridcell
+      - generic [ref=e1299]:
+        - complementary "Panel lateral" [ref=e1300]:
+          - tablist [ref=e1302]:
+            - tab "Calendario"
+            - tab "Keep"
+            - tab "Tasks"
+            - tab "Contactos"
+            - separator [disabled] [ref=e1307]
+            - tab "Obtener complementos"
+        - generic:
+          - button "Ocultar panel lateral":
+            - img [ref=e1310] [cursor=pointer]

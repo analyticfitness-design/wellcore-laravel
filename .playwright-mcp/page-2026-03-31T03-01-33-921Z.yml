@@ -1,0 +1,460 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - img "WellCore" [ref=e4]
+    - navigation [ref=e5]:
+      - generic [ref=e6]:
+        - paragraph [ref=e7]: General
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - link "Dashboard" [ref=e10] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin
+              - img [ref=e11]
+              - text: Dashboard
+          - listitem [ref=e13]:
+            - link "Feed en Vivo" [ref=e14] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/feed
+              - img [ref=e15]
+              - text: Feed en Vivo
+          - listitem [ref=e20]:
+            - link "Clientes" [ref=e21] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/clients
+              - img [ref=e22]
+              - text: Clientes
+          - listitem [ref=e24]:
+            - link "Coaches" [ref=e25] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/coaches
+              - img [ref=e26]
+              - text: Coaches
+      - generic [ref=e28]:
+        - paragraph [ref=e29]: Gestion
+        - list [ref=e30]:
+          - listitem [ref=e31]:
+            - link "Planes" [ref=e32] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/plans
+              - img [ref=e33]
+              - text: Planes
+          - listitem [ref=e35]:
+            - link "AI Generator" [ref=e36] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/ai-generator
+              - img [ref=e37]
+              - text: AI Generator
+      - generic [ref=e39]:
+        - paragraph [ref=e40]: RISE
+        - list [ref=e41]:
+          - listitem [ref=e42]:
+            - link "RISE 12S" [ref=e43] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/rise
+              - img [ref=e44]
+              - text: RISE
+              - generic [ref=e46]: 12S
+      - generic [ref=e47]:
+        - paragraph [ref=e48]: Pagos
+        - list [ref=e49]:
+          - listitem [ref=e50]:
+            - link "Pagos" [ref=e51] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/payments
+              - img [ref=e52]
+              - text: Pagos
+          - listitem [ref=e54]:
+            - link "Inscripciones" [ref=e55] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/inscriptions
+              - img [ref=e56]
+              - text: Inscripciones
+      - generic [ref=e58]:
+        - paragraph [ref=e59]: Sistema
+        - list [ref=e60]:
+          - listitem [ref=e61]:
+            - link "Invitaciones" [ref=e62] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/invitations
+              - img [ref=e63]
+              - text: Invitaciones
+          - listitem [ref=e65]:
+            - link "Enviar Invitacion" [ref=e66] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/send-invitation
+              - img [ref=e67]
+              - text: Enviar Invitacion
+          - listitem [ref=e69]:
+            - link "Recompensas Referidos" [ref=e70] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/referral-rewards
+              - img [ref=e71]
+              - text: Recompensas Referidos
+          - listitem [ref=e73]:
+            - link "Campanas" [ref=e74] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/campaign-tracker
+              - img [ref=e75]
+              - text: Campanas
+          - listitem [ref=e77]:
+            - link "Chat Analytics" [ref=e78] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/chat
+              - img [ref=e79]
+              - text: Chat Analytics
+          - listitem [ref=e81]:
+            - link "Herramientas" [ref=e82] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/tools
+              - img [ref=e83]
+              - text: Herramientas
+          - listitem [ref=e85]:
+            - link "Tickets" [ref=e86] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/tickets
+              - img [ref=e87]
+              - text: Tickets
+          - listitem [ref=e89]:
+            - link "Ajustes" [ref=e90] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/settings
+              - img [ref=e91]
+              - text: Ajustes
+    - button "Cerrar sesion" [ref=e96]:
+      - img [ref=e97]
+      - text: Cerrar sesion
+  - generic [ref=e99]:
+    - banner [ref=e100]:
+      - generic [ref=e101]:
+        - button "ES" [ref=e103]:
+          - generic [ref=e104]: ES
+          - img [ref=e105]
+        - button "Cambiar modo" [ref=e107]:
+          - img [ref=e108]
+        - generic [ref=e110]: Super Administrador
+        - generic [ref=e111]:
+          - generic [ref=e113]: D
+          - generic [ref=e114]: Daniel Esparza - CEO
+    - main [ref=e115]:
+      - generic [ref=e116]:
+        - generic [ref=e117]:
+          - generic [ref=e118]:
+            - heading "Panel de Administracion" [level=1] [ref=e119]
+            - generic [ref=e120]:
+              - paragraph [ref=e121]: Resumen general de WellCore Fitness
+              - generic [ref=e122]:
+                - generic [ref=e126]: En vivo
+                - generic [ref=e127]: · 03:01:28 AM
+          - generic [ref=e128]:
+            - link "Ver clientes" [ref=e129] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/clients
+              - img [ref=e130]
+              - text: Ver clientes
+            - link "Ver pagos" [ref=e132] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/payments
+        - generic [ref=e133]:
+          - generic [ref=e134]:
+            - generic [ref=e135]:
+              - generic [ref=e136]: Clientes activos
+              - img [ref=e138]
+            - paragraph [ref=e140]:
+              - generic [ref=e141]: "0"
+            - paragraph [ref=e142]: en total
+          - generic [ref=e143]:
+            - generic [ref=e144]:
+              - generic [ref=e145]: Ingresos del mes
+              - img [ref=e147]
+            - paragraph [ref=e149]:
+              - generic [ref=e150]: "0"
+            - paragraph [ref=e151]: COP este mes
+          - generic [ref=e152]:
+            - generic [ref=e153]:
+              - generic [ref=e154]: Check-ins pendientes
+              - img [ref=e156]
+            - paragraph [ref=e158]:
+              - generic [ref=e159]: "0"
+            - paragraph [ref=e160]: sin responder
+          - generic [ref=e161]:
+            - generic [ref=e162]:
+              - generic [ref=e163]: Inscripciones
+              - img [ref=e165]
+            - paragraph [ref=e167]:
+              - generic [ref=e168]: "0"
+            - paragraph [ref=e169]: nuevas este mes
+        - generic [ref=e170]:
+          - generic [ref=e172]:
+            - heading "Ingresos Mensuales" [level=3] [ref=e173]
+            - generic [ref=e174]: Ultimos 6 meses
+          - heading "Distribucion de Planes" [level=3] [ref=e178]
+        - generic [ref=e182]:
+          - heading "Crecimiento de Clientes" [level=3] [ref=e183]
+          - generic [ref=e184]: Ultimos 6 meses
+        - generic [ref=e187]:
+          - generic [ref=e188]:
+            - heading "Estado de Clientes" [level=2] [ref=e189]
+            - paragraph [ref=e190]: Distribucion por estado — 17 clientes en total
+            - generic [ref=e191]:
+              - generic [ref=e192]:
+                - generic [ref=e193]: Activos
+                - generic [ref=e197]: "16"
+              - generic [ref=e198]:
+                - generic [ref=e199]: Inactivos
+                - generic [ref=e203]: "1"
+              - generic [ref=e204]:
+                - generic [ref=e205]: Pendientes
+                - generic [ref=e208]: "0"
+              - generic [ref=e209]:
+                - generic [ref=e210]: Suspendidos
+                - generic [ref=e213]: "0"
+            - generic [ref=e214]:
+              - generic [ref=e215]: Activos
+              - generic [ref=e217]: Inactivos
+              - generic [ref=e219]: Pendientes
+              - generic [ref=e221]: Suspendidos
+          - generic [ref=e223]:
+            - heading "Accesos rapidos" [level=2] [ref=e224]
+            - generic [ref=e225]:
+              - link "Gestionar Clientes" [ref=e226] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/admin/clients
+                - img [ref=e227]
+                - text: Gestionar Clientes
+                - img [ref=e229]
+              - link "Ver Pagos" [ref=e231] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/admin/payments
+                - img [ref=e232]
+                - text: Ver Pagos
+                - img [ref=e234]
+              - link "Ver Inscripciones" [ref=e236] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/admin/inscriptions
+                - img [ref=e237]
+                - text: Ver Inscripciones
+                - img [ref=e239]
+              - link "Gestionar Coaches" [ref=e241] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/admin/coaches
+                - img [ref=e242]
+                - text: Gestionar Coaches
+                - img [ref=e244]
+              - link "Tickets de Soporte" [ref=e246] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/admin/tickets
+                - img [ref=e247]
+                - text: Tickets de Soporte
+                - img [ref=e249]
+        - generic [ref=e251]:
+          - generic [ref=e252]:
+            - generic [ref=e253]:
+              - heading "Inscripciones Recientes" [level=2] [ref=e254]
+              - link "Ver todas" [ref=e255] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/admin/inscriptions
+            - generic [ref=e256]:
+              - generic [ref=e257]:
+                - generic [ref=e259]: O
+                - generic [ref=e260]:
+                  - paragraph [ref=e261]: Octavio Rodríguez zarate
+                  - paragraph [ref=e262]: octaviorodriguez660@gmail.com
+                - generic [ref=e263]:
+                  - generic [ref=e264]: Metodo
+                  - paragraph [ref=e265]: hace 1 semana
+              - generic [ref=e266]:
+                - generic [ref=e268]: L
+                - generic [ref=e269]:
+                  - paragraph [ref=e270]: Lizeth Tatiana Ojeda ferrucho
+                  - paragraph [ref=e271]: taniaojeda1997@icloud.com
+                - generic [ref=e272]:
+                  - generic [ref=e273]: Metodo
+                  - paragraph [ref=e274]: hace 1 semana
+              - generic [ref=e275]:
+                - generic [ref=e277]: L
+                - generic [ref=e278]:
+                  - paragraph [ref=e279]: Leidy Tatiana Hortua Pabon
+                  - paragraph [ref=e280]: tatishortua2004@gmail.com
+                - generic [ref=e281]:
+                  - generic [ref=e282]: Metodo
+                  - paragraph [ref=e283]: hace 1 semana
+              - generic [ref=e284]:
+                - generic [ref=e286]: V
+                - generic [ref=e287]:
+                  - paragraph [ref=e288]: Verificacion Deploy
+                  - paragraph [ref=e289]: verify-deploy-2026@test.com
+                - generic [ref=e290]:
+                  - generic [ref=e291]: Esencial
+                  - paragraph [ref=e292]: hace 1 semana
+              - generic [ref=e293]:
+                - generic [ref=e295]: T
+                - generic [ref=e296]:
+                  - paragraph [ref=e297]: Test Migration
+                  - paragraph [ref=e298]: test-migration-check@test.com
+                - generic [ref=e299]:
+                  - generic [ref=e300]: Metodo
+                  - paragraph [ref=e301]: hace 1 semana
+          - generic [ref=e302]:
+            - generic [ref=e303]:
+              - heading "Pagos Recientes" [level=2] [ref=e304]
+              - link "Ver todos" [ref=e305] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/admin/payments
+            - generic [ref=e306]:
+              - generic [ref=e307]:
+                - img [ref=e309]
+                - generic [ref=e311]:
+                  - paragraph [ref=e312]: Luis Eduardo Angarita Avila
+                  - paragraph [ref=e313]: Rise · NEQUI
+                - generic [ref=e314]:
+                  - text: $99.900
+                  - paragraph [ref=e315]: hace 3 semanas
+              - generic [ref=e316]:
+                - img [ref=e318]
+                - generic [ref=e320]:
+                  - paragraph [ref=e321]: Silvia Carvajal
+                  - paragraph [ref=e322]: Rise · -
+                - generic [ref=e323]:
+                  - text: $99.900
+                  - paragraph [ref=e324]: hace 3 semanas
+        - generic [ref=e325]:
+          - generic [ref=e326]:
+            - generic [ref=e327]:
+              - heading "Linea de Actividad" [level=2] [ref=e328]
+              - paragraph [ref=e329]: Actividad reciente de clientes en la plataforma
+            - generic [ref=e330]:
+              - generic [ref=e331]: "Filtrar:"
+              - button "Todos" [ref=e332]
+              - button "Check-ins" [ref=e333]
+              - button "Entrenos" [ref=e334]
+              - button "Pagos" [ref=e335]
+              - button "Nuevos" [ref=e336]
+              - button "XP" [ref=e337]
+          - generic [ref=e338]:
+            - generic [ref=e339]:
+              - img [ref=e341]
+              - generic [ref=e343]:
+                - paragraph [ref=e344]: Julie Rodriguez se registro en la plataforma
+                - generic [ref=e345]:
+                  - paragraph [ref=e346]: hace 5 horas
+                  - generic [ref=e347]: ·
+                  - paragraph [ref=e348]: Plan esencial
+              - generic [ref=e350]: Nuevo
+            - generic [ref=e351]:
+              - img [ref=e353]
+              - generic [ref=e355]:
+                - paragraph [ref=e356]: Silvia Gómez se registro en la plataforma
+                - generic [ref=e357]:
+                  - paragraph [ref=e358]: hace 5 horas
+                  - generic [ref=e359]: ·
+                  - paragraph [ref=e360]: Plan esencial
+              - generic [ref=e362]: Nuevo
+            - generic [ref=e363]:
+              - img [ref=e365]
+              - generic [ref=e367]:
+                - paragraph [ref=e368]: William Alexander Torres Monroy se registro en la plataforma
+                - generic [ref=e369]:
+                  - paragraph [ref=e370]: hace 1 día
+                  - generic [ref=e371]: ·
+                  - paragraph [ref=e372]: Plan rise
+              - generic [ref=e374]: Nuevo
+            - generic [ref=e375]:
+              - img [ref=e377]
+              - generic [ref=e379]:
+                - paragraph [ref=e380]: Octavio Rodríguez se registro en la plataforma
+                - generic [ref=e381]:
+                  - paragraph [ref=e382]: hace 1 día
+                  - generic [ref=e383]: ·
+                  - paragraph [ref=e384]: Plan metodo
+              - generic [ref=e386]: Nuevo
+            - generic [ref=e387]:
+              - img [ref=e389]
+              - generic [ref=e391]:
+                - paragraph [ref=e392]: Luis Miguel Saavedra se registro en la plataforma
+                - generic [ref=e393]:
+                  - paragraph [ref=e394]: hace 1 semana
+                  - generic [ref=e395]: ·
+                  - paragraph [ref=e396]: Plan presencial
+              - generic [ref=e398]: Nuevo
+            - generic [ref=e399]:
+              - img [ref=e401]
+              - generic [ref=e403]:
+                - paragraph [ref=e404]: Tatis Hortua se registro en la plataforma
+                - generic [ref=e405]:
+                  - paragraph [ref=e406]: hace 1 semana
+                  - generic [ref=e407]: ·
+                  - paragraph [ref=e408]: Plan metodo
+              - generic [ref=e410]: Nuevo
+            - generic [ref=e411]:
+              - img [ref=e413]
+              - generic [ref=e415]:
+                - paragraph [ref=e416]: Lizeth Ojeda se registro en la plataforma
+                - generic [ref=e417]:
+                  - paragraph [ref=e418]: hace 1 semana
+                  - generic [ref=e419]: ·
+                  - paragraph [ref=e420]: Plan metodo
+              - generic [ref=e422]: Nuevo
+            - generic [ref=e423]:
+              - img [ref=e425]
+              - generic [ref=e427]:
+                - paragraph [ref=e428]: Daniel Esparza Nuñez se registro en la plataforma
+                - generic [ref=e429]:
+                  - paragraph [ref=e430]: hace 1 semana
+                  - generic [ref=e431]: ·
+                  - paragraph [ref=e432]: Plan elite
+              - generic [ref=e434]: Nuevo
+            - generic [ref=e435]:
+              - img [ref=e437]
+              - generic [ref=e439]:
+                - paragraph [ref=e440]: Silvia Gomez Roa se registro en la plataforma
+                - generic [ref=e441]:
+                  - paragraph [ref=e442]: hace 1 semana
+                  - generic [ref=e443]: ·
+                  - paragraph [ref=e444]: Plan elite
+              - generic [ref=e446]: Nuevo
+            - generic [ref=e447]:
+              - img [ref=e449]
+              - generic [ref=e451]:
+                - paragraph [ref=e452]: Óscar Mauricio Durán Carvajal se registro en la plataforma
+                - generic [ref=e453]:
+                  - paragraph [ref=e454]: hace 1 semana
+                  - generic [ref=e455]: ·
+                  - paragraph [ref=e456]: Plan rise
+              - generic [ref=e458]: Nuevo
+            - generic [ref=e459]:
+              - img [ref=e461]
+              - generic [ref=e463]:
+                - paragraph [ref=e464]: Xavier Anthoni Gómez Vásquez se registro en la plataforma
+                - generic [ref=e465]:
+                  - paragraph [ref=e466]: hace 2 semanas
+                  - generic [ref=e467]: ·
+                  - paragraph [ref=e468]: Plan presencial
+              - generic [ref=e470]: Nuevo
+            - generic [ref=e471]:
+              - img [ref=e473]
+              - generic [ref=e475]:
+                - paragraph [ref=e476]: Lina se registro en la plataforma
+                - generic [ref=e477]:
+                  - paragraph [ref=e478]: hace 2 semanas
+                  - generic [ref=e479]: ·
+                  - paragraph [ref=e480]: Plan rise
+              - generic [ref=e482]: Nuevo
+            - generic [ref=e483]:
+              - img [ref=e485]
+              - generic [ref=e487]:
+                - paragraph [ref=e488]: Jairo Rivera se registro en la plataforma
+                - generic [ref=e489]:
+                  - paragraph [ref=e490]: hace 2 semanas
+                  - generic [ref=e491]: ·
+                  - paragraph [ref=e492]: Plan elite
+              - generic [ref=e494]: Nuevo
+            - generic [ref=e495]:
+              - img [ref=e497]
+              - generic [ref=e499]:
+                - paragraph [ref=e500]: Wilson Castillo se registro en la plataforma
+                - generic [ref=e501]:
+                  - paragraph [ref=e502]: hace 2 semanas
+                  - generic [ref=e503]: ·
+                  - paragraph [ref=e504]: Plan presencial
+              - generic [ref=e506]: Nuevo
+            - generic [ref=e507]:
+              - img [ref=e509]
+              - generic [ref=e511]:
+                - paragraph [ref=e512]: Luis Eduardo Angarita Avila realizo un pago $99.900
+                - generic [ref=e513]:
+                  - paragraph [ref=e514]: hace 3 semanas
+                  - generic [ref=e515]: ·
+                  - paragraph [ref=e516]: Plan rise
+              - generic [ref=e518]: Pago
+            - generic [ref=e519]:
+              - img [ref=e521]
+              - generic [ref=e523]:
+                - paragraph [ref=e524]: Luis Eduardo Angarita Avila se registro en la plataforma
+                - generic [ref=e525]:
+                  - paragraph [ref=e526]: hace 3 semanas
+                  - generic [ref=e527]: ·
+                  - paragraph [ref=e528]: Plan rise
+              - generic [ref=e530]: Nuevo
+            - generic [ref=e531]:
+              - img [ref=e533]
+              - generic [ref=e535]:
+                - paragraph [ref=e536]: Silvia Carvajal realizo un pago $99.900
+                - generic [ref=e537]:
+                  - paragraph [ref=e538]: hace 3 semanas
+                  - generic [ref=e539]: ·
+                  - paragraph [ref=e540]: Plan rise
+              - generic [ref=e542]: Pago

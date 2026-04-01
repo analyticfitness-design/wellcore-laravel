@@ -1,0 +1,803 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - img "WellCore" [ref=e4]
+    - navigation [ref=e5]:
+      - generic [ref=e6]:
+        - paragraph [ref=e7]: Entrenamiento
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - link "Resumen" [ref=e10] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client
+              - img [ref=e11]
+              - text: Resumen
+          - listitem [ref=e13]:
+            - link "Mi Plan" [ref=e14] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/plan
+              - img [ref=e15]
+              - text: Mi Plan
+          - listitem [ref=e17]:
+            - link "Entrenar" [ref=e18] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/workout
+              - img [ref=e19]
+              - text: Entrenar
+          - listitem [ref=e21]:
+            - link "Check-in Semanal" [ref=e22] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/checkin
+              - img [ref=e23]
+              - text: Check-in Semanal
+      - generic [ref=e25]:
+        - paragraph [ref=e26]: Progreso
+        - list [ref=e27]:
+          - listitem [ref=e28]:
+            - link "Fotos de Progreso" [ref=e29] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/photos
+              - img [ref=e30]
+              - text: Fotos de Progreso
+          - listitem [ref=e32]:
+            - link "Metricas" [ref=e33] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/metrics
+              - img [ref=e34]
+              - text: Metricas
+          - listitem [ref=e36]:
+            - link "Video Check-in" [ref=e37] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/video-checkin
+              - img [ref=e38]
+              - text: Video Check-in
+      - generic [ref=e40]:
+        - paragraph [ref=e41]: Comunidad
+        - list [ref=e42]:
+          - listitem [ref=e43]:
+            - link "Comunidad" [ref=e44] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/community
+              - img [ref=e45]
+              - text: Comunidad
+          - listitem [ref=e47]:
+            - link "Retos" [ref=e48] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/challenges
+              - img [ref=e49]
+              - text: Retos
+          - listitem [ref=e52]:
+            - link "Chat con Coach" [ref=e53] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/chat
+              - img [ref=e54]
+              - text: Chat con Coach
+          - listitem [ref=e56]:
+            - link "Referidos" [ref=e57] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/referrals
+              - img [ref=e58]
+              - text: Referidos
+      - generic [ref=e60]:
+        - paragraph [ref=e61]: Recursos
+        - list [ref=e62]:
+          - listitem [ref=e63]:
+            - link "Configuracion" [ref=e64] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/settings
+              - img [ref=e65]
+              - text: Configuracion
+          - listitem [ref=e68]:
+            - link "Perfil" [ref=e69] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/profile
+              - img [ref=e70]
+              - text: Perfil
+    - button "Cerrar sesion" [ref=e74]:
+      - img [ref=e75]
+      - text: Cerrar sesion
+  - generic [ref=e77]:
+    - generic [ref=e78]:
+      - generic [ref=e79]:
+        - img [ref=e80]
+        - generic [ref=e83]:
+          - text: Viendo como cliente —
+          - strong [ref=e84]: Julie Rodriguez
+      - button "Salir de la sesión de impersonación y volver al panel de administración" [ref=e86]:
+        - img [ref=e87]
+        - text: Volver al Admin
+    - banner [ref=e89]:
+      - generic [ref=e90]:
+        - button "ES" [ref=e92]:
+          - generic [ref=e93]: ES
+          - img [ref=e94]
+        - button "Oscuro" [ref=e96]:
+          - generic [ref=e97]:
+            - img [ref=e98]
+            - generic [ref=e100]: Oscuro
+        - generic [ref=e101]: Esencial
+        - generic [ref=e102]:
+          - generic [ref=e104]: J
+          - generic [ref=e105]: Julie Rodriguez
+    - main [ref=e106]:
+      - generic [ref=e107]:
+        - generic [ref=e109]:
+          - generic [ref=e110]:
+            - button "DIA 1 Glúteos/Piernas" [ref=e111]:
+              - generic [ref=e112]: DIA 1
+              - generic [ref=e113]: Glúteos/Piernas
+            - button "DIA 2 Cardio" [ref=e114]:
+              - generic [ref=e115]: DIA 2
+              - generic [ref=e116]: Cardio
+            - button "DIA 3 Isquiotibiales/Hombros" [ref=e117]:
+              - generic [ref=e118]: DIA 3
+              - generic [ref=e119]: Isquiotibiales/Hombros
+            - button "DIA 4 Cardio" [ref=e120]:
+              - generic [ref=e121]: DIA 4
+              - generic [ref=e122]: Cardio
+            - button "DIA 5 Glúteos/Brazos" [ref=e123]:
+              - generic [ref=e124]: DIA 5
+              - generic [ref=e125]: Glúteos/Brazos
+            - button "DIA 6 Cardio" [ref=e126]:
+              - generic [ref=e127]: DIA 6
+              - generic [ref=e128]: Cardio
+          - generic [ref=e130]:
+            - generic [ref=e135]: En curso
+            - generic [ref=e136]: 1:39:29
+        - generic [ref=e138]:
+          - generic [ref=e140]:
+            - generic [ref=e141]: 0/8 ejercicios completados
+            - generic [ref=e142]: 0%
+          - generic [ref=e144]:
+            - generic [ref=e145]:
+              - generic [ref=e147]:
+                - generic [ref=e148]:
+                  - generic [ref=e149]: "1"
+                  - heading "Hip Thrust con Mancuerna en Banco" [level=3] [ref=e150]
+                - generic [ref=e151]:
+                  - generic [ref=e152]: RIR 3
+                  - generic [ref=e153]:
+                    - img [ref=e154]
+                    - text: 90 seg descanso
+              - button "Notas del coach" [ref=e157]:
+                - img [ref=e158]
+                - text: Notas del coach
+            - generic [ref=e160]:
+              - generic [ref=e161]:
+                - generic [ref=e162]: Set
+                - generic [ref=e163]: Anterior
+                - generic [ref=e164]: Peso (kg)
+                - generic [ref=e165]: Reps
+                - generic [ref=e166]: Completar
+              - generic [ref=e167]:
+                - generic [ref=e169]: "1"
+                - generic [ref=e171]:
+                  - text: —
+                  - text: × 12-15
+                - generic [ref=e172]:
+                  - button "Reducir peso" [ref=e173]:
+                    - img [ref=e174]
+                  - spinbutton [ref=e175]: "0"
+                  - button "Aumentar peso" [ref=e176]:
+                    - img [ref=e177]
+                - generic [ref=e179]:
+                  - button "Reducir reps" [ref=e180]:
+                    - img [ref=e181]
+                  - spinbutton [ref=e182]: "12"
+                  - button "Aumentar reps" [ref=e183]:
+                    - img [ref=e184]
+                - button "Completar serie" [ref=e187]:
+                  - img [ref=e188]
+              - generic [ref=e190]:
+                - generic [ref=e192]: "2"
+                - generic [ref=e194]:
+                  - text: —
+                  - text: × 12-15
+                - generic [ref=e195]:
+                  - button "Reducir peso" [ref=e196]:
+                    - img [ref=e197]
+                  - spinbutton [ref=e198]: "0"
+                  - button "Aumentar peso" [ref=e199]:
+                    - img [ref=e200]
+                - generic [ref=e202]:
+                  - button "Reducir reps" [ref=e203]:
+                    - img [ref=e204]
+                  - spinbutton [ref=e205]: "12"
+                  - button "Aumentar reps" [ref=e206]:
+                    - img [ref=e207]
+                - button "Completar serie" [ref=e210]:
+                  - img [ref=e211]
+              - generic [ref=e213]:
+                - generic [ref=e215]: "3"
+                - generic [ref=e217]:
+                  - text: —
+                  - text: × 12-15
+                - generic [ref=e218]:
+                  - button "Reducir peso" [ref=e219]:
+                    - img [ref=e220]
+                  - spinbutton [ref=e221]: "0"
+                  - button "Aumentar peso" [ref=e222]:
+                    - img [ref=e223]
+                - generic [ref=e225]:
+                  - button "Reducir reps" [ref=e226]:
+                    - img [ref=e227]
+                  - spinbutton [ref=e228]: "12"
+                  - button "Aumentar reps" [ref=e229]:
+                    - img [ref=e230]
+                - button "Completar serie" [ref=e233]:
+                  - img [ref=e234]
+            - button "Descanso · 90 seg" [ref=e237]:
+              - img [ref=e238]
+              - generic [ref=e240]: Descanso · 90 seg
+          - generic [ref=e241]:
+            - generic [ref=e242]:
+              - generic [ref=e244]:
+                - generic [ref=e245]:
+                  - generic [ref=e246]: "2"
+                  - heading "Sentadilla Goblet con Mancuerna" [level=3] [ref=e247]
+                - generic [ref=e248]:
+                  - generic [ref=e249]: RIR 3
+                  - generic [ref=e250]:
+                    - img [ref=e251]
+                    - text: 90 seg descanso
+              - button "Notas del coach" [ref=e254]:
+                - img [ref=e255]
+                - text: Notas del coach
+            - generic [ref=e257]:
+              - generic [ref=e258]:
+                - generic [ref=e259]: Set
+                - generic [ref=e260]: Anterior
+                - generic [ref=e261]: Peso (kg)
+                - generic [ref=e262]: Reps
+                - generic [ref=e263]: Completar
+              - generic [ref=e264]:
+                - generic [ref=e266]: "1"
+                - generic [ref=e268]:
+                  - text: —
+                  - text: × 10-12
+                - generic [ref=e269]:
+                  - button "Reducir peso" [ref=e270]:
+                    - img [ref=e271]
+                  - spinbutton [ref=e272]: "0"
+                  - button "Aumentar peso" [ref=e273]:
+                    - img [ref=e274]
+                - generic [ref=e276]:
+                  - button "Reducir reps" [ref=e277]:
+                    - img [ref=e278]
+                  - spinbutton [ref=e279]: "10"
+                  - button "Aumentar reps" [ref=e280]:
+                    - img [ref=e281]
+                - button "Completar serie" [ref=e284]:
+                  - img [ref=e285]
+              - generic [ref=e287]:
+                - generic [ref=e289]: "2"
+                - generic [ref=e291]:
+                  - text: —
+                  - text: × 10-12
+                - generic [ref=e292]:
+                  - button "Reducir peso" [ref=e293]:
+                    - img [ref=e294]
+                  - spinbutton [ref=e295]: "0"
+                  - button "Aumentar peso" [ref=e296]:
+                    - img [ref=e297]
+                - generic [ref=e299]:
+                  - button "Reducir reps" [ref=e300]:
+                    - img [ref=e301]
+                  - spinbutton [ref=e302]: "10"
+                  - button "Aumentar reps" [ref=e303]:
+                    - img [ref=e304]
+                - button "Completar serie" [ref=e307]:
+                  - img [ref=e308]
+              - generic [ref=e310]:
+                - generic [ref=e312]: "3"
+                - generic [ref=e314]:
+                  - text: —
+                  - text: × 10-12
+                - generic [ref=e315]:
+                  - button "Reducir peso" [ref=e316]:
+                    - img [ref=e317]
+                  - spinbutton [ref=e318]: "0"
+                  - button "Aumentar peso" [ref=e319]:
+                    - img [ref=e320]
+                - generic [ref=e322]:
+                  - button "Reducir reps" [ref=e323]:
+                    - img [ref=e324]
+                  - spinbutton [ref=e325]: "10"
+                  - button "Aumentar reps" [ref=e326]:
+                    - img [ref=e327]
+                - button "Completar serie" [ref=e330]:
+                  - img [ref=e331]
+            - button "Descanso · 90 seg" [ref=e334]:
+              - img [ref=e335]
+              - generic [ref=e337]: Descanso · 90 seg
+          - generic [ref=e338]:
+            - generic [ref=e339]:
+              - generic [ref=e341]:
+                - generic [ref=e342]:
+                  - generic [ref=e343]: "3"
+                  - heading "Press de Banca con Mancuernas" [level=3] [ref=e344]
+                - generic [ref=e345]:
+                  - generic [ref=e346]: RIR 3
+                  - generic [ref=e347]:
+                    - img [ref=e348]
+                    - text: 90 seg descanso
+              - button "Notas del coach" [ref=e351]:
+                - img [ref=e352]
+                - text: Notas del coach
+            - generic [ref=e354]:
+              - generic [ref=e355]:
+                - generic [ref=e356]: Set
+                - generic [ref=e357]: Anterior
+                - generic [ref=e358]: Peso (kg)
+                - generic [ref=e359]: Reps
+                - generic [ref=e360]: Completar
+              - generic [ref=e361]:
+                - generic [ref=e363]: "1"
+                - generic [ref=e365]:
+                  - text: —
+                  - text: × 10-12
+                - generic [ref=e366]:
+                  - button "Reducir peso" [ref=e367]:
+                    - img [ref=e368]
+                  - spinbutton [ref=e369]: "0"
+                  - button "Aumentar peso" [ref=e370]:
+                    - img [ref=e371]
+                - generic [ref=e373]:
+                  - button "Reducir reps" [ref=e374]:
+                    - img [ref=e375]
+                  - spinbutton [ref=e376]: "10"
+                  - button "Aumentar reps" [ref=e377]:
+                    - img [ref=e378]
+                - button "Completar serie" [ref=e381]:
+                  - img [ref=e382]
+              - generic [ref=e384]:
+                - generic [ref=e386]: "2"
+                - generic [ref=e388]:
+                  - text: —
+                  - text: × 10-12
+                - generic [ref=e389]:
+                  - button "Reducir peso" [ref=e390]:
+                    - img [ref=e391]
+                  - spinbutton [ref=e392]: "0"
+                  - button "Aumentar peso" [ref=e393]:
+                    - img [ref=e394]
+                - generic [ref=e396]:
+                  - button "Reducir reps" [ref=e397]:
+                    - img [ref=e398]
+                  - spinbutton [ref=e399]: "10"
+                  - button "Aumentar reps" [ref=e400]:
+                    - img [ref=e401]
+                - button "Completar serie" [ref=e404]:
+                  - img [ref=e405]
+              - generic [ref=e407]:
+                - generic [ref=e409]: "3"
+                - generic [ref=e411]:
+                  - text: —
+                  - text: × 10-12
+                - generic [ref=e412]:
+                  - button "Reducir peso" [ref=e413]:
+                    - img [ref=e414]
+                  - spinbutton [ref=e415]: "0"
+                  - button "Aumentar peso" [ref=e416]:
+                    - img [ref=e417]
+                - generic [ref=e419]:
+                  - button "Reducir reps" [ref=e420]:
+                    - img [ref=e421]
+                  - spinbutton [ref=e422]: "10"
+                  - button "Aumentar reps" [ref=e423]:
+                    - img [ref=e424]
+                - button "Completar serie" [ref=e427]:
+                  - img [ref=e428]
+            - button "Descanso · 90 seg" [ref=e431]:
+              - img [ref=e432]
+              - generic [ref=e434]: Descanso · 90 seg
+          - generic [ref=e435]:
+            - generic [ref=e436]:
+              - generic [ref=e438]:
+                - generic [ref=e439]:
+                  - generic [ref=e440]: "4"
+                  - heading "Remo con Mancuerna 1 Brazo" [level=3] [ref=e441]
+                - generic [ref=e442]:
+                  - generic [ref=e443]: RIR 3
+                  - generic [ref=e444]:
+                    - img [ref=e445]
+                    - text: 60 seg descanso
+              - button "Notas del coach" [ref=e448]:
+                - img [ref=e449]
+                - text: Notas del coach
+            - generic [ref=e451]:
+              - generic [ref=e452]:
+                - generic [ref=e453]: Set
+                - generic [ref=e454]: Anterior
+                - generic [ref=e455]: Peso (kg)
+                - generic [ref=e456]: Reps
+                - generic [ref=e457]: Completar
+              - generic [ref=e458]:
+                - generic [ref=e460]: "1"
+                - generic [ref=e462]:
+                  - text: —
+                  - text: × 10-12 c/lado
+                - generic [ref=e463]:
+                  - button "Reducir peso" [ref=e464]:
+                    - img [ref=e465]
+                  - spinbutton [ref=e466]: "0"
+                  - button "Aumentar peso" [ref=e467]:
+                    - img [ref=e468]
+                - generic [ref=e470]:
+                  - button "Reducir reps" [ref=e471]:
+                    - img [ref=e472]
+                  - spinbutton [ref=e473]: "10"
+                  - button "Aumentar reps" [ref=e474]:
+                    - img [ref=e475]
+                - button "Completar serie" [ref=e478]:
+                  - img [ref=e479]
+              - generic [ref=e481]:
+                - generic [ref=e483]: "2"
+                - generic [ref=e485]:
+                  - text: —
+                  - text: × 10-12 c/lado
+                - generic [ref=e486]:
+                  - button "Reducir peso" [ref=e487]:
+                    - img [ref=e488]
+                  - spinbutton [ref=e489]: "0"
+                  - button "Aumentar peso" [ref=e490]:
+                    - img [ref=e491]
+                - generic [ref=e493]:
+                  - button "Reducir reps" [ref=e494]:
+                    - img [ref=e495]
+                  - spinbutton [ref=e496]: "10"
+                  - button "Aumentar reps" [ref=e497]:
+                    - img [ref=e498]
+                - button "Completar serie" [ref=e501]:
+                  - img [ref=e502]
+              - generic [ref=e504]:
+                - generic [ref=e506]: "3"
+                - generic [ref=e508]:
+                  - text: —
+                  - text: × 10-12 c/lado
+                - generic [ref=e509]:
+                  - button "Reducir peso" [ref=e510]:
+                    - img [ref=e511]
+                  - spinbutton [ref=e512]: "0"
+                  - button "Aumentar peso" [ref=e513]:
+                    - img [ref=e514]
+                - generic [ref=e516]:
+                  - button "Reducir reps" [ref=e517]:
+                    - img [ref=e518]
+                  - spinbutton [ref=e519]: "10"
+                  - button "Aumentar reps" [ref=e520]:
+                    - img [ref=e521]
+                - button "Completar serie" [ref=e524]:
+                  - img [ref=e525]
+            - button "Descanso · 60 seg" [ref=e528]:
+              - img [ref=e529]
+              - generic [ref=e531]: Descanso · 60 seg
+          - generic [ref=e532]:
+            - generic [ref=e533]:
+              - generic [ref=e535]:
+                - generic [ref=e536]:
+                  - generic [ref=e537]: "5"
+                  - heading "Zancada Reversa con Mancuernas" [level=3] [ref=e538]
+                - generic [ref=e539]:
+                  - generic [ref=e540]: RIR 3
+                  - generic [ref=e541]:
+                    - img [ref=e542]
+                    - text: 90 seg descanso
+              - button "Notas del coach" [ref=e545]:
+                - img [ref=e546]
+                - text: Notas del coach
+            - generic [ref=e548]:
+              - generic [ref=e549]:
+                - generic [ref=e550]: Set
+                - generic [ref=e551]: Anterior
+                - generic [ref=e552]: Peso (kg)
+                - generic [ref=e553]: Reps
+                - generic [ref=e554]: Completar
+              - generic [ref=e555]:
+                - generic [ref=e557]: "1"
+                - generic [ref=e559]:
+                  - text: —
+                  - text: × 10 c/pierna
+                - generic [ref=e560]:
+                  - button "Reducir peso" [ref=e561]:
+                    - img [ref=e562]
+                  - spinbutton [ref=e563]: "0"
+                  - button "Aumentar peso" [ref=e564]:
+                    - img [ref=e565]
+                - generic [ref=e567]:
+                  - button "Reducir reps" [ref=e568]:
+                    - img [ref=e569]
+                  - spinbutton [ref=e570]: "10"
+                  - button "Aumentar reps" [ref=e571]:
+                    - img [ref=e572]
+                - button "Completar serie" [ref=e575]:
+                  - img [ref=e576]
+              - generic [ref=e578]:
+                - generic [ref=e580]: "2"
+                - generic [ref=e582]:
+                  - text: —
+                  - text: × 10 c/pierna
+                - generic [ref=e583]:
+                  - button "Reducir peso" [ref=e584]:
+                    - img [ref=e585]
+                  - spinbutton [ref=e586]: "0"
+                  - button "Aumentar peso" [ref=e587]:
+                    - img [ref=e588]
+                - generic [ref=e590]:
+                  - button "Reducir reps" [ref=e591]:
+                    - img [ref=e592]
+                  - spinbutton [ref=e593]: "10"
+                  - button "Aumentar reps" [ref=e594]:
+                    - img [ref=e595]
+                - button "Completar serie" [ref=e598]:
+                  - img [ref=e599]
+              - generic [ref=e601]:
+                - generic [ref=e603]: "3"
+                - generic [ref=e605]:
+                  - text: —
+                  - text: × 10 c/pierna
+                - generic [ref=e606]:
+                  - button "Reducir peso" [ref=e607]:
+                    - img [ref=e608]
+                  - spinbutton [ref=e609]: "0"
+                  - button "Aumentar peso" [ref=e610]:
+                    - img [ref=e611]
+                - generic [ref=e613]:
+                  - button "Reducir reps" [ref=e614]:
+                    - img [ref=e615]
+                  - spinbutton [ref=e616]: "10"
+                  - button "Aumentar reps" [ref=e617]:
+                    - img [ref=e618]
+                - button "Completar serie" [ref=e621]:
+                  - img [ref=e622]
+            - button "Descanso · 90 seg" [ref=e625]:
+              - img [ref=e626]
+              - generic [ref=e628]: Descanso · 90 seg
+          - generic [ref=e629]:
+            - generic [ref=e630]:
+              - generic [ref=e632]:
+                - generic [ref=e633]:
+                  - generic [ref=e634]: "6"
+                  - heading "Curl de Bíceps Alterno con Mancuernas" [level=3] [ref=e635]
+                - generic [ref=e636]:
+                  - generic [ref=e637]: RIR 3
+                  - generic [ref=e638]:
+                    - img [ref=e639]
+                    - text: 60 seg descanso
+              - button "Notas del coach" [ref=e642]:
+                - img [ref=e643]
+                - text: Notas del coach
+            - generic [ref=e645]:
+              - generic [ref=e646]:
+                - generic [ref=e647]: Set
+                - generic [ref=e648]: Anterior
+                - generic [ref=e649]: Peso (kg)
+                - generic [ref=e650]: Reps
+                - generic [ref=e651]: Completar
+              - generic [ref=e652]:
+                - generic [ref=e654]: "1"
+                - generic [ref=e656]:
+                  - text: —
+                  - text: × 12 c/brazo
+                - generic [ref=e657]:
+                  - button "Reducir peso" [ref=e658]:
+                    - img [ref=e659]
+                  - spinbutton [ref=e660]: "0"
+                  - button "Aumentar peso" [ref=e661]:
+                    - img [ref=e662]
+                - generic [ref=e664]:
+                  - button "Reducir reps" [ref=e665]:
+                    - img [ref=e666]
+                  - spinbutton [ref=e667]: "12"
+                  - button "Aumentar reps" [ref=e668]:
+                    - img [ref=e669]
+                - button "Completar serie" [ref=e672]:
+                  - img [ref=e673]
+              - generic [ref=e675]:
+                - generic [ref=e677]: "2"
+                - generic [ref=e679]:
+                  - text: —
+                  - text: × 12 c/brazo
+                - generic [ref=e680]:
+                  - button "Reducir peso" [ref=e681]:
+                    - img [ref=e682]
+                  - spinbutton [ref=e683]: "0"
+                  - button "Aumentar peso" [ref=e684]:
+                    - img [ref=e685]
+                - generic [ref=e687]:
+                  - button "Reducir reps" [ref=e688]:
+                    - img [ref=e689]
+                  - spinbutton [ref=e690]: "12"
+                  - button "Aumentar reps" [ref=e691]:
+                    - img [ref=e692]
+                - button "Completar serie" [ref=e695]:
+                  - img [ref=e696]
+              - generic [ref=e698]:
+                - generic [ref=e700]: "3"
+                - generic [ref=e702]:
+                  - text: —
+                  - text: × 12 c/brazo
+                - generic [ref=e703]:
+                  - button "Reducir peso" [ref=e704]:
+                    - img [ref=e705]
+                  - spinbutton [ref=e706]: "0"
+                  - button "Aumentar peso" [ref=e707]:
+                    - img [ref=e708]
+                - generic [ref=e710]:
+                  - button "Reducir reps" [ref=e711]:
+                    - img [ref=e712]
+                  - spinbutton [ref=e713]: "12"
+                  - button "Aumentar reps" [ref=e714]:
+                    - img [ref=e715]
+                - button "Completar serie" [ref=e718]:
+                  - img [ref=e719]
+            - button "Descanso · 60 seg" [ref=e722]:
+              - img [ref=e723]
+              - generic [ref=e725]: Descanso · 60 seg
+          - generic [ref=e726]:
+            - generic [ref=e727]:
+              - generic [ref=e729]:
+                - generic [ref=e730]:
+                  - generic [ref=e731]: "7"
+                  - heading "Extensión de Tríceps Sobre Cabeza (1 Mancuerna)" [level=3] [ref=e732]
+                - generic [ref=e733]:
+                  - generic [ref=e734]: RIR 3
+                  - generic [ref=e735]:
+                    - img [ref=e736]
+                    - text: 60 seg descanso
+              - button "Notas del coach" [ref=e739]:
+                - img [ref=e740]
+                - text: Notas del coach
+            - generic [ref=e742]:
+              - generic [ref=e743]:
+                - generic [ref=e744]: Set
+                - generic [ref=e745]: Anterior
+                - generic [ref=e746]: Peso (kg)
+                - generic [ref=e747]: Reps
+                - generic [ref=e748]: Completar
+              - generic [ref=e749]:
+                - generic [ref=e751]: "1"
+                - generic [ref=e753]:
+                  - text: —
+                  - text: × 12
+                - generic [ref=e754]:
+                  - button "Reducir peso" [ref=e755]:
+                    - img [ref=e756]
+                  - spinbutton [ref=e757]: "0"
+                  - button "Aumentar peso" [ref=e758]:
+                    - img [ref=e759]
+                - generic [ref=e761]:
+                  - button "Reducir reps" [ref=e762]:
+                    - img [ref=e763]
+                  - spinbutton [ref=e764]: "12"
+                  - button "Aumentar reps" [ref=e765]:
+                    - img [ref=e766]
+                - button "Completar serie" [ref=e769]:
+                  - img [ref=e770]
+              - generic [ref=e772]:
+                - generic [ref=e774]: "2"
+                - generic [ref=e776]:
+                  - text: —
+                  - text: × 12
+                - generic [ref=e777]:
+                  - button "Reducir peso" [ref=e778]:
+                    - img [ref=e779]
+                  - spinbutton [ref=e780]: "0"
+                  - button "Aumentar peso" [ref=e781]:
+                    - img [ref=e782]
+                - generic [ref=e784]:
+                  - button "Reducir reps" [ref=e785]:
+                    - img [ref=e786]
+                  - spinbutton [ref=e787]: "12"
+                  - button "Aumentar reps" [ref=e788]:
+                    - img [ref=e789]
+                - button "Completar serie" [ref=e792]:
+                  - img [ref=e793]
+              - generic [ref=e795]:
+                - generic [ref=e797]: "3"
+                - generic [ref=e799]:
+                  - text: —
+                  - text: × 12
+                - generic [ref=e800]:
+                  - button "Reducir peso" [ref=e801]:
+                    - img [ref=e802]
+                  - spinbutton [ref=e803]: "0"
+                  - button "Aumentar peso" [ref=e804]:
+                    - img [ref=e805]
+                - generic [ref=e807]:
+                  - button "Reducir reps" [ref=e808]:
+                    - img [ref=e809]
+                  - spinbutton [ref=e810]: "12"
+                  - button "Aumentar reps" [ref=e811]:
+                    - img [ref=e812]
+                - button "Completar serie" [ref=e815]:
+                  - img [ref=e816]
+            - button "Descanso · 60 seg" [ref=e819]:
+              - img [ref=e820]
+              - generic [ref=e822]: Descanso · 60 seg
+          - generic [ref=e823]:
+            - generic [ref=e824]:
+              - generic [ref=e826]:
+                - generic [ref=e827]:
+                  - generic [ref=e828]: "8"
+                  - heading "Plancha Frontal" [level=3] [ref=e829]
+                - generic [ref=e831]:
+                  - img [ref=e832]
+                  - text: 45 seg descanso
+              - button "Notas del coach" [ref=e835]:
+                - img [ref=e836]
+                - text: Notas del coach
+            - generic [ref=e838]:
+              - generic [ref=e839]:
+                - generic [ref=e840]: Set
+                - generic [ref=e841]: Anterior
+                - generic [ref=e842]: Peso (kg)
+                - generic [ref=e843]: Reps
+                - generic [ref=e844]: Completar
+              - generic [ref=e845]:
+                - generic [ref=e847]: "1"
+                - generic [ref=e849]:
+                  - text: —
+                  - text: × 30-40 seg
+                - generic [ref=e850]:
+                  - button "Reducir peso" [ref=e851]:
+                    - img [ref=e852]
+                  - spinbutton [ref=e853]: "0"
+                  - button "Aumentar peso" [ref=e854]:
+                    - img [ref=e855]
+                - generic [ref=e857]:
+                  - button "Reducir reps" [ref=e858]:
+                    - img [ref=e859]
+                  - spinbutton [ref=e860]: "30"
+                  - button "Aumentar reps" [ref=e861]:
+                    - img [ref=e862]
+                - button "Completar serie" [ref=e865]:
+                  - img [ref=e866]
+              - generic [ref=e868]:
+                - generic [ref=e870]: "2"
+                - generic [ref=e872]:
+                  - text: —
+                  - text: × 30-40 seg
+                - generic [ref=e873]:
+                  - button "Reducir peso" [ref=e874]:
+                    - img [ref=e875]
+                  - spinbutton [ref=e876]: "0"
+                  - button "Aumentar peso" [ref=e877]:
+                    - img [ref=e878]
+                - generic [ref=e880]:
+                  - button "Reducir reps" [ref=e881]:
+                    - img [ref=e882]
+                  - spinbutton [ref=e883]: "30"
+                  - button "Aumentar reps" [ref=e884]:
+                    - img [ref=e885]
+                - button "Completar serie" [ref=e888]:
+                  - img [ref=e889]
+              - generic [ref=e891]:
+                - generic [ref=e893]: "3"
+                - generic [ref=e895]:
+                  - text: —
+                  - text: × 30-40 seg
+                - generic [ref=e896]:
+                  - button "Reducir peso" [ref=e897]:
+                    - img [ref=e898]
+                  - spinbutton [ref=e899]: "0"
+                  - button "Aumentar peso" [ref=e900]:
+                    - img [ref=e901]
+                - generic [ref=e903]:
+                  - button "Reducir reps" [ref=e904]:
+                    - img [ref=e905]
+                  - spinbutton [ref=e906]: "30"
+                  - button "Aumentar reps" [ref=e907]:
+                    - img [ref=e908]
+                - button "Completar serie" [ref=e911]:
+                  - img [ref=e912]
+            - button "Descanso · 45 seg" [ref=e915]:
+              - img [ref=e916]
+              - generic [ref=e918]: Descanso · 45 seg
+        - generic [ref=e920]:
+          - generic [ref=e921]:
+            - generic [ref=e922]: 0 sets
+            - generic [ref=e924]: 0 reps
+            - generic [ref=e926]: — kg max
+          - generic [ref=e927]:
+            - button "Abandonar sesion" [ref=e928]:
+              - img [ref=e929]
+              - text: Abandonar
+            - button "COMPLETAR SESION" [disabled] [ref=e931]
+        - generic [ref=e933]:
+          - generic [ref=e934]:
+            - heading "CÓMO ENTRENAR" [level=3] [ref=e935]
+            - button "Cerrar tutorial" [ref=e936]:
+              - img [ref=e937]
+          - generic [ref=e940]:
+            - generic [ref=e941]: "1"
+            - generic [ref=e942]:
+              - paragraph [ref=e943]: Ajusta peso y reps
+              - paragraph [ref=e944]: Usa los botones − + para ajustar el peso y las repeticiones de cada serie antes de ejecutarla.
+          - button "Siguiente" [ref=e950]

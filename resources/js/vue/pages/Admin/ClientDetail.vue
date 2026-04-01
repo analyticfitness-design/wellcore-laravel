@@ -30,8 +30,8 @@ async function fetchClient() {
     error.value = null;
     try {
         const response = await api.get(`/api/v/admin/clients/${route.params.id}`);
-        client.value = response.data;
-        editForm.value = { ...response.data };
+        client.value = response.data.client || response.data;
+        editForm.value = { ...(response.data.client || response.data) };
     } catch (err) {
         error.value = err.response?.data?.message || 'Error al cargar el cliente';
     } finally {
@@ -53,7 +53,7 @@ async function saveClient() {
     saving.value = true;
     try {
         const response = await api.put(`/api/v/admin/clients/${route.params.id}`, editForm.value);
-        client.value = response.data;
+        client.value = response.data.client || response.data;
         editMode.value = false;
     } catch (err) {
         error.value = err.response?.data?.message || 'Error al guardar';

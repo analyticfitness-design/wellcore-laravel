@@ -1,0 +1,237 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - img "WellCore" [ref=e4]
+    - navigation [ref=e5]:
+      - generic [ref=e6]:
+        - paragraph [ref=e7]: Entrenamiento
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - link "Resumen" [ref=e10] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client
+              - img [ref=e11]
+              - text: Resumen
+          - listitem [ref=e13]:
+            - link "Mi Plan" [ref=e14] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/plan
+              - img [ref=e15]
+              - text: Mi Plan
+          - listitem [ref=e17]:
+            - link "Entrenar" [ref=e18] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/workout
+              - img [ref=e19]
+              - text: Entrenar
+          - listitem [ref=e21]:
+            - link "Check-in Semanal" [ref=e22] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/checkin
+              - img [ref=e23]
+              - text: Check-in Semanal
+      - generic [ref=e25]:
+        - paragraph [ref=e26]: Progreso
+        - list [ref=e27]:
+          - listitem [ref=e28]:
+            - link "Fotos de Progreso" [ref=e29] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/photos
+              - img [ref=e30]
+              - text: Fotos de Progreso
+          - listitem [ref=e32]:
+            - link "Metricas" [ref=e33] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/metrics
+              - img [ref=e34]
+              - text: Metricas
+          - listitem [ref=e36]:
+            - link "Video Check-in" [ref=e37] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/video-checkin
+              - img [ref=e38]
+              - text: Video Check-in
+      - generic [ref=e40]:
+        - paragraph [ref=e41]: Comunidad
+        - list [ref=e42]:
+          - listitem [ref=e43]:
+            - link "Comunidad" [ref=e44] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/community
+              - img [ref=e45]
+              - text: Comunidad
+          - listitem [ref=e47]:
+            - link "Retos" [ref=e48] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/challenges
+              - img [ref=e49]
+              - text: Retos
+          - listitem [ref=e52]:
+            - link "Chat con Coach" [ref=e53] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/chat
+              - img [ref=e54]
+              - text: Chat con Coach
+          - listitem [ref=e56]:
+            - link "Referidos" [ref=e57] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/referrals
+              - img [ref=e58]
+              - text: Referidos
+      - generic [ref=e60]:
+        - paragraph [ref=e61]: Recursos
+        - list [ref=e62]:
+          - listitem [ref=e63]:
+            - link "Registro Nutricional" [ref=e64] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/ai-nutrition
+              - img [ref=e65]
+              - text: Registro Nutricional
+          - listitem [ref=e67]:
+            - link "Configuracion" [ref=e68] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/settings
+              - img [ref=e69]
+              - text: Configuracion
+          - listitem [ref=e72]:
+            - link "Perfil" [ref=e73] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/profile
+              - img [ref=e74]
+              - text: Perfil
+    - button "Cerrar sesion" [ref=e78]:
+      - img [ref=e79]
+      - text: Cerrar sesion
+  - generic [ref=e81]:
+    - generic [ref=e82]:
+      - generic [ref=e83]:
+        - img [ref=e84]
+        - generic [ref=e87]:
+          - text: Viendo como cliente —
+          - strong [ref=e88]: Lizeth Ojeda
+      - button "Salir de la sesión de impersonación y volver al panel de administración" [ref=e90]:
+        - img [ref=e91]
+        - text: Volver al Admin
+    - banner [ref=e93]:
+      - generic [ref=e94]:
+        - button "ES" [ref=e96]:
+          - generic [ref=e97]: ES
+          - img [ref=e98]
+        - button "Oscuro" [ref=e100]:
+          - generic [ref=e101]:
+            - img [ref=e102]
+            - generic [ref=e104]: Oscuro
+        - generic [ref=e105]: Metodo
+        - generic [ref=e106]:
+          - generic [ref=e108]: L
+          - generic [ref=e109]: Lizeth Ojeda
+    - main [ref=e110]:
+      - generic [ref=e111]:
+        - generic [ref=e112]:
+          - heading "MI PLAN" [level=1] [ref=e113]
+          - paragraph [ref=e114]: Tu programación personalizada, diseñada por tu coach
+        - generic [ref=e115]:
+          - button "Entrenamiento" [ref=e116]
+          - button "Hábitos" [ref=e117]
+          - button "Nutrición" [ref=e118]
+          - button "Suplementos" [ref=e119]
+          - button "Ciclo 🔒" [ref=e120]
+          - button "Bloodwork 🔒" [ref=e121]
+        - generic [ref=e122]:
+          - generic [ref=e123]:
+            - generic [ref=e124]: "5"
+            - generic [ref=e125]: Días/sem
+          - generic [ref=e126]:
+            - generic [ref=e127]: "25"
+            - generic [ref=e128]: Ejercicios
+          - generic [ref=e129]:
+            - generic [ref=e130]: ~225
+            - generic [ref=e131]: Min/sem
+        - generic [ref=e132]:
+          - generic [ref=e133]:
+            - button "DÍA 1 LUNES 5 ejercicios · ~30 min" [ref=e134]:
+              - generic [ref=e135]:
+                - generic [ref=e136]: DÍA
+                - generic [ref=e137]: "1"
+              - generic [ref=e138]:
+                - paragraph [ref=e139]: LUNES
+                - generic [ref=e141]: 5 ejercicios · ~30 min
+              - img [ref=e142]
+            - generic [ref=e144]:
+              - generic [ref=e145]:
+                - generic [ref=e147]:
+                  - generic [ref=e148]: "1"
+                  - generic [ref=e149]:
+                    - paragraph [ref=e150]: Hip Thrust con barra
+                    - generic [ref=e151]:
+                      - generic [ref=e152]: 4×10-12
+                      - generic [ref=e153]:
+                        - img [ref=e154]
+                        - text: 90s después de completar la biserie
+                      - generic [ref=e156]: RIR2
+                    - paragraph [ref=e157]: Biserie con el siguiente ejercicio. Este es TU ejercicio estrella y es 100% seguro para la rodilla — la articulación casi no participa. Apretá arriba 2 segundos completos, empujá desde los talones. No dejés caer la cadera entre reps, mantené la tensión. Vos tenés más fuerza que Tatis en este ejercicio, dale con todo lo que tengas.
+                - generic [ref=e159]:
+                  - generic [ref=e160]: "2"
+                  - generic [ref=e161]:
+                    - paragraph [ref=e162]: Sentadilla Búlgara controlada (con soporte TRX o rack)
+                    - generic [ref=e163]:
+                      - generic [ref=e164]: 4×10 cada pierna
+                      - generic [ref=e165]:
+                        - img [ref=e166]
+                        - text: 90s después de completar la biserie
+                      - generic [ref=e168]: RIR2
+                    - paragraph [ref=e169]: Biserie con Hip Thrust. Incliná el torso ligeramente hacia adelante para activar más glúteo y menos rodilla. Bajá CONTROLADA — no te dejés caer. Usá el TRX o agarrate del rack con una mano si sentís inestabilidad en la rodilla operada. Mientras Tatis hace las suyas sin soporte, vos usá el apoyo sin pena — lo importante es la activación del glúteo.
+                - generic [ref=e171]:
+                  - generic [ref=e172]: "3"
+                  - generic [ref=e173]:
+                    - paragraph [ref=e174]: Patada de glúteo en máquina (Glute Kickback)
+                    - generic [ref=e175]:
+                      - generic [ref=e176]: 3×12-15
+                      - generic [ref=e177]:
+                        - img [ref=e178]
+                        - text: 60s después de completar la biserie
+                      - generic [ref=e180]: RIR1
+                    - paragraph [ref=e181]: "Biserie con el siguiente ejercicio. Extendé la pierna completamente atrás y apretá el glúteo arriba 1 segundo. No usés impulso. En la última serie hacés drop set: terminás las 12 reps, bajás el peso 30% y sacás 8-10 reps más. Tatis y vos se turnan sin descanso extra."
+                - generic [ref=e183]:
+                  - generic [ref=e184]: "4"
+                  - generic [ref=e185]:
+                    - paragraph [ref=e186]: Abductora en máquina
+                    - generic [ref=e187]:
+                      - generic [ref=e188]: 3×15-20
+                      - generic [ref=e189]:
+                        - img [ref=e190]
+                        - text: 60s después de completar la biserie
+                      - generic [ref=e192]: RIR1
+                    - paragraph [ref=e193]: "Biserie con Patada de glúteo. Incliná el torso hacia adelante para activar más glúteo medio. Abrí las piernas con fuerza y controlá el regreso. En la última serie: drop set, bajá 30% y dale 10 reps más. Este ejercicio además fortalece los estabilizadores de la rodilla — doble beneficio para vos."
+                - generic [ref=e195]:
+                  - generic [ref=e196]: "5"
+                  - generic [ref=e197]:
+                    - paragraph [ref=e198]: Puente de glúteo con banda elástica
+                    - generic [ref=e199]:
+                      - generic [ref=e200]: 3×20
+                      - generic [ref=e201]:
+                        - img [ref=e202]
+                        - text: 45s
+                      - generic [ref=e204]: RIR0
+                    - paragraph [ref=e205]: Ejercicio final para quemar el glúteo por completo. Banda por encima de las rodillas, pies separados al ancho de caderas, empujá la cadera lo más alto que puedas y apretá arriba 3 segundos. Las últimas reps van a doler pero no soltés la contracción. Tatis y vos terminan juntas este finisher.
+              - link "ENTRENAR DÍA 1" [ref=e207] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/client/workout/1
+                - img [ref=e208]
+                - text: ENTRENAR DÍA 1
+          - button "DÍA 2 MARTES 5 ejercicios · ~30 min" [ref=e211]:
+            - generic [ref=e212]:
+              - generic [ref=e213]: DÍA
+              - generic [ref=e214]: "2"
+            - generic [ref=e215]:
+              - paragraph [ref=e216]: MARTES
+              - generic [ref=e218]: 5 ejercicios · ~30 min
+            - img [ref=e219]
+          - button "DÍA 3 MIéRCOLES 5 ejercicios · ~30 min" [ref=e222]:
+            - generic [ref=e223]:
+              - generic [ref=e224]: DÍA
+              - generic [ref=e225]: "3"
+            - generic [ref=e226]:
+              - paragraph [ref=e227]: MIéRCOLES
+              - generic [ref=e229]: 5 ejercicios · ~30 min
+            - img [ref=e230]
+          - button "DÍA 4 JUEVES 5 ejercicios · ~30 min" [ref=e233]:
+            - generic [ref=e234]:
+              - generic [ref=e235]: DÍA
+              - generic [ref=e236]: "4"
+            - generic [ref=e237]:
+              - paragraph [ref=e238]: JUEVES
+              - generic [ref=e240]: 5 ejercicios · ~30 min
+            - img [ref=e241]
+          - button "DÍA 5 VIERNES 5 ejercicios · ~30 min" [ref=e244]:
+            - generic [ref=e245]:
+              - generic [ref=e246]: DÍA
+              - generic [ref=e247]: "5"
+            - generic [ref=e248]:
+              - paragraph [ref=e249]: VIERNES
+              - generic [ref=e251]: 5 ejercicios · ~30 min
+            - img [ref=e252]

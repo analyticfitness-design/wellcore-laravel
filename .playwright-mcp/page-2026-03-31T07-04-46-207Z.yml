@@ -1,0 +1,219 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - img "WellCore" [ref=e4]
+    - navigation [ref=e5]:
+      - generic [ref=e6]:
+        - paragraph [ref=e7]: General
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - link "Dashboard" [ref=e10] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin
+              - img [ref=e11]
+              - text: Dashboard
+          - listitem [ref=e13]:
+            - link "Feed en Vivo" [ref=e14] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/feed
+              - img [ref=e15]
+              - text: Feed en Vivo
+          - listitem [ref=e20]:
+            - link "Clientes" [ref=e21] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/clients
+              - img [ref=e22]
+              - text: Clientes
+          - listitem [ref=e24]:
+            - link "Coaches" [ref=e25] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/coaches
+              - img [ref=e26]
+              - text: Coaches
+      - generic [ref=e28]:
+        - paragraph [ref=e29]: Gestion
+        - list [ref=e30]:
+          - listitem [ref=e31]:
+            - link "Planes" [ref=e32] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/plans
+              - img [ref=e33]
+              - text: Planes
+          - listitem [ref=e35]:
+            - link "AI Generator" [ref=e36] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/ai-generator
+              - img [ref=e37]
+              - text: AI Generator
+      - generic [ref=e39]:
+        - paragraph [ref=e40]: RISE
+        - list [ref=e41]:
+          - listitem [ref=e42]:
+            - link "RISE 12S" [ref=e43] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/rise
+              - img [ref=e44]
+              - text: RISE
+              - generic [ref=e46]: 12S
+      - generic [ref=e47]:
+        - paragraph [ref=e48]: Pagos
+        - list [ref=e49]:
+          - listitem [ref=e50]:
+            - link "Pagos" [ref=e51] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/payments
+              - img [ref=e52]
+              - text: Pagos
+          - listitem [ref=e54]:
+            - link "Inscripciones" [ref=e55] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/inscriptions
+              - img [ref=e56]
+              - text: Inscripciones
+      - generic [ref=e58]:
+        - paragraph [ref=e59]: Sistema
+        - list [ref=e60]:
+          - listitem [ref=e61]:
+            - link "Invitaciones" [ref=e62] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/invitations
+              - img [ref=e63]
+              - text: Invitaciones
+          - listitem [ref=e65]:
+            - link "Enviar Invitacion" [ref=e66] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/send-invitation
+              - img [ref=e67]
+              - text: Enviar Invitacion
+          - listitem [ref=e69]:
+            - link "Recompensas Referidos" [ref=e70] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/referral-rewards
+              - img [ref=e71]
+              - text: Recompensas Referidos
+          - listitem [ref=e73]:
+            - link "Campanas" [ref=e74] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/campaign-tracker
+              - img [ref=e75]
+              - text: Campanas
+          - listitem [ref=e77]:
+            - link "Chat Analytics" [ref=e78] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/chat
+              - img [ref=e79]
+              - text: Chat Analytics
+          - listitem [ref=e81]:
+            - link "Herramientas" [ref=e82] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/tools
+              - img [ref=e83]
+              - text: Herramientas
+          - listitem [ref=e85]:
+            - link "Tickets" [ref=e86] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/tickets
+              - img [ref=e87]
+              - text: Tickets
+          - listitem [ref=e89]:
+            - link "Ajustes" [ref=e90] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/settings
+              - img [ref=e91]
+              - text: Ajustes
+    - button "Cerrar sesion" [ref=e96]:
+      - img [ref=e97]
+      - text: Cerrar sesion
+  - generic [ref=e99]:
+    - banner [ref=e100]:
+      - generic [ref=e101]:
+        - button "ES" [ref=e103]:
+          - generic [ref=e104]: ES
+          - img [ref=e105]
+        - button "Cambiar modo" [ref=e107]:
+          - img [ref=e108]
+        - generic [ref=e110]: Super Administrador
+        - generic [ref=e111]:
+          - generic [ref=e113]: D
+          - generic [ref=e114]: Daniel Esparza - CEO
+    - main [ref=e115]:
+      - generic [ref=e116]:
+        - generic [ref=e117]:
+          - generic [ref=e118]:
+            - link [ref=e119] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/clients
+              - img [ref=e120]
+            - generic [ref=e122]:
+              - generic [ref=e124]: V
+              - generic [ref=e125]:
+                - heading "VANESSA DIAZ" [level=1] [ref=e126]
+                - generic [ref=e127]:
+                  - generic [ref=e128]: WC-YFCNEX
+                  - generic [ref=e129]: "|"
+                  - generic [ref=e130]: Angiev.diaz20@gmail.com
+                  - generic [ref=e131]: Rise
+                  - generic [ref=e132]: Activo
+          - generic [ref=e133]:
+            - button "Ver portal del cliente" [ref=e135]:
+              - img [ref=e136]
+              - text: Ver Portal
+            - button "Asignar Coach" [ref=e139]:
+              - img [ref=e140]
+              - text: Asignar Coach
+        - generic [ref=e142]:
+          - button "Informacion" [ref=e143]
+          - button "Planes" [ref=e144]
+          - button "Check-ins" [ref=e145]
+          - button "Pagos" [ref=e146]
+          - button "Metricas" [ref=e147]
+        - generic [ref=e148]:
+          - generic [ref=e149]:
+            - heading "Datos del Cliente" [level=2] [ref=e150]
+            - generic [ref=e151]:
+              - generic [ref=e152]:
+                - text: Nombre
+                - paragraph [ref=e153]: VANESSA DIAZ
+              - generic [ref=e154]:
+                - text: Email
+                - paragraph [ref=e155]: Angiev.diaz20@gmail.com
+              - generic [ref=e156]:
+                - text: Codigo
+                - paragraph [ref=e157]: WC-YFCNEX
+              - generic [ref=e158]:
+                - text: Ciudad
+                - paragraph [ref=e159]: Bucaramanga
+              - generic [ref=e160]:
+                - text: Fecha Nacimiento
+                - paragraph [ref=e161]: "-"
+              - generic [ref=e162]:
+                - text: Fecha Inicio
+                - paragraph [ref=e163]: 31/03/2026
+              - generic [ref=e164]:
+                - text: Referral Code
+                - paragraph [ref=e165]: "-"
+              - generic [ref=e166]:
+                - text: Referido por
+                - paragraph [ref=e167]: "-"
+          - generic [ref=e168]:
+            - generic [ref=e169]:
+              - heading "Cambiar Estado" [level=2] [ref=e170]
+              - generic [ref=e171]:
+                - generic [ref=e172]:
+                  - generic [ref=e173]: Estado
+                  - combobox [ref=e174]:
+                    - option "Activo" [selected]
+                    - option "Inactivo"
+                    - option "Suspendido"
+                    - option "Pendiente"
+                    - option "Congelado"
+                - button "Guardar" [ref=e175]
+            - generic [ref=e176]:
+              - heading "Cambiar Plan" [level=2] [ref=e177]
+              - generic [ref=e178]:
+                - generic [ref=e179]:
+                  - generic [ref=e180]: Plan
+                  - combobox [ref=e181]:
+                    - option "Esencial"
+                    - option "Metodo"
+                    - option "Elite"
+                    - option "Rise" [selected]
+                    - option "Presencial"
+                    - option "Trial"
+                - button "Guardar" [ref=e182]
+            - generic [ref=e183]:
+              - heading "Resumen" [level=2] [ref=e184]
+              - generic [ref=e185]:
+                - generic [ref=e186]:
+                  - paragraph [ref=e187]: "0"
+                  - paragraph [ref=e188]: Check-ins
+                - generic [ref=e189]:
+                  - paragraph [ref=e190]: "0"
+                  - paragraph [ref=e191]: Pagos aprobados
+                - generic [ref=e192]:
+                  - paragraph [ref=e193]: "0"
+                  - paragraph [ref=e194]: Planes activos
+                - generic [ref=e195]:
+                  - paragraph [ref=e196]: "0"
+                  - paragraph [ref=e197]: Fotos progreso

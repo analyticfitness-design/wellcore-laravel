@@ -1,0 +1,179 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - generic [ref=e3]:
+      - img "WellCore" [ref=e4]
+      - generic [ref=e5]: RISE
+    - navigation [ref=e6]:
+      - generic [ref=e7]:
+        - paragraph [ref=e8]: RISE
+        - list [ref=e9]:
+          - listitem [ref=e10]:
+            - link "Dashboard" [ref=e11] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/rise
+              - img [ref=e12]
+              - text: Dashboard
+          - listitem [ref=e14]:
+            - link "Mi Programa" [ref=e15] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/rise/program
+              - img [ref=e16]
+              - text: Mi Programa
+          - listitem [ref=e18]:
+            - link "Entrenamiento" [ref=e19] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/rise/workout
+              - img [ref=e20]
+              - text: Entrenamiento
+          - listitem [ref=e22]:
+            - link "Tracking Diario" [ref=e23] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/rise/tracking
+              - img [ref=e24]
+              - text: Tracking Diario
+      - generic [ref=e26]:
+        - paragraph [ref=e27]: Mediciones
+        - list [ref=e28]:
+          - listitem [ref=e29]:
+            - link "Mediciones" [ref=e30] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/rise/measurements
+              - img [ref=e31]
+              - text: Mediciones
+          - listitem [ref=e33]:
+            - link "Fotos" [ref=e34] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/rise/photos
+              - img [ref=e35]
+              - text: Fotos
+      - generic [ref=e37]:
+        - paragraph [ref=e38]: Habitos
+        - list [ref=e39]:
+          - listitem [ref=e40]:
+            - link "Habitos RISE" [ref=e41] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/rise/habits
+              - img [ref=e42]
+              - text: Habitos RISE
+      - generic [ref=e45]:
+        - paragraph [ref=e46]: General
+        - list [ref=e47]:
+          - listitem [ref=e48]:
+            - link "Chat" [ref=e49] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/rise/chat
+              - img [ref=e50]
+              - text: Chat
+          - listitem [ref=e52]:
+            - link "Perfil" [ref=e53] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/rise/profile
+              - img [ref=e54]
+              - text: Perfil
+      - generic [ref=e56]:
+        - paragraph [ref=e57]: Mis Planes
+        - list [ref=e58]:
+          - listitem [ref=e59]:
+            - link "Mi Plan" [ref=e60] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client
+              - img [ref=e61]
+              - text: Mi Plan
+    - button "Cerrar sesion" [ref=e65]:
+      - img [ref=e66]
+      - text: Cerrar sesion
+  - generic [ref=e68]:
+    - generic [ref=e69]:
+      - generic [ref=e70]:
+        - img [ref=e71]
+        - generic [ref=e74]:
+          - text: Viendo como cliente —
+          - strong [ref=e75]: VANESSA DIAZ
+      - button "Salir de la sesión de impersonación y volver al panel de administración" [ref=e77]:
+        - img [ref=e78]
+        - text: Volver al Admin
+    - banner [ref=e80]:
+      - generic [ref=e81]:
+        - button "Cambiar modo" [ref=e82]:
+          - img [ref=e83]
+        - generic [ref=e85]:
+          - img [ref=e86]
+          - text: RISE
+        - generic [ref=e88]:
+          - generic [ref=e90]: V
+          - generic [ref=e91]: VANESSA DIAZ
+    - main [ref=e92]:
+      - generic [ref=e93]:
+        - generic [ref=e94]:
+          - generic [ref=e95]:
+            - heading "Buenos días, VANESSA" [level=1] [ref=e96]
+            - generic [ref=e97]:
+              - generic [ref=e98]:
+                - img [ref=e99]
+                - text: Programa RISE
+              - generic [ref=e101]: Semana 1 de 4
+          - generic [ref=e102]:
+            - link "Registrar hoy" [ref=e103] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/rise/tracking
+              - img [ref=e104]
+              - text: Registrar hoy
+            - link "Nueva medicion" [ref=e106] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/rise/measurements
+        - generic [ref=e110]:
+          - generic [ref=e111]:
+            - generic [ref=e112]:
+              - heading "Progreso del Programa" [level=2] [ref=e113]
+              - paragraph [ref=e114]: 31 Mar 2026 — 28 Apr 2026
+            - generic [ref=e116]:
+              - paragraph [ref=e117]: 0%
+              - paragraph [ref=e118]: completado
+          - generic [ref=e121]:
+            - generic [ref=e122]: Dia 0 de 28
+            - generic [ref=e123]: 28 dias restantes
+        - generic [ref=e124]:
+          - generic [ref=e125]:
+            - generic [ref=e126]:
+              - generic [ref=e127]: Racha
+              - img [ref=e129]
+            - paragraph [ref=e131]: "0"
+            - paragraph [ref=e132]: dias consecutivos
+          - generic [ref=e133]:
+            - generic [ref=e134]:
+              - generic [ref=e135]: Entrenos
+              - img [ref=e137]
+            - paragraph [ref=e139]: "0"
+            - paragraph [ref=e140]: esta semana
+          - generic [ref=e141]:
+            - generic [ref=e142]:
+              - generic [ref=e143]: Adherencia
+              - img [ref=e145]
+            - paragraph [ref=e147]: 0%
+            - paragraph [ref=e148]: general
+          - generic [ref=e149]:
+            - generic [ref=e150]:
+              - generic [ref=e151]: Peso
+              - img [ref=e153]
+            - paragraph [ref=e155]: "--"
+            - paragraph [ref=e156]: sin registro
+        - generic [ref=e157]:
+          - generic [ref=e158]:
+            - heading "Semana actual" [level=2] [ref=e159]
+            - paragraph [ref=e160]: Semana 14 — Tracking diario
+            - generic [ref=e161]:
+              - generic [ref=e163]: Lun
+              - generic [ref=e167]: Mar
+              - generic [ref=e172]: Mie
+              - generic [ref=e176]: Jue
+              - generic [ref=e180]: Vie
+              - generic [ref=e184]: Sab
+              - generic [ref=e188]: Dom
+            - generic [ref=e191]:
+              - generic [ref=e192]: Entrenamiento
+              - generic [ref=e194]: Nutricion
+              - generic [ref=e196]: Pendiente
+              - generic [ref=e198]: Hoy
+          - generic [ref=e200]:
+            - heading "Resumen semanal" [level=2] [ref=e201]
+            - generic [ref=e202]:
+              - generic [ref=e204]:
+                - generic [ref=e205]: Entrenamientos
+                - generic [ref=e206]: 0/7
+              - generic [ref=e209]:
+                - generic [ref=e210]: Nutricion
+                - generic [ref=e211]: 0/7
+              - generic [ref=e214]:
+                - generic [ref=e215]: Habitos
+                - generic [ref=e216]: 0/7
+              - generic [ref=e219]:
+                - generic [ref=e220]: Dias registrados (total)
+                - generic [ref=e221]: "0"

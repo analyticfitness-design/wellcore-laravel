@@ -1,0 +1,17 @@
+- generic [active] [ref=e1]:
+  - link "WELLCORE" [ref=e2] [cursor=pointer]:
+    - /url: /
+  - generic [ref=e3]:
+    - generic [ref=e4]: "500"
+    - heading "ERROR DEL SERVIDOR" [level=1] [ref=e6]
+    - paragraph [ref=e7]: Algo salio mal de nuestro lado. Estamos trabajando para solucionarlo. Por favor intenta de nuevo en unos minutos.
+    - link "Volver al Inicio" [ref=e8] [cursor=pointer]:
+      - /url: /
+    - paragraph [ref=e10]:
+      - text: "Si el problema persiste, contactanos:"
+      - link "info@wellcorefitness.com" [ref=e11] [cursor=pointer]:
+        - /url: mailto:info@wellcorefitness.com
+      - text: o a traves de Instagram
+      - link "@wellcore.fitness" [ref=e12] [cursor=pointer]:
+        - /url: https://www.instagram.com/wellcore.fitness/
+  - paragraph [ref=e13]: © 2026 WellCore Fitness. Todos los derechos reservados.

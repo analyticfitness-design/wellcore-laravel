@@ -1,0 +1,214 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - img "WellCore" [ref=e4]
+    - navigation [ref=e5]:
+      - generic [ref=e6]:
+        - paragraph [ref=e7]: Entrenamiento
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - link "Resumen" [ref=e10] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client
+              - img [ref=e11]
+              - text: Resumen
+          - listitem [ref=e13]:
+            - link "Mi Plan" [ref=e14] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/plan
+              - img [ref=e15]
+              - text: Mi Plan
+          - listitem [ref=e17]:
+            - link "Entrenar" [ref=e18] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/workout
+              - img [ref=e19]
+              - text: Entrenar
+          - listitem [ref=e21]:
+            - link "Check-in Semanal" [ref=e22] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/checkin
+              - img [ref=e23]
+              - text: Check-in Semanal
+      - generic [ref=e25]:
+        - paragraph [ref=e26]: Progreso
+        - list [ref=e27]:
+          - listitem [ref=e28]:
+            - link "Fotos de Progreso" [ref=e29] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/photos
+              - img [ref=e30]
+              - text: Fotos de Progreso
+          - listitem [ref=e32]:
+            - link "Metricas" [ref=e33] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/metrics
+              - img [ref=e34]
+              - text: Metricas
+          - listitem [ref=e36]:
+            - link "Video Check-in" [ref=e37] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/video-checkin
+              - img [ref=e38]
+              - text: Video Check-in
+      - generic [ref=e40]:
+        - paragraph [ref=e41]: Comunidad
+        - list [ref=e42]:
+          - listitem [ref=e43]:
+            - link "Comunidad" [ref=e44] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/community
+              - img [ref=e45]
+              - text: Comunidad
+          - listitem [ref=e47]:
+            - link "Retos" [ref=e48] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/challenges
+              - img [ref=e49]
+              - text: Retos
+          - listitem [ref=e52]:
+            - link "Chat con Coach" [ref=e53] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/chat
+              - img [ref=e54]
+              - text: Chat con Coach
+          - listitem [ref=e56]:
+            - link "Referidos" [ref=e57] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/referrals
+              - img [ref=e58]
+              - text: Referidos
+      - generic [ref=e60]:
+        - paragraph [ref=e61]: Recursos
+        - list [ref=e62]:
+          - listitem [ref=e63]:
+            - link "Registro Nutricional" [ref=e64] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/ai-nutrition
+              - img [ref=e65]
+              - text: Registro Nutricional
+          - listitem [ref=e67]:
+            - link "Configuracion" [ref=e68] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/settings
+              - img [ref=e69]
+              - text: Configuracion
+          - listitem [ref=e72]:
+            - link "Perfil" [ref=e73] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/profile
+              - img [ref=e74]
+              - text: Perfil
+    - button "Cerrar sesion" [ref=e78]:
+      - img [ref=e79]
+      - text: Cerrar sesion
+  - generic [ref=e81]:
+    - generic [ref=e82]:
+      - generic [ref=e83]:
+        - img [ref=e84]
+        - generic [ref=e87]:
+          - text: Viendo como cliente —
+          - strong [ref=e88]: Lizeth Ojeda
+      - button "Salir de la sesión de impersonación y volver al panel de administración" [ref=e90]:
+        - img [ref=e91]
+        - text: Volver al Admin
+    - banner [ref=e93]:
+      - generic [ref=e94]:
+        - button "ES" [ref=e96]:
+          - generic [ref=e97]: ES
+          - img [ref=e98]
+        - button "Oscuro" [ref=e100]:
+          - generic [ref=e101]:
+            - img [ref=e102]
+            - generic [ref=e104]: Oscuro
+        - generic [ref=e105]: Metodo
+        - generic [ref=e106]:
+          - generic [ref=e108]: L
+          - generic [ref=e109]: Lizeth Ojeda
+    - main [ref=e110]:
+      - generic [ref=e111]:
+        - generic [ref=e112]:
+          - heading "MI PLAN" [level=1] [ref=e113]
+          - paragraph [ref=e114]: Tu programación personalizada, diseñada por tu coach
+        - generic [ref=e115]:
+          - button "Entrenamiento" [ref=e116]
+          - button "Hábitos" [ref=e117]
+          - button "Nutrición" [ref=e118]
+          - button "Suplementos" [ref=e119]
+          - button "Ciclo 🔒" [ref=e120]
+          - button "Bloodwork 🔒" [ref=e121]
+        - generic [ref=e254]:
+          - generic [ref=e255]:
+            - heading "NUTRICIÓN" [level=1] [ref=e256]
+            - paragraph [ref=e257]: Tu plan nutricional personalizado por tu coach
+          - generic [ref=e258]:
+            - generic [ref=e259]:
+              - paragraph [ref=e261]: Calorías
+              - paragraph [ref=e262]: 2,271
+              - paragraph [ref=e263]: kcal / día
+            - generic [ref=e264]:
+              - paragraph [ref=e266]: Proteína
+              - paragraph [ref=e267]: 117g
+              - paragraph [ref=e268]: 24% del total
+            - generic [ref=e269]:
+              - paragraph [ref=e271]: Carbos
+              - paragraph [ref=e272]: 300g
+              - paragraph [ref=e273]: 62% del total
+            - generic [ref=e274]:
+              - paragraph [ref=e276]: Grasas
+              - paragraph [ref=e277]: 67g
+              - paragraph [ref=e278]: 14% del total
+          - generic [ref=e284]:
+            - img [ref=e286]
+            - generic [ref=e288]:
+              - paragraph [ref=e289]: Objetivo del plan
+              - paragraph [ref=e290]: Rendimiento deportivo + construcción muscular + composición corporal lean
+          - generic [ref=e291]:
+            - heading "COMIDAS DEL DÍA" [level=3] [ref=e292]
+            - generic [ref=e293]:
+              - button "1 DESAYUNO 490 kcal" [ref=e295]:
+                - generic [ref=e297]: "1"
+                - paragraph [ref=e299]: DESAYUNO
+                - generic [ref=e300]:
+                  - generic [ref=e301]: 490 kcal
+                  - img [ref=e302]
+              - button "2 MEDIA MAñANA 380 kcal" [ref=e305]:
+                - generic [ref=e307]: "2"
+                - paragraph [ref=e309]: MEDIA MAñANA
+                - generic [ref=e310]:
+                  - generic [ref=e311]: 380 kcal
+                  - img [ref=e312]
+              - button "3 ALMUERZO 650 kcal" [ref=e315]:
+                - generic [ref=e317]: "3"
+                - paragraph [ref=e319]: ALMUERZO
+                - generic [ref=e320]:
+                  - generic [ref=e321]: 650 kcal
+                  - img [ref=e322]
+              - button "4 PRE/POST ENTRENO 450 kcal" [ref=e325]:
+                - generic [ref=e327]: "4"
+                - paragraph [ref=e329]: PRE/POST ENTRENO
+                - generic [ref=e330]:
+                  - generic [ref=e331]: 450 kcal
+                  - img [ref=e332]
+              - button "5 CENA 301 kcal" [ref=e335]:
+                - generic [ref=e337]: "5"
+                - paragraph [ref=e339]: CENA
+                - generic [ref=e340]:
+                  - generic [ref=e341]: 301 kcal
+                  - img [ref=e342]
+          - generic [ref=e344]:
+            - generic [ref=e345]:
+              - heading "HIDRATACIÓN" [level=3] [ref=e346]
+              - generic [ref=e347]:
+                - generic [ref=e348]: "0.0"
+                - generic [ref=e349]: / 2.5L
+            - generic [ref=e351]:
+              - img [ref=e352]
+              - img [ref=e354]
+              - img [ref=e356]
+              - img [ref=e358]
+              - img [ref=e360]
+              - img [ref=e362]
+              - img [ref=e364]
+              - img [ref=e366]
+            - generic [ref=e368]:
+              - generic [ref=e369]:
+                - button "+ 250 mL" [ref=e370]
+                - button "+ 500 mL" [ref=e371]
+              - paragraph [ref=e372]: Pizca de sal rosada en el agua de entrenamiento si la sesión pasa de 60 minutos. Agua de coco post-entreno es buena opción natural
+          - generic [ref=e373]:
+            - generic [ref=e374]:
+              - img [ref=e376]
+              - paragraph [ref=e378]: NOTAS DE TU COACH
+            - paragraph [ref=e380]: "Lizeth, tu cuerpo está en modo recuperación + construcción. Eso significa que cada comida que te metés tiene doble propósito: reconstruir tu rodilla y construir músculo. No es solo comer por comer — cada gramo de proteína que consumís va a reparar tejido. Los carbohidratos altos (300g) son intencionales: necesitás energía para entrenar duro sin comprometer la recuperación de la rodilla. El colágeno y los omegas del salmón/tilapia son tus aliados para las articulaciones. Si algún día no entrenás, bajá la porción de avena del pre-entreno a la mitad."
+          - generic [ref=e381]:
+            - heading "PESO" [level=3] [ref=e382]
+            - generic [ref=e384]:
+              - paragraph [ref=e385]: Actual
+              - paragraph [ref=e386]: "65.0"
+              - paragraph [ref=e387]: kg

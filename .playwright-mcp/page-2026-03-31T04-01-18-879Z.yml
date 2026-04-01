@@ -1,0 +1,371 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e6]:
+          - generic [ref=e7]:
+            - link "Home" [ref=e625] [cursor=pointer]:
+              - /url: /
+              - img "Home" [ref=e626]
+            - generic [ref=e10]:
+              - generic [ref=e11]: Easypanel
+              - generic [ref=e12]:
+                - generic [ref=e13]: v2.28.0
+                - button [ref=e14] [cursor=pointer]:
+                  - img [ref=e15]
+                - combobox [ref=e20]:
+                  - option "BR"
+                  - option "DA"
+                  - option "DE"
+                  - option "EN"
+                  - option "ES" [selected]
+                  - option "FA"
+                  - option "FR"
+                  - option "HI"
+                  - option "ID"
+                  - option "IT"
+                  - option "JA"
+                  - option "KA"
+                  - option "NL"
+                  - option "PL"
+                  - option "PT"
+                  - option "RO"
+                  - option "RU"
+                  - option "TH"
+                  - option "TR"
+                  - option "VI"
+                  - option "CN"
+          - generic [ref=e21]:
+            - link "Panel" [ref=e627] [cursor=pointer]:
+              - /url: /
+              - img [ref=e23]
+              - generic [ref=e26]: Panel
+            - link "\"Acciones\"" [ref=e628] [cursor=pointer]:
+              - /url: /actions
+              - img [ref=e28]
+              - generic [ref=e30]: "\"Acciones\""
+            - link "Monitor" [ref=e629] [cursor=pointer]:
+              - /url: /monitor
+              - img [ref=e32]
+              - generic [ref=e34]: Monitor
+            - link "Dominios" [ref=e630] [cursor=pointer]:
+              - /url: /domains
+              - img [ref=e36]
+              - generic [ref=e39]: Dominios
+            - link "Ajustes" [ref=e631] [cursor=pointer]:
+              - /url: /settings
+              - img [ref=e41]
+              - generic [ref=e44]: Ajustes
+          - generic [ref=e46]:
+            - link "Documentación" [ref=e632] [cursor=pointer]:
+              - /url: https://easypanel.io/docs
+              - img [ref=e48]
+              - generic [ref=e50]: Documentación
+              - img [ref=e52]
+            - link "Discord Discord" [ref=e633] [cursor=pointer]:
+              - /url: https://discord.gg/9bcDSXcZQ7
+              - img "Discord" [ref=e634]
+              - generic [ref=e59]: Discord
+              - img [ref=e61]
+            - link "Comentarios" [ref=e635] [cursor=pointer]:
+              - /url: https://my.easypanel.io/feedback
+              - img [ref=e66]
+              - generic [ref=e68]: Comentarios
+              - img [ref=e70]
+            - link "Registro de cambios" [ref=e636] [cursor=pointer]:
+              - /url: https://my.easypanel.io/changelog
+              - img [ref=e75]
+              - generic [ref=e78]: Registro de cambios
+              - img [ref=e80]
+          - link "Comprar licencia" [ref=e637] [cursor=pointer]:
+            - /url: /buy-license
+            - img [ref=e85]
+            - generic [ref=e89]: Comprar licencia
+          - button "Búsqueda rápida ⌘ K" [ref=e638] [cursor=pointer]:
+            - img [ref=e91]
+            - generic [ref=e94]: Búsqueda rápida
+            - generic [ref=e96]: ⌘ K
+          - button "13.59.70.113" [ref=e639] [cursor=pointer]:
+            - img [ref=e98]
+            - generic [ref=e102]: 13.59.70.113
+            - img [ref=e104]
+          - generic [ref=e107]:
+            - img [ref=e108]
+            - generic [ref=e110]: Modo oscuro
+            - switch "Modo oscuro" [ref=e640] [cursor=pointer]
+          - button "Cerrar sesión" [ref=e641] [cursor=pointer]:
+            - img [ref=e114]
+            - generic [ref=e117]: Cerrar sesión
+        - generic [ref=e119]:
+          - generic [ref=e120]:
+            - button "wellcorefitness" [ref=e642] [cursor=pointer]:
+              - img [ref=e123]
+              - generic [ref=e126]: wellcorefitness
+              - img [ref=e127]
+            - generic [ref=e130]:
+              - generic [ref=e131]: Servicios
+              - link [ref=e132] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/create
+                - img [ref=e133]
+            - generic [ref=e137]:
+              - link "prowaylab" [ref=e643] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/prowaylab
+                - generic [ref=e142]: prowaylab
+              - link "wellcorefitness" [ref=e644] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/wellcorefitness
+                - generic [ref=e147]: wellcorefitness
+              - link "wellcorefitness-mysql" [ref=e645] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/mysql/wellcorefitness-mysql
+                - generic [ref=e152]: wellcorefitness-mysql
+          - generic [ref=e157]:
+            - generic [ref=e158]:
+              - link "Resumen" [ref=e646] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/wellcorefitness
+                - generic [ref=e161]:
+                  - img [ref=e163]
+                  - text: Resumen
+              - link "Implementaciones" [ref=e647] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/wellcorefitness/deployments
+                - generic [ref=e166]:
+                  - img [ref=e168]
+                  - text: Implementaciones
+              - link "Git" [ref=e648] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/wellcorefitness/git
+                - generic [ref=e175]:
+                  - img [ref=e177]
+                  - text: Git
+              - link "Dominios" [ref=e649] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/wellcorefitness/domains
+                - generic [ref=e183]:
+                  - img [ref=e185]
+                  - text: Dominios
+              - link "Scripts" [ref=e650] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/wellcorefitness/scripts
+                - generic [ref=e190]:
+                  - img [ref=e192]
+                  - text: Scripts
+              - link "Procesos" [ref=e651] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/wellcorefitness/processes
+                - generic [ref=e197]:
+                  - img [ref=e199]
+                  - text: Procesos
+              - link "Redirecciones" [ref=e652] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/wellcorefitness/redirects
+                - generic [ref=e203]:
+                  - img [ref=e205]
+                  - text: Redirecciones
+              - link "Autenticación básica" [ref=e653] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/wellcorefitness/basic-auth
+                - generic [ref=e209]:
+                  - img [ref=e211]
+                  - text: Autenticación básica
+              - link "Recursos" [ref=e654] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/wellcorefitness/resources
+                - generic [ref=e217]:
+                  - img [ref=e219]
+                  - text: Recursos
+              - link "Puntos de montaje" [ref=e655] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/wellcorefitness/mounts
+                - generic [ref=e224]:
+                  - img [ref=e226]
+                  - text: Puntos de montaje
+              - link "Puertos" [ref=e656] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/wellcorefitness/ports
+                - generic [ref=e230]:
+                  - img [ref=e232]
+                  - text: Puertos
+              - link "IDE" [ref=e657] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/wellcorefitness/ide
+                - generic [ref=e236]:
+                  - img [ref=e238]
+                  - text: IDE
+              - link "PHP" [ref=e658] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/wellcorefitness/php
+                - generic [ref=e243]:
+                  - img [ref=e245]
+                  - text: PHP
+              - link "Node.js" [ref=e659] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/wellcorefitness/nodejs
+                - generic [ref=e249]:
+                  - img [ref=e251]
+                  - text: Node.js
+              - link "NGINX" [ref=e660] [cursor=pointer]:
+                - /url: /projects/wellcorefitness/box/wellcorefitness/nginx
+                - generic [ref=e255]:
+                  - img [ref=e257]
+                  - text: NGINX
+            - generic [ref=e259]:
+              - separator [ref=e260]
+              - button "Módulos" [ref=e661] [cursor=pointer]:
+                - img [ref=e263]
+                - text: Módulos
+      - generic [ref=e267]:
+        - generic [ref=e268]:
+          - generic [ref=e269]:
+            - link "wellcorefitness" [ref=e662] [cursor=pointer]:
+              - /url: /projects/wellcorefitness
+            - paragraph [ref=e271]: /
+            - paragraph [ref=e272]: wellcorefitness
+            - generic [ref=e273]: box
+            - button "Rename" [ref=e663] [cursor=pointer]:
+              - img [ref=e276]
+          - generic [ref=e279]:
+            - link "Servicio" [ref=e664] [cursor=pointer]:
+              - /url: /projects/wellcorefitness/create
+              - img [ref=e282]
+              - text: Servicio
+            - link "Plantillas" [ref=e665] [cursor=pointer]:
+              - /url: /projects/wellcorefitness/create?tab=templates
+              - img [ref=e285]
+              - text: Plantillas
+            - link "Project Settings" [ref=e666] [cursor=pointer]:
+              - /url: /projects/wellcorefitness/settings
+              - img [ref=e289]
+        - generic [ref=e295]:
+          - generic [ref=e297]:
+            - generic [ref=e298]:
+              - button "Stop" [ref=e667] [cursor=pointer]:
+                - img [ref=e300]
+              - button "restart" [ref=e668] [cursor=pointer]:
+                - img [ref=e303]
+              - button "Logs" [ref=e669] [cursor=pointer]:
+                - img [ref=e308]
+              - button "Console" [ref=e670] [cursor=pointer]:
+                - img [ref=e569]
+              - link "Open" [ref=e671] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/
+                - img [ref=e316]
+              - link "Open IDE" [ref=e672] [cursor=pointer]:
+                - /url: https://wellcorefitness-wellcorefitness-ide.v9xcpt.easypanel.host?easypanel-token=36ef09577787f649f45d
+                - img [ref=e322]
+              - button "Rebuild Docker image" [ref=e673] [cursor=pointer]:
+                - img [ref=e326]
+              - button "Modules" [ref=e674] [cursor=pointer]:
+                - img [ref=e332]
+              - button "Presets" [ref=e675] [cursor=pointer]:
+                - img [ref=e336]
+              - button "Destroy" [ref=e676] [cursor=pointer]:
+                - img [ref=e341]
+            - generic [ref=e344]:
+              - generic [ref=e345]:
+                - text: CPU
+                - generic [ref=e346]: 0.0%
+              - generic [ref=e347]: Memoria 243.0 MB
+              - generic [ref=e348]:
+                - text: E/S de red
+                - generic [ref=e349]: 3.1 MB / 32.1 MB
+          - generic [ref=e352]:
+            - img [ref=e353]
+            - generic [ref=e356]: Editar para fijar un mensaje para este servicio
+            - button "Editar" [ref=e677] [cursor=pointer]
+          - generic [ref=e358]:
+            - generic [ref=e359]:
+              - paragraph [ref=e360]: Registros
+              - generic [ref=e361]:
+                - button "\"Agregar divisor\"" [ref=e678] [cursor=pointer]:
+                  - img [ref=e363]
+                - button "Actualizar" [ref=e679] [cursor=pointer]:
+                  - img [ref=e365]
+                - button "Toggle" [ref=e680] [cursor=pointer]:
+                  - img [ref=e372]
+            - textbox "Terminal input" [ref=e681]
+          - generic [ref=e386]:
+            - paragraph [ref=e388]: Actions
+            - generic [ref=e390]:
+              - alert [ref=e391]:
+                - img [ref=e394]
+                - generic [ref=e396]: Deploy service
+                - generic [ref=e397]: 0 segundos
+                - generic [ref=e398]: /
+                - generic [ref=e399]: hace 1 hora
+                - button "Ver" [ref=e682] [cursor=pointer]
+              - alert [ref=e401]:
+                - img [ref=e404]
+                - generic [ref=e406]: Deploy service
+                - generic [ref=e407]: 0 segundos
+                - generic [ref=e408]: /
+                - generic [ref=e409]: hace 6 días
+                - button "Ver" [ref=e683] [cursor=pointer]
+              - alert [ref=e411]:
+                - img [ref=e414]
+                - generic [ref=e416]: Update environment
+                - generic [ref=e417]: 0 segundos
+                - generic [ref=e418]: /
+                - generic [ref=e419]: hace 6 días
+                - button "User" [ref=e684] [cursor=pointer]:
+                  - img [ref=e421]
+              - alert [ref=e424]:
+                - img [ref=e427]
+                - generic [ref=e429]: Run reset-admin-pw
+                - generic [ref=e430]: 0 segundos
+                - generic [ref=e431]: /
+                - generic [ref=e432]: hace 7 días
+                - button "User" [ref=e685] [cursor=pointer]:
+                  - img [ref=e434]
+                - button "Ver" [ref=e686] [cursor=pointer]
+              - alert [ref=e438]:
+                - img [ref=e441]
+                - generic [ref=e443]: Run check-db-config
+                - generic [ref=e444]: 0 segundos
+                - generic [ref=e445]: /
+                - generic [ref=e446]: hace 7 días
+                - button "User" [ref=e687] [cursor=pointer]:
+                  - img [ref=e448]
+                - button "Ver" [ref=e688] [cursor=pointer]
+              - alert [ref=e452]:
+                - img [ref=e455]
+                - generic [ref=e457]: Run check-db-config
+                - generic [ref=e458]: 0 segundos
+                - generic [ref=e459]: /
+                - generic [ref=e460]: hace 7 días
+                - button "User" [ref=e689] [cursor=pointer]:
+                  - img [ref=e462]
+                - button "Ver" [ref=e690] [cursor=pointer]
+              - alert [ref=e466]:
+                - img [ref=e469]
+                - generic [ref=e471]: Run check-db-config
+                - generic [ref=e472]: 0 segundos
+                - generic [ref=e473]: /
+                - generic [ref=e474]: hace 7 días
+                - button "User" [ref=e691] [cursor=pointer]:
+                  - img [ref=e476]
+                - button "Ver" [ref=e692] [cursor=pointer]
+              - alert [ref=e480]:
+                - img [ref=e483]
+                - generic [ref=e485]: Run reset-admin-pw
+                - generic [ref=e486]: 0 segundos
+                - generic [ref=e487]: /
+                - generic [ref=e488]: hace 7 días
+                - button "User" [ref=e693] [cursor=pointer]:
+                  - img [ref=e490]
+                - button "Ver" [ref=e694] [cursor=pointer]
+              - alert [ref=e494]:
+                - img [ref=e497]
+                - generic [ref=e499]: Run reset-admin-pw
+                - generic [ref=e500]: 1 segundo
+                - generic [ref=e501]: /
+                - generic [ref=e502]: hace 7 días
+                - button "User" [ref=e695] [cursor=pointer]:
+                  - img [ref=e504]
+                - button "Ver" [ref=e696] [cursor=pointer]
+              - alert [ref=e508]:
+                - img [ref=e511]
+                - generic [ref=e513]: Run check-git
+                - generic [ref=e514]: 0 segundos
+                - generic [ref=e515]: /
+                - generic [ref=e516]: hace 7 días
+                - button "User" [ref=e697] [cursor=pointer]:
+                  - img [ref=e518]
+                - button "Ver" [ref=e698] [cursor=pointer]
+              - button "Cargar más" [ref=e699] [cursor=pointer]
+    - region "Notifications alt+T"
+  - generic:
+    - region "Notifications-top"
+    - region "Notifications-top-left"
+    - region "Notifications-top-right"
+    - region "Notifications-bottom-left"
+    - region "Notifications-bottom"
+    - region "Notifications-bottom-right"
+  - generic:
+    - generic:
+      - tooltip "Consola"

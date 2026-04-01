@@ -1,0 +1,532 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - img "WellCore" [ref=e4]
+    - navigation [ref=e5]:
+      - generic [ref=e6]:
+        - paragraph [ref=e7]: General
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - link "Dashboard" [ref=e10] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin
+              - img [ref=e11]
+              - text: Dashboard
+          - listitem [ref=e13]:
+            - link "Feed en Vivo" [ref=e14] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/feed
+              - img [ref=e15]
+              - text: Feed en Vivo
+          - listitem [ref=e20]:
+            - link "Clientes" [ref=e21] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/clients
+              - img [ref=e22]
+              - text: Clientes
+          - listitem [ref=e24]:
+            - link "Coaches" [ref=e25] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/coaches
+              - img [ref=e26]
+              - text: Coaches
+      - generic [ref=e28]:
+        - paragraph [ref=e29]: Gestion
+        - list [ref=e30]:
+          - listitem [ref=e31]:
+            - link "Planes" [ref=e32] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/plans
+              - img [ref=e33]
+              - text: Planes
+          - listitem [ref=e35]:
+            - link "AI Generator" [ref=e36] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/ai-generator
+              - img [ref=e37]
+              - text: AI Generator
+      - generic [ref=e39]:
+        - paragraph [ref=e40]: RISE
+        - list [ref=e41]:
+          - listitem [ref=e42]:
+            - link "RISE 12S" [ref=e43] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/rise
+              - img [ref=e44]
+              - text: RISE
+              - generic [ref=e46]: 12S
+      - generic [ref=e47]:
+        - paragraph [ref=e48]: Pagos
+        - list [ref=e49]:
+          - listitem [ref=e50]:
+            - link "Pagos" [ref=e51] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/payments
+              - img [ref=e52]
+              - text: Pagos
+          - listitem [ref=e54]:
+            - link "Inscripciones" [ref=e55] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/inscriptions
+              - img [ref=e56]
+              - text: Inscripciones
+      - generic [ref=e58]:
+        - paragraph [ref=e59]: Sistema
+        - list [ref=e60]:
+          - listitem [ref=e61]:
+            - link "Invitaciones" [ref=e62] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/invitations
+              - img [ref=e63]
+              - text: Invitaciones
+          - listitem [ref=e65]:
+            - link "Enviar Invitacion" [ref=e66] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/send-invitation
+              - img [ref=e67]
+              - text: Enviar Invitacion
+          - listitem [ref=e69]:
+            - link "Recompensas Referidos" [ref=e70] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/referral-rewards
+              - img [ref=e71]
+              - text: Recompensas Referidos
+          - listitem [ref=e73]:
+            - link "Campanas" [ref=e74] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/campaign-tracker
+              - img [ref=e75]
+              - text: Campanas
+          - listitem [ref=e77]:
+            - link "Chat Analytics" [ref=e78] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/chat
+              - img [ref=e79]
+              - text: Chat Analytics
+          - listitem [ref=e81]:
+            - link "Herramientas" [ref=e82] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/tools
+              - img [ref=e83]
+              - text: Herramientas
+          - listitem [ref=e85]:
+            - link "Tickets" [ref=e86] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/tickets
+              - img [ref=e87]
+              - text: Tickets
+          - listitem [ref=e89]:
+            - link "Ajustes" [ref=e90] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/admin/settings
+              - img [ref=e91]
+              - text: Ajustes
+    - button "Cerrar sesion" [ref=e96]:
+      - img [ref=e97]
+      - text: Cerrar sesion
+  - generic [ref=e99]:
+    - banner [ref=e100]:
+      - generic [ref=e101]:
+        - button "ES" [ref=e103]:
+          - generic [ref=e104]: ES
+          - img [ref=e105]
+        - button "Cambiar modo" [ref=e107]:
+          - img [ref=e108]
+        - generic [ref=e110]: Super Administrador
+        - generic [ref=e111]:
+          - generic [ref=e113]: D
+          - generic [ref=e114]: Daniel Esparza - CEO
+    - main [ref=e115]:
+      - generic [ref=e116]:
+        - generic [ref=e117]:
+          - generic [ref=e118]:
+            - heading "Clientes" [level=1] [ref=e119]
+            - paragraph [ref=e120]: Gestion de clientes de WellCore
+          - link "Exportar CSV" [ref=e122] [cursor=pointer]:
+            - /url: https://www.wellcorefitness.com/admin/export/clients
+            - img [ref=e123]
+            - text: Exportar CSV
+        - generic [ref=e126]:
+          - generic [ref=e127]:
+            - img [ref=e128]
+            - textbox "Buscar por nombre, email o codigo..." [ref=e130]
+          - combobox [ref=e131]:
+            - option "Todos los planes" [selected]
+            - option "Esencial"
+            - option "Metodo"
+            - option "Elite"
+            - option "Rise"
+            - option "Presencial"
+          - combobox [ref=e132]:
+            - option "Todos los estados" [selected]
+            - option "Activo"
+            - option "Inactivo"
+            - option "Suspendido"
+            - option "Pendiente"
+        - table [ref=e135]:
+          - rowgroup [ref=e136]:
+            - row "Cliente Codigo Plan Estado Fecha inicio Acciones" [ref=e137]:
+              - columnheader "Cliente" [ref=e138]:
+                - button "Cliente" [ref=e139]
+              - columnheader "Codigo" [ref=e140]:
+                - button "Codigo" [ref=e141]
+              - columnheader "Plan" [ref=e142]
+              - columnheader "Estado" [ref=e143]
+              - columnheader "Fecha inicio" [ref=e144]:
+                - button "Fecha inicio" [ref=e145]
+              - columnheader "Acciones" [ref=e146]
+          - rowgroup [ref=e147]:
+            - row "J Julie Rodriguez jpaoline12@gmail.com WC-XV6WN1 Esencial Activo 30/03/2026 Ver detalle de Julie Rodriguez Desactivar cliente Julie Rodriguez Eliminar cliente Julie Rodriguez" [ref=e148]:
+              - cell "J Julie Rodriguez jpaoline12@gmail.com" [ref=e149]:
+                - generic [ref=e150]:
+                  - generic [ref=e152]: J
+                  - generic [ref=e153]:
+                    - paragraph [ref=e154]: Julie Rodriguez
+                    - paragraph [ref=e155]: jpaoline12@gmail.com
+              - cell "WC-XV6WN1" [ref=e156]
+              - cell "Esencial" [ref=e157]:
+                - generic [ref=e158]: Esencial
+              - cell "Activo" [ref=e159]:
+                - generic [ref=e160]: Activo
+              - cell "30/03/2026" [ref=e161]
+              - cell "Ver detalle de Julie Rodriguez Desactivar cliente Julie Rodriguez Eliminar cliente Julie Rodriguez" [ref=e162]:
+                - generic [ref=e163]:
+                  - link "Ver detalle de Julie Rodriguez" [ref=e164] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/57
+                    - img [ref=e165]
+                  - button "Desactivar cliente Julie Rodriguez" [ref=e168]:
+                    - img [ref=e169]
+                  - button "Eliminar cliente Julie Rodriguez" [ref=e171]:
+                    - img [ref=e172]
+            - row "S Silvia Gómez silvig04@gmail.com WC-VV3JZB Esencial Activo 30/03/2026 Ver detalle de Silvia Gómez Desactivar cliente Silvia Gómez Eliminar cliente Silvia Gómez" [ref=e174]:
+              - cell "S Silvia Gómez silvig04@gmail.com" [ref=e175]:
+                - generic [ref=e176]:
+                  - generic [ref=e178]: S
+                  - generic [ref=e179]:
+                    - paragraph [ref=e180]: Silvia Gómez
+                    - paragraph [ref=e181]: silvig04@gmail.com
+              - cell "WC-VV3JZB" [ref=e182]
+              - cell "Esencial" [ref=e183]:
+                - generic [ref=e184]: Esencial
+              - cell "Activo" [ref=e185]:
+                - generic [ref=e186]: Activo
+              - cell "30/03/2026" [ref=e187]
+              - cell "Ver detalle de Silvia Gómez Desactivar cliente Silvia Gómez Eliminar cliente Silvia Gómez" [ref=e188]:
+                - generic [ref=e189]:
+                  - link "Ver detalle de Silvia Gómez" [ref=e190] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/54
+                    - img [ref=e191]
+                  - button "Desactivar cliente Silvia Gómez" [ref=e194]:
+                    - img [ref=e195]
+                  - button "Eliminar cliente Silvia Gómez" [ref=e197]:
+                    - img [ref=e198]
+            - row "W William Alexander Torres Monroy Watm00727@gmail.com WC-VBOE2X Rise Activo 29/03/2026 Ver detalle de William Alexander Torres Monroy Desactivar cliente William Alexander Torres Monroy Eliminar cliente William Alexander Torres Monroy" [ref=e200]:
+              - cell "W William Alexander Torres Monroy Watm00727@gmail.com" [ref=e201]:
+                - generic [ref=e202]:
+                  - generic [ref=e204]: W
+                  - generic [ref=e205]:
+                    - paragraph [ref=e206]: William Alexander Torres Monroy
+                    - paragraph [ref=e207]: Watm00727@gmail.com
+              - cell "WC-VBOE2X" [ref=e208]
+              - cell "Rise" [ref=e209]:
+                - generic [ref=e210]: Rise
+              - cell "Activo" [ref=e211]:
+                - generic [ref=e212]: Activo
+              - cell "29/03/2026" [ref=e213]
+              - cell "Ver detalle de William Alexander Torres Monroy Desactivar cliente William Alexander Torres Monroy Eliminar cliente William Alexander Torres Monroy" [ref=e214]:
+                - generic [ref=e215]:
+                  - link "Ver detalle de William Alexander Torres Monroy" [ref=e216] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/47
+                    - img [ref=e217]
+                  - button "Desactivar cliente William Alexander Torres Monroy" [ref=e220]:
+                    - img [ref=e221]
+                  - button "Eliminar cliente William Alexander Torres Monroy" [ref=e223]:
+                    - img [ref=e224]
+            - row "O Octavio Rodríguez octaviorodriguez660@gmail.com WC-LVTYXH Metodo Activo 29/03/2026 Ver detalle de Octavio Rodríguez Desactivar cliente Octavio Rodríguez Eliminar cliente Octavio Rodríguez" [ref=e226]:
+              - cell "O Octavio Rodríguez octaviorodriguez660@gmail.com" [ref=e227]:
+                - generic [ref=e228]:
+                  - generic [ref=e230]: O
+                  - generic [ref=e231]:
+                    - paragraph [ref=e232]: Octavio Rodríguez
+                    - paragraph [ref=e233]: octaviorodriguez660@gmail.com
+              - cell "WC-LVTYXH" [ref=e234]
+              - cell "Metodo" [ref=e235]:
+                - generic [ref=e236]: Metodo
+              - cell "Activo" [ref=e237]:
+                - generic [ref=e238]: Activo
+              - cell "29/03/2026" [ref=e239]
+              - cell "Ver detalle de Octavio Rodríguez Desactivar cliente Octavio Rodríguez Eliminar cliente Octavio Rodríguez" [ref=e240]:
+                - generic [ref=e241]:
+                  - link "Ver detalle de Octavio Rodríguez" [ref=e242] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/46
+                    - img [ref=e243]
+                  - button "Desactivar cliente Octavio Rodríguez" [ref=e246]:
+                    - img [ref=e247]
+                  - button "Eliminar cliente Octavio Rodríguez" [ref=e249]:
+                    - img [ref=e250]
+            - row "L Luis Miguel Saavedra luisaavedraf@gmail.com WC-PRESENCIAL-003 Presencial Activo 19/03/2026 Ver detalle de Luis Miguel Saavedra Desactivar cliente Luis Miguel Saavedra Eliminar cliente Luis Miguel Saavedra" [ref=e252]:
+              - cell "L Luis Miguel Saavedra luisaavedraf@gmail.com" [ref=e253]:
+                - generic [ref=e254]:
+                  - generic [ref=e256]: L
+                  - generic [ref=e257]:
+                    - paragraph [ref=e258]: Luis Miguel Saavedra
+                    - paragraph [ref=e259]: luisaavedraf@gmail.com
+              - cell "WC-PRESENCIAL-003" [ref=e260]
+              - cell "Presencial" [ref=e261]:
+                - generic [ref=e262]: Presencial
+              - cell "Activo" [ref=e263]:
+                - generic [ref=e264]: Activo
+              - cell "19/03/2026" [ref=e265]
+              - cell "Ver detalle de Luis Miguel Saavedra Desactivar cliente Luis Miguel Saavedra Eliminar cliente Luis Miguel Saavedra" [ref=e266]:
+                - generic [ref=e267]:
+                  - link "Ver detalle de Luis Miguel Saavedra" [ref=e268] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/42
+                    - img [ref=e269]
+                  - button "Desactivar cliente Luis Miguel Saavedra" [ref=e272]:
+                    - img [ref=e273]
+                  - button "Eliminar cliente Luis Miguel Saavedra" [ref=e275]:
+                    - img [ref=e276]
+            - row "T Tatis Hortua tatishortua2004@gmail.com metodo-2907F1C0 Metodo Activo 18/03/2026 Ver detalle de Tatis Hortua Desactivar cliente Tatis Hortua Eliminar cliente Tatis Hortua" [ref=e278]:
+              - cell "T Tatis Hortua tatishortua2004@gmail.com" [ref=e279]:
+                - generic [ref=e280]:
+                  - generic [ref=e282]: T
+                  - generic [ref=e283]:
+                    - paragraph [ref=e284]: Tatis Hortua
+                    - paragraph [ref=e285]: tatishortua2004@gmail.com
+              - cell "metodo-2907F1C0" [ref=e286]
+              - cell "Metodo" [ref=e287]:
+                - generic [ref=e288]: Metodo
+              - cell "Activo" [ref=e289]:
+                - generic [ref=e290]: Activo
+              - cell "18/03/2026" [ref=e291]
+              - cell "Ver detalle de Tatis Hortua Desactivar cliente Tatis Hortua Eliminar cliente Tatis Hortua" [ref=e292]:
+                - generic [ref=e293]:
+                  - link "Ver detalle de Tatis Hortua" [ref=e294] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/39
+                    - img [ref=e295]
+                  - button "Desactivar cliente Tatis Hortua" [ref=e298]:
+                    - img [ref=e299]
+                  - button "Eliminar cliente Tatis Hortua" [ref=e301]:
+                    - img [ref=e302]
+            - row "L Lizeth Ojeda Taniaojeda1997@icloud.com metodo-082C879D Metodo Activo 18/03/2026 Ver detalle de Lizeth Ojeda Desactivar cliente Lizeth Ojeda Eliminar cliente Lizeth Ojeda" [ref=e304]:
+              - cell "L Lizeth Ojeda Taniaojeda1997@icloud.com" [ref=e305]:
+                - generic [ref=e306]:
+                  - generic [ref=e308]: L
+                  - generic [ref=e309]:
+                    - paragraph [ref=e310]: Lizeth Ojeda
+                    - paragraph [ref=e311]: Taniaojeda1997@icloud.com
+              - cell "metodo-082C879D" [ref=e312]
+              - cell "Metodo" [ref=e313]:
+                - generic [ref=e314]: Metodo
+              - cell "Activo" [ref=e315]:
+                - generic [ref=e316]: Activo
+              - cell "18/03/2026" [ref=e317]
+              - cell "Ver detalle de Lizeth Ojeda Desactivar cliente Lizeth Ojeda Eliminar cliente Lizeth Ojeda" [ref=e318]:
+                - generic [ref=e319]:
+                  - link "Ver detalle de Lizeth Ojeda" [ref=e320] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/38
+                    - img [ref=e321]
+                  - button "Desactivar cliente Lizeth Ojeda" [ref=e324]:
+                    - img [ref=e325]
+                  - button "Eliminar cliente Lizeth Ojeda" [ref=e327]:
+                    - img [ref=e328]
+            - row "D Daniel Esparza Nuñez analyticfitness@gmail.com elite-07018F1F Elite Activo - Ver detalle de Daniel Esparza Nuñez Desactivar cliente Daniel Esparza Nuñez Eliminar cliente Daniel Esparza Nuñez" [ref=e330]:
+              - cell "D Daniel Esparza Nuñez analyticfitness@gmail.com" [ref=e331]:
+                - generic [ref=e332]:
+                  - generic [ref=e334]: D
+                  - generic [ref=e335]:
+                    - paragraph [ref=e336]: Daniel Esparza Nuñez
+                    - paragraph [ref=e337]: analyticfitness@gmail.com
+              - cell "elite-07018F1F" [ref=e338]
+              - cell "Elite" [ref=e339]:
+                - generic [ref=e340]: Elite
+              - cell "Activo" [ref=e341]:
+                - generic [ref=e342]: Activo
+              - cell "-" [ref=e343]
+              - cell "Ver detalle de Daniel Esparza Nuñez Desactivar cliente Daniel Esparza Nuñez Eliminar cliente Daniel Esparza Nuñez" [ref=e344]:
+                - generic [ref=e345]:
+                  - link "Ver detalle de Daniel Esparza Nuñez" [ref=e346] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/37
+                    - img [ref=e347]
+                  - button "Desactivar cliente Daniel Esparza Nuñez" [ref=e350]:
+                    - img [ref=e351]
+                  - button "Eliminar cliente Daniel Esparza Nuñez" [ref=e353]:
+                    - img [ref=e354]
+            - row "S Silvia Gomez Roa silviagomezroa4@gmail.com elite-48A84C60 Elite Activo - Ver detalle de Silvia Gomez Roa Desactivar cliente Silvia Gomez Roa Eliminar cliente Silvia Gomez Roa" [ref=e356]:
+              - cell "S Silvia Gomez Roa silviagomezroa4@gmail.com" [ref=e357]:
+                - generic [ref=e358]:
+                  - generic [ref=e360]: S
+                  - generic [ref=e361]:
+                    - paragraph [ref=e362]: Silvia Gomez Roa
+                    - paragraph [ref=e363]: silviagomezroa4@gmail.com
+              - cell "elite-48A84C60" [ref=e364]
+              - cell "Elite" [ref=e365]:
+                - generic [ref=e366]: Elite
+              - cell "Activo" [ref=e367]:
+                - generic [ref=e368]: Activo
+              - cell "-" [ref=e369]
+              - cell "Ver detalle de Silvia Gomez Roa Desactivar cliente Silvia Gomez Roa Eliminar cliente Silvia Gomez Roa" [ref=e370]:
+                - generic [ref=e371]:
+                  - link "Ver detalle de Silvia Gomez Roa" [ref=e372] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/36
+                    - img [ref=e373]
+                  - button "Desactivar cliente Silvia Gomez Roa" [ref=e376]:
+                    - img [ref=e377]
+                  - button "Eliminar cliente Silvia Gomez Roa" [ref=e379]:
+                    - img [ref=e380]
+            - row "� Óscar Mauricio Durán Carvajal oscarduranfit@gmail.com rise-EFD2BF45 Rise Inactivo - Ver detalle de Óscar Mauricio Durán Carvajal Eliminar cliente Óscar Mauricio Durán Carvajal" [ref=e382]:
+              - cell "� Óscar Mauricio Durán Carvajal oscarduranfit@gmail.com" [ref=e383]:
+                - generic [ref=e384]:
+                  - generic [ref=e386]: �
+                  - generic [ref=e387]:
+                    - paragraph [ref=e388]: Óscar Mauricio Durán Carvajal
+                    - paragraph [ref=e389]: oscarduranfit@gmail.com
+              - cell "rise-EFD2BF45" [ref=e390]
+              - cell "Rise" [ref=e391]:
+                - generic [ref=e392]: Rise
+              - cell "Inactivo" [ref=e393]:
+                - generic [ref=e394]: Inactivo
+              - cell "-" [ref=e395]
+              - cell "Ver detalle de Óscar Mauricio Durán Carvajal Eliminar cliente Óscar Mauricio Durán Carvajal" [ref=e396]:
+                - generic [ref=e397]:
+                  - link "Ver detalle de Óscar Mauricio Durán Carvajal" [ref=e398] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/32
+                    - img [ref=e399]
+                  - button "Eliminar cliente Óscar Mauricio Durán Carvajal" [ref=e402]:
+                    - img [ref=e403]
+            - row "X Xavier Anthoni Gómez Vásquez xavier_anthoni@hotmail.com WC-PRESENCIAL-002 Presencial Activo 14/03/2026 Ver detalle de Xavier Anthoni Gómez Vásquez Desactivar cliente Xavier Anthoni Gómez Vásquez Eliminar cliente Xavier Anthoni Gómez Vásquez" [ref=e405]:
+              - cell "X Xavier Anthoni Gómez Vásquez xavier_anthoni@hotmail.com" [ref=e406]:
+                - generic [ref=e407]:
+                  - generic [ref=e409]: X
+                  - generic [ref=e410]:
+                    - paragraph [ref=e411]: Xavier Anthoni Gómez Vásquez
+                    - paragraph [ref=e412]: xavier_anthoni@hotmail.com
+              - cell "WC-PRESENCIAL-002" [ref=e413]
+              - cell "Presencial" [ref=e414]:
+                - generic [ref=e415]: Presencial
+              - cell "Activo" [ref=e416]:
+                - generic [ref=e417]: Activo
+              - cell "14/03/2026" [ref=e418]
+              - cell "Ver detalle de Xavier Anthoni Gómez Vásquez Desactivar cliente Xavier Anthoni Gómez Vásquez Eliminar cliente Xavier Anthoni Gómez Vásquez" [ref=e419]:
+                - generic [ref=e420]:
+                  - link "Ver detalle de Xavier Anthoni Gómez Vásquez" [ref=e421] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/29
+                    - img [ref=e422]
+                  - button "Desactivar cliente Xavier Anthoni Gómez Vásquez" [ref=e425]:
+                    - img [ref=e426]
+                  - button "Eliminar cliente Xavier Anthoni Gómez Vásquez" [ref=e428]:
+                    - img [ref=e429]
+            - row "L Lina l.gizethmm29@gmail.com rise-gift-6D0F0291 Rise Activo - Ver detalle de Lina Desactivar cliente Lina Eliminar cliente Lina" [ref=e431]:
+              - cell "L Lina l.gizethmm29@gmail.com" [ref=e432]:
+                - generic [ref=e433]:
+                  - generic [ref=e435]: L
+                  - generic [ref=e436]:
+                    - paragraph [ref=e437]: Lina
+                    - paragraph [ref=e438]: l.gizethmm29@gmail.com
+              - cell "rise-gift-6D0F0291" [ref=e439]
+              - cell "Rise" [ref=e440]:
+                - generic [ref=e441]: Rise
+              - cell "Activo" [ref=e442]:
+                - generic [ref=e443]: Activo
+              - cell "-" [ref=e444]
+              - cell "Ver detalle de Lina Desactivar cliente Lina Eliminar cliente Lina" [ref=e445]:
+                - generic [ref=e446]:
+                  - link "Ver detalle de Lina" [ref=e447] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/28
+                    - img [ref=e448]
+                  - button "Desactivar cliente Lina" [ref=e451]:
+                    - img [ref=e452]
+                  - button "Eliminar cliente Lina" [ref=e454]:
+                    - img [ref=e455]
+            - row "J Jairo Rivera alonso.rivera.cristancho@gmail.com elite-D787C5CB Elite Activo - Ver detalle de Jairo Rivera Desactivar cliente Jairo Rivera Eliminar cliente Jairo Rivera" [ref=e457]:
+              - cell "J Jairo Rivera alonso.rivera.cristancho@gmail.com" [ref=e458]:
+                - generic [ref=e459]:
+                  - generic [ref=e461]: J
+                  - generic [ref=e462]:
+                    - paragraph [ref=e463]: Jairo Rivera
+                    - paragraph [ref=e464]: alonso.rivera.cristancho@gmail.com
+              - cell "elite-D787C5CB" [ref=e465]
+              - cell "Elite" [ref=e466]:
+                - generic [ref=e467]: Elite
+              - cell "Activo" [ref=e468]:
+                - generic [ref=e469]: Activo
+              - cell "-" [ref=e470]
+              - cell "Ver detalle de Jairo Rivera Desactivar cliente Jairo Rivera Eliminar cliente Jairo Rivera" [ref=e471]:
+                - generic [ref=e472]:
+                  - link "Ver detalle de Jairo Rivera" [ref=e473] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/23
+                    - img [ref=e474]
+                  - button "Desactivar cliente Jairo Rivera" [ref=e477]:
+                    - img [ref=e478]
+                  - button "Eliminar cliente Jairo Rivera" [ref=e480]:
+                    - img [ref=e481]
+            - row "W Wilson Castillo estiven.villamizar.10@hotmail.com WC-PRESENCIAL-005 Presencial Activo 12/03/2026 Ver detalle de Wilson Castillo Desactivar cliente Wilson Castillo Eliminar cliente Wilson Castillo" [ref=e483]:
+              - cell "W Wilson Castillo estiven.villamizar.10@hotmail.com" [ref=e484]:
+                - generic [ref=e485]:
+                  - generic [ref=e487]: W
+                  - generic [ref=e488]:
+                    - paragraph [ref=e489]: Wilson Castillo
+                    - paragraph [ref=e490]: estiven.villamizar.10@hotmail.com
+              - cell "WC-PRESENCIAL-005" [ref=e491]
+              - cell "Presencial" [ref=e492]:
+                - generic [ref=e493]: Presencial
+              - cell "Activo" [ref=e494]:
+                - generic [ref=e495]: Activo
+              - cell "12/03/2026" [ref=e496]
+              - cell "Ver detalle de Wilson Castillo Desactivar cliente Wilson Castillo Eliminar cliente Wilson Castillo" [ref=e497]:
+                - generic [ref=e498]:
+                  - link "Ver detalle de Wilson Castillo" [ref=e499] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/22
+                    - img [ref=e500]
+                  - button "Desactivar cliente Wilson Castillo" [ref=e503]:
+                    - img [ref=e504]
+                  - button "Eliminar cliente Wilson Castillo" [ref=e506]:
+                    - img [ref=e507]
+            - row "L Luis Eduardo Angarita Avila langarita499@unab.edu.co rise-E0DA66BB Rise Activo 07/03/2026 Ver detalle de Luis Eduardo Angarita Avila Desactivar cliente Luis Eduardo Angarita Avila Eliminar cliente Luis Eduardo Angarita Avila" [ref=e509]:
+              - cell "L Luis Eduardo Angarita Avila langarita499@unab.edu.co" [ref=e510]:
+                - generic [ref=e511]:
+                  - generic [ref=e513]: L
+                  - generic [ref=e514]:
+                    - paragraph [ref=e515]: Luis Eduardo Angarita Avila
+                    - paragraph [ref=e516]: langarita499@unab.edu.co
+              - cell "rise-E0DA66BB" [ref=e517]
+              - cell "Rise" [ref=e518]:
+                - generic [ref=e519]: Rise
+              - cell "Activo" [ref=e520]:
+                - generic [ref=e521]: Activo
+              - cell "07/03/2026" [ref=e522]
+              - cell "Ver detalle de Luis Eduardo Angarita Avila Desactivar cliente Luis Eduardo Angarita Avila Eliminar cliente Luis Eduardo Angarita Avila" [ref=e523]:
+                - generic [ref=e524]:
+                  - link "Ver detalle de Luis Eduardo Angarita Avila" [ref=e525] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/16
+                    - img [ref=e526]
+                  - button "Desactivar cliente Luis Eduardo Angarita Avila" [ref=e529]:
+                    - img [ref=e530]
+                  - button "Eliminar cliente Luis Eduardo Angarita Avila" [ref=e532]:
+                    - img [ref=e533]
+            - row "S Silvia Carvajal silviacarvajalb@gmail.com rise-3D227172 Rise Activo 07/03/2026 Ver detalle de Silvia Carvajal Desactivar cliente Silvia Carvajal Eliminar cliente Silvia Carvajal" [ref=e535]:
+              - cell "S Silvia Carvajal silviacarvajalb@gmail.com" [ref=e536]:
+                - generic [ref=e537]:
+                  - generic [ref=e539]: S
+                  - generic [ref=e540]:
+                    - paragraph [ref=e541]: Silvia Carvajal
+                    - paragraph [ref=e542]: silviacarvajalb@gmail.com
+              - cell "rise-3D227172" [ref=e543]
+              - cell "Rise" [ref=e544]:
+                - generic [ref=e545]: Rise
+              - cell "Activo" [ref=e546]:
+                - generic [ref=e547]: Activo
+              - cell "07/03/2026" [ref=e548]
+              - cell "Ver detalle de Silvia Carvajal Desactivar cliente Silvia Carvajal Eliminar cliente Silvia Carvajal" [ref=e549]:
+                - generic [ref=e550]:
+                  - link "Ver detalle de Silvia Carvajal" [ref=e551] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/15
+                    - img [ref=e552]
+                  - button "Desactivar cliente Silvia Carvajal" [ref=e555]:
+                    - img [ref=e556]
+                  - button "Eliminar cliente Silvia Carvajal" [ref=e558]:
+                    - img [ref=e559]
+            - row "C Cesar Jose Luna joselunagiron28@gmail.com rise-68DF1F92 Rise Activo 06/03/2026 Ver detalle de Cesar Jose Luna Desactivar cliente Cesar Jose Luna Eliminar cliente Cesar Jose Luna" [ref=e561]:
+              - cell "C Cesar Jose Luna joselunagiron28@gmail.com" [ref=e562]:
+                - generic [ref=e563]:
+                  - generic [ref=e565]: C
+                  - generic [ref=e566]:
+                    - paragraph [ref=e567]: Cesar Jose Luna
+                    - paragraph [ref=e568]: joselunagiron28@gmail.com
+              - cell "rise-68DF1F92" [ref=e569]
+              - cell "Rise" [ref=e570]:
+                - generic [ref=e571]: Rise
+              - cell "Activo" [ref=e572]:
+                - generic [ref=e573]: Activo
+              - cell "06/03/2026" [ref=e574]
+              - cell "Ver detalle de Cesar Jose Luna Desactivar cliente Cesar Jose Luna Eliminar cliente Cesar Jose Luna" [ref=e575]:
+                - generic [ref=e576]:
+                  - link "Ver detalle de Cesar Jose Luna" [ref=e577] [cursor=pointer]:
+                    - /url: https://www.wellcorefitness.com/admin/clients/11
+                    - img [ref=e578]
+                  - button "Desactivar cliente Cesar Jose Luna" [ref=e581]:
+                    - img [ref=e582]
+                  - button "Eliminar cliente Cesar Jose Luna" [ref=e584]:
+                    - img [ref=e585]

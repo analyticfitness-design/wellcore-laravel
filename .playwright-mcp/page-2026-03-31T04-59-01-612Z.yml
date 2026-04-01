@@ -1,0 +1,286 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - img "WellCore" [ref=e4]
+    - navigation [ref=e5]:
+      - generic [ref=e6]:
+        - paragraph [ref=e7]: Entrenamiento
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - link "Resumen" [ref=e10] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client
+              - img [ref=e11]
+              - text: Resumen
+          - listitem [ref=e13]:
+            - link "Mi Plan" [ref=e14] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/plan
+              - img [ref=e15]
+              - text: Mi Plan
+          - listitem [ref=e17]:
+            - link "Entrenar" [ref=e18] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/workout
+              - img [ref=e19]
+              - text: Entrenar
+          - listitem [ref=e21]:
+            - link "Check-in Semanal" [ref=e22] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/checkin
+              - img [ref=e23]
+              - text: Check-in Semanal
+      - generic [ref=e25]:
+        - paragraph [ref=e26]: Progreso
+        - list [ref=e27]:
+          - listitem [ref=e28]:
+            - link "Fotos de Progreso" [ref=e29] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/photos
+              - img [ref=e30]
+              - text: Fotos de Progreso
+          - listitem [ref=e32]:
+            - link "Metricas" [ref=e33] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/metrics
+              - img [ref=e34]
+              - text: Metricas
+          - listitem [ref=e36]:
+            - link "Video Check-in" [ref=e37] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/video-checkin
+              - img [ref=e38]
+              - text: Video Check-in
+      - generic [ref=e40]:
+        - paragraph [ref=e41]: Comunidad
+        - list [ref=e42]:
+          - listitem [ref=e43]:
+            - link "Comunidad" [ref=e44] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/community
+              - img [ref=e45]
+              - text: Comunidad
+          - listitem [ref=e47]:
+            - link "Retos" [ref=e48] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/challenges
+              - img [ref=e49]
+              - text: Retos
+          - listitem [ref=e52]:
+            - link "Chat con Coach" [ref=e53] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/chat
+              - img [ref=e54]
+              - text: Chat con Coach
+          - listitem [ref=e56]:
+            - link "Referidos" [ref=e57] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/referrals
+              - img [ref=e58]
+              - text: Referidos
+      - generic [ref=e60]:
+        - paragraph [ref=e61]: Recursos
+        - list [ref=e62]:
+          - listitem [ref=e63]:
+            - link "Configuracion" [ref=e64] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/settings
+              - img [ref=e65]
+              - text: Configuracion
+          - listitem [ref=e68]:
+            - link "Perfil" [ref=e69] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/profile
+              - img [ref=e70]
+              - text: Perfil
+    - button "Cerrar sesion" [ref=e74]:
+      - img [ref=e75]
+      - text: Cerrar sesion
+  - generic [ref=e77]:
+    - generic [ref=e78]:
+      - generic [ref=e79]:
+        - img [ref=e80]
+        - generic [ref=e83]:
+          - text: Viendo como cliente —
+          - strong [ref=e84]: Julie Rodriguez
+      - button "Salir de la sesión de impersonación y volver al panel de administración" [ref=e86]:
+        - img [ref=e87]
+        - text: Volver al Admin
+    - banner [ref=e89]:
+      - generic [ref=e90]:
+        - button "ES" [ref=e92]:
+          - generic [ref=e93]: ES
+          - img [ref=e94]
+        - button "Oscuro" [ref=e96]:
+          - generic [ref=e97]:
+            - img [ref=e98]
+            - generic [ref=e100]: Oscuro
+        - generic [ref=e101]: Esencial
+        - generic [ref=e102]:
+          - generic [ref=e104]: J
+          - generic [ref=e105]: Julie Rodriguez
+    - main [ref=e106]:
+      - generic [ref=e107]:
+        - generic [ref=e110]:
+          - button "DIA 1 Glúteos/Piernas" [ref=e111]:
+            - generic [ref=e112]: DIA 1
+            - generic [ref=e113]: Glúteos/Piernas
+          - button "DIA 2 Cardio" [ref=e114]:
+            - generic [ref=e115]: DIA 2
+            - generic [ref=e116]: Cardio
+          - button "DIA 3 Isquiotibiales/Hombros" [ref=e117]:
+            - generic [ref=e118]: DIA 3
+            - generic [ref=e119]: Isquiotibiales/Hombros
+          - button "DIA 4 Cardio" [ref=e120]:
+            - generic [ref=e121]: DIA 4
+            - generic [ref=e122]: Cardio
+          - button "DIA 5 Glúteos/Brazos" [ref=e123]:
+            - generic [ref=e124]: DIA 5
+            - generic [ref=e125]: Glúteos/Brazos
+          - button "DIA 6 Cardio" [ref=e126]:
+            - generic [ref=e127]: DIA 6
+            - generic [ref=e128]: Cardio
+        - generic [ref=e130]:
+          - generic [ref=e132]:
+            - img [ref=e133]
+            - generic [ref=e135]: 8 ejercicios · ~64 min estimado
+          - generic [ref=e137]:
+            - generic [ref=e138]:
+              - img [ref=e140]
+              - generic [ref=e143]: "1"
+            - generic [ref=e144]:
+              - heading "Romanian Deadlift con Mancuernas" [level=3] [ref=e146]
+              - paragraph [ref=e147]: Rodillas ligeramente flexionadas, fijas. Empuja cadera hacia atrás mientras bajas las mancuernas por las piernas. Siente el estiramiento en isquiotibiales. Espalda recta siempre.
+              - generic [ref=e148]:
+                - generic [ref=e149]:
+                  - generic [ref=e150]: "3"
+                  - generic [ref=e151]: ×
+                  - generic [ref=e152]: 10-12
+                  - generic [ref=e153]: reps
+                - generic [ref=e154]:
+                  - img [ref=e155]
+                  - text: 90 seg
+                - generic [ref=e157]: RIR 3
+          - generic [ref=e159]:
+            - generic [ref=e160]:
+              - img [ref=e162]
+              - generic [ref=e165]: "2"
+            - generic [ref=e166]:
+              - heading "Kickback de Glúteo con Banda" [level=3] [ref=e168]
+              - paragraph [ref=e169]: Banda en los pies. 4 puntos de apoyo (manos y rodillas). Lleva el pie hacia el techo con rodilla a 90°. Aprieta glúteo arriba. Cadera completamente estable.
+              - generic [ref=e170]:
+                - generic [ref=e171]:
+                  - generic [ref=e172]: "3"
+                  - generic [ref=e173]: ×
+                  - generic [ref=e174]: 15 c/pierna
+                  - generic [ref=e175]: reps
+                - generic [ref=e176]:
+                  - img [ref=e177]
+                  - text: 45 seg
+                - generic [ref=e179]: RIR 3
+          - generic [ref=e181]:
+            - generic [ref=e182]:
+              - img [ref=e184]
+              - generic [ref=e187]: "3"
+            - generic [ref=e188]:
+              - heading "Press Militar con Mancuernas de Pie" [level=3] [ref=e190]
+              - paragraph [ref=e191]: Mancuernas a altura de hombros, palmas al frente. Abdomen apretado. Empuja hacia arriba sin arquear la espalda lumbar. Control en la bajada.
+              - generic [ref=e192]:
+                - generic [ref=e193]:
+                  - generic [ref=e194]: "3"
+                  - generic [ref=e195]: ×
+                  - generic [ref=e196]: 10-12
+                  - generic [ref=e197]: reps
+                - generic [ref=e198]:
+                  - img [ref=e199]
+                  - text: 90 seg
+                - generic [ref=e201]: RIR 3
+          - generic [ref=e203]:
+            - generic [ref=e204]:
+              - img [ref=e206]
+              - generic [ref=e209]: "4"
+            - generic [ref=e210]:
+              - heading "Jalón al Pecho en Polea" [level=3] [ref=e212]
+              - paragraph [ref=e213]: Agarre prono ancho. Ligeramente inclinada hacia atrás. Lleva la barra/manija hacia la clavícula. Codos viajan abajo y afuera. Aprieta espalda en la posición baja.
+              - generic [ref=e214]:
+                - generic [ref=e215]:
+                  - generic [ref=e216]: "3"
+                  - generic [ref=e217]: ×
+                  - generic [ref=e218]: 10-12
+                  - generic [ref=e219]: reps
+                - generic [ref=e220]:
+                  - img [ref=e221]
+                  - text: 90 seg
+                - generic [ref=e223]: RIR 3
+          - generic [ref=e225]:
+            - generic [ref=e226]:
+              - img [ref=e228]
+              - generic [ref=e231]: "5"
+            - generic [ref=e232]:
+              - heading "Sentadilla Sumo con Mancuerna" [level=3] [ref=e234]
+              - paragraph [ref=e235]: Pies más abiertos que hombros, puntas afuera 45°. Mancuerna colgando al centro. Rodillas siguen dirección de los pies. Activa glúteos y aductores al subir.
+              - generic [ref=e236]:
+                - generic [ref=e237]:
+                  - generic [ref=e238]: "3"
+                  - generic [ref=e239]: ×
+                  - generic [ref=e240]: 12-15
+                  - generic [ref=e241]: reps
+                - generic [ref=e242]:
+                  - img [ref=e243]
+                  - text: 90 seg
+                - generic [ref=e245]: RIR 3
+          - generic [ref=e247]:
+            - generic [ref=e248]:
+              - img [ref=e250]
+              - generic [ref=e253]: "6"
+            - generic [ref=e254]:
+              - heading "Curl de Bíceps en Polea Baja" [level=3] [ref=e256]
+              - paragraph [ref=e257]: Polea baja con barra corta o manija. Codos fijos pegados al cuerpo. Tensión constante (ventaja vs mancuerna). Control en la bajada.
+              - generic [ref=e258]:
+                - generic [ref=e259]:
+                  - generic [ref=e260]: "3"
+                  - generic [ref=e261]: ×
+                  - generic [ref=e262]: "12"
+                  - generic [ref=e263]: reps
+                - generic [ref=e264]:
+                  - img [ref=e265]
+                  - text: 60 seg
+                - generic [ref=e267]: RIR 3
+          - generic [ref=e269]:
+            - generic [ref=e270]:
+              - img [ref=e272]
+              - generic [ref=e275]: "7"
+            - generic [ref=e276]:
+              - heading "Tríceps en Polea Alta" [level=3] [ref=e278]
+              - paragraph [ref=e279]: Cuerda o barra en V en la polea alta. Codos pegados a los costados, fijos. Empuja hacia abajo hasta extensión completa. Abre ligeramente al final.
+              - generic [ref=e280]:
+                - generic [ref=e281]:
+                  - generic [ref=e282]: "3"
+                  - generic [ref=e283]: ×
+                  - generic [ref=e284]: "12"
+                  - generic [ref=e285]: reps
+                - generic [ref=e286]:
+                  - img [ref=e287]
+                  - text: 60 seg
+                - generic [ref=e289]: RIR 3
+          - generic [ref=e291]:
+            - generic [ref=e292]:
+              - img [ref=e294]
+              - generic [ref=e297]: "8"
+            - generic [ref=e298]:
+              - heading "Dead Bug" [level=3] [ref=e300]
+              - paragraph [ref=e301]: Espalda baja pegada al suelo todo el tiempo. Baja brazo y pierna opuestos lentamente (4 seg). Exhala al bajar. Excelente para estabilidad lumbar y core profundo.
+              - generic [ref=e302]:
+                - generic [ref=e303]:
+                  - generic [ref=e304]: "3"
+                  - generic [ref=e305]: ×
+                  - generic [ref=e306]: 8 c/lado
+                  - generic [ref=e307]: reps
+                - generic [ref=e308]:
+                  - img [ref=e309]
+                  - text: 45 seg
+          - generic [ref=e312]:
+            - generic [ref=e313]:
+              - paragraph [ref=e314]: Unidad de peso
+              - paragraph [ref=e315]: Selecciona la unidad que usa tu gimnasio
+            - generic [ref=e316]:
+              - button "KG" [ref=e317]
+              - button "LBS" [ref=e318]
+          - button "INICIAR ENTRENAMIENTO" [ref=e320]
+        - generic [ref=e322]:
+          - generic [ref=e323]:
+            - heading "CÓMO ENTRENAR" [level=3] [ref=e324]
+            - button "Cerrar tutorial" [ref=e325]:
+              - img [ref=e326]
+          - generic [ref=e329]:
+            - generic [ref=e330]: "1"
+            - generic [ref=e331]:
+              - paragraph [ref=e332]: Ajusta peso y reps
+              - paragraph [ref=e333]: Usa los botones − + para ajustar el peso y las repeticiones de cada serie antes de ejecutarla.
+          - button "Siguiente" [ref=e339]

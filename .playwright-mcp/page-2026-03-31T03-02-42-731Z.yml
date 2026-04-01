@@ -1,0 +1,380 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - img "WellCore" [ref=e4]
+    - navigation [ref=e5]:
+      - generic [ref=e6]:
+        - paragraph [ref=e7]: Entrenamiento
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - link "Resumen" [ref=e10] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client
+              - img [ref=e11]
+              - text: Resumen
+          - listitem [ref=e13]:
+            - link "Mi Plan" [ref=e14] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/plan
+              - img [ref=e15]
+              - text: Mi Plan
+          - listitem [ref=e17]:
+            - link "Entrenar" [ref=e18] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/workout
+              - img [ref=e19]
+              - text: Entrenar
+          - listitem [ref=e21]:
+            - link "Check-in Semanal" [ref=e22] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/checkin
+              - img [ref=e23]
+              - text: Check-in Semanal
+      - generic [ref=e25]:
+        - paragraph [ref=e26]: Progreso
+        - list [ref=e27]:
+          - listitem [ref=e28]:
+            - link "Fotos de Progreso" [ref=e29] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/photos
+              - img [ref=e30]
+              - text: Fotos de Progreso
+          - listitem [ref=e32]:
+            - link "Metricas" [ref=e33] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/metrics
+              - img [ref=e34]
+              - text: Metricas
+          - listitem [ref=e36]:
+            - link "Video Check-in" [ref=e37] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/video-checkin
+              - img [ref=e38]
+              - text: Video Check-in
+      - generic [ref=e40]:
+        - paragraph [ref=e41]: Comunidad
+        - list [ref=e42]:
+          - listitem [ref=e43]:
+            - link "Comunidad" [ref=e44] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/community
+              - img [ref=e45]
+              - text: Comunidad
+          - listitem [ref=e47]:
+            - link "Retos" [ref=e48] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/challenges
+              - img [ref=e49]
+              - text: Retos
+          - listitem [ref=e52]:
+            - link "Chat con Coach" [ref=e53] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/chat
+              - img [ref=e54]
+              - text: Chat con Coach
+          - listitem [ref=e56]:
+            - link "Referidos" [ref=e57] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/referrals
+              - img [ref=e58]
+              - text: Referidos
+      - generic [ref=e60]:
+        - paragraph [ref=e61]: Recursos
+        - list [ref=e62]:
+          - listitem [ref=e63]:
+            - link "Registro Nutricional" [ref=e64] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/ai-nutrition
+              - img [ref=e65]
+              - text: Registro Nutricional
+          - listitem [ref=e67]:
+            - link "Configuracion" [ref=e68] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/settings
+              - img [ref=e69]
+              - text: Configuracion
+          - listitem [ref=e72]:
+            - link "Perfil" [ref=e73] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/profile
+              - img [ref=e74]
+              - text: Perfil
+    - button "Cerrar sesion" [ref=e78]:
+      - img [ref=e79]
+      - text: Cerrar sesion
+  - generic [ref=e81]:
+    - generic [ref=e82]:
+      - generic [ref=e83]:
+        - img [ref=e84]
+        - generic [ref=e87]:
+          - text: Viendo como cliente —
+          - strong [ref=e88]: Lizeth Ojeda
+      - button "Salir de la sesión de impersonación y volver al panel de administración" [ref=e90]:
+        - img [ref=e91]
+        - text: Volver al Admin
+    - banner [ref=e93]:
+      - generic [ref=e94]:
+        - button "ES" [ref=e96]:
+          - generic [ref=e97]: ES
+          - img [ref=e98]
+        - button "Oscuro" [ref=e100]:
+          - generic [ref=e101]:
+            - img [ref=e102]
+            - generic [ref=e104]: Oscuro
+        - generic [ref=e105]: Metodo
+        - generic [ref=e106]:
+          - generic [ref=e108]: L
+          - generic [ref=e109]: Lizeth Ojeda
+    - main [ref=e110]:
+      - generic [ref=e111]:
+        - generic [ref=e112]:
+          - generic [ref=e113]:
+            - heading "Buenas noches, Lizeth" [level=1] [ref=e114]
+            - generic [ref=e116]: Plan Metodo
+          - generic [ref=e117]:
+            - link "Registrar entrenamiento" [ref=e118] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/plan
+              - img [ref=e119]
+              - text: Registrar entrenamiento
+            - link "Hacer check-in" [ref=e121] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/checkin
+        - generic [ref=e122]:
+          - img [ref=e124]
+          - generic [ref=e126]:
+            - paragraph [ref=e127]: “La disciplina es el puente entre tus metas y tus logros.”
+            - paragraph [ref=e128]: — Tu coach
+        - generic [ref=e129]:
+          - img [ref=e131]
+          - generic [ref=e133]: Plan entrenamiento activo — dia 12
+        - generic [ref=e134]:
+          - generic [ref=e135]:
+            - generic [ref=e136]:
+              - generic [ref=e137]: Racha
+              - img [ref=e139]
+            - paragraph [ref=e141]:
+              - generic [ref=e142]: "0"
+            - paragraph [ref=e143]: días consecutivos
+          - generic [ref=e144]:
+            - generic [ref=e145]:
+              - generic [ref=e146]: Check-ins
+              - img [ref=e148]
+            - paragraph [ref=e150]:
+              - generic [ref=e151]: "0"
+            - paragraph [ref=e152]: este mes
+          - generic [ref=e153]:
+            - generic [ref=e154]:
+              - generic [ref=e155]: Nivel 1
+              - img [ref=e157]
+            - paragraph [ref=e159]:
+              - generic [ref=e160]: "0"
+            - paragraph [ref=e161]: XP total
+            - paragraph [ref=e165]: 65 / 200 XP
+          - generic [ref=e166]:
+            - generic [ref=e168]: Esta semana
+            - generic [ref=e169]:
+              - img [ref=e170]:
+                - generic [ref=e173]: 0/7
+              - paragraph [ref=e175]: días entrenados
+        - generic [ref=e176]:
+          - generic [ref=e177]:
+            - heading "Tu Progreso" [level=2] [ref=e178]
+            - generic [ref=e179]: Semana 2 de 12
+          - generic [ref=e185]:
+            - generic [ref=e186]:
+              - paragraph [ref=e187]: Inicio
+              - paragraph [ref=e188]: 18 Mar 2026
+            - generic [ref=e189]:
+              - generic [ref=e196]: "3"
+              - generic [ref=e203]: "6"
+              - generic [ref=e210]: "9"
+              - generic [ref=e217]: "12"
+            - generic [ref=e218]:
+              - paragraph [ref=e219]: Semana 12
+              - paragraph [ref=e220]: 16%
+        - generic [ref=e221]:
+          - generic [ref=e222]:
+            - generic [ref=e223]:
+              - img [ref=e225]
+              - heading "Racha de Entrenamiento" [level=3] [ref=e227]
+            - generic [ref=e228]: Últimos 90 días
+          - generic [ref=e229]:
+            - generic [ref=e230]:
+              - generic [ref=e231]: L
+              - generic [ref=e233]: M
+              - generic [ref=e235]: V
+              - generic [ref=e237]: D
+            - generic [ref=e238]:
+              - generic "lun. 29 dic. 2025" [ref=e239]
+              - generic "mar. 30 dic. 2025" [ref=e240]
+              - generic "mié. 31 dic. 2025" [ref=e241]
+              - generic "jue. 1 ene. 2026" [ref=e242]
+              - generic "vie. 2 ene. 2026" [ref=e243]
+              - generic "sáb. 3 ene. 2026" [ref=e244]
+              - generic "dom. 4 ene. 2026" [ref=e245]
+              - generic "lun. 5 ene. 2026" [ref=e246]
+              - generic "mar. 6 ene. 2026" [ref=e247]
+              - generic "mié. 7 ene. 2026" [ref=e248]
+              - generic "jue. 8 ene. 2026" [ref=e249]
+              - generic "vie. 9 ene. 2026" [ref=e250]
+              - generic "sáb. 10 ene. 2026" [ref=e251]
+              - generic "dom. 11 ene. 2026" [ref=e252]
+              - generic "lun. 12 ene. 2026" [ref=e253]
+              - generic "mar. 13 ene. 2026" [ref=e254]
+              - generic "mié. 14 ene. 2026" [ref=e255]
+              - generic "jue. 15 ene. 2026" [ref=e256]
+              - generic "vie. 16 ene. 2026" [ref=e257]
+              - generic "sáb. 17 ene. 2026" [ref=e258]
+              - generic "dom. 18 ene. 2026" [ref=e259]
+              - generic "lun. 19 ene. 2026" [ref=e260]
+              - generic "mar. 20 ene. 2026" [ref=e261]
+              - generic "mié. 21 ene. 2026" [ref=e262]
+              - generic "jue. 22 ene. 2026" [ref=e263]
+              - generic "vie. 23 ene. 2026" [ref=e264]
+              - generic "sáb. 24 ene. 2026" [ref=e265]
+              - generic "dom. 25 ene. 2026" [ref=e266]
+              - generic "lun. 26 ene. 2026" [ref=e267]
+              - generic "mar. 27 ene. 2026" [ref=e268]
+              - generic "mié. 28 ene. 2026" [ref=e269]
+              - generic "jue. 29 ene. 2026" [ref=e270]
+              - generic "vie. 30 ene. 2026" [ref=e271]
+              - generic "sáb. 31 ene. 2026" [ref=e272]
+              - generic "dom. 1 feb. 2026" [ref=e273]
+              - generic "lun. 2 feb. 2026" [ref=e274]
+              - generic "mar. 3 feb. 2026" [ref=e275]
+              - generic "mié. 4 feb. 2026" [ref=e276]
+              - generic "jue. 5 feb. 2026" [ref=e277]
+              - generic "vie. 6 feb. 2026" [ref=e278]
+              - generic "sáb. 7 feb. 2026" [ref=e279]
+              - generic "dom. 8 feb. 2026" [ref=e280]
+              - generic "lun. 9 feb. 2026" [ref=e281]
+              - generic "mar. 10 feb. 2026" [ref=e282]
+              - generic "mié. 11 feb. 2026" [ref=e283]
+              - generic "jue. 12 feb. 2026" [ref=e284]
+              - generic "vie. 13 feb. 2026" [ref=e285]
+              - generic "sáb. 14 feb. 2026" [ref=e286]
+              - generic "dom. 15 feb. 2026" [ref=e287]
+              - generic "lun. 16 feb. 2026" [ref=e288]
+              - generic "mar. 17 feb. 2026" [ref=e289]
+              - generic "mié. 18 feb. 2026" [ref=e290]
+              - generic "jue. 19 feb. 2026" [ref=e291]
+              - generic "vie. 20 feb. 2026" [ref=e292]
+              - generic "sáb. 21 feb. 2026" [ref=e293]
+              - generic "dom. 22 feb. 2026" [ref=e294]
+              - generic "lun. 23 feb. 2026" [ref=e295]
+              - generic "mar. 24 feb. 2026" [ref=e296]
+              - generic "mié. 25 feb. 2026" [ref=e297]
+              - generic "jue. 26 feb. 2026" [ref=e298]
+              - generic "vie. 27 feb. 2026" [ref=e299]
+              - generic "sáb. 28 feb. 2026" [ref=e300]
+              - generic "dom. 1 mar. 2026" [ref=e301]
+              - generic "lun. 2 mar. 2026" [ref=e302]
+              - generic "mar. 3 mar. 2026" [ref=e303]
+              - generic "mié. 4 mar. 2026" [ref=e304]
+              - generic "jue. 5 mar. 2026" [ref=e305]
+              - generic "vie. 6 mar. 2026" [ref=e306]
+              - generic "sáb. 7 mar. 2026" [ref=e307]
+              - generic "dom. 8 mar. 2026" [ref=e308]
+              - generic "lun. 9 mar. 2026" [ref=e309]
+              - generic "mar. 10 mar. 2026" [ref=e310]
+              - generic "mié. 11 mar. 2026" [ref=e311]
+              - generic "jue. 12 mar. 2026" [ref=e312]
+              - generic "vie. 13 mar. 2026" [ref=e313]
+              - generic "sáb. 14 mar. 2026" [ref=e314]
+              - generic "dom. 15 mar. 2026" [ref=e315]
+              - generic "lun. 16 mar. 2026" [ref=e316]
+              - generic "mar. 17 mar. 2026" [ref=e317]
+              - generic "mié. 18 mar. 2026" [ref=e318]
+              - generic "jue. 19 mar. 2026" [ref=e319]
+              - generic "vie. 20 mar. 2026" [ref=e320]
+              - generic "sáb. 21 mar. 2026" [ref=e321]
+              - generic "dom. 22 mar. 2026" [ref=e322]
+              - generic "lun. 23 mar. 2026" [ref=e323]
+              - generic "mar. 24 mar. 2026" [ref=e324]
+              - generic "mié. 25 mar. 2026" [ref=e325]
+              - generic "jue. 26 mar. 2026" [ref=e326]
+              - generic "vie. 27 mar. 2026" [ref=e327]
+              - generic "sáb. 28 mar. 2026" [ref=e328]
+              - generic "dom. 29 mar. 2026" [ref=e329]
+              - generic "lun. 30 mar. 2026" [ref=e330]
+              - generic "mar. 31 mar. 2026" [ref=e331]
+              - generic "mié. 1 abr. 2026" [ref=e332]
+              - generic "jue. 2 abr. 2026" [ref=e333]
+              - generic "vie. 3 abr. 2026" [ref=e334]
+              - generic "sáb. 4 abr. 2026" [ref=e335]
+              - generic "dom. 5 abr. 2026" [ref=e336]
+              - generic "lun. 6 abr. 2026" [ref=e337]
+          - generic [ref=e339]:
+            - generic [ref=e340]: Menos
+            - generic [ref=e345]: Mas
+        - generic [ref=e346]:
+          - generic [ref=e347]:
+            - heading "Tendencia de Peso" [level=3] [ref=e348]
+            - generic [ref=e349]: Últimos 90 días
+          - generic [ref=e350]:
+            - img [ref=e351]
+            - paragraph [ref=e353]: Sin datos de peso registrados
+            - link "Registrar peso" [ref=e354] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/metrics
+        - generic [ref=e355]:
+          - generic [ref=e357]: DE
+          - generic [ref=e358]:
+            - paragraph [ref=e359]: Tu Coach
+            - paragraph [ref=e360]: Daniel Esparza - CEO
+          - link "Enviar mensaje" [ref=e361] [cursor=pointer]:
+            - /url: https://www.wellcorefitness.com/client/chat
+            - img [ref=e362]
+            - text: Enviar mensaje
+        - link "Check-in pendiente Tu check-in semanal esta listo para completar" [ref=e364] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/client/checkin
+          - generic [ref=e365]:
+            - img [ref=e367]
+            - generic [ref=e369]:
+              - paragraph [ref=e370]: Check-in pendiente
+              - paragraph [ref=e371]: Tu check-in semanal esta listo para completar
+            - img [ref=e372]
+        - generic [ref=e375]:
+          - generic [ref=e376]:
+            - img [ref=e378]
+            - heading "Resumen Semana Anterior" [level=2] [ref=e380]
+          - generic [ref=e381]:
+            - img [ref=e382]
+            - paragraph [ref=e384]: Esta es tu primera semana — vamos! Completa tu primer entrenamiento y check-in para ver tu resumen aqui.
+        - generic [ref=e385]:
+          - generic [ref=e386]:
+            - heading "Misiones del dia" [level=2] [ref=e387]
+            - generic [ref=e388]: 0/4 completadas
+          - generic [ref=e389]:
+            - link "Completar entrenamiento Pendiente" [ref=e390] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/training
+              - img [ref=e392]
+              - generic [ref=e394]:
+                - paragraph [ref=e395]: Completar entrenamiento
+                - paragraph [ref=e396]: Pendiente
+              - img [ref=e397]
+            - link "Hacer check-in semanal Pendiente" [ref=e399] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/checkin
+              - img [ref=e401]
+              - generic [ref=e403]:
+                - paragraph [ref=e404]: Hacer check-in semanal
+                - paragraph [ref=e405]: Pendiente
+              - img [ref=e406]
+            - link "Registrar peso Pendiente" [ref=e408] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/metrics
+              - img [ref=e410]
+              - generic [ref=e412]:
+                - paragraph [ref=e413]: Registrar peso
+                - paragraph [ref=e414]: Pendiente
+              - img [ref=e415]
+            - link "Revisar plan de nutricion Pendiente" [ref=e417] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/nutrition
+              - img [ref=e419]
+              - generic [ref=e421]:
+                - paragraph [ref=e422]: Revisar plan de nutricion
+                - paragraph [ref=e423]: Pendiente
+              - img [ref=e424]
+        - generic [ref=e426]:
+          - generic [ref=e427]:
+            - heading "Semana de entrenamiento" [level=2] [ref=e428]
+            - paragraph [ref=e429]: Semana 14 de 2026
+            - generic [ref=e430]:
+              - generic [ref=e432]: Lun
+              - generic [ref=e435]: Mar
+              - generic [ref=e439]: Mie
+              - generic [ref=e442]: Jue
+              - generic [ref=e445]: Vie
+              - generic [ref=e448]: Sab
+              - generic [ref=e451]: Dom
+            - generic [ref=e453]:
+              - generic [ref=e454]: Completado
+              - generic [ref=e456]: Pendiente
+              - generic [ref=e458]: Hoy
+          - generic [ref=e460]:
+            - heading "Actividad reciente" [level=2] [ref=e461]
+            - generic [ref=e462]:
+              - img [ref=e463]
+              - paragraph [ref=e465]: Sin actividad reciente

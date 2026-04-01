@@ -1,0 +1,1218 @@
+- generic [active] [ref=e1]:
+  - generic:
+    - generic "Mostrar panel" [ref=e2] [cursor=pointer]: →
+    - generic:
+      - generic:
+        - link "phpMyAdmin" [ref=e4] [cursor=pointer]:
+          - /url: index.php
+          - img "phpMyAdmin" [ref=e5]
+        - generic [ref=e6]:
+          - link "Página de inicio" [ref=e7] [cursor=pointer]:
+            - /url: index.php?route=/
+            - img "Página de inicio" [ref=e8]
+          - link "Datos de sesión vacíos" [ref=e9] [cursor=pointer]:
+            - /url: index.php?route=/logout
+            - img "Datos de sesión vacíos" [ref=e10]
+          - link "Documentación de phpMyAdmin" [ref=e11] [cursor=pointer]:
+            - /url: ./doc/html/index.html
+            - img "Documentación de phpMyAdmin" [ref=e12]
+          - link "Documentación de MySQL" [ref=e13] [cursor=pointer]:
+            - /url: ./url.php?url=https%3A%2F%2Fdev.mysql.com%2Fdoc%2Frefman%2F8.0%2Fen%2Findex.html
+            - img "Documentación de MySQL" [ref=e14]
+          - link "Ajustes del panel de navegación" [ref=e15] [cursor=pointer]:
+            - /url: "#"
+            - img "Ajustes del panel de navegación" [ref=e16]
+          - link "Recargar el panel de navegación" [ref=e17] [cursor=pointer]:
+            - /url: "#"
+            - img "Recargar el panel de navegación" [ref=e18]
+      - generic:
+        - generic:
+          - button "Reciente" [ref=e393] [cursor=pointer]
+          - button "Favoritas" [ref=e395] [cursor=pointer]
+        - list:
+          - listitem:
+            - generic [ref=e396]:
+              - link "Colapsar todos" [ref=e397] [cursor=pointer]:
+                - /url: "#"
+                - img "Colapsar todos" [ref=e398]
+              - link "Deshacer enlace en el panel principal" [ref=e399] [cursor=pointer]:
+                - /url: "#"
+                - img "Deshacer enlace en el panel principal" [ref=e400]
+        - generic:
+          - list:
+            - listitem:
+              - link "Nueva" [ref=e404] [cursor=pointer]:
+                - /url: index.php?route=/server/databases
+                - img "Nueva" [ref=e405]
+              - link "Nueva" [ref=e406] [cursor=pointer]:
+                - /url: index.php?route=/server/databases
+            - listitem:
+              - link "Expandir/Colapsar" [ref=e410] [cursor=pointer]:
+                - /url: "#"
+                - img "Expandir/Colapsar" [ref=e411]
+              - link "Opciones de la base de datos" [ref=e413] [cursor=pointer]:
+                - /url: index.php?route=/database/operations&db=information_schema
+                - img "Opciones de la base de datos" [ref=e414]
+              - link "information_schema" [ref=e415] [cursor=pointer]:
+                - /url: index.php?route=/database/structure&db=information_schema
+            - listitem:
+              - link "Expandir/Colapsar" [ref=e419] [cursor=pointer]:
+                - /url: "#"
+                - img "Expandir/Colapsar" [ref=e420]
+              - link "Opciones de la base de datos" [ref=e422] [cursor=pointer]:
+                - /url: index.php?route=/database/operations&db=mysql
+                - img "Opciones de la base de datos" [ref=e423]
+              - link "mysql" [ref=e424] [cursor=pointer]:
+                - /url: index.php?route=/database/structure&db=mysql
+            - listitem:
+              - link "Expandir/Colapsar" [ref=e428] [cursor=pointer]:
+                - /url: "#"
+                - img "Expandir/Colapsar" [ref=e429]
+              - link "Opciones de la base de datos" [ref=e431] [cursor=pointer]:
+                - /url: index.php?route=/database/operations&db=performance_schema
+                - img "Opciones de la base de datos" [ref=e432]
+              - link "performance_schema" [ref=e433] [cursor=pointer]:
+                - /url: index.php?route=/database/structure&db=performance_schema
+            - listitem:
+              - link "Expandir/Colapsar" [ref=e437] [cursor=pointer]:
+                - /url: "#"
+                - img "Expandir/Colapsar" [ref=e438]
+              - generic:
+                - img "Grupos" [ref=e441]
+                - text: prowaylab
+            - listitem:
+              - link "Expandir/Colapsar" [ref=e445] [cursor=pointer]:
+                - /url: "#"
+                - img "Expandir/Colapsar" [ref=e446]
+              - link "Opciones de la base de datos" [ref=e448] [cursor=pointer]:
+                - /url: index.php?route=/database/operations&db=sys
+                - img "Opciones de la base de datos" [ref=e449]
+              - link "sys" [ref=e450] [cursor=pointer]:
+                - /url: index.php?route=/database/structure&db=sys
+            - listitem:
+              - link "Expandir/Colapsar" [ref=e454] [cursor=pointer]:
+                - /url: "#"
+                - img "Expandir/Colapsar" [ref=e455]
+              - link "Opciones de la base de datos" [ref=e457] [cursor=pointer]:
+                - /url: index.php?route=/database/operations&db=wellcoreapi
+                - img "Opciones de la base de datos" [ref=e458]
+              - link "wellcoreapi" [ref=e459] [cursor=pointer]:
+                - /url: index.php?route=/database/structure&db=wellcoreapi
+            - listitem:
+              - link [ref=e463] [cursor=pointer]:
+                - /url: "#"
+              - link "Opciones de la base de datos" [ref=e465] [cursor=pointer]:
+                - /url: index.php?route=/database/operations&db=wellcorefitness
+                - img "Opciones de la base de datos" [ref=e466]
+              - link "wellcorefitness" [ref=e467] [cursor=pointer]:
+                - /url: index.php?route=/database/structure&db=wellcorefitness
+              - generic [ref=e468]:
+                - list:
+                  - listitem [ref=e469]:
+                    - generic:
+                      - generic:
+                        - textbox "Escribe para filtrar estos, «Enter» para buscar todo" [ref=e470]
+                        - button "Vaciar filtro rápido" [ref=e471] [cursor=pointer]: X
+                  - generic [ref=e472]:
+                    - combobox [ref=e474]:
+                      - option "1" [selected]
+                      - option "2"
+                      - option "3"
+                    - link ">" [ref=e475] [cursor=pointer]:
+                      - /url: index.php?route=/navigation
+                    - link ">>" [ref=e476] [cursor=pointer]:
+                      - /url: index.php?route=/navigation
+                  - listitem:
+                    - link "Nueva" [ref=e480] [cursor=pointer]:
+                      - /url: index.php?route=/table/create&db=wellcorefitness
+                      - img "Nueva" [ref=e481]
+                    - link "Nueva" [ref=e482] [cursor=pointer]:
+                      - /url: index.php?route=/table/create&db=wellcorefitness
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e486] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e487]
+                    - link "Estructura" [ref=e489] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=academy_content
+                      - img "Estructura" [ref=e490]
+                    - link "academy_content" [ref=e491] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=academy_content
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e495] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e496]
+                    - link "Estructura" [ref=e498] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=accountability_pods
+                      - img "Estructura" [ref=e499]
+                    - link "accountability_pods" [ref=e500] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=accountability_pods
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e504] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e505]
+                    - link "Estructura" [ref=e507] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=achievements
+                      - img "Estructura" [ref=e508]
+                    - link "achievements" [ref=e509] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=achievements
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e513] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e514]
+                    - link "Estructura" [ref=e516] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=admins
+                      - img "Estructura" [ref=e517]
+                    - link "admins" [ref=e518] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=admins
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e522] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e523]
+                    - link "Estructura" [ref=e525] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=admin_activity_log
+                      - img "Estructura" [ref=e526]
+                    - link "admin_activity_log" [ref=e527] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=admin_activity_log
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e531] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e532]
+                    - link "Estructura" [ref=e534] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=ai_generations
+                      - img "Estructura" [ref=e535]
+                    - link "ai_generations" [ref=e536] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=ai_generations
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e540] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e541]
+                    - link "Estructura" [ref=e543] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=ai_prompts
+                      - img "Estructura" [ref=e544]
+                    - link "ai_prompts" [ref=e545] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=ai_prompts
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e549] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e550]
+                    - link "Estructura" [ref=e552] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=api_logs
+                      - img "Estructura" [ref=e553]
+                    - link "api_logs" [ref=e554] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=api_logs
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e558] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e559]
+                    - link "Estructura" [ref=e561] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=appointments
+                      - img "Estructura" [ref=e562]
+                    - link "appointments" [ref=e563] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=appointments
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e567] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e568]
+                    - link "Estructura" [ref=e570] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=assigned_plans
+                      - img "Estructura" [ref=e571]
+                    - link "assigned_plans" [ref=e572] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=assigned_plans
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e576] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e577]
+                    - link "Estructura" [ref=e579] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=audit_logs
+                      - img "Estructura" [ref=e580]
+                    - link "audit_logs" [ref=e581] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=audit_logs
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e585] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e586]
+                    - link "Estructura" [ref=e588] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=auth_tokens
+                      - img "Estructura" [ref=e589]
+                    - link "auth_tokens" [ref=e590] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=auth_tokens
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e594] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e595]
+                    - link "Estructura" [ref=e597] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=auto_charge_log
+                      - img "Estructura" [ref=e598]
+                    - link "auto_charge_log" [ref=e599] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=auto_charge_log
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e603] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e604]
+                    - link "Estructura" [ref=e606] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=auto_message_log
+                      - img "Estructura" [ref=e607]
+                    - link "auto_message_log" [ref=e608] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=auto_message_log
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e612] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e613]
+                    - link "Estructura" [ref=e615] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=biometric_logs
+                      - img "Estructura" [ref=e616]
+                    - link "biometric_logs" [ref=e617] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=biometric_logs
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e621] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e622]
+                    - link "Estructura" [ref=e624] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=bloodwork_results
+                      - img "Estructura" [ref=e625]
+                    - link "bloodwork_results" [ref=e626] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=bloodwork_results
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e630] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e631]
+                    - link "Estructura" [ref=e633] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=cache
+                      - img "Estructura" [ref=e634]
+                    - link "cache" [ref=e635] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=cache
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e639] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e640]
+                    - link "Estructura" [ref=e642] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=cache_locks
+                      - img "Estructura" [ref=e643]
+                    - link "cache_locks" [ref=e644] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=cache_locks
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e648] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e649]
+                    - link "Estructura" [ref=e651] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=celebrations
+                      - img "Estructura" [ref=e652]
+                    - link "celebrations" [ref=e653] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=celebrations
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e657] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e658]
+                    - link "Estructura" [ref=e660] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=challenges
+                      - img "Estructura" [ref=e661]
+                    - link "challenges" [ref=e662] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=challenges
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e666] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e667]
+                    - link "Estructura" [ref=e669] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=challenge_participants
+                      - img "Estructura" [ref=e670]
+                    - link "challenge_participants" [ref=e671] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=challenge_participants
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e675] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e676]
+                    - link "Estructura" [ref=e678] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=chat_bans
+                      - img "Estructura" [ref=e679]
+                    - link "chat_bans" [ref=e680] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=chat_bans
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e684] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e685]
+                    - link "Estructura" [ref=e687] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=chat_messages
+                      - img "Estructura" [ref=e688]
+                    - link "chat_messages" [ref=e689] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=chat_messages
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e693] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e694]
+                    - link "Estructura" [ref=e696] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=chat_message_reactions
+                      - img "Estructura" [ref=e697]
+                    - link "chat_message_reactions" [ref=e698] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=chat_message_reactions
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e702] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e703]
+                    - link "Estructura" [ref=e705] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=chat_reports
+                      - img "Estructura" [ref=e706]
+                    - link "chat_reports" [ref=e707] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=chat_reports
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e711] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e712]
+                    - link "Estructura" [ref=e714] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=chat_typing
+                      - img "Estructura" [ref=e715]
+                    - link "chat_typing" [ref=e716] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=chat_typing
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e720] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e721]
+                    - link "Estructura" [ref=e723] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=chat_weekly_limits
+                      - img "Estructura" [ref=e724]
+                    - link "chat_weekly_limits" [ref=e725] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=chat_weekly_limits
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e729] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e730]
+                    - link "Estructura" [ref=e732] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=checkins
+                      - img "Estructura" [ref=e733]
+                    - link "checkins" [ref=e734] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=checkins
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e738] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e739]
+                    - link "Estructura" [ref=e741] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=clients
+                      - img "Estructura" [ref=e742]
+                    - link "clients" [ref=e743] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=clients
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e747] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e748]
+                    - link "Estructura" [ref=e750] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=client_achievements
+                      - img "Estructura" [ref=e751]
+                    - link "client_achievements" [ref=e752] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=client_achievements
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e756] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e757]
+                    - link "Estructura" [ref=e759] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=client_profiles
+                      - img "Estructura" [ref=e760]
+                    - link "client_profiles" [ref=e761] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=client_profiles
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e765] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e766]
+                    - link "Estructura" [ref=e768] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=client_xp
+                      - img "Estructura" [ref=e769]
+                    - link "client_xp" [ref=e770] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=client_xp
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e774] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e775]
+                    - link "Estructura" [ref=e777] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=coach_achievements
+                      - img "Estructura" [ref=e778]
+                    - link "coach_achievements" [ref=e779] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=coach_achievements
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e783] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e784]
+                    - link "Estructura" [ref=e786] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=coach_analytics_snapshots
+                      - img "Estructura" [ref=e787]
+                    - link "coach_analytics_snapshots" [ref=e788] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=coach_analytics_snapshots
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e792] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e793]
+                    - link "Estructura" [ref=e795] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=coach_applications
+                      - img "Estructura" [ref=e796]
+                    - link "coach_applications" [ref=e797] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=coach_applications
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e801] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e802]
+                    - link "Estructura" [ref=e804] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=coach_audio
+                      - img "Estructura" [ref=e805]
+                    - link "coach_audio" [ref=e806] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=coach_audio
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e810] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e811]
+                    - link "Estructura" [ref=e813] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=coach_availability
+                      - img "Estructura" [ref=e814]
+                    - link "coach_availability" [ref=e815] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=coach_availability
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e819] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e820]
+                    - link "Estructura" [ref=e822] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=coach_community_posts
+                      - img "Estructura" [ref=e823]
+                    - link "coach_community_posts" [ref=e824] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=coach_community_posts
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e828] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e829]
+                    - link "Estructura" [ref=e831] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=coach_messages
+                      - img "Estructura" [ref=e832]
+                    - link "coach_messages" [ref=e833] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=coach_messages
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e837] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e838]
+                    - link "Estructura" [ref=e840] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=coach_notes
+                      - img "Estructura" [ref=e841]
+                    - link "coach_notes" [ref=e842] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=coach_notes
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e846] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e847]
+                    - link "Estructura" [ref=e849] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=coach_presence
+                      - img "Estructura" [ref=e850]
+                    - link "coach_presence" [ref=e851] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=coach_presence
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e855] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e856]
+                    - link "Estructura" [ref=e858] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=coach_profiles
+                      - img "Estructura" [ref=e859]
+                    - link "coach_profiles" [ref=e860] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=coach_profiles
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e864] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e865]
+                    - link "Estructura" [ref=e867] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=coach_pwa_config
+                      - img "Estructura" [ref=e868]
+                    - link "coach_pwa_config" [ref=e869] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=coach_pwa_config
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e873] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e874]
+                    - link "Estructura" [ref=e876] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=coach_ratings
+                      - img "Estructura" [ref=e877]
+                    - link "coach_ratings" [ref=e878] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=coach_ratings
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e882] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e883]
+                    - link "Estructura" [ref=e885] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=coach_video_tips
+                      - img "Estructura" [ref=e886]
+                    - link "coach_video_tips" [ref=e887] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=coach_video_tips
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e891] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e892]
+                    - link "Estructura" [ref=e894] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=community_chat
+                      - img "Estructura" [ref=e895]
+                    - link "community_chat" [ref=e896] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=community_chat
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e900] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e901]
+                    - link "Estructura" [ref=e903] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=community_posts
+                      - img "Estructura" [ref=e904]
+                    - link "community_posts" [ref=e905] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=community_posts
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e909] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e910]
+                    - link "Estructura" [ref=e912] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=community_reactions
+                      - img "Estructura" [ref=e913]
+                    - link "community_reactions" [ref=e914] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=community_reactions
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e918] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e919]
+                    - link "Estructura" [ref=e921] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=coupons
+                      - img "Estructura" [ref=e922]
+                    - link "coupons" [ref=e923] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=coupons
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e926] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e927]
+                    - link "Estructura" [ref=e929] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcorefitness&table=daily_missions
+                      - img "Estructura" [ref=e930]
+                    - link "daily_missions" [ref=e931] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcorefitness&table=daily_missions
+            - listitem:
+              - link [ref=e934] [cursor=pointer]:
+                - /url: "#"
+              - link "Opciones de la base de datos" [ref=e936] [cursor=pointer]:
+                - /url: index.php?route=/database/operations&db=wellcore_fitness
+                - img "Opciones de la base de datos" [ref=e937]
+              - link "wellcore_fitness" [ref=e938] [cursor=pointer]:
+                - /url: index.php?route=/database/structure&db=wellcore_fitness
+              - generic [ref=e939]:
+                - list:
+                  - listitem [ref=e940]:
+                    - generic:
+                      - generic:
+                        - textbox "Escribe para filtrar estos, «Enter» para buscar todo" [ref=e941]
+                        - button "Vaciar filtro rápido" [ref=e942] [cursor=pointer]: X
+                  - listitem:
+                    - link "Nueva" [ref=e946] [cursor=pointer]:
+                      - /url: index.php?route=/table/create&db=wellcore_fitness
+                      - img "Nueva" [ref=e947]
+                    - link "Nueva" [ref=e948] [cursor=pointer]:
+                      - /url: index.php?route=/table/create&db=wellcore_fitness
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e952] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e953]
+                    - link "Estructura" [ref=e955] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=appointments
+                      - img "Estructura" [ref=e956]
+                    - link "appointments" [ref=e957] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=appointments
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e961] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e962]
+                    - link "Estructura" [ref=e964] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=audit_logs
+                      - img "Estructura" [ref=e965]
+                    - link "audit_logs" [ref=e966] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=audit_logs
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e970] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e971]
+                    - link "Estructura" [ref=e973] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=biometric_logs
+                      - img "Estructura" [ref=e974]
+                    - link "biometric_logs" [ref=e975] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=biometric_logs
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e979] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e980]
+                    - link "Estructura" [ref=e982] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=bloodwork_results
+                      - img "Estructura" [ref=e983]
+                    - link "bloodwork_results" [ref=e984] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=bloodwork_results
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e988] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e989]
+                    - link "Estructura" [ref=e991] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=cache
+                      - img "Estructura" [ref=e992]
+                    - link "cache" [ref=e993] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=cache
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e997] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e998]
+                    - link "Estructura" [ref=e1000] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=cache_locks
+                      - img "Estructura" [ref=e1001]
+                    - link "cache_locks" [ref=e1002] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=cache_locks
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1006] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1007]
+                    - link "Estructura" [ref=e1009] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=chat_messages
+                      - img "Estructura" [ref=e1010]
+                    - link "chat_messages" [ref=e1011] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=chat_messages
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1015] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1016]
+                    - link "Estructura" [ref=e1018] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=client_achievements
+                      - img "Estructura" [ref=e1019]
+                    - link "client_achievements" [ref=e1020] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=client_achievements
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1024] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1025]
+                    - link "Estructura" [ref=e1027] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=coach_availability
+                      - img "Estructura" [ref=e1028]
+                    - link "coach_availability" [ref=e1029] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=coach_availability
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1033] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1034]
+                    - link "Estructura" [ref=e1036] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=coach_ratings
+                      - img "Estructura" [ref=e1037]
+                    - link "coach_ratings" [ref=e1038] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=coach_ratings
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1042] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1043]
+                    - link "Estructura" [ref=e1045] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=community_posts
+                      - img "Estructura" [ref=e1046]
+                    - link "community_posts" [ref=e1047] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=community_posts
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1051] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1052]
+                    - link "Estructura" [ref=e1054] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=coupons
+                      - img "Estructura" [ref=e1055]
+                    - link "coupons" [ref=e1056] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=coupons
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1060] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1061]
+                    - link "Estructura" [ref=e1063] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=failed_jobs
+                      - img "Estructura" [ref=e1064]
+                    - link "failed_jobs" [ref=e1065] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=failed_jobs
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1069] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1070]
+                    - link "Estructura" [ref=e1072] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=food_analyses
+                      - img "Estructura" [ref=e1073]
+                    - link "food_analyses" [ref=e1074] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=food_analyses
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1078] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1079]
+                    - link "Estructura" [ref=e1081] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=habit_logs
+                      - img "Estructura" [ref=e1082]
+                    - link "habit_logs" [ref=e1083] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=habit_logs
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1087] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1088]
+                    - link "Estructura" [ref=e1090] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=jobs
+                      - img "Estructura" [ref=e1091]
+                    - link "jobs" [ref=e1092] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=jobs
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1096] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1097]
+                    - link "Estructura" [ref=e1099] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=job_batches
+                      - img "Estructura" [ref=e1100]
+                    - link "job_batches" [ref=e1101] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=job_batches
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1105] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1106]
+                    - link "Estructura" [ref=e1108] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=metrics
+                      - img "Estructura" [ref=e1109]
+                    - link "metrics" [ref=e1110] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=metrics
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1114] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1115]
+                    - link "Estructura" [ref=e1117] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=migrations
+                      - img "Estructura" [ref=e1118]
+                    - link "migrations" [ref=e1119] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=migrations
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1123] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1124]
+                    - link "Estructura" [ref=e1126] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=newsletter_subscribers
+                      - img "Estructura" [ref=e1127]
+                    - link "newsletter_subscribers" [ref=e1128] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=newsletter_subscribers
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1132] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1133]
+                    - link "Estructura" [ref=e1135] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=password_reset_tokens
+                      - img "Estructura" [ref=e1136]
+                    - link "password_reset_tokens" [ref=e1137] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=password_reset_tokens
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1141] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1142]
+                    - link "Estructura" [ref=e1144] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=payment_logs
+                      - img "Estructura" [ref=e1145]
+                    - link "payment_logs" [ref=e1146] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=payment_logs
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1150] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1151]
+                    - link "Estructura" [ref=e1153] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=permissions
+                      - img "Estructura" [ref=e1154]
+                    - link "permissions" [ref=e1155] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=permissions
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1159] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1160]
+                    - link "Estructura" [ref=e1162] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=personal_records
+                      - img "Estructura" [ref=e1163]
+                    - link "personal_records" [ref=e1164] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=personal_records
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1168] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1169]
+                    - link "Estructura" [ref=e1171] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=post_comments
+                      - img "Estructura" [ref=e1172]
+                    - link "post_comments" [ref=e1173] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=post_comments
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1177] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1178]
+                    - link "Estructura" [ref=e1180] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=post_reactions
+                      - img "Estructura" [ref=e1181]
+                    - link "post_reactions" [ref=e1182] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=post_reactions
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1186] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1187]
+                    - link "Estructura" [ref=e1189] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=rise_habits_logs
+                      - img "Estructura" [ref=e1190]
+                    - link "rise_habits_logs" [ref=e1191] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=rise_habits_logs
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1195] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1196]
+                    - link "Estructura" [ref=e1198] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=role_permissions
+                      - img "Estructura" [ref=e1199]
+                    - link "role_permissions" [ref=e1200] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=role_permissions
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1204] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1205]
+                    - link "Estructura" [ref=e1207] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=sessions
+                      - img "Estructura" [ref=e1208]
+                    - link "sessions" [ref=e1209] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=sessions
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1213] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1214]
+                    - link "Estructura" [ref=e1216] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=supplement_logs
+                      - img "Estructura" [ref=e1217]
+                    - link "supplement_logs" [ref=e1218] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=supplement_logs
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1222] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1223]
+                    - link "Estructura" [ref=e1225] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=users
+                      - img "Estructura" [ref=e1226]
+                    - link "users" [ref=e1227] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=users
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1231] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1232]
+                    - link "Estructura" [ref=e1234] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=wellcoins_transactions
+                      - img "Estructura" [ref=e1235]
+                    - link "wellcoins_transactions" [ref=e1236] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=wellcoins_transactions
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1240] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1241]
+                    - link "Estructura" [ref=e1243] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=workout_logs
+                      - img "Estructura" [ref=e1244]
+                    - link "workout_logs" [ref=e1245] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=workout_logs
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1249] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1250]
+                    - link "Estructura" [ref=e1252] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=workout_prs
+                      - img "Estructura" [ref=e1253]
+                    - link "workout_prs" [ref=e1254] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=workout_prs
+                  - listitem:
+                    - link "Expandir/Colapsar" [ref=e1257] [cursor=pointer]:
+                      - /url: "#"
+                      - img "Expandir/Colapsar" [ref=e1258]
+                    - link "Estructura" [ref=e1260] [cursor=pointer]:
+                      - /url: index.php?route=/table/structure&db=wellcore_fitness&table=workout_sessions
+                      - img "Estructura" [ref=e1261]
+                    - link "workout_sessions" [ref=e1262] [cursor=pointer]:
+                      - /url: index.php?route=/sql&pos=0&db=wellcore_fitness&table=workout_sessions
+  - text: » » > > >
+  - generic [ref=e162]:
+    - list [ref=e163]:
+      - listitem [ref=e164]:
+        - link "Búsqueda de tablas Búsqueda de tablas" [ref=e165] [cursor=pointer]:
+          - /url: index.php?route=/table/search&db=wellcorefitness&table=clients&pos=0
+          - generic [ref=e166]:
+            - img "Búsqueda de tablas" [ref=e167]
+            - text: Búsqueda de tablas
+      - listitem [ref=e168]:
+        - link "Búsqueda visual Búsqueda visual" [ref=e169] [cursor=pointer]:
+          - /url: index.php?route=/table/zoom-search&db=wellcorefitness&table=clients
+          - generic [ref=e170]:
+            - img "Búsqueda visual" [ref=e171]
+            - text: Búsqueda visual
+      - listitem [ref=e172]:
+        - link "Buscar y reemplazar Buscar y reemplazar" [ref=e173] [cursor=pointer]:
+          - /url: index.php?route=/table/find-replace&db=wellcorefitness&table=clients
+          - generic [ref=e174]:
+            - img "Buscar y reemplazar" [ref=e175]
+            - text: Buscar y reemplazar
+    - generic [ref=e1265]: Mostrar criterio de búsqueda
+    - generic [ref=e1267]:
+      - generic [ref=e1268]:
+        - alert [ref=e1269]: Mostrando filas 0 - 0 (total de 1, La consulta tardó 0.0003 segundos.)
+        - code [ref=e1271]:
+          - generic [ref=e1272]:
+            - link "SELECT" [ref=e1274] [cursor=pointer]:
+              - /url: ./url.php?url=https://dev.mysql.com/doc/refman/8.0/en/select.html
+            - text: "* FROM `clients` WHERE `email`"
+            - link "LIKE" [ref=e1276] [cursor=pointer]:
+              - /url: ./url.php?url=https://dev.mysql.com/doc/refman/8.0/en/string-comparison-functions.html%23operator_like
+            - text: "'octaviorodriguez660@gmail.com'"
+        - generic [ref=e1277]:
+          - generic [ref=e1278]:
+            - checkbox "Perfilando" [ref=e1279]
+            - generic [ref=e1280]: Perfilando
+          - text: "["
+          - link "Editar en línea" [ref=e1281] [cursor=pointer]:
+            - /url: "#"
+          - text: "] ["
+          - link "Editar" [ref=e1282] [cursor=pointer]:
+            - /url: index.php
+          - text: "] ["
+          - link "Explicar SQL" [ref=e1283] [cursor=pointer]:
+            - /url: index.php
+          - text: "] ["
+          - link "Crear código PHP" [ref=e1284] [cursor=pointer]:
+            - /url: index.php
+          - text: "] ["
+          - link "Actualizar" [ref=e1285] [cursor=pointer]:
+            - /url: index.php
+          - text: "]"
+      - table [ref=e1286]:
+        - rowgroup [ref=e1287]:
+          - 'row "Mostrar todo Mostrar todo | Número de filas: 25" [ref=e1288]':
+            - cell [ref=e1289]
+            - cell "Mostrar todo Mostrar todo" [ref=e1290]:
+              - generic [ref=e1291]:
+                - checkbox "Mostrar todo Mostrar todo" [ref=e1292]
+                - generic [ref=e1293]: Mostrar todo
+            - cell "|" [ref=e1294]:
+              - generic [ref=e1295]: "|"
+            - cell
+            - cell
+            - 'cell "Número de filas: 25" [ref=e1296]':
+              - generic [ref=e1297]:
+                - generic [ref=e1298]: "Número de filas:"
+                - 'combobox "Número de filas: Número de filas:" [ref=e1299]':
+                  - option "25" [selected]
+                  - option "50"
+                  - option "100"
+                  - option "250"
+                  - option "500"
+            - cell [ref=e1300]
+            - cell [ref=e1301]
+      - button "Opciones extra" [ref=e1304] [cursor=pointer]
+      - generic [ref=e1305]:
+        - table [ref=e1331]:
+          - rowgroup [ref=e1332]:
+            - row "Textos completos id client_code name email google_id password_hash must_change_password plan subscription_start subscription_end renewal_reminder_sent status fecha_inicio created_at updated_at avatar_url bio city birth_date referral_code referred_by onboarding_completed coach_id" [ref=e1333]:
+              - columnheader "Textos completos" [ref=e1334]:
+                - link "Textos completos" [ref=e1336] [cursor=pointer]:
+                  - /url: index.php
+                  - img "Textos completos" [ref=e1337]
+              - columnheader "id" [ref=e1340]:
+                - generic [ref=e1341]: id
+              - columnheader "client_code" [ref=e1342]:
+                - generic [ref=e1343]: client_code
+              - columnheader "name" [ref=e1344]:
+                - generic [ref=e1345]: name
+              - columnheader "email" [ref=e1346]:
+                - generic [ref=e1347]: email
+              - columnheader "google_id" [ref=e1348]:
+                - generic [ref=e1349]: google_id
+              - columnheader "password_hash" [ref=e1350]:
+                - generic [ref=e1351]: password_hash
+              - columnheader "must_change_password" [ref=e1352]:
+                - generic [ref=e1353]: must_change_password
+              - columnheader "plan" [ref=e1354]:
+                - generic [ref=e1355]: plan
+              - columnheader "subscription_start" [ref=e1356]:
+                - generic [ref=e1357]: subscription_start
+              - columnheader "subscription_end" [ref=e1358]:
+                - generic [ref=e1359]: subscription_end
+              - columnheader "renewal_reminder_sent" [ref=e1360]:
+                - generic [ref=e1361]: renewal_reminder_sent
+              - columnheader "status" [ref=e1362]:
+                - generic [ref=e1363]: status
+              - columnheader "fecha_inicio" [ref=e1364]:
+                - generic [ref=e1365]: fecha_inicio
+              - columnheader "created_at" [ref=e1366]:
+                - generic [ref=e1367]: created_at
+              - columnheader "updated_at" [ref=e1368]:
+                - generic [ref=e1369]: updated_at
+              - columnheader "avatar_url" [ref=e1370]:
+                - generic [ref=e1371]: avatar_url
+              - columnheader "bio" [ref=e1372]:
+                - generic [ref=e1373]: bio
+              - columnheader "city" [ref=e1374]:
+                - generic [ref=e1375]: city
+              - columnheader "birth_date" [ref=e1376]:
+                - generic [ref=e1377]: birth_date
+              - columnheader "referral_code" [ref=e1378]:
+                - generic [ref=e1379]: referral_code
+              - columnheader "referred_by" [ref=e1380]:
+                - generic [ref=e1381]: referred_by
+              - columnheader "onboarding_completed" [ref=e1382]:
+                - generic [ref=e1383]: onboarding_completed
+              - rowheader "coach_id" [ref=e1384]:
+                - generic [ref=e1385]: coach_id
+              - cell [ref=e1386]
+          - rowgroup [ref=e1387]:
+            - row "Editar Editar Copiar Copiar Borrar Borrar 43 metodo-DECDF783 Octavio Rodriguez octaviorodriguez660@gmail.com NULL $2y$12$c.V6Kv/mZLtl4vXUnCb0nuw3BYlCeEmrF1JlQKjhRCs... 1 metodo NULL NULL 0 inactivo 2026-03-19 2026-03-19 13:42:08 2026-03-28 01:54:38 NULL NULL NULL NULL NULL NULL 1 NULL" [ref=e1388]:
+              - cell [ref=e1389]:
+                - checkbox [ref=e1391]
+              - cell "Editar Editar" [ref=e1392]:
+                - link "Editar Editar" [ref=e1394] [cursor=pointer]:
+                  - /url: index.php
+                  - generic [ref=e1395]:
+                    - img "Editar" [ref=e1396]
+                    - text: Editar
+              - cell "Copiar Copiar" [ref=e1397]:
+                - link "Copiar Copiar" [ref=e1399] [cursor=pointer]:
+                  - /url: index.php
+                  - generic [ref=e1400]:
+                    - img "Copiar" [ref=e1401]
+                    - text: Copiar
+              - cell "Borrar Borrar" [ref=e1402]:
+                - link "Borrar Borrar" [ref=e1404] [cursor=pointer]:
+                  - /url: index.php
+                  - generic [ref=e1405]:
+                    - img "Borrar" [ref=e1406]
+                    - text: Borrar
+              - cell "43" [ref=e1407]:
+                - generic [ref=e1408]: "43"
+              - cell "metodo-DECDF783" [ref=e1409]:
+                - generic [ref=e1410]: metodo-DECDF783
+              - cell "Octavio Rodriguez" [ref=e1411]:
+                - generic [ref=e1412]: Octavio Rodriguez
+              - cell "octaviorodriguez660@gmail.com" [ref=e1413]:
+                - generic [ref=e1414]: octaviorodriguez660@gmail.com
+              - cell "NULL" [ref=e1415]:
+                - emphasis [ref=e1417]: "NULL"
+              - cell "$2y$12$c.V6Kv/mZLtl4vXUnCb0nuw3BYlCeEmrF1JlQKjhRCs..." [ref=e1418]:
+                - generic "Longitud original 60" [ref=e1419]: $2y$12$c.V6Kv/mZLtl4vXUnCb0nuw3BYlCeEmrF1JlQKjhRCs...
+              - cell "1" [ref=e1420]:
+                - generic [ref=e1421]: "1"
+              - cell "metodo" [ref=e1422]:
+                - generic [ref=e1423]: metodo
+              - cell "NULL" [ref=e1424]:
+                - emphasis [ref=e1426]: "NULL"
+              - cell "NULL" [ref=e1427]:
+                - emphasis [ref=e1429]: "NULL"
+              - cell "0" [ref=e1430]:
+                - generic [ref=e1431]: "0"
+              - cell "inactivo" [ref=e1432]:
+                - generic [ref=e1433]: inactivo
+              - cell "2026-03-19" [ref=e1434]:
+                - generic [ref=e1435]: 2026-03-19
+              - cell "2026-03-19 13:42:08" [ref=e1436]:
+                - generic [ref=e1437]: 2026-03-19 13:42:08
+              - cell "2026-03-28 01:54:38" [ref=e1438]:
+                - generic [ref=e1439]: 2026-03-28 01:54:38
+              - cell "NULL" [ref=e1440]:
+                - emphasis [ref=e1442]: "NULL"
+              - cell "NULL" [ref=e1443]:
+                - emphasis [ref=e1445]: "NULL"
+              - cell "NULL" [ref=e1446]:
+                - emphasis [ref=e1448]: "NULL"
+              - cell "NULL" [ref=e1449]:
+                - emphasis [ref=e1451]: "NULL"
+              - cell "NULL" [ref=e1452]:
+                - emphasis [ref=e1454]: "NULL"
+              - cell "NULL" [ref=e1455]:
+                - emphasis [ref=e1457]: "NULL"
+              - cell "1" [ref=e1458]:
+                - generic [ref=e1459]: "1"
+              - cell "NULL" [ref=e1460]:
+                - emphasis [ref=e1462]: "NULL"
+        - generic [ref=e1463]:
+          - img "Para los elementos que están marcados:" [ref=e1464]
+          - checkbox "Seleccionar todo" [ref=e1465]
+          - generic [ref=e1466] [cursor=pointer]: Seleccionar todo
+          - emphasis [ref=e1467]: "Para los elementos que están marcados:"
+          - button "Editar Editar" [ref=e1468] [cursor=pointer]:
+            - generic [ref=e1469]:
+              - img "Editar" [ref=e1470]
+              - text: Editar
+          - button "Copiar Copiar" [ref=e1471] [cursor=pointer]:
+            - generic [ref=e1472]:
+              - img "Copiar" [ref=e1473]
+              - text: Copiar
+          - button "Borrar Borrar" [ref=e1474] [cursor=pointer]:
+            - generic [ref=e1475]:
+              - img "Borrar" [ref=e1476]
+              - text: Borrar
+          - button "Exportar Exportar" [ref=e1477] [cursor=pointer]:
+            - generic [ref=e1478]:
+              - img "Exportar" [ref=e1479]
+              - text: Exportar
+      - table [ref=e1480]:
+        - rowgroup [ref=e1481]:
+          - 'row "Mostrar todo | Número de filas: 25" [ref=e1482]':
+            - cell [ref=e1483]
+            - cell "Mostrar todo" [ref=e1484]:
+              - generic [ref=e1485]:
+                - checkbox [ref=e1486]
+                - generic [ref=e1487]: Mostrar todo
+            - cell "|" [ref=e1488]:
+              - generic [ref=e1489]: "|"
+            - cell
+            - cell
+            - 'cell "Número de filas: 25" [ref=e1490]':
+              - generic [ref=e1491]:
+                - generic [ref=e1492]: "Número de filas:"
+                - combobox [ref=e1493]:
+                  - option "25" [selected]
+                  - option "50"
+                  - option "100"
+                  - option "250"
+                  - option "500"
+            - cell [ref=e1494]
+            - cell [ref=e1495]
+      - group "Operaciones sobre los resultados de la consulta" [ref=e1496]:
+        - generic [ref=e1497]: Operaciones sobre los resultados de la consulta
+        - button "Imprimir Imprimir" [ref=e1498] [cursor=pointer]:
+          - generic [ref=e1499]:
+            - img "Imprimir" [ref=e1500]
+            - text: Imprimir
+        - link "Copiar al portapapeles Copiar al portapapeles" [ref=e1501] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=e1502]:
+            - img "Copiar al portapapeles" [ref=e1503]
+            - text: Copiar al portapapeles
+        - link "Exportar Exportar" [ref=e1504] [cursor=pointer]:
+          - /url: index.php
+          - generic [ref=e1505]:
+            - img "Exportar" [ref=e1506]
+            - text: Exportar
+        - link "Mostrar gráfico Mostrar gráfico" [ref=e1507] [cursor=pointer]:
+          - /url: index.php
+          - generic [ref=e1508]:
+            - img "Mostrar gráfico" [ref=e1509]
+            - text: Mostrar gráfico
+        - link "Crear vista Crear vista" [ref=e1511] [cursor=pointer]:
+          - /url: index.php?route=/view/create
+          - generic [ref=e1512]:
+            - img "Crear vista" [ref=e1513]
+            - text: Crear vista
+  - link "Abrir nueva ventana de phpMyAdmin" [ref=e386] [cursor=pointer]:
+    - /url: index.php?route=%2Ftable%2Fsearch&db=wellcorefitness&table=clients&server=1
+    - img "Abrir nueva ventana de phpMyAdmin" [ref=e387]
+  - log [ref=e388]
+  - log [ref=e389]
+  - log [ref=e390]
+  - log [ref=e391]
+  - log [ref=e1514]
+  - log [ref=e1515]
+  - log [ref=e1516]
+  - log [ref=e1517]
+  - log [ref=e1518]
+  - log [ref=e1519]
+  - log [ref=e1520]
+  - log [ref=e1521]
+  - log [ref=e1522]
+  - log [ref=e1523]
+  - log [ref=e1524]
+  - log [ref=e1525]
+  - log [ref=e1526]
+  - log [ref=e1527]
+  - log [ref=e1528]
+  - log [ref=e1529]
+  - log [ref=e1530]
+  - log [ref=e1531]
+  - log [ref=e1532]
+  - log [ref=e1533]
+  - log [ref=e1534]
+  - log [ref=e1535]
+  - log [ref=e1536]
+  - log [ref=e1537]
+  - log [ref=e1538]

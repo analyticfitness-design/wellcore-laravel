@@ -1,0 +1,275 @@
+- generic [ref=e1]:
+  - complementary [ref=e2]:
+    - img "WellCore" [ref=e4]
+    - navigation [ref=e5]:
+      - generic [ref=e6]:
+        - paragraph [ref=e7]: Entrenamiento
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - link "Resumen" [ref=e10] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client
+              - img [ref=e11]
+              - text: Resumen
+          - listitem [ref=e13]:
+            - link "Mi Plan" [ref=e14] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/plan
+              - img [ref=e15]
+              - text: Mi Plan
+          - listitem [ref=e17]:
+            - link "Entrenar" [ref=e18] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/workout
+              - img [ref=e19]
+              - text: Entrenar
+          - listitem [ref=e21]:
+            - link "Check-in Semanal" [ref=e22] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/checkin
+              - img [ref=e23]
+              - text: Check-in Semanal
+      - generic [ref=e25]:
+        - paragraph [ref=e26]: Progreso
+        - list [ref=e27]:
+          - listitem [ref=e28]:
+            - link "Fotos de Progreso" [ref=e29] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/photos
+              - img [ref=e30]
+              - text: Fotos de Progreso
+          - listitem [ref=e32]:
+            - link "Metricas" [ref=e33] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/metrics
+              - img [ref=e34]
+              - text: Metricas
+          - listitem [ref=e36]:
+            - link "Video Check-in" [ref=e37] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/video-checkin
+              - img [ref=e38]
+              - text: Video Check-in
+      - generic [ref=e40]:
+        - paragraph [ref=e41]: Comunidad
+        - list [ref=e42]:
+          - listitem [ref=e43]:
+            - link "Comunidad" [ref=e44] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/community
+              - img [ref=e45]
+              - text: Comunidad
+          - listitem [ref=e47]:
+            - link "Retos" [ref=e48] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/challenges
+              - img [ref=e49]
+              - text: Retos
+          - listitem [ref=e52]:
+            - link "Chat con Coach" [ref=e53] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/chat
+              - img [ref=e54]
+              - text: Chat con Coach
+          - listitem [ref=e56]:
+            - link "Referidos" [ref=e57] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/referrals
+              - img [ref=e58]
+              - text: Referidos
+      - generic [ref=e60]:
+        - paragraph [ref=e61]: Recursos
+        - list [ref=e62]:
+          - listitem [ref=e63]:
+            - link "Configuracion" [ref=e64] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/settings
+              - img [ref=e65]
+              - text: Configuracion
+          - listitem [ref=e68]:
+            - link "Perfil" [ref=e69] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/profile
+              - img [ref=e70]
+              - text: Perfil
+    - button "Cerrar sesion" [ref=e74]:
+      - img [ref=e75]
+      - text: Cerrar sesion
+  - generic [ref=e77]:
+    - generic [ref=e78]:
+      - generic [ref=e79]:
+        - img [ref=e80]
+        - generic [ref=e83]:
+          - text: Viendo como cliente —
+          - strong [ref=e84]: Julie Rodriguez
+      - button "Salir de la sesión de impersonación y volver al panel de administración" [ref=e86]:
+        - img [ref=e87]
+        - text: Volver al Admin
+    - banner [ref=e89]:
+      - generic [ref=e90]:
+        - button "ES" [ref=e92]:
+          - generic [ref=e93]: ES
+          - img [ref=e94]
+        - button "Oscuro" [ref=e96]:
+          - generic [ref=e97]:
+            - img [ref=e98]
+            - generic [ref=e100]: Oscuro
+        - generic [ref=e101]: Esencial
+        - generic [ref=e102]:
+          - generic [ref=e104]: J
+          - generic [ref=e105]: Julie Rodriguez
+    - main [ref=e106]:
+      - generic [ref=e107]:
+        - generic [ref=e108]:
+          - heading "MI PLAN" [level=1] [ref=e109]
+          - paragraph [ref=e110]: Tu programación personalizada, diseñada por tu coach
+        - tablist "Secciones del plan" [ref=e111]:
+          - generic [ref=e112]:
+            - tab "Entrenamiento" [ref=e113]
+            - tab "Hábitos" [active] [selected] [ref=e114]
+            - tab "Nutrición" [ref=e115]
+            - tab "Suplementos" [ref=e116]
+            - tab "Ciclo 🔒" [ref=e117]
+            - tab "Bloodwork 🔒" [ref=e118]
+        - generic [ref=e603]:
+          - generic [ref=e605]:
+            - generic [ref=e606]:
+              - heading "CUMPLIMIENTO MENSUAL" [level=3] [ref=e607]
+              - paragraph [ref=e608]: Dias con al menos 1 habito registrado este mes
+            - generic [ref=e609]: 0%
+          - generic [ref=e611]:
+            - generic [ref=e612]:
+              - generic [ref=e613]:
+                - generic [ref=e614]:
+                  - heading "AGUA" [level=4] [ref=e615]
+                  - paragraph [ref=e616]: "Racha: 0 dias"
+                - img [ref=e618]
+              - paragraph [ref=e621]: "Promedio: 0/10"
+              - generic [ref=e622]:
+                - generic [ref=e623]:
+                  - 'generic "Wed: 0/10" [ref=e624]'
+                  - generic [ref=e625]: Wed
+                - generic [ref=e626]:
+                  - 'generic "Thu: 0/10" [ref=e627]'
+                  - generic [ref=e628]: Thu
+                - generic [ref=e629]:
+                  - 'generic "Fri: 0/10" [ref=e630]'
+                  - generic [ref=e631]: Fri
+                - generic [ref=e632]:
+                  - 'generic "Sat: 0/10" [ref=e633]'
+                  - generic [ref=e634]: Sat
+                - generic [ref=e635]:
+                  - 'generic "Sun: 0/10" [ref=e636]'
+                  - generic [ref=e637]: Sun
+                - generic [ref=e638]:
+                  - 'generic "Mon: 0/10" [ref=e639]'
+                  - generic [ref=e640]: Mon
+                - generic [ref=e641]:
+                  - 'generic "Tue: 0/10" [ref=e642]'
+                  - generic [ref=e643]: Tue
+            - generic [ref=e644]:
+              - generic [ref=e645]:
+                - generic [ref=e646]:
+                  - heading "SUEñO" [level=4] [ref=e647]
+                  - paragraph [ref=e648]: "Racha: 0 dias"
+                - img [ref=e650]
+              - paragraph [ref=e653]: "Promedio: 0/10"
+              - generic [ref=e654]:
+                - generic [ref=e655]:
+                  - 'generic "Wed: 0/10" [ref=e656]'
+                  - generic [ref=e657]: Wed
+                - generic [ref=e658]:
+                  - 'generic "Thu: 0/10" [ref=e659]'
+                  - generic [ref=e660]: Thu
+                - generic [ref=e661]:
+                  - 'generic "Fri: 0/10" [ref=e662]'
+                  - generic [ref=e663]: Fri
+                - generic [ref=e664]:
+                  - 'generic "Sat: 0/10" [ref=e665]'
+                  - generic [ref=e666]: Sat
+                - generic [ref=e667]:
+                  - 'generic "Sun: 0/10" [ref=e668]'
+                  - generic [ref=e669]: Sun
+                - generic [ref=e670]:
+                  - 'generic "Mon: 0/10" [ref=e671]'
+                  - generic [ref=e672]: Mon
+                - generic [ref=e673]:
+                  - 'generic "Tue: 0/10" [ref=e674]'
+                  - generic [ref=e675]: Tue
+            - generic [ref=e676]:
+              - generic [ref=e677]:
+                - generic [ref=e678]:
+                  - heading "ENTRENAMIENTO" [level=4] [ref=e679]
+                  - paragraph [ref=e680]: "Racha: 0 dias"
+                - img [ref=e682]
+              - paragraph [ref=e685]: "Promedio: 0/10"
+              - generic [ref=e686]:
+                - generic [ref=e687]:
+                  - 'generic "Wed: 0/10" [ref=e688]'
+                  - generic [ref=e689]: Wed
+                - generic [ref=e690]:
+                  - 'generic "Thu: 0/10" [ref=e691]'
+                  - generic [ref=e692]: Thu
+                - generic [ref=e693]:
+                  - 'generic "Fri: 0/10" [ref=e694]'
+                  - generic [ref=e695]: Fri
+                - generic [ref=e696]:
+                  - 'generic "Sat: 0/10" [ref=e697]'
+                  - generic [ref=e698]: Sat
+                - generic [ref=e699]:
+                  - 'generic "Sun: 0/10" [ref=e700]'
+                  - generic [ref=e701]: Sun
+                - generic [ref=e702]:
+                  - 'generic "Mon: 0/10" [ref=e703]'
+                  - generic [ref=e704]: Mon
+                - generic [ref=e705]:
+                  - 'generic "Tue: 0/10" [ref=e706]'
+                  - generic [ref=e707]: Tue
+            - generic [ref=e708]:
+              - generic [ref=e709]:
+                - generic [ref=e710]:
+                  - heading "NUTRICIóN" [level=4] [ref=e711]
+                  - paragraph [ref=e712]: "Racha: 0 dias"
+                - img [ref=e714]
+              - paragraph [ref=e717]: "Promedio: 0/10"
+              - generic [ref=e718]:
+                - generic [ref=e719]:
+                  - 'generic "Wed: 0/10" [ref=e720]'
+                  - generic [ref=e721]: Wed
+                - generic [ref=e722]:
+                  - 'generic "Thu: 0/10" [ref=e723]'
+                  - generic [ref=e724]: Thu
+                - generic [ref=e725]:
+                  - 'generic "Fri: 0/10" [ref=e726]'
+                  - generic [ref=e727]: Fri
+                - generic [ref=e728]:
+                  - 'generic "Sat: 0/10" [ref=e729]'
+                  - generic [ref=e730]: Sat
+                - generic [ref=e731]:
+                  - 'generic "Sun: 0/10" [ref=e732]'
+                  - generic [ref=e733]: Sun
+                - generic [ref=e734]:
+                  - 'generic "Mon: 0/10" [ref=e735]'
+                  - generic [ref=e736]: Mon
+                - generic [ref=e737]:
+                  - 'generic "Tue: 0/10" [ref=e738]'
+                  - generic [ref=e739]: Tue
+            - generic [ref=e740]:
+              - generic [ref=e741]:
+                - generic [ref=e742]:
+                  - heading "SUPLEMENTOS" [level=4] [ref=e743]
+                  - paragraph [ref=e744]: "Racha: 0 dias"
+                - img [ref=e746]
+              - paragraph [ref=e749]: "Promedio: 0/10"
+              - generic [ref=e750]:
+                - generic [ref=e751]:
+                  - 'generic "Wed: 0/10" [ref=e752]'
+                  - generic [ref=e753]: Wed
+                - generic [ref=e754]:
+                  - 'generic "Thu: 0/10" [ref=e755]'
+                  - generic [ref=e756]: Thu
+                - generic [ref=e757]:
+                  - 'generic "Fri: 0/10" [ref=e758]'
+                  - generic [ref=e759]: Fri
+                - generic [ref=e760]:
+                  - 'generic "Sat: 0/10" [ref=e761]'
+                  - generic [ref=e762]: Sat
+                - generic [ref=e763]:
+                  - 'generic "Sun: 0/10" [ref=e764]'
+                  - generic [ref=e765]: Sun
+                - generic [ref=e766]:
+                  - 'generic "Mon: 0/10" [ref=e767]'
+                  - generic [ref=e768]: Mon
+                - generic [ref=e769]:
+                  - 'generic "Tue: 0/10" [ref=e770]'
+                  - generic [ref=e771]: Tue
+          - generic [ref=e772]:
+            - paragraph [ref=e773]: Aún no tienes hábitos registrados en los últimos 30 días.
+            - paragraph [ref=e774]: Registra tus hábitos diarios desde la pantalla principal.

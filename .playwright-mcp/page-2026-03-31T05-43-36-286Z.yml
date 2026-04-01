@@ -1,0 +1,13 @@
+- generic [active] [ref=e1]:
+  - link "WELLCORE" [ref=e2] [cursor=pointer]:
+    - /url: /
+  - generic [ref=e3]:
+    - generic [ref=e4]: "403"
+    - heading "ACCESO DENEGADO" [level=1] [ref=e6]
+    - paragraph [ref=e7]: No tienes permiso para acceder a esta seccion. Si crees que es un error, inicia sesion con tu cuenta o contacta a soporte.
+    - generic [ref=e8]:
+      - link "Volver al Inicio" [ref=e9] [cursor=pointer]:
+        - /url: /
+      - link "Iniciar Sesion" [ref=e10] [cursor=pointer]:
+        - /url: /login
+  - paragraph [ref=e11]: © 2026 WellCore Fitness. Todos los derechos reservados.

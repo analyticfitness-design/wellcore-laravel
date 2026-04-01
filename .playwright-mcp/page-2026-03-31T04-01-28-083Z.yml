@@ -1,0 +1,572 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - img "WellCore" [ref=e4]
+    - navigation [ref=e5]:
+      - generic [ref=e6]:
+        - paragraph [ref=e7]: Entrenamiento
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - link "Resumen" [ref=e10] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client
+              - img [ref=e11]
+              - text: Resumen
+          - listitem [ref=e13]:
+            - link "Mi Plan" [ref=e14] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/plan
+              - img [ref=e15]
+              - text: Mi Plan
+          - listitem [ref=e17]:
+            - link "Entrenar" [ref=e18] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/workout
+              - img [ref=e19]
+              - text: Entrenar
+          - listitem [ref=e21]:
+            - link "Check-in Semanal" [ref=e22] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/checkin
+              - img [ref=e23]
+              - text: Check-in Semanal
+      - generic [ref=e25]:
+        - paragraph [ref=e26]: Progreso
+        - list [ref=e27]:
+          - listitem [ref=e28]:
+            - link "Fotos de Progreso" [ref=e29] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/photos
+              - img [ref=e30]
+              - text: Fotos de Progreso
+          - listitem [ref=e32]:
+            - link "Metricas" [ref=e33] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/metrics
+              - img [ref=e34]
+              - text: Metricas
+          - listitem [ref=e36]:
+            - link "Video Check-in" [ref=e37] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/video-checkin
+              - img [ref=e38]
+              - text: Video Check-in
+      - generic [ref=e40]:
+        - paragraph [ref=e41]: Comunidad
+        - list [ref=e42]:
+          - listitem [ref=e43]:
+            - link "Comunidad" [ref=e44] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/community
+              - img [ref=e45]
+              - text: Comunidad
+          - listitem [ref=e47]:
+            - link "Retos" [ref=e48] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/challenges
+              - img [ref=e49]
+              - text: Retos
+          - listitem [ref=e52]:
+            - link "Chat con Coach" [ref=e53] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/chat
+              - img [ref=e54]
+              - text: Chat con Coach
+          - listitem [ref=e56]:
+            - link "Referidos" [ref=e57] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/referrals
+              - img [ref=e58]
+              - text: Referidos
+      - generic [ref=e60]:
+        - paragraph [ref=e61]: Recursos
+        - list [ref=e62]:
+          - listitem [ref=e63]:
+            - link "Configuracion" [ref=e64] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/settings
+              - img [ref=e65]
+              - text: Configuracion
+          - listitem [ref=e68]:
+            - link "Perfil" [ref=e69] [cursor=pointer]:
+              - /url: https://www.wellcorefitness.com/client/profile
+              - img [ref=e70]
+              - text: Perfil
+    - button "Cerrar sesion" [ref=e74]:
+      - img [ref=e75]
+      - text: Cerrar sesion
+  - generic [ref=e77]:
+    - generic [ref=e78]:
+      - generic [ref=e79]:
+        - img [ref=e80]
+        - generic [ref=e83]:
+          - text: Viendo como cliente —
+          - strong [ref=e84]: Julie Rodriguez
+      - button "Salir de la sesión de impersonación y volver al panel de administración" [ref=e86]:
+        - img [ref=e87]
+        - text: Volver al Admin
+    - banner [ref=e89]:
+      - generic [ref=e90]:
+        - button "ES" [ref=e92]:
+          - generic [ref=e93]: ES
+          - img [ref=e94]
+        - button "Oscuro" [ref=e96]:
+          - generic [ref=e97]:
+            - img [ref=e98]
+            - generic [ref=e100]: Oscuro
+        - generic [ref=e101]: Esencial
+        - generic [ref=e102]:
+          - generic [ref=e104]: J
+          - generic [ref=e105]: Julie Rodriguez
+    - main [ref=e106]:
+      - generic [ref=e107]:
+        - generic [ref=e108]:
+          - heading "MI PLAN" [level=1] [ref=e109]
+          - paragraph [ref=e110]: Tu programación personalizada, diseñada por tu coach
+        - tablist "Secciones del plan" [ref=e111]:
+          - generic [ref=e112]:
+            - tab "Entrenamiento" [selected] [ref=e113]
+            - tab "Hábitos" [ref=e114]
+            - tab "Nutrición" [ref=e115]
+            - tab "Suplementos" [ref=e116]
+            - tab "Ciclo 🔒" [ref=e117]
+            - tab "Bloodwork 🔒" [ref=e118]
+        - generic [ref=e120]:
+          - generic [ref=e121]:
+            - generic [ref=e122]:
+              - generic [ref=e123]:
+                - generic [ref=e124]:
+                  - img [ref=e125]
+                  - text: Plan Esencial
+                - generic [ref=e127]: Activo
+              - paragraph [ref=e128]: "Inicio: 30 Mar 2026"
+              - generic [ref=e129]:
+                - generic [ref=e130]:
+                  - img [ref=e131]
+                  - text: 6 dias/semana
+                - generic [ref=e133]:
+                  - img [ref=e134]
+                  - text: Science-Based Full Body 3x/semana
+            - generic [ref=e136]:
+              - generic [ref=e137]:
+                - generic [ref=e138]: "1"
+                - generic [ref=e139]: / 4
+              - paragraph [ref=e140]: Semana actual
+          - generic [ref=e142]:
+            - generic [ref=e143]: Progreso del programa
+            - generic [ref=e144]: 4%
+        - generic [ref=e147]:
+          - img [ref=e149]
+          - generic [ref=e151]:
+            - paragraph [ref=e152]: Objetivo del plan
+            - paragraph [ref=e153]: "Recomposición corporal: perder grasa y ganar músculo. Énfasis en Glúteos, Piernas y Brazos. Progresión 4 semanas: Sem1 RIR 3-4 → Sem2 RIR 2-3 → Sem3 RIR 1-2 → Sem4 Deload."
+        - generic [ref=e154]:
+          - generic [ref=e155]:
+            - button "1 Semana 1 Semana actual 6 dias de entrenamiento" [expanded] [ref=e156]:
+              - generic [ref=e157]:
+                - generic [ref=e158]: "1"
+                - generic [ref=e159]:
+                  - generic [ref=e160]:
+                    - generic [ref=e161]: Semana 1
+                    - generic [ref=e162]: Semana actual
+                  - paragraph [ref=e163]: 6 dias de entrenamiento
+              - img [ref=e164]
+            - generic [ref=e167]:
+              - generic [ref=e168]:
+                - generic [ref=e169]:
+                  - generic [ref=e170]:
+                    - img [ref=e172]
+                    - generic [ref=e174]:
+                      - paragraph [ref=e175]: Full Body A — Glúteos y Piernas
+                      - paragraph [ref=e176]: 8 ejercicios
+                  - generic [ref=e177]:
+                    - generic [ref=e178]: Glúteos/Piernas
+                    - generic [ref=e179]:
+                      - img [ref=e180]
+                      - text: ~48 min
+                - link "Entrenar este dia" [ref=e183] [cursor=pointer]:
+                  - /url: https://www.wellcorefitness.com/client/workout/1
+                  - img [ref=e184]
+                  - text: Entrenar este dia
+                - generic [ref=e186]:
+                  - generic [ref=e187]:
+                    - generic [ref=e188]: "1"
+                    - generic [ref=e189]:
+                      - paragraph [ref=e190]: Hip Thrust con Mancuerna en Banco
+                      - generic [ref=e191]:
+                        - generic [ref=e192]: 3 x 12-15
+                        - generic [ref=e193]:
+                          - img [ref=e194]
+                          - text: 90 seg
+                        - generic [ref=e196]: RIR3
+                      - paragraph [ref=e197]: Hombros sobre el banco, mancuerna en cadera con toalla. Empuja cadera hasta extensión completa. Aprieta glúteos 1 seg arriba. Sem1 RIR3 → Sem2 RIR2 → Sem3 RIR1.
+                  - generic [ref=e198]:
+                    - generic [ref=e199]: "2"
+                    - generic [ref=e200]:
+                      - paragraph [ref=e201]: Sentadilla Goblet con Mancuerna
+                      - generic [ref=e202]:
+                        - generic [ref=e203]: 3 x 10-12
+                        - generic [ref=e204]:
+                          - img [ref=e205]
+                          - text: 90 seg
+                        - generic [ref=e207]: RIR3
+                      - paragraph [ref=e208]: Mancuerna vertical contra el pecho. Pies ancho de hombros, pies ligeramente afuera. Rodillas siguen dirección de los pies. Espalda recta.
+                  - generic [ref=e209]:
+                    - generic [ref=e210]: "3"
+                    - generic [ref=e211]:
+                      - paragraph [ref=e212]: Press de Banca con Mancuernas
+                      - generic [ref=e213]:
+                        - generic [ref=e214]: 3 x 10-12
+                        - generic [ref=e215]:
+                          - img [ref=e216]
+                          - text: 90 seg
+                        - generic [ref=e218]: RIR3
+                      - paragraph [ref=e219]: Banco plano. Mancuernas a altura del pecho, codos a 45°. Control en la bajada (2 seg). No trabes codos completamente arriba.
+                  - generic [ref=e220]:
+                    - generic [ref=e221]: "4"
+                    - generic [ref=e222]:
+                      - paragraph [ref=e223]: Remo con Mancuerna 1 Brazo
+                      - generic [ref=e224]:
+                        - generic [ref=e225]: 3 x 10-12 c/lado
+                        - generic [ref=e226]:
+                          - img [ref=e227]
+                          - text: 60 seg
+                        - generic [ref=e229]: RIR3
+                      - paragraph [ref=e230]: Rodilla y mano apoyadas en banco. Espalda paralela al suelo. Lleva el codo hacia la cadera. Hombro estable, no rotes el tronco.
+                  - generic [ref=e231]:
+                    - generic [ref=e232]: "5"
+                    - generic [ref=e233]:
+                      - paragraph [ref=e234]: Zancada Reversa con Mancuernas
+                      - generic [ref=e235]:
+                        - generic [ref=e236]: 3 x 10 c/pierna
+                        - generic [ref=e237]:
+                          - img [ref=e238]
+                          - text: 90 seg
+                        - generic [ref=e240]: RIR3
+                      - paragraph [ref=e241]: Paso atrás, rodilla trasera casi toca el suelo. Tronco erguido. Empuja con el talón de la pierna delantera para volver. Alterna piernas.
+                  - generic [ref=e242]:
+                    - generic [ref=e243]: "6"
+                    - generic [ref=e244]:
+                      - paragraph [ref=e245]: Curl de Bíceps Alterno con Mancuernas
+                      - generic [ref=e246]:
+                        - generic [ref=e247]: 3 x 12 c/brazo
+                        - generic [ref=e248]:
+                          - img [ref=e249]
+                          - text: 60 seg
+                        - generic [ref=e251]: RIR3
+                      - paragraph [ref=e252]: Codos pegados al cuerpo. Supina la muñeca al subir. Baja controlado 2 seg. No uses el cuerpo para impulsar.
+                  - generic [ref=e253]:
+                    - generic [ref=e254]: "7"
+                    - generic [ref=e255]:
+                      - paragraph [ref=e256]: Extensión de Tríceps Sobre Cabeza (1 Mancuerna)
+                      - generic [ref=e257]:
+                        - generic [ref=e258]: 3 x 12
+                        - generic [ref=e259]:
+                          - img [ref=e260]
+                          - text: 60 seg
+                        - generic [ref=e262]: RIR3
+                      - paragraph [ref=e263]: Sostén la mancuerna con ambas manos detrás de la cabeza. Codos apuntando al techo, fijos. Extiende sin mover los codos. Máximo estiramiento del tríceps largo.
+                  - generic [ref=e264]:
+                    - generic [ref=e265]: "8"
+                    - generic [ref=e266]:
+                      - paragraph [ref=e267]: Plancha Frontal
+                      - generic [ref=e268]:
+                        - generic [ref=e269]: 3 x 30-40 seg
+                        - generic [ref=e270]:
+                          - img [ref=e271]
+                          - text: 45 seg
+                      - paragraph [ref=e273]: "Cuerpo recto de cabeza a talones. Ombligo adentro. Respira de forma continua. Progresa: Sem1→30s · Sem2→35s · Sem3→40s · Sem4→25s."
+              - generic [ref=e274]:
+                - generic [ref=e275]:
+                  - generic [ref=e276]:
+                    - img [ref=e278]
+                    - generic [ref=e280]:
+                      - paragraph [ref=e281]: Cardio MISS — Caminadora o Elíptica
+                      - paragraph [ref=e282]: 1 ejercicio
+                  - generic [ref=e283]:
+                    - generic [ref=e284]: Cardio
+                    - generic [ref=e285]:
+                      - img [ref=e286]
+                      - text: ~15 min
+                - link "Entrenar este dia" [ref=e289] [cursor=pointer]:
+                  - /url: https://www.wellcorefitness.com/client/workout/2
+                  - img [ref=e290]
+                  - text: Entrenar este dia
+                - generic [ref=e293]:
+                  - generic [ref=e294]: "1"
+                  - generic [ref=e295]:
+                    - paragraph [ref=e296]: Caminadora con Inclinación o Elíptica
+                    - generic [ref=e297]:
+                      - generic [ref=e298]: 1 x 30-40 min
+                      - generic [ref=e299]:
+                        - img [ref=e300]
+                        - text: —
+                    - paragraph [ref=e302]: "Caminadora: velocidad 5-6 km/h · inclinación 3-5%. Elíptica: resistencia media. Mantén FC entre 120-140 ppm. Esta intensidad quema grasa sin comprometer recuperación muscular."
+              - generic [ref=e303]:
+                - generic [ref=e304]:
+                  - generic [ref=e305]:
+                    - img [ref=e307]
+                    - generic [ref=e309]:
+                      - paragraph [ref=e310]: Full Body B — Isquiotibiales y Hombros
+                      - paragraph [ref=e311]: 8 ejercicios
+                  - generic [ref=e312]:
+                    - generic [ref=e313]: Isquiotibiales/Hombros
+                    - generic [ref=e314]:
+                      - img [ref=e315]
+                      - text: ~48 min
+                - link "Entrenar este dia" [ref=e318] [cursor=pointer]:
+                  - /url: https://www.wellcorefitness.com/client/workout/3
+                  - img [ref=e319]
+                  - text: Entrenar este dia
+                - generic [ref=e321]:
+                  - generic [ref=e322]:
+                    - generic [ref=e323]: "1"
+                    - generic [ref=e324]:
+                      - paragraph [ref=e325]: Romanian Deadlift con Mancuernas
+                      - generic [ref=e326]:
+                        - generic [ref=e327]: 3 x 10-12
+                        - generic [ref=e328]:
+                          - img [ref=e329]
+                          - text: 90 seg
+                        - generic [ref=e331]: RIR3
+                      - paragraph [ref=e332]: Rodillas ligeramente flexionadas, fijas. Empuja cadera hacia atrás mientras bajas las mancuernas por las piernas. Siente el estiramiento en isquiotibiales. Espalda recta siempre.
+                  - generic [ref=e333]:
+                    - generic [ref=e334]: "2"
+                    - generic [ref=e335]:
+                      - paragraph [ref=e336]: Kickback de Glúteo con Banda
+                      - generic [ref=e337]:
+                        - generic [ref=e338]: 3 x 15 c/pierna
+                        - generic [ref=e339]:
+                          - img [ref=e340]
+                          - text: 45 seg
+                        - generic [ref=e342]: RIR3
+                      - paragraph [ref=e343]: Banda en los pies. 4 puntos de apoyo (manos y rodillas). Lleva el pie hacia el techo con rodilla a 90°. Aprieta glúteo arriba. Cadera completamente estable.
+                  - generic [ref=e344]:
+                    - generic [ref=e345]: "3"
+                    - generic [ref=e346]:
+                      - paragraph [ref=e347]: Press Militar con Mancuernas de Pie
+                      - generic [ref=e348]:
+                        - generic [ref=e349]: 3 x 10-12
+                        - generic [ref=e350]:
+                          - img [ref=e351]
+                          - text: 90 seg
+                        - generic [ref=e353]: RIR3
+                      - paragraph [ref=e354]: Mancuernas a altura de hombros, palmas al frente. Abdomen apretado. Empuja hacia arriba sin arquear la espalda lumbar. Control en la bajada.
+                  - generic [ref=e355]:
+                    - generic [ref=e356]: "4"
+                    - generic [ref=e357]:
+                      - paragraph [ref=e358]: Jalón al Pecho en Polea
+                      - generic [ref=e359]:
+                        - generic [ref=e360]: 3 x 10-12
+                        - generic [ref=e361]:
+                          - img [ref=e362]
+                          - text: 90 seg
+                        - generic [ref=e364]: RIR3
+                      - paragraph [ref=e365]: Agarre prono ancho. Ligeramente inclinada hacia atrás. Lleva la barra/manija hacia la clavícula. Codos viajan abajo y afuera. Aprieta espalda en la posición baja.
+                  - generic [ref=e366]:
+                    - generic [ref=e367]: "5"
+                    - generic [ref=e368]:
+                      - paragraph [ref=e369]: Sentadilla Sumo con Mancuerna
+                      - generic [ref=e370]:
+                        - generic [ref=e371]: 3 x 12-15
+                        - generic [ref=e372]:
+                          - img [ref=e373]
+                          - text: 90 seg
+                        - generic [ref=e375]: RIR3
+                      - paragraph [ref=e376]: Pies más abiertos que hombros, puntas afuera 45°. Mancuerna colgando al centro. Rodillas siguen dirección de los pies. Activa glúteos y aductores al subir.
+                  - generic [ref=e377]:
+                    - generic [ref=e378]: "6"
+                    - generic [ref=e379]:
+                      - paragraph [ref=e380]: Curl de Bíceps en Polea Baja
+                      - generic [ref=e381]:
+                        - generic [ref=e382]: 3 x 12
+                        - generic [ref=e383]:
+                          - img [ref=e384]
+                          - text: 60 seg
+                        - generic [ref=e386]: RIR3
+                      - paragraph [ref=e387]: Polea baja con barra corta o manija. Codos fijos pegados al cuerpo. Tensión constante (ventaja vs mancuerna). Control en la bajada.
+                  - generic [ref=e388]:
+                    - generic [ref=e389]: "7"
+                    - generic [ref=e390]:
+                      - paragraph [ref=e391]: Tríceps en Polea Alta
+                      - generic [ref=e392]:
+                        - generic [ref=e393]: 3 x 12
+                        - generic [ref=e394]:
+                          - img [ref=e395]
+                          - text: 60 seg
+                        - generic [ref=e397]: RIR3
+                      - paragraph [ref=e398]: Cuerda o barra en V en la polea alta. Codos pegados a los costados, fijos. Empuja hacia abajo hasta extensión completa. Abre ligeramente al final.
+                  - generic [ref=e399]:
+                    - generic [ref=e400]: "8"
+                    - generic [ref=e401]:
+                      - paragraph [ref=e402]: Dead Bug
+                      - generic [ref=e403]:
+                        - generic [ref=e404]: 3 x 8 c/lado
+                        - generic [ref=e405]:
+                          - img [ref=e406]
+                          - text: 45 seg
+                      - paragraph [ref=e408]: Espalda baja pegada al suelo todo el tiempo. Baja brazo y pierna opuestos lentamente (4 seg). Exhala al bajar. Excelente para estabilidad lumbar y core profundo.
+              - generic [ref=e409]:
+                - generic [ref=e410]:
+                  - generic [ref=e411]:
+                    - img [ref=e413]
+                    - generic [ref=e415]:
+                      - paragraph [ref=e416]: Cardio Activo (Opcional)
+                      - paragraph [ref=e417]: 1 ejercicio
+                  - generic [ref=e418]:
+                    - generic [ref=e419]: Cardio
+                    - generic [ref=e420]:
+                      - img [ref=e421]
+                      - text: ~15 min
+                - link "Entrenar este dia" [ref=e424] [cursor=pointer]:
+                  - /url: https://www.wellcorefitness.com/client/workout/4
+                  - img [ref=e425]
+                  - text: Entrenar este dia
+                - generic [ref=e428]:
+                  - generic [ref=e429]: "1"
+                  - generic [ref=e430]:
+                    - paragraph [ref=e431]: Elíptica o Caminadora Suave
+                    - generic [ref=e432]:
+                      - generic [ref=e433]: 1 x 30 min (opcional)
+                      - generic [ref=e434]:
+                        - img [ref=e435]
+                        - text: —
+                    - paragraph [ref=e437]: "Intensidad baja: 50-60% FCmax. Recuperación activa, no entrenamiento duro. Solo si te sientes bien y sin dolor muscular severo."
+              - generic [ref=e438]:
+                - generic [ref=e439]:
+                  - generic [ref=e440]:
+                    - img [ref=e442]
+                    - generic [ref=e444]:
+                      - paragraph [ref=e445]: Full Body C — Glúteos y Brazos
+                      - paragraph [ref=e446]: 8 ejercicios
+                  - generic [ref=e447]:
+                    - generic [ref=e448]: Glúteos/Brazos
+                    - generic [ref=e449]:
+                      - img [ref=e450]
+                      - text: ~48 min
+                - link "Entrenar este dia" [ref=e453] [cursor=pointer]:
+                  - /url: https://www.wellcorefitness.com/client/workout/5
+                  - img [ref=e454]
+                  - text: Entrenar este dia
+                - generic [ref=e456]:
+                  - generic [ref=e457]:
+                    - generic [ref=e458]: "1"
+                    - generic [ref=e459]:
+                      - paragraph [ref=e460]: Hip Thrust con Banda de Resistencia
+                      - generic [ref=e461]:
+                        - generic [ref=e462]: 4 x 15-20
+                        - generic [ref=e463]:
+                          - img [ref=e464]
+                          - text: 90 seg
+                        - generic [ref=e466]: RIR3
+                      - paragraph [ref=e467]: Banda justo encima de las rodillas + peso corporal. 4 series este día para máximo volumen de glúteo de la semana. Progresa añadiendo peso/banda más gruesa cada semana.
+                  - generic [ref=e468]:
+                    - generic [ref=e469]: "2"
+                    - generic [ref=e470]:
+                      - paragraph [ref=e471]: Clamshell con Banda
+                      - generic [ref=e472]:
+                        - generic [ref=e473]: 3 x 15 c/lado
+                        - generic [ref=e474]:
+                          - img [ref=e475]
+                          - text: 45 seg
+                        - generic [ref=e477]: RIR3
+                      - paragraph [ref=e478]: Banda sobre las rodillas. Acostada de lado, caderas y rodillas a 90°. Abre la rodilla superior como almeja. Cadera no se mueve. Activa glúteo medio perfectamente.
+                  - generic [ref=e479]:
+                    - generic [ref=e480]: "3"
+                    - generic [ref=e481]:
+                      - paragraph [ref=e482]: Remo Sentado en Polea Baja
+                      - generic [ref=e483]:
+                        - generic [ref=e484]: 3 x 10-12
+                        - generic [ref=e485]:
+                          - img [ref=e486]
+                          - text: 90 seg
+                        - generic [ref=e488]: RIR3
+                      - paragraph [ref=e489]: Siéntate frente a la polea baja, pies en el apoyo. Espalda recta. Lleva los codos hacia atrás juntando omóplatos. Pecho fuera durante el movimiento. No uses la inercia.
+                  - generic [ref=e490]:
+                    - generic [ref=e491]: "4"
+                    - generic [ref=e492]:
+                      - paragraph [ref=e493]: Elevaciones Laterales con Mancuernas
+                      - generic [ref=e494]:
+                        - generic [ref=e495]: 3 x 12-15
+                        - generic [ref=e496]:
+                          - img [ref=e497]
+                          - text: 60 seg
+                        - generic [ref=e499]: RIR3
+                      - paragraph [ref=e500]: Ligeramente inclinada al frente. Sube los brazos hasta la altura de los hombros. Pulgares apuntando ligeramente abajo (como vaciando un vaso). Peso ligero, ejecución perfecta.
+                  - generic [ref=e501]:
+                    - generic [ref=e502]: "5"
+                    - generic [ref=e503]:
+                      - paragraph [ref=e504]: Curl Martillo con Mancuernas
+                      - generic [ref=e505]:
+                        - generic [ref=e506]: 3 x 12 c/brazo
+                        - generic [ref=e507]:
+                          - img [ref=e508]
+                          - text: 60 seg
+                        - generic [ref=e510]: RIR3
+                      - paragraph [ref=e511]: Agarre neutro (palmas enfrentadas). Trabaja bíceps braquial + braquiorradial. Codos fijos. Movimiento más pesado que el curl supinado — ideal para volumen de brazo.
+                  - generic [ref=e512]:
+                    - generic [ref=e513]: "6"
+                    - generic [ref=e514]:
+                      - paragraph [ref=e515]: Press de Tríceps en Polea Alta (Cuerda)
+                      - generic [ref=e516]:
+                        - generic [ref=e517]: 3 x 12
+                        - generic [ref=e518]:
+                          - img [ref=e519]
+                          - text: 60 seg
+                        - generic [ref=e521]: RIR3
+                      - paragraph [ref=e522]: Cuerda en la polea alta. Inclínate ligeramente hacia la polea. Codos fijos a los costados. Empuja hacia abajo y separa la cuerda al final. Tensión constante en tríceps.
+                  - generic [ref=e523]:
+                    - generic [ref=e524]: "7"
+                    - generic [ref=e525]:
+                      - paragraph [ref=e526]: Abducción de Cadera con Banda de Pie
+                      - generic [ref=e527]:
+                        - generic [ref=e528]: 3 x 15 c/pierna
+                        - generic [ref=e529]:
+                          - img [ref=e530]
+                          - text: 60 seg
+                        - generic [ref=e532]: RIR3
+                      - paragraph [ref=e533]: Banda encima de rodillas. Apóyate en una pared. Levanta la pierna lateral a 45°. Sin inclinar el tronco. Excelente para glúteo medio — zona clave para forma del glúteo.
+                  - generic [ref=e534]:
+                    - generic [ref=e535]: "8"
+                    - generic [ref=e536]:
+                      - paragraph [ref=e537]: Crunch Abdominal Controlado
+                      - generic [ref=e538]:
+                        - generic [ref=e539]: 3 x 15
+                        - generic [ref=e540]:
+                          - img [ref=e541]
+                          - text: 45 seg
+                      - paragraph [ref=e543]: Manos detrás de la cabeza (sin jalar el cuello). Sube solo la parte superior del tronco. Exhala al subir. Contrae el abdomen durante todo el movimiento.
+              - generic [ref=e544]:
+                - generic [ref=e545]:
+                  - generic [ref=e546]:
+                    - img [ref=e548]
+                    - generic [ref=e550]:
+                      - paragraph [ref=e551]: Cardio o Descanso Activo
+                      - paragraph [ref=e552]: 1 ejercicio
+                  - generic [ref=e553]:
+                    - generic [ref=e554]: Cardio
+                    - generic [ref=e555]:
+                      - img [ref=e556]
+                      - text: ~15 min
+                - link "Entrenar este dia" [ref=e559] [cursor=pointer]:
+                  - /url: https://www.wellcorefitness.com/client/workout/6
+                  - img [ref=e560]
+                  - text: Entrenar este dia
+                - generic [ref=e563]:
+                  - generic [ref=e564]: "1"
+                  - generic [ref=e565]:
+                    - paragraph [ref=e566]: Caminata Activa o Sesión de Estiramientos
+                    - generic [ref=e567]:
+                      - generic [ref=e568]: 1 x 30-45 min
+                      - generic [ref=e569]:
+                        - img [ref=e570]
+                        - text: —
+                    - paragraph [ref=e572]: "Intensidad muy baja. Prioridad: recuperación activa y bienestar. Aprovecha para estirar todos los grupos musculares trabajados durante la semana."
+          - button "2 Semana 2 6 dias de entrenamiento" [ref=e574]:
+            - generic [ref=e575]:
+              - generic [ref=e576]: "2"
+              - generic [ref=e577]:
+                - generic [ref=e579]: Semana 2
+                - paragraph [ref=e580]: 6 dias de entrenamiento
+            - img [ref=e581]
+          - button "3 Semana 3 6 dias de entrenamiento" [ref=e584]:
+            - generic [ref=e585]:
+              - generic [ref=e586]: "3"
+              - generic [ref=e587]:
+                - generic [ref=e589]: Semana 3
+                - paragraph [ref=e590]: 6 dias de entrenamiento
+            - img [ref=e591]
+          - button "4 Semana 4 6 dias de entrenamiento" [ref=e594]:
+            - generic [ref=e595]:
+              - generic [ref=e596]: "4"
+              - generic [ref=e597]:
+                - generic [ref=e599]: Semana 4
+                - paragraph [ref=e600]: 6 dias de entrenamiento
+            - img [ref=e601]

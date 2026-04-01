@@ -1,0 +1,694 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "WellCore Fitness" [ref=e4] [cursor=pointer]:
+        - /url: https://www.wellcorefitness.com
+        - img "WellCore Fitness" [ref=e5]
+      - generic [ref=e6]:
+        - link "Metodo" [ref=e7] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/metodo
+        - link "RISE" [ref=e8] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/reto-rise
+        - link "Nosotros" [ref=e9] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/nosotros
+        - link "Proceso" [ref=e10] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/proceso
+        - link "Planes" [ref=e11] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/planes
+        - link "Blog" [ref=e12] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/blog
+        - link "FAQ" [ref=e13] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/faq
+        - link "Coaches" [ref=e14] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/coaches
+        - link "Presencial" [ref=e15] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/presencial
+      - generic [ref=e16]:
+        - link "Mi Cuenta" [ref=e17] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/login
+          - img [ref=e18]
+          - text: Mi Cuenta
+        - button "ES" [ref=e21]:
+          - generic [ref=e22]: ES
+          - img [ref=e23]
+        - button "Cambiar modo" [ref=e25]:
+          - img [ref=e26]
+        - link "Empezar" [ref=e28] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/inscripcion
+  - main [ref=e29]:
+    - generic [ref=e31]:
+      - paragraph [ref=e32]: Programa RISE — 30 dias de transformacion guiada.
+      - link "UNIRME" [ref=e33] [cursor=pointer]:
+        - /url: https://www.wellcorefitness.com/reto-rise
+    - generic [ref=e37]:
+      - generic [ref=e38]:
+        - generic [ref=e41]: Primera plataforma LATAM · Nivel Internacional · 2026
+        - heading "SIN MILAGROS, solo CIENCIA" [level=1] [ref=e42]:
+          - text: SIN MILAGROS,
+          - text: solo CIENCIA
+        - paragraph [ref=e43]: La primera plataforma de coaching fitness en Latinoamerica con nivel internacional. Entrenamiento y nutricion 1:1 basados en ciencia real, creada por y para latinos.
+        - generic [ref=e44]:
+          - generic [ref=e45]:
+            - generic [ref=e46]: 94%
+            - text: Adherencia
+          - generic [ref=e47]:
+            - generic [ref=e48]: 1:1
+            - text: Coaching
+          - generic [ref=e49]:
+            - generic [ref=e50]: 100%
+            - text: Personalizado
+        - generic [ref=e51]:
+          - link "Comenzar Ahora" [ref=e52] [cursor=pointer]:
+            - /url: https://www.wellcorefitness.com/inscripcion
+            - text: Comenzar Ahora
+            - img [ref=e53]
+          - link "Ver Planes" [ref=e55] [cursor=pointer]:
+            - /url: https://www.wellcorefitness.com/planes
+        - paragraph [ref=e56]: Sin tarjeta · 100% sin compromiso
+        - generic [ref=e57]:
+          - generic [ref=e58]: Esencial $299k
+          - generic [ref=e59]: Metodo $399k
+          - generic [ref=e60]: Elite $549k
+      - generic [ref=e62]:
+        - generic [ref=e67]: app.wellcorefitness.com
+        - generic [ref=e76]:
+          - generic [ref=e77]:
+            - generic [ref=e78]:
+              - paragraph [ref=e79]: 1,250
+              - paragraph [ref=e80]: XP Total
+            - generic [ref=e81]:
+              - paragraph [ref=e82]: 94%
+              - paragraph [ref=e83]: Adherencia
+            - generic [ref=e84]:
+              - paragraph [ref=e85]: "18"
+              - paragraph [ref=e86]: Semana
+            - generic [ref=e87]:
+              - paragraph [ref=e88]: "5"
+              - paragraph [ref=e89]: Racha dias
+          - generic [ref=e91]:
+            - generic [ref=e92]: Progreso semanal
+            - generic [ref=e93]: 4/5
+          - generic [ref=e96]:
+            - generic [ref=e97]:
+              - img [ref=e98]
+              - generic [ref=e100]: Mision de hoy
+            - paragraph [ref=e101]: 3 series de sentadilla — antes de las 8pm
+    - generic [ref=e104]:
+      - generic [ref=e109]:
+        - generic [ref=e110]: 0+
+        - text: personas activas esta semana
+      - generic [ref=e112]:
+        - generic [ref=e113]:
+          - generic [ref=e115]: D
+          - generic [ref=e117]: L
+          - generic [ref=e119]: C
+        - generic [ref=e120]:
+          - generic [ref=e121]: 0%
+          - text: satisfaccion
+      - generic [ref=e123]:
+        - img [ref=e124]
+        - generic [ref=e126]: Verificado por WellCore
+    - generic [ref=e129]:
+      - paragraph [ref=e130]: Basado en ciencia, no en promesas
+      - generic [ref=e131]:
+        - generic [ref=e132]: NSCA
+        - generic [ref=e133]: "|"
+        - generic [ref=e134]: ISSN
+        - generic [ref=e135]: "|"
+        - generic [ref=e136]: ACSM
+        - generic [ref=e137]: "|"
+        - generic [ref=e138]: Precision Nutrition
+        - generic [ref=e139]: "|"
+        - generic [ref=e140]: PubMed · Evidencia
+    - generic [ref=e143]:
+      - paragraph [ref=e144]: Por que WellCore
+      - heading "RESULTADOS QUE SE SOSTIENEN." [level=2] [ref=e145]
+      - paragraph [ref=e146]: No contamos con trucos rapidos. Contamos con metodo, seguimiento y ciencia aplicada a tu cuerpo. Cada decision tiene una razon.
+      - generic [ref=e147]:
+        - generic [ref=e148]:
+          - paragraph [ref=e149]: 0%
+          - paragraph [ref=e150]: Adherencia
+          - paragraph [ref=e151]: Nuestros clientes mantienen el plan semana a semana.
+        - generic [ref=e152]:
+          - paragraph [ref=e153]: "0"
+          - paragraph [ref=e154]: Clientes
+          - paragraph [ref=e155]: Activos con planes personalizados en ejecucion.
+        - generic [ref=e156]:
+          - paragraph [ref=e157]: "0"
+          - paragraph [ref=e158]: Resultados
+          - paragraph [ref=e159]: Cambios visibles y medibles en composicion corporal.
+        - generic [ref=e160]:
+          - paragraph [ref=e161]: 0%
+          - paragraph [ref=e162]: Personalizado
+          - paragraph [ref=e163]: Nada generico. Tu plan es tuyo y solo tuyo.
+      - generic [ref=e164]:
+        - generic [ref=e165]:
+          - generic [ref=e166]:
+            - img [ref=e168]
+            - generic [ref=e170]: "01"
+          - heading "Ciencia, no intuicion" [level=3] [ref=e171]
+          - paragraph [ref=e172]: Cada decision de entrenamiento y nutricion esta respaldada por evidencia publicada. Sin mitos, sin dietas milagro.
+        - generic [ref=e173]:
+          - generic [ref=e174]:
+            - img [ref=e176]
+            - generic [ref=e178]: "02"
+          - heading "Atencion 1:1 real" [level=3] [ref=e179]
+          - paragraph [ref=e180]: Tu coach te conoce por nombre, sabe tu historial y responde tus dudas. No eres un numero en una base de datos.
+        - generic [ref=e181]:
+          - generic [ref=e182]:
+            - img [ref=e184]
+            - generic [ref=e186]: "03"
+          - heading "Entiendes el por que" [level=3] [ref=e187]
+          - paragraph [ref=e188]: Te explicamos la logica detras de cada indicacion. Aprendes a entrenar y comer bien de por vida.
+    - generic [ref=e191]:
+      - paragraph [ref=e192]: Comunidad
+      - heading "NO ENTRENAS SOLO. JAMAS." [level=2] [ref=e193]
+      - paragraph [ref=e194]: Una comunidad real de personas comprometidas con su transformacion. Retos, logros y soporte mutuo — no likes vacios.
+      - generic [ref=e195]:
+        - generic [ref=e196]:
+          - generic [ref=e197]: "0"
+          - text: Miembros
+        - generic [ref=e198]:
+          - generic [ref=e199]: "0"
+          - text: Retos activos
+        - generic [ref=e200]:
+          - generic [ref=e201]: 0%
+          - text: Adherencia
+        - generic [ref=e202]:
+          - generic [ref=e203]: "0"
+          - text: Logros
+      - generic [ref=e204]:
+        - generic [ref=e205]:
+          - generic [ref=e206]:
+            - img [ref=e207]
+            - heading "Actividad en vivo" [level=3] [ref=e209]
+          - generic [ref=e210]:
+            - generic [ref=e211]:
+              - img [ref=e213]
+              - generic [ref=e215]:
+                - paragraph [ref=e216]: Maria completo su check-in
+                - paragraph [ref=e217]: Hace 12 min
+            - generic [ref=e218]:
+              - img [ref=e220]
+              - generic [ref=e222]:
+                - paragraph [ref=e223]: Juan desbloqueo logro "Racha 7"
+                - paragraph [ref=e224]: Hace 1 hora
+            - generic [ref=e225]:
+              - img [ref=e227]
+              - generic [ref=e229]:
+                - paragraph [ref=e230]: Carlos subio al leaderboard
+                - paragraph [ref=e231]: Hace 3 horas
+        - generic [ref=e232]:
+          - generic [ref=e233]:
+            - img [ref=e234]
+            - heading "Retos y desafios" [level=3] [ref=e236]
+          - generic [ref=e237]:
+            - generic [ref=e238]:
+              - generic [ref=e239]:
+                - paragraph [ref=e240]: Reto 30 dias sin azucar
+                - generic [ref=e241]: Activo
+              - paragraph [ref=e242]: 14 participantes · 18 dias restantes
+            - generic [ref=e243]:
+              - generic [ref=e244]:
+                - paragraph [ref=e245]: Reto RISE — Transformacion
+                - generic [ref=e246]: Activo
+              - paragraph [ref=e247]: 22 participantes · 24 dias restantes
+            - generic [ref=e248]:
+              - generic [ref=e249]:
+                - paragraph [ref=e250]: Reto Fuerza 5x5
+                - generic [ref=e251]: Proximo
+              - paragraph [ref=e252]: Inicia en 5 dias · 8 inscritos
+        - generic [ref=e253]:
+          - generic [ref=e254]:
+            - img [ref=e255]
+            - heading "Gamificacion" [level=3] [ref=e257]
+          - generic [ref=e258]:
+            - generic [ref=e259]:
+              - paragraph [ref=e260]: Sistema de XP
+              - paragraph [ref=e261]: Gana puntos por cada check-in, entrenamiento y logro desbloqueado.
+              - generic [ref=e262]:
+                - generic [ref=e263]: +50 XP check-in
+                - generic [ref=e264]: +100 XP racha
+            - generic [ref=e265]:
+              - paragraph [ref=e266]: Insignias y logros
+              - generic [ref=e267]:
+                - img [ref=e269]
+                - img [ref=e272]
+                - img [ref=e275]
+            - generic [ref=e277]:
+              - paragraph [ref=e278]: Leaderboard semanal
+              - paragraph [ref=e279]: Compite con la comunidad. Top 3 ganan reconocimiento.
+    - generic [ref=e282]:
+      - paragraph [ref=e283]: Como funciona
+      - heading "TU TRANSFORMACION EN 4 FASES." [level=2] [ref=e284]
+      - paragraph [ref=e285]: Un proceso estructurado donde cada semana tiene un proposito. Sin improvisacion, sin recetas genericas.
+      - generic [ref=e286]:
+        - generic [ref=e287]:
+          - generic [ref=e288]:
+            - generic [ref=e290]: "01"
+            - generic [ref=e291]: Semana 1
+          - heading "Diagnostico" [level=3] [ref=e292]
+          - paragraph [ref=e293]: "Evaluacion completa: historial, habitos, metas, metabolismo y estilo de vida. Nada se asume."
+        - generic [ref=e294]:
+          - generic [ref=e295]:
+            - generic [ref=e297]: "02"
+            - generic [ref=e298]: Semana 1-2
+          - heading "Plan personalizado" [level=3] [ref=e299]
+          - paragraph [ref=e300]: Diseno del protocolo de entrenamiento y nutricion hecho a tu medida, con la logica explicada.
+        - generic [ref=e301]:
+          - generic [ref=e302]:
+            - generic [ref=e304]: "03"
+            - generic [ref=e305]: Semanas 2-8
+          - heading "Ejecucion" [level=3] [ref=e306]
+          - paragraph [ref=e307]: Acompanamiento semanal con check-ins, ajustes en tiempo real y soporte directo de tu coach.
+        - generic [ref=e308]:
+          - generic [ref=e309]:
+            - generic [ref=e311]: "04"
+            - generic [ref=e312]: Continuo
+          - heading "Evolucion" [level=3] [ref=e313]
+          - paragraph [ref=e314]: Ajustes basados en datos reales de tu progreso. El plan evoluciona contigo permanentemente.
+      - link "Ver proceso completo" [ref=e316] [cursor=pointer]:
+        - /url: https://www.wellcorefitness.com/proceso
+        - text: Ver proceso completo
+        - img [ref=e317]
+    - generic [ref=e321]:
+      - paragraph [ref=e322]: Planes
+      - heading "ELIGE TU PLAN" [level=2] [ref=e323]
+      - paragraph [ref=e324]: Sin contratos de permanencia. Cancela cuando quieras.
+      - generic [ref=e325]:
+        - generic [ref=e326]:
+          - generic [ref=e327]:
+            - heading "ESENCIAL" [level=3] [ref=e328]
+            - generic [ref=e329]:
+              - generic [ref=e330]: $299,000
+              - generic [ref=e331]: COP/mes
+          - generic [ref=e332]:
+            - generic [ref=e333]:
+              - img [ref=e334]
+              - generic [ref=e336]: Entrenamiento personalizado desde cero
+            - generic [ref=e337]:
+              - img [ref=e338]
+              - generic [ref=e340]: Portal de cliente 24/7
+            - generic [ref=e341]:
+              - img [ref=e342]
+              - generic [ref=e344]: Evaluacion inicial + diagnostico
+            - generic [ref=e345]:
+              - img [ref=e346]
+              - generic [ref=e348]: Biblioteca de ejercicios con video
+            - generic [ref=e349]:
+              - img [ref=e350]
+              - generic [ref=e352]: Seguimiento de metricas y progreso
+            - generic [ref=e353]:
+              - img [ref=e354]
+              - generic [ref=e356]: Mediciones corporales + fotos
+            - generic [ref=e357]:
+              - img [ref=e358]
+              - generic [ref=e360]: Comunidad y chat grupal
+            - generic [ref=e361]:
+              - img [ref=e362]
+              - generic [ref=e364]: Ajuste mensual del programa
+            - generic [ref=e365]:
+              - img [ref=e366]
+              - generic [ref=e368]: Soporte por mensaje — respuesta 48h
+            - generic [ref=e369]:
+              - img [ref=e370]
+              - generic [ref=e372]: Nutricion personalizada
+            - generic [ref=e373]:
+              - img [ref=e374]
+              - generic [ref=e376]: Check-in semanal en vivo
+          - link "Comenzar Esencial" [ref=e377] [cursor=pointer]:
+            - /url: https://www.wellcorefitness.com/inscripcion?plan=esencial
+        - generic [ref=e378]:
+          - generic [ref=e379]: Mejor Valor
+          - generic [ref=e380]:
+            - heading "METODO" [level=3] [ref=e381]
+            - generic [ref=e382]:
+              - generic [ref=e383]: $399,000
+              - generic [ref=e384]: COP/mes
+          - generic [ref=e385]:
+            - generic [ref=e386]:
+              - img [ref=e387]
+              - generic [ref=e389]: Todo lo del plan Esencial +
+            - generic [ref=e390]:
+              - img [ref=e391]
+              - generic [ref=e393]: Nutricion 100% personalizada
+            - generic [ref=e394]:
+              - img [ref=e395]
+              - generic [ref=e397]: Macros y calorias ajustadas
+            - generic [ref=e398]:
+              - img [ref=e399]
+              - generic [ref=e401]: Recetas adaptadas
+            - generic [ref=e402]:
+              - img [ref=e403]
+              - generic [ref=e405]: Guia de habitos y estilo de vida
+            - generic [ref=e406]:
+              - img [ref=e407]
+              - generic [ref=e409]: Seguimiento de sueño y estres
+            - generic [ref=e410]:
+              - img [ref=e411]
+              - generic [ref=e413]: Reporte mensual de progreso
+            - generic [ref=e414]:
+              - img [ref=e415]
+              - generic [ref=e417]: Ajuste quincenal
+            - generic [ref=e418]:
+              - img [ref=e419]
+              - generic [ref=e421]: Soporte — respuesta 24h
+            - generic [ref=e422]:
+              - img [ref=e423]
+              - generic [ref=e425]: Check-in semanal en vivo
+            - generic [ref=e426]:
+              - img [ref=e427]
+              - generic [ref=e429]: Videollamada mensual
+          - link "Comenzar Metodo" [ref=e430] [cursor=pointer]:
+            - /url: https://www.wellcorefitness.com/inscripcion?plan=metodo
+        - generic [ref=e431]:
+          - generic [ref=e432]: SOLO 5 CUPOS
+          - generic [ref=e433]:
+            - heading "ELITE" [level=3] [ref=e434]
+            - generic [ref=e435]:
+              - generic [ref=e436]: $549,000
+              - generic [ref=e437]: COP/mes
+          - generic [ref=e438]:
+            - generic [ref=e439]:
+              - img [ref=e440]
+              - generic [ref=e442]: Todo lo del plan Metodo +
+            - generic [ref=e443]:
+              - img [ref=e444]
+              - generic [ref=e446]: Check-in semanal en vivo
+            - generic [ref=e447]:
+              - img [ref=e448]
+              - generic [ref=e450]: Videollamada mensual
+            - generic [ref=e451]:
+              - img [ref=e452]
+              - generic [ref=e454]: Ajuste semanal
+            - generic [ref=e455]:
+              - img [ref=e456]
+              - generic [ref=e458]: Linea directa WhatsApp
+            - generic [ref=e459]:
+              - img [ref=e460]
+              - generic [ref=e462]: Analisis composicion corporal
+            - generic [ref=e463]:
+              - img [ref=e464]
+              - generic [ref=e466]: Estrategia suplementacion
+            - generic [ref=e467]:
+              - img [ref=e468]
+              - generic [ref=e470]: Ciclo hormonal personalizado
+            - generic [ref=e471]:
+              - img [ref=e472]
+              - generic [ref=e474]: Bloodwork — analisis laboratorio
+            - generic [ref=e475]:
+              - img [ref=e476]
+              - generic [ref=e478]: Plan de viaje y contingencia
+            - generic [ref=e479]:
+              - img [ref=e480]
+              - generic [ref=e482]: Soporte prioritario — respuesta 8h
+          - link "Comenzar Elite" [ref=e483] [cursor=pointer]:
+            - /url: https://www.wellcorefitness.com/inscripcion?plan=elite
+      - paragraph [ref=e484]: Cancelacion sin penalizacion. Reembolsos evaluados antes de entregar el plan.
+    - generic [ref=e487]:
+      - paragraph [ref=e488]: Casos Reales
+      - heading "RESULTADOS REALES" [level=2] [ref=e489]
+      - paragraph [ref=e490]: Sin filtros, sin edicion. Clientes reales con planes WellCore que transformaron su cuerpo y sus habitos.
+      - generic [ref=e491]:
+        - generic [ref=e492]:
+          - generic [ref=e493]:
+            - generic [ref=e496]: DESPUES
+            - generic [ref=e499]: ANTES
+            - img [ref=e502]
+          - generic [ref=e504]:
+            - generic [ref=e505]: "-12kg"
+            - generic [ref=e506]: 4 meses
+            - generic [ref=e507]: Plan Metodo
+          - generic [ref=e508]:
+            - img [ref=e509]
+            - img [ref=e511]
+            - img [ref=e513]
+            - img [ref=e515]
+            - img [ref=e517]
+          - paragraph [ref=e519]: "\"Por primera vez entendi por que hacia cada cosa. Eso lo cambio todo. No fue una dieta, fue un cambio de mentalidad.\""
+          - generic [ref=e520]:
+            - generic [ref=e522]: ML
+            - generic [ref=e523]:
+              - paragraph [ref=e524]: Maria L.
+              - paragraph [ref=e525]: "-12kg · Plan Metodo"
+        - generic [ref=e526]:
+          - generic [ref=e527]:
+            - generic [ref=e530]: DESPUES
+            - generic [ref=e533]: ANTES
+            - img [ref=e536]
+          - generic [ref=e538]:
+            - generic [ref=e539]: +8kg musculo
+            - generic [ref=e540]: 6 meses
+            - generic [ref=e541]: Plan Elite
+          - generic [ref=e542]:
+            - img [ref=e543]
+            - img [ref=e545]
+            - img [ref=e547]
+            - img [ref=e549]
+            - img [ref=e551]
+          - paragraph [ref=e553]: "\"Sin suplementos raros, solo entrenamiento inteligente y buena nutricion. El seguimiento semanal marco la diferencia.\""
+          - generic [ref=e554]:
+            - generic [ref=e556]: JC
+            - generic [ref=e557]:
+              - paragraph [ref=e558]: Juan C.
+              - paragraph [ref=e559]: +8kg musculo · Plan Elite
+        - generic [ref=e560]:
+          - generic [ref=e561]:
+            - generic [ref=e564]: DESPUES
+            - generic [ref=e567]: ANTES
+            - img [ref=e570]
+          - generic [ref=e572]:
+            - generic [ref=e573]: "-9kg grasa"
+            - generic [ref=e574]: 12 semanas
+            - generic [ref=e575]: Plan Metodo
+          - generic [ref=e576]:
+            - img [ref=e577]
+            - img [ref=e579]
+            - img [ref=e581]
+            - img [ref=e583]
+            - img [ref=e585]
+          - paragraph [ref=e587]: "\"La guia de habitos fue lo que cambio todo. Ahora entreno por conviccion, no por obligacion.\""
+          - generic [ref=e588]:
+            - generic [ref=e590]: AP
+            - generic [ref=e591]:
+              - paragraph [ref=e592]: Andrea P.
+              - paragraph [ref=e593]: "-9kg grasa · Plan Metodo"
+    - generic [ref=e597]:
+      - generic [ref=e598]:
+        - paragraph [ref=e599]: Trabaja con nosotros
+        - heading "ERES COACH? UNETE AL METODO." [level=2] [ref=e600]
+        - paragraph [ref=e601]: Buscamos coaches con formacion real, comprometidos con la evidencia y dispuestos a entregar resultados medibles. Si te importa la ciencia mas que el marketing, queremos conocerte.
+        - generic [ref=e602]:
+          - generic [ref=e603]:
+            - img [ref=e604]
+            - text: Pasion por la evidencia
+          - generic [ref=e606]:
+            - img [ref=e607]
+            - text: Compromiso
+          - generic [ref=e609]:
+            - img [ref=e610]
+            - text: Mentalidad sin atajos
+        - link "Postulate" [ref=e613] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/coaches
+          - text: Postulate
+          - img [ref=e614]
+      - generic [ref=e617]:
+        - generic [ref=e622]: coach.wellcorefitness.com
+        - generic [ref=e623]:
+          - generic [ref=e624]:
+            - generic [ref=e625]:
+              - paragraph [ref=e626]: "18"
+              - paragraph [ref=e627]: Clientes
+            - generic [ref=e628]:
+              - paragraph [ref=e629]: $5.7M
+              - paragraph [ref=e630]: Mes
+            - generic [ref=e631]:
+              - paragraph [ref=e632]: 91%
+              - paragraph [ref=e633]: Adherencia
+          - generic [ref=e634]:
+            - paragraph [ref=e635]: Clientes activos
+            - generic [ref=e636]:
+              - generic [ref=e637]:
+                - generic [ref=e640]: Maria G.
+                - generic [ref=e641]: 88%
+              - generic [ref=e642]:
+                - generic [ref=e645]: Juan R.
+                - generic [ref=e646]: 94%
+              - generic [ref=e647]:
+                - generic [ref=e650]: Andrea M.
+                - generic [ref=e651]: 100%
+    - generic [ref=e654]:
+      - generic [ref=e655]:
+        - generic [ref=e656]:
+          - paragraph [ref=e657]: Conocimiento
+          - heading "APRENDE CON WELLCORE" [level=2] [ref=e658]
+        - link "Ver Todos" [ref=e659] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/blog
+          - text: Ver Todos
+          - img [ref=e660]
+      - generic [ref=e662]:
+        - 'link "Entrenamiento Sobrecarga Progresiva: La Clave del Crecimiento Muscular Descubre como aplicar correctamente el principio de sobrecarga progresiva para maximizar tus ganancias musculares y evitar el estancamiento. 12 Aug 2025 · 8 min" [ref=e663] [cursor=pointer]':
+          - /url: https://www.wellcorefitness.com/blog/progressive-overload-guia-completa
+          - generic [ref=e665]: Entrenamiento
+          - generic [ref=e666]:
+            - 'heading "Sobrecarga Progresiva: La Clave del Crecimiento Muscular" [level=3] [ref=e667]'
+            - paragraph [ref=e668]: Descubre como aplicar correctamente el principio de sobrecarga progresiva para maximizar tus ganancias musculares y evitar el estancamiento.
+            - generic [ref=e669]:
+              - generic [ref=e670]: 12 Aug 2025
+              - generic [ref=e671]: ·
+              - generic [ref=e672]: 8 min
+        - 'link "Entrenamiento Periodizacion del Entrenamiento: Como Planificar tu Progreso Aprende a estructurar tus ciclos de entrenamiento con periodizacion lineal y ondulante para progresar de forma sostenible y evitar mesetas. 03 Sep 2025 · 10 min" [ref=e673] [cursor=pointer]':
+          - /url: https://www.wellcorefitness.com/blog/periodizacion-entrenamiento
+          - generic [ref=e675]: Entrenamiento
+          - generic [ref=e676]:
+            - 'heading "Periodizacion del Entrenamiento: Como Planificar tu Progreso" [level=3] [ref=e677]'
+            - paragraph [ref=e678]: Aprende a estructurar tus ciclos de entrenamiento con periodizacion lineal y ondulante para progresar de forma sostenible y evitar mesetas.
+            - generic [ref=e679]:
+              - generic [ref=e680]: 03 Sep 2025
+              - generic [ref=e681]: ·
+              - generic [ref=e682]: 10 min
+        - 'link "Nutricion TDEE: Como Calcular tus Calorias Correctamente Entiende tu gasto calorico total diario con formulas validadas cientificamente y aprende a ajustar tus calorias segun tus objetivos reales. 18 Oct 2025 · 7 min" [ref=e683] [cursor=pointer]':
+          - /url: https://www.wellcorefitness.com/blog/tdee-calcular-calorias
+          - generic [ref=e685]: Nutricion
+          - generic [ref=e686]:
+            - 'heading "TDEE: Como Calcular tus Calorias Correctamente" [level=3] [ref=e687]'
+            - paragraph [ref=e688]: Entiende tu gasto calorico total diario con formulas validadas cientificamente y aprende a ajustar tus calorias segun tus objetivos reales.
+            - generic [ref=e689]:
+              - generic [ref=e690]: 18 Oct 2025
+              - generic [ref=e691]: ·
+              - generic [ref=e692]: 7 min
+    - generic [ref=e695]:
+      - generic [ref=e696]:
+        - paragraph [ref=e697]: FAQ
+        - heading "PREGUNTAS FRECUENTES" [level=2] [ref=e698]
+      - generic [ref=e699]:
+        - button "Necesito experiencia previa?" [ref=e701]:
+          - generic [ref=e702]: Necesito experiencia previa?
+          - img [ref=e703]
+        - button "Como funciona el seguimiento?" [ref=e706]:
+          - generic [ref=e707]: Como funciona el seguimiento?
+          - img [ref=e708]
+        - button "Necesito comprar suplementos?" [ref=e711]:
+          - generic [ref=e712]: Necesito comprar suplementos?
+          - img [ref=e713]
+        - button "Puedo cancelar cuando quiera?" [ref=e716]:
+          - generic [ref=e717]: Puedo cancelar cuando quiera?
+          - img [ref=e718]
+        - button "En cuanto tiempo vere resultados?" [ref=e721]:
+          - generic [ref=e722]: En cuanto tiempo vere resultados?
+          - img [ref=e723]
+        - button "Puedo entrenar en casa?" [ref=e726]:
+          - generic [ref=e727]: Puedo entrenar en casa?
+          - img [ref=e728]
+        - button "Que pasa si viajo o tengo un evento?" [ref=e731]:
+          - generic [ref=e732]: Que pasa si viajo o tengo un evento?
+          - img [ref=e733]
+        - button "Los precios incluyen IVA?" [ref=e736]:
+          - generic [ref=e737]: Los precios incluyen IVA?
+          - img [ref=e738]
+    - generic [ref=e745]:
+      - generic [ref=e748]: Lanzamiento 2026 — Acceso Fundador
+      - heading "LISTO PARA TRANSFORMARTE?" [level=2] [ref=e749]
+      - paragraph [ref=e750]: La primera plataforma de coaching fitness hecha en LATAM con estandares internacionales. Creemos que los latinos merecen acceso a coaching de elite sin barreras.
+      - generic [ref=e751]:
+        - link "Ver Planes" [ref=e752] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/planes
+          - text: Ver Planes
+          - img [ref=e753]
+        - link "Consulta Gratuita" [ref=e755] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/inscripcion
+      - generic [ref=e756]:
+        - generic [ref=e757]: Seguimiento 1:1 real
+        - generic [ref=e758]: ·
+        - generic [ref=e759]: Sin contratos forzados
+        - generic [ref=e760]: ·
+        - generic [ref=e761]: Acceso fundador
+  - contentinfo [ref=e763]:
+    - generic [ref=e764]:
+      - generic [ref=e765]:
+        - generic [ref=e766]:
+          - img "WellCore Fitness" [ref=e767]
+          - paragraph [ref=e768]: Coaching online 1:1 basado en ciencia. La primera plataforma LATAM con estandares internacionales. Sin dogmas, sin atajos, sin suplementos obligatorios.
+          - generic [ref=e769]:
+            - link "Instagram" [ref=e770] [cursor=pointer]:
+              - /url: https://www.instagram.com/wellcore.fitness/
+              - img [ref=e771]
+            - link "YouTube" [ref=e773] [cursor=pointer]:
+              - /url: https://www.youtube.com/@Wellcorefitness
+              - img [ref=e774]
+            - link "TikTok" [ref=e776] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e777]
+        - generic [ref=e779]:
+          - paragraph [ref=e780]: Ciencia del ejercicio, cada semana.
+          - paragraph [ref=e781]: Contenido exclusivo sobre entrenamiento y nutricion basada en evidencia.
+          - generic [ref=e782]:
+            - textbox "tu@email.com" [ref=e783]
+            - button "Suscribirse" [ref=e784]
+      - generic [ref=e785]:
+        - generic [ref=e786]:
+          - heading "Programa" [level=4] [ref=e787]
+          - list [ref=e788]:
+            - listitem [ref=e789]:
+              - link "El Metodo" [ref=e790] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/metodo
+            - listitem [ref=e791]:
+              - link "Proceso" [ref=e792] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/proceso
+            - listitem [ref=e793]:
+              - link "Planes" [ref=e794] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/planes
+            - listitem [ref=e795]:
+              - link "Coaches" [ref=e796] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/coaches
+            - listitem [ref=e797]:
+              - link "Presencial" [ref=e798] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/presencial
+        - generic [ref=e799]:
+          - heading "Recursos" [level=4] [ref=e800]
+          - list [ref=e801]:
+            - listitem [ref=e802]:
+              - link "Blog" [ref=e803] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/blog
+            - listitem [ref=e804]:
+              - link "FAQ" [ref=e805] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/faq
+            - listitem [ref=e806]:
+              - link "Nosotros" [ref=e807] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/nosotros
+            - listitem [ref=e808]:
+              - link "RISE" [ref=e809] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/reto-rise
+        - generic [ref=e810]:
+          - heading "Cuenta" [level=4] [ref=e811]
+          - list [ref=e812]:
+            - listitem [ref=e813]:
+              - link "Mi Cuenta" [ref=e814] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/login
+            - listitem [ref=e815]:
+              - link "Empezar" [ref=e816] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/inscripcion
+            - listitem [ref=e817]:
+              - link "Privacidad" [ref=e818] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/privacidad
+            - listitem [ref=e819]:
+              - link "Terminos" [ref=e820] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/terminos
+        - generic [ref=e821]:
+          - heading "Contacto" [level=4] [ref=e822]
+          - list [ref=e823]:
+            - listitem [ref=e824]:
+              - link "info@wellcorefitness.com" [ref=e825] [cursor=pointer]:
+                - /url: mailto:info@wellcorefitness.com
+            - listitem [ref=e826]:
+              - link "Cookies" [ref=e827] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/politica-cookies
+            - listitem [ref=e828]:
+              - link "Reembolsos" [ref=e829] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/reembolsos
+      - generic [ref=e830]:
+        - paragraph [ref=e831]: © 2026 WellCore Fitness. Todos los derechos reservados.
+        - paragraph [ref=e832]: Colombia · info@wellcorefitness.com
+  - button "Abrir chat WellCore" [ref=e834]:
+    - img [ref=e835]
+    - generic [ref=e837]: "1"

@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plan Glúteo Intermedio — WellCore Fitness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --wc-bg: #0A0A0A;
+      --wc-bg-secondary: #111111;
+      --wc-bg-tertiary: #1A1A1A;
+      --wc-accent: #DC2626;
+      --wc-accent-light: rgba(220,38,38,0.12);
+      --wc-accent-glow: rgba(220,38,38,0.25);
+      --wc-text: #F5F5F5;
+      --wc-text-muted: #9CA3AF;
+      --wc-border: rgba(255,255,255,0.08);
+      --wc-gold: #F59E0B;
+      --wc-green: #10B981;
+      --wc-blue: #3B82F6;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--wc-bg);
+      color: var(--wc-text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: linear-gradient(135deg, #0D0D0D 0%, #1A0505 50%, #0D0D0D 100%);
+      border-bottom: 1px solid var(--wc-border);
+      padding: 32px 40px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(220,38,38,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo {
+      width: 40px; height: 40px;
+      background: var(--wc-accent);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      color: white;
+      letter-spacing: 1px;
+    }
+    .brand-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 3px;
+      color: var(--wc-text);
+    }
+    .brand-sub {
+      font-size: 11px;
+      color: var(--wc-text-muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 1px;
+    }
+    .plan-badge {
+      background: var(--wc-accent-light);
+      border: 1px solid rgba(220,38,38,0.3);
+      color: var(--wc-accent);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .plan-title {
+      margin-top: 20px;
+    }
+    .plan-title h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 4px;
+      line-height: 1;
+      color: var(--wc-text);
+    }
+    .plan-title h1 span {
+      color: var(--wc-accent);
+    }
+    .plan-title p {
+      margin-top: 8px;
+      color: var(--wc-text-muted);
+      font-size: 13px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── META CHIPS ── */
+    .meta-row {
+      padding: 16px 40px;
+      background: var(--wc-bg-secondary);
+      border-bottom: 1px solid var(--wc-border);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--wc-bg-tertiary);
+      border: 1px solid var(--wc-border);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-family: 'Barlow', sans-serif;
+      font-weight: 500;
+    }
+    .chip .icon { font-size: 13px; }
+    .chip .label { color: var(--wc-text-muted); margin-right: 2px; }
+    .chip .value { color: var(--wc-text); font-weight: 600; }
+    .chip.accent { border-color: rgba(220,38,38,0.3); background: var(--wc-accent-light); }
+    .chip.accent .value { color: var(--wc-accent); }
+
+    /* ── MAIN LAYOUT ── */
+    .main { padding: 28px 40px; max-width: 900px; margin: 0 auto; }
+
+    /* ── SECTION TITLE ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      margin-top: 28px;
+    }
+    .section-header:first-child { margin-top: 0; }
+    .section-number {
+      width: 28px; height: 28px;
+      background: var(--wc-accent);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 15px;
+      color: white;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 2px;
+      color: var(--wc-text);
+    }
+    .section-subtitle {
+      font-size: 12px;
+      color: var(--wc-text-muted);
+      margin-left: auto;
+      letter-spacing: 0.5px;
+    }
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--wc-border);
+    }
+
+    /* ── CALENTAMIENTO CARD ── */
+    .warmup-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .warmup-item {
+      background: var(--wc-bg-secondary);
+      border: 1px solid var(--wc-border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .warmup-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .warmup-name {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--wc-text);
+      margin-bottom: 2px;
+    }
+    .warmup-detail {
+      font-size: 11px;
+      color: var(--wc-text-muted);
+      line-height: 1.5;
+    }
+    .warmup-sets {
+      font-family: 'Barlow', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--wc-gold);
+      margin-top: 4px;
+    }
+    .warmup-note {
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 11px;
+      color: rgba(245,158,11,0.85);
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    /* ── EJERCICIO CARD ── */
+    .ejercicio-card {
+      background: var(--wc-bg-secondary);
+      border: 1px solid var(--wc-border);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .ejercicio-card:hover { border-color: rgba(220,38,38,0.3); }
+
+    .ejercicio-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 18px 14px;
+      border-bottom: 1px solid var(--wc-border);
+    }
+    .ej-number {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--wc-bg-tertiary);
+      border: 1.5px solid var(--wc-border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 16px;
+      color: var(--wc-text-muted);
+      flex-shrink: 0;
+    }
+    .ej-number.principal {
+      background: var(--wc-accent-light);
+      border-color: rgba(220,38,38,0.4);
+      color: var(--wc-accent);
+    }
+    .ej-info { flex: 1; }
+    .ej-name {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--wc-text);
+      line-height: 1.2;
+    }
+    .ej-target {
+      font-size: 11px;
+      color: var(--wc-text-muted);
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .muscle-tag {
+      background: var(--wc-bg-tertiary);
+      border: 1px solid var(--wc-border);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 10px;
+      color: var(--wc-text-muted);
+      font-family: 'Barlow', sans-serif;
+      font-weight: 500;
+    }
+    .ej-methodology {
+      font-size: 11px;
+      color: var(--wc-accent);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .ejercicio-stats {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+    }
+    .stat-cell {
+      padding: 10px 12px;
+      text-align: center;
+      border-right: 1px solid var(--wc-border);
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-label {
+      font-size: 10px;
+      color: var(--wc-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 3px;
+    }
+    .stat-value {
+      font-family: 'Barlow', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--wc-text);
+    }
+    .stat-value.accent { color: var(--wc-accent); }
+    .stat-value.gold { color: var(--wc-gold); }
+    .stat-value.blue { color: var(--wc-blue); }
+    .stat-value.green { color: var(--wc-green); }
+
+    .ejercicio-body {
+      padding: 14px 18px;
+    }
+    .ej-notes-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--wc-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .ej-notes {
+      font-size: 12px;
+      color: rgba(245,245,245,0.75);
+      line-height: 1.7;
+    }
+    .ej-notes strong {
+      color: var(--wc-text);
+      font-weight: 600;
+    }
+    .ej-notes .highlight {
+      color: var(--wc-accent);
+      font-weight: 600;
+    }
+
+    .progression-box {
+      margin-top: 10px;
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .progression-box .prog-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+    .progression-box .prog-text {
+      font-size: 11px;
+      color: rgba(147,197,253,0.9);
+      line-height: 1.5;
+    }
+    .progression-box strong { color: #93C5FD; }
+
+    /* ── SERIES TRACKER ── */
+    .sets-tracker {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .set-box {
+      background: var(--wc-bg-tertiary);
+      border: 1px dashed rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 11px;
+      color: var(--wc-text-muted);
+      text-align: center;
+      min-width: 80px;
+    }
+    .set-box .set-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+    .set-box .set-fields {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 600;
+      font-size: 12px;
+      color: rgba(245,245,245,0.4);
+    }
+    .set-box .set-fields span {
+      display: inline-block;
+      width: 28px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      margin: 0 2px;
+      text-align: center;
+    }
+
+    /* ── CARDIO SECTION ── */
+    .cardio-card {
+      background: var(--wc-bg-secondary);
+      border: 1px solid rgba(16,185,129,0.25);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .cardio-icon-wrap {
+      width: 52px; height: 52px;
+      background: rgba(16,185,129,0.12);
+      border: 1px solid rgba(16,185,129,0.25);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .cardio-info { flex: 1; }
+    .cardio-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 2px;
+      color: var(--wc-text);
+      margin-bottom: 4px;
+    }
+    .cardio-desc {
+      font-size: 12px;
+      color: var(--wc-text-muted);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .cardio-params {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .cardio-param {
+      text-align: center;
+    }
+    .cardio-param .cp-label {
+      font-size: 10px;
+      color: var(--wc-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 2px;
+    }
+    .cardio-param .cp-value {
+      font-family: 'Barlow', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--wc-green);
+    }
+    .cardio-science {
+      background: rgba(16,185,129,0.07);
+      border: 1px solid rgba(16,185,129,0.15);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 11px;
+      color: rgba(110,231,183,0.85);
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+    .cardio-science strong { color: #6EE7B7; }
+
+    /* ── PROGRESSION TABLE ── */
+    .prog-table-wrap {
+      background: var(--wc-bg-secondary);
+      border: 1px solid var(--wc-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .prog-table-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--wc-border);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: var(--wc-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th {
+      padding: 8px 16px;
+      text-align: left;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--wc-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      background: var(--wc-bg-tertiary);
+      border-bottom: 1px solid var(--wc-border);
+    }
+    td {
+      padding: 10px 16px;
+      font-size: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    .td-semana { font-family: 'Barlow', sans-serif; font-weight: 700; color: var(--wc-text); }
+    .td-rir { font-weight: 600; color: var(--wc-gold); }
+    .td-accion { color: var(--wc-accent); font-weight: 600; font-size: 11px; }
+
+    /* ── SCIENCE BOX ── */
+    .science-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .science-item {
+      background: var(--wc-bg-secondary);
+      border: 1px solid var(--wc-border);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .sci-label {
+      font-size: 10px;
+      color: var(--wc-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .sci-title {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--wc-text);
+      margin-bottom: 4px;
+    }
+    .sci-desc {
+      font-size: 11px;
+      color: var(--wc-text-muted);
+      line-height: 1.5;
+    }
+
+    /* ── FOOTER ── */
+    .plan-footer {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid var(--wc-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .footer-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 16px;
+      letter-spacing: 3px;
+      color: var(--wc-text-muted);
+    }
+    .footer-brand span { color: var(--wc-accent); }
+    .footer-disclaimer {
+      font-size: 10px;
+      color: rgba(156,163,175,0.5);
+      text-align: right;
+      max-width: 300px;
+      line-height: 1.5;
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      body { background: #0A0A0A !important; }
+      .header::before { display: none; }
+      @page { margin: 0; size: A4; }
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: var(--wc-border);
+      margin: 24px 0;
+    }
+
+    /* RIR badge */
+    .rir-pill {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(245,158,11,0.12);
+      border: 1px solid rgba(245,158,11,0.25);
+      color: var(--wc-gold);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      letter-spacing: 0.3px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     HEADER
+═══════════════════════════════════════ -->
+<div class="header">
+  <div class="header-top">
+    <div class="brand">
+      <div class="brand-logo">WC</div>
+      <div>
+        <div class="brand-name">WELLCORE FITNESS</div>
+        <div class="brand-sub">Ciencia · Disciplina · Resultados</div>
+      </div>
+    </div>
+    <div class="plan-badge">Plan de Entrenamiento Certificado</div>
+  </div>
+  <div class="plan-title">
+    <h1>GLÚTEO <span>INTERMEDIO</span></h1>
+    <p>Science-Based Hypertrophy · Dr. Mike Israetel / RP · Jeff Nippard · WellCore Method · Marzo 2026</p>
+  </div>
+</div>
+
+<!-- META CHIPS -->
+<div class="meta-row">
+  <div class="chip accent">
+    <span class="icon">🎯</span>
+    <span class="label">Objetivo:</span>
+    <span class="value">Hipertrofia Glúteo</span>
+  </div>
+  <div class="chip">
+    <span class="icon">📊</span>
+    <span class="label">Nivel:</span>
+    <span class="value">Intermedio</span>
+  </div>
+  <div class="chip">
+    <span class="icon">🔢</span>
+    <span class="label">Ejercicios:</span>
+    <span class="value">5</span>
+  </div>
+  <div class="chip">
+    <span class="icon">🔄</span>
+    <span class="label">Series:</span>
+    <span class="value">3 por ejercicio</span>
+  </div>
+  <div class="chip">
+    <span class="icon">⏱</span>
+    <span class="label">Duración total:</span>
+    <span class="value">~75–85 min</span>
+  </div>
+  <div class="chip">
+    <span class="icon">📅</span>
+    <span class="label">Frecuencia:</span>
+    <span class="value">1 día / semana</span>
+  </div>
+  <div class="chip">
+    <span class="icon">📈</span>
+    <span class="label">Sistema:</span>
+    <span class="value">Double Progression + RIR</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- ══ BLOQUE 1: CALENTAMIENTO ══ -->
+  <div class="section-header">
+    <div class="section-number">1</div>
+    <div class="section-title">CALENTAMIENTO ESPECÍFICO</div>
+    <div class="section-line"></div>
+    <div class="section-subtitle">10–12 min · Activación neuromuscular de glúteo</div>
+  </div>
+
+  <div class="warmup-grid">
+    <div class="warmup-item">
+      <div class="warmup-icon">🚶</div>
+      <div>
+        <div class="warmup-name">Caminadora / Bici</div>
+        <div class="warmup-detail">5 min a ritmo moderado. Aumenta temperatura sinovial articular, activa la circulación y prepara el sistema nervioso. NO cardio intenso — solo activación.</div>
+        <div class="warmup-sets">5 min · RPE 3–4</div>
+      </div>
+    </div>
+    <div class="warmup-item">
+      <div class="warmup-icon">🦵</div>
+      <div>
+        <div class="warmup-name">Glute Bridge con Banda</div>
+        <div class="warmup-detail">Banda de resistencia baja por encima de rodillas. Activa el glúteo máximo y medio antes del trabajo pesado. Aprieta el glúteo arriba 1–2 segundos en cada rep.</div>
+        <div class="warmup-sets">2 × 15 reps · Sin descanso entre sets</div>
+      </div>
+    </div>
+    <div class="warmup-item">
+      <div class="warmup-icon">🦀</div>
+      <div>
+        <div class="warmup-name">Clamshells con Banda</div>
+        <div class="warmup-detail">Acostada de lado, rodillas flexionadas a 90°. Abre la pierna superior manteniendo pies juntos. Activa glúteo medio y mínimo — esenciales para estabilidad pélvica.</div>
+        <div class="warmup-sets">2 × 15 reps/lado · Pausa 1s arriba</div>
+      </div>
+    </div>
+    <div class="warmup-item">
+      <div class="warmup-icon">⚖️</div>
+      <div>
+        <div class="warmup-name">Sentadilla Goblet Ligera</div>
+        <div class="warmup-detail">Mancuerna ligera (5–10 kg). ROM completo, énfasis en profundidad. Prepara la cadera, rodilla y tobillo para el trabajo de hip thrust y búlgara. 2 sets de ramping del principal.</div>
+        <div class="warmup-sets">2 × 10 reps · 40% del peso de trabajo · ROM completo</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warmup-note">
+    <span>⚡</span>
+    <span><strong>Protocolo de Ramping (sets de activación del principal):</strong> Antes del hip thrust, realiza 2 sets de ramping sin contar como trabajo: 40% peso objetivo × 10 reps + 70% × 5 reps. El objetivo NO es agotar sino pre-activar las unidades motoras de glúteo y calentar las articulaciones de cadera.</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══ BLOQUE 2: ENTRENAMIENTO PRINCIPAL ══ -->
+  <div class="section-header">
+    <div class="section-number">2</div>
+    <div class="section-title">ENTRENAMIENTO PRINCIPAL</div>
+    <div class="section-line"></div>
+    <div class="section-subtitle">5 ejercicios · 3 series c/u · Semana 1 del mesociclo</div>
+  </div>
+
+  <!-- EJERCICIO 1: HIP THRUST -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-header">
+      <div class="ej-number principal">01</div>
+      <div class="ej-info">
+        <div class="ej-name">Hip Thrust con Barra</div>
+        <div class="ej-target">
+          <span class="muscle-tag">Glúteo máximo ●●●</span>
+          <span class="muscle-tag">Isquiotibiales ●●</span>
+          <span class="muscle-tag">Core</span>
+          <span style="color: #DC2626; font-size: 10px; font-weight: 600;">COMPUESTO PRINCIPAL</span>
+        </div>
+      </div>
+      <div class="ej-methodology">ELONGATED + CONTRACTED</div>
+    </div>
+    <div class="ejercicio-stats">
+      <div class="stat-cell">
+        <div class="stat-label">Series</div>
+        <div class="stat-value accent">3</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Reps</div>
+        <div class="stat-value">10–12</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Descanso</div>
+        <div class="stat-value gold">2–3 min</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">RIR / RPE</div>
+        <div class="stat-value gold">2 RIR</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Tempo</div>
+        <div class="stat-value blue">2-1-2-1</div>
+      </div>
+    </div>
+    <div class="ejercicio-body">
+      <div class="ej-notes-title">Técnica & Puntos Clave</div>
+      <div class="ej-notes">
+        Espalda apoyada perpendicularmente en el banco (borde a la altura de los omóplatos). Barra con protector o colchoneta apoyada en el pliegue de la cadera. Pies al ancho de hombros, rodillas a 90° en la posición superior. <strong>Sube la barra empujando a través de los talones</strong>, no de las puntas del pie — esto maximiza la activación de glúteo vs cuádriceps. Al llegar arriba, <strong>aprieta el glúteo al máximo durante 1–2 segundos</strong> (este es el peak de contracción). La posición final: caderas paralelas al suelo, sin hiperextensión lumbar. <span class="highlight">Excentrico 2s</span> bajando, lo que aumenta el tiempo bajo tensión. El tempo 2-1-2-1 asegura control total y máximo estímulo.
+      </div>
+      <div class="progression-box">
+        <span class="prog-icon">📈</span>
+        <div class="prog-text">
+          <strong>Double Progression:</strong> Comienza con un peso que te permita completar exactamente 3×10 con 2 RIR de sobra. Cada sesión, intenta agregar 1 rep por serie. Cuando alcances 3×12 con RIR 2+, sube <strong>+5 kg</strong> y vuelve a empezar desde 3×10.
+        </div>
+      </div>
+      <div class="sets-tracker">
+        <div class="set-box">
+          <div class="set-label">Serie 1</div>
+          <div class="set-fields"><span>__</span>kg × <span>__</span>reps</div>
+        </div>
+        <div class="set-box">
+          <div class="set-label">Serie 2</div>
+          <div class="set-fields"><span>__</span>kg × <span>__</span>reps</div>
+        </div>
+        <div class="set-box">
+          <div class="set-label">Serie 3</div>
+          <div class="set-fields"><span>__</span>kg × <span>__</span>reps</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 2: SENTADILLA BÚLGARA -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-header">
+      <div class="ej-number principal">02</div>
+      <div class="ej-info">
+        <div class="ej-name">Sentadilla Búlgara con Mancuernas</div>
+        <div class="ej-target">
+          <span class="muscle-tag">Glúteo máximo ●●●</span>
+          <span class="muscle-tag">Cuádriceps ●●</span>
+          <span class="muscle-tag">Isquiotibiales ●</span>
+          <span style="color: #DC2626; font-size: 10px; font-weight: 600;">LENGTHENED BIAS</span>
+        </div>
+      </div>
+      <div class="ej-methodology">ELONGATED STRETCH</div>
+    </div>
+    <div class="ejercicio-stats">
+      <div class="stat-cell">
+        <div class="stat-label">Series</div>
+        <div class="stat-value accent">3</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Reps</div>
+        <div class="stat-value">10–12 / lado</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Descanso</div>
+        <div class="stat-value gold">90–120s</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">RIR / RPE</div>
+        <div class="stat-value gold">2 RIR</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Tempo</div>
+        <div class="stat-value blue">3-1-1-0</div>
+      </div>
+    </div>
+    <div class="ejercicio-body">
+      <div class="ej-notes-title">Técnica & Puntos Clave</div>
+      <div class="ej-notes">
+        Pie trasero elevado en banco a ~45–50 cm de altura. Pie delantero suficientemente adelante para que la rodilla NO supere la punta del pie (o supere muy ligeramente — ambas variantes son seguras si hay movilidad). <strong>El torso ligeramente inclinado hacia adelante</strong> transfiere más carga al glúteo vs postura recta que enfatiza cuádriceps. <span class="highlight">El excentrico de 3 segundos es crítico</span> — aquí ocurre el mayor estiramiento del glúteo (posición elongada), que es el estímulo de mayor hipertrofia según Pedrosa et al. (2023). Baja hasta que el muslo trasero casi toque el suelo. Completa primero todas las reps de un lado antes de cambiar.
+      </div>
+      <div class="progression-box">
+        <span class="prog-icon">📈</span>
+        <div class="prog-text">
+          <strong>Double Progression:</strong> Misma lógica. Cuando alcances 3×12/lado con RIR 2, sube <strong>+2.5 kg por mancuerna</strong>. Si no tienes mancuernas intermedias, agrega una rep extra antes de subir peso.
+        </div>
+      </div>
+      <div class="sets-tracker">
+        <div class="set-box">
+          <div class="set-label">Serie 1 (Izq)</div>
+          <div class="set-fields"><span>__</span>kg × <span>__</span>reps</div>
+        </div>
+        <div class="set-box">
+          <div class="set-label">Serie 1 (Der)</div>
+          <div class="set-fields"><span>__</span>kg × <span>__</span>reps</div>
+        </div>
+        <div class="set-box" style="opacity:0.5;">
+          <div class="set-label">Serie 2–3</div>
+          <div class="set-fields">Repetir</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 3: RDL -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-header">
+      <div class="ej-number">03</div>
+      <div class="ej-info">
+        <div class="ej-name">Peso Muerto Rumano (RDL) con Barra</div>
+        <div class="ej-target">
+          <span class="muscle-tag">Isquiotibiales ●●●</span>
+          <span class="muscle-tag">Glúteo máximo ●●</span>
+          <span class="muscle-tag">Erectores</span>
+          <span style="color: #3B82F6; font-size: 10px; font-weight: 600;">HIP HINGE ELONGADO</span>
+        </div>
+      </div>
+      <div class="ej-methodology">MAXIMUM ELONGATION</div>
+    </div>
+    <div class="ejercicio-stats">
+      <div class="stat-cell">
+        <div class="stat-label">Series</div>
+        <div class="stat-value accent">3</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Reps</div>
+        <div class="stat-value">10–12</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Descanso</div>
+        <div class="stat-value gold">90–120s</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">RIR / RPE</div>
+        <div class="stat-value gold">2 RIR</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Tempo</div>
+        <div class="stat-value blue">3-1-1-0</div>
+      </div>
+    </div>
+    <div class="ejercicio-body">
+      <div class="ej-notes-title">Técnica & Puntos Clave</div>
+      <div class="ej-notes">
+        Diferencia fundamental con el peso muerto convencional: <strong>las rodillas casi no se flexionan</strong> (ligera flexión permitida). La barra baja pegada a las piernas usando una <span class="highlight">bisagra de cadera pura</span>. La columna se mantiene neutra — ni arqueada ni redondeada. Baja hasta sentir <strong>el estiramiento máximo de los isquiotibiales</strong> (para la mayoría, la barra llega a media espinilla). La profundidad la limita tu movilidad, no el ego. Piensa en "empujar las caderas hacia atrás" más que en "bajar la barra". Al subir, activa glúteos apretando fuerte en la posición superior. <span class="highlight">Excentrico de 3s</span> para maximizar tensión en posición elongada.
+      </div>
+      <div class="progression-box">
+        <span class="prog-icon">📈</span>
+        <div class="prog-text">
+          <strong>Double Progression:</strong> Al completar 3×12 con buena técnica y RIR 2, sube <strong>+5 kg</strong>. Si la movilidad es el limitante, trabaja ROM antes de agregar peso.
+        </div>
+      </div>
+      <div class="sets-tracker">
+        <div class="set-box">
+          <div class="set-label">Serie 1</div>
+          <div class="set-fields"><span>__</span>kg × <span>__</span>reps</div>
+        </div>
+        <div class="set-box">
+          <div class="set-label">Serie 2</div>
+          <div class="set-fields"><span>__</span>kg × <span>__</span>reps</div>
+        </div>
+        <div class="set-box">
+          <div class="set-label">Serie 3</div>
+          <div class="set-fields"><span>__</span>kg × <span>__</span>reps</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 4: ABDUCCIÓN -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-header">
+      <div class="ej-number">04</div>
+      <div class="ej-info">
+        <div class="ej-name">Abducción en Máquina</div>
+        <div class="ej-target">
+          <span class="muscle-tag">Glúteo medio ●●●</span>
+          <span class="muscle-tag">Glúteo mínimo ●●●</span>
+          <span class="muscle-tag">TFL ●</span>
+          <span style="color: #10B981; font-size: 10px; font-weight: 600;">DEFINICIÓN LATERAL</span>
+        </div>
+      </div>
+      <div class="ej-methodology">ISOLATION</div>
+    </div>
+    <div class="ejercicio-stats">
+      <div class="stat-cell">
+        <div class="stat-label">Series</div>
+        <div class="stat-value accent">3</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Reps</div>
+        <div class="stat-value">15–20</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Descanso</div>
+        <div class="stat-value gold">60–75s</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">RIR / RPE</div>
+        <div class="stat-value gold">1 RIR</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Tempo</div>
+        <div class="stat-value blue">2-1-2-1</div>
+      </div>
+    </div>
+    <div class="ejercicio-body">
+      <div class="ej-notes-title">Técnica & Puntos Clave</div>
+      <div class="ej-notes">
+        Siéntate en la máquina con la espalda recta. <strong>Truco avanzado</strong>: inclínate ligeramente hacia adelante (30–45°) durante el ejercicio — esto aumenta el estiramiento del glúteo medio en la posición inicial (lengthened position), maximizando el estímulo según el principio de tensión en posición elongada. <span class="highlight">Aprieta el glúteo medio al abrir</span> durante 1 segundo antes de controlar la vuelta. Este músculo es clave para el "shelf" (definición lateral superior del glúteo). Evita usar impulso — el movimiento debe ser lento y controlado en ambas fases.
+      </div>
+      <div class="progression-box">
+        <span class="prog-icon">📈</span>
+        <div class="prog-text">
+          <strong>Progresión:</strong> Al completar 3×20 con RIR 1, sube <strong>+5 kg</strong> y vuelve a 3×15. El glúteo medio responde muy bien a mayor volumen y menor carga — no subas peso agresivamente.
+        </div>
+      </div>
+      <div class="sets-tracker">
+        <div class="set-box">
+          <div class="set-label">Serie 1</div>
+          <div class="set-fields"><span>__</span>kg × <span>__</span>reps</div>
+        </div>
+        <div class="set-box">
+          <div class="set-label">Serie 2</div>
+          <div class="set-fields"><span>__</span>kg × <span>__</span>reps</div>
+        </div>
+        <div class="set-box">
+          <div class="set-label">Serie 3</div>
+          <div class="set-fields"><span>__</span>kg × <span>__</span>reps</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 5: KICKBACK POLEA -->
+  <div class="ejercicio-card">
+    <div class="ejercicio-header">
+      <div class="ej-number">05</div>
+      <div class="ej-info">
+        <div class="ej-name">Kickback en Polea Baja (Patada de Glúteo)</div>
+        <div class="ej-target">
+          <span class="muscle-tag">Glúteo máximo ●●●</span>
+          <span class="muscle-tag">Isquiotibiales ●</span>
+          <span style="color: #10B981; font-size: 10px; font-weight: 600;">AISLAMIENTO PURO</span>
+        </div>
+      </div>
+      <div class="ej-methodology">CONTRACTION BIAS</div>
+    </div>
+    <div class="ejercicio-stats">
+      <div class="stat-cell">
+        <div class="stat-label">Series</div>
+        <div class="stat-value accent">3</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Reps</div>
+        <div class="stat-value">12–15 / lado</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Descanso</div>
+        <div class="stat-value gold">60s</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">RIR / RPE</div>
+        <div class="stat-value gold">0–1 RIR</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Tempo</div>
+        <div class="stat-value blue">1-0-1-2</div>
+      </div>
+    </div>
+    <div class="ejercicio-body">
+      <div class="ej-notes-title">Técnica & Puntos Clave</div>
+      <div class="ej-notes">
+        Coloca la correa en el tobillo, conectada a la polea baja. Párate a ~60 cm de distancia, apoya las manos en la máquina para estabilidad. <strong>Mantén el torso fijo</strong> — el error más común es inclinar el tronco hacia adelante para ganar rango extra, lo que anula el aislamiento del glúteo. La pierna de trabajo lleva la cadera hacia atrás y arriba, <strong>apretando fuerte el glúteo en la posición extendida</strong>. <span class="highlight">Pausa de 2 segundos arriba</span> (tempo 1-0-1-2 → la "2" es la pausa en extensión). Rodilla ligeramente flexionada durante el movimiento. Esta posición de extensión completa corresponde a la fase de mayor activación EMG del glúteo máximo — complementa perfectamente al hip thrust.
+      </div>
+      <div class="sets-tracker">
+        <div class="set-box">
+          <div class="set-label">S1 Izquierda</div>
+          <div class="set-fields"><span>__</span>kg × <span>__</span>reps</div>
+        </div>
+        <div class="set-box">
+          <div class="set-label">S1 Derecha</div>
+          <div class="set-fields"><span>__</span>kg × <span>__</span>reps</div>
+        </div>
+        <div class="set-box" style="opacity:0.5;">
+          <div class="set-label">S2–S3</div>
+          <div class="set-fields">Repetir</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══ BLOQUE 3: CARDIO POST-ENTRENO ══ -->
+  <div class="section-header">
+    <div class="section-number">3</div>
+    <div class="section-title">CARDIO POST-ENTRENAMIENTO</div>
+    <div class="section-line"></div>
+    <div class="section-subtitle">20 min · LISS · Siempre DESPUÉS de fuerza</div>
+  </div>
+
+  <div class="cardio-card">
+    <div class="cardio-icon-wrap">🏃</div>
+    <div class="cardio-info">
+      <div class="cardio-name">LISS — LOW INTENSITY STEADY STATE</div>
+      <div class="cardio-desc">
+        Caminadora con inclinación o bicicleta estática. Intensidad constante y baja. El objetivo es consumo calórico adicional y acondicionamiento cardiovascular sin comprometer la recuperación muscular ni activar la vía AMPK de forma agresiva.
+      </div>
+      <div class="cardio-params">
+        <div class="cardio-param">
+          <div class="cp-label">Duración</div>
+          <div class="cp-value">20 min</div>
+        </div>
+        <div class="cardio-param">
+          <div class="cp-label">Intensidad</div>
+          <div class="cp-value">60–65% FCmax</div>
+        </div>
+        <div class="cardio-param">
+          <div class="cp-label">Caminadora</div>
+          <div class="cp-value">Inclinación 8–12%</div>
+        </div>
+        <div class="cardio-param">
+          <div class="cp-label">Velocidad</div>
+          <div class="cp-value">3.5–5 km/h</div>
+        </div>
+        <div class="cardio-param">
+          <div class="cp-label">FCmax estimada</div>
+          <div class="cp-value">220 − edad</div>
+        </div>
+      </div>
+      <div class="cardio-science">
+        <strong>¿Por qué LISS y no HIIT?</strong> La vía metabólica AMPK se activa agresivamente con cardio de alta intensidad (HIIT) e inhibe directamente la señalización mTORC1 — el regulador maestro de la síntesis proteica muscular. El LISS a 60–65% FCmax activa mínimamente la AMPK, preservando el ambiente anabólico creado por el entrenamiento de fuerza. Por eso en WellCore siempre: cardio <strong>POST fuerza</strong>, y preferiblemente <strong>LISS sobre HIIT</strong> en días de entrenamiento de hipertrofia. (Fuente: TESIS WellCore §1.2 — mTOR vs AMPK)
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══ BLOQUE 4: SISTEMA DE PROGRESIÓN ══ -->
+  <div class="section-header">
+    <div class="section-number">4</div>
+    <div class="section-title">SISTEMA DE PROGRESIÓN — DOUBLE PROGRESSION</div>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="prog-table-wrap">
+    <div class="prog-table-header">
+      📅 Ejemplo de progresión — Hip Thrust con Barra (3 series, rango 10–12 reps)
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Semana</th>
+          <th>Serie 1</th>
+          <th>Serie 2</th>
+          <th>Serie 3</th>
+          <th>RIR</th>
+          <th>Acción Siguiente Sesión</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="td-semana">Semana 1</td>
+          <td>60kg × 10</td>
+          <td>60kg × 10</td>
+          <td>60kg × 10</td>
+          <td class="td-rir">RIR 3</td>
+          <td class="td-accion">Mantener peso → intentar +1 rep</td>
+        </tr>
+        <tr>
+          <td class="td-semana">Semana 2</td>
+          <td>60kg × 11</td>
+          <td>60kg × 11</td>
+          <td>60kg × 10</td>
+          <td class="td-rir">RIR 2</td>
+          <td class="td-accion">Mantener peso → intentar +1 rep</td>
+        </tr>
+        <tr>
+          <td class="td-semana">Semana 3</td>
+          <td>60kg × 12</td>
+          <td>60kg × 12</td>
+          <td>60kg × 11</td>
+          <td class="td-rir">RIR 2</td>
+          <td class="td-accion">Casi listo → completar las 3×12</td>
+        </tr>
+        <tr>
+          <td class="td-semana">Semana 4</td>
+          <td>60kg × 12</td>
+          <td>60kg × 12</td>
+          <td>60kg × 12</td>
+          <td class="td-rir">RIR 2</td>
+          <td class="td-accion" style="color: #10B981;">✅ SUBIR PESO → 65kg × 10</td>
+        </tr>
+        <tr>
+          <td class="td-semana">Semana 5</td>
+          <td>65kg × 10</td>
+          <td>65kg × 9</td>
+          <td>65kg × 9</td>
+          <td class="td-rir">RIR 2</td>
+          <td class="td-accion">Nuevo ciclo → completar 3×10</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══ BLOQUE 5: CIENCIA DETRÁS ══ -->
+  <div class="section-header">
+    <div class="section-number">5</div>
+    <div class="section-title">CIENCIA DETRÁS DEL PLAN</div>
+    <div class="section-line"></div>
+    <div class="section-subtitle">WellCore Methodology · Evidence-Based</div>
+  </div>
+
+  <div class="science-grid">
+    <div class="science-item">
+      <div class="sci-label">Principio 1</div>
+      <div class="sci-title">Cobertura de las 3 posiciones</div>
+      <div class="sci-desc">Hip Thrust (posición acortada, máx EMG), Búlgara + RDL (posición elongada, máx hipertrofia), Kickback (extensión pura). Cada ejercicio tiene un rol biomecánico específico.</div>
+    </div>
+    <div class="science-item">
+      <div class="sci-label">Principio 2</div>
+      <div class="sci-title">Lengthened Partials</div>
+      <div class="sci-desc">Pedrosa et al. (2023): entrenar en posición elongada produce 2.6× más hipertrofia vs posición acortada. RDL y Búlgara maximizan el estiramiento del glúteo bajo carga.</div>
+    </div>
+    <div class="science-item">
+      <div class="sci-label">Principio 3</div>
+      <div class="sci-title">Volumen dentro del MAV</div>
+      <div class="sci-desc">15 series directas de glúteo en esta sesión. El MAV para glúteos es 12–16 sets/semana (mujeres hasta 20). Volumen óptimo para estímulo sin acumulación de fatiga excesiva.</div>
+    </div>
+    <div class="science-item">
+      <div class="sci-label">Principio 4</div>
+      <div class="sci-title">RIR 2 en compuestos</div>
+      <div class="sci-desc">Nivel intermedio: RPE 7–8 (2–3 RIR) en compuestos. Proximidad al fallo suficiente para estímulo máximo sin comprometer técnica ni acumular fatiga sistémica excesiva.</div>
+    </div>
+    <div class="science-item">
+      <div class="sci-label">Principio 5</div>
+      <div class="sci-title">mTOR vs AMPK</div>
+      <div class="sci-desc">Cardio LISS post-fuerza minimiza activación AMPK, preservando el estado anabólico. Nunca cardio HIIT el mismo día. La ventana anabólica de 3–5 horas post-sesión es crucial para nutrición proteica.</div>
+    </div>
+    <div class="science-item">
+      <div class="sci-label">Principio 6</div>
+      <div class="sci-title">Tempo excentrico controlado</div>
+      <div class="sci-desc">Excentrico 2–3s en todos los ejercicios. Davies et al. (2017): el excentrico controlado mejora la activación muscular y contribuye a mayor hipertrofia vs excéntricos descontrolados.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══ RESUMEN DE SESIÓN ══ -->
+  <div class="section-header">
+    <div class="section-number">6</div>
+    <div class="section-title">RESUMEN DE SESIÓN</div>
+    <div class="section-line"></div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px;">
+    <div style="background: var(--wc-bg-secondary); border: 1px solid var(--wc-border); border-radius: 10px; padding: 14px; text-align: center;">
+      <div style="font-size: 11px; color: var(--wc-text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px;">Calentamiento</div>
+      <div style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--wc-gold);">10–12</div>
+      <div style="font-size: 11px; color: var(--wc-text-muted);">minutos</div>
+    </div>
+    <div style="background: var(--wc-bg-secondary); border: 1px solid var(--wc-border); border-radius: 10px; padding: 14px; text-align: center;">
+      <div style="font-size: 11px; color: var(--wc-text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px;">Entrenamiento</div>
+      <div style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--wc-accent);">45–55</div>
+      <div style="font-size: 11px; color: var(--wc-text-muted);">minutos</div>
+    </div>
+    <div style="background: var(--wc-bg-secondary); border: 1px solid var(--wc-border); border-radius: 10px; padding: 14px; text-align: center;">
+      <div style="font-size: 11px; color: var(--wc-text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px;">Cardio LISS</div>
+      <div style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--wc-green);">20</div>
+      <div style="font-size: 11px; color: var(--wc-text-muted);">minutos</div>
+    </div>
+    <div style="background: var(--wc-bg-secondary); border: 1px solid rgba(220,38,38,0.3); border-radius: 10px; padding: 14px; text-align: center;">
+      <div style="font-size: 11px; color: var(--wc-text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px;">Total sesión</div>
+      <div style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--wc-text);">~80</div>
+      <div style="font-size: 11px; color: var(--wc-text-muted);">minutos</div>
+    </div>
+  </div>
+
+  <div style="background: var(--wc-bg-secondary); border: 1px solid var(--wc-border); border-radius: 10px; padding: 16px 18px; margin-bottom: 8px;">
+    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 2px; color: var(--wc-text-muted); margin-bottom: 10px;">NUTRICIÓN POST-ENTRENAMIENTO</div>
+    <div style="font-size: 12px; color: var(--wc-text-muted); line-height: 1.7;">
+      Consumir <strong style="color: var(--wc-text);">30–40g de proteína de alta calidad</strong> dentro de las 2 horas post-entrenamiento (ventana anabólica óptima). Asegurar al menos <strong style="color: var(--wc-text);">3g de leucina</strong> para superar el umbral de activación mTORC1. Acompañar con carbohidratos (0.5–0.8 g/kg) para reponer glucógeno muscular y minimizar señalización AMPK. Antes de dormir: <strong style="color: var(--wc-text);">30g de caseína o proteína de lenta digestión</strong> para potenciar MPS nocturna ~22% (Trommelen et al., 2017).
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="plan-footer">
+    <div class="footer-brand">WELL<span>CORE</span> FITNESS</div>
+    <div style="font-size: 11px; color: var(--wc-text-muted);">Coach Dann · Marzo 2026 · Plan Glúteo Intermedio</div>
+    <div class="footer-disclaimer">Basado en TESIS_ENTRENAMIENTO_WELLCORE.md · METODOLOGIAS_ELITE_COMPLETAS.md · Metodología Science-Based Hypertrophy (Dr. Israetel / RP / Jeff Nippard) · wellcorefitness.com</div>
+  </div>
+
+</div><!-- /main -->
+</body>
+</html>

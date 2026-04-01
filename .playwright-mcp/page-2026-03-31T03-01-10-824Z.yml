@@ -1,0 +1,161 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "WellCore Fitness" [ref=e4] [cursor=pointer]:
+        - /url: https://www.wellcorefitness.com
+        - img "WellCore Fitness" [ref=e5]
+      - generic [ref=e6]:
+        - link "Metodo" [ref=e7] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/metodo
+        - link "RISE" [ref=e8] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/reto-rise
+        - link "Nosotros" [ref=e9] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/nosotros
+        - link "Proceso" [ref=e10] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/proceso
+        - link "Planes" [ref=e11] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/planes
+        - link "Blog" [ref=e12] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/blog
+        - link "FAQ" [ref=e13] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/faq
+        - link "Coaches" [ref=e14] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/coaches
+        - link "Presencial" [ref=e15] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/presencial
+      - generic [ref=e16]:
+        - link "Mi Cuenta" [ref=e17] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/login
+          - img [ref=e18]
+          - text: Mi Cuenta
+        - button "ES" [ref=e21]:
+          - generic [ref=e22]: ES
+          - img [ref=e23]
+        - button "Cambiar modo" [ref=e25]:
+          - img [ref=e26]
+        - link "Empezar" [ref=e28] [cursor=pointer]:
+          - /url: https://www.wellcorefitness.com/inscripcion
+  - main [ref=e29]:
+    - generic [ref=e32]:
+      - img "WellCore" [ref=e34]
+      - generic [ref=e35]:
+        - heading "Iniciar Sesion" [level=2] [ref=e36]
+        - paragraph [ref=e37]: Ingresa tus credenciales para acceder
+      - generic [ref=e38]:
+        - generic [ref=e39]:
+          - generic [ref=e40]: Email o nombre de usuario
+          - generic [ref=e41]:
+            - generic:
+              - img
+            - textbox "Email o nombre de usuario" [ref=e42]:
+              - /placeholder: tu@email.com o tu_usuario
+        - generic [ref=e43]:
+          - generic [ref=e44]: Contrasena
+          - generic [ref=e45]:
+            - generic:
+              - img
+            - textbox "Contrasena" [ref=e46]:
+              - /placeholder: Tu contrasena
+            - button [ref=e47]:
+              - img [ref=e48]
+        - generic [ref=e51]:
+          - generic [ref=e52] [cursor=pointer]:
+            - checkbox "Recuerdame" [ref=e53]
+            - generic [ref=e54]: Recuerdame
+          - link "Olvidaste tu contrasena?" [ref=e55] [cursor=pointer]:
+            - /url: https://www.wellcorefitness.com/forgot-password
+        - button "Iniciar Sesion" [ref=e56]:
+          - generic [ref=e57]: Iniciar Sesion
+      - paragraph [ref=e58]:
+        - text: Problemas para ingresar?
+        - link "Contactanos" [ref=e59] [cursor=pointer]:
+          - /url: mailto:info@wellcorefitness.com
+  - contentinfo [ref=e61]:
+    - generic [ref=e62]:
+      - generic [ref=e63]:
+        - generic [ref=e64]:
+          - img "WellCore Fitness" [ref=e65]
+          - paragraph [ref=e66]: Coaching online 1:1 basado en ciencia. La primera plataforma LATAM con estandares internacionales. Sin dogmas, sin atajos, sin suplementos obligatorios.
+          - generic [ref=e67]:
+            - link "Instagram" [ref=e68] [cursor=pointer]:
+              - /url: https://www.instagram.com/wellcore.fitness/
+              - img [ref=e69]
+            - link "YouTube" [ref=e71] [cursor=pointer]:
+              - /url: https://www.youtube.com/@Wellcorefitness
+              - img [ref=e72]
+            - link "TikTok" [ref=e74] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e75]
+        - generic [ref=e77]:
+          - paragraph [ref=e78]: Ciencia del ejercicio, cada semana.
+          - paragraph [ref=e79]: Contenido exclusivo sobre entrenamiento y nutricion basada en evidencia.
+          - generic [ref=e80]:
+            - textbox "tu@email.com" [ref=e81]
+            - button "Suscribirse" [ref=e82]
+      - generic [ref=e83]:
+        - generic [ref=e84]:
+          - heading "Programa" [level=4] [ref=e85]
+          - list [ref=e86]:
+            - listitem [ref=e87]:
+              - link "El Metodo" [ref=e88] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/metodo
+            - listitem [ref=e89]:
+              - link "Proceso" [ref=e90] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/proceso
+            - listitem [ref=e91]:
+              - link "Planes" [ref=e92] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/planes
+            - listitem [ref=e93]:
+              - link "Coaches" [ref=e94] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/coaches
+            - listitem [ref=e95]:
+              - link "Presencial" [ref=e96] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/presencial
+        - generic [ref=e97]:
+          - heading "Recursos" [level=4] [ref=e98]
+          - list [ref=e99]:
+            - listitem [ref=e100]:
+              - link "Blog" [ref=e101] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/blog
+            - listitem [ref=e102]:
+              - link "FAQ" [ref=e103] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/faq
+            - listitem [ref=e104]:
+              - link "Nosotros" [ref=e105] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/nosotros
+            - listitem [ref=e106]:
+              - link "RISE" [ref=e107] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/reto-rise
+        - generic [ref=e108]:
+          - heading "Cuenta" [level=4] [ref=e109]
+          - list [ref=e110]:
+            - listitem [ref=e111]:
+              - link "Mi Cuenta" [ref=e112] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/login
+            - listitem [ref=e113]:
+              - link "Empezar" [ref=e114] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/inscripcion
+            - listitem [ref=e115]:
+              - link "Privacidad" [ref=e116] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/privacidad
+            - listitem [ref=e117]:
+              - link "Terminos" [ref=e118] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/terminos
+        - generic [ref=e119]:
+          - heading "Contacto" [level=4] [ref=e120]
+          - list [ref=e121]:
+            - listitem [ref=e122]:
+              - link "info@wellcorefitness.com" [ref=e123] [cursor=pointer]:
+                - /url: mailto:info@wellcorefitness.com
+            - listitem [ref=e124]:
+              - link "Cookies" [ref=e125] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/politica-cookies
+            - listitem [ref=e126]:
+              - link "Reembolsos" [ref=e127] [cursor=pointer]:
+                - /url: https://www.wellcorefitness.com/reembolsos
+      - generic [ref=e128]:
+        - paragraph [ref=e129]: © 2026 WellCore Fitness. Todos los derechos reservados.
+        - paragraph [ref=e130]: Colombia · info@wellcorefitness.com
+  - button "Abrir chat WellCore" [ref=e132]:
+    - img [ref=e133]
+    - generic [ref=e135]: "1"
