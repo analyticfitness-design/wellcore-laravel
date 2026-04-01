@@ -17,7 +17,23 @@ async function fetchDashboard() {
     error.value = null;
     try {
         const response = await api.get('/api/v/admin/dashboard');
-        data.value = response.data;
+        const r = response.data;
+        const growthArr = r.clientGrowthData || [];
+        const growthRate = growthArr.length >= 2
+            ? ((growthArr.at(-1).count - growthArr.at(-2).count) / Math.max(growthArr.at(-2).count, 1) * 100)
+            : 0;
+        data.value = {
+            activeClients: r.stats?.activeClients ?? 0,
+            mrr: r.stats?.monthlyRevenue ?? 0,
+            churnRate: 0,
+            growthRate,
+            revenueChart: (r.revenueChartData || []).map(x => ({ month: x.month, amount: x.total })),
+            clientGrowth: growthArr,
+            recentActivity: [
+                ...(r.recentInscriptions || []).map(i => ({ type: 'signup', description: `${i.nombre} — plan ${i.plan}`, time: i.timeAgo })),
+                ...(r.recentPayments || []).map(p => ({ type: 'payment', description: `${p.buyerName} pagó ${p.plan} (${p.method})`, time: p.timeAgo })),
+            ],
+        };
     } catch (err) {
         error.value = err.response?.data?.message || 'Error al cargar el dashboard';
     } finally {
