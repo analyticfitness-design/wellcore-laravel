@@ -1,5 +1,17 @@
+<!-- Message templates — static data from ResponseTemplateService (context: "message") -->
+<script>
+const MESSAGE_TEMPLATES = [
+  { title: 'Bienvenida', body: 'Bienvenido/a a WellCore! Estoy aqui para guiarte en tu transformacion. Revisa tu plan de entrenamiento y no dudes en escribirme si tienes preguntas.' },
+  { title: 'Recordatorio check-in', body: 'Recuerda completar tu check-in semanal para que pueda evaluar tu progreso y ajustar el plan si es necesario. Tu feedback es clave para tus resultados.' },
+  { title: 'Felicitacion general', body: 'Queria felicitarte por tu compromiso y dedicacion. Los resultados se estan notando y quiero que sepas que tu esfuerzo vale la pena. Sigue asi!' },
+  { title: 'Recordatorio rutina', body: 'Recuerda que tu nueva rutina ya esta disponible en el dashboard. Revisa los ejercicios y avisame si tienes alguna duda antes de empezar.' },
+  { title: 'Seguimiento semanal', body: 'Como vas con el entrenamiento esta semana? Queria hacer un seguimiento rapido. Cuentame como te has sentido y si has tenido algun problema con los ejercicios.' },
+  { title: 'Disponibilidad', body: 'Estoy disponible para resolver cualquier duda que tengas. Puedes escribirme por aqui o crear un ticket si necesitas algo especifico. Estamos para ayudarte.' },
+];
+</script>
+
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 
@@ -11,79 +23,119 @@ const selectedClient = ref(null);
 const messages = ref([]);
 const newMessage = ref('');
 const sending = ref(false);
+
+// Template selector state
+const templateOpen = ref(false);
+const templateSearch = ref('');
+const templateSearchInput = ref(null);
+
 let pollInterval = null;
 
+// Filtered templates based on search
+const filteredTemplates = computed(() => {
+  if (!templateSearch.value) return MESSAGE_TEMPLATES;
+  const q = templateSearch.value.toLowerCase();
+  return MESSAGE_TEMPLATES.filter(
+    (t) => t.title.toLowerCase().includes(q) || t.body.toLowerCase().includes(q)
+  );
+});
+
+function toggleTemplates() {
+  templateOpen.value = !templateOpen.value;
+  if (templateOpen.value) {
+    templateSearch.value = '';
+    nextTick(() => templateSearchInput.value?.focus());
+  }
+}
+
+function selectTemplate(template) {
+  newMessage.value = template.body;
+  templateOpen.value = false;
+  templateSearch.value = '';
+}
+
 function selectClient(client) {
-    selectedClientId.value = client.id;
-    selectedClient.value = client;
-    loadMessages(client.id);
+  selectedClientId.value = client.id;
+  selectedClient.value = client;
+  loadMessages(client.id);
 }
 
 async function loadClients() {
-    try {
-        const { data } = await api.get('/api/v/coach/messages');
-        clients.value = data.clients || [];
-    } catch (e) {
-        // silent
-    }
+  try {
+    const { data } = await api.get('/api/v/coach/messages');
+    clients.value = data.clients || [];
+  } catch (e) {
+    // silent
+  }
 }
 
 async function loadMessages(clientId) {
-    try {
-        const { data } = await api.get(`/api/v/coach/messages?client_id=${clientId}`);
-        messages.value = data.messages || [];
-        await nextTick();
-        scrollToBottom();
-    } catch (e) {
-        // silent
-    }
+  try {
+    const { data } = await api.get(`/api/v/coach/messages?client_id=${clientId}`);
+    messages.value = data.conversation || [];
+    // Update unread count for this client in the sidebar after marking as read
+    const idx = clients.value.findIndex((c) => c.id === clientId);
+    if (idx !== -1) clients.value[idx].unread_count = 0;
+    await nextTick();
+    scrollToBottom();
+  } catch (e) {
+    // silent
+  }
 }
 
 function scrollToBottom() {
-    const container = document.getElementById('messages-container');
-    if (container) {
-        container.scrollTop = container.scrollHeight;
-    }
+  const container = document.getElementById('messages-container');
+  if (container) {
+    container.scrollTop = container.scrollHeight;
+  }
 }
 
 async function sendMessage() {
-    if (!newMessage.value.trim() || !selectedClientId.value) return;
-    sending.value = true;
-    try {
-        await api.post('/api/v/coach/messages', {
-            client_id: selectedClientId.value,
-            message: newMessage.value,
-        });
-        messages.value.push({
-            id: Date.now(),
-            message: newMessage.value,
-            is_coach: true,
-            time: 'Ahora',
-        });
-        newMessage.value = '';
-        await nextTick();
-        scrollToBottom();
-    } catch (e) {
-        // silent
-    } finally {
-        sending.value = false;
-    }
+  if (!newMessage.value.trim() || !selectedClientId.value) return;
+  sending.value = true;
+  try {
+    await api.post('/api/v/coach/messages', {
+      client_id: selectedClientId.value,
+      message: newMessage.value,
+    });
+    messages.value.push({
+      id: Date.now(),
+      message: newMessage.value,
+      is_coach: true,
+      time: 'Ahora',
+    });
+    newMessage.value = '';
+    await nextTick();
+    scrollToBottom();
+  } catch (e) {
+    // silent
+  } finally {
+    sending.value = false;
+  }
+}
+
+function handleKeydown(e) {
+  if (e.key === 'Escape' && templateOpen.value) {
+    templateOpen.value = false;
+  }
 }
 
 onMounted(async () => {
-    await loadClients();
-    loading.value = false;
-    // Poll for new messages
-    pollInterval = setInterval(() => {
-        if (selectedClientId.value) {
-            loadMessages(selectedClientId.value);
-        }
-        loadClients();
-    }, 10000);
+  await loadClients();
+  loading.value = false;
+  // Poll for new messages (mirrors wire:poll.10s)
+  pollInterval = setInterval(() => {
+    if (selectedClientId.value) {
+      loadMessages(selectedClientId.value);
+    }
+    loadClients();
+  }, 10000);
+  document.addEventListener('keydown', handleKeydown);
 });
 
-onUnmounted(() => {
-    if (pollInterval) clearInterval(pollInterval);
+onBeforeUnmount(() => {
+  clearInterval(pollInterval);
+  document.removeEventListener('keydown', handleKeydown);
 });
 </script>
 
@@ -97,13 +149,25 @@ onUnmounted(() => {
         <p class="mt-1 text-sm text-wc-text-tertiary">Comunicacion con tus clientes</p>
       </div>
 
-      <!-- Loading -->
-      <div v-if="loading" class="flex items-center justify-center py-12">
-        <svg class="h-8 w-8 animate-spin text-wc-accent" viewBox="0 0 24 24" fill="none">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-        </svg>
-      </div>
+      <!-- Loading skeleton -->
+      <template v-if="loading">
+        <div class="grid grid-cols-1 gap-4 lg:grid-cols-12" style="min-height: 70vh;">
+          <div class="lg:col-span-4 space-y-0">
+            <div v-for="n in 5" :key="n" class="animate-pulse border-b border-wc-border bg-wc-bg-tertiary px-4 py-4 first:rounded-t-xl last:rounded-b-xl last:border-b-0">
+              <div class="flex items-center gap-3">
+                <div class="h-9 w-9 rounded-full bg-wc-border/50"></div>
+                <div class="flex-1 space-y-2">
+                  <div class="h-3 w-24 rounded bg-wc-border/50"></div>
+                  <div class="h-2.5 w-36 rounded bg-wc-border/30"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="lg:col-span-8 animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary flex items-center justify-center">
+            <div class="h-16 w-16 rounded-full bg-wc-border/30"></div>
+          </div>
+        </div>
+      </template>
 
       <!-- Message center layout -->
       <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-12" style="min-height: 70vh;">
@@ -121,12 +185,14 @@ onUnmounted(() => {
                   class="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors"
                   :class="selectedClientId === client.id ? 'bg-wc-accent/5 border-l-2 border-l-wc-accent' : 'hover:bg-wc-bg-secondary/50'"
                 >
+                  <!-- Avatar with unread indicator -->
                   <div class="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-wc-accent/15">
                     <span class="text-sm font-semibold text-wc-accent">{{ (client.name || 'C').charAt(0) }}</span>
                     <div v-if="client.unread_count > 0" class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-wc-accent text-[9px] font-bold text-white">
                       {{ client.unread_count > 9 ? '9+' : client.unread_count }}
                     </div>
                   </div>
+                  <!-- Name + preview -->
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center justify-between gap-2">
                       <p class="text-sm font-medium text-wc-text truncate" :class="{ 'font-semibold': client.unread_count > 0 }">{{ client.name }}</p>
@@ -156,7 +222,7 @@ onUnmounted(() => {
               </div>
               <div>
                 <p class="text-sm font-medium text-wc-text">{{ selectedClient.name }}</p>
-                <p class="text-xs text-wc-text-tertiary">{{ selectedClient.plan_label || 'Cliente' }}</p>
+                <p class="text-xs text-wc-text-tertiary">{{ selectedClient.plan || 'Sin plan' }}</p>
               </div>
             </div>
 
@@ -181,9 +247,88 @@ onUnmounted(() => {
               </div>
             </div>
 
-            <!-- Message input -->
+            <!-- Message input with template selector -->
             <div class="border-t border-wc-border px-4 py-3">
               <form @submit.prevent="sendMessage" class="flex items-center gap-2">
+                <!-- Template selector -->
+                <div class="relative inline-flex">
+                  <button
+                    @click="toggleTemplates"
+                    type="button"
+                    class="inline-flex items-center gap-1.5 rounded-lg bg-wc-bg-secondary px-3 py-2.5 text-xs font-medium text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text border border-wc-border transition-colors"
+                    title="Plantillas de respuesta rapida"
+                  >
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="hidden sm:inline">Plantillas</span>
+                  </button>
+
+                  <!-- Template dropdown -->
+                  <Transition name="fade">
+                    <div
+                      v-if="templateOpen"
+                      class="absolute bottom-full mb-2 left-0 z-50 w-80 rounded-xl border border-wc-border bg-wc-bg shadow-2xl"
+                    >
+                      <!-- Search header -->
+                      <div class="border-b border-wc-border p-3">
+                        <div class="relative">
+                          <svg class="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                          </svg>
+                          <input
+                            ref="templateSearchInput"
+                            v-model="templateSearch"
+                            type="text"
+                            placeholder="Buscar plantilla..."
+                            class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary py-1.5 pl-8 pr-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
+                            @keydown.escape="templateOpen = false"
+                          />
+                        </div>
+                      </div>
+
+                      <!-- Template list -->
+                      <div class="max-h-72 overflow-y-auto p-1.5">
+                        <button
+                          v-for="(tpl, idx) in filteredTemplates"
+                          :key="idx"
+                          @click="selectTemplate(tpl)"
+                          type="button"
+                          class="w-full rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-wc-bg-secondary group"
+                        >
+                          <span class="text-sm font-medium text-wc-text group-hover:text-wc-accent transition-colors">
+                            {{ tpl.title }}
+                          </span>
+                          <p class="mt-0.5 text-xs leading-relaxed text-wc-text-tertiary line-clamp-2">
+                            {{ tpl.body }}
+                          </p>
+                        </button>
+
+                        <!-- No results -->
+                        <div v-if="filteredTemplates.length === 0" class="px-3 py-6 text-center">
+                          <p class="text-xs text-wc-text-tertiary">No se encontraron plantillas para "<span class="font-medium text-wc-text-secondary">{{ templateSearch }}</span>"</p>
+                        </div>
+                      </div>
+
+                      <!-- Footer hint -->
+                      <div class="border-t border-wc-border px-3 py-2">
+                        <p class="text-[10px] text-wc-text-tertiary text-center">
+                          {{ MESSAGE_TEMPLATES.length }} plantillas disponibles
+                        </p>
+                      </div>
+                    </div>
+                  </Transition>
+                </div>
+
+                <!-- Click-outside overlay to close template dropdown -->
+                <Teleport to="body">
+                  <div
+                    v-if="templateOpen"
+                    class="fixed inset-0 z-40"
+                    @click="templateOpen = false"
+                  ></div>
+                </Teleport>
+
                 <input
                   v-model="newMessage"
                   type="text"
@@ -196,8 +341,12 @@ onUnmounted(() => {
                   :disabled="sending || !newMessage.trim()"
                   class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-wc-accent text-white hover:bg-wc-accent-hover transition-colors disabled:opacity-50"
                 >
-                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <svg v-if="!sending" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                  </svg>
+                  <svg v-else class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
                 </button>
               </form>
@@ -219,3 +368,8 @@ onUnmounted(() => {
     </div>
   </CoachLayout>
 </template>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active { transition: opacity 0.15s ease, transform 0.15s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; transform: scale(0.95); }
+</style>
