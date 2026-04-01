@@ -38,7 +38,9 @@ async function fetchPayments() {
 
 function formatCurrency(value) {
     if (!value && value !== 0) return '$0';
-    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(value);
+    const num = typeof value === 'string' ? parseFloat(value.replace(/\./g, '').replace(',', '.')) : value;
+    if (isNaN(num)) return '$0';
+    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(num);
 }
 
 function applyFilter(val) {
@@ -82,19 +84,19 @@ onMounted(() => {
       <div v-if="data" class="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
           <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Ingresos totales</span>
-          <p class="mt-2 font-data text-2xl font-bold text-wc-text">{{ formatCurrency(data.totalRevenue) }}</p>
+          <p class="mt-2 font-data text-2xl font-bold text-wc-text">{{ formatCurrency(data.stats?.totalRevenue) }}</p>
         </div>
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
           <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Este mes</span>
-          <p class="mt-2 font-data text-2xl font-bold text-emerald-500">{{ formatCurrency(data.monthlyRevenue) }}</p>
+          <p class="mt-2 font-data text-2xl font-bold text-emerald-500">{{ formatCurrency(data.stats?.monthRevenue) }}</p>
         </div>
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
           <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Pendientes</span>
-          <p class="mt-2 font-data text-2xl font-bold text-amber-500">{{ formatCurrency(data.pendingAmount) }}</p>
+          <p class="mt-2 font-data text-2xl font-bold text-amber-500">{{ data.stats?.pendingPayments ?? 0 }}</p>
         </div>
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
           <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Total pagos</span>
-          <p class="mt-2 font-data text-2xl font-bold text-wc-text">{{ data.totalCount || 0 }}</p>
+          <p class="mt-2 font-data text-2xl font-bold text-wc-text">{{ data.pagination?.total || 0 }}</p>
         </div>
       </div>
 
@@ -138,8 +140,8 @@ onMounted(() => {
           </thead>
           <tbody class="divide-y divide-wc-border">
             <tr v-for="(payment, idx) in payments" :key="idx" class="bg-wc-bg-secondary transition-colors hover:bg-wc-bg-tertiary">
-              <td class="px-4 py-3 text-sm text-wc-text">{{ payment.clientName || '-' }}</td>
-              <td class="px-4 py-3 text-sm text-wc-text-secondary">{{ payment.description || payment.concept || '-' }}</td>
+              <td class="px-4 py-3 text-sm text-wc-text">{{ payment.buyer_name || payment.client_name || '-' }}</td>
+              <td class="px-4 py-3 text-sm text-wc-text-secondary">{{ payment.plan || '-' }}</td>
               <td class="px-4 py-3 font-data text-sm font-bold text-wc-text">{{ formatCurrency(payment.amount) }}</td>
               <td class="px-4 py-3">
                 <span class="rounded-full px-2.5 py-0.5 text-xs font-medium capitalize" :class="getStatusColor(payment.status)">{{ getStatusLabel(payment.status) }}</span>
