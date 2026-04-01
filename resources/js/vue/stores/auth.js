@@ -3,10 +3,26 @@ import { ref, computed } from 'vue';
 import axios from 'axios';
 
 export const useAuthStore = defineStore('auth', () => {
+    // If the Laravel session injected auth data (e.g. after impersonation),
+    // sync it to localStorage so the SPA uses the correct token.
+    if (window.__WC_SESSION) {
+        const s = window.__WC_SESSION;
+        if (s.token && s.token !== localStorage.getItem('wc_token')) {
+            localStorage.setItem('wc_token', s.token);
+            localStorage.setItem('wc_user_type', s.userType || 'client');
+            localStorage.setItem('wc_user_id', String(s.userId || ''));
+            if (s.impersonating) {
+                localStorage.setItem('wc_impersonating', 'true');
+                localStorage.setItem('wc_admin_token', localStorage.getItem('wc_token') || '');
+            }
+        }
+    }
+
     const token = ref(localStorage.getItem('wc_token') || null);
     const userType = ref(localStorage.getItem('wc_user_type') || null);
     const userId = ref(localStorage.getItem('wc_user_id') || null);
 
+    const isImpersonating = computed(() => localStorage.getItem('wc_impersonating') === 'true');
     const isAuthenticated = computed(() => !!token.value);
 
     function setAuth(data) {
@@ -31,6 +47,8 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.removeItem('wc_user_type');
         localStorage.removeItem('wc_user_id');
         localStorage.removeItem('wc_user_name');
+        localStorage.removeItem('wc_impersonating');
+        localStorage.removeItem('wc_admin_token');
     }
 
     async function login(identity, password, rememberMe = false) {
@@ -74,6 +92,7 @@ export const useAuthStore = defineStore('auth', () => {
         logout,
         forgotPassword,
         resetPassword,
+        isImpersonating,
         setAuth,
         clearAuth,
     };

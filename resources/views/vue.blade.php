@@ -23,5 +23,15 @@
 </head>
 <body class="min-h-screen bg-wc-bg text-wc-text">
     <div id="vue-app"></div>
+    @if(session('wc_token'))
+    <script>
+        window.__WC_SESSION = {
+            token: @json(session('wc_token')),
+            userType: @json(session('wc_user_type', 'client')),
+            userId: @json(session('wc_user_id')),
+            impersonating: @json(session()->has('wc_admin_token')),
+        };
+    </script>
+    @endif
 </body>
 </html>
