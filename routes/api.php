@@ -11,14 +11,20 @@ use App\Http\Controllers\Api\SocialController;
 use App\Http\Controllers\Api\TrainingController;
 use Illuminate\Support\Facades\Route;
 
-// Vue SPA Auth API
-Route::prefix('v/auth')->group(function () {
-    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
-    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/me', [AuthController::class, 'me']);
-});
+// Vue SPA Auth API — needs web session so login persists for impersonation/blade
+Route::prefix('v/auth')
+    ->middleware([
+        \Illuminate\Cookie\Middleware\EncryptCookies::class,
+        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+        \Illuminate\Session\Middleware\StartSession::class,
+    ])
+    ->group(function () {
+        Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
+        Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+        Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::get('/me', [AuthController::class, 'me']);
+    });
 
 // Vue SPA Public Forms API
 Route::prefix('v/public')->group(function () {
