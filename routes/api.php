@@ -167,6 +167,7 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
     Route::put('/inscriptions/{id}', [AdminController::class, 'updateInscription'])->where('id', '[0-9]+');
     Route::get('/invitations', [AdminController::class, 'invitations']);
     Route::post('/invitations', [AdminController::class, 'createInvitation']);
+    Route::delete('/invitations/{id}', [AdminController::class, 'deleteInvitation'])->where('id', '[0-9]+');
     Route::get('/rise', [AdminController::class, 'rise']);
     Route::get('/settings', [AdminController::class, 'settings']);
     Route::put('/settings', [AdminController::class, 'updateSettings']);

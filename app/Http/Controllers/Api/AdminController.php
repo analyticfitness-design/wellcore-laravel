@@ -1052,7 +1052,7 @@ class AdminController extends Controller
         $sortBy = $request->query('sort_by', 'created_at');
         $sortDir = $request->query('sort_dir', 'desc');
 
-        $query = Invitation::query();
+        $query = Invitation::query()->with(['createdBy', 'usedBy']);
 
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
@@ -1065,14 +1065,49 @@ class AdminController extends Controller
             $query->where('status', $statusFilter);
         }
 
-        $paginated = $query->orderBy($sortBy, $sortDir === 'asc' ? 'asc' : 'desc')->paginate(25);
+        $allowedSort = ['code', 'plan', 'status', 'created_at', 'expires_at'];
+        $sortBy = in_array($sortBy, $allowedSort) ? $sortBy : 'created_at';
+
+        $paginated = $query->orderBy($sortBy, $sortDir === 'asc' ? 'asc' : 'desc')->paginate(20);
+
+        $stats = [
+            'total'   => Invitation::count(),
+            'pending' => Invitation::where('status', 'pending')->count(),
+            'used'    => Invitation::where('status', 'used')->count(),
+            'expired' => Invitation::where('status', 'expired')->count(),
+        ];
+
+        $items = collect($paginated->items())->map(function ($inv) {
+            $rawStatus = $inv->getRawOriginal('status') ?? 'pending';
+            $planVal = $inv->plan instanceof \App\Enums\PlanType ? $inv->plan->value : $inv->plan;
+            $planLabel = $inv->plan instanceof \App\Enums\PlanType ? $inv->plan->label() : ucfirst($planVal);
+
+            return [
+                'id'           => $inv->id,
+                'code'         => $inv->code,
+                'plan'         => $planVal,
+                'plan_label'   => $planLabel,
+                'email_hint'   => $inv->email_hint,
+                'status'       => $rawStatus,
+                'created_by_name' => $inv->createdBy?->name ?? null,
+                'used_by_name'    => $inv->usedBy?->name ?? null,
+                'created_at'   => $inv->created_at?->toISOString(),
+                'created_ago'  => $inv->created_at?->diffForHumans(),
+                'expires_at'   => $inv->expires_at?->format('d M Y'),
+                'expires_past' => $inv->expires_at?->isPast() ?? false,
+                'used_at'      => $inv->used_at?->format('d M Y'),
+                'intake_url'   => $rawStatus === 'pending' ? url('/unirse/'.$inv->code) : null,
+            ];
+        });
 
         return response()->json([
-            'invitations' => $paginated->items(),
-            'pagination' => [
+            'invitations' => $items,
+            'stats'       => $stats,
+            'pagination'  => [
                 'current_page' => $paginated->currentPage(),
-                'last_page' => $paginated->lastPage(),
-                'total' => $paginated->total(),
+                'last_page'    => $paginated->lastPage(),
+                'total'        => $paginated->total(),
+                'per_page'     => $paginated->perPage(),
             ],
         ]);
     }
@@ -1092,28 +1127,58 @@ class AdminController extends Controller
             'email_hint' => 'nullable|string|max:255',
             'note' => 'nullable|string|max:500',
             'expires_at' => 'nullable|date|after:today',
+        ], [
+            'plan.required'   => 'Selecciona un plan.',
+            'plan.in'         => 'El plan seleccionado no es valido.',
+            'expires_at.after' => 'La fecha de expiracion debe ser futura.',
         ]);
 
-        $code = strtoupper(Str::random(10));
+        // Generate unique 12-char uppercase code (matching Livewire logic)
+        do {
+            $code = strtoupper(Str::random(12));
+        } while (Invitation::where('code', $code)->exists());
 
         $invitation = Invitation::create([
-            'code' => $code,
-            'plan' => $validated['plan'],
+            'code'       => $code,
+            'plan'       => $validated['plan'],
             'email_hint' => $validated['email_hint'] ?? null,
-            'note' => $validated['note'] ?? null,
-            'expires_at' => $validated['expires_at'] ?? now()->addDays(30),
-            'status' => 'active',
+            'note'       => $validated['note'] ?? null,
+            'expires_at' => $validated['expires_at'] ?? null,
+            'status'     => 'pending',
             'created_by' => $admin->id,
+            'created_at' => now(),
         ]);
 
-        $intakeUrl = url('/intake?code='.$code);
+        $intakeUrl = url('/unirse/'.$code);
 
         return response()->json([
-            'created' => true,
-            'code' => $code,
+            'created'    => true,
+            'code'       => $code,
             'intake_url' => $intakeUrl,
-            'id' => $invitation->id,
+            'id'         => $invitation->id,
         ], 201);
+    }
+
+    /**
+     * DELETE /api/v/admin/invitations/{id}
+     *
+     * Delete a pending invitation.
+     * Ports Admin\InvitationManager.php deleteInvitation() logic.
+     */
+    public function deleteInvitation(Request $request, int $id): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $invitation = Invitation::findOrFail($id);
+        $rawStatus = $invitation->getRawOriginal('status') ?? $invitation->status;
+
+        if ($rawStatus !== 'pending') {
+            return response()->json(['message' => 'Solo se pueden eliminar invitaciones pendientes.'], 422);
+        }
+
+        $invitation->delete();
+
+        return response()->json(['deleted' => true]);
     }
 
     // ─── Rise Management ────────────────────────────────────────────────
