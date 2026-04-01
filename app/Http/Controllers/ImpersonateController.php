@@ -59,6 +59,7 @@ class ImpersonateController extends Controller
             'wc_token'     => $clientToken->token,
             'wc_user_type' => 'client',
             'wc_user_id'   => $clientId,
+            'wc_user_name' => $client->name,
         ]);
 
         // Redirect to the correct portal based on the client's plan type.

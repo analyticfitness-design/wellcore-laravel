@@ -12,6 +12,9 @@ export const useAuthStore = defineStore('auth', () => {
             localStorage.setItem('wc_token', s.token);
             localStorage.setItem('wc_user_type', s.userType || 'client');
             localStorage.setItem('wc_user_id', String(s.userId || ''));
+            if (s.userName) {
+                localStorage.setItem('wc_user_name', s.userName);
+            }
         }
         // Always sync impersonation state from session (source of truth)
         if (s.impersonating) {
