@@ -991,12 +991,17 @@ class AdminController extends Controller
         $inscriptions = collect($paginated->items())->map(fn ($i) => [
             'id' => $i->id,
             'nombre' => trim(($i->nombre ?? '').' '.($i->apellido ?? '')),
+            'initial' => mb_substr($i->nombre ?? 'I', 0, 1),
             'email' => $i->email,
             'phone' => $i->phone ?? $i->telefono ?? null,
+            'whatsapp' => $i->whatsapp ?? null,
             'plan' => $i->plan?->label() ?? $i->getRawOriginal('plan') ?? '-',
             'plan_raw' => $i->getRawOriginal('plan') ?? '',
             'status' => $i->status ?? '-',
-            'created_at' => $i->created_at?->format('d M Y H:i'),
+            'ciudad' => $i->ciudad ?? null,
+            'objetivo' => $i->objetivo ?? null,
+            'experiencia' => $i->experiencia ?? null,
+            'created_at' => $i->created_at?->format('d/m/Y H:i'),
             'time_ago' => $i->created_at?->diffForHumans(),
         ]);
 
@@ -1022,7 +1027,7 @@ class AdminController extends Controller
         $inscription = Inscription::findOrFail($id);
 
         $validated = $request->validate([
-            'status' => 'required|string|in:nuevo,contactado,pagado,activo,rechazado',
+            'status' => 'required|string|in:pendiente,nuevo,contactado,convertido,pagado,activo,rechazado',
         ]);
 
         $inscription->update(['status' => $validated['status']]);

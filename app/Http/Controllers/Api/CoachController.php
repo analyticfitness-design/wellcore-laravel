@@ -423,6 +423,74 @@ class CoachController extends Controller
         return response()->json(['moved' => true]);
     }
 
+    /**
+     * GET /api/v/coach/kanban/detail/{id}
+     *
+     * Client detail for kanban modal.
+     * Ports Coach\ClientKanban.php openDetail() logic.
+     */
+    public function kanbanClientDetail(Request $request, int $id): JsonResponse
+    {
+        $coach   = $this->resolveCoachOrFail($request);
+        $coachId = $coach->id;
+
+        $client = Client::find($id);
+        if (! $client) {
+            return response()->json(['error' => 'Cliente no encontrado.'], 404);
+        }
+
+        // Verify coach has this client
+        $hasClient = AssignedPlan::where('assigned_by', $coachId)
+            ->where('client_id', $id)
+            ->exists();
+        if (! $hasClient) {
+            return response()->json(['error' => 'No autorizado.'], 403);
+        }
+
+        $xp = ClientXp::where('client_id', $id)->first();
+
+        $lastCheckin = Checkin::where('client_id', $id)
+            ->orderByDesc('checkin_date')
+            ->first();
+
+        $recentNotes = CoachNote::where('coach_id', $coachId)
+            ->where('client_id', $id)
+            ->orderByDesc('created_at')
+            ->limit(3)
+            ->get()
+            ->map(fn ($n) => [
+                'note' => Str::limit($n->note, 100),
+                'type' => $n->note_type,
+                'date' => Carbon::parse($n->created_at)->diffForHumans(),
+            ])
+            ->toArray();
+
+        $activePlan = AssignedPlan::where('client_id', $id)
+            ->where('assigned_by', $coachId)
+            ->where('active', true)
+            ->orderByDesc('created_at')
+            ->first();
+
+        return response()->json([
+            'client' => [
+                'id'                     => $client->id,
+                'name'                   => $client->name,
+                'email'                  => $client->email,
+                'plan_label'             => $client->plan?->label() ?? 'Sin plan',
+                'status_label'           => $client->status?->label() ?? 'Desconocido',
+                'fecha_inicio'           => $client->fecha_inicio ? Carbon::parse($client->fecha_inicio)->format('d M Y') : 'N/A',
+                'avatar_initial'         => mb_strtoupper(mb_substr($client->name ?? 'C', 0, 1)),
+                'xp_level'               => $xp->level ?? 1,
+                'xp_total'               => $xp->xp_total ?? 0,
+                'streak_days'            => $xp->streak_days ?? 0,
+                'last_checkin'           => $lastCheckin ? Carbon::parse($lastCheckin->checkin_date)->diffForHumans() : 'Sin check-ins',
+                'last_checkin_bienestar' => $lastCheckin?->bienestar,
+                'active_plan_type'       => $activePlan?->plan_type ?? 'N/A',
+                'recent_notes'           => $recentNotes,
+            ],
+        ]);
+    }
+
     protected function classifyClient(Client $client, ?int $daysSinceActivity, ?int $daysSinceStart): string
     {
         if (in_array($client->status?->value, ['inactivo', 'suspendido', 'congelado'])) {

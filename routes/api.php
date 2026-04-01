@@ -126,6 +126,7 @@ Route::prefix('v/coach')->middleware('throttle:api')->group(function () {
     Route::get('/clients', [CoachController::class, 'clients']);
     Route::get('/kanban', [CoachController::class, 'kanban']);
     Route::post('/kanban/move', [CoachController::class, 'kanbanMove']);
+    Route::get('/kanban/detail/{id}', [CoachController::class, 'kanbanClientDetail'])->where('id', '[0-9]+');
     Route::get('/checkins', [CoachController::class, 'checkins']);
     Route::post('/checkins/{id}/reply', [CoachController::class, 'checkinReply'])->where('id', '[0-9]+');
     Route::get('/messages', [CoachController::class, 'messages']);
