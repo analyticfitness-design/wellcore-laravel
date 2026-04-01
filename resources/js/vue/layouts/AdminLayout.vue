@@ -30,7 +30,7 @@ async function handleLogout() {
         await authStore.logout();
     } finally {
         loggingOut.value = false;
-        router.push('/v/login');
+        router.push('/login');
     }
 }
 
@@ -52,47 +52,47 @@ const navSections = [
     {
         label: 'General',
         items: [
-            { name: 'Dashboard', to: '/v/admin', icon: 'dashboard', routeName: 'admin-dashboard' },
-            { name: 'Live Feed', to: '/v/admin/feed', icon: 'feed', routeName: 'admin-feed' },
-            { name: 'Clientes', to: '/v/admin/clients', icon: 'clients', routeName: 'admin-clients' },
+            { name: 'Dashboard', to: '/admin', icon: 'dashboard', routeName: 'admin-dashboard' },
+            { name: 'Live Feed', to: '/admin/feed', icon: 'feed', routeName: 'admin-feed' },
+            { name: 'Clientes', to: '/admin/clients', icon: 'clients', routeName: 'admin-clients' },
         ],
     },
     {
         label: 'Financiero',
         items: [
-            { name: 'Pagos', to: '/v/admin/payments', icon: 'payments', routeName: 'admin-payments' },
-            { name: 'Inscripciones', to: '/v/admin/inscriptions', icon: 'inscriptions', routeName: 'admin-inscriptions' },
-            { name: 'Invitaciones', to: '/v/admin/invitations', icon: 'invitations', routeName: 'admin-invitations' },
+            { name: 'Pagos', to: '/admin/payments', icon: 'payments', routeName: 'admin-payments' },
+            { name: 'Inscripciones', to: '/admin/inscriptions', icon: 'inscriptions', routeName: 'admin-inscriptions' },
+            { name: 'Invitaciones', to: '/admin/invitations', icon: 'invitations', routeName: 'admin-invitations' },
         ],
     },
     {
         label: 'Equipo',
         items: [
-            { name: 'Coaches', to: '/v/admin/coaches', icon: 'coaches', routeName: 'admin-coaches' },
+            { name: 'Coaches', to: '/admin/coaches', icon: 'coaches', routeName: 'admin-coaches' },
         ],
     },
     {
         label: 'Planes',
         items: [
-            { name: 'Planes', to: '/v/admin/plans', icon: 'plans', routeName: 'admin-plans' },
-            { name: 'Generador IA', to: '/v/admin/ai-generator', icon: 'ai', routeName: 'admin-ai-generator' },
-            { name: 'RISE', to: '/v/admin/rise', icon: 'rise', routeName: 'admin-rise' },
+            { name: 'Planes', to: '/admin/plans', icon: 'plans', routeName: 'admin-plans' },
+            { name: 'Generador IA', to: '/admin/ai-generator', icon: 'ai', routeName: 'admin-ai-generator' },
+            { name: 'RISE', to: '/admin/rise', icon: 'rise', routeName: 'admin-rise' },
         ],
     },
     {
         label: 'Comunicacion',
         items: [
-            { name: 'Chat Analytics', to: '/v/admin/chat-analytics', icon: 'chat', routeName: 'admin-chat-analytics' },
-            { name: 'Tickets', to: '/v/admin/tickets', icon: 'tickets', routeName: 'admin-tickets' },
-            { name: 'Campanas', to: '/v/admin/campaigns', icon: 'campaigns', routeName: 'admin-campaigns' },
+            { name: 'Chat Analytics', to: '/admin/chat-analytics', icon: 'chat', routeName: 'admin-chat-analytics' },
+            { name: 'Tickets', to: '/admin/tickets', icon: 'tickets', routeName: 'admin-tickets' },
+            { name: 'Campanas', to: '/admin/campaigns', icon: 'campaigns', routeName: 'admin-campaigns' },
         ],
     },
     {
         label: 'Sistema',
         items: [
-            { name: 'Referidos', to: '/v/admin/referrals', icon: 'referrals', routeName: 'admin-referrals' },
-            { name: 'Herramientas', to: '/v/admin/tools', icon: 'tools', routeName: 'admin-tools' },
-            { name: 'Configuracion', to: '/v/admin/settings', icon: 'settings', routeName: 'admin-settings' },
+            { name: 'Referidos', to: '/admin/referrals', icon: 'referrals', routeName: 'admin-referrals' },
+            { name: 'Herramientas', to: '/admin/tools', icon: 'tools', routeName: 'admin-tools' },
+            { name: 'Configuracion', to: '/admin/settings', icon: 'settings', routeName: 'admin-settings' },
         ],
     },
 ];
@@ -103,11 +103,11 @@ function isActive(routeName) {
 
 // Mobile bottom nav items (5 key items)
 const bottomNav = [
-    { name: 'Dashboard', to: '/v/admin', icon: 'dashboard', routeName: 'admin-dashboard' },
-    { name: 'Clientes', to: '/v/admin/clients', icon: 'clients', routeName: 'admin-clients' },
-    { name: 'Pagos', to: '/v/admin/payments', icon: 'payments', routeName: 'admin-payments' },
-    { name: 'Feed', to: '/v/admin/feed', icon: 'feed', routeName: 'admin-feed' },
-    { name: 'Config', to: '/v/admin/settings', icon: 'settings', routeName: 'admin-settings' },
+    { name: 'Dashboard', to: '/admin', icon: 'dashboard', routeName: 'admin-dashboard' },
+    { name: 'Clientes', to: '/admin/clients', icon: 'clients', routeName: 'admin-clients' },
+    { name: 'Pagos', to: '/admin/payments', icon: 'payments', routeName: 'admin-payments' },
+    { name: 'Feed', to: '/admin/feed', icon: 'feed', routeName: 'admin-feed' },
+    { name: 'Config', to: '/admin/settings', icon: 'settings', routeName: 'admin-settings' },
 ];
 </script>
 

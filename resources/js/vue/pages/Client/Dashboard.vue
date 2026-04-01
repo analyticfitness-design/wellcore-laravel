@@ -540,7 +540,7 @@ function getMissionStatusClass(completed) {
               ? 'border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/15'
               : 'border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10'
         ]"
-        @click="router.push('/v/client/plan')"
+        @click="router.push('/client/plan')"
       >
         <div class="flex items-center gap-4">
           <div :class="[

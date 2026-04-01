@@ -30,7 +30,7 @@ async function handleLogout() {
         await authStore.logout();
     } finally {
         loggingOut.value = false;
-        router.push('/v/login');
+        router.push('/login');
     }
 }
 
@@ -52,34 +52,34 @@ const navSections = [
     {
         label: 'Coach',
         items: [
-            { name: 'Dashboard', to: '/v/coach', icon: 'dashboard', routeName: 'coach-dashboard' },
-            { name: 'Clientes', to: '/v/coach/clients', icon: 'clients', routeName: 'coach-clients' },
-            { name: 'Kanban', to: '/v/coach/kanban', icon: 'kanban', routeName: 'coach-kanban' },
+            { name: 'Dashboard', to: '/coach', icon: 'dashboard', routeName: 'coach-dashboard' },
+            { name: 'Clientes', to: '/coach/clients', icon: 'clients', routeName: 'coach-clients' },
+            { name: 'Kanban', to: '/coach/kanban', icon: 'kanban', routeName: 'coach-kanban' },
         ],
     },
     {
         label: 'Comunicacion',
         items: [
-            { name: 'Check-ins', to: '/v/coach/checkins', icon: 'checkins', routeName: 'coach-checkins' },
-            { name: 'Mensajes', to: '/v/coach/messages', icon: 'messages', routeName: 'coach-messages' },
-            { name: 'Broadcast', to: '/v/coach/broadcast', icon: 'broadcast', routeName: 'coach-broadcast' },
+            { name: 'Check-ins', to: '/coach/checkins', icon: 'checkins', routeName: 'coach-checkins' },
+            { name: 'Mensajes', to: '/coach/messages', icon: 'messages', routeName: 'coach-messages' },
+            { name: 'Broadcast', to: '/coach/broadcast', icon: 'broadcast', routeName: 'coach-broadcast' },
         ],
     },
     {
         label: 'Seguimiento',
         items: [
-            { name: 'Planes', to: '/v/coach/plans', icon: 'plans', routeName: 'coach-plans' },
-            { name: 'Analitica', to: '/v/coach/analytics', icon: 'analytics', routeName: 'coach-analytics' },
-            { name: 'Notas', to: '/v/coach/notes', icon: 'notes', routeName: 'coach-notes' },
+            { name: 'Planes', to: '/coach/plans', icon: 'plans', routeName: 'coach-plans' },
+            { name: 'Analitica', to: '/coach/analytics', icon: 'analytics', routeName: 'coach-analytics' },
+            { name: 'Notas', to: '/coach/notes', icon: 'notes', routeName: 'coach-notes' },
         ],
     },
     {
         label: 'Mi Espacio',
         items: [
-            { name: 'Perfil', to: '/v/coach/profile', icon: 'profile', routeName: 'coach-profile' },
-            { name: 'Mi Marca', to: '/v/coach/brand', icon: 'brand', routeName: 'coach-brand' },
-            { name: 'Herramientas', to: '/v/coach/features', icon: 'features', routeName: 'coach-features' },
-            { name: 'Recursos', to: '/v/coach/resources', icon: 'resources', routeName: 'coach-resources' },
+            { name: 'Perfil', to: '/coach/profile', icon: 'profile', routeName: 'coach-profile' },
+            { name: 'Mi Marca', to: '/coach/brand', icon: 'brand', routeName: 'coach-brand' },
+            { name: 'Herramientas', to: '/coach/features', icon: 'features', routeName: 'coach-features' },
+            { name: 'Recursos', to: '/coach/resources', icon: 'resources', routeName: 'coach-resources' },
         ],
     },
 ];
@@ -90,11 +90,11 @@ function isActive(routeName) {
 
 // Mobile bottom nav items (5 max)
 const bottomNav = [
-    { name: 'Dashboard', to: '/v/coach', icon: 'dashboard', routeName: 'coach-dashboard' },
-    { name: 'Clientes', to: '/v/coach/clients', icon: 'clients', routeName: 'coach-clients' },
-    { name: 'Mensajes', to: '/v/coach/messages', icon: 'messages', routeName: 'coach-messages' },
-    { name: 'Planes', to: '/v/coach/plans', icon: 'plans', routeName: 'coach-plans' },
-    { name: 'Perfil', to: '/v/coach/profile', icon: 'profile', routeName: 'coach-profile' },
+    { name: 'Dashboard', to: '/coach', icon: 'dashboard', routeName: 'coach-dashboard' },
+    { name: 'Clientes', to: '/coach/clients', icon: 'clients', routeName: 'coach-clients' },
+    { name: 'Mensajes', to: '/coach/messages', icon: 'messages', routeName: 'coach-messages' },
+    { name: 'Planes', to: '/coach/plans', icon: 'plans', routeName: 'coach-plans' },
+    { name: 'Perfil', to: '/coach/profile', icon: 'profile', routeName: 'coach-profile' },
 ];
 </script>
 

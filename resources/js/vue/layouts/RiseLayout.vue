@@ -30,7 +30,7 @@ async function handleLogout() {
         await authStore.logout();
     } finally {
         loggingOut.value = false;
-        router.push('/v/login');
+        router.push('/login');
     }
 }
 
@@ -52,30 +52,30 @@ const navSections = [
     {
         label: 'RISE',
         items: [
-            { name: 'Dashboard', to: '/v/rise', icon: 'dashboard', routeName: 'rise-dashboard' },
-            { name: 'Mi Programa', to: '/v/rise/program', icon: 'program', routeName: 'rise-program' },
-            { name: 'Tracking Diario', to: '/v/rise/tracking', icon: 'tracking', routeName: 'rise-tracking' },
+            { name: 'Dashboard', to: '/rise', icon: 'dashboard', routeName: 'rise-dashboard' },
+            { name: 'Mi Programa', to: '/rise/program', icon: 'program', routeName: 'rise-program' },
+            { name: 'Tracking Diario', to: '/rise/tracking', icon: 'tracking', routeName: 'rise-tracking' },
         ],
     },
     {
         label: 'Mediciones',
         items: [
-            { name: 'Mediciones', to: '/v/rise/measurements', icon: 'measurements', routeName: 'rise-measurements' },
-            { name: 'Fotos', to: '/v/rise/photos', icon: 'photos', routeName: 'rise-photos' },
+            { name: 'Mediciones', to: '/rise/measurements', icon: 'measurements', routeName: 'rise-measurements' },
+            { name: 'Fotos', to: '/rise/photos', icon: 'photos', routeName: 'rise-photos' },
         ],
     },
     {
         label: 'Habitos',
         items: [
-            { name: 'Habitos RISE', to: '/v/rise/habits', icon: 'habits', routeName: 'rise-habits' },
+            { name: 'Habitos RISE', to: '/rise/habits', icon: 'habits', routeName: 'rise-habits' },
         ],
     },
     {
         label: 'General',
         items: [
-            { name: 'Chat', to: '/v/rise/chat', icon: 'chat', routeName: 'rise-chat' },
-            { name: 'Entrenamiento', to: '/v/rise/workout', icon: 'workout', routeName: 'rise-workout' },
-            { name: 'Perfil', to: '/v/rise/profile', icon: 'profile', routeName: 'rise-profile' },
+            { name: 'Chat', to: '/rise/chat', icon: 'chat', routeName: 'rise-chat' },
+            { name: 'Entrenamiento', to: '/rise/workout', icon: 'workout', routeName: 'rise-workout' },
+            { name: 'Perfil', to: '/rise/profile', icon: 'profile', routeName: 'rise-profile' },
         ],
     },
 ];
@@ -86,11 +86,11 @@ function isActive(routeName) {
 
 // Mobile bottom nav items
 const bottomNav = [
-    { name: 'Dashboard', to: '/v/rise', icon: 'dashboard', routeName: 'rise-dashboard' },
-    { name: 'Programa', to: '/v/rise/program', icon: 'program', routeName: 'rise-program' },
-    { name: 'Habitos', to: '/v/rise/habits', icon: 'habits', routeName: 'rise-habits' },
-    { name: 'Chat', to: '/v/rise/chat', icon: 'chat', routeName: 'rise-chat' },
-    { name: 'Perfil', to: '/v/rise/profile', icon: 'profile', routeName: 'rise-profile' },
+    { name: 'Dashboard', to: '/rise', icon: 'dashboard', routeName: 'rise-dashboard' },
+    { name: 'Programa', to: '/rise/program', icon: 'program', routeName: 'rise-program' },
+    { name: 'Habitos', to: '/rise/habits', icon: 'habits', routeName: 'rise-habits' },
+    { name: 'Chat', to: '/rise/chat', icon: 'chat', routeName: 'rise-chat' },
+    { name: 'Perfil', to: '/rise/profile', icon: 'profile', routeName: 'rise-profile' },
 ];
 </script>
 

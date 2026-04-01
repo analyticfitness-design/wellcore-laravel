@@ -35,7 +35,7 @@ export function useApi() {
         (error) => {
             if (error.response && error.response.status === 401) {
                 authStore.clearAuth();
-                window.location.href = '/v/login';
+                window.location.href = '/login';
             }
             return Promise.reject(error);
         }

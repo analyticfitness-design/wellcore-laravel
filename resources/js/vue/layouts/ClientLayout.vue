@@ -32,7 +32,7 @@ async function handleLogout() {
         await authStore.logout();
     } finally {
         loggingOut.value = false;
-        router.push('/v/login');
+        router.push('/login');
     }
 }
 
@@ -54,38 +54,38 @@ const navSections = [
     {
         label: 'Entrenamiento',
         items: [
-            { name: 'Dashboard', to: '/v/client', icon: 'dashboard', routeName: 'client-dashboard' },
-            { name: 'Mi Plan', to: '/v/client/plan', icon: 'plan', routeName: 'client-plan' },
-            { name: 'Entrenamiento', to: '/v/client/training', icon: 'training', routeName: 'client-training' },
+            { name: 'Dashboard', to: '/client', icon: 'dashboard', routeName: 'client-dashboard' },
+            { name: 'Mi Plan', to: '/client/plan', icon: 'plan', routeName: 'client-plan' },
+            { name: 'Entrenamiento', to: '/client/training', icon: 'training', routeName: 'client-training' },
         ],
     },
     {
         label: 'Nutricion',
         items: [
-            { name: 'Nutricion', to: '/v/client/nutrition', icon: 'nutrition', routeName: 'client-nutrition' },
-            { name: 'Habitos', to: '/v/client/habits', icon: 'habits', routeName: 'client-habits' },
+            { name: 'Nutricion', to: '/client/nutrition', icon: 'nutrition', routeName: 'client-nutrition' },
+            { name: 'Habitos', to: '/client/habits', icon: 'habits', routeName: 'client-habits' },
         ],
     },
     {
         label: 'Progreso',
         items: [
-            { name: 'Metricas', to: '/v/client/metrics', icon: 'metrics', routeName: 'client-metrics' },
-            { name: 'Fotos', to: '/v/client/photos', icon: 'photos', routeName: 'client-photos' },
+            { name: 'Metricas', to: '/client/metrics', icon: 'metrics', routeName: 'client-metrics' },
+            { name: 'Fotos', to: '/client/photos', icon: 'photos', routeName: 'client-photos' },
         ],
     },
     {
         label: 'Social',
         items: [
-            { name: 'Chat', to: '/v/client/chat', icon: 'chat', routeName: 'client-chat' },
-            { name: 'Comunidad', to: '/v/client/community', icon: 'community', routeName: 'client-community' },
-            { name: 'Retos', to: '/v/client/challenges', icon: 'challenges', routeName: 'client-challenges' },
+            { name: 'Chat', to: '/client/chat', icon: 'chat', routeName: 'client-chat' },
+            { name: 'Comunidad', to: '/client/community', icon: 'community', routeName: 'client-community' },
+            { name: 'Retos', to: '/client/challenges', icon: 'challenges', routeName: 'client-challenges' },
         ],
     },
     {
         label: 'Cuenta',
         items: [
-            { name: 'Perfil', to: '/v/client/profile', icon: 'profile', routeName: 'client-profile' },
-            { name: 'Configuracion', to: '/v/client/settings', icon: 'settings', routeName: 'client-settings' },
+            { name: 'Perfil', to: '/client/profile', icon: 'profile', routeName: 'client-profile' },
+            { name: 'Configuracion', to: '/client/settings', icon: 'settings', routeName: 'client-settings' },
         ],
     },
 ];
@@ -96,11 +96,11 @@ function isActive(routeName) {
 
 // Mobile bottom nav items
 const bottomNav = [
-    { name: 'Dashboard', to: '/v/client', icon: 'dashboard', routeName: 'client-dashboard' },
-    { name: 'Plan', to: '/v/client/plan', icon: 'plan', routeName: 'client-plan' },
-    { name: 'Metricas', to: '/v/client/metrics', icon: 'metrics', routeName: 'client-metrics' },
-    { name: 'Chat', to: '/v/client/chat', icon: 'chat', routeName: 'client-chat' },
-    { name: 'Perfil', to: '/v/client/profile', icon: 'profile', routeName: 'client-profile' },
+    { name: 'Dashboard', to: '/client', icon: 'dashboard', routeName: 'client-dashboard' },
+    { name: 'Plan', to: '/client/plan', icon: 'plan', routeName: 'client-plan' },
+    { name: 'Metricas', to: '/client/metrics', icon: 'metrics', routeName: 'client-metrics' },
+    { name: 'Chat', to: '/client/chat', icon: 'chat', routeName: 'client-chat' },
+    { name: 'Perfil', to: '/client/profile', icon: 'profile', routeName: 'client-profile' },
 ];
 </script>
 

@@ -90,7 +90,7 @@ onMounted(() => {
       <p class="text-sm text-wc-text">{{ error }}</p>
       <div class="mt-4 flex justify-center gap-3">
         <button @click="fetchClient" class="rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white">Reintentar</button>
-        <button @click="router.push('/v/admin/clients')" class="rounded-lg border border-wc-border px-4 py-2 text-sm font-medium text-wc-text">Volver</button>
+        <button @click="router.push('/admin/clients')" class="rounded-lg border border-wc-border px-4 py-2 text-sm font-medium text-wc-text">Volver</button>
       </div>
     </div>
 
@@ -100,7 +100,7 @@ onMounted(() => {
       <!-- Header -->
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex items-center gap-4">
-          <button @click="router.push('/v/admin/clients')" class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text transition-colors" aria-label="Volver">
+          <button @click="router.push('/admin/clients')" class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text transition-colors" aria-label="Volver">
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
             </svg>
