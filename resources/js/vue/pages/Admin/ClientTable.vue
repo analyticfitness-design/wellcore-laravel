@@ -84,7 +84,7 @@ function applyFilter() {
 }
 
 function viewClient(id) {
-    router.push(`/v/admin/clients/${id}`);
+    router.push(`/admin/clients/${id}`);
 }
 
 function getStatusColor(status) {

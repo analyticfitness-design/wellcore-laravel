@@ -164,7 +164,7 @@ async function finishWorkout() {
             weight_unit: weightUnit.value,
         });
         sessionId.value = response.data.sessionId;
-        router.push(`/v/rise/workout-summary/${response.data.sessionId}`);
+        router.push(`/rise/workout-summary/${response.data.sessionId}`);
     } catch (err) {
         error.value = err.response?.data?.message || 'Error al guardar entrenamiento';
     }
