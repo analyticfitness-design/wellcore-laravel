@@ -1,0 +1,76 @@
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+import axios from 'axios';
+
+export const useAuthStore = defineStore('auth', () => {
+    const token = ref(localStorage.getItem('wc_token') || null);
+    const userType = ref(localStorage.getItem('wc_user_type') || null);
+    const userId = ref(localStorage.getItem('wc_user_id') || null);
+
+    const isAuthenticated = computed(() => !!token.value);
+
+    function setAuth(data) {
+        token.value = data.token;
+        userType.value = data.userType;
+        userId.value = data.userId;
+
+        localStorage.setItem('wc_token', data.token);
+        localStorage.setItem('wc_user_type', data.userType);
+        localStorage.setItem('wc_user_id', data.userId);
+    }
+
+    function clearAuth() {
+        token.value = null;
+        userType.value = null;
+        userId.value = null;
+
+        localStorage.removeItem('wc_token');
+        localStorage.removeItem('wc_user_type');
+        localStorage.removeItem('wc_user_id');
+    }
+
+    async function login(identity, password, rememberMe = false) {
+        const response = await axios.post('/api/v/auth/login', {
+            identity,
+            password,
+            remember_me: rememberMe,
+        });
+
+        setAuth(response.data);
+        return response.data;
+    }
+
+    async function logout() {
+        try {
+            await axios.post('/api/v/auth/logout', null, {
+                headers: { Authorization: `Bearer ${token.value}` },
+            });
+        } catch {
+            // Silently fail — we clear local state regardless
+        }
+        clearAuth();
+    }
+
+    async function forgotPassword(email) {
+        const response = await axios.post('/api/v/auth/forgot-password', { email });
+        return response.data;
+    }
+
+    async function resetPassword(data) {
+        const response = await axios.post('/api/v/auth/reset-password', data);
+        return response.data;
+    }
+
+    return {
+        token,
+        userType,
+        userId,
+        isAuthenticated,
+        login,
+        logout,
+        forgotPassword,
+        resetPassword,
+        setAuth,
+        clearAuth,
+    };
+});

@@ -6,7 +6,8 @@ Fitness coaching platform serving LATAM market with personalized training, nutri
 
 ## Tech Stack
 - Laravel 13.1.1 + PHP 8.4
-- Livewire 3 + Alpine.js
+- Vue 3.5 + TypeScript + Pinia + Vue Router 4 (frontend SPA en migración)
+- Livewire 3 + Alpine.js (componentes legacy, en proceso de migración a Vue 3)
 - Tailwind CSS 4
 - MySQL (shared DB: wellcore_fitness)
 - Vite 8
@@ -15,7 +16,8 @@ Fitness coaching platform serving LATAM market with personalized training, nutri
 - Strangler Fig pattern: both apps (vanilla PHP + Laravel) share the same MySQL database
 - Custom WellCoreGuard reads auth_tokens table (compatible with vanilla app tokens)
 - No Laravel migrations for existing tables — models map directly with $table
-- Livewire for all interactivity (no separate SPA/API)
+- Frontend migration: Livewire → Vue 3 SPA (resources/js/vue/), API via Laravel REST
+- Vue 3 components in resources/js/vue/, consumed via Inertia.js or blade vue.blade.php
 
 ## Database
 - Connection: MySQL wellcore_fitness (host=127.0.0.1, port=3306)
@@ -66,7 +68,7 @@ IMPORTANT: This is a Laravel project. You MUST delegate tasks to the specialized
 |-----------|---------------|
 | Architecture, DDD, patterns, service layers | **la-01-architect** |
 | Eloquent, models, business logic, Actions, DTOs | **la-02-backend** |
-| Livewire components, Blade views, Alpine.js, .blade.php | **la-03-livewire-blade** |
+| Vue 3 components, composables, Pinia, Vue Router, UI/UX, animaciones, charts, forms | **la-03-vue3** |
 | Tailwind CSS, design tokens, dark mode, UI styling | **la-04-tailwind-ds** |
 | Auth, CSRF, security, validation, middleware, permissions | **la-05-security** |
 | Migrations, schema, queries, optimization, indexes | **la-06-database** |
@@ -86,10 +88,10 @@ IMPORTANT: This is a Laravel project. You MUST delegate tasks to the specialized
 ### How to dispatch
 ```
 // Simple task → one agent
-Agent(subagent_type="la-03-livewire-blade", prompt="...")
+Agent(subagent_type="la-03-vue3", prompt="...")
 
 // Complex task → parallel agents
-Agent(la-02-backend) + Agent(la-03-livewire-blade) simultaneously
+Agent(la-02-backend) + Agent(la-03-vue3) simultaneously
 
 // Explicit user request
 "Usa la-09-payments para integrar Wompi"

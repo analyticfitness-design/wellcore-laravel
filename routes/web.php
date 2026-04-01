@@ -304,6 +304,11 @@ Route::middleware('auth:wellcore')->group(function () {
     })->name('logout');
 });
 
+// Vue SPA catch-all — serves the Vue app for all /v/* routes
+Route::get('/v/{any}', function () {
+    return view('vue');
+})->where('any', '.*')->name('vue');
+
 // DEV ONLY routes — disabled in production
 if (app()->environment('local', 'testing')) {
     Route::get('/test', TestDashboard::class);

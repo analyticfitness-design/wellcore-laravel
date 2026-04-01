@@ -20,7 +20,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     {{-- Preload critical resources --}}
     <link rel="preload" href="/images/logo-dark.png" as="image">
@@ -62,7 +62,7 @@
                 <img src="/images/logo-light.png" alt="WellCore Fitness" class="hidden h-10 dark:block">
             </a>
 
-            {{-- Desktop Nav Links (8 links — need lg breakpoint) --}}
+            {{-- Desktop Nav Links (8 links â€” need lg breakpoint) --}}
             <div class="hidden items-center gap-5 lg:flex xl:gap-7">
                 <a href="{{ route('metodo') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('metodo') ? '!text-wc-text' : '' }}">{{ __('nav.metodo') }}</a>
                 <a href="{{ route('reto-rise') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('reto-rise') ? '!text-wc-text' : '' }}">{{ __('nav.rise') }}</a>

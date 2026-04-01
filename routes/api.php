@@ -1,0 +1,175 @@
+<?php
+
+use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ClientController;
+use App\Http\Controllers\Api\CoachController;
+use App\Http\Controllers\Api\PublicFormController;
+use App\Http\Controllers\Api\RiseController;
+use App\Http\Controllers\Api\ShopController;
+use App\Http\Controllers\Api\SocialController;
+use App\Http\Controllers\Api\TrainingController;
+use Illuminate\Support\Facades\Route;
+
+// Vue SPA Auth API
+Route::prefix('v/auth')->group(function () {
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [AuthController::class, 'me']);
+});
+
+// Vue SPA Public Forms API
+Route::prefix('v/public')->group(function () {
+    Route::post('/inscription', [PublicFormController::class, 'inscriptionSubmit']);
+    Route::post('/coach-apply', [PublicFormController::class, 'coachApply']);
+    Route::post('/rise-enroll', [PublicFormController::class, 'riseEnroll']);
+    Route::post('/presencial', [PublicFormController::class, 'presencialSubmit']);
+});
+
+// Shop (public — no auth required)
+Route::prefix('v/shop')->group(function () {
+    Route::get('/products', [ShopController::class, 'index']);
+    Route::get('/products/{slug}', [ShopController::class, 'show']);
+});
+
+// Client (authenticated — Bearer token required)
+Route::prefix('v/client')->middleware('throttle:api')->group(function () {
+    Route::get('/dashboard', [ClientController::class, 'dashboard']);
+    Route::get('/metrics', [ClientController::class, 'metrics']);
+    Route::post('/metrics', [ClientController::class, 'storeMetric']);
+    Route::get('/profile', [ClientController::class, 'profile']);
+    Route::put('/profile', [ClientController::class, 'updateProfile']);
+    Route::get('/settings', [ClientController::class, 'settings']);
+    Route::put('/settings', [ClientController::class, 'updateSettings']);
+    Route::put('/settings/password', [ClientController::class, 'changePassword']);
+    Route::post('/onboarding/complete', [ClientController::class, 'completeOnboarding']);
+    Route::get('/coach-feedback', [ClientController::class, 'coachFeedback']);
+    Route::post('/coach-feedback', [ClientController::class, 'submitCoachFeedback']);
+    Route::get('/notifications', [ClientController::class, 'notifications']);
+    Route::post('/notifications/read-all', [ClientController::class, 'markAllRead']);
+    Route::get('/tickets', [ClientController::class, 'tickets']);
+    Route::post('/tickets', [ClientController::class, 'createTicket']);
+    Route::post('/notifications/{id}/read', [ClientController::class, 'markRead']);
+});
+
+// Training (Phase 5)
+Route::prefix('v/client')->middleware('throttle:api')->group(function () {
+    Route::get('/plan', [TrainingController::class, 'plan']);
+    Route::get('/training', [TrainingController::class, 'training']);
+    Route::post('/training/toggle', [TrainingController::class, 'toggleTrainingDay']);
+    Route::get('/workout/{day?}', [TrainingController::class, 'workout'])->where('day', '[0-9]+');
+    Route::post('/workout/start', [TrainingController::class, 'startWorkout']);
+    Route::post('/workout/complete-set', [TrainingController::class, 'completeSet']);
+    Route::post('/workout/finish', [TrainingController::class, 'finishWorkout']);
+    Route::get('/workout-summary/{sessionId}', [TrainingController::class, 'workoutSummary'])->where('sessionId', '[0-9]+');
+    Route::post('/workout-summary/{sessionId}/feeling', [TrainingController::class, 'saveWorkoutFeeling'])->where('sessionId', '[0-9]+');
+    Route::get('/checkin', [TrainingController::class, 'checkin']);
+    Route::post('/checkin', [TrainingController::class, 'submitCheckin']);
+});
+
+// Social & Resources (Phase 6)
+Route::prefix('v/client')->middleware('throttle:api')->group(function () {
+    Route::get('/community', [SocialController::class, 'communityIndex']);
+    Route::post('/community', [SocialController::class, 'communityCreate']);
+    Route::post('/community/{id}/react', [SocialController::class, 'communityReact'])->where('id', '[0-9]+');
+    Route::post('/community/{id}/comment', [SocialController::class, 'communityComment'])->where('id', '[0-9]+');
+    Route::get('/challenges', [SocialController::class, 'challenges']);
+    Route::post('/challenges/{id}/join', [SocialController::class, 'joinChallenge'])->where('id', '[0-9]+');
+    Route::get('/chat', [SocialController::class, 'chatIndex']);
+    Route::post('/chat', [SocialController::class, 'chatSend']);
+    Route::get('/nutrition', [SocialController::class, 'nutrition']);
+    Route::post('/nutrition/water', [SocialController::class, 'toggleWater']);
+    Route::get('/habits', [SocialController::class, 'habits']);
+    Route::post('/habits/toggle', [SocialController::class, 'toggleHabit']);
+    Route::get('/referrals', [SocialController::class, 'referrals']);
+    Route::post('/referrals/invite', [SocialController::class, 'sendReferralInvite']);
+    Route::get('/supplements', [SocialController::class, 'supplements']);
+    Route::post('/supplements/toggle', [SocialController::class, 'toggleSupplement']);
+    Route::get('/photos', [SocialController::class, 'photos']);
+    Route::post('/photos', [SocialController::class, 'uploadPhoto']);
+    Route::delete('/photos/{id}', [SocialController::class, 'deletePhoto'])->where('id', '[0-9]+');
+    Route::get('/records', [SocialController::class, 'records']);
+    Route::get('/ai-nutrition', [SocialController::class, 'aiNutritionHistory']);
+    Route::post('/ai-nutrition/analyze', [SocialController::class, 'aiNutritionAnalyze']);
+    Route::get('/videos', [SocialController::class, 'videos']);
+    Route::get('/academia', [SocialController::class, 'academia']);
+    Route::get('/video-checkins', [SocialController::class, 'videoCheckinHistory']);
+    Route::post('/video-checkin', [SocialController::class, 'videoCheckinSubmit']);
+});
+
+// Rise (Phase 7 — authenticated client, Bearer token)
+Route::prefix('v/rise')->middleware('throttle:api')->group(function () {
+    Route::get('/dashboard', [RiseController::class, 'dashboard']);
+    Route::get('/program', [RiseController::class, 'program']);
+    Route::get('/habits', [RiseController::class, 'habits']);
+    Route::post('/habits/toggle', [RiseController::class, 'toggleHabit']);
+    Route::get('/measurements', [RiseController::class, 'measurements']);
+    Route::post('/measurements', [RiseController::class, 'storeMeasurement']);
+    Route::get('/photos', [RiseController::class, 'photos']);
+    Route::post('/photos', [RiseController::class, 'uploadPhoto']);
+    Route::delete('/photos/{id}', [RiseController::class, 'deletePhoto'])->where('id', '[0-9]+');
+    Route::get('/chat', [RiseController::class, 'chat']);
+    Route::post('/chat', [RiseController::class, 'chatSend']);
+    Route::get('/workout/{day?}', [RiseController::class, 'workout'])->where('day', '[0-9]+');
+    Route::post('/workout/start', [RiseController::class, 'startWorkout']);
+    Route::post('/workout/complete-set', [RiseController::class, 'completeSet']);
+    Route::post('/workout/finish', [RiseController::class, 'finishWorkout']);
+    Route::get('/workout-summary/{sessionId}', [RiseController::class, 'workoutSummary'])->where('sessionId', '[0-9]+');
+    Route::get('/profile', [RiseController::class, 'profile']);
+});
+
+// Coach (Phase 8 — authenticated admin with coach/admin/superadmin/jefe role)
+Route::prefix('v/coach')->middleware('throttle:api')->group(function () {
+    Route::get('/dashboard', [CoachController::class, 'dashboard']);
+    Route::get('/clients', [CoachController::class, 'clients']);
+    Route::get('/kanban', [CoachController::class, 'kanban']);
+    Route::post('/kanban/move', [CoachController::class, 'kanbanMove']);
+    Route::get('/checkins', [CoachController::class, 'checkins']);
+    Route::post('/checkins/{id}/reply', [CoachController::class, 'checkinReply'])->where('id', '[0-9]+');
+    Route::get('/messages', [CoachController::class, 'messages']);
+    Route::post('/messages', [CoachController::class, 'sendMessage']);
+    Route::post('/broadcast', [CoachController::class, 'broadcast']);
+    Route::get('/plans', [CoachController::class, 'plans']);
+    Route::post('/plans', [CoachController::class, 'createPlan']);
+    Route::put('/plans/{id}', [CoachController::class, 'updatePlan'])->where('id', '[0-9]+');
+    Route::post('/plans/generate', [CoachController::class, 'generatePlan']);
+    Route::get('/analytics', [CoachController::class, 'analytics']);
+    Route::get('/profile', [CoachController::class, 'profile']);
+    Route::put('/profile', [CoachController::class, 'updateProfile']);
+    Route::get('/notes', [CoachController::class, 'notes']);
+    Route::post('/notes', [CoachController::class, 'createNote']);
+    Route::put('/notes/{id}', [CoachController::class, 'updateNote'])->where('id', '[0-9]+');
+    Route::delete('/notes/{id}', [CoachController::class, 'deleteNote'])->where('id', '[0-9]+');
+    Route::get('/brand', [CoachController::class, 'brand']);
+    Route::put('/brand', [CoachController::class, 'updateBrand']);
+    Route::get('/features', [CoachController::class, 'features']);
+    Route::get('/resources', [CoachController::class, 'resources']);
+});
+
+// Admin (Phase 9 — authenticated admin with admin/superadmin/jefe role)
+Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard']);
+    Route::get('/feed', [AdminController::class, 'feed']);
+    Route::get('/clients', [AdminController::class, 'clients']);
+    Route::get('/clients/{id}', [AdminController::class, 'clientDetail'])->where('id', '[0-9]+');
+    Route::put('/clients/{id}', [AdminController::class, 'updateClient'])->where('id', '[0-9]+');
+    Route::get('/payments', [AdminController::class, 'payments']);
+    Route::get('/coaches', [AdminController::class, 'coaches']);
+    Route::post('/coaches', [AdminController::class, 'addCoach']);
+    Route::put('/coaches/{id}', [AdminController::class, 'updateCoach'])->where('id', '[0-9]+');
+    Route::get('/plans', [AdminController::class, 'plans']);
+    Route::get('/inscriptions', [AdminController::class, 'inscriptions']);
+    Route::put('/inscriptions/{id}', [AdminController::class, 'updateInscription'])->where('id', '[0-9]+');
+    Route::get('/invitations', [AdminController::class, 'invitations']);
+    Route::post('/invitations', [AdminController::class, 'createInvitation']);
+    Route::get('/rise', [AdminController::class, 'rise']);
+    Route::get('/settings', [AdminController::class, 'settings']);
+    Route::put('/settings', [AdminController::class, 'updateSettings']);
+    Route::get('/chat-analytics', [AdminController::class, 'chatAnalytics']);
+    Route::post('/ai-generator', [AdminController::class, 'aiGenerator']);
+    Route::get('/tickets', [AdminController::class, 'tickets']);
+    Route::post('/tickets/{id}/reply', [AdminController::class, 'replyTicket']);
+    Route::patch('/tickets/{id}/status', [AdminController::class, 'updateTicketStatus']);
+});

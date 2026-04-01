@@ -2,7 +2,7 @@
 <script>
     // FOUC: aplicar clase dark antes de que Alpine cargue
     if (localStorage.getItem('darkMode') === 'true') document.documentElement.classList.add('dark');
-    // Alpine store — toggle controlado por usuario
+    // Alpine store â€” toggle controlado por usuario
     document.addEventListener('alpine:init', () => {
         Alpine.store('darkMode', {
             on: localStorage.getItem('darkMode') === 'true',
@@ -13,7 +13,7 @@
             }
         });
     });
-    // Re-aplicar después de cada wire:navigate (morphdom elimina la clase del <html>)
+    // Re-aplicar despuÃ©s de cada wire:navigate (morphdom elimina la clase del <html>)
     document.addEventListener('livewire:navigated', () => {
         document.documentElement.classList.toggle('dark', localStorage.getItem('darkMode') === 'true');
     });
@@ -25,7 +25,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? 'Admin' }} — WellCore Admin</title>
+    <title>{{ $title ?? 'Admin' }} â€” WellCore Admin</title>
 
     <!-- Favicon & PWA -->
     <link rel="manifest" href="{{ asset('manifest.json') }}">
@@ -43,7 +43,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles

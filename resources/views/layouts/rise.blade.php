@@ -2,7 +2,7 @@
 <script>
     // FOUC: aplicar clase dark antes de que Alpine cargue
     if (localStorage.getItem('darkMode') === 'true') document.documentElement.classList.add('dark');
-    // Alpine store — toggle controlado por usuario
+    // Alpine store â€” toggle controlado por usuario
     document.addEventListener('alpine:init', () => {
         Alpine.store('darkMode', {
             on: localStorage.getItem('darkMode') === 'true',
@@ -13,7 +13,7 @@
             }
         });
     });
-    // Re-aplicar después de cada wire:navigate (morphdom elimina la clase del <html>)
+    // Re-aplicar despuÃ©s de cada wire:navigate (morphdom elimina la clase del <html>)
     document.addEventListener('livewire:navigated', () => {
         document.documentElement.classList.toggle('dark', localStorage.getItem('darkMode') === 'true');
     });
@@ -25,7 +25,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? 'RISE Dashboard' }} — WellCore RISE</title>
+    <title>{{ $title ?? 'RISE Dashboard' }} â€” WellCore RISE</title>
 
     <!-- Favicon & PWA -->
     <link rel="manifest" href="{{ asset('manifest.json') }}">
@@ -43,7 +43,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
@@ -248,7 +248,7 @@
     {{-- Main wrapper (offset by sidebar on lg+) --}}
     <div class="lg:pl-60">
 
-        {{-- Impersonation banner — visible only when an admin is viewing as this client --}}
+        {{-- Impersonation banner â€” visible only when an admin is viewing as this client --}}
         @if(session('wc_admin_token'))
         <div class="flex items-center justify-between bg-wc-accent px-4 py-2 text-sm font-medium text-white">
             <div class="flex items-center gap-2">
@@ -262,7 +262,7 @@
                 @csrf
                 <button type="submit"
                         class="inline-flex items-center gap-1.5 rounded border border-white/30 bg-white/10 px-3 py-1 text-xs font-semibold text-white hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
-                        aria-label="Salir de la sesión de impersonación y volver al panel de administración">
+                        aria-label="Salir de la sesiÃ³n de impersonaciÃ³n y volver al panel de administraciÃ³n">
                     <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
                     </svg>
