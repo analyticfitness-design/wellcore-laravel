@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useApi } from '../../composables/useApi';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
@@ -15,10 +15,13 @@ const hasCoach = ref(false);
 // Message input
 const newMessage = ref('');
 const sending = ref(false);
+const validationErrors = ref({});
 const messagesContainer = ref(null);
+const textareaRef = ref(null);
 
-// Polling
+// Polling — module-level mutable (not reactive) to avoid proxy overhead
 let pollInterval = null;
+let isPageVisible = true;
 
 // Fetch chat data
 async function fetchChat() {
@@ -38,9 +41,9 @@ async function fetchChat() {
     }
 }
 
-// Poll for new messages
+// Poll for new messages — visibility-aware (matches Livewire wire:poll.30s.visible)
 async function pollMessages() {
-    if (!hasCoach.value) return;
+    if (!hasCoach.value || !isPageVisible) return;
     try {
         const response = await api.get('/api/v/client/chat');
         const d = response.data;
@@ -54,17 +57,27 @@ async function pollMessages() {
     }
 }
 
+// Visibility change handler — pauses polling when tab/page is hidden
+function handleVisibilityChange() {
+    isPageVisible = !document.hidden;
+}
+
 // Send message
 async function sendMessage() {
     const text = newMessage.value.trim();
     if (!text || sending.value) return;
 
+    validationErrors.value = {};
     sending.value = true;
     try {
         const response = await api.post('/api/v/client/chat', {
             message: text,
         });
         newMessage.value = '';
+        // Reset textarea height after clearing
+        if (textareaRef.value) {
+            textareaRef.value.style.height = 'auto';
+        }
         if (response.data.message) {
             messages.value.push(response.data.message);
         } else {
@@ -72,11 +85,29 @@ async function sendMessage() {
             await pollMessages();
         }
         await scrollToBottom();
-    } catch {
-        // Fail silently
+    } catch (err) {
+        if (err.response?.status === 422) {
+            validationErrors.value = err.response.data.errors || {};
+        }
     } finally {
         sending.value = false;
     }
+}
+
+// Handle Enter key — send on Enter, newline on Shift+Enter
+function handleKeydown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+}
+
+// Auto-resize textarea as user types
+function autoResizeTextarea() {
+    const el = textareaRef.value;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
 
 // Scroll to bottom
@@ -87,7 +118,7 @@ async function scrollToBottom() {
     }
 }
 
-// Format timestamp
+// Format timestamp — dd/mm HH:mm to match Blade's format('d/m H:i')
 function formatTime(dateStr) {
     if (!dateStr) return '';
     const date = new Date(dateStr);
@@ -101,12 +132,15 @@ function getCoachInitial() {
 
 onMounted(async () => {
     await fetchChat();
-    // Start polling every 5 seconds
-    pollInterval = setInterval(pollMessages, 5000);
+    // Poll every 30s to match Livewire wire:poll.30s.visible
+    pollInterval = setInterval(pollMessages, 30000);
+    // Listen for visibility changes to pause polling when tab is hidden
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 });
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
     if (pollInterval) clearInterval(pollInterval);
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
 });
 </script>
 
@@ -213,36 +247,46 @@ onUnmounted(() => {
                   </div>
                   <p class="mt-1 px-1 text-right text-[10px] text-wc-text-tertiary">
                     {{ formatTime(msg.created_at) }}
-                    <span v-if="msg.read_at" class="ml-1 text-blue-400">Leido</span>
+                    <svg v-if="msg.read_at" class="ml-1 inline h-3 w-3 text-blue-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                    </svg>
                   </p>
                 </div>
               </div>
             </template>
           </div>
 
-          <!-- Message Input -->
+          <!-- Input Area -->
           <div class="border-t border-wc-border px-4 py-3">
-            <form @submit.prevent="sendMessage" class="flex items-center gap-3">
-              <input
-                v-model="newMessage"
-                type="text"
-                placeholder="Escribe un mensaje..."
-                maxlength="2000"
-                class="flex-1 rounded-xl border border-wc-border bg-wc-bg px-4 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary transition-colors focus:border-wc-accent/50 focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
-                :disabled="sending"
-              />
+            <form @submit.prevent="sendMessage" class="flex items-end gap-3">
+              <div class="flex-1">
+                <textarea
+                  ref="textareaRef"
+                  v-model="newMessage"
+                  rows="1"
+                  maxlength="2000"
+                  placeholder="Escribe un mensaje..."
+                  class="block w-full resize-none rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
+                  :disabled="sending"
+                  @keydown="handleKeydown"
+                  @input="autoResizeTextarea"
+                ></textarea>
+                <p v-if="validationErrors.message" class="mt-1 text-xs text-red-500">
+                  {{ validationErrors.message[0] }}
+                </p>
+              </div>
               <button
                 type="submit"
                 :disabled="sending || !newMessage.trim()"
-                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-wc-accent text-white transition-colors hover:bg-wc-accent/90 disabled:opacity-50"
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-wc-accent text-white transition-all hover:bg-wc-accent-hover active:scale-95 disabled:opacity-60"
                 aria-label="Enviar mensaje"
               >
-                <svg v-if="!sending" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <svg v-if="!sending" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                 </svg>
-                <svg v-else class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                <svg v-else class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
               </button>
             </form>

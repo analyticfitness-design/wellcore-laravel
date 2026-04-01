@@ -75,12 +75,14 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
     Route::post('/community', [SocialController::class, 'communityCreate']);
     Route::post('/community/{id}/react', [SocialController::class, 'communityReact'])->where('id', '[0-9]+');
     Route::post('/community/{id}/comment', [SocialController::class, 'communityComment'])->where('id', '[0-9]+');
+    Route::delete('/community/{id}', [SocialController::class, 'communityDelete'])->where('id', '[0-9]+');
     Route::get('/challenges', [SocialController::class, 'challenges']);
     Route::post('/challenges/{id}/join', [SocialController::class, 'joinChallenge'])->where('id', '[0-9]+');
     Route::get('/chat', [SocialController::class, 'chatIndex']);
     Route::post('/chat', [SocialController::class, 'chatSend']);
     Route::get('/nutrition', [SocialController::class, 'nutrition']);
     Route::post('/nutrition/water', [SocialController::class, 'toggleWater']);
+    Route::post('/nutrition/dismiss-tutorial', [SocialController::class, 'dismissNutritionTutorial']);
     Route::get('/habits', [SocialController::class, 'habits']);
     Route::post('/habits/toggle', [SocialController::class, 'toggleHabit']);
     Route::get('/referrals', [SocialController::class, 'referrals']);

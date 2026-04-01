@@ -220,6 +220,28 @@ class SocialController extends Controller
         ], 201);
     }
 
+    /**
+     * DELETE /api/v/client/community/{id}
+     *
+     * Soft-delete a post (set visible=false). Only the post owner may delete.
+     * Ports CommunityFeed.php deletePost().
+     */
+    public function communityDelete(Request $request, int $id): JsonResponse
+    {
+        $client   = $this->resolveClientOrFail($request);
+        $clientId = $client->id;
+
+        $deleted = CommunityPost::where('id', $id)
+            ->where('client_id', $clientId)
+            ->update(['visible' => false]);
+
+        if (! $deleted) {
+            return response()->json(['message' => 'Post no encontrado o no tienes permiso'], 404);
+        }
+
+        return response()->json(['deleted' => true]);
+    }
+
     // ─── Challenges ────────────────────────────────────────────────────
 
     /**
@@ -448,6 +470,12 @@ class SocialController extends Controller
         $water     = $this->loadWaterData($clientId, $plan);
         $weight    = $this->loadWeightData($clientId, $plan);
 
+        // Show onboarding tutorial if client has never logged a biometric weight
+        $showTutorial = ! BiometricLog::where('client_id', $clientId)
+            ->whereNotNull('weight_kg')
+            ->where('weight_kg', '>', 0)
+            ->exists();
+
         return response()->json([
             'has_plan'        => $plan !== null,
             'plan_raw'        => $plan,
@@ -456,7 +484,19 @@ class SocialController extends Controller
             'extras'          => $extras,
             'water'           => $water,
             'weight'          => $weight,
+            'show_tutorial'   => $showTutorial,
         ]);
+    }
+
+    /**
+     * POST /api/v/client/nutrition/dismiss-tutorial
+     *
+     * Dismiss the nutrition onboarding tutorial (no-op server-side,
+     * the tutorial auto-dismisses once client logs a weight).
+     */
+    public function dismissNutritionTutorial(Request $request): JsonResponse
+    {
+        return response()->json(['ok' => true]);
     }
 
     /**

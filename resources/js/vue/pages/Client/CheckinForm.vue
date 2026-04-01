@@ -1,16 +1,47 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useApi } from '../../composables/useApi';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
 
-// State
+// ─── Bienestar options (static, module-level) ─────────────────────
+const bienestarLabels = [
+  { value: 1, label: 'Muy mal' },
+  { value: 2, label: 'Mal' },
+  { value: 3, label: 'Normal' },
+  { value: 4, label: 'Bien' },
+  { value: 5, label: 'Muy bien' },
+];
+
+// ─── Confetti pieces (static) ─────────────────────────────────────
+const confettiPieces = [
+  { left: '8%',  color: '#DC2626', delay: '0.1s', duration: '2.8s', round: false },
+  { left: '22%', color: '#F59E0B', delay: '0.3s', duration: '3.2s', round: true },
+  { left: '38%', color: '#10B981', delay: '0s',   duration: '2.5s', round: false },
+  { left: '52%', color: '#DC2626', delay: '0.5s', duration: '3s',   round: true },
+  { left: '65%', color: '#8B5CF6', delay: '0.2s', duration: '2.7s', round: false },
+  { left: '78%', color: '#F59E0B', delay: '0.4s', duration: '3.4s', round: true },
+  { left: '90%', color: '#10B981', delay: '0.15s', duration: '2.6s', round: false },
+  { left: '45%', color: '#8B5CF6', delay: '0.6s', duration: '3.1s', round: false },
+];
+
+// ─── Module-level mutable handles (NOT reactive) ──────────────────
+let confettiTimer = null;
+
+// ─── State ────────────────────────────────────────────────────────
 const loading = ref(true);
 const error = ref(null);
 const submitting = ref(false);
 const showSuccess = ref(false);
+const showConfetti = ref(false);
 const isCheckinAvailable = ref(false);
+const alreadySubmitted = ref(false);
+
+// Tutorial
+const showTutorial = ref(false);
+const tutorialStep = ref(1);
+const tutorialTotal = 3;
 
 // Form fields
 const bienestar = ref(null);
@@ -24,15 +55,16 @@ const formErrors = ref({});
 const recentCheckins = ref([]);
 
 // Current week info
-const currentWeekLabel = computed(() => {
+const currentWeekNum = computed(() => {
   const now = new Date();
   const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
   const dayNum = d.getUTCDay() || 7;
   d.setUTCDate(d.getUTCDate() + 4 - dayNum);
   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  const weekNum = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-  return 'Semana ' + weekNum;
+  return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
 });
+
+const currentWeekLabel = computed(() => 'Semana ' + currentWeekNum.value);
 
 const currentDateLabel = computed(() => {
   const now = new Date();
@@ -44,28 +76,44 @@ const currentDateLabel = computed(() => {
 const lastBienestar = ref(0);
 const lastDiasEntrenados = ref(0);
 
-// Bienestar options
-const bienestarLabels = [
-  { value: 1, label: 'Muy mal' },
-  { value: 2, label: 'Mal' },
-  { value: 3, label: 'Normal' },
-  { value: 4, label: 'Bien' },
-  { value: 5, label: 'Muy bien' },
-];
-
 function setBienestar(value) {
   bienestar.value = value;
 }
 
-// Fetch
+// ─── Confetti control ─────────────────────────────────────────────
+watch(showSuccess, (v) => {
+  if (v) {
+    showConfetti.value = true;
+    confettiTimer = setTimeout(() => { showConfetti.value = false; }, 4000);
+  } else {
+    showConfetti.value = false;
+    clearTimeout(confettiTimer);
+  }
+});
+
+// ─── Tutorial ─────────────────────────────────────────────────────
+function nextTutorialStep() {
+  if (tutorialStep.value < tutorialTotal) tutorialStep.value++;
+}
+function prevTutorialStep() {
+  if (tutorialStep.value > 1) tutorialStep.value--;
+}
+function dismissTutorial() {
+  showTutorial.value = false;
+  tutorialStep.value = 1;
+}
+
+// ─── Fetch ────────────────────────────────────────────────────────
 async function fetchCheckin() {
   loading.value = true;
   error.value = null;
   try {
     const response = await api.get('/api/v/client/checkin');
     const d = response.data;
-    isCheckinAvailable.value = d.isCheckinAvailable || false;
-    recentCheckins.value = d.recentCheckins || [];
+    isCheckinAvailable.value = d.is_checkin_available ?? false;
+    alreadySubmitted.value = d.already_submitted ?? false;
+    showTutorial.value = d.show_tutorial ?? false;
+    recentCheckins.value = d.recent_checkins ?? [];
   } catch (err) {
     error.value = err.response?.data?.message || 'Error al cargar check-in';
   } finally {
@@ -73,7 +121,7 @@ async function fetchCheckin() {
   }
 }
 
-// Submit
+// ─── Submit ───────────────────────────────────────────────────────
 async function submitCheckin() {
   if (submitting.value) return;
   formErrors.value = {};
@@ -109,10 +157,15 @@ async function submitCheckin() {
     await fetchCheckin();
   } catch (err) {
     if (err.response?.status === 422) {
-      const errors = err.response.data.errors || {};
-      formErrors.value = {};
-      for (const key in errors) {
-        formErrors.value[key] = errors[key][0] || errors[key];
+      // Handle both Laravel validation errors and custom error messages
+      if (err.response.data.errors) {
+        const errors = err.response.data.errors;
+        formErrors.value = {};
+        for (const key in errors) {
+          formErrors.value[key] = Array.isArray(errors[key]) ? errors[key][0] : errors[key];
+        }
+      } else if (err.response.data.error) {
+        formErrors.value.submit = err.response.data.error;
       }
     } else if (err.response?.data?.message) {
       formErrors.value.submit = err.response.data.message;
@@ -128,8 +181,11 @@ function dismissSuccess() {
   showSuccess.value = false;
 }
 
-onMounted(() => {
-  fetchCheckin();
+// ─── Lifecycle ────────────────────────────────────────────────────
+onMounted(fetchCheckin);
+
+onBeforeUnmount(() => {
+  clearTimeout(confettiTimer);
 });
 </script>
 
@@ -147,9 +203,9 @@ onMounted(() => {
       <!-- Loading -->
       <template v-if="loading">
         <div class="space-y-4 animate-pulse">
-          <div class="h-20 rounded-xl bg-wc-bg-tertiary"></div>
-          <div class="h-96 rounded-xl bg-wc-bg-tertiary"></div>
-          <div class="h-48 rounded-xl bg-wc-bg-tertiary"></div>
+          <div class="h-20 rounded-xl border border-wc-border bg-wc-bg-tertiary"></div>
+          <div class="h-96 rounded-xl border border-wc-border bg-wc-bg-tertiary"></div>
+          <div class="h-48 rounded-xl border border-wc-border bg-wc-bg-tertiary"></div>
         </div>
       </template>
 
@@ -176,7 +232,7 @@ onMounted(() => {
           </div>
         </div>
 
-        <!-- Submit error -->
+        <!-- Top-level submit error -->
         <p v-if="formErrors.submit" class="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">{{ formErrors.submit }}</p>
 
         <!-- Form -->
@@ -249,7 +305,7 @@ onMounted(() => {
               id="rpe"
               min="1"
               max="10"
-              class="w-full accent-[#DC2626]"
+              class="w-full accent-wc-accent"
             />
             <div class="mt-1 flex justify-between text-xs text-wc-text-tertiary">
               <span>1 - Muy facil</span>
@@ -271,11 +327,21 @@ onMounted(() => {
             <p v-if="formErrors.comentario" class="mt-1 text-xs text-red-500">{{ formErrors.comentario }}</p>
           </div>
 
+          <!-- Duplicate / inline submit error (inside form) -->
+          <div v-if="formErrors.submit" class="flex items-center gap-3 rounded-xl border border-wc-accent/30 bg-wc-accent/10 p-4">
+            <svg class="h-5 w-5 shrink-0 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+            <p class="text-sm font-medium text-wc-accent">{{ formErrors.submit }}</p>
+          </div>
+
           <!-- Submit -->
           <button
             type="submit"
             :disabled="!isCheckinAvailable || submitting"
-            class="w-full rounded-lg bg-wc-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg disabled:opacity-40 disabled:cursor-not-allowed"
+            :title="!isCheckinAvailable ? 'Solo disponible viernes y sabado' : undefined"
+            :aria-disabled="!isCheckinAvailable || undefined"
+            class="btn-press w-full rounded-lg bg-wc-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <template v-if="!isCheckinAvailable">
               <span class="inline-flex items-center gap-2">
@@ -299,7 +365,7 @@ onMounted(() => {
         <div v-if="recentCheckins.length > 0">
           <h2 class="mb-4 font-display text-xl tracking-wide text-wc-text">CHECK-INS ANTERIORES</h2>
           <div class="space-y-3">
-            <div v-for="(checkin, cIdx) in recentCheckins" :key="cIdx" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
+            <div v-for="(checkin, cIdx) in recentCheckins" :key="checkin.id || cIdx" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
               <!-- Header -->
               <div class="mb-3 flex items-center justify-between">
                 <div class="flex items-center gap-2">
@@ -346,7 +412,7 @@ onMounted(() => {
         </div>
       </template>
 
-      <!-- Success Overlay -->
+      <!-- ===== ACHIEVEMENT OVERLAY: CHECK-IN ===== -->
       <Teleport to="body">
         <Transition
           enter-active-class="transition ease-out duration-300"
@@ -360,54 +426,200 @@ onMounted(() => {
             v-if="showSuccess"
             class="fixed inset-0 z-50 flex items-center justify-center p-4"
             style="background: rgba(0,0,0,0.85);"
-            @keydown.escape="dismissSuccess"
+            @keydown.escape.window="dismissSuccess"
           >
-            <div
-              class="relative w-full max-w-sm overflow-hidden rounded-2xl text-center"
-              style="background: linear-gradient(160deg, #0C1015 0%, #131F2B 50%, #0C1015 100%);"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="checkin-success-title"
-            >
-              <div class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse at 50% -5%, rgba(255,255,255,0.08) 0%, transparent 60%);" aria-hidden="true"></div>
-
-              <div class="relative z-10 p-8">
-                <span class="block text-6xl mb-4 animate-bounce" aria-hidden="true">&#x2705;</span>
-
-                <div class="mb-3 flex items-center justify-center gap-2">
-                  <span class="font-display text-xl tracking-[0.25em] text-white/90">WELLCORE</span>
-                  <span class="h-2 w-2 rounded-full bg-white/30" aria-hidden="true"></span>
-                </div>
-
-                <h2 id="checkin-success-title" class="font-sans text-2xl font-bold text-white mb-2">Check-in enviado!</h2>
-
-                <!-- Stats grid -->
-                <div class="my-5 grid grid-cols-3 gap-3">
-                  <div class="rounded-xl border border-white/10 bg-white/[0.06] p-3">
-                    <p class="font-data text-2xl font-bold text-white">{{ lastDiasEntrenados }}</p>
-                    <p class="mt-0.5 text-[11px] text-white/50">dias entrend.</p>
-                  </div>
-                  <div class="rounded-xl border border-white/10 bg-white/[0.06] p-3">
-                    <p class="font-data text-2xl font-bold text-white">{{ lastBienestar }}/5</p>
-                    <p class="mt-0.5 text-[11px] text-white/50">bienestar</p>
-                  </div>
-                  <div class="rounded-xl border border-white/10 bg-white/[0.06] p-3">
-                    <p class="font-data text-2xl font-bold text-white">{{ currentWeekLabel.replace('Semana ', 'S') }}</p>
-                    <p class="mt-0.5 text-[11px] text-white/50">semana</p>
-                  </div>
-                </div>
-
-                <p class="mb-6 text-sm text-white/70">Tu coach revisara tu reporte esta semana. Sigue asi!</p>
-
-                <button
-                  @click="dismissSuccess"
-                  class="w-full rounded-xl bg-wc-accent px-6 py-3 font-display text-lg tracking-wider text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-black"
-                >PERFECTO!</button>
-              </div>
+            <!-- Confetti -->
+            <div v-if="showConfetti" class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+              <div
+                v-for="(piece, pIdx) in confettiPieces"
+                :key="pIdx"
+                class="wc-confetti"
+                :style="{
+                  left: piece.left,
+                  background: piece.color,
+                  borderRadius: piece.round ? '50%' : '0',
+                  animation: `wc-confetti-fall ${piece.duration} ease-in forwards ${piece.delay}`,
+                }"
+              ></div>
             </div>
+
+            <!-- Card -->
+            <Transition
+              enter-active-class="transition ease-out duration-400"
+              enter-from-class="opacity-0 scale-90"
+              enter-to-class="opacity-100 scale-100"
+            >
+              <div
+                v-if="showSuccess"
+                class="relative w-full max-w-sm overflow-hidden rounded-2xl text-center"
+                style="background: linear-gradient(160deg, #0C1015 0%, #131F2B 50%, #0C1015 100%);"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="checkin-success-title"
+              >
+                <!-- Shimmer -->
+                <div class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse at 50% -5%, rgba(255,255,255,0.08) 0%, transparent 60%);" aria-hidden="true"></div>
+
+                <div class="relative z-10 p-8">
+                  <span class="wc-emoji-bounce block text-6xl mb-4" aria-hidden="true">&#x2705;</span>
+
+                  <div class="mb-3 flex items-center justify-center gap-2">
+                    <span class="font-display text-xl tracking-[0.25em] text-white/90">WELLCORE</span>
+                    <span class="h-2 w-2 rounded-full bg-white/30" aria-hidden="true"></span>
+                  </div>
+
+                  <h2 id="checkin-success-title" class="font-sans text-2xl font-bold text-white mb-2">Check-in enviado!</h2>
+
+                  <!-- Stats grid -->
+                  <div class="my-5 grid grid-cols-3 gap-3">
+                    <div class="rounded-xl border border-white/10 bg-white/[0.06] p-3">
+                      <p class="font-data text-2xl font-bold text-white">{{ lastDiasEntrenados }}</p>
+                      <p class="mt-0.5 text-[11px] text-white/50">dias entrend.</p>
+                    </div>
+                    <div class="rounded-xl border border-white/10 bg-white/[0.06] p-3">
+                      <p class="font-data text-2xl font-bold text-white">{{ lastBienestar }}/5</p>
+                      <p class="mt-0.5 text-[11px] text-white/50">bienestar</p>
+                    </div>
+                    <div class="rounded-xl border border-white/10 bg-white/[0.06] p-3">
+                      <p class="font-data text-2xl font-bold text-white">S{{ currentWeekNum }}</p>
+                      <p class="mt-0.5 text-[11px] text-white/50">semana</p>
+                    </div>
+                  </div>
+
+                  <p class="mb-6 text-sm text-white/70">Tu coach revisara tu reporte esta semana. Sigue asi!</p>
+
+                  <button
+                    @click="dismissSuccess"
+                    class="w-full rounded-xl bg-wc-accent px-6 py-3 font-display text-lg tracking-wider text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-black"
+                  >PERFECTO!</button>
+                </div>
+              </div>
+            </Transition>
           </div>
         </Transition>
       </Teleport>
+      <!-- ===== /ACHIEVEMENT OVERLAY: CHECK-IN ===== -->
+
+      <!-- ===== ONBOARDING TUTORIAL: CHECK-IN ===== -->
+      <Teleport to="body">
+        <Transition
+          enter-active-class="transition ease-out duration-300"
+          enter-from-class="opacity-0"
+          enter-to-class="opacity-100"
+          leave-active-class="transition ease-in duration-200"
+          leave-from-class="opacity-100"
+          leave-to-class="opacity-0"
+        >
+          <div
+            v-if="showTutorial"
+            class="fixed inset-0 z-[80] flex items-end justify-center bg-black/70 px-4 pb-6"
+            @keydown.escape.window="dismissTutorial"
+          >
+            <Transition
+              enter-active-class="transition ease-out duration-300"
+              enter-from-class="opacity-0 translate-y-8"
+              enter-to-class="opacity-100 translate-y-0"
+            >
+              <div v-if="showTutorial" class="w-full max-w-sm rounded-2xl border border-wc-border bg-wc-bg p-6 shadow-2xl">
+                <!-- Header -->
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="font-display text-lg tracking-widest text-wc-text">CHECK-IN SEMANAL</h3>
+                  <button @click="dismissTutorial" class="text-wc-text-tertiary hover:text-wc-text transition-colors" aria-label="Cerrar" type="button">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                  </button>
+                </div>
+
+                <!-- Step 1 -->
+                <div v-show="tutorialStep === 1">
+                  <div class="flex items-start gap-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-white font-bold text-sm">1</div>
+                    <div>
+                      <p class="font-semibold text-wc-text text-sm">Que es el check-in?</p>
+                      <p class="mt-1 text-xs text-wc-text-secondary leading-relaxed">Es tu reporte semanal al coach. Con esta informacion tu coach ajusta tu plan de entrenamiento y nutricion para maximizar tus resultados semana a semana.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div v-show="tutorialStep === 2">
+                  <div class="flex items-start gap-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-white font-bold text-sm">2</div>
+                    <div>
+                      <p class="font-semibold text-wc-text text-sm">Se honesto</p>
+                      <p class="mt-1 text-xs text-wc-text-secondary leading-relaxed">No hay respuestas malas. Si tuviste una semana dificil, dilo. Tu coach solo puede ayudarte si conoce tu realidad -- no la version perfecta.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div v-show="tutorialStep === 3">
+                  <div class="flex items-start gap-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-white font-bold text-sm">3</div>
+                    <div>
+                      <p class="font-semibold text-wc-text text-sm">Hazlo cada semana</p>
+                      <p class="mt-1 text-xs text-wc-text-secondary leading-relaxed">Los clientes que completan su check-in semanalmente progresan 3x mas rapido. El seguimiento constante es lo que diferencia los resultados promedio de los extraordinarios.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step indicators -->
+                <div class="mt-4 flex justify-center gap-1.5">
+                  <div
+                    v-for="i in tutorialTotal"
+                    :key="i"
+                    class="h-1.5 rounded-full transition-all"
+                    :class="i === tutorialStep ? 'bg-wc-accent w-4' : 'bg-wc-bg-tertiary w-1.5'"
+                  ></div>
+                </div>
+
+                <!-- Navigation buttons -->
+                <div class="mt-5 flex gap-3">
+                  <button
+                    v-if="tutorialStep > 1"
+                    @click="prevTutorialStep"
+                    type="button"
+                    class="flex-1 rounded-xl border border-wc-border bg-wc-bg-secondary py-2.5 text-sm font-medium text-wc-text-secondary hover:text-wc-text transition-colors"
+                  >Atras</button>
+                  <button
+                    v-if="tutorialStep < tutorialTotal"
+                    @click="nextTutorialStep"
+                    type="button"
+                    class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-red-700 transition-colors"
+                  >Siguiente</button>
+                  <button
+                    v-if="tutorialStep === tutorialTotal"
+                    @click="dismissTutorial"
+                    type="button"
+                    class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-red-700 transition-colors"
+                  >Listo, comenzar!</button>
+                </div>
+              </div>
+            </Transition>
+          </div>
+        </Transition>
+      </Teleport>
+      <!-- ===== /ONBOARDING TUTORIAL: CHECK-IN ===== -->
     </div>
   </ClientLayout>
 </template>
+
+<style scoped>
+@keyframes wc-confetti-fall {
+  0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+.wc-confetti {
+  position: absolute;
+  top: -10px;
+  width: 10px;
+  height: 10px;
+}
+@keyframes wc-emoji-bounce {
+  0%, 100% { transform: scale(1) rotate(-3deg); }
+  50%      { transform: scale(1.15) rotate(3deg); }
+}
+.wc-emoji-bounce {
+  animation: wc-emoji-bounce 2s ease-in-out infinite;
+  display: inline-block;
+}
+</style>
