@@ -78,6 +78,7 @@ class AuthController extends Controller
             'token' => $token,
             'userType' => $userType->value,
             'userId' => $user->id,
+            'name' => $user->name ?? $user->username ?? 'Usuario',
             'redirectUrl' => $redirectUrl,
         ]);
     }

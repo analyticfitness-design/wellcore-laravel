@@ -17,6 +17,9 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.setItem('wc_token', data.token);
         localStorage.setItem('wc_user_type', data.userType);
         localStorage.setItem('wc_user_id', data.userId);
+        if (data.name) {
+            localStorage.setItem('wc_user_name', data.name);
+        }
     }
 
     function clearAuth() {
@@ -27,6 +30,7 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.removeItem('wc_token');
         localStorage.removeItem('wc_user_type');
         localStorage.removeItem('wc_user_id');
+        localStorage.removeItem('wc_user_name');
     }
 
     async function login(identity, password, rememberMe = false) {
