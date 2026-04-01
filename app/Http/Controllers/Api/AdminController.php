@@ -221,7 +221,14 @@ class AdminController extends Controller
         $this->resolveAdminOrFail($request);
 
         $typeFilter = $request->query('type', 'all');
-        $dateFilter = $request->query('date', 'today');
+        $dateFilter = $request->query('date', 'week');
+
+        $typeFilter = match ($typeFilter) {
+            'checkin'  => 'checkins',
+            'payment'  => 'payments',
+            'signup'   => 'inscriptions',
+            default    => $typeFilter,
+        };
 
         $tz = 'America/Bogota';
         $dateFrom = match ($dateFilter) {
@@ -238,13 +245,15 @@ class AdminController extends Controller
             $inscriptions = Inscription::when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
                 ->latest('created_at')->limit(50)->get()
                 ->map(fn ($i) => [
-                    'type' => 'inscription',
-                    'icon' => 'clipboard-document-check',
-                    'color' => 'sky',
-                    'title' => 'Nueva inscripcion',
+                    'type'        => 'signup',
+                    'icon'        => 'clipboard-document-check',
+                    'color'       => 'sky',
+                    'title'       => 'Nueva inscripcion',
+                    'clientName'  => trim(($i->nombre ?? '').' '.($i->apellido ?? '')),
                     'description' => trim(($i->nombre ?? '').' '.($i->apellido ?? '')).' — '.($i->plan?->label() ?? 'Sin plan'),
-                    'timestamp' => $i->created_at?->toIso8601String(),
-                    'time_ago' => $i->created_at?->diffForHumans() ?? '-',
+                    'timestamp'   => $i->created_at?->toIso8601String(),
+                    'time_ago'    => $i->created_at?->diffForHumans() ?? '-',
+                    'time'        => $i->created_at?->diffForHumans() ?? '-',
                 ]);
             $items = $items->merge($inscriptions);
         }
@@ -254,13 +263,15 @@ class AdminController extends Controller
             $payments = Payment::when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
                 ->latest('created_at')->limit(50)->get()
                 ->map(fn ($p) => [
-                    'type' => 'payment',
-                    'icon' => 'banknotes',
-                    'color' => 'emerald',
-                    'title' => 'Pago recibido',
+                    'type'        => 'payment',
+                    'icon'        => 'banknotes',
+                    'color'       => 'emerald',
+                    'title'       => 'Pago recibido',
+                    'clientName'  => $p->buyer_name ?? $p->email ?? 'Desconocido',
                     'description' => ($p->buyer_name ?? $p->email ?? 'Desconocido').' — $'.number_format((float) $p->amount, 0, ',', '.').' COP',
-                    'timestamp' => $p->created_at?->toIso8601String(),
-                    'time_ago' => $p->created_at?->diffForHumans() ?? '-',
+                    'timestamp'   => $p->created_at?->toIso8601String(),
+                    'time_ago'    => $p->created_at?->diffForHumans() ?? '-',
+                    'time'        => $p->created_at?->diffForHumans() ?? '-',
                 ]);
             $items = $items->merge($payments);
         }
@@ -271,13 +282,15 @@ class AdminController extends Controller
                 ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
                 ->latest('created_at')->limit(50)->get()
                 ->map(fn ($c) => [
-                    'type' => 'checkin',
-                    'icon' => 'clipboard-document-list',
-                    'color' => 'orange',
-                    'title' => 'Check-in enviado',
+                    'type'        => 'checkin',
+                    'icon'        => 'clipboard-document-list',
+                    'color'       => 'orange',
+                    'title'       => 'Check-in enviado',
+                    'clientName'  => $c->client?->name ?? 'Cliente',
                     'description' => ($c->client?->name ?? 'Cliente').' — Bienestar: '.($c->bienestar ?? '-').'/10',
-                    'timestamp' => $c->created_at?->toIso8601String(),
-                    'time_ago' => $c->created_at?->diffForHumans() ?? '-',
+                    'timestamp'   => $c->created_at?->toIso8601String(),
+                    'time_ago'    => $c->created_at?->diffForHumans() ?? '-',
+                    'time'        => $c->created_at?->diffForHumans() ?? '-',
                 ]);
             $items = $items->merge($checkins);
         }
@@ -288,15 +301,19 @@ class AdminController extends Controller
                 ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
                 ->latest('created_at')->limit(50)->get()
                 ->map(fn ($m) => [
-                    'type' => 'message',
-                    'icon' => 'chat-bubble-left-right',
-                    'color' => 'violet',
-                    'title' => 'Nuevo mensaje',
+                    'type'        => 'message',
+                    'icon'        => 'chat-bubble-left-right',
+                    'color'       => 'violet',
+                    'title'       => 'Nuevo mensaje',
+                    'clientName'  => $m->direction === 'client_to_coach'
+                        ? ($m->client?->name ?? 'Cliente')
+                        : 'Coach '.($m->coach?->name ?? ''),
                     'description' => ($m->direction === 'coach_to_client'
                         ? ('Coach '.($m->coach?->name ?? '').' → '.($m->client?->name ?? 'Cliente'))
                         : (($m->client?->name ?? 'Cliente').' → Coach')).' — '.Str::limit($m->message ?? '', 60),
-                    'timestamp' => $m->created_at?->toIso8601String(),
-                    'time_ago' => $m->created_at?->diffForHumans() ?? '-',
+                    'timestamp'   => $m->created_at?->toIso8601String(),
+                    'time_ago'    => $m->created_at?->diffForHumans() ?? '-',
+                    'time'        => $m->created_at?->diffForHumans() ?? '-',
                 ]);
             $items = $items->merge($messages);
         }
@@ -307,13 +324,15 @@ class AdminController extends Controller
                 ->when($dateFrom, fn ($q) => $q->where('log_date', '>=', $dateFrom->toDateString()))
                 ->latest('log_date')->limit(50)->get()
                 ->map(fn ($t) => [
-                    'type' => 'training',
-                    'icon' => 'fire',
-                    'color' => 'yellow',
-                    'title' => 'Entrenamiento',
+                    'type'        => 'training',
+                    'icon'        => 'fire',
+                    'color'       => 'yellow',
+                    'title'       => 'Entrenamiento',
+                    'clientName'  => $t->client?->name ?? 'Cliente',
                     'description' => ($t->client?->name ?? 'Cliente').' — '.($t->completed ? 'Completado' : 'Registrado'),
-                    'timestamp' => $t->log_date?->startOfDay()->toIso8601String(),
-                    'time_ago' => $t->log_date?->diffForHumans() ?? '-',
+                    'timestamp'   => $t->log_date?->startOfDay()->toIso8601String(),
+                    'time_ago'    => $t->log_date?->diffForHumans() ?? '-',
+                    'time'        => $t->log_date?->diffForHumans() ?? '-',
                 ]);
             $items = $items->merge($training);
         }
@@ -321,15 +340,15 @@ class AdminController extends Controller
         $feed = $items->sortByDesc('timestamp')->take(50)->values()->toArray();
 
         // Stats
-        $today = Carbon::today();
+        $today = Carbon::today('America/Bogota');
         $feedStats = [
-            'eventsToday' => Inscription::where('created_at', '>=', $today)->count()
+            'eventsToday'  => Inscription::where('created_at', '>=', $today)->count()
                 + Payment::where('created_at', '>=', $today)->count()
                 + Checkin::where('created_at', '>=', $today)->count()
                 + CoachMessage::where('created_at', '>=', $today)->count(),
-            'inscriptionsToday' => Inscription::where('created_at', '>=', $today)->count(),
+            'actionsToday' => Inscription::where('created_at', '>=', $today)->count(),
             'paymentsToday' => Payment::where('created_at', '>=', $today)->count(),
-            'activeConversations' => CoachMessage::where('created_at', '>=', $today)->distinct('client_id')->count('client_id'),
+            'activeNow'    => CoachMessage::where('created_at', '>=', $today)->distinct('client_id')->count('client_id'),
         ];
 
         return response()->json([
