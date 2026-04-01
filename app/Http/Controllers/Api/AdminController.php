@@ -1717,4 +1717,79 @@ class AdminController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Send a gift plan invitation on behalf of an existing client.
+     */
+    public function sendGiftInvitation(Request $request): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $validated = $request->validate([
+            'gifter_name' => 'required|string|max:255',
+            'gifter_email' => 'required|email|max:255',
+            'recipient_name' => 'required|string|max:255',
+            'recipient_email' => 'required|email|max:255|different:gifter_email',
+            'gift_message' => 'nullable|string|max:500',
+            'plan' => 'required|in:rise,esencial,metodo,elite,presencial',
+        ], [
+            'gifter_name.required' => 'El nombre de quien regala es obligatorio.',
+            'gifter_email.required' => 'El email de quien regala es obligatorio.',
+            'gifter_email.email' => 'Ingresa un email valido para quien regala.',
+            'recipient_name.required' => 'El nombre del destinatario es obligatorio.',
+            'recipient_email.required' => 'El email del destinatario es obligatorio.',
+            'recipient_email.email' => 'Ingresa un email valido para el destinatario.',
+            'recipient_email.different' => 'El email del destinatario debe ser diferente al de quien regala.',
+            'gift_message.max' => 'El mensaje no puede exceder 500 caracteres.',
+            'plan.required' => 'Selecciona un plan.',
+            'plan.in' => 'El plan seleccionado no es valido.',
+        ]);
+
+        $planNames = [
+            'rise' => 'RISE',
+            'esencial' => 'Esencial',
+            'metodo' => 'Metodo',
+            'elite' => 'Elite',
+            'presencial' => 'Presencial',
+        ];
+
+        try {
+            \Illuminate\Support\Facades\Mail::to($validated['recipient_email'])->send(
+                new \App\Mail\GiftPlanInvitation(
+                    recipientName: $validated['recipient_name'],
+                    planKey: $validated['plan'],
+                    gifterName: $validated['gifter_name'],
+                    gifterEmail: $validated['gifter_email'],
+                    giftMessage: $validated['gift_message'] ?? null,
+                )
+            );
+
+            $planName = $planNames[$validated['plan']] ?? $validated['plan'];
+
+            return response()->json([
+                'sent' => true,
+                'message' => "Regalo del plan {$planName} enviado a {$validated['recipient_email']} de parte de {$validated['gifter_name']}",
+                'entry' => [
+                    'gifter' => $validated['gifter_name'],
+                    'name' => $validated['recipient_name'],
+                    'email' => $validated['recipient_email'],
+                    'plan' => $planName,
+                    'type' => 'gift',
+                    'time' => now()->format('H:i'),
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('SendGiftInvitation mail error', [
+                'gifter' => $validated['gifter_email'],
+                'recipient' => $validated['recipient_email'],
+                'plan' => $validated['plan'],
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'sent' => false,
+                'message' => 'Error al enviar el regalo: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
 }
