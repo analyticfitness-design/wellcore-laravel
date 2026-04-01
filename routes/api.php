@@ -182,4 +182,5 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
     Route::get('/tickets', [AdminController::class, 'tickets']);
     Route::post('/tickets/{id}/reply', [AdminController::class, 'replyTicket']);
     Route::patch('/tickets/{id}/status', [AdminController::class, 'updateTicketStatus']);
+    Route::post('/send-plan-invitation', [AdminController::class, 'sendPlanInvitation']);
 });

@@ -1651,4 +1651,70 @@ class AdminController extends Controller
             ],
         ]);
     }
+
+    // ─── Send Plan Invitation Email ─────────────────────────────────────
+
+    /**
+     * POST /api/v/admin/send-plan-invitation
+     *
+     * Send a professional plan invitation email to a prospect.
+     * Ports Admin\SendPlanInvitation.php sendInvitation() logic.
+     */
+    public function sendPlanInvitation(Request $request): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $validated = $request->validate([
+            'recipient_name' => 'required|string|max:255',
+            'recipient_email' => 'required|email|max:255',
+            'plan' => 'required|in:rise,esencial,metodo,elite,presencial',
+        ], [
+            'recipient_name.required' => 'El nombre es obligatorio.',
+            'recipient_email.required' => 'El email es obligatorio.',
+            'recipient_email.email' => 'Ingresa un email valido.',
+            'plan.required' => 'Selecciona un plan.',
+            'plan.in' => 'El plan seleccionado no es valido.',
+        ]);
+
+        $planNames = [
+            'rise' => 'RISE',
+            'esencial' => 'Esencial',
+            'metodo' => 'Metodo',
+            'elite' => 'Elite',
+            'presencial' => 'Presencial',
+        ];
+
+        try {
+            \Illuminate\Support\Facades\Mail::to($validated['recipient_email'])->send(
+                new \App\Mail\PlanInvitation(
+                    recipientName: $validated['recipient_name'],
+                    planKey: $validated['plan'],
+                )
+            );
+
+            $planName = $planNames[$validated['plan']] ?? $validated['plan'];
+
+            return response()->json([
+                'sent' => true,
+                'message' => "Invitacion del plan {$planName} enviada a {$validated['recipient_email']}",
+                'entry' => [
+                    'name' => $validated['recipient_name'],
+                    'email' => $validated['recipient_email'],
+                    'plan' => $planName,
+                    'time' => now()->format('H:i'),
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('SendPlanInvitation mail error', [
+                'email' => $validated['recipient_email'],
+                'plan' => $validated['plan'],
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'sent' => false,
+                'message' => 'Error al enviar: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
 }
