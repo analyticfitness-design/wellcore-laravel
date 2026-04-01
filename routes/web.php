@@ -135,10 +135,75 @@ Route::middleware('guest:wellcore')->group(function () {
 });
 
 // Vue SPA portal routes — auth enforced by Vue Router + API middleware, not Laravel
-Route::get('/client/{any?}', fn () => view('vue'))->where('any', '.*');
-Route::get('/rise/{any?}', fn () => view('vue'))->where('any', '.*');
-Route::get('/coach/{any?}', fn () => view('vue'))->where('any', '.*');
-Route::get('/admin/{any?}', fn () => view('vue'))->where('any', '.*');
+// All routes serve the same Vue SPA shell. Named routes required by Livewire components,
+// auth middleware, and blade layouts that reference route('x.y').
+
+// Client portal
+Route::view('/client', 'vue')->name('client.dashboard');
+Route::view('/client/plan', 'vue')->name('client.plan');
+Route::view('/client/workout', 'vue')->name('client.workout');
+Route::view('/client/training', 'vue')->name('client.training');
+Route::view('/client/checkin', 'vue')->name('client.checkin');
+Route::view('/client/photos', 'vue')->name('client.photos');
+Route::view('/client/metrics', 'vue')->name('client.metrics');
+Route::view('/client/video-checkin', 'vue')->name('client.video-checkin');
+Route::view('/client/community', 'vue')->name('client.community');
+Route::view('/client/challenges', 'vue')->name('client.challenges');
+Route::view('/client/chat', 'vue')->name('client.chat');
+Route::view('/client/referrals', 'vue')->name('client.referrals');
+Route::view('/client/nutrition', 'vue')->name('client.nutrition');
+Route::view('/client/ai-nutrition', 'vue')->name('client.ai-nutrition');
+Route::view('/client/settings', 'vue')->name('client.settings');
+Route::view('/client/profile', 'vue')->name('client.profile');
+Route::get('/client/{any}', fn () => view('vue'))->where('any', '.*');
+
+// RISE portal
+Route::view('/rise', 'vue')->name('rise.dashboard');
+Route::view('/rise/program', 'vue')->name('rise.program');
+Route::view('/rise/workout', 'vue')->name('rise.workout');
+Route::view('/rise/tracking', 'vue')->name('rise.tracking');
+Route::view('/rise/measurements', 'vue')->name('rise.measurements');
+Route::view('/rise/photos', 'vue')->name('rise.photos');
+Route::view('/rise/habits', 'vue')->name('rise.habits');
+Route::view('/rise/chat', 'vue')->name('rise.chat');
+Route::view('/rise/profile', 'vue')->name('rise.profile');
+Route::get('/rise/{any}', fn () => view('vue'))->where('any', '.*');
+
+// Coach portal
+Route::view('/coach', 'vue')->name('coach.dashboard');
+Route::view('/coach/clients', 'vue')->name('coach.clients');
+Route::view('/coach/kanban', 'vue')->name('coach.kanban');
+Route::view('/coach/messages', 'vue')->name('coach.messages');
+Route::view('/coach/notes', 'vue')->name('coach.notes');
+Route::view('/coach/broadcast', 'vue')->name('coach.broadcast');
+Route::view('/coach/checkins', 'vue')->name('coach.checkins');
+Route::view('/coach/plans', 'vue')->name('coach.plans');
+Route::view('/coach/analytics', 'vue')->name('coach.analytics');
+Route::view('/coach/resources', 'vue')->name('coach.resources');
+Route::view('/coach/features', 'vue')->name('coach.features');
+Route::view('/coach/profile', 'vue')->name('coach.profile');
+Route::view('/coach/brand', 'vue')->name('coach.brand');
+Route::get('/coach/{any}', fn () => view('vue'))->where('any', '.*');
+
+// Admin portal
+Route::view('/admin', 'vue')->name('admin.dashboard');
+Route::view('/admin/feed', 'vue')->name('admin.feed');
+Route::view('/admin/clients', 'vue')->name('admin.clients');
+Route::view('/admin/coaches', 'vue')->name('admin.coaches');
+Route::view('/admin/plans', 'vue')->name('admin.plans');
+Route::view('/admin/ai-generator', 'vue')->name('admin.ai-generator');
+Route::view('/admin/rise', 'vue')->name('admin.rise');
+Route::view('/admin/payments', 'vue')->name('admin.payments');
+Route::view('/admin/inscriptions', 'vue')->name('admin.inscriptions');
+Route::view('/admin/invitations', 'vue')->name('admin.invitations');
+Route::view('/admin/send-invitation', 'vue')->name('admin.send-invitation');
+Route::view('/admin/referral-rewards', 'vue')->name('admin.referral-rewards');
+Route::view('/admin/campaign-tracker', 'vue')->name('admin.campaign-tracker');
+Route::view('/admin/chat', 'vue')->name('admin.chat');
+Route::view('/admin/tools', 'vue')->name('admin.tools');
+Route::view('/admin/tickets', 'vue')->name('admin.tickets');
+Route::view('/admin/settings', 'vue')->name('admin.settings');
+Route::get('/admin/{any}', fn () => view('vue'))->where('any', '.*');
 
 // Session logout + impersonation (POST routes — still need auth)
 Route::middleware('auth:wellcore')->group(function () {
