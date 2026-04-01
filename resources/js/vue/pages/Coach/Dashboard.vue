@@ -59,7 +59,7 @@ onMounted(loadDashboard);
         </div>
         <div class="flex items-center gap-2">
           <RouterLink
-            to="/v/coach/checkins"
+            to="/coach/checkins"
             class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -68,7 +68,7 @@ onMounted(loadDashboard);
             Revisar check-ins
           </RouterLink>
           <RouterLink
-            to="/v/coach/messages"
+            to="/coach/messages"
             class="inline-flex items-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2 text-sm font-medium text-wc-text hover:bg-wc-bg-secondary transition-colors"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -154,7 +154,7 @@ onMounted(loadDashboard);
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 lg:col-span-2">
             <div class="flex items-center justify-between">
               <h2 class="font-display text-lg tracking-wide text-wc-text">Clientes que necesitan atencion</h2>
-              <RouterLink to="/v/coach/clients" class="text-xs font-medium text-wc-accent hover:underline">Ver todos</RouterLink>
+              <RouterLink to="/coach/clients" class="text-xs font-medium text-wc-accent hover:underline">Ver todos</RouterLink>
             </div>
 
             <div v-if="attentionClients.length > 0" class="mt-4 space-y-3">
@@ -184,7 +184,7 @@ onMounted(loadDashboard);
                   </div>
                 </div>
                 <RouterLink
-                  to="/v/coach/checkins"
+                  to="/coach/checkins"
                   class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-tertiary text-wc-text-secondary hover:text-wc-accent hover:border-wc-accent/30 transition-colors"
                 >
                   <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -207,7 +207,7 @@ onMounted(loadDashboard);
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
             <div class="flex items-center justify-between">
               <h2 class="font-display text-lg tracking-wide text-wc-text">Mensajes recientes</h2>
-              <RouterLink to="/v/coach/messages" class="text-xs font-medium text-wc-accent hover:underline">Ver todos</RouterLink>
+              <RouterLink to="/coach/messages" class="text-xs font-medium text-wc-accent hover:underline">Ver todos</RouterLink>
             </div>
 
             <ul v-if="recentMessages.length > 0" class="mt-4 space-y-3">

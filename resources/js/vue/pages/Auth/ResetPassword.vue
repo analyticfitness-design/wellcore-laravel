@@ -92,7 +92,7 @@ async function resetPassword() {
               </div>
               <h2 class="mt-5 text-2xl font-bold text-wc-text">Contrasena Actualizada</h2>
               <p class="mt-3 text-sm text-wc-text-secondary">Tu contrasena ha sido cambiada exitosamente. Ya puedes iniciar sesion con tu nueva contrasena.</p>
-              <RouterLink to="/v/login" class="mt-6 inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-wc-accent-hover active:scale-[0.98]">
+              <RouterLink to="/login" class="mt-6 inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-wc-accent-hover active:scale-[0.98]">
                 Iniciar Sesion
               </RouterLink>
             </div>
@@ -110,11 +110,11 @@ async function resetPassword() {
               <p class="mt-3 text-sm text-wc-text-secondary">
                 Este enlace de recuperacion ha expirado o ya fue utilizado. Los enlaces son validos por 1 hora.
               </p>
-              <RouterLink to="/v/forgot-password" class="mt-6 inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-wc-accent-hover active:scale-[0.98]">
+              <RouterLink to="/forgot-password" class="mt-6 inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-wc-accent-hover active:scale-[0.98]">
                 Solicitar nuevo enlace
               </RouterLink>
               <div class="mt-4">
-                <RouterLink to="/v/login" class="inline-flex items-center gap-2 text-sm text-wc-accent hover:underline">
+                <RouterLink to="/login" class="inline-flex items-center gap-2 text-sm text-wc-accent hover:underline">
                   <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
                   Volver a Iniciar Sesion
                 </RouterLink>
@@ -206,7 +206,7 @@ async function resetPassword() {
             </form>
 
             <div class="mt-8 text-center">
-              <RouterLink to="/v/login" class="inline-flex items-center gap-2 text-sm text-wc-accent hover:underline">
+              <RouterLink to="/login" class="inline-flex items-center gap-2 text-sm text-wc-accent hover:underline">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
                 Volver a Iniciar Sesion
               </RouterLink>

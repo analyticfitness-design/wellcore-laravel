@@ -100,7 +100,7 @@ onMounted(() => {
     <!-- Error -->
     <div v-else-if="error && !session" class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-6 text-center">
       <p class="text-sm font-medium text-wc-text">{{ error }}</p>
-      <RouterLink to="/v/rise" class="mt-4 inline-block rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors">
+      <RouterLink to="/rise" class="mt-4 inline-block rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors">
         Volver al Dashboard
       </RouterLink>
     </div>
@@ -281,7 +281,7 @@ onMounted(() => {
         </button>
 
         <div class="flex flex-col gap-3 sm:flex-row">
-          <RouterLink to="/v/rise"
+          <RouterLink to="/rise"
             class="flex flex-1 items-center justify-center gap-2 rounded-xl border border-wc-border bg-wc-bg-tertiary px-5 py-3 text-sm font-medium text-wc-text-secondary transition-colors hover:text-wc-text">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />

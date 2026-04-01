@@ -61,7 +61,7 @@ onMounted(loadClients);
         </div>
         <div class="flex items-center gap-3">
           <RouterLink
-            to="/v/coach/kanban"
+            to="/coach/kanban"
             class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text transition-colors"
             title="Vista Kanban"
           >
@@ -170,11 +170,11 @@ onMounted(loadClients);
             </div>
             <div class="mt-4 flex items-center gap-2">
               <RouterLink
-                to="/v/coach/checkins"
+                to="/coach/checkins"
                 class="inline-flex items-center gap-1.5 rounded-lg bg-wc-accent px-3 py-1.5 text-xs font-medium text-white hover:bg-wc-accent-hover transition-colors"
               >Ver check-ins</RouterLink>
               <RouterLink
-                to="/v/coach/messages"
+                to="/coach/messages"
                 class="inline-flex items-center gap-1.5 rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-1.5 text-xs font-medium text-wc-text hover:bg-wc-bg-secondary transition-colors"
               >Enviar mensaje</RouterLink>
             </div>

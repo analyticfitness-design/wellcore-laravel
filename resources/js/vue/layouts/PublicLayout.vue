@@ -38,7 +38,7 @@ function toggleDarkMode() {
         <!-- Right side -->
         <div class="flex items-center gap-2.5">
           <!-- Mi Cuenta -->
-          <RouterLink to="/v/login" class="hidden items-center gap-1.5 text-sm font-medium text-wc-text-secondary hover:text-wc-text lg:flex">
+          <RouterLink to="/login" class="hidden items-center gap-1.5 text-sm font-medium text-wc-text-secondary hover:text-wc-text lg:flex">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
             </svg>
@@ -102,7 +102,7 @@ function toggleDarkMode() {
             <a href="/coaches" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Coaches</a>
             <a href="/presencial" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text">Presencial</a>
             <div class="flex gap-2 pt-3">
-              <RouterLink to="/v/login" class="flex-1 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-center text-sm font-medium text-wc-text hover:bg-wc-bg-tertiary">Mi Cuenta</RouterLink>
+              <RouterLink to="/login" class="flex-1 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-center text-sm font-medium text-wc-text hover:bg-wc-bg-tertiary">Mi Cuenta</RouterLink>
               <a href="/inscripcion" class="flex-1 rounded-lg bg-wc-accent px-3 py-2.5 text-center text-sm font-medium text-white hover:bg-wc-accent-hover">Empezar</a>
             </div>
           </div>
@@ -161,7 +161,7 @@ function toggleDarkMode() {
           <div>
             <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">Cuenta</h4>
             <ul class="mt-4 space-y-2.5">
-              <li><RouterLink to="/v/login" class="text-sm text-wc-text-tertiary hover:text-wc-text">Mi Cuenta</RouterLink></li>
+              <li><RouterLink to="/login" class="text-sm text-wc-text-tertiary hover:text-wc-text">Mi Cuenta</RouterLink></li>
               <li><a href="/inscripcion" class="text-sm text-wc-text-tertiary hover:text-wc-text">Empezar</a></li>
               <li><a href="/privacidad" class="text-sm text-wc-text-tertiary hover:text-wc-text">Privacidad</a></li>
               <li><a href="/terminos" class="text-sm text-wc-text-tertiary hover:text-wc-text">Terminos</a></li>

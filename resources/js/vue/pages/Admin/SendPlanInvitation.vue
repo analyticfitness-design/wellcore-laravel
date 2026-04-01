@@ -22,7 +22,7 @@ import AdminLayout from '../../layouts/AdminLayout.vue';
         <h2 class="mt-4 font-display text-xl tracking-wide text-wc-text">Proximamente</h2>
         <p class="mt-2 text-sm text-wc-text-tertiary">El formulario de envio de invitaciones de plan esta en desarrollo.</p>
         <p class="mt-1 text-xs text-wc-text-tertiary/60">Mientras tanto, utiliza el gestor de invitaciones para crear y enviar invitaciones.</p>
-        <RouterLink to="/v/admin/invitations" class="mt-4 inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors">
+        <RouterLink to="/admin/invitations" class="mt-4 inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors">
           Ir a Invitaciones
         </RouterLink>
       </div>

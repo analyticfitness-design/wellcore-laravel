@@ -213,7 +213,7 @@ onMounted(() => {
       <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
         <h2 class="font-display text-lg tracking-wide text-wc-text">Acciones rapidas</h2>
         <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <RouterLink to="/v/rise/tracking"
+          <RouterLink to="/rise/tracking"
             class="flex items-center gap-3 rounded-lg border border-wc-border bg-wc-bg-secondary p-3 transition-colors hover:border-wc-accent/30 hover:bg-wc-accent/5">
             <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-500/15">
               <svg class="h-[18px] w-[18px] text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -226,7 +226,7 @@ onMounted(() => {
             </div>
           </RouterLink>
 
-          <RouterLink to="/v/rise/habits"
+          <RouterLink to="/rise/habits"
             class="flex items-center gap-3 rounded-lg border border-wc-border bg-wc-bg-secondary p-3 transition-colors hover:border-wc-accent/30 hover:bg-wc-accent/5">
             <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-wc-accent/15">
               <svg class="h-[18px] w-[18px] text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -239,7 +239,7 @@ onMounted(() => {
             </div>
           </RouterLink>
 
-          <RouterLink to="/v/rise/measurements"
+          <RouterLink to="/rise/measurements"
             class="flex items-center gap-3 rounded-lg border border-wc-border bg-wc-bg-secondary p-3 transition-colors hover:border-wc-accent/30 hover:bg-wc-accent/5">
             <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-500/15">
               <svg class="h-[18px] w-[18px] text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

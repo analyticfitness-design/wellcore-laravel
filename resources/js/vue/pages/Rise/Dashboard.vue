@@ -84,7 +84,7 @@ onMounted(() => {
         <!-- Quick actions (desktop) -->
         <div class="hidden sm:flex items-center gap-2">
           <RouterLink
-            to="/v/rise/tracking"
+            to="/rise/tracking"
             class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-wc-accent to-wc-accent px-4 py-2 text-sm font-medium text-white hover:from-wc-accent hover:to-amber-700 transition-all"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -93,7 +93,7 @@ onMounted(() => {
             Registrar hoy
           </RouterLink>
           <RouterLink
-            to="/v/rise/measurements"
+            to="/rise/measurements"
             class="inline-flex items-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2 text-sm font-medium text-wc-text hover:bg-wc-bg-secondary transition-colors"
           >
             Nueva medicion
@@ -314,7 +314,7 @@ onMounted(() => {
       <!-- Quick actions (mobile) -->
       <div class="grid grid-cols-1 gap-3 sm:hidden">
         <RouterLink
-          to="/v/rise/tracking"
+          to="/rise/tracking"
           class="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-wc-accent to-wc-accent px-4 py-3 text-sm font-medium text-white hover:from-wc-accent hover:to-amber-700 transition-all"
         >
           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -323,13 +323,13 @@ onMounted(() => {
           Registrar hoy
         </RouterLink>
         <RouterLink
-          to="/v/rise/measurements"
+          to="/rise/measurements"
           class="flex items-center justify-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-3 text-sm font-medium text-wc-text hover:bg-wc-bg-secondary transition-colors"
         >
           Nueva medicion
         </RouterLink>
         <RouterLink
-          to="/v/rise/program"
+          to="/rise/program"
           class="flex items-center justify-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-3 text-sm font-medium text-wc-text hover:bg-wc-bg-secondary transition-colors"
         >
           Ver mi programa

@@ -42,7 +42,7 @@
           <h2 class="mb-2 font-display text-xl tracking-wide text-wc-text">Sin coach asignado</h2>
           <p class="mb-6 text-sm text-wc-text-secondary">No tienes un coach asignado todavía. Escríbenos para que te conectemos con el coach perfecto para tu objetivo.</p>
           <router-link
-            to="/v/client/chat"
+            to="/client/chat"
             class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

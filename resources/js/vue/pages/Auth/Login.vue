@@ -150,7 +150,7 @@ async function login() {
                 >
                 <span class="text-sm text-wc-text-secondary">Recuerdame</span>
               </label>
-              <RouterLink to="/v/forgot-password" class="text-sm text-wc-accent hover:underline">
+              <RouterLink to="/forgot-password" class="text-sm text-wc-accent hover:underline">
                 Olvidaste tu contrasena?
               </RouterLink>
             </div>

@@ -352,7 +352,7 @@ onMounted(() => {
               Compartir en Comunidad
             </button>
             <RouterLink
-              to="/v/client"
+              to="/client"
               class="flex flex-1 items-center justify-center gap-2 rounded-xl border border-wc-border bg-wc-bg-tertiary px-5 py-3 text-sm font-medium text-wc-text-secondary transition-colors hover:text-wc-text"
             >
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" /></svg>
@@ -401,7 +401,7 @@ onMounted(() => {
 
             <!-- Link to training view -->
             <div class="mt-4 text-center">
-              <RouterLink to="/v/client/training" class="inline-flex items-center gap-1.5 text-sm font-medium text-wc-accent hover:underline">
+              <RouterLink to="/client/training" class="inline-flex items-center gap-1.5 text-sm font-medium text-wc-accent hover:underline">
                 Ver historial completo
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
               </RouterLink>

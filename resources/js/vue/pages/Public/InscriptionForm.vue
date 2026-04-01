@@ -202,7 +202,7 @@ async function submit() {
           </div>
           <h2 class="text-2xl font-bold text-wc-text font-display">Inscripcion Exitosa</h2>
           <p class="mt-3 text-wc-text-secondary">Tu cuenta ha sido creada. Revisa tu email para los siguientes pasos.</p>
-          <a href="/v/login" class="mt-6 inline-flex rounded-full bg-wc-accent px-8 py-3 font-semibold text-white hover:bg-wc-accent-hover active:scale-[0.98]">
+          <a href="/login" class="mt-6 inline-flex rounded-full bg-wc-accent px-8 py-3 font-semibold text-white hover:bg-wc-accent-hover active:scale-[0.98]">
             Iniciar Sesion
           </a>
         </div>

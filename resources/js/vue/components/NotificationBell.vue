@@ -179,7 +179,7 @@ onUnmounted(() => {
         <!-- Footer -->
         <div v-if="hasNotifications" class="border-t border-wc-border px-4 py-2.5 text-center">
           <RouterLink
-            to="/v/client"
+            to="/client"
             @click="showDropdown = false"
             class="text-xs font-medium text-wc-accent hover:text-wc-accent/80 transition-colors"
           >
