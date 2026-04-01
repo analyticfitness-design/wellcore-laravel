@@ -224,10 +224,10 @@ class AdminController extends Controller
         $dateFilter = $request->query('date', 'week');
 
         $typeFilter = match ($typeFilter) {
-            'checkin'  => 'checkins',
-            'payment'  => 'payments',
-            'signup'   => 'inscriptions',
-            default    => $typeFilter,
+            'checkin' => 'checkins',
+            'payment' => 'payments',
+            'signup' => 'inscriptions',
+            default => $typeFilter,
         };
 
         $tz = 'America/Bogota';
@@ -245,15 +245,15 @@ class AdminController extends Controller
             $inscriptions = Inscription::when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
                 ->latest('created_at')->limit(50)->get()
                 ->map(fn ($i) => [
-                    'type'        => 'signup',
-                    'icon'        => 'clipboard-document-check',
-                    'color'       => 'sky',
-                    'title'       => 'Nueva inscripcion',
-                    'clientName'  => trim(($i->nombre ?? '').' '.($i->apellido ?? '')),
+                    'type' => 'signup',
+                    'icon' => 'clipboard-document-check',
+                    'color' => 'sky',
+                    'title' => 'Nueva inscripcion',
+                    'clientName' => trim(($i->nombre ?? '').' '.($i->apellido ?? '')),
                     'description' => trim(($i->nombre ?? '').' '.($i->apellido ?? '')).' — '.($i->plan?->label() ?? 'Sin plan'),
-                    'timestamp'   => $i->created_at?->toIso8601String(),
-                    'time_ago'    => $i->created_at?->diffForHumans() ?? '-',
-                    'time'        => $i->created_at?->diffForHumans() ?? '-',
+                    'timestamp' => $i->created_at?->toIso8601String(),
+                    'time_ago' => $i->created_at?->diffForHumans() ?? '-',
+                    'time' => $i->created_at?->diffForHumans() ?? '-',
                 ]);
             $items = $items->merge($inscriptions);
         }
@@ -263,15 +263,15 @@ class AdminController extends Controller
             $payments = Payment::when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
                 ->latest('created_at')->limit(50)->get()
                 ->map(fn ($p) => [
-                    'type'        => 'payment',
-                    'icon'        => 'banknotes',
-                    'color'       => 'emerald',
-                    'title'       => 'Pago recibido',
-                    'clientName'  => $p->buyer_name ?? $p->email ?? 'Desconocido',
+                    'type' => 'payment',
+                    'icon' => 'banknotes',
+                    'color' => 'emerald',
+                    'title' => 'Pago recibido',
+                    'clientName' => $p->buyer_name ?? $p->email ?? 'Desconocido',
                     'description' => ($p->buyer_name ?? $p->email ?? 'Desconocido').' — $'.number_format((float) $p->amount, 0, ',', '.').' COP',
-                    'timestamp'   => $p->created_at?->toIso8601String(),
-                    'time_ago'    => $p->created_at?->diffForHumans() ?? '-',
-                    'time'        => $p->created_at?->diffForHumans() ?? '-',
+                    'timestamp' => $p->created_at?->toIso8601String(),
+                    'time_ago' => $p->created_at?->diffForHumans() ?? '-',
+                    'time' => $p->created_at?->diffForHumans() ?? '-',
                 ]);
             $items = $items->merge($payments);
         }
@@ -282,15 +282,15 @@ class AdminController extends Controller
                 ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
                 ->latest('created_at')->limit(50)->get()
                 ->map(fn ($c) => [
-                    'type'        => 'checkin',
-                    'icon'        => 'clipboard-document-list',
-                    'color'       => 'orange',
-                    'title'       => 'Check-in enviado',
-                    'clientName'  => $c->client?->name ?? 'Cliente',
+                    'type' => 'checkin',
+                    'icon' => 'clipboard-document-list',
+                    'color' => 'orange',
+                    'title' => 'Check-in enviado',
+                    'clientName' => $c->client?->name ?? 'Cliente',
                     'description' => ($c->client?->name ?? 'Cliente').' — Bienestar: '.($c->bienestar ?? '-').'/10',
-                    'timestamp'   => $c->created_at?->toIso8601String(),
-                    'time_ago'    => $c->created_at?->diffForHumans() ?? '-',
-                    'time'        => $c->created_at?->diffForHumans() ?? '-',
+                    'timestamp' => $c->created_at?->toIso8601String(),
+                    'time_ago' => $c->created_at?->diffForHumans() ?? '-',
+                    'time' => $c->created_at?->diffForHumans() ?? '-',
                 ]);
             $items = $items->merge($checkins);
         }
@@ -301,19 +301,19 @@ class AdminController extends Controller
                 ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
                 ->latest('created_at')->limit(50)->get()
                 ->map(fn ($m) => [
-                    'type'        => 'message',
-                    'icon'        => 'chat-bubble-left-right',
-                    'color'       => 'violet',
-                    'title'       => 'Nuevo mensaje',
-                    'clientName'  => $m->direction === 'client_to_coach'
+                    'type' => 'message',
+                    'icon' => 'chat-bubble-left-right',
+                    'color' => 'violet',
+                    'title' => 'Nuevo mensaje',
+                    'clientName' => $m->direction === 'client_to_coach'
                         ? ($m->client?->name ?? 'Cliente')
                         : 'Coach '.($m->coach?->name ?? ''),
                     'description' => ($m->direction === 'coach_to_client'
                         ? ('Coach '.($m->coach?->name ?? '').' → '.($m->client?->name ?? 'Cliente'))
                         : (($m->client?->name ?? 'Cliente').' → Coach')).' — '.Str::limit($m->message ?? '', 60),
-                    'timestamp'   => $m->created_at?->toIso8601String(),
-                    'time_ago'    => $m->created_at?->diffForHumans() ?? '-',
-                    'time'        => $m->created_at?->diffForHumans() ?? '-',
+                    'timestamp' => $m->created_at?->toIso8601String(),
+                    'time_ago' => $m->created_at?->diffForHumans() ?? '-',
+                    'time' => $m->created_at?->diffForHumans() ?? '-',
                 ]);
             $items = $items->merge($messages);
         }
@@ -324,15 +324,15 @@ class AdminController extends Controller
                 ->when($dateFrom, fn ($q) => $q->where('log_date', '>=', $dateFrom->toDateString()))
                 ->latest('log_date')->limit(50)->get()
                 ->map(fn ($t) => [
-                    'type'        => 'training',
-                    'icon'        => 'fire',
-                    'color'       => 'yellow',
-                    'title'       => 'Entrenamiento',
-                    'clientName'  => $t->client?->name ?? 'Cliente',
+                    'type' => 'training',
+                    'icon' => 'fire',
+                    'color' => 'yellow',
+                    'title' => 'Entrenamiento',
+                    'clientName' => $t->client?->name ?? 'Cliente',
                     'description' => ($t->client?->name ?? 'Cliente').' — '.($t->completed ? 'Completado' : 'Registrado'),
-                    'timestamp'   => $t->log_date?->startOfDay()->toIso8601String(),
-                    'time_ago'    => $t->log_date?->diffForHumans() ?? '-',
-                    'time'        => $t->log_date?->diffForHumans() ?? '-',
+                    'timestamp' => $t->log_date?->startOfDay()->toIso8601String(),
+                    'time_ago' => $t->log_date?->diffForHumans() ?? '-',
+                    'time' => $t->log_date?->diffForHumans() ?? '-',
                 ]);
             $items = $items->merge($training);
         }
@@ -342,13 +342,13 @@ class AdminController extends Controller
         // Stats
         $today = Carbon::today('America/Bogota');
         $feedStats = [
-            'eventsToday'  => Inscription::where('created_at', '>=', $today)->count()
+            'eventsToday' => Inscription::where('created_at', '>=', $today)->count()
                 + Payment::where('created_at', '>=', $today)->count()
                 + Checkin::where('created_at', '>=', $today)->count()
                 + CoachMessage::where('created_at', '>=', $today)->count(),
             'actionsToday' => Inscription::where('created_at', '>=', $today)->count(),
             'paymentsToday' => Payment::where('created_at', '>=', $today)->count(),
-            'activeNow'    => CoachMessage::where('created_at', '>=', $today)->distinct('client_id')->count('client_id'),
+            'activeNow' => CoachMessage::where('created_at', '>=', $today)->distinct('client_id')->count('client_id'),
         ];
 
         return response()->json([
@@ -401,7 +401,7 @@ class AdminController extends Controller
             $query->where('status', $statusFilter);
         }
 
-        $allowedSorts = ['name', 'email', 'plan', 'status', 'created_at', 'fecha_inicio'];
+        $allowedSorts = ['name', 'email', 'client_code', 'plan', 'status', 'created_at', 'fecha_inicio'];
         if (! in_array($sortBy, $allowedSorts)) {
             $sortBy = 'created_at';
         }
@@ -437,7 +437,7 @@ class AdminController extends Controller
 
         $client = Client::findOrFail($id);
 
-        // Assigned plans
+        // Assigned plans (for edit form)
         $plans = AssignedPlan::where('client_id', $id)
             ->orderByDesc('created_at')
             ->get()
@@ -450,10 +450,67 @@ class AdminController extends Controller
                 'created_at' => $p->created_at?->format('d M Y'),
             ]);
 
-        // Available coaches
+        // Available coaches (for edit form)
         $coaches = Admin::where('role', 'coach')
             ->orderBy('name')
             ->get(['id', 'name']);
+
+        // Coach name: derive from the most recent assigned plan's assigned_by
+        $latestPlan = AssignedPlan::where('client_id', $id)
+            ->whereNotNull('assigned_by')
+            ->orderByDesc('created_at')
+            ->first();
+        $coachName = $latestPlan?->assigned_by
+            ? Admin::find($latestPlan->assigned_by)?->name
+            : null;
+
+        // Metrics
+        $totalWorkouts = $client->trainingLogs()->count();
+        $completedWorkouts = $client->trainingLogs()->where('completed', true)->count();
+        $adherence = $totalWorkouts > 0
+            ? round(($completedWorkouts / $totalWorkouts) * 100)
+            : 0;
+
+        // registeredAt: prefer fecha_inicio, fall back to created_at
+        $registeredAt = $client->fecha_inicio
+            ? Carbon::parse($client->fecha_inicio)->format('d M Y')
+            : $client->created_at?->format('d M Y');
+
+        // planDetails: current week from fecha_inicio
+        $startDate = $client->fecha_inicio ? Carbon::parse($client->fecha_inicio) : null;
+        $currentWeek = $startDate
+            ? (int) max(1, $startDate->diffInWeeks(now()) + 1)
+            : null;
+
+        // Latest 10 check-ins
+        $checkins = $client->checkins()
+            ->orderByDesc('checkin_date')
+            ->limit(10)
+            ->get()
+            ->map(fn ($c) => [
+                'date' => $c->checkin_date?->format('d M Y'),
+                'reviewed' => $c->coach_reply !== null,
+                'note' => $c->comentario,
+            ]);
+
+        // Latest 10 payments
+        $payments = $client->payments()
+            ->orderByDesc('created_at')
+            ->limit(10)
+            ->get()
+            ->map(fn ($p) => [
+                'description' => $p->plan?->label() ?? $p->plan,
+                'date' => $p->created_at?->format('d M Y'),
+                'amount' => $p->amount,
+                'currency' => $p->currency ?? 'COP',
+                'status' => $p->status?->value ?? $p->status,
+            ]);
+
+        // Last login from auth_tokens
+        $lastLogin = AuthToken::where('user_id', $id)
+            ->where('user_type', UserType::Client)
+            ->orderByDesc('created_at')
+            ->value('created_at');
 
         return response()->json([
             'client' => [
@@ -465,14 +522,57 @@ class AdminController extends Controller
                 'plan_label' => $client->plan?->label() ?? 'Sin plan',
                 'status' => $client->status?->value ?? '',
                 'status_label' => $client->status?->label() ?? 'Desconocido',
-                'fecha_inicio' => $client->fecha_inicio ? Carbon::parse($client->fecha_inicio)->format('d M Y') : null,
+                'fecha_inicio' => $client->fecha_inicio
+                    ? Carbon::parse($client->fecha_inicio)->format('d M Y')
+                    : null,
                 'created_at' => $client->created_at?->format('d M Y'),
                 'client_code' => $client->client_code ?? null,
+                'city' => $client->city ?? null,
+                'birth_date' => $client->birth_date
+                    ? Carbon::parse($client->birth_date)->format('d/m/Y')
+                    : null,
+                'referral_code' => $client->referral_code ?? null,
+                'referred_by' => $client->referred_by ?? null,
+                'bio' => $client->bio ?? null,
+                'avatar_url' => $client->avatar_url ?? null,
+                // Vue ClientDetail.vue fields
+                'coachName' => $coachName,
+                'country' => $client->city ?? null,
+                'registeredAt' => $registeredAt,
+                // Summary stats
+                'stats' => [
+                    'checkins_count' => $client->checkins()->count(),
+                    'approved_payments' => $client->payments()->where('status', 'approved')->count(),
+                    'active_plans' => AssignedPlan::where('client_id', $id)->where('active', true)->count(),
+                    'progress_photos' => $client->progressPhotos()->count(),
+                ],
+                'planDetails' => [
+                    'name' => $client->plan?->label() ?? null,
+                    'startDate' => $startDate?->format('d M Y'),
+                    'currentWeek' => $currentWeek,
+                    'totalWeeks' => null,
+                ],
+                'metrics' => [
+                    'totalWorkouts' => $totalWorkouts,
+                    'adherence' => $adherence,
+                    'streak' => 0,
+                ],
+                'checkins' => $checkins,
+                'payments' => $payments,
+                'lastLogin' => $lastLogin
+                    ? Carbon::parse($lastLogin)->format('d M Y H:i')
+                    : null,
             ],
             'plans' => $plans,
             'coaches' => $coaches,
-            'statusOptions' => array_map(fn ($s) => ['value' => $s->value, 'label' => $s->label()], ClientStatus::cases()),
-            'planOptions' => array_map(fn ($p) => ['value' => $p->value, 'label' => $p->label()], PlanType::cases()),
+            'statusOptions' => array_map(
+                fn ($s) => ['value' => $s->value, 'label' => $s->label()],
+                ClientStatus::cases()
+            ),
+            'planOptions' => array_map(
+                fn ($p) => ['value' => $p->value, 'label' => $p->label()],
+                PlanType::cases()
+            ),
         ]);
     }
 

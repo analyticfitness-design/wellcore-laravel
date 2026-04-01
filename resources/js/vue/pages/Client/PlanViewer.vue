@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, reactive, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import ClientLayout from '../../layouts/ClientLayout.vue';
@@ -14,28 +14,53 @@ const activeTab = ref('entrenamiento');
 const currentWeek = ref(1);
 
 // Plan data
-const planData = ref(null);
 const trainingPlan = ref(null);
 const nutritionPlan = ref(null);
 const supplementPlan = ref(null);
-const habitsPlan = ref(null);
+const cicloPlan = ref(null);
 const clientPlanType = ref('basico');
 const planStartDate = ref(null);
 
-// Tabs
+// Habit data (from API buildHabitData)
+const habitData = ref([]);
+const habitCompliance = ref(0);
+
+// Bloodwork
+const bloodworkResults = ref([]);
+const bwSaving = ref(false);
+const bwShowSuccess = ref(false);
+const bwErrors = ref({});
+const bwForm = reactive({
+  testName: '',
+  value: '',
+  unit: '',
+  referenceRange: '',
+  testDate: '',
+});
+const bwFormOpen = ref(false);
+let bwSuccessTimer = null;
+
+// Tabs definition (matching blade order)
 const tabs = [
   { key: 'entrenamiento', label: 'Entrenamiento' },
+  { key: 'habitos', label: 'Habitos' },
   { key: 'nutricion', label: 'Nutricion' },
   { key: 'suplementacion', label: 'Suplementos' },
-  { key: 'habitos', label: 'Habitos' },
+  { key: 'ciclo', label: 'Ciclo' },
+  { key: 'bloodwork', label: 'Bloodwork' },
 ];
 
 const canAccessNutricion = computed(() => {
   return ['esencial', 'metodo', 'elite', 'presencial', 'rise'].includes(clientPlanType.value);
 });
 
+const canAccessElite = computed(() => {
+  return ['elite'].includes(clientPlanType.value);
+});
+
 function isTabLocked(key) {
   if (['nutricion', 'suplementacion'].includes(key) && !canAccessNutricion.value) return true;
+  if (['ciclo', 'bloodwork'].includes(key) && !canAccessElite.value) return true;
   return false;
 }
 
@@ -87,7 +112,7 @@ function isWeekOpen(weekNum) {
   return !!openWeeks.value[weekNum];
 }
 
-// Type badge colors
+// Type badge colors (matches blade $tipoBadgeClass)
 function tipoBadgeClass(tipo) {
   const t = (tipo || '').toLowerCase();
   const map = {
@@ -120,13 +145,197 @@ function rirClass(rir) {
 // Supplement timing icons
 function getTimingIcon(timing) {
   const t = (timing || '').toLowerCase();
-  if (t.includes('mañana') || t.includes('manana') || t.includes('morning')) return '\u{1F305}';
+  if (t.includes('ma\u00f1ana') || t.includes('manana') || t.includes('morning')) return '\u{1F305}';
   if (t.includes('pre-entreno') || t.includes('pre entreno') || t.includes('pre-workout')) return '\u{26A1}';
   if (t.includes('post-entreno') || t.includes('post entreno') || t.includes('post-workout')) return '\u{1F504}';
   if (t.includes('con comida')) return '\u{1F37D}';
   if (t.includes('noche') || t.includes('night') || t.includes('antes de dormir')) return '\u{1F319}';
   return '\u{1F48A}';
 }
+
+// Supplement priority colors (matches blade $prioridadColor)
+function prioridadStyle(prioridad) {
+  const p = (prioridad || '').toLowerCase();
+  if (p === 'esencial') return { text: 'text-wc-accent', bg: 'bg-wc-accent/10' };
+  if (p === 'recomendado') return { text: 'text-amber-400', bg: 'bg-amber-500/10' };
+  return { text: 'text-wc-text-tertiary', bg: 'bg-wc-bg-secondary' };
+}
+
+// Supplement category styles (matches blade $catIconMap)
+function getCatStyle(nombre) {
+  const lower = (nombre || '').toLowerCase();
+  if (lower.includes('rendimiento')) return { icon: '\u{26A1}', color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/20' };
+  if (lower.includes('protecci') || lower.includes('proteccion')) return { icon: '\u{1F6E1}\uFE0F', color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' };
+  if (lower.includes('salud')) return { icon: '\u{2764}\uFE0F', color: 'text-sky-400', bg: 'bg-sky-500/10', border: 'border-sky-500/20' };
+  if (lower.includes('recuperaci') || lower.includes('recuperacion')) return { icon: '\u{1F504}', color: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/20' };
+  return { icon: '\u{1F48A}', color: 'text-wc-text-secondary', bg: 'bg-wc-bg-secondary', border: 'border-wc-border' };
+}
+
+// Habit accent colors (matches blade $habitAccents)
+const habitAccents = {
+  agua:          { bg: 'bg-blue-500/10',    border: 'border-blue-500/25',    text: 'text-blue-400',    bar: 'bg-blue-500' },
+  sueno:         { bg: 'bg-indigo-500/10',  border: 'border-indigo-500/25',  text: 'text-indigo-400',  bar: 'bg-indigo-500' },
+  entrenamiento: { bg: 'bg-wc-accent/10',   border: 'border-wc-accent/25',  text: 'text-wc-accent',   bar: 'bg-wc-accent' },
+  nutricion:     { bg: 'bg-emerald-500/10', border: 'border-emerald-500/25', text: 'text-emerald-400', bar: 'bg-emerald-500' },
+  suplementos:   { bg: 'bg-violet-500/10',  border: 'border-violet-500/25',  text: 'text-violet-400',  bar: 'bg-violet-500' },
+};
+
+function getHabitAccent(type) {
+  return habitAccents[type] || habitAccents.entrenamiento;
+}
+
+// Ciclo phase colors (matches blade $phaseColors)
+function getPhaseColor(nombre) {
+  const lower = (nombre || '').toLowerCase();
+  if (lower.includes('iniciaci') || lower.includes('iniciacion')) return { bg: 'bg-sky-500/10', border: 'border-sky-500/25', text: 'text-sky-400', dot: 'bg-sky-400' };
+  if (lower.includes('pico')) return { bg: 'bg-wc-accent/[0.08]', border: 'border-wc-accent/25', text: 'text-wc-accent', dot: 'bg-wc-accent' };
+  if (lower.includes('tapering')) return { bg: 'bg-amber-500/10', border: 'border-amber-500/25', text: 'text-amber-400', dot: 'bg-amber-400' };
+  if (lower.includes('pct') || lower.includes('post')) return { bg: 'bg-emerald-500/10', border: 'border-emerald-500/25', text: 'text-emerald-400', dot: 'bg-emerald-400' };
+  return { bg: 'bg-wc-bg-secondary', border: 'border-wc-border', text: 'text-wc-text-secondary', dot: 'bg-wc-text-tertiary' };
+}
+
+// Bloodwork status helper (matches blade $bwStatus)
+function bwStatus(result) {
+  const range = result.reference_range || '';
+  const val = parseFloat(result.value || 0);
+  if (!range || val <= 0) return 'neutral';
+  const m = range.match(/(\d+[.,]?\d*)\s*[-\u2013]\s*(\d+[.,]?\d*)/);
+  if (!m) return 'neutral';
+  const lo = parseFloat(m[1].replace(',', '.'));
+  const hi = parseFloat(m[2].replace(',', '.'));
+  if (val >= lo && val <= hi) return 'ok';
+  return 'flag';
+}
+
+// Spectrum position for bloodwork value
+function bwSpectrumPct(result) {
+  const range = result.reference_range || '';
+  const val = parseFloat(result.value || 0);
+  if (!range || val <= 0) return null;
+  const m = range.match(/(\d+[.,]?\d*)\s*[-\u2013]\s*(\d+[.,]?\d*)/);
+  if (!m) return null;
+  const lo = parseFloat(m[1].replace(',', '.'));
+  const hi = parseFloat(m[2].replace(',', '.'));
+  const r = hi - lo;
+  if (r <= 0) return null;
+  const visMin = lo - r * 0.4;
+  const visMax = hi + r * 0.4;
+  return Math.max(2, Math.min(98, ((val - visMin) / (visMax - visMin)) * 100));
+}
+
+// Latest per test for summary cards
+const latestByTest = computed(() => {
+  const map = {};
+  // bloodworkResults is already ordered desc by test_date from API
+  // Reverse to process oldest first, so newest overwrites
+  const reversed = [...bloodworkResults.value].reverse();
+  for (const r of reversed) {
+    if (!map[r.test_name]) {
+      map[r.test_name] = r;
+    }
+  }
+  return map;
+});
+
+// Ciclo hormonal femenino local state
+const cicloStartDate = ref('');
+const cicloCycleLength = ref(28);
+const cicloShowConfig = ref(false);
+
+function initCicloFromStorage() {
+  cicloStartDate.value = localStorage.getItem('wc_cycle_start') || '';
+  cicloCycleLength.value = parseInt(localStorage.getItem('wc_cycle_length')) || 28;
+  cicloShowConfig.value = !cicloStartDate.value;
+}
+
+function saveCicloConfig() {
+  localStorage.setItem('wc_cycle_start', cicloStartDate.value);
+  localStorage.setItem('wc_cycle_length', String(cicloCycleLength.value));
+  cicloShowConfig.value = false;
+}
+
+const cicloCurrentDay = computed(() => {
+  if (!cicloStartDate.value) return null;
+  const start = new Date(cicloStartDate.value + 'T00:00:00');
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const diff = Math.floor((today - start) / 86400000);
+  const d = (diff % cicloCycleLength.value) + 1;
+  return d > 0 ? d : null;
+});
+
+const cicloPhaseKey = computed(() => {
+  const d = cicloCurrentDay.value;
+  if (!d) return '';
+  if (d <= 5) return 'menstrual';
+  if (d <= 13) return 'folicular';
+  if (d <= 16) return 'ovulatoria';
+  return 'lutea';
+});
+
+const cicloPhaseMap = {
+  menstrual:  { name: 'Menstrual',  emoji: '\u{1F311}', ring: '#f87171', bg: 'bg-red-500/10',    border: 'border-red-500/25',    text: 'text-red-400',    train: 'Ejercicio de baja intensidad: yoga, caminata ligera, estiramientos. Reduce cargas y escucha tu cuerpo.', nutrition: 'Aumenta hierro y magnesio. Prioriza alimentos anti-inflamatorios: salmon, nueces, verduras de hoja.', energy: 3 },
+  folicular:  { name: 'Folicular',  emoji: '\u{1F331}', ring: '#4ade80', bg: 'bg-green-500/10',  border: 'border-green-500/25',  text: 'text-green-400',  train: 'Tu energia aumenta. Ideal para fuerza, HIIT y aumentar cargas. Aprovecha la ventana anabolica.', nutrition: 'Soporta la sintesis de estrogeno con zinc y B6. Proteina moderada-alta para soportar el volumen.', energy: 7 },
+  ovulatoria: { name: 'Ovulatoria', emoji: '\u{2728}',  ring: '#fbbf24', bg: 'bg-amber-500/10',  border: 'border-amber-500/25',  text: 'text-amber-400',  train: 'Pico maximo de energia y fuerza. Momento ideal para PRs, sesiones de alta intensidad y nuevos records.', nutrition: 'Mantiene proteina alta. Antioxidantes para reducir inflamacion post-esfuerzo. Hidratacion optima.', energy: 10 },
+  lutea:      { name: 'Lutea',      emoji: '\u{1F319}', ring: '#c084fc', bg: 'bg-purple-500/10', border: 'border-purple-500/25', text: 'text-purple-400', train: 'Energia moderada. Enfocate en tecnica, estabilidad y recuperacion activa. Reduce intensidad al final.', nutrition: 'Sube el apetito, es normal. Prioriza fibra, magnesio y calcio para reducir sintomas de SPM.', energy: 6 },
+};
+
+const cicloPhaseData = computed(() => cicloPhaseMap[cicloPhaseKey.value] || null);
+
+const cicloDaysUntilNext = computed(() => {
+  if (!cicloCurrentDay.value) return null;
+  return cicloCycleLength.value - cicloCurrentDay.value + 1;
+});
+
+const cicloPhaseArcs = computed(() => {
+  const r = 54;
+  const circ = 2 * Math.PI * r;
+  const cl = cicloCycleLength.value;
+  const gap = 2.5;
+  return [
+    { color: '#f87171', start: 0, days: 5 },
+    { color: '#4ade80', start: 5, days: 8 },
+    { color: '#fbbf24', start: 13, days: 3 },
+    { color: '#c084fc', start: 16, days: cl - 16 },
+  ].map(p => {
+    const arcLen = Math.max(0, (p.days / cl) * circ - gap);
+    return {
+      color: p.color,
+      dasharray: arcLen.toFixed(1) + ' ' + (circ * 2).toFixed(1),
+      dashoffset: (-(p.start / cl) * circ).toFixed(1),
+    };
+  });
+});
+
+const cicloDotOffset = computed(() => {
+  if (!cicloCurrentDay.value) return null;
+  const r = 54;
+  const circ = 2 * Math.PI * r;
+  return (-(((cicloCurrentDay.value - 0.5) / cicloCycleLength.value) * circ)).toFixed(1);
+});
+
+// Phase reference cards for feminine cycle
+const phaseCards = [
+  { dot: 'bg-red-400',    text: 'text-red-400',    border: 'border-red-500/25',    bgF: 'bg-red-500/10',    bgB: 'bg-red-500/20',    name: 'Menstrual',  days: '1\u20135',  sub: 'Descanso activo',    train: 'Yoga, caminata, movilidad. Reduce cargas. Recuperacion activa prioritaria.', nutr: 'Hierro, magnesio, omega-3 y alimentos anti-inflamatorios.' },
+  { dot: 'bg-green-400',  text: 'text-green-400',  border: 'border-green-500/25',  bgF: 'bg-green-500/10',  bgB: 'bg-green-500/20',  name: 'Folicular',  days: '6\u201313', sub: 'Fuerza e intensidad',  train: 'Fuerza maxima, HIIT, aumentar cargas. Ventana anabolica optima.', nutr: 'Proteina alta, zinc, vitamina B6 para sintesis de estrogeno.' },
+  { dot: 'bg-amber-400',  text: 'text-amber-400',  border: 'border-amber-500/25',  bgF: 'bg-amber-500/10',  bgB: 'bg-amber-500/20',  name: 'Ovulatoria', days: '14\u201316', sub: 'Pico de rendimiento', train: 'Pico de fuerza y energia. Ideal para PRs y nuevos records.', nutr: 'Antioxidantes, proteina alta, hidratacion optima.' },
+  { dot: 'bg-purple-400', text: 'text-purple-400', border: 'border-purple-500/25', bgF: 'bg-purple-500/10', bgB: 'bg-purple-500/20', name: 'Lutea',      days: '17\u201328', sub: 'Tecnica y estabilidad', train: 'Tecnica, estabilidad, recuperacion activa. Reduce intensidad al final.', nutr: 'Fibra, magnesio y calcio. El apetito sube \u2014 es normal.' },
+];
+
+// Ciclo efectos accordion
+const openEfecto = ref(null);
+function toggleEfecto(idx) {
+  openEfecto.value = openEfecto.value === idx ? null : idx;
+}
+
+// Bloodwork test options (matches blade select)
+const bwTestOptions = [
+  { group: 'Metabolismo', tests: ['Glucosa', 'HbA1c', 'Insulina'] },
+  { group: 'Lipidos', tests: ['Colesterol Total', 'HDL', 'LDL', 'Trigliceridos'] },
+  { group: 'Hormonas', tests: ['Testosterona', 'TSH', 'T3 Libre', 'T4 Libre', 'Cortisol', 'DHEA-S'] },
+  { group: 'Hematologia', tests: ['Hemoglobina', 'Hematocrito', 'Ferritina', 'Hierro'] },
+  { group: 'Vitaminas y Minerales', tests: ['Vitamina D', 'Vitamina B12', 'Zinc', 'Magnesio'] },
+  { group: 'Funcion Renal/Hepatica', tests: ['Creatinina', 'ALT/TGP', 'AST/TGO'] },
+];
 
 // Fetch
 async function fetchPlan() {
@@ -135,19 +344,29 @@ async function fetchPlan() {
   try {
     const response = await api.get('/api/v/client/plan');
     const d = response.data;
-    planData.value = d;
-    trainingPlan.value = d.trainingPlan || null;
-    nutritionPlan.value = d.nutritionPlan || null;
-    supplementPlan.value = d.supplementPlan || null;
-    habitsPlan.value = d.habitsPlan || null;
-    clientPlanType.value = d.clientPlanType || 'basico';
-    planStartDate.value = d.planStartDate || null;
-    currentWeek.value = d.currentWeek || 1;
+    trainingPlan.value = d.training_plan || null;
+    nutritionPlan.value = d.nutrition_plan || null;
+    supplementPlan.value = d.supplement_plan || null;
+    cicloPlan.value = d.ciclo_plan || null;
+    clientPlanType.value = d.plan_type || 'basico';
+    planStartDate.value = d.plan_start_date || null;
+    currentWeek.value = d.current_week || 1;
+    habitData.value = d.habit_data || [];
+    habitCompliance.value = d.habit_compliance || 0;
+    bloodworkResults.value = d.bloodwork || [];
 
     // Auto-open current week
     if (currentWeek.value) {
       openWeeks.value[currentWeek.value] = true;
     }
+
+    // Auto-open bloodwork form if no results
+    if (bloodworkResults.value.length === 0) {
+      bwFormOpen.value = true;
+    }
+
+    // Init ciclo local storage
+    initCicloFromStorage();
   } catch (err) {
     error.value = err.response?.data?.message || 'Error al cargar el plan';
   } finally {
@@ -159,8 +378,75 @@ function goToWorkout(dayIndex) {
   router.push({ name: 'client-workout', params: { day: dayIndex } });
 }
 
+// Bloodwork save
+async function saveBloodwork() {
+  bwSaving.value = true;
+  bwErrors.value = {};
+  bwShowSuccess.value = false;
+  try {
+    await api.post('/api/v/client/bloodwork', {
+      test_name: bwForm.testName,
+      value: bwForm.value,
+      unit: bwForm.unit,
+      reference_range: bwForm.referenceRange,
+      test_date: bwForm.testDate,
+    });
+    bwShowSuccess.value = true;
+    bwForm.testName = '';
+    bwForm.value = '';
+    bwForm.unit = '';
+    bwForm.referenceRange = '';
+    bwForm.testDate = '';
+    // Refresh bloodwork data
+    const response = await api.get('/api/v/client/plan');
+    bloodworkResults.value = response.data.bloodwork || [];
+    clearTimeout(bwSuccessTimer);
+    bwSuccessTimer = setTimeout(() => { bwShowSuccess.value = false; }, 5000);
+  } catch (err) {
+    if (err.response?.status === 422) {
+      bwErrors.value = err.response.data.errors || {};
+    }
+  } finally {
+    bwSaving.value = false;
+  }
+}
+
+async function deleteBloodwork(id) {
+  if (!confirm('\u00bfEliminar este resultado?')) return;
+  try {
+    await api.delete(`/api/v/client/bloodwork/${id}`);
+    bloodworkResults.value = bloodworkResults.value.filter(r => r.id !== id);
+  } catch (e) {
+    // silent
+  }
+}
+
+// Format date for display
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+  return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function formatDateShort(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+}
+
+// Phase card flip state
+const flippedCards = ref({});
+function toggleFlip(idx) {
+  flippedCards.value[idx] = !flippedCards.value[idx];
+}
+
 onMounted(() => {
   fetchPlan();
+});
+
+onBeforeUnmount(() => {
+  clearTimeout(bwSuccessTimer);
 });
 </script>
 
@@ -170,7 +456,7 @@ onMounted(() => {
       <!-- Header -->
       <div class="mb-8">
         <h1 class="font-display text-3xl tracking-wide text-wc-text">MI PLAN</h1>
-        <p class="mt-1 text-sm text-wc-text-secondary">Tu programacion personalizada, diseñada por tu coach</p>
+        <p class="mt-1 text-sm text-wc-text-secondary">Tu programacion personalizada, disenada por tu coach</p>
       </div>
 
       <!-- Loading skeleton -->
@@ -358,6 +644,13 @@ onMounted(() => {
                             class="rounded-full px-2.5 py-1 text-[10px] font-semibold"
                             :class="tipoBadgeClass(dia.tipo || dia.grupo_muscular || dia.muscle_group)"
                           >{{ dia.tipo || dia.grupo_muscular || dia.muscle_group }}</span>
+                          <span
+                            v-if="dia.duracion || (dia.ejercicios || []).length > 0"
+                            class="hidden rounded-full bg-wc-bg-tertiary px-2.5 py-1 text-[10px] font-medium text-wc-text-tertiary sm:inline-flex items-center gap-1"
+                          >
+                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                            {{ dia.duracion || ('~' + Math.max((dia.ejercicios || []).length * 6, 15) + ' min') }}
+                          </span>
                         </div>
                       </div>
 
@@ -445,7 +738,84 @@ onMounted(() => {
               <svg class="h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z" /></svg>
             </div>
             <h2 class="mt-5 font-display text-xl tracking-wide text-wc-text">PLAN EN PREPARACION</h2>
-            <p class="mt-2 text-sm text-wc-text-secondary">Tu coach esta diseñando tu plan de entrenamiento.</p>
+            <p class="mt-2 text-sm text-wc-text-secondary">Tu coach esta disenando tu plan de entrenamiento.</p>
+          </div>
+        </div>
+
+        <!-- ==================== TAB: HABITOS ==================== -->
+        <div v-else-if="activeTab === 'habitos'">
+          <div class="space-y-6">
+            <!-- Compliance bar (premium) -->
+            <div class="relative overflow-hidden rounded-xl border border-wc-accent/20 bg-gradient-to-br from-wc-accent/[0.08] via-wc-bg-tertiary to-transparent p-5">
+              <div class="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-wc-accent/[0.06]"></div>
+              <div class="pointer-events-none absolute -right-2 -top-2 h-12 w-12 rounded-full bg-wc-accent/10"></div>
+              <div class="relative flex items-center justify-between">
+                <div>
+                  <h3 class="font-display text-lg tracking-wide text-wc-text">CUMPLIMIENTO MENSUAL</h3>
+                  <p class="mt-0.5 text-sm text-wc-text-secondary">Dias con al menos 1 habito registrado este mes</p>
+                </div>
+                <span class="font-data text-4xl font-bold tabular-nums text-wc-accent">{{ habitCompliance }}%</span>
+              </div>
+              <div class="relative mt-3 h-2 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
+                <div class="h-full rounded-full bg-gradient-to-r from-wc-accent to-red-400 transition-all duration-700" :style="{ width: habitCompliance + '%' }"></div>
+              </div>
+            </div>
+
+            <!-- Habit Cards -->
+            <div v-if="habitData.length > 0" class="grid gap-4 sm:grid-cols-2">
+              <div
+                v-for="(habit, hIdx) in habitData"
+                :key="hIdx"
+                class="rounded-xl border p-5"
+                :class="[getHabitAccent(habit.type).border, getHabitAccent(habit.type).bg]"
+              >
+                <div class="flex items-start justify-between">
+                  <div>
+                    <h4 class="font-display text-base tracking-wide text-wc-text">{{ (habit.label || '').toUpperCase() }}</h4>
+                    <p class="mt-1 text-xs text-wc-text-tertiary">
+                      Racha: <span class="font-data font-semibold" :class="getHabitAccent(habit.type).text">{{ habit.streak }} dias</span>
+                    </p>
+                  </div>
+                  <div class="flex h-10 w-10 items-center justify-center rounded-xl" :class="getHabitAccent(habit.type).bg">
+                    <!-- Droplet -->
+                    <svg v-if="habit.icon === 'droplet'" class="h-5 w-5" :class="getHabitAccent(habit.type).text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21c-4.97 0-9-4.03-9-9 0-3.87 4.5-9.5 7.68-12.38a1.74 1.74 0 012.64 0C16.5 2.5 21 8.13 21 12c0 4.97-4.03 9-9 9z"/></svg>
+                    <!-- Moon -->
+                    <svg v-else-if="habit.icon === 'moon'" class="h-5 w-5" :class="getHabitAccent(habit.type).text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
+                    <!-- Dumbbell -->
+                    <svg v-else-if="habit.icon === 'dumbbell'" class="h-5 w-5" :class="getHabitAccent(habit.type).text" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 0a1.5 1.5 0 0 1-1.5-1.5v-3a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v3m-4.5 0a1.5 1.5 0 0 0-1.5 1.5v3a1.5 1.5 0 0 0 1.5 1.5h1.5a1.5 1.5 0 0 0 1.5-1.5v-3m12-4.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5m3 0a1.5 1.5 0 0 1-1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5a1.5 1.5 0 0 1-1.5-1.5v-3m0-4.5a1.5 1.5 0 0 0-1.5-1.5h-1.5a1.5 1.5 0 0 0-1.5 1.5v3" /></svg>
+                    <!-- Utensils -->
+                    <svg v-else-if="habit.icon === 'utensils'" class="h-5 w-5" :class="getHabitAccent(habit.type).text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v6m0 0c1.66 0 3-1.34 3-3S13.66 2 12 2s-3 1.34-3 3 1.34 3 3 3zm0 0v14m6-20v8a2 2 0 01-2 2h-1v10"/></svg>
+                    <!-- Pill -->
+                    <svg v-else-if="habit.icon === 'pill'" class="h-5 w-5" :class="getHabitAccent(habit.type).text" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m10.5 6 6.5 6.5-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364L10.5 6Z M17 6.5l-4.5 4.5" /></svg>
+                  </div>
+                </div>
+
+                <div class="mt-3">
+                  <p class="text-xs text-wc-text-tertiary">
+                    Promedio: <span class="font-data font-semibold text-wc-text">{{ habit.average }}/10</span>
+                  </p>
+                </div>
+
+                <!-- Last 7 days bars -->
+                <div class="mt-3 flex items-end gap-1.5">
+                  <div v-for="(day, dayIdx) in (habit.last7 || [])" :key="dayIdx" class="flex flex-1 flex-col items-center gap-1">
+                    <div
+                      class="h-6 w-full rounded-sm transition-all duration-500"
+                      :class="day.value > 0 ? getHabitAccent(habit.type).bar : 'bg-wc-bg-secondary'"
+                      :style="day.value > 0 ? 'opacity: ' + Math.max(0.3, Math.min(day.value / 10, 1)) : ''"
+                      :title="day.date + ': ' + day.value + '/10'"
+                    ></div>
+                    <span class="text-[10px] text-wc-text-tertiary">{{ day.date }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Empty habits fallback -->
+            <div v-if="habitData.length === 0 || habitData.every(h => h.streak === 0 && h.average === 0)" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center">
+              <p class="text-sm text-wc-text-secondary">Aun no tienes habitos registrados en los ultimos 30 dias.</p>
+              <p class="mt-1 text-xs text-wc-text-tertiary">Registra tus habitos diarios desde la pantalla principal.</p>
+            </div>
           </div>
         </div>
 
@@ -513,6 +883,7 @@ onMounted(() => {
                   <div>
                     <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Protocolo</p>
                     <p class="mt-0.5 text-sm font-medium text-wc-text">{{ supplementPlan.descripcion_protocolo || supplementPlan.descripcion }}</p>
+                    <p v-if="supplementPlan.perfil_cliente" class="mt-1 text-xs text-wc-text-tertiary">{{ supplementPlan.perfil_cliente }}</p>
                   </div>
                 </div>
               </div>
@@ -525,30 +896,42 @@ onMounted(() => {
                 </div>
               </div>
 
-              <!-- Categorias or flat list -->
+              <!-- STRUCTURE A: Categorias (IA format) -->
               <template v-if="supplementPlan.categorias && supplementPlan.categorias.length > 0">
-                <div v-for="(cat, cIdx) in supplementPlan.categorias" :key="cIdx" class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary">
-                  <div class="flex items-center gap-2 border-b border-wc-border px-5 py-3 bg-wc-bg-secondary">
-                    <h3 class="font-display text-sm tracking-wider text-wc-text">{{ (cat.nombre || 'Suplementos').toUpperCase() }}</h3>
-                    <span class="ml-auto rounded-full bg-wc-bg-tertiary px-2 py-0.5 text-[10px] font-semibold text-wc-text-tertiary">{{ (cat.suplementos || []).length }}</span>
-                  </div>
-                  <div class="divide-y divide-wc-border">
-                    <div v-for="(sup, sIdx) in (cat.suplementos || [])" :key="sIdx" class="px-5 py-4">
-                      <div class="flex flex-wrap items-start gap-x-3 gap-y-1">
-                        <span class="font-semibold text-wc-text">{{ typeof sup === 'string' ? sup : (sup.nombre || sup.name || 'Suplemento') }}</span>
-                        <span v-if="typeof sup === 'object' && (sup.dosis || sup.dose)" class="rounded bg-wc-bg-secondary px-2 py-0.5 font-data text-xs font-bold text-wc-accent">{{ sup.dosis || sup.dose }}</span>
-                        <span v-if="typeof sup === 'object' && sup.prioridad" class="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-wc-accent bg-wc-accent/10">{{ sup.prioridad }}</span>
+                <div class="space-y-4">
+                  <div v-for="(cat, cIdx) in supplementPlan.categorias" :key="cIdx" class="overflow-hidden rounded-xl border bg-wc-bg-tertiary" :class="getCatStyle(cat.nombre || '').border">
+                    <!-- Category header -->
+                    <div class="flex items-center gap-2 border-b px-5 py-3" :class="[getCatStyle(cat.nombre || '').border, getCatStyle(cat.nombre || '').bg]">
+                      <span class="text-base">{{ getCatStyle(cat.nombre || '').icon }}</span>
+                      <h3 class="font-display text-sm tracking-wider" :class="getCatStyle(cat.nombre || '').color">{{ (cat.nombre || 'Suplementos').toUpperCase() }}</h3>
+                      <span class="ml-auto rounded-full bg-wc-bg-secondary px-2 py-0.5 text-[10px] font-semibold text-wc-text-tertiary">
+                        {{ (cat.suplementos || []).length }} item{{ (cat.suplementos || []).length !== 1 ? 's' : '' }}
+                      </span>
+                    </div>
+                    <!-- Supplements in category -->
+                    <div class="divide-y divide-wc-border">
+                      <div v-for="(sup, sIdx) in (cat.suplementos || [])" :key="sIdx" class="px-5 py-4">
+                        <div class="flex flex-wrap items-start gap-x-3 gap-y-1">
+                          <span class="font-semibold text-wc-text">{{ typeof sup === 'string' ? sup : (sup.nombre || sup.name || 'Suplemento') }}</span>
+                          <span v-if="typeof sup === 'object' && (sup.dosis || sup.dose)" class="rounded bg-wc-bg-secondary px-2 py-0.5 font-data text-xs font-bold text-wc-accent">{{ sup.dosis || sup.dose }}</span>
+                          <span
+                            v-if="typeof sup === 'object' && sup.prioridad"
+                            class="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"
+                            :class="[prioridadStyle(sup.prioridad).text, prioridadStyle(sup.prioridad).bg]"
+                          >{{ sup.prioridad }}</span>
+                        </div>
+                        <p v-if="typeof sup === 'object' && (sup.timing || sup.momento || sup.horario)" class="mt-1.5 inline-flex items-center gap-1 text-xs text-wc-text-secondary">
+                          <span>{{ getTimingIcon(sup.timing || sup.momento || sup.horario) }}</span>
+                          <span>{{ sup.timing || sup.momento || sup.horario }}</span>
+                        </p>
+                        <p v-if="typeof sup === 'object' && (sup.notas || sup.notes)" class="mt-1 text-xs leading-relaxed text-wc-text-tertiary">{{ sup.notas || sup.notes }}</p>
                       </div>
-                      <p v-if="typeof sup === 'object' && (sup.timing || sup.momento || sup.horario)" class="mt-1.5 inline-flex items-center gap-1 text-xs text-wc-text-secondary">
-                        <span>{{ getTimingIcon(sup.timing || sup.momento || sup.horario) }}</span>
-                        <span>{{ sup.timing || sup.momento || sup.horario }}</span>
-                      </p>
-                      <p v-if="typeof sup === 'object' && (sup.notas || sup.notes)" class="mt-1 text-xs leading-relaxed text-wc-text-tertiary">{{ sup.notas || sup.notes }}</p>
                     </div>
                   </div>
                 </div>
               </template>
 
+              <!-- STRUCTURE B: Flat list -->
               <template v-else-if="(supplementPlan.suplementos || supplementPlan.supplements || supplementPlan.protocolo || []).length > 0">
                 <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
                   <div class="flex items-center justify-between border-b border-wc-border px-5 py-4">
@@ -576,54 +959,612 @@ onMounted(() => {
               <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center">
                 <p class="text-sm text-wc-text-secondary">Tu coach esta preparando tu protocolo de suplementacion.</p>
               </div>
+
+              <!-- Timing Diario (timing_diario[]) -->
+              <div v-if="supplementPlan.timing_diario && supplementPlan.timing_diario.length > 0" class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary">
+                <div class="border-b border-wc-border px-5 py-4">
+                  <h3 class="font-display text-sm tracking-wider text-wc-text">PROTOCOLO DIARIO</h3>
+                </div>
+                <div class="divide-y divide-wc-border">
+                  <div v-for="(momento, mIdx) in supplementPlan.timing_diario" :key="mIdx" class="flex items-start gap-4 px-5 py-3.5">
+                    <span class="mt-0.5 shrink-0 text-base">{{ getTimingIcon(typeof momento === 'object' ? (momento.momento || '') : '') }}</span>
+                    <div class="min-w-0 flex-1">
+                      <p class="text-xs font-semibold text-wc-text">{{ typeof momento === 'object' ? (momento.momento || '') : '' }}</p>
+                      <p class="mt-0.5 text-xs text-wc-text-secondary">{{ typeof momento === 'object' ? (momento.suplementos || '') : momento }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Timing Groups (old format: timing or horarios) -->
+              <div v-if="(supplementPlan.timing || supplementPlan.horarios) && typeof (supplementPlan.timing || supplementPlan.horarios) === 'object' && !Array.isArray(supplementPlan.timing || supplementPlan.horarios)" class="space-y-3">
+                <h3 class="font-display text-sm tracking-wider text-wc-text-tertiary uppercase px-1">PROTOCOLO POR MOMENTO</h3>
+                <div v-for="(items, moment) in (supplementPlan.timing || supplementPlan.horarios)" :key="moment" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
+                  <p class="mb-3 font-display text-sm tracking-wide text-wc-text">{{ getTimingIcon(moment) }} {{ moment.toUpperCase() }}</p>
+                  <ul class="space-y-1.5">
+                    <li v-for="(item, iIdx) in (Array.isArray(items) ? items : [items])" :key="iIdx" class="flex items-center gap-2 text-sm text-wc-text-secondary">
+                      <span class="h-1.5 w-1.5 rounded-full bg-wc-accent shrink-0"></span>
+                      {{ typeof item === 'object' ? (item.nombre || item.name || JSON.stringify(item)) : item }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Sinergias -->
+              <div v-if="supplementPlan.sinergias && supplementPlan.sinergias.length > 0" class="overflow-hidden rounded-xl border border-sky-500/20 bg-sky-500/5">
+                <div class="border-b border-sky-500/20 px-5 py-3">
+                  <h3 class="font-display text-sm tracking-wider text-sky-400">SINERGIAS CLAVE</h3>
+                </div>
+                <div class="divide-y divide-sky-500/10">
+                  <div v-for="(sinergia, sIdx) in supplementPlan.sinergias" :key="sIdx" class="px-5 py-4">
+                    <p class="text-sm font-semibold text-sky-300">{{ sinergia.titulo || '' }}</p>
+                    <p class="mt-1 text-xs leading-relaxed text-wc-text-secondary">{{ sinergia.explicacion || '' }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Coach notes -->
+              <div v-if="supplementPlan.notas_coach || supplementPlan.coach_notes || supplementPlan.notas" class="rounded-xl border-l-4 border-wc-accent bg-wc-bg-tertiary p-5">
+                <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-wc-accent">Notas del coach</p>
+                <p class="text-sm leading-relaxed text-wc-text-secondary">{{ supplementPlan.notas_coach || supplementPlan.coach_notes || supplementPlan.notas }}</p>
+                <p v-if="supplementPlan.mensaje_final" class="mt-3 text-xs italic text-wc-text-tertiary">{{ supplementPlan.mensaje_final }}</p>
+              </div>
             </div>
           </template>
 
           <div v-else-if="!canAccessNutricion" class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-8 text-center">
-            <p class="font-display text-xl text-wc-text">Suplementos Premium</p>
+            <p class="font-display text-xl text-wc-text">Suplementacion Premium</p>
             <p class="mt-2 text-sm text-wc-text-secondary">Disponible en planes Metodo y Elite.</p>
             <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">Upgrade</a>
           </div>
+
+          <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center">
+            <p class="text-sm text-wc-text-secondary">Tu coach esta preparando tu protocolo de suplementacion.</p>
+          </div>
         </div>
 
-        <!-- ==================== TAB: HABITOS ==================== -->
-        <div v-else-if="activeTab === 'habitos'">
-          <template v-if="habitsPlan && (habitsPlan.habitos || habitsPlan.habits || []).length > 0">
-            <div class="space-y-3">
-              <div
-                v-for="(habit, hIdx) in (habitsPlan.habitos || habitsPlan.habits || [])"
-                :key="hIdx"
-                class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4"
-              >
-                <div class="flex items-start justify-between gap-3">
-                  <div class="flex items-start gap-3 min-w-0">
-                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10">
-                      <svg class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+        <!-- ==================== TAB: CICLO ==================== -->
+        <div v-else-if="activeTab === 'ciclo'">
+          <!-- Locked -->
+          <div v-if="!canAccessElite" class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-8 text-center">
+            <p class="font-display text-xl text-wc-text">Ciclo Hormonal Personalizado</p>
+            <p class="mt-2 text-sm text-wc-text-secondary">Disponible exclusivamente en el plan Elite.</p>
+            <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">Upgrade a Elite</a>
+          </div>
+
+          <!-- Masculine: Steroid/AE Protocol -->
+          <template v-else-if="cicloPlan && cicloPlan.compounds">
+            <div class="space-y-5">
+              <!-- Warning -->
+              <div v-if="cicloPlan.warning || cicloPlan.advertencia" class="rounded-xl border border-amber-500/30 bg-amber-500/[0.08] p-4">
+                <div class="flex items-start gap-3">
+                  <svg class="mt-0.5 h-5 w-5 shrink-0 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+                  <p class="text-xs leading-relaxed text-amber-300">{{ cicloPlan.warning || cicloPlan.advertencia }}</p>
+                </div>
+              </div>
+
+              <!-- Protocol header -->
+              <div class="rounded-2xl border border-wc-border bg-wc-bg-tertiary p-5">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary">Protocolo Activo</p>
+                    <h2 class="mt-1 font-display text-2xl tracking-wide text-wc-text">{{ (cicloPlan.name || cicloPlan.nombre || 'Protocolo Hormonal').toUpperCase() }}</h2>
+                    <p v-if="cicloPlan.duration || cicloPlan.duracion" class="mt-1 text-sm text-wc-text-secondary">Duracion: <span class="font-semibold text-wc-text">{{ cicloPlan.duration || cicloPlan.duracion }}</span></p>
+                    <p v-if="cicloPlan.descripcion_protocolo || cicloPlan.descripcion" class="mt-2 text-xs leading-relaxed text-wc-text-tertiary">{{ cicloPlan.descripcion_protocolo || cicloPlan.descripcion }}</p>
+                  </div>
+                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-wc-accent/10">
+                    <svg class="h-7 w-7 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 1-6.23-.693L5 14.5m14.8.8 1.402 1.402c1 1 .03 2.798-1.421 2.798H4.062c-1.451 0-2.42-1.798-1.42-2.798L4 14.5" /></svg>
+                  </div>
+                </div>
+
+                <!-- Metrics strip -->
+                <div v-if="cicloPlan.metricas" class="mt-4 grid grid-cols-4 gap-2 border-t border-wc-border pt-4">
+                  <div v-if="cicloPlan.metricas.duracion" class="text-center"><p class="font-data text-lg font-black text-wc-accent">{{ cicloPlan.metricas.duracion }}</p><p class="text-[9px] uppercase tracking-wider text-wc-text-tertiary">Duracion</p></div>
+                  <div v-if="cicloPlan.metricas.compuestos" class="text-center"><p class="font-data text-lg font-black text-wc-text">{{ cicloPlan.metricas.compuestos }}</p><p class="text-[9px] uppercase tracking-wider text-wc-text-tertiary">Compuestos</p></div>
+                  <div v-if="cicloPlan.metricas.fases" class="text-center"><p class="font-data text-lg font-black text-wc-text">{{ cicloPlan.metricas.fases }}</p><p class="text-[9px] uppercase tracking-wider text-wc-text-tertiary">Fases</p></div>
+                  <div v-if="cicloPlan.metricas.labs_requeridos" class="text-center"><p class="font-data text-lg font-black text-wc-text">{{ cicloPlan.metricas.labs_requeridos }}</p><p class="text-[9px] uppercase tracking-wider text-wc-text-tertiary">Labs req.</p></div>
+                </div>
+              </div>
+
+              <!-- Compounds Table -->
+              <div v-if="cicloPlan.compounds && cicloPlan.compounds.length > 0" class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary">
+                <div class="border-b border-wc-border px-5 py-4">
+                  <h3 class="font-display text-sm tracking-wider text-wc-text">COMPUESTOS</h3>
+                </div>
+                <div class="divide-y divide-wc-border">
+                  <div v-for="(compound, cIdx) in cicloPlan.compounds" :key="cIdx" class="px-5 py-4">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <span class="font-semibold text-wc-text">{{ typeof compound === 'object' ? (compound.nombre || compound.name || '') : compound }}</span>
+                      <span v-if="typeof compound === 'object' && (compound.dosis || compound.dose)" class="rounded bg-wc-accent/10 px-2 py-0.5 font-data text-xs font-bold text-wc-accent">{{ compound.dosis || compound.dose }}</span>
+                      <span v-if="typeof compound === 'object' && (compound.semanas || compound.weeks)" class="rounded-full border border-wc-border px-2 py-0.5 text-[10px] text-wc-text-tertiary">Sem {{ compound.semanas || compound.weeks }}</span>
                     </div>
-                    <div class="min-w-0">
-                      <p class="text-sm font-semibold text-wc-text">{{ typeof habit === 'string' ? habit : (habit.nombre || habit.name || habit.habito || 'Habito') }}</p>
-                      <p v-if="typeof habit === 'object' && (habit.descripcion || habit.description)" class="mt-1 text-xs text-wc-text-tertiary">{{ habit.descripcion || habit.description }}</p>
-                      <p v-if="typeof habit === 'object' && (habit.frecuencia || habit.frequency)" class="mt-1 text-xs text-wc-text-secondary">{{ habit.frecuencia || habit.frequency }}</p>
+                    <p v-if="typeof compound === 'object' && (compound.frecuencia || compound.frequency)" class="mt-1 text-xs text-wc-text-secondary">&#x1F5D3;&#xFE0F; {{ compound.frecuencia || compound.frequency }}</p>
+                    <p v-if="typeof compound === 'object' && (compound.notas || compound.notes)" class="mt-1 text-xs leading-relaxed text-wc-text-tertiary">{{ compound.notas || compound.notes }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Phase timeline -->
+              <div v-if="(cicloPlan.phases || cicloPlan.fases || []).length > 0">
+                <h3 class="mb-3 font-display text-sm tracking-wider text-wc-text-tertiary uppercase px-1">FASES DEL CICLO</h3>
+                <!-- Visual timeline bar -->
+                <div class="mb-4 flex h-2.5 w-full overflow-hidden rounded-full">
+                  <div
+                    v-for="(phase, pi) in (cicloPlan.phases || cicloPlan.fases)"
+                    :key="pi"
+                    class="h-full flex-1"
+                    :class="getPhaseColor(typeof phase === 'object' ? (phase.nombre || phase.name || '') : phase).dot"
+                    :style="{ opacity: 0.5 + (pi / (cicloPlan.phases || cicloPlan.fases).length) * 0.5 }"
+                  ></div>
+                </div>
+                <div class="grid gap-3 sm:grid-cols-2">
+                  <div
+                    v-for="(phase, pIdx) in (cicloPlan.phases || cicloPlan.fases)"
+                    :key="pIdx"
+                    class="rounded-xl border p-4"
+                    :class="[getPhaseColor(typeof phase === 'object' ? (phase.nombre || phase.name || '') : phase).border, getPhaseColor(typeof phase === 'object' ? (phase.nombre || phase.name || '') : phase).bg]"
+                  >
+                    <div class="flex items-center gap-2 mb-2">
+                      <div class="h-2 w-2 rounded-full shrink-0" :class="getPhaseColor(typeof phase === 'object' ? (phase.nombre || phase.name || '') : phase).dot"></div>
+                      <p class="font-display text-sm tracking-wide" :class="getPhaseColor(typeof phase === 'object' ? (phase.nombre || phase.name || '') : phase).text">{{ (typeof phase === 'object' ? (phase.nombre || phase.name || '') : phase).toUpperCase() }}</p>
+                      <span v-if="typeof phase === 'object' && (phase.semanas || phase.weeks)" class="ml-auto text-[10px] text-wc-text-tertiary">Sem {{ phase.semanas || phase.weeks }}</span>
+                    </div>
+                    <p v-if="typeof phase === 'object' && (phase.descripcion || phase.description)" class="text-xs leading-relaxed text-wc-text-secondary">{{ phase.descripcion || phase.description }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PCT -->
+              <div v-if="(cicloPlan.pct || []).length > 0" class="overflow-hidden rounded-xl border border-emerald-500/20 bg-emerald-500/5">
+                <div class="border-b border-emerald-500/20 px-5 py-3">
+                  <h3 class="font-display text-sm tracking-wider text-emerald-400">POST CYCLE THERAPY (PCT)</h3>
+                </div>
+                <div class="divide-y divide-emerald-500/10">
+                  <div v-for="(pct, pIdx) in cicloPlan.pct" :key="pIdx" class="flex items-center gap-4 px-5 py-3.5">
+                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
+                      <svg class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <p class="font-semibold text-wc-text text-sm">{{ typeof pct === 'object' ? (pct.nombre || pct.name || '') : pct }}</p>
+                      <p v-if="typeof pct === 'object' && (pct.dosis || pct.dose)" class="text-xs text-emerald-400 font-data font-bold mt-0.5">{{ pct.dosis || pct.dose }}</p>
+                      <p v-if="typeof pct === 'object' && (pct.semanas || pct.weeks)" class="text-[11px] text-wc-text-tertiary mt-0.5">{{ pct.semanas || pct.weeks }}</p>
                     </div>
                   </div>
-                  <div v-if="typeof habit === 'object' && habit.streak" class="text-right shrink-0">
-                    <p class="font-data text-lg font-bold text-emerald-400">{{ habit.streak }}</p>
-                    <p class="text-[10px] text-wc-text-tertiary">dias</p>
+                </div>
+              </div>
+
+              <!-- Labs -->
+              <div v-if="(cicloPlan.labs || []).length > 0" class="overflow-hidden rounded-xl border border-sky-500/20 bg-sky-500/5">
+                <div class="border-b border-sky-500/20 px-5 py-3">
+                  <h3 class="font-display text-sm tracking-wider text-sky-400">ANALISIS DE LABORATORIO</h3>
+                </div>
+                <div class="divide-y divide-sky-500/10">
+                  <div v-for="(lab, lIdx) in cicloPlan.labs" :key="lIdx" class="px-5 py-4">
+                    <div class="flex items-center justify-between gap-2">
+                      <p class="font-semibold text-sky-300 text-sm">{{ typeof lab === 'object' ? (lab.nombre || lab.name || '') : lab }}</p>
+                      <span v-if="typeof lab === 'object' && (lab.cuando || lab.when)" class="shrink-0 rounded-full bg-sky-500/15 px-2.5 py-0.5 text-[10px] font-bold text-sky-400 uppercase tracking-wide">{{ lab.cuando || lab.when }}</span>
+                    </div>
+                    <p v-if="typeof lab === 'object' && (lab.marcadores || lab.markers)" class="mt-1.5 text-xs leading-relaxed text-wc-text-tertiary">{{ lab.marcadores || lab.markers }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Daily monitoring -->
+              <div v-if="(cicloPlan.monitoreo_diario || []).length > 0" class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary">
+                <div class="border-b border-wc-border px-5 py-4">
+                  <h3 class="font-display text-sm tracking-wider text-wc-text">MONITOREO DIARIO</h3>
+                </div>
+                <div class="divide-y divide-wc-border">
+                  <div v-for="(item, mIdx) in cicloPlan.monitoreo_diario" :key="mIdx" class="flex items-start gap-3 px-5 py-3.5">
+                    <div class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border border-wc-accent/40 bg-wc-accent/10">
+                      <svg class="h-3 w-3 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75"/></svg>
+                    </div>
+                    <div class="flex-1">
+                      <div class="flex items-center gap-2">
+                        <p class="text-sm font-medium text-wc-text">{{ typeof item === 'object' ? (item.item || '') : item }}</p>
+                        <span v-if="typeof item === 'object' && item.frecuencia" class="text-[10px] text-wc-text-tertiary">{{ item.frecuencia }}</span>
+                      </div>
+                      <p v-if="typeof item === 'object' && item.detalle" class="mt-0.5 text-xs text-wc-text-tertiary">{{ item.detalle }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Side effects accordion -->
+              <div v-if="(cicloPlan.efectos_secundarios || []).length > 0" class="space-y-2">
+                <h3 class="font-display text-sm tracking-wider text-wc-text-tertiary uppercase px-1">EFECTOS SECUNDARIOS & MANEJO</h3>
+                <div v-for="(efecto, eIdx) in cicloPlan.efectos_secundarios" :key="eIdx" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
+                  <button
+                    @click="toggleEfecto(eIdx)"
+                    class="flex w-full items-center justify-between px-5 py-3.5 text-left"
+                  >
+                    <span class="text-sm font-medium text-wc-text">{{ typeof efecto === 'object' ? (efecto.efecto || '') : efecto }}</span>
+                    <svg
+                      class="h-4 w-4 shrink-0 text-wc-text-tertiary transition-transform"
+                      :class="openEfecto === eIdx ? 'rotate-180' : ''"
+                      fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                    ><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+                  </button>
+                  <Transition name="fade">
+                    <div v-if="openEfecto === eIdx" class="border-t border-wc-border px-5 py-3.5 bg-wc-bg-secondary">
+                      <p class="text-xs leading-relaxed text-wc-text-secondary">{{ typeof efecto === 'object' ? (efecto.manejo || efecto.management || '') : '' }}</p>
+                    </div>
+                  </Transition>
+                </div>
+              </div>
+
+              <!-- Emergency signals -->
+              <div v-if="(cicloPlan.emergencia || []).length > 0" class="overflow-hidden rounded-xl border border-red-500/30 bg-red-500/5">
+                <div class="border-b border-red-500/30 px-5 py-3">
+                  <div class="flex items-center gap-2">
+                    <svg class="h-4 w-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z"/></svg>
+                    <h3 class="font-display text-sm tracking-wider text-red-400">SENALES DE EMERGENCIA</h3>
+                  </div>
+                </div>
+                <div class="divide-y divide-red-500/15">
+                  <div v-for="(emerg, emIdx) in cicloPlan.emergencia" :key="emIdx" class="px-5 py-4">
+                    <p class="text-sm font-semibold text-red-300">&#x26A0;&#xFE0F; {{ typeof emerg === 'object' ? (emerg.sintoma || '') : emerg }}</p>
+                    <p v-if="typeof emerg === 'object' && emerg.accion" class="mt-1.5 text-xs leading-relaxed text-wc-text-secondary">{{ emerg.accion }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Coach notes -->
+              <div v-if="cicloPlan.notas_coach" class="rounded-xl border-l-4 border-wc-accent bg-wc-bg-tertiary p-5">
+                <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-wc-accent">Notas del coach</p>
+                <p class="text-sm leading-relaxed text-wc-text-secondary">{{ cicloPlan.notas_coach }}</p>
+              </div>
+            </div>
+          </template>
+
+          <!-- Feminine: Menstrual Cycle Tracker -->
+          <template v-else>
+            <div class="space-y-5">
+              <!-- Hero ring + phase -->
+              <div
+                class="relative overflow-hidden rounded-2xl border p-6"
+                :class="cicloPhaseData ? [cicloPhaseData.bg, cicloPhaseData.border] : ['bg-wc-bg-tertiary', 'border-wc-border']"
+              >
+                <template v-if="cicloCurrentDay && cicloPhaseData">
+                  <div class="flex flex-col items-center sm:flex-row sm:items-center sm:gap-8">
+                    <div class="relative shrink-0">
+                      <svg width="140" height="140" viewBox="0 0 140 140" class="-rotate-90">
+                        <circle cx="70" cy="70" r="54" fill="none" stroke-width="10" style="stroke: currentColor; opacity: 0.12;" class="text-wc-text"/>
+                        <circle
+                          v-for="(arc, aIdx) in cicloPhaseArcs"
+                          :key="aIdx"
+                          cx="70" cy="70" r="54" fill="none"
+                          :stroke="arc.color"
+                          stroke-width="10"
+                          stroke-linecap="butt"
+                          :stroke-dasharray="arc.dasharray"
+                          :stroke-dashoffset="arc.dashoffset"
+                        />
+                        <circle
+                          v-if="cicloCurrentDay"
+                          cx="70" cy="70" r="54" fill="none" stroke="white" stroke-width="4" stroke-linecap="round"
+                          :stroke-dasharray="'4 ' + (2 * Math.PI * 54)"
+                          :stroke-dashoffset="cicloDotOffset"
+                          style="filter: drop-shadow(0 0 4px rgba(255,255,255,0.9));"
+                        />
+                      </svg>
+                      <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                        <span class="text-2xl">{{ cicloPhaseData.emoji }}</span>
+                        <span class="font-data text-2xl font-black leading-none" :class="cicloPhaseData.text">{{ cicloCurrentDay }}</span>
+                        <span class="text-[10px] text-wc-text-tertiary font-medium uppercase tracking-wide">dia</span>
+                      </div>
+                    </div>
+                    <div class="mt-4 sm:mt-0 text-center sm:text-left flex-1">
+                      <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary mb-1">Fase actual</p>
+                      <h2 class="font-display text-4xl tracking-wide leading-none" :class="cicloPhaseData.text">{{ cicloPhaseData.name }}</h2>
+                      <p class="mt-2 font-data text-sm text-wc-text-secondary">Dia <span class="font-bold text-wc-text">{{ cicloCurrentDay }}</span> de {{ cicloCycleLength }}</p>
+                      <p class="mt-1 text-xs text-wc-text-tertiary">Proximo ciclo en <span class="font-semibold text-wc-text-secondary">{{ cicloDaysUntilNext }}</span> dias</p>
+                      <div class="mt-3 flex items-center gap-1.5">
+                        <span class="text-[10px] font-medium text-wc-text-tertiary uppercase tracking-wider">Energia</span>
+                        <div class="flex gap-0.5">
+                          <div
+                            v-for="i in 10"
+                            :key="i"
+                            class="h-2 w-2 rounded-full transition-colors"
+                            :class="i <= cicloPhaseData.energy ? cicloPhaseData.text.replace('text-','bg-') : 'bg-wc-bg-secondary'"
+                          ></div>
+                        </div>
+                      </div>
+                      <button @click="cicloShowConfig = !cicloShowConfig" class="mt-3 text-[11px] text-wc-text-tertiary hover:text-wc-text-secondary transition-colors flex items-center gap-1">
+                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                        Ajustar configuracion
+                      </button>
+                    </div>
+                  </div>
+                </template>
+
+                <template v-else>
+                  <div class="py-4 text-center">
+                    <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-wc-bg-secondary">
+                      <svg class="h-7 w-7 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" /></svg>
+                    </div>
+                    <p class="font-display text-lg tracking-wide text-wc-text">CONFIGURA TU CICLO</p>
+                    <p class="mt-1 text-sm text-wc-text-secondary">Ingresa la fecha del inicio de tu ultimo ciclo para ver tu fase actual.</p>
+                  </div>
+                </template>
+              </div>
+
+              <!-- Config form -->
+              <Transition name="fade">
+                <div v-if="cicloShowConfig" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+                  <h3 class="font-display text-base tracking-wide text-wc-text mb-4">CONFIGURACION DEL CICLO</h3>
+                  <div class="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">&#x1F4C5; Fecha de inicio del ultimo ciclo</label>
+                      <input type="date" v-model="cicloStartDate" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"/>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">&#x1F504; Duracion del ciclo (dias)</label>
+                      <input type="number" v-model.number="cicloCycleLength" min="21" max="40" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"/>
+                    </div>
+                  </div>
+                  <div class="mt-4 flex items-center gap-3">
+                    <button @click="saveCicloConfig" class="rounded-lg bg-wc-accent px-5 py-2 text-sm font-medium text-white hover:bg-wc-accent/90 transition-colors">Guardar</button>
+                    <p class="text-xs text-wc-text-tertiary">Los datos se guardan localmente en tu dispositivo.</p>
+                  </div>
+                </div>
+              </Transition>
+
+              <!-- Recommendations -->
+              <template v-if="cicloCurrentDay && cicloPhaseData">
+                <div class="grid gap-4 sm:grid-cols-2">
+                  <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+                    <div class="flex items-center gap-2 mb-3">
+                      <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-lg" :class="cicloPhaseData.bg">&#x1F3CB;&#xFE0F;</span>
+                      <h4 class="font-display text-sm tracking-wide text-wc-text">ENTRENAMIENTO</h4>
+                    </div>
+                    <p class="text-sm leading-relaxed text-wc-text-secondary">{{ cicloPhaseData.train }}</p>
+                  </div>
+                  <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+                    <div class="flex items-center gap-2 mb-3">
+                      <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-lg" :class="cicloPhaseData.bg">&#x1F957;</span>
+                      <h4 class="font-display text-sm tracking-wide text-wc-text">NUTRICION</h4>
+                    </div>
+                    <p class="text-sm leading-relaxed text-wc-text-secondary">{{ cicloPhaseData.nutrition }}</p>
+                  </div>
+                </div>
+              </template>
+
+              <!-- Phase timeline reference -->
+              <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+                <h3 class="font-display text-sm tracking-wide text-wc-text mb-4">FASES DEL CICLO</h3>
+                <div class="mb-4 flex h-3 w-full overflow-hidden rounded-full">
+                  <div class="h-full transition-all" style="width: 18%; background:#f87171;"></div>
+                  <div class="h-full transition-all" style="width: 32%; background:#4ade80;"></div>
+                  <div class="h-full transition-all" style="width: 11%; background:#fbbf24;"></div>
+                  <div class="h-full flex-1" style="background:#c084fc;"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div
+                    v-for="(pc, pcIdx) in phaseCards"
+                    :key="pcIdx"
+                    @click="toggleFlip(pcIdx)"
+                    class="cursor-pointer select-none"
+                    style="perspective: 700px; height: 130px;"
+                  >
+                    <div
+                      style="position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.45s cubic-bezier(.4,0,.2,1);"
+                      :style="flippedCards[pcIdx] ? 'transform:rotateY(180deg)' : 'transform:rotateY(0deg)'"
+                    >
+                      <div class="absolute inset-0 rounded-xl p-3" :class="[pc.border, pc.bgF]" style="backface-visibility:hidden;">
+                        <div class="flex items-center gap-1.5 mb-1.5"><div class="h-2 w-2 shrink-0 rounded-full" :class="pc.dot"></div><p class="text-xs font-semibold" :class="pc.text">{{ pc.name }}</p></div>
+                        <p class="text-[10px] text-wc-text-tertiary">Dias {{ pc.days }}</p>
+                        <p class="text-[10px] text-wc-text-tertiary mt-0.5">{{ pc.sub }}</p>
+                      </div>
+                      <div class="absolute inset-0 overflow-y-auto rounded-xl p-3" :class="[pc.border, pc.bgB]" style="backface-visibility:hidden; transform:rotateY(180deg);">
+                        <p class="text-[10px] font-bold mb-1" :class="pc.text">&#x1F3CB;&#xFE0F; Entreno</p>
+                        <p class="text-[10px] text-wc-text-secondary leading-relaxed">{{ pc.train }}</p>
+                        <div class="mt-2 border-t pt-2" :class="pc.border">
+                          <p class="text-[10px] font-bold mb-1" :class="pc.text">&#x1F957; Nutricion</p>
+                          <p class="text-[10px] text-wc-text-secondary leading-relaxed">{{ pc.nutr }}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </template>
+        </div>
 
-          <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center">
-            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-wc-bg-secondary">
-              <svg class="h-6 w-6 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-            </div>
-            <p class="mt-3 font-display text-lg text-wc-text">HABITOS EN PREPARACION</p>
-            <p class="mt-1 text-sm text-wc-text-secondary">Tu coach esta configurando tu plan de habitos.</p>
+        <!-- ==================== TAB: BLOODWORK ==================== -->
+        <div v-else-if="activeTab === 'bloodwork'">
+          <!-- Locked -->
+          <div v-if="!canAccessElite" class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-8 text-center">
+            <p class="font-display text-xl text-wc-text">Bloodwork &amp; Analisis Laboratorio</p>
+            <p class="mt-2 text-sm text-wc-text-secondary">Disponible exclusivamente en el plan Elite.</p>
+            <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">Upgrade a Elite</a>
           </div>
+
+          <template v-else>
+            <div class="space-y-6">
+              <!-- Latest values summary -->
+              <div v-if="Object.keys(latestByTest).length > 0">
+                <h3 class="font-display text-sm tracking-wide text-wc-text-secondary mb-3">ULTIMOS VALORES</h3>
+                <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                  <div
+                    v-for="(r, testName) in latestByTest"
+                    :key="testName"
+                    class="rounded-xl border bg-wc-bg-tertiary p-3.5"
+                    :class="bwStatus(r) === 'ok' ? 'border-emerald-500/25' : bwStatus(r) === 'flag' ? 'border-amber-500/30' : 'border-wc-border'"
+                  >
+                    <div class="flex items-start justify-between gap-1 mb-2">
+                      <p class="text-[11px] font-medium text-wc-text-secondary leading-tight">{{ testName }}</p>
+                      <span v-if="bwStatus(r) === 'ok'" class="shrink-0 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/20">
+                        <svg class="h-2.5 w-2.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                      </span>
+                      <span v-else-if="bwStatus(r) === 'flag'" class="shrink-0 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500/20">
+                        <svg class="h-2.5 w-2.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+                      </span>
+                    </div>
+                    <div class="flex items-baseline gap-1">
+                      <span class="font-data text-xl font-black text-wc-text tabular-nums">{{ r.value }}</span>
+                      <span class="text-[10px] text-wc-text-tertiary">{{ r.unit }}</span>
+                    </div>
+                    <div
+                      v-if="bwSpectrumPct(r) !== null"
+                      class="mt-2 relative h-1.5 w-full overflow-hidden rounded-full"
+                      style="background: linear-gradient(to right, #ef4444 0%, #fbbf24 20%, #4ade80 32%, #4ade80 68%, #fbbf24 80%, #ef4444 100%);"
+                    >
+                      <div class="absolute top-0 h-full w-0.5 rounded-full bg-white shadow" :style="{ left: bwSpectrumPct(r).toFixed(1) + '%', transform: 'translateX(-50%)' }"></div>
+                    </div>
+                    <p v-else-if="r.reference_range" class="mt-1 text-[9px] text-wc-text-tertiary">Ref: {{ r.reference_range }}</p>
+                    <p class="mt-1 text-[9px] text-wc-text-tertiary">{{ formatDateShort(r.test_date) }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Add result form -->
+              <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+                <button @click="bwFormOpen = !bwFormOpen" class="flex w-full items-center justify-between">
+                  <h3 class="font-display text-base tracking-wide text-wc-text">AGREGAR RESULTADO</h3>
+                  <svg class="h-5 w-5 text-wc-text-tertiary transition-transform" :class="bwFormOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+                </button>
+
+                <div v-show="bwFormOpen">
+                  <!-- Success message -->
+                  <Transition name="fade">
+                    <div v-if="bwShowSuccess" class="mt-4 flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-sm text-emerald-400">
+                      <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                      Resultado guardado correctamente.
+                    </div>
+                  </Transition>
+
+                  <form @submit.prevent="saveBloodwork" class="mt-4 space-y-4">
+                    <div class="grid gap-4 sm:grid-cols-2">
+                      <div>
+                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">&#x1F9EA; Prueba</label>
+                        <select v-model="bwForm.testName" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none">
+                          <option value="">Seleccionar prueba...</option>
+                          <optgroup v-for="group in bwTestOptions" :key="group.group" :label="group.group">
+                            <option v-for="test in group.tests" :key="test" :value="test">{{ test }}</option>
+                          </optgroup>
+                        </select>
+                        <span v-if="bwErrors.test_name" class="mt-1 block text-xs text-red-400">{{ bwErrors.test_name[0] }}</span>
+                      </div>
+
+                      <div>
+                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">&#x1F4C5; Fecha</label>
+                        <input type="date" v-model="bwForm.testDate" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
+                        <span v-if="bwErrors.test_date" class="mt-1 block text-xs text-red-400">{{ bwErrors.test_date[0] }}</span>
+                      </div>
+
+                      <div>
+                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">&#x1F4CA; Valor</label>
+                        <input type="number" step="0.01" v-model="bwForm.value" placeholder="ej: 95.5" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
+                        <span v-if="bwErrors.value" class="mt-1 block text-xs text-red-400">{{ bwErrors.value[0] }}</span>
+                      </div>
+
+                      <div>
+                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">&#x1F52C; Unidad</label>
+                        <input type="text" v-model="bwForm.unit" placeholder="ej: mg/dL" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
+                        <span v-if="bwErrors.unit" class="mt-1 block text-xs text-red-400">{{ bwErrors.unit[0] }}</span>
+                      </div>
+
+                      <div class="sm:col-span-2">
+                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">&#x1F4CB; Rango de referencia <span class="font-normal text-wc-text-tertiary">(opcional - ej: 70-100)</span></label>
+                        <input type="text" v-model="bwForm.referenceRange" placeholder="ej: 70-100 mg/dL" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      :disabled="bwSaving"
+                      class="rounded-xl bg-wc-accent px-5 py-2.5 text-sm font-medium text-white hover:bg-wc-accent/90 transition-colors disabled:opacity-50"
+                    >
+                      <span v-if="!bwSaving">Guardar Resultado</span>
+                      <span v-else class="inline-flex items-center gap-2">
+                        <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                        Guardando...
+                      </span>
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+              <!-- Results history -->
+              <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-wc-border">
+                  <h3 class="font-display text-base tracking-wide text-wc-text">HISTORIAL</h3>
+                  <span v-if="bloodworkResults.length > 0" class="rounded-full bg-wc-bg-secondary px-2.5 py-0.5 text-xs font-medium text-wc-text-secondary">
+                    {{ bloodworkResults.length }} registros
+                  </span>
+                </div>
+
+                <div v-if="bloodworkResults.length > 0">
+                  <div
+                    v-for="(result, rIdx) in [...bloodworkResults].reverse()"
+                    :key="result.id || rIdx"
+                    class="px-5 py-3.5"
+                    :class="rIdx < [...bloodworkResults].reverse().length - 1 ? 'border-b border-wc-border/60' : ''"
+                  >
+                    <div class="flex items-center gap-4">
+                      <!-- Status dot -->
+                      <div class="shrink-0 flex h-8 w-8 items-center justify-center rounded-full"
+                        :class="bwStatus(result) === 'ok' ? 'bg-emerald-500/15' : bwStatus(result) === 'flag' ? 'bg-amber-500/15' : 'bg-wc-bg-secondary'"
+                      >
+                        <svg v-if="bwStatus(result) === 'ok'" class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                        <svg v-else-if="bwStatus(result) === 'flag'" class="h-4 w-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+                        <svg v-else class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                      </div>
+
+                      <!-- Test name + date -->
+                      <div class="min-w-0 flex-1">
+                        <p class="text-sm font-medium text-wc-text truncate">{{ result.test_name }}</p>
+                        <p class="text-[11px] text-wc-text-tertiary">{{ formatDate(result.test_date) }}</p>
+                      </div>
+
+                      <!-- Value + unit -->
+                      <div class="shrink-0 text-right">
+                        <p class="font-data text-base font-bold text-wc-text tabular-nums">
+                          {{ result.value }}
+                          <span class="text-xs font-normal text-wc-text-tertiary">{{ result.unit }}</span>
+                        </p>
+                        <p v-if="result.reference_range" class="text-[10px] text-wc-text-tertiary">{{ result.reference_range }}</p>
+                      </div>
+
+                      <!-- Delete -->
+                      <button
+                        @click="deleteBloodwork(result.id)"
+                        class="shrink-0 flex h-7 w-7 items-center justify-center rounded-lg text-wc-text-tertiary hover:bg-red-500/10 hover:text-red-400 transition-colors"
+                        title="Eliminar"
+                      >
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
+                      </button>
+                    </div>
+                    <!-- Spectrum bar -->
+                    <div
+                      v-if="bwSpectrumPct(result) !== null"
+                      class="mt-2 px-12 relative h-1.5 w-full overflow-hidden rounded-full"
+                      style="background: linear-gradient(to right, #ef4444 0%, #fbbf24 20%, #4ade80 32%, #4ade80 68%, #fbbf24 80%, #ef4444 100%);"
+                    >
+                      <div class="absolute top-0 h-full w-0.5 rounded-full bg-white shadow" :style="{ left: bwSpectrumPct(result).toFixed(1) + '%', transform: 'translateX(-50%)' }"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-else class="py-10 text-center">
+                  <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-wc-bg-secondary">
+                    <svg class="h-7 w-7 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 1-6.23-.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/></svg>
+                  </div>
+                  <p class="font-display text-base tracking-wide text-wc-text">SIN RESULTADOS AUN</p>
+                  <p class="mt-1 text-sm text-wc-text-secondary">Agrega tus resultados de laboratorio para llevar un seguimiento de tu salud.</p>
+                </div>
+              </div>
+            </div>
+          </template>
         </div>
       </template>
     </div>
   </ClientLayout>
 </template>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+</style>

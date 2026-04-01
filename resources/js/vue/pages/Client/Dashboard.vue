@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import ClientLayout from '../../layouts/ClientLayout.vue';
@@ -14,7 +14,7 @@ const error = ref(null);
 const data = ref(null);
 const showOnboarding = ref(false);
 
-// Greeting
+// Greeting (time-based, computed client-side)
 const greeting = computed(() => {
     const h = new Date().getHours();
     return h < 12 ? 'Buenos dias' : h < 18 ? 'Buenas tardes' : 'Buenas noches';
@@ -34,6 +34,8 @@ async function fetchDashboard() {
         if (!response.data.onboardingCompleted) {
             showOnboarding.value = true;
         }
+        // Start check-in timer after data loads
+        startCheckinTimer();
     } catch (err) {
         error.value = err.response?.data?.message || 'Error al cargar el dashboard';
     } finally {
@@ -45,7 +47,7 @@ onMounted(() => {
     fetchDashboard();
 });
 
-// Streak calendar helpers
+// ── Streak calendar helpers ──
 function getCalendarColor(count) {
     if (count >= 5) return 'bg-wc-accent';
     if (count >= 4) return 'bg-wc-accent/80';
@@ -58,7 +60,6 @@ function getCalendarColor(count) {
 function generateCalendarDays() {
     const today = new Date();
     const days = [];
-    // Go back 90 days, align to Monday
     const start = new Date(today);
     start.setDate(start.getDate() - 90);
     // Align to Monday (1 = Monday)
@@ -100,13 +101,13 @@ function getCalendarCount(dateStr) {
     return data.value.streakCalendar[dateStr] || 0;
 }
 
-// Weight chart helpers
+// ── Weight chart helpers ──
 function getWeightBarHeight(weight, min, range) {
     if (range === 0) return 50;
     return ((weight - min) / range) * 70 + 30;
 }
 
-// Check-in countdown
+// ── Check-in countdown (module-level timer — not reactive) ──
 const checkinHours = ref('00');
 const checkinMinutes = ref('00');
 const checkinSeconds = ref('00');
@@ -114,7 +115,11 @@ let checkinInterval = null;
 
 function startCheckinTimer() {
     if (!data.value?.nextCheckinDate) return;
+    // Only show live timer if check-in is within 24 hours and not past due
+    if (data.value.daysUntilCheckin > 1 || data.value.daysUntilCheckin <= 0) return;
+
     const target = new Date(data.value.nextCheckinDate);
+    if (isNaN(target.getTime())) return;
 
     function tick() {
         const now = new Date();
@@ -128,19 +133,22 @@ function startCheckinTimer() {
     checkinInterval = setInterval(tick, 1000);
 }
 
-onUnmounted(() => {
+const showCheckinTimer = computed(() => {
+    if (!data.value) return false;
+    return data.value.daysUntilCheckin >= 0 && data.value.daysUntilCheckin <= 1;
+});
+
+onBeforeUnmount(() => {
     if (checkinInterval) clearInterval(checkinInterval);
 });
 
-// XP progress
+// ── XP progress ──
 const xpProgress = computed(() => {
     if (!data.value) return 0;
-    const xp = data.value.xpTotal || 0;
-    const forNext = data.value.xpForNextLevel || 1000;
-    return Math.min(100, ((xp % forNext) / forNext) * 100);
+    return data.value.xpProgress || 0;
 });
 
-// Trained this week ring
+// ── Trained this week ring ──
 const trainedRingOffset = computed(() => {
     if (!data.value) return 251;
     const circumference = 251;
@@ -148,12 +156,86 @@ const trainedRingOffset = computed(() => {
     return circumference - (circumference * trained / 7);
 });
 
-// Mission icon mapping
+// ── Mission status class ──
 function getMissionStatusClass(completed) {
     return completed
         ? 'border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10'
         : 'border-wc-border bg-wc-bg-tertiary hover:bg-wc-bg-secondary';
 }
+
+// ── Mission route mapping (API returns route keys, we map to Vue routes) ──
+const missionRouteMap = {
+    training: '/client/training',
+    checkin: '/client/checkin',
+    weight: '/client/metrics',
+    nutrition: '/client/nutrition',
+};
+
+function getMissionRoute(mission) {
+    return missionRouteMap[mission.key] || mission.route || '/client/dashboard';
+}
+
+// ── Recent activity type icons ──
+function getActivityIconData(type) {
+    switch (type) {
+        case 'training':
+            return {
+                bgClass: 'bg-emerald-500/10',
+                iconClass: 'text-emerald-500',
+                path: 'm4.5 12.75 6 6 9-13.5',
+            };
+        case 'checkin':
+            return {
+                bgClass: 'bg-sky-500/10',
+                iconClass: 'text-sky-500',
+                path: 'M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
+            };
+        case 'payment':
+            return {
+                bgClass: 'bg-violet-500/10',
+                iconClass: 'text-violet-500',
+                path: 'M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z',
+            };
+        default:
+            return {
+                bgClass: 'bg-wc-bg-secondary',
+                iconClass: 'text-wc-text-tertiary',
+                path: 'M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
+            };
+    }
+}
+
+// ── Weekly summary motivational text ──
+const weeklySummaryMessage = computed(() => {
+    if (!data.value) return {};
+    const w = data.value.lastWeekWorkouts || 0;
+    if (w >= 5) return { label: 'Semana excepcional', colorClass: 'text-emerald-600 dark:text-emerald-400', desc: `${w} entrenamientos completados. Sigue asi.` };
+    if (w >= 3) return { label: 'Buen ritmo', colorClass: 'text-sky-600 dark:text-sky-400', desc: `${w} entrenamientos esta semana. Vas por buen camino.` };
+    if (w >= 1) return { label: 'En camino', colorClass: 'text-amber-600 dark:text-amber-400', desc: 'Cada sesion cuenta. Intenta sumar una mas esta semana.' };
+    return { label: 'Nueva semana', colorClass: 'text-wc-accent', desc: 'Es un nuevo comienzo. Tu primera sesion te espera.' };
+});
+
+// ── Completed missions count ──
+const completedMissionsCount = computed(() => {
+    if (!data.value?.dailyMissions) return 0;
+    return data.value.dailyMissions.filter(m => m.completed).length;
+});
+
+// ── Week markers for plan progress bar (desktop) ──
+const weekMarkers = computed(() => {
+    if (!data.value) return [];
+    const total = data.value.totalWeeks || 12;
+    const active = data.value.weeksActive || 0;
+    const markers = [];
+    for (let i = 1; i <= total; i++) {
+        markers.push({
+            week: i,
+            isActive: i <= active,
+            showLabel: i % 3 === 0,
+        });
+    }
+    return markers;
+});
 </script>
 
 <template>
@@ -165,6 +247,12 @@ function getMissionStatusClass(completed) {
         <div class="h-9 w-72 animate-pulse rounded-lg bg-wc-bg-tertiary"></div>
         <div class="h-5 w-48 animate-pulse rounded-lg bg-wc-bg-tertiary"></div>
       </div>
+
+      <!-- Quote skeleton -->
+      <div class="h-14 animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary"></div>
+
+      <!-- Plan alert skeleton -->
+      <div class="h-14 animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary"></div>
 
       <!-- Stats skeleton -->
       <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
@@ -180,9 +268,24 @@ function getMissionStatusClass(completed) {
       <!-- Chart skeleton -->
       <div class="h-64 animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary"></div>
 
+      <!-- Coach skeleton -->
+      <div class="h-16 animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary"></div>
+
+      <!-- Check-in countdown skeleton -->
+      <div class="h-20 animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary"></div>
+
+      <!-- Weekly summary skeleton -->
+      <div class="h-48 animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary"></div>
+
       <!-- Missions skeleton -->
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div v-for="i in 4" :key="i" class="h-20 animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary"></div>
+      </div>
+
+      <!-- Weekly overview + recent activity skeleton -->
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div class="h-56 animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary lg:col-span-2"></div>
+        <div class="h-56 animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary"></div>
       </div>
     </div>
 
@@ -206,7 +309,9 @@ function getMissionStatusClass(completed) {
     <!-- Dashboard Content -->
     <div v-else-if="data" class="space-y-6">
 
-      <!-- Greeting section -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- GREETING SECTION + QUICK ACTIONS (desktop)                    -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">
@@ -230,10 +335,18 @@ function getMissionStatusClass(completed) {
             </svg>
             Registrar entrenamiento
           </RouterLink>
+          <RouterLink
+            to="/client/checkin"
+            class="inline-flex items-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2 text-sm font-medium text-wc-text transition-colors hover:bg-wc-bg-secondary"
+          >
+            Hacer check-in
+          </RouterLink>
         </div>
       </div>
 
-      <!-- Daily Motivational Quote -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- DAILY MOTIVATIONAL QUOTE                                      -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
       <div v-if="data.dailyQuote" class="flex items-start gap-3 rounded-xl border border-wc-border/50 bg-wc-bg-tertiary/50 px-4 py-3">
         <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 mt-0.5">
           <svg class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -241,11 +354,16 @@ function getMissionStatusClass(completed) {
           </svg>
         </div>
         <div class="min-w-0 flex-1">
-          <p class="text-sm italic text-wc-text-tertiary leading-relaxed">"{{ data.dailyQuote }}"</p>
+          <p class="text-sm italic text-wc-text-tertiary leading-relaxed">
+            &ldquo;{{ data.dailyQuote }}&rdquo;
+          </p>
+          <p class="mt-1 text-[10px] font-medium uppercase tracking-wider text-wc-text-tertiary/60">&mdash; Tu coach</p>
         </div>
       </div>
 
-      <!-- Plan alert -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- PLAN ALERT                                                    -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
       <div v-if="!data.hasActivePlan" class="flex items-start gap-4 rounded-xl border border-wc-accent/30 bg-wc-accent/5 p-4">
         <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
           <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -276,7 +394,9 @@ function getMissionStatusClass(completed) {
         </span>
       </div>
 
-      <!-- Stats cards -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- STATS CARDS                                                   -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
       <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <!-- Streak with Flame -->
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
@@ -327,7 +447,7 @@ function getMissionStatusClass(completed) {
               ></div>
             </div>
             <p class="mt-1 text-[10px] text-wc-text-tertiary">
-              {{ ((data.xpTotal || 0) % (data.xpForNextLevel || 1000)).toLocaleString() }} / {{ (data.xpForNextLevel || 1000).toLocaleString() }} XP
+              {{ ((data.xpTotal || 0) % (data.xpForNextLevel || 200)).toLocaleString() }} / {{ (data.xpForNextLevel || 200).toLocaleString() }} XP
             </p>
           </div>
         </div>
@@ -360,7 +480,9 @@ function getMissionStatusClass(completed) {
         </div>
       </div>
 
-      <!-- Plan Progress Timeline -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- PLAN PROGRESS TIMELINE                                        -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
       <div v-if="data.hasActivePlan" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
         <div class="mb-4 flex items-center justify-between">
           <h2 class="font-display text-lg tracking-wide text-wc-text">Tu progreso</h2>
@@ -384,10 +506,20 @@ function getMissionStatusClass(completed) {
           </div>
         </div>
 
+        <!-- Week markers -->
         <div class="mt-3 flex items-center justify-between">
           <div class="text-left">
             <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Inicio</p>
             <p class="font-data text-xs text-wc-text">{{ data.startDate || '--' }}</p>
+          </div>
+          <!-- Desktop week dots -->
+          <div class="hidden items-center gap-0 flex-1 mx-4 sm:flex">
+            <div v-for="marker in weekMarkers" :key="marker.week" class="flex flex-1 flex-col items-center">
+              <div
+                :class="marker.isActive ? 'h-1.5 w-1.5 rounded-full bg-wc-accent/60' : 'h-1 w-1 rounded-full bg-wc-border'"
+              ></div>
+              <span v-if="marker.showLabel" class="mt-1 text-[9px] text-wc-text-tertiary">{{ marker.week }}</span>
+            </div>
           </div>
           <div class="text-right">
             <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">
@@ -398,7 +530,9 @@ function getMissionStatusClass(completed) {
         </div>
       </div>
 
-      <!-- Streak Calendar (90-day heatmap) -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- STREAK CALENDAR (90-day heatmap)                              -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
       <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
         <div class="mb-3 flex items-center justify-between">
           <div class="flex items-center gap-2">
@@ -409,7 +543,7 @@ function getMissionStatusClass(completed) {
             </div>
             <h3 class="text-sm font-semibold text-wc-text">Racha de entrenamiento</h3>
             <span v-if="(data.calendarStreak || 0) > 0" class="inline-flex items-center gap-1 rounded-full bg-orange-500/10 px-2 py-0.5 text-xs font-bold text-orange-500">
-              {{ data.calendarStreak }} dias seguidos
+              {{ data.calendarStreak }} dia{{ data.calendarStreak !== 1 ? 's' : '' }} seguido{{ data.calendarStreak !== 1 ? 's' : '' }}
             </span>
           </div>
           <span class="hidden text-xs text-wc-text-tertiary sm:inline">Ultimos 90 dias</span>
@@ -460,7 +594,9 @@ function getMissionStatusClass(completed) {
         </div>
       </div>
 
-      <!-- Weight Chart (CSS bar chart) -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- WEIGHT CHART (CSS bar chart)                                  -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
       <div v-if="data.weightChartData && data.weightChartData.length > 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
         <div class="mb-4 flex items-center justify-between">
           <h3 class="text-sm font-semibold text-wc-text">Tendencia de peso</h3>
@@ -499,6 +635,7 @@ function getMissionStatusClass(completed) {
           <span>Max: {{ Math.max(...data.weightChartData.map(e => e.weight)).toFixed(1) }} kg</span>
         </div>
       </div>
+      <!-- Weight chart empty state -->
       <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
         <div class="flex flex-col items-center justify-center h-48 text-center">
           <svg class="h-8 w-8 text-wc-text-tertiary/40" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -509,10 +646,12 @@ function getMissionStatusClass(completed) {
         </div>
       </div>
 
-      <!-- Coach Card -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- COACH CARD                                                    -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
       <div v-if="data.coachName" class="flex items-center gap-4 rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
         <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
-          <span class="font-display text-sm tracking-wide text-wc-accent">{{ data.coachInitials || 'C' }}</span>
+          <span class="font-display text-sm tracking-wide text-wc-accent">{{ data.coachInitials || 'WC' }}</span>
         </div>
         <div class="min-w-0 flex-1">
           <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Tu coach</p>
@@ -529,20 +668,23 @@ function getMissionStatusClass(completed) {
         </RouterLink>
       </div>
 
-      <!-- Check-in Countdown -->
-      <div
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- CHECK-IN COUNTDOWN                                            -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <RouterLink
         v-if="data.daysUntilCheckin !== undefined"
+        to="/client/checkin"
         :class="[
-          'rounded-xl border p-4 sm:p-5 transition-colors cursor-pointer',
+          'group block rounded-xl border p-4 sm:p-5 transition-colors',
           data.daysUntilCheckin <= 0
             ? 'border-wc-accent/40 bg-wc-accent/10 hover:bg-wc-accent/15'
             : data.daysUntilCheckin <= 2
               ? 'border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/15'
               : 'border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10'
         ]"
-        @click="router.push('/client/plan')"
       >
         <div class="flex items-center gap-4">
+          <!-- Icon -->
           <div :class="[
             'flex h-11 w-11 shrink-0 items-center justify-center rounded-xl',
             data.daysUntilCheckin <= 0 ? 'bg-wc-accent/20' : data.daysUntilCheckin <= 2 ? 'bg-amber-500/20' : 'bg-emerald-500/15'
@@ -558,6 +700,7 @@ function getMissionStatusClass(completed) {
             </svg>
           </div>
 
+          <!-- Text -->
           <div class="min-w-0 flex-1">
             <p v-if="data.daysUntilCheckin <= 0" class="text-sm font-semibold uppercase tracking-wide text-wc-accent">Check-in pendiente</p>
             <p v-else-if="data.daysUntilCheckin <= 2" class="text-sm font-semibold text-amber-600 dark:text-amber-400">
@@ -566,16 +709,33 @@ function getMissionStatusClass(completed) {
             <p v-else class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
               Proximo check-in en {{ data.daysUntilCheckin }} dias
             </p>
-            <p class="mt-0.5 text-xs text-wc-text-tertiary capitalize">{{ data.nextCheckinDateLabel || '' }}</p>
+            <p v-if="data.daysUntilCheckin <= 0" class="mt-0.5 text-xs text-wc-text-tertiary">Tu check-in semanal esta listo. Envialo ahora.</p>
+            <p v-else class="mt-0.5 text-xs text-wc-text-tertiary capitalize">{{ data.nextCheckinDate || '' }}</p>
           </div>
 
-          <svg class="h-4 w-4 shrink-0 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <!-- Live countdown timer (if < 24h) -->
+          <div
+            v-if="showCheckinTimer && data.daysUntilCheckin > 0"
+            :class="[
+              'hidden items-center gap-1 font-data text-lg font-bold tabular-nums sm:flex',
+              data.daysUntilCheckin <= 2 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'
+            ]"
+          >
+            <span>{{ checkinHours }}</span><span class="text-wc-text-tertiary">:</span>
+            <span>{{ checkinMinutes }}</span><span class="text-wc-text-tertiary">:</span>
+            <span>{{ checkinSeconds }}</span>
+          </div>
+
+          <!-- Arrow -->
+          <svg class="h-4 w-4 shrink-0 text-wc-text-tertiary group-hover:text-wc-text transition-colors" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
           </svg>
         </div>
-      </div>
+      </RouterLink>
 
-      <!-- Weekly Summary -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- WEEKLY SUMMARY (last week)                                    -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
       <div v-if="data.hasLastWeekData" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
         <div class="mb-4 flex items-center gap-2">
           <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-500/10">
@@ -601,84 +761,209 @@ function getMissionStatusClass(completed) {
           </div>
         </div>
 
+        <!-- Motivational text based on performance -->
         <div class="mt-4 rounded-xl border border-wc-accent/10 bg-wc-accent/5 px-4 py-2.5">
           <p class="text-xs text-wc-text-tertiary">
-            <template v-if="(data.lastWeekWorkouts || 0) >= 5">
-              <span class="font-semibold text-emerald-600 dark:text-emerald-400">Semana excepcional</span> &mdash; {{ data.lastWeekWorkouts }} entrenamientos completados. Sigue asi.
-            </template>
-            <template v-else-if="(data.lastWeekWorkouts || 0) >= 3">
-              <span class="font-semibold text-sky-600 dark:text-sky-400">Buen ritmo</span> &mdash; {{ data.lastWeekWorkouts }} entrenamientos esta semana. Vas por buen camino.
-            </template>
-            <template v-else-if="(data.lastWeekWorkouts || 0) >= 1">
-              <span class="font-semibold text-amber-600 dark:text-amber-400">En camino</span> &mdash; Cada sesion cuenta. Intenta sumar una mas esta semana.
-            </template>
-            <template v-else>
-              <span class="font-semibold text-wc-accent">Nueva semana</span> &mdash; Es un nuevo comienzo. Tu primera sesion te espera.
-            </template>
+            <span :class="['font-semibold', weeklySummaryMessage.colorClass]">{{ weeklySummaryMessage.label }}</span>
+            &mdash; {{ weeklySummaryMessage.desc }}
+          </p>
+        </div>
+      </div>
+      <!-- Weekly summary empty state (first week) -->
+      <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+        <div class="mb-3 flex items-center gap-2">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-500/10">
+            <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+            </svg>
+          </div>
+          <h2 class="font-display text-lg tracking-wide text-wc-text">Resumen semanal</h2>
+        </div>
+        <div class="flex items-center gap-3 rounded-xl border border-wc-accent/10 bg-wc-accent/5 px-4 py-3">
+          <svg class="h-5 w-5 shrink-0 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+          </svg>
+          <p class="text-sm text-wc-text-tertiary">
+            <span class="font-semibold text-wc-text">Tu primera semana</span> &mdash; Completa tu primer entrenamiento y check-in para ver tu resumen aqui.
           </p>
         </div>
       </div>
 
-      <!-- Daily Missions -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- DAILY MISSIONS                                                -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
       <div v-if="data.dailyMissions && data.dailyMissions.length > 0">
         <div class="mb-3 flex items-center justify-between">
           <h2 class="font-display text-lg tracking-wide text-wc-text">Misiones diarias</h2>
           <span class="text-xs text-wc-text-tertiary">
-            {{ data.dailyMissions.filter(m => m.completed).length }}/{{ data.dailyMissions.length }} completadas
+            {{ completedMissionsCount }}/{{ data.dailyMissions.length }} completadas
           </span>
         </div>
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <div
+          <RouterLink
             v-for="(mission, idx) in data.dailyMissions"
-            :key="idx"
+            :key="mission.key || idx"
+            :to="getMissionRoute(mission)"
             :class="[
-              'group flex items-center gap-3 rounded-xl border p-4 transition-colors cursor-pointer',
+              'group flex items-center gap-3 rounded-xl border p-4 transition-colors',
               getMissionStatusClass(mission.completed)
             ]"
-            @click="mission.route && router.push(mission.route)"
           >
+            <!-- Status icon -->
             <div :class="[
               'flex h-9 w-9 shrink-0 items-center justify-center rounded-full',
               mission.completed ? 'bg-emerald-500/15' : 'border-2 border-wc-border'
             ]">
+              <!-- Completed checkmark -->
               <svg v-if="mission.completed" class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
               </svg>
-              <span v-else class="text-xs font-bold text-wc-text-tertiary">{{ idx + 1 }}</span>
+              <!-- Type-specific icons for incomplete missions -->
+              <template v-else>
+                <!-- Dumbbell icon for training -->
+                <svg v-if="mission.key === 'training' || mission.icon === 'dumbbell'" class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                </svg>
+                <!-- Check-in icon -->
+                <svg v-else-if="mission.key === 'checkin' || mission.icon === 'checkin'" class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <!-- Scale icon for weight -->
+                <svg v-else-if="mission.key === 'weight' || mission.icon === 'scale'" class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.589-1.202L18.75 4.97Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.589-1.202L5.25 4.97Z" />
+                </svg>
+                <!-- Nutrition/book icon -->
+                <svg v-else class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                </svg>
+              </template>
             </div>
+
+            <!-- Text -->
             <div class="min-w-0 flex-1">
-              <p :class="['text-sm font-medium', mission.completed ? 'text-emerald-600 dark:text-emerald-400 line-through' : 'text-wc-text']">
-                {{ mission.label }}
+              <p :class="['text-sm font-medium leading-tight', mission.completed ? 'text-emerald-600 dark:text-emerald-400' : 'text-wc-text']">
+                {{ mission.title }}
               </p>
-              <p v-if="mission.xp" class="mt-0.5 text-[10px] text-wc-text-tertiary">+{{ mission.xp }} XP</p>
+              <p class="mt-0.5 text-[11px] text-wc-text-tertiary">
+                {{ mission.completed ? 'Completada' : 'Pendiente' }}
+              </p>
             </div>
+
+            <!-- Arrow (incomplete only) -->
+            <svg v-if="!mission.completed" class="h-4 w-4 shrink-0 text-wc-text-tertiary group-hover:text-wc-text transition-colors" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </RouterLink>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- WEEKLY TRAINING OVERVIEW + RECENT ACTIVITY                    -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+
+        <!-- Weekly training overview (Mon-Sun with checkmarks) -->
+        <div v-if="data.weekDays && data.weekDays.length > 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 lg:col-span-2">
+          <h2 class="font-display text-lg tracking-wide text-wc-text">Semana de entrenamiento</h2>
+          <p class="mt-1 text-xs text-wc-text-tertiary">Semana {{ new Date().toLocaleDateString('es', { year: 'numeric' }).split('/').pop() }}</p>
+
+          <div class="mt-5 flex items-center justify-between gap-2 sm:justify-start sm:gap-4">
+            <div v-for="(day, idx) in data.weekDays" :key="idx" class="flex flex-col items-center gap-2">
+              <span :class="['text-[11px] font-medium text-wc-text-tertiary', day.isToday ? '!text-wc-accent !font-semibold' : '']">
+                {{ day.label }}
+              </span>
+              <!-- Completed day -->
+              <div v-if="day.completed" class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/15 sm:h-12 sm:w-12">
+                <svg class="h-5 w-5 text-emerald-500 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+              </div>
+              <!-- Pending day -->
+              <div v-else :class="['flex h-10 w-10 items-center justify-center rounded-full border-2 border-wc-border sm:h-12 sm:w-12', day.isToday ? '!border-wc-accent/40' : '']">
+                <div v-if="day.isToday" class="h-2 w-2 rounded-full bg-wc-accent"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Legend -->
+          <div class="mt-5 flex items-center gap-4 text-xs text-wc-text-tertiary">
+            <div class="flex items-center gap-1.5">
+              <div class="h-2.5 w-2.5 rounded-full bg-emerald-500/40"></div>
+              Completado
+            </div>
+            <div class="flex items-center gap-1.5">
+              <div class="h-2.5 w-2.5 rounded-full border border-wc-border"></div>
+              Pendiente
+            </div>
+            <div class="flex items-center gap-1.5">
+              <div class="h-2.5 w-2.5 rounded-full bg-wc-accent"></div>
+              Hoy
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent activity -->
+        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+          <h2 class="font-display text-lg tracking-wide text-wc-text">Actividad reciente</h2>
+
+          <ul v-if="data.recentActivity && data.recentActivity.length > 0" class="mt-4 space-y-3">
+            <li v-for="(activity, idx) in data.recentActivity" :key="idx" class="flex items-start gap-3">
+              <!-- Type-specific icon -->
+              <div :class="['mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full', getActivityIconData(activity.type).bgClass]">
+                <svg :class="['h-3.5 w-3.5', getActivityIconData(activity.type).iconClass]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" :d="getActivityIconData(activity.type).path" />
+                </svg>
+              </div>
+              <!-- Text -->
+              <div class="min-w-0 flex-1">
+                <p class="text-sm text-wc-text">{{ activity.description }}</p>
+                <p class="text-xs text-wc-text-tertiary">{{ activity.timeAgo }}</p>
+              </div>
+            </li>
+          </ul>
+
+          <!-- Empty activity state -->
+          <div v-else class="mt-6 flex flex-col items-center py-4 text-center">
+            <svg class="h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            <p class="mt-2 text-sm text-wc-text-tertiary">Sin actividad reciente</p>
           </div>
         </div>
       </div>
 
-      <!-- Recent Activity -->
-      <div v-if="data.recentActivity && data.recentActivity.length > 0">
-        <h2 class="mb-3 font-display text-lg tracking-wide text-wc-text">Actividad reciente</h2>
-        <div class="space-y-2">
-          <div
-            v-for="(activity, idx) in data.recentActivity"
-            :key="idx"
-            class="flex items-center gap-3 rounded-xl border border-wc-border bg-wc-bg-tertiary px-4 py-3"
-          >
-            <div :class="['flex h-8 w-8 shrink-0 items-center justify-center rounded-lg', activity.bgClass || 'bg-wc-accent/10']">
-              <svg class="h-4 w-4" :class="activity.iconClass || 'text-wc-accent'" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" :d="activity.iconPath || 'M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'" />
-              </svg>
-            </div>
-            <div class="min-w-0 flex-1">
-              <p class="truncate text-sm text-wc-text">{{ activity.text }}</p>
-              <p class="text-[10px] text-wc-text-tertiary">{{ activity.timeAgo }}</p>
-            </div>
-            <span v-if="activity.xp" class="shrink-0 rounded-full bg-violet-500/10 px-2 py-0.5 text-[10px] font-semibold text-violet-500">
-              +{{ activity.xp }} XP
-            </span>
-          </div>
-        </div>
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- MOBILE QUICK ACTIONS                                          -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div class="grid grid-cols-1 gap-3 sm:hidden">
+        <RouterLink
+          to="/client/plan"
+          class="flex items-center justify-center gap-2 rounded-lg bg-wc-accent px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-wc-accent-hover"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          Registrar entrenamiento
+        </RouterLink>
+        <RouterLink
+          to="/client/checkin"
+          class="flex items-center justify-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-3 text-sm font-medium text-wc-text transition-colors hover:bg-wc-bg-secondary"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          Hacer check-in
+        </RouterLink>
+        <RouterLink
+          to="/client/plan"
+          class="flex items-center justify-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-3 text-sm font-medium text-wc-text transition-colors hover:bg-wc-bg-secondary"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+          </svg>
+          Ver plan
+        </RouterLink>
       </div>
 
     </div>
