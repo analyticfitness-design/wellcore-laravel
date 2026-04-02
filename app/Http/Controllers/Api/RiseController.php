@@ -1056,10 +1056,18 @@ class RiseController extends Controller
      * Workout summary with stats, PRs, XP.
      * Ports Rise\WorkoutSummary.php (extends Client\WorkoutSummary) mount() logic.
      */
-    public function workoutSummary(Request $request, int $sessionId): JsonResponse
+    public function workoutSummary(Request $request, string $sessionId): JsonResponse
     {
         $client   = $this->resolveClientOrFail($request);
         $clientId = $client->id;
+
+        if ($sessionId === 'latest') {
+            $session = \App\Models\WorkoutSession::where('client_id', $clientId)
+                ->where('completed', true)
+                ->latest()
+                ->firstOrFail();
+            $sessionId = (string) $session->id;
+        }
 
         $session = WorkoutSession::with('logs')
             ->where('client_id', $clientId)

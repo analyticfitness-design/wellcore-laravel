@@ -69,8 +69,8 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
     Route::post('/workout/start', [TrainingController::class, 'startWorkout']);
     Route::post('/workout/complete-set', [TrainingController::class, 'completeSet']);
     Route::post('/workout/finish', [TrainingController::class, 'finishWorkout']);
-    Route::get('/workout-summary/{sessionId}', [TrainingController::class, 'workoutSummary'])->where('sessionId', '[0-9]+');
-    Route::post('/workout-summary/{sessionId}/feeling', [TrainingController::class, 'saveWorkoutFeeling'])->where('sessionId', '[0-9]+');
+    Route::get('/workout-summary/{sessionId}', [TrainingController::class, 'workoutSummary'])->where('sessionId', '[0-9]+|latest');
+    Route::post('/workout-summary/{sessionId}/feeling', [TrainingController::class, 'saveWorkoutFeeling'])->where('sessionId', '[0-9]+|latest');
     Route::get('/checkin', [TrainingController::class, 'checkin']);
     Route::post('/checkin', [TrainingController::class, 'submitCheckin']);
 });
@@ -128,8 +128,8 @@ Route::prefix('v/rise')->middleware('throttle:api')->group(function () {
     Route::post('/workout/abandon', [RiseController::class, 'abandonWorkout']);
     Route::post('/workout/dismiss-tutorial', [RiseController::class, 'dismissWorkoutTutorial']);
     Route::post('/workout/finish', [RiseController::class, 'finishWorkout']);
-    Route::get('/workout-summary/{sessionId}', [RiseController::class, 'workoutSummary'])->where('sessionId', '[0-9]+');
-    Route::post('/workout-summary/{sessionId}/feeling', [RiseController::class, 'saveWorkoutFeeling'])->where('sessionId', '[0-9]+');
+    Route::get('/workout-summary/{sessionId}', [RiseController::class, 'workoutSummary'])->where('sessionId', '[0-9]+|latest');
+    Route::post('/workout-summary/{sessionId}/feeling', [RiseController::class, 'saveWorkoutFeeling'])->where('sessionId', '[0-9]+|latest');
     Route::get('/profile', [RiseController::class, 'profile']);
 });
 

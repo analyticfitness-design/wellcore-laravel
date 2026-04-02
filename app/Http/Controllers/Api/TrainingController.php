@@ -608,14 +608,22 @@ class TrainingController extends Controller
      *
      * Post-workout summary. Ports WorkoutSummary.php mount() logic.
      */
-    public function workoutSummary(Request $request, int $sessionId): JsonResponse
+    public function workoutSummary(Request $request, string $sessionId): JsonResponse
     {
         $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
-        $session = WorkoutSession::with('logs')
-            ->where('client_id', $clientId)
-            ->findOrFail($sessionId);
+        if ($sessionId === 'latest') {
+            $session = WorkoutSession::with('logs')
+                ->where('client_id', $clientId)
+                ->where('completed', true)
+                ->latest()
+                ->firstOrFail();
+        } else {
+            $session = WorkoutSession::with('logs')
+                ->where('client_id', $clientId)
+                ->findOrFail((int) $sessionId);
+        }
 
         $completedLogs = $session->logs->where('completed', true);
         $exerciseCount = $completedLogs->pluck('exercise_name')->unique()->count();
@@ -686,7 +694,7 @@ class TrainingController extends Controller
      *
      * Save workout feeling and notes. Ports WorkoutSummary.php saveFeedback().
      */
-    public function saveWorkoutFeeling(Request $request, int $sessionId): JsonResponse
+    public function saveWorkoutFeeling(Request $request, string $sessionId): JsonResponse
     {
         $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
@@ -696,7 +704,11 @@ class TrainingController extends Controller
             'notes' => 'nullable|string|max:1000',
         ]);
 
-        $session = WorkoutSession::where('client_id', $clientId)->findOrFail($sessionId);
+        if ($sessionId === 'latest') {
+            $session = WorkoutSession::where('client_id', $clientId)->where('completed', true)->latest()->firstOrFail();
+        } else {
+            $session = WorkoutSession::where('client_id', $clientId)->findOrFail((int) $sessionId);
+        }
 
         $session->update([
             'feeling' => $request->input('feeling'),
