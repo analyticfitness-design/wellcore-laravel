@@ -31,6 +31,7 @@
             userId: @json(session('wc_user_id')),
             userName: @json(session('wc_user_name')),
             impersonating: @json(session()->has('wc_admin_token')),
+            adminToken: @json(session('wc_admin_token')),
         };
     </script>
     @endif

@@ -22,6 +22,12 @@ export const useAuthStore = defineStore('auth', () => {
         } else {
             localStorage.removeItem('wc_impersonating');
         }
+        // Sync admin token so stop-impersonation form POST can include it as fallback
+        if (s.adminToken) {
+            localStorage.setItem('wc_admin_token', s.adminToken);
+        } else {
+            localStorage.removeItem('wc_admin_token');
+        }
     }
 
     const token = ref(localStorage.getItem('wc_token') || null);

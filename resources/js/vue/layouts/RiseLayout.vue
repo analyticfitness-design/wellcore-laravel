@@ -15,16 +15,26 @@ const isImpersonating = computed(() => authStore.isImpersonating);
 
 function stopImpersonation() {
     stoppingImpersonation.value = true;
+    // Read admin token BEFORE clearing auth
+    const adminToken = localStorage.getItem('wc_admin_token');
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = '/admin/impersonate/stop';
     const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
     if (csrf) {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = '_token';
-        input.value = csrf;
-        form.appendChild(input);
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_token';
+        csrfInput.value = csrf;
+        form.appendChild(csrfInput);
+    }
+    // Pass admin token as POST body fallback (session may not be available in SPA context)
+    if (adminToken) {
+        const tokenInput = document.createElement('input');
+        tokenInput.type = 'hidden';
+        tokenInput.name = 'admin_token';
+        tokenInput.value = adminToken;
+        form.appendChild(tokenInput);
     }
     authStore.clearAuth();
     document.body.appendChild(form);
