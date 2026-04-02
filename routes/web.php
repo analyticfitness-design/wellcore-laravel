@@ -17,6 +17,41 @@ use App\Models\Client;
 use App\Services\FeatureFlagService;
 use Illuminate\Support\Facades\Route;
 
+// Serve progress photos — local first, then proxy from PHP vanilla service via Docker network
+Route::get('/uploads/photos/{filename}', function (string $filename) {
+    // Security: only allow safe filenames (no path traversal)
+    if (!preg_match('/^[\w\-\.]+\.(jpg|jpeg|png|webp|gif)$/i', $filename)) {
+        abort(404);
+    }
+
+    $localPath = public_path('uploads/photos/' . $filename);
+    if (file_exists($localPath)) {
+        return response()->file($localPath);
+    }
+
+    // Proxy from PHP vanilla service on Docker internal network
+    $vanillaHosts = ['wellcorefitness', 'wellcorefitness.wellcorefitness'];
+    foreach ($vanillaHosts as $host) {
+        try {
+            $url = "http://{$host}/uploads/photos/{$filename}";
+            $ctx = stream_context_create(['http' => ['timeout' => 3, 'ignore_errors' => true]]);
+            $content = @file_get_contents($url, false, $ctx);
+            if ($content !== false && strlen($content) > 0) {
+                $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                $mime = match($ext) {
+                    'jpg', 'jpeg' => 'image/jpeg',
+                    'png' => 'image/png',
+                    'webp' => 'image/webp',
+                    default => 'image/jpeg',
+                };
+                return response($content, 200)->header('Content-Type', $mime);
+            }
+        } catch (\Throwable) {}
+    }
+
+    abort(404);
+})->where('filename', '[^/]+');
+
 // Health check endpoint (public, no auth — used by uptime monitors and load balancers)
 Route::get('/health', function () {
     $checks = [
