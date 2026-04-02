@@ -20,7 +20,8 @@ class CreateAdrianaPlan extends Command
         $plan = json_decode($json, true);
 
         // Find or create client (assuming email or name exists)
-        $client = Client::where('nombre', 'like', '%ADRIANA%')
+        $client = Client::where('name', 'like', '%ADRIANA%')
+            ->orWhere('name', 'like', '%Adriana%')
             ->orWhere('email', 'like', '%adriana%')
             ->first();
 
