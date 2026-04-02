@@ -3,323 +3,352 @@
     "objetivo": "Recomposicion corporal — perdida de grasa + preservacion y desarrollo muscular. Enfoque en cadenas posteriores (gluteo/femoral), tren superior funcional y nucleo. Rodilla izquierda: se evita flexion profunda con carga; se priorizan angulos parciales y trabajo unilateral controlado.",
     "frecuencia": "6 dias por semana (Lunes a Sabado)",
     "duracion_semanas": 5,
+    "metodologia": "Science-Based Hypertrophy + Bisets Antagonistas + AMRAP Finisher",
     "semanas": [
       {
         "semana": 1,
-        "fase": "Adaptacion — RIR 3-4, volumen MEV",
-        "descripcion": "Semana de activacion neuromuscular. Aprende los patrones de movimiento, calibra pesos iniciales. RIR 3-4 en todos los ejercicios.",
+        "fase": "Adaptacion",
+        "descripcion": "Aprender los patrones de movimiento, establecer rangos de trabajo. RIR 3-4 (quedan 3-4 repeticiones en el tanque). Volumen moderado para evitar DOMS excesivo.",
         "dias": [
           {
-            "nombre": "Lunes — Cuadriceps + Abductores + Pantorrilla",
+            "nombre": "Lunes — Cuadriceps / Abductores / Pantorrillas",
             "tipo": "piernas",
-            "duracion": "85-95 min + 20 min cardio",
-            "calentamiento": "8 min bicicleta estatica intensidad baja + movilidad de cadera (circulos, apertura lateral) + activacion de cuadriceps con banda elastica 2x15",
+            "duracion": "65 min",
+            "calentamiento": "5 min bicicleta estacionaria baja intensidad + movilidad cadera y tobillo",
             "ejercicios": [
               {
-                "nombre": "Prensa de pierna angulo alto 45 grados",
+                "nombre": "Prensa de piernas (angulo 45°, rango parcial 60-90°)",
                 "series": 3,
                 "repeticiones": "12-15",
                 "descanso": "90s",
-                "notas": "BISET A1. Pies separados al ancho de hombros, angulo parcial de rodilla (no bajar mas de 90 grados) para proteger rodilla izquierda. Empuje desde el talon. RIR 3-4."
+                "notas": "Pies al ancho de hombros, no bajar mas de 90° para proteger rodilla izquierda. RIR 4."
               },
               {
-                "nombre": "Extension de cuadriceps en maquina",
+                "nombre": "BISET A1 — Extension de cuadriceps unilateral",
                 "series": 3,
-                "repeticiones": "12-15",
+                "repeticiones": "12 por pierna",
+                "descanso": "0s (va directo a A2)",
+                "notas": "Pierna derecha primero, luego izquierda. Contraccion 1s en pico."
+              },
+              {
+                "nombre": "BISET A2 — Abduccion de cadera en maquina",
+                "series": 3,
+                "repeticiones": "15",
                 "descanso": "90s",
-                "notas": "BISET A2. Contraccion pico al tope de la extension, descenso controlado 3 segundos. Ejecutar inmediatamente despues de la prensa sin descanso entre A1 y A2."
+                "notas": "Control excentrico 2s. Foco en gluteo medio. RIR 3."
               },
               {
-                "nombre": "Abduccion de cadera en maquina sentada",
+                "nombre": "BISET B1 — Sentadilla sumo con mancuerna (rango parcial)",
                 "series": 3,
-                "repeticiones": "15-20",
-                "descanso": "60s",
-                "notas": "BISET B1. Inclinacion leve hacia adelante del torso para mayor activacion del gluteo medio. Contraccion pico 1 segundo al final del recorrido. RIR 3-4."
+                "repeticiones": "12",
+                "descanso": "0s (va directo a B2)",
+                "notas": "Descender solo hasta paralelo o menos segun tolerancia de rodilla. Pies abiertos 45°."
               },
               {
-                "nombre": "Patada lateral con banda elastica de pie",
+                "nombre": "BISET B2 — Elevacion lateral de pierna en cable (abductor)",
                 "series": 3,
-                "repeticiones": "15-20",
-                "descanso": "60s",
-                "notas": "BISET B2. Control total del movimiento, evitar rotacion de tronco. Ejecutar ambas piernas. Inmediatamente despues de la maquina de abduccion."
+                "repeticiones": "15 por pierna",
+                "descanso": "90s",
+                "notas": "Estabilidad de core, movimiento controlado."
               },
               {
-                "nombre": "Elevacion de pantorrillas en maquina sentada",
+                "nombre": "Elevacion de pantorrillas en prensa (bilateral)",
                 "series": 3,
-                "repeticiones": "15-20",
+                "repeticiones": "20",
                 "descanso": "60s",
-                "notas": "Dorsiflexion completa en la bajada, contraccion pico 2 segundos arriba. Tempo 2-1-3. RIR 3-4."
+                "notas": "Rango completo. Pausa 1s en contraccion."
               },
               {
-                "nombre": "Elevacion de pantorrillas de pie con peso",
-                "series": 2,
-                "repeticiones": "15-20",
-                "descanso": "60s",
-                "notas": "AMRAP FINISHER: En el ultimo set, baja el peso un 20% y ejecuta las maximas repeticiones posibles con buena forma (sin rebote). Rango completo obligatorio."
+                "nombre": "AMRAP FINISHER — Step-up con mancuernas (rodilla segura)",
+                "series": 1,
+                "repeticiones": "AMRAP 45s",
+                "descanso": "60s y termina",
+                "notas": "Usar un cajon bajo (20cm). Esfuerzo maximo sin comprometer forma. Alternando piernas."
               }
             ]
           },
           {
-            "nombre": "Martes — Tren Superior: Hombros + Brazos + Abdomen",
+            "nombre": "Martes — Hombros / Brazos / Abdomen",
             "tipo": "empuje",
-            "duracion": "80-90 min + 20 min cardio",
-            "calentamiento": "Rotaciones de hombro con banda 2x15 + circulos de brazo + activacion de manguito rotador con banda elastica 2x12",
+            "duracion": "60 min",
+            "calentamiento": "Rotaciones de hombro + banda elastica face pull 2x15",
             "ejercicios": [
               {
-                "nombre": "Press de hombro con mancuernas sentada",
+                "nombre": "Press de hombro con mancuernas (sentada)",
                 "series": 3,
-                "repeticiones": "10-12",
+                "repeticiones": "12",
                 "descanso": "90s",
-                "notas": "BISET A1. Codos ligeramente adelantados al subir, no bloquear codos al tope. Core activo durante todo el movimiento. RIR 3-4."
+                "notas": "No bloquear codos en la parte superior. RIR 4."
               },
               {
-                "nombre": "Elevaciones laterales con mancuernas",
+                "nombre": "BISET A1 — Elevacion lateral con mancuerna",
                 "series": 3,
-                "repeticiones": "12-15",
+                "repeticiones": "15",
+                "descanso": "0s",
+                "notas": "Codos ligeramente flexionados, subir hasta paralelo al suelo."
+              },
+              {
+                "nombre": "BISET A2 — Face pull en polea",
+                "series": 3,
+                "repeticiones": "15",
                 "descanso": "90s",
-                "notas": "BISET A2. Ligera inclinacion hacia adelante del torso. Codos ligeramente doblados. Pulgar levemente bajo (como vaciando un vaso). Ejecutar inmediatamente despues del press."
+                "notas": "Cuerda a nivel de nariz, codos altos. Retraccion escapular al final."
               },
               {
-                "nombre": "Curl de biceps con mancuernas alternado",
+                "nombre": "BISET B1 — Curl de biceps con mancuernas (alternado)",
                 "series": 3,
-                "repeticiones": "10-12",
-                "descanso": "75s",
-                "notas": "BISET B1. Supinacion total de la muneca al subir. No balancear el tronco. Descenso 3 segundos. RIR 3-4."
+                "repeticiones": "12 por brazo",
+                "descanso": "0s",
+                "notas": "Supinacion en pico de contraccion. RIR 3."
               },
               {
-                "nombre": "Extension de triceps en polea alta",
+                "nombre": "BISET B2 — Extension de triceps en polea alta (cuerda)",
                 "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "75s",
-                "notas": "BISET B2. Codos fijos a los lados del torso. Extension completa al final. Ejecutar inmediatamente despues del curl. RIR 3-4."
+                "repeticiones": "15",
+                "descanso": "90s",
+                "notas": "Codos pegados al cuerpo, contraccion completa abajo."
               },
               {
-                "nombre": "Elevaciones frontales con mancuernas",
+                "nombre": "Plancha frontal",
                 "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "60s",
-                "notas": "Subir hasta paralelo al suelo, no mas. Control total en la bajada 3 segundos. RIR 3-4."
-              },
-              {
-                "nombre": "Plancha isometrica",
-                "series": 3,
-                "repeticiones": "30-40 seg",
+                "repeticiones": "30s",
                 "descanso": "45s",
-                "notas": "ABDOMEN. Cadera neutra, no elevar ni bajar. Activar gluteos y cuadriceps durante la plancha para mayor tension total."
+                "notas": "Cuerpo recto, activar core y gluteos."
               },
               {
-                "nombre": "Crunch en polea alta de rodillas",
-                "series": 3,
-                "repeticiones": "15-20",
-                "descanso": "45s",
-                "notas": "AMRAP FINISHER (ultimo set): ejecuta el maximo de repeticiones posibles hasta RIR 0. Flexion lumbar controlada, codos hacia las rodillas."
-              }
-            ]
-          },
-          {
-            "nombre": "Miercoles — Gluteo (sesion especializada)",
-            "tipo": "piernas",
-            "duracion": "85-95 min + 20 min cardio",
-            "calentamiento": "Puente de gluteo con banda 2x20 + clamshell con banda 2x15 cada lado + activacion en cuadrupedia 2x12",
-            "ejercicios": [
-              {
-                "nombre": "Hip thrust con barra en banco",
-                "series": 4,
-                "repeticiones": "10-12",
-                "descanso": "90s",
-                "notas": "BISET A1. Espalda media apoyada en banco, barra sobre cadera con pad. Extension completa de cadera arriba. Contraccion pico 2 seg. Rodilla izquierda: mantener angulo de 90 grados en la posicion alta. RIR 3-4."
-              },
-              {
-                "nombre": "Patada de gluteo en polea baja con tobillera",
-                "series": 4,
-                "repeticiones": "12-15",
-                "descanso": "90s",
-                "notas": "BISET A2. Ejecutar inmediatamente despues del hip thrust. Inclinacion leve hacia adelante, rodilla ligeramente doblada en la patada. Contraccion maxima en el tope del recorrido."
-              },
-              {
-                "nombre": "Sentadilla sumo con mancuerna (goblet)",
-                "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "75s",
-                "notas": "BISET B1. Pies abiertos mas alla del ancho de hombros con puntas hacia afuera. Descenso solo hasta paralelo (rodilla izquierda: NO ir mas abajo de paralelo). Torso erecto. RIR 3-4."
-              },
-              {
-                "nombre": "Abduccion de cadera en polea baja lateral",
-                "series": 3,
-                "repeticiones": "15-18",
-                "descanso": "75s",
-                "notas": "BISET B2. Pierna ligeramente alejada del cuerpo, movimiento lateral controlado. Ambas piernas. RIR 3-4."
-              },
-              {
-                "nombre": "Puente de gluteo unilateral en suelo",
-                "series": 3,
-                "repeticiones": "15-20",
-                "descanso": "60s",
-                "notas": "Sin carga adicional. Pie apoyado a 90 grados, empuje desde el talon. Contraccion pico 2 segundos. Excelente para rodilla izquierda — movimiento controlado sin carga articular."
-              },
-              {
-                "nombre": "Hip thrust con barra en banco",
+                "nombre": "AMRAP FINISHER — Curl de biceps 21s (7+7+7)",
                 "series": 1,
-                "repeticiones": "AMRAP",
-                "descanso": "—",
-                "notas": "AMRAP FINISHER: Con el mismo peso del primer ejercicio, ejecuta el maximo de repeticiones hasta RIR 0. Cuando la cadera no llegue a extension completa, detener el set."
+                "repeticiones": "AMRAP 1 ronda",
+                "descanso": "termina aqui",
+                "notas": "7 reps mitad inferior + 7 reps mitad superior + 7 reps completas. Peso moderado."
               }
             ]
           },
           {
-            "nombre": "Jueves — Tren Superior: Espalda + Biceps + Abdomen",
+            "nombre": "Miercoles — Gluteo (Dia especializado)",
+            "tipo": "piernas",
+            "duracion": "70 min",
+            "calentamiento": "Activacion gluteo: clamshell 2x15 + hip thrust sin peso 2x10",
+            "ejercicios": [
+              {
+                "nombre": "Hip Thrust en maquina o barra (pie plano, amplitud media)",
+                "series": 4,
+                "repeticiones": "12",
+                "descanso": "90s",
+                "notas": "Punto de apoyo escapulas, no cuello. Extension completa de cadera. RIR 4. Proteger rodilla: no hyperflex."
+              },
+              {
+                "nombre": "BISET A1 — Romanian Deadlift con mancuernas",
+                "series": 3,
+                "repeticiones": "12",
+                "descanso": "0s",
+                "notas": "Bisagra de cadera, rodillas ligeramente flexionadas. Bajar hasta tension en isquios."
+              },
+              {
+                "nombre": "BISET A2 — Patada trasera en cable (glute kickback)",
+                "series": 3,
+                "repeticiones": "15 por pierna",
+                "descanso": "90s",
+                "notas": "Extension completa sin hiperextender lumbar."
+              },
+              {
+                "nombre": "BISET B1 — Hip Thrust unilateral en banco",
+                "series": 3,
+                "repeticiones": "12 por pierna",
+                "descanso": "0s",
+                "notas": "Empezar con pierna derecha. Pausa 1s en pico."
+              },
+              {
+                "nombre": "BISET B2 — Abduccion de cadera en suelo con banda",
+                "series": 3,
+                "repeticiones": "20",
+                "descanso": "90s",
+                "notas": "Acostada de lado, banda sobre rodillas. Control total."
+              },
+              {
+                "nombre": "Good Morning con barra (barra vacia o muy ligera)",
+                "series": 3,
+                "repeticiones": "15",
+                "descanso": "60s",
+                "notas": "Enfasis en estiramiento de isquios. No cargar fuerte en semana 1."
+              },
+              {
+                "nombre": "AMRAP FINISHER — Glute bridge bilateral con banda",
+                "series": 1,
+                "repeticiones": "AMRAP 60s",
+                "descanso": "termina",
+                "notas": "Banda sobre rodillas, pies a ancho de caderas. Maximas repeticiones con calidad."
+              }
+            ]
+          },
+          {
+            "nombre": "Jueves — Espalda / Biceps / Abdomen",
             "tipo": "jale",
-            "duracion": "80-90 min + 20 min cardio",
-            "calentamiento": "Band pull-apart 2x20 + remo con banda elastica 2x15 + activacion de escapulas en polea 2x12",
+            "duracion": "65 min",
+            "calentamiento": "Band pull-apart 2x15 + rotacion toraxica 1 min",
             "ejercicios": [
               {
-                "nombre": "Jale al pecho en polea alta agarre ancho",
-                "series": 4,
-                "repeticiones": "10-12",
+                "nombre": "Jalon al pecho en polea (agarre prono, ancho)",
+                "series": 3,
+                "repeticiones": "12",
                 "descanso": "90s",
-                "notas": "BISET A1. Retraccion escapular ANTES de jalar. Codos hacia abajo y atras. Descenso controlado 3 segundos. RIR 3-4."
+                "notas": "Pecho hacia la barra, codos hacia caderas. RIR 4."
               },
               {
-                "nombre": "Remo con mancuerna un brazo apoyado",
-                "series": 4,
-                "repeticiones": "10-12",
+                "nombre": "BISET A1 — Remo en maquina (agarre neutro)",
+                "series": 3,
+                "repeticiones": "12",
+                "descanso": "0s",
+                "notas": "Retraccion escapular en pico. No usar momento."
+              },
+              {
+                "nombre": "BISET A2 — Jalon recto en polea (pullover cable)",
+                "series": 3,
+                "repeticiones": "15",
                 "descanso": "90s",
-                "notas": "BISET A2. Codo cerca al torso, tirar hacia la cadera no hacia el hombro. Rotacion leve del torso para mayor rango. Ejecutar ambos lados. RIR 3-4."
+                "notas": "Brazos extendidos, foco en dorsal."
               },
               {
-                "nombre": "Remo en maquina agarre neutro",
+                "nombre": "BISET B1 — Remo con mancuerna unilateral",
                 "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "75s",
-                "notas": "BISET B1. Codos a 45 grados. Protraccion escapular al inicio para ROM completo. RIR 3-4."
+                "repeticiones": "12 por brazo",
+                "descanso": "0s",
+                "notas": "Espalda plana, codo sube cerca del cuerpo."
               },
               {
-                "nombre": "Curl en polea baja con cuerda",
+                "nombre": "BISET B2 — Curl de biceps en polea baja (agarre supino)",
                 "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "75s",
-                "notas": "BISET B2. Codos fijos. Supinacion total al tope. Descenso lento 3 segundos. Ejecutar inmediatamente despues del remo. RIR 3-4."
+                "repeticiones": "15",
+                "descanso": "90s",
+                "notas": "Tension constante gracias a la polea."
               },
               {
-                "nombre": "Pullover en polea alta de pie",
+                "nombre": "Crunch en polea alta (abdominal)",
                 "series": 3,
-                "repeticiones": "12-15",
+                "repeticiones": "20",
                 "descanso": "60s",
-                "notas": "Brazos casi extendidos, arco de movimiento amplio. Excelente para estiramiento del dorsal. RIR 3-4."
+                "notas": "Flexion de columna, no de cadera."
               },
               {
-                "nombre": "Elevacion de piernas colgada en barra",
-                "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "45s",
-                "notas": "ABDOMEN. Rodillas ligeramente dobladas para reducir tension en hip flexores. No balancear. Control total en la bajada."
-              },
-              {
-                "nombre": "Jale al pecho en polea alta agarre ancho",
+                "nombre": "AMRAP FINISHER — Remo con banda elastica",
                 "series": 1,
-                "repeticiones": "AMRAP",
-                "descanso": "—",
-                "notas": "AMRAP FINISHER: Con el mismo peso, ejecuta el maximo de repeticiones posibles manteniendo la retraccion escapular. Cuando pierdas la forma, detener."
+                "repeticiones": "AMRAP 45s",
+                "descanso": "termina",
+                "notas": "Banda en columna fija, remo bilateral. Maximas reps explosivas."
               }
             ]
           },
           {
-            "nombre": "Viernes — Femorales + Gluteo",
+            "nombre": "Viernes — Femorales / Gluteo posterior",
             "tipo": "piernas",
-            "duracion": "85-95 min + 20 min cardio",
-            "calentamiento": "Hip hinge con palo 2x10 + curl de femoral con banda acostada 2x15 + movilidad de cadera en cuadrupedia",
+            "duracion": "65 min",
+            "calentamiento": "Curl de pierna sin peso 2x15 + movilidad cadera flexores",
             "ejercicios": [
               {
-                "nombre": "Peso muerto rumano con barra",
+                "nombre": "Curl de femoral en maquina (acostada)",
                 "series": 4,
-                "repeticiones": "10-12",
+                "repeticiones": "12",
                 "descanso": "90s",
-                "notas": "BISET A1. Bisagra de cadera pura, rodillas ligeramente dobladas (NO es sentadilla). Barra cerca al cuerpo. Sentir el estiramiento en femoral al bajar. Rodilla izquierda: movimiento seguro por ser hip hinge. RIR 3-4."
+                "notas": "RIR 4. Fase excentrica 2s. Rodilla izquierda: mismo peso que derecha, sin compensar."
               },
               {
-                "nombre": "Curl femoral acostado en maquina",
-                "series": 4,
-                "repeticiones": "12-15",
+                "nombre": "BISET A1 — Romanian Deadlift con barra",
+                "series": 3,
+                "repeticiones": "10",
+                "descanso": "0s",
+                "notas": "Peso mayor que con mancuernas. Mantener espalda neutra."
+              },
+              {
+                "nombre": "BISET A2 — Hip Thrust con pie elevado (single-leg en banco)",
+                "series": 3,
+                "repeticiones": "12 por pierna",
                 "descanso": "90s",
-                "notas": "BISET A2. Ejecutar inmediatamente. Pies en dorsiflexion para mayor activacion. Contraccion pico 2 seg. Descenso controlado 3 seg. RIR 3-4."
+                "notas": "Pierna trabajadora con pie apoyado en el suelo, la otra en el banco. Gluteo medio activo."
               },
               {
-                "nombre": "Good morning con barra o mancuernas",
+                "nombre": "BISET B1 — Curl de femoral unilateral en polea baja",
                 "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "75s",
-                "notas": "BISET B1. Peso ligero-moderado. Bisagra de cadera, columna neutra. Sentir tension en femoral y gluteo. Ideal para rodilla izquierda. RIR 3-4."
+                "repeticiones": "12 por pierna",
+                "descanso": "0s",
+                "notas": "Parado, polea en tobillo. Control total."
               },
               {
-                "nombre": "Hip thrust con barra en banco",
+                "nombre": "BISET B2 — Peso muerto sumo con mancuerna (rango parcial)",
                 "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "75s",
-                "notas": "BISET B2. Segunda sesion de gluteo en la semana para mayor volumen. Contraccion pico 2 seg. RIR 3-4."
+                "repeticiones": "12",
+                "descanso": "90s",
+                "notas": "Pies muy abiertos, descender hasta media tibia. Gluteo y femoral."
               },
               {
-                "nombre": "Estocada reversa con mancuernas",
+                "nombre": "Elevacion de pantorrillas parada (unilateral)",
                 "series": 3,
-                "repeticiones": "10-12",
-                "descanso": "75s",
-                "notas": "RODILLA IZQUIERDA: la estocada reversa es mas segura que la frontal porque reduce la carga sobre la tibia. Paso atras grande, torso erecto. Ambas piernas. RIR 3-4."
+                "repeticiones": "15 por pierna",
+                "descanso": "60s",
+                "notas": "Apoyarse en pared para equilibrio. Rango completo."
               },
               {
-                "nombre": "Peso muerto rumano con barra",
+                "nombre": "AMRAP FINISHER — Curl de femoral bilateral en maquina",
                 "series": 1,
-                "repeticiones": "AMRAP",
-                "descanso": "—",
-                "notas": "AMRAP FINISHER: Con el mismo peso, maximo de repeticiones manteniendo la bisagra perfecta. Cuando la espalda empiece a redondearse, detener el set."
+                "repeticiones": "AMRAP 45s",
+                "descanso": "termina",
+                "notas": "Peso ligero, maximas reps continuas sin pausar."
               }
             ]
           },
           {
-            "nombre": "Sabado — Full Body Funcional",
+            "nombre": "Sabado — Full Body Funcional / Metabolico",
             "tipo": "full",
-            "duracion": "55-65 min (sin cardio adicional — el circuito ya eleva la frecuencia cardiaca)",
-            "calentamiento": "5 min movilidad general + activacion de gluteo y core 2 min",
+            "duracion": "55 min",
+            "calentamiento": "5 min caminata inclinada + dinamismo articular completo",
             "ejercicios": [
               {
-                "nombre": "Press de hombro con mancuernas sentada",
+                "nombre": "Circuito A1 — Press de banca con mancuernas",
                 "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "60s",
-                "notas": "Circuito A — Empuje. Peso moderado-ligero, tempo controlado. RIR 3-4."
+                "repeticiones": "12",
+                "descanso": "0s",
+                "notas": "Pecho, codos a 45°. Control excentrico."
               },
               {
-                "nombre": "Remo con mancuerna un brazo apoyado",
+                "nombre": "Circuito A2 — Remo con banda o cable",
                 "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "60s",
-                "notas": "Circuito A — Jale. Ejecutar alternando con el press, 60s entre cada ejercicio del circuito."
+                "repeticiones": "12",
+                "descanso": "0s",
+                "notas": "Antagonista directo. Espalda activa."
               },
               {
-                "nombre": "Sentadilla sumo con mancuerna (goblet)",
+                "nombre": "Circuito A3 — Hip Thrust bilateral con peso corporal (rapido)",
                 "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "60s",
-                "notas": "Circuito B — Piernas. Solo hasta paralelo. Rodilla izquierda: controlar el descenso sin sobrepasar 90 grados."
+                "repeticiones": "20",
+                "descanso": "60s entre circuitos",
+                "notas": "Ritmo moderado-alto. Sin peso adicional hoy."
               },
               {
-                "nombre": "Peso muerto rumano con barra",
+                "nombre": "Circuito B1 — Press de hombro Arnold (mancuernas)",
                 "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "60s",
-                "notas": "Circuito B — Posterior. Peso ligero, enfoque en tecnica y conexion mente-musculo."
+                "repeticiones": "12",
+                "descanso": "0s",
+                "notas": "Rotacion en el movimiento. Amplitud controlada."
               },
               {
-                "nombre": "Plancha isometrica",
+                "nombre": "Circuito B2 — Curl de biceps con barra EZ",
                 "series": 3,
-                "repeticiones": "30-40 seg",
-                "descanso": "45s",
-                "notas": "Core funcional. Mantener linea neutra de columna."
+                "repeticiones": "12",
+                "descanso": "0s",
+                "notas": "Codos pegados. Sin balanceo."
               },
               {
-                "nombre": "Elevacion de pantorrillas de pie con peso",
+                "nombre": "Circuito B3 — Mountain climbers (rodillas al pecho)",
                 "series": 3,
-                "repeticiones": "AMRAP",
-                "descanso": "45s",
-                "notas": "AMRAP FINISHER del Full Body: maximo de repeticiones con peso moderado. Rango completo obligatorio. Cierra la sesion con este finisher."
+                "repeticiones": "30s",
+                "descanso": "60s entre circuitos",
+                "notas": "Core apretado. Ritmo moderado para no impactar rodilla."
+              },
+              {
+                "nombre": "AMRAP FINISHER — Kettlebell swing (o mancuerna) con dos manos",
+                "series": 1,
+                "repeticiones": "AMRAP 60s",
+                "descanso": "termina",
+                "notas": "Bisagra de cadera explosiva. Peso ligero-moderado. Patron de glute drive, no sentadilla."
               }
             ]
           }
@@ -327,320 +356,348 @@
       },
       {
         "semana": 2,
-        "fase": "Acumulacion — RIR 2-3, volumen MEV+",
-        "descripcion": "Aumenta la carga en un 5-10% respecto a la semana 1. RIR 2-3. Agrega 1 set a los ejercicios principales. El cuerpo ya conoce los patrones.",
+        "fase": "Acumulacion",
+        "descripcion": "Aumentar volumen de trabajo. Agregar 1 serie a los ejercicios principales. RIR 2-3. El cuerpo ya conoce los movimientos.",
         "dias": [
           {
-            "nombre": "Lunes — Cuadriceps + Abductores + Pantorrilla",
+            "nombre": "Lunes — Cuadriceps / Abductores / Pantorrillas",
             "tipo": "piernas",
-            "duracion": "90-100 min + 20-25 min cardio",
-            "calentamiento": "8 min bicicleta estatica + movilidad de cadera + activacion de cuadriceps con banda 2x15",
+            "duracion": "70 min",
+            "calentamiento": "5 min bicicleta + movilidad cadera",
             "ejercicios": [
               {
-                "nombre": "Prensa de pierna angulo alto 45 grados",
+                "nombre": "Prensa de piernas 45° (rango parcial 60-90°)",
                 "series": 4,
-                "repeticiones": "10-12",
+                "repeticiones": "12",
                 "descanso": "90s",
-                "notas": "BISET A1. +5-10% de carga respecto semana 1. Mismo angulo de rodilla seguro. RIR 2-3."
+                "notas": "Aumentar peso 5-10% vs semana 1. RIR 3."
               },
               {
-                "nombre": "Extension de cuadriceps en maquina",
+                "nombre": "BISET A1 — Extension de cuadriceps unilateral",
                 "series": 4,
-                "repeticiones": "10-12",
+                "repeticiones": "12 por pierna",
+                "descanso": "0s",
+                "notas": "Igual que semana 1 pero 1 serie mas."
+              },
+              {
+                "nombre": "BISET A2 — Abduccion de cadera en maquina",
+                "series": 4,
+                "repeticiones": "15",
                 "descanso": "90s",
-                "notas": "BISET A2. Aumenta el peso si lograste RIR 3 en semana 1. Contraccion 2 seg en tope."
+                "notas": "Agregar resistencia leve si fue facil semana 1."
               },
               {
-                "nombre": "Abduccion de cadera en maquina sentada",
+                "nombre": "BISET B1 — Sentadilla sumo con mancuerna",
                 "series": 3,
-                "repeticiones": "15-18",
-                "descanso": "60s",
-                "notas": "BISET B1. +5% de carga. Misma inclinacion de torso para activar gluteo medio. RIR 2-3."
+                "repeticiones": "12",
+                "descanso": "0s",
+                "notas": "Aumentar peso si forma fue perfecta semana 1."
               },
               {
-                "nombre": "Patada lateral con banda elastica de pie",
+                "nombre": "BISET B2 — Elevacion lateral de pierna en cable",
                 "series": 3,
-                "repeticiones": "15-18",
-                "descanso": "60s",
-                "notas": "BISET B2. Banda de mayor resistencia si la primera se siente ligera."
+                "repeticiones": "15 por pierna",
+                "descanso": "90s",
+                "notas": "Mayor control excentrico (3s)."
               },
               {
-                "nombre": "Elevacion de pantorrillas en maquina sentada",
+                "nombre": "Elevacion de pantorrillas en prensa",
                 "series": 4,
-                "repeticiones": "15-20",
+                "repeticiones": "20",
                 "descanso": "60s",
-                "notas": "+1 set respecto semana 1. Mismo tempo 2-1-3. RIR 2-3."
+                "notas": "Agregar 1 serie. Pausa en pico."
               },
               {
-                "nombre": "Elevacion de pantorrillas de pie con peso",
-                "series": 2,
-                "repeticiones": "AMRAP",
-                "descanso": "60s",
-                "notas": "AMRAP FINISHER: 2 sets AMRAP esta semana. Sin descanso entre ellos. Rango completo."
+                "nombre": "AMRAP FINISHER — Step-up con mancuernas",
+                "series": 1,
+                "repeticiones": "AMRAP 60s (extender de 45 a 60s)",
+                "descanso": "termina",
+                "notas": "Aumentar tiempo de esfuerzo maximo."
               }
             ]
           },
           {
-            "nombre": "Martes — Tren Superior: Hombros + Brazos + Abdomen",
+            "nombre": "Martes — Hombros / Brazos / Abdomen",
             "tipo": "empuje",
-            "duracion": "85-95 min + 20-25 min cardio",
-            "calentamiento": "Rotaciones de hombro con banda 2x15 + activacion de manguito rotador",
+            "duracion": "65 min",
+            "calentamiento": "Rotaciones + face pull con banda 2x15",
             "ejercicios": [
               {
-                "nombre": "Press de hombro con mancuernas sentada",
+                "nombre": "Press de hombro con mancuernas (sentada)",
                 "series": 4,
-                "repeticiones": "8-10",
-                "descanso": "90s",
-                "notas": "BISET A1. +5-10% de carga. Baja un poco las repeticiones, sube el peso. RIR 2-3."
-              },
-              {
-                "nombre": "Elevaciones laterales con mancuernas",
-                "series": 4,
-                "repeticiones": "12-15",
-                "descanso": "90s",
-                "notas": "BISET A2. Mas peso que semana 1 si completaste todas las reps con RIR 3."
-              },
-              {
-                "nombre": "Curl de biceps con mancuernas alternado",
-                "series": 3,
                 "repeticiones": "10-12",
-                "descanso": "75s",
-                "notas": "BISET B1. +5% de peso. Supinacion total en cada rep. RIR 2-3."
-              },
-              {
-                "nombre": "Extension de triceps en polea alta",
-                "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "75s",
-                "notas": "BISET B2. Carga moderada-alta. Codos fijos en todo momento."
-              },
-              {
-                "nombre": "Elevaciones frontales con mancuernas",
-                "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "60s",
-                "notas": "+5% de carga. Misma tecnica de semana 1. RIR 2-3."
-              },
-              {
-                "nombre": "Plancha isometrica",
-                "series": 3,
-                "repeticiones": "40-50 seg",
-                "descanso": "45s",
-                "notas": "ABDOMEN. Aumenta el tiempo 10 segundos respecto semana 1."
-              },
-              {
-                "nombre": "Crunch en polea alta de rodillas",
-                "series": 3,
-                "repeticiones": "AMRAP",
-                "descanso": "45s",
-                "notas": "AMRAP FINISHER: Los 3 sets son AMRAP esta semana. Aumenta la carga si alcanzaste mas de 20 reps en semana 1."
-              }
-            ]
-          },
-          {
-            "nombre": "Miercoles — Gluteo (sesion especializada)",
-            "tipo": "piernas",
-            "duracion": "90-100 min + 20-25 min cardio",
-            "calentamiento": "Puente de gluteo con banda 2x20 + clamshell 2x15 + activacion en cuadrupedia",
-            "ejercicios": [
-              {
-                "nombre": "Hip thrust con barra en banco",
-                "series": 4,
-                "repeticiones": "8-10",
                 "descanso": "90s",
-                "notas": "BISET A1. +5-10% de carga respecto semana 1. Contraccion pico 2 seg. RIR 2-3."
+                "notas": "RIR 3. Aumentar peso leve."
               },
               {
-                "nombre": "Patada de gluteo en polea baja con tobillera",
+                "nombre": "BISET A1 — Elevacion lateral con mancuerna",
                 "series": 4,
-                "repeticiones": "12-15",
+                "repeticiones": "15",
+                "descanso": "0s",
+                "notas": "Ultimo set al fallo tecnico."
+              },
+              {
+                "nombre": "BISET A2 — Face pull en polea",
+                "series": 4,
+                "repeticiones": "15",
                 "descanso": "90s",
-                "notas": "BISET A2. Aumenta el peso si lograste todas las reps con RIR 3."
+                "notas": "Mantener codos altos."
               },
               {
-                "nombre": "Sentadilla sumo con mancuerna (goblet)",
+                "nombre": "BISET B1 — Curl de biceps con mancuernas (alternado)",
                 "series": 3,
-                "repeticiones": "10-12",
-                "descanso": "75s",
-                "notas": "BISET B1. +5% de peso. Rodilla izquierda: mismo angulo seguro de semana 1. RIR 2-3."
+                "repeticiones": "12 por brazo",
+                "descanso": "0s",
+                "notas": "Semana 2: agregar peso si RIR fue >3."
               },
               {
-                "nombre": "Abduccion de cadera en polea baja lateral",
+                "nombre": "BISET B2 — Extension de triceps en polea (cuerda)",
                 "series": 3,
-                "repeticiones": "15-18",
-                "descanso": "75s",
-                "notas": "BISET B2. +5% de carga en la polea."
+                "repeticiones": "15",
+                "descanso": "90s",
+                "notas": "Separar la cuerda al fondo para mayor activacion."
               },
               {
-                "nombre": "Puente de gluteo unilateral en suelo",
+                "nombre": "Plancha lateral (cada lado)",
                 "series": 3,
-                "repeticiones": "15-20",
-                "descanso": "60s",
-                "notas": "Agrega una mancuerna ligera sobre la cadera si el propio peso se siente facil. Solo si no hay molestia en rodilla izquierda."
+                "repeticiones": "25s por lado",
+                "descanso": "45s",
+                "notas": "Caderas alineadas, sin dejar caer pelvis."
               },
               {
-                "nombre": "Hip thrust con barra en banco",
+                "nombre": "AMRAP FINISHER — Superserie curl + press de hombro",
                 "series": 1,
-                "repeticiones": "AMRAP",
-                "descanso": "—",
-                "notas": "AMRAP FINISHER: Mas exigente que semana 1 — lleva hasta RIR 0-1. Cuenta las repeticiones y busca superarlas en semana 3."
+                "repeticiones": "AMRAP 45s",
+                "descanso": "termina",
+                "notas": "Mancuernas ligeras: curl + press encadenados. Flujo continuo."
               }
             ]
           },
           {
-            "nombre": "Jueves — Tren Superior: Espalda + Biceps + Abdomen",
+            "nombre": "Miercoles — Gluteo (Dia especializado)",
+            "tipo": "piernas",
+            "duracion": "75 min",
+            "calentamiento": "Clamshell + hip thrust sin peso",
+            "ejercicios": [
+              {
+                "nombre": "Hip Thrust en maquina o barra",
+                "series": 4,
+                "repeticiones": "10-12",
+                "descanso": "90s",
+                "notas": "Aumentar carga 5-10%. RIR 3. Pausa 1s en pico."
+              },
+              {
+                "nombre": "BISET A1 — Romanian Deadlift con barra",
+                "series": 4,
+                "repeticiones": "10",
+                "descanso": "0s",
+                "notas": "Agregar 1 serie vs semana 1."
+              },
+              {
+                "nombre": "BISET A2 — Patada trasera en cable",
+                "series": 4,
+                "repeticiones": "15 por pierna",
+                "descanso": "90s",
+                "notas": "Aumentar resistencia si fue facil."
+              },
+              {
+                "nombre": "BISET B1 — Hip Thrust unilateral en banco",
+                "series": 3,
+                "repeticiones": "12 por pierna",
+                "descanso": "0s",
+                "notas": "Pausa 2s en pico esta semana."
+              },
+              {
+                "nombre": "BISET B2 — Abduccion con banda en suelo",
+                "series": 3,
+                "repeticiones": "20",
+                "descanso": "90s",
+                "notas": "Banda mas resistente si fue facil."
+              },
+              {
+                "nombre": "Good Morning con barra",
+                "series": 3,
+                "repeticiones": "12",
+                "descanso": "60s",
+                "notas": "Agregar un poco de carga esta semana."
+              },
+              {
+                "nombre": "AMRAP FINISHER — Glute bridge con banda + pausa",
+                "series": 1,
+                "repeticiones": "AMRAP 60s",
+                "descanso": "termina",
+                "notas": "Pausa 1s en cada rep."
+              }
+            ]
+          },
+          {
+            "nombre": "Jueves — Espalda / Biceps / Abdomen",
             "tipo": "jale",
-            "duracion": "85-95 min + 20-25 min cardio",
-            "calentamiento": "Band pull-apart 2x20 + remo con banda 2x15 + activacion escapular",
+            "duracion": "65 min",
+            "calentamiento": "Band pull-apart + rotacion toraxica",
             "ejercicios": [
               {
-                "nombre": "Jale al pecho en polea alta agarre ancho",
-                "series": 4,
-                "repeticiones": "8-10",
-                "descanso": "90s",
-                "notas": "BISET A1. +5-10% de carga. Baja las reps, sube el peso. RIR 2-3."
-              },
-              {
-                "nombre": "Remo con mancuerna un brazo apoyado",
+                "nombre": "Jalon al pecho en polea",
                 "series": 4,
                 "repeticiones": "10-12",
                 "descanso": "90s",
-                "notas": "BISET A2. +5% de carga. Busca un rango de movimiento mayor con la rotacion del torso."
+                "notas": "Aumentar carga leve. RIR 3."
               },
               {
-                "nombre": "Remo en maquina agarre neutro",
-                "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "75s",
-                "notas": "BISET B1. +5% de peso. Codos a 45 grados, protraccion escapular al inicio."
+                "nombre": "BISET A1 — Remo en maquina",
+                "series": 4,
+                "repeticiones": "12",
+                "descanso": "0s",
+                "notas": "1 serie mas vs semana 1."
               },
               {
-                "nombre": "Curl en polea baja con cuerda",
-                "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "75s",
-                "notas": "BISET B2. +5% de carga. Supinacion total en el tope."
+                "nombre": "BISET A2 — Jalon recto en polea (pullover)",
+                "series": 4,
+                "repeticiones": "15",
+                "descanso": "90s",
+                "notas": "Mantener brazos extendidos."
               },
               {
-                "nombre": "Pullover en polea alta de pie",
+                "nombre": "BISET B1 — Remo con mancuerna unilateral",
                 "series": 3,
-                "repeticiones": "12-15",
+                "repeticiones": "12 por brazo",
+                "descanso": "0s",
+                "notas": "Aumentar peso si forma fue impecable."
+              },
+              {
+                "nombre": "BISET B2 — Curl de biceps en polea baja",
+                "series": 3,
+                "repeticiones": "15",
+                "descanso": "90s",
+                "notas": "Tension constante, no soltar en fondo."
+              },
+              {
+                "nombre": "Crunch en polea + twist oblicuo",
+                "series": 3,
+                "repeticiones": "15 + 10 por lado",
                 "descanso": "60s",
-                "notas": "+5% de peso. Brazos casi extendidos para maximo estiramiento dorsal."
+                "notas": "Agregar componente rotacional esta semana."
               },
               {
-                "nombre": "Elevacion de piernas colgada en barra",
-                "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "45s",
-                "notas": "ABDOMEN. Aumenta las reps o el tiempo de ejecucion."
-              },
-              {
-                "nombre": "Jale al pecho en polea alta agarre ancho",
+                "nombre": "AMRAP FINISHER — Remo explosivo en cable",
                 "series": 1,
-                "repeticiones": "AMRAP",
-                "descanso": "—",
-                "notas": "AMRAP FINISHER: Mismo peso que el trabajo principal. Maximo de reps con escap retraid. Anota el numero."
+                "repeticiones": "AMRAP 45s",
+                "descanso": "termina",
+                "notas": "Tempo rapido, forma mantenida."
               }
             ]
           },
           {
-            "nombre": "Viernes — Femorales + Gluteo",
+            "nombre": "Viernes — Femorales / Gluteo posterior",
             "tipo": "piernas",
-            "duracion": "90-100 min + 20-25 min cardio",
-            "calentamiento": "Hip hinge con palo 2x10 + curl femoral con banda 2x15 + movilidad de cadera",
+            "duracion": "70 min",
+            "calentamiento": "Curl sin peso + movilidad flexores",
             "ejercicios": [
               {
-                "nombre": "Peso muerto rumano con barra",
+                "nombre": "Curl de femoral en maquina (acostada)",
                 "series": 4,
-                "repeticiones": "8-10",
+                "repeticiones": "10-12",
                 "descanso": "90s",
-                "notas": "BISET A1. +5-10% de carga. Bisagra perfecta, rodillas ligeramente dobladas. RIR 2-3."
+                "notas": "Aumentar peso 5%. RIR 3. Excentrico 2s."
               },
               {
-                "nombre": "Curl femoral acostado en maquina",
+                "nombre": "BISET A1 — Romanian Deadlift con barra",
                 "series": 4,
-                "repeticiones": "12-15",
+                "repeticiones": "10",
+                "descanso": "0s",
+                "notas": "1 serie adicional."
+              },
+              {
+                "nombre": "BISET A2 — Hip Thrust unilateral en banco",
+                "series": 4,
+                "repeticiones": "12 por pierna",
                 "descanso": "90s",
-                "notas": "BISET A2. +5% de carga. Pies en dorsiflexion. Contraccion pico 2 seg."
+                "notas": "Pausa 2s en pico."
               },
               {
-                "nombre": "Good morning con barra o mancuernas",
+                "nombre": "BISET B1 — Curl de femoral unilateral en cable",
                 "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "75s",
-                "notas": "BISET B1. Ligero aumento de peso si la columna se mantuvo neutra en semana 1."
+                "repeticiones": "12 por pierna",
+                "descanso": "0s",
+                "notas": "Mayor resistencia si fue facil."
               },
               {
-                "nombre": "Hip thrust con barra en banco",
+                "nombre": "BISET B2 — Peso muerto sumo con mancuerna",
                 "series": 3,
-                "repeticiones": "10-12",
-                "descanso": "75s",
-                "notas": "BISET B2. +5% de carga. Complementa el trabajo de gluteo de Miercoles."
+                "repeticiones": "12",
+                "descanso": "90s",
+                "notas": "Rango parcial. Aumentar mancuerna leve."
               },
               {
-                "nombre": "Estocada reversa con mancuernas",
+                "nombre": "Elevacion de pantorrillas unilateral",
                 "series": 3,
-                "repeticiones": "10-12",
-                "descanso": "75s",
-                "notas": "+5% de carga si la semana 1 fue con buena forma. Rodilla izquierda: paso atras grande."
+                "repeticiones": "15 por pierna",
+                "descanso": "60s",
+                "notas": "Mantener patron de semana 1."
               },
               {
-                "nombre": "Peso muerto rumano con barra",
+                "nombre": "AMRAP FINISHER — Nordic curl asistido (banda) o curl maquina",
                 "series": 1,
-                "repeticiones": "AMRAP",
-                "descanso": "—",
-                "notas": "AMRAP FINISHER: Mismo peso que el trabajo principal. Maximo de reps con bisagra perfecta. Anota el numero para superar en semana 3."
+                "repeticiones": "AMRAP 45s",
+                "descanso": "termina",
+                "notas": "Si disponible: Nordic curl con banda de asistencia para excéntrico."
               }
             ]
           },
           {
-            "nombre": "Sabado — Full Body Funcional",
+            "nombre": "Sabado — Full Body Funcional / Metabolico",
             "tipo": "full",
-            "duracion": "55-65 min",
-            "calentamiento": "5 min movilidad general + activacion core 2 min",
+            "duracion": "60 min",
+            "calentamiento": "Caminata inclinada 5 min + articular",
             "ejercicios": [
               {
-                "nombre": "Press de hombro con mancuernas sentada",
-                "series": 3,
-                "repeticiones": "10-12",
-                "descanso": "60s",
-                "notas": "Circuito A — +5% de carga. RIR 2-3."
+                "nombre": "Circuito A1 — Press de banca con mancuernas",
+                "series": 4,
+                "repeticiones": "12",
+                "descanso": "0s",
+                "notas": "Semana 2: 4 circuitos completos."
               },
               {
-                "nombre": "Remo con mancuerna un brazo apoyado",
-                "series": 3,
-                "repeticiones": "10-12",
-                "descanso": "60s",
-                "notas": "Circuito A — +5% de carga. Control total del movimiento."
+                "nombre": "Circuito A2 — Remo en cable o banda",
+                "series": 4,
+                "repeticiones": "12",
+                "descanso": "0s",
+                "notas": "Mantener ritmo del circuito."
               },
               {
-                "nombre": "Sentadilla sumo con mancuerna (goblet)",
-                "series": 3,
-                "repeticiones": "10-12",
-                "descanso": "60s",
-                "notas": "Circuito B — +5% de carga. Rodilla izquierda: mismo angulo seguro."
+                "nombre": "Circuito A3 — Hip Thrust bilateral rapido",
+                "series": 4,
+                "repeticiones": "20",
+                "descanso": "60s entre circuitos",
+                "notas": "Agregar 1 circuito vs semana 1."
               },
               {
-                "nombre": "Peso muerto rumano con barra",
+                "nombre": "Circuito B1 — Press Arnold",
                 "series": 3,
-                "repeticiones": "10-12",
-                "descanso": "60s",
-                "notas": "Circuito B — +5% de carga. Bisagra pura."
+                "repeticiones": "12",
+                "descanso": "0s",
+                "notas": "Mismo peso semana 1, mayor control."
               },
               {
-                "nombre": "Plancha isometrica",
+                "nombre": "Circuito B2 — Curl barra EZ",
                 "series": 3,
-                "repeticiones": "40-50 seg",
-                "descanso": "45s",
-                "notas": "Aumenta 10 seg respecto semana 1."
+                "repeticiones": "12",
+                "descanso": "0s",
+                "notas": "Leve aumento de peso si RIR fue >3."
               },
               {
-                "nombre": "Elevacion de pantorrillas de pie con peso",
+                "nombre": "Circuito B3 — Plank to shoulder tap",
                 "series": 3,
-                "repeticiones": "AMRAP",
-                "descanso": "45s",
-                "notas": "AMRAP FINISHER. Anota el numero de reps totales del set AMRAP."
+                "repeticiones": "20 toques",
+                "descanso": "60s entre circuitos",
+                "notas": "Sustituir mountain climbers por este para mayor estabilidad."
+              },
+              {
+                "nombre": "AMRAP FINISHER — Kettlebell swing",
+                "series": 1,
+                "repeticiones": "AMRAP 60s",
+                "descanso": "termina",
+                "notas": "Mismo patron semana 1, aumentar peso si fue facil."
               }
             ]
           }
@@ -648,320 +705,348 @@
       },
       {
         "semana": 3,
-        "fase": "Intensificacion — RIR 1-2, volumen MAV",
-        "descripcion": "Semana de alta intensidad. Lleva los ejercicios principales a RIR 1-2. El volumen alcanza el MAV. El AMRAP es significativamente mas exigente.",
+        "fase": "Intensificacion",
+        "descripcion": "Maxima carga del ciclo. RIR 1-2. Series al borde del fallo tecnico. Volumen estable, intensidad maxima. Descansos pueden extenderse 15-20s si necesario.",
         "dias": [
           {
-            "nombre": "Lunes — Cuadriceps + Abductores + Pantorrilla",
+            "nombre": "Lunes — Cuadriceps / Abductores / Pantorrillas",
             "tipo": "piernas",
-            "duracion": "90-100 min + 25 min cardio",
-            "calentamiento": "10 min bicicleta estatica + movilidad completa de cadera + activacion profunda",
+            "duracion": "70 min",
+            "calentamiento": "Bicicleta 5 min + movilidad profunda",
             "ejercicios": [
               {
-                "nombre": "Prensa de pierna angulo alto 45 grados",
+                "nombre": "Prensa de piernas 45° (rango parcial)",
                 "series": 4,
-                "repeticiones": "8-10",
+                "repeticiones": "10",
                 "descanso": "2 min",
-                "notas": "BISET A1. +10% respecto semana 2. RIR 1-2. El ultimo rep debe ser muy dificil. Rodilla izquierda: sin cambios en el angulo."
+                "notas": "Carga maxima del ciclo. RIR 1-2. Cuidado rodilla izquierda."
               },
               {
-                "nombre": "Extension de cuadriceps en maquina",
+                "nombre": "BISET A1 — Extension de cuadriceps unilateral",
                 "series": 4,
-                "repeticiones": "10-12",
+                "repeticiones": "10 por pierna",
+                "descanso": "0s",
+                "notas": "Drop set opcional en ultimo set: bajar 20% peso y hacer 5 reps mas."
+              },
+              {
+                "nombre": "BISET A2 — Abduccion de cadera en maquina",
+                "series": 4,
+                "repeticiones": "12",
                 "descanso": "2 min",
-                "notas": "BISET A2. Peso desafiante. Contraccion pico 2 seg. El ultimo rep debe requerir esfuerzo maximo."
+                "notas": "Mayor resistencia. Ultimo set al fallo."
               },
               {
-                "nombre": "Abduccion de cadera en maquina sentada",
-                "series": 4,
-                "repeticiones": "12-15",
-                "descanso": "75s",
-                "notas": "BISET B1. +1 set respecto semana 2. Peso alto. RIR 1-2."
+                "nombre": "BISET B1 — Sentadilla sumo con mancuerna",
+                "series": 3,
+                "repeticiones": "10",
+                "descanso": "0s",
+                "notas": "Carga mas alta. Monitorear rodilla."
               },
               {
-                "nombre": "Patada lateral con banda elastica de pie",
-                "series": 4,
-                "repeticiones": "12-15",
-                "descanso": "75s",
-                "notas": "BISET B2. Banda de alta resistencia. Control total sin compensar con el tronco."
+                "nombre": "BISET B2 — Abduccion en cable",
+                "series": 3,
+                "repeticiones": "12 por pierna",
+                "descanso": "2 min",
+                "notas": "Fallo tecnico en ultima serie."
               },
               {
-                "nombre": "Elevacion de pantorrillas en maquina sentada",
+                "nombre": "Elevacion de pantorrillas en prensa",
                 "series": 4,
-                "repeticiones": "12-15",
+                "repeticiones": "15",
                 "descanso": "60s",
-                "notas": "Carga alta. Tempo 2-1-3. RIR 1-2."
+                "notas": "Maxima carga que permita rango completo."
               },
               {
-                "nombre": "Elevacion de pantorrillas de pie con peso",
-                "series": 2,
-                "repeticiones": "AMRAP",
-                "descanso": "30s",
-                "notas": "AMRAP FINISHER intensificado: solo 30s entre los 2 sets AMRAP. Objetivo: superar el total de reps de semana 2."
+                "nombre": "AMRAP FINISHER — Step-up intenso",
+                "series": 1,
+                "repeticiones": "AMRAP 60s con descanso 10s / AMRAP 30s",
+                "descanso": "termina",
+                "notas": "Cluster: 60s esfuerzo, 10s pausa, 30s mas. Total ~100 segundos de trabajo."
               }
             ]
           },
           {
-            "nombre": "Martes — Tren Superior: Hombros + Brazos + Abdomen",
+            "nombre": "Martes — Hombros / Brazos / Abdomen",
             "tipo": "empuje",
-            "duracion": "85-95 min + 25 min cardio",
-            "calentamiento": "Rotaciones de hombro + activacion manguito rotador",
+            "duracion": "65 min",
+            "calentamiento": "Activacion escapular + rotadores",
             "ejercicios": [
               {
-                "nombre": "Press de hombro con mancuernas sentada",
+                "nombre": "Press de hombro con mancuernas",
                 "series": 4,
                 "repeticiones": "8-10",
                 "descanso": "2 min",
-                "notas": "BISET A1. Carga maxima que permita 8 reps con RIR 1-2. Core muy activo."
+                "notas": "RIR 1. Carga maxima del ciclo."
               },
               {
-                "nombre": "Elevaciones laterales con mancuernas",
+                "nombre": "BISET A1 — Elevacion lateral con mancuerna",
                 "series": 4,
-                "repeticiones": "10-12",
+                "repeticiones": "12",
+                "descanso": "0s",
+                "notas": "Ultimo set: rest-pause (8 reps, 10s pausa, 4 reps mas)."
+              },
+              {
+                "nombre": "BISET A2 — Face pull en polea",
+                "series": 4,
+                "repeticiones": "12",
                 "descanso": "2 min",
-                "notas": "BISET A2. +5-10% de carga. Control total, sin impulso del tronco."
+                "notas": "Mayor resistencia."
               },
               {
-                "nombre": "Curl de biceps con mancuernas alternado",
-                "series": 4,
-                "repeticiones": "8-10",
-                "descanso": "75s",
-                "notas": "BISET B1. +1 set. Carga alta. El ultimo rep debe ser muy exigente. RIR 1-2."
-              },
-              {
-                "nombre": "Extension de triceps en polea alta",
-                "series": 4,
-                "repeticiones": "10-12",
-                "descanso": "75s",
-                "notas": "BISET B2. +1 set. Codos completamente fijos."
-              },
-              {
-                "nombre": "Elevaciones frontales con mancuernas",
+                "nombre": "BISET B1 — Curl de biceps con barra EZ",
                 "series": 3,
-                "repeticiones": "10-12",
+                "repeticiones": "10",
+                "descanso": "0s",
+                "notas": "Cambio a barra EZ para mayor carga. RIR 2."
+              },
+              {
+                "nombre": "BISET B2 — Press frances con mancuerna (triceps)",
+                "series": 3,
+                "repeticiones": "12",
+                "descanso": "2 min",
+                "notas": "Extension sobre cabeza. RIR 2."
+              },
+              {
+                "nombre": "Ab wheel rollout (o plancha con deslizamiento)",
+                "series": 3,
+                "repeticiones": "10",
                 "descanso": "60s",
-                "notas": "+5% de carga. RIR 1-2."
+                "notas": "Control total. Si muy dificil usar plancha elevada en rodillas."
               },
               {
-                "nombre": "Plancha isometrica",
-                "series": 3,
-                "repeticiones": "50-60 seg",
-                "descanso": "45s",
-                "notas": "ABDOMEN. Agrega variacion: levanta alternado un pie 5 seg sin perder la alineacion."
-              },
-              {
-                "nombre": "Crunch en polea alta de rodillas",
-                "series": 3,
-                "repeticiones": "AMRAP",
-                "descanso": "30s",
-                "notas": "AMRAP FINISHER intensificado: 30s de descanso entre sets. Peso alto. Objetivo: superar reps de semana 2."
-              }
-            ]
-          },
-          {
-            "nombre": "Miercoles — Gluteo (sesion especializada)",
-            "tipo": "piernas",
-            "duracion": "90-100 min + 25 min cardio",
-            "calentamiento": "Puente de gluteo con banda 2x20 + clamshell 2x15 + activacion completa",
-            "ejercicios": [
-              {
-                "nombre": "Hip thrust con barra en banco",
-                "series": 4,
-                "repeticiones": "8-10",
-                "descanso": "2 min",
-                "notas": "BISET A1. Carga maxima que permita 8 reps con RIR 1-2. Esta es la semana pico de gluteo."
-              },
-              {
-                "nombre": "Patada de gluteo en polea baja con tobillera",
-                "series": 4,
-                "repeticiones": "12-15",
-                "descanso": "2 min",
-                "notas": "BISET A2. +10% de carga. Contraccion maxima en cada rep."
-              },
-              {
-                "nombre": "Sentadilla sumo con mancuerna (goblet)",
-                "series": 4,
-                "repeticiones": "8-10",
-                "descanso": "90s",
-                "notas": "BISET B1. +1 set. Peso desafiante. Rodilla izquierda: misma restriccion. RIR 1-2."
-              },
-              {
-                "nombre": "Abduccion de cadera en polea baja lateral",
-                "series": 4,
-                "repeticiones": "12-15",
-                "descanso": "90s",
-                "notas": "BISET B2. +1 set. Carga alta pero controlada."
-              },
-              {
-                "nombre": "Puente de gluteo unilateral en suelo",
-                "series": 3,
-                "repeticiones": "12-15",
-                "descanso": "60s",
-                "notas": "Con mancuerna ligera sobre la cadera (si toleras en rodilla). Contraccion pico 3 seg."
-              },
-              {
-                "nombre": "Hip thrust con barra en banco",
+                "nombre": "AMRAP FINISHER — Elevacion lateral dropset",
                 "series": 1,
-                "repeticiones": "AMRAP",
-                "descanso": "—",
-                "notas": "AMRAP FINISHER pico: lleva hasta RIR 0 — el set termina cuando NO puedes completar una rep mas con forma. Anota el numero exacto de reps."
+                "repeticiones": "12 + 10 + 8 reps bajando peso",
+                "descanso": "termina",
+                "notas": "3 pesos distintos, sin descanso entre ellos. Quema total de deltoide lateral."
               }
             ]
           },
           {
-            "nombre": "Jueves — Tren Superior: Espalda + Biceps + Abdomen",
+            "nombre": "Miercoles — Gluteo (Dia especializado)",
+            "tipo": "piernas",
+            "duracion": "75 min",
+            "calentamiento": "Activacion gluteo completa",
+            "ejercicios": [
+              {
+                "nombre": "Hip Thrust en maquina o barra",
+                "series": 5,
+                "repeticiones": "8-10",
+                "descanso": "2 min",
+                "notas": "Carga maxima del ciclo. 5 series esta semana. Pausa 1s obligatoria en pico."
+              },
+              {
+                "nombre": "BISET A1 — Romanian Deadlift con barra",
+                "series": 4,
+                "repeticiones": "8",
+                "descanso": "0s",
+                "notas": "Carga alta, rango controlado. RIR 1."
+              },
+              {
+                "nombre": "BISET A2 — Patada trasera en cable (carga alta)",
+                "series": 4,
+                "repeticiones": "12 por pierna",
+                "descanso": "2 min",
+                "notas": "Mayor resistencia que semanas anteriores."
+              },
+              {
+                "nombre": "BISET B1 — Hip Thrust unilateral con disco o mancuerna",
+                "series": 3,
+                "repeticiones": "10 por pierna",
+                "descanso": "0s",
+                "notas": "Agregar carga al hip thrust unilateral esta semana."
+              },
+              {
+                "nombre": "BISET B2 — Abduccion en maquina sentada (carga maxima)",
+                "series": 3,
+                "repeticiones": "12",
+                "descanso": "2 min",
+                "notas": "Fallo tecnico en ultima serie."
+              },
+              {
+                "nombre": "Good Morning con barra",
+                "series": 3,
+                "repeticiones": "10",
+                "descanso": "90s",
+                "notas": "Carga moderada-alta, espalda neutra obligatoria."
+              },
+              {
+                "nombre": "AMRAP FINISHER — Hip Thrust isometrico (pausa) + explosivo",
+                "series": 1,
+                "repeticiones": "5 pausas 3s + AMRAP rapido 30s",
+                "descanso": "termina",
+                "notas": "5 reps con pausa 3s + inmediatamente 30s de reps explosivas rapidas."
+              }
+            ]
+          },
+          {
+            "nombre": "Jueves — Espalda / Biceps / Abdomen",
             "tipo": "jale",
-            "duracion": "85-95 min + 25 min cardio",
-            "calentamiento": "Band pull-apart 2x20 + activacion escapular completa",
+            "duracion": "65 min",
+            "calentamiento": "Activacion escapular + movilidad toraxica",
             "ejercicios": [
               {
-                "nombre": "Jale al pecho en polea alta agarre ancho",
+                "nombre": "Jalon al pecho en polea",
                 "series": 4,
                 "repeticiones": "8-10",
                 "descanso": "2 min",
-                "notas": "BISET A1. Carga maxima con 8 reps a RIR 1. Escapulas retraidas y deprimidas antes de cada rep."
+                "notas": "Carga maxima. RIR 1."
               },
               {
-                "nombre": "Remo con mancuerna un brazo apoyado",
+                "nombre": "BISET A1 — Remo en maquina (carga alta)",
                 "series": 4,
-                "repeticiones": "8-10",
+                "repeticiones": "10",
+                "descanso": "0s",
+                "notas": "Retraccion total. Ultimo set al fallo."
+              },
+              {
+                "nombre": "BISET A2 — Pullover en cable (carga alta)",
+                "series": 4,
+                "repeticiones": "12",
                 "descanso": "2 min",
-                "notas": "BISET A2. +10% de carga. Rotacion de torso controlada para mayor ROM."
+                "notas": "Mayor resistencia."
               },
               {
-                "nombre": "Remo en maquina agarre neutro",
-                "series": 4,
-                "repeticiones": "10-12",
-                "descanso": "90s",
-                "notas": "BISET B1. +1 set. Carga alta. Protraccion total al inicio, retraccion completa al final."
-              },
-              {
-                "nombre": "Curl en polea baja con cuerda",
-                "series": 4,
-                "repeticiones": "10-12",
-                "descanso": "90s",
-                "notas": "BISET B2. +1 set. Codos completamente fijos. Supinacion maxima."
-              },
-              {
-                "nombre": "Pullover en polea alta de pie",
+                "nombre": "BISET B1 — Remo Pendlay con barra (o remo inclinado)",
                 "series": 3,
-                "repeticiones": "10-12",
-                "descanso": "60s",
-                "notas": "+10% de carga. Enfasis en el estiramiento del dorsal al inicio."
+                "repeticiones": "8",
+                "descanso": "0s",
+                "notas": "Sustituir remo de mancuerna por Pendlay esta semana para mayor sobrecarga."
               },
               {
-                "nombre": "Elevacion de piernas colgada en barra",
+                "nombre": "BISET B2 — Curl concentrado con mancuerna",
                 "series": 3,
-                "repeticiones": "15-20",
-                "descanso": "45s",
-                "notas": "ABDOMEN. Aumenta las reps. Si es muy facil, mantener piernas mas extendidas."
+                "repeticiones": "12 por brazo",
+                "descanso": "2 min",
+                "notas": "Aislamiento maximo de biceps."
               },
               {
-                "nombre": "Jale al pecho en polea alta agarre ancho",
+                "nombre": "Dragon flag negativo (o crunch con peso)",
+                "series": 3,
+                "repeticiones": "8",
+                "descanso": "90s",
+                "notas": "Si dragon flag es muy avanzado: crunch en polea con carga maxima del ciclo."
+              },
+              {
+                "nombre": "AMRAP FINISHER — Jalon al pecho rapido (50% peso)",
                 "series": 1,
-                "repeticiones": "AMRAP",
-                "descanso": "—",
-                "notas": "AMRAP FINISHER pico: hasta RIR 0. Retraccion escapular perfecta en cada rep. Cuenta y anota."
+                "repeticiones": "AMRAP 45s",
+                "descanso": "termina",
+                "notas": "Reducir peso 50%, maximas reps con forma correcta."
               }
             ]
           },
           {
-            "nombre": "Viernes — Femorales + Gluteo",
+            "nombre": "Viernes — Femorales / Gluteo posterior",
             "tipo": "piernas",
-            "duracion": "90-100 min + 25 min cardio",
-            "calentamiento": "Hip hinge con palo + curl femoral con banda + movilidad completa",
+            "duracion": "70 min",
+            "calentamiento": "Curl sin peso + movilidad isquios",
             "ejercicios": [
               {
-                "nombre": "Peso muerto rumano con barra",
-                "series": 4,
+                "nombre": "Curl de femoral en maquina",
+                "series": 5,
                 "repeticiones": "8-10",
                 "descanso": "2 min",
-                "notas": "BISET A1. Carga maxima con bisagra perfecta. RIR 1-2. Barra muy cerca al cuerpo."
+                "notas": "Carga maxima. 5 series. Excentrico 3s."
               },
               {
-                "nombre": "Curl femoral acostado en maquina",
+                "nombre": "BISET A1 — Romanian Deadlift con barra (carga alta)",
                 "series": 4,
-                "repeticiones": "10-12",
+                "repeticiones": "8",
+                "descanso": "0s",
+                "notas": "Carga mas alta que semana 2."
+              },
+              {
+                "nombre": "BISET A2 — Hip Thrust con pausa 3s",
+                "series": 4,
+                "repeticiones": "8",
                 "descanso": "2 min",
-                "notas": "BISET A2. +10% de carga. Pies en dorsiflexion. Contraccion pico 2 seg."
+                "notas": "Cada rep con pausa 3s en contraccion maxima."
               },
               {
-                "nombre": "Good morning con barra o mancuernas",
+                "nombre": "BISET B1 — Nordic curl asistido",
                 "series": 3,
-                "repeticiones": "10-12",
-                "descanso": "90s",
-                "notas": "BISET B1. Peso moderado-alto. Columna completamente neutra. RIR 1-2."
+                "repeticiones": "6-8",
+                "descanso": "0s",
+                "notas": "Si posible: Nordic curl completo. Sino: asistido con banda. Alto riesgo/recompensa."
               },
               {
-                "nombre": "Hip thrust con barra en banco",
-                "series": 4,
-                "repeticiones": "8-10",
-                "descanso": "90s",
-                "notas": "BISET B2. +1 set. Carga desafiante. Viernes complementa el trabajo del Miercoles."
-              },
-              {
-                "nombre": "Estocada reversa con mancuernas",
+                "nombre": "BISET B2 — Peso muerto sumo con barra (carga moderada-alta)",
                 "series": 3,
-                "repeticiones": "8-10",
-                "descanso": "75s",
-                "notas": "+10% de carga. Paso atras grande. Rodilla izquierda: mantener control total."
+                "repeticiones": "10",
+                "descanso": "2 min",
+                "notas": "Rango parcial. Introducir barra en lugar de mancuerna."
               },
               {
-                "nombre": "Peso muerto rumano con barra",
+                "nombre": "Elevacion de pantorrillas unilateral con peso",
+                "series": 3,
+                "repeticiones": "12 por pierna",
+                "descanso": "60s",
+                "notas": "Sostener mancuerna del lado trabajador."
+              },
+              {
+                "nombre": "AMRAP FINISHER — Curl de femoral maquina dropset",
                 "series": 1,
-                "repeticiones": "AMRAP",
-                "descanso": "—",
-                "notas": "AMRAP FINISHER pico: hasta RIR 0. El set termina cuando la espalda pierda neutralidad. Anota el numero exacto de reps."
+                "repeticiones": "10 + 8 + 6 bajando peso",
+                "descanso": "termina",
+                "notas": "Dropset triple. Sin descanso entre pesos."
               }
             ]
           },
           {
-            "nombre": "Sabado — Full Body Funcional",
+            "nombre": "Sabado — Full Body Intenso",
             "tipo": "full",
-            "duracion": "55-65 min",
-            "calentamiento": "5 min movilidad + activacion core y gluteo",
+            "duracion": "60 min",
+            "calentamiento": "Dinamismo articular completo 8 min",
             "ejercicios": [
               {
-                "nombre": "Press de hombro con mancuernas sentada",
+                "nombre": "Circuito A1 — Press de banca con mancuernas (carga alta)",
                 "series": 4,
-                "repeticiones": "8-10",
-                "descanso": "60s",
-                "notas": "Circuito A — +10% carga. RIR 1-2."
+                "repeticiones": "10",
+                "descanso": "0s",
+                "notas": "Carga maxima de circuito."
               },
               {
-                "nombre": "Remo con mancuerna un brazo apoyado",
+                "nombre": "Circuito A2 — Remo en cable (carga alta)",
                 "series": 4,
-                "repeticiones": "8-10",
-                "descanso": "60s",
-                "notas": "Circuito A — +10% carga."
+                "repeticiones": "10",
+                "descanso": "0s",
+                "notas": "Antagonista cargado."
               },
               {
-                "nombre": "Sentadilla sumo con mancuerna (goblet)",
+                "nombre": "Circuito A3 — Hip Thrust con banda de resistencia",
                 "series": 4,
-                "repeticiones": "8-10",
+                "repeticiones": "15",
                 "descanso": "60s",
-                "notas": "Circuito B — Peso desafiante. Rodilla izquierda: misma restriccion."
+                "notas": "Banda sobre cadera ademas del peso corporal."
               },
               {
-                "nombre": "Peso muerto rumano con barra",
-                "series": 4,
-                "repeticiones": "8-10",
-                "descanso": "60s",
-                "notas": "Circuito B — Carga alta con forma perfecta."
-              },
-              {
-                "nombre": "Plancha isometrica",
+                "nombre": "Circuito B1 — Press militar con barra (o mancuernas pesadas)",
                 "series": 3,
-                "repeticiones": "50-60 seg",
-                "descanso": "45s",
-                "notas": "Variacion: un pie levantado alternado cada 5 seg."
+                "repeticiones": "10",
+                "descanso": "0s",
+                "notas": "Cambio de Arnold press a press militar esta semana."
               },
               {
-                "nombre": "Elevacion de pantorrillas de pie con peso",
+                "nombre": "Circuito B2 — Curl con barra EZ (carga alta)",
                 "series": 3,
-                "repeticiones": "AMRAP",
-                "descanso": "30s",
-                "notas": "AMRAP FINISHER pico: 30s entre sets. Objetivo: superar el total de reps de semana 2."
+                "repeticiones": "10",
+                "descanso": "0s",
+                "notas": "Mayor carga vs semanas 1-2."
+              },
+              {
+                "nombre": "Circuito B3 — Dead bug (control de core)",
+                "series": 3,
+                "repeticiones": "10 por lado",
+                "descanso": "60s",
+                "notas": "Lento y controlado. Lumbar pegada al suelo."
+              },
+              {
+                "nombre": "AMRAP FINISHER — Complex barra: curl + press + remo",
+                "series": 1,
+                "repeticiones": "AMRAP 90s",
+                "descanso": "termina",
+                "notas": "Barra ligera: curl biceps + press hombro + remo inclinado encadenados. Maximas rondas."
               }
             ]
           }
@@ -969,320 +1054,271 @@
       },
       {
         "semana": 4,
-        "fase": "Pico — RIR 0-1, AMRAP maximo",
-        "descripcion": "Semana de maxima intensidad. El cuerpo esta en su punto mas alto de adaptacion. Lleva todos los ejercicios a RIR 0-1. Los AMRAP son el esfuerzo maximo de todo el ciclo.",
+        "fase": "Pico",
+        "descripcion": "Semana de pico: volumen ligero, intensidad maxima absoluta. RIR 0-1 en ejercicios principales. Series cortas, descansos completos. El objetivo es llevar cada set al limite.",
         "dias": [
           {
-            "nombre": "Lunes — Cuadriceps + Abductores + Pantorrilla",
+            "nombre": "Lunes — Cuadriceps / Abductores / Pantorrillas",
             "tipo": "piernas",
-            "duracion": "90-100 min + 25 min cardio",
-            "calentamiento": "10 min bicicleta + movilidad completa + activacion profunda",
+            "duracion": "60 min",
+            "calentamiento": "Activacion completa 10 min",
             "ejercicios": [
               {
-                "nombre": "Prensa de pierna angulo alto 45 grados",
-                "series": 4,
+                "nombre": "Prensa de piernas 45° — Series de Fuerza",
+                "series": 5,
                 "repeticiones": "6-8",
-                "descanso": "2 min",
-                "notas": "BISET A1. Peso maximo que permita 6 reps con RIR 0-1. SEMANA PICO. Rodilla izquierda: misma proteccion."
+                "descanso": "2.5 min",
+                "notas": "Carga maxima del programa. RIR 0 en ultimas series. Rodilla izquierda: cuidado maximo en angulo."
               },
               {
-                "nombre": "Extension de cuadriceps en maquina",
-                "series": 4,
-                "repeticiones": "8-10",
-                "descanso": "2 min",
-                "notas": "BISET A2. Peso desafiante. El ultimo rep es el limite absoluto. Contraccion maxima."
-              },
-              {
-                "nombre": "Abduccion de cadera en maquina sentada",
-                "series": 4,
-                "repeticiones": "10-12",
-                "descanso": "90s",
-                "notas": "BISET B1. Peso maximo con forma perfecta. RIR 0-1."
-              },
-              {
-                "nombre": "Patada lateral con banda elastica de pie",
-                "series": 4,
-                "repeticiones": "12-15",
-                "descanso": "90s",
-                "notas": "BISET B2. Banda de mayor resistencia posible con forma perfecta."
-              },
-              {
-                "nombre": "Elevacion de pantorrillas en maquina sentada",
-                "series": 4,
-                "repeticiones": "10-12",
-                "descanso": "75s",
-                "notas": "Peso maximo con tempo 2-1-3. RIR 0-1."
-              },
-              {
-                "nombre": "Elevacion de pantorrillas de pie con peso",
+                "nombre": "Extension de cuadriceps bilateral — Top Set",
                 "series": 3,
-                "repeticiones": "AMRAP",
-                "descanso": "30s",
-                "notas": "AMRAP FINISHER MAXIMO: 3 sets AMRAP con solo 30s de descanso. Este es el esfuerzo maximo del ciclo en pantorrillas. Anota el total de reps."
+                "repeticiones": "10",
+                "descanso": "2 min",
+                "notas": "Un solo ejercicio de cuadriceps adicional. RIR 1."
+              },
+              {
+                "nombre": "Abduccion de cadera — Series de Fuerza",
+                "series": 4,
+                "repeticiones": "10",
+                "descanso": "90s",
+                "notas": "Carga maxima. No biset esta semana — recuperacion completa."
+              },
+              {
+                "nombre": "Elevacion de pantorrillas",
+                "series": 3,
+                "repeticiones": "15",
+                "descanso": "60s",
+                "notas": "Mantenimiento. No aumentar carga."
+              },
+              {
+                "nombre": "AMRAP FINISHER — Extension cuadriceps 50% peso",
+                "series": 1,
+                "repeticiones": "AMRAP sin parar",
+                "descanso": "termina",
+                "notas": "Reducir peso a 50%, maximas reps continuas hasta fallo tecnico total."
               }
             ]
           },
           {
-            "nombre": "Martes — Tren Superior: Hombros + Brazos + Abdomen",
+            "nombre": "Martes — Hombros / Brazos / Abdomen",
             "tipo": "empuje",
-            "duracion": "85-95 min + 25 min cardio",
-            "calentamiento": "Rotaciones de hombro + activacion manguito rotador completa",
+            "duracion": "60 min",
+            "calentamiento": "Activacion escapular + rotadores manguito",
             "ejercicios": [
               {
-                "nombre": "Press de hombro con mancuernas sentada",
+                "nombre": "Press de hombro con mancuernas — Series de Fuerza",
+                "series": 5,
+                "repeticiones": "6",
+                "descanso": "2.5 min",
+                "notas": "Carga maxima del ciclo. RIR 0 ultimas 2 series."
+              },
+              {
+                "nombre": "Elevacion lateral — Top Set + Back Off",
+                "series": 3,
+                "repeticiones": "10 + 15 + 20",
+                "descanso": "90s",
+                "notas": "Ir bajando peso: 1 set pesado (10) + 1 medio (15) + 1 ligero (20). Tecnica de fatiga acumulada."
+              },
+              {
+                "nombre": "Curl de biceps con barra — Series de Fuerza",
                 "series": 4,
                 "repeticiones": "6-8",
                 "descanso": "2 min",
-                "notas": "BISET A1. Semana pico. Peso maximo con 6 reps. RIR 0-1."
+                "notas": "Carga maxima. RIR 1."
               },
               {
-                "nombre": "Elevaciones laterales con mancuernas",
+                "nombre": "Extension de triceps en polea — Series de Fuerza",
                 "series": 4,
-                "repeticiones": "8-10",
+                "repeticiones": "8",
                 "descanso": "2 min",
-                "notas": "BISET A2. Peso maximo con forma estricta. Sin impulso."
+                "notas": "Carga maxima. RIR 1."
               },
               {
-                "nombre": "Curl de biceps con mancuernas alternado",
-                "series": 4,
-                "repeticiones": "8-10",
-                "descanso": "90s",
-                "notas": "BISET B1. Semana pico de biceps. Cada rep cuenta."
-              },
-              {
-                "nombre": "Extension de triceps en polea alta",
-                "series": 4,
-                "repeticiones": "8-10",
-                "descanso": "90s",
-                "notas": "BISET B2. Carga maxima con codos fijos. RIR 0-1."
-              },
-              {
-                "nombre": "Elevaciones frontales con mancuernas",
+                "nombre": "Plancha con peso (disco en espalda)",
                 "series": 3,
-                "repeticiones": "8-10",
-                "descanso": "75s",
-                "notas": "Peso maximo con forma perfecta."
-              },
-              {
-                "nombre": "Plancha isometrica",
-                "series": 3,
-                "repeticiones": "60 seg o fallo",
-                "descanso": "45s",
-                "notas": "ABDOMEN. Mantener hasta el fallo en cada set."
-              },
-              {
-                "nombre": "Crunch en polea alta de rodillas",
-                "series": 3,
-                "repeticiones": "AMRAP",
-                "descanso": "20s",
-                "notas": "AMRAP FINISHER MAXIMO: 20s de descanso entre sets. Este es el esfuerzo maximo del ciclo. Peso alto."
-              }
-            ]
-          },
-          {
-            "nombre": "Miercoles — Gluteo (sesion especializada)",
-            "tipo": "piernas",
-            "duracion": "90-100 min + 25 min cardio",
-            "calentamiento": "Activacion profunda de gluteo: puente + clamshell + cuadrupedia intensiva",
-            "ejercicios": [
-              {
-                "nombre": "Hip thrust con barra en banco",
-                "series": 4,
-                "repeticiones": "6-8",
-                "descanso": "2 min",
-                "notas": "BISET A1. MAXIMO del ciclo en hip thrust. Peso que permita 6 reps con RIR 0. Contraccion pico 2 seg. Rodilla izquierda: proteccion maxima."
-              },
-              {
-                "nombre": "Patada de gluteo en polea baja con tobillera",
-                "series": 4,
-                "repeticiones": "10-12",
-                "descanso": "2 min",
-                "notas": "BISET A2. Peso maximo con forma perfecta. Contraccion absoluta en el tope."
-              },
-              {
-                "nombre": "Sentadilla sumo con mancuerna (goblet)",
-                "series": 4,
-                "repeticiones": "6-8",
-                "descanso": "90s",
-                "notas": "BISET B1. Peso maximo seguro para rodilla. RIR 0-1."
-              },
-              {
-                "nombre": "Abduccion de cadera en polea baja lateral",
-                "series": 4,
-                "repeticiones": "10-12",
-                "descanso": "90s",
-                "notas": "BISET B2. Peso maximo con control total."
-              },
-              {
-                "nombre": "Puente de gluteo unilateral en suelo",
-                "series": 3,
-                "repeticiones": "12-15",
+                "repeticiones": "30s",
                 "descanso": "60s",
-                "notas": "Con mancuerna moderada. Contraccion pico 3 seg por rep."
+                "notas": "Agregar disco de 5-10kg. Maxima tension de core."
               },
               {
-                "nombre": "Hip thrust con barra en banco",
+                "nombre": "AMRAP FINISHER — Elevacion lateral con banda (quemador)",
                 "series": 1,
-                "repeticiones": "AMRAP",
-                "descanso": "—",
-                "notas": "AMRAP FINISHER ABSOLUTO: el set mas exigente del ciclo completo. Hasta el fallo tecnico (cuando la cadera no llegue a extension). Anota el numero exacto de reps — este es tu marcador de progreso."
+                "repeticiones": "AMRAP 60s",
+                "descanso": "termina",
+                "notas": "Banda ligera, ritmo continuo. Sensacion de quema total en deltoide."
               }
             ]
           },
           {
-            "nombre": "Jueves — Tren Superior: Espalda + Biceps + Abdomen",
+            "nombre": "Miercoles — Gluteo (Dia especializado)",
+            "tipo": "piernas",
+            "duracion": "70 min",
+            "calentamiento": "Activacion completa 12 min",
+            "ejercicios": [
+              {
+                "nombre": "Hip Thrust — Series de Fuerza",
+                "series": 6,
+                "repeticiones": "5-6",
+                "descanso": "2.5 min",
+                "notas": "Carga maxima absoluta del programa. 6 series. Cada rep con pausa 1s. Rodilla segura."
+              },
+              {
+                "nombre": "Romanian Deadlift con barra — Top Set",
+                "series": 4,
+                "repeticiones": "6",
+                "descanso": "2 min",
+                "notas": "Carga maxima del programa para RDL. RIR 0 en ultimo set."
+              },
+              {
+                "nombre": "Patada trasera en cable — Series de Acumulacion",
+                "series": 4,
+                "repeticiones": "15 por pierna",
+                "descanso": "90s",
+                "notas": "Carga moderada. Volumen de mantenimiento."
+              },
+              {
+                "nombre": "Hip Thrust unilateral con carga",
+                "series": 3,
+                "repeticiones": "8 por pierna",
+                "descanso": "90s",
+                "notas": "Carga maxima para unilateral."
+              },
+              {
+                "nombre": "AMRAP FINISHER — Hip Thrust corporal peso (sin carga)",
+                "series": 1,
+                "repeticiones": "AMRAP 90s",
+                "descanso": "termina",
+                "notas": "Solo peso corporal, maximas reps explosivas. Flush de sangre post-carga maxima."
+              }
+            ]
+          },
+          {
+            "nombre": "Jueves — Espalda / Biceps / Abdomen",
             "tipo": "jale",
-            "duracion": "85-95 min + 25 min cardio",
-            "calentamiento": "Activacion escapular completa + band pull-apart",
+            "duracion": "60 min",
+            "calentamiento": "Activacion escapular 8 min",
             "ejercicios": [
               {
-                "nombre": "Jale al pecho en polea alta agarre ancho",
+                "nombre": "Dominadas asistidas o Jalon — Series de Fuerza",
+                "series": 5,
+                "repeticiones": "5-6",
+                "descanso": "2.5 min",
+                "notas": "Si puede hacer dominadas asistidas en maquina: preferir. Sino jalon carga maxima. RIR 0."
+              },
+              {
+                "nombre": "Remo en maquina — Top Set",
                 "series": 4,
                 "repeticiones": "6-8",
                 "descanso": "2 min",
-                "notas": "BISET A1. Semana pico de espalda. Peso maximo con 6 reps. RIR 0-1."
+                "notas": "Carga maxima. RIR 1."
               },
               {
-                "nombre": "Remo con mancuerna un brazo apoyado",
+                "nombre": "Curl Inclinado con mancuernas",
                 "series": 4,
-                "repeticiones": "8-10",
+                "repeticiones": "8 por brazo",
                 "descanso": "2 min",
-                "notas": "BISET A2. Carga maxima con ROM completo."
+                "notas": "Banco inclinado 45°. Maximo estiramiento de biceps. Carga alta."
               },
               {
-                "nombre": "Remo en maquina agarre neutro",
+                "nombre": "Crunch con carga maxima",
                 "series": 4,
-                "repeticiones": "8-10",
+                "repeticiones": "12",
                 "descanso": "90s",
-                "notas": "BISET B1. Peso maximo con protraccion-retraccion completa."
+                "notas": "Maximo peso en polea alta o con disco en pecho."
               },
               {
-                "nombre": "Curl en polea baja con cuerda",
-                "series": 4,
-                "repeticiones": "8-10",
-                "descanso": "90s",
-                "notas": "BISET B2. Carga maxima. Supinacion total."
-              },
-              {
-                "nombre": "Pullover en polea alta de pie",
-                "series": 3,
-                "repeticiones": "8-10",
-                "descanso": "75s",
-                "notas": "Peso maximo con brazos casi extendidos. Estiramiento maximo del dorsal."
-              },
-              {
-                "nombre": "Elevacion de piernas colgada en barra",
-                "series": 3,
-                "repeticiones": "AMRAP",
-                "descanso": "30s",
-                "notas": "ABDOMEN AMRAP: hasta el fallo en cada set. Rodillas ligeramente dobladas."
-              },
-              {
-                "nombre": "Jale al pecho en polea alta agarre ancho",
+                "nombre": "AMRAP FINISHER — Chin-up con banda (o curl barra)",
                 "series": 1,
                 "repeticiones": "AMRAP",
-                "descanso": "—",
-                "notas": "AMRAP FINISHER ABSOLUTO: hasta que no puedas completar una repeticion mas con escapulas retraidas. Anota el numero exacto."
+                "descanso": "termina",
+                "notas": "Chin-up con banda de asistencia hasta fallo, o curl de barra hasta fallo tecnico total."
               }
             ]
           },
           {
-            "nombre": "Viernes — Femorales + Gluteo",
+            "nombre": "Viernes — Femorales / Gluteo posterior",
             "tipo": "piernas",
-            "duracion": "90-100 min + 25 min cardio",
-            "calentamiento": "Hip hinge + curl femoral con banda + movilidad profunda",
+            "duracion": "65 min",
+            "calentamiento": "Movilidad isquios + activacion",
             "ejercicios": [
               {
-                "nombre": "Peso muerto rumano con barra",
-                "series": 4,
-                "repeticiones": "6-8",
-                "descanso": "2 min",
-                "notas": "BISET A1. Semana pico de femorales. Peso maximo con bisagra perfecta. RIR 0."
+                "nombre": "Curl de femoral en maquina — Series de Fuerza",
+                "series": 6,
+                "repeticiones": "5-6",
+                "descanso": "2.5 min",
+                "notas": "Carga maxima del programa. Excentrico 3s. 6 series."
               },
               {
-                "nombre": "Curl femoral acostado en maquina",
+                "nombre": "Romanian Deadlift con barra — Top Set",
                 "series": 4,
-                "repeticiones": "8-10",
-                "descanso": "2 min",
-                "notas": "BISET A2. Carga maxima. Pies en dorsiflexion. Contraccion pico."
+                "repeticiones": "5",
+                "descanso": "2.5 min",
+                "notas": "Carga maxima absoluta para RDL. RIR 0 en ultimas 2 series."
               },
               {
-                "nombre": "Good morning con barra o mancuernas",
+                "nombre": "Nordic curl o asistido — Series de Fuerza",
                 "series": 3,
-                "repeticiones": "8-10",
-                "descanso": "90s",
-                "notas": "BISET B1. Peso moderado-alto. Columna neutra absoluta. RIR 0-1."
+                "repeticiones": "5-6",
+                "descanso": "2.5 min",
+                "notas": "Maxima tension excentrica. Descender controlado 4s."
               },
               {
-                "nombre": "Hip thrust con barra en banco",
-                "series": 4,
-                "repeticiones": "6-8",
-                "descanso": "90s",
-                "notas": "BISET B2. Carga maxima. Complementa la sesion del Miercoles."
-              },
-              {
-                "nombre": "Estocada reversa con mancuernas",
+                "nombre": "Elevacion de pantorrillas — Mantenimiento",
                 "series": 3,
-                "repeticiones": "8-10",
-                "descanso": "75s",
-                "notas": "Peso maximo con forma perfecta. Rodilla izquierda: paso atras controlado."
+                "repeticiones": "15",
+                "descanso": "60s",
+                "notas": "No aumentar carga esta semana."
               },
               {
-                "nombre": "Peso muerto rumano con barra",
+                "nombre": "AMRAP FINISHER — Curl femoral al fallo",
                 "series": 1,
-                "repeticiones": "AMRAP",
-                "descanso": "—",
-                "notas": "AMRAP FINISHER ABSOLUTO: hasta que la espalda no pueda mantenerse neutra. Este es el marcador de progreso de femorales del ciclo."
+                "repeticiones": "AMRAP hasta fallo tecnico",
+                "descanso": "termina",
+                "notas": "50% del peso de trabajo. Reps continuas hasta no poder mantener forma."
               }
             ]
           },
           {
-            "nombre": "Sabado — Full Body Funcional",
+            "nombre": "Sabado — Full Body de Maxima Intensidad",
             "tipo": "full",
-            "duracion": "55-65 min",
-            "calentamiento": "Movilidad completa + activacion profunda",
+            "duracion": "55 min",
+            "calentamiento": "Dinamismo completo 10 min",
             "ejercicios": [
               {
-                "nombre": "Press de hombro con mancuernas sentada",
+                "nombre": "Press de banca con mancuernas — Series de Fuerza",
                 "series": 4,
-                "repeticiones": "6-8",
-                "descanso": "60s",
-                "notas": "Circuito A — Semana pico. Peso maximo con 6 reps. RIR 0-1."
+                "repeticiones": "8",
+                "descanso": "2 min",
+                "notas": "Carga maxima del ciclo para press. RIR 1."
               },
               {
-                "nombre": "Remo con mancuerna un brazo apoyado",
+                "nombre": "Remo con barra — Series de Fuerza",
                 "series": 4,
-                "repeticiones": "6-8",
-                "descanso": "60s",
-                "notas": "Circuito A — Carga maxima del ciclo."
+                "repeticiones": "8",
+                "descanso": "2 min",
+                "notas": "Antagonista cargado. Misma intensidad."
               },
               {
-                "nombre": "Sentadilla sumo con mancuerna (goblet)",
+                "nombre": "Hip Thrust con barra — Series de Fuerza",
                 "series": 4,
-                "repeticiones": "6-8",
-                "descanso": "60s",
-                "notas": "Circuito B — Peso maximo seguro para rodilla."
+                "repeticiones": "8",
+                "descanso": "2 min",
+                "notas": "Carga alta. Patron principal del dia."
               },
               {
-                "nombre": "Peso muerto rumano con barra",
-                "series": 4,
-                "repeticiones": "6-8",
-                "descanso": "60s",
-                "notas": "Circuito B — Carga maxima con bisagra perfecta."
-              },
-              {
-                "nombre": "Plancha isometrica",
+                "nombre": "Press militar — Top Set",
                 "series": 3,
-                "repeticiones": "60 seg o fallo",
-                "descanso": "45s",
-                "notas": "Hasta el fallo en cada set."
+                "repeticiones": "6",
+                "descanso": "2 min",
+                "notas": "Carga maxima del programa para press militar."
               },
               {
-                "nombre": "Elevacion de pantorrillas de pie con peso",
-                "series": 3,
-                "repeticiones": "AMRAP",
-                "descanso": "20s",
-                "notas": "AMRAP FINISHER ABSOLUTO: 20s entre sets. Esfuerzo maximo del ciclo en pantorrillas."
+                "nombre": "AMRAP FINISHER — Complex barra maxima",
+                "series": 1,
+                "repeticiones": "5 rondas completas AMRAP",
+                "descanso": "termina",
+                "notas": "Barra moderada: 5 curl + 5 press + 5 remo. Maximas rondas en 90s."
               }
             ]
           }
@@ -1290,215 +1326,215 @@
       },
       {
         "semana": 5,
-        "fase": "Deload activo — RIR 4+, volumen menor a MEV",
-        "descripcion": "Semana de recuperacion activa. Reduce el peso al 50-60% del maximo de semana 4. Baja el volumen (2-3 sets por ejercicio). El cuerpo se supracompensa para el siguiente ciclo. No hay AMRAP.",
+        "fase": "Deload",
+        "descripcion": "Semana de descarga activa. OBLIGATORIO. Reducir volumen 40-50%, mantener intensidad ligera-moderada (RIR 4+). Permite supercompensacion y recuperacion del sistema nervioso. No saltarse esta semana.",
         "dias": [
           {
-            "nombre": "Lunes — Cuadriceps + Abductores + Pantorrilla (Deload)",
+            "nombre": "Lunes — Cuadriceps / Abductores (Deload)",
             "tipo": "piernas",
-            "duracion": "50-60 min + LISS 20 min caminadora suave",
-            "calentamiento": "8 min caminadora suave + movilidad de cadera",
+            "duracion": "45 min",
+            "calentamiento": "Movilidad suave 5 min",
             "ejercicios": [
               {
-                "nombre": "Prensa de pierna angulo alto 45 grados",
+                "nombre": "Prensa de piernas 45° (peso ligero)",
                 "series": 2,
                 "repeticiones": "15",
                 "descanso": "90s",
-                "notas": "Deload. 50% del peso maximo de semana 4. RIR 4+. El objetivo es mover sangre al musculo, no estimulo de hipertrofia."
+                "notas": "60% del peso maximo. Foco en movimiento perfecto. Sin esfuerzo real."
               },
               {
-                "nombre": "Extension de cuadriceps en maquina",
+                "nombre": "Extension de cuadriceps unilateral",
                 "series": 2,
-                "repeticiones": "15",
+                "repeticiones": "15 por pierna",
                 "descanso": "90s",
-                "notas": "Peso muy ligero. Conexion mente-musculo. Disfruta el movimiento sin esfuerzo."
+                "notas": "Peso ligero. Solo mantener patron neuromuscular."
               },
               {
-                "nombre": "Abduccion de cadera en maquina sentada",
+                "nombre": "Abduccion de cadera en maquina",
+                "series": 2,
+                "repeticiones": "20",
+                "descanso": "90s",
+                "notas": "Resistencia minima. Activar, no cansar."
+              },
+              {
+                "nombre": "Elevacion de pantorrillas",
                 "series": 2,
                 "repeticiones": "20",
                 "descanso": "60s",
-                "notas": "50% del peso maximo. Movimiento fluido y controlado. RIR 4+."
-              },
-              {
-                "nombre": "Elevacion de pantorrillas en maquina sentada",
-                "series": 2,
-                "repeticiones": "20",
-                "descanso": "60s",
-                "notas": "Peso ligero. Rango completo. Solo movilidad activa."
+                "notas": "Mantenimiento de rango de movimiento."
               }
             ]
           },
           {
-            "nombre": "Martes — Tren Superior: Hombros + Brazos (Deload)",
+            "nombre": "Martes — Hombros / Brazos (Deload)",
             "tipo": "empuje",
-            "duracion": "50-60 min + LISS 20 min opcional",
-            "calentamiento": "Rotaciones de hombro con banda + circulos de brazo suaves",
+            "duracion": "40 min",
+            "calentamiento": "Rotaciones suaves 5 min",
             "ejercicios": [
               {
-                "nombre": "Press de hombro con mancuernas sentada",
+                "nombre": "Press de hombro con mancuernas ligeras",
                 "series": 2,
                 "repeticiones": "15",
                 "descanso": "90s",
-                "notas": "Deload. 50% del peso de semana 4. Solo activar el patron motor. RIR 4+."
+                "notas": "60-65% del peso maximo. Tecnica perfecta."
               },
               {
-                "nombre": "Elevaciones laterales con mancuernas",
+                "nombre": "Elevacion lateral con mancuernas",
                 "series": 2,
-                "repeticiones": "15",
+                "repeticiones": "20",
                 "descanso": "90s",
-                "notas": "Mancuernas muy ligeras. Solo conexion mente-musculo con deltoides medio."
+                "notas": "Peso muy ligero. Solo activacion."
               },
               {
-                "nombre": "Curl de biceps con mancuernas alternado",
+                "nombre": "Curl de biceps alternado",
                 "series": 2,
-                "repeticiones": "15",
-                "descanso": "75s",
-                "notas": "Peso ligero. Supinacion completa. Sin esfuerzo maximo."
+                "repeticiones": "15 por brazo",
+                "descanso": "90s",
+                "notas": "Peso ligero. Sin esfuerzo real."
               },
               {
-                "nombre": "Extension de triceps en polea alta",
+                "nombre": "Extension de triceps en polea",
                 "series": 2,
-                "repeticiones": "15",
-                "descanso": "75s",
-                "notas": "50% de carga. Movimiento fluido."
+                "repeticiones": "20",
+                "descanso": "90s",
+                "notas": "Resistencia minima. Rango completo."
               },
               {
-                "nombre": "Plancha isometrica",
+                "nombre": "Plancha frontal",
                 "series": 2,
-                "repeticiones": "20-30 seg",
-                "descanso": "45s",
-                "notas": "ABDOMEN. Solo activacion. Sin esfuerzo maximo."
+                "repeticiones": "30s",
+                "descanso": "60s",
+                "notas": "Sin peso adicional."
               }
             ]
           },
           {
             "nombre": "Miercoles — Gluteo (Deload)",
             "tipo": "piernas",
-            "duracion": "50-60 min + LISS 20 min caminadora",
-            "calentamiento": "Puente de gluteo con banda 2x15 + clamshell 2x10",
+            "duracion": "45 min",
+            "calentamiento": "Activacion suave gluteo",
             "ejercicios": [
               {
-                "nombre": "Hip thrust con barra en banco",
+                "nombre": "Hip Thrust con peso ligero",
+                "series": 3,
+                "repeticiones": "15",
+                "descanso": "90s",
+                "notas": "60% del peso maximo. Cada rep controlada. Reconectar con el patron."
+              },
+              {
+                "nombre": "Romanian Deadlift con mancuernas",
                 "series": 2,
                 "repeticiones": "15",
                 "descanso": "90s",
-                "notas": "Deload. 50% del peso maximo. Contraccion suave. Enfoque en la conexion mente-gluteo. RIR 4+."
+                "notas": "Peso ligero. Estirar isquios y activar gluteo."
               },
               {
-                "nombre": "Patada de gluteo en polea baja con tobillera",
+                "nombre": "Patada trasera en cable (peso minimo)",
                 "series": 2,
-                "repeticiones": "15",
-                "descanso": "75s",
-                "notas": "Peso muy ligero. Solo activacion neural del gluteo."
+                "repeticiones": "20 por pierna",
+                "descanso": "90s",
+                "notas": "Activacion, no fatiga."
               },
               {
-                "nombre": "Puente de gluteo unilateral en suelo",
+                "nombre": "Abduccion en suelo con banda ligera",
                 "series": 2,
-                "repeticiones": "15",
+                "repeticiones": "25",
                 "descanso": "60s",
-                "notas": "Sin carga adicional. Recuperacion activa."
+                "notas": "Banda mas ligera que las semanas anteriores."
               }
             ]
           },
           {
-            "nombre": "Jueves — Tren Superior: Espalda + Biceps (Deload)",
+            "nombre": "Jueves — Espalda / Biceps (Deload)",
             "tipo": "jale",
-            "duracion": "50-60 min + LISS 20 min opcional",
-            "calentamiento": "Band pull-apart 2x15 + activacion escapular suave",
+            "duracion": "40 min",
+            "calentamiento": "Activacion escapular 5 min",
             "ejercicios": [
               {
-                "nombre": "Jale al pecho en polea alta agarre ancho",
+                "nombre": "Jalon al pecho en polea (peso ligero)",
                 "series": 2,
                 "repeticiones": "15",
                 "descanso": "90s",
-                "notas": "Deload. 50% del peso de semana 4. Solo patron motor. RIR 4+."
+                "notas": "60% del peso maximo. Foco en dorsales."
               },
               {
-                "nombre": "Remo con mancuerna un brazo apoyado",
+                "nombre": "Remo en maquina (peso ligero)",
                 "series": 2,
                 "repeticiones": "15",
                 "descanso": "90s",
-                "notas": "Peso ligero. Enfoque en la retraccion escapular consciente."
+                "notas": "Activacion de espalda media y retractores."
               },
               {
-                "nombre": "Curl en polea baja con cuerda",
+                "nombre": "Curl de biceps alternado",
                 "series": 2,
-                "repeticiones": "15",
-                "descanso": "75s",
-                "notas": "50% de carga. Solo activacion de biceps."
+                "repeticiones": "15 por brazo",
+                "descanso": "90s",
+                "notas": "Ligero. Mantenimiento neuromuscular."
               },
               {
-                "nombre": "Elevacion de piernas colgada en barra",
+                "nombre": "Crunch en polea (peso minimo)",
                 "series": 2,
-                "repeticiones": "10",
-                "descanso": "45s",
-                "notas": "ABDOMEN. Solo activacion. Rodillas muy dobladas."
+                "repeticiones": "20",
+                "descanso": "60s",
+                "notas": "Solo activacion de nucleo."
               }
             ]
           },
           {
-            "nombre": "Viernes — Femorales + Gluteo (Deload)",
+            "nombre": "Viernes — Femorales / Gluteo (Deload)",
             "tipo": "piernas",
-            "duracion": "50-60 min + LISS 20 min caminadora",
-            "calentamiento": "Hip hinge con palo + movilidad de cadera suave",
+            "duracion": "45 min",
+            "calentamiento": "Movilidad suave isquios",
             "ejercicios": [
               {
-                "nombre": "Peso muerto rumano con barra",
+                "nombre": "Curl de femoral en maquina (peso ligero)",
+                "series": 3,
+                "repeticiones": "15",
+                "descanso": "90s",
+                "notas": "60% del peso maximo. Excentrico 2s. Mantenimiento."
+              },
+              {
+                "nombre": "Romanian Deadlift con mancuernas",
                 "series": 2,
                 "repeticiones": "15",
                 "descanso": "90s",
-                "notas": "Deload. 50% del peso de semana 4. Bisagra consciente. RIR 4+."
+                "notas": "Ligero. Estiramiento activo."
               },
               {
-                "nombre": "Curl femoral acostado en maquina",
+                "nombre": "Hip Thrust bilateral (peso corporal)",
                 "series": 2,
-                "repeticiones": "15",
-                "descanso": "75s",
-                "notas": "Peso ligero. Solo activacion de femorales."
+                "repeticiones": "20",
+                "descanso": "60s",
+                "notas": "Sin carga adicional. Activacion de gluteo."
               },
               {
-                "nombre": "Hip thrust con barra en banco",
+                "nombre": "Elevacion de pantorrillas",
                 "series": 2,
-                "repeticiones": "15",
-                "descanso": "75s",
-                "notas": "50% de carga. Recuperacion activa de gluteo."
+                "repeticiones": "20",
+                "descanso": "60s",
+                "notas": "Mantenimiento."
               }
             ]
           },
           {
-            "nombre": "Sabado — Full Body Funcional (Deload)",
-            "tipo": "full",
-            "duracion": "45-50 min",
-            "calentamiento": "Movilidad completa 10 min",
+            "nombre": "Sabado — Cardio / Movilidad Activa (Deload)",
+            "tipo": "cardio",
+            "duracion": "35 min",
+            "calentamiento": "Inmediato desde el inicio",
             "ejercicios": [
               {
-                "nombre": "Press de hombro con mancuernas sentada",
-                "series": 2,
-                "repeticiones": "15",
-                "descanso": "60s",
-                "notas": "Deload. Peso muy ligero. Solo movilidad activa y patron motor."
+                "nombre": "Caminata en cinta con inclinacion",
+                "series": 1,
+                "repeticiones": "20 min",
+                "descanso": "N/A",
+                "notas": "Inclinacion 5-8%, velocidad moderada (5-6 km/h). FC objetivo 50-60% max."
               },
               {
-                "nombre": "Remo con mancuerna un brazo apoyado",
-                "series": 2,
-                "repeticiones": "15",
-                "descanso": "60s",
-                "notas": "Peso ligero. Recuperacion activa de espalda."
-              },
-              {
-                "nombre": "Sentadilla sumo con mancuerna (goblet)",
-                "series": 2,
-                "repeticiones": "15",
-                "descanso": "60s",
-                "notas": "Peso muy ligero. Solo patron motor. Rodilla izquierda: sin ninguna restriccion a este peso."
-              },
-              {
-                "nombre": "Plancha isometrica",
-                "series": 2,
-                "repeticiones": "20-30 seg",
-                "descanso": "45s",
-                "notas": "Solo activacion de core. Sin esfuerzo maximo."
+                "nombre": "Stretching estatico full body",
+                "series": 1,
+                "repeticiones": "15 min",
+                "descanso": "N/A",
+                "notas": "Cada posicion 30-45s. Enfocarse en: cuadriceps, isquios, flexores de cadera, gluteo, espalda baja."
               }
             ]
           }
@@ -1506,98 +1542,108 @@
       }
     ]
   },
-
   "plan_nutricion": {
+    "objetivo": "Deficit calorico moderado (-300 kcal/dia) para recomposicion corporal con alto volumen de entrenamiento. Prioridad: proteina alta para preservar musculo durante deficit.",
     "calorias_diarias": 1650,
-    "proteina_g": 130,
-    "carbohidratos_g": 145,
+    "proteina_g": 140,
+    "carbohidratos_g": 150,
     "grasas_g": 55,
-    "objetivo": "Deficit calorico moderado para perdida de grasa preservando musculo. Con 65 kg estimados y 40 anos, tu TMB es aproximadamente 1,380 kcal (Mifflin-St Jeor). Con actividad alta (6 dias de entreno), tu TDEE es ~2,100 kcal. Un deficit de 450 kcal te ubica en 1,650 kcal/dia — suficiente para perder 0.4-0.5 kg de grasa por semana sin perder musculo. Proteina alta (2.0 g/kg) para preservacion muscular y resistencia anabolica propia de los 40 anos.",
+    "proteina_por_kg": "2.1g/kg (peso actual estimado 66kg)",
+    "distribucion_macros": "34% proteina / 36% carbos / 30% grasa",
+    "timing_proteina": "Distribuir en 4-5 comidas. Minimo 30g por comida principal para maxima sintesis proteica.",
     "tips": [
-      "Come proteina en CADA tiempo de comida — minimo 25-35g por comida para maximizar la sintesis proteica (MPS) y combatir la resistencia anabolica propia de los 40 anos.",
-      "Carbohidratos ANTES y DESPUES del entreno: pre-entreno 30-60 min antes (fruta + proteina), post-entreno dentro de 90 min (comida completa con carbos y proteina).",
-      "Hidratacion: 2.5-3 litros de agua al dia. En dias de piernas (Lunes/Miercoles/Viernes) agrega un vaso extra con electrolitos (agua de coco o sal + limon).",
-      "No saltarse la cena — es la comida de recuperacion nocturna. Incluye proteina de absorcion lenta (caseina: leche, queso cottage, yogur griego) para minimizar el catabolismo nocturno.",
-      "En dias de deload (Semana 5): puedes aumentar las calorias en 150-200 kcal para potenciar la supracompensacion.",
-      "Cafe negro antes del entreno (1-2 tazas, 30-45 min antes): mejora el rendimiento y la oxidacion de grasas. Sin azucar.",
-      "Evita los ultraprocesados y el azucar refinada durante las primeras 4 semanas para potenciar la sensibilidad a la insulina."
+      "Consumir 30-40g de proteina dentro de los 60 min post-entrenamiento",
+      "Carbohidratos peri-entreno: 30-40g antes y 40-50g despues en dias de piernas y gluteo",
+      "Dias de deload (semana 5): reducir carbos 20%, mantener proteina igual",
+      "Hidratacion: 2.5-3L de agua al dia, mas 500ml por hora de entrenamiento",
+      "Si hambre excesiva: agregar mas verduras de hoja verde sin calorias significativas",
+      "Evitar deficit > 500 kcal — comprometeria recuperacion muscular y rendimiento"
     ],
     "comidas_sugeridas": [
       {
-        "nombre": "Desayuno",
-        "opciones": [
-          "OPCION A: 3 huevos revueltos + 2 claras + 1 arepa de maiz + 1 banano mediano (540 kcal | 38g P | 52g C | 18g G)",
-          "OPCION B: 80g avena en agua + 1 scoop proteina whey (30g P) + 1 cucharada miel + 1/2 banano (510 kcal | 40g P | 65g C | 8g G)",
-          "OPCION C: 2 huevos + 2 claras en omelette + 40g queso bajo en grasa + 2 tostadas integrales + 1 naranja (520 kcal | 36g P | 50g C | 18g G)",
-          "OPCION D: 200g yogur griego natural + 30g granola sin azucar + 1 scoop proteina + 100g fresas (480 kcal | 42g P | 48g C | 10g G)"
-        ]
+        "nombre": "Desayuno Pre-Entreno (si entrena en manana)",
+        "descripcion": "2 huevos enteros + 2 claras revueltos + 1 taza avena con leche descremada + 1 fruta mediana",
+        "proteina_g": 35,
+        "carbos_g": 55,
+        "grasa_g": 10,
+        "calorias": 450
       },
       {
-        "nombre": "Almuerzo",
-        "opciones": [
-          "OPCION A: 180g pechuga de pollo a la plancha + 200g arroz blanco cocido + 100g frijoles negros + ensalada verde con limon (680 kcal | 52g P | 78g C | 10g G)",
-          "OPCION B: 200g atun en agua escurrido + 200g papa criolla cocida + 2 cucharadas aguacate + ensalada de tomate y pepino (620 kcal | 48g P | 68g C | 14g G)",
-          "OPCION C: 180g salmon al horno + 200g arroz integral + brocoli y zanahoria al vapor (700 kcal | 46g P | 70g C | 22g G)",
-          "OPCION D: 200g carne de res magra (bola negra) + 200g arroz + 100g lentejas + ensalada (720 kcal | 56g P | 75g C | 18g G)"
-        ]
+        "nombre": "Almuerzo Principal",
+        "descripcion": "150g pechuga de pollo o 200g tilapia + 1 taza arroz integral o 1.5 tazas papa o yuca + ensalada grande con aceite de oliva",
+        "proteina_g": 40,
+        "carbos_g": 45,
+        "grasa_g": 12,
+        "calorias": 450
       },
       {
         "nombre": "Merienda Post-Entreno",
-        "opciones": [
-          "OPCION A: 1 scoop proteina whey con leche descremada 250ml + 1 manzana (320 kcal | 34g P | 38g C | 4g G)",
-          "OPCION B: 150g queso cottage bajo en grasa + 100g arandanos + 10 almendras (280 kcal | 28g P | 22g C | 10g G)",
-          "OPCION C: 200ml yogur griego + 20g proteina en polvo + 50g avena (380 kcal | 36g P | 40g C | 8g G)",
-          "OPCION D: 2 huevos duros + 1 fruta mediana + 1 punado nueces (290 kcal | 16g P | 22g C | 16g G)"
-        ]
+        "descripcion": "1 scoop proteina en polvo (whey) + 1 banano mediano + 1 punanado nueces",
+        "proteina_g": 30,
+        "carbos_g": 30,
+        "grasa_g": 10,
+        "calorias": 320
       },
       {
         "nombre": "Cena",
-        "opciones": [
-          "OPCION A: 150g pechuga de pollo al horno + 150g camote cocido + espinacas salteadas (450 kcal | 40g P | 38g C | 10g G)",
-          "OPCION B: Sopa de lentejas con 80g pollo desmenuzado + verduras + 1 arepa pequena (420 kcal | 36g P | 45g C | 8g G)",
-          "OPCION C: 200g claras de huevo revueltas con espinacas y tomate + 1 rebanada pan integral + 1/4 aguacate (380 kcal | 34g P | 28g C | 12g G)",
-          "OPCION D: 150g salmon + brocoli al vapor + 100g quinoa cocida (480 kcal | 42g P | 32g C | 16g G)"
-        ]
+        "descripcion": "150g carne magra (res 90% o lomo) / 200g salmon / 2 huevos + 2 claras + verduras al vapor o asadas + 1/2 taza legumbres",
+        "proteina_g": 35,
+        "carbos_g": 15,
+        "grasa_g": 15,
+        "calorias": 330
+      },
+      {
+        "nombre": "Snack Nocturno (opcional)",
+        "descripcion": "200g yogur griego 0% grasa + 1 cda miel de abeja + canela",
+        "proteina_g": 18,
+        "carbos_g": 15,
+        "grasa_g": 1,
+        "calorias": 140
       }
     ]
   },
-
   "plan_habitos": [
     {
-      "nombre": "Sueno reparador de 7-8 horas",
-      "descripcion": "Duerme entre 7 y 8 horas cada noche. Apaga pantallas 45 minutos antes de acostarte. Mantén la habitacion fresca (18-20 grados). Establece una rutina fija de hora de dormir y hora de despertar.",
-      "razon": "El 60-70% de la recuperacion muscular ocurre durante el sueno profundo. A los 40 anos, la produccion de hormona de crecimiento (HGH) ya ha disminuido un 30-40% respecto a los 25 anos — el sueno es el mayor estimulador natural que te queda. Dormir mal aumenta el cortisol, que destruye musculo y aumenta el almacenamiento de grasa abdominal.",
-      "frecuencia": "Diario — sin excepciones"
+      "nombre": "Sueno de calidad",
+      "frecuencia": "Diario — 7.5 a 9 horas",
+      "descripcion": "Dormir entre 10pm-11pm. Evitar pantallas 45 min antes. Cuarto oscuro y frio (18-20°C).",
+      "razon": "El 70-80% de la hormona de crecimiento se secreta durante el sueno profundo. Critico para recuperacion muscular y metabolismo de grasa en mujeres."
     },
     {
-      "nombre": "Hidratacion activa — 2.5 a 3 litros diarios",
-      "descripcion": "Lleva una botella de 1 litro al gimnasio y toma 500ml antes de empezar. Fuera del gimnasio, toma agua cada hora. En dias de piernas (Lunes, Miercoles, Viernes) agrega electrolitos en el primer litro del dia.",
-      "razon": "Una deshidratacion del 2% reduce el rendimiento en entreno un 10-15%. Tu rodilla izquierda requiere que el cartilago este bien hidratado para funcionar como amortiguador. Los musculos son 75% agua — sin hidratacion, la sintesis proteica se ve comprometida.",
-      "frecuencia": "Diario"
+      "nombre": "Caminata diaria de recuperacion activa",
+      "frecuencia": "Diario — 20-30 minutos",
+      "descripcion": "Caminata tranquila (no es cardio intenso). Puede ser despues de cenar o durante el dia.",
+      "razon": "Activa circulacion linfatica, reduce DOMS, mejora sensibilidad a la insulina y reduce cortisol cronico sin sumar fatiga al entrenamiento."
     },
     {
-      "nombre": "Caminata de 10-15 minutos post-comida",
-      "descripcion": "Despues de almuerzo o cena, camina a ritmo suave durante 10-15 minutos. No es cardio intenso — es una caminata relajada en casa, parque o trabajo.",
-      "razon": "Las caminatas post-comida reducen el pico glucemico en un 30%. Para tu objetivo de recomposicion, mantener la insulina estable durante el dia maximiza la oxidacion de grasas en reposo. La caminata suave no interfiere con la recuperacion muscular.",
-      "frecuencia": "Diario (despues de almuerzo o cena)"
+      "nombre": "Hidratacion consciente",
+      "frecuencia": "Diario — 2.5 a 3 litros",
+      "descripcion": "Comenzar el dia con 500ml de agua antes del primer cafe. Tener botella visible siempre.",
+      "razon": "La deshidratacion del 2% reduce rendimiento en fuerza hasta 10%. Esencial para sintesis proteica y transporte de nutrientes."
     },
     {
-      "nombre": "Tracking de comidas — 5 dias por semana",
-      "descripcion": "Usa una app de tracking (MyFitnessPal o Cronometer) para registrar lo que comes. No necesita ser perfecto — solo consciente. Enfocate en alcanzar la meta de proteina (130g) cada dia.",
-      "razon": "El tracking de alimentos es el predictor numero 1 de exito en recomposicion corporal segun multiples meta-analisis. Las personas que hacen seguimiento de sus comidas pierden 2-3 veces mas grasa. Solo necesitas hacerlo durante las primeras 4-8 semanas para calibrar tus porciones.",
-      "frecuencia": "5-7 dias por semana"
+      "nombre": "Registro de entrenamiento",
+      "frecuencia": "Cada sesion",
+      "descripcion": "Anotar peso usado, series, reps y RIR percibido. Puede ser en el celular o cuaderno.",
+      "razon": "La sobrecarga progresiva necesita datos. Sin registro no hay progresion sistematica. Es la herramienta #1 de avance muscular a largo plazo."
     },
     {
-      "nombre": "Gestion del estres — respiracion 4-7-8",
-      "descripcion": "Una vez al dia, en el momento de mayor estres o antes de dormir: inhala 4 segundos, retén el aire 7 segundos, exhala 8 segundos. Repite 4-6 ciclos.",
-      "razon": "El cortisol cronico elevado es el mayor enemigo de la recomposicion corporal a los 40 anos. Niveles altos de cortisol aumentan el almacenamiento de grasa visceral e inhiben la sintesis proteica. La tecnica 4-7-8 activa el sistema nervioso parasimpatico en menos de 90 segundos.",
-      "frecuencia": "Diario — preferiblemente antes de dormir"
+      "nombre": "Control de estres y cortisol",
+      "frecuencia": "Diario — 10 minutos",
+      "descripcion": "5 min de respiracion diafragmatica (4-7-8) + 5 min de gratitud o journaling antes de dormir.",
+      "razon": "El cortisol cronicamente elevado inhibe la lipasa hormono-sensible (quema de grasa) y promueve catabolismo muscular. Especialmente relevante en mujeres con alto porcentaje de grasa."
     },
     {
-      "nombre": "Check-in semanal al coach cada domingo",
-      "descripcion": "Cada domingo envia 3 fotos (frente, perfil derecho, espalda) + peso en ayunas del lunes + respuesta a: Como te sentiste esta semana / Hubo algun dolor o molestia / Completaste los 6 dias de entreno.",
-      "razon": "El seguimiento semanal permite ajustar el programa en tiempo real. Las fotos son el mejor indicador real de cambio en composicion corporal. El reporte temprano de molestias en la rodilla izquierda permite hacer ajustes antes de que se conviertan en lesiones.",
-      "frecuencia": "Cada domingo"
+      "nombre": "Ingesta proteica en desayuno",
+      "frecuencia": "Diario",
+      "descripcion": "Minimo 30g de proteina en las primeras 2 horas de despertar. Evitar desayunos solo de carbohidratos.",
+      "razon": "Activa mTOR en la manana, establece un perfil hormonal anabolico temprano y reduce craving de azucar durante el dia."
+    },
+    {
+      "nombre": "Movilidad de rodilla izquierda",
+      "frecuencia": "Post-entreno dias de piernas — 5 minutos",
+      "descripcion": "Extensiones suaves de rodilla (0-90°), ejercicios de VMO (vasto medial oblicuo) con banda, hielo opcional si hay inflamacion post-sesion.",
+      "razon": "Mantenimiento de salud articular en rodilla lesionada durante ciclo de entrenamiento intenso. Previene inflamacion cronica y permite continuar progresando sin interrupciones."
     }
   ]
 }
