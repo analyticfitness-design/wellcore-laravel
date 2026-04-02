@@ -165,10 +165,18 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
     Route::get('/clients/{id}', [AdminController::class, 'clientDetail'])->where('id', '[0-9]+');
     Route::put('/clients/{id}', [AdminController::class, 'updateClient'])->where('id', '[0-9]+');
     Route::get('/payments', [AdminController::class, 'payments']);
+    Route::get('/coaches/stats', [AdminController::class, 'coachStats']);
     Route::get('/coaches', [AdminController::class, 'coaches']);
     Route::post('/coaches', [AdminController::class, 'addCoach']);
+    Route::get('/coaches/{id}', [AdminController::class, 'getCoach'])->where('id', '[0-9]+');
     Route::put('/coaches/{id}', [AdminController::class, 'updateCoach'])->where('id', '[0-9]+');
+    Route::delete('/coaches/{id}', [AdminController::class, 'deleteCoach'])->where('id', '[0-9]+');
+    Route::patch('/coaches/{id}/visibility', [AdminController::class, 'toggleCoachVisibility'])->where('id', '[0-9]+');
     Route::get('/plans', [AdminController::class, 'plans']);
+    Route::post('/plans', [AdminController::class, 'createPlan']);
+    Route::get('/plans/{id}', [AdminController::class, 'viewPlan'])->where('id', '[0-9]+');
+    Route::put('/plans/{id}', [AdminController::class, 'updatePlan'])->where('id', '[0-9]+');
+    Route::delete('/plans/{id}', [AdminController::class, 'deletePlan'])->where('id', '[0-9]+');
     Route::get('/inscriptions', [AdminController::class, 'inscriptions']);
     Route::put('/inscriptions/{id}', [AdminController::class, 'updateInscription'])->where('id', '[0-9]+');
     Route::get('/invitations', [AdminController::class, 'invitations']);

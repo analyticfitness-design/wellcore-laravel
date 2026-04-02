@@ -757,17 +757,30 @@ class AdminController extends Controller
             $profile = CoachProfile::where('admin_id', $admin->id)->first();
             $clientCount = AssignedPlan::where('assigned_by', $admin->id)->distinct('client_id')->count('client_id');
 
+            $specs = [];
+            if ($profile && $profile->specializations) {
+                $raw = $profile->specializations;
+                if (is_array($raw)) {
+                    $specs = $raw;
+                } elseif (is_string($raw)) {
+                    $decoded = json_decode($raw, true);
+                    $specs   = is_array($decoded) ? $decoded : array_map('trim', explode(',', $raw));
+                }
+            }
+
             return [
-                'id' => $admin->id,
-                'name' => $admin->name,
-                'username' => $admin->username,
-                'role' => $admin->role?->value ?? $admin->role ?? '',
-                'role_label' => $admin->role?->label() ?? ucfirst($admin->role ?? ''),
-                'client_count' => $clientCount,
-                'has_profile' => $profile !== null,
-                'city' => $profile?->city,
-                'referral_code' => $profile?->referral_code,
-                'created_at' => $admin->created_at?->format('d M Y'),
+                'id'             => $admin->id,
+                'name'           => $admin->name,
+                'username'       => $admin->username,
+                'role'           => $admin->role?->value ?? $admin->role ?? '',
+                'role_label'     => $admin->role?->label() ?? ucfirst($admin->role ?? ''),
+                'client_count'   => $clientCount,
+                'has_profile'    => $profile !== null,
+                'city'           => $profile?->city,
+                'specializations'=> $specs,
+                'public_visible' => (bool) ($profile?->public_visible ?? false),
+                'referral_code'  => $profile?->referral_code,
+                'created_at'     => $admin->created_at?->format('d M Y'),
             ];
         });
 
@@ -885,6 +898,122 @@ class AdminController extends Controller
         return response()->json(['updated' => true]);
     }
 
+    /**
+     * GET /api/v/admin/coaches/{id}
+     *
+     * Full coach detail (profile + client count) for the view modal.
+     */
+    public function getCoach(Request $request, int $id): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $admin   = Admin::findOrFail($id);
+        $profile = CoachProfile::where('admin_id', $id)->first();
+        $clientCount = AssignedPlan::where('assigned_by', $id)
+            ->where('active', true)
+            ->distinct('client_id')
+            ->count('client_id');
+
+        $specs = [];
+        if ($profile && $profile->specializations) {
+            $raw = $profile->specializations;
+            if (is_array($raw)) {
+                $specs = $raw;
+            } elseif (is_string($raw)) {
+                $decoded = json_decode($raw, true);
+                $specs   = is_array($decoded) ? $decoded : array_map('trim', explode(',', $raw));
+            }
+        }
+
+        return response()->json([
+            'id'                  => $admin->id,
+            'name'                => $admin->name,
+            'username'            => $admin->username,
+            'role'                => $admin->role?->value ?? $admin->role ?? '',
+            'role_label'          => $admin->role?->label() ?? ucfirst($admin->role ?? ''),
+            'created_at'          => $admin->created_at?->format('d M Y'),
+            'client_count'        => $clientCount,
+            'has_profile'         => $profile !== null,
+            'bio'                 => $profile?->bio,
+            'city'                => $profile?->city,
+            'experience'          => $profile?->experience,
+            'specializations'     => $specs,
+            'whatsapp'            => $profile?->whatsapp,
+            'instagram'           => $profile?->instagram,
+            'referral_code'       => $profile?->referral_code,
+            'referral_commission' => $profile?->referral_commission,
+            'public_visible'      => (bool) ($profile?->public_visible ?? false),
+        ]);
+    }
+
+    /**
+     * DELETE /api/v/admin/coaches/{id}
+     *
+     * Delete a coach. Cannot delete superadmins or yourself.
+     * Ports Admin\CoachManagement.php deleteCoach() logic.
+     */
+    public function deleteCoach(Request $request, int $id): JsonResponse
+    {
+        $currentAdmin = $this->resolveAdminOrFail($request);
+
+        if ($currentAdmin->id === $id) {
+            return response()->json(['error' => 'No puedes eliminarte a ti mismo.'], 403);
+        }
+
+        $admin = Admin::find($id);
+        if (! $admin) {
+            return response()->json(['error' => 'Coach no encontrado.'], 404);
+        }
+
+        $roleVal = $admin->role instanceof \App\Enums\UserRole ? $admin->role->value : $admin->role;
+        if ($roleVal === 'superadmin') {
+            return response()->json(['error' => 'No se puede eliminar un superadmin.'], 403);
+        }
+
+        AuthToken::where('user_id', $id)->where('user_type', 'admin')->delete();
+        CoachProfile::where('admin_id', $id)->delete();
+        $admin->delete();
+
+        return response()->json(['deleted' => true]);
+    }
+
+    /**
+     * PATCH /api/v/admin/coaches/{id}/visibility
+     *
+     * Toggle public_visible on the coach profile.
+     * Ports Admin\CoachManagement.php toggleVisibility() logic.
+     */
+    public function toggleCoachVisibility(Request $request, int $id): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $profile = CoachProfile::where('admin_id', $id)->first();
+        if (! $profile) {
+            return response()->json(['error' => 'Perfil no encontrado.'], 404);
+        }
+
+        $profile->update(['public_visible' => ! $profile->public_visible]);
+
+        return response()->json(['public_visible' => (bool) $profile->public_visible]);
+    }
+
+    /**
+     * GET /api/v/admin/coaches/stats
+     *
+     * Aggregate stats for the coach management header cards.
+     */
+    public function coachStats(Request $request): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        return response()->json([
+            'total'        => Admin::count(),
+            'coaches'      => Admin::where('role', 'coach')->count(),
+            'with_profile' => CoachProfile::count(),
+            'clients'      => AssignedPlan::where('active', true)->distinct('client_id')->count('client_id'),
+        ]);
+    }
+
     // ─── Plans ──────────────────────────────────────────────────────────
 
     /**
@@ -897,16 +1026,23 @@ class AdminController extends Controller
     {
         $this->resolveAdminOrFail($request);
 
-        $search = $request->query('search', '');
-        $typeFilter = $request->query('type', 'all');
-        $coachFilter = $request->query('coach', 'all');
-        $sortBy = $request->query('sort_by', 'created_at');
-        $sortDir = $request->query('sort_dir', 'desc');
+        $search       = $request->query('search', '');
+        $typeFilter   = $request->query('type', 'all');
+        $coachFilter  = $request->query('coach', 'all');
+        $publicFilter = $request->query('public', 'all');
+        $aiFilter     = $request->query('ai', 'all');
+        $sortBy       = $request->query('sort_by', 'created_at');
+        $sortDir      = $request->query('sort_dir', 'desc');
 
         $query = PlanTemplate::query();
 
         if ($search !== '') {
-            $query->where('name', 'like', "%{$search}%");
+            $s = $search;
+            $query->where(function ($q) use ($s) {
+                $q->where('name', 'like', "%{$s}%")
+                  ->orWhere('methodology', 'like', "%{$s}%")
+                  ->orWhere('description', 'like', "%{$s}%");
+            });
         }
         if ($typeFilter !== 'all') {
             $query->where('plan_type', $typeFilter);
@@ -914,41 +1050,190 @@ class AdminController extends Controller
         if ($coachFilter !== 'all') {
             $query->where('coach_id', (int) $coachFilter);
         }
+        if ($publicFilter !== 'all') {
+            $query->where('is_public', $publicFilter === 'yes');
+        }
+        if ($aiFilter !== 'all') {
+            $query->where('ai_generated', $aiFilter === 'yes');
+        }
 
         $allowedSorts = ['name', 'plan_type', 'created_at'];
         if (! in_array($sortBy, $allowedSorts)) {
             $sortBy = 'created_at';
         }
 
-        $paginated = $query->orderBy($sortBy, $sortDir === 'asc' ? 'asc' : 'desc')->paginate(25);
+        $paginated = $query->orderBy($sortBy, $sortDir === 'asc' ? 'asc' : 'desc')->paginate(20);
 
         $plans = collect($paginated->items())->map(fn ($p) => [
-            'id' => $p->id,
-            'name' => $p->name,
-            'plan_type' => $p->plan_type,
-            'methodology' => $p->methodology,
-            'description' => $p->description,
-            'is_public' => (bool) $p->is_public,
+            'id'           => $p->id,
+            'name'         => $p->name,
+            'plan_type'    => $p->plan_type,
+            'methodology'  => $p->methodology,
+            'description'  => $p->description,
+            'is_public'    => (bool) $p->is_public,
             'ai_generated' => (bool) $p->ai_generated,
-            'coach_id' => $p->coach_id,
-            'coach_name' => $p->coach_id ? Admin::find($p->coach_id)?->name : null,
-            'created_at' => $p->created_at?->format('d M Y'),
+            'coach_id'     => $p->coach_id,
+            'coach_name'   => $p->coach_id ? Admin::find($p->coach_id)?->name : null,
+            'created_at'   => $p->created_at?->format('d M Y'),
         ]);
 
-        // Coaches for filter
+        // Stats counts
+        $stats = [
+            'total'          => PlanTemplate::count(),
+            'entrenamiento'  => PlanTemplate::where('plan_type', 'entrenamiento')->count(),
+            'nutricion'      => PlanTemplate::where('plan_type', 'nutricion')->count(),
+            'habitos'        => PlanTemplate::where('plan_type', 'habitos')->count(),
+            'suplementacion' => PlanTemplate::where('plan_type', 'suplementacion')->count(),
+            'ciclo'          => PlanTemplate::where('plan_type', 'ciclo')->count(),
+            'ai_generated'   => PlanTemplate::where('ai_generated', true)->count(),
+        ];
+
+        // Coaches for filter dropdown
         $coaches = Admin::whereIn('role', ['coach', 'admin', 'superadmin'])
             ->orderBy('name')
             ->get(['id', 'name', 'role']);
 
         return response()->json([
-            'plans' => $plans,
+            'plans'      => $plans,
+            'stats'      => $stats,
+            'coaches'    => $coaches,
             'pagination' => [
                 'current_page' => $paginated->currentPage(),
-                'last_page' => $paginated->lastPage(),
-                'total' => $paginated->total(),
+                'last_page'    => $paginated->lastPage(),
+                'total'        => $paginated->total(),
             ],
-            'coaches' => $coaches,
         ]);
+    }
+
+    /**
+     * GET /api/v/admin/plans/{id}
+     *
+     * Fetch a single plan with full content_json for the view modal.
+     */
+    public function viewPlan(Request $request, int $id): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $plan = PlanTemplate::findOrFail($id);
+
+        return response()->json([
+            'plan' => [
+                'id'           => $plan->id,
+                'name'         => $plan->name,
+                'plan_type'    => $plan->plan_type,
+                'methodology'  => $plan->methodology,
+                'description'  => $plan->description,
+                'is_public'    => (bool) $plan->is_public,
+                'ai_generated' => (bool) $plan->ai_generated,
+                'coach_id'     => $plan->coach_id,
+                'coach_name'   => $plan->coach_id ? Admin::find($plan->coach_id)?->name : null,
+                'content_json' => is_array($plan->content_json)
+                    ? $plan->content_json
+                    : json_decode($plan->content_json ?? '{}', true),
+                'created_at'   => $plan->created_at?->format('d M Y'),
+                'updated_at'   => $plan->updated_at?->format('d M Y'),
+            ],
+        ]);
+    }
+
+    /**
+     * POST /api/v/admin/plans
+     *
+     * Create a new plan template.
+     * Ports Admin\PlanManagement.php savePlan() (create path).
+     */
+    public function createPlan(Request $request): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $validated = $request->validate([
+            'name'         => 'required|string|max:160',
+            'plan_type'    => 'required|in:entrenamiento,nutricion,habitos,suplementacion,ciclo',
+            'methodology'  => 'nullable|string|max:255',
+            'description'  => 'nullable|string|max:5000',
+            'content_json' => 'required',
+            'is_public'    => 'nullable|boolean',
+            'coach_id'     => 'nullable|integer|exists:admins,id',
+        ]);
+
+        $contentArray = $validated['content_json'];
+        if (is_string($contentArray)) {
+            $contentArray = json_decode($contentArray, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return response()->json(['errors' => ['content_json' => ['JSON invalido: '.json_last_error_msg()]]], 422);
+            }
+        }
+
+        $plan = PlanTemplate::create([
+            'name'         => $validated['name'],
+            'plan_type'    => $validated['plan_type'],
+            'methodology'  => $validated['methodology'] ?? null,
+            'description'  => $validated['description'] ?? null,
+            'content_json' => $contentArray,
+            'is_public'    => $validated['is_public'] ?? false,
+            'coach_id'     => $validated['coach_id'] ?? null,
+            'ai_generated' => false,
+        ]);
+
+        return response()->json(['created' => true, 'id' => $plan->id], 201);
+    }
+
+    /**
+     * PUT /api/v/admin/plans/{id}
+     *
+     * Update an existing plan template.
+     * Ports Admin\PlanManagement.php savePlan() (edit path).
+     */
+    public function updatePlan(Request $request, int $id): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $plan = PlanTemplate::findOrFail($id);
+
+        $validated = $request->validate([
+            'name'         => 'required|string|max:160',
+            'plan_type'    => 'required|in:entrenamiento,nutricion,habitos,suplementacion,ciclo',
+            'methodology'  => 'nullable|string|max:255',
+            'description'  => 'nullable|string|max:5000',
+            'content_json' => 'required',
+            'is_public'    => 'nullable|boolean',
+            'coach_id'     => 'nullable|integer|exists:admins,id',
+        ]);
+
+        $contentArray = $validated['content_json'];
+        if (is_string($contentArray)) {
+            $contentArray = json_decode($contentArray, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return response()->json(['errors' => ['content_json' => ['JSON invalido: '.json_last_error_msg()]]], 422);
+            }
+        }
+
+        $plan->update([
+            'name'         => $validated['name'],
+            'plan_type'    => $validated['plan_type'],
+            'methodology'  => $validated['methodology'] ?? null,
+            'description'  => $validated['description'] ?? null,
+            'content_json' => $contentArray,
+            'is_public'    => $validated['is_public'] ?? $plan->is_public,
+            'coach_id'     => array_key_exists('coach_id', $validated) ? ($validated['coach_id'] ?: null) : $plan->coach_id,
+        ]);
+
+        return response()->json(['updated' => true]);
+    }
+
+    /**
+     * DELETE /api/v/admin/plans/{id}
+     *
+     * Delete a plan template.
+     * Ports Admin\PlanManagement.php deletePlan() logic.
+     */
+    public function deletePlan(Request $request, int $id): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        PlanTemplate::findOrFail($id)->delete();
+
+        return response()->json(['deleted' => true]);
     }
 
     // ─── Inscriptions ───────────────────────────────────────────────────
