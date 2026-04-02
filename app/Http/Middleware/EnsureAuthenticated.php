@@ -62,7 +62,15 @@ class EnsureAuthenticated
             return substr($header, 7);
         }
 
-        // 3. Check cookie — wc_token is not in encryptCookies(except), so the vanilla
+        // 3. Check admin_token in POST body (impersonation from Vue SPA where PHP session may be absent).
+        //    Also seed the session so WellCoreGuard can resolve the user in subsequent middleware.
+        if ($request->filled('admin_token')) {
+            $bodyToken = $request->input('admin_token');
+            session(['wc_token' => $bodyToken]);
+            return $bodyToken;
+        }
+
+        // 4. Check cookie — wc_token is not in encryptCookies(except), so the vanilla
         //    PHP app's unencrypted cookie will throw DecryptException; catch it silently.
         try {
             $cookie = $request->cookie('wc_token');

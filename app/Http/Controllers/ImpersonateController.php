@@ -17,7 +17,7 @@ class ImpersonateController extends Controller
      * The current admin token is stashed under 'wc_admin_token' so it can
      * be restored when impersonation ends.
      */
-    public function start(int $clientId): RedirectResponse
+    public function start(\Illuminate\Http\Request $request, int $clientId): RedirectResponse
     {
         // 1. Verify the current user is a known admin type (middleware enforces
         //    role:superadmin,admin, but we re-check here for defence-in-depth).
@@ -33,7 +33,18 @@ class ImpersonateController extends Controller
         }
 
         // 3. Stash the current admin token so we can restore the session later.
+        //    Vue SPA may not maintain the PHP session — accept token from POST body as fallback.
         $adminToken = session('wc_token');
+        if (!$adminToken && $request->filled('admin_token')) {
+            $candidate = $request->input('admin_token');
+            $valid = \App\Models\AuthToken::where('token', $candidate)
+                ->where('user_type', \App\Enums\UserType::Admin->value)
+                ->where('expires_at', '>', now())
+                ->exists();
+            if ($valid) {
+                $adminToken = $candidate;
+            }
+        }
         if (!$adminToken) {
             abort(403, 'No active admin session token found.');
         }
