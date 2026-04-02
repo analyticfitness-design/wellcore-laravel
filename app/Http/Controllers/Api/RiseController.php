@@ -105,7 +105,9 @@ class RiseController extends Controller
             $progressPct   = $totalDays > 0 ? min(100, round(($daysElapsed / $totalDays) * 100, 1)) : 0;
 
             $programJson = $program->personalized_program ?? [];
-            $totalWeeks  = $programJson['plan_entrenamiento']['duracion_semanas'] ?? 4;
+            $totalWeeks  = $programJson['plan_entrenamiento']['duracion_semanas']
+                ?? count($programJson['plan_entrenamiento']['semanas'] ?? [])
+                ?: 4;
             $currentWeek = min($totalWeeks, (int) ceil(max(1, $daysElapsed) / 7));
         }
 
@@ -239,7 +241,9 @@ class RiseController extends Controller
             ? (int) max(0, Carbon::parse($riseProgram->start_date)->diffInDays(now()))
             : 0;
 
-        $totalWeeks  = $trainingPlan['duracion_semanas'] ?? 4;
+        $totalWeeks  = $trainingPlan['duracion_semanas']
+            ?? count($trainingPlan['semanas'] ?? [])
+            ?: 4;
         $currentWeek = min($totalWeeks, (int) ceil(max(1, $daysElapsed) / 7));
         $progressPct = $totalDays > 0 ? min(100, round(($daysElapsed / $totalDays) * 100, 1)) : 0;
 

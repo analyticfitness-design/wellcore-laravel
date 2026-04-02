@@ -1449,7 +1449,7 @@
   "plan_nutricion": {
     "nota": "Plan base para mujer activa de 35 años entrenando 5 días/semana en casa. Ajustar según evolución y preferencias personales.",
     "calorias_diarias": 1650,
-    "proteinas_g": 125,
+    "proteina_g": 125,
     "carbohidratos_g": 170,
     "grasas_g": 52,
     "distribucion_macros": {
@@ -1467,7 +1467,7 @@
       "carbohidratos_g": 140,
       "nota": "Días sin entrenamiento: reducir carbohidratos, mantener proteína y grasa"
     },
-    "comidas": [
+    "comidas_sugeridas": [
       {
         "nombre": "Desayuno",
         "hora_sugerida": "7:00 - 8:00 AM",
@@ -1476,21 +1476,21 @@
           {
             "opcion": 1,
             "descripcion": "3 huevos revueltos con espinaca y tomate + 2 tostadas de pan integral",
-            "proteinas_g": 25,
+            "proteina_g": 25,
             "carbohidratos_g": 35,
             "grasas_g": 14
           },
           {
             "opcion": 2,
             "descripcion": "Yogur griego natural (150g) + granola sin azúcar (30g) + frutos rojos (100g)",
-            "proteinas_g": 18,
+            "proteina_g": 18,
             "carbohidratos_g": 40,
             "grasas_g": 8
           },
           {
             "opcion": 3,
             "descripcion": "Avena cocida (60g seca) con leche + 1 scoop proteína en polvo + banana",
-            "proteinas_g": 28,
+            "proteina_g": 28,
             "carbohidratos_g": 55,
             "grasas_g": 6
           }
@@ -1504,21 +1504,21 @@
           {
             "opcion": 1,
             "descripcion": "1 manzana + 20g almendras",
-            "proteinas_g": 4,
+            "proteina_g": 4,
             "carbohidratos_g": 22,
             "grasas_g": 10
           },
           {
             "opcion": 2,
             "descripcion": "Batido de proteína con agua o leche vegetal + 1 fruta",
-            "proteinas_g": 22,
+            "proteina_g": 22,
             "carbohidratos_g": 18,
             "grasas_g": 3
           },
           {
             "opcion": 3,
             "descripcion": "Requesón (100g) con fresas troceadas",
-            "proteinas_g": 12,
+            "proteina_g": 12,
             "carbohidratos_g": 10,
             "grasas_g": 5
           }
@@ -1532,21 +1532,21 @@
           {
             "opcion": 1,
             "descripcion": "Pechuga de pollo a la plancha (150g) + arroz integral (80g cocido) + ensalada verde con aceite de oliva",
-            "proteinas_g": 38,
+            "proteina_g": 38,
             "carbohidratos_g": 45,
             "grasas_g": 12
           },
           {
             "opcion": 2,
             "descripcion": "Carne molida magra salteada (120g) con vegetales + papa cocida mediana",
-            "proteinas_g": 32,
+            "proteina_g": 32,
             "carbohidratos_g": 40,
             "grasas_g": 15
           },
           {
             "opcion": 3,
             "descripcion": "Lentejas guisadas (200g) + arroz blanco (60g cocido) + aguacate 1/4",
-            "proteinas_g": 20,
+            "proteina_g": 20,
             "carbohidratos_g": 52,
             "grasas_g": 10
           }
@@ -1561,21 +1561,21 @@
           {
             "opcion": 1,
             "descripcion": "1 banano + 1 cuchara de mantequilla de maní",
-            "proteinas_g": 5,
+            "proteina_g": 5,
             "carbohidratos_g": 28,
             "grasas_g": 8
           },
           {
             "opcion": 2,
             "descripcion": "Pan integral con queso fresco y mermelada natural",
-            "proteinas_g": 10,
+            "proteina_g": 10,
             "carbohidratos_g": 30,
             "grasas_g": 6
           },
           {
             "opcion": 3,
             "descripcion": "Fruta con yogur griego pequeño (80g)",
-            "proteinas_g": 8,
+            "proteina_g": 8,
             "carbohidratos_g": 22,
             "grasas_g": 3
           }
@@ -1589,21 +1589,21 @@
           {
             "opcion": 1,
             "descripcion": "Batido de proteína (1 scoop) con leche descremada + 1 fruta",
-            "proteinas_g": 28,
+            "proteina_g": 28,
             "carbohidratos_g": 20,
             "grasas_g": 3
           },
           {
             "opcion": 2,
             "descripcion": "2 huevos duros + 1 naranja",
-            "proteinas_g": 14,
+            "proteina_g": 14,
             "carbohidratos_g": 18,
             "grasas_g": 10
           },
           {
             "opcion": 3,
             "descripcion": "Atún en agua (1 lata pequeña) con galletas de arroz",
-            "proteinas_g": 25,
+            "proteina_g": 25,
             "carbohidratos_g": 20,
             "grasas_g": 2
           }
@@ -1617,21 +1617,21 @@
           {
             "opcion": 1,
             "descripcion": "Salmón al horno (120g) + vegetales al vapor + quinoa (50g cocida)",
-            "proteinas_g": 35,
+            "proteina_g": 35,
             "carbohidratos_g": 22,
             "grasas_g": 14
           },
           {
             "opcion": 2,
             "descripcion": "Pechuga de pollo en caldo con zanahoria y papa pequeña",
-            "proteinas_g": 30,
+            "proteina_g": 30,
             "carbohidratos_g": 28,
             "grasas_g": 8
           },
           {
             "opcion": 3,
             "descripcion": "Tortilla de 3 claras + 1 yema con champiñones y pimentón + ensalada",
-            "proteinas_g": 22,
+            "proteina_g": 22,
             "carbohidratos_g": 15,
             "grasas_g": 12
           }

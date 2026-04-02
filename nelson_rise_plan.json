@@ -1249,7 +1249,7 @@
   "plan_nutricion": {
     "objetivo_nutricional": "Deficit calorico moderado de 350 kcal para perdida de grasa preservando masa muscular. Alta proteina para soportar recomposicion en atleta avanzado.",
     "calorias_diarias": 2250,
-    "proteinas_g": 175,
+    "proteina_g": 175,
     "carbohidratos_g": 225,
     "grasas_g": 65,
     "nota_calorias": "TDEE estimado ~2600 kcal (78kg, actividad alta Crossfit 5 dias). Deficit de ~350 kcal. Dias de entrenamiento pueden subir 100-150 kcal extra en carbohidratos.",
@@ -1265,7 +1265,7 @@
       "post_entreno": "Proteina + carbohidratos simples dentro de 45 min (whey + banana o arroz blanco)",
       "nota": "Por el horario 6am, el desayuno PRE es critico para el rendimiento en Crossfit"
     },
-    "comidas": [
+    "comidas_sugeridas": [
       {
         "nombre": "Desayuno / Pre-Entreno (5:30am)",
         "descripcion": "Avena con leche descremada (60g avena), 1 banana mediana, 30g proteina en polvo (whey). Opcional: 1 cucharada de mantequilla de mani.",

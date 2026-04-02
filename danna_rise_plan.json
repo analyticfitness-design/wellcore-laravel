@@ -1811,7 +1811,7 @@
   },
   "plan_nutricion": {
     "calorias_diarias": 1700,
-    "proteinas_g": 130,
+    "proteina_g": 130,
     "carbohidratos_g": 175,
     "grasas_g": 55,
     "notas_generales": "Distribución pensada para mujer de 59 kg, nivel intermedio, objetivo composición corporal. Superávit calórico mínimo los días de entrenamiento, ligero déficit el día de descanso. Hidratación mínima: 2.5L agua/día.",
@@ -1825,7 +1825,7 @@
         "notas": "Domingo. Reducir carbohidratos, mantener proteína y grasa."
       }
     },
-    "comidas": [
+    "comidas_sugeridas": [
       {
         "numero": 1,
         "nombre": "Desayuno",
@@ -1841,7 +1841,7 @@
               "Café negro o té sin azúcar"
             ],
             "macros_aprox": {
-              "proteinas_g": 28,
+              "proteina_g": 28,
               "carbohidratos_g": 55,
               "grasas_g": 8
             }
@@ -1855,7 +1855,7 @@
               "Puñado de frutos rojos"
             ],
             "macros_aprox": {
-              "proteinas_g": 42,
+              "proteina_g": 42,
               "carbohidratos_g": 38,
               "grasas_g": 6
             }
@@ -1875,7 +1875,7 @@
               "25g proteína en polvo con agua"
             ],
             "macros_aprox": {
-              "proteinas_g": 22,
+              "proteina_g": 22,
               "carbohidratos_g": 27,
               "grasas_g": 1
             }
@@ -1888,7 +1888,7 @@
               "Mostaza al gusto"
             ],
             "macros_aprox": {
-              "proteinas_g": 22,
+              "proteina_g": 22,
               "carbohidratos_g": 24,
               "grasas_g": 2
             }
@@ -1910,7 +1910,7 @@
               "1 cdta aceite de oliva"
             ],
             "macros_aprox": {
-              "proteinas_g": 45,
+              "proteina_g": 45,
               "carbohidratos_g": 45,
               "grasas_g": 7
             }
@@ -1924,7 +1924,7 @@
               "Limón y hierbas al gusto"
             ],
             "macros_aprox": {
-              "proteinas_g": 44,
+              "proteina_g": 44,
               "carbohidratos_g": 40,
               "grasas_g": 12
             }
@@ -1945,7 +1945,7 @@
               "10 almendras"
             ],
             "macros_aprox": {
-              "proteinas_g": 18,
+              "proteina_g": 18,
               "carbohidratos_g": 12,
               "grasas_g": 8
             }
@@ -1957,7 +1957,7 @@
               "1 manzana mediana"
             ],
             "macros_aprox": {
-              "proteinas_g": 12,
+              "proteina_g": 12,
               "carbohidratos_g": 20,
               "grasas_g": 10
             }
@@ -1979,7 +1979,7 @@
               "Infusión digestiva sin azúcar"
             ],
             "macros_aprox": {
-              "proteinas_g": 42,
+              "proteina_g": 42,
               "carbohidratos_g": 12,
               "grasas_g": 14
             }
@@ -1993,7 +1993,7 @@
               "Infusión sin azúcar"
             ],
             "macros_aprox": {
-              "proteinas_g": 28,
+              "proteina_g": 28,
               "carbohidratos_g": 8,
               "grasas_g": 7
             }

@@ -1267,10 +1267,10 @@
   },
   "plan_nutricion": {
     "calorias_diarias": 1600,
-    "proteinas_g": 120,
+    "proteina_g": 120,
     "carbohidratos_g": 165,
     "grasas_g": 50,
-    "comidas": [
+    "comidas_sugeridas": [
       {
         "tiempo": "Desayuno",
         "descripcion": "Avena con frutas y proteína en polvo o huevos revueltos con tostada integral"
