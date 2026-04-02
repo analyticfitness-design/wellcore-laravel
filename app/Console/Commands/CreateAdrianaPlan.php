@@ -36,7 +36,7 @@ class CreateAdrianaPlan extends Command
             [
                 'start_date' => Carbon::now(),
                 'end_date' => Carbon::now()->addWeeks(5),
-                'experience_level' => 'intermediate_advanced',
+                'experience_level' => 'avanzado',
                 'training_location' => 'full_gym',
                 'gender' => 'female',
                 'status' => 'active',
