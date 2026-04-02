@@ -227,7 +227,7 @@ class RiseController extends Controller
 
         $programJson = $riseProgram->personalized_program ?? [];
 
-        $trainingPlan  = $programJson['plan_entrenamiento'] ?? null;
+        $trainingPlan  = $this->normalizeTrainingPlan($programJson['plan_entrenamiento'] ?? null);
         $nutritionPlan = $programJson['plan_nutricion'] ?? null;
         $habitsPlan    = $programJson['plan_habitos']['habitos'] ?? $programJson['plan_habitos'] ?? [];
 
@@ -1323,5 +1323,48 @@ class RiseController extends Controller
             ->update(['feeling' => $validated['feeling']]);
 
         return response()->json(['saved' => true]);
+    }
+
+    // ─── Helpers ─────────────────────────────────────────────────────────
+
+    /**
+     * Normalizes training plan JSON to always expose a `semanas` array.
+     *
+     * Two legacy formats exist in the DB:
+     *  A) { "semanas": [ { "semana":1, "dias":[...] } ] }  ← new format, pass-through
+     *  B) { "dias": { "lunes": {...}, "martes": {...} } }  ← old flat format, wrap into 1 semana
+     */
+    private function normalizeTrainingPlan(?array $plan): ?array
+    {
+        if ($plan === null) {
+            return null;
+        }
+
+        // Already has semanas array — pass-through
+        if (!empty($plan['semanas']) && is_array($plan['semanas'])) {
+            return $plan;
+        }
+
+        // Old format: dias is a keyed object {lunes:{...}, martes:{...}}
+        if (!empty($plan['dias']) && is_array($plan['dias'])) {
+            $diasArray = [];
+            foreach ($plan['dias'] as $diaNombre => $diaData) {
+                $diasArray[] = array_merge(
+                    ['nombre' => ucfirst($diaNombre)],
+                    is_array($diaData) ? $diaData : []
+                );
+            }
+
+            $plan['semanas'] = [[
+                'semana'      => 1,
+                'fase'        => $plan['fase'] ?? 'Programa',
+                'descripcion' => $plan['descripcion'] ?? '',
+                'dias'        => $diasArray,
+            ]];
+
+            unset($plan['dias']);
+        }
+
+        return $plan;
     }
 }
