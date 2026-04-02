@@ -1,0 +1,155 @@
+{
+  "plan_entrenamiento": {
+    "duracion_semanas": 5,
+    "objetivo": "Recomposicion_Perdida_Grasa",
+    "volumen_semanal_sets": 98,
+    "dias": {
+      "lunes": {
+        "nombre": "Cuadriceps/Abductores/Pantorrillas",
+        "duracion_min": 60,
+        "ejercicios": [
+          {"nombre": "Belt Squat", "sets": 4, "reps": "6-8", "rir": 2, "descanso": 180},
+          {"nombre": "Leg Press 45°", "sets": 3, "reps": "8-10", "rir": 2, "descanso": 150},
+          {"nombre": "Smith Machine Squat (Alto)", "sets": 3, "reps": "10-12", "rir": 1, "descanso": 120},
+          {"nombre": "Leg Extension Machine", "sets": 3, "reps": "12-15", "rir": 1, "descanso": 90},
+          {"nombre": "Abductor Machine", "sets": 3, "reps": "12-15", "rir": 1, "descanso": 75},
+          {"nombre": "Seated Calf Raise", "sets": 3, "reps": "15-20", "rir": 0, "descanso": 60}
+        ]
+      },
+      "martes": {
+        "nombre": "Upper Body/Hombros/Brazos+Abs",
+        "duracion_min": 65,
+        "ejercicios": [
+          {"nombre": "Dumbbell Bench Press", "sets": 4, "reps": "8-10", "rir": 2, "descanso": 150},
+          {"nombre": "Machine Chest Press", "sets": 3, "reps": "10-12", "rir": 2, "descanso": 120},
+          {"nombre": "Machine Shoulder Press", "sets": 3, "reps": "8-10", "rir": 2, "descanso": 120},
+          {"nombre": "Lateral Raise Cable", "sets": 3, "reps": "12-15", "rir": 1, "descanso": 90},
+          {"nombre": "Barbell Curl", "sets": 3, "reps": "8-10", "rir": 2, "descanso": 90},
+          {"nombre": "Rope Tricep Pushdown", "sets": 3, "reps": "12-15", "rir": 1, "descanso": 75},
+          {"nombre": "Machine Crunch", "sets": 2, "reps": "15-20", "rir": 0, "descanso": 60}
+        ]
+      },
+      "miercoles": {
+        "nombre": "Glutes Focus",
+        "duracion_min": 55,
+        "ejercicios": [
+          {"nombre": "Barbell Hip Thrust", "sets": 4, "reps": "8-10", "rir": 2, "descanso": 150},
+          {"nombre": "Bulgarian Split Squat", "sets": 3, "reps": "10-12", "rir": 2, "descanso": 120},
+          {"nombre": "45° Leg Press (Glute)", "sets": 3, "reps": "10-12", "rir": 1, "descanso": 120},
+          {"nombre": "Hamstring Curl Machine", "sets": 3, "reps": "12-15", "rir": 1, "descanso": 90},
+          {"nombre": "Cable Pull-Through", "sets": 3, "reps": "12-15", "rir": 0, "descanso": 75}
+        ]
+      },
+      "jueves": {
+        "nombre": "Upper Back/Shoulders/Brazos+Abs",
+        "duracion_min": 70,
+        "ejercicios": [
+          {"nombre": "Barbell Row", "sets": 4, "reps": "6-8", "rir": 2, "descanso": 150},
+          {"nombre": "Lat Pulldown", "sets": 3, "reps": "8-10", "rir": 2, "descanso": 120},
+          {"nombre": "Machine Reverse Pec Deck", "sets": 3, "reps": "12-15", "rir": 1, "descanso": 90},
+          {"nombre": "Machine Shoulder Press Alt", "sets": 3, "reps": "10-12", "rir": 1, "descanso": 100},
+          {"nombre": "Preacher Curl", "sets": 3, "reps": "10-12", "rir": 1, "descanso": 90},
+          {"nombre": "Overhead Rope Extension", "sets": 3, "reps": "10-12", "rir": 1, "descanso": 90},
+          {"nombre": "Decline Crunch", "sets": 2, "reps": "12-15", "rir": 0, "descanso": 60}
+        ]
+      },
+      "viernes": {
+        "nombre": "Hamstrings/Glutes/Calves",
+        "duracion_min": 60,
+        "ejercicios": [
+          {"nombre": "Romanian Deadlift", "sets": 4, "reps": "6-8", "rir": 2, "descanso": 150},
+          {"nombre": "Hamstring Curl Prone", "sets": 3, "reps": "10-12", "rir": 2, "descanso": 120},
+          {"nombre": "Leg Curl 45° Glute", "sets": 3, "reps": "8-12", "rir": 1, "descanso": 100},
+          {"nombre": "Hip Thrust Dumbbells", "sets": 3, "reps": "10-12", "rir": 0, "descanso": 90},
+          {"nombre": "Standing Calf Raise", "sets": 3, "reps": "12-15", "rir": 1, "descanso": 75}
+        ]
+      },
+      "sabado": {
+        "nombre": "Full Body Funcional + AMRAP",
+        "duracion_min": 45,
+        "circuitos": [
+          {
+            "nombre": "AMRAP 1 (10 min)",
+            "ejercicios_amrap": ["Goblet Squat 15", "Pushup 10", "Row Machine 12"],
+            "rpe": 7
+          },
+          {
+            "nombre": "AMRAP 2 (10 min)",
+            "ejercicios_amrap": ["Bulgarian Split Squat 10x2", "Lat Pulldown 12", "DB Shoulder Press 10"],
+            "rpe": 7
+          },
+          {
+            "nombre": "Superset Finisher (3 rondas)",
+            "ejercicio1": "Leg Press 15 reps",
+            "ejercicio2": "Cable Chest Fly 15 reps",
+            "descanso_entre_sets": 0,
+            "descanso_ronda": 60
+          }
+        ]
+      }
+    },
+    "principios": {
+      "rpe_rir": "RIR 2 compuestos, RIR 1 secundarios, RIR 0 finishers",
+      "periodizacion": "5 semanas + deload semana 6",
+      "intensidad_tecnica": "Lengthened Partials (semanas 4-5 en aislamientos)",
+      "limitaciones": "Sin flexion profunda rodilla izquierda - Belt Squat, Leg Press, RDL priorizados"
+    }
+  },
+  "plan_nutricion": {
+    "tdee_kcal": 2292,
+    "deficit_kcal": 442,
+    "objetivo_kcal_diario": 1850,
+    "macros": {
+      "proteina_g": 160,
+      "proteina_g_kg": 2.3,
+      "grasa_g": 65,
+      "grasa_g_kg": 0.93,
+      "carbs_ciclo": {
+        "dias_altos": ["Lunes", "Jueves", "Viernes"],
+        "carbs_alto_g": 315,
+        "dias_medios": ["Martes"],
+        "carbs_medio_g": 210,
+        "dias_bajos": ["Miercoles", "Sabado"],
+        "carbs_bajo_g": 100
+      }
+    },
+    "periodizacion": {
+      "carbohidratos": "Ciclo semanal según volumen sesion",
+      "proteina": "Consistente 160g diarios",
+      "grasas": "Consistente 65g diarios (salud hormonal)"
+    },
+    "neat_protocol": {
+      "pasos_minimo": 7000,
+      "pasos_objetivo": 10000,
+      "caminatas_post_comida": "10-15 min (200-300 kcal bonus)"
+    },
+    "suplementacion": {
+      "whey_protein": "2 scoops/dia (60g convenience)",
+      "vitamin_d": "2000-4000 IU/dia",
+      "omega3": "2-3g EPA+DHA/dia"
+    },
+    "alimentos_latam": [
+      "Pechuga pollo (base proteina)",
+      "Huevos (6-7/dia)",
+      "Atun lata (proteina rapida)",
+      "Carne res magra",
+      "Tilapia (carbs bajos)",
+      "Yogur griego (proteina+probioticos)",
+      "Frijoles negros (carbs+fibra)",
+      "Lentejas (carbs+proteina)",
+      "Arroz blanco (post-entreno)",
+      "Papa (high satiety)",
+      "Avena (slow carbs)",
+      "Aguacate (grasas saludables)"
+    ]
+  },
+  "plan_habitos": {
+    "sueno": "8 horas minimo noche anterior entreno",
+    "hidratacion": "3-4 L agua/dia + electrolitos entreno",
+    "recuperacion": "Foam roll quads 2x/semana, stretching 90-90 rodilla 45 seg",
+    "tracking": "Spreadsheet: Fecha | Ejercicio | Peso | Reps | RIR | Notas rodilla",
+    "checkpoint": "Cada 2 semanas: comparar pesos. Si +0 kg x 2 semanas, -2 sets siguiente semana",
+    "ajuste_nutricion": "Si no hay progreso 3 semanas: -100 kcal carbs OR +10 min cardio LISS",
+    "deload_semana6": "60-70% pesos, -50% volumen, prioridad recuperacion"
+  }
+}
