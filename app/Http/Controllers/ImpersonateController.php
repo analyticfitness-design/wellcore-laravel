@@ -96,11 +96,24 @@ class ImpersonateController extends Controller
             return redirect('/login');
         }
 
-        // Restore the admin token as the active session token.
-        session(['wc_token' => $adminToken]);
+        // Look up admin user from the token to restore full session context.
+        $authToken = \App\Models\AuthToken::where('token', $adminToken)
+            ->where('user_type', \App\Enums\UserType::Admin->value)
+            ->where('expires_at', '>', now())
+            ->first();
+
+        $adminUser = $authToken ? \App\Models\Admin::find($authToken->user_id) : null;
+
+        // Restore the admin session.
+        session([
+            'wc_token'     => $adminToken,
+            'wc_user_type' => 'admin',
+            'wc_user_id'   => $adminUser?->id,
+            'wc_user_name' => $adminUser?->name ?? $adminUser?->username ?? 'Admin',
+        ]);
 
         // Remove impersonation state.
-        session()->forget(['wc_admin_token', 'wc_user_type', 'wc_user_id']);
+        session()->forget('wc_admin_token');
 
         return redirect('/admin/clients');
     }
