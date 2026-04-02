@@ -1235,4 +1235,85 @@ class RiseController extends Controller
 
         return $dia;
     }
+
+    /**
+     * POST /api/v/rise/workout/uncomplete-set
+     */
+    public function uncompleteSet(Request $request): JsonResponse
+    {
+        $client = $this->resolveClientOrFail($request);
+
+        $validated = $request->validate([
+            'session_id'     => 'required|integer',
+            'exercise_name'  => 'required|string|max:200',
+            'set_number'     => 'required|integer|min:1',
+            'exercise_index' => 'nullable|integer',
+        ]);
+
+        $session = \App\Models\WorkoutSession::where('id', $validated['session_id'])
+            ->where('client_id', $client->id)
+            ->where('completed', false)
+            ->first();
+
+        if (! $session) {
+            return response()->json(['error' => 'Sesion no encontrada.'], 404);
+        }
+
+        \App\Models\WorkoutLog::where('session_id', $validated['session_id'])
+            ->where('exercise_name', $validated['exercise_name'])
+            ->where('set_number', $validated['set_number'])
+            ->delete();
+
+        return response()->json(['uncompleted' => true]);
+    }
+
+    /**
+     * POST /api/v/rise/workout/abandon
+     */
+    public function abandonWorkout(Request $request): JsonResponse
+    {
+        $client = $this->resolveClientOrFail($request);
+
+        $validated = $request->validate([
+            'session_id' => 'required|integer',
+        ]);
+
+        $session = \App\Models\WorkoutSession::where('id', $validated['session_id'])
+            ->where('client_id', $client->id)
+            ->where('completed', false)
+            ->first();
+
+        if ($session) {
+            $session->delete();
+        }
+
+        return response()->json(['abandoned' => true]);
+    }
+
+    /**
+     * POST /api/v/rise/workout/dismiss-tutorial
+     */
+    public function dismissWorkoutTutorial(Request $request): JsonResponse
+    {
+        // Non-critical — just acknowledge
+        return response()->json(['ok' => true]);
+    }
+
+    /**
+     * POST /api/v/rise/workout-summary/{sessionId}/feeling
+     */
+    public function saveWorkoutFeeling(Request $request, int $sessionId): JsonResponse
+    {
+        $client = $this->resolveClientOrFail($request);
+
+        $validated = $request->validate([
+            'feeling' => 'required|string|max:50',
+        ]);
+
+        \App\Models\WorkoutSession::where('id', $sessionId)
+            ->where('client_id', $client->id)
+            ->update(['feeling' => $validated['feeling']]);
+
+        return response()->json(['saved' => true]);
+    }
 }

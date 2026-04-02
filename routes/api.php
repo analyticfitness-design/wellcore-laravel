@@ -123,8 +123,13 @@ Route::prefix('v/rise')->middleware('throttle:api')->group(function () {
     Route::get('/workout/{day?}', [RiseController::class, 'workout'])->where('day', '[0-9]+');
     Route::post('/workout/start', [RiseController::class, 'startWorkout']);
     Route::post('/workout/complete-set', [RiseController::class, 'completeSet']);
+    Route::post('/workout/complete-cardio-set', [RiseController::class, 'completeSet']);
+    Route::post('/workout/uncomplete-set', [RiseController::class, 'uncompleteSet']);
+    Route::post('/workout/abandon', [RiseController::class, 'abandonWorkout']);
+    Route::post('/workout/dismiss-tutorial', [RiseController::class, 'dismissWorkoutTutorial']);
     Route::post('/workout/finish', [RiseController::class, 'finishWorkout']);
     Route::get('/workout-summary/{sessionId}', [RiseController::class, 'workoutSummary'])->where('sessionId', '[0-9]+');
+    Route::post('/workout-summary/{sessionId}/feeling', [RiseController::class, 'saveWorkoutFeeling'])->where('sessionId', '[0-9]+');
     Route::get('/profile', [RiseController::class, 'profile']);
 });
 
