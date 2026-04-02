@@ -64,6 +64,8 @@ const routes = [
     { path: '/rise/workout/:day?', name: 'rise-workout', component: () => import('../pages/Rise/WorkoutPlayer.vue'), meta: { auth: true, title: 'Entrenamiento — WellCore RISE' } },
     { path: '/rise/workout-summary/:sessionId', name: 'rise-workout-summary', component: () => import('../pages/Rise/WorkoutSummary.vue'), meta: { auth: true, title: 'Resumen — WellCore RISE' } },
     { path: '/rise/profile', name: 'rise-profile', component: () => import('../pages/Rise/RiseProfile.vue'), meta: { auth: true, title: 'Perfil — WellCore RISE' } },
+    { path: '/rise/training', name: 'rise-training', component: () => import('../pages/Rise/TrainingView.vue'), meta: { auth: true, title: 'Entrenamiento — WellCore RISE' } },
+    { path: '/rise/nutrition', name: 'rise-nutrition', component: () => import('../pages/Rise/NutritionView.vue'), meta: { auth: true, title: 'Nutricion — WellCore RISE' } },
 
     // Coach (lazy loaded, auth required)
     { path: '/coach', name: 'coach-dashboard', component: () => import('../pages/Coach/Dashboard.vue'), meta: { auth: true, title: 'Dashboard Coach — WellCore' } },
