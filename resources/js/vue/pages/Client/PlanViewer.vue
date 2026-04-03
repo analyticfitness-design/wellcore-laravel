@@ -822,40 +822,225 @@ onBeforeUnmount(() => {
         <!-- ==================== TAB: NUTRICION ==================== -->
         <div v-else-if="activeTab === 'nutricion'">
           <template v-if="canAccessNutricion && nutritionPlan">
-            <!-- Macros summary -->
-            <div v-if="nutritionPlan.macros" class="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <div v-for="(val, key) in nutritionPlan.macros" :key="key" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-                <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary">{{ key }}</p>
-                <p class="mt-1 font-data text-2xl font-bold text-wc-text">{{ val }}</p>
-              </div>
-            </div>
+            <div class="space-y-5">
 
-            <!-- Meals list -->
-            <div v-if="nutritionPlan.comidas && nutritionPlan.comidas.length > 0" class="space-y-3">
-              <div v-for="(meal, mIdx) in nutritionPlan.comidas" :key="mIdx" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
-                <div class="flex items-center gap-3 border-b border-wc-border px-4 py-3">
-                  <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
-                    <span class="font-data text-sm font-bold text-wc-accent">{{ mIdx + 1 }}</span>
+              <!-- Hero: Calorías totales + objetivo -->
+              <div
+                v-if="(nutritionPlan.objetivo_cal || nutritionPlan.calorias_diarias || nutritionPlan.calorias)"
+                class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden"
+              >
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4 px-5 py-4">
+                  <div class="flex items-center gap-4 flex-1">
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-wc-accent/10">
+                      <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary">Calorías diarias</p>
+                      <p class="font-data text-3xl font-bold text-wc-text leading-none mt-0.5">
+                        {{ (nutritionPlan.objetivo_cal || nutritionPlan.calorias_diarias || nutritionPlan.calorias).toLocaleString() }}
+                        <span class="text-sm font-normal text-wc-text-tertiary ml-1">kcal</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div v-if="nutritionPlan.objetivo" class="sm:max-w-xs">
+                    <span class="rounded-full border border-wc-accent/30 bg-wc-accent/5 px-3 py-1.5 text-xs text-wc-accent font-medium leading-snug">
+                      {{ nutritionPlan.objetivo }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Macros visuales con barras de progreso -->
+              <div v-if="(nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g) || (nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g) || (nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g)">
+                <!-- Compute helpers inline via template expressions -->
+                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+                  <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary mb-4">Distribución de macros</p>
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+                    <!-- Proteína -->
+                    <div class="space-y-2">
+                      <div class="flex items-end justify-between">
+                        <div>
+                          <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary">Proteína</p>
+                          <p class="font-data text-2xl font-bold text-wc-text leading-none">
+                            {{ (nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) }}
+                            <span class="text-xs font-normal text-wc-text-tertiary">g</span>
+                          </p>
+                        </div>
+                        <span class="font-data text-xs font-semibold text-wc-accent">
+                          {{ Math.round(((nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4) / Math.max(1, ((nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4) + ((nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4) + ((nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9)) * 100) }}%
+                        </span>
+                      </div>
+                      <div class="h-2 w-full rounded-full bg-wc-bg-secondary overflow-hidden">
+                        <div
+                          class="h-full rounded-full bg-wc-accent transition-all duration-700"
+                          :style="{ width: Math.round(((nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4) / Math.max(1, ((nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4) + ((nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4) + ((nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9)) * 100) + '%' }"
+                        ></div>
+                      </div>
+                      <p class="text-[10px] text-wc-text-tertiary">{{ (nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4 }} kcal</p>
+                    </div>
+
+                    <!-- Carbohidratos -->
+                    <div class="space-y-2">
+                      <div class="flex items-end justify-between">
+                        <div>
+                          <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary">Carbohidratos</p>
+                          <p class="font-data text-2xl font-bold text-wc-text leading-none">
+                            {{ (nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) }}
+                            <span class="text-xs font-normal text-wc-text-tertiary">g</span>
+                          </p>
+                        </div>
+                        <span class="font-data text-xs font-semibold text-blue-400">
+                          {{ Math.round(((nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4) / Math.max(1, ((nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4) + ((nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4) + ((nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9)) * 100) }}%
+                        </span>
+                      </div>
+                      <div class="h-2 w-full rounded-full bg-wc-bg-secondary overflow-hidden">
+                        <div
+                          class="h-full rounded-full bg-blue-400 transition-all duration-700"
+                          :style="{ width: Math.round(((nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4) / Math.max(1, ((nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4) + ((nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4) + ((nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9)) * 100) + '%' }"
+                        ></div>
+                      </div>
+                      <p class="text-[10px] text-wc-text-tertiary">{{ (nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4 }} kcal</p>
+                    </div>
+
+                    <!-- Grasas -->
+                    <div class="space-y-2">
+                      <div class="flex items-end justify-between">
+                        <div>
+                          <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary">Grasas</p>
+                          <p class="font-data text-2xl font-bold text-wc-text leading-none">
+                            {{ (nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) }}
+                            <span class="text-xs font-normal text-wc-text-tertiary">g</span>
+                          </p>
+                        </div>
+                        <span class="font-data text-xs font-semibold text-amber-400">
+                          {{ Math.round(((nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9) / Math.max(1, ((nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4) + ((nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4) + ((nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9)) * 100) }}%
+                        </span>
+                      </div>
+                      <div class="h-2 w-full rounded-full bg-wc-bg-secondary overflow-hidden">
+                        <div
+                          class="h-full rounded-full bg-amber-400 transition-all duration-700"
+                          :style="{ width: Math.round(((nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9) / Math.max(1, ((nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4) + ((nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4) + ((nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9)) * 100) + '%' }"
+                        ></div>
+                      </div>
+                      <p class="text-[10px] text-wc-text-tertiary">{{ (nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9 }} kcal</p>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- Notas del coach -->
+              <div v-if="nutritionPlan.notas_coach" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+                <div class="flex items-start gap-3">
+                  <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
+                    <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"/>
+                    </svg>
                   </div>
                   <div class="min-w-0 flex-1">
-                    <p class="text-sm font-semibold text-wc-text">{{ meal.nombre || meal.name || ('Comida ' + (mIdx + 1)) }}</p>
-                    <p v-if="meal.hora || meal.time" class="text-xs text-wc-text-tertiary">{{ meal.hora || meal.time }}</p>
-                  </div>
-                  <div v-if="meal.calorias || meal.calories" class="rounded-full bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-semibold text-wc-text-secondary">
-                    {{ meal.calorias || meal.calories }} kcal
-                  </div>
-                </div>
-                <div v-if="(meal.alimentos || meal.foods || []).length > 0" class="divide-y divide-wc-border/40 px-4">
-                  <div v-for="(alimento, aIdx) in (meal.alimentos || meal.foods || [])" :key="aIdx" class="flex items-center justify-between py-2.5">
-                    <span class="text-sm text-wc-text">{{ typeof alimento === 'string' ? alimento : (alimento.nombre || alimento.name || 'Alimento') }}</span>
-                    <span v-if="typeof alimento === 'object' && (alimento.cantidad || alimento.porcion)" class="text-xs text-wc-text-tertiary">{{ alimento.cantidad || alimento.porcion }}</span>
+                    <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary mb-1.5">Notas de tu coach</p>
+                    <p class="text-sm leading-relaxed text-wc-text-secondary">{{ nutritionPlan.notas_coach }}</p>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center">
-              <p class="text-sm text-wc-text-secondary">Tu coach esta preparando tu plan de nutricion.</p>
+              <!-- Tips nutricionales -->
+              <div v-if="nutritionPlan.tips && nutritionPlan.tips.length > 0" class="rounded-xl border border-emerald-500/20 bg-emerald-500/[0.04] p-5">
+                <p class="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-3">Consejos de tu coach</p>
+                <ul class="space-y-2.5">
+                  <li v-for="(tip, tIdx) in nutritionPlan.tips" :key="tIdx" class="flex items-start gap-2.5">
+                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
+                    </svg>
+                    <span class="text-sm leading-relaxed text-wc-text-secondary">{{ tip }}</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Comidas (formato completo: comidas[]) -->
+              <div v-if="nutritionPlan.comidas && nutritionPlan.comidas.length > 0" class="space-y-3">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary px-0.5">Plan de comidas</p>
+                <div v-for="(meal, mIdx) in nutritionPlan.comidas" :key="mIdx" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
+                  <!-- Meal header -->
+                  <div class="flex items-center gap-3 border-b border-wc-border px-4 py-3">
+                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
+                      <span class="font-data text-sm font-bold text-wc-accent">{{ mIdx + 1 }}</span>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <p class="text-sm font-semibold text-wc-text">{{ meal.nombre || meal.name || ('Comida ' + (mIdx + 1)) }}</p>
+                      <p v-if="meal.hora || meal.time" class="text-xs text-wc-text-tertiary">{{ meal.hora || meal.time }}</p>
+                    </div>
+                    <div v-if="meal.calorias || meal.calories" class="rounded-full bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-semibold text-wc-text-secondary">
+                      {{ meal.calorias || meal.calories }} kcal
+                    </div>
+                  </div>
+
+                  <!-- Alimentos -->
+                  <div v-if="(meal.alimentos || meal.foods || []).length > 0" class="divide-y divide-wc-border/40 px-4">
+                    <div v-for="(alimento, aIdx) in (meal.alimentos || meal.foods || [])" :key="aIdx" class="flex items-start gap-2 py-2.5">
+                      <!-- Badge for OPCIÓN items -->
+                      <template v-if="typeof alimento === 'string' && alimento.trimStart().toUpperCase().startsWith('OPCIÓN')">
+                        <span class="mt-0.5 shrink-0 rounded bg-blue-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-blue-400">
+                          {{ alimento.trimStart().match(/^OPCIÓN\s+[A-Z]/i)?.[0] ?? 'OPC' }}
+                        </span>
+                        <span class="text-sm text-wc-text-secondary leading-snug">
+                          {{ alimento.trimStart().replace(/^OPCIÓN\s+[A-Z]:\s*/i, '') }}
+                        </span>
+                      </template>
+                      <template v-else>
+                        <span class="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-wc-text-tertiary"></span>
+                        <span class="text-sm text-wc-text">{{ typeof alimento === 'string' ? alimento : (alimento.nombre || alimento.name || 'Alimento') }}</span>
+                        <span v-if="typeof alimento === 'object' && (alimento.cantidad || alimento.porcion)" class="ml-auto shrink-0 text-xs text-wc-text-tertiary">{{ alimento.cantidad || alimento.porcion }}</span>
+                      </template>
+                    </div>
+                  </div>
+
+                  <!-- Macros por comida -->
+                  <div v-if="meal.macros && (meal.macros.proteina_g || meal.macros.carbohidratos_g || meal.macros.grasas_g)" class="flex gap-4 border-t border-wc-border/60 bg-wc-bg-secondary/40 px-4 py-2.5">
+                    <div v-if="meal.macros.proteina_g" class="flex items-center gap-1.5">
+                      <span class="h-2 w-2 rounded-full bg-wc-accent"></span>
+                      <span class="font-data text-xs font-semibold text-wc-text">{{ meal.macros.proteina_g }}g</span>
+                      <span class="text-[10px] text-wc-text-tertiary">P</span>
+                    </div>
+                    <div v-if="meal.macros.carbohidratos_g" class="flex items-center gap-1.5">
+                      <span class="h-2 w-2 rounded-full bg-blue-400"></span>
+                      <span class="font-data text-xs font-semibold text-wc-text">{{ meal.macros.carbohidratos_g }}g</span>
+                      <span class="text-[10px] text-wc-text-tertiary">C</span>
+                    </div>
+                    <div v-if="meal.macros.grasas_g" class="flex items-center gap-1.5">
+                      <span class="h-2 w-2 rounded-full bg-amber-400"></span>
+                      <span class="font-data text-xs font-semibold text-wc-text">{{ meal.macros.grasas_g }}g</span>
+                      <span class="text-[10px] text-wc-text-tertiary">G</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Comidas sugeridas (formato RISE: comidas_sugeridas[]) -->
+              <div v-else-if="nutritionPlan.comidas_sugeridas && nutritionPlan.comidas_sugeridas.length > 0" class="space-y-3">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary px-0.5">Comidas sugeridas</p>
+                <div v-for="(meal, mIdx) in nutritionPlan.comidas_sugeridas" :key="mIdx" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
+                  <div class="flex items-start gap-3">
+                    <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary">
+                      <span class="font-data text-xs font-bold text-wc-text-tertiary">{{ mIdx + 1 }}</span>
+                    </div>
+                    <div class="min-w-0">
+                      <p class="text-sm font-semibold text-wc-text">{{ meal.nombre || meal.name || ('Comida ' + (mIdx + 1)) }}</p>
+                      <p v-if="meal.descripcion" class="mt-0.5 text-sm text-wc-text-secondary leading-relaxed">{{ meal.descripcion }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Empty state: no meals at all -->
+              <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center">
+                <p class="text-sm text-wc-text-secondary">Tu coach esta preparando tu plan de nutricion.</p>
+              </div>
+
             </div>
           </template>
 
