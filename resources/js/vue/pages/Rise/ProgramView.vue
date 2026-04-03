@@ -313,23 +313,133 @@ onMounted(fetchProgram);
         <div v-else-if="activeTab === 'nutrition'" class="space-y-4">
           <template v-if="data.nutritionPlan">
 
-            <!-- Macros -->
-            <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-                <p class="font-data text-2xl font-bold text-wc-accent">{{ data.nutritionPlan.calorias_diarias }}</p>
-                <p class="mt-0.5 text-[10px] uppercase tracking-wider text-wc-text-tertiary">Calorias</p>
+            <!-- Calorias totales (card destacada) -->
+            <div class="relative overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary px-5 py-4">
+              <div class="pointer-events-none absolute -right-4 -top-4 h-20 w-20 rounded-full bg-wc-accent/[0.06]"></div>
+              <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Calorias diarias</p>
+              <div class="mt-1 flex items-baseline gap-2">
+                <span class="font-data text-3xl font-bold tabular-nums text-wc-accent">
+                  {{
+                    data.nutritionPlan.calorias_diarias ||
+                    (
+                      (data.nutritionPlan.proteina_g || 0) * 4 +
+                      (data.nutritionPlan.carbohidratos_g || 0) * 4 +
+                      (data.nutritionPlan.grasas_g || 0) * 9
+                    )
+                  }}
+                </span>
+                <span class="text-sm text-wc-text-tertiary">kcal / dia</span>
               </div>
-              <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-                <p class="font-data text-2xl font-bold text-blue-400">{{ data.nutritionPlan.proteina_g }}<span class="text-sm font-normal text-wc-text-tertiary">g</span></p>
-                <p class="mt-0.5 text-[10px] uppercase tracking-wider text-wc-text-tertiary">Proteina</p>
+            </div>
+
+            <!-- Macros con barras de progreso -->
+            <div class="space-y-3">
+              <!-- Proteina -->
+              <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
+                <div class="flex items-center justify-between">
+                  <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Proteina</p>
+                  <div class="flex items-baseline gap-1">
+                    <span class="font-data text-xl font-bold tabular-nums text-wc-text">{{ data.nutritionPlan.proteina_g }}</span>
+                    <span class="text-xs text-wc-text-tertiary">g</span>
+                    <span class="ml-2 rounded-full bg-wc-accent/10 px-2 py-0.5 font-data text-[10px] font-semibold text-wc-accent">
+                      {{
+                        Math.round(
+                          ((data.nutritionPlan.proteina_g || 0) * 4) /
+                          Math.max(1,
+                            data.nutritionPlan.calorias_diarias ||
+                            ((data.nutritionPlan.proteina_g || 0) * 4 + (data.nutritionPlan.carbohidratos_g || 0) * 4 + (data.nutritionPlan.grasas_g || 0) * 9)
+                          ) * 100
+                        )
+                      }}%
+                    </span>
+                  </div>
+                </div>
+                <div class="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
+                  <div
+                    class="h-full rounded-full bg-wc-accent transition-all duration-700"
+                    :style="{
+                      width: Math.round(
+                        ((data.nutritionPlan.proteina_g || 0) * 4) /
+                        Math.max(1,
+                          data.nutritionPlan.calorias_diarias ||
+                          ((data.nutritionPlan.proteina_g || 0) * 4 + (data.nutritionPlan.carbohidratos_g || 0) * 4 + (data.nutritionPlan.grasas_g || 0) * 9)
+                        ) * 100
+                      ) + '%'
+                    }"
+                  ></div>
+                </div>
               </div>
-              <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-                <p class="font-data text-2xl font-bold text-amber-400">{{ data.nutritionPlan.carbohidratos_g }}<span class="text-sm font-normal text-wc-text-tertiary">g</span></p>
-                <p class="mt-0.5 text-[10px] uppercase tracking-wider text-wc-text-tertiary">Carbos</p>
+
+              <!-- Carbos -->
+              <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
+                <div class="flex items-center justify-between">
+                  <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Carbohidratos</p>
+                  <div class="flex items-baseline gap-1">
+                    <span class="font-data text-xl font-bold tabular-nums text-wc-text">{{ data.nutritionPlan.carbohidratos_g }}</span>
+                    <span class="text-xs text-wc-text-tertiary">g</span>
+                    <span class="ml-2 rounded-full bg-blue-400/10 px-2 py-0.5 font-data text-[10px] font-semibold text-blue-400">
+                      {{
+                        Math.round(
+                          ((data.nutritionPlan.carbohidratos_g || 0) * 4) /
+                          Math.max(1,
+                            data.nutritionPlan.calorias_diarias ||
+                            ((data.nutritionPlan.proteina_g || 0) * 4 + (data.nutritionPlan.carbohidratos_g || 0) * 4 + (data.nutritionPlan.grasas_g || 0) * 9)
+                          ) * 100
+                        )
+                      }}%
+                    </span>
+                  </div>
+                </div>
+                <div class="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
+                  <div
+                    class="h-full rounded-full bg-blue-400 transition-all duration-700"
+                    :style="{
+                      width: Math.round(
+                        ((data.nutritionPlan.carbohidratos_g || 0) * 4) /
+                        Math.max(1,
+                          data.nutritionPlan.calorias_diarias ||
+                          ((data.nutritionPlan.proteina_g || 0) * 4 + (data.nutritionPlan.carbohidratos_g || 0) * 4 + (data.nutritionPlan.grasas_g || 0) * 9)
+                        ) * 100
+                      ) + '%'
+                    }"
+                  ></div>
+                </div>
               </div>
-              <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-                <p class="font-data text-2xl font-bold text-emerald-400">{{ data.nutritionPlan.grasas_g }}<span class="text-sm font-normal text-wc-text-tertiary">g</span></p>
-                <p class="mt-0.5 text-[10px] uppercase tracking-wider text-wc-text-tertiary">Grasas</p>
+
+              <!-- Grasas -->
+              <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
+                <div class="flex items-center justify-between">
+                  <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Grasas</p>
+                  <div class="flex items-baseline gap-1">
+                    <span class="font-data text-xl font-bold tabular-nums text-wc-text">{{ data.nutritionPlan.grasas_g }}</span>
+                    <span class="text-xs text-wc-text-tertiary">g</span>
+                    <span class="ml-2 rounded-full bg-amber-400/10 px-2 py-0.5 font-data text-[10px] font-semibold text-amber-400">
+                      {{
+                        Math.round(
+                          ((data.nutritionPlan.grasas_g || 0) * 9) /
+                          Math.max(1,
+                            data.nutritionPlan.calorias_diarias ||
+                            ((data.nutritionPlan.proteina_g || 0) * 4 + (data.nutritionPlan.carbohidratos_g || 0) * 4 + (data.nutritionPlan.grasas_g || 0) * 9)
+                          ) * 100
+                        )
+                      }}%
+                    </span>
+                  </div>
+                </div>
+                <div class="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
+                  <div
+                    class="h-full rounded-full bg-amber-400 transition-all duration-700"
+                    :style="{
+                      width: Math.round(
+                        ((data.nutritionPlan.grasas_g || 0) * 9) /
+                        Math.max(1,
+                          data.nutritionPlan.calorias_diarias ||
+                          ((data.nutritionPlan.proteina_g || 0) * 4 + (data.nutritionPlan.carbohidratos_g || 0) * 4 + (data.nutritionPlan.grasas_g || 0) * 9)
+                        ) * 100
+                      ) + '%'
+                    }"
+                  ></div>
+                </div>
               </div>
             </div>
 

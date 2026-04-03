@@ -26,6 +26,7 @@ const coachNotes = ref(null);
 const restDayInfo = ref(null);
 const tips = ref([]);
 const comidasSugeridas = ref([]);
+const planSemanal = ref([]);
 const hydrationNote = ref(null);
 const showTutorial = ref(false);
 const tutorialStep = ref(1);
@@ -34,6 +35,7 @@ const tutorialStep = ref(1);
 const openMeals = ref({});
 const openSugeridas = ref({});
 const openRestDay = ref(false);
+const openPlanDays = ref({});
 
 function toggleMeal(index) {
   openMeals.value[index] = !openMeals.value[index];
@@ -41,6 +43,10 @@ function toggleMeal(index) {
 
 function toggleSugerida(index) {
   openSugeridas.value[index] = !openSugeridas.value[index];
+}
+
+function togglePlanDay(index) {
+  openPlanDays.value[index] = !openPlanDays.value[index];
 }
 
 // Fetch nutrition data
@@ -70,6 +76,7 @@ async function fetchNutrition() {
         restDayInfo.value = ex.rest_day_info || null;
         tips.value = ex.tips || [];
         comidasSugeridas.value = ex.comidas_sugeridas || [];
+        planSemanal.value = ex.plan_semanal || [];
         hydrationNote.value = ex.hydration_note || null;
 
         const w = d.water || {};
@@ -387,6 +394,71 @@ onMounted(() => {
                     <div v-if="meal.notas" class="rounded-lg border border-wc-border bg-wc-bg-tertiary px-3.5 py-3">
                       <p class="text-xs leading-relaxed text-wc-text-tertiary">{{ meal.notas }}</p>
                     </div>
+                  </div>
+                </div>
+              </Transition>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── PLAN POR DIA (plan_semanal) ─────────────────────────────── -->
+        <div v-if="planSemanal.length > 0">
+          <h3 class="mb-3 font-display text-xl tracking-wide text-wc-text">PLAN POR DIA</h3>
+          <div class="space-y-2">
+            <div
+              v-for="(diaItem, di) in planSemanal"
+              :key="di"
+              class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary"
+            >
+              <button
+                @click="togglePlanDay(di)"
+                class="flex w-full items-center gap-3 p-4 text-left transition hover:bg-wc-bg-tertiary focus:outline-none focus:ring-2 focus:ring-inset focus:ring-wc-accent"
+                :aria-expanded="openPlanDays[di] ? 'true' : 'false'"
+              >
+                <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
+                  <span class="font-data text-sm font-bold text-wc-accent">{{ di + 1 }}</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-display text-sm tracking-wide text-wc-text">{{ (diaItem.dia || 'Dia').toUpperCase() }}</p>
+                  <p v-if="diaItem.comidas && diaItem.comidas.length" class="text-[11px] text-wc-text-tertiary">
+                    {{ diaItem.comidas.length }} comida{{ diaItem.comidas.length !== 1 ? 's' : '' }}
+                  </p>
+                </div>
+                <svg
+                  class="h-4 w-4 shrink-0 text-wc-text-tertiary transition-transform duration-200"
+                  :class="{ 'rotate-180': openPlanDays[di] }"
+                  fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+              </button>
+
+              <Transition name="accordion">
+                <div v-show="openPlanDays[di]" class="border-t border-wc-border">
+                  <div class="space-y-2 p-4">
+                    <div
+                      v-for="(comida, ci) in (diaItem.comidas || [])"
+                      :key="ci"
+                      class="rounded-lg border border-wc-border bg-wc-bg-tertiary p-3"
+                    >
+                      <p class="mb-1.5 font-display text-xs tracking-wide text-wc-text">{{ (comida.nombre || 'Comida').toUpperCase() }}</p>
+                      <ul v-if="comida.alimentos && comida.alimentos.length" class="space-y-1">
+                        <li v-for="(alimento, ai) in comida.alimentos" :key="ai" class="flex items-start gap-2">
+                          <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                          <span class="text-sm leading-relaxed text-wc-text-secondary">{{ formatAlimento(alimento) }}</span>
+                        </li>
+                      </ul>
+                      <ul v-else-if="comida.opciones && comida.opciones.length" class="space-y-1">
+                        <li v-for="(opcion, oi) in comida.opciones" :key="oi" class="flex items-start gap-2">
+                          <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                          <span class="text-sm leading-relaxed text-wc-text-secondary">{{ opcion }}</span>
+                        </li>
+                      </ul>
+                      <p v-if="comida.notas" class="mt-2 text-xs text-wc-text-tertiary">{{ comida.notas }}</p>
+                    </div>
+                    <p v-if="!diaItem.comidas || diaItem.comidas.length === 0" class="py-2 text-center text-sm text-wc-text-tertiary">
+                      Sin comidas definidas para este dia.
+                    </p>
                   </div>
                 </div>
               </Transition>

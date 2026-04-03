@@ -653,11 +653,27 @@ class TrainingController extends Controller
             return $session->awardXp();
         });
 
-        $prs = $completedLogs->where('is_pr', true)->map(fn ($log) => [
-            'exercise' => $log->exercise_name,
-            'weight' => (float) $log->weight_kg,
-            'reps' => $log->reps,
-        ])->values()->toArray();
+        $prs = $completedLogs->where('is_pr', true)->map(function ($log) use ($clientId, $session) {
+            // Look up the best weight for this exercise in any prior completed session
+            $prevBest = \App\Models\WorkoutLog::where('client_id', $clientId)
+                ->where('exercise_name', $log->exercise_name)
+                ->where('completed', true)
+                ->where('session_id', '!=', $session->id)
+                ->whereHas('session', fn ($q) => $q->where('completed', true))
+                ->orderByDesc('weight_kg')
+                ->first();
+
+            $previousWeight = $prevBest ? (float) $prevBest->weight_kg : null;
+            $previousReps   = $prevBest ? (int)   $prevBest->reps       : null;
+
+            return [
+                'exercise'        => $log->exercise_name,
+                'weight'          => (float) $log->weight_kg,
+                'reps'            => (int) $log->reps,
+                'previous_weight' => $previousWeight,
+                'previous_reps'   => $previousReps,
+            ];
+        })->values()->toArray();
 
         $sessionHistory = WorkoutSession::where('client_id', $clientId)
             ->where('completed', true)
