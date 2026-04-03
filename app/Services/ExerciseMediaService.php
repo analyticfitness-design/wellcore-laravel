@@ -87,11 +87,18 @@ class ExerciseMediaService
         foreach ($normalizedNames as $i => $norm) {
             $fitcron = $fitcronByNorm[$norm] ?? null;
 
-            if ($fitcron) {
+            if ($fitcron && $fitcron->gif_filename) {
                 $result[$norm] = [
                     'gif_url'   => $this->gifUrl($fitcron->gif_filename),
                     'video_url' => $videosBySlug[$fitcron->slug]?->youtube_url ?? $fitcron->video_url ?? null,
                 ];
+            } elseif ($fitcron) {
+                // Found in fitcron but no GIF — store video, let Layer 2 fill gif_url
+                $result[$norm] = [
+                    'gif_url'   => null,
+                    'video_url' => $videosBySlug[$fitcron->slug]?->youtube_url ?? $fitcron->video_url ?? null,
+                ];
+                $unmatched[$norm] = $names[$i];
             } else {
                 $unmatched[$norm] = $names[$i]; // norm => original name
             }
@@ -142,9 +149,11 @@ class ExerciseMediaService
                     $videoUrl = $video;
                 }
 
+                // Preserve existing video_url from fitcron if already set
+                $existingVideo = $result[$norm]['video_url'] ?? null;
                 $result[$norm] = [
                     'gif_url'   => $this->gifUrl($row->gif_filename),
-                    'video_url' => $videoUrl,
+                    'video_url' => $existingVideo ?? $videoUrl,
                 ];
             }
         } catch (\Throwable) {
