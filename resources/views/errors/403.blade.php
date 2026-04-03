@@ -23,7 +23,7 @@
         }
 
         .logo {
-            font-family: 'Bebas Neue', 'Inter', sans-serif;
+            font-family: 'Oswald', Impact, sans-serif;
             font-size: 1.75rem;
             letter-spacing: 0.15em;
             color: #FAFAFA;
@@ -42,7 +42,7 @@
         }
 
         .error-code {
-            font-family: 'Bebas Neue', 'Inter', sans-serif;
+            font-family: 'Oswald', Impact, sans-serif;
             font-size: 8rem;
             line-height: 1;
             color: #DC2626;
@@ -58,7 +58,7 @@
         }
 
         .title {
-            font-family: 'Bebas Neue', 'Inter', sans-serif;
+            font-family: 'Oswald', Impact, sans-serif;
             font-size: 2rem;
             letter-spacing: 0.1em;
             color: #FAFAFA;

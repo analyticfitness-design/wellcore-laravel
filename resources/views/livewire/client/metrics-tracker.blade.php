@@ -313,7 +313,7 @@
                 // WellCore global defaults
                 Chart.defaults.color = '#a3a3a3';
                 Chart.defaults.borderColor = '#262626';
-                Chart.defaults.font.family = "'Barlow', sans-serif";
+                Chart.defaults.font.family = "'Raleway', sans-serif";
                 Chart.defaults.font.size = 11;
 
                 this.createWeightChart();

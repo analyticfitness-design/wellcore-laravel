@@ -1,0 +1,4496 @@
+[
+    {
+        "slug": "serratos-aislados-en-polea-dorsal",
+        "nombre": "Serratos Aislados en Polea",
+        "gif_filename": "35631301-Cable-One-Arm-Pulldown_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-superior-en-pronacion-en-polea-dorsal",
+        "nombre": "Remo Superior en Pronación en Polea",
+        "gif_filename": "32321301-Cable-Standing-Rear-Delt-Horizontal-Row-with-rope_Shoulder_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-abierto-doble-neutro-en-polea-alta-dorsal",
+        "nombre": "Jalón Abierto Doble Neutro en Polea Alta",
+        "gif_filename": "33581301-Cable-Parallel-Grip-Lat-Pulldown-on-Floor_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-inferior-en-circulos",
+        "nombre": "Crunch Inferior en círculos",
+        "gif_filename": "43331301-Bench-Reverse-Crunch-Circle_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-inferior-en-pronacion-en-polea-baja-dorsal",
+        "nombre": "Remo Inferior en Pronación en Polea Baja",
+        "gif_filename": "38591301-Cable-Bent-Over-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-superior-concentrado-elevado",
+        "nombre": "Crunch Superior Concentrado Elevado",
+        "gif_filename": "43321301-Crunch-Hold_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "serratos-inclinados-con-barra-en-polea-dorsal",
+        "nombre": "Serratos Inclinados con Barra en Polea",
+        "gif_filename": "41801301-Cable-Seated-Pullover_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-cruzado-estirado",
+        "nombre": "Crunch Cruzado estirado",
+        "gif_filename": "43311301-Crunch-Single-Leg-Lift_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "rotacion-vertical-aislada-en-polea-dorsal",
+        "nombre": "Rotación Vertical Aislada en Polea",
+        "gif_filename": "41941301-Cable-Half-Kneeling-External-Rotation_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-inferior-con-flexion-y-extension",
+        "nombre": "Crunch Inferior con flexión y extensión",
+        "gif_filename": "43301301-Reverse-Crunch-Kick_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-inferior-cruzado",
+        "nombre": "Crunch Inferior Cruzado",
+        "gif_filename": "41561301-Lying-Leg-Hip-Side-Raise-on-Floor_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-abierto-neutro-en-polea-alta-dorsal",
+        "nombre": "Jalón Abierto Neutro en Polea Alta",
+        "gif_filename": "42171301-Cable-Wide-Neutral-Grip-PullDown_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-cadera-con-piernas-estiradas-v2",
+        "nombre": "Elevación de Cadera con piernas estiradas v2",
+        "gif_filename": "40581301-Leg-Raise-Dragon-Flag_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-cruzado-en-polea-alta-dorsal",
+        "nombre": "Remo Cruzado en Polea Alta",
+        "gif_filename": "01531301-Cable-Cross-over-Lateral-Pulldown_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "marcha-horizontal-alterna",
+        "nombre": "Marcha Horizontal Alterna",
+        "gif_filename": "39621301-Seated-Flutter-Kick_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-declinado-abierto-en-pronacion-en-polea-dorsal",
+        "nombre": "Remo Declinado Abierto en Pronación en Polea",
+        "gif_filename": "01591301-Cable-Decline-Seated-Wide-Grip-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-alterno-sentado-con-palmada",
+        "nombre": "Marcha Horizontal Alterna con palmada",
+        "gif_filename": "39441301-Seated-Alternate-Crunch_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-superior",
+        "nombre": "Crunch Superior",
+        "gif_filename": "36791301-Sit-up-with-Arms-on-Chest_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-superior-con-cuerda-en-polea-dorsal",
+        "nombre": "Remo Superior con Cuerda en Polea",
+        "gif_filename": "01671301-Cable-High-Row-kneeling-rope-attachment_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-frog",
+        "nombre": "Crunch Frog",
+        "gif_filename": "35101301-Crunchy-Frog-on-Floor_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "serratos-inclinados-cerrados-con-barra-en-polea-dorsal",
+        "nombre": "Serratos Inclinados Cerrados con Barra en Polea",
+        "gif_filename": "01721301-Cable-Incline-Pushdown_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-inferior-sentado-2",
+        "nombre": "Crunch Inferior sentado",
+        "gif_filename": "35091301-Seated-In-Out-Leg-Raise-on-Floor_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "marcha-horizontal-aislada-con-pierna-extendida",
+        "nombre": "Marcha Horizontal Aislada con pierna extendida",
+        "gif_filename": "34961301-Lying-Straight-Leg-Marches_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-superior-cruzado",
+        "nombre": "Crunch Superior Cruzado",
+        "gif_filename": "34841301-Elbow-to-Knee-Sit-up_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-cerrado-con-cuerda-en-polea-alta-dorsal",
+        "nombre": "Jalón Cerrado con Cuerda en Polea Alta",
+        "gif_filename": "01771301-Cable-Lateral-Pulldown-with-rope-attachment_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pulse-up",
+        "nombre": "Pulse Up",
+        "gif_filename": "34591301-Pulse-Up_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-horizontal-en-silla-romana",
+        "nombre": "Crunch Horizontal en Silla Romana",
+        "gif_filename": "33291301-Roman-Chair-Sit-Up_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-horizontal-en-pronacion-en-polea-dorsal",
+        "nombre": "Remo Horizontal en Pronación en Polea",
+        "gif_filename": "01801301-Cable-Low-Seated-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-piernas-con-torsion-en-soporte",
+        "nombre": "Elevación de Piernas con torsión en soporte",
+        "gif_filename": "28021301-Twisted-Leg-Raise_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-aislado-prono-supino-en-polea-alta-dorsal",
+        "nombre": "Jalón Aislado Prono-Supino en Polea Alta",
+        "gif_filename": "01931301-Cable-One-Arm-Straight-Back-High-Row-kneeling_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "giros-superiores-sentado-con-peso",
+        "nombre": "Giros Superiores Sentado con peso",
+        "gif_filename": "23711301-Weighted-Russian-Twist_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-abierto-en-pronacion-en-polea-alta-dorsal",
+        "nombre": "Jalón Abierto en Pronación en Polea Alta",
+        "gif_filename": "01971301-Cable-Pulldown-pro-lat-bar_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "giros-superiores-sentado",
+        "nombre": "Giros Superiores Sentado",
+        "gif_filename": "23291301-Spine-Twist_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-en-pronacion-en-polea-alta-dorsal",
+        "nombre": "Jalón en Pronación en Polea Alta",
+        "gif_filename": "01981301-Cable-Pulldown_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-superior-cruzado-concentrado-2",
+        "nombre": "Crunch Superior Cruzado Concentrado",
+        "gif_filename": "23121301-Lying-Elbow-to-Knee_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-horizontal-superior-con-cuerda-en-polea-dorsal",
+        "nombre": "Remo Horizontal Superior con Cuerda en Polea",
+        "gif_filename": "02021301-Cable-Rear-Delt-Row-stirrups_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "roll-reverse-crunch",
+        "nombre": "Roll Reverse Crunch",
+        "gif_filename": "22061301-Roll-Reverse-Crunch_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-superior-declinado",
+        "nombre": "Crunch Superior Declinado",
+        "gif_filename": "18641301-Extra-Decline-Sit-up_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-trasero-abierto-en-pronacion-en-polea-alta-dorsal",
+        "nombre": "Jalón Trasero Abierto en Pronación en Polea Alta",
+        "gif_filename": "13251301-Cable-Wide-Grip-Rear-Pulldown-Behind-Neck_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "puente-lateral-con-abduccion-de-cadera",
+        "nombre": "Puente Lateral con Abducción de Cadera",
+        "gif_filename": "17741301-Side-Bridge-Hip-Abduction_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-en-supinacion-en-polea-alta-dorsal",
+        "nombre": "Jalón en Supinación en Polea Alta",
+        "gif_filename": "02081301-Cable-Reverse-grip-Straight-Back-Seated-High-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-en-decubito-lateral-con-curl-de-biceps",
+        "nombre": "Crunch en Decúbito Lateral con curl de bíceps",
+        "gif_filename": "17691301-Bodyweight-Side-Lying-Biceps-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-cerrado-neutro-con-inclinacion-en-polea-alta-dorsal",
+        "nombre": "Jalón Cerrado Neutro con Inclinación en Polea Alta",
+        "gif_filename": "02131301-Cable-Seated-High-Row-V-bar_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-superior-cruzado-concentrado",
+        "nombre": "Crunch Superior Cruzado Concentrado Elevado",
+        "gif_filename": "14951301-Oblique-Crunch-Version-2_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-diagonal-en-polea-baja-dorsal",
+        "nombre": "Extensión Diagonal en Polea Baja",
+        "gif_filename": "02301301-Cable-Standing-Lift_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "half-wipers-con-piernas-estiradas",
+        "nombre": "Half Wipers con piernas estiradas",
+        "gif_filename": "12491301-Wipers-straight-leg_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "serratos-inferiores-con-barra-en-polea-dorsal",
+        "nombre": "Serratos Inferiores con Barra en Polea",
+        "gif_filename": "02381301-Cable-Straight-Arm-Pulldown_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "half-wipers-con-piernas-flexionadas",
+        "nombre": "Half Wipers con piernas flexionadas",
+        "gif_filename": "12481301-Half-Wipers-bent-leg_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "hollow-hold",
+        "nombre": "Hollow Hold",
+        "gif_filename": "12461301-Hollow-Hold_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-abierto-en-supinacion-en-polea-alta-dorsal",
+        "nombre": "Jalón Abierto en Supinación en Polea Alta",
+        "gif_filename": "02451301-Cable-Underhand-Pulldown_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-superior-cruzado-declinado",
+        "nombre": "Crunch Superior Cruzado Declinado",
+        "gif_filename": "11901301-Incline-Twisting-Sit-up-version-2_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-cerrado-en-pronacion-en-polea-alta-dorsal",
+        "nombre": "Jalón Cerrado en Pronación en Polea Alta",
+        "gif_filename": "10471301-Cable-Close-Grip-Front-Lat-Pulldown_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-cadera-con-piernas-estiradas",
+        "nombre": "Elevación de Cadera con piernas estiradas",
+        "gif_filename": "11631301-Lying-Leg-Raise_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-cadera-con-flexion-de-rodillas-v2",
+        "nombre": "Elevación de Cadera con flexión de rodillas v2",
+        "gif_filename": "08651301-Lying-leg-hip-raise_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-aislado-prono-neutro-en-polea-alta-dorsal",
+        "nombre": "Jalón Aislado Prono-Neutro en Polea Alta",
+        "gif_filename": "12041301-Cable-one-arm-lat-pulldown_back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "wheel-rollout-de-rodillas",
+        "nombre": "Wheel Rollout de rodillas",
+        "gif_filename": "08571301-Wheel-Rollout_Waist-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "serratos-con-cuerda-en-polea-dorsal",
+        "nombre": "Serratos con Cuerda en Polea",
+        "gif_filename": "12291301-Cable-Standing-Lat-Pushdown-rope-equipment_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "wheel-rollout-de-pie",
+        "nombre": "Wheel Rollout de pie",
+        "gif_filename": "07961301-Standing-Wheel-Rollout_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-horizontal-neutro-en-polea-dorsal",
+        "nombre": "Remo Horizontal Neutro en Polea",
+        "gif_filename": "12381301-Cable-Seated-Row-Bent-bar_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "puente-lateral",
+        "nombre": "Puente Lateral",
+        "gif_filename": "07051301-Side-Bridge-II_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-inferior-sentado",
+        "nombre": "Crunch Inferior sentado en banco",
+        "gif_filename": "06891301-Seated-Leg-Raise_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-horizontal-abierto-en-pronacion-en-polea-dorsal",
+        "nombre": "Remo Horizontal Abierto en Pronación en Polea",
+        "gif_filename": "02181301-Cable-Seated-Wide-grip-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "russian-twist",
+        "nombre": "Russian Twist",
+        "gif_filename": "06871301-Russian-Twist_Waist-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-con-giro-aislado-en-polea-baja-dorsal",
+        "nombre": "Remo con giro Aislado en Polea Baja",
+        "gif_filename": "02441301-Cable-Twisting-Pull_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-lateral-tumbado-concentrado",
+        "nombre": "Crunch Lateral Horizontal Concentrado",
+        "gif_filename": "06351301-Oblique-Crunches-Floor_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-horizontal-aislado-en-polea-dorsal",
+        "nombre": "Remo Horizontal Aislado en Polea",
+        "gif_filename": "12051301-Cable-one-arm-twisting-seated-row_back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-cadera-con-flexion",
+        "nombre": "Elevación de Cadera con flexión de rodillas v1",
+        "gif_filename": "05701301-Leg-Pull-In-Flat-Bench_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "janda-sit-up",
+        "nombre": "Janda Sit-up",
+        "gif_filename": "05081301-Janda-Sit-up_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-superior-aislado-en-polea-dorsal",
+        "nombre": "Remo Superior Aislado en Polea",
+        "gif_filename": "12101301-Cable-Twisting-Standing-high-Row_back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jackknife-sit-up",
+        "nombre": "Jackknife Sit-Up",
+        "gif_filename": "05071301-Jackknife-Sit-Up_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-horizontal-cerrado-en-pronacion-en-polea-dorsal",
+        "nombre": "Remo Horizontal Cerrado en Pronación en Polea",
+        "gif_filename": "13201301-Cable-Rope-Crossover-Seated-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-inferior-inclinado-con-piernas-estiradas",
+        "nombre": "Crunch Inferior Inclinado con piernas estiradas",
+        "gif_filename": "04911301-Incline-Leg-Hip-Raise-leg-straight_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-aislado-en-polea-alta-dorsal",
+        "nombre": "Jalón Aislado en Polea Alta",
+        "gif_filename": "00071301-Alternate-Lateral-Pulldown_back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-cadera-con-piernas-flexionadas",
+        "nombre": "Elevación de Cadera con piernas flexionadas",
+        "gif_filename": "04841301-Hip-Raise-bent-knee_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-inferior-cruzado-alterno",
+        "nombre": "Crunch Inferior Cruzado Alterno",
+        "gif_filename": "04431301-Elbow-to-Knee_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-inferior-aislado-con-banda-dorsal",
+        "nombre": "Remo Inferior Aislado con Banda",
+        "gif_filename": "09881301-Band-one-arm-Standing-Low-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-cruzado-2",
+        "nombre": "Crunch Cruzado",
+        "gif_filename": "02621301-Cross-Body-Crunch_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-superior-aislado-con-banda-dorsal",
+        "nombre": "Remo Superior Aislado con Banda",
+        "gif_filename": "09831301-Band-kneeling-one-arm-pulldown_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "cocoons",
+        "nombre": "Cocoons",
+        "gif_filename": "02601301-Cocoons_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-horizontal-aislado-con-banda-dorsal",
+        "nombre": "Remo Horizontal Aislado con Banda",
+        "gif_filename": "09901301-Band-One-Arm-Twisting-Seated-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-inferior-con-rodillas-flexionadas",
+        "nombre": "Crunch Inferior con Rodillas Flexionadas",
+        "gif_filename": "01381301-Bottoms-Up-m_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-lateral-tumbado-con-toques-alternos-de-talon",
+        "nombre": "Crunch Lateral Horizontal Alterno",
+        "gif_filename": "00061301-Alternate-Heel-Touchers_waist-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-en-supinacion-con-bandas-dorsal",
+        "nombre": "Jalón en Supinación con Bandas",
+        "gif_filename": "31161301-Band-Fixed-Back-Underhand-Pulldown_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-cruzado",
+        "nombre": "Crunch Cruzado con piernas elevadas",
+        "gif_filename": "00031301-air-bike-m_waist_FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-neutro-con-bandas-dorsal",
+        "nombre": "Jalón Neutro con Bandas",
+        "gif_filename": "31171301-Band-Fixed-Back-Close-Grip-Pulldown_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-lateral-inclinado",
+        "nombre": "Crunch Lateral Inclinado",
+        "gif_filename": "00021301-45°-Side-Bend_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-declinado-alterno-con-bandas-dorsal",
+        "nombre": "Remo Declinado Alterno con Bandas",
+        "gif_filename": "33251301-Band-Alternate-Low-Row-wtih-Twist_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-horizontal-con-bandas-dorsal",
+        "nombre": "Remo Horizontal con Bandas",
+        "gif_filename": "38961301-Band-seated-row-male_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-lateral-de-pie-con-banda-abdomen",
+        "nombre": "Crunch Lateral de pie con Banda",
+        "gif_filename": "38411301-Band-side-bend-male_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-libre-declinado-con-cuerdas-dorsal",
+        "nombre": "Remo Libre Declinado con Cuerdas",
+        "gif_filename": "28341301-Suspender-Weighted-Inverted-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-inferior-en-maquina-smith-abdomen",
+        "nombre": "Crunch Inferior en Máquina Smith",
+        "gif_filename": "07561301-Smith-Hip-Raise_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-libre-horizontal-abierto-con-cuerdas-dorsal",
+        "nombre": "Remo Libre Horizontal Abierto con Cuerdas",
+        "gif_filename": "04981301-Inverted-Row-with-Straps_back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-doble-vertical-en-maquina-abdomen",
+        "nombre": "Crunch Doble Vertical en Máquina",
+        "gif_filename": "18571301-Lever-Total-Abdominal-Crunch_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sit-up-en-maquina-abdomen",
+        "nombre": "Sit Up en Máquina",
+        "gif_filename": "18581301-Lever-Decline-Sit-up_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-inclinado-alterno-con-bandas-dorsal",
+        "nombre": "Remo Inclinado Alterno con Bandas",
+        "gif_filename": "33261301-Band-Alternate-Lat-Pulldown-with-Twist_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-inferior-horizontal-en-maquina-abdomen",
+        "nombre": "Crunch Inferior Horizontal en Máquina",
+        "gif_filename": "18561301-Lever-Lying-Leg-Raise-Bent-Knee_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-libre-inclinado-abierto-con-cuerda-dorsal",
+        "nombre": "Remo Libre Inclinado Abierto con Cuerda",
+        "gif_filename": "37441301-Rear-Delt-Fly-with-Bed-Sheet_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-superior-horizontal-en-maquina-abdomen",
+        "nombre": "Crunch Superior Horizontal en Máquina",
+        "gif_filename": "22761301-Lever-Lying-Crunch_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "giros-inferiores-de-oblicuos-en-maquina-abdomen",
+        "nombre": "Giros Inferiores de Oblicuos en Máquina",
+        "gif_filename": "14531103-Lever-Seated-Twist_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-libre-inclinado-cerrado-con-cuerda-dorsal",
+        "nombre": "Remo Libre Inclinado Cerrado con Cuerda",
+        "gif_filename": "37461301-Rear-Delt-Row-with-Bed-Sheet_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-superior-vertical-amplio-en-maquina-abdomen",
+        "nombre": "Crunch Superior Vertical Amplio en Máquina",
+        "gif_filename": "14521301-Lever-Seated-Crunch_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-libre-horizontal-cerrado-con-cuerda-dorsal",
+        "nombre": "Remo Libre Horizontal Cerrado con Cuerda",
+        "gif_filename": "37491301-Inverted-Row-with-Bed-Sheet_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-superior-vertical-en-maquina-abdomen",
+        "nombre": "Crunch Superior Vertical en Máquina",
+        "gif_filename": "05951301-Lever-Seated-Crunch-chest-pad_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "giros-superiores-de-oblicuos-en-maquina-abdomen",
+        "nombre": "Giros Superiores de Oblicuos en Máquina",
+        "gif_filename": "06081301-Lever-Twist_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-neutro-alterno-en-polea-deltoides",
+        "nombre": "Press Militar Neutro Alterno en Polea",
+        "gif_filename": "01481301-Cable-Alternate-Shoulder-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "plancha-lateral-declinada-aislada-abdomen",
+        "nombre": "Puente Lateral Declinado Aislada",
+        "gif_filename": "17751301-Side-Plank-Hip-Adduction_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-frontal-aislada-en-polea-deltoides",
+        "nombre": "Elevación Frontal Aislada en Polea",
+        "gif_filename": "01611301-Cable-Forward-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "plancha-lateral-declinada-abdomen",
+        "nombre": "Puente Lateral Declinado",
+        "gif_filename": "43341301-Side-Plank-Oblique-Crunch_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-frontal-en-polea-deltoides",
+        "nombre": "Elevación Frontal en Polea",
+        "gif_filename": "01621301-Cable-Front-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "plancha-lateral-inclinada-abdomen",
+        "nombre": "Plancha Lateral Inclinada",
+        "gif_filename": "35441301-Bodyweight-Incline-Side-Plank_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-en-plancha-lateral-abdomen",
+        "nombre": "Crunch en Plancha Lateral",
+        "gif_filename": "35031301-Elbow-to-Knee-Side-Plank-Crunch-male_Wiast_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-lateral-aislada-en-polea-deltoides",
+        "nombre": "Elevación Lateral Aislada en Polea",
+        "gif_filename": "01921301-Cable-One-Arm-Lateral-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "plancha-lateral-abdomen",
+        "nombre": "Plancha Lateral",
+        "gif_filename": "07151301-Side-Plank-m_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-en-polea-deltoides",
+        "nombre": "Press Militar en Polea",
+        "gif_filename": "02191301-Cable-Shoulder-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "plancha-con-rodillas-abdomen",
+        "nombre": "Plancha con rodillas",
+        "gif_filename": "32381301-Kneeling-plank-male_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "encogimientos-en-polea-deltoides",
+        "nombre": "Encogimientos en Polea",
+        "gif_filename": "02201301-Cable-Shrug_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "plancha-abdomen",
+        "nombre": "Plancha",
+        "gif_filename": "04631301-Front-Plank_waist-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "rotacion-externa-aislada-en-polea-deltoides",
+        "nombre": "Rotación Externa Aislada en Polea",
+        "gif_filename": "02351301-Cable-Standing-Shoulder-External-Rotation_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-lateral-en-soporte-abdomen",
+        "nombre": "Crunch Lateral en soporte",
+        "gif_filename": "07091301-Side-Hip-on-parallel-bars_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-piernas-flexionadas-en-soporte-abdomen",
+        "nombre": "Elevación de piernas flexionadas en soporte",
+        "gif_filename": "08261301-Vertical-Leg-Raise-on-parallel-bars_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-al-menton-en-polea-deltoides",
+        "nombre": "Remo al mentón en Polea",
+        "gif_filename": "02461301-Cable-Upright-Row_shoulder_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-piernas-estiradas-en-soporte-abdomen",
+        "nombre": "Elevación de piernas estiradas en soporte",
+        "gif_filename": "29631301-Captains-Chair-Straight-Leg-Raise_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "rotacion-interna-aislada-en-polea-deltoides",
+        "nombre": "Rotación Interna Aislada en Polea",
+        "gif_filename": "02161301-Cable-Seated-Shoulder-Internal-Rotation_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-piernas-alternas-colgado-abdomen",
+        "nombre": "Elevación de piernas alternas Colgado",
+        "gif_filename": "08581301-Wind-Sprints_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-piernas-laterales-colgado-abdomen",
+        "nombre": "Elevación de piernas laterales Colgado",
+        "gif_filename": "17611301-Hanging-Oblique-Knee-Raise_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-lateral-horizontal-en-polea-deltoides",
+        "nombre": "Elevación Lateral Horizontal en Polea",
+        "gif_filename": "29241301-Cable-Side-Lying-Lateral-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-piernas-flexionadas-colgado-abdomen",
+        "nombre": "Elevación de piernas flexionadas Colgado",
+        "gif_filename": "17641301-Hanging-Leg-Hip-Raise_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-superior-en-polea-deltoides",
+        "nombre": "Remo Superior en Polea",
+        "gif_filename": "36971301-Cable-Kneeling-Rear-Delt-Row-with-rope-male_Shoulder_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-piernas-estiradas-colgado-abdomen",
+        "nombre": "Elevación de piernas estiradas Colgado",
+        "gif_filename": "04751301-Hanging-Straight-Leg-Raise_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-total-colgado-abdomen",
+        "nombre": "Elevación Total Colgado",
+        "gif_filename": "04731301-Hanging-Pike_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-lateral-concentrada-en-polea-deltoides",
+        "nombre": "Elevación Lateral Concentrada en Polea",
+        "gif_filename": "38801301-Cable-Leaning-Lateral-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "giros-de-cintura-de-pie-con-banda-abdomen",
+        "nombre": "Giros de cintura de pie con Banda",
+        "gif_filename": "35911301-Band-twist-male_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pajaros-aislados-en-polea-deltoides",
+        "nombre": "Pájaros Aislados en Polea",
+        "gif_filename": "39121301-Cable-Bent-Over-One-Arm-Lateral-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-piernas-con-bandas-abdomen",
+        "nombre": "Elevación de piernas con Bandas",
+        "gif_filename": "10021301-Band-Lying-Straight-Leg-Raise_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sit-up-con-bandas-abdomen",
+        "nombre": "Sit Up con Bandas",
+        "gif_filename": "09921301-Band-push-sit-up_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-cerrado-en-polea-deltoides",
+        "nombre": "Press Militar Cerrado en Polea",
+        "gif_filename": "40101301-Cable-Kneeling-Shoulder-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pliegue-completo-con-bandas-abdomen",
+        "nombre": "Pliegue completo con Bandas",
+        "gif_filename": "09811301-Band-jack-knife-sit-up_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-frontal-inclinada-en-polea-deltoides",
+        "nombre": "Elevación Frontal Inclinada en Polea",
+        "gif_filename": "40141301-Cable-Standing-Front-Raise-Variation_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-bicicleta-con-bandas-abdomen",
+        "nombre": "Crunch Cruzado con Bandas",
+        "gif_filename": "09721301-Band-bicycle-crunch_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-superior-de-pie-con-bandas-abdomen",
+        "nombre": "Crunch Superior de pie con Bandas",
+        "gif_filename": "10051301-Band-standing-crunch_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-al-menton-horizontal-en-polea-deltoides",
+        "nombre": "Remo al mentón Horizontal en Polea",
+        "gif_filename": "42251301-Cable-Lying-Upright-Row_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-diagonal-de-pie-con-bandas-abdomen",
+        "nombre": "Crunch Diagonal de pie con Bandas",
+        "gif_filename": "10071301-Band-standing-twisting-crunch_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "encogimientos-horizontales-en-polea-deltoides",
+        "nombre": "Encogimientos Horizontales en Polea",
+        "gif_filename": "42261301-Cable-Lying-Shrug_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-diagonal-de-rodillas-con-bandas-abdomen",
+        "nombre": "Crunch Diagonal de rodillas con Bandas",
+        "gif_filename": "09851301-Band-Kneeling-Twisting-Crunch_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-diagonal-en-polea-abdomen",
+        "nombre": "Crunch Diagonal en Polea",
+        "gif_filename": "01741301-Cable-Judo-Flip_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-frontal-horizontal-en-polea-deltoides",
+        "nombre": "Elevación Frontal Horizontal en Polea",
+        "gif_filename": "42271301-Cable-Lying-Front-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "giros-de-cintura-sentado-con-polea-abdomen",
+        "nombre": "Giros de cintura sentado con Polea",
+        "gif_filename": "40421301-Cable-Seated-Cross-Arm-Twist_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-con-bandas-deltoides",
+        "nombre": "Press Militar con Bandas",
+        "gif_filename": "09971301-Band-shoulder-press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-lateral-de-pie-en-polea-baja-abdomen",
+        "nombre": "Crunch Lateral de pie en Polea Baja",
+        "gif_filename": "02221301-Cable-Side-Bend_Waist-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extensiones-laterales-amplias-con-banda-deltoides",
+        "nombre": "Extensiones Laterales Amplias con Banda",
+        "gif_filename": "09931301-Band-reverse-fly_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-piernas-colgado-con-polea-abdomen",
+        "nombre": "Elevación de piernas colgado con Polea",
+        "gif_filename": "28871301-Cable-Hanging-Leg-Raise_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-completas-con-bandas-deltoides",
+        "nombre": "Elevaciones Completas con Bandas",
+        "gif_filename": "10171301-Band-Y-raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-superior-de-rodillas-con-polea-abdomen",
+        "nombre": "Crunch Superior de rodillas con Polea",
+        "gif_filename": "01751301-Cable-Kneeling-Crunch_Waist-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "encogimientos-con-banda-deltoides",
+        "nombre": "Encogimientos con Banda",
+        "gif_filename": "10181301-Band-shrug_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-inferior-en-polea-abdomen",
+        "nombre": "Crunch Inferior en Polea",
+        "gif_filename": "08731301-Cable-Reverse-Crunch_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pliegue-completo-entre-poleas-abdomen",
+        "nombre": "Pliegue completo entre Poleas",
+        "gif_filename": "02421301-Cable-Tuck-Reverse-Crunch_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-superior-con-bandas-deltoides",
+        "nombre": "Remo Superior con Bandas",
+        "gif_filename": "10221301-Band-standing-rear-delt-row_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "inclinacion-diagonal-en-polea-abdomen",
+        "nombre": "Inclinación diagonal en Polea",
+        "gif_filename": "08621301-Cable-twist-up-down_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-laterales-con-banda-deltoides",
+        "nombre": "Elevaciones Laterales con Banda",
+        "gif_filename": "15081301-Band-Lateral-Raise-Version-2_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-superior-de-pie-con-polea-delante-abdomen",
+        "nombre": "Crunch Superior de pie con Polea delante",
+        "gif_filename": "02261301-Cable-Standing-Crunch_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-al-menton-con-banda-deltoides",
+        "nombre": "Remo al mentón con Banda",
+        "gif_filename": "15001301-Band-Upright-Row-Under-two-feet_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-lateral-de-pie-en-polea-alta-abdomen",
+        "nombre": "Crunch Lateral de pie en Polea Alta",
+        "gif_filename": "02231301-Cable-Side-Crunch_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-superior-sentado-con-polea-abdomen",
+        "nombre": "Crunch Superior sentado con Polea",
+        "gif_filename": "02121301-Cable-Seated-Crunch_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-frontales-con-banda-deltoides",
+        "nombre": "Elevaciones Frontales con Banda",
+        "gif_filename": "09781301-Band-front-raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "giros-rusos-en-fitball-con-polea-abdomen",
+        "nombre": "Russian Twist en Fitball con Polea",
+        "gif_filename": "02111301-Cable-Russian-Twists-on-stability-ball_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extensiones-laterales-con-banda-deltoides",
+        "nombre": "Extensiones Laterales con Banda",
+        "gif_filename": "15031301-Band-Pull-Apart_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-lateral-con-barra-abdomen",
+        "nombre": "Crunch Lateral con Barra",
+        "gif_filename": "00961301-Barbell-Side-Bent-II_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "giros-de-cintura-doblado-con-barra-abdomen",
+        "nombre": "Giros de cintura doblado con Barra",
+        "gif_filename": "33911301-Bent-Over-Twist_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-trasero-con-bandas-deltoides",
+        "nombre": "Press Militar Trasero con Bandas",
+        "gif_filename": "14991301-Band-Behind-Neck-Shoulder-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "giros-de-cintura-sentado-con-barra-abdomen",
+        "nombre": "Giros de cintura sentado con Barra",
+        "gif_filename": "00941301-Barbell-Seated-Twist_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-aislado-con-banda-deltoides",
+        "nombre": "Press Militar Aislado con Banda",
+        "gif_filename": "29961301-Band-Single-Arm-Shoulder-Press_Shoulder_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-lateral-con-mancuerna-abdomen",
+        "nombre": "Crunch Lateral con Mancuerna",
+        "gif_filename": "04071301-Dumbbell-Side-Bend_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "giros-rusos-con-mancuerna-abdomen",
+        "nombre": "Russian Twist con Mancuerna",
+        "gif_filename": "34491301-Dumbbell-Russian-Twist_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pajaros-de-pie-con-bandas-deltoides",
+        "nombre": "Pájaros de pie con Bandas",
+        "gif_filename": "39711301-Band-bent-over-rear-lateral-raise-male_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "abdominales-en-v-con-mancuerna-abdomen",
+        "nombre": "Abdominales en V con Mancuerna",
+        "gif_filename": "33361301-Dumbbell-V-up_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-lateral-aislada-con-banda-deltoides",
+        "nombre": "Elevación Lateral Aislada con Banda",
+        "gif_filename": "09771301-Band-front-lateral-raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "plancha-lateral-con-mancuerna-abdomen",
+        "nombre": "Puente Lateral con Mancuerna",
+        "gif_filename": "33371301-Dumbbell-Side-Bridge_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "encogimientos-en-paralelas-deltoides",
+        "nombre": "Encogimientos en Paralelas",
+        "gif_filename": "41761301-Shrug-on-parallel-bars_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "giros-sentado-en-fitball-abdomen",
+        "nombre": "Giros sentado en Fitball",
+        "gif_filename": "08491301-Weighted-Seated-Twist-on-stability-ball_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sit-up-en-fitball-abdomen",
+        "nombre": "Sit Up en Fitball",
+        "gif_filename": "22971301-Stability-Ball-Crunch-Full-range-hands-behind-head_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "encogimientos-libres-en-banco-deltoides",
+        "nombre": "Encogimientos Libres en Banco",
+        "gif_filename": "30121301-Scapula-Dips_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-piernas-en-fitball-abdomen",
+        "nombre": "Elevación de piernas en Fitball",
+        "gif_filename": "06501301-Pull-In-on-stability-ball_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-verticales-entre-bancos-deltoides",
+        "nombre": "Flexiones Verticales entre Bancos",
+        "gif_filename": "34011301-Pike-Push-up-between-Benches_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "crunch-superior-en-fitball-abdomen",
+        "nombre": "Crunch Superior en Fitball",
+        "gif_filename": "02711301-Crunch-on-stability-ball_waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "step-up-con-mancuernas-pierna",
+        "nombre": "Step Up con Mancuernas",
+        "gif_filename": "04311301-Dumbbell-Step-up_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-verticales-con-banco-deltoides",
+        "nombre": "Flexiones Verticales con Banco",
+        "gif_filename": "33831301-Pike-Push-up-on-Bench-VERSION-2_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelo-aislado-sentado-con-mancuerna-pierna",
+        "nombre": "Extensión de Gemelo Aislado sentado con Mancuerna",
+        "gif_filename": "04001301-Dumbbell-Seated-One-Leg-Calf-Raise_calves_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-libre-deltoides",
+        "nombre": "Press Militar Libre",
+        "gif_filename": "04711301-Handstand-Push-Up_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "peso-muerto-rigido-con-mancuernas-pierna",
+        "nombre": "Peso Muerto Rígido con Mancuernas",
+        "gif_filename": "04321301-Dumbbell-Stiff-Leg-Deadlift_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-libre-entre-bancos-deltoides",
+        "nombre": "Press Militar Libre entre Bancos",
+        "gif_filename": "39161301-Handstand-Shoulder-Press-with-Wall-between-benches_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelos-de-pie-con-mancuernas-pierna",
+        "nombre": "Extensión de Gemelos de pie con Mancuernas",
+        "gif_filename": "04171301-Dumbbell-Standing-Calf-Raise_Calf_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "cuarto-de-sentadilla-con-mancuernas-pierna",
+        "nombre": "Cuarto de Sentadilla con Mancuernas",
+        "gif_filename": "04131301-Dumbbell-Squat_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-declinado-en-pronacion-en-maquina-deltoides",
+        "nombre": "Press Militar Declinado en Pronación en Máquina",
+        "gif_filename": "41741301-Lever-Reverse-Shoulder-Press-plate-loaded_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-a-una-pierna-con-mancuerna-pierna",
+        "nombre": "Sentadilla a una pierna con Mancuerna",
+        "gif_filename": "04101301-Dumbbell-Single-Leg-Split-Squat_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "aperturas-traseras-neutras-en-maquina-deltoides",
+        "nombre": "Aperturas Traseras Neutras en Máquina",
+        "gif_filename": "06011301-Lever-Seated-Reverse-Fly-parallel-grip_shoulder_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "zancada-trasera-con-mancuernas-pierna",
+        "nombre": "Zancada Trasera con Mancuernas",
+        "gif_filename": "03811301-Dumbbell-Rear-Lunge_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "aperturas-traseras-en-pronacion-en-maquina-deltoides",
+        "nombre": "Aperturas Traseras en Pronación en Máquina",
+        "gif_filename": "06021301-Lever-Seated-Reverse-Fly_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-abierta-con-mancuerna-pierna",
+        "nombre": "Sentadilla Sumo con Mancuerna",
+        "gif_filename": "03711301-Dumbbell-Plyo-Squat_thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "zancada-delantera-con-mancuernas-pierna",
+        "nombre": "Zancada Delantera con Mancuernas",
+        "gif_filename": "03361301-Dumbbell-Lunge_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-aislado-en-punta-deltoides",
+        "nombre": "Press Aislado en Punta",
+        "gif_filename": "35251301-Landmine-Kneeling-One-Arm-Shoulder-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "peso-muerto-con-mancuernas-pierna",
+        "nombre": "Peso Muerto con Mancuernas",
+        "gif_filename": "14591301-Dumbbell-Romanian-Deadlift_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-inclinado-en-pronacion-en-maquina-deltoides",
+        "nombre": "Press Militar Inclinado en Pronación en Máquina",
+        "gif_filename": "08691301-Lever-Shoulder-Press-plate-loaded-II_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "media-sentadilla-con-mancuernas-pierna",
+        "nombre": "Media Sentadilla con Mancuernas",
+        "gif_filename": "02911301-Dumbbell-Bench-Squat_thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "encogimientos-en-maquina-deltoides",
+        "nombre": "Encogimientos en Máquina",
+        "gif_filename": "06041301-Lever-Shrug-plate-loaded_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "zancada-lateral-cruzada-con-mancuerna-pierna",
+        "nombre": "Zancada Lateral Cruzada con Mancuerna",
+        "gif_filename": "36831301-Dumbbell-Gobelt-Curtsey-Lunge_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "zancada-lateral-con-mancuerna-pierna",
+        "nombre": "Zancada Lateral con Mancuerna",
+        "gif_filename": "34481301-Dumbbell-Side-Lunge-VERSION-3_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "encogimientos-concentrados-en-maquina-deltoides",
+        "nombre": "Encogimientos Concentrados en Máquina",
+        "gif_filename": "14391301-Lever-Gripless-Shrug-VERSION-2_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-gluteos-con-mancuerna-pierna",
+        "nombre": "Hip Thrust con Mancuerna",
+        "gif_filename": "33351301-Dumbbell-Glute-Bridge_Hip_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-inclinado-neutro-en-maquina-deltoides",
+        "nombre": "Press Militar Inclinado Neutro en Máquina",
+        "gif_filename": "11951301-Lever-Incline-Hammer-Chest-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-asistida-con-mancuerna-pierna",
+        "nombre": "Sentadilla Asistida con Mancuerna",
+        "gif_filename": "28041301-Dumbbell-Supported-Squat_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-en-pronacion-en-maquina-deltoides",
+        "nombre": "Press Militar en Pronación en Máquina",
+        "gif_filename": "14541103-Lever-Seated-Shoulder-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "peso-muerto-abierto-con-mancuerna-pierna",
+        "nombre": "Peso Muerto Abierto con Mancuerna",
+        "gif_filename": "28071301-Dumbbell-Sumo-Pull-Through_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-amplia-con-mancuerna-pierna",
+        "nombre": "Sentadilla Abierta con Mancuerna",
+        "gif_filename": "17601301-Dumbbell-Goblet-Squat_Thighs-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-neutro-en-maquina-deltoides",
+        "nombre": "Press Militar Neutro en Máquina",
+        "gif_filename": "29621301-Lever-Seated-Hammer-Grip-Shoulder-Press_Shoulder_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "peso-muerto-rumano-con-mancuernas-pierna",
+        "nombre": "Peso Muerto Rumano con Mancuernas",
+        "gif_filename": "14591301-Dumbbell-Romanian-Deadlift_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-lateral-en-punta-deltoides",
+        "nombre": "Elevación Lateral en Punta",
+        "gif_filename": "32371301-Landmine-Lateral-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "peso-muerto-a-una-pierna-con-mancuernas-pierna",
+        "nombre": "Peso Muerto a una pierna con Mancuernas",
+        "gif_filename": "17571301-Dumbbell-Single-Leg-Deadlift_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-laterales-en-maquina-deltoides",
+        "nombre": "Elevaciones Laterales en Máquina",
+        "gif_filename": "33431301-Lever-Lateral-Raise-VERSION-2_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "zancadas-con-salto-pierna",
+        "nombre": "Zancadas con salto",
+        "gif_filename": "15541301-Dumbbell-Split-Jump_Plyometric_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-arnold-abierto-con-mancuernas-deltoides",
+        "nombre": "Press Arnold Abierto con Mancuernas",
+        "gif_filename": "02871301-Dumbbell-Arnold-Press-II_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-con-mancuernas-pierna",
+        "nombre": "Sentadilla con Mancuernas",
+        "gif_filename": "15551301-Dumbbell-Squat_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "encogimientos-declinados-con-mancuernas-deltoides",
+        "nombre": "Encogimientos Declinados con Mancuernas",
+        "gif_filename": "03041301-Dumbbell-Decline-Shrug-II_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-en-pared-con-mancuernas-pierna",
+        "nombre": "Sentadilla en Pared con Mancuernas",
+        "gif_filename": "15581301-Dumbbell-Wall-Squat_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-en-zancada-inclinada-con-mancuernas-pierna",
+        "nombre": "Sentadilla en zancada inclinada con Mancuernas",
+        "gif_filename": "15511301-Dumbbell-Decline-Bench-Lunge_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-frontal-con-mancuerna-deltoides",
+        "nombre": "Elevación Frontal con Mancuerna",
+        "gif_filename": "03091301-Dumbbell-Front-Raise-II_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-con-salto-con-mancuernas-pierna",
+        "nombre": "Sentadilla con salto con Mancuernas",
+        "gif_filename": "15521301-Dumbbell-Jumping-Squat_Plyometric_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-frontales-en-pronacion-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Frontales en Pronación con Mancuernas",
+        "gif_filename": "03101301-Dumbbell-Front-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "step-up-con-barra-pierna",
+        "nombre": "Step Up con Barra",
+        "gif_filename": "37281301-Barbell-Front-Step-Up_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-laterales-en-supinacion-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Laterales en Supinación con Mancuernas",
+        "gif_filename": "03111301-Dumbbell-Full-Can-Lateral-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "zancada-lateral-cruzada-con-barra-pierna",
+        "nombre": "Zancada Lateral Cruzada con Barra",
+        "gif_filename": "37231301-Barbell-Curtsey-Lunge_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "peso-muerto-asistido-con-barra-pierna",
+        "nombre": "Peso Muerto Asistido con Barra",
+        "gif_filename": "00741301-Barbell-Rack-Pull_Hips-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-lateral-inclinada-aislada-con-mancuerna-deltoides",
+        "nombre": "Elevación Lateral Inclinada Aislada con Mancuerna",
+        "gif_filename": "03231301-Dumbbell-Incline-One-Arm-Lateral-Raise_shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-en-zancada-con-barra-pierna",
+        "nombre": "Sentadilla en zancada con Barra",
+        "gif_filename": "30301301-Barbell-Split-Squat_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-frontales-inclinadas-con-giro-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Frontales Inclinadas con giro con Mancuernas",
+        "gif_filename": "03251301-Dumbbell-Incline-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-gluteos-con-barra-pierna",
+        "nombre": "Hip Thrust con Barra",
+        "gif_filename": "29641301-Barbell-Glute-Bridge-hands-on-bar_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "encogimientos-inclinados-con-mancuernas-deltoides",
+        "nombre": "Encogimientos Inclinados con Mancuernas",
+        "gif_filename": "03291301-Dumbbell-Incline-Shrug_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-gluteos-inferior-con-barra-pierna",
+        "nombre": "Hip Thrust Declinado con Barra",
+        "gif_filename": "35621301-Barbell-Glute-Bridge-Two-Legs-on-Bench-male_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-lateral-horizontal-aislada-con-mancuerna-deltoides",
+        "nombre": "Elevación Lateral Horizontal Aislada con Mancuerna",
+        "gif_filename": "03411301-Dumbbell-Lying-One-Arm-Deltoid-Rear_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "peso-muerto-con-barra-pierna",
+        "nombre": "Peso Muerto con Barra",
+        "gif_filename": "00321301-Barbell-Deadlift_Hips-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "peso-muerto-sumo-con-barra-pierna",
+        "nombre": "Peso Muerto Sumo con Barra",
+        "gif_filename": "01171301-Barbell-Sumo-Deadlift_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "encogimientos-laterales-con-mancuernas-deltoides",
+        "nombre": "Encogimientos Laterales con Mancuernas",
+        "gif_filename": "03761301-Dumbbell-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "peso-muerto-a-una-pierna-con-barra-pierna",
+        "nombre": "Peso Muerto a una pierna con Barra",
+        "gif_filename": "17561301-Barbell-Single-Leg-Deadlift_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-completas-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Completas con Mancuernas",
+        "gif_filename": "04191301-Dumbbell-Standing-Front-Raise-Above-Head_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "cuarto-de-sentadilla-con-barra-pierna",
+        "nombre": "Cuarto de Sentadilla con Barra",
+        "gif_filename": "15141301-Barbell-Quarter-Squat_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-en-pronacion-con-mancuernas-deltoides",
+        "nombre": "Press Militar en Pronación con Mancuernas",
+        "gif_filename": "04261301-Dumbbell-Standing-Overhead-Press_shoulder_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-en-zancada-inclinada-con-barra-pierna",
+        "nombre": "Sentadilla en zancada inclinada con Barra",
+        "gif_filename": "15181301-Barbell-Decline-Bench-Lunge_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-neutro-con-mancuernas-deltoides",
+        "nombre": "Press Militar Neutro con Mancuernas",
+        "gif_filename": "04271301-Dumbbell-Standing-Palms-In-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "zancada-lateral-con-barra-pierna",
+        "nombre": "Zancada Lateral con Barra",
+        "gif_filename": "14101301-Barbell-Lateral-Lunge_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "saltos-rodillas-cuclillas-con-barra-pierna",
+        "nombre": "Saltos rodillas en cuclillas con Barra",
+        "gif_filename": "14201301-Kneeling-Jump-Squat_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-al-menton-con-mancuernas-deltoides",
+        "nombre": "Remo al mentón con Mancuernas",
+        "gif_filename": "04371301-Dumbbell-Upright-Row_shoulder_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-abierta-con-salto-con-barra-pierna",
+        "nombre": "Sentadilla con salto con Barra",
+        "gif_filename": "00531301-Barbell-Jump-Squat_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-con-giro-con-mancuernas-deltoides",
+        "nombre": "Press Militar con giro con Mancuernas",
+        "gif_filename": "04381301-Dumbbell-W-press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-gluteo-aislado-con-barra-pierna",
+        "nombre": "Hip Thrust Aislado con Barra",
+        "gif_filename": "10611301-Barbell-one-leg-hip-thrust_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "rotacion-vertical-aislada-con-mancuerna-deltoides",
+        "nombre": "Rotación Vertical Aislada con Mancuerna",
+        "gif_filename": "08641301-Dumbbell-Upright-Shoulder-External-Rotation_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-gluteos-superior-con-barra-pierna",
+        "nombre": "Hip Thrust Inclinado con Barra",
+        "gif_filename": "10601301-Barbell-Hip-Thrust_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-cuadriceps-con-barra-pierna",
+        "nombre": "Extensión de Cuádriceps con Barra",
+        "gif_filename": "01021301-Barbell-Squat-on-knees_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-frontales-inclinadas-en-pronacion-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Frontales Inclinadas en Pronación con Mancuernas",
+        "gif_filename": "11761301-Dumbbell-Incline-Front-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelos-sentado-con-barra-pierna",
+        "nombre": "Extensión de Gemelos sentado con Barra",
+        "gif_filename": "00881301-Barbell-Seated-Calf-Raise_Calves_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-laterales-declinadas-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Laterales Declinadas con Mancuernas",
+        "gif_filename": "03261301-Dumbbell-Incline-Rear-Lateral-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-abierta-con-barra-pierna",
+        "nombre": "Sentadilla Sumo con Barra",
+        "gif_filename": "01241301-Barbell-Wide-Squat_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pajaros-aislados-con-mancuerna-deltoides",
+        "nombre": "Pájaros Aislados con Mancuerna",
+        "gif_filename": "03451301-Dumbbell-Lying-One-Arm-Rear-Lateral-Raise_shoulder_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelos-de-pie-con-barra-pierna",
+        "nombre": "Extensión de Gemelos de pie con Barra",
+        "gif_filename": "01081301-Barbell-Standing-Leg-Calf-Raise_Calf_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-superior-aislado-con-mancuerna-deltoides",
+        "nombre": "Remo Superior Aislado con Mancuerna",
+        "gif_filename": "03771301-Dumbbell-Rear-Delt-Row_shoulder_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "peso-muerto-rumano-con-barra-pierna",
+        "nombre": "Peso Muerto Rumano con Barra",
+        "gif_filename": "00851301-Barbell-Romanian-Deadlift_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "zancada-trasera-con-barra-pierna",
+        "nombre": "Zancada Trasera con Barra",
+        "gif_filename": "00771301-Barbell-Rear-Lunge-II_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pajaros-sentado-con-mancuernas-deltoides",
+        "nombre": "Pájaros sentado con Mancuernas",
+        "gif_filename": "03781301-Dumbbell-Rear-Fly_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-a-una-pierna-con-barra-pierna",
+        "nombre": "Sentadilla a una pierna con Barra",
+        "gif_filename": "00681301-Barbell-One-Leg-Squat_thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pajaros-de-pie-con-mancuernas-deltoides",
+        "nombre": "Pájaros de pie con Mancuernas",
+        "gif_filename": "03801301-Dumbbell-Rear-Lateral-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-con-barra-pierna",
+        "nombre": "Sentadilla con Barra",
+        "gif_filename": "00631301-Barbell-Narrow-Stance-Squat_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-laterales-declinadas-en-pronacion-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Laterales Declinadas en Pronación con Mancuernas",
+        "gif_filename": "03861301-Dumbbell-Rotation-Reverse-Fly_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "buenos-dias-con-barra-pierna",
+        "nombre": "Buenos días con Barra",
+        "gif_filename": "00441301-Barbell-Good-Morning_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-laterales-declinadas-neutras-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Laterales Declinadas Neutras con Mancuernas",
+        "gif_filename": "03831301-Dumbbell-Reverse-Fly_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-amplia-con-barra-pierna",
+        "nombre": "Sentadilla Profunda con Barra",
+        "gif_filename": "00431301-Barbell-Full-Squat_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-laterales-horizontales-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Laterales Horizontales con Mancuernas",
+        "gif_filename": "04081301-Dumbbell-Side-Lying-One-Hand-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "media-sentadilla-con-barra-pierna",
+        "nombre": "Media Sentadilla con Barra",
+        "gif_filename": "00261301-Barbell-Bench-Squat_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "peso-muerto-en-punta-pierna",
+        "nombre": "Peso Muerto en Punta",
+        "gif_filename": "42471301-Landmine-Romanian-Deadlift-VERSION-2_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "rotacion-externa-aislada-con-mancuerna-deltoides",
+        "nombre": "Rotación Externa Aislada con Mancuerna",
+        "gif_filename": "08631301-Dumbbell-lying-external-shoulder-rotation_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-en-punta-pierna",
+        "nombre": "Sentadilla en Punta",
+        "gif_filename": "42461301-Landmine-Front-Squat_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "zancada-trasera-en-punta-pierna",
+        "nombre": "Zancada Trasera en Punta",
+        "gif_filename": "40401301-Landmine-Rear-Lunge-VERSION-2_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-cubano-circular-con-mancuernas-deltoides",
+        "nombre": "Press Cubano Circular con Mancuernas",
+        "gif_filename": "02991301-Dumbbell-Cuban-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "aductor-externo-en-maquina-pierna",
+        "nombre": "Aductor Externo en Máquina",
+        "gif_filename": "05971301-Lever-Seated-Hip-Abduction_Hips-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-lateral-frontal-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Lateral - Frontal con Mancuernas",
+        "gif_filename": "03351301-Dumbbell-Lateral-to-Front-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelos-sentado-en-maquina-pierna",
+        "nombre": "Extensión de Gemelos sentado en Máquina",
+        "gif_filename": "26661301-Lever-Seated-Calf-Raise-plate-loaded-VERSION-2_Calves_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "encogimientos-con-mancuernas-deltoides",
+        "nombre": "Encogimientos con Mancuernas",
+        "gif_filename": "04061301-Dumbbell-Shrug_Back-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-femoral-vertical-en-maquina-pierna",
+        "nombre": "Curl Femoral Vertical en Máquina",
+        "gif_filename": "05991301-Lever-Seated-Leg-Curl_Thighs-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-arnold-con-mancuernas-deltoides",
+        "nombre": "Press Arnold con Mancuernas",
+        "gif_filename": "21371301-Dumbbell-Arnold-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-femoral-aislado-en-maquina-pierna",
+        "nombre": "Curl Femoral Aislado en Máquina",
+        "gif_filename": "05821301-Lever-Kneeling-Leg-Curl-plate-loaded_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-inclinada-abierta-en-maquina-pierna",
+        "nombre": "Sentadilla Sumo Inclinada en Máquina",
+        "gif_filename": "41001301-Sled-Wide-Hack-Squat-male_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-circulares-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Circulares con Mancuernas",
+        "gif_filename": "21431301-Dumbbell-Standing-Around-World_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-inclinada-cerrada-en-maquina-pierna",
+        "nombre": "Sentadilla Cerrada Inclinada en Máquina",
+        "gif_filename": "19921301-Sled-Full-Hack-Squat_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-scott-con-mancuernas-deltoides",
+        "nombre": "Press Scott con Mancuernas",
+        "gif_filename": "23971301-Dumbbell-Scott-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelos-inclinada-en-maquina-pierna",
+        "nombre": "Extensión de Gemelos Inclinada en Máquina",
+        "gif_filename": "13831301-Hack-Calf-Raise_Calves_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-laterales-delanteras-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Laterales Delanteras con Mancuernas",
+        "gif_filename": "24701301-Dumbbell-Lying-on-Floor-Rear-Delt-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelos-en-prensa-pierna",
+        "nombre": "Extensión de Gemelos en Prensa",
+        "gif_filename": "13911301-Sled-Calf-Press-On-Leg-Press_Calves_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelos-concentrada-en-maquina-pierna",
+        "nombre": "Extensión de Gemelos Concentrada en Máquina",
+        "gif_filename": "12531301-Lever-Donkey-Calf-Raise_Calves_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-horizontal-con-mancuernas-deltoides",
+        "nombre": "Press Horizontal con Mancuernas",
+        "gif_filename": "41251301-Dumbbell-Face-Down-Lying-Shoulder-Press-male_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "prensa-inclinada-cerrada-pierna",
+        "nombre": "Prensa Inclinada Cerrada",
+        "gif_filename": "15751301-Sled-45°-Narrow-Stance-Leg-Press_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-superior-trasero-con-mancuernas-deltoides",
+        "nombre": "Remo Superior Trasero con Mancuernas",
+        "gif_filename": "42351301-Dumbbell-Seated-Bent-Over-Rear-Delt-Row_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "prensa-inclinada-pierna",
+        "nombre": "Prensa Inclinada",
+        "gif_filename": "07401301-Sled-45°-Leg-Wide-Press_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-laterales-declinadas-en-supinacion-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Laterales Declinadas en Supinación con Mancuernas",
+        "gif_filename": "35421301-Dumbbell-Incline-T-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-femoral-horizontal-en-maquina-pierna",
+        "nombre": "Curl Femoral Horizontal en Máquina",
+        "gif_filename": "05861301-Lever-Lying-Leg-Curl_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-lateral-frontal-alto-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Lateral - Frontal Alto con Mancuernas",
+        "gif_filename": "42381301-Dumbbell-Seated-Lateral-to-Front-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelos-en-maquina-con-carga-inferior-pierna",
+        "nombre": "Extensión de Gemelos en Máquina con carga Inferior",
+        "gif_filename": "12201301-Lever-Calf-Raise-bench-press-machine_Calves_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-cubano-con-mancuernas-deltoides",
+        "nombre": "Press Cubano con Mancuernas",
+        "gif_filename": "41831301-Dumbbell-Seated-Cuban-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-trasera-en-maquina-pierna",
+        "nombre": "Extensión Trasera en Máquina",
+        "gif_filename": "10371301-Lever-Standing-Rear-Kick_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "rotacion-externa-concentrada-con-mancuerna-deltoides",
+        "nombre": "Rotación Externa Concentrada con Mancuerna",
+        "gif_filename": "36931301-Dumbbell-Bench-Supported-External-Rotation_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-frontal-en-maquina-pierna",
+        "nombre": "Extensión Frontal en Máquina",
+        "gif_filename": "10361301-Lever-Standing-Leg-Raise_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "aductor-interno-aislado-en-maquina-pierna",
+        "nombre": "Aductor Interno Aislado en Máquina",
+        "gif_filename": "10351301-Lever-Side-Hip-Adduction_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-frontales-en-supinacion-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Frontales en Supinación con Mancuernas",
+        "gif_filename": "39111301-Dumbbell-Low-Fly_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "aductor-externo-aislado-en-maquina-pierna",
+        "nombre": "Aductor Externo Aislado en Máquina",
+        "gif_filename": "10341301-Lever-Side-Hip-Abduction_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-frontal-declinada-con-mancuerna-deltoides",
+        "nombre": "Elevación Frontal Declinada con Mancuerna",
+        "gif_filename": "39801301-Dumbbell-Incline-Front-Raise-with-Chest-Support_Shoulder_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelos-declinada-en-maquina-pierna",
+        "nombre": "Extensión de Gemelos Declinada en Máquina",
+        "gif_filename": "07421301-Sled-Forward-Angled-Calf-Raise_Calf_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelos-en-maquina-con-carga-superior-pierna",
+        "nombre": "Extensión de Gemelos en Máquina con carga Superior",
+        "gif_filename": "06051301-Lever-Standing-Calf-Raise_Calf_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "encogimiento-aislado-con-mancuerna-deltoides",
+        "nombre": "Encogimiento Aislado con Mancuerna",
+        "gif_filename": "40531301-Dumbbell-Seated-Gittleson-Shrug_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "aductor-interno-en-maquina-pierna",
+        "nombre": "Aductor Interno en Máquina",
+        "gif_filename": "05981301-Lever-Seated-Hip-Adduction_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-frontales-declinadas-neutras-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Frontales Declinadas Neutras con Mancuernas",
+        "gif_filename": "42361301-Dumbbell-Incline-Two-Front-Raise-with-Chest-Support_Shoulder_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-cuadriceps-en-maquina-pierna",
+        "nombre": "Extensión de Cuádriceps en Máquina",
+        "gif_filename": "05851301-Lever-Leg-Extension_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-en-supinacion-con-mancuernas-deltoides",
+        "nombre": "Press Militar en Supinación con Mancuernas",
+        "gif_filename": "42371301-Dumbbell-Seated-Close-Grip-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-en-maquina-pierna",
+        "nombre": "Sentadilla en Máquina",
+        "gif_filename": "05781301-Lever-Deadlift-plate-loaded_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-laterales-neutras-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Laterales Neutras con Mancuernas",
+        "gif_filename": "03341301-Dumbbell-Lateral-Raise_shoulder-AFIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-en-supinacion-en-maquina-smith-dorsal",
+        "nombre": "Remo en Supinación en Máquina Smith",
+        "gif_filename": "13611301-Smith-Reverse-Grip-Bent-Over-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-aislado-en-pronacion-en-maquina-smith-dorsal",
+        "nombre": "Remo Aislado en Pronación en Máquina Smith",
+        "gif_filename": "13601301-Smith-One-Arm-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevaciones-frontales-declinadas-en-pronacion-con-mancuernas-deltoides",
+        "nombre": "Elevaciones Frontales Declinadas en Pronación con Mancuernas",
+        "gif_filename": "35411301-Dumbbell-Incline-Y-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "hiperextensiones-en-maquina-lumbar",
+        "nombre": "Hiperextensiones en Máquina",
+        "gif_filename": "05731301-Lever-Back-Extension_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-trasera-con-barra-deltoides",
+        "nombre": "Elevación Trasera con Barra",
+        "gif_filename": "00751301-Barbell-Rear-Delt-Raise_shoulder_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-femoral-libre-pierna",
+        "nombre": "Curl Femoral Libre",
+        "gif_filename": "35071301-Self-Assisted-Inverse-Leg-Curl-VERSION-2_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "step-up-lateral-pierna",
+        "nombre": "Step Up Lateral",
+        "gif_filename": "42561301-Stepdown-Squat_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-trasera-con-barra-deltoides",
+        "nombre": "Extensión Trasera con Barra",
+        "gif_filename": "01001301-Barbell-Skier_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelos-sentado-con-mancuerna-pierna",
+        "nombre": "Extensión de Gemelos sentado con Mancuerna",
+        "gif_filename": "41551301-Weighted-Seated-Calf-Raise_Calves_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-completa-con-barra-deltoides",
+        "nombre": "Elevación Completa con Barra",
+        "gif_filename": "01071301-Barbell-Standing-Front-Raise-Over-Head_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelos-de-pie-pierna",
+        "nombre": "Extensión de Gemelos de pie",
+        "gif_filename": "02841301-Donkey-Calf-Raise_Calves_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-a-una-pierna-con-banda-delante-pierna",
+        "nombre": "Sentadilla a una pierna con Banda Delante",
+        "gif_filename": "09871301-Band-One-Arm-Single-Leg-Split-Squat_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-al-menton-cerrado-con-barra-z-deltoides",
+        "nombre": "Remo al mentón Cerrado con Barra Z",
+        "gif_filename": "01201301-Barbell-Upright-Row_shoulder_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "peso-muerto-con-bandas-pierna",
+        "nombre": "Peso Muerto con Bandas",
+        "gif_filename": "09911301-Band-pull-through_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-trasero-con-barra-deltoides",
+        "nombre": "Press Militar Trasero con Barra",
+        "gif_filename": "07881301-Standing-Behind-Neck-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "rotacion-de-cadera-interna-con-banda-pierna",
+        "nombre": "Rotación de Cadera Interna con Banda",
+        "gif_filename": "09951301-Band-Seated-Hip-External-Rotation_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-con-barra-deltoides",
+        "nombre": "Press Militar con Barra",
+        "gif_filename": "11651301-Barbell-Standing-Military-Press-without-rack_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "rotacion-de-cadera-externa-con-banda-pierna",
+        "nombre": "Rotación de Cadera Externa con Banda",
+        "gif_filename": "09961301-Band-Seated-Hip-Internal-Rotation_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-en-supinacion-con-barra-z-deltoides",
+        "nombre": "Press Militar en Supinación con Barra Z",
+        "gif_filename": "12261301-EZ-Bar-Standing-Overhead-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelo-aislado-con-banda-pierna",
+        "nombre": "Extensión de Gemelo Aislado con Banda",
+        "gif_filename": "09991301-Band-single-leg-calf-raise_Calves_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelo-aislado-delantero-con-banda-pierna",
+        "nombre": "Extensión de Gemelo Aislado Delantero con Banda",
+        "gif_filename": "10001301-Band-single-leg-reverse-calf-raise_Calves_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-frontal-cerrada-en-pronacion-con-barra-deltoides",
+        "nombre": "Elevación Frontal Cerrada en Pronación con Barra",
+        "gif_filename": "01191301-Barbell-Upright-Row-II_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-a-una-pierna-con-banda-debajopierna",
+        "nombre": "Sentadilla a una pierna con Banda Debajo",
+        "gif_filename": "10011301-Band-single-leg-split-squat_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-al-menton-con-barra-deltoides",
+        "nombre": "Remo al mentón con Barra",
+        "gif_filename": "01231301-Barbell-Wide-Grip-Upright-Row_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-con-banda-pierna",
+        "nombre": "Sentadilla con Banda",
+        "gif_filename": "10041301-Band-squat_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-frontal-declinada-abierta-con-barra-z-deltoides",
+        "nombre": "Elevación Frontal Declinada Abierta con Barra Z",
+        "gif_filename": "04451301-EZ-Barbell-Anti-Gravity-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "step-up-con-banda-pierna",
+        "nombre": "Step Up con Banda",
+        "gif_filename": "10081301-Band-step-up_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-mixto-con-barra-deltoides",
+        "nombre": "Press Militar Mixto con Barra",
+        "gif_filename": "01051301-Barbell-Standing-Bradford-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "peso-muerto-con-banda-pierna",
+        "nombre": "Peso Muerto con Banda",
+        "gif_filename": "10091301-Band-stiff-leg-deadlift_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "rotacion-de-aductor-interna-con-banda-pierna",
+        "nombre": "Rotación de Aductor Interna con Banda",
+        "gif_filename": "09821301-Band-Lying-Hip-External-Rotation_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-cerrado-con-barra-deltoides",
+        "nombre": "Press Militar Cerrado con Barra",
+        "gif_filename": "14561301-Barbell-Standing-Close-Grip-Military-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "rotacion-de-aductor-externa-con-banda-pierna",
+        "nombre": "Rotación de Aductor Externa con Banda",
+        "gif_filename": "09841301-Band-Lying-Hip-Internal-Rotatio_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "encogimientos-en-press-militar-con-barra-deltoides",
+        "nombre": "Encogimientos en Press Militar con Barra",
+        "gif_filename": "29281301-Barbell-Overhead-Shrug_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-gluteos-con-banda-pierna",
+        "nombre": "Hip Thrust con Banda",
+        "gif_filename": "14081301-Band-Hip-Lift_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-militar-abierto-con-barra-deltoides",
+        "nombre": "Press Militar Abierto con Barra",
+        "gif_filename": "14571301-Barbell-Standing-Wide-Military-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-frontal-aislada-con-banda-pierna",
+        "nombre": "Extensión Frontal Aislada con Banda",
+        "gif_filename": "15071301-Band-Hip-Flexion_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-frontal-declinada-en-pronacion-con-barra-deltoides",
+        "nombre": "Elevación Frontal Declinada en Pronación con Barra",
+        "gif_filename": "37221301-Barbell-Incline-Lying-Rear-Delt-Raise_Shoulder_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelos-con-banda-pierna",
+        "nombre": "Extensión de Gemelos con Banda",
+        "gif_filename": "15051301-Band-Calf-Raise-Version-3_Calves_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-cuadriceps-aislada-con-banda-pierna",
+        "nombre": "Extensión de Cuádriceps Aislada con Banda",
+        "gif_filename": "35181301-Band-Seated-Leg-Extension-male_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "encogimientos-delanteros-con-barra-deltoides",
+        "nombre": "Encogimientos Delanteros con Barra",
+        "gif_filename": "00951301-Barbell-Shrug_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-aislada-asistida-con-cuerda-pierna",
+        "nombre": "Sentadilla Aislada Asistida con Cuerda",
+        "gif_filename": "37471301-Assisted-Pistol-Squat-with-Bed-Sheet_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "encogimientos-traseros-con-barra-deltoides",
+        "nombre": "Encogimientos Traseros con Barra",
+        "gif_filename": "37301301-Barbell-Behind-The-Back-Shrug_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-trasera-aislada-en-polea-baja-pierna",
+        "nombre": "Extensión Trasera Aislada en Polea Baja",
+        "gif_filename": "02281301-Cable-Standing-Hip-Extension_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "encogimientos-sentado-con-barra-deltoides",
+        "nombre": "Encogimientos Sentado con Barra",
+        "gif_filename": "40161301-Barbell-Seated-Shrug_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "peso-muerto-en-polea-pierna",
+        "nombre": "Peso Muerto en Polea",
+        "gif_filename": "12061301-Cable-pull-through_hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelo-aislado-en-polea-pierna",
+        "nombre": "Extensión de Gemelo Aislado en Polea",
+        "gif_filename": "13761301-Cable-Standing-One-Leg-Calf-Raise_Calves_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-frontal-con-giros-con-barra-z-deltoides",
+        "nombre": "Elevación Frontal con giros con Barra Z",
+        "gif_filename": "39861301-EZ-bar-Front-Twist-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gemelos-en-polea-pierna",
+        "nombre": "Extensión de Gemelos en Polea",
+        "gif_filename": "13751301-Cable-Standing-Calf-Raise_Calves_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-frontal-en-pronacion-con-barra-deltoides",
+        "nombre": "Elevación Frontal en Pronación con Barra",
+        "gif_filename": "00411301-Barbell-Front-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-femoral-vertical-en-polea-pierna",
+        "nombre": "Curl Femoral Vertical en Polea",
+        "gif_filename": "15471301-Cable-Standing-Leg-Curl_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-frontal-inclinada-en-supinacion-con-barra-z-deltoides",
+        "nombre": "Elevación Frontal Inclinada en Supinación con Barra Z",
+        "gif_filename": "39891301-EZ-bar-Incline-Front-Raise_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "aductor-externo-en-polea-pierna",
+        "nombre": "Aductor Externo en Polea",
+        "gif_filename": "30481301-Cable-hip-abduction-version-2-male_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-femoral-libre-asistido-con-polea-pierna",
+        "nombre": "Curl Femoral Libre Asistido con Polea",
+        "gif_filename": "32351301-Cable-Assisted-Inverse-Leg-Curl_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-en-pronacion-en-maquina-dorsal",
+        "nombre": "Jalón en Pronación en Máquina",
+        "gif_filename": "05791301-Lever-Front-Pulldown_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "zancada-delantera-en-polea-pierna",
+        "nombre": "Zancada Delantera en Polea",
+        "gif_filename": "33561301-Cable-Forward-Lunge_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-en-supinacion-en-maquina-dorsal",
+        "nombre": "Jalón en Supinación en Máquina",
+        "gif_filename": "06731301-reverse-grip-machine-lat-pulldown_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "zancada-lateral-en-polea-pierna",
+        "nombre": "Zancada Lateral en Polea",
+        "gif_filename": "33551301-Cable-Lateral-Lunge-VERSION-2_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-de-gluteos-en-polea-pierna",
+        "nombre": "Extensión de Glúteos en Polea",
+        "gif_filename": "33521301-Cable-Kneeling-Pull-Through_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-horizontal-en-pronacion-en-maquina-dorsal",
+        "nombre": "Remo Horizontal en Pronación en Máquina",
+        "gif_filename": "13501301-Lever-Seated-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "zancada-trasera-en-polea-pierna",
+        "nombre": "Zancada Trasera en Polea",
+        "gif_filename": "33511301-Cable-Lunge_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sentadilla-con-poleas-pierna",
+        "nombre": "Sentadilla con Poleas",
+        "gif_filename": "33491301-Cable-Front-Squat_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-horizontal-en-supinacion-en-maquina-dorsal",
+        "nombre": "Remo Horizontal en Supinación en Máquina",
+        "gif_filename": "13481301-Lever-Reverse-Grip-Vertical-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "aductor-interno-en-polea-baja-pierna",
+        "nombre": "Aductor Interno en Polea Baja",
+        "gif_filename": "01681301-Cable-Hip-Adduction_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-horizontal-neutro-en-maquina-dorsal",
+        "nombre": "Remo Horizontal Neutro en Máquina",
+        "gif_filename": "26641301-Lever-Seated-Row-plate-loaded_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-declinado-en-pronacion-en-polea-dorsal",
+        "nombre": "Remo Declinado en Pronación en Polea",
+        "gif_filename": "13181301-Cable-Incline-Bench-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-declinado-neutro-en-pronacion-en-polea-dorsal",
+        "nombre": "Remo Declinado Neutro en Pronación en Polea",
+        "gif_filename": "13221301-Cable-Rope-Extension-Incline-Bench-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-en-barra-t-en-supinacion-dorsal",
+        "nombre": "Remo en Barra T en Supinación",
+        "gif_filename": "13491301-Lever-Reverse-T-Bar-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-horizontal-cerrado-neutro-amplio-en-polea-dorsal",
+        "nombre": "Remo Horizontal Cerrado Neutro Amplio en Polea",
+        "gif_filename": "08611301-Cable-seated-row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-en-barra-t-en-pronacion-dorsal",
+        "nombre": "Remo en Barra T en Pronación",
+        "gif_filename": "11941301-Lever-Lying-T-bar-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extensiones-cruzadas-en-polea-alta-dorsal",
+        "nombre": "Extensiones Cruzadas en Polea Alta",
+        "gif_filename": "23301301-Cable-Lat-Pulldown-Full-Range-Of-Motion_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-en-punta-dorsal",
+        "nombre": "Remo en Punta",
+        "gif_filename": "32001301-Lever-Bent-over-Row-with-V-bar-plate-loaded_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "serratos-con-giro-en-polea-dorsal",
+        "nombre": "Serratos con giro en Polea",
+        "gif_filename": "24641301-Cable-Thibaudeau-Kayak-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-aislado-en-punta-dorsal",
+        "nombre": "Remo Aislado en Punta",
+        "gif_filename": "40381301-Landmine-One-Arm-Bent-Over-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jalon-cerrado-neutro-en-polea-alta-dorsal",
+        "nombre": "Jalón Cerrado Neutro en Polea Alta",
+        "gif_filename": "26161301-Cable-Lateral-Pulldown-with-V-bar_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-horizontal-cerrado-neutro-en-polea-dorsal",
+        "nombre": "Remo Horizontal Cerrado Neutro en Polea",
+        "gif_filename": "26611301-Cable-Seated-Row-with-V-bar_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-aislado-neutro-en-maquina-smith-dorsal",
+        "nombre": "Remo Aislado Neutro en Máquina Smith",
+        "gif_filename": "39451301-Smith-Single-Arm-Bent-Over-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-inferior-aislado-en-polea-baja-dorsal",
+        "nombre": "Remo Inferior Aislado en Polea Baja",
+        "gif_filename": "01891301-Cable-One-Arm-Bent-over-Row_Back-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "dominada-invertida-dorsal",
+        "nombre": "Dominada Invertida",
+        "gif_filename": "04971301-Inverted-Row-II_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "dominada-mixta-dorsal",
+        "nombre": "Dominada Mixta",
+        "gif_filename": "06271301-Mixed-Grip-Chin-up_back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "dominada-a-una-mano-asistida-dorsal",
+        "nombre": "Dominada a una mano asistida",
+        "gif_filename": "06381301-One-Arm-Chin-Up_back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "dominada-cerrada-corta-dorsal",
+        "nombre": "Dominada Cerrada Corta",
+        "gif_filename": "01401301-Brachialis-Pull-up_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "dominada-en-supinacion-dorsal",
+        "nombre": "Dominada en Supinación",
+        "gif_filename": "13261301-Chin-Up_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "dominada-trasera-dorsal",
+        "nombre": "Dominada Trasera",
+        "gif_filename": "13671301-Wide-Grip-Rear-Pull-Up_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "dominada-dorsal",
+        "nombre": "Dominada",
+        "gif_filename": "14291301-Wide-Grip-Pull-Up_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "dominada-cerrada-dorsal",
+        "nombre": "Dominada Cerrada",
+        "gif_filename": "17631301-Shoulder-Grip-Pull-up_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "dominada-cerrada-en-martillo-dorsal",
+        "nombre": "Dominada Cerrada en Martillo",
+        "gif_filename": "18651301-Hammer-Grip-Pull-up-on-Dip-Cage_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "dominada-abierta-dorsal",
+        "nombre": "Dominada Abierta",
+        "gif_filename": "18661301-Wide-Grip-Pull-Up-on-Dip-Cage_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "dominada-a-una-mano-dorsal",
+        "nombre": "Dominada a una mano",
+        "gif_filename": "32901301-Weighted-One-Hand-Pull-up_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "dominada-lateral-dorsal",
+        "nombre": "Dominada Lateral",
+        "gif_filename": "32931301-Archer-Pull-up_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "dominada-circular-en-supinacion-dorsal",
+        "nombre": "Dominada Circular en Supinación",
+        "gif_filename": "42071301-Chin-Up-Around-the-Bar_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "retraccion-escapular-colgado-dorsal",
+        "nombre": "Retracción Escapular Colgado",
+        "gif_filename": "41771301-Hanging-Scapular-Shrug_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "retraccion-escapular-entre-bancos-dorsal",
+        "nombre": "Retracción Escapular entre Bancos",
+        "gif_filename": "17721301-Elbow-Lift-Reverse-Push-Up_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-colgado-en-supinacion-dorsal",
+        "nombre": "Remo Colgado en Supinación",
+        "gif_filename": "12231301-Underhand-Grip-Inverted-Back-Row_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-colgado-en-pronacion-dorsal",
+        "nombre": "Remo Colgado en Pronación",
+        "gif_filename": "04991301-Inverted-Row_Back-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "hiperextensiones-lumbar",
+        "nombre": "Hiperextensiones",
+        "gif_filename": "18601301-Hyperextension-VERSION-2_Hips_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "hiperextensiones-inclinadas-lumbar",
+        "nombre": "Hiperextensiones Inclinadas",
+        "gif_filename": "04891301-Hyperextension_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "brazada-en-fitball-lumbar",
+        "nombre": "Brazada en Fitball",
+        "gif_filename": "13321301-Exercise-Ball-Alternating-Arm-Ups_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "hiperextensiones-en-fitball-lumbar",
+        "nombre": "Hiperextensiones en Fitball",
+        "gif_filename": "13141301-Back-Extension-on-Exercise-Ball_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-aislado-con-mancuerna-dorsal",
+        "nombre": "Remo Aislado con Mancuerna",
+        "gif_filename": "02921301-Dumbbell-Bent-over-Row_back_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pullover-con-mancuerna-dorsal",
+        "nombre": "Pullover con Mancuerna",
+        "gif_filename": "04331301-Dumbbell-Straight-Arm-Pullover_Chest-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-inclinado-neutro-con-mancuernas-dorsal",
+        "nombre": "Remo Inclinado Neutro con Mancuernas",
+        "gif_filename": "33201301-Dumbbell-Hammer-Grip-Incline-Bench-Two-Arm-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-inclinado-en-pronacion-con-mancuernas-dorsal",
+        "nombre": "Remo Inclinado en Pronación con Mancuernas",
+        "gif_filename": "03271301-Dumbbell-Incline-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-inclinado-en-supinacion-con-mancuernas-dorsal",
+        "nombre": "Remo Inclinado en Supinación con Mancuernas",
+        "gif_filename": "13311301-Dumbbell-Reverse-Grip-Incline-Bench-Two-Arm-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-neutro-con-mancuernas-dorsal",
+        "nombre": "Remo Neutro con Mancuernas",
+        "gif_filename": "02931301-Dumbbell-Bent-Over-Row_Back-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-en-pronacion-con-mancuernas-dorsal",
+        "nombre": "Remo en Pronación con Mancuernas",
+        "gif_filename": "13291301-Dumbbell-Palm-Rotational-Bent-Over-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-en-supinacion-con-mancuernas-dorsal",
+        "nombre": "Remo en Supinación con Mancuernas",
+        "gif_filename": "37991301-Dumbbell-Bent-Over-Reverse-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pullover-con-barra-z-dorsal",
+        "nombre": "Pullover con Barra Z",
+        "gif_filename": "30101301-EZ-Bar-Lying-Bent-Arms-Pullover_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-aislado-con-barra-dorsal",
+        "nombre": "Remo Aislado con Barra",
+        "gif_filename": "00641301-Barbell-One-Arm-Bent-over-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-inclinado-en-supinacion-con-barra-dorsal",
+        "nombre": "Remo Inclinado en Supinación con Barra",
+        "gif_filename": "13171301-Barbell-Reverse-Grip-Incline-Bench-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-inclinado-en-pronacion-con-barra-dorsal",
+        "nombre": "Remo Inclinado en Pronación con Barra",
+        "gif_filename": "00491301-Barbell-Incline-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-en-supinacion-con-barra-dorsal",
+        "nombre": "Remo en Supinación con Barra",
+        "gif_filename": "01181301-Barbell-Reverse-Grip-Bent-over-Row_Back-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-en-pronacion-con-barra-dorsal",
+        "nombre": "Remo en Pronación con Barra",
+        "gif_filename": "00271301-Barbell-Bent-Over-Row_Back-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "remo-en-pronacion-abierto-con-barra-dorsal",
+        "nombre": "Remo en Pronación Abierto con Barra",
+        "gif_filename": "37211301-Barbell-Bent-Over-Wide-Grip-Row_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-concentrada-en-polea-baja-triceps",
+        "nombre": "Extensión Concentrada en Polea Baja",
+        "gif_filename": "01491301-Cable-Alternate-Triceps-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-concentrada-en-polea-alta-triceps",
+        "nombre": "Extensión Concentrada en Polea Alta",
+        "gif_filename": "01521301-Cable-Concentration-Extension-on-knee_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frances-inclinado-con-polea-triceps",
+        "nombre": "Press Francés Inclinado con Polea",
+        "gif_filename": "01731301-Cable-Incline-Triceps-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-vertical-neutra-en-polea-baja-triceps",
+        "nombre": "Extensión Vertical Neutra en Polea Baja",
+        "gif_filename": "01941301-Cable-Overhead-Triceps-Extension-rope-attachment_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-trasera-aislada-en-polea-alta-triceps",
+        "nombre": "Extensión Trasera Aislada en Polea Alta",
+        "gif_filename": "02041301-Cable-Rear-Drive_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-vertical-aislada-en-supinacion-en-polea-alta-triceps",
+        "nombre": "Extensión Vertical Aislada en Supinación en Polea Alta",
+        "gif_filename": "02311301-Cable-Standing-One-Arm-Triceps-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-vertical-en-pronacion-en-polea-alta-triceps",
+        "nombre": "Extensión Vertical en Pronación en Polea Alta",
+        "gif_filename": "02411301-Cable-Triceps-Pushdown-V-bar-attachment_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "patadas-traseras-en-polea-triceps",
+        "nombre": "Patadas Traseras en Polea",
+        "gif_filename": "08601301-Cable-kickback_Upper-arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-vertical-neutro-en-polea-alta-triceps",
+        "nombre": "Extensión Vertical Neutra en Polea Alta",
+        "gif_filename": "12271301-Cable-Standing-One-Arm-Tricep-Pushdown-Overhand-Grip_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extensiones-concentradas-en-polea-alta-triceps",
+        "nombre": "Extensiones Concentradas en Polea Alta",
+        "gif_filename": "01761301-Cable-Kneeling-Triceps-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frances-con-polea-triceps",
+        "nombre": "Press Francés con Polea",
+        "gif_filename": "01861301-Cable-Lying-Triceps-Extension-II_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-lateral-aislada-en-supinacion-en-polea-alta-triceps",
+        "nombre": "Extensión Lateral Aislada en Supinación en Polea Alta",
+        "gif_filename": "16091301-Cable-One-Arm-Side-Triceps-Pushdown_Upper-arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-vertical-en-supinacion-en-polea-alta-triceps",
+        "nombre": "Extensión Vertical en Supinación en Polea Alta",
+        "gif_filename": "16061301-Cable-Reverse-Grip-Triceps-Pushdown-SZ-bar_Upper-arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-vertical-aislada-en-pronacion-en-polea-alta-triceps",
+        "nombre": "Extensión Vertical Aislada en Pronación en Polea Alta",
+        "gif_filename": "17231301-Cable-One-Arm-Tricep-Pushdown_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-horizontal-en-martillo-en-polea-alta-triceps",
+        "nombre": "Extensión Horizontal en Martillo en Polea Alta",
+        "gif_filename": "17241301-Cable-Rope-High-Pulley-Overhead-Tricep-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frances-neutro-con-polea-triceps",
+        "nombre": "Press Francés Neutro con Polea",
+        "gif_filename": "17261301-Cable-Rope-Lying-on-Floor-Tricep-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-vertical-en-pronacion-en-polea-baja-triceps",
+        "nombre": "Extensión Vertical en Pronación en Polea Baja",
+        "gif_filename": "18591301-Cable-Kneeling-Triceps-Extension-VERSION-2_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-vertical-aislada-en-pronacion-en-polea-baja-triceps",
+        "nombre": "Extensión Vertical Aislada en Pronación en Polea Baja",
+        "gif_filename": "17271301-Cable-Standing-Reverse-Grip-One-Arm-Overhead-Tricep-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-frontal-aislada-en-polea-alta-triceps",
+        "nombre": "Extensión Frontal Aislada en Polea Alta",
+        "gif_filename": "33531301-Cable-One-Arm-High-Pulley-Overhead-Tricep-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extensiones-cruzadas-en-polea-triceps",
+        "nombre": "Extensiones Cruzadas en Polea",
+        "gif_filename": "37191301-Cable-Standing-High-Cross-Triceps-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-martillo-en-polea-baja-biceps",
+        "nombre": "Curl en Martillo en Polea Baja",
+        "gif_filename": "01651301-Cable-Hammer-Curl-with-rope-m_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-vertical-en-supinacion-con-polea-biceps",
+        "nombre": "Curl Vertical en Supinación con Polea",
+        "gif_filename": "01821301-Cable-Lying-Close-rip-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-aislado-en-supinacion-en-polea-baja-biceps",
+        "nombre": "Curl Aislado en Supinación en Polea Baja",
+        "gif_filename": "01901301-Cable-One-Arm-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-banco-scott-en-supinacion-con-polea-biceps",
+        "nombre": "Curl en Banco Scott en Supinación con Polea",
+        "gif_filename": "01951301-Cable-Preacher-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-banco-scott-en-pronacion-con-polea-biceps",
+        "nombre": "Curl en Banco Scott en Pronación con Polea",
+        "gif_filename": "02091301-Cable-Reverse-Preacher-Curl_Forearm_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-martillo-en-polea-alta-biceps",
+        "nombre": "Curl en Martillo en Polea Alta",
+        "gif_filename": "02321301-Cable-Standing-Pulldown-with-rope_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-en-polea-baja-biceps",
+        "nombre": "Curl en Supinación en Polea Baja",
+        "gif_filename": "08681301-Cable-Curl-m_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-lateral-en-supinacion-con-polea-biceps",
+        "nombre": "Curl Lateral en Supinación con Polea",
+        "gif_filename": "02291301-Cable-Standing-Inner-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-lateral-en-supinacion-aislado-con-polea-biceps",
+        "nombre": "Curl Lateral en Supinación Aislado con Polea",
+        "gif_filename": "12031301-Cable-one-arm-inner-biceps-curl_upper-arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-aislado-en-pronacion-en-polea-baja-biceps",
+        "nombre": "Curl Aislado en Pronación en Polea Baja",
+        "gif_filename": "14131301-Cable-Reverse-One-Arm-Curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-pronacion-con-agarre-z-en-polea-baja-biceps",
+        "nombre": "Curl en Pronación con agarre Z en Polea Baja",
+        "gif_filename": "16081301-Cable-Reverse-Grip-Biceps-Curl-SZ-bar_Upper-arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-con-agarre-z-en-polea-baja-biceps",
+        "nombre": "Curl en Supinación con agarre Z en Polea Baja",
+        "gif_filename": "16071301-Cable-Biceps-Curl-SZ-bar_Upper-arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-lateral-aislado-en-supinacion-en-polea-baja-biceps",
+        "nombre": "Curl Concentrado Lateral Aislado en Supinación en Polea Baja",
+        "gif_filename": "16421301-Cable-Seated-One-Arm-Concentration-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-banco-scott-neutro-con-polea-biceps",
+        "nombre": "Curl en Banco Scott Neutro con Polea",
+        "gif_filename": "16391301-Cable-Rope-Hammer-Preacher-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-banco-scott-neutro-aislado-con-polea-biceps",
+        "nombre": "Curl en Banco Scott Neutro Aislado con Polea",
+        "gif_filename": "16401301-Cable-Rope-One-Arm-Hammer-Preacher-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-en-polea-alta-biceps",
+        "nombre": "Curl en Supinación en Polea Alta",
+        "gif_filename": "16381301-Cable-Pulldown-Bicep-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-horizontal-cerrado-en-supinacion-con-polea-biceps",
+        "nombre": "Curl Horizontal Cerrado en Supinación con Polea",
+        "gif_filename": "16341301-Cable-Lying-Bicep-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-banco-scott-en-pronacion-aislado-con-polea-biceps",
+        "nombre": "Curl en Banco Scott en Pronación Aislado con Polea",
+        "gif_filename": "16351301-Cable-One-Arm-Reverse-Preacher-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-banco-scott-en-supinacion-aislado-con-polea-biceps",
+        "nombre": "Curl en Banco Scott en Supinación Aislado con Polea",
+        "gif_filename": "16331301-Cable-One-Arm-Preacher-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-retraido-en-polea-baja-biceps",
+        "nombre": "Curl en Supinación Retraído en Polea Baja",
+        "gif_filename": "16321301-Cable-Drag-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-cerrado-en-polea-baja-biceps",
+        "nombre": "Curl Concentrado Cerrado en Polea Baja",
+        "gif_filename": "16311301-Cable-Concentration-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-cerrado-en-polea-baja-biceps",
+        "nombre": "Curl en Supinación Cerrado en Polea Baja",
+        "gif_filename": "16301301-Cable-Close-Grip-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-horizontal-inclinado-con-polea-biceps",
+        "nombre": "Curl Horizontal Inclinado con Polea",
+        "gif_filename": "16451301-Cable-Two-Arm-Curl-on-Incline-Bench_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-en-supinacion-en-polea-baja-biceps",
+        "nombre": "Curl Concentrado en Supinación en Polea Baja",
+        "gif_filename": "16441301-Cable-Squatting-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-v-en-polea-baja-biceps",
+        "nombre": "Curl en V en Polea Baja",
+        "gif_filename": "18611301-Cable-Curl-with-Multipurpose-V-bar_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-horizontal-en-supinacion-con-polea-biceps",
+        "nombre": "Curl Horizontal en Supinación con Polea",
+        "gif_filename": "23961301-Cable-Lying-Biceps-Curl-VERSION-2_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-aislado-largo-en-supinacion-en-polea-baja-biceps",
+        "nombre": "Curl Aislado Largo en Supinación en Polea Baja",
+        "gif_filename": "26561301-Cable-One-Arm-Biceps-Curl-VERSION-2_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-frontal-aislado-en-supinacion-en-polea-baja-biceps",
+        "nombre": "Curl Concentrado Frontal Aislado en Supinación en Polea Baja",
+        "gif_filename": "39251301-Cable-Seated-Floor-One-Arm-Concentration-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-con-peso-libre-biceps",
+        "nombre": "Curl con peso libre",
+        "gif_filename": "01391301-Brachialis-Narrow-Pull-ups_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-alterno-en-supinacion-en-maquina-biceps",
+        "nombre": "Curl Alterno en Supinación en Máquina",
+        "gif_filename": "10321301-Lever-Alternate-Biceps-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-en-maquina-biceps",
+        "nombre": "Curl Concentrado en Máquina",
+        "gif_filename": "05751301-Lever-Bicep-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-pronacion-en-maquina-scott-biceps",
+        "nombre": "Curl en Pronación en Máquina Scott",
+        "gif_filename": "16161301-Lever-Reverse-Grip-Preacher-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-martillo-en-maquina-scott-biceps",
+        "nombre": "Curl en Martillo en Máquina Scott",
+        "gif_filename": "16151301-Lever-Hammer-Grip-Preacher-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-en-maquina-scott-biceps",
+        "nombre": "Curl en Supinación en Máquina Scott",
+        "gif_filename": "16141301-Lever-Preacher-Curl-version-2_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-con-giro-alterno-con-mancuernas-biceps",
+        "nombre": "Curl con giro Alterno con Mancuernas",
+        "gif_filename": "02851301-Dumbbell-Alternate-Biceps-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-martillo-alterno-con-mancuernas-biceps",
+        "nombre": "Curl en Martillo Alterno con Mancuernas",
+        "gif_filename": "02981301-Dumbbell-Cross-Body-Hammer-Curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-inclinado-con-giro-alterno-con-mancuernas-biceps",
+        "nombre": "Curl Inclinado con giro Alterno con Mancuernas",
+        "gif_filename": "03181301-Dumbbell-Incline-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-inclinado-lateral-con-mancuernas-biceps",
+        "nombre": "Curl Inclinado Lateral con Mancuernas",
+        "gif_filename": "03221301-Dumbbell-Incline-Inner-Biceps-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-inclinado-neutro-alterno-con-mancuernas-biceps",
+        "nombre": "Curl Inclinado Neutro Alterno con Mancuernas",
+        "gif_filename": "12331301-Dumbbell-Incline-Alternate-Hammer-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-aislado-hacia-abajo-con-mancuerna-biceps",
+        "nombre": "Curl Aislado hacia abajo con Mancuerna",
+        "gif_filename": "04181301-Dumbbell-Standing-Concentration-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-aislado-en-pronacion-con-mancuerna-biceps",
+        "nombre": "Curl Aislado en Pronación con Mancuerna",
+        "gif_filename": "04251301-Dumbbell-Standing-One-Arm-Reverse-Curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-horizontal-con-giro-con-mancuernas-biceps",
+        "nombre": "Curl Horizontal con giro con Mancuernas",
+        "gif_filename": "03501301-Dumbbell-Lying-Supine-Curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-en-supinacion-con-mancuerna-biceps",
+        "nombre": "Curl Concentrado en Supinación con Mancuerna",
+        "gif_filename": "02971301-Dumbbell-Concentration-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-en-pronacion-con-mancuerna-biceps",
+        "nombre": "Curl Concentrado en Pronación con Mancuerna",
+        "gif_filename": "04031301-Dumbbell-Seated-Revers-grip-Concentration-Curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-banco-scott-en-supinacion-con-mancuerna-biceps",
+        "nombre": "Curl en Banco Scott en Supinación con Mancuerna",
+        "gif_filename": "03721301-Dumbbell-Preacher-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-banco-scott-en-pronacion-con-mancuerna-biceps",
+        "nombre": "Curl en Banco Scott en Pronación con Mancuerna",
+        "gif_filename": "14141301-Dumbbell-One-Arm-Reverse-Preacher-Curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-horizontal-en-supinacion-con-mancuernas-biceps",
+        "nombre": "Curl Horizontal en Supinación con Mancuernas",
+        "gif_filename": "16611301-Dumbbell-Lying-Supine-Biceps-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-martillo-cruzado-con-mancuernas-biceps",
+        "nombre": "Curl en Martillo Cruzado con Mancuernas",
+        "gif_filename": "16571301-Dumbbell-Cross-Body-Hammer-Curl-Version-2_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-aislado-neutro-con-mancuerna-biceps",
+        "nombre": "Curl Aislado Neutro con Mancuerna",
+        "gif_filename": "16711301-Dumbbell-One-Arm-Standing-Hammer-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-aislado-en-supinacion-con-mancuerna-biceps",
+        "nombre": "Curl Aislado en Supinación con Mancuerna",
+        "gif_filename": "16701301-Dumbbell-One-Arm-Standing-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-spider-aislado-neutro-con-mancuerna-biceps",
+        "nombre": "Curl Spider Aislado Neutro con Mancuerna",
+        "gif_filename": "16661301-Dumbbell-One-Arm-Prone-Hammer-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-spider-aislado-en-pronacion-con-mancuerna-biceps",
+        "nombre": "Curl Spider Aislado en Pronación con Mancuerna",
+        "gif_filename": "16671301-Dumbbell-One-Arm-Reverse-Spider-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-spider-aislado-en-supinacion-con-mancuerna-biceps",
+        "nombre": "Curl Spider Aislado en Supinación con Mancuerna",
+        "gif_filename": "16651301-Dumbbell-One-Arm-Prone-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-lateral-con-mancuernas-biceps",
+        "nombre": "Curl Lateral con Mancuernas",
+        "gif_filename": "16641301-Dumbbell-High-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-banco-scott-neutro-con-mancuerna-biceps",
+        "nombre": "Curl en Banco Scott Neutro con Mancuerna",
+        "gif_filename": "16631301-Dumbbell-One-Arm-Hammer-Preacher-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-horizontal-con-mancuernas-biceps",
+        "nombre": "Curl Horizontal con Mancuernas",
+        "gif_filename": "16621301-Dumbbell-Lying-Wide-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-inclinado-alterno-en-supinacion-con-mancuernas-biceps",
+        "nombre": "Curl Inclinado Alterno en Supinación con Mancuernas",
+        "gif_filename": "36821301-Dumbbell-Incline-Alternate-Bicep-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-spider-neutro-con-mancuerna-biceps",
+        "nombre": "Curl Spider Neutro con Mancuerna",
+        "gif_filename": "39631301-Dumbbell-Single-Spider-Curl-with-Chest-Support_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-pronacion-con-barra-z-biceps",
+        "nombre": "Curl en Pronación con Barra Z",
+        "gif_filename": "04511301-EZ-Barbell-Reverse-Grip-Curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-corto-con-barra-z-biceps",
+        "nombre": "Curl en Supinación Corto con Barra Z",
+        "gif_filename": "14581301-EZ-Barbell-Seated-Curls_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-con-barra-z-biceps",
+        "nombre": "Curl en Supinación con Barra Z",
+        "gif_filename": "04471301-EZ-Barbell-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-spider-en-supinacion-con-barra-z-biceps",
+        "nombre": "Curl Spider en Supinación con Barra Z",
+        "gif_filename": "16281301-EZ-Barbell-Spider-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-cerrado-con-barra-z-biceps",
+        "nombre": "Curl Concentrado Cerrado con Barra Z",
+        "gif_filename": "16821301-EZ-Bar-Seated-Close-Grip-Concentration-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-abierto-con-barra-z-biceps",
+        "nombre": "Curl en Supinación Abierto Con Barra Z",
+        "gif_filename": "27411301-EZ-Barbell-Standing-Wide-Grip-Biceps-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-en-caida-con-bandas-triceps",
+        "nombre": "Extensión en caída con Bandas",
+        "gif_filename": "37451301-Overhead-Triceps-Extension-with-Bed-Sheet_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-abierto-en-banco-scott-con-barra-z-biceps",
+        "nombre": "Curl en Supinación Abierto en banco Scott con Barra Z",
+        "gif_filename": "04541301-EZ-Barbell-Spider-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-cerrado-en-banco-scott-con-barra-z-biceps",
+        "nombre": "Curl en Supinación Cerrado en banco Scott con Barra Z",
+        "gif_filename": "16271301-EZ-Barbell-Close-Grip-Preacher-Curl_Upper-Arms-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-pronacion-en-banco-scott-con-barra-z-biceps",
+        "nombre": "Curl en Pronación en banco Scott con Barra Z",
+        "gif_filename": "04521301-EZ-Barbell-Reverse-grip-Preacher-Curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-hacia-abajo-con-barra-z-biceps",
+        "nombre": "Curl en Supinación hacia abajo con Barra Z",
+        "gif_filename": "29001301-EZ-Barbell-Standing-Preacher-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-aislado-con-barra-biceps",
+        "nombre": "Curl Aislado con Barra",
+        "gif_filename": "00231301-Barbell-Alternate-Biceps-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-retraido-con-barra-biceps",
+        "nombre": "Curl en Supinación Retraído con Barra",
+        "gif_filename": "00381301-Barbell-Drag-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-con-barra-biceps",
+        "nombre": "Curl en Supinación con Barra",
+        "gif_filename": "00311301-Barbell-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-pronacion-abierto-con-barra-biceps",
+        "nombre": "Curl en Pronación Abierto con Barra",
+        "gif_filename": "00801301-Barbell-Reverse-Curl_Forearm_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-pronacion-en-banco-scott-con-barra-biceps",
+        "nombre": "Curl en Pronación en banco Scott con Barra",
+        "gif_filename": "00811301-Barbell-Reverse-Preacher-Curl_Forearm_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-en-banco-scott-con-barra-biceps",
+        "nombre": "Curl en Supinación en banco Scott con Barra",
+        "gif_filename": "00701301-Barbell-Preacher-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-cerrado-con-barra-biceps",
+        "nombre": "Curl en Supinación Cerrado con Barra",
+        "gif_filename": "01061301-Barbell-Standing-Close-Grip-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-pronacion-con-barra-biceps",
+        "nombre": "Curl en Pronación con Barra",
+        "gif_filename": "01101301-Barbell-Standing-Reverse-Grip-Curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-martillo-con-barra-biceps",
+        "nombre": "Curl en Martillo con Barra",
+        "gif_filename": "06361301-Olympic-Barbell-Hammer-Curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-hacia-abajo-con-barra-biceps",
+        "nombre": "Curl en Supinación hacia abajo con Barra",
+        "gif_filename": "00591301-Barbell-Lying-Preacher-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-spider-en-supinacion-con-barra-biceps",
+        "nombre": "Curl Spider en Supinación con Barra",
+        "gif_filename": "00721301-Barbell-Prone-Incline-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-cerrado-con-barra-biceps",
+        "nombre": "Curl Concentrado Cerrado con Barra",
+        "gif_filename": "00891301-Barbell-Seated-Close-grip-Concentration-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-abierto-con-barra-biceps",
+        "nombre": "Curl en Supinación Abierto Con Barra",
+        "gif_filename": "16291301-Barbell-Standing-Wide-Grip-Biceps-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-con-barra-biceps",
+        "nombre": "Curl Concentrado con Barra",
+        "gif_filename": "24141301-Barbell-Standing-Concentration-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-spider-en-pronacion-con-barra-biceps",
+        "nombre": "Curl Spider en Pronación con Barra",
+        "gif_filename": "39881301-Barbell-Incline-Reverse-grip-Spider-Curl-with-Chest-Support_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-concentrado-con-banda-biceps",
+        "nombre": "Curl en Supinación Concentrado con Banda",
+        "gif_filename": "09761301-Band-concentration-curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-aislado-con-banda-biceps",
+        "nombre": "Curl en Supinación Aislado con Banda",
+        "gif_filename": "09861301-Band-one-arm-overhead-biceps-curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-caida-con-bandas-biceps",
+        "nombre": "Curl en caída con Bandas",
+        "gif_filename": "37481301-Biceps-Curl-with-Bed-Sheet_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-alterno-con-bandas-biceps",
+        "nombre": "Curl en Supinación Alterno con Bandas",
+        "gif_filename": "09681301-Band-alternating-biceps-curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-en-supinacion-con-bandas-biceps",
+        "nombre": "Curl en Supinación con Bandas",
+        "gif_filename": "40631301-Band-Biceps-Curl_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-vertical-con-bandas-triceps",
+        "nombre": "Extensión Vertical con Bandas",
+        "gif_filename": "39391301-Band-overhead-triceps-extension-male_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frances-con-bandas-triceps",
+        "nombre": "Press Francés con Bandas",
+        "gif_filename": "15041301-Band-Skull-Crusher_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-hacia-abajo-con-bandas-triceps",
+        "nombre": "Extensión hacia abajo con Bandas",
+        "gif_filename": "15021301-Band-Pushdown-Male_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-lateral-aislada-con-banda-triceps",
+        "nombre": "Extensión Lateral Aislada con Banda",
+        "gif_filename": "09981301-Band-side-triceps-extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extensiones-inclinadas-con-mancuernas-triceps",
+        "nombre": "Extensiones Inclinadas con Mancuernas",
+        "gif_filename": "03301301-Dumbbell-Incline-Triceps-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frances-con-mancuernas-triceps",
+        "nombre": "Press Francés con Mancuernas",
+        "gif_filename": "03521301-Dumbbell-Neutral-Grip-Bench-Press_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-horizontal-concentrada-interna-con-mancuerna-triceps",
+        "nombre": "Extensión Horizontal Concentrada Interna con Mancuerna",
+        "gif_filename": "03441301-Dumbbell-Lying-One-Arm-Pronated-Triceps-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extensiones-horizontales-internas-con-mancuernas-triceps",
+        "nombre": "Extensiones Horizontales Internas con Mancuernas",
+        "gif_filename": "04361301-Dumbbell-Tate-Press_Triceps_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-vertical-aislada-con-mancuerna-triceps",
+        "nombre": "Extensión Vertical Aislada con Mancuerna",
+        "gif_filename": "03621301-Dumbbell-One-Arm-Triceps-Extension-on-bench_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-declinada-con-mancuernas-triceps",
+        "nombre": "Extensión Declinada con Mancuernas",
+        "gif_filename": "03061301-Dumbbell-Decline-Triceps-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-banca-neutro-con-mancuernas-triceps",
+        "nombre": "Press Banca Neutro con Mancuernas",
+        "gif_filename": "03381301-Dumbbell-Lying-Elbow-Press_Triceps_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-horizontal-concentrada-superior-con-mancuerna-triceps",
+        "nombre": "Extensión Horizontal Concentrada Superior con Mancuerna",
+        "gif_filename": "03461301-Dumbbell-Lying-One-Arm-Supinated-Triceps-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-banca-en-supinacion-aislado-con-mancuerna-triceps",
+        "nombre": "Press Banca en Supinación Aislado con Mancuerna",
+        "gif_filename": "16221301-Dumbbell-One-Arm-Reverse-Grip-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-inclinado-aislado-con-mancuerna-triceps",
+        "nombre": "Press Inclinado Aislado con Mancuerna",
+        "gif_filename": "16191301-Dumbbell-Incline-One-Arm-Hammer-Press_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-declinado-aislado-con-mancuerna-triceps",
+        "nombre": "Press Declinado Aislado con Mancuerna",
+        "gif_filename": "16171301-Dumbbell-Decline-One-Arm-Hammer-Press_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-banca-con-giro-con-mancuernas-triceps",
+        "nombre": "Press Banca con giro con Mancuernas",
+        "gif_filename": "17431301-Dumbbell-Twisting-Bench-Press_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frances-inclinado-alterno-con-mancuernas-triceps",
+        "nombre": "Press Francés Inclinado Alterno con Mancuernas",
+        "gif_filename": "17291301-Dumbbell-Lying-Alternate-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "patadas-traseras-con-mancuernas-triceps",
+        "nombre": "Patadas Traseras con Mancuernas",
+        "gif_filename": "03331301-Dumbbell-Kickback_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "patadas-traseras-alternas-con-mancuernas-triceps",
+        "nombre": "Patadas Traseras Alternas con Mancuernas",
+        "gif_filename": "17301301-Dumbbell-Seated-Bent-Over-Alternate-Kickback_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-vertical-con-mancuerna-triceps",
+        "nombre": "Extensión Vertical con Mancuerna",
+        "gif_filename": "21881301-Dumbbell-Seated-Triceps-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-delante-detras-con-mancuernas-triceps",
+        "nombre": "Extensión Delante-Detrás con Mancuernas",
+        "gif_filename": "41571301-Dumbbell-Seated-Front-and-Back-Tate-Press_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frances-tras-nuca-con-barra-triceps",
+        "nombre": "Press Francés tras nuca con Barra",
+        "gif_filename": "00561301-Barbell-Lying-Close-grip-Triceps-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-horizontal-con-barra-triceps",
+        "nombre": "Extensión Horizontal con Barra",
+        "gif_filename": "17201301-Barbell-Lying-Back-of-the-Head-Tricep-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-inclinado-en-supinacion-con-barra-triceps",
+        "nombre": "Press Inclinado en Supinación con Barra",
+        "gif_filename": "00481301-Barbell-Incline-Reverse-grip-Press_Triceps_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frances-declinado-con-barra-triceps",
+        "nombre": "Press Francés Declinado con Barra",
+        "gif_filename": "00351301-Barbell-Decline-Close-Grip-To-Skull-Press_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frances-inverso-con-barra-triceps",
+        "nombre": "Press Francés Inverso con Barra",
+        "gif_filename": "17211301-Barbell-Reverse-Grip-Skullcrusher_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frances-con-barra-triceps",
+        "nombre": "Press Francés con Barra",
+        "gif_filename": "00601301-Barbell-Lying-Triceps-Extension-Skull-Crusher_Triceps-SFIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-a-una-mano-con-barra-triceps",
+        "nombre": "Press a una mano con Barra",
+        "gif_filename": "00651301-Barbell-One-Arm-Floor-Press_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-cerrado-con-barra-triceps",
+        "nombre": "Press Cerrado con Barra",
+        "gif_filename": "00301301-Barbell-Close-Grip-Bench-Press_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-inclinado-cerrado-con-barra-triceps",
+        "nombre": "Press Inclinado Cerrado con Barra",
+        "gif_filename": "17191301-Barbell-Incline-Close-Grip-Bench-Press_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-cerrado-en-supinacion-con-barra-triceps",
+        "nombre": "Press Cerrado en Supinación con Barra",
+        "gif_filename": "21871301-Barbell-Reverse-Close-grip-Bench-Press_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-vertical-con-barra-z-triceps",
+        "nombre": "Extensión Vertical con Barra Z",
+        "gif_filename": "04531301-EZ-Barbell-Seated-Triceps-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-inclinada-con-barra-z-triceps",
+        "nombre": "Extensión Inclinada con Barra Z",
+        "gif_filename": "04491301-EZ-Barbell-Incline-Triceps-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-horizontal-con-barra-z-triceps",
+        "nombre": "Extensión Horizontal con Barra Z",
+        "gif_filename": "17481301-EZ-Bar-Lying-Close-Grip-Triceps-Extension-Behind-Head_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frances-con-barra-z-triceps",
+        "nombre": "Press Francés con Barra Z",
+        "gif_filename": "04501301-EZ-Barbell-JM-Bench-Press_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frances-declinado-cerrado-con-barra-z-triceps",
+        "nombre": "Press Francés Declinado Cerrado con Barra Z",
+        "gif_filename": "04481301-EZ-Barbell-Decline-Close-grip-Face-Press_Triceps_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frances-declinado-abierto-con-barra-z-triceps",
+        "nombre": "Press Francés Declinado Abierto con Barra Z",
+        "gif_filename": "21861301-EZ-Barbell-Decline-Triceps-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extensiones-en-pronacion-en-maquina-triceps",
+        "nombre": "Extensiones en Pronación en Máquina",
+        "gif_filename": "06071301-Lever-Triceps-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extensiones-en-maquina-triceps",
+        "nombre": "Extensiones en Máquina",
+        "gif_filename": "10331301-Lever-Triceps-Extension_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "fondos-en-maquina-triceps",
+        "nombre": "Fondos en Máquina",
+        "gif_filename": "18711301-Lever-Triceps-Dip-plate-loaded_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "fondos-en-pronacion-en-maquina-triceps",
+        "nombre": "Fondos en Pronación en Máquina",
+        "gif_filename": "05911301-Lever-Overhand-Triceps-Dip_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-en-supinacion-triceps",
+        "nombre": "Flexiones en supinación",
+        "gif_filename": "37511301-Reverse-Push-up_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-cruzadas-triceps",
+        "nombre": "Flexiones Cruzadas",
+        "gif_filename": "37841301-Cross-Arms-Push-up_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-cerradas-triceps",
+        "nombre": "Flexiones Cerradas",
+        "gif_filename": "14671301-Push-up-on-Forearms_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-basicas-triceps",
+        "nombre": "Flexiones Básicas",
+        "gif_filename": "06721301-Reverse-Dip_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-con-codos-triceps",
+        "nombre": "Flexiones con codos",
+        "gif_filename": "01371301-Body-Up_Shoulders_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-diamante-triceps",
+        "nombre": "Flexiones Diamante",
+        "gif_filename": "02831301-Diamond-Push-up_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extensiones-en-caida-libre-triceps",
+        "nombre": "Extensiones en caída libre",
+        "gif_filename": "08161301-Triceps-Press_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "fondos-en-banco-triceps",
+        "nombre": "Fondos en banco",
+        "gif_filename": "13991301-Bench-dip-on-floor_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "fondos-entre-bancos-triceps",
+        "nombre": "Fondos entre bancos",
+        "gif_filename": "08121301-Triceps-Dip-bench-leg_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "fondos-imposibles-triceps",
+        "nombre": "Fondos Imposibles",
+        "gif_filename": "32891301-Impossible-dips_Upper-arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "fondos-coreanos-en-barra-triceps",
+        "nombre": "Fondos Coreanos en Barra",
+        "gif_filename": "32881301-Korean-dips_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "fondos-cerrados-en-paralelas-triceps",
+        "nombre": "Fondos Cerrados en Paralelas",
+        "gif_filename": "08141301-Triceps-Dip_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pullover-extenso-con-mancuernas-pectoral",
+        "nombre": "Pullover Extenso con Mancuernas",
+        "gif_filename": "02881301-Dumbbell-Around-Pullover_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pullover-con-mancuerna-pectoral",
+        "nombre": "Pullover con Mancuerna",
+        "gif_filename": "03751301-Dumbbell-Pullover_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-declinado-neutro-con-mancuernas-pectoral",
+        "nombre": "Press Declinado Neutro con Mancuernas",
+        "gif_filename": "03031301-Dumbbell-Decline-Hammer-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-declinado-con-mancuernas-pectoral",
+        "nombre": "Press Declinado con Mancuernas",
+        "gif_filename": "03011301-Dumbbell-Decline-Bench-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-banca-con-mancuernas-pectoral",
+        "nombre": "Press Banca con Mancuernas",
+        "gif_filename": "02891301-Dumbbell-Bench-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-inclinado-en-supinacion-con-mancuernas-pectoral",
+        "nombre": "Press Inclinado en Supinación con Mancuernas",
+        "gif_filename": "03241301-Dumbbell-Incline-Palm-in-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-aislado-en-supinacion-con-mancuerna-pectoral",
+        "nombre": "Press Aislado en Supinación con Mancuerna",
+        "gif_filename": "03431301-Dumbbell-Lying-One-Arm-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-inclinado-en-supinacion-con-giro-con-mancuernas-pectoral",
+        "nombre": "Press Inclinado en Supinación con giro con Mancuernas",
+        "gif_filename": "12141301-Dumbbell-Incline-reverse-grip-30-degrees-bench-press_chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-inclinado-aislado-con-mancuerna-pectoral",
+        "nombre": "Press Inclinado Aislado con Mancuerna",
+        "gif_filename": "12811301-Dumbbell-Incline-One-Arm-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "aperturas-declinadas-con-giro-con-mancuernas-pectoral",
+        "nombre": "Aperturas Declinadas con giro con Mancuernas",
+        "gif_filename": "03071301-Dumbbell-Decline-Twist-Fly_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "aperturas-declinadas-con-mancuernas-pectoral",
+        "nombre": "Aperturas Declinadas con Mancuernas",
+        "gif_filename": "03021301-Dumbbell-Decline-Fly_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "aperturas-inclinadas-con-mancuernas-pectoral",
+        "nombre": "Aperturas Inclinadas con Mancuernas",
+        "gif_filename": "03191301-Dumbbell-Incline-Fly_Chest-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "aperturas-con-mancuernas-pectoral",
+        "nombre": "Aperturas con Mancuernas",
+        "gif_filename": "03081301-Dumbbell-Fly_Chest-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-banca-alterno-con-mancuernas-pectoral",
+        "nombre": "Press Banca Alterno con Mancuernas",
+        "gif_filename": "36951301-Dumbbell-Alternate-Bench-Press-high-start_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-abierto-neutro-con-mancuernas-pectoral",
+        "nombre": "Press Abierto Neutro con Mancuernas",
+        "gif_filename": "03401301-Dumbbell-Lying-Hammer-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-cerrado-neutro-con-mancuernas-pectoral",
+        "nombre": "Press Cerrado Neutro con Mancuernas",
+        "gif_filename": "36811301-Dumbbell-Squeeze-Bench-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-inclinado-cerrado-neutro-con-mancuerna-pectoral",
+        "nombre": "Press Inclinado Cerrado Neutro con Mancuerna",
+        "gif_filename": "40151301-Dumbbell-Incline-Close-grip-Press-Variation_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-a-una-mano-asistidas-pectoral",
+        "nombre": "Flexiones a una mano asistidas",
+        "gif_filename": "39641301-Twist-Push-up_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-a-una-mano-pectoral",
+        "nombre": "Flexiones a una mano",
+        "gif_filename": "07251301-Single-Arm-Push-up_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-archer-pectoral",
+        "nombre": "Flexiones Archer",
+        "gif_filename": "32941301-Archer-Push-up_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-declinadas-pectoral",
+        "nombre": "Flexiones Declinadas",
+        "gif_filename": "02791301-Decline-Push-Up-m_chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-pliometricas-con-palmada-pectoral",
+        "nombre": "Flexiones Pliométricas con Palmada",
+        "gif_filename": "12731301-Clap-Push-Up_Plyometrics_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-cerradas-pectoral",
+        "nombre": "Flexiones Cerradas",
+        "gif_filename": "02591301-Close-Grip-Push-up_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-abiertas-pectoral",
+        "nombre": "Flexiones Abiertas",
+        "gif_filename": "13111301-Wide-Hand-Push-up_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-pliometricas-pectoral",
+        "nombre": "Flexiones Pliométricas",
+        "gif_filename": "13061301-Plyo-Push-Up_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-con-soportes-pectoral",
+        "nombre": "Flexiones con Soportes",
+        "gif_filename": "14861301-Push-up-With-push-up-handles_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexiones-pectoral",
+        "nombre": "Flexiones",
+        "gif_filename": "06621301-Push-up-m_Chest-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-svend-pectoral",
+        "nombre": "Press Svend",
+        "gif_filename": "08561301-Weighted-Svend-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "fondos-en-barra-pectoral",
+        "nombre": "Fondos en Barra",
+        "gif_filename": "24621301-Chest-Dip-on-Straight-Bar_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "fondos-en-paralelas-pectoral",
+        "nombre": "Fondos en Paralelas",
+        "gif_filename": "02511301-Chest-Dip_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "aperturas-en-maquina-pectoral",
+        "nombre": "Aperturas en Máquina",
+        "gif_filename": "10301301-Lever-Pec-Deck-Fly_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "aperturas-extendidas-en-maquina-pectoral",
+        "nombre": "Aperturas Extendidas en Máquina",
+        "gif_filename": "05961301-Lever-Seated-Fly_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-banca-en-maquina-pectoral",
+        "nombre": "Press Banca en Máquina",
+        "gif_filename": "10411301-Lever-Lying-Chest-Press-plate-loaded_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "cruces-en-maquina-pectoral",
+        "nombre": "Cruces en Máquina",
+        "gif_filename": "33441301-Lever-Crossovers_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "fondos-en-maquina-pectoral",
+        "nombre": "Fondos en Máquina",
+        "gif_filename": "14511301-Lever-Seated-Dip_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frontal-cerrado-en-maquina-pectoral",
+        "nombre": "Press Frontal Cerrado en Máquina",
+        "gif_filename": "13011301-Machine-Inner-Chest-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frontal-superior-en-maquina-pectoral",
+        "nombre": "Press Frontal Superior en Máquina",
+        "gif_filename": "12991301-Leverage-Incline-Chest-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-inclinado-en-maquina-pectoral",
+        "nombre": "Press Inclinado en Máquina",
+        "gif_filename": "14791301-Lever-Incline-Chest-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frontal-inferior-en-maquina-pectoral",
+        "nombre": "Press Frontal Inferior en Máquina",
+        "gif_filename": "22781301-Lever-Decline-Chest-Press-VERSION-2_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frontal-en-maquina-pectoral",
+        "nombre": "Press Frontal en Máquina",
+        "gif_filename": "22771301-Lever-Chest-Press-VERSION-4_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "apertura-aislada-en-punta-pectoral",
+        "nombre": "Apertura Aislada en Punta",
+        "gif_filename": "39231301-Landmine-Floor-One-Arm-Chest-Fly_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-declinado-con-barra-pectoral",
+        "nombre": "Press Declinado con Barra",
+        "gif_filename": "00361301-Barbell-Decline-Wide-grip-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-declinado-inverso-con-barra-pectoral",
+        "nombre": "Press Declinado Inverso con Barra",
+        "gif_filename": "12561301-Barbell-Reverse-Grip-Decline-Bench-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pullover-declinado-cerrado-con-barra-pectoral",
+        "nombre": "Pullover Declinado Cerrado con Barra",
+        "gif_filename": "00341301-Barbell-Decline-Bent-Arm-Pullover_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-banca-abierto-inverso-con-barra-pectoral",
+        "nombre": "Press Banca Abierto Inverso con Barra",
+        "gif_filename": "12581301-Barbell-Wide-Reverse-Grip-Bench-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-inclinado-inverso-con-barra-pectoral",
+        "nombre": "Press Inclinado Inverso con Barra",
+        "gif_filename": "12571301-Barbell-Reverse-Grip-Incline-Bench-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pullover-declinado-con-barra-pectoral",
+        "nombre": "Pullover Declinado con Barra",
+        "gif_filename": "00371301-Barbell-Decline-wide-grip-pullover_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pullover-con-barra-pectoral",
+        "nombre": "Pullover con Barra",
+        "gif_filename": "13161301-Barbell-Bent-Arm-Pullover_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-cerrado-en-maquina-smith-pectoral",
+        "nombre": "Press Cerrado en Máquina Smith",
+        "gif_filename": "29191301-Smith-Hex-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-banca-cerrado-con-barra-pectoral",
+        "nombre": "Press Banca Cerrado con Barra",
+        "gif_filename": "24321301-EZ-bar-Close-Grip-Bench-Press_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-banca-abierto-con-barra-pectoral",
+        "nombre": "Press Banca Abierto con Barra",
+        "gif_filename": "01221301-Barbell-Wide-Bench-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-inclinado-con-barra-pectoral",
+        "nombre": "Press Inclinado con Barra",
+        "gif_filename": "00471301-Barbell-Incline-Bench-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-banca-con-barra-pectoral",
+        "nombre": "Press Banca con Barra",
+        "gif_filename": "00251301-Barbell-Bench-Press_Chest-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pullover-con-cuerda-en-polea-pectoral",
+        "nombre": "Pullover con cuerda en Polea",
+        "gif_filename": "01841301-Cable-Lying-Extension-Pullover-with-rope-attachment_Back_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "apertura-aislada-declinada-con-polea-pectoral",
+        "nombre": "Apertura Aislada Declinada con Polea",
+        "gif_filename": "12621301-Cable-One-Arm-Decline-Chest-Fly_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-declinado-aislado-con-polea-pectoral",
+        "nombre": "Press Declinado Aislado con Polea",
+        "gif_filename": "12601301-Cable-Decline-One-Arm-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "cruce-completo-de-poleas-pectoral",
+        "nombre": "Cruce completo de Poleas",
+        "gif_filename": "02271301-Cable-Standing-Fly_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "cruce-inferior-de-poleas-pectoral",
+        "nombre": "Cruce inferior de Poleas",
+        "gif_filename": "12691301-Cable-Standing-Up-Straight-Crossovers_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "cruce-superior-de-poleas-pectoral",
+        "nombre": "Cruce superior de Poleas",
+        "gif_filename": "12701301-Cable-Upper-Chest-Crossovers_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "cruce-de-poleas-pectoral",
+        "nombre": "Cruce de Poleas",
+        "gif_filename": "01881301-Cable-Middle-Fly_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-inclinado-aislado-con-polea-pectoral",
+        "nombre": "Press Inclinado Aislado con Polea",
+        "gif_filename": "12651301-Cable-One-Arm-Incline-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-banca-aislado-con-polea-pectoral",
+        "nombre": "Press Banca Aislado con Polea",
+        "gif_filename": "12601301-Cable-Decline-One-Arm-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frontal-a-una-mano-en-polea-pectoral",
+        "nombre": "Press Frontal a una mano en Polea",
+        "gif_filename": "12111301-Cable-twisting-standing-one-arm-chest-press_chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frontal-con-poleas-pectoral",
+        "nombre": "Press Frontal con Poleas",
+        "gif_filename": "21441301-Cable-Seated-Chest-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frontal-cerrado-con-poleas-pectoral",
+        "nombre": "Press Frontal Cerrado con Poleas",
+        "gif_filename": "33641301-Cable-Seating-Close-Press_Upper-Arms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frontal-neutral-con-polea-pectoral",
+        "nombre": "Press Frontal Neutral con Polea",
+        "gif_filename": "41931301-Cable-Half-Kneeling-Pallof-Press_Waist_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-banca-con-bandas-pectoral",
+        "nombre": "Press Banca con Bandas",
+        "gif_filename": "12541301-Band-Bench-Press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frontal-inclinado-con-bandas-pectoral",
+        "nombre": "Press Frontal Inclinado con Bandas",
+        "gif_filename": "33241301-Band-Alternate-Incline-Chest-Press-with-Twist_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "aperturas-con-bandas-pectoral",
+        "nombre": "Aperturas con Bandas",
+        "gif_filename": "37571301-Band-high-fly-male_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frontal-en-pronacion-con-bandas-pectoral",
+        "nombre": "Press Frontal en Pronación con Bandas",
+        "gif_filename": "37801301-Band-Standing-Chest-Press-male_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "press-frontal-neutral-con-banda-pectoral",
+        "nombre": "Press Frontal Neutral con Banda",
+        "gif_filename": "09891301-Band-one-arm-twisting-chest-press_Chest_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "carrera-continua-cardio",
+        "nombre": "Carrera continua",
+        "gif_filename": "06851301-Run_Cardio-FIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "burpee-cardio",
+        "nombre": "Burpee",
+        "gif_filename": "11601301-Burpee_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "burpee-con-mancuernas-cardio",
+        "nombre": "Burpee con Mancuernas",
+        "gif_filename": "12011301-Dumbbell-burpee_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "burpee-jack-cardio",
+        "nombre": "Burpee Jack",
+        "gif_filename": "05011301-Jack-Burpee_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "caminar-con-peso-cardio",
+        "nombre": "Caminar con peso",
+        "gif_filename": "21331301-Farmers-walk_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "caminar-cardio",
+        "nombre": "Caminar",
+        "gif_filename": "22581301-Walking_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "paso-lateral-con-banda-cardio",
+        "nombre": "Paso lateral con Banda",
+        "gif_filename": "29261301-X-Band-Side-Walk_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "caminar-a-paso-ligero-cardio",
+        "nombre": "Caminar a paso ligero",
+        "gif_filename": "30041301-Briskly-Walking_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "butt-kicks-cardio",
+        "nombre": "Butt Kicks",
+        "gif_filename": "30371301-Butt-Kicks-male_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "split-jacks-cardio",
+        "nombre": "Split Jacks",
+        "gif_filename": "31131301-Split-Jacks-male_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "mountain-climbers-cardio",
+        "nombre": "Mountain Climbers",
+        "gif_filename": "06301301-Mountain-Climber_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "carrera-de-skater-cardio",
+        "nombre": "Carrera de skater",
+        "gif_filename": "31091301-Skater-male_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "plyo-jacks-cardio",
+        "nombre": "Plyo Jacks",
+        "gif_filename": "31081301-Plyo-Jacks-male_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "jumping-jacks-cardio",
+        "nombre": "Jumping Jacks",
+        "gif_filename": "30941301-Jumping-Jack-male_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "rodilla-al-codo-con-sentadilla-cardio",
+        "nombre": "Rodilla al codo con sentadilla",
+        "gif_filename": "30921301-High-Knee-Squat-male_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "rodilla-al-codo-cardio",
+        "nombre": "Rodilla al codo",
+        "gif_filename": "30911301-High-Knee-Skips-male_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "rodilla-al-codo-con-giro-cardio",
+        "nombre": "Rodilla al codo con giro",
+        "gif_filename": "30861301-Elbow-To-Knee-Twists-male_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pies-rapidos-de-pie-cardio",
+        "nombre": "Pies rápidos de pie",
+        "gif_filename": "31961301-Quick-Feet-Run_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "salto-alterno-en-el-sitio-cardio",
+        "nombre": "Salto alterno en el sitio",
+        "gif_filename": "31971301-Prancing_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "carrera-en-zigzag-cardio",
+        "nombre": "Carrera en zigzag",
+        "gif_filename": "31981301-ZigZag-Hopes_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "skips-cardio",
+        "nombre": "Skips",
+        "gif_filename": "31991301-Skips_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "carrera-rapida-en-el-sitio-cardio",
+        "nombre": "Carrera rápida en el sitio",
+        "gif_filename": "35891301-Quickly-Trot-in-place_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-rodillas-con-apoyo-cardio",
+        "nombre": "Elevación de rodillas con apoyo",
+        "gif_filename": "36361301-High-Knee-against-wall_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "pies-rapidos-agachado-cardio",
+        "nombre": "Pies rápidos agachado",
+        "gif_filename": "35521301-Quick-Feet-VERSION-2_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "patadas-altas-cardio",
+        "nombre": "Patadas altas",
+        "gif_filename": "36381301-Push-to-Run_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "carrera-con-salto-cardio",
+        "nombre": "Carrera con salto",
+        "gif_filename": "36371301-Wheel-Run_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "carrera-de-pasos-cortos-cardio",
+        "nombre": "Carrera de pasos cortos",
+        "gif_filename": "36561301-Short-Stride-Run_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "caminar-con-rodilla-arriba-cardio",
+        "nombre": "Caminar con rodilla arriba",
+        "gif_filename": "36551301-Walking-High-Knees-Lunge_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "salto-con-desplazamiento-lateral-cruzado-cardio",
+        "nombre": "Salto con desplazamiento lateral cruzado",
+        "gif_filename": "36721301-Back-And-Forth-Step_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "salto-de-esqui-cardio",
+        "nombre": "Salto de esquí",
+        "gif_filename": "36711301-Ski-Step_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "salto-con-desplazamiento-lateral-cardio",
+        "nombre": "Salto con desplazamiento lateral",
+        "gif_filename": "35511301-Side-Shuttle_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "golpes-alternos-cardio",
+        "nombre": "Golpes alternos",
+        "gif_filename": "35311301-Alternate-Punching_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "desplazamientos-de-boxeo-cardio",
+        "nombre": "Desplazamientos de Boxeo",
+        "gif_filename": "35321301-Boxer-Shuffle_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "elevacion-de-rodillas-cardio",
+        "nombre": "Elevación de rodillas",
+        "gif_filename": "35561301-High-Knee-Run_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "zancada-con-salto-cardio",
+        "nombre": "Zancada con salto",
+        "gif_filename": "37081301-Cardio-Lunge_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "squat-tuck-jumps-cardio",
+        "nombre": "Squat Tuck Jumps",
+        "gif_filename": "37061301-Squat-Tuck-Jump_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "tuck-jumps-cardio",
+        "nombre": "Tuck Jumps",
+        "gif_filename": "37001301-Tuck-Jump-VERSION-2_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "sprints-con-rodilla-alta-cardio",
+        "nombre": "Sprints con rodilla alta",
+        "gif_filename": "37011301-High-Knee-Sprints_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "step-up-cardio",
+        "nombre": "Step Up",
+        "gif_filename": "37651301-Jump-Step-Up-male_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "carrera-hacia-atras-cardio",
+        "nombre": "Carrera hacia atrás",
+        "gif_filename": "42581301-Backwards-Run_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "caminar-en-cuclillas-cardio",
+        "nombre": "Caminar en cuclillas",
+        "gif_filename": "38671301-Duck-Walk-male_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "maquina-escaladora-cardio",
+        "nombre": "Máquina Escaladora",
+        "gif_filename": "23111301-Walking-on-Stepmill_Thighs_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "maquina-eliptica-cardio",
+        "nombre": "Máquina Elíptica",
+        "gif_filename": "21921301-Elliptical-Machine-Walk_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "maquina-de-step-cardio",
+        "nombre": "Máquina de Step",
+        "gif_filename": "21401301-Walk-Wave-Machine_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "krankcycle-cardio",
+        "nombre": "Krankcycle",
+        "gif_filename": "21391301-Hands-bike_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "bicicleta-estatica-normal-cardio",
+        "nombre": "Bicicleta Estática Normal",
+        "gif_filename": "22791301-Stationary-Bike-Run-version-4_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "bicicleta-estatica-cardio",
+        "nombre": "Bicicleta Estática Deportiva",
+        "gif_filename": "21381301-Stationary-Bike-Run-version-3_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "maquina-de-remo-cardio",
+        "nombre": "Máquina de Remo",
+        "gif_filename": "11611301-Rowing-with-rowing-machine_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "carrera-en-cinta-inclinada-cardio",
+        "nombre": "Carrera en Cinta Inclinada",
+        "gif_filename": "36661301-Walking-on-Incline-Treadmill_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "carrera-en-cinta-cardio",
+        "nombre": "Carrera en Cinta",
+        "gif_filename": "06841301-Run-equipment_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "bicicleta-estatica-reclinada-cardio",
+        "nombre": "Bicicleta Estática Reclinada",
+        "gif_filename": "21931301-Bicycle-Recline-Walk_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "air-bike-cardio",
+        "nombre": "Air Bike",
+        "gif_filename": "38931301-Assault-Bike-Run_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "salto-con-cuerda-alterno-alto-cardio",
+        "nombre": "Salto con Cuerda Alterno Alto",
+        "gif_filename": "36771301-High-Knee-Jump-Rope-male_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "salto-con-cuerda-alterno-normal-cardio",
+        "nombre": "Salto con Cuerda Alterno Normal",
+        "gif_filename": "36761301-Skip-Jump-Rope-male_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "salto-con-cuerda-alto-cardio",
+        "nombre": "Salto con Cuerda Alto",
+        "gif_filename": "36781301-High-Jump-Rope-male_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "salto-con-cuerda-lateral-cardio",
+        "nombre": "Salto con Cuerda Lateral",
+        "gif_filename": "36751301-Side-to-Side-Jump-Rope-male_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "salto-con-cuerda-normal-cardio",
+        "nombre": "Salto con Cuerda Normal",
+        "gif_filename": "26121301-Jump-Rope-male_Cardio_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexion-frontal-con-disco-cuello",
+        "nombre": "Flexión Frontal con Disco",
+        "gif_filename": "10431301-Weighted-Lying-Neck-Flexion_neck_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-frontal-con-disco-cuello",
+        "nombre": "Extensión Frontal con Disco",
+        "gif_filename": "10421301-Weighted-Lying-Neck-Extension_neck_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-frontal-con-arnes-cuello",
+        "nombre": "Extensión Frontal con Arnés",
+        "gif_filename": "08481301-Weighted-Seated-Neck-Extension-with-head-harness_Neck_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-lateral-con-arnes-cuello",
+        "nombre": "Extensión Lateral con Arnés",
+        "gif_filename": "08381301-Weighted-Lying-Side-Lifting-Head-with-head-harness_Neck_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "flexion-frontal-en-polea-cuello",
+        "nombre": "Flexión Frontal en Polea",
+        "gif_filename": "24121301-Cable-Seated-Neck-Flexion-with-head-harness_Neck_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-frontal-en-polea-cuello",
+        "nombre": "Extensión Frontal en Polea",
+        "gif_filename": "24111301-Cable-Seated-Neck-Extension-with-head-harness_Neck_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-lateral-en-maquina-cuello",
+        "nombre": "Extensión Lateral en Máquina",
+        "gif_filename": "22841301-Lever-Neck-Right-Side-Flexion-plate-loaded_Neck_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "extension-frontal-en-maquina-cuello",
+        "nombre": "Extensión Frontal en Máquina",
+        "gif_filename": "22821301-Lever-Neck-Extension-plate-loaded_Neck_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-a-una-mano-en-polea-alta-antebrazo",
+        "nombre": "Curl a una mano en Polea Alta",
+        "gif_filename": "41631301-Cable-One-Arm-Wrist-Curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-vertical-en-polea-baja-antebrazo",
+        "nombre": "Curl Vertical en Polea Baja",
+        "gif_filename": "02241301-Cable-Standing-Back-Wrist-Curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-en-supinacion-con-polea-antebrazo",
+        "nombre": "Curl Concentrado en Supinación con Polea",
+        "gif_filename": "02471301-Cable-Wrist-Curl_Forearm_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-en-pronacion-con-polea-antebrazo",
+        "nombre": "Curl Concentrado en Pronación con Polea",
+        "gif_filename": "02101301-Cable-Reverse-Wrist-Curl_Forearm_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "hand-grip-antebrazo",
+        "nombre": "Hand Grip",
+        "gif_filename": "33451301-Hand-Spring-Wrist-Curl_Hands_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "wrist-roller-antebrazo",
+        "nombre": "Wrist Roller",
+        "gif_filename": "08591301-Wrist-Roller_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "rotacion-concentrada-con-mancuerna-antebrazo",
+        "nombre": "Rotación Concentrada con Mancuerna",
+        "gif_filename": "03991301-Dumbbell-Seated-One-Arm-Rotate_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-neutral-con-mancuerna-antebrazo",
+        "nombre": "Curl Concentrado Neutral con Mancuerna",
+        "gif_filename": "14151301-Dumbbell-One-Arm-Seated-Neutral-Wrist-Curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-en-pronacion-con-mancuerna-antebrazo",
+        "nombre": "Curl Concentrado en Pronación con Mancuerna",
+        "gif_filename": "03581301-Dumbbell-One-arm-Revers-Wrist-Curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-en-supinacion-con-mancuerna-antebrazo",
+        "nombre": "Curl Concentrado en Supinación con Mancuerna",
+        "gif_filename": "03641301-Dumbbell-One-arm-Wrist-Curl_Forearm-SFIX_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-inclinado-con-barra-antebrazo",
+        "nombre": "Curl Inclinado con Barra",
+        "gif_filename": "39871301-Barbell-Incline-Wrist-Curl-with-Chest-Support_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-vertical-en-supinacion-con-barra-antebrazo",
+        "nombre": "Curl Vertical en Supinación con Barra",
+        "gif_filename": "01041301-Barbell-Standing-Back-Wrist-Curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-vertical-de-dedos-con-barra-antebrazo",
+        "nombre": "Curl Vertical de Dedos con Barra",
+        "gif_filename": "16101301-Barbell-Behind-Back-Finger-Curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-de-dedos-con-barra-antebrazo",
+        "nombre": "Curl Concentrado de Dedos con Barra",
+        "gif_filename": "04551301-Finger-Curls_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-en-pronacion-con-barra-antebrazo",
+        "nombre": "Curl Concentrado en Pronación con Barra",
+        "gif_filename": "00791301-Barbell-Revers-Wrist-Curl-II_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-en-supinacion-con-barra-antebrazo",
+        "nombre": "Curl Concentrado en Supinación con Barra",
+        "gif_filename": "01251301-Barbell-Wrist-Curl-II_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-en-pronacion-con-banda-antebrazo",
+        "nombre": "Curl Concentrado en Pronación con Banda",
+        "gif_filename": "09941301-Band-reverse-wrist-curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    },
+    {
+        "slug": "curl-concentrado-en-supinacion-con-banda-antebrazo",
+        "nombre": "Curl Concentrado en Supinación con Banda",
+        "gif_filename": "10161301-Band-wrist-curl_Forearms_720.gif",
+        "sin_fondo_listo": 1
+    }
+]

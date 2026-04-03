@@ -219,7 +219,7 @@
                                          padding: 12,
                                          usePointStyle: true,
                                          pointStyleWidth: 8,
-                                         font: { size: 11, family: 'Barlow, sans-serif' }
+                                         font: { size: 11, family: 'Raleway, sans-serif' }
                                      }
                                  }
                              }
