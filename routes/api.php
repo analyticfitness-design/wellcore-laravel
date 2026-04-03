@@ -12,6 +12,23 @@ use App\Http\Controllers\Api\SocialController;
 use App\Http\Controllers\Api\TrainingController;
 use Illuminate\Support\Facades\Route;
 
+// Temporary GIF debug route — remove after diagnosis
+Route::get('/debug-gif', function () {
+    $exs = [['nombre' => 'Hip thrust'], ['nombre' => 'Peso muerto rumano'], ['nombre' => 'Sentadilla bulgara']];
+    $aliasCount = \Illuminate\Support\Facades\DB::table('exercise_aliases')->count();
+    $hipAlias = \Illuminate\Support\Facades\DB::table('exercise_aliases')->where('alias', 'hip thrust')->first();
+    try {
+        app(\App\Services\ExerciseMediaService::class)->enrichWithMedia($exs);
+    } catch (\Throwable $e) {
+        return response()->json(['error' => $e->getMessage(), 'trace' => substr($e->getTraceAsString(), 0, 500)]);
+    }
+    return response()->json([
+        'aliases_count' => $aliasCount,
+        'hip_alias' => $hipAlias,
+        'exercises' => $exs,
+    ]);
+});
+
 // Ejercicios Fitcron (public — no auth required)
 Route::prefix('ejercicios')->group(function () {
     Route::get('/', [EjerciciosController::class, 'index']);
