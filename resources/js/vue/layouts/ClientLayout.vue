@@ -92,13 +92,6 @@ const navSections = [
         ],
     },
     {
-        label: 'Nutricion',
-        items: [
-            { name: 'Nutricion', to: '/client/nutrition', icon: 'nutrition', routeName: 'client-nutrition' },
-            { name: 'Habitos', to: '/client/habits', icon: 'habits', routeName: 'client-habits' },
-        ],
-    },
-    {
         label: 'Progreso',
         items: [
             { name: 'Metricas', to: '/client/metrics', icon: 'metrics', routeName: 'client-metrics' },

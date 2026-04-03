@@ -49,6 +49,51 @@ const planStartDate = ref(null);
 const habitData = ref([]);
 const habitCompliance = ref(0);
 
+// Nutrition tab accordion state
+const openNutrMeals = ref({});
+const activeNutrOption = ref({});
+
+function toggleNutrMeal(idx) {
+  openNutrMeals.value[idx] = !openNutrMeals.value[idx];
+}
+
+function setNutrOption(idx, option) {
+  activeNutrOption.value[idx] = option;
+}
+
+function getNutrMealColor(nombre) {
+  const n = (nombre || '').toLowerCase();
+  if (n.includes('desayuno')) return 'bg-amber-500/10 text-amber-400';
+  if (n.includes('pre-entreno') || n.includes('pre entreno')) return 'bg-green-500/10 text-green-400';
+  if (n.includes('almuerzo') || n.includes('post-entreno') || n.includes('post entreno')) return 'bg-blue-500/10 text-blue-400';
+  if (n.includes('cena')) return 'bg-indigo-500/10 text-indigo-400';
+  if (n.includes('snack') || n.includes('merienda') || n.includes('media mañana') || n.includes('media manana')) return 'bg-pink-500/10 text-pink-400';
+  return 'bg-wc-accent/10 text-wc-accent';
+}
+
+function formatNutrAlimento(alimento) {
+  if (typeof alimento === 'string') return alimento;
+  if (typeof alimento === 'object' && alimento !== null) {
+    const name = alimento.nombre || alimento.alimento || alimento.name || '';
+    const qty = alimento.cantidad || alimento.porcion || alimento.quantity || alimento.amount || '';
+    if (name && qty) return `${name} — ${qty}`;
+    return name || qty || '';
+  }
+  return String(alimento);
+}
+
+function getNutrMealOpciones(meal) {
+  // Returns a map of { a: [...], b: [...], c: [...] } if multi-option, otherwise null
+  const keys = ['opcion_a', 'option_a'];
+  const found = keys.some(k => meal[k] && Array.isArray(meal[k]) && meal[k].length > 0);
+  if (!found && !(meal.opciones && (meal.opciones.opcion_a || meal.opciones.option_a))) return null;
+  const src = meal.opciones || meal;
+  const a = src.opcion_a || src.option_a || null;
+  const b = src.opcion_b || src.option_b || null;
+  const c = src.opcion_c || src.option_c || null;
+  return { a, b, c };
+}
+
 // Bloodwork
 const bloodworkResults = ref([]);
 const bwSaving = ref(false);
@@ -990,78 +1035,187 @@ onBeforeUnmount(() => {
                 </ul>
               </div>
 
-              <!-- Comidas (formato completo: comidas[]) -->
+              <!-- Comidas (formato completo: comidas[]) — collapsible meal cards -->
               <div v-if="nutritionPlan.comidas && nutritionPlan.comidas.length > 0" class="space-y-3">
                 <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary px-0.5">Plan de comidas</p>
-                <div v-for="(meal, mIdx) in nutritionPlan.comidas" :key="mIdx" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
-                  <!-- Meal header -->
-                  <div class="flex items-center gap-3 border-b border-wc-border px-4 py-3">
-                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
-                      <span class="font-data text-sm font-bold text-wc-accent">{{ mIdx + 1 }}</span>
+                <div
+                  v-for="(meal, mIdx) in nutritionPlan.comidas"
+                  :key="mIdx"
+                  class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary"
+                >
+                  <!-- Header (clickable) -->
+                  <button
+                    @click="toggleNutrMeal(mIdx)"
+                    class="flex w-full items-center gap-3 p-4 text-left transition hover:bg-wc-bg-tertiary"
+                  >
+                    <!-- Colored number badge -->
+                    <div
+                      class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
+                      :class="getNutrMealColor(meal.nombre || meal.name)"
+                    >
+                      <span class="font-data text-sm font-bold">{{ meal.numero ?? (mIdx + 1) }}</span>
                     </div>
+
+                    <!-- Name -->
                     <div class="min-w-0 flex-1">
-                      <p class="text-sm font-semibold text-wc-text">{{ meal.nombre || meal.name || ('Comida ' + (mIdx + 1)) }}</p>
-                      <p v-if="meal.hora || meal.time" class="text-xs text-wc-text-tertiary">{{ meal.hora || meal.time }}</p>
+                      <p class="truncate font-display text-sm tracking-wide text-wc-text">
+                        {{ (meal.nombre || meal.name || ('Comida ' + (mIdx + 1))).toUpperCase() }}
+                      </p>
+                      <p v-if="meal.hora || meal.time" class="text-[11px] text-wc-text-tertiary">{{ meal.hora || meal.time }}</p>
                     </div>
-                    <div v-if="meal.calorias || meal.calories" class="rounded-full bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-semibold text-wc-text-secondary">
-                      {{ meal.calorias || meal.calories }} kcal
-                    </div>
-                  </div>
 
-                  <!-- Alimentos -->
-                  <div v-if="(meal.alimentos || meal.foods || []).length > 0" class="divide-y divide-wc-border/40 px-4">
-                    <div v-for="(alimento, aIdx) in (meal.alimentos || meal.foods || [])" :key="aIdx" class="flex items-start gap-2 py-2.5">
-                      <!-- Badge for OPCIÓN items -->
-                      <template v-if="typeof alimento === 'string' && alimento.trimStart().toUpperCase().startsWith('OPCIÓN')">
-                        <span class="mt-0.5 shrink-0 rounded bg-blue-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-blue-400">
-                          {{ alimento.trimStart().match(/^OPCIÓN\s+[A-Z]/i)?.[0] ?? 'OPC' }}
-                        </span>
-                        <span class="text-sm text-wc-text-secondary leading-snug">
-                          {{ alimento.trimStart().replace(/^OPCIÓN\s+[A-Z]:\s*/i, '') }}
-                        </span>
-                      </template>
-                      <template v-else>
-                        <span class="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-wc-text-tertiary"></span>
-                        <span class="text-sm text-wc-text">{{ typeof alimento === 'string' ? alimento : (alimento.nombre || alimento.name || 'Alimento') }}</span>
-                        <span v-if="typeof alimento === 'object' && (alimento.cantidad || alimento.porcion)" class="ml-auto shrink-0 text-xs text-wc-text-tertiary">{{ alimento.cantidad || alimento.porcion }}</span>
-                      </template>
+                    <!-- Macro chips (desktop) -->
+                    <div class="hidden items-center gap-1.5 sm:flex">
+                      <span
+                        v-if="meal.macros && (meal.macros.proteina > 0 || meal.macros.proteina_g > 0)"
+                        class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                        style="background:rgba(220,38,38,0.12); color:#F87171;"
+                      >P {{ meal.macros.proteina || meal.macros.proteina_g }}g</span>
+                      <span
+                        v-if="meal.macros && (meal.macros.carbohidratos > 0 || meal.macros.carbohidratos_g > 0)"
+                        class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                        style="background:rgba(59,130,246,0.12); color:#60A5FA;"
+                      >C {{ meal.macros.carbohidratos || meal.macros.carbohidratos_g }}g</span>
+                      <span
+                        v-if="meal.macros && (meal.macros.grasas > 0 || meal.macros.grasas_g > 0)"
+                        class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                        style="background:rgba(245,158,11,0.12); color:#FBBF24;"
+                      >G {{ meal.macros.grasas || meal.macros.grasas_g }}g</span>
                     </div>
-                  </div>
 
-                  <!-- Macros por comida -->
-                  <div v-if="meal.macros && (meal.macros.proteina_g || meal.macros.carbohidratos_g || meal.macros.grasas_g)" class="flex gap-4 border-t border-wc-border/60 bg-wc-bg-secondary/40 px-4 py-2.5">
-                    <div v-if="meal.macros.proteina_g" class="flex items-center gap-1.5">
-                      <span class="h-2 w-2 rounded-full bg-wc-accent"></span>
-                      <span class="font-data text-xs font-semibold text-wc-text">{{ meal.macros.proteina_g }}g</span>
-                      <span class="text-[10px] text-wc-text-tertiary">P</span>
+                    <!-- kcal + chevron -->
+                    <div class="ml-2 flex shrink-0 items-center gap-3">
+                      <span
+                        v-if="meal.kcal || meal.calorias || meal.calories"
+                        class="font-data text-sm font-bold tabular-nums text-wc-text"
+                      >{{ meal.kcal || meal.calorias || meal.calories }}<span class="text-xs font-normal text-wc-text-tertiary"> kcal</span></span>
+                      <svg
+                        class="h-4 w-4 text-wc-text-tertiary transition-transform duration-200"
+                        :class="{ 'rotate-180': openNutrMeals[mIdx] }"
+                        fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"
+                      >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                      </svg>
                     </div>
-                    <div v-if="meal.macros.carbohidratos_g" class="flex items-center gap-1.5">
-                      <span class="h-2 w-2 rounded-full bg-blue-400"></span>
-                      <span class="font-data text-xs font-semibold text-wc-text">{{ meal.macros.carbohidratos_g }}g</span>
-                      <span class="text-[10px] text-wc-text-tertiary">C</span>
+                  </button>
+
+                  <!-- Expandable body -->
+                  <Transition name="accordion">
+                    <div v-show="openNutrMeals[mIdx]" class="border-t border-wc-border">
+                      <div class="space-y-3 p-4">
+
+                        <!-- Mobile macro chips -->
+                        <div class="flex flex-wrap gap-1.5 sm:hidden">
+                          <span
+                            v-if="meal.macros && (meal.macros.proteina > 0 || meal.macros.proteina_g > 0)"
+                            class="rounded-full px-2.5 py-1 text-xs font-semibold"
+                            style="background:rgba(220,38,38,0.12); color:#F87171;"
+                          >P {{ meal.macros.proteina || meal.macros.proteina_g }}g</span>
+                          <span
+                            v-if="meal.macros && (meal.macros.carbohidratos > 0 || meal.macros.carbohidratos_g > 0)"
+                            class="rounded-full px-2.5 py-1 text-xs font-semibold"
+                            style="background:rgba(59,130,246,0.12); color:#60A5FA;"
+                          >C {{ meal.macros.carbohidratos || meal.macros.carbohidratos_g }}g</span>
+                          <span
+                            v-if="meal.macros && (meal.macros.grasas > 0 || meal.macros.grasas_g > 0)"
+                            class="rounded-full px-2.5 py-1 text-xs font-semibold"
+                            style="background:rgba(245,158,11,0.12); color:#FBBF24;"
+                          >G {{ meal.macros.grasas || meal.macros.grasas_g }}g</span>
+                        </div>
+
+                        <!-- Multi-option tabs (opcion_a / b / c) -->
+                        <template v-if="getNutrMealOpciones(meal)">
+                          <!-- Option selector -->
+                          <div class="flex gap-1.5">
+                            <button
+                              v-for="(optAlimentos, optKey) in Object.fromEntries(Object.entries(getNutrMealOpciones(meal)).filter(([,v]) => v && v.length > 0))"
+                              :key="optKey"
+                              @click="setNutrOption(mIdx, optKey)"
+                              class="rounded-full px-3 py-1 text-xs font-semibold transition"
+                              :class="(activeNutrOption[mIdx] || 'a') === optKey
+                                ? 'bg-wc-accent text-white'
+                                : 'bg-wc-bg-tertiary text-wc-text-secondary hover:text-wc-text border border-wc-border'"
+                            >Opción {{ optKey.toUpperCase() }}</button>
+                          </div>
+                          <!-- Option alimentos -->
+                          <ul class="space-y-1.5">
+                            <li
+                              v-for="(alimento, ai) in (getNutrMealOpciones(meal)[(activeNutrOption[mIdx] || 'a')] || [])"
+                              :key="ai"
+                              class="flex items-start gap-2.5"
+                            >
+                              <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                              <span class="text-sm leading-relaxed text-wc-text-secondary">{{ formatNutrAlimento(alimento) }}</span>
+                            </li>
+                          </ul>
+                        </template>
+
+                        <!-- Standard alimentos list -->
+                        <ul
+                          v-else-if="(meal.alimentos || meal.foods || []).length > 0"
+                          class="space-y-1.5"
+                        >
+                          <li
+                            v-for="(alimento, ai) in (meal.alimentos || meal.foods)"
+                            :key="ai"
+                            class="flex items-start gap-2.5"
+                          >
+                            <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                            <span class="text-sm leading-relaxed text-wc-text-secondary">{{ formatNutrAlimento(alimento) }}</span>
+                          </li>
+                        </ul>
+
+                        <!-- Notas -->
+                        <div v-if="meal.notas" class="rounded-lg border border-wc-border bg-wc-bg-tertiary px-3.5 py-3">
+                          <p class="text-xs leading-relaxed text-wc-text-tertiary">{{ meal.notas }}</p>
+                        </div>
+                      </div>
                     </div>
-                    <div v-if="meal.macros.grasas_g" class="flex items-center gap-1.5">
-                      <span class="h-2 w-2 rounded-full bg-amber-400"></span>
-                      <span class="font-data text-xs font-semibold text-wc-text">{{ meal.macros.grasas_g }}g</span>
-                      <span class="text-[10px] text-wc-text-tertiary">G</span>
-                    </div>
-                  </div>
+                  </Transition>
                 </div>
               </div>
 
-              <!-- Comidas sugeridas (formato RISE: comidas_sugeridas[]) -->
+              <!-- Comidas sugeridas (formato RISE: comidas_sugeridas[]) — also collapsible -->
               <div v-else-if="nutritionPlan.comidas_sugeridas && nutritionPlan.comidas_sugeridas.length > 0" class="space-y-3">
                 <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary px-0.5">Comidas sugeridas</p>
-                <div v-for="(meal, mIdx) in nutritionPlan.comidas_sugeridas" :key="mIdx" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-                  <div class="flex items-start gap-3">
-                    <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary">
-                      <span class="font-data text-xs font-bold text-wc-text-tertiary">{{ mIdx + 1 }}</span>
+                <div
+                  v-for="(meal, mIdx) in nutritionPlan.comidas_sugeridas"
+                  :key="mIdx"
+                  class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary"
+                >
+                  <button
+                    @click="toggleNutrMeal('s' + mIdx)"
+                    class="flex w-full items-center gap-3 p-4 text-left transition hover:bg-wc-bg-tertiary"
+                  >
+                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg" :class="getNutrMealColor(meal.nombre || meal.name)">
+                      <span class="font-data text-sm font-bold">{{ mIdx + 1 }}</span>
                     </div>
-                    <div class="min-w-0">
-                      <p class="text-sm font-semibold text-wc-text">{{ meal.nombre || meal.name || ('Comida ' + (mIdx + 1)) }}</p>
-                      <p v-if="meal.descripcion" class="mt-0.5 text-sm text-wc-text-secondary leading-relaxed">{{ meal.descripcion }}</p>
+                    <div class="min-w-0 flex-1">
+                      <p class="truncate font-display text-sm tracking-wide text-wc-text">
+                        {{ (meal.nombre || meal.name || ('Comida ' + (mIdx + 1))).toUpperCase() }}
+                      </p>
                     </div>
-                  </div>
+                    <svg
+                      class="h-4 w-4 text-wc-text-tertiary transition-transform duration-200"
+                      :class="{ 'rotate-180': openNutrMeals['s' + mIdx] }"
+                      fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"
+                    >
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                  </button>
+                  <Transition name="accordion">
+                    <div v-show="openNutrMeals['s' + mIdx]" class="border-t border-wc-border">
+                      <div class="p-4">
+                        <p v-if="meal.descripcion" class="text-sm leading-relaxed text-wc-text-secondary">{{ meal.descripcion }}</p>
+                        <ul v-if="(meal.alimentos || meal.foods || []).length > 0" class="space-y-1.5">
+                          <li v-for="(alimento, ai) in (meal.alimentos || meal.foods)" :key="ai" class="flex items-start gap-2.5">
+                            <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                            <span class="text-sm leading-relaxed text-wc-text-secondary">{{ formatNutrAlimento(alimento) }}</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </Transition>
                 </div>
               </div>
 
@@ -1781,4 +1935,6 @@ onBeforeUnmount(() => {
 <style scoped>
 .fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
+.accordion-enter-active, .accordion-leave-active { transition: max-height 0.3s ease, opacity 0.2s ease; overflow: hidden; max-height: 600px; }
+.accordion-enter-from, .accordion-leave-to { max-height: 0; opacity: 0; }
 </style>
