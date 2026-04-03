@@ -81,6 +81,40 @@ class TrainingController extends Controller
             }
         }
 
+        // Enrich training plan exercises with GIF URLs (batch, single query)
+        if ($trainingPlan) {
+            try {
+                $mediaService = app(ExerciseMediaService::class);
+                $dias = $trainingPlan['dias'] ?? [];
+                foreach ($dias as &$dia) {
+                    $ejercicios = $dia['ejercicios'] ?? [];
+                    if (!empty($ejercicios)) {
+                        $mediaService->enrichWithMedia($ejercicios);
+                        $dia['ejercicios'] = $ejercicios;
+                    }
+                }
+                unset($dia);
+                $trainingPlan['dias'] = $dias;
+
+                // Also enrich semanas if present
+                if (isset($trainingPlan['semanas'])) {
+                    foreach ($trainingPlan['semanas'] as &$semana) {
+                        foreach (($semana['dias'] ?? []) as &$dia) {
+                            $ejercicios = $dia['ejercicios'] ?? [];
+                            if (!empty($ejercicios)) {
+                                $mediaService->enrichWithMedia($ejercicios);
+                                $dia['ejercicios'] = $ejercicios;
+                            }
+                        }
+                        unset($dia);
+                    }
+                    unset($semana);
+                }
+            } catch (\Throwable $e) {
+                // Silently skip if ejercicios_fitcron unavailable
+            }
+        }
+
         // Habits (last 30 days)
         $habitData = $this->buildHabitData($clientId);
 

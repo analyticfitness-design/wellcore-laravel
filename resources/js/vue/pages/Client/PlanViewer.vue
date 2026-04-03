@@ -826,7 +826,14 @@ onBeforeUnmount(() => {
                       <!-- Exercises list -->
                       <div v-if="(dia.ejercicios || []).length > 0" class="divide-y divide-wc-border/40 border-t border-wc-border/40">
                         <div v-for="(ejercicio, eIdx) in (dia.ejercicios || [])" :key="eIdx" class="flex items-start gap-3 px-4 py-3">
-                          <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-wc-accent/10 font-data text-[11px] font-bold text-wc-accent">{{ eIdx + 1 }}</span>
+                          <!-- GIF thumbnail o número de índice -->
+                          <div class="mt-0.5 shrink-0">
+                            <div v-if="typeof ejercicio === 'object' && ejercicio.gif_url" class="relative h-12 w-12 overflow-hidden rounded-lg bg-wc-bg-secondary">
+                              <img :src="ejercicio.gif_url" :alt="ejercicio.nombre || 'ejercicio'" class="h-full w-full object-cover" loading="lazy" />
+                              <span class="absolute bottom-0 right-0 flex h-4 w-4 items-center justify-center rounded-tl-md bg-black/60 text-[9px] font-bold text-white">{{ eIdx + 1 }}</span>
+                            </div>
+                            <span v-else class="flex h-6 w-6 items-center justify-center rounded-md bg-wc-accent/10 font-sans text-[11px] font-bold text-wc-accent">{{ eIdx + 1 }}</span>
+                          </div>
                           <div class="flex-1 min-w-0">
                             <p class="text-sm font-medium text-wc-text">{{ typeof ejercicio === 'string' ? ejercicio : (ejercicio.nombre || ejercicio.name || ejercicio.ejercicio || 'Ejercicio') }}</p>
                             <div v-if="typeof ejercicio === 'object'" class="mt-1.5 flex flex-wrap gap-1.5">
