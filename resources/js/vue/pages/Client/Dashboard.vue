@@ -377,7 +377,12 @@ const weekMarkers = computed(() => {
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- GREETING SECTION + QUICK ACTIONS (desktop)                    -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <!-- M64 — Hero Premium: orbe rojo + grain + glass -->
+      <div class="wc-hero-premium relative overflow-hidden rounded-2xl">
+        <!-- Orbe rojo superior -->
+        <div class="pointer-events-none absolute -top-10 left-1/2 h-52 w-80 -translate-x-1/2 rounded-full opacity-100" style="background:radial-gradient(ellipse,rgba(220,38,38,0.28) 0%,transparent 70%);filter:blur(32px);z-index:0;"></div>
+        <!-- Contenido glass -->
+        <div class="relative z-10 flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/[0.06] p-5 backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between" style="backdrop-filter:blur(24px) saturate(1.8);">
         <div>
           <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">
             {{ greeting }}, {{ data.clientName }}
@@ -414,7 +419,8 @@ const weekMarkers = computed(() => {
             Hacer check-in
           </RouterLink>
         </div>
-      </div>
+        </div><!-- /glass content -->
+      </div><!-- /wc-hero-premium -->
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- DAILY MOTIVATIONAL QUOTE                                      -->
@@ -480,8 +486,8 @@ const weekMarkers = computed(() => {
               </svg>
             </div>
           </div>
-          <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ data.streakDays || 0 }}</p>
-          <p class="mt-0.5 text-xs text-wc-text-tertiary">dias consecutivos</p>
+          <p class="mt-3 font-display text-4xl text-wc-accent" style="line-height:1">{{ data.streakDays || 0 }}</p>
+          <p class="mt-1 text-[9px] font-semibold uppercase tracking-widest text-wc-text-tertiary">dias consecutivos</p>
         </div>
 
         <!-- Check-ins this month -->
@@ -494,8 +500,8 @@ const weekMarkers = computed(() => {
               </svg>
             </div>
           </div>
-          <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ data.checkinsThisMonth || 0 }}</p>
-          <p class="mt-0.5 text-xs text-wc-text-tertiary">este mes</p>
+          <p class="mt-3 font-display text-4xl text-wc-accent" style="line-height:1">{{ data.checkinsThisMonth || 0 }}</p>
+          <p class="mt-1 text-[9px] font-semibold uppercase tracking-widest text-wc-text-tertiary">este mes</p>
         </div>
 
         <!-- XP + Level -->
@@ -508,8 +514,8 @@ const weekMarkers = computed(() => {
               </svg>
             </div>
           </div>
-          <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ (data.xpTotal || 0).toLocaleString() }}</p>
-          <p class="mt-0.5 text-xs text-wc-text-tertiary">XP total</p>
+          <p class="mt-3 font-display text-4xl text-wc-accent" style="line-height:1">{{ (data.xpTotal || 0).toLocaleString() }}</p>
+          <p class="mt-1 text-[9px] font-semibold uppercase tracking-widest text-wc-text-tertiary">XP total</p>
           <!-- XP Progress bar -->
           <div class="mt-3">
             <div class="h-1.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
