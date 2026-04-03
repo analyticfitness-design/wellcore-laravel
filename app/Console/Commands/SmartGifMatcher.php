@@ -301,15 +301,19 @@ class SmartGifMatcher extends Command
                 $data = is_string($content) ? json_decode($content, true) : $content;
                 if (! is_array($data)) return [];
 
-                $dias = $data['dias'] ?? [];
-                foreach ($data['semanas'] ?? [] as $s) {
-                    $dias = array_merge($dias, $s['dias'] ?? []);
+                $dias = is_array($data['dias'] ?? null) ? $data['dias'] : [];
+                $semanas = is_array($data['semanas'] ?? null) ? $data['semanas'] : [];
+                foreach ($semanas as $s) {
+                    $semDias = is_array($s['dias'] ?? null) ? $s['dias'] : [];
+                    $dias = array_merge($dias, $semDias);
                 }
 
                 return collect($dias)->flatMap(fn ($d) =>
-                    collect($d['ejercicios'] ?? [])->map(fn ($e) =>
-                        is_array($e) ? ($e['nombre'] ?? $e['name'] ?? null) : $e
-                    )
+                    is_array($d)
+                        ? collect($d['ejercicios'] ?? [])->map(fn ($e) =>
+                            is_array($e) ? ($e['nombre'] ?? $e['name'] ?? null) : $e
+                          )
+                        : collect()
                 );
             })
             ->filter(fn ($n) => is_string($n) && trim($n) !== '')
