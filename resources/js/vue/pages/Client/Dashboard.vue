@@ -435,7 +435,7 @@ const weekMarkers = computed(() => {
           <p class="text-sm italic text-wc-text-tertiary leading-relaxed">
             &ldquo;{{ data.dailyQuote }}&rdquo;
           </p>
-          <p class="mt-1 text-[10px] font-medium uppercase tracking-wider text-wc-text-tertiary/60">&mdash; Tu coach</p>
+          <p class="mt-1 text-xs font-medium uppercase tracking-wider text-wc-text-tertiary/60">&mdash; Tu coach</p>
         </div>
       </div>
 
@@ -450,11 +450,11 @@ const weekMarkers = computed(() => {
         </div>
         <div class="min-w-0 flex-1">
           <p class="text-sm font-semibold text-wc-text">No tienes un plan activo</p>
-          <p class="mt-0.5 text-xs text-wc-text-tertiary">Contacta a tu coach para que te asigne un plan de entrenamiento.</p>
+          <p class="mt-0.5 text-sm text-wc-text-tertiary">Contacta a tu coach para que te asigne un plan de entrenamiento.</p>
         </div>
         <RouterLink
           to="/client/chat"
-          class="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-wc-accent px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-wc-accent-hover"
+          class="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-wc-accent px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-wc-accent-hover"
         >
           Contactar coach
         </RouterLink>
@@ -465,7 +465,7 @@ const weekMarkers = computed(() => {
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
         </div>
-        <span class="text-xs text-wc-text-tertiary">
+        <span class="text-sm text-wc-text-tertiary">
           Plan
           <span v-if="data.planPhase" class="font-semibold capitalize text-wc-text">{{ data.planPhase }}</span>
           activo &mdash; Dia <span class="font-semibold text-wc-text">{{ data.planDaysActive }}</span>
@@ -479,7 +479,7 @@ const weekMarkers = computed(() => {
         <!-- Streak with Flame -->
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Racha</span>
+            <span class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Racha</span>
             <div :class="['flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10', (data.streakDays || 0) >= 3 ? 'animate-pulse' : '']">
               <svg class="h-4 w-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
                 <path fill-rule="evenodd" d="M12.963 2.286a.75.75 0 0 0-1.071-.136 9.742 9.742 0 0 0-3.539 6.176A7.547 7.547 0 0 1 6.648 6.61a.75.75 0 0 0-1.152.082A9 9 0 1 0 15.68 4.534a7.46 7.46 0 0 1-2.717-2.248ZM15.75 14.25a3.75 3.75 0 1 1-7.313-1.172c.628.465 1.35.81 2.133 1a5.99 5.99 0 0 1 1.925-3.546 3.75 3.75 0 0 1 3.255 3.718Z" clip-rule="evenodd" />
@@ -487,13 +487,13 @@ const weekMarkers = computed(() => {
             </div>
           </div>
           <p class="mt-3 font-display text-4xl text-wc-accent" style="line-height:1">{{ data.streakDays || 0 }}</p>
-          <p class="mt-1 text-[9px] font-semibold uppercase tracking-widest text-wc-text-tertiary">dias consecutivos</p>
+          <p class="mt-1 text-sm font-semibold uppercase tracking-widest text-wc-text-tertiary">dias consecutivos</p>
         </div>
 
         <!-- Check-ins this month -->
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Check-ins</span>
+            <span class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Check-ins</span>
             <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
               <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -501,13 +501,13 @@ const weekMarkers = computed(() => {
             </div>
           </div>
           <p class="mt-3 font-display text-4xl text-wc-accent" style="line-height:1">{{ data.checkinsThisMonth || 0 }}</p>
-          <p class="mt-1 text-[9px] font-semibold uppercase tracking-widest text-wc-text-tertiary">este mes</p>
+          <p class="mt-1 text-sm font-semibold uppercase tracking-widest text-wc-text-tertiary">este mes</p>
         </div>
 
         <!-- XP + Level -->
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Nivel {{ data.level || 1 }}</span>
+            <span class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Nivel {{ data.level || 1 }}</span>
             <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10">
               <svg class="h-4 w-4 text-violet-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
@@ -515,7 +515,7 @@ const weekMarkers = computed(() => {
             </div>
           </div>
           <p class="mt-3 font-display text-4xl text-wc-accent" style="line-height:1">{{ (data.xpTotal || 0).toLocaleString() }}</p>
-          <p class="mt-1 text-[9px] font-semibold uppercase tracking-widest text-wc-text-tertiary">XP total</p>
+          <p class="mt-1 text-sm font-semibold uppercase tracking-widest text-wc-text-tertiary">XP total</p>
           <!-- XP Progress bar -->
           <div class="mt-3">
             <div class="h-1.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
@@ -533,7 +533,7 @@ const weekMarkers = computed(() => {
         <!-- Days trained this week — Progress Ring -->
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Esta semana</span>
+            <span class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Esta semana</span>
           </div>
           <div class="mt-3 flex items-center gap-3">
             <svg width="60" height="60" viewBox="0 0 86 86" class="shrink-0">
@@ -552,7 +552,7 @@ const weekMarkers = computed(() => {
               </text>
             </svg>
             <div>
-              <p class="text-xs text-wc-text-tertiary">dias entrenados</p>
+              <p class="text-sm text-wc-text-tertiary">dias entrenados</p>
             </div>
           </div>
         </div>
@@ -564,7 +564,7 @@ const weekMarkers = computed(() => {
       <div v-if="data.hasActivePlan" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
         <div class="mb-4 flex items-center justify-between">
           <h2 class="font-display text-lg tracking-wide text-wc-text">Tu progreso</h2>
-          <span class="text-xs text-wc-text-tertiary">
+          <span class="text-sm text-wc-text-tertiary">
             Semana {{ Math.min(data.weeksActive || 0, data.totalWeeks || 12) }} de {{ data.totalWeeks || 12 }}
           </span>
         </div>
@@ -587,8 +587,8 @@ const weekMarkers = computed(() => {
         <!-- Week markers -->
         <div class="mt-3 flex items-center justify-between">
           <div class="text-left">
-            <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Inicio</p>
-            <p class="font-data text-xs text-wc-text">{{ data.startDate || '--' }}</p>
+            <p class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Inicio</p>
+            <p class="font-data text-sm text-wc-text">{{ data.startDate || '--' }}</p>
           </div>
           <!-- Desktop week dots -->
           <div class="hidden items-center gap-0 flex-1 mx-4 sm:flex">
@@ -596,14 +596,14 @@ const weekMarkers = computed(() => {
               <div
                 :class="marker.isActive ? 'h-1.5 w-1.5 rounded-full bg-wc-accent/60' : 'h-1 w-1 rounded-full bg-wc-border'"
               ></div>
-              <span v-if="marker.showLabel" class="mt-1 text-[9px] text-wc-text-tertiary">{{ marker.week }}</span>
+              <span v-if="marker.showLabel" class="mt-1 text-xs text-wc-text-tertiary">{{ marker.week }}</span>
             </div>
           </div>
           <div class="text-right">
-            <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">
+            <p class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">
               {{ (data.weeksActive || 0) >= (data.totalWeeks || 12) ? 'Continuo' : 'Semana 12' }}
             </p>
-            <p class="font-data text-xs text-wc-text">{{ data.progressPercent || 0 }}%</p>
+            <p class="font-data text-sm text-wc-text">{{ data.progressPercent || 0 }}%</p>
           </div>
         </div>
       </div>
@@ -624,20 +624,20 @@ const weekMarkers = computed(() => {
               {{ data.calendarStreak }} dia{{ data.calendarStreak !== 1 ? 's' : '' }} seguido{{ data.calendarStreak !== 1 ? 's' : '' }}
             </span>
           </div>
-          <span class="hidden text-xs text-wc-text-tertiary sm:inline">Ultimos 90 dias</span>
+          <span class="hidden text-sm text-wc-text-tertiary sm:inline">Ultimos 90 dias</span>
         </div>
 
         <!-- Calendar grid -->
         <div class="flex gap-0.5 overflow-x-auto pb-1">
           <!-- Day labels -->
           <div class="flex flex-col gap-0.5 pr-1 shrink-0">
-            <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">L</span>
-            <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">M</span>
-            <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">X</span>
-            <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">J</span>
-            <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">V</span>
-            <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">S</span>
-            <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">D</span>
+            <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">L</span>
+            <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">M</span>
+            <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">X</span>
+            <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">J</span>
+            <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">V</span>
+            <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">S</span>
+            <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">D</span>
           </div>
 
           <!-- Grid -->
@@ -660,8 +660,8 @@ const weekMarkers = computed(() => {
 
         <!-- Legend -->
         <div class="mt-2 flex items-center justify-between">
-          <span class="text-[10px] text-wc-text-tertiary sm:hidden">Ultimos 90 dias</span>
-          <div class="ml-auto flex items-center gap-1 text-[10px] text-wc-text-tertiary">
+          <span class="text-xs text-wc-text-tertiary sm:hidden">Ultimos 90 dias</span>
+          <div class="ml-auto flex items-center gap-1 text-xs text-wc-text-tertiary">
             <span>Menos</span>
             <div class="h-2 w-2 rounded-[2px] bg-wc-bg-secondary sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
             <div class="h-2 w-2 rounded-[2px] bg-wc-accent/40 sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
@@ -678,7 +678,7 @@ const weekMarkers = computed(() => {
       <div v-if="data.weightChartData && data.weightChartData.length > 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
         <div class="mb-4 flex items-center justify-between">
           <h3 class="text-sm font-semibold text-wc-text">Tendencia de peso</h3>
-          <span class="text-xs text-wc-text-tertiary">Ultimos 90 dias</span>
+          <span class="text-sm text-wc-text-tertiary">Ultimos 90 dias</span>
         </div>
 
         <div class="flex items-end justify-center gap-1 sm:gap-2 overflow-x-auto" style="height: 140px;">
@@ -704,13 +704,13 @@ const weekMarkers = computed(() => {
               }"
             ></div>
             <!-- Label -->
-            <span class="mt-1 w-full truncate text-center text-[10px] text-wc-text-tertiary">
+            <span class="mt-1 w-full truncate text-center text-xs text-wc-text-tertiary">
               {{ entry.date ? String(entry.date).slice(0, 5) : '' }}
             </span>
           </div>
         </div>
 
-        <div class="mt-2 flex justify-between text-xs text-wc-text-tertiary">
+        <div class="mt-2 flex justify-between text-sm text-wc-text-tertiary">
           <span>Min: {{ Math.min(...data.weightChartData.map(e => e.weight)).toFixed(1) }} kg</span>
           <span>Max: {{ Math.max(...data.weightChartData.map(e => e.weight)).toFixed(1) }} kg</span>
         </div>
@@ -722,7 +722,7 @@ const weekMarkers = computed(() => {
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
           </svg>
           <p class="mt-2 text-sm text-wc-text-tertiary">Sin datos de peso aun</p>
-          <RouterLink to="/client/metrics" class="mt-2 text-xs font-medium text-wc-accent hover:underline">Registrar peso</RouterLink>
+          <RouterLink to="/client/metrics" class="mt-2 text-sm font-medium text-wc-accent hover:underline">Registrar peso</RouterLink>
         </div>
       </div>
 
@@ -734,12 +734,12 @@ const weekMarkers = computed(() => {
           <span class="font-display text-sm tracking-wide text-wc-accent">{{ data.coachInitials || 'WC' }}</span>
         </div>
         <div class="min-w-0 flex-1">
-          <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Tu coach</p>
+          <p class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Tu coach</p>
           <p class="truncate text-sm font-semibold text-wc-text">{{ data.coachName }}</p>
         </div>
         <RouterLink
           to="/client/chat"
-          class="inline-flex items-center gap-1.5 rounded-full bg-wc-accent px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-wc-accent-hover shadow-lg shadow-wc-accent/20"
+          class="inline-flex items-center gap-1.5 rounded-full bg-wc-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-wc-accent-hover shadow-lg shadow-wc-accent/20"
         >
           <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
@@ -789,8 +789,8 @@ const weekMarkers = computed(() => {
             <p v-else class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
               Proximo check-in en {{ data.daysUntilCheckin }} dias
             </p>
-            <p v-if="data.daysUntilCheckin <= 0" class="mt-0.5 text-xs text-wc-text-tertiary">Tu check-in semanal esta listo. Envialo ahora.</p>
-            <p v-else class="mt-0.5 text-xs text-wc-text-tertiary capitalize">{{ data.nextCheckinDate || '' }}</p>
+            <p v-if="data.daysUntilCheckin <= 0" class="mt-0.5 text-sm text-wc-text-tertiary">Tu check-in semanal esta listo. Envialo ahora.</p>
+            <p v-else class="mt-0.5 text-sm text-wc-text-tertiary capitalize">{{ data.nextCheckinDate || '' }}</p>
           </div>
 
           <!-- Live countdown timer (if < 24h) -->
@@ -829,21 +829,21 @@ const weekMarkers = computed(() => {
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
           <div class="rounded-xl bg-wc-bg-secondary px-4 py-3 text-center">
             <p class="font-data text-2xl font-bold text-wc-text">{{ data.lastWeekWorkouts || 0 }}</p>
-            <p class="mt-0.5 text-[11px] text-wc-text-tertiary">Entrenamientos</p>
+            <p class="mt-0.5 text-sm text-wc-text-tertiary">Entrenamientos</p>
           </div>
           <div class="rounded-xl bg-wc-bg-secondary px-4 py-3 text-center">
             <p class="font-data text-2xl font-bold text-wc-text">{{ data.lastWeekCheckins || 0 }}</p>
-            <p class="mt-0.5 text-[11px] text-wc-text-tertiary">Check-ins</p>
+            <p class="mt-0.5 text-sm text-wc-text-tertiary">Check-ins</p>
           </div>
           <div class="col-span-2 rounded-xl bg-wc-bg-secondary px-4 py-3 text-center sm:col-span-1">
             <p class="font-data text-2xl font-bold text-wc-text">{{ data.lastWeekWeight || '--' }}</p>
-            <p class="mt-0.5 text-[11px] text-wc-text-tertiary">{{ data.lastWeekWeight ? 'kg actuales' : 'Sin registro' }}</p>
+            <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ data.lastWeekWeight ? 'kg actuales' : 'Sin registro' }}</p>
           </div>
         </div>
 
         <!-- Motivational text based on performance -->
         <div class="mt-4 rounded-xl border border-wc-accent/10 bg-wc-accent/5 px-4 py-2.5">
-          <p class="text-xs text-wc-text-tertiary">
+          <p class="text-sm text-wc-text-tertiary">
             <span :class="['font-semibold', weeklySummaryMessage.colorClass]">{{ weeklySummaryMessage.label }}</span>
             &mdash; {{ weeklySummaryMessage.desc }}
           </p>
@@ -875,7 +875,7 @@ const weekMarkers = computed(() => {
       <div v-if="data.dailyMissions && data.dailyMissions.length > 0">
         <div class="mb-3 flex items-center justify-between">
           <h2 class="text-sm font-semibold text-wc-text">Misiones diarias</h2>
-          <span class="text-xs text-wc-text-tertiary">
+          <span class="text-sm text-wc-text-tertiary">
             {{ completedMissionsCount }}/{{ data.dailyMissions.length }} completadas
           </span>
         </div>
@@ -924,7 +924,7 @@ const weekMarkers = computed(() => {
               <p :class="['text-sm font-medium leading-tight', mission.completed ? 'text-emerald-600 dark:text-emerald-400' : 'text-wc-text']">
                 {{ mission.title }}
               </p>
-              <p class="mt-0.5 text-[11px] text-wc-text-tertiary">
+              <p class="mt-0.5 text-sm text-wc-text-tertiary">
                 {{ mission.completed ? 'Completada' : 'Pendiente' }}
               </p>
             </div>
@@ -945,11 +945,11 @@ const weekMarkers = computed(() => {
         <!-- Weekly training overview (Mon-Sun with checkmarks) -->
         <div v-if="data.weekDays && data.weekDays.length > 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 lg:col-span-2">
           <h2 class="text-sm font-semibold text-wc-text">Semana de entrenamiento</h2>
-          <p class="mt-1 text-xs text-wc-text-tertiary">Semana {{ new Date().toLocaleDateString('es', { year: 'numeric' }).split('/').pop() }}</p>
+          <p class="mt-1 text-sm text-wc-text-tertiary">Semana {{ new Date().toLocaleDateString('es', { year: 'numeric' }).split('/').pop() }}</p>
 
           <div class="mt-5 flex items-center justify-between gap-2 sm:justify-start sm:gap-4">
             <div v-for="(day, idx) in data.weekDays" :key="idx" class="flex flex-col items-center gap-2">
-              <span :class="['text-[11px] font-medium text-wc-text-tertiary', day.isToday ? '!text-wc-accent !font-semibold' : '']">
+              <span :class="['text-sm font-medium text-wc-text-tertiary', day.isToday ? '!text-wc-accent !font-semibold' : '']">
                 {{ day.label }}
               </span>
               <!-- Completed day -->
@@ -966,7 +966,7 @@ const weekMarkers = computed(() => {
           </div>
 
           <!-- Legend -->
-          <div class="mt-5 flex items-center gap-4 text-xs text-wc-text-tertiary">
+          <div class="mt-5 flex items-center gap-4 text-sm text-wc-text-tertiary">
             <div class="flex items-center gap-1.5">
               <div class="h-2.5 w-2.5 rounded-full bg-emerald-500/40"></div>
               Completado
@@ -997,7 +997,7 @@ const weekMarkers = computed(() => {
               <!-- Text -->
               <div class="min-w-0 flex-1">
                 <p class="text-sm text-wc-text">{{ activity.description }}</p>
-                <p class="text-xs text-wc-text-tertiary">{{ activity.timeAgo }}</p>
+                <p class="text-sm text-wc-text-tertiary">{{ activity.timeAgo }}</p>
               </div>
             </li>
           </ul>
