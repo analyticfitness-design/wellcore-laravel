@@ -257,31 +257,50 @@ class MatchGifsFromJson extends Command
 
     private function collectPlanNames(): \Illuminate\Support\Collection
     {
-        return DB::table('assigned_plans')
+        // ── Source 1: assigned_plans (Client / Elite / Método / Esencial) ──────
+        $fromAssigned = DB::table('assigned_plans')
             ->where('active', true)
             ->where('plan_type', 'entrenamiento')
             ->pluck('content')
             ->flatMap(function ($content) {
+                return $this->extractNamesFromContent($content);
+            });
+
+        // ── Source 2: rise_programs (RISE clients) ────────────────────────────
+        $fromRise = DB::table('rise_programs')
+            ->whereNotNull('personalized_program')
+            ->pluck('personalized_program')
+            ->flatMap(function ($content) {
                 $data = is_string($content) ? json_decode($content, true) : $content;
                 if (! is_array($data)) return [];
+                $trainingPlan = $data['plan_entrenamiento'] ?? $data['training_plan'] ?? $data;
+                return $this->extractNamesFromContent(is_array($trainingPlan) ? json_encode($trainingPlan) : $trainingPlan);
+            });
 
-                $dias = is_array($data['dias'] ?? null) ? $data['dias'] : [];
-                $semanas = is_array($data['semanas'] ?? null) ? $data['semanas'] : [];
-                foreach ($semanas as $s) {
-                    $semDias = is_array($s['dias'] ?? null) ? $s['dias'] : [];
-                    $dias = array_merge($dias, $semDias);
-                }
-
-                return collect($dias)->flatMap(fn ($d) =>
-                    is_array($d)
-                        ? collect($d['ejercicios'] ?? [])->map(fn ($e) =>
-                            is_array($e) ? ($e['nombre'] ?? $e['name'] ?? null) : $e
-                          )
-                        : collect()
-                );
-            })
+        return $fromAssigned->merge($fromRise)
             ->filter(fn ($n) => is_string($n) && trim($n) !== '')
             ->unique()
             ->values();
+    }
+
+    private function extractNamesFromContent(mixed $content): array
+    {
+        $data = is_string($content) ? json_decode($content, true) : $content;
+        if (! is_array($data)) return [];
+
+        $dias = is_array($data['dias'] ?? null) ? $data['dias'] : [];
+        $semanas = is_array($data['semanas'] ?? null) ? $data['semanas'] : [];
+        foreach ($semanas as $s) {
+            $semDias = is_array($s['dias'] ?? null) ? $s['dias'] : [];
+            $dias = array_merge($dias, $semDias);
+        }
+
+        return collect($dias)->flatMap(fn ($d) =>
+            is_array($d)
+                ? collect($d['ejercicios'] ?? [])->map(fn ($e) =>
+                    is_array($e) ? ($e['nombre'] ?? $e['name'] ?? null) : $e
+                  )
+                : collect()
+        )->all();
     }
 }
