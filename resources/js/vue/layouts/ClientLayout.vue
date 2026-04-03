@@ -170,11 +170,9 @@ const bottomNav = [
       class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col border-r border-wc-border bg-wc-bg-secondary transition-transform duration-300 ease-in-out lg:translate-x-0"
     >
       <!-- Logo -->
-      <div class="flex h-16 items-center gap-3 border-b border-wc-border px-5">
-        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-wc-accent">
-          <span class="font-display text-base leading-none text-white">W</span>
-        </div>
-        <span class="font-display text-xl tracking-wider text-wc-text">WELLCORE</span>
+      <div class="flex h-20 items-center justify-center border-b border-wc-border px-4">
+        <img src="/images/logo-client-dark.png" alt="WellCore Fitness" class="hidden h-16 w-auto object-contain dark:block" />
+        <img src="/images/logo-client-light.png" alt="WellCore Fitness" class="block h-16 w-auto object-contain dark:hidden" />
       </div>
 
       <!-- Navigation -->
