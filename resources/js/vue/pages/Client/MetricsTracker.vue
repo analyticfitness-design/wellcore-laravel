@@ -408,25 +408,25 @@ onBeforeUnmount(() => {
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
           <!-- Current Weight -->
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Peso actual</p>
-            <p class="mt-1 font-data text-3xl font-semibold text-wc-text">
+            <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Peso actual</p>
+            <p class="mt-1 font-display text-3xl text-wc-accent">
               {{ currentWeight ? Number(currentWeight).toFixed(1) : '--' }}
-              <span class="text-base font-normal text-wc-text-tertiary">kg</span>
+              <span class="text-sm text-wc-text-secondary">kg</span>
             </p>
           </div>
 
           <!-- Monthly Change -->
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Cambio mensual</p>
+            <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Cambio mensual</p>
             <p :class="[
-              'mt-1 font-data text-3xl font-semibold',
+              'mt-1 font-display text-3xl',
               weightChange !== null
                 ? (weightChange > 0 ? 'text-amber-500' : weightChange < 0 ? 'text-emerald-500' : 'text-wc-text')
                 : 'text-wc-text'
             ]">
               <template v-if="weightChange !== null">
                 {{ weightChange > 0 ? '+' : '' }}{{ Number(weightChange).toFixed(1) }}
-                <span class="text-base font-normal text-wc-text-tertiary">kg</span>
+                <span class="text-sm text-wc-text-secondary">kg</span>
               </template>
               <template v-else>--</template>
             </p>
@@ -434,8 +434,8 @@ onBeforeUnmount(() => {
 
           <!-- Goal Placeholder -->
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Objetivo</p>
-            <p class="mt-1 font-data text-3xl font-semibold text-wc-text-tertiary">
+            <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Objetivo</p>
+            <p class="mt-1 font-display text-3xl text-wc-text-tertiary">
               -- <span class="text-base font-normal">kg</span>
             </p>
             <p class="mt-1 text-sm text-wc-text-tertiary">Consulta con tu coach</p>
@@ -444,7 +444,7 @@ onBeforeUnmount(() => {
 
         <!-- Log Form -->
         <form @submit.prevent="saveMetric" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 sm:p-6">
-          <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-wc-text-secondary">Nuevo registro</h2>
+          <h2 class="mb-4 text-lg font-semibold text-wc-text">Nuevo registro</h2>
 
           <!-- Save error -->
           <div v-if="saveError" class="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
@@ -522,7 +522,7 @@ onBeforeUnmount(() => {
                 </svg>
               </div>
               <div>
-                <h3 class="text-sm font-semibold uppercase tracking-wider text-wc-text-secondary">Mediciones corporales</h3>
+                <h3 class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Mediciones corporales</h3>
                 <p class="text-sm text-wc-text-tertiary">Mide con cinta metrica flexible, en la manana</p>
               </div>
             </div>
@@ -603,7 +603,7 @@ onBeforeUnmount(() => {
 
         <!-- Weight CSS Bar Chart (mini) -->
         <div v-if="chartData.length > 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-          <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-wc-text-secondary">Tendencia de peso</h2>
+          <h2 class="mb-4 text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Tendencia de peso</h2>
 
           <div class="flex items-end gap-1 sm:gap-2" style="height: 120px;">
             <div
@@ -634,7 +634,7 @@ onBeforeUnmount(() => {
           <!-- 1. Weight Trend (Line, 90 days) -->
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
             <h3 class="font-display text-lg tracking-wide text-wc-text">Peso Corporal</h3>
-            <p class="text-sm text-wc-text-secondary">Ultimos 90 dias</p>
+            <p class="text-sm text-wc-text-tertiary">Ultimos 90 dias</p>
             <div class="relative mt-4" style="height: 180px">
               <canvas ref="weightChartRef"></canvas>
               <p v-if="!hasWeight" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
@@ -646,7 +646,7 @@ onBeforeUnmount(() => {
           <!-- 2. Weekly Check-ins (Bar, 12 weeks) -->
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
             <h3 class="font-display text-lg tracking-wide text-wc-text">Check-ins Semanales</h3>
-            <p class="text-sm text-wc-text-secondary">Ultimas 12 semanas</p>
+            <p class="text-sm text-wc-text-tertiary">Ultimas 12 semanas</p>
             <div class="relative mt-4" style="height: 180px">
               <canvas ref="checkinChartRef"></canvas>
               <p v-if="!hasCheckins" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
@@ -658,7 +658,7 @@ onBeforeUnmount(() => {
           <!-- 3. Body Composition (Doughnut) -->
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
             <h3 class="font-display text-lg tracking-wide text-wc-text">Composicion Corporal</h3>
-            <p class="text-sm text-wc-text-secondary">Ultima medicion</p>
+            <p class="text-sm text-wc-text-tertiary">Ultima medicion</p>
             <div class="relative mx-auto mt-4 flex items-center justify-center" style="height: 180px; max-width: 260px">
               <canvas ref="compositionChartRef"></canvas>
               <p v-if="!hasComposition" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
@@ -670,7 +670,7 @@ onBeforeUnmount(() => {
           <!-- 4. Training Volume (Line, 12 weeks) -->
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
             <h3 class="font-display text-lg tracking-wide text-wc-text">Volumen de Entrenamiento</h3>
-            <p class="text-sm text-wc-text-secondary">Sesiones por semana</p>
+            <p class="text-sm text-wc-text-tertiary">Sesiones por semana</p>
             <div class="relative mt-4" style="height: 180px">
               <canvas ref="trainingChartRef"></canvas>
               <p v-if="!hasTraining" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
@@ -683,18 +683,18 @@ onBeforeUnmount(() => {
         <!-- History Table -->
         <div v-if="history.length > 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary">
           <div class="border-b border-wc-border px-5 py-3">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-wc-text-secondary">Historial</h2>
+            <h2 class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Historial</h2>
           </div>
 
           <div class="overflow-x-auto">
             <table class="w-full text-sm">
               <thead>
-                <tr class="border-b border-wc-border text-left text-sm uppercase tracking-wider text-wc-text-tertiary">
-                  <th class="px-3 py-3 font-medium sm:px-5">Fecha</th>
-                  <th class="px-3 py-3 font-medium sm:px-5">Peso</th>
-                  <th class="px-3 py-3 font-medium sm:px-5">Musc%</th>
-                  <th class="px-3 py-3 font-medium sm:px-5">Grasa%</th>
-                  <th class="hidden px-3 py-3 font-medium sm:table-cell sm:px-5">Notas</th>
+                <tr class="border-b border-wc-border text-left">
+                  <th class="px-3 py-3 text-xs font-semibold tracking-widest uppercase text-wc-text-secondary sm:px-5">Fecha</th>
+                  <th class="px-3 py-3 text-xs font-semibold tracking-widest uppercase text-wc-text-secondary sm:px-5">Peso</th>
+                  <th class="px-3 py-3 text-xs font-semibold tracking-widest uppercase text-wc-text-secondary sm:px-5">Musc%</th>
+                  <th class="px-3 py-3 text-xs font-semibold tracking-widest uppercase text-wc-text-secondary sm:px-5">Grasa%</th>
+                  <th class="hidden px-3 py-3 text-xs font-semibold tracking-widest uppercase text-wc-text-secondary sm:table-cell sm:px-5">Notas</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-wc-border">
@@ -703,19 +703,19 @@ onBeforeUnmount(() => {
                   :key="idx"
                   class="hover:bg-wc-bg-secondary/50"
                 >
-                  <td class="whitespace-nowrap px-3 py-3 font-data text-wc-text sm:px-5">
+                  <td class="whitespace-nowrap px-3 py-3 text-sm text-wc-text-tertiary sm:px-5">
                     {{ formatDate(entry.date || entry.log_date) }}
                   </td>
-                  <td class="whitespace-nowrap px-3 py-3 font-data font-semibold text-wc-text sm:px-5">
+                  <td class="whitespace-nowrap px-3 py-3 font-data text-sm text-wc-text-secondary sm:px-5">
                     {{ entry.peso ? Number(entry.peso).toFixed(1) + ' kg' : '--' }}
                   </td>
-                  <td class="whitespace-nowrap px-3 py-3 font-data text-wc-text sm:px-5">
+                  <td class="whitespace-nowrap px-3 py-3 font-data text-sm text-wc-text-secondary sm:px-5">
                     {{ entry.porcentaje_musculo ? Number(entry.porcentaje_musculo).toFixed(1) + '%' : '--' }}
                   </td>
-                  <td class="whitespace-nowrap px-3 py-3 font-data text-wc-text sm:px-5">
+                  <td class="whitespace-nowrap px-3 py-3 font-data text-sm text-wc-text-secondary sm:px-5">
                     {{ entry.porcentaje_grasa ? Number(entry.porcentaje_grasa).toFixed(1) + '%' : '--' }}
                   </td>
-                  <td class="hidden max-w-[200px] truncate px-3 py-3 text-wc-text-secondary sm:table-cell sm:px-5"
+                  <td class="hidden max-w-[200px] truncate px-3 py-3 text-sm text-wc-text-tertiary sm:table-cell sm:px-5"
                       :title="entry.notas || ''">
                     {{ entry.notas || '--' }}
                   </td>

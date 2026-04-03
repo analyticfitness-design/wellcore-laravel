@@ -287,7 +287,7 @@ onMounted(() => {
         <form @submit.prevent="updateProfile" class="space-y-4">
           <!-- Name -->
           <div>
-            <label for="settings-name" class="mb-1 block text-sm font-medium text-wc-text-secondary">Nombre completo</label>
+            <label for="settings-name" class="mb-1 block text-sm font-medium text-wc-text">Nombre completo</label>
             <input
               v-model="profileForm.name"
               type="text"
@@ -300,7 +300,7 @@ onMounted(() => {
 
           <!-- Email -->
           <div>
-            <label for="settings-email" class="mb-1 block text-sm font-medium text-wc-text-secondary">Correo electronico</label>
+            <label for="settings-email" class="mb-1 block text-sm font-medium text-wc-text">Correo electronico</label>
             <input
               v-model="profileForm.email"
               type="email"
@@ -313,7 +313,7 @@ onMounted(() => {
 
           <!-- Phone -->
           <div>
-            <label for="settings-phone" class="mb-1 block text-sm font-medium text-wc-text-secondary">Telefono</label>
+            <label for="settings-phone" class="mb-1 block text-sm font-medium text-wc-text">Telefono</label>
             <input
               v-model="profileForm.phone"
               type="tel"
@@ -582,7 +582,7 @@ onMounted(() => {
         <form @submit.prevent="changePassword" class="space-y-4">
           <!-- Current Password -->
           <div>
-            <label for="current-password" class="mb-1 block text-sm font-medium text-wc-text-secondary">Contrasena actual</label>
+            <label for="current-password" class="mb-1 block text-sm font-medium text-wc-text">Contrasena actual</label>
             <input
               v-model="passwordForm.current_password"
               type="password"
@@ -596,7 +596,7 @@ onMounted(() => {
 
           <!-- New Password -->
           <div>
-            <label for="new-password" class="mb-1 block text-sm font-medium text-wc-text-secondary">Nueva contrasena</label>
+            <label for="new-password" class="mb-1 block text-sm font-medium text-wc-text">Nueva contrasena</label>
             <input
               v-model="passwordForm.password"
               type="password"
@@ -610,7 +610,7 @@ onMounted(() => {
 
           <!-- Confirm Password -->
           <div>
-            <label for="confirm-password" class="mb-1 block text-sm font-medium text-wc-text-secondary">Confirmar contrasena</label>
+            <label for="confirm-password" class="mb-1 block text-sm font-medium text-wc-text">Confirmar contrasena</label>
             <input
               v-model="passwordForm.password_confirmation"
               type="password"

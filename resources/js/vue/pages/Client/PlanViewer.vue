@@ -679,7 +679,7 @@ onBeforeUnmount(() => {
                       <span class="font-data text-4xl font-bold tabular-nums text-wc-accent">{{ currentWeek }}</span>
                       <span class="text-sm text-wc-text-tertiary">/ {{ totalWeeks }}</span>
                     </div>
-                    <p class="text-sm uppercase tracking-wider text-wc-text-tertiary">Semana actual</p>
+                    <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Semana actual</p>
                   </div>
                 </div>
 
@@ -705,8 +705,8 @@ onBeforeUnmount(() => {
                   </svg>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <p class="mb-1.5 text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Notas de tu coach</p>
-                  <p class="text-sm leading-relaxed text-wc-text-secondary">{{ trainingPlan.notas_coach }}</p>
+                  <p class="mb-1.5 text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Notas de tu coach</p>
+                  <p class="text-base leading-relaxed text-wc-text-secondary">{{ trainingPlan.notas_coach }}</p>
                 </div>
               </div>
             </div>
@@ -745,14 +745,14 @@ onBeforeUnmount(() => {
                     </div>
                     <div>
                       <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-sm font-semibold text-wc-text">Semana {{ semana.numero || sIdx + 1 }}</span>
+                        <span class="text-lg font-semibold text-wc-text">Semana {{ semana.numero || sIdx + 1 }}</span>
                         <span
                           v-if="(semana.numero || sIdx + 1) === currentWeek"
-                          class="rounded-full bg-wc-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white"
+                          class="rounded-full bg-wc-accent px-2 py-0.5 text-xs font-semibold tracking-widest uppercase text-white"
                         >Semana actual</span>
                         <span v-if="semana.fase" class="rounded-full bg-wc-bg-secondary px-2 py-0.5 text-[10px] font-medium text-wc-text-tertiary">{{ semana.fase }}</span>
                       </div>
-                      <p v-if="(semana.dias || []).length > 0" class="mt-0.5 text-sm text-wc-text-tertiary">
+                      <p v-if="(semana.dias || []).length > 0" class="mt-0.5 text-sm text-wc-text-secondary">
                         {{ (semana.dias || []).length }} dia{{ (semana.dias || []).length !== 1 ? 's' : '' }} de entrenamiento
                       </p>
                     </div>
@@ -779,8 +779,8 @@ onBeforeUnmount(() => {
                             <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 0a1.5 1.5 0 0 1-1.5-1.5v-3a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v3m-4.5 0a1.5 1.5 0 0 0-1.5 1.5v3a1.5 1.5 0 0 0 1.5 1.5h1.5a1.5 1.5 0 0 0 1.5-1.5v-3m12-4.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5m3 0a1.5 1.5 0 0 1-1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5a1.5 1.5 0 0 1-1.5-1.5v-3m0-4.5a1.5 1.5 0 0 0-1.5-1.5h-1.5a1.5 1.5 0 0 0-1.5 1.5v3" /></svg>
                           </div>
                           <div class="min-w-0">
-                            <p class="truncate text-sm font-semibold text-wc-text">{{ dia.nombre || dia.name || dia.dia || ('Dia ' + (dIdx + 1)) }}</p>
-                            <p v-if="(dia.ejercicios || []).length > 0" class="text-sm text-wc-text-tertiary">
+                            <p class="truncate text-base font-semibold text-wc-text">{{ dia.nombre || dia.name || dia.dia || ('Dia ' + (dIdx + 1)) }}</p>
+                            <p v-if="(dia.ejercicios || []).length > 0" class="text-sm text-wc-text-secondary">
                               {{ (dia.ejercicios || []).length }} ejercicio{{ (dia.ejercicios || []).length !== 1 ? 's' : '' }}
                             </p>
                           </div>
@@ -807,7 +807,7 @@ onBeforeUnmount(() => {
                           <svg class="h-3.5 w-3.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" /></svg>
                         </div>
                         <div>
-                          <p class="text-sm font-bold uppercase tracking-wider text-amber-400">Calentamiento</p>
+                          <p class="text-xs font-semibold tracking-widest uppercase text-amber-400">Calentamiento</p>
                           <p class="mt-0.5 text-sm leading-relaxed text-wc-text-secondary">{{ dia.calentamiento || dia.warmup }}</p>
                         </div>
                       </div>
@@ -835,11 +835,11 @@ onBeforeUnmount(() => {
                             <span v-else class="flex h-6 w-6 items-center justify-center rounded-md bg-wc-accent/10 font-sans text-[11px] font-bold text-wc-accent">{{ eIdx + 1 }}</span>
                           </div>
                           <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-wc-text">{{ typeof ejercicio === 'string' ? ejercicio : (ejercicio.nombre || ejercicio.name || ejercicio.ejercicio || 'Ejercicio') }}</p>
+                            <p class="text-base font-medium text-wc-text">{{ typeof ejercicio === 'string' ? ejercicio : (ejercicio.nombre || ejercicio.name || ejercicio.ejercicio || 'Ejercicio') }}</p>
                             <div v-if="typeof ejercicio === 'object'" class="mt-1.5 flex flex-wrap gap-1.5">
                               <span
                                 v-if="(ejercicio.series || ejercicio.sets) || (ejercicio.repeticiones || ejercicio.reps)"
-                                class="rounded-full bg-wc-bg-tertiary px-2 py-0.5 text-sm font-semibold text-wc-text-secondary"
+                                class="rounded-full bg-wc-bg-tertiary px-2 py-0.5 text-sm font-medium text-wc-text-secondary"
                               >
                                 <template v-if="(ejercicio.series || ejercicio.sets) && (ejercicio.repeticiones || ejercicio.reps)">
                                   {{ ejercicio.series || ejercicio.sets }} x {{ ejercicio.repeticiones || ejercicio.reps }}
@@ -860,7 +860,7 @@ onBeforeUnmount(() => {
                                 :class="rirClass(ejercicio.rir)"
                               >RIR{{ ejercicio.rir }}</span>
                             </div>
-                            <p v-if="typeof ejercicio === 'object' && (ejercicio.notas || ejercicio.notes)" class="mt-1.5 text-sm italic leading-relaxed text-wc-text-tertiary">{{ ejercicio.notas || ejercicio.notes }}</p>
+                            <p v-if="typeof ejercicio === 'object' && (ejercicio.notas || ejercicio.notes)" class="mt-1.5 text-base leading-relaxed text-wc-text-secondary">{{ ejercicio.notas || ejercicio.notes }}</p>
                           </div>
                         </div>
                       </div>
@@ -871,7 +871,7 @@ onBeforeUnmount(() => {
                           <svg class="h-3.5 w-3.5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" /></svg>
                         </div>
                         <div>
-                          <p class="text-sm font-bold uppercase tracking-wider text-sky-400">Vuelta a la calma</p>
+                          <p class="text-xs font-semibold tracking-widest uppercase text-sky-400">Vuelta a la calma</p>
                           <p class="mt-0.5 text-sm leading-relaxed text-wc-text-secondary">{{ dia.vuelta_calma || dia.cooldown }}</p>
                         </div>
                       </div>
@@ -1015,7 +1015,7 @@ onBeforeUnmount(() => {
                       </svg>
                     </div>
                     <div>
-                      <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary">Calorías diarias</p>
+                      <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Calorías diarias</p>
                       <p class="font-data text-3xl font-bold text-wc-text leading-none mt-0.5">
                         {{ (nutritionPlan.objetivo_cal || nutritionPlan.calorias_diarias || nutritionPlan.calorias).toLocaleString() }}
                         <span class="text-sm font-normal text-wc-text-tertiary ml-1">kcal</span>
@@ -1033,14 +1033,14 @@ onBeforeUnmount(() => {
               <!-- Macros visuales con barras de progreso -->
               <div v-if="macroP || macroC || macroF">
                 <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-                  <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary mb-4">Distribución de macros</p>
+                  <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary mb-4">Distribución de macros</p>
                   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
                     <!-- Proteína -->
                     <div class="space-y-2">
                       <div class="flex items-end justify-between">
                         <div>
-                          <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary">Proteína</p>
+                          <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Proteína</p>
                           <p class="font-data text-2xl font-bold text-wc-text leading-none">
                             {{ macroP }}<span class="text-xs font-normal text-wc-text-tertiary">g</span>
                           </p>
@@ -1060,7 +1060,7 @@ onBeforeUnmount(() => {
                     <div class="space-y-2">
                       <div class="flex items-end justify-between">
                         <div>
-                          <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary">Carbohidratos</p>
+                          <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Carbohidratos</p>
                           <p class="font-data text-2xl font-bold text-wc-text leading-none">
                             {{ macroC }}<span class="text-xs font-normal text-wc-text-tertiary">g</span>
                           </p>
@@ -1080,7 +1080,7 @@ onBeforeUnmount(() => {
                     <div class="space-y-2">
                       <div class="flex items-end justify-between">
                         <div>
-                          <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary">Grasas</p>
+                          <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Grasas</p>
                           <p class="font-data text-2xl font-bold text-wc-text leading-none">
                             {{ macroF }}<span class="text-xs font-normal text-wc-text-tertiary">g</span>
                           </p>
@@ -1109,15 +1109,15 @@ onBeforeUnmount(() => {
                     </svg>
                   </div>
                   <div class="min-w-0 flex-1">
-                    <p class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary mb-1.5">Notas de tu coach</p>
-                    <p class="text-sm leading-relaxed text-wc-text-secondary">{{ nutritionPlan.notas_coach }}</p>
+                    <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary mb-1.5">Notas de tu coach</p>
+                    <p class="text-base leading-relaxed text-wc-text-secondary">{{ nutritionPlan.notas_coach }}</p>
                   </div>
                 </div>
               </div>
 
               <!-- Tips nutricionales -->
               <div v-if="nutritionPlan.tips && nutritionPlan.tips.length > 0" class="rounded-xl border border-emerald-500/20 bg-emerald-500/[0.04] p-5">
-                <p class="text-sm font-bold uppercase tracking-widest text-emerald-400 mb-3">Consejos de tu coach</p>
+                <p class="text-xs font-semibold tracking-widest uppercase text-emerald-400 mb-3">Consejos de tu coach</p>
                 <ul class="space-y-2.5">
                   <li v-for="(tip, tIdx) in nutritionPlan.tips" :key="tIdx" class="flex items-start gap-2.5">
                     <svg class="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
@@ -1130,7 +1130,7 @@ onBeforeUnmount(() => {
 
               <!-- Comidas (formato completo: comidas[]) — collapsible meal cards -->
               <div v-if="nutritionPlan.comidas && nutritionPlan.comidas.length > 0" class="space-y-3">
-                <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary px-0.5">Plan de comidas</p>
+                <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary px-0.5">Plan de comidas</p>
                 <div
                   v-for="(meal, mIdx) in nutritionPlan.comidas"
                   :key="mIdx"
@@ -1270,7 +1270,7 @@ onBeforeUnmount(() => {
 
               <!-- Comidas sugeridas (formato RISE: comidas_sugeridas[]) — also collapsible -->
               <div v-else-if="nutritionPlan.comidas_sugeridas && nutritionPlan.comidas_sugeridas.length > 0" class="space-y-3">
-                <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary px-0.5">Comidas sugeridas</p>
+                <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary px-0.5">Comidas sugeridas</p>
                 <div
                   v-for="(meal, mIdx) in nutritionPlan.comidas_sugeridas"
                   :key="mIdx"
@@ -1342,7 +1342,7 @@ onBeforeUnmount(() => {
                     <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
                   </div>
                   <div>
-                    <p class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Protocolo</p>
+                    <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Protocolo</p>
                     <p class="mt-0.5 text-sm font-medium text-wc-text">{{ supplementPlan.descripcion_protocolo || supplementPlan.descripcion }}</p>
                     <p v-if="supplementPlan.perfil_cliente" class="mt-1 text-sm text-wc-text-tertiary">{{ supplementPlan.perfil_cliente }}</p>
                   </div>
@@ -1508,7 +1508,7 @@ onBeforeUnmount(() => {
               <div class="rounded-2xl border border-wc-border bg-wc-bg-tertiary p-5">
                 <div class="flex items-start justify-between gap-4">
                   <div>
-                    <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary">Protocolo Activo</p>
+                    <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Protocolo Activo</p>
                     <h2 class="mt-1 font-display text-2xl tracking-wide text-wc-text">{{ (cicloPlan.name || cicloPlan.nombre || 'Protocolo Hormonal').toUpperCase() }}</h2>
                     <p v-if="cicloPlan.duration || cicloPlan.duracion" class="mt-1 text-sm text-wc-text-secondary">Duracion: <span class="font-semibold text-wc-text">{{ cicloPlan.duration || cicloPlan.duracion }}</span></p>
                     <p v-if="cicloPlan.descripcion_protocolo || cicloPlan.descripcion" class="mt-2 text-sm leading-relaxed text-wc-text-tertiary">{{ cicloPlan.descripcion_protocolo || cicloPlan.descripcion }}</p>
@@ -1716,7 +1716,7 @@ onBeforeUnmount(() => {
                       </div>
                     </div>
                     <div class="mt-4 sm:mt-0 text-center sm:text-left flex-1">
-                      <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary mb-1">Fase actual</p>
+                      <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary mb-1">Fase actual</p>
                       <h2 class="font-display text-4xl tracking-wide leading-none" :class="cicloPhaseData.text">{{ cicloPhaseData.name }}</h2>
                       <p class="mt-2 font-data text-sm text-wc-text-secondary">Dia <span class="font-bold text-wc-text">{{ cicloCurrentDay }}</span> de {{ cicloCycleLength }}</p>
                       <p class="mt-1 text-sm text-wc-text-tertiary">Proximo ciclo en <span class="font-semibold text-wc-text-secondary">{{ cicloDaysUntilNext }}</span> dias</p>

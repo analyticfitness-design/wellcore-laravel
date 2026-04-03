@@ -180,7 +180,7 @@ onMounted(() => {
               </svg>
             </div>
             <div>
-              <h2 class="font-display text-xl tracking-wide text-wc-text">DATOS PERSONALES</h2>
+              <h2 class="text-lg font-semibold text-wc-text">DATOS PERSONALES</h2>
               <p class="text-sm text-wc-text-tertiary">Informacion basica de tu cuenta</p>
             </div>
           </div>
@@ -188,7 +188,7 @@ onMounted(() => {
           <div class="space-y-4">
             <!-- Name -->
             <div>
-              <label for="name" class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Nombre completo</label>
+              <label for="name" class="mb-1.5 block text-sm font-medium text-wc-text">Nombre completo</label>
               <input
                 v-model="form.name"
                 type="text"
@@ -201,7 +201,7 @@ onMounted(() => {
 
             <!-- Email -->
             <div>
-              <label for="email" class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Email</label>
+              <label for="email" class="mb-1.5 block text-sm font-medium text-wc-text">Email</label>
               <input
                 v-model="form.email"
                 type="email"
@@ -214,7 +214,7 @@ onMounted(() => {
 
             <!-- City -->
             <div>
-              <label for="city" class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Ciudad</label>
+              <label for="city" class="mb-1.5 block text-sm font-medium text-wc-text">Ciudad</label>
               <input
                 v-model="form.city"
                 type="text"
@@ -227,7 +227,7 @@ onMounted(() => {
 
             <!-- Birth Date -->
             <div>
-              <label for="birthDate" class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Fecha de nacimiento</label>
+              <label for="birthDate" class="mb-1.5 block text-sm font-medium text-wc-text">Fecha de nacimiento</label>
               <input
                 v-model="form.birthDate"
                 type="date"
@@ -239,7 +239,7 @@ onMounted(() => {
 
             <!-- WhatsApp -->
             <div>
-              <label for="whatsapp" class="mb-1.5 block text-sm font-medium text-wc-text-secondary">WhatsApp</label>
+              <label for="whatsapp" class="mb-1.5 block text-sm font-medium text-wc-text">WhatsApp</label>
               <input
                 v-model="form.whatsapp"
                 type="text"
@@ -252,7 +252,7 @@ onMounted(() => {
 
             <!-- Bio -->
             <div>
-              <label for="bio" class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Bio</label>
+              <label for="bio" class="mb-1.5 block text-sm font-medium text-wc-text">Bio</label>
               <textarea
                 v-model="form.bio"
                 id="bio"
@@ -274,7 +274,7 @@ onMounted(() => {
               </svg>
             </div>
             <div>
-              <h2 class="font-display text-xl tracking-wide text-wc-text">DATOS FITNESS</h2>
+              <h2 class="text-lg font-semibold text-wc-text">DATOS FITNESS</h2>
               <p class="text-sm text-wc-text-tertiary">Tu informacion de entrenamiento</p>
             </div>
           </div>
@@ -283,7 +283,7 @@ onMounted(() => {
             <!-- Peso + Altura (inline) -->
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label for="peso" class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Peso (kg)</label>
+                <label for="peso" class="mb-1.5 block text-sm font-medium text-wc-text">Peso (kg)</label>
                 <input
                   v-model="form.peso"
                   type="number"
@@ -295,7 +295,7 @@ onMounted(() => {
                 <p v-if="formErrors.peso" class="mt-1 text-xs text-red-500">{{ formErrors.peso[0] }}</p>
               </div>
               <div>
-                <label for="altura" class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Altura (cm)</label>
+                <label for="altura" class="mb-1.5 block text-sm font-medium text-wc-text">Altura (cm)</label>
                 <input
                   v-model="form.altura"
                   type="number"
@@ -310,7 +310,7 @@ onMounted(() => {
 
             <!-- Objetivo -->
             <div>
-              <label for="objetivo" class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Objetivo</label>
+              <label for="objetivo" class="mb-1.5 block text-sm font-medium text-wc-text">Objetivo</label>
               <input
                 v-model="form.objetivo"
                 type="text"
@@ -323,7 +323,7 @@ onMounted(() => {
 
             <!-- Nivel -->
             <div>
-              <label for="nivel" class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Nivel</label>
+              <label for="nivel" class="mb-1.5 block text-sm font-medium text-wc-text">Nivel</label>
               <select
                 v-model="form.nivel"
                 id="nivel"
@@ -339,7 +339,7 @@ onMounted(() => {
 
             <!-- Lugar de Entreno -->
             <div>
-              <label for="lugarEntreno" class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Lugar de entrenamiento</label>
+              <label for="lugarEntreno" class="mb-1.5 block text-sm font-medium text-wc-text">Lugar de entrenamiento</label>
               <select
                 v-model="form.lugarEntreno"
                 id="lugarEntreno"
@@ -380,7 +380,7 @@ onMounted(() => {
 
             <!-- Restricciones -->
             <div>
-              <label for="restricciones" class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Restricciones o lesiones</label>
+              <label for="restricciones" class="mb-1.5 block text-sm font-medium text-wc-text">Restricciones o lesiones</label>
               <textarea
                 v-model="form.restricciones"
                 id="restricciones"

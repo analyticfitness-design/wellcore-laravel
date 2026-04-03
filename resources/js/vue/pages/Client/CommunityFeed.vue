@@ -373,13 +373,13 @@ function getReactionCount(post, type) {
           </div>
           <div class="hidden items-center gap-4 sm:flex">
             <div class="text-center">
-              <p class="font-display text-2xl text-wc-accent">{{ communityStats.total_posts }}</p>
-              <p class="text-xs uppercase tracking-wider text-wc-text-tertiary">Posts</p>
+              <p class="font-display text-3xl text-wc-accent">{{ communityStats.total_posts }}</p>
+              <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Posts</p>
             </div>
             <div class="h-8 w-px bg-wc-border"></div>
             <div class="text-center">
-              <p class="font-display text-2xl text-wc-accent">{{ communityStats.active_members }}</p>
-              <p class="text-xs uppercase tracking-wider text-wc-text-tertiary">Miembros</p>
+              <p class="font-display text-3xl text-wc-accent">{{ communityStats.active_members }}</p>
+              <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Miembros</p>
             </div>
           </div>
         </div>

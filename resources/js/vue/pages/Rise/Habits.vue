@@ -146,8 +146,8 @@ onMounted(() => {
               </svg>
             </div>
             <div>
-              <p class="font-display text-2xl text-wc-accent" style="line-height:1">{{ data?.currentStreak ?? 0 }}</p>
-              <p class="text-sm uppercase tracking-wider text-wc-text-tertiary">Racha</p>
+              <p class="font-display text-3xl text-wc-accent" style="line-height:1">{{ data?.currentStreak ?? 0 }}</p>
+              <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Racha</p>
             </div>
           </div>
         </div>
@@ -160,8 +160,8 @@ onMounted(() => {
               </svg>
             </div>
             <div>
-              <p class="font-display text-2xl text-wc-accent" style="line-height:1">{{ data?.completedDays ?? 0 }}</p>
-              <p class="text-sm uppercase tracking-wider text-wc-text-tertiary">Dias</p>
+              <p class="font-display text-3xl text-wc-accent" style="line-height:1">{{ data?.completedDays ?? 0 }}</p>
+              <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Dias</p>
             </div>
           </div>
         </div>
@@ -174,8 +174,8 @@ onMounted(() => {
               </svg>
             </div>
             <div>
-              <p class="font-display text-2xl text-wc-accent" style="line-height:1">{{ data?.avgWater ?? '--' }}<span class="text-xs font-normal text-wc-text-tertiary">L</span></p>
-              <p class="text-sm uppercase tracking-wider text-wc-text-tertiary">Agua prom.</p>
+              <p class="font-display text-3xl text-wc-accent" style="line-height:1">{{ data?.avgWater ?? '--' }}<span class="text-xs font-normal text-wc-text-tertiary">L</span></p>
+              <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Agua prom.</p>
             </div>
           </div>
         </div>
@@ -188,8 +188,8 @@ onMounted(() => {
               </svg>
             </div>
             <div>
-              <p class="font-display text-2xl text-wc-accent" style="line-height:1">{{ data?.avgSleep ?? '--' }}<span class="text-xs font-normal text-wc-text-tertiary">h</span></p>
-              <p class="text-sm uppercase tracking-wider text-wc-text-tertiary">Sueno prom.</p>
+              <p class="font-display text-3xl text-wc-accent" style="line-height:1">{{ data?.avgSleep ?? '--' }}<span class="text-xs font-normal text-wc-text-tertiary">h</span></p>
+              <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Sueno prom.</p>
             </div>
           </div>
         </div>
@@ -204,7 +204,7 @@ onMounted(() => {
             :key="day.label"
             :class="['flex flex-col items-center gap-1.5 rounded-lg p-2', day.isToday ? 'bg-wc-accent/5 ring-1 ring-wc-accent/20' : '']"
           >
-            <span :class="['text-sm font-medium', day.isToday ? 'text-wc-accent font-semibold' : 'text-wc-text-tertiary']">{{ day.label }}</span>
+            <span :class="['text-sm font-medium', day.isToday ? 'text-wc-accent font-semibold' : 'text-wc-text-secondary']">{{ day.label }}</span>
             <div v-if="day.hasEntry" :class="['flex h-9 w-9 items-center justify-center rounded-full', day.habitCount >= (day.total * 0.8) ? 'bg-emerald-500/15 text-emerald-500' : 'bg-wc-accent/15 text-wc-accent']">
               <span class="text-xs font-bold">{{ day.habitCount }}</span>
             </div>
@@ -263,7 +263,7 @@ onMounted(() => {
               </div>
               <div>
                 <p class="text-sm font-medium text-wc-text">{{ habit.nombre || habit.name }}</p>
-                <p class="text-sm text-wc-text-tertiary">
+                <p class="text-sm text-wc-text-secondary">
                   {{ habitsDone[index] ? 'Completado' : 'Pendiente' }}
                   <template v-if="habit.frecuencia"> &middot; {{ habit.frecuencia }}</template>
                 </p>

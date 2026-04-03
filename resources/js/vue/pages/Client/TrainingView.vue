@@ -176,9 +176,9 @@ onMounted(() => {
             :aria-disabled="isFuture(day.date)"
           >
             <!-- Day Name -->
-            <span class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">{{ day.dayName }}</span>
+            <span class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">{{ day.dayName }}</span>
             <!-- Day Number -->
-            <span :class="['font-data text-lg font-semibold', day.isToday ? 'text-wc-accent' : 'text-wc-text']">{{ day.dayNumber }}</span>
+            <span :class="['font-display text-2xl', day.isToday ? 'text-wc-accent' : 'text-wc-text']">{{ day.dayNumber }}</span>
             <!-- Toggle Circle -->
             <div :class="[
               'flex h-10 w-10 items-center justify-center rounded-full transition-all',
@@ -195,23 +195,23 @@ onMounted(() => {
         <!-- Stats Row -->
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
           <div class="mb-3 flex items-center justify-between">
-            <span class="text-sm font-medium text-wc-text-secondary">
+            <span class="text-base font-medium text-wc-text">
               <span class="font-display text-xl tracking-wide text-wc-accent">{{ completedCount }}</span>
               de 7 dias completados
             </span>
-            <span class="font-display text-base tracking-wide text-wc-accent">{{ completionPct }}%</span>
+            <span class="text-sm font-semibold text-wc-accent">{{ completionPct }}%</span>
           </div>
           <div class="h-2 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
             <div class="h-full rounded-full bg-wc-accent transition-all duration-500" :style="{ width: completionPct + '%' }"></div>
           </div>
           <div class="mt-4 grid grid-cols-2 gap-4 border-t border-wc-border pt-4">
             <div>
-              <p class="text-sm text-wc-text-tertiary">Sesiones esta semana</p>
-              <p class="font-display text-3xl tracking-wide text-wc-accent">{{ completedCount }}</p>
+              <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Sesiones esta semana</p>
+              <p class="font-display text-3xl text-wc-accent">{{ completedCount }}</p>
             </div>
             <div>
-              <p class="text-sm text-wc-text-tertiary">Sesiones este mes</p>
-              <p class="font-display text-3xl tracking-wide text-wc-accent">{{ monthSessions }}</p>
+              <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Sesiones este mes</p>
+              <p class="font-display text-3xl text-wc-accent">{{ monthSessions }}</p>
             </div>
           </div>
         </div>

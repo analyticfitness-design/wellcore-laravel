@@ -208,12 +208,12 @@ function progressColor(pct) {
           <div class="flex flex-1 flex-col p-5 pt-3">
             <!-- Type badge -->
             <div class="mb-2">
-              <span class="rounded bg-wc-bg-secondary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-text-secondary">
+              <span class="rounded bg-wc-bg-secondary px-2 py-0.5 text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">
                 {{ getTypeConfig(challenge.challenge_type).label }}
               </span>
             </div>
 
-            <h3 class="font-display text-lg tracking-wide text-wc-text">{{ challenge.title }}</h3>
+            <h3 class="text-base font-semibold text-wc-text">{{ challenge.title }}</h3>
             <p class="mt-1 line-clamp-2 text-sm leading-relaxed text-wc-text-secondary">{{ challenge.description }}</p>
 
             <!-- Progress bar -->
@@ -251,9 +251,10 @@ function progressColor(pct) {
               </div>
 
               <!-- Days left -->
-              <div v-if="!isExpired(challenge.end_date) && !challenge.is_completed" class="mt-2 text-sm"
-                :class="daysLeft(challenge.end_date) <= 3 ? 'text-orange-400' : 'text-wc-text-tertiary'">
-                {{ daysLeft(challenge.end_date) }} dias restantes
+              <div v-if="!isExpired(challenge.end_date) && !challenge.is_completed" class="mt-2">
+                <span :class="daysLeft(challenge.end_date) <= 3 ? 'text-sm font-medium text-wc-accent' : 'text-sm text-wc-text-tertiary'">
+                  {{ daysLeft(challenge.end_date) }} dias restantes
+                </span>
               </div>
 
               <!-- Join button -->
