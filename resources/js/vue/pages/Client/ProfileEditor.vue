@@ -181,7 +181,7 @@ onMounted(() => {
             </div>
             <div>
               <h2 class="font-display text-xl tracking-wide text-wc-text">DATOS PERSONALES</h2>
-              <p class="text-xs text-wc-text-tertiary">Informacion basica de tu cuenta</p>
+              <p class="text-sm text-wc-text-tertiary">Informacion basica de tu cuenta</p>
             </div>
           </div>
 
@@ -275,7 +275,7 @@ onMounted(() => {
             </div>
             <div>
               <h2 class="font-display text-xl tracking-wide text-wc-text">DATOS FITNESS</h2>
-              <p class="text-xs text-wc-text-tertiary">Tu informacion de entrenamiento</p>
+              <p class="text-sm text-wc-text-tertiary">Tu informacion de entrenamiento</p>
             </div>
           </div>
 

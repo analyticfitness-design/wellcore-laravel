@@ -158,27 +158,27 @@ onMounted(() => {
             <p class="text-sm font-medium text-wc-text-secondary">Medidas corporales (cm)</p>
             <div class="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
               <div>
-                <label class="block text-xs text-wc-text-tertiary">Pecho</label>
+                <label class="block text-sm text-wc-text-tertiary">Pecho</label>
                 <input type="number" step="0.1" v-model="chestCm" placeholder="--"
                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
               <div>
-                <label class="block text-xs text-wc-text-tertiary">Cintura</label>
+                <label class="block text-sm text-wc-text-tertiary">Cintura</label>
                 <input type="number" step="0.1" v-model="waistCm" placeholder="--"
                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
               <div>
-                <label class="block text-xs text-wc-text-tertiary">Cadera</label>
+                <label class="block text-sm text-wc-text-tertiary">Cadera</label>
                 <input type="number" step="0.1" v-model="hipsCm" placeholder="--"
                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
               <div>
-                <label class="block text-xs text-wc-text-tertiary">Muslo</label>
+                <label class="block text-sm text-wc-text-tertiary">Muslo</label>
                 <input type="number" step="0.1" v-model="thighCm" placeholder="--"
                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
               <div>
-                <label class="block text-xs text-wc-text-tertiary">Brazo</label>
+                <label class="block text-sm text-wc-text-tertiary">Brazo</label>
                 <input type="number" step="0.1" v-model="armCm" placeholder="--"
                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
@@ -189,12 +189,12 @@ onMounted(() => {
             <p class="text-sm font-medium text-wc-text-secondary">Composicion corporal (%)</p>
             <div class="mt-2 grid grid-cols-2 gap-3 sm:max-w-sm">
               <div>
-                <label class="block text-xs text-wc-text-tertiary">Musculo</label>
+                <label class="block text-sm text-wc-text-tertiary">Musculo</label>
                 <input type="number" step="0.1" v-model="musclePct" placeholder="--"
                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
               <div>
-                <label class="block text-xs text-wc-text-tertiary">Grasa</label>
+                <label class="block text-sm text-wc-text-tertiary">Grasa</label>
                 <input type="number" step="0.1" v-model="fatPct" placeholder="--"
                   class="mt-1 block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
@@ -217,16 +217,16 @@ onMounted(() => {
       <!-- First vs Latest comparison -->
       <div v-if="firstMeasurement && latestMeasurement" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
         <h2 class="font-display text-lg tracking-wide text-wc-text">Progreso: Inicio vs Actual</h2>
-        <p class="mt-1 text-xs text-wc-text-tertiary">{{ firstMeasurement.date }} vs {{ latestMeasurement.date }}</p>
+        <p class="mt-1 text-sm text-wc-text-tertiary">{{ firstMeasurement.date }} vs {{ latestMeasurement.date }}</p>
 
         <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <template v-for="field in comparisonFields" :key="field.key">
             <div v-if="firstMeasurement[field.key] != null && latestMeasurement[field.key] != null" class="rounded-lg border border-wc-border bg-wc-bg-secondary p-3">
-              <p class="text-xs font-medium text-wc-text-tertiary">{{ field.label }}</p>
+              <p class="text-sm font-medium text-wc-text-tertiary">{{ field.label }}</p>
               <p class="mt-1 font-data text-lg font-bold text-wc-text">
                 {{ latestMeasurement[field.key] }}<span class="text-xs font-normal text-wc-text-tertiary">{{ field.unit }}</span>
               </p>
-              <p :class="['mt-0.5 text-xs font-medium', isImproved(field) === true ? 'text-emerald-500' : isImproved(field) === false ? 'text-wc-accent' : 'text-wc-text-tertiary']">
+              <p :class="['mt-0.5 text-sm font-medium', isImproved(field) === true ? 'text-emerald-500' : isImproved(field) === false ? 'text-wc-accent' : 'text-wc-text-tertiary']">
                 <template v-if="getDiff(field) !== 0">
                   {{ getDiff(field) > 0 ? '+' : '' }}{{ getDiff(field) }}{{ field.unit }}
                 </template>
@@ -257,7 +257,7 @@ onMounted(() => {
                 <h2 class="font-sans text-2xl font-bold text-white mb-2">Medidas guardadas</h2>
                 <div v-if="weightKg" class="my-5 rounded-xl border border-white/10 bg-white/[0.06] px-5 py-4">
                   <p class="font-display text-3xl text-white" style="line-height:1">{{ parseFloat(weightKg).toFixed(1) }} <span class="text-lg font-normal text-white/50">kg</span></p>
-                  <p class="mt-0.5 text-xs text-white/50">peso registrado</p>
+                  <p class="mt-0.5 text-sm text-white/50">peso registrado</p>
                 </div>
                 <p class="mb-6 text-sm text-white/70">Cada medida es evidencia de tu transformacion.</p>
                 <button @click="dismissSuccess" class="w-full rounded-xl bg-wc-accent px-6 py-3 font-display text-lg tracking-wider text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-black">
@@ -277,15 +277,15 @@ onMounted(() => {
           <table class="w-full text-left text-sm">
             <thead>
               <tr class="border-b border-wc-border">
-                <th class="whitespace-nowrap pb-3 pr-4 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Fecha</th>
-                <th class="whitespace-nowrap pb-3 pr-4 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Peso</th>
-                <th class="whitespace-nowrap pb-3 pr-4 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Pecho</th>
-                <th class="whitespace-nowrap pb-3 pr-4 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Cintura</th>
-                <th class="whitespace-nowrap pb-3 pr-4 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Cadera</th>
-                <th class="whitespace-nowrap pb-3 pr-4 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Muslo</th>
-                <th class="whitespace-nowrap pb-3 pr-4 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Brazo</th>
-                <th class="whitespace-nowrap pb-3 pr-4 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Musculo%</th>
-                <th class="whitespace-nowrap pb-3 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Grasa%</th>
+                <th class="whitespace-nowrap pb-3 pr-4 text-sm font-semibold uppercase tracking-wider text-wc-text-tertiary">Fecha</th>
+                <th class="whitespace-nowrap pb-3 pr-4 text-sm font-semibold uppercase tracking-wider text-wc-text-tertiary">Peso</th>
+                <th class="whitespace-nowrap pb-3 pr-4 text-sm font-semibold uppercase tracking-wider text-wc-text-tertiary">Pecho</th>
+                <th class="whitespace-nowrap pb-3 pr-4 text-sm font-semibold uppercase tracking-wider text-wc-text-tertiary">Cintura</th>
+                <th class="whitespace-nowrap pb-3 pr-4 text-sm font-semibold uppercase tracking-wider text-wc-text-tertiary">Cadera</th>
+                <th class="whitespace-nowrap pb-3 pr-4 text-sm font-semibold uppercase tracking-wider text-wc-text-tertiary">Muslo</th>
+                <th class="whitespace-nowrap pb-3 pr-4 text-sm font-semibold uppercase tracking-wider text-wc-text-tertiary">Brazo</th>
+                <th class="whitespace-nowrap pb-3 pr-4 text-sm font-semibold uppercase tracking-wider text-wc-text-tertiary">Musculo%</th>
+                <th class="whitespace-nowrap pb-3 text-sm font-semibold uppercase tracking-wider text-wc-text-tertiary">Grasa%</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-wc-border">
@@ -312,7 +312,7 @@ onMounted(() => {
             <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />
           </svg>
           <p class="mt-3 text-sm font-medium text-wc-text">Sin mediciones registradas</p>
-          <p class="mt-1 text-xs text-wc-text-tertiary">Registra tu primera medicion para comenzar a monitorear tu progreso.</p>
+          <p class="mt-1 text-sm text-wc-text-tertiary">Registra tu primera medicion para comenzar a monitorear tu progreso.</p>
           <button @click="toggleForm"
             class="mt-4 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-wc-accent to-wc-accent px-4 py-2 text-sm font-medium text-white hover:from-wc-accent hover:to-amber-700 transition-all">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

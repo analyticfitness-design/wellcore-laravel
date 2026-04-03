@@ -190,9 +190,9 @@ onBeforeUnmount(() => {
             <p class="text-sm font-semibold text-wc-text">{{ coachName }}</p>
             <div v-if="hasCoach" class="flex items-center gap-1.5">
               <span class="h-2 w-2 rounded-full bg-green-500"></span>
-              <span class="text-xs text-wc-text-tertiary">Coach</span>
+              <span class="text-sm text-wc-text-tertiary">Coach</span>
             </div>
-            <span v-else class="text-xs text-wc-text-tertiary/70">Sin coach asignado</span>
+            <span v-else class="text-sm text-wc-text-tertiary/70">Sin coach asignado</span>
           </div>
         </div>
 
@@ -235,7 +235,7 @@ onBeforeUnmount(() => {
                   <div class="rounded-2xl rounded-tl-sm bg-wc-bg-secondary px-4 py-2.5">
                     <p class="text-sm text-wc-text">{{ msg.message }}</p>
                   </div>
-                  <p class="mt-1 px-1 text-[10px] text-wc-text-tertiary">{{ formatTime(msg.created_at) }}</p>
+                  <p class="mt-1 px-1 text-xs text-wc-text-tertiary">{{ formatTime(msg.created_at) }}</p>
                 </div>
               </div>
 
@@ -245,7 +245,7 @@ onBeforeUnmount(() => {
                   <div class="rounded-2xl rounded-tr-sm bg-wc-accent px-4 py-2.5">
                     <p class="text-sm text-white">{{ msg.message }}</p>
                   </div>
-                  <p class="mt-1 px-1 text-right text-[10px] text-wc-text-tertiary">
+                  <p class="mt-1 px-1 text-right text-xs text-wc-text-tertiary">
                     {{ formatTime(msg.created_at) }}
                     <svg v-if="msg.read_at" class="ml-1 inline h-3 w-3 text-blue-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />

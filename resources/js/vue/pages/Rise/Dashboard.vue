@@ -75,7 +75,7 @@ onMounted(() => {
               </svg>
               Programa RISE
             </span>
-            <span v-if="data.hasProgram" class="text-xs text-wc-text-tertiary">
+            <span v-if="data.hasProgram" class="text-sm text-wc-text-tertiary">
               Semana {{ data.currentWeek }} de {{ data.totalWeeks }}
             </span>
           </div>
@@ -117,7 +117,7 @@ onMounted(() => {
             <div class="flex items-center gap-4">
               <div class="text-right">
                 <p class="font-display text-3xl text-wc-accent" style="line-height:1">{{ Math.round(data.progressPct || 0) }}%</p>
-                <p class="text-xs text-wc-text-tertiary">completado</p>
+                <p class="text-sm text-wc-text-tertiary">completado</p>
               </div>
             </div>
           </div>
@@ -130,7 +130,7 @@ onMounted(() => {
                 :style="{ width: (data.progressPct || 0) + '%' }"
               ></div>
             </div>
-            <div class="mt-2 flex items-center justify-between text-xs text-wc-text-tertiary">
+            <div class="mt-2 flex items-center justify-between text-sm text-wc-text-tertiary">
               <span>Dia {{ data.daysElapsed }} de {{ data.totalDays }}</span>
               <span>{{ data.daysRemaining }} dias restantes</span>
             </div>
@@ -144,7 +144,7 @@ onMounted(() => {
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
         </svg>
         <p class="mt-3 text-sm font-medium text-wc-text">No tienes un programa RISE activo</p>
-        <p class="mt-1 text-xs text-wc-text-tertiary">Contacta a tu coach para activar tu programa RISE.</p>
+        <p class="mt-1 text-sm text-wc-text-tertiary">Contacta a tu coach para activar tu programa RISE.</p>
       </div>
 
       <!-- Stats cards -->
@@ -152,7 +152,7 @@ onMounted(() => {
         <!-- Current Streak -->
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Racha</span>
+            <span class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Racha</span>
             <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-wc-accent/10">
               <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
@@ -160,13 +160,13 @@ onMounted(() => {
             </div>
           </div>
           <p class="mt-3 font-display text-3xl text-wc-accent" style="line-height:1">{{ data.currentStreak ?? 0 }}</p>
-          <p class="mt-0.5 text-xs text-wc-text-tertiary">dias consecutivos</p>
+          <p class="mt-0.5 text-sm text-wc-text-tertiary">dias consecutivos</p>
         </div>
 
         <!-- Workouts this week -->
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Entrenos</span>
+            <span class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Entrenos</span>
             <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
               <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
@@ -174,13 +174,13 @@ onMounted(() => {
             </div>
           </div>
           <p class="mt-3 font-display text-3xl text-wc-accent" style="line-height:1">{{ data.workoutsThisWeek ?? 0 }}</p>
-          <p class="mt-0.5 text-xs text-wc-text-tertiary">esta semana</p>
+          <p class="mt-0.5 text-sm text-wc-text-tertiary">esta semana</p>
         </div>
 
         <!-- Adherence -->
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Adherencia</span>
+            <span class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Adherencia</span>
             <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/10">
               <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
@@ -188,13 +188,13 @@ onMounted(() => {
             </div>
           </div>
           <p class="mt-3 font-display text-3xl text-wc-accent" style="line-height:1">{{ data.overallAdherence ?? 0 }}%</p>
-          <p class="mt-0.5 text-xs text-wc-text-tertiary">general</p>
+          <p class="mt-0.5 text-sm text-wc-text-tertiary">general</p>
         </div>
 
         <!-- Weight -->
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Peso</span>
+            <span class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Peso</span>
             <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10">
               <svg class="h-4 w-4 text-violet-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
@@ -203,7 +203,7 @@ onMounted(() => {
           </div>
           <template v-if="data.latestWeight">
             <p class="mt-3 font-display text-3xl text-wc-accent" style="line-height:1">{{ data.latestWeight }}</p>
-            <p class="mt-0.5 text-xs text-wc-text-tertiary">
+            <p class="mt-0.5 text-sm text-wc-text-tertiary">
               kg
               <span v-if="data.weightChange !== null" :class="data.weightChange < 0 ? 'text-emerald-500' : data.weightChange > 0 ? 'text-wc-accent' : ''">
                 ({{ data.weightChange > 0 ? '+' : '' }}{{ data.weightChange }} kg)
@@ -212,7 +212,7 @@ onMounted(() => {
           </template>
           <template v-else>
             <p class="mt-3 font-display text-3xl text-wc-text-tertiary" style="line-height:1">--</p>
-            <p class="mt-0.5 text-xs text-wc-text-tertiary">sin registro</p>
+            <p class="mt-0.5 text-sm text-wc-text-tertiary">sin registro</p>
           </template>
         </div>
       </div>
@@ -223,11 +223,11 @@ onMounted(() => {
         <!-- Weekly tracking grid -->
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 lg:col-span-2">
           <h2 class="font-display text-lg tracking-wide text-wc-text">Semana actual</h2>
-          <p class="mt-1 text-xs text-wc-text-tertiary">Tracking diario</p>
+          <p class="mt-1 text-sm text-wc-text-tertiary">Tracking diario</p>
 
           <div class="mt-5 flex items-center justify-between gap-2 sm:justify-start sm:gap-4">
             <div v-for="day in (data.weekDays || [])" :key="day.label" class="flex flex-col items-center gap-2">
-              <span :class="['text-[11px] font-medium text-wc-text-tertiary', day.isToday ? '!text-wc-accent font-semibold' : '']">
+              <span :class="['text-sm font-medium text-wc-text-tertiary', day.isToday ? '!text-wc-accent font-semibold' : '']">
                 {{ day.label }}
               </span>
               <div v-if="day.trainingDone" class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/15 sm:h-12 sm:w-12">
@@ -242,7 +242,7 @@ onMounted(() => {
             </div>
           </div>
 
-          <div class="mt-5 flex items-center gap-4 text-xs text-wc-text-tertiary">
+          <div class="mt-5 flex items-center gap-4 text-sm text-wc-text-tertiary">
             <div class="flex items-center gap-1.5">
               <div class="h-2.5 w-2.5 rounded-full bg-emerald-500/40"></div>
               Entrenamiento
@@ -303,7 +303,7 @@ onMounted(() => {
             <!-- Tracking total -->
             <div class="mt-4 border-t border-wc-border pt-4">
               <div class="flex items-center justify-between">
-                <span class="text-xs text-wc-text-tertiary">Dias registrados (total)</span>
+                <span class="text-sm text-wc-text-tertiary">Dias registrados (total)</span>
                 <span class="font-data text-sm font-semibold text-wc-accent">{{ data.totalTrackingDays ?? 0 }}</span>
               </div>
             </div>

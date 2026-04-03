@@ -176,7 +176,7 @@ onMounted(() => {
             :aria-disabled="isFuture(day.date)"
           >
             <!-- Day Name -->
-            <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ day.dayName }}</span>
+            <span class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">{{ day.dayName }}</span>
             <!-- Day Number -->
             <span :class="['font-data text-lg font-semibold', day.isToday ? 'text-wc-accent' : 'text-wc-text']">{{ day.dayNumber }}</span>
             <!-- Toggle Circle -->
@@ -206,11 +206,11 @@ onMounted(() => {
           </div>
           <div class="mt-4 grid grid-cols-2 gap-4 border-t border-wc-border pt-4">
             <div>
-              <p class="text-xs text-wc-text-tertiary">Sesiones esta semana</p>
+              <p class="text-sm text-wc-text-tertiary">Sesiones esta semana</p>
               <p class="font-display text-3xl tracking-wide text-wc-accent">{{ completedCount }}</p>
             </div>
             <div>
-              <p class="text-xs text-wc-text-tertiary">Sesiones este mes</p>
+              <p class="text-sm text-wc-text-tertiary">Sesiones este mes</p>
               <p class="font-display text-3xl tracking-wide text-wc-accent">{{ monthSessions }}</p>
             </div>
           </div>

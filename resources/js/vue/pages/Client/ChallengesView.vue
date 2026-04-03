@@ -214,11 +214,11 @@ function progressColor(pct) {
             </div>
 
             <h3 class="font-display text-lg tracking-wide text-wc-text">{{ challenge.title }}</h3>
-            <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-wc-text-secondary">{{ challenge.description }}</p>
+            <p class="mt-1 line-clamp-2 text-sm leading-relaxed text-wc-text-secondary">{{ challenge.description }}</p>
 
             <!-- Progress bar -->
             <div v-if="challenge.is_joined" class="mt-4">
-              <div class="flex items-center justify-between text-xs">
+              <div class="flex items-center justify-between text-sm">
                 <span class="text-wc-text-tertiary">Progreso</span>
                 <span class="font-data font-bold" :class="challenge.progress_pct >= 100 ? 'text-emerald-500' : 'text-wc-text'">
                   {{ challenge.progress_pct || 0 }}%
@@ -235,7 +235,7 @@ function progressColor(pct) {
 
             <div class="mt-auto pt-4">
               <!-- Dates & participants -->
-              <div class="flex items-center justify-between text-xs text-wc-text-tertiary">
+              <div class="flex items-center justify-between text-sm text-wc-text-tertiary">
                 <div class="flex items-center gap-1">
                   <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
@@ -251,7 +251,7 @@ function progressColor(pct) {
               </div>
 
               <!-- Days left -->
-              <div v-if="!isExpired(challenge.end_date) && !challenge.is_completed" class="mt-2 text-xs"
+              <div v-if="!isExpired(challenge.end_date) && !challenge.is_completed" class="mt-2 text-sm"
                 :class="daysLeft(challenge.end_date) <= 3 ? 'text-orange-400' : 'text-wc-text-tertiary'">
                 {{ daysLeft(challenge.end_date) }} dias restantes
               </div>

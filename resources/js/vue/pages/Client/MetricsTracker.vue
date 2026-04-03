@@ -408,7 +408,7 @@ onBeforeUnmount(() => {
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
           <!-- Current Weight -->
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Peso actual</p>
+            <p class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Peso actual</p>
             <p class="mt-1 font-data text-3xl font-semibold text-wc-text">
               {{ currentWeight ? Number(currentWeight).toFixed(1) : '--' }}
               <span class="text-base font-normal text-wc-text-tertiary">kg</span>
@@ -417,7 +417,7 @@ onBeforeUnmount(() => {
 
           <!-- Monthly Change -->
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Cambio mensual</p>
+            <p class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Cambio mensual</p>
             <p :class="[
               'mt-1 font-data text-3xl font-semibold',
               weightChange !== null
@@ -434,11 +434,11 @@ onBeforeUnmount(() => {
 
           <!-- Goal Placeholder -->
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Objetivo</p>
+            <p class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Objetivo</p>
             <p class="mt-1 font-data text-3xl font-semibold text-wc-text-tertiary">
               -- <span class="text-base font-normal">kg</span>
             </p>
-            <p class="mt-1 text-xs text-wc-text-tertiary">Consulta con tu coach</p>
+            <p class="mt-1 text-sm text-wc-text-tertiary">Consulta con tu coach</p>
           </div>
         </div>
 
@@ -523,33 +523,33 @@ onBeforeUnmount(() => {
               </div>
               <div>
                 <h3 class="text-sm font-semibold uppercase tracking-wider text-wc-text-secondary">Mediciones corporales</h3>
-                <p class="text-xs text-wc-text-tertiary">Mide con cinta metrica flexible, en la manana</p>
+                <p class="text-sm text-wc-text-tertiary">Mide con cinta metrica flexible, en la manana</p>
               </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
               <div>
-                <label for="chest" class="mb-1 block text-xs font-medium text-wc-text">Pecho (cm)</label>
+                <label for="chest" class="mb-1 block text-sm font-medium text-wc-text">Pecho (cm)</label>
                 <input type="number" id="chest" v-model="form.chest" step="0.1" min="30" max="200" placeholder="95.0"
                   class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
               <div>
-                <label for="waist" class="mb-1 block text-xs font-medium text-wc-text">Cintura (cm)</label>
+                <label for="waist" class="mb-1 block text-sm font-medium text-wc-text">Cintura (cm)</label>
                 <input type="number" id="waist" v-model="form.waist" step="0.1" min="30" max="200" placeholder="80.0"
                   class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
               <div>
-                <label for="hip" class="mb-1 block text-xs font-medium text-wc-text">Cadera (cm)</label>
+                <label for="hip" class="mb-1 block text-sm font-medium text-wc-text">Cadera (cm)</label>
                 <input type="number" id="hip" v-model="form.hip" step="0.1" min="30" max="200" placeholder="95.0"
                   class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
               <div>
-                <label for="thigh" class="mb-1 block text-xs font-medium text-wc-text">Muslo (cm)</label>
+                <label for="thigh" class="mb-1 block text-sm font-medium text-wc-text">Muslo (cm)</label>
                 <input type="number" id="thigh" v-model="form.thigh" step="0.1" min="20" max="100" placeholder="55.0"
                   class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
               <div>
-                <label for="arm" class="mb-1 block text-xs font-medium text-wc-text">Brazo (cm)</label>
+                <label for="arm" class="mb-1 block text-sm font-medium text-wc-text">Brazo (cm)</label>
                 <input type="number" id="arm" v-model="form.arm" step="0.1" min="15" max="60" placeholder="32.0"
                   class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
@@ -558,7 +558,7 @@ onBeforeUnmount(() => {
             <!-- Measurement guide -->
             <div class="mt-4 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
               <button @click="showGuide = !showGuide" type="button" class="flex w-full items-center justify-between text-left">
-                <span class="text-xs font-semibold text-amber-400">Como tomar las mediciones correctamente</span>
+                <span class="text-sm font-semibold text-amber-400">Como tomar las mediciones correctamente</span>
                 <svg :class="['h-4 w-4 text-amber-400 transition-transform', showGuide && 'rotate-180']" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                 </svg>
@@ -571,7 +571,7 @@ onBeforeUnmount(() => {
                 leave-from-class="max-h-96 opacity-100"
                 leave-to-class="max-h-0 opacity-0"
               >
-                <div v-show="showGuide" class="mt-3 space-y-2 overflow-hidden text-xs text-wc-text-secondary">
+                <div v-show="showGuide" class="mt-3 space-y-2 overflow-hidden text-sm text-wc-text-secondary">
                   <p><strong class="text-wc-text">Pecho:</strong> Cinta alrededor del torso a la altura de los pezones. Brazos relajados a los lados. No inflar el pecho.</p>
                   <p><strong class="text-wc-text">Cintura:</strong> En el punto mas estrecho del abdomen, generalmente 2-3 cm arriba del ombligo. Medir al exhalar normalmente.</p>
                   <p><strong class="text-wc-text">Cadera:</strong> En el punto mas ancho de los gluteos. Pies juntos, de pie recto.</p>
@@ -634,7 +634,7 @@ onBeforeUnmount(() => {
           <!-- 1. Weight Trend (Line, 90 days) -->
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
             <h3 class="font-display text-lg tracking-wide text-wc-text">Peso Corporal</h3>
-            <p class="text-xs text-wc-text-secondary">Ultimos 90 dias</p>
+            <p class="text-sm text-wc-text-secondary">Ultimos 90 dias</p>
             <div class="relative mt-4" style="height: 180px">
               <canvas ref="weightChartRef"></canvas>
               <p v-if="!hasWeight" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
@@ -646,7 +646,7 @@ onBeforeUnmount(() => {
           <!-- 2. Weekly Check-ins (Bar, 12 weeks) -->
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
             <h3 class="font-display text-lg tracking-wide text-wc-text">Check-ins Semanales</h3>
-            <p class="text-xs text-wc-text-secondary">Ultimas 12 semanas</p>
+            <p class="text-sm text-wc-text-secondary">Ultimas 12 semanas</p>
             <div class="relative mt-4" style="height: 180px">
               <canvas ref="checkinChartRef"></canvas>
               <p v-if="!hasCheckins" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
@@ -658,7 +658,7 @@ onBeforeUnmount(() => {
           <!-- 3. Body Composition (Doughnut) -->
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
             <h3 class="font-display text-lg tracking-wide text-wc-text">Composicion Corporal</h3>
-            <p class="text-xs text-wc-text-secondary">Ultima medicion</p>
+            <p class="text-sm text-wc-text-secondary">Ultima medicion</p>
             <div class="relative mx-auto mt-4 flex items-center justify-center" style="height: 180px; max-width: 260px">
               <canvas ref="compositionChartRef"></canvas>
               <p v-if="!hasComposition" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
@@ -670,7 +670,7 @@ onBeforeUnmount(() => {
           <!-- 4. Training Volume (Line, 12 weeks) -->
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
             <h3 class="font-display text-lg tracking-wide text-wc-text">Volumen de Entrenamiento</h3>
-            <p class="text-xs text-wc-text-secondary">Sesiones por semana</p>
+            <p class="text-sm text-wc-text-secondary">Sesiones por semana</p>
             <div class="relative mt-4" style="height: 180px">
               <canvas ref="trainingChartRef"></canvas>
               <p v-if="!hasTraining" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
@@ -689,7 +689,7 @@ onBeforeUnmount(() => {
           <div class="overflow-x-auto">
             <table class="w-full text-sm">
               <thead>
-                <tr class="border-b border-wc-border text-left text-xs uppercase tracking-wider text-wc-text-tertiary">
+                <tr class="border-b border-wc-border text-left text-sm uppercase tracking-wider text-wc-text-tertiary">
                   <th class="px-3 py-3 font-medium sm:px-5">Fecha</th>
                   <th class="px-3 py-3 font-medium sm:px-5">Peso</th>
                   <th class="px-3 py-3 font-medium sm:px-5">Musc%</th>
@@ -829,7 +829,7 @@ onBeforeUnmount(() => {
               <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-sm font-bold text-white">1</div>
               <div>
                 <p class="text-sm font-semibold text-wc-text">Registra tu peso</p>
-                <p class="mt-1 text-xs leading-relaxed text-wc-text-secondary">Pesate en ayunas, despues de ir al bano y antes de desayunar. Siempre a la misma hora para tener datos comparables semana a semana.</p>
+                <p class="mt-1 text-sm leading-relaxed text-wc-text-secondary">Pesate en ayunas, despues de ir al bano y antes de desayunar. Siempre a la misma hora para tener datos comparables semana a semana.</p>
               </div>
             </div>
           </div>
@@ -840,7 +840,7 @@ onBeforeUnmount(() => {
               <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-sm font-bold text-white">2</div>
               <div>
                 <p class="text-sm font-semibold text-wc-text">Las fluctuaciones son normales</p>
-                <p class="mt-1 text-xs leading-relaxed text-wc-text-secondary">El peso puede variar 1-3 kg en un dia por agua, comida y sal. Lo que importa es la tendencia de semanas, no el numero de un dia especifico.</p>
+                <p class="mt-1 text-sm leading-relaxed text-wc-text-secondary">El peso puede variar 1-3 kg en un dia por agua, comida y sal. Lo que importa es la tendencia de semanas, no el numero de un dia especifico.</p>
               </div>
             </div>
           </div>
@@ -851,7 +851,7 @@ onBeforeUnmount(() => {
               <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-sm font-bold text-white">3</div>
               <div>
                 <p class="text-sm font-semibold text-wc-text">El peso no es todo</p>
-                <p class="mt-1 text-xs leading-relaxed text-wc-text-secondary">La escala no distingue musculo de grasa. Registra tambien tus medidas y fotos de progreso — la transformacion visual siempre supera a los numeros.</p>
+                <p class="mt-1 text-sm leading-relaxed text-wc-text-secondary">La escala no distingue musculo de grasa. Registra tambien tus medidas y fotos de progreso — la transformacion visual siempre supera a los numeros.</p>
               </div>
             </div>
           </div>

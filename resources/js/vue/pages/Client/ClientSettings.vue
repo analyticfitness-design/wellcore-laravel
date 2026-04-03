@@ -280,14 +280,14 @@ onMounted(() => {
           </div>
           <div>
             <h2 class="font-display text-lg tracking-wide text-wc-text">DATOS DE PERFIL</h2>
-            <p class="text-xs text-wc-text-tertiary">Actualiza tu informacion personal</p>
+            <p class="text-sm text-wc-text-tertiary">Actualiza tu informacion personal</p>
           </div>
         </div>
 
         <form @submit.prevent="updateProfile" class="space-y-4">
           <!-- Name -->
           <div>
-            <label for="settings-name" class="mb-1 block text-xs font-medium text-wc-text-tertiary">Nombre completo</label>
+            <label for="settings-name" class="mb-1 block text-sm font-medium text-wc-text-secondary">Nombre completo</label>
             <input
               v-model="profileForm.name"
               type="text"
@@ -300,7 +300,7 @@ onMounted(() => {
 
           <!-- Email -->
           <div>
-            <label for="settings-email" class="mb-1 block text-xs font-medium text-wc-text-tertiary">Correo electronico</label>
+            <label for="settings-email" class="mb-1 block text-sm font-medium text-wc-text-secondary">Correo electronico</label>
             <input
               v-model="profileForm.email"
               type="email"
@@ -313,7 +313,7 @@ onMounted(() => {
 
           <!-- Phone -->
           <div>
-            <label for="settings-phone" class="mb-1 block text-xs font-medium text-wc-text-tertiary">Telefono</label>
+            <label for="settings-phone" class="mb-1 block text-sm font-medium text-wc-text-secondary">Telefono</label>
             <input
               v-model="profileForm.phone"
               type="tel"
@@ -355,7 +355,7 @@ onMounted(() => {
             </div>
             <div>
               <h2 class="font-display text-lg tracking-wide text-wc-text">PREFERENCIAS DE NOTIFICACION</h2>
-              <p class="text-xs text-wc-text-tertiary">Elige que notificaciones deseas recibir</p>
+              <p class="text-sm text-wc-text-tertiary">Elige que notificaciones deseas recibir</p>
             </div>
           </div>
 
@@ -364,7 +364,7 @@ onMounted(() => {
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
                 <p class="text-sm font-medium text-wc-text">Recordatorios de check-in</p>
-                <p class="mt-0.5 text-xs text-wc-text-tertiary">Recibe avisos para no olvidar tu check-in semanal</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">Recibe avisos para no olvidar tu check-in semanal</p>
               </div>
               <button
                 type="button"
@@ -385,7 +385,7 @@ onMounted(() => {
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
                 <p class="text-sm font-medium text-wc-text">Mensajes del coach</p>
-                <p class="mt-0.5 text-xs text-wc-text-tertiary">Notificaciones cuando tu coach te envia feedback</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">Notificaciones cuando tu coach te envia feedback</p>
               </div>
               <button
                 type="button"
@@ -406,7 +406,7 @@ onMounted(() => {
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
                 <p class="text-sm font-medium text-wc-text">Logros y rachas</p>
-                <p class="mt-0.5 text-xs text-wc-text-tertiary">Celebra records personales y rachas de entrenamiento</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">Celebra records personales y rachas de entrenamiento</p>
               </div>
               <button
                 type="button"
@@ -427,7 +427,7 @@ onMounted(() => {
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
                 <p class="text-sm font-medium text-wc-text">Pagos y planes</p>
-                <p class="mt-0.5 text-xs text-wc-text-tertiary">Confirmaciones de pago y asignaciones de nuevos planes</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">Confirmaciones de pago y asignaciones de nuevos planes</p>
               </div>
               <button
                 type="button"
@@ -448,7 +448,7 @@ onMounted(() => {
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
                 <p class="text-sm font-medium text-wc-text">Resumen semanal</p>
-                <p class="mt-0.5 text-xs text-wc-text-tertiary">Recibe un resumen de tu progreso cada semana</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">Recibe un resumen de tu progreso cada semana</p>
               </div>
               <button
                 type="button"
@@ -469,7 +469,7 @@ onMounted(() => {
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
                 <p class="text-sm font-medium text-wc-text">Sonido al completar entrenamiento</p>
-                <p class="mt-0.5 text-xs text-wc-text-tertiary">Reproduce un sonido sutil cuando completas tu entrenamiento</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">Reproduce un sonido sutil cuando completas tu entrenamiento</p>
               </div>
               <button
                 type="button"
@@ -503,7 +503,7 @@ onMounted(() => {
           </div>
           <div>
             <h2 class="font-display text-lg tracking-wide text-wc-text">APARIENCIA</h2>
-            <p class="text-xs text-wc-text-tertiary">Personaliza el aspecto visual de la plataforma</p>
+            <p class="text-sm text-wc-text-tertiary">Personaliza el aspecto visual de la plataforma</p>
           </div>
         </div>
 
@@ -523,7 +523,7 @@ onMounted(() => {
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
                 </svg>
               </div>
-              <span class="text-xs font-medium text-gray-700">Modo Claro</span>
+              <span class="text-sm font-medium text-gray-700">Modo Claro</span>
               <div v-if="!isDarkMode()" class="absolute right-2 top-2">
                 <div class="flex h-4 w-4 items-center justify-center rounded-full bg-wc-accent">
                   <svg class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
@@ -545,7 +545,7 @@ onMounted(() => {
                   <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
                 </svg>
               </div>
-              <span class="text-xs font-medium text-gray-300">Modo Oscuro</span>
+              <span class="text-sm font-medium text-gray-300">Modo Oscuro</span>
               <div v-if="isDarkMode()" class="absolute right-2 top-2">
                 <div class="flex h-4 w-4 items-center justify-center rounded-full bg-wc-accent">
                   <svg class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
@@ -570,7 +570,7 @@ onMounted(() => {
           </div>
           <div>
             <h2 class="font-display text-lg tracking-wide text-wc-text">CAMBIAR CONTRASENA</h2>
-            <p class="text-xs text-wc-text-tertiary">Actualiza tu contrasena de acceso</p>
+            <p class="text-sm text-wc-text-tertiary">Actualiza tu contrasena de acceso</p>
           </div>
         </div>
 
@@ -582,7 +582,7 @@ onMounted(() => {
         <form @submit.prevent="changePassword" class="space-y-4">
           <!-- Current Password -->
           <div>
-            <label for="current-password" class="mb-1 block text-xs font-medium text-wc-text-tertiary">Contrasena actual</label>
+            <label for="current-password" class="mb-1 block text-sm font-medium text-wc-text-secondary">Contrasena actual</label>
             <input
               v-model="passwordForm.current_password"
               type="password"
@@ -596,7 +596,7 @@ onMounted(() => {
 
           <!-- New Password -->
           <div>
-            <label for="new-password" class="mb-1 block text-xs font-medium text-wc-text-tertiary">Nueva contrasena</label>
+            <label for="new-password" class="mb-1 block text-sm font-medium text-wc-text-secondary">Nueva contrasena</label>
             <input
               v-model="passwordForm.password"
               type="password"
@@ -610,7 +610,7 @@ onMounted(() => {
 
           <!-- Confirm Password -->
           <div>
-            <label for="confirm-password" class="mb-1 block text-xs font-medium text-wc-text-tertiary">Confirmar contrasena</label>
+            <label for="confirm-password" class="mb-1 block text-sm font-medium text-wc-text-secondary">Confirmar contrasena</label>
             <input
               v-model="passwordForm.password_confirmation"
               type="password"

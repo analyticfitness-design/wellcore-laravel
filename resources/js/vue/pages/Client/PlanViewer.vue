@@ -679,13 +679,13 @@ onBeforeUnmount(() => {
                       <span class="font-data text-4xl font-bold tabular-nums text-wc-accent">{{ currentWeek }}</span>
                       <span class="text-sm text-wc-text-tertiary">/ {{ totalWeeks }}</span>
                     </div>
-                    <p class="text-[11px] uppercase tracking-wider text-wc-text-tertiary">Semana actual</p>
+                    <p class="text-sm uppercase tracking-wider text-wc-text-tertiary">Semana actual</p>
                   </div>
                 </div>
 
                 <!-- Progress bar -->
                 <div v-if="totalWeeks > 1" class="mt-5">
-                  <div class="flex items-center justify-between text-[11px] text-wc-text-tertiary mb-1.5">
+                  <div class="flex items-center justify-between text-sm text-wc-text-tertiary mb-1.5">
                     <span>Progreso del programa</span>
                     <span class="font-data font-semibold text-wc-accent">{{ Math.round(progressPct) }}%</span>
                   </div>
@@ -705,7 +705,7 @@ onBeforeUnmount(() => {
                   </svg>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <p class="mb-1.5 text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Notas de tu coach</p>
+                  <p class="mb-1.5 text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Notas de tu coach</p>
                   <p class="text-sm leading-relaxed text-wc-text-secondary">{{ trainingPlan.notas_coach }}</p>
                 </div>
               </div>
@@ -717,7 +717,7 @@ onBeforeUnmount(() => {
                 <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" /></svg>
               </div>
               <div>
-                <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-accent/70">Objetivo del plan</p>
+                <p class="text-sm font-semibold uppercase tracking-wider text-wc-accent/70">Objetivo del plan</p>
                 <p class="mt-0.5 text-sm leading-relaxed text-wc-text-secondary">{{ planObjetivo }}</p>
               </div>
             </div>
@@ -752,7 +752,7 @@ onBeforeUnmount(() => {
                         >Semana actual</span>
                         <span v-if="semana.fase" class="rounded-full bg-wc-bg-secondary px-2 py-0.5 text-[10px] font-medium text-wc-text-tertiary">{{ semana.fase }}</span>
                       </div>
-                      <p v-if="(semana.dias || []).length > 0" class="mt-0.5 text-xs text-wc-text-tertiary">
+                      <p v-if="(semana.dias || []).length > 0" class="mt-0.5 text-sm text-wc-text-tertiary">
                         {{ (semana.dias || []).length }} dia{{ (semana.dias || []).length !== 1 ? 's' : '' }} de entrenamiento
                       </p>
                     </div>
@@ -780,7 +780,7 @@ onBeforeUnmount(() => {
                           </div>
                           <div class="min-w-0">
                             <p class="truncate text-sm font-semibold text-wc-text">{{ dia.nombre || dia.name || dia.dia || ('Dia ' + (dIdx + 1)) }}</p>
-                            <p v-if="(dia.ejercicios || []).length > 0" class="text-xs text-wc-text-tertiary">
+                            <p v-if="(dia.ejercicios || []).length > 0" class="text-sm text-wc-text-tertiary">
                               {{ (dia.ejercicios || []).length }} ejercicio{{ (dia.ejercicios || []).length !== 1 ? 's' : '' }}
                             </p>
                           </div>
@@ -807,8 +807,8 @@ onBeforeUnmount(() => {
                           <svg class="h-3.5 w-3.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" /></svg>
                         </div>
                         <div>
-                          <p class="text-[10px] font-bold uppercase tracking-wider text-amber-400">Calentamiento</p>
-                          <p class="mt-0.5 text-xs leading-relaxed text-wc-text-secondary">{{ dia.calentamiento || dia.warmup }}</p>
+                          <p class="text-sm font-bold uppercase tracking-wider text-amber-400">Calentamiento</p>
+                          <p class="mt-0.5 text-sm leading-relaxed text-wc-text-secondary">{{ dia.calentamiento || dia.warmup }}</p>
                         </div>
                       </div>
 
@@ -839,7 +839,7 @@ onBeforeUnmount(() => {
                             <div v-if="typeof ejercicio === 'object'" class="mt-1.5 flex flex-wrap gap-1.5">
                               <span
                                 v-if="(ejercicio.series || ejercicio.sets) || (ejercicio.repeticiones || ejercicio.reps)"
-                                class="rounded-full bg-wc-bg-tertiary px-2 py-0.5 text-[11px] font-semibold text-wc-text-secondary"
+                                class="rounded-full bg-wc-bg-tertiary px-2 py-0.5 text-sm font-semibold text-wc-text-secondary"
                               >
                                 <template v-if="(ejercicio.series || ejercicio.sets) && (ejercicio.repeticiones || ejercicio.reps)">
                                   {{ ejercicio.series || ejercicio.sets }} x {{ ejercicio.repeticiones || ejercicio.reps }}
@@ -849,7 +849,7 @@ onBeforeUnmount(() => {
                               </span>
                               <span
                                 v-if="ejercicio.descanso || ejercicio.rest || ejercicio.rest_seconds"
-                                class="inline-flex items-center gap-1 rounded-full bg-wc-bg-tertiary px-2 py-0.5 text-[11px] text-wc-text-tertiary"
+                                class="inline-flex items-center gap-1 rounded-full bg-wc-bg-tertiary px-2 py-0.5 text-sm text-wc-text-tertiary"
                               >
                                 <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
                                 {{ typeof (ejercicio.descanso || ejercicio.rest || ejercicio.rest_seconds) === 'number' ? (ejercicio.descanso || ejercicio.rest || ejercicio.rest_seconds) + 's' : (ejercicio.descanso || ejercicio.rest || ejercicio.rest_seconds) }}
@@ -860,7 +860,7 @@ onBeforeUnmount(() => {
                                 :class="rirClass(ejercicio.rir)"
                               >RIR{{ ejercicio.rir }}</span>
                             </div>
-                            <p v-if="typeof ejercicio === 'object' && (ejercicio.notas || ejercicio.notes)" class="mt-1.5 text-xs italic leading-relaxed text-wc-text-tertiary">{{ ejercicio.notas || ejercicio.notes }}</p>
+                            <p v-if="typeof ejercicio === 'object' && (ejercicio.notas || ejercicio.notes)" class="mt-1.5 text-sm italic leading-relaxed text-wc-text-tertiary">{{ ejercicio.notas || ejercicio.notes }}</p>
                           </div>
                         </div>
                       </div>
@@ -871,8 +871,8 @@ onBeforeUnmount(() => {
                           <svg class="h-3.5 w-3.5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" /></svg>
                         </div>
                         <div>
-                          <p class="text-[10px] font-bold uppercase tracking-wider text-sky-400">Vuelta a la calma</p>
-                          <p class="mt-0.5 text-xs leading-relaxed text-wc-text-secondary">{{ dia.vuelta_calma || dia.cooldown }}</p>
+                          <p class="text-sm font-bold uppercase tracking-wider text-sky-400">Vuelta a la calma</p>
+                          <p class="mt-0.5 text-sm leading-relaxed text-wc-text-secondary">{{ dia.vuelta_calma || dia.cooldown }}</p>
                         </div>
                       </div>
                     </div>
@@ -945,7 +945,7 @@ onBeforeUnmount(() => {
                     </div>
                     <div class="min-w-0">
                       <h4 class="font-display text-base tracking-wide text-wc-text leading-tight">{{ (habit.label || '').toUpperCase() }}</h4>
-                      <p class="mt-0.5 text-xs text-wc-text-tertiary">
+                      <p class="mt-0.5 text-sm text-wc-text-tertiary">
                         Racha: <span class="font-data font-semibold" :class="getHabitAccent(habit.type).text">{{ habit.streak }} dias</span>
                         <span class="mx-1 text-wc-border">·</span>
                         Cumplimiento: <span class="font-data font-semibold text-wc-text">{{ habit.average }}%</span>
@@ -984,14 +984,14 @@ onBeforeUnmount(() => {
                 </div>
 
                 <!-- Tip -->
-                <p v-if="habit.tip" class="mt-3 text-xs text-wc-text-tertiary leading-relaxed border-t border-wc-border/50 pt-3">{{ habit.tip }}</p>
+                <p v-if="habit.tip" class="mt-3 text-sm text-wc-text-tertiary leading-relaxed border-t border-wc-border/50 pt-3">{{ habit.tip }}</p>
               </div>
             </div>
 
             <!-- Empty state -->
             <div v-else-if="!habitsLoading" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center">
               <p class="text-sm text-wc-text-secondary">Aun no tienes habitos configurados en tu plan.</p>
-              <p class="mt-1 text-xs text-wc-text-tertiary">Tu coach activara los habitos cuando asigne tu plan.</p>
+              <p class="mt-1 text-sm text-wc-text-tertiary">Tu coach activara los habitos cuando asigne tu plan.</p>
             </div>
           </div>
         </div>
@@ -1015,7 +1015,7 @@ onBeforeUnmount(() => {
                       </svg>
                     </div>
                     <div>
-                      <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary">Calorías diarias</p>
+                      <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary">Calorías diarias</p>
                       <p class="font-data text-3xl font-bold text-wc-text leading-none mt-0.5">
                         {{ (nutritionPlan.objetivo_cal || nutritionPlan.calorias_diarias || nutritionPlan.calorias).toLocaleString() }}
                         <span class="text-sm font-normal text-wc-text-tertiary ml-1">kcal</span>
@@ -1033,14 +1033,14 @@ onBeforeUnmount(() => {
               <!-- Macros visuales con barras de progreso -->
               <div v-if="macroP || macroC || macroF">
                 <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-                  <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary mb-4">Distribución de macros</p>
+                  <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary mb-4">Distribución de macros</p>
                   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
                     <!-- Proteína -->
                     <div class="space-y-2">
                       <div class="flex items-end justify-between">
                         <div>
-                          <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary">Proteína</p>
+                          <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary">Proteína</p>
                           <p class="font-data text-2xl font-bold text-wc-text leading-none">
                             {{ macroP }}<span class="text-xs font-normal text-wc-text-tertiary">g</span>
                           </p>
@@ -1053,14 +1053,14 @@ onBeforeUnmount(() => {
                         <div class="h-full rounded-full bg-wc-accent transition-all duration-700"
                              :style="{ width: Math.round((macroP * 4) / totalKcalNutrition * 100) + '%' }"></div>
                       </div>
-                      <p class="text-[10px] text-wc-text-tertiary">{{ macroP * 4 }} kcal</p>
+                      <p class="text-sm text-wc-text-tertiary">{{ macroP * 4 }} kcal</p>
                     </div>
 
                     <!-- Carbohidratos -->
                     <div class="space-y-2">
                       <div class="flex items-end justify-between">
                         <div>
-                          <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary">Carbohidratos</p>
+                          <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary">Carbohidratos</p>
                           <p class="font-data text-2xl font-bold text-wc-text leading-none">
                             {{ macroC }}<span class="text-xs font-normal text-wc-text-tertiary">g</span>
                           </p>
@@ -1073,14 +1073,14 @@ onBeforeUnmount(() => {
                         <div class="h-full rounded-full bg-blue-400 transition-all duration-700"
                              :style="{ width: Math.round((macroC * 4) / totalKcalNutrition * 100) + '%' }"></div>
                       </div>
-                      <p class="text-[10px] text-wc-text-tertiary">{{ macroC * 4 }} kcal</p>
+                      <p class="text-sm text-wc-text-tertiary">{{ macroC * 4 }} kcal</p>
                     </div>
 
                     <!-- Grasas -->
                     <div class="space-y-2">
                       <div class="flex items-end justify-between">
                         <div>
-                          <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary">Grasas</p>
+                          <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary">Grasas</p>
                           <p class="font-data text-2xl font-bold text-wc-text leading-none">
                             {{ macroF }}<span class="text-xs font-normal text-wc-text-tertiary">g</span>
                           </p>
@@ -1093,7 +1093,7 @@ onBeforeUnmount(() => {
                         <div class="h-full rounded-full bg-amber-400 transition-all duration-700"
                              :style="{ width: Math.round((macroF * 9) / totalKcalNutrition * 100) + '%' }"></div>
                       </div>
-                      <p class="text-[10px] text-wc-text-tertiary">{{ macroF * 9 }} kcal</p>
+                      <p class="text-sm text-wc-text-tertiary">{{ macroF * 9 }} kcal</p>
                     </div>
 
                   </div>
@@ -1109,7 +1109,7 @@ onBeforeUnmount(() => {
                     </svg>
                   </div>
                   <div class="min-w-0 flex-1">
-                    <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary mb-1.5">Notas de tu coach</p>
+                    <p class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary mb-1.5">Notas de tu coach</p>
                     <p class="text-sm leading-relaxed text-wc-text-secondary">{{ nutritionPlan.notas_coach }}</p>
                   </div>
                 </div>
@@ -1117,7 +1117,7 @@ onBeforeUnmount(() => {
 
               <!-- Tips nutricionales -->
               <div v-if="nutritionPlan.tips && nutritionPlan.tips.length > 0" class="rounded-xl border border-emerald-500/20 bg-emerald-500/[0.04] p-5">
-                <p class="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-3">Consejos de tu coach</p>
+                <p class="text-sm font-bold uppercase tracking-widest text-emerald-400 mb-3">Consejos de tu coach</p>
                 <ul class="space-y-2.5">
                   <li v-for="(tip, tIdx) in nutritionPlan.tips" :key="tIdx" class="flex items-start gap-2.5">
                     <svg class="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
@@ -1130,7 +1130,7 @@ onBeforeUnmount(() => {
 
               <!-- Comidas (formato completo: comidas[]) — collapsible meal cards -->
               <div v-if="nutritionPlan.comidas && nutritionPlan.comidas.length > 0" class="space-y-3">
-                <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary px-0.5">Plan de comidas</p>
+                <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary px-0.5">Plan de comidas</p>
                 <div
                   v-for="(meal, mIdx) in nutritionPlan.comidas"
                   :key="mIdx"
@@ -1154,7 +1154,7 @@ onBeforeUnmount(() => {
                       <p class="truncate font-display text-sm tracking-wide text-wc-text">
                         {{ (meal.nombre || meal.name || ('Comida ' + (mIdx + 1))).toUpperCase() }}
                       </p>
-                      <p v-if="meal.hora || meal.time" class="text-[11px] text-wc-text-tertiary">{{ meal.hora || meal.time }}</p>
+                      <p v-if="meal.hora || meal.time" class="text-sm text-wc-text-tertiary">{{ meal.hora || meal.time }}</p>
                     </div>
 
                     <!-- Macro chips (desktop) -->
@@ -1260,7 +1260,7 @@ onBeforeUnmount(() => {
 
                         <!-- Notas -->
                         <div v-if="meal.notas" class="rounded-lg border border-wc-border bg-wc-bg-tertiary px-3.5 py-3">
-                          <p class="text-xs leading-relaxed text-wc-text-tertiary">{{ meal.notas }}</p>
+                          <p class="text-sm leading-relaxed text-wc-text-tertiary">{{ meal.notas }}</p>
                         </div>
                       </div>
                     </div>
@@ -1270,7 +1270,7 @@ onBeforeUnmount(() => {
 
               <!-- Comidas sugeridas (formato RISE: comidas_sugeridas[]) — also collapsible -->
               <div v-else-if="nutritionPlan.comidas_sugeridas && nutritionPlan.comidas_sugeridas.length > 0" class="space-y-3">
-                <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary px-0.5">Comidas sugeridas</p>
+                <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary px-0.5">Comidas sugeridas</p>
                 <div
                   v-for="(meal, mIdx) in nutritionPlan.comidas_sugeridas"
                   :key="mIdx"
@@ -1342,9 +1342,9 @@ onBeforeUnmount(() => {
                     <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
                   </div>
                   <div>
-                    <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Protocolo</p>
+                    <p class="text-sm font-medium uppercase tracking-wider text-wc-text-tertiary">Protocolo</p>
                     <p class="mt-0.5 text-sm font-medium text-wc-text">{{ supplementPlan.descripcion_protocolo || supplementPlan.descripcion }}</p>
-                    <p v-if="supplementPlan.perfil_cliente" class="mt-1 text-xs text-wc-text-tertiary">{{ supplementPlan.perfil_cliente }}</p>
+                    <p v-if="supplementPlan.perfil_cliente" class="mt-1 text-sm text-wc-text-tertiary">{{ supplementPlan.perfil_cliente }}</p>
                   </div>
                 </div>
               </div>
@@ -1353,7 +1353,7 @@ onBeforeUnmount(() => {
               <div v-if="supplementPlan.advertencia" class="rounded-xl border border-amber-500/30 bg-amber-500/[0.08] p-4">
                 <div class="flex items-start gap-2">
                   <svg class="mt-0.5 h-4 w-4 shrink-0 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
-                  <p class="text-xs leading-relaxed text-amber-300">{{ supplementPlan.advertencia }}</p>
+                  <p class="text-sm leading-relaxed text-amber-300">{{ supplementPlan.advertencia }}</p>
                 </div>
               </div>
 
@@ -1381,11 +1381,11 @@ onBeforeUnmount(() => {
                             :class="[prioridadStyle(sup.prioridad).text, prioridadStyle(sup.prioridad).bg]"
                           >{{ sup.prioridad }}</span>
                         </div>
-                        <p v-if="typeof sup === 'object' && (sup.timing || sup.momento || sup.horario)" class="mt-1.5 inline-flex items-center gap-1 text-xs text-wc-text-secondary">
+                        <p v-if="typeof sup === 'object' && (sup.timing || sup.momento || sup.horario)" class="mt-1.5 inline-flex items-center gap-1 text-sm text-wc-text-secondary">
                           <span>{{ getTimingIcon(sup.timing || sup.momento || sup.horario) }}</span>
                           <span>{{ sup.timing || sup.momento || sup.horario }}</span>
                         </p>
-                        <p v-if="typeof sup === 'object' && (sup.notas || sup.notes)" class="mt-1 text-xs leading-relaxed text-wc-text-tertiary">{{ sup.notas || sup.notes }}</p>
+                        <p v-if="typeof sup === 'object' && (sup.notas || sup.notes)" class="mt-1 text-sm leading-relaxed text-wc-text-tertiary">{{ sup.notas || sup.notes }}</p>
                       </div>
                     </div>
                   </div>
@@ -1409,8 +1409,8 @@ onBeforeUnmount(() => {
                           <span class="font-semibold text-wc-text">{{ typeof sup === 'string' ? sup : (sup.nombre || sup.name || 'Suplemento') }}</span>
                           <span v-if="typeof sup === 'object' && (sup.dosis || sup.dose)" class="rounded bg-wc-bg-secondary px-2 py-0.5 font-data text-xs font-semibold text-wc-accent">{{ sup.dosis || sup.dose }}</span>
                         </div>
-                        <p v-if="typeof sup === 'object' && (sup.momento || sup.timing || sup.horario)" class="mt-1 text-xs text-wc-text-secondary">{{ getTimingIcon(sup.momento || sup.timing || sup.horario) }} {{ sup.momento || sup.timing || sup.horario }}</p>
-                        <p v-if="typeof sup === 'object' && (sup.notas || sup.notes)" class="mt-1 text-xs text-wc-text-tertiary">{{ sup.notas || sup.notes }}</p>
+                        <p v-if="typeof sup === 'object' && (sup.momento || sup.timing || sup.horario)" class="mt-1 text-sm text-wc-text-secondary">{{ getTimingIcon(sup.momento || sup.timing || sup.horario) }} {{ sup.momento || sup.timing || sup.horario }}</p>
+                        <p v-if="typeof sup === 'object' && (sup.notas || sup.notes)" class="mt-1 text-sm text-wc-text-tertiary">{{ sup.notas || sup.notes }}</p>
                       </div>
                     </div>
                   </div>
@@ -1430,8 +1430,8 @@ onBeforeUnmount(() => {
                   <div v-for="(momento, mIdx) in supplementPlan.timing_diario" :key="mIdx" class="flex items-start gap-4 px-5 py-3.5">
                     <span class="mt-0.5 shrink-0 text-base">{{ getTimingIcon(typeof momento === 'object' ? (momento.momento || '') : '') }}</span>
                     <div class="min-w-0 flex-1">
-                      <p class="text-xs font-semibold text-wc-text">{{ typeof momento === 'object' ? (momento.momento || '') : '' }}</p>
-                      <p class="mt-0.5 text-xs text-wc-text-secondary">{{ typeof momento === 'object' ? (momento.suplementos || '') : momento }}</p>
+                      <p class="text-sm font-semibold text-wc-text">{{ typeof momento === 'object' ? (momento.momento || '') : '' }}</p>
+                      <p class="mt-0.5 text-sm text-wc-text-secondary">{{ typeof momento === 'object' ? (momento.suplementos || '') : momento }}</p>
                     </div>
                   </div>
                 </div>
@@ -1459,16 +1459,16 @@ onBeforeUnmount(() => {
                 <div class="divide-y divide-sky-500/10">
                   <div v-for="(sinergia, sIdx) in supplementPlan.sinergias" :key="sIdx" class="px-5 py-4">
                     <p class="text-sm font-semibold text-sky-300">{{ sinergia.titulo || '' }}</p>
-                    <p class="mt-1 text-xs leading-relaxed text-wc-text-secondary">{{ sinergia.explicacion || '' }}</p>
+                    <p class="mt-1 text-sm leading-relaxed text-wc-text-secondary">{{ sinergia.explicacion || '' }}</p>
                   </div>
                 </div>
               </div>
 
               <!-- Coach notes -->
               <div v-if="supplementPlan.notas_coach || supplementPlan.coach_notes || supplementPlan.notas" class="rounded-xl border-l-4 border-wc-accent bg-wc-bg-tertiary p-5">
-                <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-wc-accent">Notas del coach</p>
+                <p class="mb-2 text-sm font-semibold uppercase tracking-wider text-wc-accent">Notas del coach</p>
                 <p class="text-sm leading-relaxed text-wc-text-secondary">{{ supplementPlan.notas_coach || supplementPlan.coach_notes || supplementPlan.notas }}</p>
-                <p v-if="supplementPlan.mensaje_final" class="mt-3 text-xs italic text-wc-text-tertiary">{{ supplementPlan.mensaje_final }}</p>
+                <p v-if="supplementPlan.mensaje_final" class="mt-3 text-sm italic text-wc-text-tertiary">{{ supplementPlan.mensaje_final }}</p>
               </div>
             </div>
           </template>
@@ -1500,7 +1500,7 @@ onBeforeUnmount(() => {
               <div v-if="cicloPlan.warning || cicloPlan.advertencia" class="rounded-xl border border-amber-500/30 bg-amber-500/[0.08] p-4">
                 <div class="flex items-start gap-3">
                   <svg class="mt-0.5 h-5 w-5 shrink-0 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
-                  <p class="text-xs leading-relaxed text-amber-300">{{ cicloPlan.warning || cicloPlan.advertencia }}</p>
+                  <p class="text-sm leading-relaxed text-amber-300">{{ cicloPlan.warning || cicloPlan.advertencia }}</p>
                 </div>
               </div>
 
@@ -1508,10 +1508,10 @@ onBeforeUnmount(() => {
               <div class="rounded-2xl border border-wc-border bg-wc-bg-tertiary p-5">
                 <div class="flex items-start justify-between gap-4">
                   <div>
-                    <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary">Protocolo Activo</p>
+                    <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary">Protocolo Activo</p>
                     <h2 class="mt-1 font-display text-2xl tracking-wide text-wc-text">{{ (cicloPlan.name || cicloPlan.nombre || 'Protocolo Hormonal').toUpperCase() }}</h2>
                     <p v-if="cicloPlan.duration || cicloPlan.duracion" class="mt-1 text-sm text-wc-text-secondary">Duracion: <span class="font-semibold text-wc-text">{{ cicloPlan.duration || cicloPlan.duracion }}</span></p>
-                    <p v-if="cicloPlan.descripcion_protocolo || cicloPlan.descripcion" class="mt-2 text-xs leading-relaxed text-wc-text-tertiary">{{ cicloPlan.descripcion_protocolo || cicloPlan.descripcion }}</p>
+                    <p v-if="cicloPlan.descripcion_protocolo || cicloPlan.descripcion" class="mt-2 text-sm leading-relaxed text-wc-text-tertiary">{{ cicloPlan.descripcion_protocolo || cicloPlan.descripcion }}</p>
                   </div>
                   <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-wc-accent/10">
                     <svg class="h-7 w-7 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 1-6.23-.693L5 14.5m14.8.8 1.402 1.402c1 1 .03 2.798-1.421 2.798H4.062c-1.451 0-2.42-1.798-1.42-2.798L4 14.5" /></svg>
@@ -1539,8 +1539,8 @@ onBeforeUnmount(() => {
                       <span v-if="typeof compound === 'object' && (compound.dosis || compound.dose)" class="rounded bg-wc-accent/10 px-2 py-0.5 font-data text-xs font-bold text-wc-accent">{{ compound.dosis || compound.dose }}</span>
                       <span v-if="typeof compound === 'object' && (compound.semanas || compound.weeks)" class="rounded-full border border-wc-border px-2 py-0.5 text-[10px] text-wc-text-tertiary">Sem {{ compound.semanas || compound.weeks }}</span>
                     </div>
-                    <p v-if="typeof compound === 'object' && (compound.frecuencia || compound.frequency)" class="mt-1 text-xs text-wc-text-secondary">&#x1F5D3;&#xFE0F; {{ compound.frecuencia || compound.frequency }}</p>
-                    <p v-if="typeof compound === 'object' && (compound.notas || compound.notes)" class="mt-1 text-xs leading-relaxed text-wc-text-tertiary">{{ compound.notas || compound.notes }}</p>
+                    <p v-if="typeof compound === 'object' && (compound.frecuencia || compound.frequency)" class="mt-1 text-sm text-wc-text-secondary">&#x1F5D3;&#xFE0F; {{ compound.frecuencia || compound.frequency }}</p>
+                    <p v-if="typeof compound === 'object' && (compound.notas || compound.notes)" class="mt-1 text-sm leading-relaxed text-wc-text-tertiary">{{ compound.notas || compound.notes }}</p>
                   </div>
                 </div>
               </div>
@@ -1570,7 +1570,7 @@ onBeforeUnmount(() => {
                       <p class="font-display text-sm tracking-wide" :class="getPhaseColor(typeof phase === 'object' ? (phase.nombre || phase.name || '') : phase).text">{{ (typeof phase === 'object' ? (phase.nombre || phase.name || '') : phase).toUpperCase() }}</p>
                       <span v-if="typeof phase === 'object' && (phase.semanas || phase.weeks)" class="ml-auto text-[10px] text-wc-text-tertiary">Sem {{ phase.semanas || phase.weeks }}</span>
                     </div>
-                    <p v-if="typeof phase === 'object' && (phase.descripcion || phase.description)" class="text-xs leading-relaxed text-wc-text-secondary">{{ phase.descripcion || phase.description }}</p>
+                    <p v-if="typeof phase === 'object' && (phase.descripcion || phase.description)" class="text-sm leading-relaxed text-wc-text-secondary">{{ phase.descripcion || phase.description }}</p>
                   </div>
                 </div>
               </div>
@@ -1587,8 +1587,8 @@ onBeforeUnmount(() => {
                     </div>
                     <div class="min-w-0 flex-1">
                       <p class="font-semibold text-wc-text text-sm">{{ typeof pct === 'object' ? (pct.nombre || pct.name || '') : pct }}</p>
-                      <p v-if="typeof pct === 'object' && (pct.dosis || pct.dose)" class="text-xs text-emerald-400 font-data font-bold mt-0.5">{{ pct.dosis || pct.dose }}</p>
-                      <p v-if="typeof pct === 'object' && (pct.semanas || pct.weeks)" class="text-[11px] text-wc-text-tertiary mt-0.5">{{ pct.semanas || pct.weeks }}</p>
+                      <p v-if="typeof pct === 'object' && (pct.dosis || pct.dose)" class="text-sm text-emerald-400 font-data font-bold mt-0.5">{{ pct.dosis || pct.dose }}</p>
+                      <p v-if="typeof pct === 'object' && (pct.semanas || pct.weeks)" class="text-sm text-wc-text-tertiary mt-0.5">{{ pct.semanas || pct.weeks }}</p>
                     </div>
                   </div>
                 </div>
@@ -1605,7 +1605,7 @@ onBeforeUnmount(() => {
                       <p class="font-semibold text-sky-300 text-sm">{{ typeof lab === 'object' ? (lab.nombre || lab.name || '') : lab }}</p>
                       <span v-if="typeof lab === 'object' && (lab.cuando || lab.when)" class="shrink-0 rounded-full bg-sky-500/15 px-2.5 py-0.5 text-[10px] font-bold text-sky-400 uppercase tracking-wide">{{ lab.cuando || lab.when }}</span>
                     </div>
-                    <p v-if="typeof lab === 'object' && (lab.marcadores || lab.markers)" class="mt-1.5 text-xs leading-relaxed text-wc-text-tertiary">{{ lab.marcadores || lab.markers }}</p>
+                    <p v-if="typeof lab === 'object' && (lab.marcadores || lab.markers)" class="mt-1.5 text-sm leading-relaxed text-wc-text-tertiary">{{ lab.marcadores || lab.markers }}</p>
                   </div>
                 </div>
               </div>
@@ -1625,7 +1625,7 @@ onBeforeUnmount(() => {
                         <p class="text-sm font-medium text-wc-text">{{ typeof item === 'object' ? (item.item || '') : item }}</p>
                         <span v-if="typeof item === 'object' && item.frecuencia" class="text-[10px] text-wc-text-tertiary">{{ item.frecuencia }}</span>
                       </div>
-                      <p v-if="typeof item === 'object' && item.detalle" class="mt-0.5 text-xs text-wc-text-tertiary">{{ item.detalle }}</p>
+                      <p v-if="typeof item === 'object' && item.detalle" class="mt-0.5 text-sm text-wc-text-tertiary">{{ item.detalle }}</p>
                     </div>
                   </div>
                 </div>
@@ -1648,7 +1648,7 @@ onBeforeUnmount(() => {
                   </button>
                   <Transition name="fade">
                     <div v-if="openEfecto === eIdx" class="border-t border-wc-border px-5 py-3.5 bg-wc-bg-secondary">
-                      <p class="text-xs leading-relaxed text-wc-text-secondary">{{ typeof efecto === 'object' ? (efecto.manejo || efecto.management || '') : '' }}</p>
+                      <p class="text-sm leading-relaxed text-wc-text-secondary">{{ typeof efecto === 'object' ? (efecto.manejo || efecto.management || '') : '' }}</p>
                     </div>
                   </Transition>
                 </div>
@@ -1665,14 +1665,14 @@ onBeforeUnmount(() => {
                 <div class="divide-y divide-red-500/15">
                   <div v-for="(emerg, emIdx) in cicloPlan.emergencia" :key="emIdx" class="px-5 py-4">
                     <p class="text-sm font-semibold text-red-300">&#x26A0;&#xFE0F; {{ typeof emerg === 'object' ? (emerg.sintoma || '') : emerg }}</p>
-                    <p v-if="typeof emerg === 'object' && emerg.accion" class="mt-1.5 text-xs leading-relaxed text-wc-text-secondary">{{ emerg.accion }}</p>
+                    <p v-if="typeof emerg === 'object' && emerg.accion" class="mt-1.5 text-sm leading-relaxed text-wc-text-secondary">{{ emerg.accion }}</p>
                   </div>
                 </div>
               </div>
 
               <!-- Coach notes -->
               <div v-if="cicloPlan.notas_coach" class="rounded-xl border-l-4 border-wc-accent bg-wc-bg-tertiary p-5">
-                <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-wc-accent">Notas del coach</p>
+                <p class="mb-2 text-sm font-semibold uppercase tracking-wider text-wc-accent">Notas del coach</p>
                 <p class="text-sm leading-relaxed text-wc-text-secondary">{{ cicloPlan.notas_coach }}</p>
               </div>
             </div>
@@ -1712,16 +1712,16 @@ onBeforeUnmount(() => {
                       <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
                         <span class="text-2xl">{{ cicloPhaseData.emoji }}</span>
                         <span class="font-data text-2xl font-black leading-none" :class="cicloPhaseData.text">{{ cicloCurrentDay }}</span>
-                        <span class="text-[10px] text-wc-text-tertiary font-medium uppercase tracking-wide">dia</span>
+                        <span class="text-sm text-wc-text-tertiary font-medium uppercase tracking-wide">dia</span>
                       </div>
                     </div>
                     <div class="mt-4 sm:mt-0 text-center sm:text-left flex-1">
-                      <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary mb-1">Fase actual</p>
+                      <p class="text-sm font-bold uppercase tracking-widest text-wc-text-tertiary mb-1">Fase actual</p>
                       <h2 class="font-display text-4xl tracking-wide leading-none" :class="cicloPhaseData.text">{{ cicloPhaseData.name }}</h2>
                       <p class="mt-2 font-data text-sm text-wc-text-secondary">Dia <span class="font-bold text-wc-text">{{ cicloCurrentDay }}</span> de {{ cicloCycleLength }}</p>
-                      <p class="mt-1 text-xs text-wc-text-tertiary">Proximo ciclo en <span class="font-semibold text-wc-text-secondary">{{ cicloDaysUntilNext }}</span> dias</p>
+                      <p class="mt-1 text-sm text-wc-text-tertiary">Proximo ciclo en <span class="font-semibold text-wc-text-secondary">{{ cicloDaysUntilNext }}</span> dias</p>
                       <div class="mt-3 flex items-center gap-1.5">
-                        <span class="text-[10px] font-medium text-wc-text-tertiary uppercase tracking-wider">Energia</span>
+                        <span class="text-sm font-medium text-wc-text-tertiary uppercase tracking-wider">Energia</span>
                         <div class="flex gap-0.5">
                           <div
                             v-for="i in 10"
@@ -1756,17 +1756,17 @@ onBeforeUnmount(() => {
                   <h3 class="font-display text-base tracking-wide text-wc-text mb-4">CONFIGURACION DEL CICLO</h3>
                   <div class="grid gap-4 sm:grid-cols-2">
                     <div>
-                      <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">&#x1F4C5; Fecha de inicio del ultimo ciclo</label>
+                      <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">&#x1F4C5; Fecha de inicio del ultimo ciclo</label>
                       <input type="date" v-model="cicloStartDate" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"/>
                     </div>
                     <div>
-                      <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">&#x1F504; Duracion del ciclo (dias)</label>
+                      <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">&#x1F504; Duracion del ciclo (dias)</label>
                       <input type="number" v-model.number="cicloCycleLength" min="21" max="40" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"/>
                     </div>
                   </div>
                   <div class="mt-4 flex items-center gap-3">
                     <button @click="saveCicloConfig" class="rounded-lg bg-wc-accent px-5 py-2 text-sm font-medium text-white hover:bg-wc-accent/90 transition-colors">Guardar</button>
-                    <p class="text-xs text-wc-text-tertiary">Los datos se guardan localmente en tu dispositivo.</p>
+                    <p class="text-sm text-wc-text-tertiary">Los datos se guardan localmente en tu dispositivo.</p>
                   </div>
                 </div>
               </Transition>
@@ -1813,16 +1813,16 @@ onBeforeUnmount(() => {
                       :style="flippedCards[pcIdx] ? 'transform:rotateY(180deg)' : 'transform:rotateY(0deg)'"
                     >
                       <div class="absolute inset-0 rounded-xl p-3" :class="[pc.border, pc.bgF]" style="backface-visibility:hidden;">
-                        <div class="flex items-center gap-1.5 mb-1.5"><div class="h-2 w-2 shrink-0 rounded-full" :class="pc.dot"></div><p class="text-xs font-semibold" :class="pc.text">{{ pc.name }}</p></div>
-                        <p class="text-[10px] text-wc-text-tertiary">Dias {{ pc.days }}</p>
-                        <p class="text-[10px] text-wc-text-tertiary mt-0.5">{{ pc.sub }}</p>
+                        <div class="flex items-center gap-1.5 mb-1.5"><div class="h-2 w-2 shrink-0 rounded-full" :class="pc.dot"></div><p class="text-sm font-semibold" :class="pc.text">{{ pc.name }}</p></div>
+                        <p class="text-sm text-wc-text-tertiary">Dias {{ pc.days }}</p>
+                        <p class="text-sm text-wc-text-tertiary mt-0.5">{{ pc.sub }}</p>
                       </div>
                       <div class="absolute inset-0 overflow-y-auto rounded-xl p-3" :class="[pc.border, pc.bgB]" style="backface-visibility:hidden; transform:rotateY(180deg);">
-                        <p class="text-[10px] font-bold mb-1" :class="pc.text">&#x1F3CB;&#xFE0F; Entreno</p>
-                        <p class="text-[10px] text-wc-text-secondary leading-relaxed">{{ pc.train }}</p>
+                        <p class="text-sm font-bold mb-1" :class="pc.text">&#x1F3CB;&#xFE0F; Entreno</p>
+                        <p class="text-sm text-wc-text-secondary leading-relaxed">{{ pc.train }}</p>
                         <div class="mt-2 border-t pt-2" :class="pc.border">
-                          <p class="text-[10px] font-bold mb-1" :class="pc.text">&#x1F957; Nutricion</p>
-                          <p class="text-[10px] text-wc-text-secondary leading-relaxed">{{ pc.nutr }}</p>
+                          <p class="text-sm font-bold mb-1" :class="pc.text">&#x1F957; Nutricion</p>
+                          <p class="text-sm text-wc-text-secondary leading-relaxed">{{ pc.nutr }}</p>
                         </div>
                       </div>
                     </div>
@@ -1855,7 +1855,7 @@ onBeforeUnmount(() => {
                     :class="bwStatus(r) === 'ok' ? 'border-emerald-500/25' : bwStatus(r) === 'flag' ? 'border-amber-500/30' : 'border-wc-border'"
                   >
                     <div class="flex items-start justify-between gap-1 mb-2">
-                      <p class="text-[11px] font-medium text-wc-text-secondary leading-tight">{{ testName }}</p>
+                      <p class="text-sm font-medium text-wc-text-secondary leading-tight">{{ testName }}</p>
                       <span v-if="bwStatus(r) === 'ok'" class="shrink-0 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/20">
                         <svg class="h-2.5 w-2.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
                       </span>
@@ -1865,7 +1865,7 @@ onBeforeUnmount(() => {
                     </div>
                     <div class="flex items-baseline gap-1">
                       <span class="font-data text-xl font-black text-wc-text tabular-nums">{{ r.value }}</span>
-                      <span class="text-[10px] text-wc-text-tertiary">{{ r.unit }}</span>
+                      <span class="text-sm text-wc-text-tertiary">{{ r.unit }}</span>
                     </div>
                     <div
                       v-if="bwSpectrumPct(r) !== null"
@@ -1899,36 +1899,36 @@ onBeforeUnmount(() => {
                   <form @submit.prevent="saveBloodwork" class="mt-4 space-y-4">
                     <div class="grid gap-4 sm:grid-cols-2">
                       <div>
-                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">&#x1F9EA; Prueba</label>
+                        <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">&#x1F9EA; Prueba</label>
                         <select v-model="bwForm.testName" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none">
                           <option value="">Seleccionar prueba...</option>
                           <optgroup v-for="group in bwTestOptions" :key="group.group" :label="group.group">
                             <option v-for="test in group.tests" :key="test" :value="test">{{ test }}</option>
                           </optgroup>
                         </select>
-                        <span v-if="bwErrors.test_name" class="mt-1 block text-xs text-red-400">{{ bwErrors.test_name[0] }}</span>
+                        <span v-if="bwErrors.test_name" class="mt-1 block text-sm text-red-400">{{ bwErrors.test_name[0] }}</span>
                       </div>
 
                       <div>
-                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">&#x1F4C5; Fecha</label>
+                        <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">&#x1F4C5; Fecha</label>
                         <input type="date" v-model="bwForm.testDate" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
-                        <span v-if="bwErrors.test_date" class="mt-1 block text-xs text-red-400">{{ bwErrors.test_date[0] }}</span>
+                        <span v-if="bwErrors.test_date" class="mt-1 block text-sm text-red-400">{{ bwErrors.test_date[0] }}</span>
                       </div>
 
                       <div>
-                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">&#x1F4CA; Valor</label>
+                        <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">&#x1F4CA; Valor</label>
                         <input type="number" step="0.01" v-model="bwForm.value" placeholder="ej: 95.5" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
-                        <span v-if="bwErrors.value" class="mt-1 block text-xs text-red-400">{{ bwErrors.value[0] }}</span>
+                        <span v-if="bwErrors.value" class="mt-1 block text-sm text-red-400">{{ bwErrors.value[0] }}</span>
                       </div>
 
                       <div>
-                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">&#x1F52C; Unidad</label>
+                        <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">&#x1F52C; Unidad</label>
                         <input type="text" v-model="bwForm.unit" placeholder="ej: mg/dL" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
-                        <span v-if="bwErrors.unit" class="mt-1 block text-xs text-red-400">{{ bwErrors.unit[0] }}</span>
+                        <span v-if="bwErrors.unit" class="mt-1 block text-sm text-red-400">{{ bwErrors.unit[0] }}</span>
                       </div>
 
                       <div class="sm:col-span-2">
-                        <label class="block text-xs font-medium text-wc-text-tertiary mb-1.5">&#x1F4CB; Rango de referencia <span class="font-normal text-wc-text-tertiary">(opcional - ej: 70-100)</span></label>
+                        <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">&#x1F4CB; Rango de referencia <span class="font-normal text-wc-text-tertiary">(opcional - ej: 70-100)</span></label>
                         <input type="text" v-model="bwForm.referenceRange" placeholder="ej: 70-100 mg/dL" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
                       </div>
                     </div>
@@ -1977,7 +1977,7 @@ onBeforeUnmount(() => {
                       <!-- Test name + date -->
                       <div class="min-w-0 flex-1">
                         <p class="text-sm font-medium text-wc-text truncate">{{ result.test_name }}</p>
-                        <p class="text-[11px] text-wc-text-tertiary">{{ formatDate(result.test_date) }}</p>
+                        <p class="text-sm text-wc-text-tertiary">{{ formatDate(result.test_date) }}</p>
                       </div>
 
                       <!-- Value + unit -->
@@ -1986,7 +1986,7 @@ onBeforeUnmount(() => {
                           {{ result.value }}
                           <span class="text-xs font-normal text-wc-text-tertiary">{{ result.unit }}</span>
                         </p>
-                        <p v-if="result.reference_range" class="text-[10px] text-wc-text-tertiary">{{ result.reference_range }}</p>
+                        <p v-if="result.reference_range" class="text-sm text-wc-text-tertiary">{{ result.reference_range }}</p>
                       </div>
 
                       <!-- Delete -->

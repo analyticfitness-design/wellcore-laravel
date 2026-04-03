@@ -147,7 +147,7 @@ onMounted(() => {
             </div>
             <div>
               <p class="font-display text-2xl text-wc-accent" style="line-height:1">{{ data?.currentStreak ?? 0 }}</p>
-              <p class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Racha</p>
+              <p class="text-sm uppercase tracking-wider text-wc-text-tertiary">Racha</p>
             </div>
           </div>
         </div>
@@ -161,7 +161,7 @@ onMounted(() => {
             </div>
             <div>
               <p class="font-display text-2xl text-wc-accent" style="line-height:1">{{ data?.completedDays ?? 0 }}</p>
-              <p class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Dias</p>
+              <p class="text-sm uppercase tracking-wider text-wc-text-tertiary">Dias</p>
             </div>
           </div>
         </div>
@@ -175,7 +175,7 @@ onMounted(() => {
             </div>
             <div>
               <p class="font-display text-2xl text-wc-accent" style="line-height:1">{{ data?.avgWater ?? '--' }}<span class="text-xs font-normal text-wc-text-tertiary">L</span></p>
-              <p class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Agua prom.</p>
+              <p class="text-sm uppercase tracking-wider text-wc-text-tertiary">Agua prom.</p>
             </div>
           </div>
         </div>
@@ -189,7 +189,7 @@ onMounted(() => {
             </div>
             <div>
               <p class="font-display text-2xl text-wc-accent" style="line-height:1">{{ data?.avgSleep ?? '--' }}<span class="text-xs font-normal text-wc-text-tertiary">h</span></p>
-              <p class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Sueno prom.</p>
+              <p class="text-sm uppercase tracking-wider text-wc-text-tertiary">Sueno prom.</p>
             </div>
           </div>
         </div>
@@ -204,7 +204,7 @@ onMounted(() => {
             :key="day.label"
             :class="['flex flex-col items-center gap-1.5 rounded-lg p-2', day.isToday ? 'bg-wc-accent/5 ring-1 ring-wc-accent/20' : '']"
           >
-            <span :class="['text-[11px] font-medium', day.isToday ? 'text-wc-accent font-semibold' : 'text-wc-text-tertiary']">{{ day.label }}</span>
+            <span :class="['text-sm font-medium', day.isToday ? 'text-wc-accent font-semibold' : 'text-wc-text-tertiary']">{{ day.label }}</span>
             <div v-if="day.hasEntry" :class="['flex h-9 w-9 items-center justify-center rounded-full', day.habitCount >= (day.total * 0.8) ? 'bg-emerald-500/15 text-emerald-500' : 'bg-wc-accent/15 text-wc-accent']">
               <span class="text-xs font-bold">{{ day.habitCount }}</span>
             </div>
@@ -220,7 +220,7 @@ onMounted(() => {
         <div class="flex items-center justify-between">
           <div>
             <h2 class="font-display text-lg tracking-wide text-wc-text">Hoy</h2>
-            <p v-if="todaySaved && savedAt" class="mt-0.5 text-xs text-emerald-500">Guardado a las {{ savedAt }}</p>
+            <p v-if="todaySaved && savedAt" class="mt-0.5 text-sm text-emerald-500">Guardado a las {{ savedAt }}</p>
           </div>
           <span v-if="todaySaved" class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-500">
             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -232,7 +232,7 @@ onMounted(() => {
 
         <!-- Progress indicator -->
         <div v-if="habitsPlan.length > 0" class="mt-5">
-          <div class="flex items-center justify-between text-xs text-wc-text-tertiary mb-2">
+          <div class="flex items-center justify-between text-sm text-wc-text-tertiary mb-2">
             <span>{{ completedCount }}/{{ habitsPlan.length }} habitos</span>
             <span>{{ progressPct }}%</span>
           </div>
@@ -263,7 +263,7 @@ onMounted(() => {
               </div>
               <div>
                 <p class="text-sm font-medium text-wc-text">{{ habit.nombre || habit.name }}</p>
-                <p class="text-xs text-wc-text-tertiary">
+                <p class="text-sm text-wc-text-tertiary">
                   {{ habitsDone[index] ? 'Completado' : 'Pendiente' }}
                   <template v-if="habit.frecuencia"> &middot; {{ habit.frecuencia }}</template>
                 </p>
@@ -273,7 +273,7 @@ onMounted(() => {
 
           <div v-else class="rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-6 text-center">
             <p class="text-sm text-wc-text-tertiary">Tu coach esta definiendo tus habitos personalizados. Apareceran aqui pronto.</p>
-            <p class="mt-2 text-xs text-wc-text-tertiary">Por ahora, registra agua, sueno y pasos abajo.</p>
+            <p class="mt-2 text-sm text-wc-text-tertiary">Por ahora, registra agua, sueno y pasos abajo.</p>
           </div>
 
           <!-- Water + Sleep + Steps -->

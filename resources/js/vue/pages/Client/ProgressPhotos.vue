@@ -360,7 +360,7 @@ onMounted(fetchPhotos);
           </div>
           <div>
             <h2 class="font-display text-xl tracking-wide text-wc-text">SUBIR FOTOS</h2>
-            <p class="text-xs text-wc-text-tertiary">Sube fotos de frente, lado y espalda</p>
+            <p class="text-sm text-wc-text-tertiary">Sube fotos de frente, lado y espalda</p>
           </div>
         </div>
 
@@ -416,7 +416,7 @@ onMounted(fetchPhotos);
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
                   </svg>
                   <p class="mt-2 text-sm font-medium text-wc-text-secondary">{{ ANGLE_LABELS[angle] }}</p>
-                  <p class="mt-1 text-xs text-wc-text-tertiary">Click para seleccionar</p>
+                  <p class="mt-1 text-sm text-wc-text-tertiary">Click para seleccionar</p>
                 </template>
 
                 <input
@@ -463,14 +463,14 @@ onMounted(fetchPhotos);
         <h3 class="mb-4 font-display text-lg tracking-wide text-wc-text">COMPARACION LADO A LADO</h3>
         <div class="mb-4 grid grid-cols-2 gap-3">
           <div>
-            <label class="mb-1 block text-xs font-medium text-wc-text-tertiary">Fecha 1</label>
+            <label class="mb-1 block text-sm font-medium text-wc-text-secondary">Fecha 1</label>
             <select v-model="compareDate1" class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20">
               <option value="">Seleccionar...</option>
               <option v-for="date in availableDates" :key="date" :value="date">{{ formatDate(date) }}</option>
             </select>
           </div>
           <div>
-            <label class="mb-1 block text-xs font-medium text-wc-text-tertiary">Fecha 2</label>
+            <label class="mb-1 block text-sm font-medium text-wc-text-secondary">Fecha 2</label>
             <select v-model="compareDate2" class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20">
               <option value="">Seleccionar...</option>
               <option v-for="date in availableDates" :key="date" :value="date">{{ formatDate(date) }}</option>
@@ -480,7 +480,7 @@ onMounted(fetchPhotos);
 
         <div v-if="compareDate1 && compareDate2" class="grid grid-cols-2 gap-4">
           <div v-for="cDate in [compareDate1, compareDate2]" :key="cDate">
-            <p class="mb-2 text-center text-xs font-semibold text-wc-text-tertiary">{{ formatDate(cDate) }}</p>
+            <p class="mb-2 text-center text-sm font-semibold text-wc-text-tertiary">{{ formatDate(cDate) }}</p>
             <div class="grid grid-cols-1 gap-2">
               <div v-for="angle in ANGLES" :key="angle">
                 <div class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary">
@@ -497,11 +497,11 @@ onMounted(fetchPhotos);
                       <svg class="h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                       </svg>
-                      <p class="mt-2 text-xs text-wc-text-tertiary">Sin foto</p>
+                      <p class="mt-2 text-sm text-wc-text-tertiary">Sin foto</p>
                     </div>
                   </template>
                   <div class="px-3 py-2 text-center">
-                    <span class="text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">{{ ANGLE_LABELS[angle] }}</span>
+                    <span class="text-sm font-semibold uppercase tracking-wider text-wc-text-secondary">{{ ANGLE_LABELS[angle] }}</span>
                   </div>
                 </div>
               </div>
@@ -585,13 +585,13 @@ onMounted(fetchPhotos);
                         <svg class="h-12 w-12 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                         </svg>
-                        <p class="mt-2 text-xs text-wc-text-tertiary">Sin foto</p>
+                        <p class="mt-2 text-sm text-wc-text-tertiary">Sin foto</p>
                       </div>
                     </template>
 
                     <!-- Angle label below photo/placeholder -->
                     <div class="px-3 py-2 text-center">
-                      <span class="text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">{{ ANGLE_LABELS[angle] }}</span>
+                      <span class="text-sm font-semibold uppercase tracking-wider text-wc-text-secondary">{{ ANGLE_LABELS[angle] }}</span>
                     </div>
                   </div>
                 </div>

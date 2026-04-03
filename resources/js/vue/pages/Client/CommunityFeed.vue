@@ -374,12 +374,12 @@ function getReactionCount(post, type) {
           <div class="hidden items-center gap-4 sm:flex">
             <div class="text-center">
               <p class="font-display text-2xl text-wc-accent">{{ communityStats.total_posts }}</p>
-              <p class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Posts</p>
+              <p class="text-xs uppercase tracking-wider text-wc-text-tertiary">Posts</p>
             </div>
             <div class="h-8 w-px bg-wc-border"></div>
             <div class="text-center">
               <p class="font-display text-2xl text-wc-accent">{{ communityStats.active_members }}</p>
-              <p class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Miembros</p>
+              <p class="text-xs uppercase tracking-wider text-wc-text-tertiary">Miembros</p>
             </div>
           </div>
         </div>
@@ -404,7 +404,7 @@ function getReactionCount(post, type) {
             :key="tab.key"
             type="button"
             @click="postType = tab.key"
-            class="flex flex-1 items-center justify-center gap-2 py-3 text-xs font-semibold uppercase tracking-wider transition-colors"
+            class="flex flex-1 items-center justify-center gap-2 py-3 text-sm font-semibold uppercase tracking-wider transition-colors"
             :class="postType === tab.key
               ? `border-b-2 ${tab.borderColor} ${tab.textColor} ${tab.bgColor}`
               : 'text-wc-text-tertiary hover:text-wc-text-secondary'"
@@ -435,8 +435,8 @@ function getReactionCount(post, type) {
           </div>
 
           <!-- Validation errors -->
-          <p v-if="postErrors.content" class="mt-1 text-xs text-red-400">{{ postErrors.content[0] || postErrors.content }}</p>
-          <p v-if="postErrors.post_type" class="mt-1 text-xs text-red-400">{{ postErrors.post_type[0] }}</p>
+          <p v-if="postErrors.content" class="mt-1 text-sm text-red-400">{{ postErrors.content[0] || postErrors.content }}</p>
+          <p v-if="postErrors.post_type" class="mt-1 text-sm text-red-400">{{ postErrors.post_type[0] }}</p>
 
           <div class="mt-3 flex justify-end">
             <button
@@ -498,7 +498,7 @@ function getReactionCount(post, type) {
                         :class="`${getPostTypeInfo(post.post_type).bg} ${getPostTypeInfo(post.post_type).text}`"
                       >{{ getPostTypeInfo(post.post_type).emoji }} {{ getPostTypeInfo(post.post_type).label }}</span>
                     </div>
-                    <p class="text-[11px] text-wc-text-tertiary">{{ timeAgo(post.created_at) }}</p>
+                    <p class="text-xs text-wc-text-tertiary">{{ timeAgo(post.created_at) }}</p>
                   </div>
                 </div>
 
@@ -527,7 +527,7 @@ function getReactionCount(post, type) {
                   v-if="confirmDeleteId === post.id && deletingPost !== post.id"
                   class="mt-2 flex items-center justify-between rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2"
                 >
-                  <p class="text-xs text-red-400">Haz clic de nuevo en el icono para confirmar</p>
+                  <p class="text-sm text-red-400">Haz clic de nuevo en el icono para confirmar</p>
                   <button @click.stop="cancelDelete" class="text-[10px] font-semibold uppercase text-wc-text-tertiary hover:text-wc-text-secondary transition-colors">
                     Cancelar
                   </button>
@@ -580,19 +580,19 @@ function getReactionCount(post, type) {
                         {{ (comment.client_name || 'M').charAt(0).toUpperCase() }}
                       </div>
                       <div class="min-w-0 flex-1">
-                        <span class="text-xs font-semibold text-wc-text">{{ comment.client_name || 'Miembro' }}</span>
-                        <span class="ml-1.5 text-[10px] text-wc-text-tertiary">{{ timeAgo(comment.created_at) }}</span>
-                        <p class="mt-0.5 text-xs leading-relaxed text-wc-text-secondary">{{ comment.content }}</p>
+                        <span class="text-sm font-semibold text-wc-text">{{ comment.client_name || 'Miembro' }}</span>
+                        <span class="ml-1.5 text-xs text-wc-text-tertiary">{{ timeAgo(comment.created_at) }}</span>
+                        <p class="mt-0.5 text-sm leading-relaxed text-wc-text-secondary">{{ comment.content }}</p>
                       </div>
                     </div>
 
                     <!-- "X more" indicator -->
-                    <p v-if="getHiddenCommentCount(post) > 0" class="pl-8 text-[10px] text-wc-text-tertiary">
+                    <p v-if="getHiddenCommentCount(post) > 0" class="pl-8 text-xs text-wc-text-tertiary">
                       + {{ getHiddenCommentCount(post) }} comentarios mas
                     </p>
                   </template>
 
-                  <p v-else class="py-2 text-center text-xs text-wc-text-tertiary">Sin comentarios aun</p>
+                  <p v-else class="py-2 text-center text-sm text-wc-text-tertiary">Sin comentarios aun</p>
 
                   <!-- Add comment input -->
                   <div class="mt-2 flex gap-2 border-t border-wc-border/40 pt-2">
@@ -602,7 +602,7 @@ function getReactionCount(post, type) {
                       @keydown.enter="addComment(post.id)"
                       placeholder="Comentar..."
                       maxlength="500"
-                      class="flex-1 rounded-xl border border-wc-border bg-wc-bg px-3 py-1.5 text-xs text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent/50 focus:outline-none focus:ring-1 focus:ring-wc-accent/20"
+                      class="flex-1 rounded-xl border border-wc-border bg-wc-bg px-3 py-1.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent/50 focus:outline-none focus:ring-1 focus:ring-wc-accent/20"
                     />
                     <button
                       @click="addComment(post.id)"
@@ -654,7 +654,7 @@ function getReactionCount(post, type) {
             </svg>
             <span class="text-sm text-wc-text-tertiary">Cargando mas...</span>
           </div>
-          <p v-else-if="!hasMore && posts.length > 0" class="text-xs text-wc-text-tertiary">Has visto todas las publicaciones</p>
+          <p v-else-if="!hasMore && posts.length > 0" class="text-sm text-wc-text-tertiary">Has visto todas las publicaciones</p>
         </div>
       </div>
     </div>
