@@ -109,7 +109,7 @@ class TrainingController extends Controller
                     }
                 }
             } catch (\Throwable $e) {
-                // Silently skip if ejercicios_fitcron unavailable
+                \Log::warning('GIF enrichment failed', ['error' => $e->getMessage(), 'trace' => substr($e->getTraceAsString(), 0, 500)]);
             }
         }
 
