@@ -45,9 +45,14 @@ const cicloPlan = ref(null);
 const clientPlanType = ref('basico');
 const planStartDate = ref(null);
 
-// Habit data (from API buildHabitData)
+// Habit data (from API buildHabitData — plan endpoint, used as fallback)
 const habitData = ref([]);
 const habitCompliance = ref(0);
+
+// Live habit data — from GET /api/v/client/habits (loaded when tab activates)
+const habitsLive = ref(null);   // null = not yet loaded
+const habitsLoading = ref(false);
+const habitsToggling = ref({});  // { [habit_type]: true } while POST in flight
 
 // Nutrition tab accordion state
 const openNutrMeals = ref({});
@@ -136,6 +141,9 @@ function isTabLocked(key) {
 function setTab(key) {
   if (!isTabLocked(key)) {
     activeTab.value = key;
+    if (key === 'habitos' && habitsLive.value === null) {
+      fetchHabits();
+    }
   }
 }
 
@@ -446,6 +454,61 @@ async function fetchPlan() {
 function goToWorkout(dayIndex) {
   router.push({ name: 'client-workout', params: { day: dayIndex } });
 }
+
+// ── Live habits ──────────────────────────────────────────────────────────────
+
+async function fetchHabits() {
+  habitsLoading.value = true;
+  try {
+    const res = await api.get('/api/v/client/habits');
+    habitsLive.value = res.data;
+    // Sync compliance bar from live data
+    if (res.data.weekly_compliance !== undefined) {
+      habitCompliance.value = res.data.weekly_compliance ?? habitCompliance.value;
+    }
+  } catch {
+    // silently fall back to plan data already loaded
+  } finally {
+    habitsLoading.value = false;
+  }
+}
+
+async function doToggleHabit(habitType) {
+  if (habitsToggling.value[habitType]) return;
+  habitsToggling.value[habitType] = true;
+  try {
+    const res = await api.post('/api/v/client/habits/toggle', { habit_type: habitType });
+    // Update local state optimistically confirmed by server
+    if (habitsLive.value?.today_habits?.[habitType] !== undefined) {
+      habitsLive.value.today_habits[habitType].completed = res.data.completed;
+      if (res.data.completed) {
+        habitsLive.value.today_habits[habitType].streak = (habitsLive.value.today_habits[habitType].streak || 0) + 1;
+      }
+    }
+  } catch {
+    // ignore — user can retry
+  } finally {
+    habitsToggling.value[habitType] = false;
+  }
+}
+
+// Computed list of habits merging live data with fallback plan data
+const habitCards = computed(() => {
+  if (habitsLive.value?.today_habits) {
+    return Object.entries(habitsLive.value.today_habits).map(([type, h]) => ({
+      type,
+      label: h.label,
+      icon: h.icon,
+      tip: h.tip,
+      streak: h.streak ?? 0,
+      average: h.compliance ?? 0,
+      completed: h.completed ?? false,
+      last7: [],
+    }));
+  }
+  // fallback: plan data (no completed info)
+  return habitData.value.map(h => ({ ...h, completed: false }));
+});
 
 // Bloodwork save
 async function saveBloodwork() {
@@ -829,7 +892,7 @@ onBeforeUnmount(() => {
         <!-- ==================== TAB: HABITOS ==================== -->
         <div v-else-if="activeTab === 'habitos'">
           <div class="space-y-6">
-            <!-- Compliance bar (premium) -->
+            <!-- Compliance bar -->
             <div class="relative overflow-hidden rounded-xl border border-wc-accent/20 bg-gradient-to-br from-wc-accent/[0.08] via-wc-bg-tertiary to-transparent p-5">
               <div class="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-wc-accent/[0.06]"></div>
               <div class="pointer-events-none absolute -right-2 -top-2 h-12 w-12 rounded-full bg-wc-accent/10"></div>
@@ -845,60 +908,83 @@ onBeforeUnmount(() => {
               </div>
             </div>
 
+            <!-- Loading skeleton -->
+            <template v-if="habitsLoading">
+              <div v-for="n in 4" :key="n" class="animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary h-28"></div>
+            </template>
+
             <!-- Habit Cards -->
-            <div v-if="habitData.length > 0" class="grid gap-4 sm:grid-cols-2">
+            <div v-else-if="habitCards.length > 0" class="grid gap-4 sm:grid-cols-2">
               <div
-                v-for="(habit, hIdx) in habitData"
-                :key="hIdx"
-                class="rounded-xl border p-5"
-                :class="[getHabitAccent(habit.type).border, getHabitAccent(habit.type).bg]"
+                v-for="habit in habitCards"
+                :key="habit.type"
+                class="rounded-xl border p-5 transition-all duration-300"
+                :class="[
+                  getHabitAccent(habit.type).border,
+                  habit.completed ? getHabitAccent(habit.type).bg : 'bg-wc-bg-tertiary',
+                ]"
               >
-                <div class="flex items-start justify-between">
-                  <div>
-                    <h4 class="font-display text-base tracking-wide text-wc-text">{{ (habit.label || '').toUpperCase() }}</h4>
-                    <p class="mt-1 text-xs text-wc-text-tertiary">
-                      Racha: <span class="font-data font-semibold" :class="getHabitAccent(habit.type).text">{{ habit.streak }} dias</span>
-                    </p>
+                <!-- Header row: icon + title + check-in button -->
+                <div class="flex items-start justify-between gap-3">
+                  <div class="flex items-start gap-3 min-w-0">
+                    <!-- Icon -->
+                    <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" :class="getHabitAccent(habit.type).bg">
+                      <svg v-if="habit.icon === 'water' || habit.icon === 'droplet'" class="h-4.5 w-4.5" :class="getHabitAccent(habit.type).text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21c-4.97 0-9-4.03-9-9 0-3.87 4.5-9.5 7.68-12.38a1.74 1.74 0 012.64 0C16.5 2.5 21 8.13 21 12c0 4.97-4.03 9-9 9z"/></svg>
+                      <svg v-else-if="habit.icon === 'moon'" class="h-4.5 w-4.5" :class="getHabitAccent(habit.type).text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
+                      <svg v-else-if="habit.icon === 'dumbbell'" class="h-4.5 w-4.5" :class="getHabitAccent(habit.type).text" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 0a1.5 1.5 0 0 1-1.5-1.5v-3a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v3m-4.5 0a1.5 1.5 0 0 0-1.5 1.5v3a1.5 1.5 0 0 0 1.5 1.5h1.5a1.5 1.5 0 0 0 1.5-1.5v-3m12-4.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5m3 0a1.5 1.5 0 0 1-1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5a1.5 1.5 0 0 1-1.5-1.5v-3m0-4.5a1.5 1.5 0 0 0-1.5-1.5h-1.5a1.5 1.5 0 0 0-1.5 1.5v3" /></svg>
+                      <svg v-else-if="habit.icon === 'apple' || habit.icon === 'utensils'" class="h-4.5 w-4.5" :class="getHabitAccent(habit.type).text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v6m0 0c1.66 0 3-1.34 3-3S13.66 2 12 2s-3 1.34-3 3 1.34 3 3 3zm0 0v14m6-20v8a2 2 0 01-2 2h-1v10"/></svg>
+                      <svg v-else-if="habit.icon === 'pill'" class="h-4.5 w-4.5" :class="getHabitAccent(habit.type).text" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m10.5 6 6.5 6.5-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364L10.5 6Z M17 6.5l-4.5 4.5" /></svg>
+                      <svg v-else class="h-4.5 w-4.5" :class="getHabitAccent(habit.type).text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    </div>
+                    <div class="min-w-0">
+                      <h4 class="font-display text-base tracking-wide text-wc-text leading-tight">{{ (habit.label || '').toUpperCase() }}</h4>
+                      <p class="mt-0.5 text-xs text-wc-text-tertiary">
+                        Racha: <span class="font-data font-semibold" :class="getHabitAccent(habit.type).text">{{ habit.streak }} dias</span>
+                        <span class="mx-1 text-wc-border">·</span>
+                        Cumplimiento: <span class="font-data font-semibold text-wc-text">{{ habit.average }}%</span>
+                      </p>
+                    </div>
                   </div>
-                  <div class="flex h-10 w-10 items-center justify-center rounded-xl" :class="getHabitAccent(habit.type).bg">
-                    <!-- Droplet -->
-                    <svg v-if="habit.icon === 'droplet'" class="h-5 w-5" :class="getHabitAccent(habit.type).text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21c-4.97 0-9-4.03-9-9 0-3.87 4.5-9.5 7.68-12.38a1.74 1.74 0 012.64 0C16.5 2.5 21 8.13 21 12c0 4.97-4.03 9-9 9z"/></svg>
-                    <!-- Moon -->
-                    <svg v-else-if="habit.icon === 'moon'" class="h-5 w-5" :class="getHabitAccent(habit.type).text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
-                    <!-- Dumbbell -->
-                    <svg v-else-if="habit.icon === 'dumbbell'" class="h-5 w-5" :class="getHabitAccent(habit.type).text" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 0a1.5 1.5 0 0 1-1.5-1.5v-3a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v3m-4.5 0a1.5 1.5 0 0 0-1.5 1.5v3a1.5 1.5 0 0 0 1.5 1.5h1.5a1.5 1.5 0 0 0 1.5-1.5v-3m12-4.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5m3 0a1.5 1.5 0 0 1-1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5a1.5 1.5 0 0 1-1.5-1.5v-3m0-4.5a1.5 1.5 0 0 0-1.5-1.5h-1.5a1.5 1.5 0 0 0-1.5 1.5v3" /></svg>
-                    <!-- Utensils -->
-                    <svg v-else-if="habit.icon === 'utensils'" class="h-5 w-5" :class="getHabitAccent(habit.type).text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v6m0 0c1.66 0 3-1.34 3-3S13.66 2 12 2s-3 1.34-3 3 1.34 3 3 3zm0 0v14m6-20v8a2 2 0 01-2 2h-1v10"/></svg>
-                    <!-- Pill -->
-                    <svg v-else-if="habit.icon === 'pill'" class="h-5 w-5" :class="getHabitAccent(habit.type).text" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m10.5 6 6.5 6.5-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364L10.5 6Z M17 6.5l-4.5 4.5" /></svg>
+
+                  <!-- Check-in button -->
+                  <button
+                    v-if="!habit.completed"
+                    @click="doToggleHabit(habit.type)"
+                    :disabled="habitsToggling[habit.type]"
+                    class="shrink-0 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-200 border"
+                    :class="[
+                      getHabitAccent(habit.type).border,
+                      getHabitAccent(habit.type).text,
+                      habitsToggling[habit.type]
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'hover:bg-wc-bg-secondary active:scale-95',
+                    ]"
+                  >
+                    <svg v-if="habitsToggling[habit.type]" class="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+                    <svg v-else class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                    Registrar hoy
+                  </button>
+
+                  <!-- Completed badge -->
+                  <div
+                    v-else
+                    class="shrink-0 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold"
+                    :class="[getHabitAccent(habit.type).bg, getHabitAccent(habit.type).text]"
+                  >
+                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                    Hecho hoy
                   </div>
                 </div>
 
-                <div class="mt-3">
-                  <p class="text-xs text-wc-text-tertiary">
-                    Promedio: <span class="font-data font-semibold text-wc-text">{{ habit.average }}/10</span>
-                  </p>
-                </div>
-
-                <!-- Last 7 days bars -->
-                <div class="mt-3 flex items-end gap-1.5">
-                  <div v-for="(day, dayIdx) in (habit.last7 || [])" :key="dayIdx" class="flex flex-1 flex-col items-center gap-1">
-                    <div
-                      class="h-6 w-full rounded-sm transition-all duration-500"
-                      :class="day.value > 0 ? getHabitAccent(habit.type).bar : 'bg-wc-bg-secondary'"
-                      :style="day.value > 0 ? 'opacity: ' + Math.max(0.3, Math.min(day.value / 10, 1)) : ''"
-                      :title="day.date + ': ' + day.value + '/10'"
-                    ></div>
-                    <span class="text-[10px] text-wc-text-tertiary">{{ day.date }}</span>
-                  </div>
-                </div>
+                <!-- Tip -->
+                <p v-if="habit.tip" class="mt-3 text-xs text-wc-text-tertiary leading-relaxed border-t border-wc-border/50 pt-3">{{ habit.tip }}</p>
               </div>
             </div>
 
-            <!-- Empty habits fallback -->
-            <div v-if="habitData.length === 0 || habitData.every(h => h.streak === 0 && h.average === 0)" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center">
-              <p class="text-sm text-wc-text-secondary">Aun no tienes habitos registrados en los ultimos 30 dias.</p>
-              <p class="mt-1 text-xs text-wc-text-tertiary">Registra tus habitos diarios desde la pantalla principal.</p>
+            <!-- Empty state -->
+            <div v-else-if="!habitsLoading" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center">
+              <p class="text-sm text-wc-text-secondary">Aun no tienes habitos configurados en tu plan.</p>
+              <p class="mt-1 text-xs text-wc-text-tertiary">Tu coach activara los habitos cuando asigne tu plan.</p>
             </div>
           </div>
         </div>
