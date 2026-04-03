@@ -106,22 +106,23 @@ class ExerciseMediaService
     }
 
     /**
-     * Look up unmatched exercise names in the pre-computed gif map table.
+     * Look up unmatched exercise names in the exercise_aliases table
+     * (populated by SmartGifMatcher command).
      * Updates $result in-place.
      */
     private function enrichFromMap(array $unmatchedNormToOriginal, array &$result): void
     {
-        // Check if table exists to avoid errors in fresh environments
         try {
-            $mapRows = DB::table('exercise_name_gif_map')
+            // Lookup by normalized alias (the key stored by SmartGifMatcher)
+            $aliasRows = DB::table('exercise_aliases')
                 ->whereNotNull('gif_filename')
-                ->whereIn('nombre_plan', array_values($unmatchedNormToOriginal))
-                ->select('nombre_plan', 'gif_filename', 'fitcron_slug')
+                ->whereIn('alias', array_keys($unmatchedNormToOriginal))
+                ->select('alias', 'gif_filename', 'fitcron_slug')
                 ->get()
-                ->keyBy(fn ($r) => $this->normalize($r->nombre_plan));
+                ->keyBy('alias');
 
             foreach ($unmatchedNormToOriginal as $norm => $originalName) {
-                $row = $mapRows[$norm] ?? null;
+                $row = $aliasRows[$norm] ?? null;
 
                 if (! $row) {
                     continue;
@@ -147,7 +148,7 @@ class ExerciseMediaService
                 ];
             }
         } catch (\Throwable) {
-            // exercise_name_gif_map may not exist yet — silently skip
+            // exercise_aliases may not exist yet — silently skip
         }
     }
 
@@ -158,9 +159,12 @@ class ExerciseMediaService
 
     private function normalize(string $name): string
     {
+        // Must match SmartGifMatcher::normalizeAlias() exactly so alias keys align
+        $name = preg_replace('/\([^)]*\)/', ' ', $name); // strip parentheticals
         $name = mb_strtolower(trim($name));
-        $name = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $name) ?: $name;
-        $name = preg_replace('/[^a-z0-9\s]/', '', $name);
+        $map  = ['á'=>'a','é'=>'e','í'=>'i','ó'=>'o','ú'=>'u','ü'=>'u','ñ'=>'n'];
+        $name = strtr($name, $map);
+        $name = preg_replace('/[^a-z0-9\s]/', ' ', $name);
 
         return preg_replace('/\s+/', ' ', trim($name));
     }
