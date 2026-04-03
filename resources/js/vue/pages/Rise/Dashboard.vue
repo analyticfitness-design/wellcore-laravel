@@ -116,7 +116,7 @@ onMounted(() => {
             </div>
             <div class="flex items-center gap-4">
               <div class="text-right">
-                <p class="font-data text-3xl font-bold text-wc-accent">{{ Math.round(data.progressPct || 0) }}%</p>
+                <p class="font-display text-3xl text-wc-accent" style="line-height:1">{{ Math.round(data.progressPct || 0) }}%</p>
                 <p class="text-xs text-wc-text-tertiary">completado</p>
               </div>
             </div>
@@ -159,7 +159,7 @@ onMounted(() => {
               </svg>
             </div>
           </div>
-          <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ data.currentStreak ?? 0 }}</p>
+          <p class="mt-3 font-display text-3xl text-wc-accent" style="line-height:1">{{ data.currentStreak ?? 0 }}</p>
           <p class="mt-0.5 text-xs text-wc-text-tertiary">dias consecutivos</p>
         </div>
 
@@ -173,7 +173,7 @@ onMounted(() => {
               </svg>
             </div>
           </div>
-          <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ data.workoutsThisWeek ?? 0 }}</p>
+          <p class="mt-3 font-display text-3xl text-wc-accent" style="line-height:1">{{ data.workoutsThisWeek ?? 0 }}</p>
           <p class="mt-0.5 text-xs text-wc-text-tertiary">esta semana</p>
         </div>
 
@@ -187,7 +187,7 @@ onMounted(() => {
               </svg>
             </div>
           </div>
-          <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ data.overallAdherence ?? 0 }}%</p>
+          <p class="mt-3 font-display text-3xl text-wc-accent" style="line-height:1">{{ data.overallAdherence ?? 0 }}%</p>
           <p class="mt-0.5 text-xs text-wc-text-tertiary">general</p>
         </div>
 
@@ -202,7 +202,7 @@ onMounted(() => {
             </div>
           </div>
           <template v-if="data.latestWeight">
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ data.latestWeight }}</p>
+            <p class="mt-3 font-display text-3xl text-wc-accent" style="line-height:1">{{ data.latestWeight }}</p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">
               kg
               <span v-if="data.weightChange !== null" :class="data.weightChange < 0 ? 'text-emerald-500' : data.weightChange > 0 ? 'text-wc-accent' : ''">
@@ -211,7 +211,7 @@ onMounted(() => {
             </p>
           </template>
           <template v-else>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text-tertiary">--</p>
+            <p class="mt-3 font-display text-3xl text-wc-text-tertiary" style="line-height:1">--</p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">sin registro</p>
           </template>
         </div>

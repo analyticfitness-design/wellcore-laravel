@@ -256,7 +256,7 @@ onMounted(() => {
                 </div>
                 <h2 class="font-sans text-2xl font-bold text-white mb-2">Medidas guardadas</h2>
                 <div v-if="weightKg" class="my-5 rounded-xl border border-white/10 bg-white/[0.06] px-5 py-4">
-                  <p class="font-data text-3xl font-bold text-white">{{ parseFloat(weightKg).toFixed(1) }} <span class="text-lg font-normal text-white/50">kg</span></p>
+                  <p class="font-display text-3xl text-white" style="line-height:1">{{ parseFloat(weightKg).toFixed(1) }} <span class="text-lg font-normal text-white/50">kg</span></p>
                   <p class="mt-0.5 text-xs text-white/50">peso registrado</p>
                 </div>
                 <p class="mb-6 text-sm text-white/70">Cada medida es evidencia de tu transformacion.</p>

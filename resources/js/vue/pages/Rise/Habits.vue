@@ -146,7 +146,7 @@ onMounted(() => {
               </svg>
             </div>
             <div>
-              <p class="font-data text-2xl font-bold text-wc-text">{{ data?.currentStreak ?? 0 }}</p>
+              <p class="font-display text-2xl text-wc-accent" style="line-height:1">{{ data?.currentStreak ?? 0 }}</p>
               <p class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Racha</p>
             </div>
           </div>
@@ -160,7 +160,7 @@ onMounted(() => {
               </svg>
             </div>
             <div>
-              <p class="font-data text-2xl font-bold text-wc-text">{{ data?.completedDays ?? 0 }}</p>
+              <p class="font-display text-2xl text-wc-accent" style="line-height:1">{{ data?.completedDays ?? 0 }}</p>
               <p class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Dias</p>
             </div>
           </div>
@@ -174,7 +174,7 @@ onMounted(() => {
               </svg>
             </div>
             <div>
-              <p class="font-data text-2xl font-bold text-wc-text">{{ data?.avgWater ?? '--' }}<span class="text-xs font-normal text-wc-text-tertiary">L</span></p>
+              <p class="font-display text-2xl text-wc-accent" style="line-height:1">{{ data?.avgWater ?? '--' }}<span class="text-xs font-normal text-wc-text-tertiary">L</span></p>
               <p class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Agua prom.</p>
             </div>
           </div>
@@ -188,7 +188,7 @@ onMounted(() => {
               </svg>
             </div>
             <div>
-              <p class="font-data text-2xl font-bold text-wc-text">{{ data?.avgSleep ?? '--' }}<span class="text-xs font-normal text-wc-text-tertiary">h</span></p>
+              <p class="font-display text-2xl text-wc-accent" style="line-height:1">{{ data?.avgSleep ?? '--' }}<span class="text-xs font-normal text-wc-text-tertiary">h</span></p>
               <p class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Sueno prom.</p>
             </div>
           </div>
