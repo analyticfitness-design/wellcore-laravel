@@ -370,11 +370,12 @@ class TrainingController extends Controller
         }
 
         // Build full days array including exercises so Vue can switch days client-side
+        // Use the enriched $exercises for the current day so video_url/gif_url are included
         $fullDays = array_map(fn ($d, $i) => [
             'index' => $i,
             'nombre' => $d['nombre'] ?? $d['name'] ?? $d['dia'] ?? 'Dia '.($i + 1),
             'grupo_muscular' => $d['grupo_muscular'] ?? $d['muscle_group'] ?? '',
-            'ejercicios' => $d['ejercicios'] ?? $d['exercises'] ?? $d['ejercicios_dia'] ?? [],
+            'ejercicios' => ($i === $currentDayIndex) ? $exercises : ($d['ejercicios'] ?? $d['exercises'] ?? $d['ejercicios_dia'] ?? []),
         ], $days, array_keys($days));
 
         return response()->json([
