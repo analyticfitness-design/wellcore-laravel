@@ -362,8 +362,12 @@ class TrainingController extends Controller
         // Enrich exercises with last_weight / last_reps from previous sessions
         $exercises = $this->enrichExercisesWithHistory($clientId, $exercises);
 
-        // Enrich with media (GIF + video)
-        app(ExerciseMediaService::class)->enrichWithMedia($exercises);
+        // Enrich with media (GIF + video) — silently skip if table unavailable
+        try {
+            app(ExerciseMediaService::class)->enrichWithMedia($exercises);
+        } catch (\Throwable $e) {
+            // ejercicios_fitcron may not exist in this environment
+        }
 
         // Build full days array including exercises so Vue can switch days client-side
         $fullDays = array_map(fn ($d, $i) => [
