@@ -137,8 +137,8 @@ const bottomNav = [
     >
       <!-- Logo -->
       <div class="flex h-20 items-center justify-center border-b border-wc-border px-4">
-        <img src="/images/logo-admin-dark.png" alt="WellCore Fitness" class="hidden h-16 w-auto object-contain dark:block" />
-        <img src="/images/logo-admin-light.png" alt="WellCore Fitness" class="block h-16 w-auto object-contain dark:hidden" />
+        <img src="/images/logo-client-dark.png" alt="WellCore Fitness" class="hidden h-16 w-auto object-contain dark:block" />
+        <img src="/images/logo-client-light.png" alt="WellCore Fitness" class="block h-16 w-auto object-contain dark:hidden" />
       </div>
 
       <!-- Navigation -->
