@@ -289,10 +289,19 @@ class MatchGifsFromJson extends Command
         if (! is_array($data)) return [];
 
         $dias = is_array($data['dias'] ?? null) ? $data['dias'] : [];
-        $semanas = is_array($data['semanas'] ?? null) ? $data['semanas'] : [];
+
+        // Handle both 'semanas' and 'weeks' top-level keys (plans use different naming)
+        $semanas = is_array($data['semanas'] ?? null) ? $data['semanas']
+            : (is_array($data['weeks'] ?? null) ? $data['weeks'] : []);
         foreach ($semanas as $s) {
-            $semDias = is_array($s['dias'] ?? null) ? $s['dias'] : [];
+            $semDias = is_array($s['dias'] ?? null) ? $s['dias']
+                : (is_array($s['days'] ?? null) ? $s['days'] : []);
             $dias = array_merge($dias, $semDias);
+        }
+
+        // Also handle flat 'days' key at root level
+        if (empty($dias) && is_array($data['days'] ?? null)) {
+            $dias = $data['days'];
         }
 
         return collect($dias)->flatMap(fn ($d) =>
