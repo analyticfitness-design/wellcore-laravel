@@ -1003,6 +1003,26 @@ class TrainingController extends Controller
             }
         }
 
+        // Handle weeks as array of week-objects: {weeks: [{week:1, days:[...]}, ...]}
+        if (! isset($content['semanas']) && ! isset($content['dias']) && ! isset($content['days'])
+            && isset($content['weeks']) && is_array($content['weeks'])) {
+            $firstWeek = $content['weeks'][0] ?? null;
+            if (is_array($firstWeek) && (isset($firstWeek['days']) || isset($firstWeek['dias']))) {
+                $content['semanas'] = [];
+                foreach ($content['weeks'] as $idx => $week) {
+                    if (is_array($week)) {
+                        $content['semanas'][] = [
+                            'numero' => $week['week'] ?? $week['semana'] ?? ($idx + 1),
+                            'fase'   => $week['phase'] ?? $week['fase'] ?? $week['name'] ?? null,
+                            'dias'   => $this->normalizeDays($week['days'] ?? $week['dias'] ?? []),
+                        ];
+                    }
+                }
+                unset($content['weeks']);
+                return $content;
+            }
+        }
+
         if (! isset($content['dias']) || ! is_array($content['dias'])) {
             $days = $content['days'] ?? null;
             $weeks = $content['weeks'] ?? null;
