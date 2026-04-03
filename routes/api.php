@@ -176,6 +176,7 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
     Route::get('/clients', [AdminController::class, 'clients']);
     Route::get('/clients/{id}', [AdminController::class, 'clientDetail'])->where('id', '[0-9]+');
     Route::put('/clients/{id}', [AdminController::class, 'updateClient'])->where('id', '[0-9]+');
+    Route::delete('/clients/{id}', [AdminController::class, 'deleteClient'])->where('id', '[0-9]+');
     Route::get('/payments', [AdminController::class, 'payments']);
     Route::get('/coaches/stats', [AdminController::class, 'coachStats']);
     Route::get('/coaches', [AdminController::class, 'coaches']);

@@ -638,6 +638,27 @@ class AdminController extends Controller
         ]);
     }
 
+    // ─── Delete Client ──────────────────────────────────────────────────
+
+    /**
+     * DELETE /api/v/admin/clients/{id}
+     */
+    public function deleteClient(Request $request, int $id): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $client = Client::find($id);
+        if (! $client) {
+            return response()->json(['error' => 'Cliente no encontrado.'], 404);
+        }
+
+        AuthToken::where('user_id', $id)->where('user_type', 'client')->delete();
+        \App\Models\AssignedPlan::where('client_id', $id)->delete();
+        $client->delete();
+
+        return response()->json(['deleted' => true]);
+    }
+
     // ─── Payments ───────────────────────────────────────────────────────
 
     /**
