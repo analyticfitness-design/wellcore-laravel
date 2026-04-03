@@ -96,19 +96,17 @@ class TrainingController extends Controller
                 unset($dia);
                 $trainingPlan['dias'] = $dias;
 
-                // Also enrich semanas if present
+                // Also enrich semanas (write back explicitly to avoid PHP reference issue with ??)
                 if (isset($trainingPlan['semanas'])) {
-                    foreach ($trainingPlan['semanas'] as &$semana) {
-                        foreach (($semana['dias'] ?? []) as &$dia) {
+                    foreach ($trainingPlan['semanas'] as $sIdx => $semana) {
+                        foreach ($semana['dias'] as $dIdx => $dia) {
                             $ejercicios = $dia['ejercicios'] ?? [];
                             if (!empty($ejercicios)) {
                                 $mediaService->enrichWithMedia($ejercicios);
-                                $dia['ejercicios'] = $ejercicios;
+                                $trainingPlan['semanas'][$sIdx]['dias'][$dIdx]['ejercicios'] = $ejercicios;
                             }
                         }
-                        unset($dia);
                     }
-                    unset($semana);
                 }
             } catch (\Throwable $e) {
                 // Silently skip if ejercicios_fitcron unavailable
