@@ -270,6 +270,10 @@ Route::post('/admin/coach-impersonate/stop', [CoachImpersonateController::class,
 // Backwards-compat: /v/* redirects to /* without the /v prefix (301 permanent)
 Route::get('/v/{any}', fn ($any) => redirect('/'.$any, 301))->where('any', '.*');
 
+// Exercise GIFs — public, no auth required (used in <img> tags)
+Route::get('/media/gif/{slug}', [\App\Http\Controllers\Media\GifController::class, 'serve'])
+    ->where('slug', '[\w\-]+');
+
 // DEV ONLY routes — disabled in production
 if (app()->environment('local', 'testing')) {
     Route::get('/test', TestDashboard::class);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Enums\PlanType;
 use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
+use App\Services\ExerciseMediaService;
 use App\Models\AssignedPlan;
 use App\Models\BloodworkResult;
 use App\Models\Checkin;
@@ -360,6 +361,9 @@ class TrainingController extends Controller
 
         // Enrich exercises with last_weight / last_reps from previous sessions
         $exercises = $this->enrichExercisesWithHistory($clientId, $exercises);
+
+        // Enrich with media (GIF + video)
+        app(ExerciseMediaService::class)->enrichWithMedia($exercises);
 
         // Build full days array including exercises so Vue can switch days client-side
         $fullDays = array_map(fn ($d, $i) => [
