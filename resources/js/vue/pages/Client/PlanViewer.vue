@@ -16,6 +16,30 @@ const currentWeek = ref(1);
 // Plan data
 const trainingPlan = ref(null);
 const nutritionPlan = ref(null);
+
+// Macro helpers — soporta claves en español (proteina_g, carbohidratos_g, grasas_g),
+// inglés (protein_g, carbs_g, fat_g) y formato anidado (macros.{key})
+const macroP = computed(() => {
+  const p = nutritionPlan.value;
+  if (!p) return 0;
+  return p.macros?.proteina_g ?? p.macros?.proteinas_g ?? p.macros?.protein_g
+      ?? p.proteina_g ?? p.proteinas_g ?? p.protein_g ?? 0;
+});
+const macroC = computed(() => {
+  const p = nutritionPlan.value;
+  if (!p) return 0;
+  return p.macros?.carbohidratos_g ?? p.macros?.carbs_g ?? p.macros?.carbohidratos
+      ?? p.carbohidratos_g ?? p.carbs_g ?? p.carbohidratos ?? 0;
+});
+const macroF = computed(() => {
+  const p = nutritionPlan.value;
+  if (!p) return 0;
+  return p.macros?.grasas_g ?? p.macros?.fat_g ?? p.macros?.grasas
+      ?? p.grasas_g ?? p.fat_g ?? p.grasas ?? 0;
+});
+const totalKcalNutrition = computed(() =>
+  Math.max(1, macroP.value * 4 + macroC.value * 4 + macroF.value * 9)
+);
 const supplementPlan = ref(null);
 const cicloPlan = ref(null);
 const clientPlanType = ref('basico');
@@ -869,8 +893,7 @@ onBeforeUnmount(() => {
               </div>
 
               <!-- Macros visuales con barras de progreso -->
-              <div v-if="(nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g) || (nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g) || (nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g)">
-                <!-- Compute helpers inline via template expressions -->
+              <div v-if="macroP || macroC || macroF">
                 <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
                   <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary mb-4">Distribución de macros</p>
                   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -881,21 +904,18 @@ onBeforeUnmount(() => {
                         <div>
                           <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary">Proteína</p>
                           <p class="font-data text-2xl font-bold text-wc-text leading-none">
-                            {{ (nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) }}
-                            <span class="text-xs font-normal text-wc-text-tertiary">g</span>
+                            {{ macroP }}<span class="text-xs font-normal text-wc-text-tertiary">g</span>
                           </p>
                         </div>
                         <span class="font-data text-xs font-semibold text-wc-accent">
-                          {{ Math.round(((nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4) / Math.max(1, ((nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4) + ((nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4) + ((nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9)) * 100) }}%
+                          {{ Math.round((macroP * 4) / totalKcalNutrition * 100) }}%
                         </span>
                       </div>
                       <div class="h-2 w-full rounded-full bg-wc-bg-secondary overflow-hidden">
-                        <div
-                          class="h-full rounded-full bg-wc-accent transition-all duration-700"
-                          :style="{ width: Math.round(((nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4) / Math.max(1, ((nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4) + ((nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4) + ((nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9)) * 100) + '%' }"
-                        ></div>
+                        <div class="h-full rounded-full bg-wc-accent transition-all duration-700"
+                             :style="{ width: Math.round((macroP * 4) / totalKcalNutrition * 100) + '%' }"></div>
                       </div>
-                      <p class="text-[10px] text-wc-text-tertiary">{{ (nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4 }} kcal</p>
+                      <p class="text-[10px] text-wc-text-tertiary">{{ macroP * 4 }} kcal</p>
                     </div>
 
                     <!-- Carbohidratos -->
@@ -904,21 +924,18 @@ onBeforeUnmount(() => {
                         <div>
                           <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary">Carbohidratos</p>
                           <p class="font-data text-2xl font-bold text-wc-text leading-none">
-                            {{ (nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) }}
-                            <span class="text-xs font-normal text-wc-text-tertiary">g</span>
+                            {{ macroC }}<span class="text-xs font-normal text-wc-text-tertiary">g</span>
                           </p>
                         </div>
                         <span class="font-data text-xs font-semibold text-blue-400">
-                          {{ Math.round(((nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4) / Math.max(1, ((nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4) + ((nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4) + ((nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9)) * 100) }}%
+                          {{ Math.round((macroC * 4) / totalKcalNutrition * 100) }}%
                         </span>
                       </div>
                       <div class="h-2 w-full rounded-full bg-wc-bg-secondary overflow-hidden">
-                        <div
-                          class="h-full rounded-full bg-blue-400 transition-all duration-700"
-                          :style="{ width: Math.round(((nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4) / Math.max(1, ((nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4) + ((nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4) + ((nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9)) * 100) + '%' }"
-                        ></div>
+                        <div class="h-full rounded-full bg-blue-400 transition-all duration-700"
+                             :style="{ width: Math.round((macroC * 4) / totalKcalNutrition * 100) + '%' }"></div>
                       </div>
-                      <p class="text-[10px] text-wc-text-tertiary">{{ (nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4 }} kcal</p>
+                      <p class="text-[10px] text-wc-text-tertiary">{{ macroC * 4 }} kcal</p>
                     </div>
 
                     <!-- Grasas -->
@@ -927,21 +944,18 @@ onBeforeUnmount(() => {
                         <div>
                           <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-tertiary">Grasas</p>
                           <p class="font-data text-2xl font-bold text-wc-text leading-none">
-                            {{ (nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) }}
-                            <span class="text-xs font-normal text-wc-text-tertiary">g</span>
+                            {{ macroF }}<span class="text-xs font-normal text-wc-text-tertiary">g</span>
                           </p>
                         </div>
                         <span class="font-data text-xs font-semibold text-amber-400">
-                          {{ Math.round(((nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9) / Math.max(1, ((nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4) + ((nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4) + ((nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9)) * 100) }}%
+                          {{ Math.round((macroF * 9) / totalKcalNutrition * 100) }}%
                         </span>
                       </div>
                       <div class="h-2 w-full rounded-full bg-wc-bg-secondary overflow-hidden">
-                        <div
-                          class="h-full rounded-full bg-amber-400 transition-all duration-700"
-                          :style="{ width: Math.round(((nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9) / Math.max(1, ((nutritionPlan.macros?.proteina_g ?? nutritionPlan.proteina_g ?? 0) * 4) + ((nutritionPlan.macros?.carbohidratos_g ?? nutritionPlan.carbohidratos_g ?? 0) * 4) + ((nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9)) * 100) + '%' }"
-                        ></div>
+                        <div class="h-full rounded-full bg-amber-400 transition-all duration-700"
+                             :style="{ width: Math.round((macroF * 9) / totalKcalNutrition * 100) + '%' }"></div>
                       </div>
-                      <p class="text-[10px] text-wc-text-tertiary">{{ (nutritionPlan.macros?.grasas_g ?? nutritionPlan.grasas_g ?? 0) * 9 }} kcal</p>
+                      <p class="text-[10px] text-wc-text-tertiary">{{ macroF * 9 }} kcal</p>
                     </div>
 
                   </div>
