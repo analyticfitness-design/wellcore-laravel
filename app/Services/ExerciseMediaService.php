@@ -150,7 +150,7 @@ class ExerciseMediaService
                 }
 
                 // Preserve existing video_url from fitcron if already set
-                $existingVideo = $result[$norm]['video_url'] ?? null;
+                $existingVideo = ($result[$norm] ?? null)['video_url'] ?? null;
                 $result[$norm] = [
                     'gif_url'   => $this->gifUrl($row->gif_filename),
                     'video_url' => $existingVideo ?? $videoUrl,
