@@ -104,12 +104,10 @@ class ExerciseMediaService
             return null;
         }
 
-        // Prefer the sin_fondo version when available
-        if ($fitcron->sin_fondo_listo) {
-            return '/media/gif/'.$fitcron->slug;
-        }
+        // Serve from GitHub raw CDN (public repo, no server storage needed)
+        $base = 'https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs/master';
 
-        return null;
+        return $base.'/'.rawurlencode($fitcron->gif_filename);
     }
 
     private function normalize(string $name): string
