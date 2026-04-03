@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 // Temporary GIF debug route — remove after diagnosis
 Route::get('/debug-gif', function () {
+    if (function_exists('opcache_reset')) opcache_reset();
     // Get Silvia's actual training plan (client_id=54)
     $plan = \Illuminate\Support\Facades\DB::table('assigned_plans')
         ->where('client_id', 54)->where('active', true)->where('plan_type', 'entrenamiento')
