@@ -14,18 +14,49 @@ use Illuminate\Support\Facades\Route;
 
 // Temporary GIF debug route — remove after diagnosis
 Route::get('/debug-gif', function () {
-    $exs = [['nombre' => 'Hip thrust'], ['nombre' => 'Peso muerto rumano'], ['nombre' => 'Sentadilla bulgara']];
-    $aliasCount = \Illuminate\Support\Facades\DB::table('exercise_aliases')->count();
-    $hipAlias = \Illuminate\Support\Facades\DB::table('exercise_aliases')->where('alias', 'hip thrust')->first();
-    try {
-        app(\App\Services\ExerciseMediaService::class)->enrichWithMedia($exs);
-    } catch (\Throwable $e) {
-        return response()->json(['error' => $e->getMessage(), 'trace' => substr($e->getTraceAsString(), 0, 500)]);
+    // Get Silvia's actual training plan (client_id=54)
+    $plan = \Illuminate\Support\Facades\DB::table('assigned_plans')
+        ->where('client_id', 54)->where('active', true)->where('plan_type', 'entrenamiento')
+        ->first();
+    if (!$plan) return response()->json(['error' => 'no plan']);
+    $content = is_array($plan->content) ? $plan->content : json_decode($plan->content, true);
+
+    // Simulate normalizeTrainingPlan (inline)
+    $ctrl = app(\App\Http\Controllers\Api\TrainingController::class);
+    $reflection = new \ReflectionClass($ctrl);
+    $method = $reflection->getMethod('normalizeTrainingPlan');
+    $method->setAccessible(true);
+    $trainingPlan = $method->invoke($ctrl, $content);
+
+    $mediaService = app(\App\Services\ExerciseMediaService::class);
+    $errors = [];
+    $gifsBefore = 0; $gifsAfter = 0;
+
+    if (isset($trainingPlan['semanas'])) {
+        foreach ($trainingPlan['semanas'] as $sIdx => $semana) {
+            foreach ($semana['dias'] as $dIdx => $dia) {
+                $ejercicios = $dia['ejercicios'] ?? [];
+                $gifsBefore += count($ejercicios);
+                if (!empty($ejercicios)) {
+                    try {
+                        $mediaService->enrichWithMedia($ejercicios);
+                        $trainingPlan['semanas'][$sIdx]['dias'][$dIdx]['ejercicios'] = $ejercicios;
+                        $gifsAfter += count(array_filter($ejercicios, fn($e) => !empty($e['gif_url'])));
+                    } catch (\Throwable $e) {
+                        $errors[] = $e->getMessage();
+                    }
+                }
+            }
+        }
     }
+
+    $firstEx = $trainingPlan['semanas'][0]['dias'][0]['ejercicios'][0] ?? null;
     return response()->json([
-        'aliases_count' => $aliasCount,
-        'hip_alias' => $hipAlias,
-        'exercises' => $exs,
+        'total_exercises' => $gifsBefore,
+        'with_gif' => $gifsAfter,
+        'errors' => $errors,
+        'first_exercise' => $firstEx,
+        'semanas_count' => count($trainingPlan['semanas'] ?? []),
     ]);
 });
 
