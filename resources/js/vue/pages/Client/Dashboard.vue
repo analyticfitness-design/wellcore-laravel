@@ -632,11 +632,11 @@ const weekMarkers = computed(() => {
           <!-- Day labels -->
           <div class="flex flex-col gap-0.5 pr-1 shrink-0">
             <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">L</span>
-            <span class="h-2.5 w-4 sm:h-3">&nbsp;</span>
             <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">M</span>
-            <span class="h-2.5 w-4 sm:h-3">&nbsp;</span>
+            <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">X</span>
+            <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">J</span>
             <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">V</span>
-            <span class="h-2.5 w-4 sm:h-3">&nbsp;</span>
+            <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">S</span>
             <span class="h-2.5 w-4 text-[9px] leading-[10px] text-wc-text-tertiary sm:h-3 sm:text-[10px] sm:leading-3">D</span>
           </div>
 
@@ -681,11 +681,11 @@ const weekMarkers = computed(() => {
           <span class="text-xs text-wc-text-tertiary">Ultimos 90 dias</span>
         </div>
 
-        <div class="flex items-end gap-1 sm:gap-2" style="height: 140px;">
+        <div class="flex items-end justify-center gap-1 sm:gap-2 overflow-x-auto" style="height: 140px;">
           <div
             v-for="(entry, idx) in data.weightChartData"
             :key="idx"
-            class="group relative flex flex-1 flex-col items-center justify-end"
+            class="group relative flex w-8 sm:w-10 shrink-0 flex-col items-center justify-end"
             style="height: 100%;"
           >
             <!-- Tooltip -->
@@ -704,7 +704,9 @@ const weekMarkers = computed(() => {
               }"
             ></div>
             <!-- Label -->
-            <span class="mt-1 text-[10px] text-wc-text-tertiary">{{ entry.date }}</span>
+            <span class="mt-1 w-full truncate text-center text-[10px] text-wc-text-tertiary">
+              {{ entry.date ? String(entry.date).slice(0, 5) : '' }}
+            </span>
           </div>
         </div>
 
@@ -821,7 +823,7 @@ const weekMarkers = computed(() => {
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
             </svg>
           </div>
-          <h2 class="font-display text-lg tracking-wide text-wc-text">Resumen semanal</h2>
+          <h2 class="text-sm font-semibold text-wc-text">Resumen semanal</h2>
         </div>
 
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -855,7 +857,7 @@ const weekMarkers = computed(() => {
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
             </svg>
           </div>
-          <h2 class="font-display text-lg tracking-wide text-wc-text">Resumen semanal</h2>
+          <h2 class="text-sm font-semibold text-wc-text">Resumen semanal</h2>
         </div>
         <div class="flex items-center gap-3 rounded-xl border border-wc-accent/10 bg-wc-accent/5 px-4 py-3">
           <svg class="h-5 w-5 shrink-0 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -872,7 +874,7 @@ const weekMarkers = computed(() => {
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <div v-if="data.dailyMissions && data.dailyMissions.length > 0">
         <div class="mb-3 flex items-center justify-between">
-          <h2 class="font-display text-lg tracking-wide text-wc-text">Misiones diarias</h2>
+          <h2 class="text-sm font-semibold text-wc-text">Misiones diarias</h2>
           <span class="text-xs text-wc-text-tertiary">
             {{ completedMissionsCount }}/{{ data.dailyMissions.length }} completadas
           </span>
@@ -942,7 +944,7 @@ const weekMarkers = computed(() => {
 
         <!-- Weekly training overview (Mon-Sun with checkmarks) -->
         <div v-if="data.weekDays && data.weekDays.length > 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 lg:col-span-2">
-          <h2 class="font-display text-lg tracking-wide text-wc-text">Semana de entrenamiento</h2>
+          <h2 class="text-sm font-semibold text-wc-text">Semana de entrenamiento</h2>
           <p class="mt-1 text-xs text-wc-text-tertiary">Semana {{ new Date().toLocaleDateString('es', { year: 'numeric' }).split('/').pop() }}</p>
 
           <div class="mt-5 flex items-center justify-between gap-2 sm:justify-start sm:gap-4">
