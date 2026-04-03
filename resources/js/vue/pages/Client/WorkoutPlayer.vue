@@ -3,6 +3,8 @@ import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import ClientLayout from '../../layouts/ClientLayout.vue';
+import ExerciseMediaModal from '../../components/workout/ExerciseMediaModal.vue';
+import { getEmbedUrl } from '../../composables/useExerciseMedia';
 
 const api = useApi();
 const route = useRoute();
@@ -36,6 +38,14 @@ const confirmAbandon = ref(false);
 
 // Expanded coach notes (per exercise index)
 const expandedNotes = ref({});
+
+// Exercise media modal
+const mediaModal = ref({ show: false, exercise: null });
+function openMedia(ex) { mediaModal.value = { show: true, exercise: ex }; }
+function closeMedia() { mediaModal.value = { show: false, exercise: null }; }
+
+// Toggle inline media in active workout view
+const showActiveMedia = ref({});
 
 // ── Timers (module-level, NOT reactive) ──
 let timerInterval = null;
@@ -182,7 +192,7 @@ function exEquip(ex) { return ex.equipo || ex.equipment || null; }
 function exIsCardio(ex) { return !!ex.is_cardio; }
 
 function exVideoUrl(ex) { return ex.video_url || ex.video || null; }
-function exImageUrl(ex) { return ex.image_url || ex.imagen || ex.thumbnail_url || null; }
+function exImageUrl(ex) { return ex.image_url || ex.gif_url || ex.imagen || ex.thumbnail_url || null; }
 
 function exThumbnail(ex) {
   const img = exImageUrl(ex);
@@ -821,23 +831,28 @@ onBeforeUnmount(() => {
                 ]"
               >
                 <div class="flex items-stretch">
-                  <!-- Thumbnail column -->
-                  <div class="relative w-20 shrink-0 overflow-hidden bg-wc-bg-secondary">
+                  <!-- Thumbnail column — clickable to open media modal -->
+                  <div
+                    class="relative w-20 shrink-0 overflow-hidden bg-wc-bg-secondary cursor-pointer"
+                    @click="openMedia(exercise)"
+                  >
+                    <!-- GIF animado o thumbnail de YouTube -->
                     <img
-                      v-if="exThumbnail(exercise)"
-                      :src="exThumbnail(exercise)"
+                      v-if="exImageUrl(exercise)"
+                      :src="exImageUrl(exercise)"
                       :alt="exName(exercise)"
                       class="h-full w-full object-cover opacity-90"
                     />
+                    <!-- Fallback trueno si no hay imagen -->
                     <div v-else class="flex h-full w-full min-h-[80px] flex-col items-center justify-center bg-gradient-to-b from-wc-bg-secondary to-wc-bg">
                       <svg class="h-7 w-7 text-wc-text-tertiary/40" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
                     </div>
-                    <!-- Number overlay -->
+                    <!-- Numero del ejercicio -->
                     <div class="absolute bottom-2 left-2 flex h-6 w-6 items-center justify-center rounded-lg bg-wc-bg/80 backdrop-blur-sm border border-wc-border/30">
                       <span class="font-data text-xs font-black leading-none text-wc-accent">{{ exIndex + 1 }}</span>
                     </div>
-                    <!-- Video play icon -->
-                    <div v-if="exVideoUrl(exercise)" class="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-wc-bg/80 backdrop-blur-sm">
+                    <!-- Badge play si tiene video -->
+                    <div v-if="exVideoUrl(exercise)" class="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600/90 backdrop-blur-sm">
                       <svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </div>
                   </div>
@@ -1051,11 +1066,28 @@ onBeforeUnmount(() => {
                     </Transition>
                   </div>
 
-                  <!-- Video link -->
-                  <a v-if="exVideoUrl(exercise)" :href="exVideoUrl(exercise)" target="_blank" rel="noopener" class="mt-2 inline-flex items-center gap-1.5 text-[11px] font-medium text-wc-accent hover:text-red-400 transition-colors">
-                    <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                    Ver demo
-                  </a>
+                  <!-- Video/GIF del ejercicio activo (colapsable) -->
+                  <div v-if="exVideoUrl(exercise) || exImageUrl(exercise)" class="mt-3">
+                    <button
+                      @click="showActiveMedia[exIndex] = !showActiveMedia[exIndex]"
+                      class="flex items-center gap-2 text-xs text-wc-text-tertiary hover:text-wc-text transition-colors"
+                    >
+                      <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                      <span>{{ showActiveMedia[exIndex] ? 'Ocultar video' : 'Ver ejercicio' }}</span>
+                    </button>
+                    <div v-show="showActiveMedia[exIndex]" class="mt-2 overflow-hidden rounded-xl border border-wc-border">
+                      <div v-if="exVideoUrl(exercise)" class="aspect-video w-full">
+                        <iframe
+                          :src="getEmbedUrl(exVideoUrl(exercise))"
+                          class="h-full w-full"
+                          frameborder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowfullscreen
+                        ></iframe>
+                      </div>
+                      <img v-else :src="exImageUrl(exercise)" :alt="exName(exercise)" class="w-full object-contain max-h-64 bg-wc-bg" />
+                    </div>
+                  </div>
                 </div>
 
                 <!-- ═══ CARDIO TABLE ═══ -->
@@ -1501,6 +1533,13 @@ onBeforeUnmount(() => {
       </Transition>
 
     </div>
+
+    <!-- Modal de media del ejercicio -->
+    <ExerciseMediaModal
+      :exercise="mediaModal.exercise"
+      :show="mediaModal.show"
+      @close="closeMedia"
+    />
   </ClientLayout>
 </template>
 
