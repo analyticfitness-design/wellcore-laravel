@@ -1170,35 +1170,42 @@ onBeforeUnmount(() => {
                     </div>
 
                     <!-- Weight input with +/- -->
-                    <div class="flex items-center justify-center gap-px">
-                      <button
-                        @click="set.weight = Math.max(0, (parseFloat(set.weight) || 0) - weightStep())"
-                        class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
-                        :disabled="set.completed"
-                        :class="set.completed && 'opacity-30 pointer-events-none'"
-                        aria-label="Reducir peso"
-                      >
-                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" /></svg>
-                      </button>
-                      <input
-                        type="number"
-                        step="0.5"
-                        min="0"
-                        v-model.number="set.weight"
-                        class="h-7 w-10 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-xs font-semibold text-wc-text focus:border-wc-accent focus:outline-none tabular-nums"
-                        :class="set.completed && 'opacity-60'"
-                        :disabled="set.completed"
-                        placeholder="0"
-                      />
-                      <button
-                        @click="set.weight = (parseFloat(set.weight) || 0) + weightStep()"
-                        class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
-                        :disabled="set.completed"
-                        :class="set.completed && 'opacity-30 pointer-events-none'"
-                        aria-label="Aumentar peso"
-                      >
-                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-                      </button>
+                    <div class="flex flex-col items-center gap-0.5">
+                      <div class="flex items-center justify-center gap-px">
+                        <button
+                          @click="set.weight = Math.max(0, (parseFloat(set.weight) || 0) - weightStep())"
+                          class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
+                          :disabled="set.completed"
+                          :class="set.completed && 'opacity-30 pointer-events-none'"
+                          aria-label="Reducir peso"
+                        >
+                          <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" /></svg>
+                        </button>
+                        <input
+                          type="number"
+                          step="0.5"
+                          min="0"
+                          v-model.number="set.weight"
+                          class="h-7 w-10 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-xs font-semibold text-wc-text focus:border-wc-accent focus:outline-none tabular-nums"
+                          :class="set.completed && 'opacity-60'"
+                          :disabled="set.completed"
+                          placeholder="0"
+                        />
+                        <button
+                          @click="set.weight = (parseFloat(set.weight) || 0) + weightStep()"
+                          class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
+                          :disabled="set.completed"
+                          :class="set.completed && 'opacity-30 pointer-events-none'"
+                          aria-label="Aumentar peso"
+                        >
+                          <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                        </button>
+                      </div>
+                      <!-- Peso sesión anterior — solo primer set, solo si hay dato -->
+                      <span
+                        v-if="sIdx === 0 && exercise.last_weight != null"
+                        class="font-data text-[9px] leading-none tabular-nums text-wc-text-tertiary/60"
+                      >Últ: {{ weightUnit === 'lbs' ? (exercise.last_weight * 2.205).toFixed(1) : exercise.last_weight.toFixed(1) }}{{ weightUnit }}<span v-if="exercise.last_reps"> &times; {{ exercise.last_reps }}</span></span>
                     </div>
 
                     <!-- Reps input with +/- -->

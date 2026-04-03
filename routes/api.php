@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\Api\EjerciciosController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\CoachController;
@@ -10,6 +11,12 @@ use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\SocialController;
 use App\Http\Controllers\Api\TrainingController;
 use Illuminate\Support\Facades\Route;
+
+// Ejercicios Fitcron (public — no auth required)
+Route::prefix('ejercicios')->group(function () {
+    Route::get('/', [EjerciciosController::class, 'index']);
+    Route::get('/{slug}', [EjerciciosController::class, 'show']);
+});
 
 // Vue SPA Auth API — needs web session so login persists for impersonation/blade
 Route::prefix('v/auth')

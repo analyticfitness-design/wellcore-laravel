@@ -205,6 +205,71 @@ function getActivityIconData(type) {
     }
 }
 
+// ── Plan-specific motivational quotes (client-side, varies by day of week) ──
+const PLAN_QUOTES = {
+    rise: [
+        'El cambio que buscas empieza con la disciplina de hoy.',
+        'La ciencia no miente: la constancia reescribe tu biologia.',
+        'Cada sesion es datos. Cada dato te acerca a quien puedes ser.',
+        'RISE no es un programa. Es una decision que tomas cada manana.',
+        'Transformacion real requiere esfuerzo real. Hoy es ese dia.',
+        'Tu cuerpo responde a la senales que le das. Dale las correctas.',
+        'No buscamos perfeccion. Buscamos progreso medible, sostenido.',
+    ],
+    elite: [
+        'Los elite no descansan en su objetivo, descansan para su objetivo.',
+        'El rendimiento maximo no se improvisa: se construye rep a rep.',
+        'Tu limite de ayer es tu punto de partida de hoy.',
+        'Los que llegan al top hacen lo ordinario con extraordinaria consistencia.',
+        'Intensidad sin estrategia es ruido. Tu entrenas con proposito.',
+        'La excelencia no es un evento, es un habito que defiendes cada dia.',
+        'Cuando todos se detienen, el elite da un paso mas. Da ese paso.',
+    ],
+    metodo: [
+        'El metodo no es perfeccion, es consistencia implacable.',
+        'Proceso sobre resultado. El resultado es consecuencia del proceso.',
+        'Los habitos que construyes hoy son la persona que seras manana.',
+        'No hay atajo al cuerpo que quieres. Hay un metodo. Este es el tuyo.',
+        'La semana mas importante es la proxima. Empieza con esta sesion.',
+        'Confia en el plan. Los resultados llegan cuando la disciplina se vuelve rutina.',
+        'Un dia a la vez, una sesion a la vez. Eso es el metodo en accion.',
+    ],
+    presencial: [
+        'La presencia lo es todo: cuerpo, mente y enfoque en cada sesion.',
+        'Cada entrenamiento en persona es una inversion directa en ti.',
+        'Tu coach esta aqui. Tu esfuerzo tambien tiene que estarlo.',
+        'Lo que construyes en persona, nadie te lo puede quitar.',
+        'Conexion real, resultados reales. Eso es lo que logras hoy.',
+        'La disciplina que traes al gym se traduce en la vida que llevas afuera.',
+        'Hoy no es un dia comun: es otro dia que eligiste mejorar.',
+    ],
+    esencial: [
+        'Cada gran transformacion comenzo con un primer paso. El tuyo cuenta.',
+        'No necesitas ser el mejor hoy. Solo necesitas ser mejor que ayer.',
+        'La salud no es un destino, es un camino. Hoy caminas en la direccion correcta.',
+        'Resultados reales vienen de acciones reales. Esta es una de ellas.',
+        'No subestimes el poder de la constancia. Los cambios llegan.',
+        'Tu cuerpo es capaz de mas de lo que crees. Hoy lo demuestras.',
+        'Moverse es vivir. Seguir moviendose es prosperar.',
+    ],
+    trial: [
+        'Bienvenido al inicio de algo diferente. Hoy cuentas.',
+        'Los mejores viajes empiezan con curiosidad. La tuya te trajo aqui.',
+        'Una semana puede cambiar una perspectiva. Esta es la tuya.',
+        'No hay mejor momento para empezar que cuando ya empezaste.',
+        'El primer paso siempre es el mas importante. Ya lo diste.',
+        'Siente la diferencia que hace moverse con proposito.',
+        'Esto es solo el comienzo. Y los comienzos son poderosos.',
+    ],
+};
+
+const motivationalQuote = computed(() => {
+    const day = new Date().getDay(); // 0 (Sun) – 6 (Sat)
+    const planType = (data.value?.planType || 'esencial').toLowerCase();
+    const quotes = PLAN_QUOTES[planType] ?? PLAN_QUOTES.esencial;
+    return quotes[day % quotes.length];
+});
+
 // ── Weekly summary motivational text ──
 const weeklySummaryMessage = computed(() => {
     if (!data.value) return {};
@@ -321,6 +386,13 @@ const weekMarkers = computed(() => {
             <span class="inline-flex rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-semibold text-wc-accent">
               Plan {{ data.planLabel }}
             </span>
+          </div>
+          <!-- Plan-specific motivational phrase -->
+          <div class="mt-3 flex items-start gap-2">
+            <svg class="mt-0.5 h-3.5 w-3.5 shrink-0 text-wc-accent/60" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 0 1-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179Zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 0 1-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179Z" />
+            </svg>
+            <p class="text-sm italic leading-snug text-wc-text-secondary/70">{{ motivationalQuote }}</p>
           </div>
         </div>
 
