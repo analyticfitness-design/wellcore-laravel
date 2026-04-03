@@ -4,9 +4,12 @@ namespace App\Services;
 
 use App\Models\EjercicioFitcron;
 use App\Models\EjercicioVideo;
+use Illuminate\Support\Facades\DB;
 
 class ExerciseMediaService
 {
+    private const GIF_CDN = 'https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs/master';
+
     public function enrichWithMedia(array &$exercises): void
     {
         if (empty($exercises)) {
@@ -27,8 +30,8 @@ class ExerciseMediaService
         $mediaByName = $this->loadMediaByNames($names);
 
         foreach ($exercises as &$ex) {
-            $name = $ex['nombre'] ?? $ex['name'] ?? '';
-            $norm = $this->normalize($name);
+            $name  = $ex['nombre'] ?? $ex['name'] ?? '';
+            $norm  = $this->normalize($name);
             $media = $mediaByName[$norm] ?? null;
 
             if (! $media) {
@@ -47,20 +50,23 @@ class ExerciseMediaService
     }
 
     /**
-     * Single query lookup: returns [normalizedName => ['gif_url' => ..., 'video_url' => ...]]
+     * Batch lookup: [normalizedName => ['gif_url' => ..., 'video_url' => ...]]
+     *
+     * Strategy:
+     *  1. Exact normalized match against ejercicios_fitcron
+     *  2. Fallback: exercise_name_gif_map table (pre-computed by SmartGifMatcher)
      */
     private function loadMediaByNames(array $names): array
     {
         $normalizedNames = array_map(fn ($n) => $this->normalize($n), $names);
 
-        // Load fitcron records matching any of the normalized names
-        $fitcronRows = EjercicioFitcron::query()
-            ->select('slug', 'nombre', 'gif_filename', 'video_url', 'sin_fondo_listo', 'gif_path_sin_fondo')
+        // ── Layer 1: exact match against fitcron ──────────────────────────────
+        $fitcronRows   = EjercicioFitcron::query()
+            ->select('slug', 'nombre', 'gif_filename', 'video_url')
             ->get();
 
         $fitcronByNorm = $fitcronRows->keyBy(fn ($row) => $this->normalize($row->nombre));
 
-        // Collect slugs for the matched exercises to load their videos
         $slugs = collect($normalizedNames)
             ->map(fn ($norm) => $fitcronByNorm[$norm]?->slug)
             ->filter()
@@ -70,44 +76,84 @@ class ExerciseMediaService
 
         $videosBySlug = EjercicioVideo::query()
             ->select('fitcron_slug', 'youtube_url')
-            ->whereIn('fitcron_slug', $slugs)
+            ->whereIn('fitcron_slug', $slugs ?: ['__none__'])
             ->where('active', true)
             ->get()
             ->keyBy('fitcron_slug');
 
-        $result = [];
+        $result   = [];
+        $unmatched = []; // norms that had no exact fitcron match
 
         foreach ($normalizedNames as $i => $norm) {
             $fitcron = $fitcronByNorm[$norm] ?? null;
 
-            if (! $fitcron) {
-                continue;
+            if ($fitcron) {
+                $result[$norm] = [
+                    'gif_url'   => $this->gifUrl($fitcron->gif_filename),
+                    'video_url' => $videosBySlug[$fitcron->slug]?->youtube_url ?? $fitcron->video_url ?? null,
+                ];
+            } else {
+                $unmatched[$norm] = $names[$i]; // norm => original name
             }
+        }
 
-            $gifUrl = $this->resolveGifUrl($fitcron);
-            $videoUrl = $videosBySlug[$fitcron->slug]?->youtube_url
-                ?? $fitcron->video_url
-                ?? null;
-
-            $result[$norm] = [
-                'gif_url' => $gifUrl,
-                'video_url' => $videoUrl,
-            ];
+        // ── Layer 2: exercise_name_gif_map fallback ───────────────────────────
+        if (! empty($unmatched)) {
+            $this->enrichFromMap($unmatched, $result);
         }
 
         return $result;
     }
 
-    private function resolveGifUrl(EjercicioFitcron $fitcron): ?string
+    /**
+     * Look up unmatched exercise names in the pre-computed gif map table.
+     * Updates $result in-place.
+     */
+    private function enrichFromMap(array $unmatchedNormToOriginal, array &$result): void
     {
-        if (! $fitcron->gif_filename) {
-            return null;
+        // Check if table exists to avoid errors in fresh environments
+        try {
+            $mapRows = DB::table('exercise_name_gif_map')
+                ->whereNotNull('gif_filename')
+                ->whereIn('nombre_plan', array_values($unmatchedNormToOriginal))
+                ->select('nombre_plan', 'gif_filename', 'fitcron_slug')
+                ->get()
+                ->keyBy(fn ($r) => $this->normalize($r->nombre_plan));
+
+            foreach ($unmatchedNormToOriginal as $norm => $originalName) {
+                $row = $mapRows[$norm] ?? null;
+
+                if (! $row) {
+                    continue;
+                }
+
+                $videoUrl = null;
+                if ($row->fitcron_slug) {
+                    $video = EjercicioVideo::query()
+                        ->where('fitcron_slug', $row->fitcron_slug)
+                        ->where('active', true)
+                        ->value('youtube_url');
+                    if (! $video) {
+                        $video = EjercicioFitcron::query()
+                            ->where('slug', $row->fitcron_slug)
+                            ->value('video_url');
+                    }
+                    $videoUrl = $video;
+                }
+
+                $result[$norm] = [
+                    'gif_url'   => $this->gifUrl($row->gif_filename),
+                    'video_url' => $videoUrl,
+                ];
+            }
+        } catch (\Throwable) {
+            // exercise_name_gif_map may not exist yet — silently skip
         }
+    }
 
-        // Serve from GitHub raw CDN (public repo, no server storage needed)
-        $base = 'https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs/master';
-
-        return $base.'/'.rawurlencode($fitcron->gif_filename);
+    private function gifUrl(?string $filename): ?string
+    {
+        return $filename ? self::GIF_CDN.'/'.rawurlencode($filename) : null;
     }
 
     private function normalize(string $name): string

@@ -98,6 +98,13 @@ async function fetchMetrics() {
   }
 }
 
+// ── Date formatter ──
+function formatDate(dateStr) {
+  if (!dateStr) return '--';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
 // ── Save metric ──
 async function saveMetric() {
   saving.value = true;
@@ -612,7 +619,7 @@ onBeforeUnmount(() => {
                 class="w-full rounded-t bg-wc-accent/80 transition-all group-hover:bg-wc-accent"
                 :style="{ height: getBarHeight(entry.peso) + '%' }"
               ></div>
-              <span class="mt-1 text-[10px] text-wc-text-tertiary">{{ entry.date }}</span>
+              <span class="mt-1 text-[10px] text-wc-text-tertiary">{{ formatDate(entry.date) }}</span>
             </div>
           </div>
 
@@ -697,7 +704,7 @@ onBeforeUnmount(() => {
                   class="hover:bg-wc-bg-secondary/50"
                 >
                   <td class="whitespace-nowrap px-3 py-3 font-data text-wc-text sm:px-5">
-                    {{ entry.date || entry.log_date }}
+                    {{ formatDate(entry.date || entry.log_date) }}
                   </td>
                   <td class="whitespace-nowrap px-3 py-3 font-data font-semibold text-wc-text sm:px-5">
                     {{ entry.peso ? Number(entry.peso).toFixed(1) + ' kg' : '--' }}

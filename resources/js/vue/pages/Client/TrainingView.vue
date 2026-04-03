@@ -196,10 +196,10 @@ onMounted(() => {
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
           <div class="mb-3 flex items-center justify-between">
             <span class="text-sm font-medium text-wc-text-secondary">
-              <span class="font-data text-lg font-semibold text-wc-text">{{ completedCount }}</span>
+              <span class="font-display text-xl tracking-wide text-wc-accent">{{ completedCount }}</span>
               de 7 dias completados
             </span>
-            <span class="font-data text-sm font-semibold text-wc-accent">{{ completionPct }}%</span>
+            <span class="font-display text-base tracking-wide text-wc-accent">{{ completionPct }}%</span>
           </div>
           <div class="h-2 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
             <div class="h-full rounded-full bg-wc-accent transition-all duration-500" :style="{ width: completionPct + '%' }"></div>
@@ -207,11 +207,11 @@ onMounted(() => {
           <div class="mt-4 grid grid-cols-2 gap-4 border-t border-wc-border pt-4">
             <div>
               <p class="text-xs text-wc-text-tertiary">Sesiones esta semana</p>
-              <p class="font-data text-2xl font-semibold text-wc-text">{{ completedCount }}</p>
+              <p class="font-display text-3xl tracking-wide text-wc-accent">{{ completedCount }}</p>
             </div>
             <div>
               <p class="text-xs text-wc-text-tertiary">Sesiones este mes</p>
-              <p class="font-data text-2xl font-semibold text-wc-text">{{ monthSessions }}</p>
+              <p class="font-display text-3xl tracking-wide text-wc-accent">{{ monthSessions }}</p>
             </div>
           </div>
         </div>
