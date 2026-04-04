@@ -14,11 +14,13 @@ final class DumpSilviaPlan extends Command
 
     public function handle(): int
     {
+        $out = '';
+
         // Client info
         $client = DB::table('clients')->where('id', 54)->first();
-        $out = "CLIENTE: {$client->name} | {$client->email} | plan:{$client->plan}\n\n";
+        $out .= "CLIENTE: {$client->name} | {$client->email} | plan:{$client->plan}\n\n";
 
-        // All active plans
+        // Dump ALL active plans - raw JSON first 2000 chars
         $plans = DB::table('assigned_plans')->where('client_id', 54)->where('active', 1)->get();
         foreach ($plans as $p) {
             $out .= "=== PLAN id={$p->id} type={$p->plan_type} ===\n";
@@ -26,43 +28,49 @@ final class DumpSilviaPlan extends Command
             $topKeys = implode(', ', array_keys($d));
             $out .= "Keys: {$topKeys}\n";
 
-            // Try weeks / semanas
-            $weeks = $d['weeks'] ?? $d['semanas'] ?? [];
-            $out .= 'Semanas/Weeks: ' . count($weeks) . "\n";
-
-            if (!empty($weeks)) {
-                $w1   = $weeks[0];
-                $days = $w1['days'] ?? $w1['dias'] ?? [];
-                foreach ($days as $day) {
-                    $dayName = $day['name'] ?? $day['nombre'] ?? '?';
-                    $exs     = $day['exercises'] ?? $day['ejercicios'] ?? [];
-                    $names   = array_map(fn ($e) => $e['name'] ?? $e['nombre'] ?? '?', $exs);
-                    $out .= "  [{$dayName}]: " . implode(', ', $names) . "\n";
-                }
-            }
-
-            // Nutrition
-            if ($p->plan_type === 'nutricion') {
-                $out .= 'cal: ' . ($d['calorias_diarias'] ?? $d['objetivo_cal'] ?? 'N/A') . "\n";
-                $out .= 'comidas: ' . count($d['comidas'] ?? $d['comidas_sugeridas'] ?? []) . "\n";
-            }
-
-            $out .= "\n";
+            // Raw first 1500 chars of JSON for inspection
+            $raw = substr($p->content ?? '', 0, 1500);
+            $out .= "RAW: {$raw}\n";
+            $out .= "---\n";
         }
 
-        // Check client_profiles for physical data
+        // Check client_profiles
         try {
             $profile = DB::table('client_profiles')->where('client_id', 54)->first();
             if ($profile) {
                 $out .= 'PERFIL: ' . json_encode((array) $profile, JSON_UNESCAPED_UNICODE) . "\n";
+            } else {
+                $out .= "PERFIL: no encontrado\n";
             }
-        } catch (\Throwable) {}
+        } catch (\Throwable $e) {
+            $out .= 'PERFIL_ERR: ' . $e->getMessage() . "\n";
+        }
 
         // Check measurements
         try {
             $meas = DB::table('client_measurements')->where('client_id', 54)->orderByDesc('id')->first();
             if ($meas) {
                 $out .= 'MEDIDA: ' . json_encode((array) $meas, JSON_UNESCAPED_UNICODE) . "\n";
+            } else {
+                $out .= "MEDIDA: no encontrada\n";
+            }
+        } catch (\Throwable $e) {
+            $out .= 'MEDIDA_ERR: ' . $e->getMessage() . "\n";
+        }
+
+        // Check intake forms / onboarding
+        try {
+            $intake = DB::table('client_intakes')->where('client_id', 54)->first();
+            if ($intake) {
+                $out .= 'INTAKE: ' . json_encode((array) $intake, JSON_UNESCAPED_UNICODE) . "\n";
+            }
+        } catch (\Throwable) {}
+
+        // Check rise_programs
+        try {
+            $rp = DB::table('rise_programs')->where('client_id', 54)->first();
+            if ($rp) {
+                $out .= 'RISE: found id=' . $rp->id . "\n";
             }
         } catch (\Throwable) {}
 
