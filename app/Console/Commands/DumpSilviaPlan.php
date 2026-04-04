@@ -24,7 +24,12 @@ final class DumpSilviaPlan extends Command
         $plans = DB::table('assigned_plans')->where('client_id', 54)->where('active', 1)->get();
         foreach ($plans as $p) {
             $out .= "=== PLAN id={$p->id} type={$p->plan_type} ===\n";
-            $d = json_decode($p->content, true) ?? [];
+            $decoded = json_decode($p->content, true);
+            // Handle double-encoded JSON
+            if (is_string($decoded)) {
+                $decoded = json_decode($decoded, true);
+            }
+            $d = is_array($decoded) ? $decoded : [];
             $topKeys = implode(', ', array_keys($d));
             $out .= "Keys: {$topKeys}\n";
 
