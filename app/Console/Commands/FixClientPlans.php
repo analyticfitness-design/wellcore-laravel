@@ -951,7 +951,6 @@ class FixClientPlans extends Command
             [
                 'content' => json_encode($content, JSON_UNESCAPED_UNICODE),
                 'active' => true,
-                'updated_at' => now(),
                 'created_at' => now(),
             ]
         );
