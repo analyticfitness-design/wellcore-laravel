@@ -65,12 +65,12 @@ class ExerciseMediaService
 
         // ── Layer 1: exact match against fitcron ──────────────────────────────
         // Static cache: loaded once per PHP process/request — avoids N×749 row loads
-        if (self::$fitcronCache === null) {
-            self::$fitcronCache = EjercicioFitcron::query()
+        if ($this->fitcronCache === null) {
+            $this->fitcronCache = EjercicioFitcron::query()
                 ->select('slug', 'nombre', 'gif_filename', 'video_url')
                 ->get();
         }
-        $fitcronRows   = self::$fitcronCache;
+        $fitcronRows   = $this->fitcronCache;
 
         $fitcronByNorm = $fitcronRows->keyBy(fn ($row) => $this->normalize($row->nombre));
 
