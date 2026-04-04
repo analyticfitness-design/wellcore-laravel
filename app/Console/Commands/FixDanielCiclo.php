@@ -96,8 +96,7 @@ final class FixDanielCiclo extends Command
             ->where('plan_type', 'ciclo_hormonal')
             ->where('active', 1)
             ->update([
-                'content'    => json_encode($data, JSON_UNESCAPED_UNICODE),
-                'updated_at' => now(),
+                'content' => json_encode($data, JSON_UNESCAPED_UNICODE),
             ]);
 
         $this->info('✓ Ciclo de Daniel actualizado correctamente.');
