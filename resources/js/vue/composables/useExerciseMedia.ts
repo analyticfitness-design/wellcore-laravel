@@ -21,5 +21,11 @@ export function extractYouTubeId(url: string | null): string | null {
  */
 export function getEmbedUrl(videoUrl: string | null): string | null {
   const id = extractYouTubeId(videoUrl);
-  return id ? `https://www.youtube.com/embed/${id}?autoplay=0&rel=0&modestbranding=1` : null;
+  // youtube-nocookie.com reduces tracking and has fewer embedding restrictions
+  return id ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=0&rel=0&modestbranding=1` : null;
+}
+
+export function getWatchUrl(videoUrl: string | null): string | null {
+  const id = extractYouTubeId(videoUrl);
+  return id ? `https://www.youtube.com/watch?v=${id}` : null;
 }

@@ -1,6 +1,6 @@
 <script setup>
-import { onMounted, onBeforeUnmount } from 'vue';
-import { getEmbedUrl } from '../../composables/useExerciseMedia';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import { getEmbedUrl, getWatchUrl } from '../../composables/useExerciseMedia';
 
 const props = defineProps({
   exercise: {
@@ -14,6 +14,11 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close']);
+
+const videoBlocked = ref(false);
+
+// Reset blocked state when a new exercise is shown
+watch(() => props.exercise, () => { videoBlocked.value = false; });
 
 function exName(ex) {
   return ex?.nombre || ex?.name || ex?.ejercicio || 'Ejercicio';
@@ -39,12 +44,21 @@ function onKeydown(e) {
   }
 }
 
+// YouTube sends a postMessage when embedding is blocked
+function onMessage(e) {
+  if (typeof e.data === 'string' && e.data.includes('embeddingDisabled')) {
+    videoBlocked.value = true;
+  }
+}
+
 onMounted(() => {
   window.addEventListener('keydown', onKeydown);
+  window.addEventListener('message', onMessage);
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', onKeydown);
+  window.removeEventListener('message', onMessage);
 });
 </script>
 
@@ -94,8 +108,8 @@ onBeforeUnmount(() => {
 
           <!-- Media content -->
           <div class="bg-wc-bg-secondary">
-            <!-- YouTube iframe (priority over GIF) -->
-            <div v-if="exVideoUrl(exercise)" class="aspect-video w-full">
+            <!-- YouTube iframe (priority over GIF), unless blocked -->
+            <div v-if="exVideoUrl(exercise) && !videoBlocked" class="aspect-video w-full">
               <iframe
                 :src="getEmbedUrl(exVideoUrl(exercise))"
                 class="h-full w-full"
@@ -104,19 +118,33 @@ onBeforeUnmount(() => {
                 allowfullscreen
               ></iframe>
             </div>
-            <!-- GIF fallback when no video -->
-            <div v-else-if="exImageUrl(exercise)" class="flex items-center justify-center bg-wc-bg p-4">
+            <!-- GIF shown when no video OR when video is blocked -->
+            <div v-if="!exVideoUrl(exercise) || videoBlocked" class="flex items-center justify-center bg-wc-bg p-4">
               <img
+                v-if="exImageUrl(exercise)"
                 :src="exImageUrl(exercise)"
                 :alt="exName(exercise)"
                 class="max-h-80 w-full object-contain"
               />
+              <p v-else class="text-sm text-wc-text-tertiary">Sin imagen disponible</p>
             </div>
           </div>
 
-          <!-- Footer hint -->
-          <div class="px-4 py-3 text-center">
+          <!-- Footer: link to YouTube when video exists -->
+          <div class="flex items-center justify-center gap-3 px-4 py-3">
             <p class="text-xs text-wc-text-tertiary">Toca fuera para cerrar</p>
+            <a
+              v-if="exVideoUrl(exercise)"
+              :href="getWatchUrl(exVideoUrl(exercise))"
+              target="_blank"
+              rel="noopener"
+              class="flex items-center gap-1.5 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 transition-colors"
+            >
+              <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+              Ver en YouTube
+            </a>
           </div>
         </div>
       </Transition>
