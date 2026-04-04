@@ -82,13 +82,35 @@ class TrainingController extends Controller
         }
 
         // Enrich training plan exercises with GIF/video URLs.
-        // ExerciseMediaService caches fitcron rows statically — all 20 calls share one DB load.
-        // try-catch is inside the loop so one failing day never blocks the rest.
+        // NOTE: must NOT use ?? [] in foreach when iterating by reference (&$semana, &$dia)
+        // because ?? [] creates a temporary copy — references would point to the copy, not $trainingPlan.
         if ($trainingPlan) {
             $mediaService = app(ExerciseMediaService::class);
 
-            foreach ($trainingPlan['semanas'] ?? [] as $sIdx => &$semana) {
-                foreach ($semana['dias'] ?? [] as $dIdx => &$dia) {
+            if (!empty($trainingPlan['semanas'])) {
+                foreach ($trainingPlan['semanas'] as $sIdx => &$semana) {
+                    if (empty($semana['dias'])) {
+                        continue;
+                    }
+                    foreach ($semana['dias'] as $dIdx => &$dia) {
+                        $ejercicios = $dia['ejercicios'] ?? [];
+                        if (empty($ejercicios)) {
+                            continue;
+                        }
+                        try {
+                            $mediaService->enrichWithMedia($ejercicios);
+                        } catch (\Throwable $e) {
+                            \Log::warning('GIF enrichment failed', ['sIdx' => $sIdx, 'dIdx' => $dIdx, 'error' => $e->getMessage()]);
+                        }
+                        $dia['ejercicios'] = $ejercicios;
+                    }
+                    unset($dia);
+                }
+                unset($semana);
+            }
+
+            if (!empty($trainingPlan['dias'])) {
+                foreach ($trainingPlan['dias'] as $dIdx => &$dia) {
                     $ejercicios = $dia['ejercicios'] ?? [];
                     if (empty($ejercicios)) {
                         continue;
@@ -96,26 +118,12 @@ class TrainingController extends Controller
                     try {
                         $mediaService->enrichWithMedia($ejercicios);
                     } catch (\Throwable $e) {
-                        \Log::warning('GIF enrichment failed', ['sIdx' => $sIdx, 'dIdx' => $dIdx, 'error' => $e->getMessage()]);
+                        \Log::warning('GIF enrichment failed (legacy dias)', ['dIdx' => $dIdx, 'error' => $e->getMessage()]);
                     }
                     $dia['ejercicios'] = $ejercicios;
                 }
+                unset($dia);
             }
-            unset($semana, $dia);
-
-            foreach ($trainingPlan['dias'] ?? [] as $dIdx => &$dia) {
-                $ejercicios = $dia['ejercicios'] ?? [];
-                if (empty($ejercicios)) {
-                    continue;
-                }
-                try {
-                    $mediaService->enrichWithMedia($ejercicios);
-                } catch (\Throwable $e) {
-                    \Log::warning('GIF enrichment failed (legacy dias)', ['dIdx' => $dIdx, 'error' => $e->getMessage()]);
-                }
-                $dia['ejercicios'] = $ejercicios;
-            }
-            unset($dia);
         }
 
         // Habits (last 30 days)
