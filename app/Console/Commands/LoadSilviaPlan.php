@@ -285,11 +285,10 @@ final class LoadSilviaPlan extends Command
 
         // ── 4. Insertar nuevo plan ────────────────────────────────────────────
         $newId = DB::table('assigned_plans')->insertGetId([
-            'client_id'  => $clientId,
-            'plan_type'  => 'entrenamiento',
-            'content'    => json_encode($content, JSON_UNESCAPED_UNICODE),
-            'active'     => 1,
-            'fecha_inicio' => now()->toDateString(),
+            'client_id' => $clientId,
+            'plan_type' => 'entrenamiento',
+            'content'   => json_encode($content, JSON_UNESCAPED_UNICODE),
+            'active'    => 1,
         ]);
 
         $this->info("Nuevo plan entrenamiento creado con id={$newId}");
