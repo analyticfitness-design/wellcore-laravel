@@ -81,53 +81,41 @@ class TrainingController extends Controller
             }
         }
 
-        // Enrich training plan exercises with GIF URLs — single batch across ALL semanas/dias
+        // Enrich training plan exercises with GIF/video URLs.
+        // ExerciseMediaService caches fitcron rows statically — all 20 calls share one DB load.
+        // try-catch is inside the loop so one failing day never blocks the rest.
         if ($trainingPlan) {
-            try {
-                $mediaService = app(ExerciseMediaService::class);
+            $mediaService = app(ExerciseMediaService::class);
 
-                // Collect ALL exercises from all semanas × dias into one flat array,
-                // track their position so we can write results back.
-                $allExercises = [];
-                $positions    = []; // [ [sIdx, dIdx, eIdx], ... ]
-
-                foreach ($trainingPlan['semanas'] ?? [] as $sIdx => $semana) {
-                    foreach ($semana['dias'] ?? [] as $dIdx => $dia) {
-                        foreach ($dia['ejercicios'] ?? [] as $eIdx => $ej) {
-                            $positions[]    = [$sIdx, $dIdx, $eIdx];
-                            $allExercises[] = $ej;
-                        }
+            foreach ($trainingPlan['semanas'] ?? [] as $sIdx => &$semana) {
+                foreach ($semana['dias'] ?? [] as $dIdx => &$dia) {
+                    $ejercicios = $dia['ejercicios'] ?? [];
+                    if (empty($ejercicios)) {
+                        continue;
                     }
-                }
-
-                // Also collect from top-level dias (legacy plans)
-                $diasPositions = [];
-                $diasExercises = [];
-                foreach ($trainingPlan['dias'] ?? [] as $dIdx => $dia) {
-                    foreach ($dia['ejercicios'] ?? [] as $eIdx => $ej) {
-                        $diasPositions[]  = [$dIdx, $eIdx];
-                        $diasExercises[]  = $ej;
+                    try {
+                        $mediaService->enrichWithMedia($ejercicios);
+                    } catch (\Throwable $e) {
+                        \Log::warning('GIF enrichment failed', ['sIdx' => $sIdx, 'dIdx' => $dIdx, 'error' => $e->getMessage()]);
                     }
+                    $dia['ejercicios'] = $ejercicios;
                 }
-
-                // ONE batch enrichment call covers ALL semanas + dias
-                if (!empty($allExercises)) {
-                    $mediaService->enrichWithMedia($allExercises);
-                    foreach ($positions as $i => [$sIdx, $dIdx, $eIdx]) {
-                        $trainingPlan['semanas'][$sIdx]['dias'][$dIdx]['ejercicios'][$eIdx] = $allExercises[$i];
-                    }
-                }
-
-                if (!empty($diasExercises)) {
-                    $mediaService->enrichWithMedia($diasExercises);
-                    foreach ($diasPositions as $i => [$dIdx, $eIdx]) {
-                        $trainingPlan['dias'][$dIdx]['ejercicios'][$eIdx] = $diasExercises[$i];
-                    }
-                }
-
-            } catch (\Throwable $e) {
-                \Log::warning('GIF enrichment failed', ['error' => $e->getMessage(), 'trace' => substr($e->getTraceAsString(), 0, 500)]);
             }
+            unset($semana, $dia);
+
+            foreach ($trainingPlan['dias'] ?? [] as $dIdx => &$dia) {
+                $ejercicios = $dia['ejercicios'] ?? [];
+                if (empty($ejercicios)) {
+                    continue;
+                }
+                try {
+                    $mediaService->enrichWithMedia($ejercicios);
+                } catch (\Throwable $e) {
+                    \Log::warning('GIF enrichment failed (legacy dias)', ['dIdx' => $dIdx, 'error' => $e->getMessage()]);
+                }
+                $dia['ejercicios'] = $ejercicios;
+            }
+            unset($dia);
         }
 
         // Habits (last 30 days)

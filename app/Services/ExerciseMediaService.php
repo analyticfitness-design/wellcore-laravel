@@ -10,6 +10,9 @@ class ExerciseMediaService
 {
     private const GIF_CDN = 'https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs/master';
 
+    /** Cached fitcron rows — loaded once per request, shared across all enrichWithMedia calls */
+    private static ?\Illuminate\Support\Collection $fitcronCache = null;
+
     public function enrichWithMedia(array &$exercises): void
     {
         if (empty($exercises)) {
@@ -61,9 +64,13 @@ class ExerciseMediaService
         $normalizedNames = array_map(fn ($n) => $this->normalize($n), $names);
 
         // ── Layer 1: exact match against fitcron ──────────────────────────────
-        $fitcronRows   = EjercicioFitcron::query()
-            ->select('slug', 'nombre', 'gif_filename', 'video_url')
-            ->get();
+        // Static cache: loaded once per PHP process/request — avoids N×749 row loads
+        if (self::$fitcronCache === null) {
+            self::$fitcronCache = EjercicioFitcron::query()
+                ->select('slug', 'nombre', 'gif_filename', 'video_url')
+                ->get();
+        }
+        $fitcronRows   = self::$fitcronCache;
 
         $fitcronByNorm = $fitcronRows->keyBy(fn ($row) => $this->normalize($row->nombre));
 
