@@ -10,8 +10,8 @@ class ExerciseMediaService
 {
     private const GIF_CDN = 'https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs/master';
 
-    /** Cached fitcron rows — loaded once per request, shared across all enrichWithMedia calls */
-    private static ?\Illuminate\Support\Collection $fitcronCache = null;
+    /** Instance-level cache: loaded once per service instance (one per request) */
+    private ?\Illuminate\Support\Collection $fitcronCache = null;
 
     public function enrichWithMedia(array &$exercises): void
     {
