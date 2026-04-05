@@ -183,6 +183,53 @@ async function dismissTutorial() {
     }
 }
 
+// Food icon helper — maps food keywords to emojis
+function foodIcon(name) {
+  const lower = (name || '').toLowerCase();
+  const map = [
+    [['pollo','pechuga','chicken','pavo'], '\u{1F357}'],
+    [['carne','res','steak','lomo','cerdo'], '\u{1F969}'],
+    [['salm\u00F3n','salmon','at\u00FAn','atun','tilapia','pescado','corvina','trucha'], '\u{1F41F}'],
+    [['huevo','clara','claras'], '\u{1F95A}'],
+    [['yogur','yogurt','leche'], '\u{1F95B}'],
+    [['queso','reques\u00F3n','requeson'], '\u{1F9C0}'],
+    [['avena','granola','oatmeal'], '\u{1F963}'],
+    [['arroz','rice','quinoa'], '\u{1F35A}'],
+    [['pasta'], '\u{1F35D}'],
+    [['pan','tostada'], '\u{1F35E}'],
+    [['arepa','tortilla'], '\u{1FAD3}'],
+    [['papa'], '\u{1F954}'],
+    [['batata','camote'], '\u{1F360}'],
+    [['banana','banano','pl\u00E1tano','platano'], '\u{1F34C}'],
+    [['manzana'], '\u{1F34E}'],
+    [['fresa','fresas'], '\u{1F353}'],
+    [['fruta','frutas'], '\u{1F347}'],
+    [['br\u00F3coli','brocoli'], '\u{1F966}'],
+    [['espinaca','lechuga'], '\u{1F96C}'],
+    [['ensalada','vegetal','vegetales'], '\u{1F957}'],
+    [['tomate'], '\u{1F345}'],
+    [['aguacate','avocado'], '\u{1F951}'],
+    [['nuez','nueces','almendra','man\u00ED','mani'], '\u{1F95C}'],
+    [['aceite','oliva'], '\u{1FAD2}'],
+    [['prote\u00EDna','proteina','whey'], '\u{1F9EA}'],
+    [['agua'], '\u{1F4A7}'],
+    [['caf\u00E9','cafe'], '\u2615'],
+    [['miel'], '\u{1F36F}'],
+  ];
+  for (const [keywords, emoji] of map) {
+    if (keywords.some(k => lower.includes(k))) return emoji;
+  }
+  return null;
+}
+
+function getAlimentoName(alimento) {
+  if (typeof alimento === 'string') return alimento;
+  if (typeof alimento === 'object' && alimento !== null) {
+    return alimento.nombre || alimento.alimento || alimento.name || '';
+  }
+  return String(alimento);
+}
+
 onMounted(() => {
     fetchNutrition();
 });
@@ -244,10 +291,10 @@ onMounted(() => {
         <div v-if="hasMacros" class="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <!-- Calories -->
           <div class="relative overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary p-4">
-            <div class="absolute inset-x-0 top-0 h-0.5" style="background:#10B981;"></div>
+            <div class="absolute inset-x-0 top-0 h-0.5 wc-macro-calories-bg"></div>
             <p class="text-[10px] font-medium uppercase tracking-widest text-wc-text-tertiary">Calorias</p>
             <p class="mt-1 font-data text-3xl font-bold tabular-nums text-wc-text">{{ totalCalories.toLocaleString() }}</p>
-            <p class="mt-0.5 text-xs font-medium" style="color:#10B981;">kcal / dia</p>
+            <p class="mt-0.5 text-xs font-medium wc-macro-calories">kcal / dia</p>
           </div>
 
           <!-- Protein -->
@@ -260,26 +307,26 @@ onMounted(() => {
 
           <!-- Carbs -->
           <div class="relative overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary p-4">
-            <div class="absolute inset-x-0 top-0 h-0.5" style="background:#3B82F6;"></div>
+            <div class="absolute inset-x-0 top-0 h-0.5 wc-macro-carbs-bg"></div>
             <p class="text-[10px] font-medium uppercase tracking-widest text-wc-text-tertiary">Carbos</p>
             <p class="mt-1 font-data text-3xl font-bold tabular-nums text-wc-text">{{ carbGrams }}<span class="text-lg font-normal">g</span></p>
-            <p class="mt-0.5 text-xs font-medium" style="color:#3B82F6;">{{ macroPercentages.carbs }}% del total</p>
+            <p class="mt-0.5 text-xs font-medium wc-macro-carbs">{{ macroPercentages.carbs }}% del total</p>
           </div>
 
           <!-- Fat -->
           <div class="relative overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary p-4">
-            <div class="absolute inset-x-0 top-0 h-0.5" style="background:#F59E0B;"></div>
+            <div class="absolute inset-x-0 top-0 h-0.5 wc-macro-fat-bg"></div>
             <p class="text-[10px] font-medium uppercase tracking-widest text-wc-text-tertiary">Grasas</p>
             <p class="mt-1 font-data text-3xl font-bold tabular-nums text-wc-text">{{ fatGrams }}<span class="text-lg font-normal">g</span></p>
-            <p class="mt-0.5 text-xs font-medium" style="color:#F59E0B;">{{ macroPercentages.fat }}% del total</p>
+            <p class="mt-0.5 text-xs font-medium wc-macro-fat">{{ macroPercentages.fat }}% del total</p>
           </div>
         </div>
 
         <!-- Macro visual bars -->
         <div v-if="hasMacros" class="flex h-2 w-full overflow-hidden rounded-full">
           <div class="h-full bg-wc-accent transition-all duration-700 delay-100" :style="{ width: animateBars ? `${macroPercentages.protein}%` : '0%' }"></div>
-          <div class="h-full transition-all duration-700 delay-200" :style="{ background: '#3B82F6', width: animateBars ? `${macroPercentages.carbs}%` : '0%' }"></div>
-          <div class="h-full transition-all duration-700 delay-300" :style="{ background: '#F59E0B', width: animateBars ? `${macroPercentages.fat}%` : '0%' }"></div>
+          <div class="h-full wc-macro-carbs-bg transition-all duration-700 delay-200" :style="{ width: animateBars ? `${macroPercentages.carbs}%` : '0%' }"></div>
+          <div class="h-full wc-macro-fat-bg transition-all duration-700 delay-300" :style="{ width: animateBars ? `${macroPercentages.fat}%` : '0%' }"></div>
         </div>
 
         <!-- ─── OBJETIVO ──────────────────────────────────────────────────── -->
@@ -385,7 +432,8 @@ onMounted(() => {
                     <!-- Alimentos -->
                     <ul v-if="meal.alimentos && meal.alimentos.length" class="space-y-1.5">
                       <li v-for="(alimento, ai) in meal.alimentos" :key="ai" class="flex items-start gap-2.5">
-                        <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                        <span v-if="foodIcon(getAlimentoName(alimento))" class="shrink-0 text-base leading-relaxed">{{ foodIcon(getAlimentoName(alimento)) }}</span>
+                        <span v-else class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
                         <span class="text-sm leading-relaxed text-wc-text-secondary">{{ formatAlimento(alimento) }}</span>
                       </li>
                     </ul>
@@ -444,13 +492,15 @@ onMounted(() => {
                       <p class="mb-1.5 font-display text-xs tracking-wide text-wc-text">{{ (comida.nombre || 'Comida').toUpperCase() }}</p>
                       <ul v-if="comida.alimentos && comida.alimentos.length" class="space-y-1">
                         <li v-for="(alimento, ai) in comida.alimentos" :key="ai" class="flex items-start gap-2">
-                          <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                          <span v-if="foodIcon(getAlimentoName(alimento))" class="shrink-0 text-base leading-relaxed">{{ foodIcon(getAlimentoName(alimento)) }}</span>
+                          <span v-else class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
                           <span class="text-sm leading-relaxed text-wc-text-secondary">{{ formatAlimento(alimento) }}</span>
                         </li>
                       </ul>
                       <ul v-else-if="comida.opciones && comida.opciones.length" class="space-y-1">
                         <li v-for="(opcion, oi) in comida.opciones" :key="oi" class="flex items-start gap-2">
-                          <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                          <span v-if="foodIcon(opcion)" class="shrink-0 text-base leading-relaxed">{{ foodIcon(opcion) }}</span>
+                          <span v-else class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
                           <span class="text-sm leading-relaxed text-wc-text-secondary">{{ opcion }}</span>
                         </li>
                       </ul>
@@ -519,7 +569,8 @@ onMounted(() => {
                 <div v-show="openSugeridas[si]" class="border-t border-wc-border/50">
                   <ul class="space-y-2 p-4">
                     <li v-for="(opcion, oi) in (comidaSug.opciones || [])" :key="oi" class="flex items-start gap-2.5">
-                      <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                      <span v-if="foodIcon(opcion)" class="shrink-0 text-base leading-relaxed">{{ foodIcon(opcion) }}</span>
+                      <span v-else class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
                       <span class="text-sm leading-relaxed text-wc-text-secondary">{{ opcion }}</span>
                     </li>
                   </ul>
@@ -773,4 +824,12 @@ onMounted(() => {
 .accordion-leave-active { transition: max-height 0.2s ease, opacity 0.2s ease; }
 .accordion-enter-from, .accordion-leave-to { max-height: 0; opacity: 0; overflow: hidden; }
 .accordion-enter-to, .accordion-leave-from { max-height: 600px; opacity: 1; }
+
+/* Macro color token classes */
+.wc-macro-calories { color: #10B981; }
+.wc-macro-calories-bg { background-color: #10B981; }
+.wc-macro-carbs { color: #3B82F6; }
+.wc-macro-carbs-bg { background-color: #3B82F6; }
+.wc-macro-fat { color: #F59E0B; }
+.wc-macro-fat-bg { background-color: #F59E0B; }
 </style>

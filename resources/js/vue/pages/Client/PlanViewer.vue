@@ -615,7 +615,7 @@ onBeforeUnmount(() => {
       <!-- Content -->
       <template v-else>
         <!-- Tabs -->
-        <div class="mb-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-1" role="tablist" aria-label="Secciones del plan">
+        <div class="wc-glass mb-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-1" role="tablist" aria-label="Secciones del plan">
           <div class="flex gap-1 overflow-x-auto">
             <button
               v-for="tab in tabs"
@@ -642,7 +642,8 @@ onBeforeUnmount(() => {
         <div v-if="activeTab === 'entrenamiento'">
           <template v-if="trainingPlan">
             <!-- Program Overview Card -->
-            <div class="relative mb-6 overflow-hidden rounded-xl border border-wc-accent/20 bg-gradient-to-br from-wc-accent/[0.08] via-wc-bg-tertiary to-transparent p-5 sm:p-6">
+            <div class="wc-topline wc-grain relative mb-6 overflow-hidden rounded-xl border border-wc-accent/20 bg-gradient-to-br from-wc-accent/[0.08] via-wc-bg-tertiary to-transparent p-5 sm:p-6">
+              <div class="wc-orb-tr" aria-hidden="true"></div>
               <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-wc-accent/[0.06]"></div>
               <div class="pointer-events-none absolute -right-3 -top-3 h-16 w-16 rounded-full bg-wc-accent/10"></div>
 
@@ -728,7 +729,7 @@ onBeforeUnmount(() => {
                 v-for="(semana, sIdx) in semanas"
                 :key="sIdx"
                 class="overflow-hidden rounded-xl border transition-colors"
-                :class="(semana.numero || sIdx + 1) === currentWeek ? 'border-wc-accent/30 bg-wc-accent/5' : 'border-wc-border bg-wc-bg-tertiary'"
+                :class="(semana.numero || sIdx + 1) === currentWeek ? 'wc-topline border-wc-accent/30 bg-wc-accent/5' : 'border-wc-border bg-wc-bg-tertiary'"
               >
                 <!-- Week header -->
                 <button
@@ -770,7 +771,7 @@ onBeforeUnmount(() => {
                     <div
                       v-for="(dia, dIdx) in (semana.dias || [])"
                       :key="dIdx"
-                      class="rounded-xl border border-wc-border bg-wc-bg-secondary"
+                      class="wc-lift rounded-xl border border-wc-border bg-wc-bg-secondary"
                     >
                       <!-- Day header -->
                       <div class="flex items-center justify-between gap-3 px-4 py-3.5">
@@ -816,7 +817,7 @@ onBeforeUnmount(() => {
                       <div v-if="(dia.ejercicios || []).length > 0" class="border-t border-wc-border/40 px-4 py-2.5">
                         <button
                           @click="goToWorkout(dIdx + 1)"
-                          class="flex w-full items-center justify-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 transition-colors"
+                          class="btn-ripple btn-press shadow-lg shadow-wc-accent/20 flex w-full items-center justify-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 transition-colors"
                         >
                           <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"/></svg>
                           Entrenar este dia

@@ -379,6 +379,7 @@ const weekMarkers = computed(() => {
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- M64 — Hero Premium: orbe rojo + grain + glass -->
       <div class="wc-hero-premium relative overflow-hidden rounded-2xl">
+        <div class="wc-orb-tr" aria-hidden="true"></div>
         <!-- Orbe rojo superior -->
         <div class="pointer-events-none absolute -top-10 left-1/2 h-52 w-80 -translate-x-1/2 rounded-full opacity-100" style="background:radial-gradient(ellipse,rgba(220,38,38,0.28) 0%,transparent 70%);filter:blur(32px);z-index:0;"></div>
         <!-- Contenido glass -->
@@ -405,7 +406,7 @@ const weekMarkers = computed(() => {
         <div class="hidden items-center gap-2 sm:flex">
           <RouterLink
             to="/client/plan"
-            class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-wc-accent-hover"
+            class="btn-ripple inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-wc-accent-hover"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -425,7 +426,7 @@ const weekMarkers = computed(() => {
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- DAILY MOTIVATIONAL QUOTE                                      -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div v-if="data.dailyQuote" class="flex items-start gap-3 rounded-xl border border-wc-border/50 bg-wc-bg-tertiary/50 px-4 py-3">
+      <div v-if="data.dailyQuote" class="wc-topline flex items-start gap-3 rounded-xl border border-wc-border/50 bg-wc-bg-tertiary/50 px-4 py-3">
         <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 mt-0.5">
           <svg class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
@@ -459,13 +460,13 @@ const weekMarkers = computed(() => {
           Contactar coach
         </RouterLink>
       </div>
-      <div v-else class="flex items-center gap-3 rounded-xl border border-wc-border bg-wc-bg-tertiary px-4 py-3">
-        <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10">
+      <div v-else class="wc-glass flex items-center gap-3 rounded-xl border border-wc-border bg-wc-bg-tertiary px-4 py-3">
+        <div class="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10">
           <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
         </div>
-        <span class="text-sm text-wc-text-secondary">
+        <span class="relative z-10 text-sm text-wc-text-secondary">
           Plan
           <span v-if="data.planPhase" class="font-semibold capitalize text-wc-text">{{ data.planPhase }}</span>
           activo &mdash; Dia <span class="font-semibold text-wc-text">{{ data.planDaysActive }}</span>
@@ -475,9 +476,9 @@ const weekMarkers = computed(() => {
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- STATS CARDS                                                   -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+      <div class="relative wc-grain grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <!-- Streak with Flame -->
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
+        <div class="wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
           <div class="flex items-center justify-between">
             <span class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Racha</span>
             <div :class="['flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10', (data.streakDays || 0) >= 3 ? 'animate-pulse' : '']">
@@ -491,7 +492,7 @@ const weekMarkers = computed(() => {
         </div>
 
         <!-- Check-ins this month -->
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
+        <div class="wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
           <div class="flex items-center justify-between">
             <span class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Check-ins</span>
             <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
@@ -505,7 +506,7 @@ const weekMarkers = computed(() => {
         </div>
 
         <!-- XP + Level -->
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
+        <div class="wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
           <div class="flex items-center justify-between">
             <span class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Nivel {{ data.level || 1 }}</span>
             <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10">
@@ -531,7 +532,7 @@ const weekMarkers = computed(() => {
         </div>
 
         <!-- Days trained this week — Progress Ring -->
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
+        <div class="wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
           <div class="flex items-center justify-between">
             <span class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Esta semana</span>
           </div>
@@ -1018,7 +1019,7 @@ const weekMarkers = computed(() => {
       <div class="grid grid-cols-1 gap-3 sm:hidden">
         <RouterLink
           to="/client/plan"
-          class="flex items-center justify-center gap-2 rounded-lg bg-wc-accent px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-wc-accent-hover"
+          class="btn-ripple flex items-center justify-center gap-2 rounded-lg bg-wc-accent px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-wc-accent-hover"
         >
           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
