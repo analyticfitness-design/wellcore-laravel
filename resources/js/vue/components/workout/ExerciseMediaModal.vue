@@ -113,7 +113,7 @@ onBeforeUnmount(() => {
             <!-- YouTube iframe (shown after clicking play) -->
             <div v-if="playingVideo && getEmbedUrl(exVideoUrl(exercise)) && !videoBlocked" class="aspect-video w-full">
               <iframe
-                :src="getEmbedUrl(exVideoUrl(exercise)) + '&autoplay=1'"
+                :src="getEmbedUrl(exVideoUrl(exercise)) + '&autoplay=1&playsinline=1'"
                 class="h-full w-full"
                 frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
