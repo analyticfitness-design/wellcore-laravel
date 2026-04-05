@@ -32,7 +32,7 @@
     {{-- Success overlay handled by fullscreen achievement modal below --}}
 
     {{-- Form --}}
-    <form wire:submit="submit" class="space-y-6 rounded-[--radius-card] border border-wc-border bg-wc-bg-tertiary p-5 sm:p-6">
+    <form wire:submit="submit" class="wc-topline space-y-6 rounded-[--radius-card] border border-wc-border bg-wc-bg-tertiary p-5 sm:p-6">
 
         {{-- Bienestar (1-5) --}}
         <div>
@@ -147,7 +147,7 @@
         {{-- Submit --}}
         <button
             type="submit"
-            class="btn-press w-full rounded-[--radius-button] bg-wc-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg disabled:opacity-40 disabled:cursor-not-allowed"
+            class="btn-ripple btn-press w-full rounded-[--radius-button] bg-wc-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg disabled:opacity-40 disabled:cursor-not-allowed"
             wire:loading.attr="disabled"
             @if(!$isCheckinAvailable) disabled aria-disabled="true" title="Solo disponible viernes y sábado" @endif
         >

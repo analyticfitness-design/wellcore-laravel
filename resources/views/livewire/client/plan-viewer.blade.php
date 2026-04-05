@@ -17,7 +17,7 @@
             'bloodwork'     => 'Bloodwork',
         ];
     @endphp
-    <div class="mb-6 rounded-card border border-wc-border bg-wc-bg-tertiary p-1" role="tablist" aria-label="Secciones del plan">
+    <div class="mb-6 rounded-card border border-wc-border bg-wc-bg-tertiary p-1 wc-glass" role="tablist" aria-label="Secciones del plan">
         <div class="flex gap-1 overflow-x-auto">
             @foreach($tabs as $key => $label)
                 @php
@@ -80,10 +80,10 @@
             @endphp
 
             {{-- ─── PROGRAM OVERVIEW CARD (premium) ──────────────────────── --}}
-            <div class="relative mb-6 overflow-hidden rounded-card border border-wc-accent/20 bg-gradient-to-br from-wc-accent/8 via-wc-bg-tertiary to-transparent p-5 sm:p-6">
-                {{-- Decorative orbs --}}
+            <div class="relative mb-6 overflow-hidden rounded-card border border-wc-accent/20 bg-gradient-to-br from-wc-accent/8 via-wc-bg-tertiary to-transparent p-5 sm:p-6 wc-topline wc-grain">
+                {{-- Premium decorative orbs --}}
+                <div class="wc-orb-tr"></div>
                 <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-wc-accent/6"></div>
-                <div class="pointer-events-none absolute -right-3 -top-3 h-16 w-16 rounded-full bg-wc-accent/10"></div>
 
                 <div class="relative">
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -181,7 +181,7 @@
 
                         <div
                             x-data="{ open: {{ $isCurrentWeek ? 'true' : 'false' }} }"
-                            class="overflow-hidden rounded-card border transition-colors {{ $isCurrentWeek ? 'border-wc-accent/30 bg-wc-accent/5' : 'border-wc-border bg-wc-bg-tertiary' }}"
+                            class="overflow-hidden rounded-card border transition-colors {{ $isCurrentWeek ? 'border-wc-accent/30 bg-wc-accent/5 wc-topline' : 'border-wc-border bg-wc-bg-tertiary' }}"
                         >
                             {{-- Week header --}}
                             <button
@@ -230,7 +230,7 @@
                                             $cooldown = $dia['vuelta_calma'] ?? $dia['cooldown'] ?? null;
                                         @endphp
 
-                                        <div class="rounded-xl border border-wc-border bg-wc-bg-secondary">
+                                        <div class="rounded-xl border border-wc-border bg-wc-bg-secondary wc-lift">
                                             {{-- Day header --}}
                                             <div class="flex items-center justify-between gap-3 px-4 py-3.5">
                                                 <div class="flex items-center gap-3 min-w-0">
@@ -282,7 +282,7 @@
                                             @if(!empty($ejercicios))
                                                 <div class="border-t border-wc-border/40 px-4 py-2.5">
                                                     <a wire:navigate href="{{ route('client.workout', ['day' => $loop->iteration]) }}"
-                                                       class="flex w-full items-center justify-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 transition-colors">
+                                                       class="flex w-full items-center justify-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-semibold text-white hover:bg-wc-accent-hover transition-colors btn-ripple btn-press shadow-lg shadow-wc-accent/20">
                                                         <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
                                                             <path d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"/>
                                                         </svg>

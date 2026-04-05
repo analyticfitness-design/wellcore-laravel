@@ -8,7 +8,7 @@
     {{-- Stat Cards --}}
     <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {{-- Current Weight --}}
-        <div class="rounded-[--radius-card] border border-wc-border bg-wc-bg-tertiary p-4">
+        <div class="wc-lift rounded-[--radius-card] border border-wc-border bg-wc-bg-tertiary p-4">
             <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Peso actual</p>
             <p class="mt-1 font-data text-3xl font-semibold text-wc-text">
                 {{ $currentWeight ? number_format((float) $currentWeight, 1) : '--' }}
@@ -17,7 +17,7 @@
         </div>
 
         {{-- Monthly Change --}}
-        <div class="rounded-[--radius-card] border border-wc-border bg-wc-bg-tertiary p-4">
+        <div class="wc-lift rounded-[--radius-card] border border-wc-border bg-wc-bg-tertiary p-4">
             <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Cambio mensual</p>
             <p class="mt-1 font-data text-3xl font-semibold {{ $weightChange !== null ? ($weightChange > 0 ? 'text-amber-500' : ($weightChange < 0 ? 'text-emerald-500' : 'text-wc-text')) : 'text-wc-text' }}">
                 @if ($weightChange !== null)
@@ -30,7 +30,7 @@
         </div>
 
         {{-- Goal Placeholder --}}
-        <div class="rounded-[--radius-card] border border-wc-border bg-wc-bg-tertiary p-4">
+        <div class="wc-lift rounded-[--radius-card] border border-wc-border bg-wc-bg-tertiary p-4">
             <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Objetivo</p>
             <p class="mt-1 font-data text-3xl font-semibold text-wc-text-tertiary">--
                 <span class="text-base font-normal">kg</span>
@@ -42,7 +42,7 @@
     {{-- Success overlay handled by fullscreen achievement modal below --}}
 
     {{-- Log Form --}}
-    <form wire:submit="saveMetric" class="rounded-[--radius-card] border border-wc-border bg-wc-bg-tertiary p-5 sm:p-6">
+    <form wire:submit="saveMetric" class="wc-glass rounded-[--radius-card] border border-wc-border bg-wc-bg-tertiary p-5 sm:p-6">
         <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-wc-text-secondary">Nuevo registro</h2>
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">

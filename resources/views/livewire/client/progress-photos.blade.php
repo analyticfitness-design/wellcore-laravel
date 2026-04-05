@@ -201,7 +201,7 @@
                 <button
                     type="submit"
                     wire:loading.attr="disabled"
-                    class="btn-press flex items-center gap-2 rounded-xl bg-wc-accent px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-wc-accent-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+                    class="btn-ripple btn-press flex items-center gap-2 rounded-xl bg-wc-accent px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-wc-accent-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                     <svg wire:loading wire:target="uploadPhotos" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -262,7 +262,7 @@
                                         // $datePhotos is now a plain array — use array_filter to find by tipo.
                                         $photo = collect($datePhotos)->firstWhere('tipo', $tipo);
                                     @endphp
-                                    <div class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary">
+                                    <div class="wc-lift overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary">
                                         @if($photo && ($photo['filename'] ?? null) && Storage::disk('public')->exists($photo['filename']))
                                             <img
                                                 src="{{ Storage::disk('public')->url($photo['filename']) }}"

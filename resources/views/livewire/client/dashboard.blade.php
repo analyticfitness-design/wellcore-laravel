@@ -149,7 +149,8 @@
     </div>
 
     {{-- Greeting section --}}
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div class="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between overflow-hidden">
+        <div class="wc-orb-tr" aria-hidden="true"></div>
         <div>
             <h1
                 x-data="{
@@ -174,7 +175,7 @@
         {{-- Quick actions (desktop) --}}
         <div class="hidden sm:flex items-center gap-2">
             <a href="{{ route('client.plan') }}"
-               class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors btn-press">
+               class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors btn-ripple btn-press">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
@@ -188,7 +189,7 @@
     </div>
 
     {{-- ITEM 4: Daily Motivational Quote --}}
-    <div class="flex items-start gap-3 rounded-xl border border-wc-border/50 bg-wc-bg-tertiary/50 px-4 py-3">
+    <div class="wc-topline flex items-start gap-3 rounded-xl border border-wc-border/50 bg-wc-bg-tertiary/50 px-4 py-3">
         <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 mt-0.5">
             <svg class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
@@ -220,13 +221,13 @@
             </a>
         </div>
     @else
-        <div class="flex items-center gap-3 rounded-xl border border-wc-border bg-wc-bg-tertiary px-4 py-3">
-            <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10">
+        <div class="wc-glass flex items-center gap-3 rounded-xl border border-wc-border bg-wc-bg-tertiary px-4 py-3">
+            <div class="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10">
                 <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                 </svg>
             </div>
-            <span class="text-xs text-wc-text-tertiary">
+            <span class="relative z-10 text-xs text-wc-text-tertiary">
                 {{ __('client_dashboard.plan_label', ['plan' => '']) }}
                 @if($planPhase) <span class="font-semibold capitalize text-wc-text">{{ $planPhase }}</span> @endif
                 {{ __('client_dashboard.plan_active_label') }} &mdash; {{ __('client_dashboard.plan_active_day') }} <span class="font-semibold text-wc-text">{{ $planDaysActive }}</span>
@@ -242,9 +243,9 @@
         <x-skeleton :card="true" />
         <x-skeleton :card="true" />
     </div>
-    <div wire:loading.remove class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+    <div wire:loading.remove class="relative wc-grain grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {{-- Streak with Flame Animation --}}
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift stat-glow-red">
+        <div class="relative z-10 rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift wc-lift stat-glow-red">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ __('client_dashboard.streak') }}</span>
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10 {{ $streakDays >= 3 ? 'flame-active' : '' }}">
@@ -258,7 +259,7 @@
         </div>
 
         {{-- Check-ins this month --}}
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift stat-glow-emerald">
+        <div class="relative z-10 rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift wc-lift stat-glow-emerald">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ __('client_dashboard.checkins') }}</span>
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
@@ -272,7 +273,7 @@
         </div>
 
         {{-- XP + Level --}}
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift stat-glow-violet">
+        <div class="relative z-10 rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift wc-lift stat-glow-violet">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ __('client_dashboard.level', ['level' => $level]) }}</span>
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10">
@@ -296,7 +297,7 @@
         </div>
 
         {{-- Days trained this week — Progress Ring --}}
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift stat-glow-amber">
+        <div class="relative z-10 rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift wc-lift stat-glow-amber">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ __('client_dashboard.this_week') }}</span>
             </div>

@@ -22,10 +22,10 @@
 
             {{-- Calorías --}}
             <div class="relative overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary p-4">
-                <div class="absolute inset-x-0 top-0 h-0.5" style="background:#10B981;"></div>
+                <div class="absolute inset-x-0 top-0 h-0.5 wc-macro-calories-bg"></div>
                 <p class="text-[10px] font-medium uppercase tracking-widest text-wc-text-tertiary">Calorías</p>
                 <p class="font-data mt-1 text-3xl font-bold tabular-nums text-wc-text">{{ number_format($totalCalories) }}</p>
-                <p class="mt-0.5 text-xs font-medium" style="color:#10B981;">kcal / día</p>
+                <p class="mt-0.5 text-xs font-medium wc-macro-calories">kcal / día</p>
             </div>
 
             {{-- Proteína --}}
@@ -38,18 +38,18 @@
 
             {{-- Carbos --}}
             <div class="relative overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary p-4">
-                <div class="absolute inset-x-0 top-0 h-0.5" style="background:#3B82F6;"></div>
+                <div class="absolute inset-x-0 top-0 h-0.5 wc-macro-carbs-bg"></div>
                 <p class="text-[10px] font-medium uppercase tracking-widest text-wc-text-tertiary">Carbos</p>
                 <p class="font-data mt-1 text-3xl font-bold tabular-nums text-wc-text">{{ $carbGrams }}<span class="text-lg font-normal">g</span></p>
-                <p class="mt-0.5 text-xs font-medium" style="color:#3B82F6;">{{ $macroPercentages['carbs'] }}% del total</p>
+                <p class="mt-0.5 text-xs font-medium wc-macro-carbs">{{ $macroPercentages['carbs'] }}% del total</p>
             </div>
 
             {{-- Grasas --}}
             <div class="relative overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary p-4">
-                <div class="absolute inset-x-0 top-0 h-0.5" style="background:#F59E0B;"></div>
+                <div class="absolute inset-x-0 top-0 h-0.5 wc-macro-fat-bg"></div>
                 <p class="text-[10px] font-medium uppercase tracking-widest text-wc-text-tertiary">Grasas</p>
                 <p class="font-data mt-1 text-3xl font-bold tabular-nums text-wc-text">{{ $fatGrams }}<span class="text-lg font-normal">g</span></p>
-                <p class="mt-0.5 text-xs font-medium" style="color:#F59E0B;">{{ $macroPercentages['fat'] }}% del total</p>
+                <p class="mt-0.5 text-xs font-medium wc-macro-fat">{{ $macroPercentages['fat'] }}% del total</p>
             </div>
         </div>
 
@@ -197,17 +197,22 @@
                             @if(!empty($comida['alimentos']))
                             <ul class="space-y-1.5">
                                 @foreach($comida['alimentos'] as $alimento)
+                                @php
+                                    if (is_array($alimento)) {
+                                        $aName = $alimento['nombre'] ?? $alimento['alimento'] ?? $alimento['name'] ?? '';
+                                        $aQty  = $alimento['cantidad'] ?? $alimento['porcion'] ?? $alimento['quantity'] ?? $alimento['amount'] ?? '';
+                                        $aText = $aName && $aQty ? "$aName — $aQty" : ($aName ?: $aQty);
+                                    } else {
+                                        $aText = (string) $alimento;
+                                    }
+                                    $foodIcon = \App\Helpers\FoodIconHelper::resolve($aText);
+                                @endphp
                                 <li class="flex items-start gap-2.5">
-                                    <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
-                                    @php
-                                        if (is_array($alimento)) {
-                                            $aName = $alimento['nombre'] ?? $alimento['alimento'] ?? $alimento['name'] ?? '';
-                                            $aQty  = $alimento['cantidad'] ?? $alimento['porcion'] ?? $alimento['quantity'] ?? $alimento['amount'] ?? '';
-                                            $aText = $aName && $aQty ? "$aName — $aQty" : ($aName ?: $aQty);
-                                        } else {
-                                            $aText = (string) $alimento;
-                                        }
-                                    @endphp
+                                    @if($foodIcon['isEmoji'])
+                                        <span class="mt-0.5 shrink-0 text-base leading-none">{{ $foodIcon['icon'] }}</span>
+                                    @else
+                                        <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                                    @endif
                                     <span class="text-sm leading-relaxed text-wc-text-secondary">{{ $aText }}</span>
                                 </li>
                                 @endforeach
@@ -303,8 +308,13 @@
                         <div x-show="open" x-collapse class="border-t border-wc-border/50">
                             <ul class="space-y-2 p-4">
                                 @foreach($opcionesCS as $opcion)
+                                    @php $optIcon = \App\Helpers\FoodIconHelper::resolve($opcion); @endphp
                                     <li class="flex items-start gap-2.5">
-                                        <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                                        @if($optIcon['isEmoji'])
+                                            <span class="mt-0.5 shrink-0 text-base leading-none">{{ $optIcon['icon'] }}</span>
+                                        @else
+                                            <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                                        @endif
                                         <span class="text-sm leading-relaxed text-wc-text-secondary">{{ $opcion }}</span>
                                     </li>
                                 @endforeach
@@ -370,7 +380,7 @@
                 class="flex w-full items-center justify-between rounded-xl border border-wc-border bg-wc-bg-secondary px-5 py-4 text-left hover:bg-wc-bg-tertiary transition">
                 <div class="flex items-center gap-3">
                     <div class="flex h-8 w-8 items-center justify-center rounded-lg" style="background:rgba(139,92,246,0.12);">
-                        <svg class="h-4 w-4" style="color:#A78BFA;" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <svg class="h-4 w-4 text-[var(--color-wc-purple)]" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
                         </svg>
                     </div>

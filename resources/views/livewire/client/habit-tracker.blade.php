@@ -67,7 +67,7 @@
             <div data-animate="fadeInUp" data-animate-delay="{{ ($loop->index + 1) * 100 }}">
                 <button
                     wire:click="toggleHabit('{{ $type }}')"
-                    class="w-full flex items-center gap-4 rounded-[--radius-card] border p-4 transition-all btn-press
+                    class="w-full flex items-center gap-4 rounded-[--radius-card] border p-4 transition-all wc-lift btn-ripple btn-press
                         {{ $habit['completed']
                             ? 'border-emerald-500/30 bg-emerald-500/5'
                             : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-text-tertiary' }}"

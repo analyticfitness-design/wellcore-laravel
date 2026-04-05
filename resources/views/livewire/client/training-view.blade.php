@@ -8,7 +8,7 @@
     <div class="flex items-center justify-between rounded-[--radius-card] border border-wc-border bg-wc-bg-tertiary p-4">
         <button
             wire:click="previousWeek"
-            class="flex h-10 w-10 items-center justify-center rounded-[--radius-button] border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text transition-colors"
+            class="btn-press flex h-10 w-10 items-center justify-center rounded-[--radius-button] border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text transition-colors"
             aria-label="Semana anterior"
         >
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -32,7 +32,7 @@
         <button
             wire:click="nextWeek"
             @disabled($isCurrentWeek)
-            class="flex h-10 w-10 items-center justify-center rounded-[--radius-button] border border-wc-border bg-wc-bg-secondary text-wc-text-secondary transition-colors
+            class="btn-press flex h-10 w-10 items-center justify-center rounded-[--radius-button] border border-wc-border bg-wc-bg-secondary text-wc-text-secondary transition-colors
                 {{ $isCurrentWeek ? 'opacity-30 cursor-not-allowed' : 'hover:text-wc-text' }}"
             aria-label="Semana siguiente"
             @if($isCurrentWeek) title="Ya estás en la semana actual" @endif
@@ -50,7 +50,7 @@
             <button
                 @if(!$isFuture) wire:click="toggleDay('{{ $day['date'] }}')" @endif
                 @disabled($isFuture)
-                class="group flex flex-col items-center gap-2 rounded-[--radius-card] border p-3 sm:p-4 transition-all
+                class="group flex flex-col items-center gap-2 rounded-[--radius-card] border p-3 sm:p-4 transition-all wc-lift
                     {{ $isFuture
                         ? 'border-wc-border bg-wc-bg-tertiary opacity-40 cursor-not-allowed'
                         : ($day['isToday'] ? 'border-wc-accent/50 bg-wc-accent/5' : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-text-tertiary') }}"
