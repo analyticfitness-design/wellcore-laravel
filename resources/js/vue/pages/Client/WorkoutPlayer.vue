@@ -640,7 +640,7 @@ onBeforeUnmount(() => {
 
 <template>
   <ClientLayout>
-    <div class="min-h-screen workout-dark" :class="{ 'pb-[280px]': workoutStarted }">
+    <div class="min-h-screen" :class="{ 'pb-[280px]': workoutStarted }">
 
       <!-- ════════════════════════════════════════════════ -->
       <!-- LOADING                                          -->
