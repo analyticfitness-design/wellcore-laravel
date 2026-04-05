@@ -87,6 +87,46 @@ function formatNutrAlimento(alimento) {
   return String(alimento);
 }
 
+function foodIcon(name) {
+  const lower = (typeof name === 'string' ? name : formatNutrAlimento(name)).toLowerCase();
+  const map = [
+    [['pollo','pechuga','chicken','pavo'], '\u{1F357}'],
+    [['carne','res','steak','lomo','cerdo'], '\u{1F969}'],
+    [['salm\u00F3n','salmon','at\u00FAn','atun','tilapia','pescado','corvina','trucha'], '\u{1F41F}'],
+    [['huevo','clara','claras'], '\u{1F95A}'],
+    [['yogur','yogurt','leche'], '\u{1F95B}'],
+    [['queso','reques\u00F3n','requeson'], '\u{1F9C0}'],
+    [['avena','granola','oatmeal'], '\u{1F963}'],
+    [['arroz','rice','quinoa'], '\u{1F35A}'],
+    [['pasta'], '\u{1F35D}'],
+    [['pan','tostada'], '\u{1F35E}'],
+    [['arepa','tortilla'], '\u{1FAD3}'],
+    [['papa'], '\u{1F954}'],
+    [['batata','camote'], '\u{1F360}'],
+    [['banana','banano','pl\u00E1tano','platano'], '\u{1F34C}'],
+    [['manzana'], '\u{1F34E}'],
+    [['fresa','fresas'], '\u{1F353}'],
+    [['fruta','frutas'], '\u{1F347}'],
+    [['br\u00F3coli','brocoli'], '\u{1F966}'],
+    [['espinaca','lechuga'], '\u{1F96C}'],
+    [['ensalada','vegetal','vegetales'], '\u{1F957}'],
+    [['tomate'], '\u{1F345}'],
+    [['aguacate','avocado'], '\u{1F951}'],
+    [['nuez','nueces','almendra','man\u00ED','mani'], '\u{1F95C}'],
+    [['aceite','oliva'], '\u{1FAD2}'],
+    [['prote\u00EDna','proteina','whey'], '\u{1F9EA}'],
+    [['agua'], '\u{1F4A7}'],
+    [['caf\u00E9','cafe'], '\u2615'],
+    [['miel'], '\u{1F36F}'],
+    [['frijol','lenteja'], '\u{1FAD8}'],
+    [['jugo','mango','maracuy'], '\u{1F9C3}'],
+  ];
+  for (const [keywords, emoji] of map) {
+    if (keywords.some(k => lower.includes(k))) return emoji;
+  }
+  return null;
+}
+
 function getNutrMealOpciones(meal) {
   // Returns a map of { a: [...], b: [...], c: [...] } if multi-option, otherwise null
   const keys = ['opcion_a', 'option_a'];
@@ -1254,7 +1294,8 @@ onBeforeUnmount(() => {
                             :key="ai"
                             class="flex items-start gap-2.5"
                           >
-                            <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                            <span v-if="foodIcon(alimento)" class="shrink-0 text-base leading-none">{{ foodIcon(alimento) }}</span>
+                            <span v-else class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
                             <span class="text-sm leading-relaxed text-wc-text-secondary">{{ formatNutrAlimento(alimento) }}</span>
                           </li>
                         </ul>
@@ -1303,7 +1344,8 @@ onBeforeUnmount(() => {
                         <p v-if="meal.descripcion" class="text-sm leading-relaxed text-wc-text-secondary">{{ meal.descripcion }}</p>
                         <ul v-if="(meal.alimentos || meal.foods || []).length > 0" class="space-y-1.5">
                           <li v-for="(alimento, ai) in (meal.alimentos || meal.foods)" :key="ai" class="flex items-start gap-2.5">
-                            <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                            <span v-if="foodIcon(alimento)" class="shrink-0 text-base leading-none">{{ foodIcon(alimento) }}</span>
+                            <span v-else class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
                             <span class="text-sm leading-relaxed text-wc-text-secondary">{{ formatNutrAlimento(alimento) }}</span>
                           </li>
                         </ul>
