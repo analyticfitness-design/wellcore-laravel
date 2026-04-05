@@ -274,6 +274,39 @@ Route::get('/v/{any}', fn ($any) => redirect('/'.$any, 301))->where('any', '.*')
 Route::get('/media/gif/{slug}', [\App\Http\Controllers\Media\GifController::class, 'serve'])
     ->where('slug', '[\w\-]+');
 
+// Temp diagnostic — remove after debugging
+Route::get('/diag-videos', function () {
+    $out = [];
+    $out['tables'] = [
+        'ejercicios_fitcron' => \Illuminate\Support\Facades\Schema::hasTable('ejercicios_fitcron'),
+        'ejercicio_videos' => \Illuminate\Support\Facades\Schema::hasTable('ejercicio_videos'),
+        'exercise_aliases' => \Illuminate\Support\Facades\Schema::hasTable('exercise_aliases'),
+    ];
+    if ($out['tables']['ejercicios_fitcron']) {
+        $out['fitcron_count'] = \DB::table('ejercicios_fitcron')->count();
+        $out['fitcron_with_video'] = \DB::table('ejercicios_fitcron')->whereNotNull('video_url')->where('video_url','!=','')->count();
+        $out['fitcron_sample'] = \DB::table('ejercicios_fitcron')->whereNotNull('video_url')->limit(3)->get(['slug','nombre','video_url']);
+    }
+    if ($out['tables']['ejercicio_videos']) {
+        $out['videos_count'] = \DB::table('ejercicio_videos')->count();
+        $out['videos_active'] = \DB::table('ejercicio_videos')->where('active', true)->count();
+        $out['videos_sample'] = \DB::table('ejercicio_videos')->where('active', true)->limit(5)->get(['fitcron_slug','youtube_url']);
+    }
+    // Test enrichment for "Press Inclinado con Barra"
+    $testExercises = [
+        ['nombre' => 'Press Inclinado con Barra'],
+        ['nombre' => 'Press Declinado con Mancuernas'],
+        ['nombre' => 'Face Pulls en Polea Alta con Cuerda'],
+    ];
+    try {
+        app(\App\Services\ExerciseMediaService::class)->enrichWithMedia($testExercises);
+        $out['enrichment_test'] = $testExercises;
+    } catch (\Throwable $e) {
+        $out['enrichment_error'] = $e->getMessage();
+    }
+    return response()->json($out, 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+});
+
 // DEV ONLY routes — disabled in production
 if (app()->environment('local', 'testing')) {
     Route::get('/test', TestDashboard::class);
