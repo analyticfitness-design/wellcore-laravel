@@ -1080,30 +1080,28 @@ onBeforeUnmount(() => {
                       <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                       <span>{{ showActiveMedia[exIndex] ? 'Ocultar video' : 'Ver ejercicio' }}</span>
                     </button>
-                    <div v-show="showActiveMedia[exIndex]" class="mt-2 overflow-hidden rounded-xl border border-wc-border">
-                      <!-- YouTube embed if valid YouTube URL -->
-                      <div v-if="getEmbedUrl(exVideoUrl(exercise))" class="aspect-video w-full">
+                    <div v-show="showActiveMedia[exIndex]" class="mt-2 overflow-hidden rounded-xl border border-wc-border"
+                         :data-playing="showActiveMedia[exIndex + '_playing']"
+                    >
+                      <!-- YouTube embed (shown after clicking play on GIF) -->
+                      <div v-if="showActiveMedia[exIndex + '_playing'] && getEmbedUrl(exVideoUrl(exercise))" class="aspect-video w-full">
                         <iframe
-                          :src="getEmbedUrl(exVideoUrl(exercise))"
+                          :src="getEmbedUrl(exVideoUrl(exercise)) + '&autoplay=1'"
                           class="h-full w-full"
                           frameborder="0"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                           allowfullscreen
                         ></iframe>
                       </div>
-                      <!-- GIF fallback (always available, shown when no YouTube) -->
-                      <div v-else class="relative">
+                      <!-- GIF with play overlay (default) -->
+                      <div v-else class="relative cursor-pointer group" @click="getEmbedUrl(exVideoUrl(exercise)) ? (showActiveMedia[exIndex + '_playing'] = true) : null">
                         <img v-if="exImageUrl(exercise)" :src="exImageUrl(exercise)" :alt="exName(exercise)" class="w-full object-contain max-h-64 bg-wc-bg" />
-                        <a
-                          v-if="exVideoUrl(exercise)"
-                          :href="exVideoUrl(exercise)"
-                          target="_blank"
-                          rel="noopener"
-                          class="absolute bottom-2 right-2 flex items-center gap-1 rounded-lg bg-wc-accent/90 px-2.5 py-1.5 text-[10px] font-semibold text-white backdrop-blur-sm hover:bg-wc-accent transition-colors"
-                        >
-                          <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
-                          Ver video
-                        </a>
+                        <!-- Play button overlay -->
+                        <div v-if="getEmbedUrl(exVideoUrl(exercise))" class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
+                          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-red-600 shadow-lg group-hover:scale-110 transition-transform">
+                            <svg class="h-5 w-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>

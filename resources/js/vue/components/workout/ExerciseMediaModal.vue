@@ -16,9 +16,11 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 
 const videoBlocked = ref(false);
+const playingVideo = ref(false);
 
-// Reset blocked state when a new exercise is shown
-watch(() => props.exercise, () => { videoBlocked.value = false; });
+// Reset state when a new exercise is shown
+watch(() => props.exercise, () => { videoBlocked.value = false; playingVideo.value = false; });
+watch(() => props.show, (v) => { if (!v) playingVideo.value = false; });
 
 function exName(ex) {
   return ex?.nombre || ex?.name || ex?.ejercicio || 'Ejercicio';
@@ -106,34 +108,55 @@ onBeforeUnmount(() => {
             </button>
           </div>
 
-          <!-- Media content -->
+          <!-- Media content: GIF by default → click play → YouTube embed -->
           <div class="bg-wc-bg-secondary">
-            <!-- YouTube iframe — only when URL is a valid YouTube URL and not blocked -->
-            <div v-if="getEmbedUrl(exVideoUrl(exercise)) && !videoBlocked" class="aspect-video w-full">
+            <!-- YouTube iframe (shown after clicking play) -->
+            <div v-if="playingVideo && getEmbedUrl(exVideoUrl(exercise)) && !videoBlocked" class="aspect-video w-full">
               <iframe
-                :src="getEmbedUrl(exVideoUrl(exercise))"
+                :src="getEmbedUrl(exVideoUrl(exercise)) + '&autoplay=1'"
                 class="h-full w-full"
                 frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen
               ></iframe>
             </div>
-            <!-- GIF shown when no YouTube embed available OR video is blocked -->
-            <div v-if="!getEmbedUrl(exVideoUrl(exercise)) || videoBlocked" class="flex items-center justify-center bg-wc-bg p-4">
+            <!-- GIF with play overlay (default state) -->
+            <div v-else class="relative cursor-pointer group" @click="getEmbedUrl(exVideoUrl(exercise)) ? (playingVideo = true) : null">
               <img
                 v-if="exImageUrl(exercise)"
                 :src="exImageUrl(exercise)"
                 :alt="exName(exercise)"
-                class="max-h-80 w-full object-contain"
+                class="w-full object-contain max-h-80 bg-wc-bg"
               />
-              <p v-else class="text-sm text-wc-text-tertiary">Sin imagen disponible</p>
+              <div v-else class="flex items-center justify-center h-48 bg-wc-bg">
+                <p class="text-sm text-wc-text-tertiary">Sin imagen disponible</p>
+              </div>
+              <!-- Play button overlay (only if YouTube URL available) -->
+              <div
+                v-if="getEmbedUrl(exVideoUrl(exercise))"
+                class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors"
+              >
+                <div class="flex h-16 w-16 items-center justify-center rounded-full bg-red-600 shadow-lg shadow-red-600/30 group-hover:scale-110 transition-transform">
+                  <svg class="h-7 w-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
 
           <!-- Footer -->
           <div class="flex items-center justify-center gap-3 px-4 py-3">
             <p class="text-xs text-wc-text-tertiary">Toca fuera para cerrar</p>
-            <!-- YouTube link when it's a valid YouTube URL -->
+            <!-- Toggle GIF/Video when playing -->
+            <button
+              v-if="playingVideo"
+              @click="playingVideo = false"
+              class="flex items-center gap-1.5 rounded-lg border border-wc-border px-3 py-1.5 text-xs font-medium text-wc-text-secondary hover:text-wc-text transition-colors"
+            >
+              Ver GIF
+            </button>
+            <!-- YouTube external link -->
             <a
               v-if="getWatchUrl(exVideoUrl(exercise))"
               :href="getWatchUrl(exVideoUrl(exercise))"
@@ -144,20 +167,7 @@ onBeforeUnmount(() => {
               <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
               </svg>
-              Ver en YouTube
-            </a>
-            <!-- Fitcron/external video link when URL exists but is NOT YouTube -->
-            <a
-              v-else-if="exVideoUrl(exercise)"
-              :href="exVideoUrl(exercise)"
-              target="_blank"
-              rel="noopener"
-              class="flex items-center gap-1.5 rounded-lg bg-wc-accent px-3 py-1.5 text-xs font-semibold text-white hover:bg-wc-accent-hover transition-colors"
-            >
-              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"/>
-              </svg>
-              Ver video
+              YouTube
             </a>
           </div>
         </div>
