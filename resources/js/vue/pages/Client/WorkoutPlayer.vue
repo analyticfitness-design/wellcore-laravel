@@ -300,6 +300,7 @@ async function toggleSet(exIndex, setIndex) {
       set.completed = false;
       return;
     }
+    if (navigator.vibrate) navigator.vibrate(50);
 
     const saveWeight = weightToKg(parseFloat(set.weight) || 0);
 
@@ -350,6 +351,7 @@ async function completeCardioSet(exIndex, setIndex, duration, speed, incline) {
   if (duration <= 0) return;
 
   set.completed = true;
+  if (navigator.vibrate) navigator.vibrate(50);
   set.reps = duration;
 
   if (workoutStarted.value) {
@@ -581,6 +583,8 @@ async function startWorkout() {
 
 async function finishWorkout() {
   if (saving.value) return;
+  // Haptic feedback
+  if (navigator.vibrate) navigator.vibrate([50, 30, 100]);
   saving.value = true;
   stopTimer();
   clearRestTimer();
@@ -636,7 +640,7 @@ onBeforeUnmount(() => {
 
 <template>
   <ClientLayout>
-    <div class="min-h-screen" :class="{ 'pb-[280px]': workoutStarted }">
+    <div class="min-h-screen workout-dark" :class="{ 'pb-[280px]': workoutStarted }">
 
       <!-- ════════════════════════════════════════════════ -->
       <!-- LOADING                                          -->
@@ -731,7 +735,7 @@ onBeforeUnmount(() => {
             </div>
 
             <!-- Active session timer -->
-            <div v-if="workoutStarted" class="mt-2 flex items-center justify-between rounded-lg bg-wc-accent/10 border border-wc-accent/20 px-3 py-2">
+            <div v-if="workoutStarted" class="mt-2 flex items-center justify-between rounded-lg bg-wc-accent/10 border border-wc-accent/20 px-3 py-2 wc-grain">
               <div class="flex items-center gap-2">
                 <span class="relative flex h-2 w-2">
                   <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-wc-accent opacity-75"></span>
@@ -739,7 +743,7 @@ onBeforeUnmount(() => {
                 </span>
                 <span class="text-xs font-semibold uppercase tracking-wider text-wc-accent">En curso</span>
               </div>
-              <span class="font-data text-lg font-bold text-wc-accent tabular-nums">{{ elapsedDisplay }}</span>
+              <span class="font-data text-lg font-bold text-wc-accent tabular-nums wc-timer-glow">{{ elapsedDisplay }}</span>
             </div>
           </div>
         </div>
@@ -755,7 +759,7 @@ onBeforeUnmount(() => {
           leave-from-class="opacity-100 translate-y-0"
           leave-to-class="opacity-0 translate-y-4"
         >
-          <div v-if="showRestTimer" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 rounded-2xl border border-wc-accent/30 bg-wc-bg/95 backdrop-blur-xl px-6 py-4 shadow-2xl min-w-[200px]">
+          <div v-if="showRestTimer" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 rounded-2xl border border-wc-accent/30 bg-wc-bg/95 backdrop-blur-xl px-6 py-4 shadow-2xl min-w-[200px] wc-grain">
             <div class="flex items-center gap-4">
               <!-- Rest progress ring -->
               <div class="relative h-14 w-14 shrink-0">
@@ -826,9 +830,10 @@ onBeforeUnmount(() => {
               <!-- Exercise card -->
               <div
                 :class="[
-                  'overflow-hidden rounded-2xl border bg-wc-bg-tertiary transition-all',
+                  'overflow-hidden rounded-2xl border bg-wc-bg-tertiary transition-all wc-glass wc-lift wc-stagger-enter',
                   isInBlock(exercise) ? 'ml-3 border-l-[3px] border-l-wc-accent border-wc-border/70' : 'border-wc-border'
                 ]"
+                :style="{ animationDelay: (exIndex * 80) + 'ms' }"
               >
                 <div class="flex items-stretch">
                   <!-- Thumbnail column — clickable to open media modal -->
@@ -848,8 +853,8 @@ onBeforeUnmount(() => {
                       <svg class="h-7 w-7 text-wc-text-tertiary/40" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
                     </div>
                     <!-- Numero del ejercicio -->
-                    <div class="absolute bottom-2 left-2 flex h-6 w-6 items-center justify-center rounded-lg bg-wc-bg/80 backdrop-blur-sm border border-wc-border/30">
-                      <span class="font-data text-xs font-black leading-none text-wc-accent">{{ exIndex + 1 }}</span>
+                    <div class="absolute bottom-2 left-2 flex h-6 w-6 items-center justify-center rounded-lg bg-wc-accent backdrop-blur-sm border border-wc-border/30">
+                      <span class="font-display text-xs font-black leading-none text-white">{{ exIndex + 1 }}</span>
                     </div>
                     <!-- Badge play si tiene video -->
                     <div v-if="exVideoUrl(exercise)" class="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600/90 backdrop-blur-sm">
@@ -937,7 +942,7 @@ onBeforeUnmount(() => {
             <div class="pt-2 pb-4">
               <button
                 @click="startWorkout"
-                class="w-full rounded-2xl bg-wc-accent py-4 text-center shadow-lg shadow-wc-accent/20 hover:bg-red-700 transition-colors"
+                class="wc-btn-energy btn-ripple w-full rounded-2xl py-4 text-center shadow-lg shadow-wc-accent/20 hover:bg-red-700 transition-colors"
               >
                 <span class="font-display text-xl tracking-widest text-white">INICIAR ENTRENAMIENTO</span>
               </button>
@@ -958,7 +963,7 @@ onBeforeUnmount(() => {
                 <span class="font-data text-xs font-bold text-wc-accent">{{ progressPct }}%</span>
               </div>
               <div class="h-1.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
-                <div class="h-full rounded-full bg-gradient-to-r from-wc-accent to-red-400 transition-all duration-700 ease-out" :style="{ width: progressPct + '%' }"></div>
+                <div class="h-full rounded-full wc-progress-bar transition-all duration-700 ease-out" :style="{ width: progressPct + '%' }"></div>
               </div>
             </div>
 
@@ -1167,7 +1172,7 @@ onBeforeUnmount(() => {
                 <!-- ═══ STRENGTH TABLE ═══ -->
                 <div v-else class="border-t border-wc-border overflow-x-auto scrollbar-none">
                   <!-- Strength header -->
-                  <div class="grid gap-1 px-3 py-2 bg-wc-bg-secondary/50" style="grid-template-columns: 32px 50px 1fr 1fr 36px">
+                  <div class="wc-topline grid gap-1 px-3 py-2 bg-wc-bg-secondary/50" style="grid-template-columns: 32px 50px 1fr 1fr 36px">
                     <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Set</span>
                     <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Anterior</span>
                     <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">{{ weightUnit === 'lbs' ? 'Peso (lbs)' : 'Peso (kg)' }}</span>
@@ -1179,9 +1184,9 @@ onBeforeUnmount(() => {
                   <div
                     v-for="(set, sIdx) in getSetRows(exIndex)"
                     :key="'str-' + sIdx"
-                    class="grid gap-1 items-center px-3 py-2 transition-colors"
+                    class="wc-zebra grid gap-1 items-center px-3 py-2 transition-colors"
                     :class="[
-                      set.completed ? 'bg-emerald-500/5' : '',
+                      set.completed ? 'wc-set-done' : '',
                       sIdx < getSetRows(exIndex).length - 1 ? 'border-b border-wc-border/50' : ''
                     ]"
                     style="grid-template-columns: 32px 50px 1fr 1fr 36px"
@@ -1189,7 +1194,7 @@ onBeforeUnmount(() => {
                     <!-- Set number + PR badge -->
                     <div class="flex flex-col items-center justify-center gap-0.5">
                       <span class="font-data text-sm font-bold" :class="set.completed ? 'text-emerald-400' : 'text-wc-text-tertiary'">{{ sIdx + 1 }}</span>
-                      <span v-if="set.is_pr" class="pr-badge inline-flex items-center gap-0.5 rounded-md px-1 py-0.5 text-[8px] font-black leading-none text-black">PR</span>
+                      <span v-if="set.is_pr" class="pr-badge wc-pr-badge inline-flex items-center gap-0.5 rounded-md px-1 py-0.5 text-[8px] font-black leading-none text-black">PR</span>
                     </div>
 
                     <!-- Anterior (target from last session) -->
@@ -1206,7 +1211,7 @@ onBeforeUnmount(() => {
                       <div class="flex items-center justify-center gap-px">
                         <button
                           @click="set.weight = Math.max(0, (parseFloat(set.weight) || 0) - weightStep())"
-                          class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
+                          class="btn-press flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
                           :disabled="set.completed"
                           :class="set.completed && 'opacity-30 pointer-events-none'"
                           aria-label="Reducir peso"
@@ -1218,14 +1223,14 @@ onBeforeUnmount(() => {
                           step="0.5"
                           min="0"
                           v-model.number="set.weight"
-                          class="h-7 w-10 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-xs font-semibold text-wc-text focus:border-wc-accent focus:outline-none tabular-nums"
+                          class="wc-input-focus h-7 w-10 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-xs font-semibold text-wc-text focus:border-wc-accent focus:outline-none tabular-nums"
                           :class="set.completed && 'opacity-60'"
                           :disabled="set.completed"
                           placeholder="0"
                         />
                         <button
                           @click="set.weight = (parseFloat(set.weight) || 0) + weightStep()"
-                          class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
+                          class="btn-press flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
                           :disabled="set.completed"
                           :class="set.completed && 'opacity-30 pointer-events-none'"
                           aria-label="Aumentar peso"
@@ -1244,7 +1249,7 @@ onBeforeUnmount(() => {
                     <div class="flex items-center justify-center gap-px">
                       <button
                         @click="set.reps = Math.max(0, (parseInt(set.reps) || 0) - 1)"
-                        class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
+                        class="btn-press flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
                         :disabled="set.completed"
                         :class="set.completed && 'opacity-30 pointer-events-none'"
                         aria-label="Reducir reps"
@@ -1255,14 +1260,14 @@ onBeforeUnmount(() => {
                         type="number"
                         min="0"
                         v-model.number="set.reps"
-                        class="h-7 w-9 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-xs font-semibold text-wc-text focus:border-wc-accent focus:outline-none tabular-nums"
+                        class="wc-input-focus h-7 w-9 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-xs font-semibold text-wc-text focus:border-wc-accent focus:outline-none tabular-nums"
                         :class="set.completed && 'opacity-60'"
                         :disabled="set.completed"
                         placeholder="0"
                       />
                       <button
                         @click="set.reps = (parseInt(set.reps) || 0) + 1"
-                        class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
+                        class="btn-press flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-wc-text-tertiary hover:text-wc-text active:bg-wc-bg transition-colors"
                         :disabled="set.completed"
                         :class="set.completed && 'opacity-30 pointer-events-none'"
                         aria-label="Aumentar reps"
@@ -1369,7 +1374,7 @@ onBeforeUnmount(() => {
                   @click="finishWorkout"
                   :disabled="completedSetsCount <= 0 || saving"
                   :class="[
-                    'flex-1 rounded-2xl py-3.5 text-center font-display text-lg tracking-widest transition-all',
+                    'btn-ripple btn-press flex-1 rounded-2xl py-3.5 text-center font-display text-lg tracking-widest transition-all',
                     completedSetsCount > 0
                       ? 'bg-wc-accent text-white shadow-lg shadow-wc-accent/20 hover:bg-red-700'
                       : 'bg-wc-bg-secondary text-wc-text-tertiary cursor-not-allowed'
