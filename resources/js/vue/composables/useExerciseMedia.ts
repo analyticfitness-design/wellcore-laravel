@@ -21,7 +21,9 @@ export function extractYouTubeId(url: string | null): string | null {
  */
 export function getEmbedUrl(videoUrl: string | null): string | null {
   const id = extractYouTubeId(videoUrl);
-  return id ? `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1` : null;
+  if (!id) return null;
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://wellcorefitness.com';
+  return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1&origin=${encodeURIComponent(origin)}&enablejsapi=1`;
 }
 
 export function getWatchUrl(videoUrl: string | null): string | null {

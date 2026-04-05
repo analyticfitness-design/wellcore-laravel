@@ -48,9 +48,36 @@ function onKeydown(e) {
 
 // YouTube sends a postMessage when embedding is blocked
 function onMessage(e) {
-  if (typeof e.data === 'string' && e.data.includes('embeddingDisabled')) {
+  if (typeof e.data === 'string' && (e.data.includes('embeddingDisabled') || e.data.includes('error'))) {
     videoBlocked.value = true;
+    playingVideo.value = false;
   }
+  // Also catch JSON messages from YouTube iframe API
+  try {
+    const parsed = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+    if (parsed?.event === 'onError' || parsed?.info?.errorCode) {
+      videoBlocked.value = true;
+      playingVideo.value = false;
+    }
+  } catch {}
+}
+
+// Fallback: if iframe doesn't load within 5s, assume blocked
+function onIframeLoad() {
+  // Successfully loaded — do nothing
+}
+
+function startEmbedTimeout() {
+  setTimeout(() => {
+    if (playingVideo.value && !videoBlocked.value) {
+      // Check if iframe has content by trying to read its dimensions
+      const iframe = document.querySelector('[role="dialog"] iframe');
+      if (iframe && (iframe.offsetHeight === 0 || iframe.offsetWidth === 0)) {
+        videoBlocked.value = true;
+        playingVideo.value = false;
+      }
+    }
+  }, 6000);
 }
 
 onMounted(() => {
