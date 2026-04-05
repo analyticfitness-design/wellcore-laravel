@@ -108,8 +108,8 @@ onBeforeUnmount(() => {
 
           <!-- Media content -->
           <div class="bg-wc-bg-secondary">
-            <!-- YouTube iframe (priority over GIF), unless blocked -->
-            <div v-if="exVideoUrl(exercise) && !videoBlocked" class="aspect-video w-full">
+            <!-- YouTube iframe — only when URL is a valid YouTube URL and not blocked -->
+            <div v-if="getEmbedUrl(exVideoUrl(exercise)) && !videoBlocked" class="aspect-video w-full">
               <iframe
                 :src="getEmbedUrl(exVideoUrl(exercise))"
                 class="h-full w-full"
@@ -118,8 +118,8 @@ onBeforeUnmount(() => {
                 allowfullscreen
               ></iframe>
             </div>
-            <!-- GIF shown when no video OR when video is blocked -->
-            <div v-if="!exVideoUrl(exercise) || videoBlocked" class="flex items-center justify-center bg-wc-bg p-4">
+            <!-- GIF shown when no YouTube embed available OR video is blocked -->
+            <div v-if="!getEmbedUrl(exVideoUrl(exercise)) || videoBlocked" class="flex items-center justify-center bg-wc-bg p-4">
               <img
                 v-if="exImageUrl(exercise)"
                 :src="exImageUrl(exercise)"
@@ -130,11 +130,12 @@ onBeforeUnmount(() => {
             </div>
           </div>
 
-          <!-- Footer: link to YouTube when video exists -->
+          <!-- Footer -->
           <div class="flex items-center justify-center gap-3 px-4 py-3">
             <p class="text-xs text-wc-text-tertiary">Toca fuera para cerrar</p>
+            <!-- YouTube link when it's a valid YouTube URL -->
             <a
-              v-if="exVideoUrl(exercise)"
+              v-if="getWatchUrl(exVideoUrl(exercise))"
               :href="getWatchUrl(exVideoUrl(exercise))"
               target="_blank"
               rel="noopener"
@@ -144,6 +145,19 @@ onBeforeUnmount(() => {
                 <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
               </svg>
               Ver en YouTube
+            </a>
+            <!-- Fitcron/external video link when URL exists but is NOT YouTube -->
+            <a
+              v-else-if="exVideoUrl(exercise)"
+              :href="exVideoUrl(exercise)"
+              target="_blank"
+              rel="noopener"
+              class="flex items-center gap-1.5 rounded-lg bg-wc-accent px-3 py-1.5 text-xs font-semibold text-white hover:bg-wc-accent-hover transition-colors"
+            >
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"/>
+              </svg>
+              Ver video
             </a>
           </div>
         </div>
