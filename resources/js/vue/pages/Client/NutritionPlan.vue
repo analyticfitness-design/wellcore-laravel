@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { Replace, X as XIcon, Search as SearchIcon, CheckCircle2, AlertTriangle, Flame, RefreshCw } from 'lucide-vue-next';
 import { useApi } from '../../composables/useApi';
+import { RECIPES } from '../../data/recipes';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
@@ -230,8 +232,139 @@ function getAlimentoName(alimento) {
   return String(alimento);
 }
 
+// ─── RECIPE SWAPS ────────────────────────────────────────────────────────
+// Live data from macros-today endpoint (includes swap state per meal)
+const macrosToday = ref(null);
+const loadingMacros = ref(false);
+const swapModalMeal = ref(null); // {name, calories, protein, carbs, fat, swapped, swap_id?}
+const swapSearch = ref('');
+const applyingSwap = ref(false);
+const toast = ref(null); // {type:'success'|'error', msg}
+let toastTimer = null;
+
+async function loadMacrosToday() {
+  loadingMacros.value = true;
+  try {
+    const r = await api.get('/api/v/client/nutrition/macros-today');
+    macrosToday.value = r.data;
+  } catch (e) {
+    macrosToday.value = null;
+  } finally {
+    loadingMacros.value = false;
+  }
+}
+
+// Find the matching meal from macros-today by fuzzy name match against plan meal name
+function findTodayMeal(planMealName) {
+  if (!macrosToday.value?.meals) return null;
+  const clean = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const target = clean(cleanMealName(planMealName));
+  return macrosToday.value.meals.find(m => {
+    const mn = clean(m.name);
+    return mn === target || mn.includes(target) || target.includes(mn);
+  }) || null;
+}
+
+function openSwapModal(planMeal) {
+  const todayMeal = findTodayMeal(planMeal.nombre);
+  // Fallback: synthesize from plan meal macros if macros-today doesn't have it
+  swapModalMeal.value = todayMeal || {
+    name: cleanMealName(planMeal.nombre),
+    calories: planMeal.calorias || 0,
+    protein: planMeal.macros?.proteina || 0,
+    carbs: planMeal.macros?.carbohidratos || 0,
+    fat: planMeal.macros?.grasas || 0,
+    swapped: false,
+    swap_id: null,
+  };
+  swapSearch.value = '';
+}
+
+function closeSwapModal() {
+  swapModalMeal.value = null;
+}
+
+// Compatibility: ideal (±15% cal), aceptable (±30%), else bad
+function compatibility(recipe, meal) {
+  if (!meal || !meal.calories) return 'bad';
+  const diff = Math.abs(recipe.macros.cal - meal.calories) / meal.calories;
+  if (diff <= 0.15) return 'ideal';
+  if (diff <= 0.30) return 'aceptable';
+  return 'bad';
+}
+
+const compatOrder = { ideal: 0, aceptable: 1, bad: 2 };
+
+const swapCandidates = computed(() => {
+  if (!swapModalMeal.value) return [];
+  const q = swapSearch.value.trim().toLowerCase();
+  return RECIPES
+    .filter(r => !q || r.name.toLowerCase().includes(q) || r.description.toLowerCase().includes(q))
+    .map(r => ({ recipe: r, score: compatibility(r, swapModalMeal.value) }))
+    .sort((a, b) => compatOrder[a.score] - compatOrder[b.score]);
+});
+
+function showToast(type, msg) {
+  if (toastTimer) clearTimeout(toastTimer);
+  toast.value = { type, msg };
+  toastTimer = setTimeout(() => { toast.value = null; }, 3500);
+}
+
+async function applySwap(recipe) {
+  if (!swapModalMeal.value || applyingSwap.value) return;
+  applyingSwap.value = true;
+  const meal = swapModalMeal.value;
+  try {
+    await api.post('/api/v/client/nutrition/swap', {
+      recipe_id: recipe.id,
+      recipe_name: recipe.name,
+      original_meal_name: meal.name,
+      recipe_macros: {
+        calories: recipe.macros.cal,
+        protein: recipe.macros.protein,
+        carbs: recipe.macros.carbs,
+        fat: recipe.macros.fat,
+      },
+      original_macros: {
+        calories: meal.calories,
+        protein: meal.protein,
+        carbs: meal.carbs,
+        fat: meal.fat,
+      },
+    });
+    await loadMacrosToday();
+    closeSwapModal();
+    showToast('success', `Reemplazado por ${recipe.name}`);
+  } catch (e) {
+    showToast('error', 'Error al aplicar el reemplazo. Intenta de nuevo.');
+  } finally {
+    applyingSwap.value = false;
+  }
+}
+
+async function undoSwap(planMeal) {
+  const todayMeal = findTodayMeal(planMeal.nombre);
+  if (!todayMeal?.swap_id) return;
+  try {
+    await api.delete(`/api/v/client/nutrition/swap/${todayMeal.swap_id}`);
+    await loadMacrosToday();
+    showToast('success', 'Reemplazo deshecho');
+  } catch (e) {
+    showToast('error', 'No se pudo deshacer');
+  }
+}
+
+function isMealSwapped(planMeal) {
+  return findTodayMeal(planMeal.nombre)?.swapped === true;
+}
+
+function swappedRecipeName(planMeal) {
+  return findTodayMeal(planMeal.nombre)?.recipe_name || '';
+}
+
 onMounted(() => {
     fetchNutrition();
+    loadMacrosToday();
 });
 </script>
 
@@ -351,8 +484,31 @@ onMounted(() => {
             <div
               v-for="(meal, index) in meals"
               :key="index"
-              class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary"
+              class="overflow-hidden rounded-xl border bg-wc-bg-secondary transition-colors"
+              :class="isMealSwapped(meal) ? 'border-wc-accent/40' : 'border-wc-border'"
             >
+              <!-- Swapped marker — fine gradient line + glass chip -->
+              <div v-if="isMealSwapped(meal)" class="relative">
+                <div class="h-px w-full bg-gradient-to-r from-wc-accent/0 via-wc-accent/40 to-wc-accent/0"></div>
+                <div class="flex items-center justify-between gap-3 px-4 py-2.5">
+                  <div class="group/chip flex min-w-0 items-center gap-2.5 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1 backdrop-blur-sm">
+                    <span class="relative flex h-1 w-1 shrink-0">
+                      <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-wc-accent opacity-60"></span>
+                      <span class="relative inline-flex h-1 w-1 rounded-full bg-wc-accent"></span>
+                    </span>
+                    <span class="font-display text-[9px] tracking-[0.22em] text-white/40">REEMPLAZADO POR</span>
+                    <span class="min-w-0 truncate font-display text-xs tracking-wider text-wc-text">{{ swappedRecipeName(meal) }}</span>
+                    <button
+                      @click.stop="undoSwap(meal)"
+                      class="ml-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-white/30 opacity-0 transition-all duration-300 hover:text-wc-accent group-hover/chip:opacity-100"
+                      aria-label="Deshacer reemplazo"
+                    >
+                      <XIcon :size="10" :stroke-width="2" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <!-- Header (clickable) -->
               <button
                 @click="toggleMeal(index)"
@@ -391,6 +547,17 @@ onMounted(() => {
                     G {{ meal.macros.grasas }}g
                   </span>
                 </div>
+
+                <!-- Swap CTA — ghost / subtle -->
+                <span
+                  @click.stop="openSwapModal(meal)"
+                  role="button"
+                  :title="isMealSwapped(meal) ? 'Cambiar por otra receta' : 'Cambiar por receta'"
+                  class="wc-swap-ghost ml-2 group/swap inline-flex items-center gap-2 rounded-full px-2.5 py-1.5 text-white/40 transition-all duration-300 ease-out hover:text-wc-accent hover:bg-white/[0.04]"
+                >
+                  <Replace :size="13" :stroke-width="2" class="transition-transform duration-300 group-hover/swap:rotate-180" />
+                  <span class="hidden font-display text-[10px] tracking-[0.2em] sm:inline">CAMBIAR</span>
+                </span>
 
                 <!-- Calories + chevron -->
                 <div class="ml-2 flex shrink-0 items-center gap-3">
@@ -813,12 +980,145 @@ onMounted(() => {
         </div>
       </div>
     </Transition>
+
+    <!-- ===== SWAP RECIPE MODAL ===== -->
+    <Transition name="fade">
+      <div
+        v-if="swapModalMeal"
+        @click.self="closeSwapModal"
+        @keydown.escape="closeSwapModal"
+        class="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
+      >
+        <div class="wc-card-hero wc-grain wc-orb-tr relative flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl">
+          <!-- Header -->
+          <div class="relative flex items-start justify-between gap-4 px-8 pt-7 pb-5">
+            <div class="min-w-0">
+              <p class="font-display text-[10px] tracking-[0.28em] text-wc-accent/80">REEMPLAZAR</p>
+              <h2 class="mt-1.5 truncate font-display text-3xl tracking-wide text-wc-text">{{ swapModalMeal.name }}</h2>
+              <p class="mt-2 font-data text-[11px] tabular-nums tracking-wider text-white/40">
+                <span class="text-white/60">{{ swapModalMeal.calories }}</span> KCAL
+                <span class="mx-1.5 text-white/20">·</span>
+                {{ swapModalMeal.protein }}P
+                <span class="mx-1.5 text-white/20">·</span>
+                {{ swapModalMeal.carbs }}C
+                <span class="mx-1.5 text-white/20">·</span>
+                {{ swapModalMeal.fat }}G
+              </p>
+            </div>
+            <button
+              @click="closeSwapModal"
+              class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/[0.06] bg-white/[0.02] text-white/40 backdrop-blur-sm transition-all duration-300 hover:border-wc-accent/40 hover:text-wc-accent hover:bg-white/[0.04]"
+              aria-label="Cerrar"
+            >
+              <XIcon :size="16" :stroke-width="2" />
+            </button>
+          </div>
+
+          <!-- Divider -->
+          <div class="h-px w-full bg-gradient-to-r from-transparent via-white/[0.08] to-transparent"></div>
+
+          <!-- Search -->
+          <div class="px-8 pt-5 pb-2">
+            <div class="group/search relative">
+              <SearchIcon :size="15" :stroke-width="2" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 transition-colors group-focus-within/search:text-wc-accent/70" />
+              <input
+                v-model="swapSearch"
+                type="text"
+                placeholder="Buscar receta"
+                class="w-full rounded-2xl border border-white/[0.06] bg-white/[0.03] py-3 pl-11 pr-4 text-sm text-wc-text placeholder-white/25 transition-all duration-300 focus:border-wc-accent/40 focus:bg-white/[0.04] focus:outline-none focus:shadow-[0_0_0_4px_rgba(220,38,38,0.08)]"
+              />
+            </div>
+          </div>
+
+          <!-- Recipe grid -->
+          <div class="grid flex-1 grid-cols-1 gap-5 overflow-y-auto px-8 py-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div
+              v-for="({ recipe: r, score }, idx) in swapCandidates"
+              :key="r.id"
+              :style="{ animationDelay: (idx * 30) + 'ms' }"
+              class="wc-stagger-enter group/card relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-wc-accent/30 hover:bg-white/[0.035] hover:shadow-[0_8px_32px_-12px_rgba(220,38,38,0.25)]"
+              :class="{ 'opacity-40 hover:opacity-60': score === 'bad' }"
+            >
+              <!-- Emoji panel -->
+              <div class="relative flex aspect-[5/3] items-center justify-center overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent"></div>
+                <span class="relative text-5xl opacity-90 transition-transform duration-500 ease-out group-hover/card:scale-110">{{ r.emoji }}</span>
+              </div>
+
+              <!-- Body -->
+              <div class="flex flex-1 flex-col gap-3 px-4 pb-4">
+                <!-- Compatibility micro-label -->
+                <div class="flex items-center gap-1.5">
+                  <template v-if="score === 'ideal'">
+                    <span class="h-1 w-1 rounded-full bg-emerald-400"></span>
+                    <span class="font-display text-[9px] tracking-[0.22em] text-emerald-400/80">IDEAL</span>
+                  </template>
+                  <template v-else-if="score === 'aceptable'">
+                    <span class="h-1 w-1 rounded-full bg-amber-400"></span>
+                    <span class="font-display text-[9px] tracking-[0.22em] text-amber-400/80">ACEPTABLE</span>
+                  </template>
+                  <template v-else>
+                    <span class="h-1 w-1 rounded-full bg-white/20"></span>
+                    <span class="font-display text-[9px] tracking-[0.22em] text-white/30">FUERA DE RANGO</span>
+                  </template>
+                </div>
+
+                <h4 class="font-display text-base tracking-wide text-wc-text line-clamp-2">{{ r.name }}</h4>
+
+                <p class="font-data text-[11px] tabular-nums tracking-wider text-white/40">
+                  <span class="text-white/60">{{ r.macros.cal }}</span> KCAL
+                  <span class="mx-1 text-white/15">·</span>{{ r.macros.protein }}P
+                  <span class="mx-1 text-white/15">·</span>{{ r.macros.carbs }}C
+                  <span class="mx-1 text-white/15">·</span>{{ r.macros.fat }}G
+                </p>
+
+                <button
+                  @click="applySwap(r)"
+                  :disabled="applyingSwap"
+                  class="mt-auto flex items-center justify-center gap-2 rounded-xl border border-white/[0.06] bg-transparent px-3 py-2.5 font-display text-[11px] tracking-[0.2em] text-white/60 transition-all duration-300 ease-out hover:border-wc-accent/40 hover:text-wc-accent hover:shadow-[0_0_20px_-4px_rgba(220,38,38,0.4)] disabled:opacity-40"
+                >
+                  <Replace :size="11" :stroke-width="2" />
+                  REEMPLAZAR
+                </button>
+              </div>
+            </div>
+
+            <div v-if="swapCandidates.length === 0" class="col-span-full rounded-2xl border border-white/[0.06] bg-white/[0.02] p-12 text-center">
+              <p class="font-display text-xs tracking-[0.2em] text-white/30">SIN RESULTADOS PARA "{{ swapSearch.toUpperCase() }}"</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
+    <!-- ===== TOAST ===== -->
+    <Transition name="toast">
+      <div
+        v-if="toast"
+        class="pointer-events-none fixed inset-x-0 bottom-8 z-[90] flex justify-center px-4"
+      >
+        <div
+          class="pointer-events-auto flex items-center gap-2.5 rounded-full border border-white/[0.08] bg-black/60 px-5 py-2.5 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.6)] backdrop-blur-xl"
+        >
+          <span class="flex h-4 w-4 items-center justify-center">
+            <CheckCircle2 v-if="toast.type === 'success'" :size="14" :stroke-width="2.25" class="text-emerald-400" />
+            <AlertTriangle v-else :size="14" :stroke-width="2.25" class="text-wc-accent" />
+          </span>
+          <span class="text-xs font-medium tracking-wide text-white/80">{{ toast.msg }}</span>
+        </div>
+      </div>
+    </Transition>
   </ClientLayout>
 </template>
 
 <style scoped>
-.fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
+.fade-enter-active, .fade-leave-active { transition: opacity 0.25s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
+
+.toast-enter-active, .toast-leave-active { transition: opacity 0.3s ease, transform 0.3s ease; }
+.toast-enter-from, .toast-leave-to { opacity: 0; transform: translateY(8px); }
+
+.wc-swap-ghost:hover :deep(svg) { filter: drop-shadow(0 0 6px rgba(220,38,38,0.5)); }
 
 .accordion-enter-active { transition: max-height 0.3s ease, opacity 0.3s ease; }
 .accordion-leave-active { transition: max-height 0.2s ease, opacity 0.2s ease; }
