@@ -1,94 +1,101 @@
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
-import { getEmbedUrl, getWatchUrl } from '../../composables/useExerciseMedia';
+import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { extractYouTubeId, getWatchUrl } from '../../composables/useExerciseMedia';
 
 const props = defineProps({
-  exercise: {
-    type: Object,
-    default: null,
-  },
-  show: {
-    type: Boolean,
-    default: false,
-  },
+  exercise: { type: Object, default: null },
+  show: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(['close']);
 
-const videoBlocked = ref(false);
 const playingVideo = ref(false);
+const playerReady = ref(false);
+const playerError = ref(false);
+let ytPlayer = null;
 
-// Reset state when a new exercise is shown
-watch(() => props.exercise, () => { videoBlocked.value = false; playingVideo.value = false; });
-watch(() => props.show, (v) => { if (!v) playingVideo.value = false; });
+// Reset state when exercise or visibility changes
+watch(() => props.exercise, () => { playingVideo.value = false; playerError.value = false; destroyPlayer(); });
+watch(() => props.show, (v) => { if (!v) { playingVideo.value = false; destroyPlayer(); } });
 
-function exName(ex) {
-  return ex?.nombre || ex?.name || ex?.ejercicio || 'Ejercicio';
-}
+function exName(ex) { return ex?.nombre || ex?.name || ex?.ejercicio || 'Ejercicio'; }
+function exVideoUrl(ex) { return ex?.video_url || ex?.video || null; }
+function exImageUrl(ex) { return ex?.image_url || ex?.gif_url || ex?.imagen || ex?.thumbnail_url || null; }
+function hasYouTube(ex) { return !!extractYouTubeId(exVideoUrl(ex)); }
 
-function exVideoUrl(ex) {
-  return ex?.video_url || ex?.video || null;
-}
+function onBackdropClick(e) { if (e.target === e.currentTarget) emit('close'); }
+function onKeydown(e) { if (e.key === 'Escape') emit('close'); }
 
-function exImageUrl(ex) {
-  return ex?.image_url || ex?.gif_url || ex?.imagen || ex?.thumbnail_url || null;
-}
-
-function onBackdropClick(e) {
-  if (e.target === e.currentTarget) {
-    emit('close');
-  }
-}
-
-function onKeydown(e) {
-  if (e.key === 'Escape') {
-    emit('close');
-  }
-}
-
-// YouTube sends a postMessage when embedding is blocked
-function onMessage(e) {
-  if (typeof e.data === 'string' && (e.data.includes('embeddingDisabled') || e.data.includes('error'))) {
-    videoBlocked.value = true;
-    playingVideo.value = false;
-  }
-  // Also catch JSON messages from YouTube iframe API
-  try {
-    const parsed = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
-    if (parsed?.event === 'onError' || parsed?.info?.errorCode) {
-      videoBlocked.value = true;
-      playingVideo.value = false;
+// Load YouTube IFrame API script (once)
+function ensureYTApi() {
+  return new Promise((resolve) => {
+    if (window.YT && window.YT.Player) { resolve(); return; }
+    if (document.querySelector('script[src*="youtube.com/iframe_api"]')) {
+      // Script loaded but API not ready — wait
+      const check = setInterval(() => {
+        if (window.YT && window.YT.Player) { clearInterval(check); resolve(); }
+      }, 100);
+      return;
     }
-  } catch {}
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => { if (prev) prev(); resolve(); };
+    document.head.appendChild(tag);
+  });
 }
 
-// Fallback: if iframe doesn't load within 5s, assume blocked
-function onIframeLoad() {
-  // Successfully loaded — do nothing
-}
+async function startVideo() {
+  const videoId = extractYouTubeId(exVideoUrl(props.exercise));
+  if (!videoId) return;
 
-function startEmbedTimeout() {
-  setTimeout(() => {
-    if (playingVideo.value && !videoBlocked.value) {
-      // Check if iframe has content by trying to read its dimensions
-      const iframe = document.querySelector('[role="dialog"] iframe');
-      if (iframe && (iframe.offsetHeight === 0 || iframe.offsetWidth === 0)) {
-        videoBlocked.value = true;
+  playingVideo.value = true;
+  playerError.value = false;
+  playerReady.value = false;
+
+  await nextTick();
+  await ensureYTApi();
+
+  const container = document.getElementById('yt-player-modal');
+  if (!container) return;
+
+  ytPlayer = new window.YT.Player('yt-player-modal', {
+    videoId,
+    width: '100%',
+    height: '100%',
+    playerVars: {
+      autoplay: 1,
+      rel: 0,
+      modestbranding: 1,
+      playsinline: 1,
+    },
+    events: {
+      onReady: () => { playerReady.value = true; },
+      onError: (e) => {
+        console.warn('YouTube player error:', e.data);
+        playerError.value = true;
         playingVideo.value = false;
-      }
-    }
-  }, 6000);
+        destroyPlayer();
+      },
+    },
+  });
 }
 
-onMounted(() => {
-  window.addEventListener('keydown', onKeydown);
-  window.addEventListener('message', onMessage);
-});
+function destroyPlayer() {
+  if (ytPlayer) {
+    try { ytPlayer.destroy(); } catch {}
+    ytPlayer = null;
+  }
+  playerReady.value = false;
+}
 
-onBeforeUnmount(() => {
-  window.removeEventListener('keydown', onKeydown);
-  window.removeEventListener('message', onMessage);
-});
+function stopAndShowGif() {
+  playingVideo.value = false;
+  destroyPlayer();
+}
+
+onMounted(() => window.addEventListener('keydown', onKeydown));
+onBeforeUnmount(() => { window.removeEventListener('keydown', onKeydown); destroyPlayer(); });
 </script>
 
 <template>
@@ -135,20 +142,22 @@ onBeforeUnmount(() => {
             </button>
           </div>
 
-          <!-- Media content: GIF by default → click play → YouTube embed -->
+          <!-- Media content -->
           <div class="bg-wc-bg-secondary">
-            <!-- YouTube iframe (shown after clicking play) -->
-            <div v-if="playingVideo && getEmbedUrl(exVideoUrl(exercise)) && !videoBlocked" class="aspect-video w-full">
-              <iframe
-                :src="getEmbedUrl(exVideoUrl(exercise)) + '&autoplay=1&playsinline=1'"
-                class="h-full w-full"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-              ></iframe>
+            <!-- YouTube Player via IFrame API -->
+            <div v-if="playingVideo && !playerError" class="aspect-video w-full bg-black">
+              <div id="yt-player-modal" class="h-full w-full"></div>
+              <!-- Loading state -->
+              <div v-if="!playerReady" class="absolute inset-0 flex items-center justify-center bg-black">
+                <div class="flex flex-col items-center gap-2">
+                  <div class="h-8 w-8 animate-spin rounded-full border-2 border-wc-accent border-t-transparent"></div>
+                  <p class="text-xs text-wc-text-tertiary">Cargando video...</p>
+                </div>
+              </div>
             </div>
-            <!-- GIF with play overlay (default state) -->
-            <div v-else class="relative cursor-pointer group" @click="getEmbedUrl(exVideoUrl(exercise)) ? (playingVideo = true) : null">
+
+            <!-- GIF with play overlay (default state + error fallback) -->
+            <div v-else class="relative cursor-pointer group" @click="hasYouTube(exercise) ? startVideo() : null">
               <img
                 v-if="exImageUrl(exercise)"
                 :src="exImageUrl(exercise)"
@@ -158,9 +167,15 @@ onBeforeUnmount(() => {
               <div v-else class="flex items-center justify-center h-48 bg-wc-bg">
                 <p class="text-sm text-wc-text-tertiary">Sin imagen disponible</p>
               </div>
-              <!-- Play button overlay (only if YouTube URL available) -->
+
+              <!-- Error message overlay -->
+              <div v-if="playerError" class="absolute top-2 left-2 right-2 rounded-lg bg-black/80 px-3 py-2 text-center">
+                <p class="text-xs text-wc-text-secondary">Video no disponible para embed. Toca YouTube para verlo.</p>
+              </div>
+
+              <!-- Play button overlay -->
               <div
-                v-if="getEmbedUrl(exVideoUrl(exercise))"
+                v-if="hasYouTube(exercise) && !playerError"
                 class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors"
               >
                 <div class="flex h-16 w-16 items-center justify-center rounded-full bg-red-600 shadow-lg shadow-red-600/30 group-hover:scale-110 transition-transform">
@@ -175,17 +190,15 @@ onBeforeUnmount(() => {
           <!-- Footer -->
           <div class="flex items-center justify-center gap-3 px-4 py-3">
             <p class="text-xs text-wc-text-tertiary">Toca fuera para cerrar</p>
-            <!-- Toggle GIF/Video when playing -->
             <button
               v-if="playingVideo"
-              @click="playingVideo = false"
+              @click="stopAndShowGif"
               class="flex items-center gap-1.5 rounded-lg border border-wc-border px-3 py-1.5 text-xs font-medium text-wc-text-secondary hover:text-wc-text transition-colors"
             >
               Ver GIF
             </button>
-            <!-- YouTube external link -->
             <a
-              v-if="getWatchUrl(exVideoUrl(exercise))"
+              v-if="hasYouTube(exercise)"
               :href="getWatchUrl(exVideoUrl(exercise))"
               target="_blank"
               rel="noopener"
@@ -195,6 +208,15 @@ onBeforeUnmount(() => {
                 <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
               </svg>
               YouTube
+            </a>
+            <a
+              v-else-if="exVideoUrl(exercise)"
+              :href="exVideoUrl(exercise)"
+              target="_blank"
+              rel="noopener"
+              class="flex items-center gap-1.5 rounded-lg bg-wc-accent px-3 py-1.5 text-xs font-semibold text-white hover:bg-wc-accent-hover transition-colors"
+            >
+              Ver video
             </a>
           </div>
         </div>
