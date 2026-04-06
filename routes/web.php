@@ -374,6 +374,35 @@ Route::get('/fix-danna-martes', function () {
     ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 });
 
+Route::get('/diag-danna-rise', function () {
+    // Check rise_programs table for Danna (client_id=64)
+    $rise = \DB::table('rise_programs')->where('client_id', 64)->first();
+    if (!$rise) return response()->json(['error' => 'No rise_programs for client 64']);
+
+    $content = json_decode($rise->content ?? $rise->program_data ?? '{}', true);
+    $columns = \Illuminate\Support\Facades\Schema::getColumnListing('rise_programs');
+
+    // Get martes data
+    $semanas = $content['semanas'] ?? $content['weeks'] ?? [];
+    $martes = null;
+    if (!empty($semanas)) {
+        $dias = $semanas[0]['dias'] ?? $semanas[0]['days'] ?? [];
+        $martes = $dias[1] ?? null;
+    }
+
+    return response()->json([
+        'rise_id' => $rise->id,
+        'columns' => $columns,
+        'content_keys' => array_keys($content),
+        'total_semanas' => count($semanas),
+        'martes' => $martes ? [
+            'nombre' => $martes['nombre'] ?? $martes['name'] ?? $martes['dia'] ?? '?',
+            'ejercicios_count' => count($martes['ejercicios'] ?? $martes['exercises'] ?? []),
+        ] : 'no martes found',
+        'raw_keys' => array_keys((array)$rise),
+    ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+});
+
 Route::get('/diag-danna-full', function () {
     $plan = \DB::table('assigned_plans')->where('id', 102)->first();
     $content = json_decode($plan->content, true);
