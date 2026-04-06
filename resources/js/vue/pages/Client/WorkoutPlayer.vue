@@ -640,7 +640,7 @@ onBeforeUnmount(() => {
 
 <template>
   <ClientLayout>
-    <div class="min-h-screen" :class="{ 'pb-[280px]': workoutStarted }">
+    <div class="min-h-screen" :class="{ 'pb-[320px]': workoutStarted }">
 
       <!-- ════════════════════════════════════════════════ -->
       <!-- LOADING                                          -->
@@ -1350,8 +1350,8 @@ onBeforeUnmount(() => {
           leave-from-class="translate-y-0"
           leave-to-class="translate-y-full"
         >
-          <div v-if="workoutStarted" class="fixed bottom-0 inset-x-0 z-[55] border-t border-wc-border bg-wc-bg/95 backdrop-blur-md safe-area-pb">
-            <div class="px-4 py-3">
+          <div v-if="workoutStarted" class="fixed bottom-0 inset-x-0 z-[55] border-t border-wc-border bg-wc-bg/95 backdrop-blur-md" style="padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);">
+            <div class="px-4 pt-3 pb-2">
               <!-- Session stats -->
               <div class="mb-2.5 flex items-center justify-center gap-4 text-center">
                 <div>

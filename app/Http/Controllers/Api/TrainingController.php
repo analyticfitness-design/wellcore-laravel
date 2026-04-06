@@ -612,11 +612,18 @@ class TrainingController extends Controller
             return response()->json(['error' => 'Sesion no encontrada o ya completada.'], 404);
         }
 
-        $durationSec = (int) $session->created_at->diffInSeconds(now());
+        // Use frontend elapsed time if provided (more accurate), fallback to server diff
+        $elapsedFromClient = (int) $request->input('elapsed', 0);
+        $durationSec = $elapsedFromClient > 0
+            ? $elapsedFromClient
+            : (int) $session->created_at->diffInSeconds(now());
+
+        // Cap at 4 hours max (14400 sec) to prevent absurd values from stale sessions
+        $durationSec = min($durationSec, 14400);
 
         $session->update([
             'completed' => true,
-            'duration_minutes' => (int) ($durationSec / 60),
+            'duration_minutes' => max(1, (int) round($durationSec / 60)),
             'feeling' => $request->input('feeling'),
             'notes' => $request->input('notes'),
         ]);

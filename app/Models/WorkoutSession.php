@@ -59,10 +59,14 @@ class WorkoutSession extends Model
 
     public function formattedDuration(): string
     {
-        $totalSec = ($this->duration_minutes ?? 0) * 60;
-        $m = intdiv($totalSec, 60);
-        $s = $totalSec % 60;
+        $minutes = $this->duration_minutes ?? 0;
 
-        return sprintf('%d:%02d', $m, $s);
+        if ($minutes >= 60) {
+            $h = intdiv($minutes, 60);
+            $m = $minutes % 60;
+            return sprintf('%d:%02d:%00d', $h, $m, 0);
+        }
+
+        return sprintf('%d:%02d', $minutes, 0);
     }
 }
