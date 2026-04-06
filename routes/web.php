@@ -275,6 +275,38 @@ Route::get('/media/gif/{slug}', [\App\Http\Controllers\Media\GifController::clas
     ->where('slug', '[\w\-]+');
 
 // Temp diagnostic — remove after debugging
+Route::get('/diag-danna', function () {
+    $client = \DB::table('clients')->where('name', 'like', '%Danna%Sarmiento%')->first();
+    if (!$client) return response()->json(['error' => 'Client not found']);
+
+    $plans = \DB::table('assigned_plans')
+        ->where('client_id', $client->id)
+        ->where('plan_type', 'entrenamiento')
+        ->where('active', true)
+        ->get(['id', 'plan_type', 'active', 'created_at']);
+
+    $result = ['client' => ['id' => $client->id, 'name' => $client->name, 'plan' => $client->plan ?? null], 'plans' => $plans];
+
+    if ($plans->count() > 0) {
+        $plan = \DB::table('assigned_plans')->where('id', $plans->first()->id)->first();
+        $content = json_decode($plan->content, true);
+        $semanas = $content['semanas'] ?? [];
+
+        $result['total_semanas'] = count($semanas);
+        if (!empty($semanas)) {
+            $firstWeek = $semanas[0];
+            $dias = $firstWeek['dias'] ?? [];
+            $result['semana_1_dias'] = count($dias);
+            $result['dias_nombres'] = array_map(fn($d) => [
+                'nombre' => $d['nombre'] ?? $d['name'] ?? $d['dia'] ?? '?',
+                'ejercicios' => count($d['ejercicios'] ?? []),
+            ], $dias);
+        }
+    }
+
+    return response()->json($result, 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+});
+
 Route::get('/diag-videos', function () {
     $out = [];
     $out['tables'] = [
