@@ -510,9 +510,13 @@ onMounted(() => {
               </div>
 
               <!-- Header (clickable) -->
-              <button
+              <div
                 @click="toggleMeal(index)"
-                class="flex w-full items-center gap-3 p-4 text-left transition hover:bg-wc-bg-tertiary"
+                role="button"
+                tabindex="0"
+                @keydown.enter="toggleMeal(index)"
+                @keydown.space.prevent="toggleMeal(index)"
+                class="flex w-full cursor-pointer items-center gap-3 p-4 text-left transition hover:bg-wc-bg-tertiary"
               >
                 <!-- Number badge -->
                 <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg" :class="getMealIconColor(meal.nombre)">
@@ -549,15 +553,15 @@ onMounted(() => {
                 </div>
 
                 <!-- Swap CTA — ghost / subtle -->
-                <span
+                <button
+                  type="button"
                   @click.stop="openSwapModal(meal)"
-                  role="button"
                   :title="isMealSwapped(meal) ? 'Cambiar por otra receta' : 'Cambiar por receta'"
-                  class="wc-swap-ghost ml-2 group/swap inline-flex items-center gap-2 rounded-full px-2.5 py-1.5 text-white/40 transition-all duration-300 ease-out hover:text-wc-accent hover:bg-white/[0.04]"
+                  class="wc-swap-ghost group/swap ml-2 inline-flex items-center gap-2 rounded-full px-2.5 py-1.5 text-white/40 transition-all duration-300 ease-out hover:bg-white/[0.04] hover:text-wc-accent"
                 >
                   <Replace :size="13" :stroke-width="2" class="transition-transform duration-300 group-hover/swap:rotate-180" />
                   <span class="hidden font-display text-[10px] tracking-[0.2em] sm:inline">CAMBIAR</span>
-                </span>
+                </button>
 
                 <!-- Calories + chevron -->
                 <div class="ml-2 flex shrink-0 items-center gap-3">
@@ -570,7 +574,7 @@ onMounted(() => {
                     <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                   </svg>
                 </div>
-              </button>
+              </div>
 
               <!-- Body (expandable) -->
               <Transition name="accordion">
