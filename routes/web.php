@@ -275,6 +275,18 @@ Route::get('/media/gif/{slug}', [\App\Http\Controllers\Media\GifController::clas
     ->where('slug', '[\w\-]+');
 
 // Temp diagnostic — remove after debugging
+Route::get('/diag-danna-full', function () {
+    $plan = \DB::table('assigned_plans')->where('id', 102)->first();
+    $content = json_decode($plan->content, true);
+    $semana1 = $content['semanas'][0] ?? [];
+    $martes = $semana1['dias'][1] ?? null;
+    $lunes = $semana1['dias'][0] ?? null;
+    return response()->json([
+        'martes' => $martes,
+        'lunes_sample' => $lunes,
+    ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+});
+
 Route::get('/diag-danna', function () {
     $client = \DB::table('clients')->where('name', 'like', '%Danna%Sarmiento%')->first();
     if (!$client) return response()->json(['error' => 'Client not found']);
