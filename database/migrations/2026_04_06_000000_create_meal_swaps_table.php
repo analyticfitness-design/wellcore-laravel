@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('meal_swaps', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('client_id');
+            $table->integer('client_id');
             $table->unsignedBigInteger('recipe_id');
             $table->string('recipe_name');
             $table->string('original_meal_name');
