@@ -26,59 +26,18 @@ function hasYouTube(ex) { return !!extractYouTubeId(exVideoUrl(ex)); }
 function onBackdropClick(e) { if (e.target === e.currentTarget) emit('close'); }
 function onKeydown(e) { if (e.key === 'Escape') emit('close'); }
 
-// Load YouTube IFrame API script (once)
-function ensureYTApi() {
-  return new Promise((resolve) => {
-    if (window.YT && window.YT.Player) { resolve(); return; }
-    if (document.querySelector('script[src*="youtube.com/iframe_api"]')) {
-      // Script loaded but API not ready — wait
-      const check = setInterval(() => {
-        if (window.YT && window.YT.Player) { clearInterval(check); resolve(); }
-      }, 100);
-      return;
-    }
-    const tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    const prev = window.onYouTubeIframeAPIReady;
-    window.onYouTubeIframeAPIReady = () => { if (prev) prev(); resolve(); };
-    document.head.appendChild(tag);
-  });
+// Build YouTube embed src — uses standard embed URL
+function ytEmbedSrc() {
+  const videoId = extractYouTubeId(exVideoUrl(props.exercise));
+  if (!videoId) return null;
+  return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
 }
 
-async function startVideo() {
-  const videoId = extractYouTubeId(exVideoUrl(props.exercise));
-  if (!videoId) return;
-
+function startVideo() {
+  if (!ytEmbedSrc()) return;
   playingVideo.value = true;
   playerError.value = false;
-  playerReady.value = false;
-
-  await nextTick();
-  await ensureYTApi();
-
-  const container = document.getElementById('yt-player-modal');
-  if (!container) return;
-
-  ytPlayer = new window.YT.Player('yt-player-modal', {
-    videoId,
-    width: '100%',
-    height: '100%',
-    playerVars: {
-      autoplay: 1,
-      rel: 0,
-      modestbranding: 1,
-      playsinline: 1,
-    },
-    events: {
-      onReady: () => { playerReady.value = true; },
-      onError: (e) => {
-        console.warn('YouTube player error:', e.data);
-        playerError.value = true;
-        playingVideo.value = false;
-        destroyPlayer();
-      },
-    },
-  });
+  playerReady.value = true;
 }
 
 function destroyPlayer() {
@@ -144,16 +103,15 @@ onBeforeUnmount(() => { window.removeEventListener('keydown', onKeydown); destro
 
           <!-- Media content -->
           <div class="bg-wc-bg-secondary">
-            <!-- YouTube Player via IFrame API -->
-            <div v-if="playingVideo && !playerError" class="aspect-video w-full bg-black">
-              <div id="yt-player-modal" class="h-full w-full"></div>
-              <!-- Loading state -->
-              <div v-if="!playerReady" class="absolute inset-0 flex items-center justify-center bg-black">
-                <div class="flex flex-col items-center gap-2">
-                  <div class="h-8 w-8 animate-spin rounded-full border-2 border-wc-accent border-t-transparent"></div>
-                  <p class="text-xs text-wc-text-tertiary">Cargando video...</p>
-                </div>
-              </div>
+            <!-- YouTube iframe (shown after clicking play) -->
+            <div v-if="playingVideo && ytEmbedSrc() && !playerError" class="aspect-video w-full bg-black relative">
+              <iframe
+                :src="ytEmbedSrc()"
+                class="absolute inset-0 h-full w-full"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+              ></iframe>
             </div>
 
             <!-- GIF with play overlay (default state + error fallback) -->
