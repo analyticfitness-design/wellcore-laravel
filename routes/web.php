@@ -379,7 +379,7 @@ Route::get('/diag-danna-rise', function () {
     $rise = \DB::table('rise_programs')->where('client_id', 64)->first();
     if (!$rise) return response()->json(['error' => 'No rise_programs for client 64']);
 
-    $content = json_decode($rise->content ?? $rise->program_data ?? '{}', true);
+    $content = json_decode($rise->personalized_program ?? $rise->content ?? '{}', true);
     $columns = \Illuminate\Support\Facades\Schema::getColumnListing('rise_programs');
 
     // Get martes data
