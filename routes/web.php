@@ -382,24 +382,35 @@ Route::get('/diag-danna-rise', function () {
     $content = json_decode($rise->personalized_program ?? $rise->content ?? '{}', true);
     $columns = \Illuminate\Support\Facades\Schema::getColumnListing('rise_programs');
 
-    // Get martes data
-    $semanas = $content['semanas'] ?? $content['weeks'] ?? [];
+    $entrenamiento = $content['plan_entrenamiento'] ?? [];
+    $semanas = $entrenamiento['semanas'] ?? [];
+
+    // Find martes in first week
     $martes = null;
     if (!empty($semanas)) {
-        $dias = $semanas[0]['dias'] ?? $semanas[0]['days'] ?? [];
-        $martes = $dias[1] ?? null;
+        $dias = $semanas[0]['dias'] ?? [];
+        foreach ($dias as $d) {
+            $nombre = strtolower($d['dia'] ?? $d['nombre'] ?? '');
+            if (str_contains($nombre, 'martes')) { $martes = $d; break; }
+        }
     }
 
     return response()->json([
         'rise_id' => $rise->id,
-        'columns' => $columns,
-        'content_keys' => array_keys($content),
+        'entrenamiento_keys' => array_keys($entrenamiento),
         'total_semanas' => count($semanas),
+        'semana1_dias' => !empty($semanas) ? count($semanas[0]['dias'] ?? []) : 0,
+        'dias_nombres' => !empty($semanas) ? array_map(fn($d) => [
+            'dia' => $d['dia'] ?? $d['nombre'] ?? '?',
+            'grupo' => $d['grupo_muscular'] ?? $d['muscle_group'] ?? '?',
+            'ejercicios' => count($d['ejercicios'] ?? []),
+        ], $semanas[0]['dias'] ?? []) : [],
         'martes' => $martes ? [
-            'nombre' => $martes['nombre'] ?? $martes['name'] ?? $martes['dia'] ?? '?',
-            'ejercicios_count' => count($martes['ejercicios'] ?? $martes['exercises'] ?? []),
-        ] : 'no martes found',
-        'raw_keys' => array_keys((array)$rise),
+            'dia' => $martes['dia'] ?? '?',
+            'grupo' => $martes['grupo_muscular'] ?? '?',
+            'ejercicios_count' => count($martes['ejercicios'] ?? []),
+            'ejercicios_nombres' => array_map(fn($e) => $e['nombre'] ?? $e['name'] ?? '?', $martes['ejercicios'] ?? []),
+        ] : 'not found',
     ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 });
 
