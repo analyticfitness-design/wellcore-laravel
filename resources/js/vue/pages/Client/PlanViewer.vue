@@ -6,8 +6,49 @@ import ClientLayout from '../../layouts/ClientLayout.vue';
 import {
   FlaskConical, Dumbbell, Pill, Fish, Sun, Citrus, Star, Moon,
   Atom, Leaf, Zap, Dna, Flame, Bone, TestTube, Bed,
-  Crown, Brain, Magnet, Shield, Droplet, Sparkles, Activity
+  Crown, Brain, Magnet, Shield, Droplet, Sparkles, Activity,
+  Syringe, Calendar, Layers, TestTube2, AlertTriangle, AlertCircle,
+  AlertOctagon, MessageCircle, Droplets, ArrowUp, ArrowDown,
+  Check, Clock
 } from 'lucide-vue-next';
+
+function getBloodworkStatusStyle(status) {
+  const s = (status || '').toLowerCase();
+  if (s === 'high' || s === 'alto' || s === 'flag') {
+    return {
+      icon: ArrowUp,
+      iconColor: 'text-amber-400',
+      iconBg: 'bg-amber-500/10',
+      iconBorder: 'border-amber-500/30',
+      valueColor: 'text-amber-400',
+      badgeClass: 'border-amber-500/30 bg-amber-500/10 text-amber-400',
+    };
+  }
+  if (s === 'low' || s === 'bajo') {
+    return {
+      icon: ArrowDown,
+      iconColor: 'text-blue-400',
+      iconBg: 'bg-blue-500/10',
+      iconBorder: 'border-blue-500/30',
+      valueColor: 'text-blue-400',
+      badgeClass: 'border-blue-500/30 bg-blue-500/10 text-blue-400',
+    };
+  }
+  return {
+    icon: Check,
+    iconColor: 'text-emerald-400',
+    iconBg: 'bg-emerald-500/10',
+    iconBorder: 'border-emerald-500/30',
+    valueColor: 'text-emerald-400',
+    badgeClass: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
+  };
+}
+function getBloodworkStatusLabel(status) {
+  const s = (status || '').toLowerCase();
+  if (s === 'high' || s === 'alto' || s === 'flag') return 'Alto';
+  if (s === 'low' || s === 'bajo') return 'Bajo';
+  return 'Normal';
+}
 
 const api = useApi();
 const router = useRouter();
@@ -1623,184 +1664,200 @@ onBeforeUnmount(() => {
 
           <!-- Masculine: Steroid/AE Protocol -->
           <template v-else-if="cicloPlan && cicloPlan.compounds">
-            <div class="space-y-5">
-              <!-- Warning -->
-              <div v-if="cicloPlan.warning || cicloPlan.advertencia" class="rounded-xl border border-amber-500/30 bg-amber-500/[0.08] p-4">
-                <div class="flex items-start gap-3">
-                  <svg class="mt-0.5 h-5 w-5 shrink-0 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
-                  <p class="text-sm leading-relaxed text-amber-300">{{ cicloPlan.warning || cicloPlan.advertencia }}</p>
-                </div>
-              </div>
-
-              <!-- Protocol header -->
-              <div class="rounded-2xl border border-wc-border bg-wc-bg-tertiary p-5">
-                <div class="flex items-start justify-between gap-4">
+            <div>
+              <!-- Header compacto premium -->
+              <div class="mb-5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-xl border border-wc-accent/30 bg-wc-accent/10">
+                    <Syringe :size="20" :stroke-width="1.75" class="text-wc-accent" />
+                  </div>
                   <div>
-                    <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Protocolo Activo</p>
-                    <h2 class="mt-1 font-display text-2xl tracking-wide text-wc-text">{{ (cicloPlan.name || cicloPlan.nombre || 'Protocolo Hormonal').toUpperCase() }}</h2>
-                    <p v-if="cicloPlan.duration || cicloPlan.duracion" class="mt-1 text-sm text-wc-text-secondary">Duracion: <span class="font-semibold text-wc-text">{{ cicloPlan.duration || cicloPlan.duracion }}</span></p>
-                    <p v-if="cicloPlan.descripcion_protocolo || cicloPlan.descripcion" class="mt-2 text-sm leading-relaxed text-wc-text-tertiary">{{ cicloPlan.descripcion_protocolo || cicloPlan.descripcion }}</p>
-                  </div>
-                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-wc-accent/10">
-                    <svg class="h-7 w-7 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 1-6.23-.693L5 14.5m14.8.8 1.402 1.402c1 1 .03 2.798-1.421 2.798H4.062c-1.451 0-2.42-1.798-1.42-2.798L4 14.5" /></svg>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-wc-accent">Protocolo Activo</p>
+                    <h2 class="font-display text-2xl tracking-wide text-wc-text uppercase">{{ cicloPlan.name || cicloPlan.nombre || 'Ciclo' }}</h2>
                   </div>
                 </div>
-
-                <!-- Metrics strip -->
-                <div v-if="cicloPlan.metricas" class="mt-4 grid grid-cols-4 gap-2 border-t border-wc-border pt-4">
-                  <div v-if="cicloPlan.metricas.duracion" class="text-center"><p class="font-data text-lg font-black text-wc-accent">{{ cicloPlan.metricas.duracion }}</p><p class="text-[9px] uppercase tracking-wider text-wc-text-tertiary">Duracion</p></div>
-                  <div v-if="cicloPlan.metricas.compuestos" class="text-center"><p class="font-data text-lg font-black text-wc-text">{{ cicloPlan.metricas.compuestos }}</p><p class="text-[9px] uppercase tracking-wider text-wc-text-tertiary">Compuestos</p></div>
-                  <div v-if="cicloPlan.metricas.fases" class="text-center"><p class="font-data text-lg font-black text-wc-text">{{ cicloPlan.metricas.fases }}</p><p class="text-[9px] uppercase tracking-wider text-wc-text-tertiary">Fases</p></div>
-                  <div v-if="cicloPlan.metricas.labs_requeridos" class="text-center"><p class="font-data text-lg font-black text-wc-text">{{ cicloPlan.metricas.labs_requeridos }}</p><p class="text-[9px] uppercase tracking-wider text-wc-text-tertiary">Labs req.</p></div>
+                <div v-if="cicloPlan.duration || cicloPlan.duracion" class="flex items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-tertiary px-3 py-1.5">
+                  <Clock :size="14" :stroke-width="2" class="text-wc-accent" />
+                  <span class="text-[10px] uppercase tracking-wider text-wc-text-secondary">{{ cicloPlan.duration || cicloPlan.duracion }}</span>
                 </div>
               </div>
 
-              <!-- Compounds Table -->
-              <div v-if="cicloPlan.compounds && cicloPlan.compounds.length > 0" class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary">
-                <div class="border-b border-wc-border px-5 py-4">
-                  <h3 class="font-display text-sm tracking-wider text-wc-text">COMPUESTOS</h3>
+              <p v-if="cicloPlan.descripcion_protocolo || cicloPlan.descripcion" class="mb-5 text-sm leading-relaxed text-wc-text-tertiary">{{ cicloPlan.descripcion_protocolo || cicloPlan.descripcion }}</p>
+
+              <!-- Métricas grid -->
+              <div v-if="cicloPlan.metricas" class="mb-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div v-if="cicloPlan.metricas.duracion" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
+                  <Calendar :size="18" :stroke-width="1.75" class="mx-auto mb-1 text-wc-accent" />
+                  <p class="font-data text-xl font-black text-wc-accent tabular-nums">{{ cicloPlan.metricas.duracion }}</p>
+                  <p class="mt-0.5 text-[9px] uppercase tracking-wider text-wc-text-tertiary">Duración</p>
                 </div>
-                <div class="divide-y divide-wc-border">
-                  <div v-for="(compound, cIdx) in cicloPlan.compounds" :key="cIdx" class="px-5 py-4">
-                    <div class="flex flex-wrap items-center gap-2">
-                      <span class="font-semibold text-wc-text">{{ typeof compound === 'object' ? (compound.nombre || compound.name || '') : compound }}</span>
-                      <span v-if="typeof compound === 'object' && (compound.dosis || compound.dose)" class="rounded bg-wc-accent/10 px-2 py-0.5 font-data text-xs font-bold text-wc-accent">{{ compound.dosis || compound.dose }}</span>
-                      <span v-if="typeof compound === 'object' && (compound.semanas || compound.weeks)" class="rounded-full border border-wc-border px-2 py-0.5 text-[10px] text-wc-text-tertiary">Sem {{ compound.semanas || compound.weeks }}</span>
-                    </div>
-                    <p v-if="typeof compound === 'object' && (compound.frecuencia || compound.frequency)" class="mt-1 text-sm text-wc-text-secondary">&#x1F5D3;&#xFE0F; {{ compound.frecuencia || compound.frequency }}</p>
-                    <p v-if="typeof compound === 'object' && (compound.notas || compound.notes)" class="mt-1 text-sm leading-relaxed text-wc-text-tertiary">{{ compound.notas || compound.notes }}</p>
-                  </div>
+                <div v-if="cicloPlan.metricas.compuestos" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
+                  <FlaskConical :size="18" :stroke-width="1.75" class="mx-auto mb-1 text-wc-accent" />
+                  <p class="font-data text-xl font-black text-wc-accent tabular-nums">{{ cicloPlan.metricas.compuestos }}</p>
+                  <p class="mt-0.5 text-[9px] uppercase tracking-wider text-wc-text-tertiary">Compuestos</p>
+                </div>
+                <div v-if="cicloPlan.metricas.fases" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
+                  <Layers :size="18" :stroke-width="1.75" class="mx-auto mb-1 text-wc-accent" />
+                  <p class="font-data text-xl font-black text-wc-accent tabular-nums">{{ cicloPlan.metricas.fases }}</p>
+                  <p class="mt-0.5 text-[9px] uppercase tracking-wider text-wc-text-tertiary">Fases</p>
+                </div>
+                <div v-if="cicloPlan.metricas.labs_requeridos" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
+                  <TestTube2 :size="18" :stroke-width="1.75" class="mx-auto mb-1 text-wc-accent" />
+                  <p class="font-data text-xl font-black text-wc-accent tabular-nums">{{ cicloPlan.metricas.labs_requeridos }}</p>
+                  <p class="mt-0.5 text-[9px] uppercase tracking-wider text-wc-text-tertiary">Labs</p>
                 </div>
               </div>
 
-              <!-- Phase timeline -->
-              <div v-if="(cicloPlan.phases || cicloPlan.fases || []).length > 0">
-                <h3 class="mb-3 font-display text-sm tracking-wider text-wc-text-tertiary uppercase px-1">FASES DEL CICLO</h3>
-                <!-- Visual timeline bar -->
-                <div class="mb-4 flex h-2.5 w-full overflow-hidden rounded-full">
-                  <div
-                    v-for="(phase, pi) in (cicloPlan.phases || cicloPlan.fases)"
-                    :key="pi"
-                    class="h-full flex-1"
-                    :class="getPhaseColor(typeof phase === 'object' ? (phase.nombre || phase.name || '') : phase).dot"
-                    :style="{ opacity: 0.5 + (pi / (cicloPlan.phases || cicloPlan.fases).length) * 0.5 }"
-                  ></div>
-                </div>
+              <!-- Warning -->
+              <div v-if="cicloPlan.warning || cicloPlan.advertencia" class="mb-5 flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/[0.06] p-4">
+                <AlertTriangle :size="18" :stroke-width="2" class="shrink-0 text-amber-400 mt-0.5" />
+                <p class="text-xs leading-relaxed text-amber-300">{{ cicloPlan.warning || cicloPlan.advertencia }}</p>
+              </div>
+
+              <!-- Compuestos -->
+              <div v-if="cicloPlan.compounds && cicloPlan.compounds.length" class="mb-6">
+                <h3 class="mb-3 font-display text-lg tracking-wide text-wc-text uppercase">Compuestos</h3>
                 <div class="grid gap-3 sm:grid-cols-2">
-                  <div
-                    v-for="(phase, pIdx) in (cicloPlan.phases || cicloPlan.fases)"
-                    :key="pIdx"
-                    class="rounded-xl border p-4"
-                    :class="[getPhaseColor(typeof phase === 'object' ? (phase.nombre || phase.name || '') : phase).border, getPhaseColor(typeof phase === 'object' ? (phase.nombre || phase.name || '') : phase).bg]"
-                  >
-                    <div class="flex items-center gap-2 mb-2">
-                      <div class="h-2 w-2 rounded-full shrink-0" :class="getPhaseColor(typeof phase === 'object' ? (phase.nombre || phase.name || '') : phase).dot"></div>
-                      <p class="font-display text-sm tracking-wide" :class="getPhaseColor(typeof phase === 'object' ? (phase.nombre || phase.name || '') : phase).text">{{ (typeof phase === 'object' ? (phase.nombre || phase.name || '') : phase).toUpperCase() }}</p>
-                      <span v-if="typeof phase === 'object' && (phase.semanas || phase.weeks)" class="ml-auto text-[10px] text-wc-text-tertiary">Sem {{ phase.semanas || phase.weeks }}</span>
+                  <div v-for="(comp, i) in cicloPlan.compounds" :key="i" class="group relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary p-5 wc-lift transition-all hover:border-wc-accent/40">
+                    <div class="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-wc-accent/0 blur-2xl transition-all group-hover:bg-wc-accent/10"></div>
+                    <div class="relative flex items-start gap-4">
+                      <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-wc-accent/20 bg-wc-accent/5">
+                        <Syringe :size="20" :stroke-width="1.75" class="text-wc-accent" />
+                      </div>
+                      <div class="min-w-0 flex-1">
+                        <h4 class="font-display text-base tracking-wide text-wc-text uppercase truncate">{{ typeof comp === 'object' ? (comp.nombre || comp.name) : comp }}</h4>
+                        <p v-if="typeof comp === 'object' && (comp.dosis || comp.dose)" class="mt-1 font-data text-lg font-bold text-wc-accent tabular-nums">{{ comp.dosis || comp.dose }}</p>
+                        <div class="mt-2 flex flex-wrap items-center gap-1.5">
+                          <span v-if="typeof comp === 'object' && (comp.frecuencia || comp.frequency)" class="inline-flex items-center gap-1 rounded-full border border-wc-border bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-text-secondary">
+                            <Clock :size="10" :stroke-width="2.5" />
+                            {{ comp.frecuencia || comp.frequency }}
+                          </span>
+                          <span v-if="typeof comp === 'object' && comp.via" class="inline-flex items-center rounded-full border border-wc-border bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-text-secondary">{{ comp.via }}</span>
+                          <span v-if="typeof comp === 'object' && (comp.semanas || comp.weeks)" class="inline-flex items-center rounded-full border border-wc-accent/30 bg-wc-accent/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-accent">Sem {{ comp.semanas || comp.weeks }}</span>
+                        </div>
+                        <p v-if="typeof comp === 'object' && (comp.notas || comp.notes)" class="mt-2.5 text-xs leading-relaxed text-wc-text-tertiary">{{ comp.notas || comp.notes }}</p>
+                      </div>
+                      <div class="absolute top-0 right-0 flex h-6 w-6 items-center justify-center rounded-bl-xl rounded-tr-2xl bg-wc-accent/10 font-data text-[10px] font-bold text-wc-accent">{{ i + 1 }}</div>
                     </div>
-                    <p v-if="typeof phase === 'object' && (phase.descripcion || phase.description)" class="text-sm leading-relaxed text-wc-text-secondary">{{ phase.descripcion || phase.description }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Fases -->
+              <div v-if="(cicloPlan.phases || cicloPlan.fases || []).length > 0" class="mb-6">
+                <h3 class="mb-3 font-display text-lg tracking-wide text-wc-text uppercase">Fases del Protocolo</h3>
+                <div class="space-y-2">
+                  <div v-for="(fase, i) in (cicloPlan.phases || cicloPlan.fases)" :key="i" class="relative flex items-start gap-4 rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10 font-data text-base font-black text-wc-accent">{{ i + 1 }}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center justify-between gap-3">
+                        <p class="font-display text-sm tracking-wide text-wc-text uppercase">{{ typeof fase === 'object' ? (fase.nombre || fase.name) : fase }}</p>
+                        <span v-if="typeof fase === 'object' && (fase.semanas || fase.weeks)" class="text-[10px] font-semibold text-wc-text-tertiary uppercase tracking-wider">Sem {{ fase.semanas || fase.weeks }}</span>
+                      </div>
+                      <p v-if="typeof fase === 'object' && (fase.descripcion || fase.description)" class="mt-1 text-xs text-wc-text-secondary leading-relaxed">{{ fase.descripcion || fase.description }}</p>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <!-- PCT -->
-              <div v-if="(cicloPlan.pct || []).length > 0" class="overflow-hidden rounded-xl border border-emerald-500/20 bg-emerald-500/5">
-                <div class="border-b border-emerald-500/20 px-5 py-3">
-                  <h3 class="font-display text-sm tracking-wider text-emerald-400">POST CYCLE THERAPY (PCT)</h3>
-                </div>
-                <div class="divide-y divide-emerald-500/10">
-                  <div v-for="(pct, pIdx) in cicloPlan.pct" :key="pIdx" class="flex items-center gap-4 px-5 py-3.5">
-                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
-                      <svg class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-                    </div>
-                    <div class="min-w-0 flex-1">
-                      <p class="font-semibold text-wc-text text-sm">{{ typeof pct === 'object' ? (pct.nombre || pct.name || '') : pct }}</p>
-                      <p v-if="typeof pct === 'object' && (pct.dosis || pct.dose)" class="text-sm text-emerald-400 font-data font-bold mt-0.5">{{ pct.dosis || pct.dose }}</p>
-                      <p v-if="typeof pct === 'object' && (pct.semanas || pct.weeks)" class="text-sm text-wc-text-tertiary mt-0.5">{{ pct.semanas || pct.weeks }}</p>
+              <div v-if="(cicloPlan.pct || []).length > 0" class="mb-6">
+                <h3 class="mb-3 font-display text-lg tracking-wide text-wc-text uppercase">Post Cycle Therapy</h3>
+                <div class="grid gap-3 sm:grid-cols-2">
+                  <div v-for="(pct, i) in cicloPlan.pct" :key="i" class="group relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary p-5 wc-lift transition-all hover:border-wc-accent/40">
+                    <div class="relative flex items-start gap-4">
+                      <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-wc-accent/20 bg-wc-accent/5">
+                        <Shield :size="20" :stroke-width="1.75" class="text-wc-accent" />
+                      </div>
+                      <div class="min-w-0 flex-1">
+                        <h4 class="font-display text-base tracking-wide text-wc-text uppercase truncate">{{ typeof pct === 'object' ? (pct.nombre || pct.name) : pct }}</h4>
+                        <p v-if="typeof pct === 'object' && (pct.dosis || pct.dose)" class="mt-1 font-data text-lg font-bold text-wc-accent tabular-nums">{{ pct.dosis || pct.dose }}</p>
+                        <div class="mt-2 flex flex-wrap items-center gap-1.5">
+                          <span v-if="typeof pct === 'object' && (pct.frecuencia || pct.frequency)" class="inline-flex items-center gap-1 rounded-full border border-wc-border bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-text-secondary">
+                            <Clock :size="10" :stroke-width="2.5" />
+                            {{ pct.frecuencia || pct.frequency }}
+                          </span>
+                          <span v-if="typeof pct === 'object' && (pct.semanas || pct.weeks)" class="inline-flex items-center rounded-full border border-wc-accent/30 bg-wc-accent/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-accent">Sem {{ pct.semanas || pct.weeks }}</span>
+                        </div>
+                      </div>
+                      <div class="absolute top-0 right-0 flex h-6 w-6 items-center justify-center rounded-bl-xl rounded-tr-2xl bg-wc-accent/10 font-data text-[10px] font-bold text-wc-accent">{{ i + 1 }}</div>
                     </div>
                   </div>
                 </div>
               </div>
 
               <!-- Labs -->
-              <div v-if="(cicloPlan.labs || []).length > 0" class="overflow-hidden rounded-xl border border-sky-500/20 bg-sky-500/5">
-                <div class="border-b border-sky-500/20 px-5 py-3">
-                  <h3 class="font-display text-sm tracking-wider text-sky-400">ANALISIS DE LABORATORIO</h3>
+              <div v-if="(cicloPlan.labs || []).length > 0" class="mb-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+                <div class="mb-3 flex items-center gap-2">
+                  <TestTube2 :size="18" :stroke-width="1.75" class="text-wc-accent" />
+                  <h3 class="font-display text-base tracking-wide text-wc-text uppercase">Labs Requeridos</h3>
                 </div>
-                <div class="divide-y divide-sky-500/10">
-                  <div v-for="(lab, lIdx) in cicloPlan.labs" :key="lIdx" class="px-5 py-4">
-                    <div class="flex items-center justify-between gap-2">
-                      <p class="font-semibold text-sky-300 text-sm">{{ typeof lab === 'object' ? (lab.nombre || lab.name || '') : lab }}</p>
-                      <span v-if="typeof lab === 'object' && (lab.cuando || lab.when)" class="shrink-0 rounded-full bg-sky-500/15 px-2.5 py-0.5 text-[10px] font-bold text-sky-400 uppercase tracking-wide">{{ lab.cuando || lab.when }}</span>
-                    </div>
-                    <p v-if="typeof lab === 'object' && (lab.marcadores || lab.markers)" class="mt-1.5 text-sm leading-relaxed text-wc-text-tertiary">{{ lab.marcadores || lab.markers }}</p>
-                  </div>
-                </div>
+                <ul class="space-y-2">
+                  <li v-for="(lab, i) in cicloPlan.labs" :key="i" class="flex items-center justify-between gap-3 border-b border-wc-border/50 pb-2 last:border-0 last:pb-0">
+                    <span class="text-sm text-wc-text-secondary">{{ typeof lab === 'object' ? (lab.laboratorio || lab.nombre || lab.name) : lab }}</span>
+                    <span v-if="typeof lab === 'object' && (lab.cuando || lab.when)" class="text-[10px] font-semibold uppercase tracking-wider text-wc-accent">{{ lab.cuando || lab.when }}</span>
+                  </li>
+                </ul>
               </div>
 
-              <!-- Daily monitoring -->
-              <div v-if="(cicloPlan.monitoreo_diario || []).length > 0" class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary">
-                <div class="border-b border-wc-border px-5 py-4">
-                  <h3 class="font-display text-sm tracking-wider text-wc-text">MONITOREO DIARIO</h3>
+              <!-- Monitoreo diario -->
+              <div v-if="(cicloPlan.monitoreo_diario || []).length > 0" class="mb-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+                <div class="mb-3 flex items-center gap-2">
+                  <Activity :size="18" :stroke-width="1.75" class="text-wc-accent" />
+                  <h3 class="font-display text-base tracking-wide text-wc-text uppercase">Monitoreo Diario</h3>
                 </div>
-                <div class="divide-y divide-wc-border">
-                  <div v-for="(item, mIdx) in cicloPlan.monitoreo_diario" :key="mIdx" class="flex items-start gap-3 px-5 py-3.5">
-                    <div class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border border-wc-accent/40 bg-wc-accent/10">
-                      <svg class="h-3 w-3 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75"/></svg>
-                    </div>
+                <ul class="space-y-2">
+                  <li v-for="(item, i) in cicloPlan.monitoreo_diario" :key="i" class="flex items-start gap-2 border-b border-wc-border/50 pb-2 last:border-0 last:pb-0">
+                    <Check :size="14" :stroke-width="2.5" class="mt-0.5 shrink-0 text-wc-accent" />
                     <div class="flex-1">
-                      <div class="flex items-center gap-2">
-                        <p class="text-sm font-medium text-wc-text">{{ typeof item === 'object' ? (item.item || '') : item }}</p>
-                        <span v-if="typeof item === 'object' && item.frecuencia" class="text-[10px] text-wc-text-tertiary">{{ item.frecuencia }}</span>
+                      <p class="text-sm text-wc-text-secondary">{{ typeof item === 'object' ? (item.item || '') : item }}</p>
+                      <p v-if="typeof item === 'object' && item.detalle" class="mt-0.5 text-xs text-wc-text-tertiary">{{ item.detalle }}</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Efectos secundarios -->
+              <div v-if="(cicloPlan.efectos_secundarios || []).length > 0" class="mb-6 rounded-xl border border-amber-500/30 bg-amber-500/[0.06] p-5">
+                <div class="mb-3 flex items-center gap-2">
+                  <AlertCircle :size="18" :stroke-width="1.75" class="text-amber-400" />
+                  <h3 class="font-display text-base tracking-wide text-amber-300 uppercase">Efectos Secundarios</h3>
+                </div>
+                <div class="space-y-2">
+                  <div v-for="(efecto, eIdx) in cicloPlan.efectos_secundarios" :key="eIdx" class="rounded-lg border border-amber-500/20 bg-wc-bg-tertiary/40 overflow-hidden">
+                    <button @click="toggleEfecto(eIdx)" class="flex w-full items-center justify-between px-4 py-2.5 text-left">
+                      <span class="text-sm font-medium text-wc-text">{{ typeof efecto === 'object' ? (efecto.efecto || '') : efecto }}</span>
+                      <svg class="h-4 w-4 shrink-0 text-amber-400/70 transition-transform" :class="openEfecto === eIdx ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+                    </button>
+                    <Transition name="fade">
+                      <div v-if="openEfecto === eIdx" class="border-t border-amber-500/20 px-4 py-2.5">
+                        <p class="text-xs leading-relaxed text-wc-text-secondary">{{ typeof efecto === 'object' ? (efecto.manejo || efecto.management || '') : '' }}</p>
                       </div>
-                      <p v-if="typeof item === 'object' && item.detalle" class="mt-0.5 text-sm text-wc-text-tertiary">{{ item.detalle }}</p>
-                    </div>
+                    </Transition>
                   </div>
                 </div>
               </div>
 
-              <!-- Side effects accordion -->
-              <div v-if="(cicloPlan.efectos_secundarios || []).length > 0" class="space-y-2">
-                <h3 class="font-display text-sm tracking-wider text-wc-text-tertiary uppercase px-1">EFECTOS SECUNDARIOS & MANEJO</h3>
-                <div v-for="(efecto, eIdx) in cicloPlan.efectos_secundarios" :key="eIdx" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
-                  <button
-                    @click="toggleEfecto(eIdx)"
-                    class="flex w-full items-center justify-between px-5 py-3.5 text-left"
-                  >
-                    <span class="text-sm font-medium text-wc-text">{{ typeof efecto === 'object' ? (efecto.efecto || '') : efecto }}</span>
-                    <svg
-                      class="h-4 w-4 shrink-0 text-wc-text-tertiary transition-transform"
-                      :class="openEfecto === eIdx ? 'rotate-180' : ''"
-                      fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                    ><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
-                  </button>
-                  <Transition name="fade">
-                    <div v-if="openEfecto === eIdx" class="border-t border-wc-border px-5 py-3.5 bg-wc-bg-secondary">
-                      <p class="text-sm leading-relaxed text-wc-text-secondary">{{ typeof efecto === 'object' ? (efecto.manejo || efecto.management || '') : '' }}</p>
-                    </div>
-                  </Transition>
+              <!-- Emergencia -->
+              <div v-if="(cicloPlan.emergencia || []).length > 0" class="mb-6 rounded-xl border border-red-500/40 bg-red-500/[0.07] p-5">
+                <div class="mb-3 flex items-center gap-2">
+                  <AlertOctagon :size="18" :stroke-width="2" class="text-red-400" />
+                  <h3 class="font-display text-base tracking-wide text-red-300 uppercase">Señales de Emergencia</h3>
                 </div>
+                <ul class="space-y-2">
+                  <li v-for="(emerg, i) in cicloPlan.emergencia" :key="i" class="border-b border-red-500/15 pb-2 last:border-0 last:pb-0">
+                    <p class="text-sm font-semibold text-red-300">{{ typeof emerg === 'object' ? (emerg.sintoma || '') : emerg }}</p>
+                    <p v-if="typeof emerg === 'object' && emerg.accion" class="mt-1 text-xs leading-relaxed text-wc-text-secondary">{{ emerg.accion }}</p>
+                  </li>
+                </ul>
               </div>
 
-              <!-- Emergency signals -->
-              <div v-if="(cicloPlan.emergencia || []).length > 0" class="overflow-hidden rounded-xl border border-red-500/30 bg-red-500/5">
-                <div class="border-b border-red-500/30 px-5 py-3">
-                  <div class="flex items-center gap-2">
-                    <svg class="h-4 w-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z"/></svg>
-                    <h3 class="font-display text-sm tracking-wider text-red-400">SENALES DE EMERGENCIA</h3>
-                  </div>
+              <!-- Notas coach -->
+              <div v-if="cicloPlan.notas_coach" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+                <div class="mb-2 flex items-center gap-2">
+                  <MessageCircle :size="18" :stroke-width="1.75" class="text-wc-accent" />
+                  <h3 class="font-display text-base tracking-wide text-wc-text uppercase">Notas del Coach</h3>
                 </div>
-                <div class="divide-y divide-red-500/15">
-                  <div v-for="(emerg, emIdx) in cicloPlan.emergencia" :key="emIdx" class="px-5 py-4">
-                    <p class="text-sm font-semibold text-red-300">&#x26A0;&#xFE0F; {{ typeof emerg === 'object' ? (emerg.sintoma || '') : emerg }}</p>
-                    <p v-if="typeof emerg === 'object' && emerg.accion" class="mt-1.5 text-sm leading-relaxed text-wc-text-secondary">{{ emerg.accion }}</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Coach notes -->
-              <div v-if="cicloPlan.notas_coach" class="rounded-xl border-l-4 border-wc-accent bg-wc-bg-tertiary p-5">
-                <p class="mb-2 text-sm font-semibold uppercase tracking-wider text-wc-accent">Notas del coach</p>
                 <p class="text-sm leading-relaxed text-wc-text-secondary">{{ cicloPlan.notas_coach }}</p>
               </div>
             </div>
@@ -1971,41 +2028,62 @@ onBeforeUnmount(() => {
           </div>
 
           <template v-else>
-            <div class="space-y-6">
-              <!-- Latest values summary -->
-              <div v-if="Object.keys(latestByTest).length > 0">
-                <h3 class="font-display text-sm tracking-wide text-wc-text-secondary mb-3">ULTIMOS VALORES</h3>
-                <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                  <div
-                    v-for="(r, testName) in latestByTest"
-                    :key="testName"
-                    class="rounded-xl border bg-wc-bg-tertiary p-3.5"
-                    :class="bwStatus(r) === 'ok' ? 'border-emerald-500/25' : bwStatus(r) === 'flag' ? 'border-amber-500/30' : 'border-wc-border'"
-                  >
-                    <div class="flex items-start justify-between gap-1 mb-2">
-                      <p class="text-sm font-medium text-wc-text-secondary leading-tight">{{ testName }}</p>
-                      <span v-if="bwStatus(r) === 'ok'" class="shrink-0 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/20">
-                        <svg class="h-2.5 w-2.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
-                      </span>
-                      <span v-else-if="bwStatus(r) === 'flag'" class="shrink-0 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500/20">
-                        <svg class="h-2.5 w-2.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
-                      </span>
-                    </div>
-                    <div class="flex items-baseline gap-1">
-                      <span class="font-data text-xl font-black text-wc-text tabular-nums">{{ r.value }}</span>
-                      <span class="text-sm text-wc-text-tertiary">{{ r.unit }}</span>
-                    </div>
-                    <div
-                      v-if="bwSpectrumPct(r) !== null"
-                      class="mt-2 relative h-1.5 w-full overflow-hidden rounded-full"
-                      style="background: linear-gradient(to right, #ef4444 0%, #fbbf24 20%, #4ade80 32%, #4ade80 68%, #fbbf24 80%, #ef4444 100%);"
-                    >
-                      <div class="absolute top-0 h-full w-0.5 rounded-full bg-white shadow" :style="{ left: bwSpectrumPct(r).toFixed(1) + '%', transform: 'translateX(-50%)' }"></div>
-                    </div>
-                    <p v-else-if="r.reference_range" class="mt-1 text-[9px] text-wc-text-tertiary">Ref: {{ r.reference_range }}</p>
-                    <p class="mt-1 text-[9px] text-wc-text-tertiary">{{ formatDateShort(r.test_date) }}</p>
+            <div>
+              <!-- Header premium -->
+              <div class="mb-5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-xl border border-wc-accent/30 bg-wc-accent/10">
+                    <Droplets :size="20" :stroke-width="1.75" class="text-wc-accent" />
+                  </div>
+                  <div>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-wc-accent">Análisis de Sangre</p>
+                    <h2 class="font-display text-2xl tracking-wide text-wc-text uppercase">Bloodwork</h2>
                   </div>
                 </div>
+                <div v-if="bloodworkResults && bloodworkResults.length" class="flex items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-tertiary px-3 py-1.5">
+                  <span class="font-data text-sm font-bold text-wc-accent tabular-nums">{{ bloodworkResults.length }}</span>
+                  <span class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">tests</span>
+                </div>
+              </div>
+
+              <!-- Latest values cards -->
+              <div v-if="Object.keys(latestByTest).length > 0" class="mb-6">
+                <h3 class="mb-3 font-display text-lg tracking-wide text-wc-text uppercase">Últimos Valores</h3>
+                <div class="grid gap-3 sm:grid-cols-2">
+                  <div
+                    v-for="(r, testName, i) in latestByTest"
+                    :key="testName"
+                    class="group relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary p-5 wc-lift transition-all hover:border-wc-accent/40"
+                  >
+                    <div class="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-wc-accent/0 blur-2xl transition-all group-hover:bg-wc-accent/10"></div>
+                    <div class="relative flex items-start gap-4">
+                      <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border" :class="getBloodworkStatusStyle(bwStatus(r) === 'flag' ? 'high' : (bwStatus(r) === 'ok' ? 'normal' : '')).iconBorder + ' ' + getBloodworkStatusStyle(bwStatus(r) === 'flag' ? 'high' : (bwStatus(r) === 'ok' ? 'normal' : '')).iconBg">
+                        <component :is="getBloodworkStatusStyle(bwStatus(r) === 'flag' ? 'high' : (bwStatus(r) === 'ok' ? 'normal' : '')).icon" :size="20" :stroke-width="1.75" :class="getBloodworkStatusStyle(bwStatus(r) === 'flag' ? 'high' : (bwStatus(r) === 'ok' ? 'normal' : '')).iconColor" />
+                      </div>
+                      <div class="min-w-0 flex-1">
+                        <h4 class="font-display text-base tracking-wide text-wc-text uppercase truncate">{{ testName }}</h4>
+                        <div class="mt-1 flex items-baseline gap-1.5">
+                          <p class="font-data text-2xl font-black tabular-nums" :class="getBloodworkStatusStyle(bwStatus(r) === 'flag' ? 'high' : (bwStatus(r) === 'ok' ? 'normal' : '')).valueColor">{{ r.value }}</p>
+                          <span class="text-xs text-wc-text-tertiary">{{ r.unit }}</span>
+                        </div>
+                        <div class="mt-2 flex flex-wrap items-center gap-1.5">
+                          <span class="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider" :class="getBloodworkStatusStyle(bwStatus(r) === 'flag' ? 'high' : (bwStatus(r) === 'ok' ? 'normal' : '')).badgeClass">
+                            {{ bwStatus(r) === 'flag' ? 'Fuera de rango' : (bwStatus(r) === 'ok' ? 'Normal' : 'Sin ref') }}
+                          </span>
+                          <span v-if="r.reference_range" class="text-[10px] text-wc-text-tertiary">Ref: {{ r.reference_range }}</span>
+                        </div>
+                        <p class="mt-2 text-[10px] text-wc-text-tertiary">{{ formatDateShort(r.test_date) }}</p>
+                      </div>
+                      <div class="absolute top-0 right-0 flex h-6 w-6 items-center justify-center rounded-bl-xl rounded-tr-2xl bg-wc-accent/10 font-data text-[10px] font-bold text-wc-accent">{{ i + 1 }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div v-else class="mb-6 rounded-2xl border border-wc-border bg-wc-bg-tertiary p-10 text-center">
+                <Droplets :size="48" :stroke-width="1.5" class="mx-auto mb-3 text-wc-text-tertiary/40" />
+                <h3 class="font-display text-lg uppercase tracking-wide text-wc-text">Sin resultados aún</h3>
+                <p class="mt-2 text-sm text-wc-text-tertiary">Agrega tu primer análisis usando el formulario.</p>
               </div>
 
               <!-- Add result form -->
