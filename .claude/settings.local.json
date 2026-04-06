@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "mcp__mysql-wellcore__mysql_query"
+      "mcp__mysql-wellcore__mysql_query",
+      "mcp__chrome-devtools__type_text",
+      "mcp__chrome-devtools__press_key",
+      "mcp__chrome-devtools__emulate"
     ]
   }
 }
