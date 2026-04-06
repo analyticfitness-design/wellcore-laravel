@@ -36,15 +36,20 @@ async function fetchChallenges() {
 async function joinChallenge(challengeId) {
     joiningId.value = challengeId;
     try {
-        await api.post('/api/v/client/challenges/join', { challenge_id: challengeId });
+        await api.post(`/api/v/client/challenges/${challengeId}/join`);
         const challenge = challenges.value.find(c => c.id === challengeId);
         if (challenge) {
             challenge.is_joined = true;
             challenge.participants_count = (challenge.participants_count || 0) + 1;
             joinedCount.value++;
         }
-    } catch {
-        // Fail silently
+    } catch (err) {
+        const status = err.response?.status;
+        if (status === 404 || status === 405) {
+            alert('Proximamente disponible');
+        } else {
+            alert(err.response?.data?.message || 'No se pudo unir al reto. Intenta de nuevo.');
+        }
     } finally {
         joiningId.value = null;
     }

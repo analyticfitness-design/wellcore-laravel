@@ -288,6 +288,38 @@ function getCatStyle(nombre) {
   return { icon: '\u{1F48A}', color: 'text-wc-text-secondary', bg: 'bg-wc-bg-secondary', border: 'border-wc-border' };
 }
 
+// Supplement icon by keyword mapping (premium BRUTAL redesign)
+function supplementIcon(name) {
+  const n = (name || '').toLowerCase();
+  const map = [
+    [['whey','proteina','protein','isolate','caseina'], '\u{1F9EA}'],
+    [['creatina','creatine'], '\u{1F4AA}'],
+    [['multivitam','animal pak','opti-men','centrum'], '\u{1F48A}'],
+    [['omega','epa','dha','fish oil','aceite de pescado'], '\u{1F41F}'],
+    [['vitamina d','vit d','d3'], '\u{2600}\uFE0F'],
+    [['vitamina c','vit c','ester'], '\u{1F34A}'],
+    [['vitamina b','complejo b','b12','b6'], '\u{1F31F}'],
+    [['magnesio','magnesium','glicinato'], '\u{1F319}'],
+    [['zinc','selenio','minerales'], '\u{2699}\uFE0F'],
+    [['ashwa','rhodiola','ginseng','adaptogen'], '\u{1F33F}'],
+    [['pre-entreno','pre workout','pump','neuro','beta-alanina'], '\u{26A1}'],
+    [['bcaa','amino','glutamina','glutamine'], '\u{1F9EC}'],
+    [['quemador','fat burner','termo','l-carnitina','cla'], '\u{1F525}'],
+    [['colageno','collagen','articula'], '\u{1F9B4}'],
+    [['probiotic','prebiotic','digestivo','enzima'], '\u{1F9A0}'],
+    [['melatonina','dormir','gaba','sleep','noche'], '\u{1F634}'],
+    [['testo','tribulus','d-aspartic','tongkat'], '\u{1F451}'],
+    [['nootropic','focus','cafeina','cafe','citicoline'], '\u{1F9E0}'],
+    [['hierro','iron','ferro'], '\u{2692}\uFE0F'],
+    [['calcio','calcium'], '\u{1F9B4}'],
+    [['cortisol','adrenal','phosphatidyl'], '\u{1F6E1}\uFE0F'],
+  ];
+  for (const [keys, emoji] of map) {
+    if (keys.some(k => n.includes(k))) return emoji;
+  }
+  return '\u{1F48A}';
+}
+
 // Habit accent colors (matches blade $habitAccents)
 const habitAccents = {
   agua:          { bg: 'bg-blue-500/10',    border: 'border-blue-500/25',    text: 'text-blue-400',    bar: 'bg-blue-500' },
@@ -1377,17 +1409,23 @@ onBeforeUnmount(() => {
         <!-- ==================== TAB: SUPLEMENTACION ==================== -->
         <div v-else-if="activeTab === 'suplementacion'">
           <template v-if="canAccessNutricion && supplementPlan">
-            <div class="space-y-5">
-              <!-- Descripcion -->
-              <div v-if="supplementPlan.descripcion_protocolo || supplementPlan.descripcion" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-                <div class="flex items-start gap-3">
-                  <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
-                    <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
-                  </div>
-                  <div>
-                    <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Protocolo</p>
-                    <p class="mt-0.5 text-sm font-medium text-wc-text">{{ supplementPlan.descripcion_protocolo || supplementPlan.descripcion }}</p>
-                    <p v-if="supplementPlan.perfil_cliente" class="mt-1 text-sm text-wc-text-tertiary">{{ supplementPlan.perfil_cliente }}</p>
+            <div class="space-y-6 wc-stagger-enter">
+              <!-- HERO HEADER -->
+              <div class="relative overflow-hidden rounded-2xl border border-wc-border wc-card-hero wc-lift">
+                <div class="wc-orb-tr"></div>
+                <div class="wc-grain absolute inset-0 pointer-events-none opacity-40"></div>
+                <div class="wc-topline"></div>
+                <div class="relative p-6 sm:p-8">
+                  <div class="flex items-start gap-4">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-wc-accent/30 bg-wc-accent/10 text-3xl shadow-lg shadow-wc-accent/10">
+                      <span>🧬</span>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <p class="text-[10px] font-bold tracking-[0.25em] uppercase text-wc-accent">Stack Personalizado</p>
+                      <h2 class="mt-1 font-display text-3xl sm:text-4xl tracking-wide wc-text-gradient leading-none">SUPLEMENTACION</h2>
+                      <p v-if="supplementPlan.descripcion_protocolo || supplementPlan.descripcion" class="mt-3 text-sm leading-relaxed text-wc-text-secondary">{{ supplementPlan.descripcion_protocolo || supplementPlan.descripcion }}</p>
+                      <p v-if="supplementPlan.perfil_cliente" class="mt-1.5 text-xs italic text-wc-text-tertiary">{{ supplementPlan.perfil_cliente }}</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1402,33 +1440,53 @@ onBeforeUnmount(() => {
 
               <!-- STRUCTURE A: Categorias (IA format) -->
               <template v-if="supplementPlan.categorias && supplementPlan.categorias.length > 0">
-                <div class="space-y-4">
-                  <div v-for="(cat, cIdx) in supplementPlan.categorias" :key="cIdx" class="overflow-hidden rounded-xl border bg-wc-bg-tertiary" :class="getCatStyle(cat.nombre || '').border">
+                <div class="space-y-6">
+                  <div v-for="(cat, cIdx) in supplementPlan.categorias" :key="cIdx">
                     <!-- Category header -->
-                    <div class="flex items-center gap-2 border-b px-5 py-3" :class="[getCatStyle(cat.nombre || '').border, getCatStyle(cat.nombre || '').bg]">
-                      <span class="text-base">{{ getCatStyle(cat.nombre || '').icon }}</span>
-                      <h3 class="font-display text-sm tracking-wider" :class="getCatStyle(cat.nombre || '').color">{{ (cat.nombre || 'Suplementos').toUpperCase() }}</h3>
-                      <span class="ml-auto rounded-full bg-wc-bg-secondary px-2 py-0.5 text-[10px] font-semibold text-wc-text-tertiary">
-                        {{ (cat.suplementos || []).length }} item{{ (cat.suplementos || []).length !== 1 ? 's' : '' }}
+                    <div class="mb-3 flex items-center gap-3 px-1">
+                      <span class="text-2xl">{{ getCatStyle(cat.nombre || '').icon }}</span>
+                      <h3 class="font-display text-xl tracking-wider" :class="getCatStyle(cat.nombre || '').color">{{ (cat.nombre || 'Suplementos').toUpperCase() }}</h3>
+                      <div class="h-px flex-1" :class="getCatStyle(cat.nombre || '').bg"></div>
+                      <span class="rounded-full border border-wc-border bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-bold text-wc-text-tertiary">
+                        {{ (cat.suplementos || []).length }}
                       </span>
                     </div>
-                    <!-- Supplements in category -->
-                    <div class="divide-y divide-wc-border">
-                      <div v-for="(sup, sIdx) in (cat.suplementos || [])" :key="sIdx" class="px-5 py-4">
-                        <div class="flex flex-wrap items-start gap-x-3 gap-y-1">
-                          <span class="font-semibold text-wc-text">{{ typeof sup === 'string' ? sup : (sup.nombre || sup.name || 'Suplemento') }}</span>
-                          <span v-if="typeof sup === 'object' && (sup.dosis || sup.dose)" class="rounded bg-wc-bg-secondary px-2 py-0.5 font-data text-xs font-bold text-wc-accent">{{ sup.dosis || sup.dose }}</span>
-                          <span
-                            v-if="typeof sup === 'object' && sup.prioridad"
-                            class="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"
-                            :class="[prioridadStyle(sup.prioridad).text, prioridadStyle(sup.prioridad).bg]"
-                          >{{ sup.prioridad }}</span>
+                    <!-- Supplement cards grid -->
+                    <div class="grid gap-3 sm:grid-cols-2">
+                      <div
+                        v-for="(sup, sIdx) in (cat.suplementos || [])"
+                        :key="sIdx"
+                        class="group relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary p-5 transition-all duration-300 hover:border-wc-accent/40 hover:shadow-xl hover:shadow-wc-accent/10 wc-lift"
+                      >
+                        <div class="wc-topline opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-wc-accent/0 blur-3xl transition-all duration-500 group-hover:bg-wc-accent/20"></div>
+                        <div class="relative flex items-start gap-4">
+                          <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-wc-border bg-wc-bg-secondary text-3xl transition-transform duration-300 group-hover:scale-110 group-hover:border-wc-accent/40">
+                            {{ supplementIcon(typeof sup === 'string' ? sup : (sup.nombre || sup.name)) }}
+                          </div>
+                          <div class="min-w-0 flex-1">
+                            <div class="flex items-start justify-between gap-2">
+                              <h4 class="font-display text-lg leading-tight tracking-wide text-wc-text">{{ (typeof sup === 'string' ? sup : (sup.nombre || sup.name || 'Suplemento')).toUpperCase() }}</h4>
+                              <span
+                                v-if="typeof sup === 'object' && sup.prioridad"
+                                class="shrink-0 rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-wider wc-pr-badge"
+                                :class="[prioridadStyle(sup.prioridad).text, prioridadStyle(sup.prioridad).bg]"
+                              >{{ sup.prioridad }}</span>
+                            </div>
+                            <div v-if="typeof sup === 'object' && (sup.dosis || sup.dose)" class="mt-2">
+                              <p class="font-data text-2xl font-black leading-none wc-text-gradient">{{ sup.dosis || sup.dose }}</p>
+                              <p class="mt-0.5 text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Dosis</p>
+                            </div>
+                            <div v-if="typeof sup === 'object' && (sup.timing || sup.momento || sup.horario)" class="mt-3 inline-flex items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-secondary px-3 py-1">
+                              <span class="text-sm">{{ getTimingIcon(sup.timing || sup.momento || sup.horario) }}</span>
+                              <span class="text-xs font-semibold text-wc-text-secondary">{{ sup.timing || sup.momento || sup.horario }}</span>
+                            </div>
+                            <p v-if="typeof sup === 'object' && (sup.frecuencia || sup.frequency)" class="mt-2 text-xs text-wc-text-tertiary">
+                              <span class="font-semibold text-wc-text-secondary">Frecuencia:</span> {{ sup.frecuencia || sup.frequency }}
+                            </p>
+                            <p v-if="typeof sup === 'object' && (sup.notas || sup.notes)" class="mt-2 text-xs leading-relaxed text-wc-text-tertiary">{{ sup.notas || sup.notes }}</p>
+                          </div>
                         </div>
-                        <p v-if="typeof sup === 'object' && (sup.timing || sup.momento || sup.horario)" class="mt-1.5 inline-flex items-center gap-1 text-sm text-wc-text-secondary">
-                          <span>{{ getTimingIcon(sup.timing || sup.momento || sup.horario) }}</span>
-                          <span>{{ sup.timing || sup.momento || sup.horario }}</span>
-                        </p>
-                        <p v-if="typeof sup === 'object' && (sup.notas || sup.notes)" class="mt-1 text-sm leading-relaxed text-wc-text-tertiary">{{ sup.notas || sup.notes }}</p>
                       </div>
                     </div>
                   </div>
@@ -1437,23 +1495,46 @@ onBeforeUnmount(() => {
 
               <!-- STRUCTURE B: Flat list -->
               <template v-else-if="(supplementPlan.suplementos || supplementPlan.supplements || supplementPlan.protocolo || []).length > 0">
-                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
-                  <div class="flex items-center justify-between border-b border-wc-border px-5 py-4">
-                    <h3 class="font-display text-lg tracking-wide text-wc-text">SUPLEMENTOS</h3>
-                    <span class="rounded-full bg-wc-accent/10 px-2.5 py-0.5 text-xs font-semibold text-wc-accent">{{ (supplementPlan.suplementos || supplementPlan.supplements || supplementPlan.protocolo || []).length }}</span>
+                <div>
+                  <div class="mb-4 flex items-center gap-3 px-1">
+                    <h3 class="font-display text-2xl tracking-wider wc-text-gradient">PROTOCOLO</h3>
+                    <div class="h-px flex-1 bg-wc-border"></div>
+                    <span class="rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-bold text-wc-accent">{{ (supplementPlan.suplementos || supplementPlan.supplements || supplementPlan.protocolo || []).length }} items</span>
                   </div>
-                  <div class="divide-y divide-wc-border">
-                    <div v-for="(sup, sIdx) in (supplementPlan.suplementos || supplementPlan.supplements || supplementPlan.protocolo || [])" :key="sIdx" class="flex items-start gap-4 px-5 py-4">
-                      <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-wc-border bg-wc-bg-secondary">
-                        <span class="font-data text-xs font-bold text-wc-accent">{{ sIdx + 1 }}</span>
-                      </div>
-                      <div class="min-w-0 flex-1">
-                        <div class="flex flex-wrap items-baseline gap-2">
-                          <span class="font-semibold text-wc-text">{{ typeof sup === 'string' ? sup : (sup.nombre || sup.name || 'Suplemento') }}</span>
-                          <span v-if="typeof sup === 'object' && (sup.dosis || sup.dose)" class="rounded bg-wc-bg-secondary px-2 py-0.5 font-data text-xs font-semibold text-wc-accent">{{ sup.dosis || sup.dose }}</span>
+                  <div class="grid gap-3 sm:grid-cols-2">
+                    <div
+                      v-for="(sup, sIdx) in (supplementPlan.suplementos || supplementPlan.supplements || supplementPlan.protocolo || [])"
+                      :key="sIdx"
+                      class="group relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary p-5 transition-all duration-300 hover:border-wc-accent/40 hover:shadow-xl hover:shadow-wc-accent/10 wc-lift"
+                    >
+                      <div class="wc-topline opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                      <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-wc-accent/0 blur-3xl transition-all duration-500 group-hover:bg-wc-accent/20"></div>
+                      <div class="relative flex items-start gap-4">
+                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-wc-border bg-wc-bg-secondary text-3xl transition-transform duration-300 group-hover:scale-110 group-hover:border-wc-accent/40">
+                          {{ supplementIcon(typeof sup === 'string' ? sup : (sup.nombre || sup.name)) }}
                         </div>
-                        <p v-if="typeof sup === 'object' && (sup.momento || sup.timing || sup.horario)" class="mt-1 text-sm text-wc-text-secondary">{{ getTimingIcon(sup.momento || sup.timing || sup.horario) }} {{ sup.momento || sup.timing || sup.horario }}</p>
-                        <p v-if="typeof sup === 'object' && (sup.notas || sup.notes)" class="mt-1 text-sm text-wc-text-tertiary">{{ sup.notas || sup.notes }}</p>
+                        <div class="min-w-0 flex-1">
+                          <div class="flex items-start justify-between gap-2">
+                            <h4 class="font-display text-lg leading-tight tracking-wide text-wc-text">{{ (typeof sup === 'string' ? sup : (sup.nombre || sup.name || 'Suplemento')).toUpperCase() }}</h4>
+                            <span
+                              v-if="typeof sup === 'object' && sup.prioridad"
+                              class="shrink-0 rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-wider wc-pr-badge"
+                              :class="[prioridadStyle(sup.prioridad).text, prioridadStyle(sup.prioridad).bg]"
+                            >{{ sup.prioridad }}</span>
+                          </div>
+                          <div v-if="typeof sup === 'object' && (sup.dosis || sup.dose)" class="mt-2">
+                            <p class="font-data text-2xl font-black leading-none wc-text-gradient">{{ sup.dosis || sup.dose }}</p>
+                            <p class="mt-0.5 text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Dosis</p>
+                          </div>
+                          <div v-if="typeof sup === 'object' && (sup.momento || sup.timing || sup.horario)" class="mt-3 inline-flex items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-secondary px-3 py-1">
+                            <span class="text-sm">{{ getTimingIcon(sup.momento || sup.timing || sup.horario) }}</span>
+                            <span class="text-xs font-semibold text-wc-text-secondary">{{ sup.momento || sup.timing || sup.horario }}</span>
+                          </div>
+                          <p v-if="typeof sup === 'object' && (sup.frecuencia || sup.frequency)" class="mt-2 text-xs text-wc-text-tertiary">
+                            <span class="font-semibold text-wc-text-secondary">Frecuencia:</span> {{ sup.frecuencia || sup.frequency }}
+                          </p>
+                          <p v-if="typeof sup === 'object' && (sup.notas || sup.notes)" class="mt-2 text-xs leading-relaxed text-wc-text-tertiary">{{ sup.notas || sup.notes }}</p>
+                        </div>
                       </div>
                     </div>
                   </div>

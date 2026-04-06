@@ -364,22 +364,23 @@ function getReactionCount(post, type) {
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- HEADER                                                         -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-gradient-to-br from-wc-bg-secondary via-wc-bg-tertiary to-wc-bg-secondary p-6">
+      <div class="wc-card-hero wc-topline wc-grain relative overflow-hidden rounded-2xl border border-wc-border p-8">
+        <div class="wc-orb-tr"></div>
         <div class="relative z-10 flex items-end justify-between">
           <div>
-            <p class="mb-1 text-xs font-semibold uppercase tracking-widest text-wc-accent">Comunidad WellCore</p>
-            <h1 class="font-display text-4xl tracking-wide text-wc-text">FEED</h1>
-            <p class="mt-1 text-sm text-wc-text-secondary">Comparte tus logros &middot; Celebra los de otros</p>
+            <p class="mb-2 text-xs font-semibold uppercase tracking-[0.3em] text-wc-accent">Comunidad WellCore</p>
+            <h1 class="wc-text-gradient font-display text-5xl sm:text-6xl tracking-wide leading-none">COMUNIDAD</h1>
+            <p class="mt-2 text-sm text-wc-text-secondary">Comparte tus logros &middot; Celebra los de otros</p>
           </div>
-          <div class="hidden items-center gap-4 sm:flex">
+          <div class="hidden items-center gap-5 sm:flex">
             <div class="text-center">
-              <p class="font-display text-3xl text-wc-accent">{{ communityStats.total_posts }}</p>
-              <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Posts</p>
+              <p class="font-display text-4xl text-wc-accent tabular-nums">{{ communityStats.total_posts }}</p>
+              <p class="text-[10px] font-semibold tracking-[0.25em] uppercase text-wc-text-secondary">Posts</p>
             </div>
-            <div class="h-8 w-px bg-wc-border"></div>
+            <div class="h-10 w-px bg-wc-border"></div>
             <div class="text-center">
-              <p class="font-display text-3xl text-wc-accent">{{ communityStats.active_members }}</p>
-              <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Miembros</p>
+              <p class="font-display text-4xl text-wc-accent tabular-nums">{{ communityStats.active_members }}</p>
+              <p class="text-[10px] font-semibold tracking-[0.25em] uppercase text-wc-text-secondary">Miembros</p>
             </div>
           </div>
         </div>
@@ -396,7 +397,7 @@ function getReactionCount(post, type) {
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- CREATE POST                                                     -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div class="overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary">
+      <div class="wc-glass wc-lift overflow-hidden rounded-2xl border border-wc-border">
         <!-- Post type tabs -->
         <div class="flex border-b border-wc-border">
           <button
@@ -427,7 +428,7 @@ function getReactionCount(post, type) {
               rows="3"
               maxlength="1000"
               :placeholder="getPlaceholder()"
-              class="w-full resize-none rounded-xl border border-wc-border bg-wc-bg px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary transition-all focus:border-wc-accent/50 focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
+              class="wc-input-focus w-full resize-none rounded-xl border border-wc-border bg-wc-bg px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary transition-all"
             ></textarea>
             <span class="absolute bottom-3 right-3 text-[10px] tabular-nums text-wc-text-tertiary">
               {{ charCount }}/1000
@@ -442,7 +443,7 @@ function getReactionCount(post, type) {
             <button
               type="submit"
               :disabled="submittingPost || !postContent.trim()"
-              class="btn-press flex items-center gap-2 rounded-xl bg-wc-accent px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-wc-accent/20 transition-all hover:bg-wc-accent/90 disabled:opacity-50"
+              class="btn-ripple btn-press flex items-center gap-2 rounded-xl bg-wc-accent px-6 py-2.5 text-sm font-semibold uppercase tracking-wider text-white shadow-lg shadow-wc-accent/30 transition-all hover:bg-wc-accent/90 disabled:opacity-50"
             >
               <!-- Send icon -->
               <svg v-if="!submittingPost" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -467,8 +468,10 @@ function getReactionCount(post, type) {
           <div
             v-for="post in posts"
             :key="post.id"
-            class="group overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary transition-all hover:border-wc-border/80 hover:shadow-lg hover:shadow-black/5"
+            class="wc-stagger-enter group relative overflow-hidden rounded-2xl border border-wc-border transition-all hover:border-wc-accent/30 hover:shadow-xl hover:shadow-black/10"
+            :class="post.post_type === 'achievement' || post.post_type === 'pr' ? 'wc-card-hero wc-grain wc-lift' : 'wc-glass wc-lift'"
           >
+            <div v-if="post.post_type === 'achievement' || post.post_type === 'pr'" class="wc-orb-tr"></div>
             <!-- Accent strip for special types -->
             <div
               v-if="post.post_type && post.post_type !== 'text'"
@@ -476,16 +479,16 @@ function getReactionCount(post, type) {
               :class="getPostTypeInfo(post.post_type).gradient"
             ></div>
 
-            <div class="p-4">
+            <div class="relative z-10 p-5">
               <!-- Header row -->
               <div class="flex items-start justify-between gap-3">
                 <div class="flex items-center gap-3">
                   <!-- Avatar with type badge -->
-                  <div class="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-wc-accent/30 to-wc-accent/10 text-sm font-bold text-wc-accent">
+                  <div class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-wc-accent/40 to-wc-accent/10 text-sm font-bold text-wc-accent ring-2 ring-wc-accent/60 ring-offset-2 ring-offset-wc-bg">
                     {{ getInitials(post.client_name) }}
                     <span
                       v-if="post.post_type && post.post_type !== 'text'"
-                      class="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-wc-bg-tertiary text-[10px]"
+                      class="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-wc-bg-tertiary text-[10px] ring-1 ring-wc-border"
                     >{{ getPostTypeInfo(post.post_type).emoji }}</span>
                   </div>
                   <div>
@@ -493,12 +496,21 @@ function getReactionCount(post, type) {
                       <p class="text-sm font-semibold leading-tight text-wc-text">{{ post.client_name || 'Miembro' }}</p>
                       <!-- Post type badge -->
                       <span
-                        v-if="post.post_type && post.post_type !== 'text'"
+                        v-if="post.post_type === 'achievement' || post.post_type === 'pr'"
+                        class="wc-pr-badge rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.15em]"
+                      >{{ getPostTypeInfo(post.post_type).emoji }} {{ getPostTypeInfo(post.post_type).label }}</span>
+                      <span
+                        v-else-if="post.post_type && post.post_type !== 'text'"
                         class="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider"
                         :class="`${getPostTypeInfo(post.post_type).bg} ${getPostTypeInfo(post.post_type).text}`"
                       >{{ getPostTypeInfo(post.post_type).emoji }} {{ getPostTypeInfo(post.post_type).label }}</span>
                     </div>
-                    <p class="text-xs text-wc-text-tertiary">{{ timeAgo(post.created_at) }}</p>
+                    <p class="flex items-center gap-1 text-xs text-wc-text-tertiary">
+                      <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                      </svg>
+                      {{ timeAgo(post.created_at) }}
+                    </p>
                   </div>
                 </div>
 
@@ -625,14 +637,15 @@ function getReactionCount(post, type) {
         </TransitionGroup>
 
         <!-- Empty state -->
-        <div v-if="!loading && posts.length === 0" class="rounded-2xl border border-dashed border-wc-border bg-wc-bg-tertiary/50 p-16 text-center">
-          <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-wc-accent/10">
-            <svg class="h-8 w-8 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <div v-if="!loading && posts.length === 0" class="wc-glass wc-grain relative overflow-hidden rounded-2xl border border-dashed border-wc-border p-16 text-center">
+          <div class="wc-orb-tr"></div>
+          <div class="relative z-10 mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-wc-accent/30 to-wc-accent/5 ring-1 ring-wc-accent/40">
+            <svg class="h-10 w-10 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
             </svg>
           </div>
-          <h3 class="mt-4 font-display text-xl text-wc-text">SIN PUBLICACIONES AUN</h3>
-          <p class="mt-2 text-sm text-wc-text-secondary">Se el primero en compartir algo con la comunidad</p>
+          <h3 class="relative z-10 mt-5 wc-text-gradient font-display text-3xl tracking-wide">SE EL PRIMERO</h3>
+          <p class="relative z-10 mt-2 text-sm text-wc-text-secondary">Comparte tu logro y motiva a la comunidad WellCore</p>
         </div>
 
         <!-- Load more button (explicit, matching Blade) -->

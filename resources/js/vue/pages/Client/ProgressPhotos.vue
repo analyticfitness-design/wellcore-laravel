@@ -38,6 +38,28 @@ const deletingId = ref(null);
 const ANGLES = ['frente', 'lado', 'espalda'];
 const ANGLE_LABELS = { frente: 'Frente', lado: 'Lado', espalda: 'Espalda' };
 
+// Translate raw Laravel validation keys (e.g. "validation.required") to Spanish
+const VALIDATION_MESSAGES = {
+  'validation.required': 'Selecciona una foto.',
+  'validation.image': 'El archivo debe ser una imagen.',
+  'validation.mimes': 'Formato de imagen no soportado.',
+  'validation.max': 'La imagen es demasiado grande.',
+  'validation.file': 'Archivo invalido.',
+  'validation.date': 'Fecha invalida.',
+};
+function translateMessage(msg) {
+  if (!msg) return '';
+  if (typeof msg !== 'string') return String(msg);
+  if (VALIDATION_MESSAGES[msg]) return VALIDATION_MESSAGES[msg];
+  // Fallback: any "validation.*" key becomes generic
+  if (msg.startsWith('validation.')) return 'Campo invalido.';
+  return msg;
+}
+function fieldErrorFor(angle) {
+  const raw = fieldErrors.value?.[angle]?.[0] || fieldErrors.value?.photo?.[0];
+  return translateMessage(raw);
+}
+
 const CONFETTI_PIECES = [
   { left: '8%',  bg: '#DC2626', dur: '2.8s', delay: '0.1s', round: false },
   { left: '22%', bg: '#F59E0B', dur: '3.2s', delay: '0.3s', round: true },
@@ -142,7 +164,7 @@ async function uploadPhotos() {
   } catch (err) {
     if (err.response?.status === 422) {
       fieldErrors.value = err.response.data.errors || {};
-      uploadError.value = Object.values(err.response.data.errors || {}).flat().join(' ');
+      uploadError.value = Object.values(err.response.data.errors || {}).flat().map(translateMessage).join(' ');
     } else {
       uploadError.value = err.response?.data?.message || err.response?.data?.error || 'Error al subir fotos';
     }
@@ -374,7 +396,7 @@ onMounted(fetchPhotos);
               id="uploadDate"
               class="w-full max-w-xs rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
             />
-            <p v-if="fieldErrors.photo_date" class="mt-1 text-xs text-red-500">{{ fieldErrors.photo_date[0] }}</p>
+            <p v-if="fieldErrors.photo_date" class="mt-1 text-xs text-red-500">{{ translateMessage(fieldErrors.photo_date[0]) }}</p>
           </div>
 
           <!-- Upload Zones: 3-column grid matching blade layout -->
@@ -427,8 +449,8 @@ onMounted(fetchPhotos);
                   @change="onFileSelect(angle, $event)"
                 />
               </label>
-              <p v-if="fieldErrors[angle] || fieldErrors.photo" class="mt-1 text-xs text-red-500">
-                {{ (fieldErrors[angle] || fieldErrors.photo)?.[0] }}
+              <p v-if="fieldErrorFor(angle)" class="mt-1 text-xs text-red-500">
+                {{ fieldErrorFor(angle) }}
               </p>
             </div>
           </div>
