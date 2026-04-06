@@ -275,6 +275,105 @@ Route::get('/media/gif/{slug}', [\App\Http\Controllers\Media\GifController::clas
     ->where('slug', '[\w\-]+');
 
 // Temp diagnostic — remove after debugging
+Route::get('/fix-danna-martes', function () {
+    $plan = \DB::table('assigned_plans')->where('id', 102)->first();
+    if (!$plan) return response()->json(['error' => 'Plan not found']);
+
+    $content = json_decode($plan->content, true);
+    $semanas = $content['semanas'] ?? [];
+
+    $progresion = [
+        1 => 'Semana 1: Establece la técnica. Elige un peso con el que puedas completar todas las repeticiones correctamente.',
+        2 => 'Semana 2: Aumenta el peso ligeramente respecto a la semana anterior manteniendo buena técnica.',
+        3 => 'Semana 3: Incrementa peso o repeticiones. Busca llegar al fallo en la última serie.',
+        4 => 'Semana 4: Semana de descarga. Reduce el peso al 60% y enfócate en la conexión mente-músculo.',
+    ];
+
+    $martesTemplate = function(int $semana) use ($progresion) {
+        $p = $progresion[$semana];
+        return [
+            'dia' => 'Martes',
+            'nombre_sesion' => 'Espalda + Abdomen + Cardio',
+            'ejercicios' => [
+                [
+                    'nombre' => 'Jalón al pecho en polea alta',
+                    'series' => 4,
+                    'repeticiones' => '12',
+                    'descanso' => '90 seg',
+                    'notas' => "Agarre pronado a la anchura de los hombros. Lleva la barra al pecho, no detrás de la nuca. Aprieta los dorsales abajo y sube controlado. | $p",
+                ],
+                [
+                    'nombre' => 'Remo con mancuerna a una mano',
+                    'series' => 4,
+                    'repeticiones' => '10 por lado',
+                    'descanso' => '60 seg',
+                    'notas' => "Apoya rodilla y mano en el banco. Espalda recta y paralela al suelo. Jala el codo hacia la cadera. Aprieta el dorsal arriba. | $p",
+                ],
+                [
+                    'nombre' => 'Remo en polea baja sentada',
+                    'series' => 3,
+                    'repeticiones' => '12-15',
+                    'descanso' => '60 seg',
+                    'notas' => "Agarre neutro. Pecho arriba, hombros atrás. Jala los codos hacia atrás sin balancear el torso. | $p",
+                ],
+                [
+                    'nombre' => 'Face pull en polea alta con cuerda',
+                    'series' => 3,
+                    'repeticiones' => '15-20',
+                    'descanso' => '45 seg',
+                    'notas' => "Jala hacia la cara con codos altos. Abre las manos al final del movimiento. Excelente para postura y deltoides posterior. | $p",
+                ],
+                [
+                    'nombre' => 'Crunch abdominal',
+                    'series' => 4,
+                    'repeticiones' => '20',
+                    'descanso' => '45 seg',
+                    'notas' => "Manos detrás de la nuca. Despega solo los hombros del suelo. Exhala al subir. Baja controlado. | $p",
+                ],
+                [
+                    'nombre' => 'Plancha frontal',
+                    'series' => 4,
+                    'repeticiones' => '45 seg',
+                    'descanso' => '30 seg',
+                    'notas' => "Cuerpo recto de cabeza a talones. No dejes caer las caderas. Respira de forma controlada. | $p",
+                ],
+                [
+                    'nombre' => 'Caminata en cinta inclinada',
+                    'series' => 1,
+                    'repeticiones' => '15 min',
+                    'descanso' => '—',
+                    'notas' => "Inclinación al 10-12%. Velocidad 5-6 km/h. Mantén buena postura, no te apoyes en los agarres. Cardio de baja intensidad para quemar grasa. | $p",
+                ],
+            ],
+        ];
+    };
+
+    // Update martes (index 1) in all 4 semanas
+    $updated = 0;
+    for ($i = 0; $i < count($semanas); $i++) {
+        $semanaNum = $i + 1;
+        if (isset($semanas[$i]['dias'][1])) {
+            $content['semanas'][$i]['dias'][1] = $martesTemplate($semanaNum);
+            $updated++;
+        }
+    }
+
+    \DB::table('assigned_plans')->where('id', 102)->update([
+        'content' => json_encode($content, JSON_UNESCAPED_UNICODE),
+    ]);
+
+    // Verify
+    $verify = json_decode(\DB::table('assigned_plans')->where('id', 102)->value('content'), true);
+    $martesCheck = $verify['semanas'][0]['dias'][1] ?? null;
+
+    return response()->json([
+        'status' => 'OK',
+        'semanas_updated' => $updated,
+        'martes_ejercicios' => count($martesCheck['ejercicios'] ?? []),
+        'martes_nombres' => array_map(fn($e) => $e['nombre'], $martesCheck['ejercicios'] ?? []),
+    ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+});
+
 Route::get('/diag-danna-full', function () {
     $plan = \DB::table('assigned_plans')->where('id', 102)->first();
     $content = json_decode($plan->content, true);
