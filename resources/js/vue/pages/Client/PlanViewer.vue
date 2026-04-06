@@ -4,10 +4,10 @@ import { useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import {
-  PhFlask, PhBarbell, PhPill, PhFish, PhSun, PhOrange, PhStar, PhMoon,
-  PhAtom, PhLeaf, PhLightning, PhDna, PhFire, PhBone, PhTestTube, PhBed,
-  PhCrown, PhBrain, PhMagnet, PhShield, PhDrop, PhTreeStructure
-} from '@phosphor-icons/vue';
+  FlaskConical, Dumbbell, Pill, Fish, Sun, Citrus, Star, Moon,
+  Atom, Leaf, Zap, Dna, Flame, Bone, TestTube, Bed,
+  Crown, Brain, Magnet, Shield, Droplet, Sparkles, Activity
+} from 'lucide-vue-next';
 
 const api = useApi();
 const router = useRouter();
@@ -293,39 +293,48 @@ function getCatStyle(nombre) {
   return { icon: '\u{1F48A}', color: 'text-wc-text-secondary', bg: 'bg-wc-bg-secondary', border: 'border-wc-border' };
 }
 
-// Supplement icon by keyword mapping → returns Phosphor component name
+// Supplement icon by keyword mapping → returns Lucide Vue component
 function supplementIcon(name) {
   const n = (name || '').toLowerCase();
   const map = [
-    [['whey','proteina','protein','isolate','caseina','casein'], 'PhFlask'],
-    [['creatina','creatine'], 'PhBarbell'],
-    [['multivitam','animal pak','opti-men','centrum','complejo'], 'PhPill'],
-    [['omega','epa','dha','fish oil','aceite de pescado'], 'PhFish'],
-    [['vitamina d','vit d','d3','vitamin d'], 'PhSun'],
-    [['vitamina c','vit c','ester','ascorbic'], 'PhOrange'],
-    [['vitamina b','complejo b','b12','b6','niacin'], 'PhStar'],
-    [['magnesio','magnesium','glicinato'], 'PhMoon'],
-    [['zinc','selenio','minerales','mineral'], 'PhAtom'],
-    [['ashwa','rhodiola','ginseng','adaptogen','tongkat'], 'PhLeaf'],
-    [['pre-entreno','pre workout','pump','neuro','beta-alanina','beta alanina'], 'PhLightning'],
-    [['bcaa','amino','glutamina','glutamine','l-carnitina','aminoacid'], 'PhDna'],
-    [['quemador','fat burner','termo','cla','citrulina','citrulline'], 'PhFire'],
-    [['colageno','collagen','articula'], 'PhBone'],
-    [['probiotic','prebiotic','digestivo','enzima'], 'PhTestTube'],
-    [['melatonina','dormir','gaba','sleep','noche'], 'PhBed'],
-    [['testo','tribulus','d-aspartic'], 'PhCrown'],
-    [['nootropic','focus','cafeina','cafe','citicoline','alpha gpc'], 'PhBrain'],
-    [['hierro','iron','ferro'], 'PhMagnet'],
-    [['calcio','calcium'], 'PhBone'],
-    [['cortisol','adrenal','phosphatidyl'], 'PhShield'],
-    [['electrolitos','electrolyte','sales','potasio','sodium'], 'PhDrop'],
-    [['hgh','peptid','grow'], 'PhTreeStructure'],
+    [['whey','proteina','protein','isolate','caseina','casein'], FlaskConical],
+    [['creatina','creatine'], Dumbbell],
+    [['multivitam','animal pak','opti-men','centrum','complejo'], Pill],
+    [['omega','epa','dha','fish oil','aceite de pescado'], Fish],
+    [['vitamina d','vit d','d3','vitamin d'], Sun],
+    [['vitamina c','vit c','ester','ascorbic'], Citrus],
+    [['vitamina b','complejo b','b12','b6','niacin'], Star],
+    [['magnesio','magnesium','glicinato'], Moon],
+    [['zinc','selenio','minerales','mineral'], Atom],
+    [['ashwa','rhodiola','ginseng','adaptogen','tongkat'], Leaf],
+    [['pre-entreno','pre workout','pump','neuro','beta-alanina','beta alanina'], Zap],
+    [['bcaa','amino','glutamina','glutamine','l-carnitina','aminoacid'], Dna],
+    [['quemador','fat burner','termo','cla','citrulina','citrulline'], Flame],
+    [['colageno','collagen','articula','calcio','calcium'], Bone],
+    [['probiotic','prebiotic','digestivo','enzima'], TestTube],
+    [['melatonina','dormir','gaba','sleep','noche'], Bed],
+    [['testo','tribulus','d-aspartic'], Crown],
+    [['nootropic','focus','cafeina','cafe','citicoline','alpha gpc'], Brain],
+    [['hierro','iron','ferro'], Magnet],
+    [['cortisol','adrenal','phosphatidyl'], Shield],
+    [['electrolitos','electrolyte','sales','potasio','sodium','agua'], Droplet],
+    [['hgh','peptid','grow'], Sparkles],
   ];
-  for (const [keys, icon] of map) {
-    if (keys.some(k => n.includes(k))) return icon;
+  for (const [keys, comp] of map) {
+    if (keys.some(k => n.includes(k))) return comp;
   }
-  return 'PhPill';
+  return Pill;
 }
+
+// Total supplements counter (works with both categorias and flat list)
+const totalSups = computed(() => {
+  const p = supplementPlan.value;
+  if (!p) return 0;
+  if (p.categorias && p.categorias.length > 0) {
+    return p.categorias.reduce((sum, c) => sum + ((c.suplementos || []).length), 0);
+  }
+  return (p.suplementos || p.supplements || p.protocolo || []).length;
+});
 
 // Habit accent colors (matches blade $habitAccents)
 const habitAccents = {
@@ -1416,25 +1425,28 @@ onBeforeUnmount(() => {
         <!-- ==================== TAB: SUPLEMENTACION ==================== -->
         <div v-else-if="activeTab === 'suplementacion'">
           <template v-if="canAccessNutricion && supplementPlan">
-            <div class="space-y-6 wc-stagger-enter">
-              <!-- HERO HEADER -->
-              <div class="relative overflow-hidden rounded-2xl border border-wc-border wc-card-hero wc-lift">
-                <div class="wc-orb-tr"></div>
-                <div class="wc-grain absolute inset-0 pointer-events-none opacity-40"></div>
-                <div class="wc-topline"></div>
-                <div class="relative p-6 sm:p-8">
-                  <div class="flex items-start gap-4">
-                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-wc-accent/30 bg-wc-accent/10 text-3xl shadow-lg shadow-wc-accent/10">
-                      <span>🧬</span>
-                    </div>
-                    <div class="min-w-0 flex-1">
-                      <p class="text-[10px] font-bold tracking-[0.25em] uppercase text-wc-accent">Stack Personalizado</p>
-                      <h2 class="mt-1 font-display text-3xl sm:text-4xl tracking-wide wc-text-gradient leading-none">SUPLEMENTACION</h2>
-                      <p v-if="supplementPlan.descripcion_protocolo || supplementPlan.descripcion" class="mt-3 text-sm leading-relaxed text-wc-text-secondary">{{ supplementPlan.descripcion_protocolo || supplementPlan.descripcion }}</p>
-                      <p v-if="supplementPlan.perfil_cliente" class="mt-1.5 text-xs italic text-wc-text-tertiary">{{ supplementPlan.perfil_cliente }}</p>
-                    </div>
+            <div class="space-y-5 wc-stagger-enter">
+              <!-- COMPACT PREMIUM HEADER -->
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-wc-accent/30 bg-wc-accent/10">
+                    <component :is="Pill" :size="20" :stroke-width="1.75" class="text-wc-accent" />
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-wc-accent">Stack Personalizado</p>
+                    <h2 class="font-display text-2xl tracking-wide text-wc-text uppercase leading-none">Suplementación</h2>
                   </div>
                 </div>
+                <div v-if="totalSups > 0" class="flex shrink-0 items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-tertiary px-3 py-1.5">
+                  <span class="font-data text-sm font-bold text-wc-accent tabular-nums">{{ totalSups }}</span>
+                  <span class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">items</span>
+                </div>
+              </div>
+
+              <!-- Descripción / perfil -->
+              <div v-if="supplementPlan.descripcion_protocolo || supplementPlan.descripcion || supplementPlan.perfil_cliente" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
+                <p v-if="supplementPlan.descripcion_protocolo || supplementPlan.descripcion" class="text-sm leading-relaxed text-wc-text-secondary">{{ supplementPlan.descripcion_protocolo || supplementPlan.descripcion }}</p>
+                <p v-if="supplementPlan.perfil_cliente" class="mt-1.5 text-xs italic text-wc-text-tertiary">{{ supplementPlan.perfil_cliente }}</p>
               </div>
 
               <!-- Advertencia -->
@@ -1463,35 +1475,31 @@ onBeforeUnmount(() => {
                       <div
                         v-for="(sup, sIdx) in (cat.suplementos || [])"
                         :key="sIdx"
-                        class="group relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary p-5 transition-all duration-300 hover:border-wc-accent/40 hover:shadow-xl hover:shadow-wc-accent/10 wc-lift"
+                        class="group relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary p-5 wc-lift transition-all hover:border-wc-accent/40"
                       >
-                        <div class="wc-topline opacity-60 group-hover:opacity-100 transition-opacity"></div>
-                        <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-wc-accent/0 blur-3xl transition-all duration-500 group-hover:bg-wc-accent/20"></div>
+                        <div class="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-wc-accent/0 blur-2xl transition-all group-hover:bg-wc-accent/10"></div>
                         <div class="relative flex items-start gap-4">
-                          <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-wc-border bg-wc-bg-secondary transition-transform duration-300 group-hover:scale-110 group-hover:border-wc-accent/40">
-                            <component :is="supplementIcon(typeof sup === 'string' ? sup : (sup.nombre || sup.name))" weight="duotone" class="h-8 w-8 text-wc-accent" />
+                          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-wc-accent/20 bg-wc-accent/5">
+                            <component :is="supplementIcon(typeof sup === 'string' ? sup : (sup.nombre || sup.name))" :size="20" :stroke-width="1.75" class="text-wc-accent" />
                           </div>
                           <div class="min-w-0 flex-1">
-                            <div class="flex items-start justify-between gap-2">
-                              <h4 class="font-display text-lg leading-tight tracking-wide text-wc-text">{{ (typeof sup === 'string' ? sup : (sup.nombre || sup.name || 'Suplemento')).toUpperCase() }}</h4>
-                              <span
-                                v-if="typeof sup === 'object' && sup.prioridad"
-                                class="shrink-0 rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-wider wc-pr-badge"
-                                :class="[prioridadStyle(sup.prioridad).text, prioridadStyle(sup.prioridad).bg]"
-                              >{{ sup.prioridad }}</span>
-                            </div>
-                            <div v-if="typeof sup === 'object' && (sup.dosis || sup.dose)" class="mt-2">
-                              <p class="font-data text-2xl font-black leading-none wc-text-gradient">{{ sup.dosis || sup.dose }}</p>
-                              <p class="mt-0.5 text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Dosis</p>
-                            </div>
-                            <div v-if="typeof sup === 'object' && (sup.timing || sup.momento || sup.horario)" class="mt-3 inline-flex items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-secondary px-3 py-1">
-                              <span class="text-sm">{{ getTimingIcon(sup.timing || sup.momento || sup.horario) }}</span>
-                              <span class="text-xs font-semibold text-wc-text-secondary">{{ sup.timing || sup.momento || sup.horario }}</span>
-                            </div>
-                            <p v-if="typeof sup === 'object' && (sup.frecuencia || sup.frequency)" class="mt-2 text-xs text-wc-text-tertiary">
-                              <span class="font-semibold text-wc-text-secondary">Frecuencia:</span> {{ sup.frecuencia || sup.frequency }}
+                            <h4 class="font-display text-base tracking-wide text-wc-text uppercase truncate pr-8">{{ (typeof sup === 'string' ? sup : (sup.nombre || sup.name || 'Suplemento')) }}</h4>
+                            <p v-if="typeof sup === 'object' && (sup.dosis || sup.dose)" class="mt-1 font-data text-lg font-bold text-wc-accent tabular-nums">
+                              {{ sup.dosis || sup.dose }}
                             </p>
-                            <p v-if="typeof sup === 'object' && (sup.notas || sup.notes)" class="mt-2 text-xs leading-relaxed text-wc-text-tertiary">{{ sup.notas || sup.notes }}</p>
+                            <div v-if="typeof sup === 'object' && (sup.momento || sup.timing || sup.horario || sup.frecuencia || sup.frequency)" class="mt-2 flex flex-wrap items-center gap-1.5">
+                              <span v-if="sup.momento || sup.timing || sup.horario" class="inline-flex items-center gap-1 rounded-full border border-wc-border bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-text-secondary">
+                                <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                                {{ sup.momento || sup.timing || sup.horario }}
+                              </span>
+                              <span v-if="sup.frecuencia || sup.frequency" class="inline-flex items-center rounded-full border border-wc-border bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-text-secondary">
+                                {{ sup.frecuencia || sup.frequency }}
+                              </span>
+                            </div>
+                            <p v-if="typeof sup === 'object' && (sup.notas || sup.notes)" class="mt-2.5 text-xs leading-relaxed text-wc-text-tertiary">{{ sup.notas || sup.notes }}</p>
+                          </div>
+                          <div class="absolute top-0 right-0 flex h-6 w-6 items-center justify-center rounded-bl-xl rounded-tr-2xl bg-wc-accent/10 font-data text-[10px] font-bold text-wc-accent">
+                            {{ sIdx + 1 }}
                           </div>
                         </div>
                       </div>
@@ -1502,46 +1510,35 @@ onBeforeUnmount(() => {
 
               <!-- STRUCTURE B: Flat list -->
               <template v-else-if="(supplementPlan.suplementos || supplementPlan.supplements || supplementPlan.protocolo || []).length > 0">
-                <div>
-                  <div class="mb-4 flex items-center gap-3 px-1">
-                    <h3 class="font-display text-2xl tracking-wider wc-text-gradient">PROTOCOLO</h3>
-                    <div class="h-px flex-1 bg-wc-border"></div>
-                    <span class="rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-bold text-wc-accent">{{ (supplementPlan.suplementos || supplementPlan.supplements || supplementPlan.protocolo || []).length }} items</span>
-                  </div>
-                  <div class="grid gap-3 sm:grid-cols-2">
-                    <div
-                      v-for="(sup, sIdx) in (supplementPlan.suplementos || supplementPlan.supplements || supplementPlan.protocolo || [])"
-                      :key="sIdx"
-                      class="group relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary p-5 transition-all duration-300 hover:border-wc-accent/40 hover:shadow-xl hover:shadow-wc-accent/10 wc-lift"
-                    >
-                      <div class="wc-topline opacity-60 group-hover:opacity-100 transition-opacity"></div>
-                      <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-wc-accent/0 blur-3xl transition-all duration-500 group-hover:bg-wc-accent/20"></div>
-                      <div class="relative flex items-start gap-4">
-                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-wc-border bg-wc-bg-secondary transition-transform duration-300 group-hover:scale-110 group-hover:border-wc-accent/40">
-                          <component :is="supplementIcon(typeof sup === 'string' ? sup : (sup.nombre || sup.name))" weight="duotone" class="h-8 w-8 text-wc-accent" />
+                <div class="grid gap-3 sm:grid-cols-2">
+                  <div
+                    v-for="(sup, sIdx) in (supplementPlan.suplementos || supplementPlan.supplements || supplementPlan.protocolo || [])"
+                    :key="sIdx"
+                    class="group relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary p-5 wc-lift transition-all hover:border-wc-accent/40"
+                  >
+                    <div class="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-wc-accent/0 blur-2xl transition-all group-hover:bg-wc-accent/10"></div>
+                    <div class="relative flex items-start gap-4">
+                      <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-wc-accent/20 bg-wc-accent/5">
+                        <component :is="supplementIcon(typeof sup === 'string' ? sup : (sup.nombre || sup.name))" :size="20" :stroke-width="1.75" class="text-wc-accent" />
+                      </div>
+                      <div class="min-w-0 flex-1">
+                        <h4 class="font-display text-base tracking-wide text-wc-text uppercase truncate pr-8">{{ (typeof sup === 'string' ? sup : (sup.nombre || sup.name || 'Suplemento')) }}</h4>
+                        <p v-if="typeof sup === 'object' && (sup.dosis || sup.dose)" class="mt-1 font-data text-lg font-bold text-wc-accent tabular-nums">
+                          {{ sup.dosis || sup.dose }}
+                        </p>
+                        <div v-if="typeof sup === 'object' && (sup.momento || sup.timing || sup.horario || sup.frecuencia || sup.frequency)" class="mt-2 flex flex-wrap items-center gap-1.5">
+                          <span v-if="sup.momento || sup.timing || sup.horario" class="inline-flex items-center gap-1 rounded-full border border-wc-border bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-text-secondary">
+                            <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                            {{ sup.momento || sup.timing || sup.horario }}
+                          </span>
+                          <span v-if="sup.frecuencia || sup.frequency" class="inline-flex items-center rounded-full border border-wc-border bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-text-secondary">
+                            {{ sup.frecuencia || sup.frequency }}
+                          </span>
                         </div>
-                        <div class="min-w-0 flex-1">
-                          <div class="flex items-start justify-between gap-2">
-                            <h4 class="font-display text-lg leading-tight tracking-wide text-wc-text">{{ (typeof sup === 'string' ? sup : (sup.nombre || sup.name || 'Suplemento')).toUpperCase() }}</h4>
-                            <span
-                              v-if="typeof sup === 'object' && sup.prioridad"
-                              class="shrink-0 rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-wider wc-pr-badge"
-                              :class="[prioridadStyle(sup.prioridad).text, prioridadStyle(sup.prioridad).bg]"
-                            >{{ sup.prioridad }}</span>
-                          </div>
-                          <div v-if="typeof sup === 'object' && (sup.dosis || sup.dose)" class="mt-2">
-                            <p class="font-data text-2xl font-black leading-none wc-text-gradient">{{ sup.dosis || sup.dose }}</p>
-                            <p class="mt-0.5 text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Dosis</p>
-                          </div>
-                          <div v-if="typeof sup === 'object' && (sup.momento || sup.timing || sup.horario)" class="mt-3 inline-flex items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-secondary px-3 py-1">
-                            <span class="text-sm">{{ getTimingIcon(sup.momento || sup.timing || sup.horario) }}</span>
-                            <span class="text-xs font-semibold text-wc-text-secondary">{{ sup.momento || sup.timing || sup.horario }}</span>
-                          </div>
-                          <p v-if="typeof sup === 'object' && (sup.frecuencia || sup.frequency)" class="mt-2 text-xs text-wc-text-tertiary">
-                            <span class="font-semibold text-wc-text-secondary">Frecuencia:</span> {{ sup.frecuencia || sup.frequency }}
-                          </p>
-                          <p v-if="typeof sup === 'object' && (sup.notas || sup.notes)" class="mt-2 text-xs leading-relaxed text-wc-text-tertiary">{{ sup.notas || sup.notes }}</p>
-                        </div>
+                        <p v-if="typeof sup === 'object' && (sup.notas || sup.notes)" class="mt-2.5 text-xs leading-relaxed text-wc-text-tertiary">{{ sup.notas || sup.notes }}</p>
+                      </div>
+                      <div class="absolute top-0 right-0 flex h-6 w-6 items-center justify-center rounded-bl-xl rounded-tr-2xl bg-wc-accent/10 font-data text-[10px] font-bold text-wc-accent">
+                        {{ sIdx + 1 }}
                       </div>
                     </div>
                   </div>
