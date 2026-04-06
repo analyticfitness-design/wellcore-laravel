@@ -16,6 +16,9 @@ export const useAuthStore = defineStore('auth', () => {
                 localStorage.setItem('wc_user_name', s.userName);
             }
         }
+        if (s.portal) {
+            localStorage.setItem('wc_user_portal', s.portal);
+        }
         // Always sync impersonation state from session (source of truth)
         if (s.impersonating) {
             localStorage.setItem('wc_impersonating', 'true');
@@ -33,6 +36,7 @@ export const useAuthStore = defineStore('auth', () => {
     const token = ref(localStorage.getItem('wc_token') || null);
     const userType = ref(localStorage.getItem('wc_user_type') || null);
     const userId = ref(localStorage.getItem('wc_user_id') || null);
+    const userPortal = ref(localStorage.getItem('wc_user_portal') || null); // '/rise' or '/client'
 
     const isImpersonating = computed(() => localStorage.getItem('wc_impersonating') === 'true');
     const isAuthenticated = computed(() => !!token.value);
@@ -48,6 +52,10 @@ export const useAuthStore = defineStore('auth', () => {
         if (data.name) {
             localStorage.setItem('wc_user_name', data.name);
         }
+        if (data.redirectUrl) {
+            userPortal.value = data.redirectUrl;
+            localStorage.setItem('wc_user_portal', data.redirectUrl);
+        }
     }
 
     function clearAuth() {
@@ -61,6 +69,7 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.removeItem('wc_user_name');
         localStorage.removeItem('wc_impersonating');
         localStorage.removeItem('wc_admin_token');
+        localStorage.removeItem('wc_user_portal');
     }
 
     async function login(identity, password, rememberMe = false) {
@@ -104,6 +113,7 @@ export const useAuthStore = defineStore('auth', () => {
         logout,
         forgotPassword,
         resetPassword,
+        userPortal,
         isImpersonating,
         setAuth,
         clearAuth,

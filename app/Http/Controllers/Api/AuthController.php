@@ -73,6 +73,7 @@ class AuthController extends Controller
         session()->put('wc_user_id', $user->id);
 
         $redirectUrl = $this->resolveRedirectUrl($user, $userType);
+        session()->put('wc_user_portal', $redirectUrl);
 
         return response()->json([
             'token' => $token,

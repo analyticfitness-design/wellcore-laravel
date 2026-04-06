@@ -129,6 +129,19 @@ router.beforeEach((to, from, next) => {
         return next('/login');
     }
 
+    // Portal guard: RISE users should not access /client/* and vice versa
+    if (authStore.isAuthenticated && authStore.userPortal) {
+        const portal = authStore.userPortal; // '/rise' or '/client'
+        if (portal === '/rise' && to.path.startsWith('/client')) {
+            const risePath = to.path.replace('/client', '/rise');
+            return next(risePath);
+        }
+        if (portal === '/client' && to.path.startsWith('/rise')) {
+            const clientPath = to.path.replace('/rise', '/client');
+            return next(clientPath);
+        }
+    }
+
     next();
 });
 
