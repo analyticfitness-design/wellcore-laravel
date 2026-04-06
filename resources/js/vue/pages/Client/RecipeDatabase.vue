@@ -17,6 +17,76 @@
       </div>
     </div>
 
+    <!-- MY MACROS TODAY — sticky -->
+    <div v-if="myMacros && myMacros.goals" class="sticky top-0 z-20 -mx-4 px-4 py-3 sm:mx-0 sm:px-0 sm:py-0">
+      <div class="rounded-2xl border border-wc-accent/20 bg-wc-bg-tertiary p-4 backdrop-blur-md">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-wc-accent/10">
+              <Sparkles :size="16" :stroke-width="2" class="text-wc-accent" />
+            </div>
+            <div>
+              <p class="text-[10px] font-bold uppercase tracking-widest text-wc-accent">Mis Macros Hoy</p>
+              <p class="text-xs text-wc-text-tertiary">Encuentra recetas que encajen en tu plan</p>
+            </div>
+          </div>
+          <div v-if="myMacros.swaps_today && myMacros.swaps_today.length" class="flex items-center gap-1.5 rounded-full border border-wc-accent/30 bg-wc-accent/10 px-2.5 py-1">
+            <RefreshCw :size="11" :stroke-width="2.5" class="text-wc-accent" />
+            <span class="text-[10px] font-bold uppercase tracking-wider text-wc-accent">{{ myMacros.swaps_today.length }} swap{{ myMacros.swaps_today.length !== 1 ? 's' : '' }} hoy</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div>
+            <div class="flex items-baseline justify-between">
+              <span class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Kcal</span>
+              <span class="font-data text-xs font-bold tabular-nums text-wc-text">{{ myMacros.current_total.calories }}/{{ myMacros.goals.calories }}</span>
+            </div>
+            <div class="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
+              <div class="h-full rounded-full bg-wc-accent transition-all" :style="{ width: Math.min(100, (myMacros.current_total.calories / myMacros.goals.calories) * 100) + '%' }"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-baseline justify-between">
+              <span class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Proteína</span>
+              <span class="font-data text-xs font-bold tabular-nums text-wc-text">{{ myMacros.current_total.protein }}/{{ myMacros.goals.protein }}g</span>
+            </div>
+            <div class="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
+              <div class="h-full rounded-full bg-red-500 transition-all" :style="{ width: Math.min(100, (myMacros.current_total.protein / myMacros.goals.protein) * 100) + '%' }"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-baseline justify-between">
+              <span class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Carbs</span>
+              <span class="font-data text-xs font-bold tabular-nums text-wc-text">{{ myMacros.current_total.carbs }}/{{ myMacros.goals.carbs }}g</span>
+            </div>
+            <div class="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
+              <div class="h-full rounded-full bg-blue-500 transition-all" :style="{ width: Math.min(100, (myMacros.current_total.carbs / myMacros.goals.carbs) * 100) + '%' }"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-baseline justify-between">
+              <span class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Grasas</span>
+              <span class="font-data text-xs font-bold tabular-nums text-wc-text">{{ myMacros.current_total.fat }}/{{ myMacros.goals.fat }}g</span>
+            </div>
+            <div class="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
+              <div class="h-full rounded-full bg-amber-500 transition-all" :style="{ width: Math.min(100, (myMacros.current_total.fat / myMacros.goals.fat) * 100) + '%' }"></div>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="myMacros.swaps_today && myMacros.swaps_today.length" class="mt-3 flex flex-wrap gap-2 border-t border-wc-border pt-3">
+          <div v-for="swap in myMacros.swaps_today" :key="swap.id" class="flex items-center gap-2 rounded-full border border-wc-border bg-wc-bg-secondary px-3 py-1">
+            <span class="text-[10px] text-wc-text-tertiary">{{ swap.original_meal_name }} →</span>
+            <span class="text-[10px] font-bold text-wc-text truncate max-w-[120px]">{{ swap.recipe_name }}</span>
+            <button @click="undoSwap(swap.id)" class="text-wc-text-tertiary hover:text-wc-accent transition-colors" aria-label="Deshacer">
+              <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Search + filters -->
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
       <div class="relative flex-1">
@@ -105,6 +175,26 @@
           <!-- Meal badge -->
           <div class="absolute right-3 top-3 rounded-full border border-wc-accent/40 bg-wc-accent/20 px-2.5 py-1 backdrop-blur-sm">
             <span class="text-[10px] font-bold uppercase tracking-wider text-wc-accent">{{ r.meal }}</span>
+          </div>
+
+          <!-- Best meal match badge -->
+          <div v-if="myMacros && getBestMealMatch(r)" class="absolute bottom-3 left-3 right-3 z-10">
+            <div
+              class="flex items-center justify-center gap-1.5 rounded-full border px-2.5 py-1 backdrop-blur-md"
+              :class="{
+                'border-emerald-500/40 bg-emerald-500/20': getRecipeCompatibility(r, getBestMealMatch(r)) === 'good',
+                'border-amber-500/40 bg-amber-500/20': getRecipeCompatibility(r, getBestMealMatch(r)) === 'warn',
+              }"
+            >
+              <CheckCircle2 v-if="getRecipeCompatibility(r, getBestMealMatch(r)) === 'good'" :size="11" :stroke-width="2.5" class="text-emerald-400" />
+              <AlertTriangle v-else :size="11" :stroke-width="2.5" class="text-amber-400" />
+              <span class="text-[9px] font-bold uppercase tracking-wider"
+                :class="{
+                  'text-emerald-400': getRecipeCompatibility(r, getBestMealMatch(r)) === 'good',
+                  'text-amber-400': getRecipeCompatibility(r, getBestMealMatch(r)) === 'warn',
+                }"
+              >Cabe en {{ getBestMealMatch(r) }}</span>
+            </div>
           </div>
         </div>
 
@@ -261,6 +351,59 @@
                 </ol>
               </div>
 
+              <!-- Impact section -->
+              <div v-if="myMacros && myMacros.meals" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
+                <div class="mb-3 flex items-center gap-2">
+                  <RefreshCw :size="16" :stroke-width="2" class="text-wc-accent" />
+                  <h3 class="font-display text-sm uppercase tracking-wide text-wc-text">Reemplazar una comida</h3>
+                </div>
+                <p class="mb-3 text-xs text-wc-text-tertiary">Aplica esta receta en lugar de una de tus comidas del día. Tus macros se ajustarán automáticamente.</p>
+                <div class="space-y-2">
+                  <button
+                    v-for="meal in myMacros.meals"
+                    :key="meal.name"
+                    @click="applySwap(selectedRecipe, meal.name)"
+                    :disabled="applyingSwap || meal.swapped"
+                    class="flex w-full items-center justify-between gap-3 rounded-xl border bg-wc-bg-secondary px-4 py-3 text-left transition-all hover:border-wc-accent/40 disabled:opacity-50 disabled:cursor-not-allowed"
+                    :class="{
+                      'border-emerald-500/40': getRecipeCompatibility(selectedRecipe, meal.name) === 'good',
+                      'border-amber-500/40': getRecipeCompatibility(selectedRecipe, meal.name) === 'warn',
+                      'border-wc-border': getRecipeCompatibility(selectedRecipe, meal.name) === 'bad' || getRecipeCompatibility(selectedRecipe, meal.name) === 'no-data',
+                    }"
+                  >
+                    <div class="flex items-center gap-3">
+                      <CheckCircle2 v-if="getRecipeCompatibility(selectedRecipe, meal.name) === 'good'" :size="18" :stroke-width="2" class="text-emerald-400" />
+                      <AlertTriangle v-else-if="getRecipeCompatibility(selectedRecipe, meal.name) === 'warn'" :size="18" :stroke-width="2" class="text-amber-400" />
+                      <Info v-else :size="18" :stroke-width="2" class="text-wc-text-tertiary" />
+                      <div>
+                        <p class="text-sm font-bold text-wc-text">Reemplazar {{ meal.name }}</p>
+                        <p class="text-[10px] text-wc-text-tertiary">
+                          Original: {{ meal.calories }}kcal · P{{ meal.protein }} C{{ meal.carbs }} G{{ meal.fat }}
+                        </p>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <p v-if="meal.swapped" class="text-[10px] font-bold uppercase text-wc-accent">Ya cambiada</p>
+                      <p v-else class="text-[10px] font-bold uppercase tracking-wider"
+                        :class="{
+                          'text-emerald-400': getRecipeCompatibility(selectedRecipe, meal.name) === 'good',
+                          'text-amber-400': getRecipeCompatibility(selectedRecipe, meal.name) === 'warn',
+                          'text-wc-text-tertiary': getRecipeCompatibility(selectedRecipe, meal.name) === 'bad' || getRecipeCompatibility(selectedRecipe, meal.name) === 'no-data',
+                        }"
+                      >Aplicar →</p>
+                    </div>
+                  </button>
+                </div>
+                <div v-if="swapResult === 'success'" class="mt-3 flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2">
+                  <CheckCircle2 :size="14" :stroke-width="2.5" class="text-emerald-400" />
+                  <span class="text-xs font-semibold text-emerald-400">¡Receta aplicada! Tus macros se actualizaron.</span>
+                </div>
+                <div v-else-if="swapResult === 'error'" class="mt-3 flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2">
+                  <AlertTriangle :size="14" :stroke-width="2.5" class="text-red-400" />
+                  <span class="text-xs font-semibold text-red-400">Error al aplicar el swap. Intenta de nuevo.</span>
+                </div>
+              </div>
+
               <!-- Coach tip -->
               <div v-if="selectedRecipe.coachTip" class="flex gap-3 rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-4">
                 <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-wc-accent/30 bg-wc-accent/10">
@@ -280,12 +423,105 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import {
   ChefHat, Search, Clock, Flame, Dumbbell, Scale, Zap,
   LayoutGrid, Coffee, UtensilsCrossed, Soup, Cookie,
-  Salad, Apple, X, Utensils, Lightbulb
+  Salad, Apple, X, Utensils, Lightbulb,
+  Sparkles, RefreshCw, AlertTriangle, CheckCircle2, Info
 } from 'lucide-vue-next';
+import { useApi } from '../../composables/useApi';
+
+const api = useApi();
+const myMacros = ref(null);
+const loadingMacros = ref(false);
+const applyingSwap = ref(false);
+const swapResult = ref(null);
+
+async function loadMyMacros() {
+  loadingMacros.value = true;
+  try {
+    const r = await api.get('/api/v/client/nutrition/macros-today');
+    myMacros.value = r.data;
+  } catch (e) {
+    myMacros.value = null;
+  } finally {
+    loadingMacros.value = false;
+  }
+}
+
+function getRecipeCompatibility(recipe, mealName) {
+  if (!myMacros.value || !myMacros.value.meals) return 'no-data';
+  const meal = myMacros.value.meals.find(m => m.name.toLowerCase().includes(mealName.toLowerCase()));
+  if (!meal) return 'no-data';
+  const r = recipe.macros || {};
+  const calDiff = Math.abs((r.cal || r.calories || 0) - meal.calories);
+  const protDiff = Math.abs((r.protein || 0) - meal.protein);
+  const carbDiff = Math.abs((r.carbs || 0) - meal.carbs);
+  const fatDiff = Math.abs((r.fat || 0) - meal.fat);
+  const tolerance = meal.calories * 0.15;
+  if (calDiff <= tolerance && protDiff <= 10 && carbDiff <= 20 && fatDiff <= 8) return 'good';
+  if (calDiff <= tolerance * 2) return 'warn';
+  return 'bad';
+}
+
+function getBestMealMatch(recipe) {
+  if (!myMacros.value || !myMacros.value.meals) return null;
+  const compatibilities = myMacros.value.meals.map(m => ({
+    meal: m,
+    score: getRecipeCompatibility(recipe, m.name),
+  }));
+  const good = compatibilities.find(c => c.score === 'good');
+  if (good) return good.meal.name;
+  const warn = compatibilities.find(c => c.score === 'warn');
+  if (warn) return warn.meal.name;
+  return null;
+}
+
+async function applySwap(recipe, mealName) {
+  if (applyingSwap.value) return;
+  applyingSwap.value = true;
+  swapResult.value = null;
+  try {
+    const meal = myMacros.value.meals.find(m => m.name === mealName);
+    await api.post('/api/v/client/nutrition/swap', {
+      recipe_id: recipe.id,
+      recipe_name: recipe.name,
+      original_meal_name: mealName,
+      recipe_macros: {
+        calories: recipe.macros.cal || recipe.macros.calories || 0,
+        protein: recipe.macros.protein || 0,
+        carbs: recipe.macros.carbs || 0,
+        fat: recipe.macros.fat || 0,
+      },
+      original_macros: {
+        calories: meal.calories,
+        protein: meal.protein,
+        carbs: meal.carbs,
+        fat: meal.fat,
+      },
+    });
+    swapResult.value = 'success';
+    await loadMyMacros();
+    setTimeout(() => { swapResult.value = null; }, 3000);
+  } catch (e) {
+    swapResult.value = 'error';
+    setTimeout(() => { swapResult.value = null; }, 3000);
+  } finally {
+    applyingSwap.value = false;
+  }
+}
+
+async function undoSwap(swapId) {
+  try {
+    await api.delete(`/api/v/client/nutrition/swap/${swapId}`);
+    await loadMyMacros();
+  } catch (e) {}
+}
+
+onMounted(() => {
+  loadMyMacros();
+});
 
 const GOALS = [
   { id: 'perder_grasa', label: 'Perder grasa', icon: '🔥' },

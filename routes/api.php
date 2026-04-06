@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\EjerciciosController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\CoachController;
+use App\Http\Controllers\Api\NutritionController;
 use App\Http\Controllers\Api\PublicFormController;
 use App\Http\Controllers\Api\RiseController;
 use App\Http\Controllers\Api\ShopController;
@@ -129,6 +130,11 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
     Route::post('/workout-summary/{sessionId}/feeling', [TrainingController::class, 'saveWorkoutFeeling'])->where('sessionId', '[0-9]+|latest');
     Route::get('/checkin', [TrainingController::class, 'checkin']);
     Route::post('/checkin', [TrainingController::class, 'submitCheckin']);
+
+    // Nutrition — Recipe Meal Swaps
+    Route::get('/nutrition/macros-today', [NutritionController::class, 'macrosToday']);
+    Route::post('/nutrition/swap', [NutritionController::class, 'createSwap']);
+    Route::delete('/nutrition/swap/{id}', [NutritionController::class, 'deleteSwap'])->where('id', '[0-9]+');
 });
 
 // Social & Resources (Phase 6)
