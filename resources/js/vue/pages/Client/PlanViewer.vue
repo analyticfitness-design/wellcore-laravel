@@ -3,6 +3,11 @@ import { ref, computed, reactive, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import ClientLayout from '../../layouts/ClientLayout.vue';
+import {
+  PhFlask, PhBarbell, PhPill, PhFish, PhSun, PhOrange, PhStar, PhMoon,
+  PhAtom, PhLeaf, PhLightning, PhDna, PhFire, PhBone, PhTestTube, PhBed,
+  PhCrown, PhBrain, PhMagnet, PhShield, PhDrop, PhTreeStructure
+} from '@phosphor-icons/vue';
 
 const api = useApi();
 const router = useRouter();
@@ -288,36 +293,38 @@ function getCatStyle(nombre) {
   return { icon: '\u{1F48A}', color: 'text-wc-text-secondary', bg: 'bg-wc-bg-secondary', border: 'border-wc-border' };
 }
 
-// Supplement icon by keyword mapping (premium BRUTAL redesign)
+// Supplement icon by keyword mapping → returns Phosphor component name
 function supplementIcon(name) {
   const n = (name || '').toLowerCase();
   const map = [
-    [['whey','proteina','protein','isolate','caseina'], '\u{1F9EA}'],
-    [['creatina','creatine'], '\u{1F4AA}'],
-    [['multivitam','animal pak','opti-men','centrum'], '\u{1F48A}'],
-    [['omega','epa','dha','fish oil','aceite de pescado'], '\u{1F41F}'],
-    [['vitamina d','vit d','d3'], '\u{2600}\uFE0F'],
-    [['vitamina c','vit c','ester'], '\u{1F34A}'],
-    [['vitamina b','complejo b','b12','b6'], '\u{1F31F}'],
-    [['magnesio','magnesium','glicinato'], '\u{1F319}'],
-    [['zinc','selenio','minerales'], '\u{2699}\uFE0F'],
-    [['ashwa','rhodiola','ginseng','adaptogen'], '\u{1F33F}'],
-    [['pre-entreno','pre workout','pump','neuro','beta-alanina'], '\u{26A1}'],
-    [['bcaa','amino','glutamina','glutamine'], '\u{1F9EC}'],
-    [['quemador','fat burner','termo','l-carnitina','cla'], '\u{1F525}'],
-    [['colageno','collagen','articula'], '\u{1F9B4}'],
-    [['probiotic','prebiotic','digestivo','enzima'], '\u{1F9A0}'],
-    [['melatonina','dormir','gaba','sleep','noche'], '\u{1F634}'],
-    [['testo','tribulus','d-aspartic','tongkat'], '\u{1F451}'],
-    [['nootropic','focus','cafeina','cafe','citicoline'], '\u{1F9E0}'],
-    [['hierro','iron','ferro'], '\u{2692}\uFE0F'],
-    [['calcio','calcium'], '\u{1F9B4}'],
-    [['cortisol','adrenal','phosphatidyl'], '\u{1F6E1}\uFE0F'],
+    [['whey','proteina','protein','isolate','caseina','casein'], 'PhFlask'],
+    [['creatina','creatine'], 'PhBarbell'],
+    [['multivitam','animal pak','opti-men','centrum','complejo'], 'PhPill'],
+    [['omega','epa','dha','fish oil','aceite de pescado'], 'PhFish'],
+    [['vitamina d','vit d','d3','vitamin d'], 'PhSun'],
+    [['vitamina c','vit c','ester','ascorbic'], 'PhOrange'],
+    [['vitamina b','complejo b','b12','b6','niacin'], 'PhStar'],
+    [['magnesio','magnesium','glicinato'], 'PhMoon'],
+    [['zinc','selenio','minerales','mineral'], 'PhAtom'],
+    [['ashwa','rhodiola','ginseng','adaptogen','tongkat'], 'PhLeaf'],
+    [['pre-entreno','pre workout','pump','neuro','beta-alanina','beta alanina'], 'PhLightning'],
+    [['bcaa','amino','glutamina','glutamine','l-carnitina','aminoacid'], 'PhDna'],
+    [['quemador','fat burner','termo','cla','citrulina','citrulline'], 'PhFire'],
+    [['colageno','collagen','articula'], 'PhBone'],
+    [['probiotic','prebiotic','digestivo','enzima'], 'PhTestTube'],
+    [['melatonina','dormir','gaba','sleep','noche'], 'PhBed'],
+    [['testo','tribulus','d-aspartic'], 'PhCrown'],
+    [['nootropic','focus','cafeina','cafe','citicoline','alpha gpc'], 'PhBrain'],
+    [['hierro','iron','ferro'], 'PhMagnet'],
+    [['calcio','calcium'], 'PhBone'],
+    [['cortisol','adrenal','phosphatidyl'], 'PhShield'],
+    [['electrolitos','electrolyte','sales','potasio','sodium'], 'PhDrop'],
+    [['hgh','peptid','grow'], 'PhTreeStructure'],
   ];
-  for (const [keys, emoji] of map) {
-    if (keys.some(k => n.includes(k))) return emoji;
+  for (const [keys, icon] of map) {
+    if (keys.some(k => n.includes(k))) return icon;
   }
-  return '\u{1F48A}';
+  return 'PhPill';
 }
 
 // Habit accent colors (matches blade $habitAccents)
@@ -1461,8 +1468,8 @@ onBeforeUnmount(() => {
                         <div class="wc-topline opacity-60 group-hover:opacity-100 transition-opacity"></div>
                         <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-wc-accent/0 blur-3xl transition-all duration-500 group-hover:bg-wc-accent/20"></div>
                         <div class="relative flex items-start gap-4">
-                          <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-wc-border bg-wc-bg-secondary text-3xl transition-transform duration-300 group-hover:scale-110 group-hover:border-wc-accent/40">
-                            {{ supplementIcon(typeof sup === 'string' ? sup : (sup.nombre || sup.name)) }}
+                          <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-wc-border bg-wc-bg-secondary transition-transform duration-300 group-hover:scale-110 group-hover:border-wc-accent/40">
+                            <component :is="supplementIcon(typeof sup === 'string' ? sup : (sup.nombre || sup.name))" weight="duotone" class="h-8 w-8 text-wc-accent" />
                           </div>
                           <div class="min-w-0 flex-1">
                             <div class="flex items-start justify-between gap-2">
@@ -1510,8 +1517,8 @@ onBeforeUnmount(() => {
                       <div class="wc-topline opacity-60 group-hover:opacity-100 transition-opacity"></div>
                       <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-wc-accent/0 blur-3xl transition-all duration-500 group-hover:bg-wc-accent/20"></div>
                       <div class="relative flex items-start gap-4">
-                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-wc-border bg-wc-bg-secondary text-3xl transition-transform duration-300 group-hover:scale-110 group-hover:border-wc-accent/40">
-                          {{ supplementIcon(typeof sup === 'string' ? sup : (sup.nombre || sup.name)) }}
+                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-wc-border bg-wc-bg-secondary transition-transform duration-300 group-hover:scale-110 group-hover:border-wc-accent/40">
+                          <component :is="supplementIcon(typeof sup === 'string' ? sup : (sup.nombre || sup.name))" weight="duotone" class="h-8 w-8 text-wc-accent" />
                         </div>
                         <div class="min-w-0 flex-1">
                           <div class="flex items-start justify-between gap-2">
