@@ -91,11 +91,9 @@
           <!-- Subtle dot pattern -->
           <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, currentColor 1px, transparent 1px); background-size: 20px 20px;"></div>
 
-          <!-- Center meal icon -->
+          <!-- Center emoji (recipe-specific 3D emoji) -->
           <div class="absolute inset-0 flex items-center justify-center">
-            <div class="flex h-20 w-20 items-center justify-center rounded-2xl border border-wc-accent/20 bg-wc-accent/5 transition-transform group-hover:scale-110">
-              <component :is="getMealIcon(r.meal)" :size="36" :stroke-width="1.5" class="text-wc-accent/60" />
-            </div>
+            <span class="text-6xl transition-transform group-hover:scale-110">{{ r.emoji }}</span>
           </div>
 
           <!-- Time badge -->
