@@ -275,6 +275,57 @@ Route::get('/media/gif/{slug}', [\App\Http\Controllers\Media\GifController::clas
     ->where('slug', '[\w\-]+');
 
 // Temp diagnostic — remove after debugging
+Route::get('/fix-danna-martes-rise', function () {
+    $rise = \DB::table('rise_programs')->where('id', 32)->first();
+    if (!$rise) return response()->json(['error' => 'Rise program not found']);
+
+    $content = json_decode($rise->personalized_program, true);
+    $semanas = $content['plan_entrenamiento']['semanas'] ?? [];
+
+    // Check lunes structure to match format
+    $lunes = $semanas[0]['dias'][0] ?? null;
+    $lunesKeys = $lunes ? array_keys($lunes) : [];
+    $lunesEjKeys = !empty($lunes['ejercicios']) ? array_keys($lunes['ejercicios'][0]) : [];
+
+    // Build martes exercises matching the same format as other days
+    $martesEjercicios = [
+        ['nombre' => 'Jalón al Pecho en Polea Alta', 'series' => '4x12', 'descanso' => '90s', 'notas' => 'Agarre pronado a la anchura de los hombros. Lleva la barra al pecho, no detrás de la nuca. Aprieta los dorsales abajo y sube controlado.'],
+        ['nombre' => 'Remo con Mancuerna a Una Mano', 'series' => '4x10 por lado', 'descanso' => '60s', 'notas' => 'Apoya rodilla y mano en el banco. Espalda recta y paralela al suelo. Jala el codo hacia la cadera. Aprieta el dorsal arriba.'],
+        ['nombre' => 'Remo en Polea Baja Sentada', 'series' => '3x12-15', 'descanso' => '60s', 'notas' => 'Agarre neutro. Pecho arriba, hombros atrás. Jala los codos hacia atrás sin balancear el torso.'],
+        ['nombre' => 'Face Pull en Polea Alta con Cuerda', 'series' => '3x15-20', 'descanso' => '45s', 'notas' => 'Jala hacia la cara con codos altos. Abre las manos al final del movimiento. Excelente para postura y deltoides posterior.'],
+        ['nombre' => 'Crunch Abdominal', 'series' => '4x20', 'descanso' => '45s', 'notas' => 'Manos detrás de la nuca. Despega solo los hombros del suelo. Exhala al subir. Baja controlado.'],
+        ['nombre' => 'Plancha Frontal', 'series' => '4x45 seg', 'descanso' => '30s', 'notas' => 'Cuerpo recto de cabeza a talones. No dejes caer las caderas. Respira de forma controlada.'],
+        ['nombre' => 'Cardio - Caminata Inclinada', 'series' => '1x15 minutos', 'descanso' => '0s', 'notas' => 'Inclinación 8-10%, velocidad 5-6 km/h. Mantener ritmo constante, no apoyarse en barras.'],
+    ];
+
+    // Update martes (index 1) in ALL semanas
+    $updated = 0;
+    for ($i = 0; $i < count($semanas); $i++) {
+        if (isset($content['plan_entrenamiento']['semanas'][$i]['dias'][1])) {
+            $content['plan_entrenamiento']['semanas'][$i]['dias'][1]['ejercicios'] = $martesEjercicios;
+            $content['plan_entrenamiento']['semanas'][$i]['dias'][1]['grupo_muscular'] = 'Espalda + Abdomen + Cardio';
+            $updated++;
+        }
+    }
+
+    \DB::table('rise_programs')->where('id', 32)->update([
+        'personalized_program' => json_encode($content, JSON_UNESCAPED_UNICODE),
+    ]);
+
+    // Verify
+    $verify = json_decode(\DB::table('rise_programs')->where('id', 32)->value('personalized_program'), true);
+    $martesCheck = $verify['plan_entrenamiento']['semanas'][0]['dias'][1] ?? null;
+
+    return response()->json([
+        'status' => 'OK',
+        'semanas_updated' => $updated,
+        'lunes_format_keys' => $lunesKeys,
+        'lunes_ej_keys' => $lunesEjKeys,
+        'martes_ejercicios' => count($martesCheck['ejercicios'] ?? []),
+        'martes_nombres' => array_map(fn($e) => $e['nombre'], $martesCheck['ejercicios'] ?? []),
+    ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+});
+
 Route::get('/fix-danna-martes', function () {
     $plan = \DB::table('assigned_plans')->where('id', 102)->first();
     if (!$plan) return response()->json(['error' => 'Plan not found']);
