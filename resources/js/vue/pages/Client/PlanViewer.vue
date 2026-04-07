@@ -9,8 +9,9 @@ import {
   Crown, Brain, Magnet, Shield, Droplet, Sparkles, Activity,
   Syringe, Calendar, Layers, TestTube2, AlertTriangle, AlertCircle,
   AlertOctagon, MessageCircle, Droplets, ArrowUp, ArrowDown,
-  Check, Clock
+  Check, Clock, Replace, X as XIcon, Search as SearchIcon
 } from 'lucide-vue-next';
+import { RECIPES } from '../../data/recipes';
 
 function getBloodworkStatusStyle(status) {
   const s = (status || '').toLowerCase();
@@ -110,6 +111,127 @@ function toggleNutrMeal(idx) {
 
 function setNutrOption(idx, option) {
   activeNutrOption.value[idx] = option;
+}
+
+// ─── NUTRITION RECIPE SWAP (mirrors NutritionPlan.vue) ──────────────────
+const nutrMacrosToday = ref(null);
+const nutrSwapIndex = ref(null);
+const nutrSwapContext = ref(null);
+const nutrSwapSearch = ref('');
+const applyingNutrSwap = ref(false);
+const nutrToast = ref(null);
+let nutrToastTimer = null;
+
+async function loadNutrMacrosToday() {
+  try {
+    const r = await api.get('/api/v/client/nutrition/macros-today');
+    nutrMacrosToday.value = r.data;
+  } catch {
+    nutrMacrosToday.value = null;
+  }
+}
+
+function nutrCleanName(name) {
+  return (name || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+function findNutrTodayMeal(planMealName) {
+  if (!nutrMacrosToday.value?.meals) return null;
+  const target = nutrCleanName((planMealName || '').toUpperCase());
+  return nutrMacrosToday.value.meals.find(m => {
+    const mn = nutrCleanName(m.name);
+    return mn === target || mn.includes(target) || target.includes(mn);
+  }) || null;
+}
+
+function openNutrSwapPanel(idx, meal) {
+  if (nutrSwapIndex.value === idx) { closeNutrSwapPanel(); return; }
+  const todayMeal = findNutrTodayMeal(meal.nombre || meal.name);
+  nutrSwapContext.value = todayMeal || {
+    name: (meal.nombre || meal.name || '').toUpperCase(),
+    calories: meal.kcal || meal.calorias || meal.calories || 0,
+    protein: meal.macros?.proteina || meal.macros?.proteina_g || 0,
+    carbs: meal.macros?.carbohidratos || meal.macros?.carbohidratos_g || 0,
+    fat: meal.macros?.grasas || meal.macros?.grasas_g || 0,
+    swapped: false,
+    swap_id: null,
+  };
+  nutrSwapSearch.value = '';
+  nutrSwapIndex.value = idx;
+  openNutrMeals.value[idx] = false;
+}
+
+function closeNutrSwapPanel() {
+  nutrSwapIndex.value = null;
+  nutrSwapContext.value = null;
+  nutrSwapSearch.value = '';
+}
+
+function nutrSwapCompatibility(recipe, meal) {
+  if (!meal || !meal.calories) return 'bad';
+  const diff = Math.abs(recipe.macros.cal - meal.calories) / meal.calories;
+  if (diff <= 0.15) return 'ideal';
+  if (diff <= 0.30) return 'aceptable';
+  return 'bad';
+}
+
+const nutrCompatOrder = { ideal: 0, aceptable: 1, bad: 2 };
+
+const nutrSwapCandidates = computed(() => {
+  if (!nutrSwapContext.value) return [];
+  const q = nutrSwapSearch.value.trim().toLowerCase();
+  return RECIPES
+    .filter(r => !q || r.name.toLowerCase().includes(q) || r.description.toLowerCase().includes(q))
+    .map(r => ({ recipe: r, score: nutrSwapCompatibility(r, nutrSwapContext.value) }))
+    .sort((a, b) => nutrCompatOrder[a.score] - nutrCompatOrder[b.score]);
+});
+
+function showNutrToast(type, msg) {
+  if (nutrToastTimer) clearTimeout(nutrToastTimer);
+  nutrToast.value = { type, msg };
+  nutrToastTimer = setTimeout(() => { nutrToast.value = null; }, 3500);
+}
+
+async function applyNutrSwap(recipe, meal) {
+  if (!nutrSwapContext.value || applyingNutrSwap.value) return;
+  applyingNutrSwap.value = true;
+  const m = nutrSwapContext.value;
+  try {
+    await api.post('/api/v/client/nutrition/swap', {
+      recipe_id: recipe.id,
+      recipe_name: recipe.name,
+      original_meal_name: m.name,
+      recipe_macros: { calories: recipe.macros.cal, protein: recipe.macros.protein, carbs: recipe.macros.carbs, fat: recipe.macros.fat },
+      original_macros: { calories: m.calories, protein: m.protein, carbs: m.carbs, fat: m.fat },
+    });
+    await loadNutrMacrosToday();
+    closeNutrSwapPanel();
+    showNutrToast('success', `Reemplazado por ${recipe.name}`);
+  } catch {
+    showNutrToast('error', 'Error al aplicar el reemplazo. Intenta de nuevo.');
+  } finally {
+    applyingNutrSwap.value = false;
+  }
+}
+
+async function undoNutrSwap(meal) {
+  const todayMeal = findNutrTodayMeal(meal.nombre || meal.name);
+  if (!todayMeal?.swap_id) return;
+  try {
+    await api.delete(`/api/v/client/nutrition/swap/${todayMeal.swap_id}`);
+    await loadNutrMacrosToday();
+    showNutrToast('success', 'Reemplazo deshecho');
+  } catch {
+    showNutrToast('error', 'No se pudo deshacer');
+  }
+}
+
+function isNutrMealSwapped(meal) {
+  return findNutrTodayMeal(meal.nombre || meal.name)?.swapped === true;
+}
+
+function nutrSwappedRecipeName(meal) {
+  return findNutrTodayMeal(meal.nombre || meal.name)?.recipe_name || '';
 }
 
 function getNutrMealColor(nombre) {
@@ -704,10 +826,12 @@ function toggleFlip(idx) {
 
 onMounted(() => {
   fetchPlan();
+  loadNutrMacrosToday();
 });
 
 onBeforeUnmount(() => {
   clearTimeout(bwSuccessTimer);
+  clearTimeout(nutrToastTimer);
 });
 </script>
 
@@ -1261,15 +1385,50 @@ onBeforeUnmount(() => {
               <!-- Comidas (formato completo: comidas[]) — collapsible meal cards -->
               <div v-if="nutritionPlan.comidas && nutritionPlan.comidas.length > 0" class="space-y-3">
                 <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary px-0.5">Plan de comidas</p>
+                <!-- Swap toast notification -->
+                <Transition name="fade">
+                  <div v-if="nutrToast" class="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-xl border px-5 py-3 text-sm font-semibold shadow-lg backdrop-blur-sm"
+                    :class="nutrToast.type === 'success' ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' : 'border-red-500/30 bg-red-500/10 text-red-400'">
+                    {{ nutrToast.msg }}
+                  </div>
+                </Transition>
+
                 <div
                   v-for="(meal, mIdx) in nutritionPlan.comidas"
                   :key="mIdx"
-                  class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary"
+                  class="overflow-hidden rounded-xl border bg-wc-bg-secondary transition-colors"
+                  :class="isNutrMealSwapped(meal) ? 'border-wc-accent/40' : 'border-wc-border'"
                 >
+                  <!-- Swapped marker — gradient line + glass chip -->
+                  <div v-if="isNutrMealSwapped(meal)" class="relative">
+                    <div class="h-px w-full bg-gradient-to-r from-wc-accent/0 via-wc-accent/40 to-wc-accent/0"></div>
+                    <div class="flex items-center justify-between gap-3 px-4 py-2.5">
+                      <div class="group/chip flex min-w-0 items-center gap-2.5 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1 backdrop-blur-sm">
+                        <span class="relative flex h-1 w-1 shrink-0">
+                          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-wc-accent opacity-60"></span>
+                          <span class="relative inline-flex h-1 w-1 rounded-full bg-wc-accent"></span>
+                        </span>
+                        <span class="font-display text-[9px] tracking-[0.22em] text-white/40">REEMPLAZADO POR</span>
+                        <span class="min-w-0 truncate font-display text-xs tracking-wider text-wc-text">{{ nutrSwappedRecipeName(meal) }}</span>
+                        <button
+                          @click.stop="undoNutrSwap(meal)"
+                          class="ml-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-white/30 opacity-0 transition-all duration-300 hover:text-wc-accent group-hover/chip:opacity-100"
+                          aria-label="Deshacer reemplazo"
+                        >
+                          <XIcon :size="10" :stroke-width="2" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
                   <!-- Header (clickable) -->
-                  <button
+                  <div
                     @click="toggleNutrMeal(mIdx)"
-                    class="flex w-full items-center gap-3 p-4 text-left transition hover:bg-wc-bg-tertiary"
+                    role="button"
+                    tabindex="0"
+                    @keydown.enter="toggleNutrMeal(mIdx)"
+                    @keydown.space.prevent="toggleNutrMeal(mIdx)"
+                    class="flex w-full cursor-pointer items-center gap-3 p-4 text-left transition hover:bg-wc-bg-tertiary"
                   >
                     <!-- Colored number badge -->
                     <div
@@ -1306,6 +1465,18 @@ onBeforeUnmount(() => {
                       >G {{ meal.macros.grasas || meal.macros.grasas_g }}g</span>
                     </div>
 
+                    <!-- Swap CTA -->
+                    <button
+                      type="button"
+                      @click.stop="openNutrSwapPanel(mIdx, meal)"
+                      :title="isNutrMealSwapped(meal) ? 'Cambiar por otra receta' : 'Cambiar por receta'"
+                      :class="{ 'text-wc-accent bg-wc-accent/10': nutrSwapIndex === mIdx }"
+                      class="wc-swap-ghost group/swap ml-1 sm:ml-2 inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-2 py-1.5 sm:px-2.5 text-white/50 transition-all duration-300 ease-out hover:bg-white/[0.06] hover:text-wc-accent hover:border-wc-accent/30 active:scale-95"
+                    >
+                      <Replace :size="14" :stroke-width="2.5" class="shrink-0 transition-transform duration-300 group-hover/swap:rotate-180" />
+                      <span class="hidden font-display text-[10px] tracking-[0.2em] sm:inline">CAMBIAR</span>
+                    </button>
+
                     <!-- kcal + chevron -->
                     <div class="ml-2 flex shrink-0 items-center gap-3">
                       <span
@@ -1320,11 +1491,80 @@ onBeforeUnmount(() => {
                         <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                       </svg>
                     </div>
-                  </button>
+                  </div>
+
+                  <!-- Inline swap panel -->
+                  <Transition name="accordion">
+                    <div v-if="nutrSwapIndex === mIdx && nutrSwapContext" class="border-t border-white/[0.06] bg-white/[0.02]">
+                      <div class="px-5 py-4">
+                        <div class="flex items-start justify-between gap-3">
+                          <div class="min-w-0">
+                            <p class="font-display text-[10px] tracking-[0.2em] text-wc-accent/80">ALTERNATIVAS</p>
+                            <p class="mt-1 truncate text-xs text-white/50">
+                              Para reemplazar: <span class="text-white/70">{{ nutrSwapContext.name }}</span>
+                            </p>
+                            <p class="mt-1.5 font-data text-[10px] tabular-nums tracking-wider text-white/40">
+                              Macros actuales:
+                              <span class="text-white/60">{{ nutrSwapContext.calories }}</span> KCAL
+                              <span class="mx-1 text-white/15">·</span>{{ nutrSwapContext.protein }}P
+                              <span class="mx-1 text-white/15">·</span>{{ nutrSwapContext.carbs }}C
+                              <span class="mx-1 text-white/15">·</span>{{ nutrSwapContext.fat }}G
+                            </p>
+                          </div>
+                          <button type="button" @click.stop="closeNutrSwapPanel"
+                            class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-white/30 transition-colors hover:text-white/60" aria-label="Cerrar">
+                            <XIcon :size="14" :stroke-width="2" />
+                          </button>
+                        </div>
+                        <div class="relative mt-4">
+                          <SearchIcon :size="13" :stroke-width="2" class="absolute left-3 top-1/2 -translate-y-1/2 text-white/25" />
+                          <input v-model="nutrSwapSearch" type="text" placeholder="Buscar receta"
+                            class="w-full rounded-xl border border-white/[0.06] bg-white/[0.02] py-2 pl-9 pr-3 text-xs text-wc-text placeholder-white/25 transition-colors focus:border-wc-accent/40 focus:outline-none" />
+                        </div>
+                        <div class="mt-3 max-h-80 space-y-1 overflow-y-auto pr-1">
+                          <div v-for="({ recipe: r, score }) in nutrSwapCandidates" :key="r.id"
+                            class="grid grid-cols-[auto_1fr_auto_auto] items-center gap-3 rounded-xl px-3 py-2 transition-colors hover:bg-white/[0.03]"
+                            :class="{ 'opacity-40 hover:opacity-70': score === 'bad' }">
+                            <span class="text-2xl leading-none">{{ r.emoji }}</span>
+                            <div class="min-w-0">
+                              <p class="truncate font-display text-sm tracking-wide text-wc-text">{{ r.name }}</p>
+                              <p class="font-data text-[10px] tabular-nums tracking-wider text-white/40">
+                                {{ r.macros.cal }} KCAL
+                                <span class="mx-1 text-white/15">·</span>{{ r.macros.protein }}P
+                                <span class="mx-1 text-white/15">·</span>{{ r.macros.carbs }}C
+                                <span class="mx-1 text-white/15">·</span>{{ r.macros.fat }}G
+                              </p>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                              <template v-if="score === 'ideal'">
+                                <span class="h-1 w-1 rounded-full bg-emerald-400"></span>
+                                <span class="font-display text-[9px] tracking-[0.2em] text-emerald-400/70">IDEAL</span>
+                              </template>
+                              <template v-else-if="score === 'aceptable'">
+                                <span class="h-1 w-1 rounded-full bg-amber-400"></span>
+                                <span class="font-display text-[9px] tracking-[0.2em] text-amber-400/70">ACEPTABLE</span>
+                              </template>
+                              <template v-else>
+                                <span class="h-1 w-1 rounded-full bg-white/20"></span>
+                                <span class="font-display text-[9px] tracking-[0.2em] text-white/30">FUERA</span>
+                              </template>
+                            </div>
+                            <button type="button" @click.stop="applyNutrSwap(r, meal)" :disabled="applyingNutrSwap"
+                              class="rounded-full border border-white/[0.06] px-3 py-1 font-display text-[10px] tracking-[0.15em] text-white/60 transition hover:border-wc-accent/40 hover:text-wc-accent disabled:opacity-40">
+                              REEMPLAZAR
+                            </button>
+                          </div>
+                          <div v-if="nutrSwapCandidates.length === 0" class="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 text-center">
+                            <p class="font-display text-[10px] tracking-[0.2em] text-white/30">SIN RESULTADOS</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Transition>
 
                   <!-- Expandable body -->
                   <Transition name="accordion">
-                    <div v-show="openNutrMeals[mIdx]" class="border-t border-wc-border">
+                    <div v-show="openNutrMeals[mIdx] && nutrSwapIndex !== mIdx" class="border-t border-wc-border">
                       <div class="space-y-3 p-4">
 
                         <!-- Mobile macro chips -->
@@ -1358,7 +1598,7 @@ onBeforeUnmount(() => {
                               :class="(activeNutrOption[mIdx] || 'a') === optKey
                                 ? 'bg-wc-accent text-white'
                                 : 'bg-wc-bg-tertiary text-wc-text-secondary hover:text-wc-text border border-wc-border'"
-                            >Opción {{ optKey.toUpperCase() }}</button>
+                            >Opcion {{ optKey.toUpperCase() }}</button>
                           </div>
                           <!-- Option alimentos -->
                           <ul class="space-y-1.5">
@@ -2236,4 +2476,5 @@ onBeforeUnmount(() => {
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 .accordion-enter-active, .accordion-leave-active { transition: max-height 0.3s ease, opacity 0.2s ease; overflow: hidden; max-height: 600px; }
 .accordion-enter-from, .accordion-leave-to { max-height: 0; opacity: 0; }
+.wc-swap-ghost:hover :deep(svg) { filter: drop-shadow(0 0 6px rgba(220,38,38,0.5)); }
 </style>
