@@ -15,7 +15,7 @@ class ResetPasswordTemp extends Command
             $this->error('Client not found');
             return;
         }
-        $client->password = bcrypt($this->argument('password'));
+        $client->password_hash = bcrypt($this->argument('password'));
         $client->save();
         $this->info("Password updated for: {$client->name} ({$client->email})");
     }
