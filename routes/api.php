@@ -263,3 +263,27 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
 });
 
 
+
+// TEMP: Insert Juliana RISE program
+Route::get('/temp/fix-juliana-rise', function () {
+    $client = \App\Models\Client::where('email', 'juliana27p@gmail.com')->first();
+    if (!$client) return response()->json(['error' => 'Client not found']);
+    $json = file_get_contents(base_path('storage/juliana_rise_program.json'));
+    $program = json_decode($json, true);
+    $rise = \DB::table('rise_programs')->where('client_id', $client->id)->first();
+    if ($rise) {
+        \DB::table('rise_programs')->where('id', $rise->id)->update([
+            'personalized_program' => json_encode($program),
+            'updated_at' => now(),
+        ]);
+        return response()->json(['ok' => true, 'action' => 'updated', 'rise_id' => $rise->id, 'client' => $client->name, 'weeks' => count($program['semanas'])]);
+    } else {
+        $id = \DB::table('rise_programs')->insertGetId([
+            'client_id' => $client->id,
+            'personalized_program' => json_encode($program),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        return response()->json(['ok' => true, 'action' => 'inserted', 'rise_id' => $id, 'client' => $client->name, 'weeks' => count($program['semanas'])]);
+    }
+});
