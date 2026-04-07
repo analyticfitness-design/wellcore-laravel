@@ -96,7 +96,7 @@ const navSections = [
         items: [
             { name: 'Metricas', to: '/client/metrics', icon: 'metrics', routeName: 'client-metrics' },
             { name: 'Fotos', to: '/client/photos', icon: 'photos', routeName: 'client-photos' },
-            { name: 'Mindfulness', to: '/client/mindfulness', icon: 'mindfulness', routeName: 'client-mindfulness' },
+            { name: 'Bienestar', to: '/client/mindfulness', icon: 'mindfulness', routeName: 'client-mindfulness' },
         ],
     },
     {

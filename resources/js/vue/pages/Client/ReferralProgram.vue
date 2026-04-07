@@ -115,10 +115,10 @@ onMounted(() => {
   <ClientLayout>
 
     <!-- Loading Skeleton -->
-    <div v-if="loading" class="mx-auto max-w-4xl space-y-6">
+    <div v-if="loading" class="mx-auto max-w-4xl space-y-6 sm:space-y-8">
       <div class="h-48 animate-pulse rounded-2xl bg-wc-bg-tertiary"></div>
-      <div class="grid grid-cols-3 gap-4">
-        <div v-for="i in 3" :key="i" class="h-28 animate-pulse rounded-2xl bg-wc-bg-tertiary"></div>
+      <div class="grid grid-cols-3 gap-3 sm:gap-4">
+        <div v-for="i in 3" :key="i" class="h-24 animate-pulse rounded-2xl bg-wc-bg-tertiary sm:h-28"></div>
       </div>
       <div class="h-36 animate-pulse rounded-2xl bg-wc-bg-tertiary"></div>
       <div class="h-24 animate-pulse rounded-2xl bg-wc-bg-tertiary"></div>
@@ -142,7 +142,7 @@ onMounted(() => {
     </div>
 
     <!-- Content -->
-    <div v-else class="mx-auto max-w-4xl space-y-6">
+    <div v-else class="mx-auto max-w-4xl space-y-6 sm:space-y-8">
 
       <!-- Hero Section -->
       <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-secondary">
@@ -156,11 +156,11 @@ onMounted(() => {
             <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
           </svg>
         </div>
-        <div class="relative px-7 py-8">
+        <div class="relative px-5 py-6 sm:px-7 sm:py-8">
           <span class="inline-block rounded-full bg-wc-accent/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-wc-accent ring-1 ring-wc-accent/20">
             Gana recompensas
           </span>
-          <h1 class="mt-3 font-display text-4xl tracking-wide text-wc-text leading-none">
+          <h1 class="mt-3 font-display text-3xl tracking-wide text-wc-text leading-none sm:text-4xl">
             PROGRAMA DE<br>
             <span class="text-wc-accent">REFERIDOS</span>
           </h1>
@@ -197,29 +197,29 @@ onMounted(() => {
       </Transition>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-3 gap-4">
+      <div class="grid grid-cols-3 gap-3 sm:gap-4">
         <!-- Total -->
         <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-secondary pt-1">
           <div class="absolute top-0 left-0 right-0 h-0.5 bg-wc-accent rounded-t-2xl"></div>
-          <div class="p-5 text-center">
-            <p class="font-data text-4xl font-bold text-wc-accent">{{ stats.total }}</p>
-            <p class="mt-2 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Total referidos</p>
+          <div class="p-3 text-center sm:p-5">
+            <p class="font-data text-2xl font-bold text-wc-accent sm:text-4xl">{{ stats.total }}</p>
+            <p class="mt-1.5 text-[9px] font-semibold uppercase tracking-widest text-wc-text-tertiary sm:mt-2 sm:text-[10px]">Total referidos</p>
           </div>
         </div>
         <!-- Registered -->
         <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-secondary pt-1">
           <div class="absolute top-0 left-0 right-0 h-0.5 bg-blue-500 rounded-t-2xl"></div>
-          <div class="p-5 text-center">
-            <p class="font-data text-4xl font-bold text-blue-400">{{ stats.registered }}</p>
-            <p class="mt-2 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Registrados</p>
+          <div class="p-3 text-center sm:p-5">
+            <p class="font-data text-2xl font-bold text-blue-400 sm:text-4xl">{{ stats.registered }}</p>
+            <p class="mt-1.5 text-[9px] font-semibold uppercase tracking-widest text-wc-text-tertiary sm:mt-2 sm:text-[10px]">Registrados</p>
           </div>
         </div>
         <!-- Active -->
         <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-secondary pt-1">
           <div class="absolute top-0 left-0 right-0 h-0.5 bg-emerald-500 rounded-t-2xl"></div>
-          <div class="p-5 text-center">
-            <p class="font-data text-4xl font-bold text-emerald-400">{{ stats.active }}</p>
-            <p class="mt-2 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">Activos</p>
+          <div class="p-3 text-center sm:p-5">
+            <p class="font-data text-2xl font-bold text-emerald-400 sm:text-4xl">{{ stats.active }}</p>
+            <p class="mt-1.5 text-[9px] font-semibold uppercase tracking-widest text-wc-text-tertiary sm:mt-2 sm:text-[10px]">Activos</p>
           </div>
         </div>
       </div>
@@ -227,7 +227,7 @@ onMounted(() => {
       <!-- Referral Link Card -->
       <div class="rounded-2xl border border-wc-accent/30 bg-wc-bg-secondary shadow-lg shadow-wc-accent/5">
         <!-- Card Header -->
-        <div class="flex items-center justify-between border-b border-wc-border px-6 py-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-wc-border px-4 py-3 sm:px-6 sm:py-4">
           <div class="flex items-center gap-3">
             <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-wc-accent/10 ring-1 ring-wc-accent/20">
               <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -245,7 +245,7 @@ onMounted(() => {
         </div>
 
         <!-- Link display + Actions -->
-        <div class="p-6 space-y-4">
+        <div class="space-y-4 p-4 sm:p-6">
           <div class="flex items-center gap-2 rounded-xl border border-wc-border bg-wc-bg px-4 py-3">
             <svg class="h-3.5 w-3.5 shrink-0 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
@@ -253,14 +253,14 @@ onMounted(() => {
             <span class="flex-1 truncate font-mono text-xs text-wc-text-secondary">{{ referralLink }}</span>
           </div>
 
-          <div class="flex flex-wrap gap-3">
+          <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-3">
             <!-- Copy button -->
             <button
               @click="copyLink"
               :class="copied
                 ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-400'
                 : 'border-wc-accent/40 text-wc-accent hover:bg-wc-accent/5'"
-              class="flex items-center gap-2 rounded-xl border px-5 py-2.5 text-sm font-semibold transition-all duration-200"
+              class="flex w-full items-center justify-center gap-2 rounded-xl border px-5 py-2.5 text-sm font-semibold transition-all duration-200 sm:w-auto sm:justify-start"
             >
               <Transition name="swap" mode="out-in">
                 <svg v-if="!copied" key="copy" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -276,7 +276,7 @@ onMounted(() => {
             <!-- WhatsApp button -->
             <button
               @click="shareWhatsApp"
-              class="flex items-center gap-2 rounded-xl bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              class="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 sm:w-auto sm:justify-start"
             >
               <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
@@ -288,7 +288,7 @@ onMounted(() => {
       </div>
 
       <!-- Invite by Email -->
-      <div class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-6">
+      <div class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-4 sm:p-6">
         <div class="mb-4 flex items-center gap-2">
           <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-wc-bg-tertiary">
             <svg class="h-4 w-4 text-wc-text-secondary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -300,7 +300,7 @@ onMounted(() => {
             <p class="text-[11px] text-wc-text-tertiary">Envia una invitacion directa a la bandeja de entrada</p>
           </div>
         </div>
-        <form @submit.prevent="sendInvite" class="flex items-start gap-3">
+        <form @submit.prevent="sendInvite" class="flex flex-col gap-3 sm:flex-row sm:items-start">
           <div class="flex-1">
             <input
               v-model="inviteEmail"
@@ -319,7 +319,7 @@ onMounted(() => {
           <button
             type="submit"
             :disabled="inviteSending || !inviteEmail.trim()"
-            class="flex items-center gap-2 rounded-xl bg-wc-accent px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+            class="flex w-full items-center justify-center gap-2 rounded-xl bg-wc-accent px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40 sm:w-auto"
           >
             <svg v-if="!inviteSending" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
@@ -336,7 +336,7 @@ onMounted(() => {
       <!-- Referral History -->
       <div class="rounded-2xl border border-wc-border bg-wc-bg-secondary overflow-hidden">
         <!-- Section header -->
-        <div class="flex items-center justify-between border-b border-wc-border px-6 py-4">
+        <div class="flex items-center justify-between border-b border-wc-border px-4 py-3 sm:px-6 sm:py-4">
           <h3 class="text-xs font-bold uppercase tracking-widest text-wc-text-tertiary">Historial de referidos</h3>
           <span v-if="history.length > 0" class="rounded-full bg-wc-bg-tertiary px-2.5 py-0.5 text-[10px] font-bold text-wc-text-secondary">
             {{ history.length }}
@@ -348,9 +348,9 @@ onMounted(() => {
           <div
             v-for="ref_item in history"
             :key="ref_item.id || ref_item.email"
-            class="flex items-center justify-between px-6 py-4 transition-colors hover:bg-wc-bg-tertiary/30"
+            class="flex flex-wrap items-center justify-between gap-2 px-4 py-3 transition-colors hover:bg-wc-bg-tertiary/30 sm:flex-nowrap sm:gap-0 sm:px-6 sm:py-4"
           >
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3 sm:gap-4">
               <!-- Avatar -->
               <div class="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-bg-tertiary ring-1 ring-wc-border">
                 <span class="font-display text-sm tracking-wide text-wc-text">
