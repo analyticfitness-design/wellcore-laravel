@@ -1,76 +1,78 @@
 <?php
-// Fix Adriana's Wednesday name + verify Bulgarian squat
-Route::get('/temp/fix-adriana-wednesday', function () {
-    try {
-        $base = 'https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs/master/';
-        $adriana = \App\Models\Client::where('email', 'asarmientoslm@gmail.com')->first();
-        if (!$adriana) return response()->json(['error' => 'Adriana not found']);
+// Debug: show Adriana's day names to find Wednesday
+Route::get('/temp/debug-adriana-days', function () {
+    $adriana = \App\Models\Client::where('email', 'asarmientoslm@gmail.com')->first();
+    if (!$adriana) return response()->json(['error' => 'not found']);
+    $rise = \DB::table('rise_programs')->where('client_id', $adriana->id)->first();
+    if (!$rise) return response()->json(['error' => 'no rise']);
+    $data = json_decode($rise->personalized_program, true);
 
-        $rise = \DB::table('rise_programs')->where('client_id', $adriana->id)->first();
-        if (!$rise) return response()->json(['error' => 'No rise program']);
-
-        $data = json_decode($rise->personalized_program, true);
-        $fixes = [];
-        $wednesdayNames = [];
-
-        foreach ($data['plan_entrenamiento']['semanas'] as &$semana) {
-            foreach ($semana['dias'] as &$dia) {
-                $nombre = $dia['nombre'] ?? '';
-                $diaField = $dia['dia'] ?? '';
-
-                // Find Wednesday by day name or position (3rd day = index 2)
-                $isWednesday = (stripos($nombre, 'miercoles') !== false || stripos($nombre, 'miércoles') !== false
-                    || stripos($diaField, 'miercoles') !== false || stripos($diaField, 'miércoles') !== false);
-
-                if ($isWednesday) {
-                    $wednesdayNames[] = $nombre;
-
-                    // Force rename to Glúteos if it doesn't say gluteos
-                    if (stripos($nombre, 'gluteo') === false && stripos($nombre, 'glúteo') === false) {
-                        // Replace whatever muscle name it has with Glúteos
-                        $dia['nombre'] = preg_replace('/—\s*.*$/', '— Glúteos', $nombre);
-                        if ($dia['nombre'] === $nombre) {
-                            // If regex didn't match, just append
-                            $dia['nombre'] = $nombre . ' (Glúteos)';
-                        }
-                        $fixes[] = 'Wednesday renamed: "' . $nombre . '" → "' . $dia['nombre'] . '"';
-                    }
-
-                    // Add Bulgarian squat if not present
-                    $hasBulgarian = false;
-                    foreach ($dia['ejercicios'] as $ej) {
-                        if (stripos($ej['nombre'], 'bulgar') !== false || stripos($ej['nombre'], 'split squat') !== false) {
-                            $hasBulgarian = true;
-                            break;
-                        }
-                    }
-
-                    if (!$hasBulgarian) {
-                        $dia['ejercicios'][] = [
-                            'nombre' => 'Sentadilla Búlgara con Mancuernas',
-                            'series' => 4,
-                            'repeticiones' => '10-12 por pierna',
-                            'descanso' => '90s',
-                            'notas' => 'Pie trasero en banco. Baja hasta que la rodilla trasera casi toque el suelo. Empuja con el talón delantero.',
-                            'gif_url' => $base . '04101301-Dumbbell-Single-Leg-Split-Squat_Thighs_720.gif',
-                        ];
-                        $fixes[] = 'Bulgarian squat added to Wednesday';
-                    }
-                }
-            }
+    $days = [];
+    $week1 = $data['plan_entrenamiento']['semanas'][0] ?? null;
+    if ($week1) {
+        foreach ($week1['dias'] as $i => $dia) {
+            $days[] = [
+                'index' => $i,
+                'dia' => $dia['dia'] ?? 'N/A',
+                'nombre' => $dia['nombre'] ?? 'N/A',
+                'exercises' => count($dia['ejercicios'] ?? []),
+                'cardio' => $dia['cardio'] ?? null,
+            ];
         }
-        unset($semana, $dia);
-
-        \DB::table('rise_programs')->where('id', $rise->id)->update([
-            'personalized_program' => json_encode($data),
-        ]);
-
-        return response()->json([
-            'ok' => true,
-            'wednesday_names_found' => $wednesdayNames,
-            'fixes' => $fixes,
-        ]);
-    } catch (\Throwable $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
     }
+    return response()->json([
+        'total_weeks' => count($data['plan_entrenamiento']['semanas'] ?? []),
+        'week1_days' => $days,
+    ]);
+});
+
+// Fix Adriana by index (3rd day = index 2 is Wednesday)
+Route::get('/temp/fix-adriana-by-index', function () {
+    $base = 'https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs/master/';
+    $adriana = \App\Models\Client::where('email', 'asarmientoslm@gmail.com')->first();
+    if (!$adriana) return response()->json(['error' => 'not found']);
+    $rise = \DB::table('rise_programs')->where('client_id', $adriana->id)->first();
+    if (!$rise) return response()->json(['error' => 'no rise']);
+    $data = json_decode($rise->personalized_program, true);
+
+    $fixes = [];
+    foreach ($data['plan_entrenamiento']['semanas'] as &$semana) {
+        // Fix 3rd day (index 2) = Wednesday → rename to Glúteos + add Bulgarian
+        if (isset($semana['dias'][2])) {
+            $dia = &$semana['dias'][2];
+            $oldName = $dia['nombre'] ?? 'N/A';
+
+            // Rename to Glúteos
+            if (stripos($oldName, 'gluteo') === false && stripos($oldName, 'glúteo') === false) {
+                $dia['nombre'] = preg_replace('/(—|:)\s*.*$/', '$1 Glúteos', $oldName);
+                if ($dia['nombre'] === $oldName) {
+                    $dia['nombre'] = str_replace(['Isquios', 'isquios', 'Isquiotibiales', 'Femoral'], 'Glúteos', $oldName);
+                }
+                $fixes[] = 'Wed renamed: ' . $oldName . ' → ' . $dia['nombre'];
+            }
+
+            // Add Bulgarian squat
+            $has = false;
+            foreach ($dia['ejercicios'] as $ej) {
+                if (stripos($ej['nombre'] ?? '', 'bulgar') !== false) { $has = true; break; }
+            }
+            if (!$has) {
+                $dia['ejercicios'][] = [
+                    'nombre' => 'Sentadilla Búlgara con Mancuernas',
+                    'series' => 4, 'repeticiones' => '10-12 por pierna', 'descanso' => '90s',
+                    'notas' => 'Pie trasero en banco. Baja controlado. Empuja con talón delantero.',
+                    'gif_url' => $base . '04101301-Dumbbell-Single-Leg-Split-Squat_Thighs_720.gif',
+                ];
+                $fixes[] = 'Bulgarian squat added to Wed';
+            }
+            unset($dia);
+        }
+    }
+    unset($semana);
+
+    \DB::table('rise_programs')->where('id', $rise->id)->update([
+        'personalized_program' => json_encode($data),
+    ]);
+
+    return response()->json(['ok' => true, 'fixes' => $fixes]);
 });

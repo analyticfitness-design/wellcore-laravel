@@ -121,6 +121,7 @@ const nutrSwapContext = ref(null);
 const nutrSwapSearch = ref('');
 const applyingNutrSwap = ref(false);
 const nutrToast = ref(null);
+const showAiEstimator = ref(false);
 let nutrToastTimer = null;
 
 async function loadNutrMacrosToday() {
@@ -1355,6 +1356,17 @@ onBeforeUnmount(() => {
                 </div>
               </div>
 
+              <!-- Botón IA: analizar comida -->
+              <button
+                @click="showAiEstimator = true"
+                class="flex w-full items-center justify-center gap-2 rounded-xl border border-wc-accent/30 bg-wc-accent/5 px-4 py-2.5 text-sm font-semibold text-wc-accent hover:bg-wc-accent/10 transition-colors"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/>
+                </svg>
+                Analizar mi comida con IA
+              </button>
+
               <!-- Notas del coach -->
               <div v-if="nutritionPlan.notas_coach" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
                 <div class="flex items-start gap-3">
@@ -1702,6 +1714,9 @@ onBeforeUnmount(() => {
           <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center">
             <p class="text-sm text-wc-text-secondary">Tu coach esta preparando tu plan de nutricion.</p>
           </div>
+
+          <!-- AI Food Estimator panel -->
+          <AiFoodEstimator :show="showAiEstimator" @close="showAiEstimator = false" />
         </div>
 
         <!-- ==================== TAB: SUPLEMENTACION ==================== -->
