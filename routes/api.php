@@ -282,6 +282,9 @@ Route::get('/temp/fix-juliana-rise', function () {
             $id = \DB::table('rise_programs')->insertGetId([
                 'client_id' => $client->id,
                 'personalized_program' => json_encode($program),
+                'start_date' => now()->toDateString(),
+                'end_date' => now()->addDays(30)->toDateString(),
+                'status' => 'active',
                 'created_at' => now(),
             ]);
             return response()->json(['ok' => true, 'action' => 'inserted', 'rise_id' => $id]);
