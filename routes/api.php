@@ -274,4 +274,3 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
     Route::post('/send-gift-invitation', [AdminController::class, 'sendGiftInvitation']);
 });
 
-require __DIR__.'/temp_fix.php';
