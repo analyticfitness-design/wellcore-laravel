@@ -262,16 +262,3 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
     Route::post('/send-gift-invitation', [AdminController::class, 'sendGiftInvitation']);
 });
 
-// TEMP: Update Silvia's nutrition plan — remove after use
-Route::get('/temp/fix-silvia-nutrition', function () {
-    $json = file_get_contents(base_path('storage/silvia_nutrition_insert.json'));
-    $content = json_decode($json, true);
-    $plan = \App\Models\AssignedPlan::where('client_id', 54)
-        ->where('plan_type', 'nutricion')
-        ->where('active', true)
-        ->first();
-    if (!$plan) return response()->json(['error' => 'No active nutrition plan found for client 54']);
-    $plan->content = $content;
-    $plan->save();
-    return response()->json(['success' => true, 'plan_id' => $plan->id, 'comidas' => count($content['comidas'] ?? [])]);
-});
