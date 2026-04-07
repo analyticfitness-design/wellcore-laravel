@@ -1,4 +1,5 @@
 <template>
+  <ClientLayout>
   <div class="space-y-8 px-4 sm:px-0 sm:space-y-10">
 
     <!-- ═══ HERO HEADER ═══════════════════════════════════════════════════════ -->
@@ -402,10 +403,12 @@
     </section>
 
   </div>
+  </ClientLayout>
 </template>
 
 <script setup>
 import { ref, computed, onBeforeUnmount } from 'vue';
+import ClientLayout from '../../layouts/ClientLayout.vue';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const SESSION_CIRC = 2 * Math.PI * 88;
