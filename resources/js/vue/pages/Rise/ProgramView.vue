@@ -42,8 +42,7 @@ function toggleWeek(weekNum) {
 }
 
 function goWorkout(weekIdx, dayIdx) {
-    // dayIdx is 0-based index within the week's dias array
-    router.push({ path: '/rise/workout', query: { day: dayIdx + 1 } });
+    router.push({ name: 'rise-workout', params: { day: dayIdx + 1 } });
 }
 
 async function fetchProgram() {

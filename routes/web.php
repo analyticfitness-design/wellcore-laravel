@@ -195,7 +195,7 @@ Route::get('/client/{any}', fn () => view('vue'))->where('any', '.*');
 // RISE portal
 Route::view('/rise', 'vue')->name('rise.dashboard');
 Route::view('/rise/program', 'vue')->name('rise.program');
-Route::view('/rise/workout', 'vue')->name('rise.workout');
+Route::view('/rise/workout/{day?}', 'vue')->name('rise.workout');
 Route::view('/rise/tracking', 'vue')->name('rise.tracking');
 Route::view('/rise/measurements', 'vue')->name('rise.measurements');
 Route::view('/rise/photos', 'vue')->name('rise.photos');
