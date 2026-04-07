@@ -274,7 +274,6 @@ Route::get('/temp/fix-juliana-rise', function () {
     if ($rise) {
         \DB::table('rise_programs')->where('id', $rise->id)->update([
             'personalized_program' => json_encode($program),
-            'updated_at' => now(),
         ]);
         return response()->json(['ok' => true, 'action' => 'updated', 'rise_id' => $rise->id, 'client' => $client->name, 'weeks' => count($program['semanas'])]);
     } else {
@@ -282,7 +281,6 @@ Route::get('/temp/fix-juliana-rise', function () {
             'client_id' => $client->id,
             'personalized_program' => json_encode($program),
             'created_at' => now(),
-            'updated_at' => now(),
         ]);
         return response()->json(['ok' => true, 'action' => 'inserted', 'rise_id' => $id, 'client' => $client->name, 'weeks' => count($program['semanas'])]);
     }
