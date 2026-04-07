@@ -263,16 +263,3 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
 });
 
 
-// TEMP: Fix Silvia nutrition macros per meal
-Route::get('/temp/fix-silvia-nutrition-v2', function () {
-    $json = file_get_contents(base_path('storage/silvia_nutrition_insert.json'));
-    $content = json_decode($json, true);
-    $plan = \App\Models\AssignedPlan::where('client_id', 54)
-        ->where('plan_type', 'nutricion')
-        ->where('active', true)
-        ->first();
-    if (!$plan) return response()->json(['error' => 'Not found']);
-    $plan->content = $content;
-    $plan->save();
-    return response()->json(['ok' => true, 'comidas' => count($content['comidas'])]);
-});
