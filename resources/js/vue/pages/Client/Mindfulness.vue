@@ -212,78 +212,146 @@
 
       <div class="mx-auto mt-6 max-w-md">
 
-        <!-- Breathing Circle -->
-        <div class="relative mx-auto flex h-64 w-64 items-center justify-center sm:h-72 sm:w-72">
-          <!-- Ambient glow -->
-          <div
-            class="absolute inset-0 rounded-full transition-all duration-1000"
-            :class="running
-              ? (phase === 'inhala'
-                  ? 'shadow-[0_0_80px_rgba(220,38,38,0.22)]'
-                  : phase === 'exhala'
-                    ? 'shadow-[0_0_80px_rgba(59,130,246,0.22)]'
-                    : 'shadow-[0_0_80px_rgba(168,85,247,0.22)]')
-              : ''"
-          ></div>
-
-          <!-- Dashed background ring -->
-          <svg class="absolute inset-0" viewBox="0 0 200 200" aria-hidden="true">
-            <circle cx="100" cy="100" r="90" fill="none" stroke="currentColor" stroke-width="2" class="text-wc-border" stroke-dasharray="4 4" />
-          </svg>
-
-          <!-- Animated breathing circle -->
+        <!-- ── Cinematic Breathing Circle ─────────────────────────────────── -->
+        <div
+          class="relative mx-auto h-72 w-72 sm:h-80 sm:w-80"
+          :style="{ filter: `drop-shadow(0 0 28px ${running || paused ? phaseColor + '55' : 'transparent'})`, transition: 'filter 0.6s ease' }"
+        >
+          <!-- SVG stack — all layers in one SVG for correct stacking -->
           <svg
-            class="absolute inset-0"
+            class="-rotate-90 absolute inset-0 h-full w-full"
             viewBox="0 0 200 200"
-            :style="{ transform: `scale(${breathScale})`, transformOrigin: 'center', transition: `transform ${phaseDuration}s ease-in-out` }"
             aria-hidden="true"
           >
             <defs>
-              <radialGradient id="breathGrad" cx="50%" cy="50%" r="50%">
-                <stop offset="0%"
-                  :stop-color="phase === 'inhala' ? '#DC2626' : phase === 'exhala' ? '#3B82F6' : '#A855F7'"
-                  stop-opacity="0.18"
-                />
-                <stop offset="100%"
-                  :stop-color="phase === 'inhala' ? '#DC2626' : phase === 'exhala' ? '#3B82F6' : '#A855F7'"
-                  stop-opacity="0.02"
-                />
+              <!-- Blur filter for glow ring -->
+              <filter id="breathGlow" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="6" result="blur" />
+              </filter>
+              <!-- Radial gradient for inner fill — keyed by phase color -->
+              <radialGradient id="innerGrad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" :stop-color="phaseColor" stop-opacity="0.22" />
+                <stop offset="100%" stop-color="#0D0D14" stop-opacity="1" />
               </radialGradient>
             </defs>
-            <circle cx="100" cy="100" r="70" fill="url(#breathGrad)" />
-            <circle
-              cx="100" cy="100" r="70"
-              fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-              :class="phase === 'inhala' ? 'text-wc-accent' : phase === 'exhala' ? 'text-blue-500' : 'text-purple-500'"
-              class="transition-colors duration-500"
-            />
-          </svg>
 
-          <!-- Progress ring -->
-          <svg class="absolute inset-0 -rotate-90" viewBox="0 0 200 200" aria-hidden="true">
+            <!-- Layer 1: Deep dark background circle -->
+            <circle cx="100" cy="100" r="90" fill="#0D0D14" />
+
+            <!-- Layer 2: Tick ring (texturized outer marks) -->
             <circle
-              cx="100" cy="100" r="92"
-              fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-              class="text-wc-accent/40 transition-all duration-1000"
-              :stroke-dasharray="BREATH_CIRC"
+              cx="100" cy="100" r="93"
+              fill="none"
+              stroke="rgba(255,255,255,0.06)"
+              stroke-width="2"
+              stroke-dasharray="3 8"
+            />
+
+            <!-- Layer 3: Total session progress arc (thin, white, outer) -->
+            <circle
+              cx="100" cy="100" r="88"
+              fill="none"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+              opacity="0.18"
+              :stroke-dasharray="TOTAL_CIRC"
               :stroke-dashoffset="progressOffset"
+              style="transition: stroke-dashoffset 1s linear"
+            />
+
+            <!-- Layer 4: Phase progress arc (thick, colored) -->
+            <circle
+              cx="100" cy="100" r="80"
+              fill="none"
+              :stroke="phaseColor"
+              stroke-width="6"
+              stroke-linecap="round"
+              :stroke-dasharray="PHASE_CIRC"
+              :stroke-dashoffset="phaseProgressOffset"
+              style="transition: stroke-dashoffset 1s linear, stroke 0.5s ease"
+            />
+
+            <!-- Layer 5: Outer glow halo (SVG blur, not box-shadow) -->
+            <circle
+              v-if="running || paused"
+              cx="100" cy="100" r="93"
+              fill="none"
+              :stroke="phaseColor"
+              stroke-width="20"
+              opacity="0.12"
+              filter="url(#breathGlow)"
+            />
+
+            <!-- Layer 6: Inner dynamic circle (scales with breath) -->
+            <circle
+              cx="100" cy="100" r="62"
+              fill="url(#innerGrad)"
+              :style="{
+                transform: `rotate(90deg) scale(${breathScale})`,
+                transformOrigin: '100px 100px',
+                transition: `transform ${phaseDuration}s ease-in-out`
+              }"
+            />
+
+            <!-- Layer 7: Inner stroke ring (colored, same scale) -->
+            <circle
+              cx="100" cy="100" r="62"
+              fill="none"
+              :stroke="phaseColor"
+              stroke-width="1.5"
+              opacity="0.6"
+              :style="{
+                transform: `rotate(90deg) scale(${breathScale})`,
+                transformOrigin: '100px 100px',
+                transition: `transform ${phaseDuration}s ease-in-out, stroke 0.5s ease`
+              }"
             />
           </svg>
 
-          <!-- Center text -->
-          <div class="relative text-center" aria-live="polite" aria-atomic="true">
-            <p class="font-data text-5xl font-bold tabular-nums text-wc-text sm:text-6xl">{{ phaseCountdown }}</p>
-            <p
+          <!-- Center content — absolute overlay, normal rotation -->
+          <div
+            class="absolute inset-0 flex flex-col items-center justify-center gap-1"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            <span
+              class="font-data text-6xl font-bold tabular-nums sm:text-7xl"
+              :style="{ color: phaseColor, transition: 'color 0.5s ease' }"
+            >{{ running || paused ? phaseCountdown : '' }}</span>
+            <span
               v-if="running || paused"
-              class="mt-2 text-sm font-semibold uppercase tracking-widest transition-colors duration-500"
-              :class="phase === 'inhala' ? 'text-wc-accent' : phase === 'exhala' ? 'text-blue-500' : 'text-purple-500'"
-            >{{ phaseLabel }}</p>
-            <p v-if="running || paused" class="mt-1 text-xs text-wc-text-secondary">
+              class="text-xs font-bold uppercase tracking-[0.3em]"
+              :style="{ color: phaseColor, transition: 'color 0.5s ease' }"
+            >{{ phaseLabel }}</span>
+            <span v-if="running || paused" class="text-[10px] tracking-wider" style="color: rgba(255,255,255,0.35)">
               Ciclo {{ currentCycle }}/{{ totalCycles }}
-            </p>
-            <p v-if="!running && !paused" class="text-xs text-wc-text-tertiary">Presiona iniciar</p>
+            </span>
+            <span v-if="!running && !paused" class="text-[11px] font-semibold uppercase tracking-widest" style="color: rgba(255,255,255,0.28)">
+              PRESIONA INICIAR
+            </span>
           </div>
         </div>
+
+        <!-- Phase indicator pills (visible when active) -->
+        <Transition name="fade">
+          <div v-if="running || paused" class="mt-5 flex justify-center gap-2">
+            <div
+              v-for="(p, i) in currentTechnique.phases"
+              :key="i"
+              class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-all duration-300"
+              :style="{
+                background: i === phaseIndex ? phaseColors[p.type] + '22' : 'transparent',
+                border: '1px solid ' + phaseColors[p.type],
+                color: phaseColors[p.type],
+                opacity: i === phaseIndex ? '1' : '0.3',
+                transform: i === phaseIndex ? 'scale(1.05)' : 'scale(0.95)',
+              }"
+            >
+              {{ p.label }} {{ p.seconds }}s
+            </div>
+          </div>
+        </Transition>
 
         <!-- Config panel (visible when stopped) -->
         <div v-if="!running && !paused" class="mt-6 space-y-4 rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-6">
@@ -291,13 +359,14 @@
             <h3 class="text-sm font-semibold text-wc-text">{{ currentTechnique.label }}</h3>
             <p class="mt-1 text-xs text-wc-text-secondary">{{ currentTechnique.description }}</p>
           </div>
-          <div class="flex flex-wrap items-center gap-2 text-xs">
+          <!-- Phase sequence summary -->
+          <div class="flex flex-wrap items-center gap-2">
             <template v-for="(p, i) in currentTechnique.phases" :key="i">
-              <div class="flex items-center gap-1">
-                <span class="inline-block h-2 w-2 rounded-full" :class="p.type === 'inhala' ? 'bg-wc-accent' : p.type === 'exhala' ? 'bg-blue-500' : 'bg-purple-500'"></span>
-                <span class="text-wc-text-secondary">{{ p.label }} {{ p.seconds }}s</span>
-                <span v-if="i < currentTechnique.phases.length - 1" class="mx-1 text-wc-text-tertiary">→</span>
-              </div>
+              <span
+                class="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider"
+                :style="{ background: phaseColors[p.type] + '18', border: '1px solid ' + phaseColors[p.type] + '55', color: phaseColors[p.type] }"
+              >{{ p.label }} {{ p.seconds }}s</span>
+              <span v-if="i < currentTechnique.phases.length - 1" class="text-wc-text-tertiary text-xs">›</span>
             </template>
           </div>
           <div>
@@ -328,28 +397,28 @@
           <button
             v-if="!running && !paused"
             @click="startBreathing"
-            class="w-full rounded-lg bg-wc-accent px-8 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent sm:w-auto"
+            class="w-full rounded-xl bg-wc-accent px-10 py-3 text-sm font-bold uppercase tracking-wider text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent sm:w-auto"
           >
             Iniciar
           </button>
           <button
             v-if="running"
             @click="pauseBreathing"
-            class="w-full rounded-lg border border-yellow-500 px-8 py-3 text-sm font-semibold text-yellow-400 transition-colors hover:bg-yellow-500/10 focus:outline-none focus:ring-2 focus:ring-wc-accent sm:w-auto"
+            class="w-full rounded-xl border border-yellow-500/60 px-10 py-3 text-sm font-bold uppercase tracking-wider text-yellow-400 transition-colors hover:bg-yellow-500/10 focus:outline-none focus:ring-2 focus:ring-yellow-500/40 sm:w-auto"
           >
             Pausar
           </button>
           <button
             v-if="paused"
             @click="resumeBreathing"
-            class="w-full rounded-lg bg-wc-accent px-8 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent sm:w-auto"
+            class="w-full rounded-xl bg-wc-accent px-10 py-3 text-sm font-bold uppercase tracking-wider text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent sm:w-auto"
           >
             Reanudar
           </button>
           <button
             v-if="running || paused"
             @click="stopBreathing"
-            class="w-full rounded-lg border border-wc-border px-8 py-3 text-sm font-semibold text-wc-text-secondary transition-colors hover:text-wc-text focus:outline-none focus:ring-2 focus:ring-wc-accent sm:w-auto"
+            class="w-full rounded-xl border border-white/10 px-10 py-3 text-sm font-bold uppercase tracking-wider text-white/40 transition-colors hover:text-white/70 focus:outline-none focus:ring-2 focus:ring-wc-accent/20 sm:w-auto"
           >
             Detener
           </button>
@@ -413,6 +482,11 @@ import ClientLayout from '../../layouts/ClientLayout.vue';
 // ─── Constants ────────────────────────────────────────────────────────────────
 const SESSION_CIRC = 2 * Math.PI * 88;
 const BREATH_CIRC  = 2 * Math.PI * 92;
+
+// ─── Breathing phase design tokens ───────────────────────────────────────────
+const phaseColors = { inhala: '#DC2626', manten: '#7C3AED', exhala: '#2563EB' };
+const PHASE_CIRC  = 2 * Math.PI * 80;   // phase-progress arc (r=80)
+const TOTAL_CIRC  = 2 * Math.PI * 88;   // total-session arc  (r=88)
 
 const SESSIONS = [
   { id: 'breathing',     title: 'Respiración 4-7-8',            description: 'Inhala 4s, retén 7s, exhala 8s. Reduce cortisol y activa el nervio vago.',                            duration: '5 min',  emoji: '🌬️', benefit: 'Reduce estrés',       seconds: 300 },
@@ -552,6 +626,16 @@ const currentTechnique = computed(() => TECHNIQUES[technique.value]);
 const phaseLabel = computed(() => {
   const labels = { inhala: 'INHALA', manten: 'MANTÉN', exhala: 'EXHALA' };
   return labels[phase.value] || '';
+});
+
+const phaseColor = computed(() => phaseColors[phase.value] ?? '#DC2626');
+
+const phaseProgressOffset = computed(() => {
+  if (!running.value && !paused.value) return PHASE_CIRC;
+  const p = currentTechnique.value.phases[phaseIndex.value];
+  const total = p?.seconds ?? 1;
+  const remaining = phaseCountdown.value;
+  return PHASE_CIRC * (remaining / total);
 });
 
 function formatBreathTime(secs) {
