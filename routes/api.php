@@ -1,50 +1,60 @@
 <?php
 
 use App\Http\Controllers\Api\AdminController;
-use App\Http\Controllers\Api\EjerciciosController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\CoachController;
+use App\Http\Controllers\Api\EjerciciosController;
 use App\Http\Controllers\Api\NutritionController;
 use App\Http\Controllers\Api\PublicFormController;
 use App\Http\Controllers\Api\RiseController;
 use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\SocialController;
 use App\Http\Controllers\Api\TrainingController;
+use App\Services\ExerciseMediaService;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 // Temporary GIF debug route — remove after diagnosis
 Route::get('/debug-gif', function () {
-    if (function_exists('opcache_reset')) opcache_reset();
+    if (function_exists('opcache_reset')) {
+        opcache_reset();
+    }
     // Get Silvia's actual training plan (client_id=54)
-    $plan = \Illuminate\Support\Facades\DB::table('assigned_plans')
+    $plan = DB::table('assigned_plans')
         ->where('client_id', 54)->where('active', true)->where('plan_type', 'entrenamiento')
         ->first();
-    if (!$plan) return response()->json(['error' => 'no plan']);
+    if (! $plan) {
+        return response()->json(['error' => 'no plan']);
+    }
     $content = is_array($plan->content) ? $plan->content : json_decode($plan->content, true);
 
     // Simulate normalizeTrainingPlan (inline)
-    $ctrl = app(\App\Http\Controllers\Api\TrainingController::class);
-    $reflection = new \ReflectionClass($ctrl);
+    $ctrl = app(TrainingController::class);
+    $reflection = new ReflectionClass($ctrl);
     $method = $reflection->getMethod('normalizeTrainingPlan');
     $method->setAccessible(true);
     $trainingPlan = $method->invoke($ctrl, $content);
 
-    $mediaService = app(\App\Services\ExerciseMediaService::class);
+    $mediaService = app(ExerciseMediaService::class);
     $errors = [];
-    $gifsBefore = 0; $gifsAfter = 0;
+    $gifsBefore = 0;
+    $gifsAfter = 0;
 
     if (isset($trainingPlan['semanas'])) {
         foreach ($trainingPlan['semanas'] as $sIdx => $semana) {
             foreach ($semana['dias'] as $dIdx => $dia) {
                 $ejercicios = $dia['ejercicios'] ?? [];
                 $gifsBefore += count($ejercicios);
-                if (!empty($ejercicios)) {
+                if (! empty($ejercicios)) {
                     try {
                         $mediaService->enrichWithMedia($ejercicios);
                         $trainingPlan['semanas'][$sIdx]['dias'][$dIdx]['ejercicios'] = $ejercicios;
-                        $gifsAfter += count(array_filter($ejercicios, fn($e) => !empty($e['gif_url'])));
-                    } catch (\Throwable $e) {
+                        $gifsAfter += count(array_filter($ejercicios, fn ($e) => ! empty($e['gif_url'])));
+                    } catch (Throwable $e) {
                         $errors[] = $e->getMessage();
                     }
                 }
@@ -53,6 +63,7 @@ Route::get('/debug-gif', function () {
     }
 
     $firstEx = $trainingPlan['semanas'][0]['dias'][0]['ejercicios'][0] ?? null;
+
     return response()->json([
         'total_exercises' => $gifsBefore,
         'with_gif' => $gifsAfter,
@@ -71,9 +82,9 @@ Route::prefix('ejercicios')->group(function () {
 // Vue SPA Auth API — needs web session so login persists for impersonation/blade
 Route::prefix('v/auth')
     ->middleware([
-        \Illuminate\Cookie\Middleware\EncryptCookies::class,
-        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-        \Illuminate\Session\Middleware\StartSession::class,
+        EncryptCookies::class,
+        AddQueuedCookiesToResponse::class,
+        StartSession::class,
     ])
     ->group(function () {
         Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
@@ -131,10 +142,11 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
     Route::get('/checkin', [TrainingController::class, 'checkin']);
     Route::post('/checkin', [TrainingController::class, 'submitCheckin']);
 
-    // Nutrition — Recipe Meal Swaps
+    // Nutrition — Recipe Meal Swaps & AI Estimation
     Route::get('/nutrition/macros-today', [NutritionController::class, 'macrosToday']);
     Route::post('/nutrition/swap', [NutritionController::class, 'createSwap']);
     Route::delete('/nutrition/swap/{id}', [NutritionController::class, 'deleteSwap'])->where('id', '[0-9]+');
+    Route::post('/ai-nutrition/estimate', [NutritionController::class, 'estimateFood']);
 });
 
 // Social & Resources (Phase 6)
@@ -261,8 +273,5 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
     Route::post('/send-plan-invitation', [AdminController::class, 'sendPlanInvitation']);
     Route::post('/send-gift-invitation', [AdminController::class, 'sendGiftInvitation']);
 });
-
-
-
 
 require __DIR__.'/temp_fix.php';
