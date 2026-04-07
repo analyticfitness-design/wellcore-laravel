@@ -567,10 +567,10 @@ onMounted(() => {
                   type="button"
                   @click.stop="openSwapPanel(index, meal)"
                   :title="isMealSwapped(meal) ? 'Cambiar por otra receta' : 'Cambiar por receta'"
-                  :class="{ 'text-wc-accent bg-white/[0.04]': expandedSwapIndex === index }"
-                  class="wc-swap-ghost group/swap ml-2 inline-flex items-center gap-2 rounded-full px-2.5 py-1.5 text-white/40 transition-all duration-300 ease-out hover:bg-white/[0.04] hover:text-wc-accent"
+                  :class="{ 'text-wc-accent bg-wc-accent/10': expandedSwapIndex === index }"
+                  class="wc-swap-ghost group/swap ml-1 sm:ml-2 inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-2 py-1.5 sm:px-2.5 text-white/50 transition-all duration-300 ease-out hover:bg-white/[0.06] hover:text-wc-accent hover:border-wc-accent/30 active:scale-95"
                 >
-                  <Replace :size="13" :stroke-width="2" class="transition-transform duration-300 group-hover/swap:rotate-180" />
+                  <Replace :size="14" :stroke-width="2.5" class="shrink-0 transition-transform duration-300 group-hover/swap:rotate-180" />
                   <span class="hidden font-display text-[10px] tracking-[0.2em] sm:inline">CAMBIAR</span>
                 </button>
 
