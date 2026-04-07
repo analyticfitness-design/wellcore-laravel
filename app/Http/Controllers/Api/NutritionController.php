@@ -201,7 +201,7 @@ class NutritionController extends Controller
     {
         $request->validate([
             'description' => ['nullable', 'string', 'max:500'],
-            'image' => ['nullable', 'image', 'max:5120'],
+            'image' => ['nullable', 'file', 'max:8192', 'mimes:jpg,jpeg,png,gif,webp,heic,heif,bmp'],
         ]);
 
         if (! $request->description && ! $request->hasFile('image')) {
