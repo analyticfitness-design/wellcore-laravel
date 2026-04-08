@@ -63,50 +63,78 @@ class FixJulieGifs extends Command
         }
         $this->info('GIF aliases loaded: ' . count($gifMap));
 
-        // ── 4. Walk exercises and map GIFs ────────────────────────────────────
+        // ── 4. Detect plan structure ──────────────────────────────────────────
+        $this->info('Plan keys: ' . implode(', ', array_keys($content)));
+
         $updated = 0;
         $missing = [];
 
-        $dias = $content['dias'] ?? [];
+        // Flatten all exercise lists regardless of structure
+        $exerciseLists = []; // [path => &array of exercises]
 
-        foreach ($dias as $dIdx => &$dia) {
-            $ejercicios = $dia['ejercicios'] ?? [];
-            foreach ($ejercicios as $eIdx => &$ej) {
+        if (! empty($content['dias'])) {
+            // Flat structure: content.dias[].ejercicios
+            foreach ($content['dias'] as $dIdx => &$dia) {
+                if (isset($dia['ejercicios'])) {
+                    $exerciseLists[] = ['label' => "dia[{$dIdx}]", 'ref' => &$dia['ejercicios']];
+                }
+            }
+            unset($dia);
+        } elseif (! empty($content['semanas'])) {
+            // Weekly structure: content.semanas[].dias[].ejercicios
+            foreach ($content['semanas'] as $sIdx => &$semana) {
+                $diasSemana = $semana['dias'] ?? [];
+                foreach ($diasSemana as $dIdx => &$dia) {
+                    if (isset($dia['ejercicios'])) {
+                        $exerciseLists[] = ['label' => "sem[{$sIdx}]dia[{$dIdx}]", 'ref' => &$dia['ejercicios']];
+                    }
+                }
+                unset($dia);
+            }
+            unset($semana);
+        } elseif (! empty($content['plan_entrenamiento'])) {
+            // RISE structure
+            $semanas = $content['plan_entrenamiento']['semanas'] ?? [];
+            foreach ($semanas as $sIdx => &$semana) {
+                foreach (($semana['dias'] ?? []) as $dIdx => &$dia) {
+                    if (isset($dia['ejercicios'])) {
+                        $exerciseLists[] = ['label' => "rise_sem[{$sIdx}]dia[{$dIdx}]", 'ref' => &$dia['ejercicios']];
+                    }
+                }
+                unset($dia);
+            }
+            unset($semana);
+        }
+
+        $this->info('Exercise blocks found: ' . count($exerciseLists));
+
+        foreach ($exerciseLists as &$block) {
+            foreach ($block['ref'] as $eIdx => &$ej) {
                 $name    = $ej['nombre'] ?? $ej['name'] ?? '';
                 $normKey = $this->normalize($name);
-
-                // Already has a valid GIF?
                 $current = $ej['gif_url'] ?? null;
 
-                // Try exact match first
-                $gif = $gifMap[$normKey] ?? null;
-
-                // Fuzzy fallback — best token overlap
-                if (! $gif) {
-                    $gif = $this->fuzzyMatch($normKey, $gifMap);
-                }
+                $gif = $gifMap[$normKey] ?? $this->fuzzyMatch($normKey, $gifMap);
 
                 if ($gif) {
                     $gifUrl = "https://www.wellcorefitness.com/storage/exercise-gifs/{$gif}";
                     if ($current !== $gifUrl) {
-                        $this->line("  ✓ [{$dIdx}][{$eIdx}] {$name}");
+                        $this->line("  ✓ [{$block['label']}][{$eIdx}] {$name}");
                         $this->line("      old: " . ($current ?: '(none)'));
                         $this->line("      new: {$gifUrl}");
                         $ej['gif_url'] = $gifUrl;
                         $updated++;
                     } else {
-                        $this->line("  = [{$dIdx}][{$eIdx}] {$name} (already correct)");
+                        $this->line("  = [{$block['label']}][{$eIdx}] {$name} (OK)");
                     }
                 } else {
                     $missing[] = $name;
-                    $this->warn("  ✗ [{$dIdx}][{$eIdx}] {$name} — NO GIF FOUND");
+                    $this->warn("  ✗ [{$block['label']}][{$eIdx}] {$name} — NO GIF");
                 }
             }
             unset($ej);
-            $dia['ejercicios'] = $ejercicios;
         }
-        unset($dia);
-        $content['dias'] = $dias;
+        unset($block);
 
         // ── 5. Summary ────────────────────────────────────────────────────────
         $this->newLine();
