@@ -920,22 +920,47 @@ class RiseController extends Controller
         $client = $this->resolveClientOrFail($request);
 
         $validated = $request->validate([
-            'day_name' => 'required|string|max:200',
-            'week'     => 'nullable|integer|min:1',
+            'day_index' => 'required|integer|min:0',
+            'week'      => 'nullable|integer|min:1',
         ]);
 
-        $session = WorkoutSession::create([
-            'client_id'    => $client->id,
-            'day_name'     => $validated['day_name'],
-            'session_date' => now()->toDateString(),
-            'week_number'  => $validated['week'] ?? null,
-            'completed'    => false,
-            'source'       => 'rise',
-        ]);
+        $dayIndex = $validated['day_index'];
+        $weekNum  = $validated['week'] ?? null;
+
+        // Derive day_name from the program
+        $riseProgram  = RiseProgram::where('client_id', $client->id)
+            ->whereIn('status', ['active', 'activo'])
+            ->first();
+
+        $dayName = 'Día ' . ($dayIndex + 1);
+        if ($riseProgram) {
+            $semanas = $riseProgram->personalized_program['plan_entrenamiento']['semanas'] ?? [];
+            if ($weekNum && isset($semanas[$weekNum - 1])) {
+                $dias    = $semanas[$weekNum - 1]['dias'] ?? [];
+                $dayName = $dias[$dayIndex]['nombre'] ?? $dias[$dayIndex]['dia'] ?? $dayName;
+            } elseif (! empty($semanas)) {
+                $dias    = $semanas[0]['dias'] ?? [];
+                $dayName = $dias[$dayIndex]['nombre'] ?? $dias[$dayIndex]['dia'] ?? $dayName;
+            }
+        }
+
+        // Reuse existing incomplete session for today if exists
+        $session = WorkoutSession::firstOrCreate(
+            [
+                'client_id'    => $client->id,
+                'day_name'     => $dayName,
+                'session_date' => now()->toDateString(),
+            ],
+            [
+                'week_number' => $weekNum,
+                'completed'   => false,
+                'source'      => 'rise',
+            ]
+        );
 
         return response()->json([
-            'sessionId' => $session->id,
-            'startTime' => $session->created_at->toIso8601String(),
+            'session_id' => $session->id,
+            'start_time' => $session->created_at->toIso8601String(),
         ], 201);
     }
 
@@ -1045,10 +1070,10 @@ class RiseController extends Controller
         }
 
         return response()->json([
-            'completed' => true,
-            'sessionId' => $session->id,
-            'duration'  => (int) ($durationSec / 60),
-            'xpEarned'  => $xpEarned,
+            'completed'  => true,
+            'session_id' => $session->id,
+            'duration'   => (int) ($durationSec / 60),
+            'xpEarned'   => $xpEarned,
         ]);
     }
 

@@ -453,18 +453,43 @@ class TrainingController extends Controller
         $clientId = $client->id;
 
         $request->validate([
-            'plan_id' => 'required|integer',
-            'day_name' => 'required|string|max:255',
+            'day_index' => 'required|integer|min:0',
+            'week'      => 'nullable|integer|min:1',
         ]);
+
+        $dayIndex = (int) $request->input('day_index');
+        $weekNum  = $request->input('week');
+
+        // Load the active plan to derive plan_id and day_name
+        $plan = AssignedPlan::where('client_id', $clientId)
+            ->where('plan_type', 'entrenamiento')
+            ->where('active', true)
+            ->latest('id')
+            ->first();
+
+        $planId  = $plan?->id;
+        $dayName = 'Día ' . ($dayIndex + 1);
+
+        if ($plan) {
+            $content = is_array($plan->content) ? $plan->content : json_decode($plan->content, true);
+
+            if ($weekNum && isset($content['semanas'][$weekNum - 1])) {
+                $dias    = $content['semanas'][$weekNum - 1]['dias'] ?? [];
+                $dayName = $dias[$dayIndex]['nombre'] ?? $dias[$dayIndex]['dia'] ?? $dayName;
+            } elseif (isset($content['dias'][$dayIndex])) {
+                $day     = $content['dias'][$dayIndex];
+                $dayName = $day['nombre'] ?? $day['dia'] ?? $day['name'] ?? $dayName;
+            }
+        }
 
         $session = WorkoutSession::firstOrCreate(
             [
-                'client_id' => $clientId,
-                'day_name' => $request->input('day_name'),
+                'client_id'    => $clientId,
+                'day_name'     => $dayName,
                 'session_date' => now()->toDateString(),
             ],
             [
-                'plan_id' => $request->input('plan_id'),
+                'plan_id'  => $planId,
                 'completed' => false,
             ]
         );
