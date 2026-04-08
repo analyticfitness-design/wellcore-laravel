@@ -301,20 +301,27 @@ Route::get('/dev/alias-check', function (\Illuminate\Http\Request $request) {
     return response()->json(['query' => $name, 'rows' => $rows]);
 })->middleware('role:superadmin,admin');
 
-// Temp debug: run ExerciseMediaService enrichment and show result
+// Temp debug: run ExerciseMediaService enrichment on real plan exercises
 Route::get('/dev/enrich-test', function () {
-    $exercises = [
-        ['nombre' => 'Hip Thrust con mancuerna en banco'],
-        ['nombre' => 'Sentadilla Goblet con mancuerna'],
-        ['nombre' => 'Zancada Reversa con mancuernas'],
-    ];
+    // Load real exercises from Julie's plan (plan_id=84, week 2, day 1)
+    $content = json_decode(DB::table('assigned_plans')->where('id', 84)->value('content'), true);
+    $dias = $content['semanas'][1]['dias'] ?? $content['semanas'][0]['dias'] ?? $content['dias'] ?? [];
+    $rawExercises = $dias[0]['ejercicios'] ?? [];
+
+    // Simulate exact what the controller does
+    $exercises = $rawExercises;
     $error = null;
     try {
         app(\App\Services\ExerciseMediaService::class)->enrichWithMedia($exercises);
     } catch (\Throwable $e) {
-        $error = $e->getMessage();
+        $error = $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
     }
-    return response()->json(['error' => $error, 'exercises' => $exercises]);
+    return response()->json([
+        'error' => $error,
+        'total' => count($exercises),
+        'with_gif' => collect($exercises)->filter(fn($ex) => !empty($ex['gif_url']))->count(),
+        'sample' => array_map(fn($ex) => ['nombre' => $ex['nombre'], 'gif_url' => $ex['gif_url'] ?? null], array_slice($exercises, 0, 3)),
+    ]);
 })->middleware('role:superadmin,admin');
 
 // DEV ONLY routes — disabled in production
