@@ -270,6 +270,18 @@ Route::post('/admin/coach-impersonate/stop', [CoachImpersonateController::class,
 // Backwards-compat: /v/* redirects to /* without the /v prefix (301 permanent)
 Route::get('/v/{any}', fn ($any) => redirect('/'.$any, 301))->where('any', '.*');
 
+// TEMP — fix Julie GIFs (token-protected, remove after use)
+Route::get('/temp-fix-julie-gifs/{token}', function ($token) {
+    if ($token !== 'wc-fix-2026-julie') {
+        abort(403);
+    }
+    ob_start();
+    $exitCode = \Artisan::call('wellcore:fix-julie-gifs', [], new \Symfony\Component\Console\Output\BufferedOutput());
+    $output = \Artisan::output();
+    return response('<pre style="background:#111;color:#0f0;padding:20px;font-size:13px">'
+        . htmlspecialchars($output) . '</pre>');
+});
+
 // Exercise GIFs — public, no auth required (used in <img> tags)
 Route::get('/media/gif/{slug}', [\App\Http\Controllers\Media\GifController::class, 'serve'])
     ->where('slug', '[\w\-]+');
