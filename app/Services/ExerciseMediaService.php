@@ -75,7 +75,7 @@ class ExerciseMediaService
         $fitcronByNorm = $fitcronRows->keyBy(fn ($row) => $this->normalize($row->nombre));
 
         $slugs = collect($normalizedNames)
-            ->map(fn ($norm) => $fitcronByNorm[$norm]?->slug)
+            ->map(fn ($norm) => ($fitcronByNorm[$norm] ?? null)?->slug)
             ->filter()
             ->unique()
             ->values()
@@ -97,13 +97,13 @@ class ExerciseMediaService
             if ($fitcron && $fitcron->gif_filename) {
                 $result[$norm] = [
                     'gif_url'   => $this->gifUrl($fitcron->gif_filename),
-                    'video_url' => $videosBySlug[$fitcron->slug]?->youtube_url ?? $fitcron->video_url ?? null,
+                    'video_url' => ($videosBySlug[$fitcron->slug] ?? null)?->youtube_url ?? $fitcron->video_url ?? null,
                 ];
             } elseif ($fitcron) {
                 // Found in fitcron but no GIF — store video, let Layer 2 fill gif_url
                 $result[$norm] = [
                     'gif_url'   => null,
-                    'video_url' => $videosBySlug[$fitcron->slug]?->youtube_url ?? $fitcron->video_url ?? null,
+                    'video_url' => ($videosBySlug[$fitcron->slug] ?? null)?->youtube_url ?? $fitcron->video_url ?? null,
                 ];
                 $unmatched[$norm] = $names[$i];
             } else {
