@@ -301,6 +301,22 @@ Route::get('/dev/alias-check', function (\Illuminate\Http\Request $request) {
     return response()->json(['query' => $name, 'rows' => $rows]);
 })->middleware('role:superadmin,admin');
 
+// Temp debug: run ExerciseMediaService enrichment and show result
+Route::get('/dev/enrich-test', function () {
+    $exercises = [
+        ['nombre' => 'Hip Thrust con mancuerna en banco'],
+        ['nombre' => 'Sentadilla Goblet con mancuerna'],
+        ['nombre' => 'Zancada Reversa con mancuernas'],
+    ];
+    $error = null;
+    try {
+        app(\App\Services\ExerciseMediaService::class)->enrichWithMedia($exercises);
+    } catch (\Throwable $e) {
+        $error = $e->getMessage();
+    }
+    return response()->json(['error' => $error, 'exercises' => $exercises]);
+})->middleware('role:superadmin,admin');
+
 // DEV ONLY routes — disabled in production
 if (app()->environment('local', 'testing')) {
     Route::get('/test', TestDashboard::class);
