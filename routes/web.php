@@ -274,56 +274,6 @@ Route::get('/v/{any}', fn ($any) => redirect('/'.$any, 301))->where('any', '.*')
 Route::get('/media/gif/{slug}', [\App\Http\Controllers\Media\GifController::class, 'serve'])
     ->where('slug', '[\w\-]+');
 
-// Temp debug: check plan JSON exercise fields (remove after use)
-Route::get('/dev/plan-ex-fields/{planId}', function ($planId) {
-    $content = DB::table('assigned_plans')->where('id', $planId)->value('content');
-    $c = json_decode($content, true);
-    $dias = $c['semanas'][0]['dias'] ?? $c['dias'] ?? [];
-    $ex = $dias[0]['ejercicios'][0] ?? null;
-    if (!$ex) return response()->json(['error' => 'no exercise', 'top_keys' => array_keys($c)]);
-    return response()->json([
-        'fields' => array_keys($ex),
-        'gif_url' => $ex['gif_url'] ?? null,
-        'image_url' => $ex['image_url'] ?? null,
-        'gif_filename' => $ex['gif_filename'] ?? null,
-        'nombre' => $ex['nombre'] ?? null,
-    ]);
-})->middleware('role:superadmin,admin');
-
-// Temp debug: check exercise_aliases for a name
-Route::get('/dev/alias-check', function (\Illuminate\Http\Request $request) {
-    $name = $request->query('name', 'hip thrust con mancuerna en banco');
-    $rows = DB::table('exercise_aliases')
-        ->where('alias', 'like', '%' . strtolower(substr($name, 0, 10)) . '%')
-        ->select('alias', 'gif_filename')
-        ->limit(5)
-        ->get();
-    return response()->json(['query' => $name, 'rows' => $rows]);
-})->middleware('role:superadmin,admin');
-
-// Temp debug: run ExerciseMediaService enrichment on real plan exercises
-Route::get('/dev/enrich-test', function () {
-    // Load real exercises from Julie's plan (plan_id=84, week 2, day 1)
-    $content = json_decode(DB::table('assigned_plans')->where('id', 84)->value('content'), true);
-    $dias = $content['semanas'][1]['dias'] ?? $content['semanas'][0]['dias'] ?? $content['dias'] ?? [];
-    $rawExercises = $dias[0]['ejercicios'] ?? [];
-
-    // Simulate exact what the controller does
-    $exercises = $rawExercises;
-    $error = null;
-    try {
-        app(\App\Services\ExerciseMediaService::class)->enrichWithMedia($exercises);
-    } catch (\Throwable $e) {
-        $error = $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
-    }
-    return response()->json([
-        'error' => $error,
-        'total' => count($exercises),
-        'with_gif' => collect($exercises)->filter(fn($ex) => !empty($ex['gif_url']))->count(),
-        'sample' => array_map(fn($ex) => ['nombre' => $ex['nombre'], 'gif_url' => $ex['gif_url'] ?? null], array_slice($exercises, 0, 3)),
-    ]);
-})->middleware('role:superadmin,admin');
-
 // DEV ONLY routes — disabled in production
 if (app()->environment('local', 'testing')) {
     Route::get('/test', TestDashboard::class);
