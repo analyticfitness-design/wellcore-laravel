@@ -274,6 +274,14 @@ Route::get('/v/{any}', fn ($any) => redirect('/'.$any, 301))->where('any', '.*')
 Route::get('/media/gif/{slug}', [\App\Http\Controllers\Media\GifController::class, 'serve'])
     ->where('slug', '[\w\-]+');
 
+// Temp: run fix-gif-mismatches command via web (admin only)
+Route::get('/dev/fix-gif-mismatches', function (\Illuminate\Http\Request $request) {
+    $dryRun = $request->query('dry') !== '0';
+    $output = new \Symfony\Component\Console\Output\BufferedOutput();
+    \Illuminate\Support\Facades\Artisan::call('wellcore:fix-gif-mismatches', $dryRun ? ['--dry-run' => true] : [], $output);
+    return response('<pre>' . $output->fetch() . '</pre>');
+})->middleware('role:superadmin,admin');
+
 // DEV ONLY routes — disabled in production
 if (app()->environment('local', 'testing')) {
     Route::get('/test', TestDashboard::class);
