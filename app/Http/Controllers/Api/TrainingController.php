@@ -5,16 +5,18 @@ namespace App\Http\Controllers\Api;
 use App\Enums\PlanType;
 use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
-use App\Services\ExerciseMediaService;
 use App\Models\AssignedPlan;
 use App\Models\BloodworkResult;
 use App\Models\Checkin;
 use App\Models\ClientXp;
 use App\Models\HabitLog;
 use App\Models\TrainingLog;
+use App\Models\WellcoreNotification;
 use App\Models\WorkoutLog;
 use App\Models\WorkoutPr;
 use App\Models\WorkoutSession;
+use App\Services\ExerciseMediaService;
+use App\Services\PushNotificationService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -87,7 +89,7 @@ class TrainingController extends Controller
         if ($trainingPlan) {
             $mediaService = app(ExerciseMediaService::class);
 
-            if (!empty($trainingPlan['semanas'])) {
+            if (! empty($trainingPlan['semanas'])) {
                 foreach ($trainingPlan['semanas'] as $sIdx => &$semana) {
                     if (empty($semana['dias'])) {
                         continue;
@@ -109,7 +111,7 @@ class TrainingController extends Controller
                 unset($semana);
             }
 
-            if (!empty($trainingPlan['dias'])) {
+            if (! empty($trainingPlan['dias'])) {
                 foreach ($trainingPlan['dias'] as $dIdx => &$dia) {
                     $ejercicios = $dia['ejercicios'] ?? [];
                     if (empty($ejercicios)) {
@@ -454,11 +456,11 @@ class TrainingController extends Controller
 
         $request->validate([
             'day_index' => 'required|integer|min:0',
-            'week'      => 'nullable|integer|min:1',
+            'week' => 'nullable|integer|min:1',
         ]);
 
         $dayIndex = (int) $request->input('day_index');
-        $weekNum  = $request->input('week');
+        $weekNum = $request->input('week');
 
         // Load the active plan to derive plan_id and day_name
         $plan = AssignedPlan::where('client_id', $clientId)
@@ -467,29 +469,29 @@ class TrainingController extends Controller
             ->latest('id')
             ->first();
 
-        $planId  = $plan?->id;
-        $dayName = 'Día ' . ($dayIndex + 1);
+        $planId = $plan?->id;
+        $dayName = 'Día '.($dayIndex + 1);
 
         if ($plan) {
             $content = is_array($plan->content) ? $plan->content : json_decode($plan->content, true);
 
             if ($weekNum && isset($content['semanas'][$weekNum - 1])) {
-                $dias    = $content['semanas'][$weekNum - 1]['dias'] ?? [];
+                $dias = $content['semanas'][$weekNum - 1]['dias'] ?? [];
                 $dayName = $dias[$dayIndex]['nombre'] ?? $dias[$dayIndex]['dia'] ?? $dayName;
             } elseif (isset($content['dias'][$dayIndex])) {
-                $day     = $content['dias'][$dayIndex];
+                $day = $content['dias'][$dayIndex];
                 $dayName = $day['nombre'] ?? $day['dia'] ?? $day['name'] ?? $dayName;
             }
         }
 
         $session = WorkoutSession::firstOrCreate(
             [
-                'client_id'    => $clientId,
-                'day_name'     => $dayName,
+                'client_id' => $clientId,
+                'day_name' => $dayName,
                 'session_date' => now()->toDateString(),
             ],
             [
-                'plan_id'  => $planId,
+                'plan_id' => $planId,
                 'completed' => false,
             ]
         );
@@ -741,7 +743,7 @@ class TrainingController extends Controller
 
         $prs = $completedLogs->where('is_pr', true)->map(function ($log) use ($clientId, $session) {
             // Look up the best weight for this exercise in any prior completed session
-            $prevBest = \App\Models\WorkoutLog::where('client_id', $clientId)
+            $prevBest = WorkoutLog::where('client_id', $clientId)
                 ->where('exercise_name', $log->exercise_name)
                 ->where('completed', true)
                 ->where('session_id', '!=', $session->id)
@@ -750,14 +752,14 @@ class TrainingController extends Controller
                 ->first();
 
             $previousWeight = $prevBest ? (float) $prevBest->weight_kg : null;
-            $previousReps   = $prevBest ? (int)   $prevBest->reps       : null;
+            $previousReps = $prevBest ? (int) $prevBest->reps : null;
 
             return [
-                'exercise'        => $log->exercise_name,
-                'weight'          => (float) $log->weight_kg,
-                'reps'            => (int) $log->reps,
+                'exercise' => $log->exercise_name,
+                'weight' => (float) $log->weight_kg,
+                'reps' => (int) $log->reps,
                 'previous_weight' => $previousWeight,
-                'previous_reps'   => $previousReps,
+                'previous_reps' => $previousReps,
             ];
         })->values()->toArray();
 
@@ -911,6 +913,23 @@ class TrainingController extends Controller
 
         Cache::forget("checkin:recent:{$clientId}");
 
+        // Notify assigned coach about new check-in
+        $coachId = AssignedPlan::where('client_id', $clientId)->where('active', true)->value('assigned_by');
+        if ($coachId) {
+            WellcoreNotification::create([
+                'user_type' => 'admin',
+                'user_id' => $coachId,
+                'type' => 'new_checkin',
+                'title' => 'Nuevo Check-in',
+                'body' => "{$client->name} envió su check-in semanal",
+                'link' => '/coach/checkins',
+            ]);
+            try {
+                PushNotificationService::notifyCheckinReminder($coachId);
+            } catch (\Throwable) {
+            }
+        }
+
         return response()->json([
             'saved' => true,
             'checkin_id' => $checkin->id,
@@ -1058,12 +1077,13 @@ class TrainingController extends Controller
                     if (is_array($week)) {
                         $content['semanas'][] = [
                             'numero' => $week['week'] ?? $week['semana'] ?? ($idx + 1),
-                            'fase'   => $week['phase'] ?? $week['fase'] ?? $week['name'] ?? null,
-                            'dias'   => $this->normalizeDays($week['days'] ?? $week['dias'] ?? []),
+                            'fase' => $week['phase'] ?? $week['fase'] ?? $week['name'] ?? null,
+                            'dias' => $this->normalizeDays($week['days'] ?? $week['dias'] ?? []),
                         ];
                     }
                 }
                 unset($content['weeks']);
+
                 return $content;
             }
         }

@@ -2,28 +2,32 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
+use App\Enums\PaymentStatus;
+use App\Enums\PlanType;
+use App\Enums\UserType;
 use App\Mail\PaymentConfirmation;
 use App\Mail\WelcomeMail;
 use App\Models\Client;
+use App\Models\PageVisit;
 use App\Models\Payment;
 use App\Models\PaymentLog;
 use App\Models\WellcoreNotification;
-use App\Enums\PaymentStatus;
-use App\Enums\UserType;
-use App\Services\AuditService;
-use App\Services\MetaConversionsService;
-use App\Services\WellCoinsService;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class WompiService
 {
     protected string $baseUrl;
+
     protected string $publicKey;
+
     protected string $privateKey;
+
     protected string $eventsSecret;
+
     protected string $integritySecret;
+
     protected bool $sandbox;
 
     public function __construct()
@@ -59,7 +63,7 @@ class WompiService
      */
     public function generateReference(string $prefix = 'WC'): string
     {
-        return $prefix . '-' . strtoupper(bin2hex(random_bytes(4))) . '-' . time();
+        return $prefix.'-'.strtoupper(bin2hex(random_bytes(4))).'-'.time();
     }
 
     /**
@@ -68,7 +72,7 @@ class WompiService
      */
     public function generateIntegritySignature(string $reference, int $amountInCents, string $currency = 'COP'): string
     {
-        $concatenated = $reference . $amountInCents . $currency . $this->integritySecret;
+        $concatenated = $reference.$amountInCents.$currency.$this->integritySecret;
 
         return hash('sha256', $concatenated);
     }
@@ -89,9 +93,9 @@ class WompiService
 
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->privateKey,
+                'Authorization' => 'Bearer '.$this->privateKey,
                 'Content-Type' => 'application/json',
-            ])->post($this->baseUrl . '/payment_links', [
+            ])->post($this->baseUrl.'/payment_links', [
                 'name' => $description,
                 'description' => $description,
                 'single_use' => true,
@@ -161,8 +165,8 @@ class WompiService
     {
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->privateKey,
-            ])->get($this->baseUrl . '/transactions', [
+                'Authorization' => 'Bearer '.$this->privateKey,
+            ])->get($this->baseUrl.'/transactions', [
                 'reference' => $reference,
             ]);
 
@@ -222,8 +226,8 @@ class WompiService
     {
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->privateKey,
-            ])->get($this->baseUrl . '/transactions/' . $transactionId);
+                'Authorization' => 'Bearer '.$this->privateKey,
+            ])->get($this->baseUrl.'/transactions/'.$transactionId);
 
             if ($response->successful()) {
                 $transaction = $response->json('data', []);
@@ -278,11 +282,11 @@ class WompiService
         $amountInCents = $transaction['amount_in_cents'] ?? '';
 
         $concatenated = $event
-            . $transactionId
-            . $status
-            . $amountInCents
-            . $timestamp
-            . $this->eventsSecret;
+            .$transactionId
+            .$status
+            .$amountInCents
+            .$timestamp
+            .$this->eventsSecret;
 
         $computed = hash('sha256', $concatenated);
 
@@ -301,6 +305,7 @@ class WompiService
 
         if (empty($transaction)) {
             $this->logEvent('webhook.empty_transaction', ['event' => $event]);
+
             return false;
         }
 
@@ -320,17 +325,18 @@ class WompiService
             'timestamp' => $timestamp,
         ]);
 
-        if ($event !== 'transaction.updated' || !$reference) {
+        if ($event !== 'transaction.updated' || ! $reference) {
             return false;
         }
 
         $payment = Payment::where('wompi_reference', $reference)->first();
 
-        if (!$payment) {
+        if (! $payment) {
             $this->logEvent('webhook.payment_not_found', [
                 'reference' => $reference,
                 'transaction_id' => $transactionId,
             ]);
+
             return false;
         }
 
@@ -373,9 +379,14 @@ class WompiService
         try {
             $client = $payment->client_id ? Client::find($payment->client_id) : null;
 
+            // 0. Activate client status
+            if ($payment->client_id) {
+                Client::where('id', $payment->client_id)->update(['status' => 'activo']);
+            }
+
             // 1. Send welcome email to client
             if ($client && $client->email) {
-                $planName = $payment->plan instanceof \App\Enums\PlanType
+                $planName = $payment->plan instanceof PlanType
                     ? $payment->plan->value
                     : ($payment->plan ?? 'Esencial');
 
@@ -389,7 +400,7 @@ class WompiService
             // 2. Send payment confirmation email
             $recipientEmail = $client?->email ?? $payment->email ?? null;
             if ($recipientEmail) {
-                $planName = $payment->plan instanceof \App\Enums\PlanType
+                $planName = $payment->plan instanceof PlanType
                     ? $payment->plan->value
                     : ($payment->plan ?? 'Plan WellCore');
 
@@ -413,14 +424,14 @@ class WompiService
                 'user_id' => 1,
                 'type' => 'payment_approved',
                 'title' => 'Pago Aprobado',
-                'body' => 'Cliente #' . $payment->client_id . ' completó pago de $'
-                    . number_format((float) $payment->amount, 0, '.', '.') . ' ' . ($payment->currency ?? 'COP'),
+                'body' => 'Cliente #'.$payment->client_id.' completó pago de $'
+                    .number_format((float) $payment->amount, 0, '.', '.').' '.($payment->currency ?? 'COP'),
             ]);
 
             // 5. Audit log
             AuditService::logAction(
                 'payment_approved',
-                'Payment #' . ($payment->wompi_reference ?? $payment->id) . ' aprobado para cliente #' . $payment->client_id,
+                'Payment #'.($payment->wompi_reference ?? $payment->id).' aprobado para cliente #'.$payment->client_id,
             );
 
             $this->logEvent('webhook.post_approval_done', [
@@ -437,7 +448,7 @@ class WompiService
             // 7. Update page visit conversion (UTM attribution)
             $clientId = $payment->client_id;
             if ($clientId) {
-                \App\Models\PageVisit::where('client_id', $clientId)
+                PageVisit::where('client_id', $clientId)
                     ->whereNull('converted_at')
                     ->latest()
                     ->limit(1)
@@ -476,7 +487,7 @@ class WompiService
     public function getMerchantInfo(): array
     {
         try {
-            $response = Http::get($this->baseUrl . '/merchants/' . $this->publicKey);
+            $response = Http::get($this->baseUrl.'/merchants/'.$this->publicKey);
 
             if ($response->successful()) {
                 return [
@@ -488,6 +499,7 @@ class WompiService
             return ['success' => false, 'error' => 'Error obteniendo datos del comercio'];
         } catch (\Throwable $e) {
             Log::error('WompiService::getMerchantInfo failed', ['error' => $e->getMessage()]);
+
             return ['success' => false, 'error' => 'Error de conexion'];
         }
     }
@@ -513,9 +525,9 @@ class WompiService
     {
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->privateKey,
+                'Authorization' => 'Bearer '.$this->privateKey,
                 'Content-Type' => 'application/json',
-            ])->post($this->baseUrl . '/transactions/' . $transactionId . '/void');
+            ])->post($this->baseUrl.'/transactions/'.$transactionId.'/void');
 
             if ($response->successful()) {
                 $this->logEvent('transaction.voided', [
@@ -574,9 +586,9 @@ class WompiService
             ]);
         } catch (\Throwable $e) {
             // Fallback to Laravel log if DB write fails
-            Log::info('WompiEvent: ' . $event, $data);
+            Log::info('WompiEvent: '.$event, $data);
         }
 
-        Log::channel('single')->info('Wompi: ' . $event, $data);
+        Log::channel('single')->info('Wompi: '.$event, $data);
     }
 }

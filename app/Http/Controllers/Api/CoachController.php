@@ -28,7 +28,9 @@ use App\Models\Referral;
 use App\Models\ReferralStat;
 use App\Models\TrainingLog;
 use App\Models\VideoCheckin;
+use App\Models\WellcoreNotification;
 use App\Services\AIService;
+use App\Services\PushNotificationService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -661,6 +663,20 @@ class CoachController extends Controller
             'coach_reply' => trim($validated['reply']),
             'replied_at' => now(),
         ]);
+
+        // Notify client about coach reply
+        WellcoreNotification::create([
+            'user_type' => 'client',
+            'user_id' => $checkin->client_id,
+            'type' => 'coach_response',
+            'title' => 'Respuesta de tu Coach',
+            'body' => 'Tu coach respondió tu check-in',
+            'link' => '/client/checkin',
+        ]);
+        try {
+            PushNotificationService::notifyCoachResponse($checkin->client_id, $coach->name);
+        } catch (\Throwable) {
+        }
 
         return response()->json(['replied' => true]);
     }

@@ -100,6 +100,7 @@ Route::prefix('v/public')->group(function () {
     Route::post('/coach-apply', [PublicFormController::class, 'coachApply']);
     Route::post('/rise-enroll', [PublicFormController::class, 'riseEnroll']);
     Route::post('/presencial', [PublicFormController::class, 'presencialSubmit']);
+    Route::post('/trial', [PublicFormController::class, 'trialSignup']);
 });
 
 // Shop (public — no auth required)
@@ -259,6 +260,7 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
     Route::delete('/plans/{id}', [AdminController::class, 'deletePlan'])->where('id', '[0-9]+');
     Route::get('/inscriptions', [AdminController::class, 'inscriptions']);
     Route::put('/inscriptions/{id}', [AdminController::class, 'updateInscription'])->where('id', '[0-9]+');
+    Route::post('/inscriptions/{id}/convert', [AdminController::class, 'convertInscription']);
     Route::get('/invitations', [AdminController::class, 'invitations']);
     Route::post('/invitations', [AdminController::class, 'createInvitation']);
     Route::delete('/invitations/{id}', [AdminController::class, 'deleteInvitation'])->where('id', '[0-9]+');
@@ -273,4 +275,3 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
     Route::post('/send-plan-invitation', [AdminController::class, 'sendPlanInvitation']);
     Route::post('/send-gift-invitation', [AdminController::class, 'sendGiftInvitation']);
 });
-

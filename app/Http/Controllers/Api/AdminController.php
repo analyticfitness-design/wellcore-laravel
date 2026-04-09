@@ -10,6 +10,9 @@ use App\Enums\UserRole;
 use App\Enums\UserType;
 use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
+use App\Mail\GiftPlanInvitation;
+use App\Mail\PlanInvitation;
+use App\Mail\WelcomeMail;
 use App\Models\Admin;
 use App\Models\AssignedPlan;
 use App\Models\AuthToken;
@@ -29,7 +32,9 @@ use App\Models\RiseProgram;
 use App\Models\RiseTracking;
 use App\Models\Ticket;
 use App\Models\TrainingLog;
+use App\Models\WellcoreNotification;
 use App\Services\AIService;
+use App\Services\PushNotificationService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -37,6 +42,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -630,6 +636,20 @@ class AdminController extends Controller
             ]);
 
             $messages[] = 'Coach '.$coach->name.' asignado.';
+
+            // Notify client about new plan assignment
+            WellcoreNotification::create([
+                'user_type' => 'client',
+                'user_id' => $id,
+                'type' => 'new_plan',
+                'title' => 'Nuevo Plan Asignado',
+                'body' => "Tu coach te asignó un nuevo plan de {$planType}",
+                'link' => '/client/plan',
+            ]);
+            try {
+                PushNotificationService::notifyNewPlan($id, $planType);
+            } catch (\Throwable) {
+            }
         }
 
         return response()->json([
@@ -653,7 +673,7 @@ class AdminController extends Controller
         }
 
         AuthToken::where('user_id', $id)->where('user_type', 'client')->delete();
-        \App\Models\AssignedPlan::where('client_id', $id)->delete();
+        AssignedPlan::where('client_id', $id)->delete();
         $client->delete();
 
         return response()->json(['deleted' => true]);
@@ -785,23 +805,23 @@ class AdminController extends Controller
                     $specs = $raw;
                 } elseif (is_string($raw)) {
                     $decoded = json_decode($raw, true);
-                    $specs   = is_array($decoded) ? $decoded : array_map('trim', explode(',', $raw));
+                    $specs = is_array($decoded) ? $decoded : array_map('trim', explode(',', $raw));
                 }
             }
 
             return [
-                'id'             => $admin->id,
-                'name'           => $admin->name,
-                'username'       => $admin->username,
-                'role'           => $admin->role?->value ?? $admin->role ?? '',
-                'role_label'     => $admin->role?->label() ?? ucfirst($admin->role ?? ''),
-                'client_count'   => $clientCount,
-                'has_profile'    => $profile !== null,
-                'city'           => $profile?->city,
-                'specializations'=> $specs,
+                'id' => $admin->id,
+                'name' => $admin->name,
+                'username' => $admin->username,
+                'role' => $admin->role?->value ?? $admin->role ?? '',
+                'role_label' => $admin->role?->label() ?? ucfirst($admin->role ?? ''),
+                'client_count' => $clientCount,
+                'has_profile' => $profile !== null,
+                'city' => $profile?->city,
+                'specializations' => $specs,
                 'public_visible' => (bool) ($profile?->public_visible ?? false),
-                'referral_code'  => $profile?->referral_code,
-                'created_at'     => $admin->created_at?->format('d M Y'),
+                'referral_code' => $profile?->referral_code,
+                'created_at' => $admin->created_at?->format('d M Y'),
             ];
         });
 
@@ -928,7 +948,7 @@ class AdminController extends Controller
     {
         $this->resolveAdminOrFail($request);
 
-        $admin   = Admin::findOrFail($id);
+        $admin = Admin::findOrFail($id);
         $profile = CoachProfile::where('admin_id', $id)->first();
         $clientCount = AssignedPlan::where('assigned_by', $id)
             ->where('active', true)
@@ -942,28 +962,28 @@ class AdminController extends Controller
                 $specs = $raw;
             } elseif (is_string($raw)) {
                 $decoded = json_decode($raw, true);
-                $specs   = is_array($decoded) ? $decoded : array_map('trim', explode(',', $raw));
+                $specs = is_array($decoded) ? $decoded : array_map('trim', explode(',', $raw));
             }
         }
 
         return response()->json([
-            'id'                  => $admin->id,
-            'name'                => $admin->name,
-            'username'            => $admin->username,
-            'role'                => $admin->role?->value ?? $admin->role ?? '',
-            'role_label'          => $admin->role?->label() ?? ucfirst($admin->role ?? ''),
-            'created_at'          => $admin->created_at?->format('d M Y'),
-            'client_count'        => $clientCount,
-            'has_profile'         => $profile !== null,
-            'bio'                 => $profile?->bio,
-            'city'                => $profile?->city,
-            'experience'          => $profile?->experience,
-            'specializations'     => $specs,
-            'whatsapp'            => $profile?->whatsapp,
-            'instagram'           => $profile?->instagram,
-            'referral_code'       => $profile?->referral_code,
+            'id' => $admin->id,
+            'name' => $admin->name,
+            'username' => $admin->username,
+            'role' => $admin->role?->value ?? $admin->role ?? '',
+            'role_label' => $admin->role?->label() ?? ucfirst($admin->role ?? ''),
+            'created_at' => $admin->created_at?->format('d M Y'),
+            'client_count' => $clientCount,
+            'has_profile' => $profile !== null,
+            'bio' => $profile?->bio,
+            'city' => $profile?->city,
+            'experience' => $profile?->experience,
+            'specializations' => $specs,
+            'whatsapp' => $profile?->whatsapp,
+            'instagram' => $profile?->instagram,
+            'referral_code' => $profile?->referral_code,
             'referral_commission' => $profile?->referral_commission,
-            'public_visible'      => (bool) ($profile?->public_visible ?? false),
+            'public_visible' => (bool) ($profile?->public_visible ?? false),
         ]);
     }
 
@@ -986,7 +1006,7 @@ class AdminController extends Controller
             return response()->json(['error' => 'Coach no encontrado.'], 404);
         }
 
-        $roleVal = $admin->role instanceof \App\Enums\UserRole ? $admin->role->value : $admin->role;
+        $roleVal = $admin->role instanceof UserRole ? $admin->role->value : $admin->role;
         if ($roleVal === 'superadmin') {
             return response()->json(['error' => 'No se puede eliminar un superadmin.'], 403);
         }
@@ -1028,10 +1048,10 @@ class AdminController extends Controller
         $this->resolveAdminOrFail($request);
 
         return response()->json([
-            'total'        => Admin::count(),
-            'coaches'      => Admin::where('role', 'coach')->count(),
+            'total' => Admin::count(),
+            'coaches' => Admin::where('role', 'coach')->count(),
             'with_profile' => CoachProfile::count(),
-            'clients'      => AssignedPlan::where('active', true)->distinct('client_id')->count('client_id'),
+            'clients' => AssignedPlan::where('active', true)->distinct('client_id')->count('client_id'),
         ]);
     }
 
@@ -1047,13 +1067,13 @@ class AdminController extends Controller
     {
         $this->resolveAdminOrFail($request);
 
-        $search       = $request->query('search', '');
-        $typeFilter   = $request->query('type', 'all');
-        $coachFilter  = $request->query('coach', 'all');
+        $search = $request->query('search', '');
+        $typeFilter = $request->query('type', 'all');
+        $coachFilter = $request->query('coach', 'all');
         $publicFilter = $request->query('public', 'all');
-        $aiFilter     = $request->query('ai', 'all');
-        $sortBy       = $request->query('sort_by', 'created_at');
-        $sortDir      = $request->query('sort_dir', 'desc');
+        $aiFilter = $request->query('ai', 'all');
+        $sortBy = $request->query('sort_by', 'created_at');
+        $sortDir = $request->query('sort_dir', 'desc');
 
         $query = PlanTemplate::query();
 
@@ -1061,8 +1081,8 @@ class AdminController extends Controller
             $s = $search;
             $query->where(function ($q) use ($s) {
                 $q->where('name', 'like', "%{$s}%")
-                  ->orWhere('methodology', 'like', "%{$s}%")
-                  ->orWhere('description', 'like', "%{$s}%");
+                    ->orWhere('methodology', 'like', "%{$s}%")
+                    ->orWhere('description', 'like', "%{$s}%");
             });
         }
         if ($typeFilter !== 'all') {
@@ -1086,27 +1106,27 @@ class AdminController extends Controller
         $paginated = $query->orderBy($sortBy, $sortDir === 'asc' ? 'asc' : 'desc')->paginate(20);
 
         $plans = collect($paginated->items())->map(fn ($p) => [
-            'id'           => $p->id,
-            'name'         => $p->name,
-            'plan_type'    => $p->plan_type,
-            'methodology'  => $p->methodology,
-            'description'  => $p->description,
-            'is_public'    => (bool) $p->is_public,
+            'id' => $p->id,
+            'name' => $p->name,
+            'plan_type' => $p->plan_type,
+            'methodology' => $p->methodology,
+            'description' => $p->description,
+            'is_public' => (bool) $p->is_public,
             'ai_generated' => (bool) $p->ai_generated,
-            'coach_id'     => $p->coach_id,
-            'coach_name'   => $p->coach_id ? Admin::find($p->coach_id)?->name : null,
-            'created_at'   => $p->created_at?->format('d M Y'),
+            'coach_id' => $p->coach_id,
+            'coach_name' => $p->coach_id ? Admin::find($p->coach_id)?->name : null,
+            'created_at' => $p->created_at?->format('d M Y'),
         ]);
 
         // Stats counts
         $stats = [
-            'total'          => PlanTemplate::count(),
-            'entrenamiento'  => PlanTemplate::where('plan_type', 'entrenamiento')->count(),
-            'nutricion'      => PlanTemplate::where('plan_type', 'nutricion')->count(),
-            'habitos'        => PlanTemplate::where('plan_type', 'habitos')->count(),
+            'total' => PlanTemplate::count(),
+            'entrenamiento' => PlanTemplate::where('plan_type', 'entrenamiento')->count(),
+            'nutricion' => PlanTemplate::where('plan_type', 'nutricion')->count(),
+            'habitos' => PlanTemplate::where('plan_type', 'habitos')->count(),
             'suplementacion' => PlanTemplate::where('plan_type', 'suplementacion')->count(),
-            'ciclo'          => PlanTemplate::where('plan_type', 'ciclo')->count(),
-            'ai_generated'   => PlanTemplate::where('ai_generated', true)->count(),
+            'ciclo' => PlanTemplate::where('plan_type', 'ciclo')->count(),
+            'ai_generated' => PlanTemplate::where('ai_generated', true)->count(),
         ];
 
         // Coaches for filter dropdown
@@ -1115,13 +1135,13 @@ class AdminController extends Controller
             ->get(['id', 'name', 'role']);
 
         return response()->json([
-            'plans'      => $plans,
-            'stats'      => $stats,
-            'coaches'    => $coaches,
+            'plans' => $plans,
+            'stats' => $stats,
+            'coaches' => $coaches,
             'pagination' => [
                 'current_page' => $paginated->currentPage(),
-                'last_page'    => $paginated->lastPage(),
-                'total'        => $paginated->total(),
+                'last_page' => $paginated->lastPage(),
+                'total' => $paginated->total(),
             ],
         ]);
     }
@@ -1139,20 +1159,20 @@ class AdminController extends Controller
 
         return response()->json([
             'plan' => [
-                'id'           => $plan->id,
-                'name'         => $plan->name,
-                'plan_type'    => $plan->plan_type,
-                'methodology'  => $plan->methodology,
-                'description'  => $plan->description,
-                'is_public'    => (bool) $plan->is_public,
+                'id' => $plan->id,
+                'name' => $plan->name,
+                'plan_type' => $plan->plan_type,
+                'methodology' => $plan->methodology,
+                'description' => $plan->description,
+                'is_public' => (bool) $plan->is_public,
                 'ai_generated' => (bool) $plan->ai_generated,
-                'coach_id'     => $plan->coach_id,
-                'coach_name'   => $plan->coach_id ? Admin::find($plan->coach_id)?->name : null,
+                'coach_id' => $plan->coach_id,
+                'coach_name' => $plan->coach_id ? Admin::find($plan->coach_id)?->name : null,
                 'content_json' => is_array($plan->content_json)
                     ? $plan->content_json
                     : json_decode($plan->content_json ?? '{}', true),
-                'created_at'   => $plan->created_at?->format('d M Y'),
-                'updated_at'   => $plan->updated_at?->format('d M Y'),
+                'created_at' => $plan->created_at?->format('d M Y'),
+                'updated_at' => $plan->updated_at?->format('d M Y'),
             ],
         ]);
     }
@@ -1168,13 +1188,13 @@ class AdminController extends Controller
         $this->resolveAdminOrFail($request);
 
         $validated = $request->validate([
-            'name'         => 'required|string|max:160',
-            'plan_type'    => 'required|in:entrenamiento,nutricion,habitos,suplementacion,ciclo',
-            'methodology'  => 'nullable|string|max:255',
-            'description'  => 'nullable|string|max:5000',
+            'name' => 'required|string|max:160',
+            'plan_type' => 'required|in:entrenamiento,nutricion,habitos,suplementacion,ciclo',
+            'methodology' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:5000',
             'content_json' => 'required',
-            'is_public'    => 'nullable|boolean',
-            'coach_id'     => 'nullable|integer|exists:admins,id',
+            'is_public' => 'nullable|boolean',
+            'coach_id' => 'nullable|integer|exists:admins,id',
         ]);
 
         $contentArray = $validated['content_json'];
@@ -1186,13 +1206,13 @@ class AdminController extends Controller
         }
 
         $plan = PlanTemplate::create([
-            'name'         => $validated['name'],
-            'plan_type'    => $validated['plan_type'],
-            'methodology'  => $validated['methodology'] ?? null,
-            'description'  => $validated['description'] ?? null,
+            'name' => $validated['name'],
+            'plan_type' => $validated['plan_type'],
+            'methodology' => $validated['methodology'] ?? null,
+            'description' => $validated['description'] ?? null,
             'content_json' => $contentArray,
-            'is_public'    => $validated['is_public'] ?? false,
-            'coach_id'     => $validated['coach_id'] ?? null,
+            'is_public' => $validated['is_public'] ?? false,
+            'coach_id' => $validated['coach_id'] ?? null,
             'ai_generated' => false,
         ]);
 
@@ -1212,13 +1232,13 @@ class AdminController extends Controller
         $plan = PlanTemplate::findOrFail($id);
 
         $validated = $request->validate([
-            'name'         => 'required|string|max:160',
-            'plan_type'    => 'required|in:entrenamiento,nutricion,habitos,suplementacion,ciclo',
-            'methodology'  => 'nullable|string|max:255',
-            'description'  => 'nullable|string|max:5000',
+            'name' => 'required|string|max:160',
+            'plan_type' => 'required|in:entrenamiento,nutricion,habitos,suplementacion,ciclo',
+            'methodology' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:5000',
             'content_json' => 'required',
-            'is_public'    => 'nullable|boolean',
-            'coach_id'     => 'nullable|integer|exists:admins,id',
+            'is_public' => 'nullable|boolean',
+            'coach_id' => 'nullable|integer|exists:admins,id',
         ]);
 
         $contentArray = $validated['content_json'];
@@ -1230,13 +1250,13 @@ class AdminController extends Controller
         }
 
         $plan->update([
-            'name'         => $validated['name'],
-            'plan_type'    => $validated['plan_type'],
-            'methodology'  => $validated['methodology'] ?? null,
-            'description'  => $validated['description'] ?? null,
+            'name' => $validated['name'],
+            'plan_type' => $validated['plan_type'],
+            'methodology' => $validated['methodology'] ?? null,
+            'description' => $validated['description'] ?? null,
             'content_json' => $contentArray,
-            'is_public'    => $validated['is_public'] ?? $plan->is_public,
-            'coach_id'     => array_key_exists('coach_id', $validated) ? ($validated['coach_id'] ?: null) : $plan->coach_id,
+            'is_public' => $validated['is_public'] ?? $plan->is_public,
+            'coach_id' => array_key_exists('coach_id', $validated) ? ($validated['coach_id'] ?: null) : $plan->coach_id,
         ]);
 
         return response()->json(['updated' => true]);
@@ -1341,6 +1361,96 @@ class AdminController extends Controller
         return response()->json(['updated' => true]);
     }
 
+    /**
+     * POST /api/v/admin/inscriptions/{id}/convert
+     *
+     * Convert an inscription into an active Client account.
+     */
+    public function convertInscription(Request $request, int $id): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $inscription = Inscription::findOrFail($id);
+
+        if ($inscription->status === 'convertido') {
+            return response()->json(['error' => 'Esta inscripción ya fue convertida'], 409);
+        }
+
+        // Extract extras from objetivo field (password_hash, peso, estatura, etc.)
+        $extras = [];
+        if ($inscription->objetivo && str_contains($inscription->objetivo, '|||')) {
+            $parts = explode('|||', $inscription->objetivo, 2);
+            if (isset($parts[1])) {
+                $extras = json_decode($parts[1], true) ?? [];
+            }
+        }
+
+        // Check email doesn't already exist as client
+        if (Client::where('email', $inscription->email)->exists()) {
+            return response()->json(['error' => 'Ya existe un cliente con este email'], 409);
+        }
+
+        // Create client
+        $client = Client::create([
+            'nombre'        => $inscription->nombre,
+            'apellido'      => $inscription->apellido ?? '',
+            'email'         => $inscription->email,
+            'telefono'      => $inscription->whatsapp ?? $inscription->telefono ?? '',
+            'password_hash' => $extras['password_hash'] ?? bcrypt('WellCore2026!'),
+            'plan'          => $inscription->plan ?? 'metodo',
+            'status'        => 'pendiente',
+            'ciudad'        => $inscription->ciudad ?? '',
+            'pais'          => $inscription->pais ?? 'Colombia',
+            'fecha_registro' => now(),
+        ]);
+
+        // Create profile
+        ClientProfile::create([
+            'client_id'    => $client->id,
+            'peso'         => $extras['peso'] ?? $inscription->peso ?? null,
+            'estatura'     => $extras['estatura'] ?? $inscription->estatura ?? null,
+            'genero'       => $extras['genero'] ?? $inscription->genero ?? null,
+            'objetivo'     => str_contains($inscription->objetivo ?? '', '|||')
+                ? explode('|||', $inscription->objetivo)[0]
+                : ($inscription->objetivo ?? ''),
+            'experiencia'  => $inscription->experiencia ?? '',
+            'equipamiento' => $extras['equipamiento'] ?? $inscription->equipamiento ?? '',
+        ]);
+
+        // Update inscription
+        $inscription->update([
+            'status'    => 'convertido',
+            'client_id' => $client->id,
+        ]);
+
+        // Generate referral code
+        $client->update(['referral_code' => strtoupper(substr(uniqid(), -8))]);
+
+        // Send welcome email
+        try {
+            Mail::to($client->email)->queue(new WelcomeMail($client->nombre ?? 'Cliente'));
+        } catch (\Throwable $e) {
+            Log::warning('Welcome email failed for client ' . $client->id . ': ' . $e->getMessage());
+        }
+
+        // Notify admin
+        WellcoreNotification::create([
+            'user_type' => 'admin',
+            'user_id'   => 1,
+            'type'      => 'inscription_converted',
+            'title'     => 'Inscripción Convertida',
+            'body'      => "{$client->nombre} fue convertido a cliente ({$inscription->plan})",
+            'link'      => "/admin/clients/{$client->id}",
+        ]);
+
+        return response()->json([
+            'converted'  => true,
+            'client_id'  => $client->id,
+            'client_name' => $client->nombre,
+            'message'    => "Cliente {$client->nombre} creado exitosamente",
+        ]);
+    }
+
     // ─── Invitations ────────────────────────────────────────────────────
 
     /**
@@ -1377,43 +1487,43 @@ class AdminController extends Controller
         $paginated = $query->orderBy($sortBy, $sortDir === 'asc' ? 'asc' : 'desc')->paginate(20);
 
         $stats = [
-            'total'   => Invitation::count(),
+            'total' => Invitation::count(),
             'pending' => Invitation::where('status', 'pending')->count(),
-            'used'    => Invitation::where('status', 'used')->count(),
+            'used' => Invitation::where('status', 'used')->count(),
             'expired' => Invitation::where('status', 'expired')->count(),
         ];
 
         $items = collect($paginated->items())->map(function ($inv) {
             $rawStatus = $inv->getRawOriginal('status') ?? 'pending';
-            $planVal = $inv->plan instanceof \App\Enums\PlanType ? $inv->plan->value : $inv->plan;
-            $planLabel = $inv->plan instanceof \App\Enums\PlanType ? $inv->plan->label() : ucfirst($planVal);
+            $planVal = $inv->plan instanceof PlanType ? $inv->plan->value : $inv->plan;
+            $planLabel = $inv->plan instanceof PlanType ? $inv->plan->label() : ucfirst($planVal);
 
             return [
-                'id'           => $inv->id,
-                'code'         => $inv->code,
-                'plan'         => $planVal,
-                'plan_label'   => $planLabel,
-                'email_hint'   => $inv->email_hint,
-                'status'       => $rawStatus,
+                'id' => $inv->id,
+                'code' => $inv->code,
+                'plan' => $planVal,
+                'plan_label' => $planLabel,
+                'email_hint' => $inv->email_hint,
+                'status' => $rawStatus,
                 'created_by_name' => $inv->createdBy?->name ?? null,
-                'used_by_name'    => $inv->usedBy?->name ?? null,
-                'created_at'   => $inv->created_at?->toISOString(),
-                'created_ago'  => $inv->created_at?->diffForHumans(),
-                'expires_at'   => $inv->expires_at?->format('d M Y'),
+                'used_by_name' => $inv->usedBy?->name ?? null,
+                'created_at' => $inv->created_at?->toISOString(),
+                'created_ago' => $inv->created_at?->diffForHumans(),
+                'expires_at' => $inv->expires_at?->format('d M Y'),
                 'expires_past' => $inv->expires_at?->isPast() ?? false,
-                'used_at'      => $inv->used_at?->format('d M Y'),
-                'intake_url'   => $rawStatus === 'pending' ? url('/unirse/'.$inv->code) : null,
+                'used_at' => $inv->used_at?->format('d M Y'),
+                'intake_url' => $rawStatus === 'pending' ? url('/unirse/'.$inv->code) : null,
             ];
         });
 
         return response()->json([
             'invitations' => $items,
-            'stats'       => $stats,
-            'pagination'  => [
+            'stats' => $stats,
+            'pagination' => [
                 'current_page' => $paginated->currentPage(),
-                'last_page'    => $paginated->lastPage(),
-                'total'        => $paginated->total(),
-                'per_page'     => $paginated->perPage(),
+                'last_page' => $paginated->lastPage(),
+                'total' => $paginated->total(),
+                'per_page' => $paginated->perPage(),
             ],
         ]);
     }
@@ -1434,8 +1544,8 @@ class AdminController extends Controller
             'note' => 'nullable|string|max:500',
             'expires_at' => 'nullable|date|after:today',
         ], [
-            'plan.required'   => 'Selecciona un plan.',
-            'plan.in'         => 'El plan seleccionado no es valido.',
+            'plan.required' => 'Selecciona un plan.',
+            'plan.in' => 'El plan seleccionado no es valido.',
             'expires_at.after' => 'La fecha de expiracion debe ser futura.',
         ]);
 
@@ -1445,12 +1555,12 @@ class AdminController extends Controller
         } while (Invitation::where('code', $code)->exists());
 
         $invitation = Invitation::create([
-            'code'       => $code,
-            'plan'       => $validated['plan'],
+            'code' => $code,
+            'plan' => $validated['plan'],
             'email_hint' => $validated['email_hint'] ?? null,
-            'note'       => $validated['note'] ?? null,
+            'note' => $validated['note'] ?? null,
             'expires_at' => $validated['expires_at'] ?? null,
-            'status'     => 'pending',
+            'status' => 'pending',
             'created_by' => $admin->id,
             'created_at' => now(),
         ]);
@@ -1458,10 +1568,10 @@ class AdminController extends Controller
         $intakeUrl = url('/unirse/'.$code);
 
         return response()->json([
-            'created'    => true,
-            'code'       => $code,
+            'created' => true,
+            'code' => $code,
             'intake_url' => $intakeUrl,
-            'id'         => $invitation->id,
+            'id' => $invitation->id,
         ], 201);
     }
 
@@ -1822,6 +1932,20 @@ class AdminController extends Controller
                         'assigned_by' => auth('wellcore')->id() ?? null,
                     ]);
                     $savedAssignedId = $assigned->id;
+
+                    // Notify client about new plan assignment
+                    WellcoreNotification::create([
+                        'user_type' => 'client',
+                        'user_id' => $validated['target_client_id'],
+                        'type' => 'new_plan',
+                        'title' => 'Nuevo Plan Asignado',
+                        'body' => "Tu coach te asignó un nuevo plan de {$validated['plan_type']}",
+                        'link' => '/client/plan',
+                    ]);
+                    try {
+                        PushNotificationService::notifyNewPlan($validated['target_client_id'], $validated['plan_type']);
+                    } catch (\Throwable) {
+                    }
                 }
             }
 
@@ -1991,8 +2115,8 @@ class AdminController extends Controller
         ];
 
         try {
-            \Illuminate\Support\Facades\Mail::to($validated['recipient_email'])->send(
-                new \App\Mail\PlanInvitation(
+            Mail::to($validated['recipient_email'])->send(
+                new PlanInvitation(
                     recipientName: $validated['recipient_name'],
                     planKey: $validated['plan'],
                 )
@@ -2019,7 +2143,7 @@ class AdminController extends Controller
 
             return response()->json([
                 'sent' => false,
-                'message' => 'Error al enviar: ' . $e->getMessage(),
+                'message' => 'Error al enviar: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -2060,8 +2184,8 @@ class AdminController extends Controller
         ];
 
         try {
-            \Illuminate\Support\Facades\Mail::to($validated['recipient_email'])->send(
-                new \App\Mail\GiftPlanInvitation(
+            Mail::to($validated['recipient_email'])->send(
+                new GiftPlanInvitation(
                     recipientName: $validated['recipient_name'],
                     planKey: $validated['plan'],
                     gifterName: $validated['gifter_name'],
@@ -2094,7 +2218,7 @@ class AdminController extends Controller
 
             return response()->json([
                 'sent' => false,
-                'message' => 'Error al enviar el regalo: ' . $e->getMessage(),
+                'message' => 'Error al enviar el regalo: '.$e->getMessage(),
             ], 500);
         }
     }
