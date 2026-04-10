@@ -310,6 +310,7 @@ async function toggleSet(exIndex, setIndex) {
         exercise_index: exIndex,
         set_index: setIndex,
         set_number: setIndex + 1,
+        exercise_name: exName(exercises.value[exIndex]),
         weight: saveWeight,
         reps: reps,
         unit: weightUnit.value,
@@ -356,13 +357,16 @@ async function completeCardioSet(exIndex, setIndex, duration, speed, incline) {
 
   if (workoutStarted.value) {
     try {
-      await api.post('/api/v/client/workout/complete-cardio-set', {
+      await api.post('/api/v/client/workout/complete-set', {
         session_id: sessionId.value,
         exercise_index: exIndex,
         set_number: setIndex + 1,
+        exercise_name: exName(exercises.value[exIndex]),
+        is_cardio: true,
         duration_minutes: duration,
         speed_kmh: speed,
         incline_percent: incline,
+        reps: duration,
       });
     } catch (err) {
       // Silently handle
