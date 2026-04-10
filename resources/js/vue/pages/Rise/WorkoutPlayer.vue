@@ -382,26 +382,33 @@ async function uncompleteCardioSet(exIndex, setIndex) {
 }
 
 // ── Rest timer ──
+// ── Rest timer (background-safe using timestamps) ──
+let restStartedAt = 0;
+let restDurationTotal = 0;
+
 function startRestTimer(seconds) {
   clearInterval(restInterval);
-  restSeconds.value = seconds;
+  restDurationTotal = seconds;
+  restStartedAt = Date.now();
   restTotal.value = seconds;
+  restSeconds.value = seconds;
   showRestTimer.value = true;
-  playBeep(440, 0.1); // Short beep on start
+  playBeep(440, 0.1);
   restInterval = setInterval(() => {
-    if (restSeconds.value <= 0) {
+    const elapsedRest = Math.floor((Date.now() - restStartedAt) / 1000);
+    const remaining = Math.max(0, restDurationTotal - elapsedRest);
+    restSeconds.value = remaining;
+    if (remaining <= 0) {
       clearInterval(restInterval);
       showRestTimer.value = false;
       playBeep(880, 0.15);
       setTimeout(() => playBeep(880, 0.15), 200);
       return;
     }
-    restSeconds.value--;
-    // Beep at 3, 2, 1
-    if (restSeconds.value <= 3 && restSeconds.value > 0) {
+    if (remaining <= 3 && remaining > 0) {
       playBeep(660, 0.08);
     }
-  }, 1000);
+  }, 500);
 }
 
 function clearRestTimer() {
@@ -410,25 +417,49 @@ function clearRestTimer() {
   restSeconds.value = 0;
 }
 
+// ── Workout session timer (background-safe using timestamps) ──
+let workoutStartTimestamp = 0;
+
 function startTimer() {
+  workoutStartTimestamp = Date.now();
   elapsed.value = 0;
   clearInterval(timerInterval);
   timerInterval = setInterval(() => {
-    elapsed.value++;
+    elapsed.value = Math.floor((Date.now() - workoutStartTimestamp) / 1000);
   }, 1000);
 }
 
 function resumeTimer(startTime) {
-  const start = new Date(startTime).getTime();
-  elapsed.value = Math.max(0, Math.floor((Date.now() - start) / 1000));
+  workoutStartTimestamp = new Date(startTime).getTime();
+  elapsed.value = Math.max(0, Math.floor((Date.now() - workoutStartTimestamp) / 1000));
   clearInterval(timerInterval);
   timerInterval = setInterval(() => {
-    elapsed.value++;
+    elapsed.value = Math.floor((Date.now() - workoutStartTimestamp) / 1000);
   }, 1000);
 }
 
 function stopTimer() {
   clearInterval(timerInterval);
+}
+
+// Re-sync timers when page becomes visible again
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      if (workoutStarted.value && workoutStartTimestamp > 0) {
+        elapsed.value = Math.floor((Date.now() - workoutStartTimestamp) / 1000);
+      }
+      if (showRestTimer.value && restStartedAt > 0) {
+        const elapsedRest = Math.floor((Date.now() - restStartedAt) / 1000);
+        const remaining = Math.max(0, restDurationTotal - elapsedRest);
+        restSeconds.value = remaining;
+        if (remaining <= 0) {
+          clearInterval(restInterval);
+          showRestTimer.value = false;
+        }
+      }
+    }
+  });
 }
 
 // ── Weight unit ──
