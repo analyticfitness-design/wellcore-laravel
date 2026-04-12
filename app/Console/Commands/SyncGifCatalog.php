@@ -12,13 +12,14 @@ use Illuminate\Support\Facades\DB;
  *   1. Update ejercicios_fitcron.gif_filename → match exercise names to the
  *      current set of 464 Spanish-named GIFs in scripts/gif-catalog.json
  *   2. Load all pre-computed aliases from scripts/gif-aliases.json into
- *      exercise_aliases (so runtime is pure hash lookup, no fuzzy)
- *   3. Report exercises that still have no GIF match
+ *      exercise_aliases (source='canonical')
+ *   3. Load manual override aliases from scripts/gif-manual-aliases.json into
+ *      exercise_aliases (source='manual', score=1.0) — runs LAST to override bad fuzzy matches
  *
  * Usage:
  *   php artisan wellcore:sync-gif-catalog           # run + save
  *   php artisan wellcore:sync-gif-catalog --dry-run # preview only
- *   php artisan wellcore:sync-gif-catalog --aliases-only  # only load aliases JSON
+ *   php artisan wellcore:sync-gif-catalog --aliases-only  # only load aliases JSON + manual
  *   php artisan wellcore:sync-gif-catalog --fitcron-only  # only update gif_filename
  */
 class SyncGifCatalog extends Command
@@ -29,9 +30,10 @@ class SyncGifCatalog extends Command
         {--fitcron-only : Only update gif_filename, skip alias load}
         {--catalog=     : Path to gif-catalog.json}
         {--aliases=     : Path to gif-aliases.json}
+        {--manual=      : Path to gif-manual-aliases.json}
         {--threshold=0.35 : Minimum score to accept a fuzzy match (0-1)}';
 
-    protected $description = 'Sync 464-GIF catalog: update gif_filename in fitcron + load aliases JSON';
+    protected $description = 'Sync 464-GIF catalog: update gif_filename in fitcron + load aliases JSON + manual overrides';
 
     private const STOPWORDS = ['con', 'en', 'de', 'la', 'el', 'los', 'las', 'un', 'una', 'a', 'al', 'del', 'y', 'o'];
 
@@ -62,6 +64,7 @@ class SyncGifCatalog extends Command
 
         $catalogPath  = $this->option('catalog') ?: base_path('scripts/gif-catalog.json');
         $aliasesPath  = $this->option('aliases') ?: base_path('scripts/gif-aliases.json');
+        $manualPath   = $this->option('manual')  ?: base_path('scripts/gif-manual-aliases.json');
 
         if ($isDry) {
             $this->warn('DRY RUN — no changes will be written.');
@@ -88,11 +91,18 @@ class SyncGifCatalog extends Command
             $this->syncFitcronFilenames($catalogByNorm, $catalog, $threshold, $isDry);
         }
 
-        // ── Step 2: Load aliases from JSON ───────────────────────────────────
+        // ── Step 2: Load canonical aliases from gif-aliases.json ─────────────
         if (! $fitcronOnly && file_exists($aliasesPath)) {
             $this->loadAliases($aliasesPath, $isDry);
         } elseif (! $fitcronOnly) {
             $this->warn("gif-aliases.json not found: {$aliasesPath} — skipping alias load");
+        }
+
+        // ── Step 3: Load manual override aliases (always last, source=manual) ─
+        if (! $fitcronOnly && file_exists($manualPath)) {
+            $this->loadManualAliases($manualPath, $isDry);
+        } elseif (! $fitcronOnly) {
+            $this->warn("gif-manual-aliases.json not found: {$manualPath} — skipping manual overrides");
         }
 
         $this->info('Done!');
@@ -236,6 +246,76 @@ class SyncGifCatalog extends Command
 
         $this->info("  Aliases inserted: {$inserted}" . ($isDry ? ' (dry run)' : ''));
         $this->info("  Aliases updated:  {$updated}");
+    }
+
+    // ─── Manual aliases loader ────────────────────────────────────────────────
+
+    /**
+     * Load gif-manual-aliases.json: { "alias display name" => "gif_filename.gif" }
+     * These are explicit corrections that override any auto/canonical alias.
+     * Loaded LAST so source='manual' wins in ExerciseMediaService hash lookup.
+     */
+    private function loadManualAliases(string $manualPath, bool $isDry): void
+    {
+        $this->line('');
+        $this->info('Loading manual override aliases from gif-manual-aliases.json...');
+
+        $raw = json_decode(file_get_contents($manualPath), true);
+
+        // Strip the _comment key if present
+        unset($raw['_comment']);
+
+        $inserted = 0;
+        $updated  = 0;
+
+        foreach ($raw as $displayName => $gifFilename) {
+            $alias       = $this->normalizeName($displayName);
+            $gifFilename = trim($gifFilename);
+
+            if (strlen($alias) < 3) {
+                continue;
+            }
+
+            // Find the fitcron_slug for this gif_filename
+            $fitcronSlug = DB::table('ejercicios_fitcron')
+                ->where('gif_filename', $gifFilename)
+                ->value('slug');
+
+            if ($isDry) {
+                $this->line("  [MANUAL] {$alias} → {$gifFilename}" . ($fitcronSlug ? " ({$fitcronSlug})" : ' (no fitcron slug)'));
+                $inserted++;
+                continue;
+            }
+
+            $exists = DB::table('exercise_aliases')->where('alias', $alias)->first();
+
+            if ($exists) {
+                DB::table('exercise_aliases')
+                    ->where('alias', $alias)
+                    ->update([
+                        'alias_display' => $displayName,
+                        'gif_filename'  => $gifFilename,
+                        'fitcron_slug'  => $fitcronSlug,
+                        'score'         => 1.0,
+                        'source'        => 'manual',
+                    ]);
+                $updated++;
+            } else {
+                DB::table('exercise_aliases')->insert([
+                    'alias'         => $alias,
+                    'alias_display' => $displayName,
+                    'gif_filename'  => $gifFilename,
+                    'fitcron_slug'  => $fitcronSlug,
+                    'score'         => 1.0,
+                    'source'        => 'manual',
+                    'created_at'    => now(),
+                ]);
+                $inserted++;
+            }
+        }
+
+        $this->info("  Manual aliases inserted: {$inserted}" . ($isDry ? ' (dry run)' : ''));
+        $this->info("  Manual aliases updated:  {$updated}");
     }
 
     // ─── Fuzzy matching ───────────────────────────────────────────────────────
