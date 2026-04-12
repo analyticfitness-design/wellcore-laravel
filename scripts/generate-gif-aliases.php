@@ -11,7 +11,7 @@
  */
 
 $dryRun = in_array('--dry-run', $argv);
-$gifDir = 'E:/WELLCORE FITNESS PLATAFORMA/Recursos/GIF EJERCICIOS 758';
+$gifDir = 'E:/WELLCORE FITNESS PLATAFORMA/Recursos/GIF EJERCICIOS 461';
 
 // Synonyms — ONLY used when the original word is present
 $synonyms = [
@@ -92,6 +92,49 @@ $synonyms = [
     'bicicleta en el aire' => ['air bike', 'bicicleta'],
     'jalon a la cara' => ['face pull'],
     'separacion' => ['pull apart', 'separacion de banda'],
+
+    // ── Términos inglés/mixtos que coaches usan al escribir planes ──
+    'press de banca' => ['bench press', 'press en banco', 'press banca', 'pecho press'],
+    'press militar' => ['shoulder press', 'overhead press', 'press de hombro', 'press aereo'],
+    'peso muerto' => ['deadlift', 'peso muerto convencional'],
+    'sentadilla con barra' => ['barbell squat', 'back squat', 'sentadilla trasera'],
+    'remo con barra' => ['barbell row', 'bent over row', 'remo inclinado con barra'],
+    'dominadas' => ['pull ups', 'pullups', 'chin ups', 'chinups', 'jalones barra'],
+    'flexiones' => ['push ups', 'pushups', 'lagartijas', 'fondos en suelo'],
+    'extension de triceps' => ['tricep extension', 'extension triceps', 'extension de tricep'],
+    'curl de biceps' => ['bicep curl', 'curl biceps', 'curl de bicep'],
+    'elevacion lateral' => ['lateral raise', 'vuelos laterales', 'elevaciones laterales'],
+    'press de hombro' => ['shoulder press', 'press hombro', 'press aereo'],
+    'jalon al pecho' => ['lat pulldown', 'pulldown', 'jalon frontal', 'jalon en polea alta'],
+    'hip thrust' => ['empuje de cadera', 'puente de gluteo con barra', 'hip thrust barra'],
+    'sentadilla bulgara' => ['bulgarian split squat', 'zancada bulgara', 'sentadilla dividida'],
+    'sentadilla goblet' => ['goblet squat', 'sentadilla copa', 'sentadilla con mancuerna al pecho'],
+    'sentadilla sumo' => ['sumo squat', 'sentadilla pies abiertos', 'plie squat'],
+    'prensa de pierna' => ['leg press', 'prensa', 'press de pierna'],
+    'curl de pierna' => ['leg curl', 'curl femoral', 'curl piernas'],
+    'extension de pierna' => ['leg extension', 'extension cuadriceps', 'quad extension'],
+    'elevacion de talones' => ['calf raise', 'pantorrillas de pie', 'gemelos de pie'],
+    'fondos' => ['dips', 'paralelas', 'fondos en paralelas'],
+    'remo en polea' => ['seated cable row', 'remo polea sentado', 'remo polea baja'],
+    'cruces de pecho' => ['cable crossover', 'cruces en polea', 'crossover'],
+    'aperturas' => ['dumbbell fly', 'fly con mancuernas', 'cristos', 'apertura de pecho'],
+    'jalones de triceps' => ['tricep pushdown', 'extension de triceps en polea', 'empuje abajo triceps'],
+    'curl martillo' => ['hammer curl', 'curl neutro', 'curl con agarre neutro'],
+    'predicador' => ['preacher curl', 'scott', 'banco predicador'],
+    'encogimiento de hombros' => ['shrug', 'encogimientos', 'trap shrug'],
+    'peso muerto rumano' => ['rdl', 'romanian deadlift', 'peso muerto pierna rigida'],
+    'zancada' => ['lunge', 'estocada', 'desplante'],
+    'plancha abdominal' => ['plank', 'plancha', 'isometrico abdominal'],
+    'rueda abdominal' => ['ab wheel', 'rueda ab', 'rueda de abdominales'],
+    'caminata del granjero' => ['farmers walk', 'caminata con peso', 'carrying'],
+    'subida al banco' => ['step up', 'step ups', 'subida a caja'],
+    'sentadilla hack' => ['hack squat', 'hack machine', 'maquina hack'],
+    'remo al menton' => ['upright row', 'remo vertical', 'remo al cuello'],
+    'press frances' => ['skull crusher', 'rompe craneos', 'ez bar press'],
+    'patada de triceps' => ['tricep kickback', 'kickback triceps'],
+    'vuelo posterior' => ['rear delt fly', 'pajaro', 'apertura posterior'],
+    'jalon frontal' => ['lat pulldown', 'jalon al pecho frontal'],
+    'pullover' => ['pull over', 'extension de espalda en polea'],
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -245,10 +288,16 @@ echo "GIFs: " . count($allData) . "\n";
 echo "Total aliases: {$totalAliases}\n";
 echo "Average aliases per GIF: " . round($totalAliases / count($allData), 1) . "\n";
 
-// Save aliases JSON
-$outputFile = $gifDir . '/gif-aliases.json';
+// Save aliases JSON to scripts/ folder in the Laravel project
+$scriptDir = __DIR__;
+$outputFile = $scriptDir . '/gif-aliases.json';
 file_put_contents($outputFile, json_encode($allData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 echo "Aliases saved to: {$outputFile}\n";
+
+// Also save a simple catalog (list of all current GIF filenames)
+$catalogFile = $scriptDir . '/gif-catalog.json';
+file_put_contents($catalogFile, json_encode(array_keys($allData), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+echo "Catalog saved to: {$catalogFile}\n";
 
 if ($dryRun) {
     echo "\nDRY RUN — review the aliases above.\n";

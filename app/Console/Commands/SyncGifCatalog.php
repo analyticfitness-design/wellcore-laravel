@@ -1,0 +1,299 @@
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+
+/**
+ * Sync the 464-GIF catalog into the database.
+ *
+ * Three actions in one command:
+ *   1. Update ejercicios_fitcron.gif_filename → match exercise names to the
+ *      current set of 464 Spanish-named GIFs in scripts/gif-catalog.json
+ *   2. Load all pre-computed aliases from scripts/gif-aliases.json into
+ *      exercise_aliases (so runtime is pure hash lookup, no fuzzy)
+ *   3. Report exercises that still have no GIF match
+ *
+ * Usage:
+ *   php artisan wellcore:sync-gif-catalog           # run + save
+ *   php artisan wellcore:sync-gif-catalog --dry-run # preview only
+ *   php artisan wellcore:sync-gif-catalog --aliases-only  # only load aliases JSON
+ *   php artisan wellcore:sync-gif-catalog --fitcron-only  # only update gif_filename
+ */
+class SyncGifCatalog extends Command
+{
+    protected $signature = 'wellcore:sync-gif-catalog
+        {--dry-run      : Preview without writing to DB}
+        {--aliases-only : Only load aliases from JSON, skip fitcron update}
+        {--fitcron-only : Only update gif_filename, skip alias load}
+        {--catalog=     : Path to gif-catalog.json}
+        {--aliases=     : Path to gif-aliases.json}
+        {--threshold=0.35 : Minimum score to accept a fuzzy match (0-1)}';
+
+    protected $description = 'Sync 464-GIF catalog: update gif_filename in fitcron + load aliases JSON';
+
+    private const STOPWORDS = ['con', 'en', 'de', 'la', 'el', 'los', 'las', 'un', 'una', 'a', 'al', 'del', 'y', 'o'];
+
+    public function handle(): int
+    {
+        $isDry        = $this->option('dry-run');
+        $aliasesOnly  = $this->option('aliases-only');
+        $fitcronOnly  = $this->option('fitcron-only');
+        $threshold    = (float) $this->option('threshold');
+
+        $catalogPath  = $this->option('catalog') ?: base_path('scripts/gif-catalog.json');
+        $aliasesPath  = $this->option('aliases') ?: base_path('scripts/gif-aliases.json');
+
+        if ($isDry) {
+            $this->warn('DRY RUN — no changes will be written.');
+        }
+
+        // ── Load catalog ──────────────────────────────────────────────────────
+        if (! file_exists($catalogPath)) {
+            $this->error("gif-catalog.json not found: {$catalogPath}");
+            return self::FAILURE;
+        }
+        $catalog = json_decode(file_get_contents($catalogPath), true);
+        $this->info('Catalog loaded: ' . count($catalog) . ' GIFs');
+
+        // Pre-build a normalized lookup for the catalog
+        // [normalized_display_name => gif_filename]
+        $catalogByNorm = [];
+        foreach ($catalog as $filename) {
+            $norm = $this->normalizeFilename($filename);
+            $catalogByNorm[$norm] = $filename;
+        }
+
+        // ── Step 1: Update ejercicios_fitcron.gif_filename ───────────────────
+        if (! $aliasesOnly) {
+            $this->syncFitcronFilenames($catalogByNorm, $catalog, $threshold, $isDry);
+        }
+
+        // ── Step 2: Load aliases from JSON ───────────────────────────────────
+        if (! $fitcronOnly && file_exists($aliasesPath)) {
+            $this->loadAliases($aliasesPath, $isDry);
+        } elseif (! $fitcronOnly) {
+            $this->warn("gif-aliases.json not found: {$aliasesPath} — skipping alias load");
+        }
+
+        $this->info('Done!');
+        return self::SUCCESS;
+    }
+
+    // ─── Fitcron sync ─────────────────────────────────────────────────────────
+
+    private function syncFitcronFilenames(array $catalogByNorm, array $catalog, float $threshold, bool $isDry): void
+    {
+        $this->line('');
+        $this->info('Updating ejercicios_fitcron.gif_filename...');
+
+        $exercises = DB::table('ejercicios_fitcron')
+            ->select('id', 'slug', 'nombre', 'gif_filename')
+            ->get();
+
+        $updated   = 0;
+        $alreadyOk = 0;
+        $noMatch   = 0;
+        $noMatchList = [];
+
+        foreach ($exercises as $ex) {
+            $currentFile  = $ex->gif_filename;
+            $normName     = $this->normalizeName($ex->nombre);
+
+            // 1. Current filename already in catalog — nothing to do
+            if ($currentFile && in_array($currentFile, $catalog, true)) {
+                $alreadyOk++;
+                continue;
+            }
+
+            // 2. Exact match by normalized exercise name = normalized filename
+            if (isset($catalogByNorm[$normName])) {
+                $newFile = $catalogByNorm[$normName];
+                if (! $isDry) {
+                    DB::table('ejercicios_fitcron')
+                        ->where('id', $ex->id)
+                        ->update(['gif_filename' => $newFile]);
+                }
+                $updated++;
+                if ($isDry) {
+                    $this->line("  [EXACT] {$ex->nombre} → {$newFile}");
+                }
+                continue;
+            }
+
+            // 3. Fuzzy match against catalog
+            $best = $this->fuzzyMatch($normName, $catalogByNorm, $threshold);
+            if ($best) {
+                if (! $isDry) {
+                    DB::table('ejercicios_fitcron')
+                        ->where('id', $ex->id)
+                        ->update(['gif_filename' => $best['file']]);
+                }
+                $updated++;
+                if ($isDry) {
+                    $this->line("  [FUZZY {$best['score']}] {$ex->nombre} → {$best['file']}");
+                }
+            } else {
+                $noMatch++;
+                $noMatchList[] = $ex->nombre . ($currentFile ? " (tenía: {$currentFile})" : '');
+            }
+        }
+
+        $this->info("  Already OK (file in catalog): {$alreadyOk}");
+        $this->info("  Updated: {$updated}" . ($isDry ? ' (would be)' : ''));
+        $this->info("  No match found: {$noMatch}");
+
+        if ($noMatch > 0 && count($noMatchList) <= 30) {
+            $this->newLine();
+            $this->warn('Exercises without a GIF match in the 464 catalog:');
+            foreach ($noMatchList as $name) {
+                $this->line("  - {$name}");
+            }
+        } elseif ($noMatch > 30) {
+            $this->warn("  ({$noMatch} exercises without match — run with --dry-run to see full list)");
+        }
+    }
+
+    // ─── Aliases loader ───────────────────────────────────────────────────────
+
+    private function loadAliases(string $aliasesPath, bool $isDry): void
+    {
+        $this->line('');
+        $this->info('Loading aliases from gif-aliases.json...');
+
+        $aliasData = json_decode(file_get_contents($aliasesPath), true);
+
+        $inserted = 0;
+        $updated  = 0;
+
+        foreach ($aliasData as $gifFilename => $data) {
+            $aliases = $data['aliases'] ?? [];
+            if (empty($aliases)) {
+                continue;
+            }
+
+            // Find the fitcron_slug for this gif_filename
+            $fitcronSlug = DB::table('ejercicios_fitcron')
+                ->where('gif_filename', $gifFilename)
+                ->value('slug');
+
+            foreach ($aliases as $alias) {
+                $alias = trim($alias);
+                if (strlen($alias) < 4) {
+                    continue;
+                }
+
+                if ($isDry) {
+                    $inserted++;
+                    continue;
+                }
+
+                $exists = DB::table('exercise_aliases')->where('alias', $alias)->first();
+
+                if ($exists) {
+                    DB::table('exercise_aliases')
+                        ->where('alias', $alias)
+                        ->update([
+                            'gif_filename'  => $gifFilename,
+                            'fitcron_slug'  => $fitcronSlug,
+                            'score'         => 1.0,
+                            'source'        => 'canonical',
+                        ]);
+                    $updated++;
+                } else {
+                    DB::table('exercise_aliases')->insert([
+                        'alias'         => $alias,
+                        'alias_display' => $alias,
+                        'gif_filename'  => $gifFilename,
+                        'fitcron_slug'  => $fitcronSlug,
+                        'score'         => 1.0,
+                        'source'        => 'canonical',
+                        'created_at'    => now(),
+                    ]);
+                    $inserted++;
+                }
+            }
+        }
+
+        $this->info("  Aliases inserted: {$inserted}" . ($isDry ? ' (dry run)' : ''));
+        $this->info("  Aliases updated:  {$updated}");
+    }
+
+    // ─── Fuzzy matching ───────────────────────────────────────────────────────
+
+    private function fuzzyMatch(string $normName, array $catalogByNorm, float $threshold): ?array
+    {
+        $planWords = $this->keywords($normName);
+        $best      = null;
+
+        foreach ($catalogByNorm as $normFile => $filename) {
+            $fileWords = $this->keywords($normFile);
+
+            // Jaccard similarity on keywords
+            $jaccard  = $this->jaccard($planWords, $fileWords);
+
+            // Character-level similarity on full normalized strings
+            similar_text($normName, $normFile, $pct);
+            $sim = $pct / 100;
+
+            $score = 0.55 * $jaccard + 0.45 * $sim;
+
+            if ($score >= $threshold && ($best === null || $score > $best['score'])) {
+                $best = ['file' => $filename, 'score' => round($score, 3)];
+            }
+        }
+
+        return $best;
+    }
+
+    private function jaccard(array $a, array $b): float
+    {
+        if (empty($a) || empty($b)) return 0.0;
+        $inter = count(array_intersect($a, $b));
+        $union = count(array_unique(array_merge($a, $b)));
+        return $union > 0 ? $inter / $union : 0.0;
+    }
+
+    // ─── Normalization helpers ────────────────────────────────────────────────
+
+    /**
+     * Normalize a Spanish GIF filename into a comparable string.
+     * "barra-press-de-banca.gif" → "barra press banca"
+     */
+    private function normalizeFilename(string $filename): string
+    {
+        $name = str_replace(['.gif', '-'], [' ', ' '], $filename);
+        return $this->normalizeName($name);
+    }
+
+    /**
+     * Normalize a human-readable Spanish exercise name.
+     * "Press de Banca con Barra (Plano)" → "press banca barra"
+     */
+    private function normalizeName(string $name): string
+    {
+        $name = preg_replace('/\([^)]*\)/', ' ', $name); // strip (...)
+        $name = mb_strtolower(trim($name));
+        $map  = ['á'=>'a','é'=>'e','í'=>'i','ó'=>'o','ú'=>'u','ü'=>'u','ñ'=>'n'];
+        $name = strtr($name, $map);
+        $name = preg_replace('/[^a-z0-9\s]/', ' ', $name);
+        $name = preg_replace('/\s+/', ' ', trim($name));
+
+        // Remove stopwords to improve matching
+        $words = array_filter(
+            explode(' ', $name),
+            fn ($w) => strlen($w) > 1 && ! in_array($w, self::STOPWORDS, true)
+        );
+
+        return implode(' ', $words);
+    }
+
+    private function keywords(string $norm): array
+    {
+        return array_unique(array_values(array_filter(
+            explode(' ', $norm),
+            fn ($w) => strlen($w) > 2 && ! in_array($w, self::STOPWORDS, true)
+        )));
+    }
+}

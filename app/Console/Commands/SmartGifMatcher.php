@@ -40,13 +40,88 @@ class SmartGifMatcher extends Command
     // ─── Key movement words — weighted higher ─────────────────────────────────
     private const MOVEMENT_TERMS = [
         'press', 'curl', 'remo', 'sentadilla', 'extension', 'apertura',
-        'cruce', 'elevacion', 'fondos', 'dominada', 'jalon', 'jalón',
+        'cruce', 'elevacion', 'fondos', 'dominada', 'jalon', 'jalon',
         'hip', 'thrust', 'face', 'pull', 'push', 'prensa', 'aductor',
         'abductor', 'predicador', 'femoral', 'flexion', 'rotacion',
         'encogimiento', 'plancha', 'puente', 'patada', 'vuelo', 'mariposa',
         'crossover', 'row', 'squat', 'lunge', 'fly', 'raise', 'pulldown',
         'pullover', 'deadlift', 'peso', 'muerto', 'shrug', 'dips', 'chin',
         'kickback', 'lateral', 'frontal', 'inclinado', 'declinado', 'vertical',
+    ];
+
+    // ─── English→Spanish translations for plan exercise names ─────────────────
+    // Coaches sometimes write plans mixing English terms
+    private const EN_ES = [
+        'bench press'     => 'press de banca',
+        'squat'           => 'sentadilla',
+        'deadlift'        => 'peso muerto',
+        'lunge'           => 'zancada',
+        'row'             => 'remo',
+        'pull up'         => 'dominadas',
+        'pullup'          => 'dominadas',
+        'chin up'         => 'dominadas',
+        'push up'         => 'flexiones',
+        'pushup'          => 'flexiones',
+        'dip'             => 'fondos',
+        'dips'            => 'fondos',
+        'overhead press'  => 'press militar',
+        'shoulder press'  => 'press de hombro',
+        'lat pulldown'    => 'jalon al pecho',
+        'pulldown'        => 'jalon al pecho',
+        'cable row'       => 'remo en polea',
+        'leg press'       => 'prensa de pierna',
+        'leg curl'        => 'curl de pierna',
+        'leg extension'   => 'extension de pierna',
+        'calf raise'      => 'elevacion de talones',
+        'hip thrust'      => 'hip thrust',
+        'rdl'             => 'peso muerto rumano',
+        'romanian'        => 'rumano',
+        'hammer curl'     => 'curl martillo',
+        'bicep curl'      => 'curl de biceps',
+        'skull crusher'   => 'press frances',
+        'tricep'          => 'triceps',
+        'triceps'         => 'triceps',
+        'lateral raise'   => 'elevacion lateral',
+        'front raise'     => 'elevacion frontal',
+        'fly'             => 'apertura',
+        'crossover'       => 'cruces',
+        'shrug'           => 'encogimiento de hombros',
+        'plank'           => 'plancha',
+        'crunch'          => 'crunch',
+        'ab wheel'        => 'rueda abdominal',
+        'step up'         => 'subida al banco',
+        'hack squat'      => 'sentadilla hack',
+        'goblet squat'    => 'sentadilla goblet',
+        'bulgarian'       => 'bulgara',
+        'sumo'            => 'sumo',
+        'barbell'         => 'barra',
+        'dumbbell'        => 'mancuerna',
+        'cable'           => 'polea',
+        'machine'         => 'maquina',
+        'band'            => 'banda',
+        'incline'         => 'inclinado',
+        'decline'         => 'declinado',
+        'seated'          => 'sentado',
+        'standing'        => 'de pie',
+        'lying'           => 'acostado',
+        'close grip'      => 'agarre cerrado',
+        'wide grip'       => 'agarre abierto',
+        'reverse grip'    => 'agarre inverso',
+        'underhand'       => 'agarre supino',
+        'overhand'        => 'agarre prono',
+        'neutral grip'    => 'agarre neutro',
+        'unilateral'      => 'un brazo',
+        'alternating'     => 'alternado',
+        'preacher'        => 'predicador',
+        'concentration'   => 'concentrado',
+        'rear delt'       => 'deltoides posterior',
+        'face pull'       => 'jalon a la cara',
+        'upright row'     => 'remo al menton',
+        'farmers walk'    => 'caminata del granjero',
+        'kickback'        => 'patada de triceps',
+        'pullover'        => 'pullover',
+        'push down'       => 'empuje abajo',
+        'pushdown'        => 'empuje abajo triceps',
     ];
 
     public function handle(): int
@@ -81,7 +156,8 @@ class SmartGifMatcher extends Command
         $bar->start();
 
         foreach ($planNames as $original) {
-            $normAlias = $this->normalizeAlias($original);
+            $normAlias    = $this->normalizeAlias($original);
+            $normTranslated = $this->translateToSpanish($normAlias);
 
             // Already in alias table — skip
             if (isset($knownAliases[$normAlias])) {
@@ -91,7 +167,7 @@ class SmartGifMatcher extends Command
             }
 
             [$slug, $gif, $score, $method] = $this->matchExercise(
-                $original, $normAlias, $fitcronIndex, $threshold
+                $original, $normAlias, $normTranslated, $fitcronIndex, $threshold
             );
 
             $stats[$method]++;
@@ -152,29 +228,42 @@ class SmartGifMatcher extends Command
     private function matchExercise(
         string $original,
         string $normAlias,
+        string $normTranslated,
         \Illuminate\Support\Collection $index,
         float $threshold
     ): array {
-        $planKeywords   = $this->keywords($original);
-        $planFileWords  = $this->filenameWords($original);
+        $planKeywords       = $this->keywords($normAlias);
+        $planKeywordsTrans  = $this->keywords($normTranslated);
+        $planFileWords      = $this->filenameWords($original);
 
         $best = ['slug' => null, 'gif' => null, 'score' => 0.0, 'method' => 'none'];
 
         foreach ($index as $entry) {
-            // Pass 1: exact normalized match → perfect
+            // Pass 1a: exact normalized match → perfect
             if ($normAlias === $entry['norm']) {
                 return [$entry['slug'], $entry['gif_filename'], 1.0, 'exact'];
             }
 
-            // Pass 2: Jaccard keyword + similar_text on Spanish name
-            $jaccard  = $this->jaccard($planKeywords, $entry['keywords']);
-            $sim      = $this->simText($normAlias, $entry['norm']);
-            $movement = $this->movementBonus($planKeywords, $entry['keywords']);
-            $score2   = 0.50 * $jaccard + 0.30 * $sim + 0.20 * $movement;
+            // Pass 1b: exact match after English→Spanish translation → near-perfect
+            if ($normTranslated !== $normAlias && $normTranslated === $entry['norm']) {
+                return [$entry['slug'], $entry['gif_filename'], 0.98, 'exact'];
+            }
 
-            // Pass 3: word overlap against GIF filename (catches English terms)
+            // Pass 2: Jaccard keyword + similar_text on Spanish name
+            $jaccard   = $this->jaccard($planKeywords, $entry['keywords']);
+            $jaccardT  = $this->jaccard($planKeywordsTrans, $entry['keywords']);
+            $bestJac   = max($jaccard, $jaccardT);
+            $sim       = $this->simText($normAlias, $entry['norm']);
+            $simT      = $this->simText($normTranslated, $entry['norm']);
+            $bestSim   = max($sim, $simT);
+            $movement  = $this->movementBonus($planKeywords, $entry['keywords']);
+            $movementT = $this->movementBonus($planKeywordsTrans, $entry['keywords']);
+            $bestMov   = max($movement, $movementT);
+            $score2    = 0.50 * $bestJac + 0.30 * $bestSim + 0.20 * $bestMov;
+
+            // Pass 3: word overlap against GIF filename (catches remaining English terms)
             $fileScore = $this->jaccard($planFileWords, $entry['filename_words']);
-            $score3    = 0.65 * $fileScore + 0.35 * $sim;
+            $score3    = 0.65 * $fileScore + 0.35 * $bestSim;
 
             $score  = max($score2, $score3);
             $method = ($score3 > $score2) ? 'filename' : 'fuzzy';
@@ -226,6 +315,7 @@ class SmartGifMatcher extends Command
     /**
      * Normalized alias stored in DB — used for exact hash lookup at runtime.
      * Removes parentheticals, accents, punctuation, lowercases.
+     * Also translates English fitness terms to Spanish.
      */
     private function normalizeAlias(string $name): string
     {
@@ -234,8 +324,25 @@ class SmartGifMatcher extends Command
         $map  = ['á'=>'a','é'=>'e','í'=>'i','ó'=>'o','ú'=>'u','ü'=>'u','ñ'=>'n'];
         $name = strtr($name, $map);
         $name = preg_replace('/[^a-z0-9\s]/', ' ', $name);
+        $name = preg_replace('/\s+/', ' ', trim($name));
 
-        return preg_replace('/\s+/', ' ', trim($name));
+        return $name;
+    }
+
+    /**
+     * Translates English terms in an exercise name to Spanish equivalents.
+     * "Barbell Bench Press" → "barra press de banca"
+     */
+    private function translateToSpanish(string $normalized): string
+    {
+        foreach (self::EN_ES as $en => $es) {
+            $normalized = preg_replace(
+                '/\b' . preg_quote($en, '/') . '\b/u',
+                $es,
+                $normalized
+            );
+        }
+        return preg_replace('/\s+/', ' ', trim($normalized));
     }
 
     private function keywords(string $name): array
