@@ -2,15 +2,35 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
+import { useApi } from '../composables/useApi';
 import NotificationBell from '../components/NotificationBell.vue';
 
 const authStore = useAuthStore();
+const api = useApi();
 const route = useRoute();
 const router = useRouter();
 
 const sidebarOpen = ref(false);
 const loggingOut = ref(false);
 const stoppingImpersonation = ref(false);
+
+// Account status check — set to true when API returns 403 {inactive:true}
+const accountInactive = ref(false);
+const accountStatusValue = ref('inactivo');
+const accountCheckDone = ref(false);
+
+onMounted(async () => {
+    try {
+        await api.get('/api/v/client/account-status');
+    } catch (err) {
+        if (err.response?.status === 403 && err.response?.data?.inactive) {
+            accountInactive.value = true;
+            accountStatusValue.value = err.response.data.status || 'inactivo';
+        }
+    } finally {
+        accountCheckDone.value = true;
+    }
+});
 
 const isImpersonating = computed(() => authStore.isImpersonating);
 
@@ -323,7 +343,67 @@ const bottomNav = [
 
       <!-- Page content -->
       <main class="px-4 py-6 pb-20 sm:px-6 lg:px-8 lg:pb-6">
-        <slot />
+
+        <!-- Account inactive overlay -->
+        <div v-if="accountInactive" class="flex min-h-[calc(100vh-8rem)] flex-col items-center justify-center py-12">
+          <div class="w-full max-w-md rounded-2xl border border-wc-border bg-wc-bg-secondary p-8 text-center shadow-lg">
+
+            <!-- Lock icon -->
+            <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-wc-accent/20 bg-wc-accent/10">
+              <svg class="h-10 w-10 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+              </svg>
+            </div>
+
+            <!-- Title & message -->
+            <h1 class="mb-2 font-display text-3xl uppercase tracking-wide text-wc-text">Cuenta Inactiva</h1>
+            <p class="mb-5 text-sm text-wc-text-secondary">
+              Tu acceso al plan ha sido pausado. Para continuar con tu transformacion, renueva tu suscripcion.
+            </p>
+
+            <!-- Status badge -->
+            <div class="mb-8 inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-4 py-1.5 text-sm font-medium text-red-400">
+              <span class="h-2 w-2 rounded-full bg-red-400"></span>
+              Estado: {{ accountStatusValue }}
+            </div>
+
+            <!-- What they recover -->
+            <div class="mb-6 rounded-xl border border-wc-border bg-wc-bg p-4 text-left">
+              <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Al renovar recuperas acceso a:</p>
+              <div v-for="item in ['Tu plan de entrenamiento personalizado', 'Plan de nutricion y recetas', 'Seguimiento con tu coach', 'Metricas, habitos y progreso']" :key="item" class="flex items-center gap-2 py-0.5 text-sm text-wc-text-secondary">
+                <svg class="h-4 w-4 shrink-0 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+                {{ item }}
+              </div>
+            </div>
+
+            <!-- Contact coach CTA -->
+            <a
+              href="mailto:info@wellcorefitness.com?subject=Renovar%20mi%20plan%20WellCore&body=Hola%2C%20quisiera%20renovar%20mi%20suscripcion."
+              class="mb-3 block w-full rounded-xl bg-wc-accent py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-wc-accent/90"
+            >
+              Contactar para Renovar
+            </a>
+
+            <!-- Logout -->
+            <button
+              @click="handleLogout"
+              :disabled="loggingOut"
+              class="block w-full rounded-xl border border-wc-border py-3 text-center text-sm font-medium text-wc-text-secondary transition-colors hover:bg-wc-bg-tertiary disabled:opacity-50"
+            >
+              {{ loggingOut ? 'Cerrando...' : 'Cerrar sesion' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Loading state while checking status -->
+        <div v-else-if="!accountCheckDone" class="flex min-h-[calc(100vh-8rem)] items-center justify-center">
+          <div class="h-8 w-8 animate-spin rounded-full border-2 border-wc-border border-t-wc-accent"></div>
+        </div>
+
+        <!-- Normal content -->
+        <slot v-else />
       </main>
     </div>
 

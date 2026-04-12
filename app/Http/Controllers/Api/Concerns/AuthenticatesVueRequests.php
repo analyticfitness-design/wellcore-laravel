@@ -71,6 +71,19 @@ trait AuthenticatesVueRequests
             abort(403, 'Acceso solo para clientes.');
         }
 
-        return $auth['user'];
+        $client = $auth['user'];
+
+        // Block accounts that are not active (inactivo, suspendido, pendiente, congelado)
+        if ($client->status !== \App\Enums\ClientStatus::Activo) {
+            abort(response()->json([
+                'inactive' => true,
+                'status'   => $client->status instanceof \App\Enums\ClientStatus
+                    ? $client->status->value
+                    : 'inactivo',
+                'message'  => 'Tu cuenta esta inactiva. Contacta a tu coach para renovar tu plan.',
+            ], 403));
+        }
+
+        return $client;
     }
 }

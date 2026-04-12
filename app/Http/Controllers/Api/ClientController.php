@@ -33,6 +33,27 @@ class ClientController extends Controller
 {
     use AuthenticatesVueRequests;
 
+    // ─── Account Status ──────────────────────────────────────────────────
+
+    /**
+     * GET /api/v/client/account-status
+     *
+     * Lightweight endpoint to verify the client account is active.
+     * Returns 200 {status:'activo'} for active accounts.
+     * Returns 403 {inactive:true, status:'inactivo'} for inactive accounts
+     * (handled by resolveClientOrFail before reaching this method).
+     */
+    public function accountStatus(Request $request): JsonResponse
+    {
+        $client = $this->resolveClientOrFail($request);
+
+        return response()->json([
+            'status' => $client->status instanceof \App\Enums\ClientStatus
+                ? $client->status->value
+                : 'activo',
+        ]);
+    }
+
     // ─── Dashboard ──────────────────────────────────────────────────────
 
     /**
