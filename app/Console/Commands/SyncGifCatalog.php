@@ -35,6 +35,24 @@ class SyncGifCatalog extends Command
 
     private const STOPWORDS = ['con', 'en', 'de', 'la', 'el', 'los', 'las', 'un', 'una', 'a', 'al', 'del', 'y', 'o'];
 
+    // Spanish plural → singular mappings for better matching
+    private const EN_ES_MANUAL = [
+        'russian twist'    => 'giro ruso',
+        'facepull'         => 'deltoides posterior remo cuerda',
+        'face pull'        => 'deltoides posterior remo cuerda',
+        'rear delt'        => 'deltoides posterior',
+        'good morning'     => 'buenos dias',
+        'romanian deadlift'=> 'rumano peso muerto',
+        'rdl'              => 'rumano peso muerto',
+        'kickback gluteo'  => 'posterior patada',
+        'glute kickback'   => 'posterior patada',
+        'clamshell'        => 'lateral abduccion cadera',
+        'hip abduction'    => 'abduccion cadera',
+        'isquiotibiales'   => 'curl pierna',
+        'femoral'          => 'curl pierna',
+        'hacka'            => 'sentadilla hack',
+    ];
+
     public function handle(): int
     {
         $isDry        = $this->option('dry-run');
@@ -270,6 +288,7 @@ class SyncGifCatalog extends Command
     /**
      * Normalize a human-readable Spanish exercise name.
      * "Press de Banca con Barra (Plano)" → "press banca barra"
+     * "Elevaciones Laterales con Mancuernas" → "elevacion lateral mancuerna"
      */
     private function normalizeName(string $name): string
     {
@@ -280,11 +299,38 @@ class SyncGifCatalog extends Command
         $name = preg_replace('/[^a-z0-9\s]/', ' ', $name);
         $name = preg_replace('/\s+/', ' ', trim($name));
 
+        // Apply manual EN→ES / alias translations first (longest match first)
+        $translated = $name;
+        foreach (self::EN_ES_MANUAL as $from => $to) {
+            $translated = str_replace($from, $to, $translated);
+        }
+        if ($translated !== $name) {
+            $name = preg_replace('/\s+/', ' ', trim($translated));
+        }
+
         // Remove stopwords to improve matching
         $words = array_filter(
             explode(' ', $name),
             fn ($w) => strlen($w) > 1 && ! in_array($w, self::STOPWORDS, true)
         );
+
+        // Basic Spanish stemming: reduce common plural forms to singular
+        // elevaciones→elevacion, laterales→lateral, frontales→frontal, etc.
+        $words = array_map(function (string $w): string {
+            if (strlen($w) > 5) {
+                if (str_ends_with($w, 'ciones')) return substr($w, 0, -2); // elevaciones→elevacion
+                if (str_ends_with($w, 'iones'))  return substr($w, 0, -2); // extensiones→extension
+                if (str_ends_with($w, 'ales'))   return substr($w, 0, -2); // laterales→lateral
+                if (str_ends_with($w, 'ares'))   return substr($w, 0, -2); // musculares→muscular
+                if (str_ends_with($w, 'eres'))   return substr($w, 0, -2); // estireres...
+                if (str_ends_with($w, 'uras'))   return substr($w, 0, -1); // aperturas→apertura
+                if (str_ends_with($w, 'ernas'))  return substr($w, 0, -1); // piernas→pierna
+                if (str_ends_with($w, 'etas'))   return substr($w, 0, -1); // bicicletas→bicicleta
+                if (str_ends_with($w, 'os') && strlen($w) > 5) return substr($w, 0, -1); // brazos→brazo
+                if (str_ends_with($w, 'as') && strlen($w) > 5) return substr($w, 0, -1); // mancuernas→mancuerna
+            }
+            return $w;
+        }, array_values($words));
 
         return implode(' ', $words);
     }
