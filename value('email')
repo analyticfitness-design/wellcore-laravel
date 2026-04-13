@@ -1,1 +1,0 @@
-"Email: " . DB::table('clients')-, 1)- . "\n";
