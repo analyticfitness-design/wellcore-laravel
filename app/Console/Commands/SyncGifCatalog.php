@@ -269,7 +269,9 @@ class SyncGifCatalog extends Command
         $updated  = 0;
 
         foreach ($raw as $displayName => $gifFilename) {
-            $alias       = $this->normalizeName($displayName);
+            // IMPORTANT: use simple normalization (no stopwords, no stemming) to match
+            // ExerciseMediaService::normalize() exactly — it's the consumer of these keys.
+            $alias       = $this->normalizeSimple($displayName);
             $gifFilename = trim($gifFilename);
 
             if (strlen($alias) < 3) {
@@ -363,6 +365,22 @@ class SyncGifCatalog extends Command
     {
         $name = str_replace(['.gif', '-'], [' ', ' '], $filename);
         return $this->normalizeName($name);
+    }
+
+    /**
+     * Simple normalization — must match ExerciseMediaService::normalize() exactly.
+     * Used for manual alias keys so the DB consumer can find them.
+     * NO stopwords removal, NO stemming — just lowercase + remove accents + punct.
+     */
+    private function normalizeSimple(string $name): string
+    {
+        $name = preg_replace('/\([^)]*\)/', ' ', $name);
+        $name = mb_strtolower(trim($name));
+        $map  = ['á'=>'a','é'=>'e','í'=>'i','ó'=>'o','ú'=>'u','ü'=>'u','ñ'=>'n'];
+        $name = strtr($name, $map);
+        $name = preg_replace('/[^a-z0-9\s]/', ' ', $name);
+
+        return preg_replace('/\s+/', ' ', trim($name));
     }
 
     /**
