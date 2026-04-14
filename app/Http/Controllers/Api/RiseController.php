@@ -6,16 +6,17 @@ use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
 use App\Models\AccountabilityPod;
 use App\Models\Client;
-use App\Services\ExerciseMediaService;
 use App\Models\PodMember;
 use App\Models\PodMessage;
 use App\Models\ProgressPhoto;
+use App\Models\RiseDailyLog;
 use App\Models\RiseHabitsLog;
 use App\Models\RiseMeasurement;
 use App\Models\RiseProgram;
 use App\Models\RiseTracking;
 use App\Models\WorkoutLog;
 use App\Models\WorkoutSession;
+use App\Services\ExerciseMediaService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -37,7 +38,7 @@ class RiseController extends Controller
      */
     public function dashboard(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         // Greeting
@@ -45,7 +46,7 @@ class RiseController extends Controller
         $greeting = match (true) {
             $hour < 12 => 'Buenos dias',
             $hour < 18 => 'Buenas tardes',
-            default    => 'Buenas noches',
+            default => 'Buenas noches',
         };
 
         $clientName = explode(' ', $client->name ?? 'Usuario')[0];
@@ -55,26 +56,26 @@ class RiseController extends Controller
         });
 
         return response()->json([
-            'greeting'                => $greeting,
-            'clientName'              => $clientName,
-            'hasProgram'              => $cached['hasProgram'],
-            'startDate'               => $cached['startDate'],
-            'endDate'                 => $cached['endDate'],
-            'totalDays'               => $cached['totalDays'],
-            'daysElapsed'             => $cached['daysElapsed'],
-            'daysRemaining'           => $cached['daysRemaining'],
-            'progressPct'             => $cached['progressPct'],
-            'currentWeek'             => $cached['currentWeek'],
-            'totalWeeks'              => $cached['totalWeeks'],
-            'workoutsThisWeek'        => $cached['workoutsThisWeek'],
-            'nutritionDaysThisWeek'   => $cached['nutritionDaysThisWeek'],
+            'greeting' => $greeting,
+            'clientName' => $clientName,
+            'hasProgram' => $cached['hasProgram'],
+            'startDate' => $cached['startDate'],
+            'endDate' => $cached['endDate'],
+            'totalDays' => $cached['totalDays'],
+            'daysElapsed' => $cached['daysElapsed'],
+            'daysRemaining' => $cached['daysRemaining'],
+            'progressPct' => $cached['progressPct'],
+            'currentWeek' => $cached['currentWeek'],
+            'totalWeeks' => $cached['totalWeeks'],
+            'workoutsThisWeek' => $cached['workoutsThisWeek'],
+            'nutritionDaysThisWeek' => $cached['nutritionDaysThisWeek'],
             'habitsCompletedThisWeek' => $cached['habitsCompletedThisWeek'],
-            'currentStreak'           => $cached['currentStreak'],
-            'latestWeight'            => $cached['latestWeight'],
-            'weightChange'            => $cached['weightChange'],
-            'totalTrackingDays'       => $cached['totalTrackingDays'],
-            'overallAdherence'        => $cached['overallAdherence'],
-            'weekDays'                => $cached['weekDays'],
+            'currentStreak' => $cached['currentStreak'],
+            'latestWeight' => $cached['latestWeight'],
+            'weightChange' => $cached['weightChange'],
+            'totalTrackingDays' => $cached['totalTrackingDays'],
+            'overallAdherence' => $cached['overallAdherence'],
+            'weekDays' => $cached['weekDays'],
         ]);
     }
 
@@ -84,29 +85,29 @@ class RiseController extends Controller
             ->whereIn('status', ['active', 'activo'])
             ->first();
 
-        $hasProgram    = false;
-        $startDate     = null;
-        $endDate       = null;
-        $totalDays     = 84;
-        $daysElapsed   = 0;
+        $hasProgram = false;
+        $startDate = null;
+        $endDate = null;
+        $totalDays = 84;
+        $daysElapsed = 0;
         $daysRemaining = 0;
-        $progressPct   = 0;
-        $currentWeek   = 1;
-        $totalWeeks    = 4;
+        $progressPct = 0;
+        $currentWeek = 1;
+        $totalWeeks = 4;
 
         if ($program) {
             $hasProgram = true;
-            $startDate  = $program->start_date?->format('d M Y');
-            $endDate    = $program->end_date?->format('d M Y');
-            $totalDays  = $program->start_date && $program->end_date
+            $startDate = $program->start_date?->format('d M Y');
+            $endDate = $program->end_date?->format('d M Y');
+            $totalDays = $program->start_date && $program->end_date
                 ? (int) Carbon::parse($program->start_date)->diffInDays($program->end_date)
                 : 84;
-            $daysElapsed   = $program->start_date ? (int) max(0, Carbon::parse($program->start_date)->diffInDays(now())) : 0;
+            $daysElapsed = $program->start_date ? (int) max(0, Carbon::parse($program->start_date)->diffInDays(now())) : 0;
             $daysRemaining = (int) max(0, $totalDays - $daysElapsed);
-            $progressPct   = $totalDays > 0 ? min(100, round(($daysElapsed / $totalDays) * 100, 1)) : 0;
+            $progressPct = $totalDays > 0 ? min(100, round(($daysElapsed / $totalDays) * 100, 1)) : 0;
 
             $programJson = $program->personalized_program ?? [];
-            $totalWeeks  = $programJson['plan_entrenamiento']['duracion_semanas']
+            $totalWeeks = $programJson['plan_entrenamiento']['duracion_semanas']
                 ?? count($programJson['plan_entrenamiento']['semanas'] ?? [])
                 ?: 4;
             $currentWeek = min($totalWeeks, (int) ceil(max(1, $daysElapsed) / 7));
@@ -114,18 +115,18 @@ class RiseController extends Controller
 
         // Weekly summary
         $startOfWeek = now()->startOfWeek(Carbon::MONDAY);
-        $endOfWeek   = now()->endOfWeek(Carbon::SUNDAY);
+        $endOfWeek = now()->endOfWeek(Carbon::SUNDAY);
 
         $weekTracking = RiseTracking::where('client_id', $clientId)
             ->whereBetween('log_date', [$startOfWeek, $endOfWeek])
             ->get();
 
-        $workoutsThisWeek      = $weekTracking->where('training_done', true)->count();
+        $workoutsThisWeek = $weekTracking->where('training_done', true)->count();
         $nutritionDaysThisWeek = $weekTracking->where('nutrition_done', true)->count();
 
         $habitsCompletedThisWeek = 0;
         if ($program) {
-            $habitsCompletedThisWeek = \App\Models\RiseDailyLog::where('rise_program_id', $program->id)
+            $habitsCompletedThisWeek = RiseDailyLog::where('rise_program_id', $program->id)
                 ->whereBetween('log_date', [$startOfWeek, $endOfWeek])
                 ->where('workout_completed', true)
                 ->count();
@@ -138,7 +139,7 @@ class RiseController extends Controller
             ->pluck('log_date')
             ->map(fn ($d) => Carbon::parse($d)->format('Y-m-d'));
 
-        $streak    = 0;
+        $streak = 0;
         $checkDate = now()->format('Y-m-d');
         if (! $trackingDays->contains($checkDate)) {
             $checkDate = now()->subDay()->format('Y-m-d');
@@ -150,7 +151,7 @@ class RiseController extends Controller
 
         // Quick stats
         $latest = RiseMeasurement::where('client_id', $clientId)->orderByDesc('log_date')->first();
-        $first  = RiseMeasurement::where('client_id', $clientId)->orderBy('log_date')->first();
+        $first = RiseMeasurement::where('client_id', $clientId)->orderBy('log_date')->first();
 
         $latestWeight = $latest ? (float) $latest->weight_kg : null;
         $weightChange = null;
@@ -159,9 +160,9 @@ class RiseController extends Controller
         }
 
         $totalTrackingDays = RiseTracking::where('client_id', $clientId)->count();
-        $overallAdherence  = 0;
+        $overallAdherence = 0;
         if ($daysElapsed > 0) {
-            $trainingDone     = RiseTracking::where('client_id', $clientId)->where('training_done', true)->count();
+            $trainingDone = RiseTracking::where('client_id', $clientId)->where('training_done', true)->count();
             $overallAdherence = round(($trainingDone / $daysElapsed) * 100, 0);
         }
 
@@ -172,38 +173,38 @@ class RiseController extends Controller
             ->keyBy(fn ($item) => Carbon::parse($item->log_date)->dayOfWeekIso);
 
         $dayLabels = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
-        $today     = now()->dayOfWeekIso;
-        $weekDays  = [];
+        $today = now()->dayOfWeekIso;
+        $weekDays = [];
 
         for ($i = 1; $i <= 7; $i++) {
             $entry = $weekTrackingGrid->get($i);
             $weekDays[] = [
-                'label'         => $dayLabels[$i - 1],
-                'trainingDone'  => $entry?->training_done ?? false,
+                'label' => $dayLabels[$i - 1],
+                'trainingDone' => $entry?->training_done ?? false,
                 'nutritionDone' => $entry?->nutrition_done ?? false,
-                'isToday'       => $i === $today,
+                'isToday' => $i === $today,
             ];
         }
 
         return [
-            'hasProgram'              => $hasProgram,
-            'startDate'               => $startDate,
-            'endDate'                 => $endDate,
-            'totalDays'               => $totalDays,
-            'daysElapsed'             => $daysElapsed,
-            'daysRemaining'           => $daysRemaining,
-            'progressPct'             => $progressPct,
-            'currentWeek'             => $currentWeek,
-            'totalWeeks'              => $totalWeeks,
-            'workoutsThisWeek'        => $workoutsThisWeek,
-            'nutritionDaysThisWeek'   => $nutritionDaysThisWeek,
+            'hasProgram' => $hasProgram,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'totalDays' => $totalDays,
+            'daysElapsed' => $daysElapsed,
+            'daysRemaining' => $daysRemaining,
+            'progressPct' => $progressPct,
+            'currentWeek' => $currentWeek,
+            'totalWeeks' => $totalWeeks,
+            'workoutsThisWeek' => $workoutsThisWeek,
+            'nutritionDaysThisWeek' => $nutritionDaysThisWeek,
             'habitsCompletedThisWeek' => $habitsCompletedThisWeek,
-            'currentStreak'           => $streak,
-            'latestWeight'            => $latestWeight,
-            'weightChange'            => $weightChange,
-            'totalTrackingDays'       => $totalTrackingDays,
-            'overallAdherence'        => $overallAdherence,
-            'weekDays'                => $weekDays,
+            'currentStreak' => $streak,
+            'latestWeight' => $latestWeight,
+            'weightChange' => $weightChange,
+            'totalTrackingDays' => $totalTrackingDays,
+            'overallAdherence' => $overallAdherence,
+            'weekDays' => $weekDays,
         ];
     }
 
@@ -217,7 +218,7 @@ class RiseController extends Controller
      */
     public function program(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $riseProgram = RiseProgram::where('client_id', $clientId)
@@ -230,9 +231,9 @@ class RiseController extends Controller
 
         $programJson = $riseProgram->personalized_program ?? [];
 
-        $trainingPlan  = $this->normalizeTrainingPlan($programJson['plan_entrenamiento'] ?? null);
+        $trainingPlan = $this->normalizeTrainingPlan($programJson['plan_entrenamiento'] ?? null);
         $nutritionPlan = $programJson['plan_nutricion'] ?? null;
-        $habitsPlan    = $programJson['plan_habitos']['habitos'] ?? $programJson['plan_habitos'] ?? [];
+        $habitsPlan = $programJson['plan_habitos']['habitos'] ?? $programJson['plan_habitos'] ?? [];
 
         // Enrich all exercises in every week/day with correct GIF URLs from the catalog.
         // This overrides any hardcoded gif_url baked into the stored JSON by the AI.
@@ -261,26 +262,26 @@ class RiseController extends Controller
             ? (int) max(0, Carbon::parse($riseProgram->start_date)->diffInDays(now()))
             : 0;
 
-        $totalWeeks  = $trainingPlan['duracion_semanas']
+        $totalWeeks = $trainingPlan['duracion_semanas']
             ?? count($trainingPlan['semanas'] ?? [])
             ?: 4;
         $currentWeek = min($totalWeeks, (int) ceil(max(1, $daysElapsed) / 7));
         $progressPct = $totalDays > 0 ? min(100, round(($daysElapsed / $totalDays) * 100, 1)) : 0;
 
         return response()->json([
-            'hasProgram'       => true,
-            'startDate'        => $riseProgram->start_date?->format('d M Y'),
-            'endDate'          => $riseProgram->end_date?->format('d M Y'),
-            'experienceLevel'  => $riseProgram->experience_level,
+            'hasProgram' => true,
+            'startDate' => $riseProgram->start_date?->format('d M Y'),
+            'endDate' => $riseProgram->end_date?->format('d M Y'),
+            'experienceLevel' => $riseProgram->experience_level,
             'trainingLocation' => $riseProgram->training_location,
-            'gender'           => $riseProgram->gender,
-            'status'           => $riseProgram->status,
-            'currentWeek'      => $currentWeek,
-            'totalWeeks'       => $totalWeeks,
-            'progressPct'      => $progressPct,
-            'trainingPlan'     => $trainingPlan,
-            'nutritionPlan'    => $nutritionPlan,
-            'habitsPlan'       => $habitsPlan,
+            'gender' => $riseProgram->gender,
+            'status' => $riseProgram->status,
+            'currentWeek' => $currentWeek,
+            'totalWeeks' => $totalWeeks,
+            'progressPct' => $progressPct,
+            'trainingPlan' => $trainingPlan,
+            'nutritionPlan' => $nutritionPlan,
+            'habitsPlan' => $habitsPlan,
         ]);
     }
 
@@ -294,7 +295,7 @@ class RiseController extends Controller
      */
     public function habits(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $riseProgram = RiseProgram::where('client_id', $clientId)
@@ -303,17 +304,17 @@ class RiseController extends Controller
             ->first();
 
         $riseProgramId = $riseProgram?->id;
-        $programJson   = $riseProgram?->personalized_program ?? [];
-        $habitsPlan    = $programJson['plan_habitos'] ?? [];
+        $programJson = $riseProgram?->personalized_program ?? [];
+        $habitsPlan = $programJson['plan_habitos'] ?? [];
 
         // Today's log
-        $today     = null;
-        $water     = null;
-        $sleep     = null;
-        $steps     = null;
-        $notes     = null;
+        $today = null;
+        $water = null;
+        $sleep = null;
+        $steps = null;
+        $notes = null;
         $todaySaved = false;
-        $savedAt   = null;
+        $savedAt = null;
         $habitsDone = [];
 
         if ($riseProgramId) {
@@ -323,12 +324,12 @@ class RiseController extends Controller
                 ->first();
 
             if ($today) {
-                $water     = $today->water_liters ? (float) $today->water_liters : null;
-                $sleep     = $today->sleep_hours ? (float) $today->sleep_hours : null;
-                $steps     = $today->steps;
-                $notes     = $today->notes;
+                $water = $today->water_liters ? (float) $today->water_liters : null;
+                $sleep = $today->sleep_hours ? (float) $today->sleep_hours : null;
+                $steps = $today->steps;
+                $notes = $today->notes;
                 $todaySaved = true;
-                $savedAt   = $today->updated_at?->format('H:i');
+                $savedAt = $today->updated_at?->format('H:i');
 
                 if ($today->habits_json !== null) {
                     $habitsDone = $today->habits_json;
@@ -350,19 +351,19 @@ class RiseController extends Controller
 
         return response()->json([
             'riseProgramId' => $riseProgramId,
-            'habitsPlan'    => $habitsPlan,
-            'todaySaved'    => $todaySaved,
-            'savedAt'       => $savedAt,
-            'water'         => $water,
-            'sleep'         => $sleep,
-            'steps'         => $steps,
-            'notes'         => $notes,
-            'habitsDone'    => $habitsDone,
-            'weekDays'      => $weekDays,
+            'habitsPlan' => $habitsPlan,
+            'todaySaved' => $todaySaved,
+            'savedAt' => $savedAt,
+            'water' => $water,
+            'sleep' => $sleep,
+            'steps' => $steps,
+            'notes' => $notes,
+            'habitsDone' => $habitsDone,
+            'weekDays' => $weekDays,
             'currentStreak' => $stats['currentStreak'],
             'completedDays' => $stats['completedDays'],
-            'avgWater'      => $stats['avgWater'],
-            'avgSleep'      => $stats['avgSleep'],
+            'avgWater' => $stats['avgWater'],
+            'avgSleep' => $stats['avgSleep'],
         ]);
     }
 
@@ -374,14 +375,14 @@ class RiseController extends Controller
      */
     public function toggleHabit(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $validated = $request->validate([
-            'water'      => 'nullable|numeric|min:0|max:10',
-            'sleep'      => 'nullable|numeric|min:0|max:24',
-            'steps'      => 'nullable|integer|min:0|max:100000',
-            'notes'      => 'nullable|string|max:500',
+            'water' => 'nullable|numeric|min:0|max:10',
+            'sleep' => 'nullable|numeric|min:0|max:24',
+            'steps' => 'nullable|integer|min:0|max:100000',
+            'notes' => 'nullable|string|max:500',
             'habitsDone' => 'nullable|array',
         ]);
 
@@ -400,18 +401,18 @@ class RiseController extends Controller
         RiseHabitsLog::updateOrCreate(
             [
                 'rise_program_id' => $riseProgramId,
-                'client_id'       => $clientId,
-                'log_date'        => now()->toDateString(),
+                'client_id' => $clientId,
+                'log_date' => now()->toDateString(),
             ],
             [
-                'water_liters'        => $validated['water'] ?? null,
-                'sleep_hours'         => $validated['sleep'] ?? null,
-                'steps'               => $validated['steps'] ?? null,
-                'notes'               => $validated['notes'] ?? null,
-                'habits_json'         => $habitsDone,
-                'training_completed'  => (bool) ($habitsDone['0'] ?? false),
-                'nutrition_followed'  => (bool) ($habitsDone['1'] ?? false),
-                'meditation'          => (bool) ($habitsDone['2'] ?? false),
+                'water_liters' => $validated['water'] ?? null,
+                'sleep_hours' => $validated['sleep'] ?? null,
+                'steps' => $validated['steps'] ?? null,
+                'notes' => $validated['notes'] ?? null,
+                'habits_json' => $habitsDone,
+                'training_completed' => (bool) ($habitsDone['0'] ?? false),
+                'nutrition_followed' => (bool) ($habitsDone['1'] ?? false),
+                'meditation' => (bool) ($habitsDone['2'] ?? false),
             ]
         );
 
@@ -433,13 +434,13 @@ class RiseController extends Controller
                 ->keyBy(fn ($item) => Carbon::parse($item->log_date)->dayOfWeekIso)
             : collect();
 
-        $dayLabels  = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
-        $today      = now()->dayOfWeekIso;
+        $dayLabels = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
+        $today = now()->dayOfWeekIso;
         $totalHabits = count($habitsPlan) + 3;
 
         $weekDays = [];
         for ($i = 1; $i <= 7; $i++) {
-            $entry      = $logs->get($i);
+            $entry = $logs->get($i);
             $habitCount = 0;
 
             if ($entry) {
@@ -449,21 +450,27 @@ class RiseController extends Controller
                         $habitCount++;
                     }
                 }
-                if ($entry->water_liters >= 2) $habitCount++;
-                if ($entry->sleep_hours >= 7) $habitCount++;
-                if ($entry->steps >= 5000) $habitCount++;
+                if ($entry->water_liters >= 2) {
+                    $habitCount++;
+                }
+                if ($entry->sleep_hours >= 7) {
+                    $habitCount++;
+                }
+                if ($entry->steps >= 5000) {
+                    $habitCount++;
+                }
             }
 
             $weekDays[] = [
-                'label'      => $dayLabels[$i - 1],
-                'isToday'    => $i === $today,
-                'hasEntry'   => $entry !== null,
+                'label' => $dayLabels[$i - 1],
+                'isToday' => $i === $today,
+                'hasEntry' => $entry !== null,
                 'habitCount' => $habitCount,
-                'total'      => $totalHabits > 0 ? $totalHabits : 6,
+                'total' => $totalHabits > 0 ? $totalHabits : 6,
                 'habitsJson' => $entry?->habits_json ?? [],
-                'water'      => $entry?->water_liters ? (float) $entry->water_liters : null,
-                'sleep'      => $entry?->sleep_hours ? (float) $entry->sleep_hours : null,
-                'steps'      => $entry?->steps,
+                'water' => $entry?->water_liters ? (float) $entry->water_liters : null,
+                'sleep' => $entry?->sleep_hours ? (float) $entry->sleep_hours : null,
+                'steps' => $entry?->steps,
             ];
         }
 
@@ -484,7 +491,7 @@ class RiseController extends Controller
         $completedDays = $allLogs->count();
 
         $currentStreak = 0;
-        $checkDate     = now()->toDateString();
+        $checkDate = now()->toDateString();
         foreach ($allLogs as $log) {
             if ($log->log_date->toDateString() === $checkDate) {
                 $currentStreak++;
@@ -495,10 +502,10 @@ class RiseController extends Controller
         }
 
         $withWater = $allLogs->whereNotNull('water_liters')->where('water_liters', '>', 0);
-        $avgWater  = $withWater->count() > 0 ? round($withWater->avg('water_liters'), 1) : null;
+        $avgWater = $withWater->count() > 0 ? round($withWater->avg('water_liters'), 1) : null;
 
         $withSleep = $allLogs->whereNotNull('sleep_hours')->where('sleep_hours', '>', 0);
-        $avgSleep  = $withSleep->count() > 0 ? round($withSleep->avg('sleep_hours'), 1) : null;
+        $avgSleep = $withSleep->count() > 0 ? round($withSleep->avg('sleep_hours'), 1) : null;
 
         return compact('currentStreak', 'completedDays', 'avgWater', 'avgSleep');
     }
@@ -520,20 +527,20 @@ class RiseController extends Controller
             ->get();
 
         $history = $measurements->map(fn ($m) => [
-            'id'         => $m->id,
-            'date'       => $m->log_date?->format('d M Y'),
-            'weight_kg'  => $m->weight_kg ? (float) $m->weight_kg : null,
-            'chest_cm'   => $m->chest_cm ? (float) $m->chest_cm : null,
-            'waist_cm'   => $m->waist_cm ? (float) $m->waist_cm : null,
-            'hips_cm'    => $m->hips_cm ? (float) $m->hips_cm : null,
-            'thigh_cm'   => $m->thigh_cm ? (float) $m->thigh_cm : null,
-            'arm_cm'     => $m->arm_cm ? (float) $m->arm_cm : null,
+            'id' => $m->id,
+            'date' => $m->log_date?->format('d M Y'),
+            'weight_kg' => $m->weight_kg ? (float) $m->weight_kg : null,
+            'chest_cm' => $m->chest_cm ? (float) $m->chest_cm : null,
+            'waist_cm' => $m->waist_cm ? (float) $m->waist_cm : null,
+            'hips_cm' => $m->hips_cm ? (float) $m->hips_cm : null,
+            'thigh_cm' => $m->thigh_cm ? (float) $m->thigh_cm : null,
+            'arm_cm' => $m->arm_cm ? (float) $m->arm_cm : null,
             'muscle_pct' => $m->muscle_pct ? (float) $m->muscle_pct : null,
-            'fat_pct'    => $m->fat_pct ? (float) $m->fat_pct : null,
+            'fat_pct' => $m->fat_pct ? (float) $m->fat_pct : null,
         ])->toArray();
 
         $latestMeasurement = null;
-        $firstMeasurement  = null;
+        $firstMeasurement = null;
 
         if ($measurements->count() > 0) {
             $latest = $measurements->first();
@@ -545,9 +552,9 @@ class RiseController extends Controller
         }
 
         return response()->json([
-            'history'            => $history,
-            'latestMeasurement'  => $latestMeasurement,
-            'firstMeasurement'   => $firstMeasurement,
+            'history' => $history,
+            'latestMeasurement' => $latestMeasurement,
+            'firstMeasurement' => $firstMeasurement,
         ]);
     }
 
@@ -562,24 +569,24 @@ class RiseController extends Controller
         $client = $this->resolveClientOrFail($request);
 
         $validated = $request->validate([
-            'weight_kg'  => 'required|numeric|min:30|max:300',
-            'chest_cm'   => 'nullable|numeric|min:30|max:200',
-            'waist_cm'   => 'nullable|numeric|min:30|max:200',
-            'hips_cm'    => 'nullable|numeric|min:30|max:200',
-            'thigh_cm'   => 'nullable|numeric|min:20|max:100',
-            'arm_cm'     => 'nullable|numeric|min:15|max:60',
+            'weight_kg' => 'required|numeric|min:30|max:300',
+            'chest_cm' => 'nullable|numeric|min:30|max:200',
+            'waist_cm' => 'nullable|numeric|min:30|max:200',
+            'hips_cm' => 'nullable|numeric|min:30|max:200',
+            'thigh_cm' => 'nullable|numeric|min:20|max:100',
+            'arm_cm' => 'nullable|numeric|min:15|max:60',
             'muscle_pct' => 'nullable|numeric|min:0|max:100',
-            'fat_pct'    => 'nullable|numeric|min:0|max:100',
+            'fat_pct' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $measurement = RiseMeasurement::create([
-            'client_id'  => $client->id,
-            'log_date'   => now()->toDateString(),
+            'client_id' => $client->id,
+            'log_date' => now()->toDateString(),
             ...$validated,
         ]);
 
         return response()->json([
-            'saved'       => true,
+            'saved' => true,
             'measurement' => $this->mapMeasurement($measurement),
         ], 201);
     }
@@ -587,15 +594,15 @@ class RiseController extends Controller
     private function mapMeasurement($m): array
     {
         return [
-            'date'       => $m->log_date?->format('d M Y'),
-            'weight_kg'  => $m->weight_kg ? (float) $m->weight_kg : null,
-            'chest_cm'   => $m->chest_cm ? (float) $m->chest_cm : null,
-            'waist_cm'   => $m->waist_cm ? (float) $m->waist_cm : null,
-            'hips_cm'    => $m->hips_cm ? (float) $m->hips_cm : null,
-            'thigh_cm'   => $m->thigh_cm ? (float) $m->thigh_cm : null,
-            'arm_cm'     => $m->arm_cm ? (float) $m->arm_cm : null,
+            'date' => $m->log_date?->format('d M Y'),
+            'weight_kg' => $m->weight_kg ? (float) $m->weight_kg : null,
+            'chest_cm' => $m->chest_cm ? (float) $m->chest_cm : null,
+            'waist_cm' => $m->waist_cm ? (float) $m->waist_cm : null,
+            'hips_cm' => $m->hips_cm ? (float) $m->hips_cm : null,
+            'thigh_cm' => $m->thigh_cm ? (float) $m->thigh_cm : null,
+            'arm_cm' => $m->arm_cm ? (float) $m->arm_cm : null,
             'muscle_pct' => $m->muscle_pct ? (float) $m->muscle_pct : null,
-            'fat_pct'    => $m->fat_pct ? (float) $m->fat_pct : null,
+            'fat_pct' => $m->fat_pct ? (float) $m->fat_pct : null,
         ];
     }
 
@@ -620,24 +627,24 @@ class RiseController extends Controller
         $photosByDate = [];
         foreach ($grouped as $date => $datePhotos) {
             $photosByDate[] = [
-                'date'       => $date,
-                'formatted'  => Carbon::parse($date)->translatedFormat('d M Y'),
-                'frente'     => $datePhotos->firstWhere('tipo', 'frente')?->filename,
-                'frente_id'  => $datePhotos->firstWhere('tipo', 'frente')?->id,
-                'perfil'     => $datePhotos->firstWhere('tipo', 'perfil')?->filename,
-                'perfil_id'  => $datePhotos->firstWhere('tipo', 'perfil')?->id,
-                'espalda'    => $datePhotos->firstWhere('tipo', 'espalda')?->filename,
+                'date' => $date,
+                'formatted' => Carbon::parse($date)->translatedFormat('d M Y'),
+                'frente' => $datePhotos->firstWhere('tipo', 'frente')?->filename,
+                'frente_id' => $datePhotos->firstWhere('tipo', 'frente')?->id,
+                'perfil' => $datePhotos->firstWhere('tipo', 'perfil')?->filename,
+                'perfil_id' => $datePhotos->firstWhere('tipo', 'perfil')?->id,
+                'espalda' => $datePhotos->firstWhere('tipo', 'espalda')?->filename,
                 'espalda_id' => $datePhotos->firstWhere('tipo', 'espalda')?->id,
             ];
         }
 
-        $firstDate  = $photos->count() > 0 ? $photos->last()->photo_date->format('Y-m-d') : null;
+        $firstDate = $photos->count() > 0 ? $photos->last()->photo_date->format('Y-m-d') : null;
         $latestDate = $photos->count() > 0 ? $photos->first()->photo_date->format('Y-m-d') : null;
 
         return response()->json([
             'photosByDate' => $photosByDate,
-            'firstDate'    => $firstDate,
-            'latestDate'   => $latestDate,
+            'firstDate' => $firstDate,
+            'latestDate' => $latestDate,
         ]);
     }
 
@@ -652,9 +659,9 @@ class RiseController extends Controller
         $client = $this->resolveClientOrFail($request);
 
         $request->validate([
-            'upload_date'   => 'required|date',
-            'photo_frente'  => 'nullable|image|max:5120',
-            'photo_perfil'  => 'nullable|image|max:5120',
+            'upload_date' => 'required|date',
+            'photo_frente' => 'nullable|image|max:5120',
+            'photo_perfil' => 'nullable|image|max:5120',
             'photo_espalda' => 'nullable|image|max:5120',
         ]);
 
@@ -663,15 +670,15 @@ class RiseController extends Controller
         }
 
         $uploadDate = $request->input('upload_date');
-        $uploadDir  = public_path('uploads/photos');
+        $uploadDir = public_path('uploads/photos');
 
         if (! is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
 
         $tiposToUpload = [
-            'frente'  => $request->file('photo_frente'),
-            'perfil'  => $request->file('photo_perfil'),
+            'frente' => $request->file('photo_frente'),
+            'perfil' => $request->file('photo_perfil'),
             'espalda' => $request->file('photo_espalda'),
         ];
 
@@ -681,8 +688,8 @@ class RiseController extends Controller
             }
 
             $extension = $photo->getClientOriginalExtension() ?: 'jpg';
-            $filename  = "{$client->id}_{$uploadDate}_{$tipo}_" . time() . ".{$extension}";
-            $destPath  = $uploadDir . DIRECTORY_SEPARATOR . $filename;
+            $filename = "{$client->id}_{$uploadDate}_{$tipo}_".time().".{$extension}";
+            $destPath = $uploadDir.DIRECTORY_SEPARATOR.$filename;
 
             copy($photo->getPathname(), $destPath);
 
@@ -692,10 +699,10 @@ class RiseController extends Controller
                 ->delete();
 
             ProgressPhoto::create([
-                'client_id'  => $client->id,
+                'client_id' => $client->id,
                 'photo_date' => $uploadDate,
-                'tipo'       => $tipo,
-                'filename'   => $filename,
+                'tipo' => $tipo,
+                'filename' => $filename,
             ]);
         }
 
@@ -720,7 +727,7 @@ class RiseController extends Controller
             return response()->json(['error' => 'Foto no encontrada.'], 404);
         }
 
-        $filePath = public_path('uploads/photos/' . $photo->filename);
+        $filePath = public_path('uploads/photos/'.$photo->filename);
         if (file_exists($filePath)) {
             unlink($filePath);
         }
@@ -740,27 +747,27 @@ class RiseController extends Controller
      */
     public function chat(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $membership = PodMember::where('client_id', $clientId)->first();
 
         if (! $membership) {
             return response()->json([
-                'podId'       => null,
-                'podName'     => null,
+                'podId' => null,
+                'podName' => null,
                 'memberCount' => 0,
-                'messages'    => [],
+                'messages' => [],
             ]);
         }
 
         $pod = AccountabilityPod::find($membership->pod_id);
         if (! $pod) {
             return response()->json([
-                'podId'       => null,
-                'podName'     => null,
+                'podId' => null,
+                'podName' => null,
                 'memberCount' => 0,
-                'messages'    => [],
+                'messages' => [],
             ]);
         }
 
@@ -772,27 +779,27 @@ class RiseController extends Controller
             ->get();
 
         $clientIds = $rawMessages->pluck('client_id')->unique()->filter();
-        $clients   = Client::whereIn('id', $clientIds)->get()->keyBy('id');
+        $clients = Client::whereIn('id', $clientIds)->get()->keyBy('id');
 
         $messages = [];
         foreach ($rawMessages as $msg) {
-            $msgClient  = $clients->get($msg->client_id);
+            $msgClient = $clients->get($msg->client_id);
             $messages[] = [
-                'id'      => $msg->id,
+                'id' => $msg->id,
                 'message' => $msg->message,
-                'name'    => $msgClient->name ?? 'Usuario',
+                'name' => $msgClient->name ?? 'Usuario',
                 'initial' => substr($msgClient->name ?? 'U', 0, 1),
-                'isOwn'   => (string) $msg->client_id === (string) $clientId,
-                'time'    => $msg->created_at?->format('H:i') ?? '',
-                'date'    => $msg->created_at?->translatedFormat('d M') ?? '',
+                'isOwn' => (string) $msg->client_id === (string) $clientId,
+                'time' => $msg->created_at?->format('H:i') ?? '',
+                'date' => $msg->created_at?->translatedFormat('d M') ?? '',
             ];
         }
 
         return response()->json([
-            'podId'       => $pod->id,
-            'podName'     => $pod->name,
+            'podId' => $pod->id,
+            'podName' => $pod->name,
             'memberCount' => $memberCount,
-            'messages'    => $messages,
+            'messages' => $messages,
         ]);
     }
 
@@ -804,7 +811,7 @@ class RiseController extends Controller
      */
     public function chatSend(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $validated = $request->validate([
@@ -822,21 +829,21 @@ class RiseController extends Controller
         }
 
         $msg = PodMessage::create([
-            'pod_id'    => $pod->id,
+            'pod_id' => $pod->id,
             'client_id' => $clientId,
-            'message'   => trim($validated['message']),
+            'message' => trim($validated['message']),
         ]);
 
         return response()->json([
-            'sent'    => true,
+            'sent' => true,
             'message' => [
-                'id'      => $msg->id,
+                'id' => $msg->id,
                 'message' => $msg->message,
-                'name'    => $client->name ?? 'Usuario',
+                'name' => $client->name ?? 'Usuario',
                 'initial' => substr($client->name ?? 'U', 0, 1),
-                'isOwn'   => true,
-                'time'    => $msg->created_at?->format('H:i') ?? '',
-                'date'    => $msg->created_at?->translatedFormat('d M') ?? '',
+                'isOwn' => true,
+                'time' => $msg->created_at?->format('H:i') ?? '',
+                'date' => $msg->created_at?->translatedFormat('d M') ?? '',
             ],
         ], 201);
     }
@@ -851,7 +858,7 @@ class RiseController extends Controller
      */
     public function workout(Request $request, ?int $day = null): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $showTutorial = ! WorkoutSession::where('client_id', $clientId)
@@ -866,7 +873,7 @@ class RiseController extends Controller
             return response()->json(['hasPlan' => false, 'showTutorial' => $showTutorial]);
         }
 
-        $programJson  = $riseProgram->personalized_program ?? [];
+        $programJson = $riseProgram->personalized_program ?? [];
         $trainingPlan = $programJson['plan_entrenamiento'] ?? null;
 
         if (! $trainingPlan || empty($trainingPlan['semanas'])) {
@@ -879,17 +886,33 @@ class RiseController extends Controller
         $allWeeksDays = [];
         foreach ($trainingPlan['semanas'] as $weekIndex => $weekData) {
             $weekNumber = $weekIndex + 1;
-            $dias       = $weekData['dias'] ?? [];
+            $dias = $weekData['dias'] ?? [];
             $allWeeksDays[$weekNumber] = array_values(
                 array_map(fn ($d) => is_array($d) ? $this->normalizeDay($d) : $d, $dias)
             );
         }
 
+        // Enrich ALL weeks with GIF/video URLs — overrides any stale hardcoded gif_url in JSON
+        try {
+            $mediaService = app(ExerciseMediaService::class);
+            foreach ($allWeeksDays as &$weekDays) {
+                foreach ($weekDays as &$dia) {
+                    if (! empty($dia['ejercicios'])) {
+                        $mediaService->enrichWithMedia($dia['ejercicios']);
+                    }
+                }
+                unset($dia);
+            }
+            unset($weekDays);
+        } catch (\Throwable) {
+            // GIFs are cosmetic — never break the workout player
+        }
+
         // Current week from program start date
-        $startDate   = Carbon::parse($riseProgram->start_date ?? now());
+        $startDate = Carbon::parse($riseProgram->start_date ?? now());
         $weeksActive = max(1, (int) ceil($startDate->diffInWeeks(now())) + 1);
         $currentWeek = min($weeksActive, $totalWeeks);
-        $days        = $allWeeksDays[$currentWeek] ?? [];
+        $days = $allWeeksDays[$currentWeek] ?? [];
 
         if (empty($days)) {
             return response()->json(['hasPlan' => false, 'showTutorial' => $showTutorial]);
@@ -901,9 +924,9 @@ class RiseController extends Controller
         }
 
         // Check for existing session today
-        $todayStr  = now()->toDateString();
-        $dayName   = $days[$currentDayIndex]['nombre'] ?? ('Dia ' . ($currentDayIndex + 1));
-        $existing  = WorkoutSession::where('client_id', $clientId)
+        $todayStr = now()->toDateString();
+        $dayName = $days[$currentDayIndex]['nombre'] ?? ('Dia '.($currentDayIndex + 1));
+        $existing = WorkoutSession::where('client_id', $clientId)
             ->where('day_name', $dayName)
             ->where('session_date', $todayStr)
             ->where('completed', false)
@@ -919,14 +942,14 @@ class RiseController extends Controller
         }
 
         return response()->json([
-            'hasPlan'         => true,
-            'showTutorial'    => $showTutorial,
-            'totalWeeks'      => $totalWeeks,
-            'currentWeek'     => $currentWeek,
-            'allWeeksDays'    => $allWeeksDays,
-            'days'            => $days,
+            'hasPlan' => true,
+            'showTutorial' => $showTutorial,
+            'totalWeeks' => $totalWeeks,
+            'currentWeek' => $currentWeek,
+            'allWeeksDays' => $allWeeksDays,
+            'days' => $days,
             'currentDayIndex' => $currentDayIndex,
-            'activeSession'   => $activeSession,
+            'activeSession' => $activeSession,
         ]);
     }
 
@@ -941,25 +964,25 @@ class RiseController extends Controller
 
         $validated = $request->validate([
             'day_index' => 'required|integer|min:0',
-            'week'      => 'nullable|integer|min:1',
+            'week' => 'nullable|integer|min:1',
         ]);
 
         $dayIndex = $validated['day_index'];
-        $weekNum  = $validated['week'] ?? null;
+        $weekNum = $validated['week'] ?? null;
 
         // Derive day_name from the program
-        $riseProgram  = RiseProgram::where('client_id', $client->id)
+        $riseProgram = RiseProgram::where('client_id', $client->id)
             ->whereIn('status', ['active', 'activo'])
             ->first();
 
-        $dayName = 'Día ' . ($dayIndex + 1);
+        $dayName = 'Día '.($dayIndex + 1);
         if ($riseProgram) {
             $semanas = $riseProgram->personalized_program['plan_entrenamiento']['semanas'] ?? [];
             if ($weekNum && isset($semanas[$weekNum - 1])) {
-                $dias    = $semanas[$weekNum - 1]['dias'] ?? [];
+                $dias = $semanas[$weekNum - 1]['dias'] ?? [];
                 $dayName = $dias[$dayIndex]['nombre'] ?? $dias[$dayIndex]['dia'] ?? $dayName;
             } elseif (! empty($semanas)) {
-                $dias    = $semanas[0]['dias'] ?? [];
+                $dias = $semanas[0]['dias'] ?? [];
                 $dayName = $dias[$dayIndex]['nombre'] ?? $dias[$dayIndex]['dia'] ?? $dayName;
             }
         }
@@ -967,14 +990,14 @@ class RiseController extends Controller
         // Reuse existing incomplete session for today if exists
         $session = WorkoutSession::firstOrCreate(
             [
-                'client_id'    => $client->id,
-                'day_name'     => $dayName,
+                'client_id' => $client->id,
+                'day_name' => $dayName,
                 'session_date' => now()->toDateString(),
             ],
             [
                 'week_number' => $weekNum,
-                'completed'   => false,
-                'source'      => 'rise',
+                'completed' => false,
+                'source' => 'rise',
             ]
         );
 
@@ -994,12 +1017,12 @@ class RiseController extends Controller
         $client = $this->resolveClientOrFail($request);
 
         $validated = $request->validate([
-            'session_id'    => 'required|integer',
+            'session_id' => 'required|integer',
             'exercise_name' => 'required|string|max:200',
-            'set_number'    => 'required|integer|min:1',
-            'reps'          => 'required|integer|min:0',
-            'weight_kg'     => 'nullable|numeric|min:0',
-            'unit'          => 'nullable|in:kg,lbs',
+            'set_number' => 'required|integer|min:1',
+            'reps' => 'required|integer|min:0',
+            'weight_kg' => 'nullable|numeric|min:0',
+            'unit' => 'nullable|in:kg,lbs',
         ]);
 
         $session = WorkoutSession::where('id', $validated['session_id'])
@@ -1027,20 +1050,20 @@ class RiseController extends Controller
         }
 
         $log = WorkoutLog::create([
-            'session_id'    => $session->id,
-            'client_id'     => $client->id,
+            'session_id' => $session->id,
+            'client_id' => $client->id,
             'exercise_name' => $validated['exercise_name'],
-            'set_number'    => $validated['set_number'],
-            'reps'          => $validated['reps'],
-            'weight_kg'     => $weightKg,
-            'completed'     => true,
-            'is_pr'         => $isPr,
+            'set_number' => $validated['set_number'],
+            'reps' => $validated['reps'],
+            'weight_kg' => $weightKg,
+            'completed' => true,
+            'is_pr' => $isPr,
         ]);
 
         return response()->json([
             'logged' => true,
             'log_id' => $log->id,
-            'is_pr'  => $isPr,
+            'is_pr' => $isPr,
         ]);
     }
 
@@ -1056,8 +1079,8 @@ class RiseController extends Controller
 
         $validated = $request->validate([
             'session_id' => 'required|integer',
-            'feeling'    => 'nullable|string|max:50',
-            'notes'      => 'nullable|string|max:1000',
+            'feeling' => 'nullable|string|max:50',
+            'notes' => 'nullable|string|max:1000',
         ]);
 
         $session = WorkoutSession::where('id', $validated['session_id'])
@@ -1072,10 +1095,10 @@ class RiseController extends Controller
         $durationSec = (int) $session->created_at->diffInSeconds(now());
 
         $session->update([
-            'completed'        => true,
+            'completed' => true,
             'duration_minutes' => (int) ($durationSec / 60),
-            'feeling'          => $validated['feeling'] ?? null,
-            'notes'            => $validated['notes'] ?? null,
+            'feeling' => $validated['feeling'] ?? null,
+            'notes' => $validated['notes'] ?? null,
         ]);
 
         try {
@@ -1090,10 +1113,10 @@ class RiseController extends Controller
         }
 
         return response()->json([
-            'completed'  => true,
+            'completed' => true,
             'session_id' => $session->id,
-            'duration'   => (int) ($durationSec / 60),
-            'xpEarned'   => $xpEarned,
+            'duration' => (int) ($durationSec / 60),
+            'xpEarned' => $xpEarned,
         ]);
     }
 
@@ -1107,11 +1130,11 @@ class RiseController extends Controller
      */
     public function workoutSummary(Request $request, string $sessionId): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         if ($sessionId === 'latest') {
-            $session = \App\Models\WorkoutSession::where('client_id', $clientId)
+            $session = WorkoutSession::where('client_id', $clientId)
                 ->where('completed', true)
                 ->latest()
                 ->firstOrFail();
@@ -1124,32 +1147,32 @@ class RiseController extends Controller
 
         $completedLogs = $session->logs->where('completed', true);
         $exerciseCount = $completedLogs->pluck('exercise_name')->unique()->count();
-        $targetSets    = $session->logs->count();
+        $targetSets = $session->logs->count();
 
-        $heaviestLog       = $completedLogs->sortByDesc('weight_kg')->first();
-        $maxWeight         = $heaviestLog ? (float) $heaviestLog->weight_kg : 0;
+        $heaviestLog = $completedLogs->sortByDesc('weight_kg')->first();
+        $maxWeight = $heaviestLog ? (float) $heaviestLog->weight_kg : 0;
         $maxWeightExercise = $heaviestLog ? $heaviestLog->exercise_name : null;
-        $prCount           = $completedLogs->where('is_pr', true)->count();
+        $prCount = $completedLogs->where('is_pr', true)->count();
 
         $stats = [
-            'duration'             => $session->formattedDuration(),
-            'duration_sec'         => ($session->duration_minutes ?? 0) * 60,
-            'max_weight'           => $maxWeight,
-            'max_weight_exercise'  => $maxWeightExercise,
-            'pr_count'             => $prCount,
-            'reps'                 => (int) $completedLogs->sum('reps'),
-            'sets_completed'       => $completedLogs->count(),
-            'sets_total'           => $targetSets,
-            'exercises_count'      => $exerciseCount,
+            'duration' => $session->formattedDuration(),
+            'duration_sec' => ($session->duration_minutes ?? 0) * 60,
+            'max_weight' => $maxWeight,
+            'max_weight_exercise' => $maxWeightExercise,
+            'pr_count' => $prCount,
+            'reps' => (int) $completedLogs->sum('reps'),
+            'sets_completed' => $completedLogs->count(),
+            'sets_total' => $targetSets,
+            'exercises_count' => $exerciseCount,
         ];
 
         $xpCacheKey = "workout_summary_xp:{$session->id}";
-        $xpEarned   = Cache::remember($xpCacheKey, 86400 * 30, fn () => $session->awardXp());
+        $xpEarned = Cache::remember($xpCacheKey, 86400 * 30, fn () => $session->awardXp());
 
         $prs = $completedLogs->where('is_pr', true)->map(fn ($log) => [
             'exercise' => $log->exercise_name,
-            'weight'   => (float) $log->weight_kg,
-            'reps'     => $log->reps,
+            'weight' => (float) $log->weight_kg,
+            'reps' => $log->reps,
         ])->values()->toArray();
 
         $sessionHistory = WorkoutSession::where('client_id', $clientId)
@@ -1159,24 +1182,24 @@ class RiseController extends Controller
             ->limit(10)
             ->get()
             ->map(fn ($s) => [
-                'id'       => $s->id,
-                'date'     => $s->session_date?->format('d M') ?? '-',
+                'id' => $s->id,
+                'date' => $s->session_date?->format('d M') ?? '-',
                 'day_name' => $s->day_name ?? '-',
                 'duration' => $s->formattedDuration(),
             ])
             ->toArray();
 
         return response()->json([
-            'session'        => [
-                'id'               => $session->id,
-                'day_name'         => $session->day_name,
-                'session_date'     => $session->session_date?->format('d M Y'),
-                'feeling'          => $session->feeling,
-                'notes'            => $session->notes,
+            'session' => [
+                'id' => $session->id,
+                'day_name' => $session->day_name,
+                'session_date' => $session->session_date?->format('d M Y'),
+                'feeling' => $session->feeling,
+                'notes' => $session->notes,
             ],
-            'stats'          => $stats,
-            'xpEarned'       => $xpEarned,
-            'prs'            => $prs,
+            'stats' => $stats,
+            'xpEarned' => $xpEarned,
+            'prs' => $prs,
             'sessionHistory' => $sessionHistory,
         ]);
     }
@@ -1191,11 +1214,11 @@ class RiseController extends Controller
      */
     public function profile(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
-        $name    = $client->name ?? 'Usuario';
-        $email   = $client->email ?? '';
+        $name = $client->name ?? 'Usuario';
+        $email = $client->email ?? '';
         $initial = strtoupper(substr($name, 0, 1));
 
         $riseProgram = RiseProgram::where('client_id', $clientId)
@@ -1203,46 +1226,46 @@ class RiseController extends Controller
             ->first();
 
         $profile = [
-            'name'             => $name,
-            'email'            => $email,
-            'initial'          => $initial,
-            'startDate'        => null,
-            'endDate'          => null,
-            'experienceLevel'  => null,
+            'name' => $name,
+            'email' => $email,
+            'initial' => $initial,
+            'startDate' => null,
+            'endDate' => null,
+            'experienceLevel' => null,
             'trainingLocation' => null,
-            'gender'           => null,
-            'status'           => null,
-            'progressPercent'  => 0,
-            'daysInProgram'    => 0,
-            'totalDays'        => 0,
+            'gender' => null,
+            'status' => null,
+            'progressPercent' => 0,
+            'daysInProgram' => 0,
+            'totalDays' => 0,
             'measurementCount' => 0,
-            'checkinsCount'    => 0,
-            'habitsLogged'     => 0,
-            'adherence'        => 0,
+            'checkinsCount' => 0,
+            'habitsLogged' => 0,
+            'adherence' => 0,
         ];
 
         if ($riseProgram) {
-            $profile['startDate']        = $riseProgram->start_date?->translatedFormat('d M Y');
-            $profile['endDate']          = $riseProgram->end_date?->translatedFormat('d M Y');
-            $profile['experienceLevel']  = $riseProgram->experience_level;
+            $profile['startDate'] = $riseProgram->start_date?->translatedFormat('d M Y');
+            $profile['endDate'] = $riseProgram->end_date?->translatedFormat('d M Y');
+            $profile['experienceLevel'] = $riseProgram->experience_level;
             $profile['trainingLocation'] = $riseProgram->training_location;
-            $profile['gender']           = $riseProgram->gender;
-            $profile['status']           = $riseProgram->status;
+            $profile['gender'] = $riseProgram->gender;
+            $profile['status'] = $riseProgram->status;
 
             if ($riseProgram->start_date && $riseProgram->end_date) {
                 $start = Carbon::parse($riseProgram->start_date);
-                $end   = Carbon::parse($riseProgram->end_date);
+                $end = Carbon::parse($riseProgram->end_date);
 
-                $profile['totalDays']      = (int) $start->diffInDays($end);
-                $profile['daysInProgram']  = (int) min($start->diffInDays(now()), $profile['totalDays']);
+                $profile['totalDays'] = (int) $start->diffInDays($end);
+                $profile['daysInProgram'] = (int) min($start->diffInDays(now()), $profile['totalDays']);
                 $profile['progressPercent'] = $profile['totalDays'] > 0
                     ? (int) min(round(($profile['daysInProgram'] / $profile['totalDays']) * 100), 100)
                     : 0;
             }
 
             $profile['measurementCount'] = RiseMeasurement::where('client_id', $clientId)->count();
-            $profile['checkinsCount']    = RiseTracking::where('client_id', $clientId)->count();
-            $profile['habitsLogged']     = RiseHabitsLog::where('rise_program_id', $riseProgram->id)
+            $profile['checkinsCount'] = RiseTracking::where('client_id', $clientId)->count();
+            $profile['habitsLogged'] = RiseHabitsLog::where('rise_program_id', $riseProgram->id)
                 ->where('client_id', $clientId)
                 ->count();
             $profile['adherence'] = $profile['daysInProgram'] > 0
@@ -1301,13 +1324,13 @@ class RiseController extends Controller
         $client = $this->resolveClientOrFail($request);
 
         $validated = $request->validate([
-            'session_id'     => 'required|integer',
-            'exercise_name'  => 'required|string|max:200',
-            'set_number'     => 'required|integer|min:1',
+            'session_id' => 'required|integer',
+            'exercise_name' => 'required|string|max:200',
+            'set_number' => 'required|integer|min:1',
             'exercise_index' => 'nullable|integer',
         ]);
 
-        $session = \App\Models\WorkoutSession::where('id', $validated['session_id'])
+        $session = WorkoutSession::where('id', $validated['session_id'])
             ->where('client_id', $client->id)
             ->where('completed', false)
             ->first();
@@ -1316,7 +1339,7 @@ class RiseController extends Controller
             return response()->json(['error' => 'Sesion no encontrada.'], 404);
         }
 
-        \App\Models\WorkoutLog::where('session_id', $validated['session_id'])
+        WorkoutLog::where('session_id', $validated['session_id'])
             ->where('exercise_name', $validated['exercise_name'])
             ->where('set_number', $validated['set_number'])
             ->delete();
@@ -1335,7 +1358,7 @@ class RiseController extends Controller
             'session_id' => 'required|integer',
         ]);
 
-        $session = \App\Models\WorkoutSession::where('id', $validated['session_id'])
+        $session = WorkoutSession::where('id', $validated['session_id'])
             ->where('client_id', $client->id)
             ->where('completed', false)
             ->first();
@@ -1367,7 +1390,7 @@ class RiseController extends Controller
             'feeling' => 'required|string|max:50',
         ]);
 
-        \App\Models\WorkoutSession::where('id', $sessionId)
+        WorkoutSession::where('id', $sessionId)
             ->where('client_id', $client->id)
             ->update(['feeling' => $validated['feeling']]);
 
@@ -1390,12 +1413,12 @@ class RiseController extends Controller
         }
 
         // Already has semanas array — pass-through
-        if (!empty($plan['semanas']) && is_array($plan['semanas'])) {
+        if (! empty($plan['semanas']) && is_array($plan['semanas'])) {
             return $plan;
         }
 
         // Old format: dias is a keyed object {lunes:{...}, martes:{...}}
-        if (!empty($plan['dias']) && is_array($plan['dias'])) {
+        if (! empty($plan['dias']) && is_array($plan['dias'])) {
             $diasArray = [];
             foreach ($plan['dias'] as $diaNombre => $diaData) {
                 $diasArray[] = array_merge(
@@ -1405,10 +1428,10 @@ class RiseController extends Controller
             }
 
             $plan['semanas'] = [[
-                'semana'      => 1,
-                'fase'        => $plan['fase'] ?? 'Programa',
+                'semana' => 1,
+                'fase' => $plan['fase'] ?? 'Programa',
                 'descripcion' => $plan['descripcion'] ?? '',
-                'dias'        => $diasArray,
+                'dias' => $diasArray,
             ]];
 
             unset($plan['dias']);
