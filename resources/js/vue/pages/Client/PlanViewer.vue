@@ -1446,25 +1446,27 @@ onBeforeUnmount(() => {
                   class="overflow-hidden rounded-xl border bg-wc-bg-secondary transition-colors"
                   :class="isNutrMealSwapped(meal) ? 'border-wc-accent/40' : 'border-wc-border'"
                 >
-                  <!-- Swapped marker — gradient line + glass chip -->
+                  <!-- Swapped marker — gradient line + chip + RESTAURAR button -->
                   <div v-if="isNutrMealSwapped(meal)" class="relative">
                     <div class="h-px w-full bg-gradient-to-r from-wc-accent/0 via-wc-accent/40 to-wc-accent/0"></div>
                     <div class="flex items-center justify-between gap-3 px-4 py-2.5">
-                      <div class="group/chip flex min-w-0 items-center gap-2.5 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1 backdrop-blur-sm">
+                      <div class="flex min-w-0 items-center gap-2.5 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1 backdrop-blur-sm">
                         <span class="relative flex h-1 w-1 shrink-0">
                           <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-wc-accent opacity-60"></span>
                           <span class="relative inline-flex h-1 w-1 rounded-full bg-wc-accent"></span>
                         </span>
                         <span class="font-display text-[9px] tracking-[0.22em] text-white/40">REEMPLAZADO POR</span>
                         <span class="min-w-0 truncate font-display text-xs tracking-wider text-wc-text">{{ nutrSwappedRecipeName(meal) }}</span>
-                        <button
-                          @click.stop="undoNutrSwap(meal)"
-                          class="ml-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-white/30 opacity-0 transition-all duration-300 hover:text-wc-accent group-hover/chip:opacity-100"
-                          aria-label="Deshacer reemplazo"
-                        >
-                          <XIcon :size="10" :stroke-width="2" />
-                        </button>
                       </div>
+                      <!-- Restore button — always visible, works on mobile -->
+                      <button
+                        @click.stop="undoNutrSwap(meal)"
+                        class="flex shrink-0 items-center gap-1.5 rounded-full border border-white/[0.10] bg-white/[0.04] px-3 py-1 font-display text-[10px] tracking-[0.15em] text-white/50 transition hover:border-wc-accent/40 hover:text-wc-accent active:scale-95"
+                        aria-label="Restaurar comida original"
+                      >
+                        <XIcon :size="11" :stroke-width="2.5" />
+                        RESTAURAR
+                      </button>
                     </div>
                   </div>
 
