@@ -291,3 +291,112 @@ if (app()->environment('local', 'testing')) {
         return redirect('/client');
     });
 }
+
+// ── Temporary: run fix-gif-aliases via HTTP (remove after use) ──
+Route::get('/run-fix-gif-aliases/{secret}', function (string $secret) {
+    if ($secret !== 'WC2026fixgifs') abort(404);
+
+    $CDN = 'https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs/master/';
+    $fixes = [
+        'patada de gluteo en polea' => 'patada-trasera-en-polea.gif',
+        'patada de glúteo en polea' => 'patada-trasera-en-polea.gif',
+        'abductor en polea' => 'patada-lateral-en-polea.gif',
+        'abduccion en polea' => 'patada-lateral-en-polea.gif',
+        'remo con mancuerna un brazo en banco' => 'remo-con-mancuerna-a-una mano.gif',
+        'remo con mancuerna a un brazo' => 'remo-con-mancuerna-a-una mano.gif',
+        'face pull en polea alta con cuerda' => 'facepull-en-polea.gif',
+        'face pull con cuerda' => 'facepull-en-polea.gif',
+        'face pull' => 'facepull-en-polea.gif',
+        'facepull' => 'facepull-en-polea.gif',
+        'romanian deadlift con mancuernas' => 'peso-muerto-rumano-con-mancuerna.gif',
+        'romanian deadlift con mancuerna' => 'peso-muerto-rumano-con-mancuerna.gif',
+        'rdl con mancuernas' => 'peso-muerto-rumano-con-mancuerna.gif',
+        'zancada con mancuerna' => 'zancada-frontal-con-mancuerna.gif',
+        'zancada con mancuernas' => 'zancada-frontal-con-mancuerna.gif',
+        'press en banco inclinado con mancuerna' => 'press-de-banca-con-mancuernas.gif',
+        'press en banco inclinado con mancuernas' => 'press-de-banca-con-mancuernas.gif',
+        'press inclinado con mancuerna' => 'press-de-banca-con-mancuernas.gif',
+        'press inclinado con mancuernas' => 'press-de-banca-con-mancuernas.gif',
+        'extension de triceps en polea alta' => 'extension-de-triceps-en-polea-con-cuerda.gif',
+        'extensión de tríceps en polea alta' => 'extension-de-triceps-en-polea-con-cuerda.gif',
+        'sentadilla búlgara con mancuerna' => 'sentadilla-bulgara-mancuerna.gif',
+        'sentadilla bulgara con mancuerna' => 'sentadilla-bulgara-mancuerna.gif',
+        'sentadilla búlgara con mancuernas' => 'sentadilla-bulgara-mancuerna.gif',
+        'sentadilla bulgara con mancuernas' => 'sentadilla-bulgara-mancuerna.gif',
+        'extension de cuádriceps en maquina' => 'extension-de-piernas-en-maquina.gif',
+        'extension de cuadriceps en maquina' => 'extension-de-piernas-en-maquina.gif',
+        'extensión de cuádriceps en máquina' => 'extension-de-piernas-en-maquina.gif',
+        'zancada reversa con mancuerna' => 'zancada-inversa-con-mancuernas.gif',
+        'zancada reversa con mancuernas' => 'zancada-inversa-con-mancuernas.gif',
+    ];
+
+    $norm = fn($s) => mb_strtolower(strtr(trim($s), ['á'=>'a','é'=>'e','í'=>'i','ó'=>'o','ú'=>'u','ñ'=>'n','ü'=>'u']), 'UTF-8');
+    $normFixes = [];
+    foreach ($fixes as $k => $v) $normFixes[$norm($k)] = $v;
+
+    $output = [];
+    $total = 0;
+
+    $fixExercises = function (&$exercises) use ($normFixes, $CDN, $norm, &$total, &$output) {
+        if (!is_array($exercises)) return;
+        foreach ($exercises as &$ej) {
+            if (!is_array($ej) || empty($ej['nombre'])) continue;
+            $key = $norm($ej['nombre']);
+            if (isset($normFixes[$key])) {
+                $ej['gif_url'] = $CDN . $normFixes[$key];
+                unset($ej['gif_filename']);
+                $output[] = "✅ {$ej['nombre']} → {$normFixes[$key]}";
+                $total++;
+            }
+        }
+        unset($ej);
+    };
+
+    $fixPlan = function (&$plan) use ($fixExercises) {
+        if (!is_array($plan)) return;
+        if (!empty($plan['semanas'])) {
+            foreach ($plan['semanas'] as &$sem) {
+                foreach ($sem['dias'] ?? [] as &$dia) {
+                    if (!empty($dia['ejercicios'])) $fixExercises($dia['ejercicios']);
+                }
+                unset($dia);
+            }
+            unset($sem);
+        }
+        if (!empty($plan['dias'])) {
+            foreach ($plan['dias'] as &$dia) {
+                if (!empty($dia['ejercicios'])) $fixExercises($dia['ejercicios']);
+            }
+            unset($dia);
+        }
+    };
+
+    // assigned_plans
+    $plans = \DB::table('assigned_plans')->where('plan_type', 'entrenamiento')->whereNotNull('content')->where('content', '!=', '')->get();
+    foreach ($plans as $p) {
+        $content = json_decode($p->content, true);
+        if (!$content) continue;
+        $before = $total;
+        $fixPlan($content);
+        if ($total > $before) {
+            $output[] = "Plan #{$p->id} (client {$p->client_id}): " . ($total - $before) . " fixed";
+            \DB::table('assigned_plans')->where('id', $p->id)->update(['content' => json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
+        }
+    }
+
+    // rise_programs
+    $rises = \DB::table('rise_programs')->whereNotNull('personalized_program')->where('personalized_program', '!=', '')->get();
+    foreach ($rises as $r) {
+        $prog = json_decode($r->personalized_program, true);
+        if (!$prog || empty($prog['plan_entrenamiento'])) continue;
+        $before = $total;
+        $fixPlan($prog['plan_entrenamiento']);
+        if ($total > $before) {
+            $output[] = "RISE #{$r->id} (client {$r->client_id}): " . ($total - $before) . " fixed";
+            \DB::table('rise_programs')->where('id', $r->id)->update(['personalized_program' => json_encode($prog, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
+        }
+    }
+
+    $output[] = "TOTAL: {$total} exercises fixed";
+    return response(implode("\n", $output), 200)->header('Content-Type', 'text/plain');
+});
