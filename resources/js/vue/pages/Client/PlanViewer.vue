@@ -1654,7 +1654,8 @@ onBeforeUnmount(() => {
                               :key="ai"
                               class="flex items-start gap-2.5"
                             >
-                              <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                              <span v-if="foodIcon(alimento)" class="shrink-0 text-base leading-none">{{ foodIcon(alimento) }}</span>
+                              <span v-else class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
                               <span class="text-sm leading-relaxed text-wc-text-secondary">{{ formatNutrAlimento(alimento) }}</span>
                             </li>
                           </ul>
