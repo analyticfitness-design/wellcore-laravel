@@ -812,7 +812,7 @@ onBeforeUnmount(() => {
           leave-from-class="opacity-100 translate-y-0"
           leave-to-class="opacity-0 translate-y-4"
         >
-          <div v-if="showRestTimer" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 rounded-2xl border border-wc-accent/30 bg-wc-bg/95 backdrop-blur-xl px-6 py-4 shadow-2xl min-w-[200px] wc-grain">
+          <div v-if="showRestTimer" class="fixed bottom-36 left-1/2 -translate-x-1/2 z-[60] rounded-2xl border border-wc-accent/30 bg-wc-bg/95 backdrop-blur-xl px-6 py-4 shadow-2xl min-w-[200px] wc-grain">
             <div class="flex items-center gap-4">
               <!-- Rest progress ring -->
               <div class="relative h-14 w-14 shrink-0">
