@@ -10,12 +10,21 @@
 
 $dryRun = !in_array('--execute', $argv);
 
-// --- DB Connection (auto-detect: production uses env vars, local uses hardcoded) ---
-$dbHost = getenv('DB_HOST') ?: '127.0.0.1';
-$dbUser = getenv('DB_USERNAME') ?: 'root';
-$dbPass = getenv('DB_PASSWORD') ?: 'QY@P6Ak2?';
-$dbName = getenv('DB_DATABASE') ?: 'wellcore_fitness';
-$dbPort = (int)(getenv('DB_PORT') ?: 3306);
+// --- DB Connection — read from Laravel .env if available ---
+$envFile = __DIR__ . '/../.env';
+$envVars = [];
+if (file_exists($envFile)) {
+    foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        if (str_starts_with($line, '#') || !str_contains($line, '=')) continue;
+        [$key, $val] = explode('=', $line, 2);
+        $envVars[trim($key)] = trim($val, " \t\n\r\0\x0B\"'");
+    }
+}
+$dbHost = $envVars['DB_HOST'] ?? getenv('DB_HOST') ?: '127.0.0.1';
+$dbUser = $envVars['DB_USERNAME'] ?? getenv('DB_USERNAME') ?: 'root';
+$dbPass = $envVars['DB_PASSWORD'] ?? getenv('DB_PASSWORD') ?: 'QY@P6Ak2?';
+$dbName = $envVars['DB_DATABASE'] ?? getenv('DB_DATABASE') ?: 'wellcore_fitness';
+$dbPort = (int)($envVars['DB_PORT'] ?? getenv('DB_PORT') ?: 3306);
 
 $db = new mysqli($dbHost, $dbUser, $dbPass, $dbName, $dbPort);
 if ($db->connect_error) {
