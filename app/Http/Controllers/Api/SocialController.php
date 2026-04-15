@@ -1062,7 +1062,7 @@ class SocialController extends Controller
 
         $request->validate([
             'photo_date' => 'required|date',
-            'tipo'       => 'required|in:frente,lado,espalda',
+            'tipo'       => 'required|in:frente,perfil,espalda',
             'photo'      => 'required|image|max:5120',
         ]);
 

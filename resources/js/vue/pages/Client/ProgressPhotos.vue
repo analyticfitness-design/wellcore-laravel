@@ -12,8 +12,8 @@ const photos = ref({});            // { 'YYYY-MM-DD': [ { id, photo_date, tipo, 
 
 // Upload form
 const uploadDate = ref(new Date().toISOString().split('T')[0]);
-const uploadFiles = ref({ frente: null, lado: null, espalda: null });
-const uploadPreviews = ref({ frente: null, lado: null, espalda: null });
+const uploadFiles = ref({ frente: null, perfil: null, espalda: null });
+const uploadPreviews = ref({ frente: null, perfil: null, espalda: null });
 const uploading = ref(false);
 const uploadError = ref(null);
 const fieldErrors = ref({});       // per-field 422 errors
@@ -35,8 +35,8 @@ const compareDate2 = ref('');
 const deletingId = ref(null);
 
 // --- Constants ---
-const ANGLES = ['frente', 'lado', 'espalda'];
-const ANGLE_LABELS = { frente: 'Frente', lado: 'Lado', espalda: 'Espalda' };
+const ANGLES = ['frente', 'perfil', 'espalda'];
+const ANGLE_LABELS = { frente: 'Frente', perfil: 'Lado', espalda: 'Espalda' };
 
 // Translate raw Laravel validation keys (e.g. "validation.required") to Spanish
 const VALIDATION_MESSAGES = {
