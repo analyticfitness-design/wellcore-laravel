@@ -1008,16 +1008,24 @@ class TrainingController extends Controller
         // (with macros chips, hora, CAMBIAR button, Opcion A/B/C tabs)
         if (! isset($plan['comidas']) && isset($plan['comidas_sugeridas'])) {
             $plan['comidas'] = array_map(function (array $meal): array {
-                // Convert opciones: ["str1","str2","str3"] → opcion_a/b/c: [str]
+                // Convert opciones: ["Opción 1: ing1 + ing2", ...] → opcion_a/b/c: ["ing1", "ing2"]
+                // Each ingredient becomes its own list item so icons and gramajes render separately.
                 if (
                     isset($meal['opciones']) &&
                     is_array($meal['opciones']) &&
                     ! isset($meal['opcion_a'])
                 ) {
                     $opts = array_values($meal['opciones']);
-                    if (isset($opts[0])) $meal['opcion_a'] = [$opts[0]];
-                    if (isset($opts[1])) $meal['opcion_b'] = [$opts[1]];
-                    if (isset($opts[2])) $meal['opcion_c'] = [$opts[2]];
+                    $keys = ['opcion_a', 'opcion_b', 'opcion_c'];
+                    foreach ($keys as $i => $key) {
+                        if (! isset($opts[$i])) break;
+                        // Strip "Opción N: " or "Opcion N: " prefix
+                        $raw = preg_replace('/^[Oo]pci[oó]n\s*\d+\s*:\s*/u', '', trim((string) $opts[$i]));
+                        // Split by " + " to get individual ingredients
+                        $ingredients = array_map('trim', explode(' + ', $raw));
+                        $ingredients = array_filter($ingredients);
+                        $meal[$key] = array_values($ingredients);
+                    }
                     unset($meal['opciones']);
                 }
                 return $meal;
