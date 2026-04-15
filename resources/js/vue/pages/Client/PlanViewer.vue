@@ -1450,18 +1450,18 @@ onBeforeUnmount(() => {
                   <div v-if="isNutrMealSwapped(meal)" class="relative">
                     <div class="h-px w-full bg-gradient-to-r from-wc-accent/0 via-wc-accent/40 to-wc-accent/0"></div>
                     <div class="flex items-center justify-between gap-3 px-4 py-2.5">
-                      <div class="flex min-w-0 items-center gap-2.5 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1 backdrop-blur-sm">
+                      <div class="flex min-w-0 items-center gap-2.5 rounded-full border border-wc-border bg-wc-bg-secondary/50 px-3 py-1 backdrop-blur-sm">
                         <span class="relative flex h-1 w-1 shrink-0">
                           <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-wc-accent opacity-60"></span>
                           <span class="relative inline-flex h-1 w-1 rounded-full bg-wc-accent"></span>
                         </span>
-                        <span class="font-display text-[9px] tracking-[0.22em] text-white/40">REEMPLAZADO POR</span>
+                        <span class="font-display text-[9px] tracking-[0.22em] text-wc-text-tertiary">REEMPLAZADO POR</span>
                         <span class="min-w-0 truncate font-display text-xs tracking-wider text-wc-text">{{ nutrSwappedRecipeName(meal) }}</span>
                       </div>
                       <!-- Restore button — always visible, works on mobile -->
                       <button
                         @click.stop="undoNutrSwap(meal)"
-                        class="flex shrink-0 items-center gap-1.5 rounded-full border border-white/[0.10] bg-white/[0.04] px-3 py-1 font-display text-[10px] tracking-[0.15em] text-white/50 transition hover:border-wc-accent/40 hover:text-wc-accent active:scale-95"
+                        class="flex shrink-0 items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-secondary/50 px-3 py-1 font-display text-[10px] tracking-[0.15em] text-wc-text-secondary transition hover:border-wc-accent/40 hover:text-wc-accent active:scale-95"
                         aria-label="Restaurar comida original"
                       >
                         <XIcon :size="11" :stroke-width="2.5" />
@@ -1520,7 +1520,7 @@ onBeforeUnmount(() => {
                       @click.stop="openNutrSwapPanel(mIdx, meal)"
                       :title="isNutrMealSwapped(meal) ? 'Cambiar por otra receta' : 'Cambiar por receta'"
                       :class="{ 'text-wc-accent bg-wc-accent/10': nutrSwapIndex === mIdx }"
-                      class="wc-swap-ghost group/swap ml-1 sm:ml-2 inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-2 py-1.5 sm:px-2.5 text-white/50 transition-all duration-300 ease-out hover:bg-white/[0.06] hover:text-wc-accent hover:border-wc-accent/30 active:scale-95"
+                      class="wc-swap-ghost group/swap ml-1 sm:ml-2 inline-flex shrink-0 items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-secondary/50 px-2 py-1.5 sm:px-2.5 text-wc-text-secondary transition-all duration-300 ease-out hover:bg-wc-bg-secondary hover:text-wc-accent hover:border-wc-accent/30 active:scale-95"
                     >
                       <Replace :size="14" :stroke-width="2.5" class="shrink-0 transition-transform duration-300 group-hover/swap:rotate-180" />
                       <span class="hidden font-display text-[10px] tracking-[0.2em] sm:inline">CAMBIAR</span>
@@ -1544,44 +1544,44 @@ onBeforeUnmount(() => {
 
                   <!-- Inline swap panel -->
                   <Transition name="accordion">
-                    <div v-if="nutrSwapIndex === mIdx && nutrSwapContext" class="border-t border-white/[0.06] bg-white/[0.02]">
+                    <div v-if="nutrSwapIndex === mIdx && nutrSwapContext" class="border-t border-wc-border bg-wc-bg-secondary/30">
                       <div class="px-5 py-4">
                         <div class="flex items-start justify-between gap-3">
                           <div class="min-w-0">
                             <p class="font-display text-[10px] tracking-[0.2em] text-wc-accent/80">ALTERNATIVAS</p>
-                            <p class="mt-1 truncate text-xs text-white/50">
-                              Para reemplazar: <span class="text-white/70">{{ nutrSwapContext.name }}</span>
+                            <p class="mt-1 truncate text-xs text-wc-text-secondary">
+                              Para reemplazar: <span class="text-wc-text">{{ nutrSwapContext.name }}</span>
                             </p>
-                            <p class="mt-1.5 font-data text-[10px] tabular-nums tracking-wider text-white/40">
+                            <p class="mt-1.5 font-data text-[10px] tabular-nums tracking-wider text-wc-text-tertiary">
                               Macros actuales:
-                              <span class="text-white/60">{{ nutrSwapContext.calories }}</span> KCAL
-                              <span class="mx-1 text-white/15">·</span>{{ nutrSwapContext.protein }}P
-                              <span class="mx-1 text-white/15">·</span>{{ nutrSwapContext.carbs }}C
-                              <span class="mx-1 text-white/15">·</span>{{ nutrSwapContext.fat }}G
+                              <span class="text-wc-text-secondary">{{ nutrSwapContext.calories }}</span> KCAL
+                              <span class="mx-1 text-wc-text-tertiary/60">·</span>{{ nutrSwapContext.protein }}P
+                              <span class="mx-1 text-wc-text-tertiary/60">·</span>{{ nutrSwapContext.carbs }}C
+                              <span class="mx-1 text-wc-text-tertiary/60">·</span>{{ nutrSwapContext.fat }}G
                             </p>
                           </div>
                           <button type="button" @click.stop="closeNutrSwapPanel"
-                            class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-white/30 transition-colors hover:text-white/60" aria-label="Cerrar">
+                            class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-wc-text-tertiary transition-colors hover:text-wc-text-secondary" aria-label="Cerrar">
                             <XIcon :size="14" :stroke-width="2" />
                           </button>
                         </div>
                         <div class="relative mt-4">
-                          <SearchIcon :size="13" :stroke-width="2" class="absolute left-3 top-1/2 -translate-y-1/2 text-white/25" />
+                          <SearchIcon :size="13" :stroke-width="2" class="absolute left-3 top-1/2 -translate-y-1/2 text-wc-text-tertiary" />
                           <input v-model="nutrSwapSearch" type="text" placeholder="Buscar receta"
-                            class="w-full rounded-xl border border-white/[0.06] bg-white/[0.02] py-2 pl-9 pr-3 text-xs text-wc-text placeholder-white/25 transition-colors focus:border-wc-accent/40 focus:outline-none" />
+                            class="w-full rounded-xl border border-wc-border bg-wc-bg py-2 pl-9 pr-3 text-xs text-wc-text placeholder:text-wc-text-tertiary transition-colors focus:border-wc-accent/40 focus:outline-none" />
                         </div>
                         <div class="mt-3 max-h-80 space-y-1 overflow-y-auto pr-1">
                           <div v-for="({ recipe: r, score }) in nutrSwapCandidates" :key="r.id"
-                            class="grid grid-cols-[auto_1fr_auto_auto] items-center gap-3 rounded-xl px-3 py-2 transition-colors hover:bg-white/[0.03]"
+                            class="grid grid-cols-[auto_1fr_auto_auto] items-center gap-3 rounded-xl px-3 py-2 transition-colors hover:bg-wc-bg-secondary/50"
                             :class="{ 'opacity-40 hover:opacity-70': score === 'bad' }">
                             <span class="text-2xl leading-none">{{ r.emoji }}</span>
                             <div class="min-w-0">
                               <p class="truncate font-display text-sm tracking-wide text-wc-text">{{ r.name }}</p>
-                              <p class="font-data text-[10px] tabular-nums tracking-wider text-white/40">
+                              <p class="font-data text-[10px] tabular-nums tracking-wider text-wc-text-tertiary">
                                 {{ r.macros.cal }} KCAL
-                                <span class="mx-1 text-white/15">·</span>{{ r.macros.protein }}P
-                                <span class="mx-1 text-white/15">·</span>{{ r.macros.carbs }}C
-                                <span class="mx-1 text-white/15">·</span>{{ r.macros.fat }}G
+                                <span class="mx-1 text-wc-text-tertiary/60">·</span>{{ r.macros.protein }}P
+                                <span class="mx-1 text-wc-text-tertiary/60">·</span>{{ r.macros.carbs }}C
+                                <span class="mx-1 text-wc-text-tertiary/60">·</span>{{ r.macros.fat }}G
                               </p>
                             </div>
                             <div class="flex items-center gap-1.5">
@@ -1594,17 +1594,17 @@ onBeforeUnmount(() => {
                                 <span class="font-display text-[9px] tracking-[0.2em] text-amber-400/70">ACEPTABLE</span>
                               </template>
                               <template v-else>
-                                <span class="h-1 w-1 rounded-full bg-white/20"></span>
-                                <span class="font-display text-[9px] tracking-[0.2em] text-white/30">FUERA</span>
+                                <span class="h-1 w-1 rounded-full bg-wc-text-tertiary/40"></span>
+                                <span class="font-display text-[9px] tracking-[0.2em] text-wc-text-tertiary">FUERA</span>
                               </template>
                             </div>
                             <button type="button" @click.stop="applyNutrSwap(r, meal)" :disabled="applyingNutrSwap"
-                              class="rounded-full border border-white/[0.06] px-3 py-1 font-display text-[10px] tracking-[0.15em] text-white/60 transition hover:border-wc-accent/40 hover:text-wc-accent disabled:opacity-40">
+                              class="rounded-full border border-wc-border px-3 py-1 font-display text-[10px] tracking-[0.15em] text-wc-text-secondary transition hover:border-wc-accent/40 hover:text-wc-accent disabled:opacity-40">
                               REEMPLAZAR
                             </button>
                           </div>
-                          <div v-if="nutrSwapCandidates.length === 0" class="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 text-center">
-                            <p class="font-display text-[10px] tracking-[0.2em] text-white/30">SIN RESULTADOS</p>
+                          <div v-if="nutrSwapCandidates.length === 0" class="rounded-xl border border-wc-border bg-wc-bg-secondary/30 p-6 text-center">
+                            <p class="font-display text-[10px] tracking-[0.2em] text-wc-text-tertiary">SIN RESULTADOS</p>
                           </div>
                         </div>
                       </div>
