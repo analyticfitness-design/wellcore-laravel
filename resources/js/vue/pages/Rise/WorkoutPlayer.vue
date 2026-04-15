@@ -182,7 +182,7 @@ function exEquip(ex) { return ex.equipo || ex.equipment || null; }
 function exIsCardio(ex) { return !!ex.is_cardio; }
 
 function exVideoUrl(ex) { return ex.video_url || ex.video || null; }
-function exImageUrl(ex) { return ex.image_url || ex.gif_url || ex.imagen || ex.thumbnail_url || null; }
+function exImageUrl(ex) { return ex.image_url || ex.imagen || ex.thumbnail_url || null; }
 
 function exThumbnail(ex) {
   const img = exImageUrl(ex);

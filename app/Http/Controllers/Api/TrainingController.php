@@ -15,7 +15,6 @@ use App\Models\WellcoreNotification;
 use App\Models\WorkoutLog;
 use App\Models\WorkoutPr;
 use App\Models\WorkoutSession;
-use App\Services\ExerciseMediaService;
 use App\Services\PushNotificationService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -83,50 +82,6 @@ class TrainingController extends Controller
             }
         }
 
-        // Enrich training plan exercises with GIF/video URLs.
-        // NOTE: must NOT use ?? [] in foreach when iterating by reference (&$semana, &$dia)
-        // because ?? [] creates a temporary copy — references would point to the copy, not $trainingPlan.
-        if ($trainingPlan) {
-            $mediaService = app(ExerciseMediaService::class);
-
-            if (! empty($trainingPlan['semanas'])) {
-                foreach ($trainingPlan['semanas'] as $sIdx => &$semana) {
-                    if (empty($semana['dias'])) {
-                        continue;
-                    }
-                    foreach ($semana['dias'] as $dIdx => &$dia) {
-                        $ejercicios = $dia['ejercicios'] ?? [];
-                        if (empty($ejercicios)) {
-                            continue;
-                        }
-                        try {
-                            $mediaService->enrichWithMedia($ejercicios);
-                        } catch (\Throwable $e) {
-                            \Log::warning('GIF enrichment failed', ['sIdx' => $sIdx, 'dIdx' => $dIdx, 'error' => $e->getMessage()]);
-                        }
-                        $dia['ejercicios'] = $ejercicios;
-                    }
-                    unset($dia);
-                }
-                unset($semana);
-            }
-
-            if (! empty($trainingPlan['dias'])) {
-                foreach ($trainingPlan['dias'] as $dIdx => &$dia) {
-                    $ejercicios = $dia['ejercicios'] ?? [];
-                    if (empty($ejercicios)) {
-                        continue;
-                    }
-                    try {
-                        $mediaService->enrichWithMedia($ejercicios);
-                    } catch (\Throwable $e) {
-                        \Log::warning('GIF enrichment failed (legacy dias)', ['dIdx' => $dIdx, 'error' => $e->getMessage()]);
-                    }
-                    $dia['ejercicios'] = $ejercicios;
-                }
-                unset($dia);
-            }
-        }
 
         // Habits (last 30 days)
         $habitData = $this->buildHabitData($clientId);
@@ -409,15 +364,7 @@ class TrainingController extends Controller
         // Enrich exercises with last_weight / last_reps from previous sessions
         $exercises = $this->enrichExercisesWithHistory($clientId, $exercises);
 
-        // Enrich with media (GIF + video) — silently skip if table unavailable
-        try {
-            app(ExerciseMediaService::class)->enrichWithMedia($exercises);
-        } catch (\Throwable $e) {
-            // ejercicios_fitcron may not exist in this environment
-        }
-
         // Build full days array including exercises so Vue can switch days client-side
-        // Use the enriched $exercises for the current day so video_url/gif_url are included
         $fullDays = array_map(fn ($d, $i) => [
             'index' => $i,
             'nombre' => $d['nombre'] ?? $d['name'] ?? $d['dia'] ?? 'Dia '.($i + 1),

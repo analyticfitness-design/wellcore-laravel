@@ -16,7 +16,6 @@ use App\Models\RiseProgram;
 use App\Models\RiseTracking;
 use App\Models\WorkoutLog;
 use App\Models\WorkoutSession;
-use App\Services\ExerciseMediaService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -234,25 +233,6 @@ class RiseController extends Controller
         $trainingPlan = $this->normalizeTrainingPlan($programJson['plan_entrenamiento'] ?? null);
         $nutritionPlan = $programJson['plan_nutricion'] ?? null;
         $habitsPlan = $programJson['plan_habitos']['habitos'] ?? $programJson['plan_habitos'] ?? [];
-
-        // Enrich all exercises in every week/day with correct GIF URLs from the catalog.
-        // This overrides any hardcoded gif_url baked into the stored JSON by the AI.
-        try {
-            $mediaService = app(ExerciseMediaService::class);
-            if (isset($trainingPlan['semanas'])) {
-                foreach ($trainingPlan['semanas'] as &$semana) {
-                    foreach ($semana['dias'] ?? [] as &$dia) {
-                        if (! empty($dia['ejercicios'])) {
-                            $mediaService->enrichWithMedia($dia['ejercicios']);
-                        }
-                    }
-                    unset($dia);
-                }
-                unset($semana);
-            }
-        } catch (\Throwable) {
-            // Silently skip — GIFs are cosmetic, never break the plan
-        }
 
         $totalDays = $riseProgram->start_date && $riseProgram->end_date
             ? (int) Carbon::parse($riseProgram->start_date)->diffInDays($riseProgram->end_date)
@@ -892,21 +872,6 @@ class RiseController extends Controller
             );
         }
 
-        // Enrich ALL weeks with GIF/video URLs — overrides any stale hardcoded gif_url in JSON
-        try {
-            $mediaService = app(ExerciseMediaService::class);
-            foreach ($allWeeksDays as &$weekDays) {
-                foreach ($weekDays as &$dia) {
-                    if (! empty($dia['ejercicios'])) {
-                        $mediaService->enrichWithMedia($dia['ejercicios']);
-                    }
-                }
-                unset($dia);
-            }
-            unset($weekDays);
-        } catch (\Throwable) {
-            // GIFs are cosmetic — never break the workout player
-        }
 
         // Current week from program start date
         $startDate = Carbon::parse($riseProgram->start_date ?? now());
