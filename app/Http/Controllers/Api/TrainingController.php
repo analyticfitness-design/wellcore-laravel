@@ -55,7 +55,7 @@ class TrainingController extends Controller
 
             match ($plan->plan_type) {
                 'entrenamiento' => $trainingPlan = $this->normalizeTrainingPlan($content),
-                'nutricion' => $nutritionPlan = $content,
+                'nutricion' => $nutritionPlan = $this->normalizeNutritionPlan($content),
                 'suplementacion' => $supplementPlan = $content,
                 'ciclo_hormonal' => $cicloPlan = $content,
                 default => null,
@@ -972,6 +972,59 @@ class TrainingController extends Controller
             'habits' => $habits,
             'compliance' => $compliance,
         ];
+    }
+
+    /**
+     * Normalize a nutrition plan JSON so PlanViewer.vue can render it consistently.
+     * Handles field name variations produced by different plan upload formats.
+     */
+    private function normalizeNutritionPlan(?array $plan): ?array
+    {
+        if (! $plan) {
+            return null;
+        }
+
+        // Alias objetivo_calorico → objetivo_cal (PlanViewer checks objetivo_cal first)
+        if (! isset($plan['objetivo_cal']) && isset($plan['objetivo_calorico'])) {
+            $plan['objetivo_cal'] = $plan['objetivo_calorico'];
+        }
+
+        // Alias macros.proteina → macros.proteina_g (macroP computed checks proteina_g)
+        if (isset($plan['macros']['proteina']) && ! isset($plan['macros']['proteina_g'])) {
+            $plan['macros']['proteina_g'] = $plan['macros']['proteina'];
+        }
+
+        // Alias notas_generales → notas_coach
+        if (! isset($plan['notas_coach']) && isset($plan['notas_generales'])) {
+            $plan['notas_coach'] = $plan['notas_generales'];
+        }
+
+        // Alias tips_nutricionales → tips
+        if (! isset($plan['tips']) && isset($plan['tips_nutricionales'])) {
+            $plan['tips'] = $plan['tips_nutricionales'];
+        }
+
+        // Map comidas_sugeridas → comidas so the full-featured tab section renders
+        // (with macros chips, hora, CAMBIAR button, Opcion A/B/C tabs)
+        if (! isset($plan['comidas']) && isset($plan['comidas_sugeridas'])) {
+            $plan['comidas'] = array_map(function (array $meal): array {
+                // Convert opciones: ["str1","str2","str3"] → opcion_a/b/c: [str]
+                if (
+                    isset($meal['opciones']) &&
+                    is_array($meal['opciones']) &&
+                    ! isset($meal['opcion_a'])
+                ) {
+                    $opts = array_values($meal['opciones']);
+                    if (isset($opts[0])) $meal['opcion_a'] = [$opts[0]];
+                    if (isset($opts[1])) $meal['opcion_b'] = [$opts[1]];
+                    if (isset($opts[2])) $meal['opcion_c'] = [$opts[2]];
+                    unset($meal['opciones']);
+                }
+                return $meal;
+            }, $plan['comidas_sugeridas']);
+        }
+
+        return $plan;
     }
 
     /**

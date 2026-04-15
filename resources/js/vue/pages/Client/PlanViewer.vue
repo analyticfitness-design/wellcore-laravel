@@ -65,12 +65,12 @@ const currentWeek = ref(1);
 const trainingPlan = ref(null);
 const nutritionPlan = ref(null);
 
-// Macro helpers — soporta claves en español (proteina_g, carbohidratos_g, grasas_g),
+// Macro helpers — soporta claves en español (proteina/_g, carbohidratos/_g, grasas/_g),
 // inglés (protein_g, carbs_g, fat_g) y formato anidado (macros.{key})
 const macroP = computed(() => {
   const p = nutritionPlan.value;
   if (!p) return 0;
-  return p.macros?.proteina_g ?? p.macros?.proteinas_g ?? p.macros?.protein_g
+  return p.macros?.proteina_g ?? p.macros?.proteinas_g ?? p.macros?.protein_g ?? p.macros?.proteina
       ?? p.proteina_g ?? p.proteinas_g ?? p.protein_g ?? 0;
 });
 const macroC = computed(() => {
@@ -1293,7 +1293,7 @@ onBeforeUnmount(() => {
 
               <!-- Hero: Calorías totales + objetivo -->
               <div
-                v-if="(nutritionPlan.objetivo_cal || nutritionPlan.calorias_diarias || nutritionPlan.calorias)"
+                v-if="(nutritionPlan.objetivo_cal || nutritionPlan.objetivo_calorico || nutritionPlan.calorias_diarias || nutritionPlan.calorias)"
                 class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden"
               >
                 <div class="flex flex-col sm:flex-row sm:items-center gap-4 px-5 py-4">
@@ -1307,7 +1307,7 @@ onBeforeUnmount(() => {
                     <div>
                       <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Calorías diarias</p>
                       <p class="font-data text-3xl font-bold text-wc-text leading-none mt-0.5">
-                        {{ (nutritionPlan.objetivo_cal || nutritionPlan.calorias_diarias || nutritionPlan.calorias).toLocaleString() }}
+                        {{ (nutritionPlan.objetivo_cal || nutritionPlan.objetivo_calorico || nutritionPlan.calorias_diarias || nutritionPlan.calorias).toLocaleString() }}
                         <span class="text-sm font-normal text-wc-text-tertiary ml-1">kcal</span>
                       </p>
                     </div>
