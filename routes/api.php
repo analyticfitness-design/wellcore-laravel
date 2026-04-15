@@ -256,6 +256,7 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
     Route::patch('/coaches/{id}/visibility', [AdminController::class, 'toggleCoachVisibility'])->where('id', '[0-9]+');
     Route::get('/plans', [AdminController::class, 'plans']);
     Route::post('/plans', [AdminController::class, 'createPlan']);
+    Route::post('/clients/{id}/plans', [AdminController::class, 'assignClientPlan'])->where('id', '[0-9]+');
     Route::get('/plans/{id}', [AdminController::class, 'viewPlan'])->where('id', '[0-9]+');
     Route::put('/plans/{id}', [AdminController::class, 'updatePlan'])->where('id', '[0-9]+');
     Route::delete('/plans/{id}', [AdminController::class, 'deletePlan'])->where('id', '[0-9]+');

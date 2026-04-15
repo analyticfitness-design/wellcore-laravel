@@ -1220,6 +1220,86 @@ class AdminController extends Controller
     }
 
     /**
+     * POST /api/v/admin/clients/{id}/plans
+     *
+     * Assign a pre-built JSON plan directly to a client.
+     * Creates a PlanTemplate entry and an AssignedPlan entry in one step.
+     * Deactivates any existing active plan of the same type for this client.
+     */
+    public function assignClientPlan(Request $request, int $id): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $client = Client::findOrFail($id);
+
+        $validated = $request->validate([
+            'plan_type'    => 'required|in:entrenamiento,nutricion,habitos,suplementacion,ciclo',
+            'name'         => 'required|string|max:160',
+            'content_json' => 'required',
+            'methodology'  => 'nullable|string|max:255',
+            'save_template' => 'nullable|boolean',
+        ]);
+
+        $content = $validated['content_json'];
+        if (is_string($content)) {
+            $content = json_decode($content, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return response()->json(['errors' => ['content_json' => ['JSON invalido: '.json_last_error_msg()]]], 422);
+            }
+        }
+
+        $adminId = auth('wellcore')->id() ?? null;
+        $templateId = null;
+
+        if ($validated['save_template'] ?? true) {
+            $template = PlanTemplate::create([
+                'coach_id'    => $adminId,
+                'name'        => $validated['name'],
+                'plan_type'   => $validated['plan_type'],
+                'methodology' => $validated['methodology'] ?? null,
+                'content_json' => $content,
+                'ai_generated' => false,
+                'is_public'   => false,
+            ]);
+            $templateId = $template->id;
+        }
+
+        // Deactivate previous active plan of same type
+        AssignedPlan::where('client_id', $id)
+            ->where('plan_type', $validated['plan_type'])
+            ->where('active', true)
+            ->update(['active' => false]);
+
+        $assigned = AssignedPlan::create([
+            'client_id'   => $id,
+            'plan_type'   => $validated['plan_type'],
+            'content'     => $content,
+            'version'     => 1,
+            'active'      => true,
+            'assigned_by' => $adminId,
+            'valid_from'  => now()->toDateString(),
+        ]);
+
+        // Notify client
+        WellcoreNotification::create([
+            'user_type'   => 'client',
+            'user_id'     => $id,
+            'type'        => 'plan_assigned',
+            'title'       => 'Nuevo plan disponible',
+            'message'     => 'Tu coach te ha asignado un nuevo plan de '.$validated['plan_type'].'. ¡Entra a revisarlo!',
+            'action_url'  => '/client/plan',
+        ]);
+
+        return response()->json([
+            'assigned'    => true,
+            'assigned_id' => $assigned->id,
+            'template_id' => $templateId,
+            'client'      => $client->name,
+            'plan_type'   => $validated['plan_type'],
+        ], 201);
+    }
+
+    /**
      * PUT /api/v/admin/plans/{id}
      *
      * Update an existing plan template.
