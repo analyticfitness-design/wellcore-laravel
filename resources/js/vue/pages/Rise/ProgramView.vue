@@ -277,7 +277,16 @@ onMounted(fetchProgram);
                     :key="ejIdx"
                     class="flex items-start gap-3"
                   >
-                    <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-wc-accent/10 font-data text-[10px] font-bold text-wc-accent">
+                    <div v-if="ej.gif_url || ej.image_url" class="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-wc-bg-secondary">
+                      <img
+                        :src="ej.gif_url || ej.image_url"
+                        :alt="ej.nombre"
+                        class="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                      <span class="absolute bottom-0 right-0 flex h-4 w-4 items-center justify-center rounded-tl-md bg-wc-accent/80 font-data text-[8px] font-bold text-white">{{ ejIdx + 1 }}</span>
+                    </div>
+                    <span v-else class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-wc-accent/10 font-data text-[10px] font-bold text-wc-accent">
                       {{ ejIdx + 1 }}
                     </span>
                     <div class="min-w-0 flex-1">

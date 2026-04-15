@@ -20,7 +20,7 @@ watch(() => props.show, (v) => { if (!v) { playingVideo.value = false; destroyPl
 
 function exName(ex) { return ex?.nombre || ex?.name || ex?.ejercicio || 'Ejercicio'; }
 function exVideoUrl(ex) { return ex?.video_url || ex?.video || null; }
-function exImageUrl(ex) { return ex?.image_url || ex?.imagen || ex?.thumbnail_url || null; }
+function exImageUrl(ex) { return ex?.image_url || ex?.gif_url || ex?.imagen || ex?.thumbnail_url || null; }
 function hasYouTube(ex) { return !!extractYouTubeId(exVideoUrl(ex)); }
 
 function onBackdropClick(e) { if (e.target === e.currentTarget) emit('close'); }
