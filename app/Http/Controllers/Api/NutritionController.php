@@ -67,6 +67,7 @@ class NutritionController extends Controller
                     'fat' => (int) $swap->fat_g,
                     'swapped' => true,
                     'swap_id' => $swap->id,
+                    'recipe_id' => (int) $swap->recipe_id,
                     'recipe_name' => $swap->recipe_name,
                 ];
 

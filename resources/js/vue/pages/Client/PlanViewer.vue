@@ -236,6 +236,21 @@ function nutrSwappedRecipeName(meal) {
   return findNutrTodayMeal(meal.nombre || meal.name)?.recipe_name || '';
 }
 
+function getNutrSwappedRecipe(meal) {
+  const t = findNutrTodayMeal(meal.nombre || meal.name);
+  if (!t || !t.swapped) return null;
+  if (t.recipe_id) {
+    const byId = RECIPES.find(r => r.id === t.recipe_id);
+    if (byId) return byId;
+  }
+  if (t.recipe_name) {
+    const target = String(t.recipe_name).toLowerCase().trim();
+    const byName = RECIPES.find(r => r.name.toLowerCase().trim() === target);
+    if (byName) return byName;
+  }
+  return null;
+}
+
 function getNutrMealColor(nombre) {
   const n = (nombre || '').toLowerCase();
   if (n.includes('desayuno')) return 'bg-amber-500/10 text-amber-400';
@@ -1635,8 +1650,48 @@ onBeforeUnmount(() => {
                           >G {{ meal.macros.grasas || meal.macros.grasas_g }}g</span>
                         </div>
 
-                        <!-- Multi-option tabs (opcion_a / b / c) -->
-                        <template v-if="getNutrMealOpciones(meal)">
+                        <!-- Swapped recipe details — shown instead of original opciones -->
+                        <template v-if="isNutrMealSwapped(meal) && getNutrSwappedRecipe(meal)">
+                          <div class="rounded-xl border border-wc-accent/30 bg-wc-accent/5 p-3.5">
+                            <div class="mb-2.5 flex items-center gap-2">
+                              <span class="text-lg leading-none">{{ getNutrSwappedRecipe(meal).emoji }}</span>
+                              <span class="font-display text-[11px] tracking-[0.2em] text-wc-accent">RECETA DE REEMPLAZO</span>
+                            </div>
+                            <p class="mb-3 font-display text-sm tracking-wide text-wc-text">{{ getNutrSwappedRecipe(meal).name.toUpperCase() }}</p>
+                            <p class="mb-3 text-xs leading-relaxed text-wc-text-tertiary">{{ getNutrSwappedRecipe(meal).description }}</p>
+                            <p class="mb-1.5 font-display text-[10px] tracking-[0.18em] text-wc-text-secondary">INGREDIENTES</p>
+                            <ul class="space-y-1.5">
+                              <li
+                                v-for="(ing, ii) in getNutrSwappedRecipe(meal).ingredients"
+                                :key="ii"
+                                class="flex items-start gap-2.5"
+                              >
+                                <span v-if="foodIcon(ing)" class="shrink-0 text-base leading-none">{{ foodIcon(ing) }}</span>
+                                <span v-else class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                                <span class="text-sm leading-relaxed text-wc-text-secondary">{{ ing }}</span>
+                              </li>
+                            </ul>
+                            <template v-if="getNutrSwappedRecipe(meal).steps && getNutrSwappedRecipe(meal).steps.length">
+                              <p class="mt-3.5 mb-1.5 font-display text-[10px] tracking-[0.18em] text-wc-text-secondary">PREPARACION</p>
+                              <ol class="space-y-1.5">
+                                <li
+                                  v-for="(step, si) in getNutrSwappedRecipe(meal).steps"
+                                  :key="si"
+                                  class="flex gap-2.5 text-sm leading-relaxed text-wc-text-secondary"
+                                >
+                                  <span class="font-data text-xs text-wc-accent shrink-0">{{ si + 1 }}.</span>
+                                  <span>{{ step }}</span>
+                                </li>
+                              </ol>
+                            </template>
+                            <div v-if="getNutrSwappedRecipe(meal).coachTip" class="mt-3 rounded-lg border border-wc-accent/20 bg-wc-bg-tertiary/50 px-3 py-2">
+                              <p class="text-xs italic leading-relaxed text-wc-text-tertiary">💡 {{ getNutrSwappedRecipe(meal).coachTip }}</p>
+                            </div>
+                          </div>
+                        </template>
+
+                        <!-- Multi-option tabs (opcion_a / b / c) — only when NOT swapped -->
+                        <template v-else-if="getNutrMealOpciones(meal)">
                           <!-- Option selector -->
                           <div class="flex gap-1.5">
                             <button
@@ -1663,9 +1718,9 @@ onBeforeUnmount(() => {
                           </ul>
                         </template>
 
-                        <!-- Standard alimentos list -->
+                        <!-- Standard alimentos list — only when NOT swapped -->
                         <ul
-                          v-else-if="(meal.alimentos || meal.foods || []).length > 0"
+                          v-else-if="!isNutrMealSwapped(meal) && (meal.alimentos || meal.foods || []).length > 0"
                           class="space-y-1.5"
                         >
                           <li
