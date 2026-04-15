@@ -709,6 +709,14 @@ onMounted(() => {
                       </li>
                     </ul>
 
+                    <!-- Opciones (comidas_sugeridas format — 3 opciones por comida) -->
+                    <ul v-else-if="meal.opciones && meal.opciones.length" class="space-y-1.5">
+                      <li v-for="(opcion, oi) in meal.opciones" :key="oi" class="flex items-start gap-2.5">
+                        <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+                        <span class="text-sm leading-relaxed text-wc-text-secondary">{{ opcion }}</span>
+                      </li>
+                    </ul>
+
                     <!-- Nota -->
                     <div v-if="meal.notas" class="rounded-lg border border-wc-border bg-wc-bg-tertiary px-3.5 py-3">
                       <p class="text-xs leading-relaxed text-wc-text-tertiary">{{ meal.notas }}</p>

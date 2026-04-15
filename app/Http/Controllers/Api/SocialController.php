@@ -1431,7 +1431,7 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
         $hasMacros = ($proteinGrams + $carbGrams + $fatGrams) > 0;
 
         $planCalories = (int) ($plan['calorias_diarias'] ?? $plan['calorias'] ?? $plan['objetivo_cal']
-            ?? $plan['calorias_objetivo'] ?? $plan['calories_target'] ?? $macros['calorias']
+            ?? $plan['calorias_objetivo'] ?? $plan['objetivo_calorico'] ?? $plan['calories_target'] ?? $macros['calorias']
             ?? ($plan['dias'][0]['kcal_total'] ?? 0));
 
         $totalCalories = $planCalories > 0
@@ -1489,6 +1489,7 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
             ?? $plan['meals']
             ?? $diasComidas
             ?? $planSemanalComidas
+            ?? $plan['comidas_sugeridas']
             ?? [];
 
         return array_map(function (array $meal) {
@@ -1496,8 +1497,10 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
 
             return [
                 'nombre'    => $meal['nombre'] ?? $meal['name'] ?? $meal['label'] ?? 'Comida',
+                'hora'      => $meal['hora'] ?? $meal['time'] ?? null,
                 'calorias'  => (int) ($meal['calorias'] ?? $meal['calories'] ?? $meal['kcal'] ?? $meal['cal'] ?? 0),
                 'alimentos' => $meal['alimentos'] ?? $meal['foods'] ?? $meal['items'] ?? [],
+                'opciones'  => $meal['opciones'] ?? $meal['options'] ?? [],
                 'notas'     => $meal['notas'] ?? $meal['notes'] ?? null,
                 'macros'    => [
                     'proteina'      => (int) ($macros['proteina_g'] ?? $macros['proteina'] ?? $macros['protein_g'] ?? $macros['protein'] ?? 0),
