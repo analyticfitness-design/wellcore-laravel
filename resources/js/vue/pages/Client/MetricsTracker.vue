@@ -145,6 +145,11 @@ async function saveMetric() {
   } catch (err) {
     if (err.response?.status === 422) {
       formErrors.value = err.response.data.errors || {};
+      // Also set a general save error so the user sees feedback even if scrolled past the field
+      const allMessages = Object.values(err.response.data.errors || {}).flat();
+      if (allMessages.length) {
+        saveError.value = allMessages.join(' ');
+      }
     } else {
       saveError.value = err.response?.data?.message || 'Error al guardar el registro';
     }

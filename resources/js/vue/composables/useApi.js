@@ -16,15 +16,19 @@ export function useApi() {
     const instance = axios.create({
         baseURL: '',
         headers: {
-            'Content-Type': 'application/json',
             'Accept': 'application/json',
         },
     });
 
-    // Attach token on every request
+    // Attach token on every request and handle Content-Type
     instance.interceptors.request.use((config) => {
         if (authStore.token) {
             config.headers.Authorization = `Bearer ${authStore.token}`;
+        }
+        // Let axios set the Content-Type automatically for FormData (multipart/form-data with boundary).
+        // Only set JSON content-type for non-FormData requests.
+        if (!(config.data instanceof FormData)) {
+            config.headers['Content-Type'] = 'application/json';
         }
         return config;
     });
