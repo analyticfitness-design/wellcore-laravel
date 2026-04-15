@@ -421,6 +421,16 @@ function tipoBadgeClass(tipo) {
   return map[t] || 'bg-wc-accent/10 text-wc-accent';
 }
 
+// Variation toggle state: key = "dayIdx-eIdx", value = true when showing variation
+const activeVariations = ref({});
+function toggleVariation(dayIdx, eIdx) {
+  const key = dayIdx + '-' + eIdx;
+  activeVariations.value[key] = !activeVariations.value[key];
+}
+function isVariationActive(dayIdx, eIdx) {
+  return !!activeVariations.value[dayIdx + '-' + eIdx];
+}
+
 // RIR badge color
 function rirClass(rir) {
   if (rir === null || rir === undefined) return '';
@@ -1081,43 +1091,67 @@ onBeforeUnmount(() => {
 
                       <!-- Exercises list -->
                       <div v-if="(dia.ejercicios || []).length > 0" class="divide-y divide-wc-border/40 border-t border-wc-border/40">
-                        <div v-for="(ejercicio, eIdx) in (dia.ejercicios || [])" :key="eIdx" class="flex items-start gap-3 px-4 py-3">
-                          <!-- Imagen del ejercicio o número de índice -->
-                          <div class="mt-0.5 shrink-0">
-                            <div v-if="typeof ejercicio === 'object' && (ejercicio.gif_url || ejercicio.image_url)" class="relative h-12 w-12 overflow-hidden rounded-lg bg-wc-bg-secondary">
-                              <img :src="ejercicio.gif_url || ejercicio.image_url" :alt="ejercicio.nombre || 'ejercicio'" class="h-full w-full object-cover" loading="lazy" />
-                              <span class="absolute bottom-0 right-0 flex h-4 w-4 items-center justify-center rounded-tl-md bg-black/60 text-[9px] font-bold text-white">{{ eIdx + 1 }}</span>
+                        <div v-for="(ejercicio, eIdx) in (dia.ejercicios || [])" :key="eIdx" class="px-4 py-3">
+                          <div class="flex items-start gap-3">
+                            <!-- Imagen del ejercicio o número de índice -->
+                            <div class="mt-0.5 shrink-0">
+                              <div v-if="typeof ejercicio === 'object' && ((isVariationActive(dIdx, eIdx) && ejercicio.variacion?.gif_url) || ejercicio.gif_url || ejercicio.image_url)" class="relative h-12 w-12 overflow-hidden rounded-lg bg-wc-bg-secondary" :class="isVariationActive(dIdx, eIdx) && ejercicio.variacion ? 'ring-1 ring-wc-accent/40' : ''">
+                                <img :src="isVariationActive(dIdx, eIdx) && ejercicio.variacion?.gif_url ? ejercicio.variacion.gif_url : (ejercicio.gif_url || ejercicio.image_url)" :alt="isVariationActive(dIdx, eIdx) && ejercicio.variacion?.nombre ? ejercicio.variacion.nombre : (ejercicio.nombre || 'ejercicio')" class="h-full w-full object-cover" loading="lazy" />
+                                <span class="absolute bottom-0 right-0 flex h-4 w-4 items-center justify-center rounded-tl-md bg-black/60 text-[9px] font-bold text-white">{{ eIdx + 1 }}</span>
+                              </div>
+                              <span v-else class="flex h-6 w-6 items-center justify-center rounded-md bg-wc-accent/10 font-sans text-[11px] font-bold text-wc-accent">{{ eIdx + 1 }}</span>
                             </div>
-                            <span v-else class="flex h-6 w-6 items-center justify-center rounded-md bg-wc-accent/10 font-sans text-[11px] font-bold text-wc-accent">{{ eIdx + 1 }}</span>
-                          </div>
-                          <div class="flex-1 min-w-0">
-                            <p class="text-base font-medium text-wc-text">{{ typeof ejercicio === 'string' ? ejercicio : (ejercicio.nombre || ejercicio.name || ejercicio.ejercicio || 'Ejercicio') }}</p>
-                            <div v-if="typeof ejercicio === 'object'" class="mt-1.5 flex flex-wrap gap-1.5">
-                              <span
-                                v-if="(ejercicio.series || ejercicio.sets) || (ejercicio.repeticiones || ejercicio.reps)"
-                                class="rounded-full bg-wc-bg-tertiary px-2 py-0.5 text-sm font-medium text-wc-text-secondary"
-                              >
-                                <template v-if="(ejercicio.series || ejercicio.sets) && (ejercicio.repeticiones || ejercicio.reps)">
-                                  {{ ejercicio.series || ejercicio.sets }} x {{ ejercicio.repeticiones || ejercicio.reps }}
-                                </template>
-                                <template v-else-if="ejercicio.series || ejercicio.sets">{{ ejercicio.series || ejercicio.sets }} series</template>
-                                <template v-else>{{ ejercicio.repeticiones || ejercicio.reps }} reps</template>
+                            <div class="flex-1 min-w-0">
+                              <p class="text-base font-medium text-wc-text">
+                                {{ isVariationActive(dIdx, eIdx) && typeof ejercicio === 'object' && ejercicio.variacion?.nombre
+                                  ? ejercicio.variacion.nombre
+                                  : (typeof ejercicio === 'string' ? ejercicio : (ejercicio.nombre || ejercicio.name || ejercicio.ejercicio || 'Ejercicio'))
+                                }}
+                              </p>
+                              <!-- Variation active indicator -->
+                              <span v-if="isVariationActive(dIdx, eIdx) && typeof ejercicio === 'object' && ejercicio.variacion" class="mt-0.5 inline-flex items-center gap-1 text-[10px] font-medium text-wc-accent/80">
+                                <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+                                Usando variacion
                               </span>
-                              <span
-                                v-if="ejercicio.descanso || ejercicio.rest || ejercicio.rest_seconds"
-                                class="inline-flex items-center gap-1 rounded-full bg-wc-bg-tertiary px-2 py-0.5 text-sm text-wc-text-tertiary"
-                              >
-                                <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-                                {{ typeof (ejercicio.descanso || ejercicio.rest || ejercicio.rest_seconds) === 'number' ? (ejercicio.descanso || ejercicio.rest || ejercicio.rest_seconds) + 's' : (ejercicio.descanso || ejercicio.rest || ejercicio.rest_seconds) }}
-                              </span>
-                              <span
-                                v-if="ejercicio.rir !== undefined && ejercicio.rir !== null"
-                                class="rounded-full px-2 py-0.5 text-[10px] font-black"
-                                :class="rirClass(ejercicio.rir)"
-                              >RIR{{ ejercicio.rir }}</span>
+                              <div v-if="typeof ejercicio === 'object'" class="mt-1.5 flex flex-wrap gap-1.5">
+                                <span
+                                  v-if="(ejercicio.series || ejercicio.sets) || (ejercicio.repeticiones || ejercicio.reps)"
+                                  class="rounded-full bg-wc-bg-tertiary px-2 py-0.5 text-sm font-medium text-wc-text-secondary"
+                                >
+                                  <template v-if="(ejercicio.series || ejercicio.sets) && (ejercicio.repeticiones || ejercicio.reps)">
+                                    {{ ejercicio.series || ejercicio.sets }} x {{ ejercicio.repeticiones || ejercicio.reps }}
+                                  </template>
+                                  <template v-else-if="ejercicio.series || ejercicio.sets">{{ ejercicio.series || ejercicio.sets }} series</template>
+                                  <template v-else>{{ ejercicio.repeticiones || ejercicio.reps }} reps</template>
+                                </span>
+                                <span
+                                  v-if="ejercicio.descanso || ejercicio.rest || ejercicio.rest_seconds"
+                                  class="inline-flex items-center gap-1 rounded-full bg-wc-bg-tertiary px-2 py-0.5 text-sm text-wc-text-tertiary"
+                                >
+                                  <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                                  {{ typeof (ejercicio.descanso || ejercicio.rest || ejercicio.rest_seconds) === 'number' ? (ejercicio.descanso || ejercicio.rest || ejercicio.rest_seconds) + 's' : (ejercicio.descanso || ejercicio.rest || ejercicio.rest_seconds) }}
+                                </span>
+                                <span
+                                  v-if="ejercicio.rir !== undefined && ejercicio.rir !== null"
+                                  class="rounded-full px-2 py-0.5 text-[10px] font-black"
+                                  :class="rirClass(ejercicio.rir)"
+                                >RIR{{ ejercicio.rir }}</span>
+                              </div>
+                              <p v-if="typeof ejercicio === 'object' && (ejercicio.notas || ejercicio.notes)" class="mt-1.5 text-base leading-relaxed text-wc-text-secondary">{{ ejercicio.notas || ejercicio.notes }}</p>
                             </div>
-                            <p v-if="typeof ejercicio === 'object' && (ejercicio.notas || ejercicio.notes)" class="mt-1.5 text-base leading-relaxed text-wc-text-secondary">{{ ejercicio.notas || ejercicio.notes }}</p>
                           </div>
+                          <!-- Variation toggle chip -->
+                          <button
+                            v-if="typeof ejercicio === 'object' && ejercicio.variacion"
+                            @click="toggleVariation(dIdx, eIdx)"
+                            class="mt-2 ml-15 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-all"
+                            :class="isVariationActive(dIdx, eIdx)
+                              ? 'border-wc-accent/40 bg-wc-accent/10 text-wc-accent'
+                              : 'border-wc-border bg-wc-bg-secondary text-wc-text-tertiary hover:border-wc-accent/30 hover:text-wc-accent/70'"
+                          >
+                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+                            {{ isVariationActive(dIdx, eIdx) ? 'Volver al original' : 'Variacion' }}
+                          </button>
                         </div>
                       </div>
 

@@ -37,6 +37,27 @@ const confirmAbandon = ref(false);
 // Expanded coach notes (per exercise index)
 const expandedNotes = ref({});
 
+// Variation toggle per exercise index
+const activeVariations = ref({});
+function toggleVariation(exIndex) {
+  activeVariations.value[exIndex] = !activeVariations.value[exIndex];
+}
+function isVariationActive(exIndex) {
+  return !!activeVariations.value[exIndex];
+}
+function displayName(exercise, exIndex) {
+  if (isVariationActive(exIndex) && exercise.variacion?.nombre) return exercise.variacion.nombre;
+  return exName(exercise);
+}
+function displayImage(exercise, exIndex) {
+  if (isVariationActive(exIndex) && exercise.variacion?.gif_url) return exercise.variacion.gif_url;
+  return exImageUrl(exercise);
+}
+function displayThumbnail(exercise, exIndex) {
+  if (isVariationActive(exIndex) && exercise.variacion?.gif_url) return exercise.variacion.gif_url;
+  return exThumbnail(exercise);
+}
+
 // ── Timers (module-level, NOT reactive) ──
 let timerInterval = null;
 let restInterval = null;
@@ -857,11 +878,11 @@ onBeforeUnmount(() => {
               >
                 <div class="flex items-stretch">
                   <!-- Thumbnail column -->
-                  <div class="relative w-20 shrink-0 overflow-hidden bg-wc-bg-secondary">
+                  <div class="relative w-20 shrink-0 overflow-hidden bg-wc-bg-secondary" :class="isVariationActive(exIndex) && exercise.variacion ? 'ring-1 ring-wc-accent/40' : ''">
                     <img
-                      v-if="exThumbnail(exercise)"
-                      :src="exThumbnail(exercise)"
-                      :alt="exName(exercise)"
+                      v-if="displayThumbnail(exercise, exIndex)"
+                      :src="displayThumbnail(exercise, exIndex)"
+                      :alt="displayName(exercise, exIndex)"
                       class="h-full w-full object-cover opacity-90"
                     />
                     <div v-else class="flex h-full w-full min-h-[80px] flex-col items-center justify-center bg-gradient-to-b from-wc-bg-secondary to-wc-bg">
@@ -881,17 +902,36 @@ onBeforeUnmount(() => {
                   <div class="min-w-0 flex-1 p-3">
                     <!-- Name + muscle group -->
                     <div class="flex flex-wrap items-start justify-between gap-2">
-                      <h3 class="font-display text-xl tracking-wide leading-tight text-wc-text uppercase">{{ exName(exercise) }}</h3>
+                      <h3 class="font-display text-xl tracking-wide leading-tight text-wc-text uppercase">{{ displayName(exercise, exIndex) }}</h3>
                       <span v-if="exMuscle(exercise)" class="shrink-0 rounded-full bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-medium text-wc-text-tertiary">
                         {{ exMuscle(exercise) }}
                       </span>
                     </div>
+
+                    <!-- Variation active indicator -->
+                    <span v-if="isVariationActive(exIndex) && exercise.variacion" class="mt-0.5 inline-flex items-center gap-1 text-[10px] font-medium text-wc-accent/80">
+                      <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+                      Usando variacion
+                    </span>
 
                     <!-- Coach notes -->
                     <p v-if="exNotas(exercise)" class="mt-1 text-xs leading-relaxed text-wc-text-tertiary">{{ exNotas(exercise) }}</p>
 
                     <!-- Chips row -->
                     <div class="mt-3 flex flex-wrap items-center gap-2">
+                      <!-- Variation toggle chip -->
+                      <button
+                        v-if="exercise.variacion"
+                        @click.stop="toggleVariation(exIndex)"
+                        class="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[11px] font-medium transition-all"
+                        :class="isVariationActive(exIndex)
+                          ? 'border-wc-accent/40 bg-wc-accent/10 text-wc-accent'
+                          : 'border-wc-border bg-wc-bg-secondary text-wc-text-tertiary hover:border-wc-accent/30 hover:text-wc-accent/70'"
+                      >
+                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+                        {{ isVariationActive(exIndex) ? 'Original' : 'Variacion' }}
+                      </button>
+
                       <!-- Cardio chips -->
                       <template v-if="exIsCardio(exercise)">
                         <span v-if="exReps(exercise)" class="inline-flex items-center gap-1.5 rounded-lg bg-sky-500/10 px-3 py-1.5">
@@ -1017,11 +1057,29 @@ onBeforeUnmount(() => {
                     <div class="min-w-0 flex-1">
                       <div class="flex items-center gap-2">
                         <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-wc-bg-secondary text-xs font-bold text-wc-text-tertiary font-data">{{ exIndex + 1 }}</span>
-                        <h3 class="font-display text-lg tracking-wide leading-tight text-wc-text uppercase">{{ exName(exercise) }}</h3>
+                        <h3 class="font-display text-lg tracking-wide leading-tight text-wc-text uppercase">{{ displayName(exercise, exIndex) }}</h3>
                       </div>
+
+                      <!-- Variation active indicator -->
+                      <span v-if="isVariationActive(exIndex) && exercise.variacion" class="mt-1 inline-flex items-center gap-1 text-[10px] font-medium text-wc-accent/80">
+                        <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+                        Usando variacion
+                      </span>
 
                       <!-- Badges row -->
                       <div class="mt-2 flex flex-wrap items-center gap-1.5">
+                        <!-- Variation toggle -->
+                        <button
+                          v-if="exercise.variacion"
+                          @click="toggleVariation(exIndex)"
+                          class="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-medium transition-all"
+                          :class="isVariationActive(exIndex)
+                            ? 'border-wc-accent/40 bg-wc-accent/10 text-wc-accent'
+                            : 'border-wc-border bg-wc-bg-secondary text-wc-text-tertiary hover:border-wc-accent/30 hover:text-wc-accent/70'"
+                        >
+                          <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+                          {{ isVariationActive(exIndex) ? 'Original' : 'Variacion' }}
+                        </button>
                         <!-- Muscle group -->
                         <span v-if="exMuscle(exercise)" class="inline-flex items-center rounded-full bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-medium text-wc-text-tertiary">
                           {{ exMuscle(exercise) }}
