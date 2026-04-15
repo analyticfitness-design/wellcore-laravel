@@ -109,7 +109,7 @@ class FixGifAliases extends Command
 
     private function fixPlan(array &$plan, array $normFixes, int &$total): void
     {
-        if (!empty($plan['semanas'])) {
+        if (!empty($plan['semanas']) && is_array($plan['semanas'])) {
             foreach ($plan['semanas'] as &$sem) {
                 if (!is_array($sem)) continue;
                 foreach ($sem['dias'] ?? [] as &$dia) {
@@ -122,7 +122,7 @@ class FixGifAliases extends Command
             }
             unset($sem);
         }
-        if (!empty($plan['dias'])) {
+        if (!empty($plan['dias']) && is_array($plan['dias'])) {
             foreach ($plan['dias'] as &$dia) {
                 if (!is_array($dia)) continue;
                 if (!empty($dia['ejercicios'])) {
