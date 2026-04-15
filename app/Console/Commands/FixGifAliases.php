@@ -111,7 +111,9 @@ class FixGifAliases extends Command
     {
         if (!empty($plan['semanas'])) {
             foreach ($plan['semanas'] as &$sem) {
+                if (!is_array($sem)) continue;
                 foreach ($sem['dias'] ?? [] as &$dia) {
+                    if (!is_array($dia)) continue;
                     if (!empty($dia['ejercicios'])) {
                         $this->fixExercises($dia['ejercicios'], $normFixes, $total);
                     }
@@ -122,6 +124,7 @@ class FixGifAliases extends Command
         }
         if (!empty($plan['dias'])) {
             foreach ($plan['dias'] as &$dia) {
+                if (!is_array($dia)) continue;
                 if (!empty($dia['ejercicios'])) {
                     $this->fixExercises($dia['ejercicios'], $normFixes, $total);
                 }
