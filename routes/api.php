@@ -20,12 +20,6 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
-// Temp migrate
-Route::get('/run-migrate-k7x9', function () {
-    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-    return response(\Illuminate\Support\Facades\Artisan::output())->header('Content-Type', 'text/plain');
-});
-
 // Temporary GIF debug route — remove after diagnosis
 Route::get('/debug-gif', function () {
     if (function_exists('opcache_reset')) {
