@@ -149,6 +149,19 @@
 
                     {{-- Wompi Widget Container --}}
                     @if($wompiPublicKey && $paymentReference)
+                        <script>
+                            window.__wompiConfig = @json([
+                                'currency' => $currency,
+                                'amountInCents' => $amountInCents,
+                                'reference' => $paymentReference,
+                                'publicKey' => $wompiPublicKey,
+                                'signature' => $wompiSignature,
+                                'redirectUrl' => $wompiRedirectUrl,
+                                'email' => $email,
+                                'fullName' => $nombre,
+                                'phoneNumber' => $whatsapp,
+                            ]);
+                        </script>
                         <div class="mt-8 rounded-xl border border-wc-border bg-wc-bg-tertiary p-6"
                              x-data="{
                                 ready: false,
@@ -167,21 +180,22 @@
                                         alert('La pasarela de pago no cargo correctamente. Recarga la pagina e intenta de nuevo.');
                                         return;
                                     }
+                                    const cfg = window.__wompiConfig || {};
                                     this.checkout = new WidgetCheckout({
-                                        currency: @json($currency),
-                                        amountInCents: @json($amountInCents),
-                                        reference: @json($paymentReference),
-                                        publicKey: @json($wompiPublicKey),
-                                        signature: { integrity: @json($wompiSignature) },
-                                        redirectUrl: @json($wompiRedirectUrl),
+                                        currency: cfg.currency,
+                                        amountInCents: cfg.amountInCents,
+                                        reference: cfg.reference,
+                                        publicKey: cfg.publicKey,
+                                        signature: { integrity: cfg.signature },
+                                        redirectUrl: cfg.redirectUrl,
                                         customerData: {
-                                            email: @json($email),
-                                            fullName: @json($nombre),
-                                            phoneNumber: @json($whatsapp),
+                                            email: cfg.email,
+                                            fullName: cfg.fullName,
+                                            phoneNumber: cfg.phoneNumber,
                                         },
                                     });
                                     this.checkout.open(function(result) {
-                                        var transaction = result.transaction;
+                                        const transaction = result.transaction;
                                         if (transaction && transaction.redirectUrl) {
                                             window.location.href = transaction.redirectUrl;
                                         }
