@@ -1,3 +1,55 @@
+@assets
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('wompiCheckout', () => ({
+        ready: false,
+        checkout: null,
+        cfg: null,
+        init() {
+            const el = document.getElementById('wompi-cfg-json');
+            if (el) { try { this.cfg = JSON.parse(el.textContent); } catch (e) { console.error('wompi cfg parse', e); } }
+            this.loadWompi();
+        },
+        loadWompi() {
+            if (window.WidgetCheckout) { this.ready = true; return; }
+            const script = document.createElement('script');
+            script.src = 'https://checkout.wompi.co/widget.js';
+            script.onload = () => { this.ready = true; };
+            script.onerror = () => { console.error('Failed to load Wompi widget script'); this.ready = true; };
+            document.head.appendChild(script);
+            setTimeout(() => { this.ready = true; }, 6000);
+        },
+        openWompi() {
+            if (!window.WidgetCheckout) {
+                alert('La pasarela de pago no cargo correctamente. Recarga la pagina e intenta de nuevo.');
+                return;
+            }
+            const cfg = this.cfg || {};
+            this.checkout = new WidgetCheckout({
+                currency: cfg.currency,
+                amountInCents: cfg.amountInCents,
+                reference: cfg.reference,
+                publicKey: cfg.publicKey,
+                signature: { integrity: cfg.signature },
+                redirectUrl: cfg.redirectUrl,
+                customerData: {
+                    email: cfg.email,
+                    fullName: cfg.fullName,
+                    phoneNumber: cfg.phoneNumber,
+                },
+            });
+            this.checkout.open(function(result) {
+                const transaction = result.transaction;
+                if (transaction && transaction.redirectUrl) {
+                    window.location.href = transaction.redirectUrl;
+                }
+            });
+        }
+    }));
+});
+</script>
+@endassets
+
 <div class="min-h-screen bg-wc-bg">
     <div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
         {{-- Header --}}
@@ -164,51 +216,8 @@
                         @endphp
                         <script type="application/json" id="wompi-cfg-json">{!! json_encode($wompiConfigForJs, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}</script>
                         <div class="mt-8 rounded-xl border border-wc-border bg-wc-bg-tertiary p-6"
-                             x-data="{
-                                ready: false,
-                                checkout: null,
-                                cfg: null,
-                                init() {
-                                    const el = document.getElementById('wompi-cfg-json');
-                                    if (el) { try { this.cfg = JSON.parse(el.textContent); } catch (e) { console.error('wompi cfg parse', e); } }
-                                    this.loadWompi();
-                                },
-                                loadWompi() {
-                                    if (window.WidgetCheckout) { this.ready = true; return; }
-                                    const script = document.createElement('script');
-                                    script.src = 'https://checkout.wompi.co/widget.js';
-                                    script.onload = () => { this.ready = true; };
-                                    script.onerror = () => { console.error('Failed to load Wompi widget script'); this.ready = true; };
-                                    document.head.appendChild(script);
-                                    setTimeout(() => { this.ready = true; }, 6000);
-                                },
-                                openWompi() {
-                                    if (!window.WidgetCheckout) {
-                                        alert('La pasarela de pago no cargo correctamente. Recarga la pagina e intenta de nuevo.');
-                                        return;
-                                    }
-                                    const cfg = this.cfg || {};
-                                    this.checkout = new WidgetCheckout({
-                                        currency: cfg.currency,
-                                        amountInCents: cfg.amountInCents,
-                                        reference: cfg.reference,
-                                        publicKey: cfg.publicKey,
-                                        signature: { integrity: cfg.signature },
-                                        redirectUrl: cfg.redirectUrl,
-                                        customerData: {
-                                            email: cfg.email,
-                                            fullName: cfg.fullName,
-                                            phoneNumber: cfg.phoneNumber,
-                                        },
-                                    });
-                                    this.checkout.open(function(result) {
-                                        const transaction = result.transaction;
-                                        if (transaction && transaction.redirectUrl) {
-                                            window.location.href = transaction.redirectUrl;
-                                        }
-                                    });
-                                }
-                             }">
+                             x-data="wompiCheckout"
+                             wire:key="wompi-{{ $paymentReference }}">
 
                             {{-- Pay button --}}
                             <div class="text-center">
