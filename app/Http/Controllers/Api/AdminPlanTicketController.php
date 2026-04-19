@@ -9,11 +9,14 @@ use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\PlanTicket;
+use App\Models\PlanTicketAttachment;
 use App\Models\PlanTicketComment;
 use App\Models\WellcoreNotification;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class AdminPlanTicketController extends Controller
@@ -387,6 +390,175 @@ class AdminPlanTicketController extends Controller
     }
 
     // ─── Helpers ────────────────────────────────────────────────────────
+
+    // ─── Attachments ────────────────────────────────────────────────────
+
+    public function listAttachments(Request $request, int $id): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $ticket = PlanTicket::find($id);
+
+        if (! $ticket) {
+            return response()->json(['error' => 'Ticket no encontrado.'], 404);
+        }
+
+        return response()->json(['attachments' => $ticket->attachments()->get()]);
+    }
+
+    public function deleteAttachment(Request $request, int $id, int $attId): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $attachment = PlanTicketAttachment::where('plan_ticket_id', $id)->find($attId);
+
+        if (! $attachment) {
+            return response()->json(['error' => 'Adjunto no encontrado.'], 404);
+        }
+
+        Storage::disk($attachment->disk ?: 'public')->delete($attachment->path);
+        $attachment->delete();
+
+        return response()->json(['deleted' => true]);
+    }
+
+    // ─── Print view ─────────────────────────────────────────────────────
+
+    public function printView(Request $request, int $id): View|JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $ticket = PlanTicket::with('attachments')->find($id);
+
+        if (! $ticket) {
+            return response()->json(['error' => 'Ticket no encontrado.'], 404);
+        }
+
+        return view('admin.plan-tickets.print', ['ticket' => $ticket]);
+    }
+
+    // ─── Stats ──────────────────────────────────────────────────────────
+
+    public function stats(Request $request): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $totalsRaw = PlanTicket::query()
+            ->select('status', DB::raw('COUNT(*) as total'))
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->toArray();
+
+        $totals = [
+            'draft' => (int) ($totalsRaw[PlanTicketStatus::Borrador->value] ?? 0),
+            'pendiente' => (int) ($totalsRaw[PlanTicketStatus::Pendiente->value] ?? 0),
+            'en_revision' => (int) ($totalsRaw[PlanTicketStatus::EnRevision->value] ?? 0),
+            'completado' => (int) ($totalsRaw[PlanTicketStatus::Completado->value] ?? 0),
+            'rechazado' => (int) ($totalsRaw[PlanTicketStatus::Rechazado->value] ?? 0),
+            'total' => (int) array_sum($totalsRaw),
+        ];
+
+        $avgCompleteHours = (float) PlanTicket::query()
+            ->whereNotNull('submitted_at')
+            ->whereNotNull('completed_at')
+            ->selectRaw('AVG(TIMESTAMPDIFF(MINUTE, submitted_at, completed_at)) / 60 as h')
+            ->value('h');
+
+        $avgReviewHours = (float) PlanTicket::query()
+            ->whereNotNull('submitted_at')
+            ->whereNotNull('reviewed_at')
+            ->selectRaw('AVG(TIMESTAMPDIFF(MINUTE, submitted_at, reviewed_at)) / 60 as h')
+            ->value('h');
+
+        $overdueCount = PlanTicket::query()->overdue()->count();
+
+        $perCoach = PlanTicket::query()
+            ->select(
+                'coach_id',
+                DB::raw('MAX(coach_name) as coach_name'),
+                DB::raw('SUM(CASE WHEN submitted_at IS NOT NULL THEN 1 ELSE 0 END) as submitted'),
+                DB::raw("SUM(CASE WHEN status = '".PlanTicketStatus::Completado->value."' THEN 1 ELSE 0 END) as completed"),
+                DB::raw("SUM(CASE WHEN status = '".PlanTicketStatus::Rechazado->value."' THEN 1 ELSE 0 END) as rejected"),
+                DB::raw('AVG(CASE WHEN submitted_at IS NOT NULL AND completed_at IS NOT NULL THEN TIMESTAMPDIFF(MINUTE, submitted_at, completed_at) END) / 60 as avg_hours'),
+            )
+            ->groupBy('coach_id')
+            ->get()
+            ->map(function ($row) {
+                $submitted = (int) $row->submitted;
+                $rejected = (int) $row->rejected;
+
+                return [
+                    'coach_id' => (int) $row->coach_id,
+                    'coach_name' => $row->coach_name,
+                    'submitted' => $submitted,
+                    'completed' => (int) $row->completed,
+                    'rejected' => $rejected,
+                    'rejection_rate_pct' => $submitted > 0 ? round(($rejected / $submitted) * 100, 2) : 0.0,
+                    'avg_time_to_complete_hours' => $row->avg_hours !== null ? round((float) $row->avg_hours, 2) : null,
+                ];
+            })
+            ->values()
+            ->toArray();
+
+        $perPlanRaw = PlanTicket::query()
+            ->select('plan_type', DB::raw('COUNT(*) as total'))
+            ->groupBy('plan_type')
+            ->pluck('total', 'plan_type')
+            ->toArray();
+
+        $perPlanType = [
+            'esencial' => (int) ($perPlanRaw[PlanType::Esencial->value] ?? 0),
+            'metodo' => (int) ($perPlanRaw[PlanType::Metodo->value] ?? 0),
+            'elite' => (int) ($perPlanRaw[PlanType::Elite->value] ?? 0),
+        ];
+
+        $since = now()->subDays(29)->startOfDay();
+
+        $trendSubmitted = PlanTicket::query()
+            ->whereNotNull('submitted_at')
+            ->where('submitted_at', '>=', $since)
+            ->selectRaw('DATE(submitted_at) as d, COUNT(*) as c')
+            ->groupBy('d')
+            ->pluck('c', 'd')
+            ->toArray();
+
+        $trendCompleted = PlanTicket::query()
+            ->whereNotNull('completed_at')
+            ->where('completed_at', '>=', $since)
+            ->selectRaw('DATE(completed_at) as d, COUNT(*) as c')
+            ->groupBy('d')
+            ->pluck('c', 'd')
+            ->toArray();
+
+        $trendRejected = PlanTicket::query()
+            ->whereNotNull('rejected_at')
+            ->where('rejected_at', '>=', $since)
+            ->selectRaw('DATE(rejected_at) as d, COUNT(*) as c')
+            ->groupBy('d')
+            ->pluck('c', 'd')
+            ->toArray();
+
+        $trend = [];
+        for ($i = 0; $i < 30; $i++) {
+            $date = now()->subDays(29 - $i)->toDateString();
+            $trend[] = [
+                'date' => $date,
+                'submitted' => (int) ($trendSubmitted[$date] ?? 0),
+                'completed' => (int) ($trendCompleted[$date] ?? 0),
+                'rejected' => (int) ($trendRejected[$date] ?? 0),
+            ];
+        }
+
+        return response()->json([
+            'totals' => $totals,
+            'avg_time_submit_to_complete_hours' => round($avgCompleteHours, 2),
+            'avg_time_to_review_hours' => round($avgReviewHours, 2),
+            'overdue_count' => $overdueCount,
+            'per_coach' => $perCoach,
+            'per_plan_type' => $perPlanType,
+            'trend_30d' => $trend,
+        ]);
+    }
 
     protected function notifyCoachOfStatusChange(PlanTicket $ticket, PlanTicketStatus $status, Admin $admin): void
     {

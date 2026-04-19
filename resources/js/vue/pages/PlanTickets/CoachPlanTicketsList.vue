@@ -29,6 +29,12 @@ const PLAN_TYPE_META = {
   elite: { label: 'Elite', bg: 'bg-wc-accent/10', text: 'text-wc-accent' },
 };
 
+const CATEGORY_META = {
+  plan_nuevo: { label: 'Plan nuevo', bg: 'bg-blue-500/10', text: 'text-blue-500' },
+  ajuste_plan: { label: 'Ajuste', bg: 'bg-purple-500/10', text: 'text-purple-500' },
+};
+function categoryMeta(c) { return CATEGORY_META[c] || CATEGORY_META.plan_nuevo; }
+
 const STATUS_META = {
   borrador: { label: 'Borrador', bg: 'bg-wc-bg-secondary', text: 'text-wc-text-tertiary' },
   pendiente: { label: 'Pendiente', bg: 'bg-yellow-500/10', text: 'text-yellow-500' },
@@ -196,6 +202,11 @@ onMounted(fetchTickets);
                   class="rounded-full px-2.5 py-0.5 text-xs font-medium"
                   :class="[planTypeMeta(t.plan_type).bg, planTypeMeta(t.plan_type).text]"
                 >{{ planTypeMeta(t.plan_type).label }}</span>
+                <span
+                  v-if="t.category"
+                  class="rounded-full px-2.5 py-0.5 text-xs font-medium"
+                  :class="[categoryMeta(t.category).bg, categoryMeta(t.category).text]"
+                >{{ categoryMeta(t.category).label }}</span>
                 <span
                   class="rounded-full px-2.5 py-0.5 text-xs font-medium"
                   :class="[statusMeta(t.status).bg, statusMeta(t.status).text]"

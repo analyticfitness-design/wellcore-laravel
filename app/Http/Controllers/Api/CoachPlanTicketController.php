@@ -10,12 +10,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Client;
 use App\Models\PlanTicket;
+use App\Models\PlanTicketAttachment;
 use App\Models\PlanTicketComment;
 use App\Models\WellcoreNotification;
 use App\Services\ClientAutofillService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class CoachPlanTicketController extends Controller
@@ -89,6 +92,7 @@ class CoachPlanTicketController extends Controller
         $validated = $request->validate([
             'client_id' => ['required', 'integer', Rule::exists('clients', 'id')],
             'plan_type' => ['required', 'string', Rule::in(array_column(PlanType::cases(), 'value'))],
+            'category' => ['nullable', 'string', Rule::in(['plan_nuevo', 'ajuste_plan'])],
             'datos_generales' => ['nullable', 'array'],
             'plan_entrenamiento' => ['nullable', 'array'],
             'plan_nutricional' => ['nullable', 'array'],
@@ -110,6 +114,7 @@ class CoachPlanTicketController extends Controller
             'client_id' => $client->id,
             'client_name' => $client->name ?? 'Cliente',
             'plan_type' => $validated['plan_type'],
+            'category' => $validated['category'] ?? 'plan_nuevo',
             'status' => PlanTicketStatus::Borrador->value,
             'datos_generales' => $validated['datos_generales'] ?? [],
             'plan_entrenamiento' => $validated['plan_entrenamiento'] ?? [],
@@ -162,6 +167,7 @@ class CoachPlanTicketController extends Controller
 
         $validated = $request->validate([
             'plan_type' => ['sometimes', 'string', Rule::in(array_column(PlanType::cases(), 'value'))],
+            'category' => ['sometimes', 'string', Rule::in(['plan_nuevo', 'ajuste_plan'])],
             'datos_generales' => ['sometimes', 'array'],
             'plan_entrenamiento' => ['sometimes', 'array'],
             'plan_nutricional' => ['sometimes', 'nullable', 'array'],
@@ -391,9 +397,22 @@ class CoachPlanTicketController extends Controller
     // ─── Helpers ────────────────────────────────────────────────────────
 
     /**
-     * Check required fields per plan_type. Returns list of dotted field paths.
+     * Check required fields per plan_type + category.
+     * plan_nuevo: requires all sections (strict).
+     * ajuste_plan: requires nombre + at least one section with content.
      */
     protected function findMissingFields(PlanTicket $ticket): array
+    {
+        $category = $ticket->category ?: 'plan_nuevo';
+
+        if ($category === 'ajuste_plan') {
+            return $this->findMissingForAjuste($ticket);
+        }
+
+        return $this->findMissingForPlanNuevo($ticket);
+    }
+
+    protected function findMissingForPlanNuevo(PlanTicket $ticket): array
     {
         $missing = [];
 
@@ -437,6 +456,51 @@ class CoachPlanTicketController extends Controller
         }
 
         return $missing;
+    }
+
+    protected function findMissingForAjuste(PlanTicket $ticket): array
+    {
+        $missing = [];
+
+        $datos = $ticket->datos_generales ?? [];
+
+        if (empty($datos['nombre'] ?? null)) {
+            $missing[] = 'datos_generales.nombre';
+        }
+
+        $hasAny = $this->hasEntrenamientoContent($ticket->plan_entrenamiento ?? [])
+            || $this->hasNutricionalContent($ticket->plan_nutricional ?? [])
+            || $this->hasHabitosContent($ticket->plan_habitos ?? [])
+            || $this->hasSuplementacionContent($ticket->plan_suplementacion ?? []);
+
+        if (! $hasAny) {
+            $missing[] = 'ajuste_plan.at_least_one_section';
+        }
+
+        return $missing;
+    }
+
+    protected function hasEntrenamientoContent(?array $entreno): bool
+    {
+        if (empty($entreno)) {
+            return false;
+        }
+
+        return ! empty($entreno['dias_semana'] ?? null)
+            || ! empty($entreno['split'] ?? null)
+            || ! empty($entreno['semanas'] ?? null)
+            || ! empty($entreno['notas'] ?? null);
+    }
+
+    protected function hasNutricionalContent(?array $nutricional): bool
+    {
+        if (empty($nutricional)) {
+            return false;
+        }
+
+        return ! empty($nutricional['objetivo'] ?? null)
+            || ! empty($nutricional['comidas_sugeridas'] ?? null)
+            || ! empty($nutricional['macros'] ?? null);
     }
 
     protected function hasHabitosContent(?array $habitos): bool
@@ -493,6 +557,97 @@ class CoachPlanTicketController extends Controller
                 'link' => $link,
             ]);
         }
+    }
+
+    // ─── Attachments ────────────────────────────────────────────────────
+
+    public function uploadAttachment(Request $request, int $id): JsonResponse
+    {
+        $coach = $this->resolveCoachOrFail($request);
+
+        $ticket = PlanTicket::forCoach($coach->id)->find($id);
+
+        if (! $ticket) {
+            return response()->json(['error' => 'Ticket no encontrado.'], 404);
+        }
+
+        if (! $ticket->is_editable) {
+            return response()->json(['error' => 'Este ticket ya no se puede editar.'], 403);
+        }
+
+        $validated = $request->validate([
+            'file' => [
+                'required',
+                'file',
+                'max:10240',
+                'mimetypes:image/jpeg,image/png,image/webp,image/heic,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            ],
+            'category' => ['nullable', 'string', Rule::in(['foto_progreso', 'laboratorio', 'documento_medico', 'otro'])],
+        ]);
+
+        $file = $validated['file'];
+        $extension = $file->getClientOriginalExtension() ?: $file->extension();
+        $storedName = Str::uuid()->toString().($extension ? ".{$extension}" : '');
+        $path = $file->storeAs("plan-tickets/{$ticket->id}", $storedName, 'public');
+
+        $attachment = PlanTicketAttachment::create([
+            'plan_ticket_id' => $ticket->id,
+            'uploaded_by_type' => 'coach',
+            'uploaded_by_id' => $coach->id,
+            'uploaded_by_name' => $coach->name ?? $coach->username ?? 'Coach',
+            'original_name' => $file->getClientOriginalName(),
+            'stored_name' => $storedName,
+            'mime' => $file->getClientMimeType() ?: 'application/octet-stream',
+            'size_bytes' => $file->getSize() ?: 0,
+            'category' => $validated['category'] ?? null,
+            'disk' => 'public',
+            'path' => $path,
+        ]);
+
+        return response()->json(['attachment' => $attachment], 201);
+    }
+
+    public function listAttachments(Request $request, int $id): JsonResponse
+    {
+        $coach = $this->resolveCoachOrFail($request);
+
+        $ticket = PlanTicket::forCoach($coach->id)->find($id);
+
+        if (! $ticket) {
+            return response()->json(['error' => 'Ticket no encontrado.'], 404);
+        }
+
+        return response()->json(['attachments' => $ticket->attachments()->get()]);
+    }
+
+    public function deleteAttachment(Request $request, int $id, int $attId): JsonResponse
+    {
+        $coach = $this->resolveCoachOrFail($request);
+
+        $ticket = PlanTicket::forCoach($coach->id)->find($id);
+
+        if (! $ticket) {
+            return response()->json(['error' => 'Ticket no encontrado.'], 404);
+        }
+
+        if (! $ticket->is_editable) {
+            return response()->json(['error' => 'Ticket no editable.'], 403);
+        }
+
+        $attachment = PlanTicketAttachment::where('plan_ticket_id', $ticket->id)->find($attId);
+
+        if (! $attachment) {
+            return response()->json(['error' => 'Adjunto no encontrado.'], 404);
+        }
+
+        if ($attachment->uploaded_by_type !== 'coach' || (int) $attachment->uploaded_by_id !== $coach->id) {
+            return response()->json(['error' => 'No puedes borrar este adjunto.'], 403);
+        }
+
+        Storage::disk($attachment->disk ?: 'public')->delete($attachment->path);
+        $attachment->delete();
+
+        return response()->json(['deleted' => true]);
     }
 
     protected function notifyAdminsOfCoachComment(PlanTicket $ticket, Admin $coach): void

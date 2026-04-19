@@ -29,6 +29,92 @@ const exportDropdownOpen = ref(false);
 const instructions = ref(null);
 const loadingInstructions = ref(false);
 
+// Attachments + print
+const attachments = ref([]);
+const loadingAttachments = ref(false);
+const printing = ref(false);
+let printBlobUrl = null;
+
+const CATEGORY_META = {
+  plan_nuevo: { label: 'Plan nuevo', bg: 'bg-blue-500/10', text: 'text-blue-500' },
+  ajuste_plan: { label: 'Ajuste', bg: 'bg-purple-500/10', text: 'text-purple-500' },
+};
+function categoryMeta(c) { return CATEGORY_META[c] || CATEGORY_META.plan_nuevo; }
+
+function formatBytes(bytes) {
+  if (!bytes) return '0 B';
+  const units = ['B', 'KB', 'MB', 'GB'];
+  let i = 0;
+  let n = bytes;
+  while (n >= 1024 && i < units.length - 1) { n /= 1024; i++; }
+  return `${n.toFixed(i === 0 ? 0 : 1)} ${units[i]}`;
+}
+
+function mimeIcon(mime) {
+  if (!mime) return 'doc';
+  if (mime.startsWith('image/')) return 'image';
+  if (mime === 'application/pdf') return 'pdf';
+  return 'doc';
+}
+
+function formatRelative(d) {
+  if (!d) return '';
+  try {
+    const diffMs = Date.now() - new Date(d).getTime();
+    const min = Math.floor(diffMs / 60000);
+    if (min < 1) return 'hace un momento';
+    if (min < 60) return `hace ${min} min`;
+    const hr = Math.floor(min / 60);
+    if (hr < 24) return `hace ${hr} h`;
+    const days = Math.floor(hr / 24);
+    if (days < 30) return `hace ${days} d`;
+    return new Date(d).toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
+  } catch { return d; }
+}
+
+async function fetchAttachments() {
+  loadingAttachments.value = true;
+  try {
+    const { data } = await api.get(`/api/v/admin/plan-tickets/${route.params.id}/attachments`);
+    attachments.value = data.attachments || [];
+  } catch (e) {
+    attachments.value = [];
+  } finally {
+    loadingAttachments.value = false;
+  }
+}
+
+async function deleteAttachment(att) {
+  if (!confirm('¿Eliminar este archivo?')) return;
+  try {
+    await api.delete(`/api/v/admin/plan-tickets/${route.params.id}/attachments/${att.id}`);
+    showToast('success', 'Archivo eliminado');
+    await fetchAttachments();
+  } catch (e) {
+    showToast('error', 'No se pudo eliminar.');
+  }
+}
+
+async function openPrintView() {
+  if (printing.value) return;
+  printing.value = true;
+  try {
+    const { data } = await api.get(`/api/v/admin/plan-tickets/${route.params.id}/print`, {
+      headers: { Accept: 'text/html' },
+      responseType: 'blob',
+    });
+    // Revoke any previous URL
+    if (printBlobUrl) URL.revokeObjectURL(printBlobUrl);
+    const blob = data instanceof Blob ? data : new Blob([data], { type: 'text/html' });
+    printBlobUrl = URL.createObjectURL(blob);
+    window.open(printBlobUrl, '_blank');
+  } catch (e) {
+    showToast('error', 'No se pudo abrir la vista de impresion.');
+  } finally {
+    printing.value = false;
+  }
+}
+
 const REJECTION_REASONS = [
   { value: 'info_incompleta', label: 'Informacion incompleta' },
   { value: 'contexto_insuficiente', label: 'Contexto insuficiente' },
@@ -226,12 +312,14 @@ function closeExportDropdown(e) {
 onMounted(async () => {
   document.addEventListener('click', closeExportDropdown);
   await fetchTicket();
-  // Load instructions banner in parallel (non-blocking from user perspective)
+  // Load instructions banner + attachments in parallel
   loadInstructions();
+  fetchAttachments();
 });
 
 onBeforeUnmount(() => {
   document.removeEventListener('click', closeExportDropdown);
+  if (printBlobUrl) URL.revokeObjectURL(printBlobUrl);
 });
 
 // Helpers for rendering JSON structures
@@ -293,6 +381,11 @@ const splitEntries = computed(() => {
                 <span class="rounded-full px-2.5 py-0.5 text-xs font-medium" :class="[statusMeta(ticket.status).bg, statusMeta(ticket.status).text]">
                   {{ statusMeta(ticket.status).label }}
                 </span>
+                <span
+                  v-if="ticket.category"
+                  class="rounded-full px-2.5 py-0.5 text-xs font-medium"
+                  :class="[categoryMeta(ticket.category).bg, categoryMeta(ticket.category).text]"
+                >{{ categoryMeta(ticket.category).label }}</span>
                 <DeadlineBadge :deadline="ticket.deadline_at" :status="ticket.status" />
               </div>
 
@@ -313,6 +406,19 @@ const splitEntries = computed(() => {
               </div>
             </div>
 
+            <!-- Header actions -->
+            <div class="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              @click="openPrintView"
+              :disabled="printing"
+              class="inline-flex items-center gap-2 rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-sm font-semibold text-wc-text hover:border-wc-accent/40 transition disabled:opacity-50"
+            >
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z" />
+              </svg>
+              {{ printing ? 'Abriendo...' : 'Imprimir / PDF' }}
+            </button>
             <!-- Export dropdown -->
             <div id="admin-export-dropdown" class="relative shrink-0" @click.stop>
               <button
@@ -358,6 +464,7 @@ const splitEntries = computed(() => {
                   </button>
                 </div>
               </Transition>
+            </div>
             </div>
           </div>
 
@@ -610,6 +717,53 @@ const splitEntries = computed(() => {
             <div class="col-span-2 sm:col-span-3"><p class="text-xs text-wc-text-tertiary">Sintomas</p><p class="whitespace-pre-wrap font-medium text-wc-text">{{ planCiclo.sintomas || '-' }}</p></div>
             <div class="col-span-2 sm:col-span-3"><p class="text-xs text-wc-text-tertiary">Notas</p><p class="whitespace-pre-wrap font-medium text-wc-text">{{ planCiclo.notas || '-' }}</p></div>
           </div>
+        </section>
+
+        <!-- Attachments -->
+        <section class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+          <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Adjuntos ({{ attachments.length }})</p>
+          <div v-if="loadingAttachments" class="animate-pulse h-16 rounded-lg bg-wc-bg-secondary"></div>
+          <div v-else-if="attachments.length === 0" class="rounded-lg bg-wc-bg-secondary p-4 text-center text-xs text-wc-text-tertiary">
+            Sin archivos adjuntos.
+          </div>
+          <ul v-else class="space-y-2">
+            <li
+              v-for="att in attachments"
+              :key="att.id"
+              class="flex items-center gap-3 rounded-lg bg-wc-bg-secondary p-3"
+            >
+              <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-wc-bg-tertiary">
+                <svg v-if="mimeIcon(att.mime) === 'image'" class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Z" />
+                </svg>
+                <svg v-else-if="mimeIcon(att.mime) === 'pdf'" class="h-4 w-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                </svg>
+                <svg v-else class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-medium text-wc-text truncate">{{ att.original_name }}</p>
+                <p class="text-[11px] text-wc-text-tertiary">
+                  {{ formatBytes(att.size_bytes) }}
+                  <span v-if="att.category"> · {{ humanLabel(att.category) }}</span>
+                  · {{ att.uploaded_by_name || '-' }} · {{ formatRelative(att.created_at) }}
+                </p>
+              </div>
+              <a
+                :href="att.url"
+                target="_blank"
+                rel="noopener"
+                class="rounded-md border border-wc-border bg-wc-bg-tertiary px-2.5 py-1 text-[11px] font-medium text-wc-text-secondary hover:border-wc-accent/40 hover:text-wc-text transition"
+              >Ver</a>
+              <button
+                type="button"
+                @click="deleteAttachment(att)"
+                class="rounded-md border border-red-500/30 px-2 py-1 text-[11px] font-medium text-red-400 hover:bg-red-500/10 transition"
+              >Eliminar</button>
+            </li>
+          </ul>
         </section>
 
         <!-- Comments thread -->

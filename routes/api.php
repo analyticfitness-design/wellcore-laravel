@@ -250,6 +250,9 @@ Route::prefix('v/coach')->middleware('throttle:api')->group(function () {
     Route::delete('/plan-tickets/{id}', [CoachPlanTicketController::class, 'destroy'])->whereNumber('id');
     Route::get('/plan-tickets/{id}/comments', [CoachPlanTicketController::class, 'listComments'])->whereNumber('id');
     Route::post('/plan-tickets/{id}/comments', [CoachPlanTicketController::class, 'addComment'])->whereNumber('id');
+    Route::post('/plan-tickets/{id}/attachments', [CoachPlanTicketController::class, 'uploadAttachment'])->whereNumber('id');
+    Route::get('/plan-tickets/{id}/attachments', [CoachPlanTicketController::class, 'listAttachments'])->whereNumber('id');
+    Route::delete('/plan-tickets/{id}/attachments/{attId}', [CoachPlanTicketController::class, 'deleteAttachment'])->whereNumber('id')->whereNumber('attId');
 
     // Coach notifications
     Route::get('/notifications', [CoachPlanTicketController::class, 'notifications']);
@@ -297,8 +300,12 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
     Route::post('/send-gift-invitation', [AdminController::class, 'sendGiftInvitation']);
 
     // Plan Tickets (admin inbox — review & export briefs)
+    Route::get('/plan-tickets/stats', [AdminPlanTicketController::class, 'stats']);
     Route::get('/plan-tickets', [AdminPlanTicketController::class, 'index']);
     Route::get('/plan-tickets/{id}', [AdminPlanTicketController::class, 'show'])->whereNumber('id');
+    Route::get('/plan-tickets/{id}/print', [AdminPlanTicketController::class, 'printView'])->whereNumber('id');
+    Route::get('/plan-tickets/{id}/attachments', [AdminPlanTicketController::class, 'listAttachments'])->whereNumber('id');
+    Route::delete('/plan-tickets/{id}/attachments/{attId}', [AdminPlanTicketController::class, 'deleteAttachment'])->whereNumber('id')->whereNumber('attId');
     Route::get('/plan-tickets/{id}/export', [AdminPlanTicketController::class, 'exportJson'])->whereNumber('id');
     Route::get('/plan-tickets/{id}/export/{section}', [AdminPlanTicketController::class, 'exportSection'])
         ->whereNumber('id')

@@ -105,6 +105,7 @@ const routes = [
     { path: '/admin/campaigns', name: 'admin-campaigns', component: () => import('../pages/Admin/CampaignTracker.vue'), meta: { auth: true, title: 'Campanas — WellCore Admin' } },
     { path: '/admin/send-invitation', name: 'admin-send-invitation', component: () => import('../pages/Admin/SendPlanInvitation.vue'), meta: { auth: true, title: 'Enviar Invitacion — WellCore Admin' } },
     { path: '/admin/plan-tickets', name: 'admin-plan-tickets', component: () => import('../pages/PlanTickets/AdminPlanTicketsList.vue'), meta: { auth: true, title: 'Tickets de Planes — WellCore Admin' } },
+    { path: '/admin/plan-tickets/stats', name: 'admin-plan-tickets-stats', component: () => import('../pages/PlanTickets/AdminPlanTicketStats.vue'), meta: { auth: true, title: 'Stats de Tickets — WellCore Admin' } },
     { path: '/admin/plan-tickets/:id', name: 'admin-plan-ticket-detail', component: () => import('../pages/PlanTickets/AdminPlanTicketDetail.vue'), meta: { auth: true, title: 'Ticket — WellCore Admin' } },
 
     // Catch-all: redirect unknown routes to login

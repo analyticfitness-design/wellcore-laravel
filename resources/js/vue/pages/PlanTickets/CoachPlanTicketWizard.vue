@@ -26,7 +26,36 @@ const clients = ref([]);
 const loadingClients = ref(false);
 
 // Form state — local copies. Flush to backend via auto-save.
-const newForm = ref({ client_id: '', plan_type: '' });
+const newForm = ref({ client_id: '', plan_type: '', category: 'plan_nuevo' });
+
+// Attachments
+const attachments = ref([]);
+const loadingAttachments = ref(false);
+const uploadingAttachment = ref(false);
+const attachmentCategory = ref('');
+const attachmentDragging = ref(false);
+const ATTACHMENT_CATEGORY_OPTIONS = [
+  { value: '', label: 'Sin categoria' },
+  { value: 'foto_progreso', label: 'Foto de progreso' },
+  { value: 'laboratorio', label: 'Laboratorio' },
+  { value: 'documento_medico', label: 'Documento medico' },
+  { value: 'otro', label: 'Otro' },
+];
+const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024; // 10MB
+const ALLOWED_MIMES = [
+  'image/jpeg', 'image/png', 'image/webp', 'image/heic',
+  'application/pdf',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+];
+
+const CATEGORY_META = {
+  plan_nuevo: { label: 'Plan nuevo', bg: 'bg-blue-500/10', text: 'text-blue-500' },
+  ajuste_plan: { label: 'Ajuste', bg: 'bg-purple-500/10', text: 'text-purple-500' },
+};
+function categoryMeta(c) { return CATEGORY_META[c] || CATEGORY_META.plan_nuevo; }
+
+const ticketCategory = computed(() => ticket.value?.category || newForm.value.category || 'plan_nuevo');
+const isAjuste = computed(() => ticketCategory.value === 'ajuste_plan');
 
 const datosGenerales = ref({
   nombre: '', plan: '', edad: null, genero: '',
@@ -288,6 +317,7 @@ const steps = computed(() => {
   list.push({ key: 'habitos', label: 'Habitos' });
   list.push({ key: 'suplementacion', label: 'Suplementacion' });
   if (isElite.value) list.push({ key: 'ciclo', label: 'Ciclo Hormonal' });
+  list.push({ key: 'adjuntos', label: 'Adjuntos' });
   list.push({ key: 'revision', label: 'Revision y Envio' });
   return list;
 });
@@ -315,11 +345,106 @@ async function fetchTicket(id) {
     const { data } = await api.get(`/api/v/coach/plan-tickets/${id}`);
     ticket.value = data.ticket;
     hydrate(data.ticket);
+    fetchAttachments();
   } catch (e) {
     showToast('error', 'No se pudo cargar el ticket.');
   } finally {
     loading.value = false;
   }
+}
+
+async function fetchAttachments() {
+  if (!ticketId.value) return;
+  loadingAttachments.value = true;
+  try {
+    const { data } = await api.get(`/api/v/coach/plan-tickets/${ticketId.value}/attachments`);
+    attachments.value = data.attachments || [];
+  } catch (e) {
+    attachments.value = [];
+  } finally {
+    loadingAttachments.value = false;
+  }
+}
+
+function formatBytes(bytes) {
+  if (!bytes) return '0 B';
+  const units = ['B', 'KB', 'MB', 'GB'];
+  let i = 0;
+  let n = bytes;
+  while (n >= 1024 && i < units.length - 1) { n /= 1024; i++; }
+  return `${n.toFixed(i === 0 ? 0 : 1)} ${units[i]}`;
+}
+
+function mimeIcon(mime) {
+  if (!mime) return 'doc';
+  if (mime.startsWith('image/')) return 'image';
+  if (mime === 'application/pdf') return 'pdf';
+  return 'doc';
+}
+
+async function uploadAttachment(file) {
+  if (!ticketId.value || !file) return;
+  if (file.size > MAX_ATTACHMENT_SIZE) {
+    showToast('error', 'El archivo excede 10MB.');
+    return;
+  }
+  if (file.type && !ALLOWED_MIMES.includes(file.type)) {
+    showToast('error', 'Tipo de archivo no permitido.');
+    return;
+  }
+  uploadingAttachment.value = true;
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (attachmentCategory.value) formData.append('category', attachmentCategory.value);
+    await api.post(`/api/v/coach/plan-tickets/${ticketId.value}/attachments`, formData);
+    showToast('success', 'Archivo subido');
+    await fetchAttachments();
+  } catch (e) {
+    const msg = e?.response?.data?.message || 'No se pudo subir el archivo.';
+    showToast('error', msg);
+  } finally {
+    uploadingAttachment.value = false;
+  }
+}
+
+function onAttachmentInput(e) {
+  const file = e.target.files?.[0];
+  if (file) uploadAttachment(file);
+  e.target.value = '';
+}
+
+function onAttachmentDrop(e) {
+  attachmentDragging.value = false;
+  const file = e.dataTransfer?.files?.[0];
+  if (file) uploadAttachment(file);
+}
+
+async function deleteAttachment(att) {
+  if (!ticketId.value) return;
+  if (!confirm('¿Eliminar este archivo?')) return;
+  try {
+    await api.delete(`/api/v/coach/plan-tickets/${ticketId.value}/attachments/${att.id}`);
+    showToast('success', 'Archivo eliminado');
+    await fetchAttachments();
+  } catch (e) {
+    showToast('error', 'No se pudo eliminar.');
+  }
+}
+
+function formatRelative(d) {
+  if (!d) return '';
+  try {
+    const diffMs = Date.now() - new Date(d).getTime();
+    const min = Math.floor(diffMs / 60000);
+    if (min < 1) return 'hace un momento';
+    if (min < 60) return `hace ${min} min`;
+    const hr = Math.floor(min / 60);
+    if (hr < 24) return `hace ${hr} h`;
+    const days = Math.floor(hr / 24);
+    if (days < 30) return `hace ${days} d`;
+    return new Date(d).toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
+  } catch { return d; }
 }
 
 function hydrate(t) {
@@ -416,6 +541,7 @@ async function createTicket() {
     const { data } = await api.post('/api/v/coach/plan-tickets', {
       client_id: newForm.value.client_id,
       plan_type: newForm.value.plan_type,
+      category: newForm.value.category,
     });
     ticket.value = data.ticket;
     // Pre-fill datos_generales.plan
@@ -575,6 +701,11 @@ onBeforeUnmount(() => {
             <div v-if="ticket" class="mt-2 flex flex-wrap items-center gap-2">
               <DeadlineBadge :deadline="ticket.deadline_at" :status="ticket.status" />
               <span
+                v-if="ticket.category"
+                class="rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
+                :class="[categoryMeta(ticket.category).bg, categoryMeta(ticket.category).text]"
+              >{{ categoryMeta(ticket.category).label }}</span>
+              <span
                 v-if="wasResubmitted"
                 class="inline-flex items-center gap-1.5 rounded-full border border-orange-500/30 bg-orange-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-orange-400"
                 :title="'Reenviado ' + formatDateTimeShort(ticket.resubmitted_at)"
@@ -674,6 +805,26 @@ onBeforeUnmount(() => {
                   </label>
                 </div>
               </div>
+
+              <!-- Category radio -->
+              <div>
+                <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Tipo de solicitud</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <label
+                    v-for="opt in [
+                      { value: 'plan_nuevo', label: 'Plan nuevo', desc: 'Cliente nuevo o plan completo desde cero. Requiere todas las secciones.' },
+                      { value: 'ajuste_plan', label: 'Ajuste de plan', desc: 'Cliente existente que necesita ajustes. Solo llena las secciones que cambian.' },
+                    ]"
+                    :key="opt.value"
+                    class="cursor-pointer rounded-lg border-2 p-3 transition"
+                    :class="newForm.category === opt.value ? 'border-wc-accent bg-wc-accent/5' : 'border-wc-border bg-wc-bg-secondary hover:border-wc-accent/40'"
+                  >
+                    <input type="radio" v-model="newForm.category" :value="opt.value" class="sr-only" />
+                    <p class="text-sm font-semibold text-wc-text">{{ opt.label }}</p>
+                    <p class="mt-1 text-xs text-wc-text-tertiary">{{ opt.desc }}</p>
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -685,6 +836,10 @@ onBeforeUnmount(() => {
             <div class="rounded-lg bg-wc-bg-secondary p-3">
               <p class="text-xs text-wc-text-tertiary">Tipo de plan</p>
               <p class="text-sm font-semibold text-wc-text">{{ humanLabel(ticket?.plan_type) }}</p>
+            </div>
+            <div class="rounded-lg bg-wc-bg-secondary p-3">
+              <p class="text-xs text-wc-text-tertiary">Tipo de solicitud</p>
+              <p class="text-sm font-semibold text-wc-text">{{ categoryMeta(ticket?.category).label }}</p>
             </div>
             <p class="text-xs text-wc-text-tertiary">El cliente y tipo de plan no se pueden modificar una vez creado el ticket.</p>
           </div>
@@ -798,6 +953,9 @@ onBeforeUnmount(() => {
         <!-- STEP: entrenamiento -->
         <section v-else-if="currentStepKey === 'entrenamiento'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-5">
           <h2 class="font-display text-xl tracking-wide text-wc-text">3. Plan de entrenamiento</h2>
+          <div v-if="isAjuste" class="rounded-lg border border-purple-500/30 bg-purple-500/5 p-3 text-xs text-purple-400">
+            Este es un ticket de ajuste. Solo llena esta seccion si hay algo que cambiar.
+          </div>
           <fieldset :disabled="!isEditable" class="space-y-5">
 
             <!-- Lugar -->
@@ -930,6 +1088,9 @@ onBeforeUnmount(() => {
         <!-- STEP: nutricion -->
         <section v-else-if="currentStepKey === 'nutricion'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-5">
           <h2 class="font-display text-xl tracking-wide text-wc-text">4. Plan nutricional</h2>
+          <div v-if="isAjuste" class="rounded-lg border border-purple-500/30 bg-purple-500/5 p-3 text-xs text-purple-400">
+            Este es un ticket de ajuste. Solo llena esta seccion si hay algo que cambiar.
+          </div>
           <fieldset :disabled="!isEditable" class="space-y-4">
             <div>
               <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Objetivo nutricional</label>
@@ -997,6 +1158,9 @@ onBeforeUnmount(() => {
         <!-- STEP: habitos -->
         <section v-else-if="currentStepKey === 'habitos'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-5">
           <h2 class="font-display text-xl tracking-wide text-wc-text">5. Plan de habitos</h2>
+          <div v-if="isAjuste" class="rounded-lg border border-purple-500/30 bg-purple-500/5 p-3 text-xs text-purple-400">
+            Este es un ticket de ajuste. Solo llena esta seccion si hay algo que cambiar.
+          </div>
           <fieldset :disabled="!isEditable" class="space-y-4">
             <div>
               <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Areas de foco</label>
@@ -1029,6 +1193,9 @@ onBeforeUnmount(() => {
         <!-- STEP: suplementacion -->
         <section v-else-if="currentStepKey === 'suplementacion'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-5">
           <h2 class="font-display text-xl tracking-wide text-wc-text">Plan de suplementacion</h2>
+          <div v-if="isAjuste" class="rounded-lg border border-purple-500/30 bg-purple-500/5 p-3 text-xs text-purple-400">
+            Este es un ticket de ajuste. Solo llena esta seccion si hay algo que cambiar.
+          </div>
           <fieldset :disabled="!isEditable" class="space-y-5">
             <div>
               <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Objetivo del stack</label>
@@ -1167,6 +1334,96 @@ onBeforeUnmount(() => {
           </fieldset>
         </section>
 
+        <!-- STEP: adjuntos -->
+        <section v-else-if="currentStepKey === 'adjuntos'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-5">
+          <div>
+            <h2 class="font-display text-xl tracking-wide text-wc-text">Adjuntos (opcional)</h2>
+            <p class="mt-1 text-sm text-wc-text-tertiary">Fotos de progreso, laboratorios, documentos medicos, etc. Max 10MB por archivo.</p>
+          </div>
+
+          <!-- Upload dropzone -->
+          <div v-if="isEditable">
+            <div class="mb-2 flex flex-col sm:flex-row sm:items-center gap-2">
+              <label class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Categoria del archivo</label>
+              <select
+                v-model="attachmentCategory"
+                class="rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1.5 text-xs text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
+              >
+                <option v-for="o in ATTACHMENT_CATEGORY_OPTIONS" :key="o.value" :value="o.value">{{ o.label }}</option>
+              </select>
+            </div>
+
+            <div
+              @dragover.prevent="attachmentDragging = true"
+              @dragleave.prevent="attachmentDragging = false"
+              @drop.prevent="onAttachmentDrop"
+              :class="attachmentDragging ? 'border-wc-accent/60 bg-wc-accent/5' : 'border-wc-border hover:border-wc-accent/40'"
+              class="relative rounded-xl border-2 border-dashed p-8 text-center transition"
+            >
+              <input
+                type="file"
+                @change="onAttachmentInput"
+                :accept="ALLOWED_MIMES.join(',')"
+                :disabled="uploadingAttachment"
+                class="absolute inset-0 opacity-0 cursor-pointer"
+              />
+              <svg class="mx-auto h-10 w-10 text-wc-text-tertiary/60" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+              </svg>
+              <p class="mt-2 text-sm font-medium text-wc-text">{{ uploadingAttachment ? 'Subiendo...' : 'Arrastra un archivo o haz click para subir' }}</p>
+              <p class="mt-1 text-xs text-wc-text-tertiary">JPG, PNG, WEBP, HEIC, PDF o DOCX · max 10MB</p>
+            </div>
+          </div>
+
+          <!-- Attachments list -->
+          <div>
+            <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Archivos ({{ attachments.length }})</p>
+            <div v-if="loadingAttachments" class="animate-pulse rounded-lg border border-wc-border bg-wc-bg-secondary h-16"></div>
+            <div v-else-if="attachments.length === 0" class="rounded-lg border border-wc-border bg-wc-bg-secondary p-4 text-center text-xs text-wc-text-tertiary">
+              Sin archivos adjuntos todavia.
+            </div>
+            <ul v-else class="space-y-2">
+              <li
+                v-for="att in attachments"
+                :key="att.id"
+                class="flex items-center gap-3 rounded-lg border border-wc-border bg-wc-bg-secondary p-3"
+              >
+                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-wc-bg-tertiary">
+                  <svg v-if="mimeIcon(att.mime) === 'image'" class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                  </svg>
+                  <svg v-else-if="mimeIcon(att.mime) === 'pdf'" class="h-4 w-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                  </svg>
+                  <svg v-else class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                  </svg>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-sm font-medium text-wc-text truncate">{{ att.original_name }}</p>
+                  <p class="text-[11px] text-wc-text-tertiary">
+                    {{ formatBytes(att.size_bytes) }}
+                    <span v-if="att.category"> · {{ humanLabel(att.category) }}</span>
+                    · {{ att.uploaded_by_name || 'Coach' }} · {{ formatRelative(att.created_at) }}
+                  </p>
+                </div>
+                <a
+                  :href="att.url"
+                  target="_blank"
+                  rel="noopener"
+                  class="rounded-md border border-wc-border bg-wc-bg-tertiary px-2.5 py-1 text-[11px] font-medium text-wc-text-secondary hover:border-wc-accent/40 hover:text-wc-text transition"
+                >Ver</a>
+                <button
+                  v-if="isEditable"
+                  type="button"
+                  @click="deleteAttachment(att)"
+                  class="rounded-md border border-red-500/30 px-2 py-1 text-[11px] font-medium text-red-400 hover:bg-red-500/10 transition"
+                >Eliminar</button>
+              </li>
+            </ul>
+          </div>
+        </section>
+
         <!-- STEP: revision -->
         <section v-else-if="currentStepKey === 'revision'" class="space-y-5">
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-4">
@@ -1247,6 +1504,7 @@ onBeforeUnmount(() => {
           <!-- Coach responsibility message -->
           <div class="rounded-xl border border-wc-accent/40 bg-wc-bg-tertiary p-5">
             <p class="mb-3 font-display text-base tracking-wide text-wc-accent">ANTES DE ENVIAR ESTE TICKET</p>
+            <p v-if="isAjuste" class="mb-2 text-sm text-purple-400 font-medium">Describe con claridad que ajuste necesita el cliente.</p>
             <div class="space-y-2 text-sm text-wc-text-secondary">
               <p><span class="text-wc-accent">✓</span> Lo que tu escribes aqui define directamente la calidad del plan que recibira tu cliente.</p>
               <p><span class="text-wc-accent">✓</span> Esta validacion 1-a-1 con el cliente es una responsabilidad clave del coach — <strong class="text-wc-text">conversa de manera humana, cercana y analiza sus respuestas</strong> para darnos contexto real.</p>

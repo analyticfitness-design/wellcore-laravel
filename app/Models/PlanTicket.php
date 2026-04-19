@@ -19,6 +19,7 @@ class PlanTicket extends Model
         'client_id',
         'client_name',
         'plan_type',
+        'category',
         'status',
         'datos_generales',
         'plan_entrenamiento',
@@ -75,6 +76,11 @@ class PlanTicket extends Model
     public function comments(): HasMany
     {
         return $this->hasMany(PlanTicketComment::class, 'plan_ticket_id')->orderBy('created_at');
+    }
+
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(PlanTicketAttachment::class, 'plan_ticket_id')->orderByDesc('created_at');
     }
 
     public function parent(): BelongsTo
