@@ -150,7 +150,44 @@
                     {{-- Wompi Widget Container --}}
                     @if($wompiPublicKey && $paymentReference)
                         <div class="mt-8 rounded-xl border border-wc-border bg-wc-bg-tertiary p-6"
-                             x-data="wompiCheckout()"
+                             x-data="{
+                                ready: false,
+                                checkout: null,
+                                loadWompi() {
+                                    if (window.WidgetCheckout) { this.ready = true; return; }
+                                    const script = document.createElement('script');
+                                    script.src = 'https://checkout.wompi.co/widget.js';
+                                    script.onload = () => { this.ready = true; };
+                                    script.onerror = () => { console.error('Failed to load Wompi widget script'); this.ready = true; };
+                                    document.head.appendChild(script);
+                                    setTimeout(() => { this.ready = true; }, 6000);
+                                },
+                                openWompi() {
+                                    if (!window.WidgetCheckout) {
+                                        alert('La pasarela de pago no cargo correctamente. Recarga la pagina e intenta de nuevo.');
+                                        return;
+                                    }
+                                    this.checkout = new WidgetCheckout({
+                                        currency: @json($currency),
+                                        amountInCents: @json($amountInCents),
+                                        reference: @json($paymentReference),
+                                        publicKey: @json($wompiPublicKey),
+                                        signature: { integrity: @json($wompiSignature) },
+                                        redirectUrl: @json($wompiRedirectUrl),
+                                        customerData: {
+                                            email: @json($email),
+                                            fullName: @json($nombre),
+                                            phoneNumber: @json($whatsapp),
+                                        },
+                                    });
+                                    this.checkout.open(function(result) {
+                                        var transaction = result.transaction;
+                                        if (transaction && transaction.redirectUrl) {
+                                            window.location.href = transaction.redirectUrl;
+                                        }
+                                    });
+                                }
+                             }"
                              x-init="loadWompi()">
 
                             {{-- Pay button --}}
@@ -288,62 +325,4 @@
         </div>
     </div>
 
-    @if($step === 3)
-    @script
-    <script>
-        Alpine.data('wompiCheckout', () => ({
-            ready: false,
-            checkout: null,
-
-            loadWompi() {
-                // Load Wompi widget.js dynamically (works with Livewire)
-                if (window.WidgetCheckout) {
-                    this.ready = true;
-                    return;
-                }
-
-                const script = document.createElement('script');
-                script.src = 'https://checkout.wompi.co/widget.js';
-                script.onload = () => { this.ready = true; };
-                script.onerror = () => {
-                    console.error('Failed to load Wompi widget script');
-                    this.ready = true; // Let them click anyway to see error
-                };
-                document.head.appendChild(script);
-
-                // Safety timeout
-                setTimeout(() => { this.ready = true; }, 6000);
-            },
-
-            openWompi() {
-                if (!window.WidgetCheckout) {
-                    alert('La pasarela de pago no cargo correctamente. Recarga la pagina e intenta de nuevo.');
-                    return;
-                }
-
-                this.checkout = new WidgetCheckout({
-                    currency: @json($currency),
-                    amountInCents: @json($amountInCents),
-                    reference: @json($paymentReference),
-                    publicKey: @json($wompiPublicKey),
-                    signature: { integrity: @json($wompiSignature) },
-                    redirectUrl: @json($wompiRedirectUrl),
-                    customerData: {
-                        email: @json($email),
-                        fullName: @json($nombre),
-                        phoneNumber: @json($whatsapp),
-                    },
-                });
-
-                this.checkout.open(function(result) {
-                    var transaction = result.transaction;
-                    if (transaction && transaction.redirectUrl) {
-                        window.location.href = transaction.redirectUrl;
-                    }
-                });
-            },
-        }));
-    </script>
-    @endscript
-    @endif
 </div>
