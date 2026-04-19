@@ -26,6 +26,7 @@ use App\Models\Inscription;
 use App\Models\Invitation;
 use App\Models\Payment;
 use App\Models\PlanTemplate;
+use App\Models\PlanTicket;
 use App\Models\Referral;
 use App\Models\RiseMeasurement;
 use App\Models\RiseProgram;
@@ -86,25 +87,118 @@ class AdminController extends Controller
      */
     public function dashboard(Request $request): JsonResponse
     {
-        $this->resolveAdminOrFail($request);
+        $admin = $this->resolveAdminOrFail($request);
 
-        // Summary stats (cached 5 min)
-        $stats = Cache::remember('admin_dashboard_stats_api', 300, function () {
-            return [
-                'activeClients' => Client::where('status', 'activo')->count(),
-                'monthlyRevenue' => number_format(
-                    (float) Payment::where('status', 'approved')
-                        ->whereMonth('created_at', now()->month)
-                        ->whereYear('created_at', now()->year)
-                        ->sum('amount'),
-                    0, ',', '.'
-                ),
-                'pendingCheckins' => Checkin::whereNull('coach_reply')->count(),
-                'newInscriptions' => Inscription::where('created_at', '>=', now()->startOfMonth())->count(),
-            ];
-        });
+        $now = now();
+        $startOfMonth = $now->copy()->startOfMonth();
+        $startOfPrevMonth = $now->copy()->subMonth()->startOfMonth();
+        $endOfPrevMonth = $now->copy()->subMonth()->endOfMonth();
 
-        // Client breakdown
+        // Production stats — plan tickets + checkins + support
+        $productionAgg = PlanTicket::query()
+            ->selectRaw("
+                SUM(CASE WHEN status = 'pendiente' THEN 1 ELSE 0 END) as pendientes,
+                SUM(CASE WHEN status = 'en_revision' THEN 1 ELSE 0 END) as en_revision,
+                SUM(CASE WHEN status = 'completado' AND completed_at >= ? THEN 1 ELSE 0 END) as completados_mes,
+                SUM(CASE WHEN status = 'rechazado' AND rejected_at >= ? THEN 1 ELSE 0 END) as rechazados_mes,
+                SUM(CASE WHEN status IN ('pendiente','en_revision') AND deadline_at IS NOT NULL AND deadline_at < ? THEN 1 ELSE 0 END) as overdue
+            ", [$startOfMonth, $startOfMonth, $now])
+            ->first();
+
+        $checkinsSinResponder = Checkin::whereNull('coach_reply')->count();
+
+        $supportOpen = Ticket::whereIn('status', ['open', 'in_progress'])->count();
+
+        $production = [
+            'plan_tickets_pendientes' => (int) ($productionAgg->pendientes ?? 0),
+            'plan_tickets_en_revision' => (int) ($productionAgg->en_revision ?? 0),
+            'plan_tickets_completados_este_mes' => (int) ($productionAgg->completados_mes ?? 0),
+            'plan_tickets_rechazados_este_mes' => (int) ($productionAgg->rechazados_mes ?? 0),
+            'plan_tickets_overdue' => (int) ($productionAgg->overdue ?? 0),
+            'checkins_sin_responder_global' => $checkinsSinResponder,
+            'support_tickets_abiertos' => $supportOpen,
+        ];
+
+        // Financial — MRR current vs previous, pending payments, new inscriptions
+        $mrrActual = (int) Payment::where('status', 'approved')
+            ->where('created_at', '>=', $startOfMonth)
+            ->sum('amount');
+
+        $mrrAnterior = (int) Payment::where('status', 'approved')
+            ->whereBetween('created_at', [$startOfPrevMonth, $endOfPrevMonth])
+            ->sum('amount');
+
+        $mrrDelta = $mrrAnterior > 0
+            ? round((($mrrActual - $mrrAnterior) / $mrrAnterior) * 100, 2)
+            : ($mrrActual > 0 ? 100.0 : 0.0);
+
+        $pagosPendientes = (int) Payment::where('status', 'pending')->sum('amount');
+
+        $nuevasInscripciones = Inscription::where('created_at', '>=', $startOfMonth)->count();
+
+        $financial = [
+            'mrr_actual_cop' => $mrrActual,
+            'mrr_mes_anterior_cop' => $mrrAnterior,
+            'mrr_delta_pct' => $mrrDelta,
+            'pagos_pendientes_cop' => $pagosPendientes,
+            'nuevas_inscripciones_este_mes' => $nuevasInscripciones,
+        ];
+
+        // Operational — client + coach counts + retention
+        $clientesAgg = Client::selectRaw("
+                SUM(CASE WHEN status = 'activo' THEN 1 ELSE 0 END) as activos,
+                SUM(CASE WHEN fecha_inicio >= ? THEN 1 ELSE 0 END) as nuevos_mes,
+                SUM(CASE WHEN status IN ('inactivo','suspendido') AND updated_at >= ? THEN 1 ELSE 0 END) as bajas_mes
+            ", [$startOfMonth, $startOfMonth])
+            ->first();
+
+        $coachesActivos = Admin::where('role', 'coach')->count();
+
+        $activos = (int) ($clientesAgg->activos ?? 0);
+        $bajasMes = (int) ($clientesAgg->bajas_mes ?? 0);
+        $retencionDenominator = $activos + $bajasMes;
+        $retencion = $retencionDenominator > 0
+            ? round(($activos / $retencionDenominator) * 100, 2)
+            : 100.0;
+
+        $operational = [
+            'clientes_activos' => $activos,
+            'clientes_nuevos_mes' => (int) ($clientesAgg->nuevos_mes ?? 0),
+            'coaches_activos' => $coachesActivos,
+            'tasa_retencion_mes_pct' => $retencion,
+        ];
+
+        // Dynamic alerts
+        $alerts = $this->buildDashboardAlerts($production, $financial, $operational);
+
+        // Top coaches this month
+        $topCoaches = PlanTicket::query()
+            ->selectRaw('coach_id, coach_name, COUNT(*) as tickets_completados')
+            ->where('status', 'completado')
+            ->where('completed_at', '>=', $startOfMonth)
+            ->whereNotNull('coach_id')
+            ->groupBy('coach_id', 'coach_name')
+            ->orderByDesc('tickets_completados')
+            ->limit(5)
+            ->get();
+
+        $clientCounts = $topCoaches->isEmpty()
+            ? collect()
+            : DB::table('clients')
+                ->selectRaw('coach_id, COUNT(*) as total')
+                ->whereIn('coach_id', $topCoaches->pluck('coach_id'))
+                ->where('status', 'activo')
+                ->groupBy('coach_id')
+                ->pluck('total', 'coach_id');
+
+        $topCoachesMonth = $topCoaches->map(fn ($row) => [
+            'coach_id' => (int) $row->coach_id,
+            'name' => $row->coach_name ?? 'Coach',
+            'tickets_completados' => (int) $row->tickets_completados,
+            'clients' => (int) ($clientCounts[$row->coach_id] ?? 0),
+        ])->values()->toArray();
+
+        // Client breakdown (kept for existing frontend compatibility)
         $breakdown = Client::selectRaw('status, COUNT(*) as cnt')
             ->groupBy('status')
             ->pluck('cnt', 'status');
@@ -115,6 +209,13 @@ class AdminController extends Controller
             'pendiente' => $breakdown->get('pendiente', 0),
             'suspendido' => $breakdown->get('suspendido', 0),
             'total' => $breakdown->sum(),
+        ];
+
+        $stats = [
+            'activeClients' => $activos,
+            'monthlyRevenue' => number_format((float) $mrrActual, 0, ',', '.'),
+            'pendingCheckins' => $checkinsSinResponder,
+            'newInscriptions' => $nuevasInscripciones,
         ];
 
         // Recent inscriptions
@@ -203,6 +304,13 @@ class AdminController extends Controller
             ->toArray();
 
         return response()->json([
+            'greeting' => $this->buildGreeting($admin->name ?? $admin->username ?? 'Admin'),
+            'production' => $production,
+            'financial' => $financial,
+            'operational' => $operational,
+            'alerts' => $alerts,
+            'top_coaches_month' => $topCoachesMonth,
+            // Legacy fields kept for backwards compatibility
             'stats' => $stats,
             'clientBreakdown' => $clientBreakdown,
             'recentInscriptions' => $recentInscriptions,
@@ -212,6 +320,95 @@ class AdminController extends Controller
             'planDistributionData' => $planDistributionData,
             'pendingRewards' => $pendingRewards,
         ]);
+    }
+
+    /**
+     * Build a localized greeting based on the current hour (America/Bogota).
+     */
+    protected function buildGreeting(string $name): string
+    {
+        $hour = (int) now('America/Bogota')->format('G');
+
+        $period = match (true) {
+            $hour >= 5 && $hour < 12 => 'Buenos dias',
+            $hour >= 12 && $hour < 19 => 'Buenas tardes',
+            default => 'Buenas noches',
+        };
+
+        return "{$period}, {$name}";
+    }
+
+    /**
+     * Build dynamic alerts based on production/financial/operational metrics.
+     *
+     * @return array<int, array{type:string,title:string,body:string,link?:string}>
+     */
+    protected function buildDashboardAlerts(array $production, array $financial, array $operational): array
+    {
+        $alerts = [];
+
+        if ($production['plan_tickets_overdue'] > 5) {
+            $alerts[] = [
+                'type' => 'warning',
+                'title' => 'Tickets vencidos',
+                'body' => "Hay {$production['plan_tickets_overdue']} tickets con deadline vencido. Revisa la bandeja de produccion.",
+                'link' => '/admin/plan-tickets?status=pendiente',
+            ];
+        }
+
+        if ($production['plan_tickets_pendientes'] > 20) {
+            $alerts[] = [
+                'type' => 'warning',
+                'title' => 'Backlog alto',
+                'body' => "Hay {$production['plan_tickets_pendientes']} tickets pendientes de revision.",
+                'link' => '/admin/plan-tickets',
+            ];
+        }
+
+        if ($production['checkins_sin_responder_global'] > 50) {
+            $alerts[] = [
+                'type' => 'warning',
+                'title' => 'Check-ins sin responder',
+                'body' => "{$production['checkins_sin_responder_global']} check-ins de clientes estan esperando respuesta del coach.",
+            ];
+        }
+
+        if ($financial['pagos_pendientes_cop'] > 10_000_000) {
+            $formatted = number_format($financial['pagos_pendientes_cop'], 0, ',', '.');
+            $alerts[] = [
+                'type' => 'error',
+                'title' => 'Pagos pendientes',
+                'body' => "Hay \${$formatted} COP en pagos pendientes de conciliacion.",
+                'link' => '/admin/payments?status=pending',
+            ];
+        }
+
+        if ($financial['mrr_delta_pct'] < -10) {
+            $alerts[] = [
+                'type' => 'error',
+                'title' => 'MRR en caida',
+                'body' => "El MRR cayo {$financial['mrr_delta_pct']}% vs el mes anterior.",
+            ];
+        }
+
+        if ($operational['tasa_retencion_mes_pct'] < 80 && $operational['clientes_activos'] > 0) {
+            $alerts[] = [
+                'type' => 'warning',
+                'title' => 'Retencion baja',
+                'body' => "La tasa de retencion del mes es {$operational['tasa_retencion_mes_pct']}%.",
+            ];
+        }
+
+        if ($production['support_tickets_abiertos'] > 15) {
+            $alerts[] = [
+                'type' => 'info',
+                'title' => 'Tickets de soporte',
+                'body' => "{$production['support_tickets_abiertos']} tickets de soporte abiertos.",
+                'link' => '/admin/tickets',
+            ];
+        }
+
+        return $alerts;
     }
 
     // ─── Live Feed ──────────────────────────────────────────────────────
@@ -1233,10 +1430,10 @@ class AdminController extends Controller
         $client = Client::findOrFail($id);
 
         $validated = $request->validate([
-            'plan_type'    => 'required|in:entrenamiento,nutricion,habitos,suplementacion,ciclo',
-            'name'         => 'required|string|max:160',
+            'plan_type' => 'required|in:entrenamiento,nutricion,habitos,suplementacion,ciclo',
+            'name' => 'required|string|max:160',
             'content_json' => 'required',
-            'methodology'  => 'nullable|string|max:255',
+            'methodology' => 'nullable|string|max:255',
             'save_template' => 'nullable|boolean',
         ]);
 
@@ -1253,13 +1450,13 @@ class AdminController extends Controller
 
         if ($validated['save_template'] ?? true) {
             $template = PlanTemplate::create([
-                'coach_id'    => $adminId,
-                'name'        => $validated['name'],
-                'plan_type'   => $validated['plan_type'],
+                'coach_id' => $adminId,
+                'name' => $validated['name'],
+                'plan_type' => $validated['plan_type'],
                 'methodology' => $validated['methodology'] ?? null,
                 'content_json' => $content,
                 'ai_generated' => false,
-                'is_public'   => false,
+                'is_public' => false,
             ]);
             $templateId = $template->id;
         }
@@ -1271,31 +1468,31 @@ class AdminController extends Controller
             ->update(['active' => false]);
 
         $assigned = AssignedPlan::create([
-            'client_id'   => $id,
-            'plan_type'   => $validated['plan_type'],
-            'content'     => $content,
-            'version'     => 1,
-            'active'      => true,
+            'client_id' => $id,
+            'plan_type' => $validated['plan_type'],
+            'content' => $content,
+            'version' => 1,
+            'active' => true,
             'assigned_by' => $adminId,
-            'valid_from'  => now()->toDateString(),
+            'valid_from' => now()->toDateString(),
         ]);
 
         // Notify client
         WellcoreNotification::create([
-            'user_type'   => 'client',
-            'user_id'     => $id,
-            'type'        => 'plan_assigned',
-            'title'       => 'Nuevo plan disponible',
-            'message'     => 'Tu coach te ha asignado un nuevo plan de '.$validated['plan_type'].'. ¡Entra a revisarlo!',
-            'action_url'  => '/client/plan',
+            'user_type' => 'client',
+            'user_id' => $id,
+            'type' => 'plan_assigned',
+            'title' => 'Nuevo plan disponible',
+            'message' => 'Tu coach te ha asignado un nuevo plan de '.$validated['plan_type'].'. ¡Entra a revisarlo!',
+            'action_url' => '/client/plan',
         ]);
 
         return response()->json([
-            'assigned'    => true,
+            'assigned' => true,
             'assigned_id' => $assigned->id,
             'template_id' => $templateId,
-            'client'      => $client->name,
-            'plan_type'   => $validated['plan_type'],
+            'client' => $client->name,
+            'plan_type' => $validated['plan_type'],
         ], 201);
     }
 
@@ -1472,34 +1669,34 @@ class AdminController extends Controller
 
         // Create client
         $client = Client::create([
-            'nombre'        => $inscription->nombre,
-            'apellido'      => $inscription->apellido ?? '',
-            'email'         => $inscription->email,
-            'telefono'      => $inscription->whatsapp ?? $inscription->telefono ?? '',
+            'nombre' => $inscription->nombre,
+            'apellido' => $inscription->apellido ?? '',
+            'email' => $inscription->email,
+            'telefono' => $inscription->whatsapp ?? $inscription->telefono ?? '',
             'password_hash' => $extras['password_hash'] ?? bcrypt('WellCore2026!'),
-            'plan'          => $inscription->plan ?? 'metodo',
-            'status'        => 'pendiente',
-            'ciudad'        => $inscription->ciudad ?? '',
-            'pais'          => $inscription->pais ?? 'Colombia',
+            'plan' => $inscription->plan ?? 'metodo',
+            'status' => 'pendiente',
+            'ciudad' => $inscription->ciudad ?? '',
+            'pais' => $inscription->pais ?? 'Colombia',
             'fecha_registro' => now(),
         ]);
 
         // Create profile
         ClientProfile::create([
-            'client_id'    => $client->id,
-            'peso'         => $extras['peso'] ?? $inscription->peso ?? null,
-            'estatura'     => $extras['estatura'] ?? $inscription->estatura ?? null,
-            'genero'       => $extras['genero'] ?? $inscription->genero ?? null,
-            'objetivo'     => str_contains($inscription->objetivo ?? '', '|||')
+            'client_id' => $client->id,
+            'peso' => $extras['peso'] ?? $inscription->peso ?? null,
+            'estatura' => $extras['estatura'] ?? $inscription->estatura ?? null,
+            'genero' => $extras['genero'] ?? $inscription->genero ?? null,
+            'objetivo' => str_contains($inscription->objetivo ?? '', '|||')
                 ? explode('|||', $inscription->objetivo)[0]
                 : ($inscription->objetivo ?? ''),
-            'experiencia'  => $inscription->experiencia ?? '',
+            'experiencia' => $inscription->experiencia ?? '',
             'equipamiento' => $extras['equipamiento'] ?? $inscription->equipamiento ?? '',
         ]);
 
         // Update inscription
         $inscription->update([
-            'status'    => 'convertido',
+            'status' => 'convertido',
             'client_id' => $client->id,
         ]);
 
@@ -1510,24 +1707,24 @@ class AdminController extends Controller
         try {
             Mail::to($client->email)->queue(new WelcomeMail($client->nombre ?? 'Cliente'));
         } catch (\Throwable $e) {
-            Log::warning('Welcome email failed for client ' . $client->id . ': ' . $e->getMessage());
+            Log::warning('Welcome email failed for client '.$client->id.': '.$e->getMessage());
         }
 
         // Notify admin
         WellcoreNotification::create([
             'user_type' => 'admin',
-            'user_id'   => 1,
-            'type'      => 'inscription_converted',
-            'title'     => 'Inscripción Convertida',
-            'body'      => "{$client->nombre} fue convertido a cliente ({$inscription->plan})",
-            'link'      => "/admin/clients/{$client->id}",
+            'user_id' => 1,
+            'type' => 'inscription_converted',
+            'title' => 'Inscripción Convertida',
+            'body' => "{$client->nombre} fue convertido a cliente ({$inscription->plan})",
+            'link' => "/admin/clients/{$client->id}",
         ]);
 
         return response()->json([
-            'converted'  => true,
-            'client_id'  => $client->id,
+            'converted' => true,
+            'client_id' => $client->id,
             'client_name' => $client->nombre,
-            'message'    => "Cliente {$client->nombre} creado exitosamente",
+            'message' => "Cliente {$client->nombre} creado exitosamente",
         ]);
     }
 

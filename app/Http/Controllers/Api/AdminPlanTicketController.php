@@ -13,10 +13,12 @@ use App\Models\PlanTicketAttachment;
 use App\Models\PlanTicketComment;
 use App\Models\WellcoreNotification;
 use App\Services\PlanTicketExportService;
+use App\Services\PushNotificationService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
@@ -228,6 +230,10 @@ class AdminPlanTicketController extends Controller
             $ticket->save();
 
             $this->notifyCoachOfStatusChange($ticket, $newStatus, $admin);
+
+            if ($newStatus === PlanTicketStatus::Completado) {
+                $this->notifyClientOfCompletedPlan($ticket);
+            }
         });
 
         return response()->json(['ticket' => $ticket->fresh()]);
@@ -533,5 +539,48 @@ class AdminPlanTicketController extends Controller
             'body' => $body,
             'link' => "/coach/plan-tickets/{$ticket->id}",
         ]);
+    }
+
+    /**
+     * Notify the client that their personalized plan is ready.
+     *
+     * Creates a bell notification + sends a web-push if the client has an active
+     * subscription. Push failures are logged but never break the transaction.
+     */
+    protected function notifyClientOfCompletedPlan(PlanTicket $ticket): void
+    {
+        if (! $ticket->client_id) {
+            return;
+        }
+
+        WellcoreNotification::create([
+            'user_type' => 'client',
+            'user_id' => $ticket->client_id,
+            'type' => 'plan_ready',
+            'title' => 'Tu nuevo plan esta listo',
+            'body' => 'Abre la app y revisa tu plan personalizado.',
+            'link' => '/client/plan',
+        ]);
+
+        try {
+            (new PushNotificationService)->send($ticket->client_id, [
+                'title' => 'Tu nuevo plan esta listo',
+                'body' => 'Abre la app y revisa tu plan personalizado.',
+                'icon' => '/images/logo-dark.png',
+                'badge' => '/icons/icon-192x192.png',
+                'tag' => 'plan-ready',
+                'data' => ['url' => '/client/plan', 'type' => 'plan_ready'],
+                'actions' => [
+                    ['action' => 'open', 'title' => 'Ver plan'],
+                    ['action' => 'dismiss', 'title' => 'Despues'],
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Push notification to client failed', [
+                'client_id' => $ticket->client_id,
+                'ticket_id' => $ticket->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }

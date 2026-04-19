@@ -224,9 +224,6 @@ Route::prefix('v/coach')->middleware('throttle:api')->group(function () {
     Route::post('/messages', [CoachController::class, 'sendMessage']);
     Route::post('/broadcast', [CoachController::class, 'broadcast']);
     Route::get('/plans', [CoachController::class, 'plans']);
-    Route::post('/plans', [CoachController::class, 'createPlan']);
-    Route::put('/plans/{id}', [CoachController::class, 'updatePlan'])->where('id', '[0-9]+');
-    Route::post('/plans/generate', [CoachController::class, 'generatePlan']);
     Route::get('/analytics', [CoachController::class, 'analytics']);
     Route::get('/profile', [CoachController::class, 'profile']);
     Route::put('/profile', [CoachController::class, 'updateProfile']);

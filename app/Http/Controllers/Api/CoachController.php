@@ -29,13 +29,12 @@ use App\Models\ReferralStat;
 use App\Models\TrainingLog;
 use App\Models\VideoCheckin;
 use App\Models\WellcoreNotification;
-use App\Services\AIService;
 use App\Services\PushNotificationService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class CoachController extends Controller
@@ -74,15 +73,15 @@ class CoachController extends Controller
      */
     protected function getCoachClientIds(int $coachId): Collection
     {
-        $fromClientsFk = \Illuminate\Support\Facades\Schema::hasColumn('clients', 'coach_id')
+        $fromClientsFk = Schema::hasColumn('clients', 'coach_id')
             ? \DB::table('clients')->where('coach_id', $coachId)->pluck('id')
             : collect();
         $fromPlans = \DB::table('assigned_plans')->where('assigned_by', $coachId)->pluck('client_id');
         $fromMessages = \DB::table('coach_messages')->where('coach_id', $coachId)->pluck('client_id');
-        $fromNotes = \Illuminate\Support\Facades\Schema::hasTable('coach_notes')
+        $fromNotes = Schema::hasTable('coach_notes')
             ? \DB::table('coach_notes')->where('coach_id', $coachId)->pluck('client_id')
             : collect();
-        $fromTickets = \Illuminate\Support\Facades\Schema::hasTable('plan_tickets')
+        $fromTickets = Schema::hasTable('plan_tickets')
             ? \DB::table('plan_tickets')->where('coach_id', $coachId)->pluck('client_id')
             : collect();
 
@@ -913,185 +912,11 @@ class CoachController extends Controller
             'methodology' => $tpl->methodology,
             'description' => $tpl->description,
             'is_public' => (bool) $tpl->is_public,
-            'ai_generated' => (bool) $tpl->ai_generated,
             'content_json' => $tpl->content_json,
             'created_at' => $tpl->created_at?->format('d M Y'),
         ]);
 
         return response()->json(['templates' => $templates]);
-    }
-
-    /**
-     * POST /api/v/coach/plans
-     *
-     * Create plan template.
-     * Ports Coach\PlansManager.php saveTemplate() logic.
-     */
-    public function createPlan(Request $request): JsonResponse
-    {
-        $coach = $this->resolveCoachOrFail($request);
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:160',
-            'plan_type' => 'required|in:entrenamiento,nutricion,habitos,suplementacion,ciclo',
-            'methodology' => 'nullable|string|max:100',
-            'description' => 'nullable|string|max:5000',
-            'content_json' => 'nullable',
-            'is_public' => 'nullable|boolean',
-        ]);
-
-        $contentArray = null;
-        if (! empty($validated['content_json'])) {
-            if (is_string($validated['content_json'])) {
-                $contentArray = json_decode($validated['content_json'], true);
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    return response()->json(['error' => 'JSON invalido: '.json_last_error_msg()], 422);
-                }
-            } else {
-                $contentArray = $validated['content_json'];
-            }
-        }
-
-        $template = PlanTemplate::create([
-            'coach_id' => $coach->id,
-            'name' => $validated['name'],
-            'plan_type' => $validated['plan_type'],
-            'methodology' => $validated['methodology'] ?? null,
-            'description' => $validated['description'] ?? null,
-            'content_json' => $contentArray,
-            'is_public' => $validated['is_public'] ?? false,
-            'ai_generated' => false,
-        ]);
-
-        return response()->json(['created' => true, 'id' => $template->id], 201);
-    }
-
-    /**
-     * PUT /api/v/coach/plans/{id}
-     *
-     * Update plan template.
-     * Ports Coach\PlansManager.php saveTemplate() (edit path) logic.
-     */
-    public function updatePlan(Request $request, int $id): JsonResponse
-    {
-        $coach = $this->resolveCoachOrFail($request);
-
-        $tpl = PlanTemplate::where('coach_id', $coach->id)->find($id);
-        if (! $tpl) {
-            return response()->json(['error' => 'Template no encontrado.'], 404);
-        }
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:160',
-            'plan_type' => 'required|in:entrenamiento,nutricion,habitos,suplementacion,ciclo',
-            'methodology' => 'nullable|string|max:100',
-            'description' => 'nullable|string|max:5000',
-            'content_json' => 'nullable',
-            'is_public' => 'nullable|boolean',
-        ]);
-
-        $contentArray = null;
-        if (! empty($validated['content_json'])) {
-            if (is_string($validated['content_json'])) {
-                $contentArray = json_decode($validated['content_json'], true);
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    return response()->json(['error' => 'JSON invalido: '.json_last_error_msg()], 422);
-                }
-            } else {
-                $contentArray = $validated['content_json'];
-            }
-        }
-
-        $tpl->update([
-            'name' => $validated['name'],
-            'plan_type' => $validated['plan_type'],
-            'methodology' => $validated['methodology'] ?? null,
-            'description' => $validated['description'] ?? null,
-            'content_json' => $contentArray,
-            'is_public' => $validated['is_public'] ?? $tpl->is_public,
-        ]);
-
-        return response()->json(['updated' => true]);
-    }
-
-    /**
-     * POST /api/v/coach/plans/generate
-     *
-     * AI plan generation.
-     * Ports Coach\PlansManager.php generate logic (uses AIService).
-     */
-    public function generatePlan(Request $request): JsonResponse
-    {
-        $coach = $this->resolveCoachOrFail($request);
-
-        $validated = $request->validate([
-            'plan_type' => 'required|in:entrenamiento,nutricion,habitos',
-            'methodology' => 'nullable|string|max:100',
-            'duration_weeks' => 'required|integer|min:1|max:52',
-            'frequency' => 'nullable|integer|min:1|max:7',
-            'experience_level' => 'nullable|in:principiante,intermedio,avanzado',
-            'training_goal' => 'nullable|string|max:100',
-            'injuries' => 'nullable|string|max:500',
-            'calorie_target' => 'nullable|integer|min:800|max:10000',
-            'protein_pct' => 'nullable|integer|min:0|max:100',
-            'carbs_pct' => 'nullable|integer|min:0|max:100',
-            'fat_pct' => 'nullable|integer|min:0|max:100',
-            'meals_per_day' => 'nullable|integer|min:1|max:10',
-            'dietary_restrictions' => 'nullable|string|max:500',
-            'habit_focus_areas' => 'nullable|array',
-            'target_client_id' => 'nullable|integer',
-        ]);
-
-        try {
-            $aiService = app(AIService::class);
-
-            $prompt = $this->buildAIPrompt($validated);
-
-            $result = $aiService->generatePlan($prompt, $validated['plan_type']);
-
-            return response()->json([
-                'generated' => true,
-                'plan' => $result,
-                'planJson' => json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
-            ]);
-        } catch (\Throwable $e) {
-            Log::warning('Coach AI plan generation failed', ['error' => $e->getMessage()]);
-
-            return response()->json([
-                'generated' => false,
-                'error' => 'Error generando el plan: '.$e->getMessage(),
-            ], 500);
-        }
-    }
-
-    protected function buildAIPrompt(array $params): string
-    {
-        $lines = [];
-        $lines[] = "Genera un plan de {$params['plan_type']} profesional.";
-        if (! empty($params['methodology'])) {
-            $lines[] = "Metodologia: {$params['methodology']}";
-        }
-        $lines[] = "Duracion: {$params['duration_weeks']} semanas";
-        if (! empty($params['frequency'])) {
-            $lines[] = "Frecuencia: {$params['frequency']} dias/semana";
-        }
-        if (! empty($params['experience_level'])) {
-            $lines[] = "Nivel: {$params['experience_level']}";
-        }
-        if (! empty($params['training_goal'])) {
-            $lines[] = "Objetivo: {$params['training_goal']}";
-        }
-        if (! empty($params['injuries'])) {
-            $lines[] = "Lesiones/restricciones: {$params['injuries']}";
-        }
-        if (! empty($params['calorie_target'])) {
-            $lines[] = "Calorias: {$params['calorie_target']}";
-        }
-        if (! empty($params['dietary_restrictions'])) {
-            $lines[] = "Restricciones dieteticas: {$params['dietary_restrictions']}";
-        }
-
-        return implode("\n", $lines);
     }
 
     // ─── Analytics ──────────────────────────────────────────────────────

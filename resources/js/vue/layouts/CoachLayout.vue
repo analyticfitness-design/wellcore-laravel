@@ -1,8 +1,24 @@
 <script setup>
-import { ref, computed, onUnmounted } from 'vue';
+import { ref, computed, onUnmounted, onMounted } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import NotificationBell from '../components/NotificationBell.vue';
+import CoachOnboardingTour from '../components/CoachOnboardingTour.vue';
+
+const showTour = ref(false);
+
+onMounted(() => {
+  try {
+    if (localStorage.getItem('coach_tour_completed') !== '1') {
+      // Small delay so sidebar DOM is painted
+      setTimeout(() => { showTour.value = true; }, 400);
+    }
+  } catch {}
+});
+
+function onTourDone() {
+  showTour.value = false;
+}
 
 const authStore = useAuthStore();
 const route = useRoute();
@@ -90,6 +106,15 @@ function isActive(routeName) {
     return route.name === routeName;
 }
 
+const TOUR_MAP = {
+    'coach-dashboard': 'dashboard',
+    'coach-clients': 'clients',
+    'coach-plan-tickets': 'plan-tickets',
+    'coach-checkins': 'checkins',
+    'coach-messages': 'messages',
+};
+function tourAttr(routeName) { return TOUR_MAP[routeName] || null; }
+
 // Mobile bottom nav items (5 max)
 const bottomNav = [
     { name: 'Dashboard', to: '/coach', icon: 'dashboard', routeName: 'coach-dashboard' },
@@ -147,6 +172,7 @@ const bottomNav = [
             <li v-for="item in section.items" :key="item.routeName">
               <RouterLink
                 :to="item.to"
+                :data-tour="tourAttr(item.routeName)"
                 :class="[
                   'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                   isActive(item.routeName)
@@ -323,6 +349,9 @@ const bottomNav = [
         </RouterLink>
       </div>
     </nav>
+
+    <!-- First-visit onboarding tour -->
+    <CoachOnboardingTour v-if="showTour" @done="onTourDone" />
 
   </div>
 </template>

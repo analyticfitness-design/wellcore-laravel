@@ -23,6 +23,7 @@ const completePlanIds = ref('');
 const updatingStatus = ref(false);
 const copying = ref(false);
 const copyingSection = ref(null); // which section is being copied
+const copiedSection = ref(null); // flash checkmark 2s
 const toast = ref(null);
 
 const exportDropdownOpen = ref(false);
@@ -215,6 +216,8 @@ async function copySection(sectionKey) {
     await navigator.clipboard.writeText(jsonText);
     const label = sectionKey === 'full' ? 'brief completo' : sectionKey;
     showToast('success', `JSON (${label}) copiado al portapapeles.`);
+    copiedSection.value = sectionKey;
+    setTimeout(() => { if (copiedSection.value === sectionKey) copiedSection.value = null; }, 2000);
     exportDropdownOpen.value = false;
   } catch (e) {
     showToast('error', 'No se pudo copiar el JSON.');
@@ -339,7 +342,7 @@ const splitEntries = computed(() => {
 
 <template>
   <AdminLayout>
-    <div class="max-w-5xl mx-auto space-y-6">
+    <div class="max-w-5xl mx-auto space-y-8">
 
       <!-- Toast -->
       <Transition name="fade">
@@ -370,20 +373,20 @@ const splitEntries = computed(() => {
 
       <template v-else-if="ticket">
         <!-- Header -->
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-          <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div class="flex-1">
-              <div class="flex items-center gap-2 flex-wrap mb-2">
-                <h1 class="font-display text-2xl tracking-wide text-wc-text sm:text-3xl">{{ ticket.client_name || 'Cliente' }}</h1>
-                <span class="rounded-full px-2.5 py-0.5 text-xs font-medium" :class="[planTypeMeta(ticket.plan_type).bg, planTypeMeta(ticket.plan_type).text]">
+        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 shadow-sm">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div class="flex-1 min-w-0">
+              <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ ticket.client_name || 'Cliente' }}</h1>
+              <div class="flex items-center gap-2 flex-wrap mt-3 mb-2">
+                <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold" :class="[planTypeMeta(ticket.plan_type).bg, planTypeMeta(ticket.plan_type).text]">
                   {{ planTypeMeta(ticket.plan_type).label }}
                 </span>
-                <span class="rounded-full px-2.5 py-0.5 text-xs font-medium" :class="[statusMeta(ticket.status).bg, statusMeta(ticket.status).text]">
+                <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold" :class="[statusMeta(ticket.status).bg, statusMeta(ticket.status).text]">
                   {{ statusMeta(ticket.status).label }}
                 </span>
                 <span
                   v-if="ticket.category"
-                  class="rounded-full px-2.5 py-0.5 text-xs font-medium"
+                  class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
                   :class="[categoryMeta(ticket.category).bg, categoryMeta(ticket.category).text]"
                 >{{ categoryMeta(ticket.category).label }}</span>
                 <DeadlineBadge :deadline="ticket.deadline_at" :status="ticket.status" />
@@ -461,6 +464,9 @@ const splitEntries = computed(() => {
                       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                       <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
+                    <svg v-else-if="copiedSection === sec.key" class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                    </svg>
                   </button>
                 </div>
               </Transition>
@@ -534,9 +540,9 @@ const splitEntries = computed(() => {
         </div>
 
         <!-- Datos generales -->
-        <section class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
-          <button @click="toggleSection('datos')" class="w-full flex items-center justify-between p-5 hover:bg-wc-bg-secondary/30 transition">
-            <h2 class="font-display text-lg tracking-wide text-wc-text">Datos generales</h2>
+        <section class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden shadow-sm">
+          <button @click="toggleSection('datos')" class="w-full flex items-center justify-between p-6 hover:bg-wc-bg-secondary/30 transition">
+            <h2 class="font-display text-xl tracking-wide text-wc-text">Datos generales</h2>
             <svg class="h-4 w-4 transition-transform text-wc-text-tertiary" :class="expandedSections.datos ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
             </svg>
@@ -554,9 +560,9 @@ const splitEntries = computed(() => {
         </section>
 
         <!-- Entrenamiento -->
-        <section class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
-          <button @click="toggleSection('entrenamiento')" class="w-full flex items-center justify-between p-5 hover:bg-wc-bg-secondary/30 transition">
-            <h2 class="font-display text-lg tracking-wide text-wc-text">Plan de entrenamiento</h2>
+        <section class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden shadow-sm">
+          <button @click="toggleSection('entrenamiento')" class="w-full flex items-center justify-between p-6 hover:bg-wc-bg-secondary/30 transition">
+            <h2 class="font-display text-xl tracking-wide text-wc-text">Plan de entrenamiento</h2>
             <svg class="h-4 w-4 transition-transform text-wc-text-tertiary" :class="expandedSections.entrenamiento ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
             </svg>
@@ -605,9 +611,9 @@ const splitEntries = computed(() => {
         </section>
 
         <!-- Nutricion -->
-        <section v-if="planNutricional" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
-          <button @click="toggleSection('nutricion')" class="w-full flex items-center justify-between p-5 hover:bg-wc-bg-secondary/30 transition">
-            <h2 class="font-display text-lg tracking-wide text-wc-text">Plan nutricional</h2>
+        <section v-if="planNutricional" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden shadow-sm">
+          <button @click="toggleSection('nutricion')" class="w-full flex items-center justify-between p-6 hover:bg-wc-bg-secondary/30 transition">
+            <h2 class="font-display text-xl tracking-wide text-wc-text">Plan nutricional</h2>
             <svg class="h-4 w-4 transition-transform text-wc-text-tertiary" :class="expandedSections.nutricion ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
             </svg>
@@ -632,9 +638,9 @@ const splitEntries = computed(() => {
         </section>
 
         <!-- Habitos -->
-        <section v-if="planHabitos" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
-          <button @click="toggleSection('habitos')" class="w-full flex items-center justify-between p-5 hover:bg-wc-bg-secondary/30 transition">
-            <h2 class="font-display text-lg tracking-wide text-wc-text">Plan de habitos</h2>
+        <section v-if="planHabitos" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden shadow-sm">
+          <button @click="toggleSection('habitos')" class="w-full flex items-center justify-between p-6 hover:bg-wc-bg-secondary/30 transition">
+            <h2 class="font-display text-xl tracking-wide text-wc-text">Plan de habitos</h2>
             <svg class="h-4 w-4 transition-transform text-wc-text-tertiary" :class="expandedSections.habitos ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
             </svg>
@@ -653,9 +659,9 @@ const splitEntries = computed(() => {
         </section>
 
         <!-- Suplementacion -->
-        <section class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
-          <button @click="toggleSection('suplementacion')" class="w-full flex items-center justify-between p-5 hover:bg-wc-bg-secondary/30 transition">
-            <h2 class="font-display text-lg tracking-wide text-wc-text">Plan de suplementacion</h2>
+        <section class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden shadow-sm">
+          <button @click="toggleSection('suplementacion')" class="w-full flex items-center justify-between p-6 hover:bg-wc-bg-secondary/30 transition">
+            <h2 class="font-display text-xl tracking-wide text-wc-text">Plan de suplementacion</h2>
             <svg class="h-4 w-4 transition-transform text-wc-text-tertiary" :class="expandedSections.suplementacion ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
             </svg>
@@ -703,9 +709,9 @@ const splitEntries = computed(() => {
         </section>
 
         <!-- Ciclo -->
-        <section v-if="isElite && planCiclo" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
-          <button @click="toggleSection('ciclo')" class="w-full flex items-center justify-between p-5 hover:bg-wc-bg-secondary/30 transition">
-            <h2 class="font-display text-lg tracking-wide text-wc-text">Ciclo hormonal</h2>
+        <section v-if="isElite && planCiclo" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden shadow-sm">
+          <button @click="toggleSection('ciclo')" class="w-full flex items-center justify-between p-6 hover:bg-wc-bg-secondary/30 transition">
+            <h2 class="font-display text-xl tracking-wide text-wc-text">Ciclo hormonal</h2>
             <svg class="h-4 w-4 transition-transform text-wc-text-tertiary" :class="expandedSections.ciclo ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
             </svg>
