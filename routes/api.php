@@ -20,6 +20,13 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
+// Temporary migrate runner — remove after use
+Route::get('/run-migrate-k7x9', function () {
+    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+    $output = \Illuminate\Support\Facades\Artisan::output();
+    return response($output)->header('Content-Type', 'text/plain; charset=utf-8');
+});
+
 // Temporary log tail — remove after diagnosis
 Route::get('/debug-log-k7x9', function () {
     $logFile = storage_path('logs/laravel.log');
