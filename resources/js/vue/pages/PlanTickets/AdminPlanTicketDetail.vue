@@ -1,8 +1,10 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { useRoute, useRouter, RouterLink } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import AdminLayout from '../../layouts/AdminLayout.vue';
+import DeadlineBadge from '../../components/DeadlineBadge.vue';
+import PlanTicketComments from '../../components/PlanTicketComments.vue';
 
 const api = useApi();
 const route = useRoute();
@@ -14,10 +16,28 @@ const adminNotas = ref('');
 const savingNotas = ref(false);
 
 const rejectModalOpen = ref(false);
-const rejectReason = ref('');
+const completeModalOpen = ref(false);
+const rejectionCode = ref('');
+const rejectionDetails = ref('');
+const completePlanIds = ref('');
 const updatingStatus = ref(false);
 const copying = ref(false);
+const copyingSection = ref(null); // which section is being copied
 const toast = ref(null);
+
+const exportDropdownOpen = ref(false);
+const instructions = ref(null);
+const loadingInstructions = ref(false);
+
+const REJECTION_REASONS = [
+  { value: 'info_incompleta', label: 'Informacion incompleta' },
+  { value: 'contexto_insuficiente', label: 'Contexto insuficiente' },
+  { value: 'conflicto_datos', label: 'Conflicto en los datos' },
+  { value: 'fuera_de_scope', label: 'Fuera de scope' },
+  { value: 'necesita_validacion_medica', label: 'Necesita validacion medica' },
+  { value: 'otro', label: 'Otro (explicar en detalles)' },
+];
+const REJECTION_LABEL = Object.fromEntries(REJECTION_REASONS.map(r => [r.value, r.label]));
 
 const PLAN_TYPE_META = {
   esencial: { label: 'Esencial', bg: 'bg-blue-500/10', text: 'text-blue-500' },
@@ -75,37 +95,101 @@ async function fetchTicket() {
   }
 }
 
-async function copyJson() {
-  copying.value = true;
+async function loadInstructions() {
+  loadingInstructions.value = true;
   try {
-    const { data } = await api.get(`/api/v/admin/plan-tickets/${route.params.id}/export`);
-    const jsonText = JSON.stringify(data, null, 2);
-    await navigator.clipboard.writeText(jsonText);
-    showToast('success', 'JSON copiado. Pegalo en Claude Code de tu PC para generar el plan.');
+    const { data } = await api.get(`/api/v/admin/plan-tickets/${route.params.id}/export/full`);
+    instructions.value = data?.instructions || null;
   } catch (e) {
-    showToast('error', 'No se pudo copiar el JSON.');
+    instructions.value = null;
   } finally {
-    copying.value = false;
+    loadingInstructions.value = false;
   }
 }
 
-async function updateStatus(status, notas = null) {
+const EXPORT_SECTIONS = [
+  { key: 'full', label: 'Copiar TODO (brief completo)', accent: true },
+  { key: 'entrenamiento', label: 'Copiar ENTRENAMIENTO' },
+  { key: 'nutricion', label: 'Copiar NUTRICION' },
+  { key: 'habitos', label: 'Copiar HABITOS' },
+  { key: 'suplementacion', label: 'Copiar SUPLEMENTACION' },
+  { key: 'ciclo', label: 'Copiar CICLO', eliteOnly: true },
+];
+
+const exportSectionsVisible = computed(() => {
+  return EXPORT_SECTIONS.filter(s => !s.eliteOnly || isElite.value);
+});
+
+async function copySection(sectionKey) {
+  if (copyingSection.value) return;
+  copyingSection.value = sectionKey;
+  try {
+    const { data } = await api.get(`/api/v/admin/plan-tickets/${route.params.id}/export/${sectionKey}`);
+    const jsonText = JSON.stringify(data, null, 2);
+    await navigator.clipboard.writeText(jsonText);
+    const label = sectionKey === 'full' ? 'brief completo' : sectionKey;
+    showToast('success', `JSON (${label}) copiado al portapapeles.`);
+    exportDropdownOpen.value = false;
+  } catch (e) {
+    showToast('error', 'No se pudo copiar el JSON.');
+  } finally {
+    copyingSection.value = null;
+  }
+}
+
+async function updateStatus(status, extras = {}) {
   updatingStatus.value = true;
   try {
-    const payload = { status };
-    if (notas !== null && notas !== undefined) payload.admin_notas = notas;
+    const payload = { status, ...extras };
     const { data } = await api.post(`/api/v/admin/plan-tickets/${route.params.id}/status`, payload);
     ticket.value = data.ticket;
     adminNotas.value = data.ticket.admin_notas || '';
     showToast('success', `Ticket marcado como ${statusMeta(status).label.toLowerCase()}.`);
     rejectModalOpen.value = false;
-    rejectReason.value = '';
+    completeModalOpen.value = false;
+    rejectionCode.value = '';
+    rejectionDetails.value = '';
+    completePlanIds.value = '';
   } catch (e) {
-    showToast('error', 'No se pudo actualizar el estado.');
+    const msg = e?.response?.data?.message || 'No se pudo actualizar el estado.';
+    showToast('error', msg);
   } finally {
     updatingStatus.value = false;
   }
 }
+
+function submitReject() {
+  if (!rejectionCode.value) {
+    showToast('error', 'Selecciona una razon de rechazo.');
+    return;
+  }
+  if (rejectionCode.value === 'otro' && !rejectionDetails.value.trim()) {
+    showToast('error', 'Los detalles son obligatorios cuando la razon es "Otro".');
+    return;
+  }
+  const extras = { rejection_code: rejectionCode.value };
+  if (rejectionDetails.value.trim()) extras.admin_notas = rejectionDetails.value.trim();
+  updateStatus('rechazado', extras);
+}
+
+function submitComplete() {
+  const raw = completePlanIds.value.trim();
+  const extras = {};
+  if (raw) {
+    const ids = raw
+      .split(/[\s,;]+/)
+      .map(s => parseInt(s, 10))
+      .filter(n => Number.isInteger(n) && n > 0);
+    if (ids.length > 0) extras.generated_plan_ids = ids;
+  }
+  updateStatus('completado', extras);
+}
+
+const generatedPlanIds = computed(() => {
+  const ids = ticket.value?.generated_plan_ids;
+  if (!Array.isArray(ids)) return [];
+  return ids.filter(n => Number.isInteger(n) && n > 0);
+});
 
 async function saveAdminNotas() {
   savingNotas.value = true;
@@ -132,7 +216,23 @@ function toggleSection(key) {
   expandedSections.value[key] = !expandedSections.value[key];
 }
 
-onMounted(fetchTicket);
+function closeExportDropdown(e) {
+  const el = document.getElementById('admin-export-dropdown');
+  if (el && !el.contains(e.target)) {
+    exportDropdownOpen.value = false;
+  }
+}
+
+onMounted(async () => {
+  document.addEventListener('click', closeExportDropdown);
+  await fetchTicket();
+  // Load instructions banner in parallel (non-blocking from user perspective)
+  loadInstructions();
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', closeExportDropdown);
+});
 
 // Helpers for rendering JSON structures
 const datosGenerales = computed(() => ticket.value?.datos_generales || {});
@@ -193,23 +293,108 @@ const splitEntries = computed(() => {
                 <span class="rounded-full px-2.5 py-0.5 text-xs font-medium" :class="[statusMeta(ticket.status).bg, statusMeta(ticket.status).text]">
                   {{ statusMeta(ticket.status).label }}
                 </span>
+                <DeadlineBadge :deadline="ticket.deadline_at" :status="ticket.status" />
               </div>
+
+              <!-- Rejection display -->
+              <div v-if="ticket.status === 'rechazado' && ticket.rejection_code" class="mb-3 rounded-lg border border-red-500/40 bg-red-500/10 p-3">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="rounded-full bg-red-500/20 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-red-400">
+                    Rechazado: {{ REJECTION_LABEL[ticket.rejection_code] || humanLabel(ticket.rejection_code) }}
+                  </span>
+                </div>
+                <p v-if="ticket.admin_notas" class="whitespace-pre-wrap text-xs text-red-400/90 mt-1">{{ ticket.admin_notas }}</p>
+              </div>
+
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-wc-text-tertiary">
                 <div><span class="text-wc-text-secondary">Coach:</span> {{ ticket.coach_name || '-' }}</div>
                 <div><span class="text-wc-text-secondary">Creado:</span> {{ formatDate(ticket.created_at) }}</div>
                 <div><span class="text-wc-text-secondary">Enviado:</span> {{ formatDate(ticket.submitted_at) }}</div>
               </div>
             </div>
-            <button
-              @click="copyJson"
-              :disabled="copying"
-              class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition disabled:opacity-50"
-            >
-              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184" />
+
+            <!-- Export dropdown -->
+            <div id="admin-export-dropdown" class="relative shrink-0" @click.stop>
+              <button
+                type="button"
+                @click="exportDropdownOpen = !exportDropdownOpen"
+                class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184" />
+                </svg>
+                Copiar JSON
+                <svg class="h-3.5 w-3.5 transition-transform" :class="exportDropdownOpen ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+              </button>
+
+              <Transition
+                enter-active-class="transition ease-out duration-150"
+                enter-from-class="opacity-0 scale-95 -translate-y-1"
+                enter-to-class="opacity-100 scale-100 translate-y-0"
+                leave-active-class="transition ease-in duration-100"
+                leave-from-class="opacity-100 scale-100 translate-y-0"
+                leave-to-class="opacity-0 scale-95 -translate-y-1"
+              >
+                <div
+                  v-if="exportDropdownOpen"
+                  class="absolute right-0 top-full mt-2 w-72 rounded-xl border border-wc-border bg-wc-bg-secondary shadow-xl z-40 py-1"
+                >
+                  <button
+                    v-for="sec in exportSectionsVisible"
+                    :key="sec.key"
+                    type="button"
+                    @click="copySection(sec.key)"
+                    :disabled="copyingSection !== null"
+                    class="w-full flex items-center justify-between px-4 py-2.5 text-left text-sm font-medium hover:bg-wc-bg-tertiary transition-colors disabled:opacity-50"
+                    :class="sec.accent ? 'text-wc-accent' : 'text-wc-text-secondary hover:text-wc-text'"
+                  >
+                    <span>{{ sec.label }}</span>
+                    <svg v-if="copyingSection === sec.key" class="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                  </button>
+                </div>
+              </Transition>
+            </div>
+          </div>
+
+          <!-- Instructions banner -->
+          <div v-if="instructions" class="mt-4 rounded-lg border border-blue-500/30 bg-blue-500/5 p-3">
+            <div class="flex items-start gap-2">
+              <svg class="h-4 w-4 shrink-0 text-blue-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
               </svg>
-              {{ copying ? 'Copiando...' : 'Copiar JSON para Claude Code' }}
-            </button>
+              <div class="text-xs text-blue-500/90 whitespace-pre-wrap leading-relaxed">{{ instructions }}</div>
+            </div>
+          </div>
+          <div v-else-if="loadingInstructions" class="mt-4 h-8 animate-pulse rounded-lg bg-wc-bg-secondary"></div>
+        </div>
+
+        <!-- Generated plans section -->
+        <div v-if="generatedPlanIds.length > 0" class="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4">
+          <div class="flex items-start gap-3 flex-wrap">
+            <svg class="h-5 w-5 shrink-0 text-emerald-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-emerald-500">Planes generados</p>
+              <div class="mt-1 flex flex-wrap items-center gap-2">
+                <span v-for="id in generatedPlanIds" :key="id" class="rounded-md bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold font-data text-emerald-500">#{{ id }}</span>
+              </div>
+              <RouterLink
+                v-if="ticket.client_id"
+                :to="`/admin/clients/${ticket.client_id}/plans`"
+                class="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-emerald-500 hover:text-emerald-400"
+              >
+                Ver planes del cliente
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                </svg>
+              </RouterLink>
+            </div>
           </div>
         </div>
 
@@ -223,7 +408,7 @@ const splitEntries = computed(() => {
           >Marcar en revision</button>
           <button
             v-if="ticket.status === 'en_revision'"
-            @click="updateStatus('completado')"
+            @click="completeModalOpen = true"
             :disabled="updatingStatus"
             class="rounded-lg border border-emerald-500/30 bg-emerald-500/5 px-4 py-2 text-sm font-semibold text-emerald-500 hover:bg-emerald-500/10 transition disabled:opacity-50"
           >Marcar como completado</button>
@@ -427,6 +612,12 @@ const splitEntries = computed(() => {
           </div>
         </section>
 
+        <!-- Comments thread -->
+        <PlanTicketComments
+          :endpoint-base="`/api/v/admin/plan-tickets/${route.params.id}`"
+          role="admin"
+        />
+
         <!-- Admin notas -->
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
           <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Notas del admin</p>
@@ -446,28 +637,79 @@ const splitEntries = computed(() => {
         </div>
       </template>
 
-      <!-- Reject modal -->
+      <!-- Reject modal (structured) -->
       <Transition name="fade">
         <div v-if="rejectModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" @click.self="rejectModalOpen = false">
           <div class="w-full max-w-md rounded-xl border border-wc-border bg-wc-bg-secondary p-5 space-y-4">
             <h3 class="font-display text-lg tracking-wide text-wc-text">Rechazar ticket</h3>
-            <p class="text-sm text-wc-text-secondary">Explica el motivo del rechazo para el coach.</p>
-            <textarea
-              v-model="rejectReason"
-              rows="4"
-              placeholder="Razon del rechazo..."
-              class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
-            ></textarea>
+            <p class="text-sm text-wc-text-secondary">Selecciona la razon del rechazo para que el coach entienda el problema.</p>
+
+            <div>
+              <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Razon del rechazo</label>
+              <select
+                v-model="rejectionCode"
+                class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
+              >
+                <option value="">Selecciona una razon...</option>
+                <option v-for="r in REJECTION_REASONS" :key="r.value" :value="r.value">{{ r.label }}</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">
+                Detalles <span v-if="rejectionCode === 'otro'" class="text-red-400">(obligatorio)</span><span v-else class="text-wc-text-tertiary">(opcional)</span>
+              </label>
+              <textarea
+                v-model="rejectionDetails"
+                rows="4"
+                placeholder="Detalles adicionales para el coach..."
+                class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
+              ></textarea>
+            </div>
+
             <div class="flex justify-end gap-2">
               <button
                 @click="rejectModalOpen = false"
                 class="rounded-lg border border-wc-border px-4 py-2 text-sm font-semibold text-wc-text-secondary hover:bg-wc-bg-tertiary"
               >Cancelar</button>
               <button
-                @click="updateStatus('rechazado', rejectReason)"
-                :disabled="!rejectReason.trim() || updatingStatus"
+                @click="submitReject"
+                :disabled="!rejectionCode || updatingStatus || (rejectionCode === 'otro' && !rejectionDetails.trim())"
                 class="rounded-lg bg-red-500/90 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 disabled:opacity-50"
               >{{ updatingStatus ? 'Rechazando...' : 'Confirmar rechazo' }}</button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+
+      <!-- Complete modal -->
+      <Transition name="fade">
+        <div v-if="completeModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" @click.self="completeModalOpen = false">
+          <div class="w-full max-w-md rounded-xl border border-wc-border bg-wc-bg-secondary p-5 space-y-4">
+            <h3 class="font-display text-lg tracking-wide text-wc-text">Marcar como completado</h3>
+            <p class="text-sm text-wc-text-secondary">Opcional: pega los IDs de los planes generados (assigned_plans) separados por comas. Se asociaran al ticket para facilitar el rastreo.</p>
+
+            <div>
+              <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">IDs de planes generados</label>
+              <textarea
+                v-model="completePlanIds"
+                rows="3"
+                placeholder="Ej: 142, 143, 144, 145"
+                class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary p-3 text-sm text-wc-text font-data focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
+              ></textarea>
+              <p class="mt-1 text-[11px] text-wc-text-tertiary">Acepta numeros separados por comas, espacios o saltos de linea.</p>
+            </div>
+
+            <div class="flex justify-end gap-2">
+              <button
+                @click="completeModalOpen = false"
+                class="rounded-lg border border-wc-border px-4 py-2 text-sm font-semibold text-wc-text-secondary hover:bg-wc-bg-tertiary"
+              >Cancelar</button>
+              <button
+                @click="submitComplete"
+                :disabled="updatingStatus"
+                class="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-600 disabled:opacity-50"
+              >{{ updatingStatus ? 'Guardando...' : 'Confirmar completado' }}</button>
             </div>
           </div>
         </div>

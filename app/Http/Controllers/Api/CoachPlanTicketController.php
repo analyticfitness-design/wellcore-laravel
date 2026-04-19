@@ -10,7 +10,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Client;
 use App\Models\PlanTicket;
+use App\Models\PlanTicketComment;
 use App\Models\WellcoreNotification;
+use App\Services\ClientAutofillService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +21,10 @@ use Illuminate\Validation\Rule;
 class CoachPlanTicketController extends Controller
 {
     use AuthenticatesVueRequests;
+
+    public function __construct(
+        private readonly ClientAutofillService $autofill,
+    ) {}
 
     /**
      * Resolve the authenticated Admin (coach/admin/superadmin/jefe) or abort.
@@ -144,7 +150,13 @@ class CoachPlanTicketController extends Controller
             return response()->json(['error' => 'Ticket no encontrado.'], 404);
         }
 
-        if (! $ticket->is_editable) {
+        $lockedStatuses = [
+            PlanTicketStatus::EnRevision,
+            PlanTicketStatus::Completado,
+            PlanTicketStatus::Rechazado,
+        ];
+
+        if (in_array($ticket->status, $lockedStatuses, true)) {
             return response()->json(['error' => 'Este ticket ya no se puede editar.'], 403);
         }
 
@@ -160,6 +172,11 @@ class CoachPlanTicketController extends Controller
         ]);
 
         $ticket->fill($validated);
+
+        if ($ticket->status === PlanTicketStatus::Pendiente) {
+            $ticket->resubmitted_at = now();
+        }
+
         $ticket->save();
 
         return response()->json(['ticket' => $ticket->fresh()]);
@@ -193,6 +210,7 @@ class CoachPlanTicketController extends Controller
         DB::transaction(function () use ($ticket) {
             $ticket->status = PlanTicketStatus::Pendiente;
             $ticket->submitted_at = now();
+            $ticket->deadline_at = now()->addHours(72);
             $ticket->save();
 
             $this->notifyAdminsOfNewTicket($ticket);
@@ -220,6 +238,154 @@ class CoachPlanTicketController extends Controller
         $ticket->delete();
 
         return response()->json(['deleted' => true]);
+    }
+
+    // ─── Duplicate ──────────────────────────────────────────────────────
+
+    public function duplicate(Request $request, int $id): JsonResponse
+    {
+        $coach = $this->resolveCoachOrFail($request);
+
+        $ticket = PlanTicket::forCoach($coach->id)->find($id);
+
+        if (! $ticket) {
+            return response()->json(['error' => 'Ticket no encontrado.'], 404);
+        }
+
+        $clone = PlanTicket::create([
+            'coach_id' => $coach->id,
+            'coach_name' => $ticket->coach_name,
+            'client_id' => $ticket->client_id,
+            'client_name' => $ticket->client_name,
+            'plan_type' => $ticket->plan_type?->value,
+            'status' => PlanTicketStatus::Borrador->value,
+            'datos_generales' => $ticket->datos_generales,
+            'plan_entrenamiento' => $ticket->plan_entrenamiento,
+            'plan_nutricional' => $ticket->plan_nutricional,
+            'plan_habitos' => $ticket->plan_habitos,
+            'plan_suplementacion' => $ticket->plan_suplementacion,
+            'plan_ciclo' => $ticket->plan_ciclo,
+            'notas_coach' => $ticket->notas_coach,
+            'parent_ticket_id' => $ticket->id,
+        ]);
+
+        return response()->json(['ticket' => $clone], 201);
+    }
+
+    // ─── Autofill ───────────────────────────────────────────────────────
+
+    public function autofill(Request $request): JsonResponse
+    {
+        $this->resolveCoachOrFail($request);
+
+        $validated = $request->validate([
+            'client_id' => ['required', 'integer', Rule::exists('clients', 'id')],
+        ]);
+
+        return response()->json($this->autofill->forClient((int) $validated['client_id']));
+    }
+
+    // ─── Comments ───────────────────────────────────────────────────────
+
+    public function listComments(Request $request, int $id): JsonResponse
+    {
+        $coach = $this->resolveCoachOrFail($request);
+
+        $ticket = PlanTicket::forCoach($coach->id)->find($id);
+
+        if (! $ticket) {
+            return response()->json(['error' => 'Ticket no encontrado.'], 404);
+        }
+
+        return response()->json(['comments' => $ticket->comments()->get()]);
+    }
+
+    public function addComment(Request $request, int $id): JsonResponse
+    {
+        $coach = $this->resolveCoachOrFail($request);
+
+        $ticket = PlanTicket::forCoach($coach->id)->find($id);
+
+        if (! $ticket) {
+            return response()->json(['error' => 'Ticket no encontrado.'], 404);
+        }
+
+        $validated = $request->validate([
+            'body' => ['required', 'string', 'max:5000'],
+        ]);
+
+        $comment = DB::transaction(function () use ($ticket, $coach, $validated) {
+            $comment = PlanTicketComment::create([
+                'plan_ticket_id' => $ticket->id,
+                'author_type' => 'coach',
+                'author_id' => $coach->id,
+                'author_name' => $coach->name ?? $coach->username ?? 'Coach',
+                'body' => $validated['body'],
+            ]);
+
+            $this->notifyAdminsOfCoachComment($ticket, $coach);
+
+            return $comment;
+        });
+
+        return response()->json(['comment' => $comment], 201);
+    }
+
+    // ─── Coach Notifications ────────────────────────────────────────────
+
+    public function notifications(Request $request): JsonResponse
+    {
+        $coach = $this->resolveCoachOrFail($request);
+
+        $rows = WellcoreNotification::where('user_type', 'admin')
+            ->where('user_id', $coach->id)
+            ->orderByDesc('created_at')
+            ->limit(30)
+            ->get(['id', 'type', 'title', 'body', 'link', 'read_at', 'created_at']);
+
+        $notifications = $rows->map(fn ($n) => [
+            'id' => $n->id,
+            'type' => $n->type,
+            'title' => $n->title,
+            'body' => $n->body,
+            'link' => $n->link,
+            'read_at' => $n->read_at?->toIso8601String(),
+            'created_at' => $n->created_at?->diffForHumans(),
+        ])->toArray();
+
+        return response()->json([
+            'notifications' => $notifications,
+            'unread_count' => $rows->whereNull('read_at')->count(),
+        ]);
+    }
+
+    public function markNotificationRead(Request $request, int $id): JsonResponse
+    {
+        $coach = $this->resolveCoachOrFail($request);
+
+        $updated = WellcoreNotification::where('id', $id)
+            ->where('user_type', 'admin')
+            ->where('user_id', $coach->id)
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+
+        if (! $updated) {
+            return response()->json(['message' => 'Notificacion no encontrada o ya leida.'], 404);
+        }
+
+        return response()->json(['message' => 'Notificacion marcada como leida.']);
+    }
+
+    public function markAllNotificationsRead(Request $request): JsonResponse
+    {
+        $coach = $this->resolveCoachOrFail($request);
+
+        WellcoreNotification::where('user_type', 'admin')
+            ->where('user_id', $coach->id)
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+
+        return response()->json(['message' => 'Todas las notificaciones marcadas como leidas.']);
     }
 
     // ─── Helpers ────────────────────────────────────────────────────────
@@ -323,6 +489,28 @@ class CoachPlanTicketController extends Controller
                 'user_id' => $admin->id,
                 'type' => 'plan_ticket_submitted',
                 'title' => 'Nuevo ticket de plan',
+                'body' => $body,
+                'link' => $link,
+            ]);
+        }
+    }
+
+    protected function notifyAdminsOfCoachComment(PlanTicket $ticket, Admin $coach): void
+    {
+        $admins = Admin::query()
+            ->whereIn('role', ['superadmin', 'admin', 'jefe'])
+            ->get(['id']);
+
+        $title = "Nuevo comentario en ticket #{$ticket->id}";
+        $body = "{$coach->name} comento en ticket de {$ticket->client_name}";
+        $link = "/admin/plan-tickets/{$ticket->id}";
+
+        foreach ($admins as $admin) {
+            WellcoreNotification::create([
+                'user_type' => 'admin',
+                'user_id' => $admin->id,
+                'type' => 'plan_ticket_comment',
+                'title' => $title,
                 'body' => $body,
                 'link' => $link,
             ]);

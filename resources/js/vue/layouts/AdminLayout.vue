@@ -2,6 +2,7 @@
 import { ref, computed, onUnmounted } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
+import NotificationBell from '../components/NotificationBell.vue';
 
 const authStore = useAuthStore();
 const route = useRoute();
@@ -265,6 +266,9 @@ const bottomNav = [
 
         <!-- Right: dark mode, role badge, admin info -->
         <div class="flex items-center gap-3">
+          <!-- Notification bell -->
+          <NotificationBell endpoint="/api/v/admin/notifications" />
+
           <!-- Dark Mode Toggle -->
           <button
             @click="toggleDarkMode"

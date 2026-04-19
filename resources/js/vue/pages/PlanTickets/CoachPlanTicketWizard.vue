@@ -3,6 +3,8 @@ import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
+import DeadlineBadge from '../../components/DeadlineBadge.vue';
+import PlanTicketComments from '../../components/PlanTicketComments.vue';
 
 const api = useApi();
 const route = useRoute();
@@ -131,10 +133,149 @@ const planType = computed(() => ticket.value?.plan_type || newForm.value.plan_ty
 const isElite = computed(() => planType.value === 'elite');
 const isMetodoOrElite = computed(() => ['metodo', 'elite'].includes(planType.value));
 
-// Readonly when status not editable
+// Readonly when status not editable — strict: only borrador or pendiente are editable
 const isEditable = computed(() => {
   if (!ticket.value) return true;
-  return ticket.value.is_editable ?? ['borrador', 'pendiente'].includes(ticket.value.status);
+  const status = ticket.value.status;
+  const editableStatuses = ['borrador', 'pendiente'];
+  // Prefer backend flag when present, but still enforce status guard
+  if (typeof ticket.value.is_editable === 'boolean') {
+    return ticket.value.is_editable && editableStatuses.includes(status);
+  }
+  return editableStatuses.includes(status);
+});
+
+// Resubmit indicator
+const wasResubmitted = computed(() => {
+  if (!ticket.value?.resubmitted_at) return false;
+  const resub = new Date(ticket.value.resubmitted_at).getTime();
+  const submitted = ticket.value.submitted_at ? new Date(ticket.value.submitted_at).getTime() : 0;
+  return resub > submitted;
+});
+
+function formatDateTimeShort(d) {
+  if (!d) return '';
+  try {
+    return new Date(d).toLocaleString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+  } catch { return d; }
+}
+
+const statusBannerMessage = computed(() => {
+  if (!ticket.value) return null;
+  const s = ticket.value.status;
+  if (s === 'en_revision') return 'Este ticket esta siendo revisado por el equipo WellCore. No se puede editar.';
+  if (s === 'completado') return 'Este ticket ya fue completado. El plan esta asignado al cliente.';
+  if (s === 'rechazado') return 'Este ticket fue rechazado por el equipo WellCore. Revisa los comentarios y crea un ticket nuevo si es necesario.';
+  return null;
+});
+
+// ============ Auto-fill + field highlight ============
+const autofillLoading = ref(false);
+const highlightedFields = ref(new Set());
+
+function flashFields(keys) {
+  for (const k of keys) highlightedFields.value.add(k);
+  // Clear after 3s
+  setTimeout(() => {
+    for (const k of keys) highlightedFields.value.delete(k);
+    // Trigger reactivity
+    highlightedFields.value = new Set(highlightedFields.value);
+  }, 3000);
+  highlightedFields.value = new Set(highlightedFields.value);
+}
+
+function isHighlighted(key) {
+  return highlightedFields.value.has(key);
+}
+
+async function autofillFromProfile() {
+  const clientId = ticket.value?.client_id || newForm.value.client_id;
+  if (!clientId) {
+    showToast('error', 'No hay cliente asociado al ticket.');
+    return;
+  }
+  autofillLoading.value = true;
+  try {
+    const { data } = await api.get(`/api/v/coach/plan-tickets/autofill`, { params: { client_id: clientId } });
+    const dg = data?.datos_generales || {};
+    const pe = data?.plan_entrenamiento || {};
+    let filledCount = 0;
+    const flashed = [];
+    for (const [key, val] of Object.entries(dg)) {
+      if (val === null || val === undefined || val === '') continue;
+      const prev = datosGenerales.value[key];
+      const changed = prev !== val;
+      datosGenerales.value[key] = val;
+      filledCount++;
+      if (changed) {
+        flashed.push(`dg.${key}`);
+      }
+    }
+    for (const [key, val] of Object.entries(pe)) {
+      if (val === null || val === undefined || val === '') continue;
+      if (Array.isArray(val) && val.length === 0) continue;
+      const prev = planEntrenamiento.value[key];
+      const changed = JSON.stringify(prev) !== JSON.stringify(val);
+      planEntrenamiento.value[key] = val;
+      filledCount++;
+      if (changed) flashed.push(`pe.${key}`);
+    }
+    if (filledCount === 0) {
+      showToast('info', 'No hay datos previos para pre-llenar.');
+    } else {
+      flashFields(flashed);
+      showToast('success', `${filledCount} campo${filledCount === 1 ? '' : 's'} rellenado${filledCount === 1 ? '' : 's'} desde el perfil.`);
+    }
+  } catch (e) {
+    showToast('error', 'No se pudieron cargar los datos del perfil.');
+  } finally {
+    autofillLoading.value = false;
+  }
+}
+
+// ============ Duplicate from previous (Paso 0) ============
+const previousTickets = ref([]);
+const loadingPrev = ref(false);
+const selectedPrevTicketId = ref('');
+const duplicatingPrev = ref(false);
+
+async function fetchPreviousTickets(clientId) {
+  if (!clientId) {
+    previousTickets.value = [];
+    return;
+  }
+  loadingPrev.value = true;
+  try {
+    const { data } = await api.get('/api/v/coach/plan-tickets', { params: { client_id: clientId, status: 'completado' } });
+    previousTickets.value = data.tickets || [];
+  } catch (e) {
+    previousTickets.value = [];
+  } finally {
+    loadingPrev.value = false;
+  }
+}
+
+async function duplicateFromPrevious() {
+  if (!selectedPrevTicketId.value) return;
+  if (!confirm('Crear un nuevo borrador duplicando este ticket previo?')) return;
+  duplicatingPrev.value = true;
+  try {
+    const { data } = await api.post(`/api/v/coach/plan-tickets/${selectedPrevTicketId.value}/duplicate`);
+    if (data?.ticket?.id) {
+      showToast('success', 'Ticket duplicado. Abriendo borrador...');
+      setTimeout(() => router.push(`/coach/plan-tickets/${data.ticket.id}`), 400);
+    }
+  } catch (e) {
+    showToast('error', 'No se pudo duplicar el ticket previo.');
+  } finally {
+    duplicatingPrev.value = false;
+  }
+}
+
+// Watch client selection for new tickets -> fetch previous
+watch(() => newForm.value.client_id, (v) => {
+  selectedPrevTicketId.value = '';
+  fetchPreviousTickets(v);
 });
 
 // Steps array built dynamically
@@ -401,8 +542,12 @@ onBeforeUnmount(() => {
       <Transition name="fade">
         <div
           v-if="toast"
-          class="fixed top-20 right-4 z-50 rounded-lg border px-4 py-3 shadow-lg"
-          :class="toast.type === 'success' ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500' : 'border-red-500/30 bg-red-500/10 text-red-400'"
+          class="fixed top-20 right-4 z-50 rounded-lg border px-4 py-3 shadow-lg text-sm font-medium"
+          :class="{
+            'border-emerald-500/30 bg-emerald-500/10 text-emerald-500': toast.type === 'success',
+            'border-red-500/30 bg-red-500/10 text-red-400': toast.type === 'error',
+            'border-blue-500/30 bg-blue-500/10 text-blue-500': toast.type === 'info',
+          }"
         >
           {{ toast.message }}
         </div>
@@ -427,6 +572,19 @@ onBeforeUnmount(() => {
             <p v-if="ticket" class="mt-1 text-sm text-wc-text-secondary">
               {{ ticket.client_name || '...' }} · {{ humanLabel(ticket.plan_type) }}
             </p>
+            <div v-if="ticket" class="mt-2 flex flex-wrap items-center gap-2">
+              <DeadlineBadge :deadline="ticket.deadline_at" :status="ticket.status" />
+              <span
+                v-if="wasResubmitted"
+                class="inline-flex items-center gap-1.5 rounded-full border border-orange-500/30 bg-orange-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-orange-400"
+                :title="'Reenviado ' + formatDateTimeShort(ticket.resubmitted_at)"
+              >
+                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992V4.36M2.985 19.644v-4.992h4.992m0 0-3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.183m0-4.991v4.99" />
+                </svg>
+                Editado tras envio · {{ formatDateTimeShort(ticket.resubmitted_at) }}
+              </span>
+            </div>
           </div>
           <div v-if="ticketId" class="text-xs text-wc-text-tertiary">
             <span v-if="savingIndicator === 'saving'" class="inline-flex items-center gap-1">
@@ -442,8 +600,14 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- Readonly banner -->
-        <div v-if="ticket && !isEditable" class="rounded-lg border border-yellow-500/30 bg-yellow-500/5 p-3 text-sm text-yellow-500">
-          Este ticket ya esta en <strong>{{ humanLabel(ticket.status) }}</strong>, no se puede editar.
+        <div v-if="ticket && !isEditable" class="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-400 flex items-start gap-3">
+          <svg class="h-5 w-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+          </svg>
+          <div>
+            <p class="font-semibold">Ticket en estado <strong>{{ humanLabel(ticket.status) }}</strong> — solo lectura</p>
+            <p class="mt-0.5 text-xs text-red-400/80">{{ statusBannerMessage }}</p>
+          </div>
         </div>
 
         <!-- Step progress -->
@@ -524,16 +688,66 @@ onBeforeUnmount(() => {
             </div>
             <p class="text-xs text-wc-text-tertiary">El cliente y tipo de plan no se pueden modificar una vez creado el ticket.</p>
           </div>
+
+          <!-- Duplicar desde ticket previo (solo en creacion, cliente elegido, y hay tickets completados previos) -->
+          <div
+            v-if="isNew && !ticketId && newForm.client_id && previousTickets.length > 0"
+            class="mt-4 rounded-lg border border-blue-500/30 bg-blue-500/5 p-4 space-y-3"
+          >
+            <div class="flex items-start gap-2">
+              <svg class="h-5 w-5 shrink-0 text-blue-500" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m0 0h5.625c.621 0 1.125.504 1.125 1.125v4.125M8.25 6.75h6" />
+              </svg>
+              <div class="flex-1">
+                <p class="text-sm font-semibold text-wc-text">Duplicar desde ticket previo</p>
+                <p class="text-xs text-wc-text-tertiary mt-0.5">Este cliente tiene planes previos. Puedes clonar uno para acelerar el brief.</p>
+              </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <select
+                v-model="selectedPrevTicketId"
+                class="flex-1 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
+              >
+                <option value="">Selecciona un ticket previo completado...</option>
+                <option v-for="p in previousTickets" :key="p.id" :value="p.id">
+                  #{{ p.id }} · {{ humanLabel(p.plan_type) }} · {{ p.submitted_at ? new Date(p.submitted_at).toLocaleDateString('es-MX') : 'sin fecha' }}
+                </option>
+              </select>
+              <button
+                type="button"
+                @click="duplicateFromPrevious"
+                :disabled="!selectedPrevTicketId || duplicatingPrev"
+                class="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600 transition disabled:opacity-50"
+              >{{ duplicatingPrev ? 'Duplicando...' : 'Duplicar y editar' }}</button>
+            </div>
+          </div>
+          <div v-else-if="isNew && !ticketId && newForm.client_id && loadingPrev" class="mt-3 text-xs text-wc-text-tertiary">
+            Buscando tickets previos del cliente...
+          </div>
         </section>
 
         <!-- STEP: datos_generales -->
         <section v-else-if="currentStepKey === 'datos'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-5">
-          <h2 class="font-display text-xl tracking-wide text-wc-text">2. Datos generales</h2>
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <h2 class="font-display text-xl tracking-wide text-wc-text">2. Datos generales</h2>
+            <button
+              v-if="isEditable && (ticket?.client_id || newForm.client_id)"
+              type="button"
+              @click="autofillFromProfile"
+              :disabled="autofillLoading"
+              class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition disabled:opacity-50 shadow-sm"
+            >
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456Z" />
+              </svg>
+              {{ autofillLoading ? 'Cargando...' : 'Pre-llenar desde el perfil del cliente' }}
+            </button>
+          </div>
           <fieldset :disabled="!isEditable" class="space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Nombre del cliente</label>
-                <input v-model="datosGenerales.nombre" type="text" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent" />
+                <input v-model="datosGenerales.nombre" type="text" :class="['w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent', isHighlighted('dg.nombre') && 'autofill-highlight']" />
               </div>
               <div>
                 <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Plan</label>
@@ -546,7 +760,7 @@ onBeforeUnmount(() => {
               </div>
               <div>
                 <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Edad</label>
-                <input v-model.number="datosGenerales.edad" type="number" min="15" max="99" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent" />
+                <input v-model.number="datosGenerales.edad" type="number" min="15" max="99" :class="['w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent', isHighlighted('dg.edad') && 'autofill-highlight']" />
               </div>
               <div>
                 <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Genero</label>
@@ -560,11 +774,11 @@ onBeforeUnmount(() => {
               </div>
               <div>
                 <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Peso (kg)</label>
-                <input v-model.number="datosGenerales.peso" type="number" step="0.1" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent" />
+                <input v-model.number="datosGenerales.peso" type="number" step="0.1" :class="['w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent', isHighlighted('dg.peso') && 'autofill-highlight']" />
               </div>
               <div>
                 <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Estatura (cm)</label>
-                <input v-model.number="datosGenerales.estatura" type="number" step="1" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent" />
+                <input v-model.number="datosGenerales.estatura" type="number" step="1" :class="['w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent', isHighlighted('dg.estatura') && 'autofill-highlight']" />
               </div>
               <div class="sm:col-span-2">
                 <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Nivel de actividad diario</label>
@@ -575,7 +789,7 @@ onBeforeUnmount(() => {
               </div>
               <div class="sm:col-span-2">
                 <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Objetivo principal</label>
-                <textarea v-model="datosGenerales.objetivo" rows="3" placeholder="Describe el objetivo del cliente en sus propias palabras..." class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
+                <textarea v-model="datosGenerales.objetivo" rows="3" placeholder="Describe el objetivo del cliente en sus propias palabras..." :class="['w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent', isHighlighted('dg.objetivo') && 'autofill-highlight']"></textarea>
               </div>
             </div>
           </fieldset>
@@ -1015,6 +1229,13 @@ onBeforeUnmount(() => {
             </div>
           </div>
 
+          <!-- Comments thread (solo si el ticket existe y no es solo borrador nuevo) -->
+          <PlanTicketComments
+            v-if="ticketId && ticket && ticket.status !== 'borrador'"
+            :endpoint-base="`/api/v/coach/plan-tickets/${ticketId}`"
+            role="coach"
+          />
+
           <!-- Missing fields list -->
           <div v-if="missingFields.length > 0" class="rounded-xl border border-red-500/30 bg-red-500/5 p-5">
             <p class="mb-2 font-semibold text-red-400">Campos faltantes:</p>
@@ -1100,4 +1321,29 @@ onBeforeUnmount(() => {
 <style scoped>
 .fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
+
+/* Autofill-modified field highlight */
+.autofill-highlight {
+  border-color: rgb(234 179 8 / 0.8) !important;
+  box-shadow: 0 0 0 2px rgb(234 179 8 / 0.15);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.autofill-highlight-wrapper {
+  position: relative;
+}
+.autofill-highlight-wrapper::after {
+  content: 'Modificado por autofill';
+  position: absolute;
+  top: -8px;
+  right: 8px;
+  background: rgb(234 179 8);
+  color: #1f1f1f;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  pointer-events: none;
+}
 </style>

@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
+import DeadlineBadge from '../../components/DeadlineBadge.vue';
 
 const api = useApi();
 const router = useRouter();
@@ -10,6 +11,8 @@ const router = useRouter();
 const loading = ref(true);
 const tickets = ref([]);
 const activeStatus = ref('all');
+const duplicatingId = ref(null);
+const toast = ref(null);
 
 const STATUS_TABS = [
   { key: 'all', label: 'Todos' },
@@ -76,6 +79,30 @@ function goToTicket(id) {
   router.push(`/coach/plan-tickets/${id}`);
 }
 
+async function duplicateTicket(id, event) {
+  if (event) event.stopPropagation();
+  if (duplicatingId.value) return;
+  duplicatingId.value = id;
+  try {
+    const { data } = await api.post(`/api/v/coach/plan-tickets/${id}/duplicate`);
+    if (data?.ticket?.id) {
+      showToast('success', 'Ticket duplicado. Abriendo borrador...');
+      setTimeout(() => router.push(`/coach/plan-tickets/${data.ticket.id}`), 400);
+    } else {
+      showToast('error', 'No se pudo duplicar el ticket.');
+    }
+  } catch (e) {
+    showToast('error', 'No se pudo duplicar el ticket.');
+  } finally {
+    duplicatingId.value = null;
+  }
+}
+
+function showToast(type, message) {
+  toast.value = { type, message };
+  setTimeout(() => { toast.value = null; }, 3000);
+}
+
 function planTypeMeta(t) {
   return PLAN_TYPE_META[t] || PLAN_TYPE_META.esencial;
 }
@@ -90,6 +117,17 @@ onMounted(fetchTickets);
 <template>
   <CoachLayout>
     <div class="space-y-6">
+
+      <!-- Toast -->
+      <Transition name="fade">
+        <div
+          v-if="toast"
+          class="fixed top-20 right-4 z-50 rounded-lg border px-4 py-3 shadow-lg"
+          :class="toast.type === 'success' ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500' : 'border-red-500/30 bg-red-500/10 text-red-400'"
+        >
+          {{ toast.message }}
+        </div>
+      </Transition>
 
       <!-- Header -->
       <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -144,11 +182,11 @@ onMounted(fetchTickets);
 
       <!-- List -->
       <div v-else class="space-y-3">
-        <button
+        <div
           v-for="t in filteredTickets"
           :key="t.id"
           @click="goToTicket(t.id)"
-          class="w-full text-left rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 hover:border-wc-accent/40 transition"
+          class="group cursor-pointer rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 hover:border-wc-accent/40 transition"
         >
           <div class="flex items-start justify-between gap-4 flex-wrap">
             <div class="min-w-0 flex-1">
@@ -162,23 +200,46 @@ onMounted(fetchTickets);
                   class="rounded-full px-2.5 py-0.5 text-xs font-medium"
                   :class="[statusMeta(t.status).bg, statusMeta(t.status).text]"
                 >{{ statusMeta(t.status).label }}</span>
+                <DeadlineBadge :deadline="t.deadline_at" :status="t.status" />
               </div>
               <div class="mt-2 flex items-center gap-4 text-xs text-wc-text-tertiary">
                 <span>Creado {{ formatDate(t.created_at) }}</span>
                 <span v-if="t.submitted_at">- Enviado {{ formatDate(t.submitted_at) }}</span>
               </div>
             </div>
-            <div class="flex items-center gap-2 shrink-0">
-              <span class="inline-flex items-center gap-1 text-xs font-semibold text-wc-accent">
+            <div class="flex items-center gap-2 shrink-0" @click.stop>
+              <button
+                type="button"
+                @click="duplicateTicket(t.id, $event)"
+                :disabled="duplicatingId === t.id"
+                class="inline-flex items-center gap-1 rounded-md border border-wc-border bg-wc-bg-secondary px-2.5 py-1 text-xs font-medium text-wc-text-secondary hover:border-wc-accent/40 hover:text-wc-text transition disabled:opacity-50"
+                title="Duplicar ticket"
+                aria-label="Duplicar ticket"
+              >
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m0 0h5.625c.621 0 1.125.504 1.125 1.125v4.125M8.25 6.75h6" />
+                </svg>
+                {{ duplicatingId === t.id ? '...' : 'Duplicar' }}
+              </button>
+              <button
+                type="button"
+                @click="goToTicket(t.id)"
+                class="inline-flex items-center gap-1 rounded-md bg-wc-accent/10 px-2.5 py-1 text-xs font-semibold text-wc-accent hover:bg-wc-accent/20 transition"
+              >
                 {{ t.is_editable ? 'Editar' : 'Ver' }}
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                 </svg>
-              </span>
+              </button>
             </div>
           </div>
-        </button>
+        </div>
       </div>
     </div>
   </CoachLayout>
 </template>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+</style>

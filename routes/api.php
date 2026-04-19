@@ -240,12 +240,21 @@ Route::prefix('v/coach')->middleware('throttle:api')->group(function () {
     Route::get('/resources', [CoachController::class, 'resources']);
 
     // Plan Tickets (coach brief inbox)
+    Route::get('/plan-tickets/autofill', [CoachPlanTicketController::class, 'autofill']);
     Route::get('/plan-tickets', [CoachPlanTicketController::class, 'index']);
     Route::post('/plan-tickets', [CoachPlanTicketController::class, 'store']);
     Route::get('/plan-tickets/{id}', [CoachPlanTicketController::class, 'show'])->whereNumber('id');
     Route::put('/plan-tickets/{id}', [CoachPlanTicketController::class, 'update'])->whereNumber('id');
     Route::post('/plan-tickets/{id}/submit', [CoachPlanTicketController::class, 'submit'])->whereNumber('id');
+    Route::post('/plan-tickets/{id}/duplicate', [CoachPlanTicketController::class, 'duplicate'])->whereNumber('id');
     Route::delete('/plan-tickets/{id}', [CoachPlanTicketController::class, 'destroy'])->whereNumber('id');
+    Route::get('/plan-tickets/{id}/comments', [CoachPlanTicketController::class, 'listComments'])->whereNumber('id');
+    Route::post('/plan-tickets/{id}/comments', [CoachPlanTicketController::class, 'addComment'])->whereNumber('id');
+
+    // Coach notifications
+    Route::get('/notifications', [CoachPlanTicketController::class, 'notifications']);
+    Route::post('/notifications/read-all', [CoachPlanTicketController::class, 'markAllNotificationsRead']);
+    Route::post('/notifications/{id}/read', [CoachPlanTicketController::class, 'markNotificationRead'])->whereNumber('id');
 });
 
 // Admin (Phase 9 — authenticated admin with admin/superadmin/jefe role)
@@ -291,5 +300,15 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
     Route::get('/plan-tickets', [AdminPlanTicketController::class, 'index']);
     Route::get('/plan-tickets/{id}', [AdminPlanTicketController::class, 'show'])->whereNumber('id');
     Route::get('/plan-tickets/{id}/export', [AdminPlanTicketController::class, 'exportJson'])->whereNumber('id');
+    Route::get('/plan-tickets/{id}/export/{section}', [AdminPlanTicketController::class, 'exportSection'])
+        ->whereNumber('id')
+        ->where('section', 'full|entrenamiento|nutricion|habitos|suplementacion|ciclo');
     Route::post('/plan-tickets/{id}/status', [AdminPlanTicketController::class, 'updateStatus'])->whereNumber('id');
+    Route::get('/plan-tickets/{id}/comments', [AdminPlanTicketController::class, 'listComments'])->whereNumber('id');
+    Route::post('/plan-tickets/{id}/comments', [AdminPlanTicketController::class, 'addComment'])->whereNumber('id');
+
+    // Admin notifications
+    Route::get('/notifications', [AdminPlanTicketController::class, 'notifications']);
+    Route::post('/notifications/read-all', [AdminPlanTicketController::class, 'markAllNotificationsRead']);
+    Route::post('/notifications/{id}/read', [AdminPlanTicketController::class, 'markNotificationRead'])->whereNumber('id');
 });

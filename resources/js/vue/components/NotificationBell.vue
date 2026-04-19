@@ -1,72 +1,89 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 
+const props = defineProps({
+    endpoint: {
+        type: String,
+        default: '/api/v/client/notifications',
+    },
+    pollInterval: {
+        type: Number,
+        default: 90000,
+    },
+});
+
 const authStore = useAuthStore();
+const router = useRouter();
 
 const notifications = ref([]);
 const unreadCount = ref(0);
 const showDropdown = ref(false);
 let pollTimer = null;
+// Unique id so multiple bells don't collide on click-outside handling
+const wrapperId = `notif-dropdown-wrapper-${Math.random().toString(36).slice(2, 9)}`;
 
 const hasNotifications = computed(() => notifications.value.length > 0);
 const badgeText = computed(() => (unreadCount.value > 9 ? '9+' : unreadCount.value));
 
+function authHeaders() {
+    return { Authorization: `Bearer ${authStore.token}` };
+}
+
 async function fetchNotifications() {
     try {
-        const res = await fetch('/api/v/client/notifications', {
-            headers: { Authorization: `Bearer ${authStore.token}` },
-        });
+        const res = await fetch(props.endpoint, { headers: authHeaders() });
         if (!res.ok) return;
         const data = await res.json();
         notifications.value = data.notifications ?? [];
-        unreadCount.value = data.unreadCount ?? 0;
+        // Support both snake_case (coach/admin) and camelCase (client) responses
+        unreadCount.value = data.unread_count ?? data.unreadCount ?? 0;
     } catch {
         // silently ignore network errors
     }
 }
 
 async function markAsRead(id) {
-    await fetch(`/api/v/client/notifications/${id}/read`, {
+    await fetch(`${props.endpoint}/${id}/read`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${authStore.token}` },
+        headers: authHeaders(),
     });
     await fetchNotifications();
 }
 
 async function markAllAsRead() {
-    await fetch('/api/v/client/notifications/read-all', {
+    await fetch(`${props.endpoint}/read-all`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${authStore.token}` },
+        headers: authHeaders(),
     });
     await fetchNotifications();
 }
 
 function handleNotificationClick(notification) {
     markAsRead(notification.id);
-    if (notification.link) {
-        setTimeout(() => {
-            window.location.href = notification.link;
-        }, 100);
-    }
     showDropdown.value = false;
+    if (notification.link) {
+        // If link is a SPA path, use Vue Router; external → full nav
+        const link = notification.link;
+        const isExternal = /^https?:\/\//i.test(link);
+        if (isExternal) {
+            setTimeout(() => { window.location.href = link; }, 100);
+        } else {
+            setTimeout(() => { router.push(link).catch(() => { window.location.href = link; }); }, 100);
+        }
+    }
 }
 
 function handleClickOutside(e) {
-    const el = document.getElementById('notif-dropdown-wrapper');
+    const el = document.getElementById(wrapperId);
     if (el && !el.contains(e.target)) {
         showDropdown.value = false;
     }
 }
 
 function startPolling() {
-    const interval = unreadCount.value > 0 ? 60_000 : 120_000;
-    pollTimer = setInterval(fetchNotifications, interval);
-}
-
-function restartPolling() {
-    clearInterval(pollTimer);
-    startPolling();
+    pollTimer = setInterval(fetchNotifications, props.pollInterval);
 }
 
 onMounted(async () => {
@@ -82,7 +99,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div id="notif-dropdown-wrapper" class="relative">
+  <div :id="wrapperId" class="relative">
 
     <!-- Bell button -->
     <button
@@ -174,17 +191,6 @@ onUnmounted(() => {
             </svg>
             <p class="text-sm text-wc-text-secondary">Sin notificaciones</p>
           </div>
-        </div>
-
-        <!-- Footer -->
-        <div v-if="hasNotifications" class="border-t border-wc-border px-4 py-2.5 text-center">
-          <RouterLink
-            to="/client"
-            @click="showDropdown = false"
-            class="text-xs font-medium text-wc-accent hover:text-wc-accent/80 transition-colors"
-          >
-            Ver todas
-          </RouterLink>
         </div>
       </div>
     </Transition>
