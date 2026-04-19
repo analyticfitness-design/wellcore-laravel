@@ -162,13 +162,17 @@
                                 'phoneNumber' => $whatsapp,
                             ];
                         @endphp
-                        <script>
-                            window.__wompiConfig = {!! json_encode($wompiConfigForJs, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!};
-                        </script>
+                        <script type="application/json" id="wompi-cfg-json">{!! json_encode($wompiConfigForJs, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}</script>
                         <div class="mt-8 rounded-xl border border-wc-border bg-wc-bg-tertiary p-6"
                              x-data="{
                                 ready: false,
                                 checkout: null,
+                                cfg: null,
+                                init() {
+                                    const el = document.getElementById('wompi-cfg-json');
+                                    if (el) { try { this.cfg = JSON.parse(el.textContent); } catch (e) { console.error('wompi cfg parse', e); } }
+                                    this.loadWompi();
+                                },
                                 loadWompi() {
                                     if (window.WidgetCheckout) { this.ready = true; return; }
                                     const script = document.createElement('script');
@@ -183,7 +187,7 @@
                                         alert('La pasarela de pago no cargo correctamente. Recarga la pagina e intenta de nuevo.');
                                         return;
                                     }
-                                    const cfg = window.__wompiConfig || {};
+                                    const cfg = this.cfg || {};
                                     this.checkout = new WidgetCheckout({
                                         currency: cfg.currency,
                                         amountInCents: cfg.amountInCents,
@@ -204,8 +208,7 @@
                                         }
                                     });
                                 }
-                             }"
-                             x-init="loadWompi()">
+                             }">
 
                             {{-- Pay button --}}
                             <div class="text-center">
