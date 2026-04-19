@@ -20,6 +20,18 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
+// Temporary log tail — remove after diagnosis
+Route::get('/debug-log-k7x9', function () {
+    $logFile = storage_path('logs/laravel.log');
+    if (! file_exists($logFile)) {
+        return response()->json(['error' => 'log file not found', 'path' => $logFile]);
+    }
+    $size = filesize($logFile);
+    $offset = max(0, $size - 20000);
+    $content = file_get_contents($logFile, false, null, $offset);
+    return response($content)->header('Content-Type', 'text/plain; charset=utf-8');
+});
+
 // Temporary GIF debug route — remove after diagnosis
 Route::get('/debug-gif', function () {
     if (function_exists('opcache_reset')) {
