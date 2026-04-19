@@ -68,6 +68,7 @@ const navSections = [
     {
         label: 'Seguimiento',
         items: [
+            { name: 'Tickets de Plan', to: '/coach/plan-tickets', icon: 'plans', routeName: 'coach-plan-tickets' },
             { name: 'Planes', to: '/coach/plans', icon: 'plans', routeName: 'coach-plans' },
             { name: 'Analitica', to: '/coach/analytics', icon: 'analytics', routeName: 'coach-analytics' },
             { name: 'Notas', to: '/coach/notes', icon: 'notes', routeName: 'coach-notes' },

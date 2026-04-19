@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\Api\AdminPlanTicketController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\CoachController;
+use App\Http\Controllers\Api\CoachPlanTicketController;
 use App\Http\Controllers\Api\EjerciciosController;
 use App\Http\Controllers\Api\NutritionController;
 use App\Http\Controllers\Api\PublicFormController;
@@ -236,6 +238,14 @@ Route::prefix('v/coach')->middleware('throttle:api')->group(function () {
     Route::put('/brand', [CoachController::class, 'updateBrand']);
     Route::get('/features', [CoachController::class, 'features']);
     Route::get('/resources', [CoachController::class, 'resources']);
+
+    // Plan Tickets (coach brief inbox)
+    Route::get('/plan-tickets', [CoachPlanTicketController::class, 'index']);
+    Route::post('/plan-tickets', [CoachPlanTicketController::class, 'store']);
+    Route::get('/plan-tickets/{id}', [CoachPlanTicketController::class, 'show'])->whereNumber('id');
+    Route::put('/plan-tickets/{id}', [CoachPlanTicketController::class, 'update'])->whereNumber('id');
+    Route::post('/plan-tickets/{id}/submit', [CoachPlanTicketController::class, 'submit'])->whereNumber('id');
+    Route::delete('/plan-tickets/{id}', [CoachPlanTicketController::class, 'destroy'])->whereNumber('id');
 });
 
 // Admin (Phase 9 — authenticated admin with admin/superadmin/jefe role)
@@ -276,4 +286,10 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
     Route::patch('/tickets/{id}/status', [AdminController::class, 'updateTicketStatus']);
     Route::post('/send-plan-invitation', [AdminController::class, 'sendPlanInvitation']);
     Route::post('/send-gift-invitation', [AdminController::class, 'sendGiftInvitation']);
+
+    // Plan Tickets (admin inbox — review & export briefs)
+    Route::get('/plan-tickets', [AdminPlanTicketController::class, 'index']);
+    Route::get('/plan-tickets/{id}', [AdminPlanTicketController::class, 'show'])->whereNumber('id');
+    Route::get('/plan-tickets/{id}/export', [AdminPlanTicketController::class, 'exportJson'])->whereNumber('id');
+    Route::post('/plan-tickets/{id}/status', [AdminPlanTicketController::class, 'updateStatus'])->whereNumber('id');
 });

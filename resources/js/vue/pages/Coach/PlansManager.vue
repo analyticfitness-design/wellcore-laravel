@@ -1,7 +1,10 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
+
+const router = useRouter();
 
 const api = useApi();
 const loading = ref(true);
@@ -76,6 +79,24 @@ onMounted(loadData);
         <div>
           <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">Gestion de Planes</h1>
           <p class="mt-1 text-sm text-wc-text-tertiary">Crea, gestiona y asigna planes a tus clientes</p>
+        </div>
+      </div>
+
+      <!-- Plan Tickets CTA -->
+      <div class="rounded-xl border border-wc-accent/40 bg-wc-bg-tertiary p-5 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+        <div>
+          <h2 class="font-display text-lg tracking-wide text-wc-text">Tickets de Plan</h2>
+          <p class="mt-0.5 text-sm text-wc-text-secondary">Ahora los planes se crean como briefs estructurados enviados al equipo WellCore.</p>
+        </div>
+        <div class="flex gap-2">
+          <button
+            @click="router.push('/coach/plan-tickets')"
+            class="rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-2 text-sm font-semibold text-wc-text hover:border-wc-accent/40 transition"
+          >Ver mis tickets</button>
+          <button
+            @click="router.push('/coach/plan-tickets/nuevo')"
+            class="rounded-lg bg-wc-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition"
+          >Crear nuevo ticket</button>
         </div>
       </div>
 

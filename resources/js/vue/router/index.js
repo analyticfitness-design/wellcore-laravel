@@ -75,6 +75,9 @@ const routes = [
     { path: '/coach/messages', name: 'coach-messages', component: () => import('../pages/Coach/MessageCenter.vue'), meta: { auth: true, title: 'Mensajes — WellCore' } },
     { path: '/coach/broadcast', name: 'coach-broadcast', component: () => import('../pages/Coach/BroadcastCenter.vue'), meta: { auth: true, title: 'Broadcast — WellCore' } },
     { path: '/coach/plans', name: 'coach-plans', component: () => import('../pages/Coach/PlansManager.vue'), meta: { auth: true, title: 'Planes — WellCore' } },
+    { path: '/coach/plan-tickets', name: 'coach-plan-tickets', component: () => import('../pages/PlanTickets/CoachPlanTicketsList.vue'), meta: { auth: true, title: 'Tickets de Plan — WellCore' } },
+    { path: '/coach/plan-tickets/nuevo', name: 'coach-plan-ticket-new', component: () => import('../pages/PlanTickets/CoachPlanTicketWizard.vue'), meta: { auth: true, title: 'Nuevo Ticket — WellCore' } },
+    { path: '/coach/plan-tickets/:id', name: 'coach-plan-ticket-edit', component: () => import('../pages/PlanTickets/CoachPlanTicketWizard.vue'), meta: { auth: true, title: 'Editar Ticket — WellCore' } },
     { path: '/coach/analytics', name: 'coach-analytics', component: () => import('../pages/Coach/Analytics.vue'), meta: { auth: true, title: 'Analytics — WellCore' } },
     { path: '/coach/profile', name: 'coach-profile', component: () => import('../pages/Coach/CoachProfile.vue'), meta: { auth: true, title: 'Perfil Coach — WellCore' } },
     { path: '/coach/notes', name: 'coach-notes', component: () => import('../pages/Coach/Notes.vue'), meta: { auth: true, title: 'Notas — WellCore' } },
@@ -101,6 +104,8 @@ const routes = [
     { path: '/admin/referrals', name: 'admin-referrals', component: () => import('../pages/Admin/ReferralRewards.vue'), meta: { auth: true, title: 'Referidos — WellCore Admin' } },
     { path: '/admin/campaigns', name: 'admin-campaigns', component: () => import('../pages/Admin/CampaignTracker.vue'), meta: { auth: true, title: 'Campanas — WellCore Admin' } },
     { path: '/admin/send-invitation', name: 'admin-send-invitation', component: () => import('../pages/Admin/SendPlanInvitation.vue'), meta: { auth: true, title: 'Enviar Invitacion — WellCore Admin' } },
+    { path: '/admin/plan-tickets', name: 'admin-plan-tickets', component: () => import('../pages/PlanTickets/AdminPlanTicketsList.vue'), meta: { auth: true, title: 'Tickets de Planes — WellCore Admin' } },
+    { path: '/admin/plan-tickets/:id', name: 'admin-plan-ticket-detail', component: () => import('../pages/PlanTickets/AdminPlanTicketDetail.vue'), meta: { auth: true, title: 'Ticket — WellCore Admin' } },
 
     // Catch-all: redirect unknown routes to login
     { path: '/:pathMatch(.*)*', redirect: '/login' },
