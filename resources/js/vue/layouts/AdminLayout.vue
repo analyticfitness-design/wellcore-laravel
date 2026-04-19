@@ -86,6 +86,7 @@ const navSections = [
             { name: 'Chat Analytics', to: '/admin/chat-analytics', icon: 'chat', routeName: 'admin-chat-analytics' },
             { name: 'Tickets', to: '/admin/tickets', icon: 'tickets', routeName: 'admin-tickets' },
             { name: 'Tickets de Planes', to: '/admin/plan-tickets', icon: 'tickets', routeName: 'admin-plan-tickets' },
+            { name: 'Solicitudes de Coaches', to: '/admin/client-requests', icon: 'tickets', routeName: 'admin-client-requests' },
             { name: 'Stats de Tickets', to: '/admin/plan-tickets/stats', icon: 'tickets', routeName: 'admin-plan-tickets-stats' },
             { name: 'Campanas', to: '/admin/campaigns', icon: 'campaigns', routeName: 'admin-campaigns' },
         ],

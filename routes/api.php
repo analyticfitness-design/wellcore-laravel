@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\Api\AdminClientRequestController;
+use App\Http\Controllers\Api\AdminCoachManagementController;
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\AdminPlanTicketController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClientController;
+use App\Http\Controllers\Api\CoachClientRequestController;
 use App\Http\Controllers\Api\CoachController;
 use App\Http\Controllers\Api\CoachPlanTicketController;
 use App\Http\Controllers\Api\EjerciciosController;
@@ -236,6 +239,15 @@ Route::prefix('v/coach')->middleware('throttle:api')->group(function () {
     Route::get('/features', [CoachController::class, 'features']);
     Route::get('/resources', [CoachController::class, 'resources']);
 
+    // Impersonation (coach → client)
+    Route::post('/clients/{id}/impersonate', [CoachController::class, 'impersonate'])->whereNumber('id');
+    Route::post('/impersonate/end', [CoachController::class, 'endImpersonation']);
+
+    // Client action requests (delete/deactivate/edit)
+    Route::post('/clients/{id}/requests', [CoachClientRequestController::class, 'store'])->whereNumber('id');
+    Route::get('/clients/{id}/requests', [CoachClientRequestController::class, 'index'])->whereNumber('id');
+    Route::delete('/client-requests/{id}', [CoachClientRequestController::class, 'cancel'])->whereNumber('id');
+
     // Plan Tickets (coach brief inbox)
     Route::get('/plan-tickets/autofill', [CoachPlanTicketController::class, 'autofill']);
     Route::get('/plan-tickets', [CoachPlanTicketController::class, 'index']);
@@ -295,6 +307,20 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
     Route::patch('/tickets/{id}/status', [AdminController::class, 'updateTicketStatus']);
     Route::post('/send-plan-invitation', [AdminController::class, 'sendPlanInvitation']);
     Route::post('/send-gift-invitation', [AdminController::class, 'sendGiftInvitation']);
+
+    // Coach management (full CRUD + reset password)
+    Route::get('/coaches/manage', [AdminCoachManagementController::class, 'index']);
+    Route::post('/coaches/manage', [AdminCoachManagementController::class, 'store']);
+    Route::get('/coaches/manage/{id}', [AdminCoachManagementController::class, 'show'])->whereNumber('id');
+    Route::put('/coaches/manage/{id}', [AdminCoachManagementController::class, 'update'])->whereNumber('id');
+    Route::post('/coaches/manage/{id}/reset-password', [AdminCoachManagementController::class, 'resetPassword'])->whereNumber('id');
+    Route::delete('/coaches/manage/{id}', [AdminCoachManagementController::class, 'destroy'])->whereNumber('id');
+
+    // Client action requests (admin inbox)
+    Route::get('/client-requests', [AdminClientRequestController::class, 'index']);
+    Route::get('/client-requests/{id}', [AdminClientRequestController::class, 'show'])->whereNumber('id');
+    Route::post('/client-requests/{id}/approve', [AdminClientRequestController::class, 'approve'])->whereNumber('id');
+    Route::post('/client-requests/{id}/reject', [AdminClientRequestController::class, 'reject'])->whereNumber('id');
 
     // Plan Tickets (admin inbox — review & export briefs)
     Route::get('/plan-tickets/stats', [AdminPlanTicketController::class, 'stats']);

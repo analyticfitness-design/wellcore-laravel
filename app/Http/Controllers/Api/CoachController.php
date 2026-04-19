@@ -9,6 +9,7 @@ use App\Models\AcademyContent;
 use App\Models\AccountabilityPod;
 use App\Models\Admin;
 use App\Models\AssignedPlan;
+use App\Models\AuthToken;
 use App\Models\Checkin;
 use App\Models\Client;
 use App\Models\ClientXp;
@@ -20,6 +21,7 @@ use App\Models\CoachNote;
 use App\Models\CoachProfile;
 use App\Models\CoachPwaConfig;
 use App\Models\CoachVideoTip;
+use App\Models\ImpersonationLog;
 use App\Models\Payment;
 use App\Models\PlanTemplate;
 use App\Models\PodMember;
@@ -1476,5 +1478,80 @@ class CoachController extends Controller
             'articles' => $articles,
             'templates' => $templates,
         ]);
+    }
+
+    // ─── Impersonation ─────────────────────────────────────────────────
+
+    /**
+     * POST /api/v/coach/clients/{id}/impersonate
+     *
+     * Issues a short-lived client auth token for the coach to enter the client portal.
+     */
+    public function impersonate(Request $request, int $clientId): JsonResponse
+    {
+        $coach = $this->resolveCoachOrFail($request);
+
+        $clientIds = $this->getCoachClientIds($coach->id);
+        if (! $clientIds->contains($clientId)) {
+            abort(403, 'Este cliente no esta asignado a ti.');
+        }
+
+        $client = Client::findOrFail($clientId);
+
+        $token = bin2hex(random_bytes(32));
+        $expiresAt = now()->addMinutes(30);
+
+        AuthToken::create([
+            'user_type' => 'client',
+            'user_id' => $client->id,
+            'token' => $token,
+            'expires_at' => $expiresAt,
+            'ip_address' => $request->ip(),
+        ]);
+
+        ImpersonationLog::create([
+            'actor_type' => 'coach',
+            'actor_id' => $coach->id,
+            'actor_name' => $coach->name ?? $coach->username ?? 'Coach',
+            'target_client_id' => $client->id,
+            'target_client_name' => $client->name ?? '',
+            'token' => $token,
+            'started_at' => now(),
+            'ip' => $request->ip(),
+            'user_agent' => substr((string) $request->userAgent(), 0, 500),
+        ]);
+
+        return response()->json([
+            'token' => $token,
+            'client_id' => $client->id,
+            'client_name' => $client->name,
+            'expires_at' => $expiresAt->toIso8601String(),
+            'redirect_url' => '/client',
+        ]);
+    }
+
+    /**
+     * POST /api/v/coach/impersonate/end
+     */
+    public function endImpersonation(Request $request): JsonResponse
+    {
+        $this->resolveCoachOrFail($request);
+
+        $validated = $request->validate([
+            'token' => 'required|string|size:64',
+        ]);
+
+        $log = ImpersonationLog::where('token', $validated['token'])
+            ->whereNull('ended_at')
+            ->latest('id')
+            ->first();
+
+        if ($log) {
+            $log->update(['ended_at' => now()]);
+        }
+
+        AuthToken::where('token', $validated['token'])->delete();
+
+        return response()->json(['ok' => true]);
     }
 }

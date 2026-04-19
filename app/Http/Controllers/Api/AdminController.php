@@ -19,6 +19,7 @@ use App\Models\AuthToken;
 use App\Models\ChatMessage;
 use App\Models\Checkin;
 use App\Models\Client;
+use App\Models\ClientActionRequest;
 use App\Models\ClientProfile;
 use App\Models\CoachMessage;
 use App\Models\CoachProfile;
@@ -109,6 +110,8 @@ class AdminController extends Controller
 
         $supportOpen = Ticket::whereIn('status', ['open', 'in_progress'])->count();
 
+        $clientRequestsPendientes = ClientActionRequest::where('status', 'pendiente')->count();
+
         $production = [
             'plan_tickets_pendientes' => (int) ($productionAgg->pendientes ?? 0),
             'plan_tickets_en_revision' => (int) ($productionAgg->en_revision ?? 0),
@@ -117,6 +120,7 @@ class AdminController extends Controller
             'plan_tickets_overdue' => (int) ($productionAgg->overdue ?? 0),
             'checkins_sin_responder_global' => $checkinsSinResponder,
             'support_tickets_abiertos' => $supportOpen,
+            'client_requests_pendientes' => $clientRequestsPendientes,
         ];
 
         // Financial — MRR current vs previous, pending payments, new inscriptions

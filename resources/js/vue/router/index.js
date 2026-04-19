@@ -101,6 +101,7 @@ const routes = [
     { path: '/admin/tools', name: 'admin-tools', component: () => import('../pages/Admin/AdminTools.vue'), meta: { auth: true, title: 'Herramientas — WellCore Admin' } },
     { path: '/admin/chat-analytics', name: 'admin-chat-analytics', component: () => import('../pages/Admin/ChatAnalytics.vue'), meta: { auth: true, title: 'Chat Analytics — WellCore Admin' } },
     { path: '/admin/tickets', name: 'admin-tickets', component: () => import('../pages/Admin/TicketManager.vue'), meta: { auth: true, title: 'Tickets — WellCore Admin' } },
+    { path: '/admin/client-requests', name: 'admin-client-requests', component: () => import('../pages/Admin/ClientRequests.vue'), meta: { auth: true, title: 'Solicitudes de Coaches — WellCore Admin' } },
     { path: '/admin/referrals', name: 'admin-referrals', component: () => import('../pages/Admin/ReferralRewards.vue'), meta: { auth: true, title: 'Referidos — WellCore Admin' } },
     { path: '/admin/campaigns', name: 'admin-campaigns', component: () => import('../pages/Admin/CampaignTracker.vue'), meta: { auth: true, title: 'Campanas — WellCore Admin' } },
     { path: '/admin/send-invitation', name: 'admin-send-invitation', component: () => import('../pages/Admin/SendPlanInvitation.vue'), meta: { auth: true, title: 'Enviar Invitacion — WellCore Admin' } },

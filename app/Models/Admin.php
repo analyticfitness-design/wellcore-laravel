@@ -14,6 +14,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
     'password_hash',
     'name',
     'role',
+    'email',
+    'whatsapp',
+    'must_change_password',
+    'active',
+    'last_login_at',
 ])]
 #[Hidden(['password_hash'])]
 class Admin extends Authenticatable
@@ -32,6 +37,9 @@ class Admin extends Authenticatable
         return [
             'role' => UserRole::class,
             'created_at' => 'datetime',
+            'last_login_at' => 'datetime',
+            'must_change_password' => 'boolean',
+            'active' => 'boolean',
         ];
     }
 

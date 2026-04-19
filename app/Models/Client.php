@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 #[Fillable([
@@ -30,6 +31,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 #[Hidden(['password_hash'])]
 class Client extends Authenticatable
 {
+    use SoftDeletes;
+
     protected $table = 'clients';
 
     public $timestamps = true;
