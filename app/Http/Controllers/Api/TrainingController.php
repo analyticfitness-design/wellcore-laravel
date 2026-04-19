@@ -15,6 +15,7 @@ use App\Models\WellcoreNotification;
 use App\Models\WorkoutLog;
 use App\Models\WorkoutPr;
 use App\Models\WorkoutSession;
+use App\Services\ExerciseMediaService;
 use App\Services\PushNotificationService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -25,6 +26,8 @@ use Illuminate\Support\Facades\DB;
 class TrainingController extends Controller
 {
     use AuthenticatesVueRequests;
+
+    public function __construct(private ExerciseMediaService $media) {}
 
     // ─── Plan Viewer ───────────────────────────────────────────────────
 
@@ -60,6 +63,23 @@ class TrainingController extends Controller
                 'ciclo_hormonal' => $cicloPlan = $content,
                 default => null,
             };
+        }
+
+        // Enrich training plan exercises with GIF URLs
+        if ($trainingPlan && isset($trainingPlan['semanas'])) {
+            foreach ($trainingPlan['semanas'] as $sIdx => $semana) {
+                foreach ($semana['dias'] ?? [] as $dIdx => $dia) {
+                    if (! empty($dia['ejercicios'])) {
+                        $this->media->enrichWithMedia($trainingPlan['semanas'][$sIdx]['dias'][$dIdx]['ejercicios']);
+                    }
+                }
+            }
+        } elseif ($trainingPlan && isset($trainingPlan['dias'])) {
+            foreach ($trainingPlan['dias'] as $dIdx => $dia) {
+                if (! empty($dia['ejercicios'])) {
+                    $this->media->enrichWithMedia($trainingPlan['dias'][$dIdx]['ejercicios']);
+                }
+            }
         }
 
         // Week progression
@@ -363,6 +383,9 @@ class TrainingController extends Controller
 
         // Enrich exercises with last_weight / last_reps from previous sessions
         $exercises = $this->enrichExercisesWithHistory($clientId, $exercises);
+
+        // Enrich exercises with GIF URLs
+        $this->media->enrichWithMedia($exercises);
 
         // Build full days array including exercises so Vue can switch days client-side
         $fullDays = array_map(fn ($d, $i) => [
@@ -1007,9 +1030,13 @@ class TrainingController extends Controller
         // Map comidas_sugeridas → comidas so the full-featured tab section renders
         // (with macros chips, hora, CAMBIAR button, Opcion A/B/C tabs)
         if (! isset($plan['comidas']) && isset($plan['comidas_sugeridas'])) {
+            $plan['comidas'] = $plan['comidas_sugeridas'];
+        }
+
+        // Convert opciones strings → opcion_a/b/c on any comidas array
+        // (handles both comidas_sugeridas-sourced and directly-stored comidas)
+        if (isset($plan['comidas']) && is_array($plan['comidas'])) {
             $plan['comidas'] = array_map(function (array $meal): array {
-                // Convert opciones: ["Opción 1: ing1 + ing2", ...] → opcion_a/b/c: ["ing1", "ing2"]
-                // Each ingredient becomes its own list item so icons and gramajes render separately.
                 if (
                     isset($meal['opciones']) &&
                     is_array($meal['opciones']) &&
@@ -1018,18 +1045,17 @@ class TrainingController extends Controller
                     $opts = array_values($meal['opciones']);
                     $keys = ['opcion_a', 'opcion_b', 'opcion_c'];
                     foreach ($keys as $i => $key) {
-                        if (! isset($opts[$i])) break;
-                        // Strip "Opción N: " or "Opcion N: " prefix
+                        if (! isset($opts[$i])) {
+                            break;
+                        }
                         $raw = preg_replace('/^[Oo]pci[oó]n\s*\d+\s*:\s*/u', '', trim((string) $opts[$i]));
-                        // Split by " + " to get individual ingredients
                         $ingredients = array_map('trim', explode(' + ', $raw));
-                        $ingredients = array_filter($ingredients);
-                        $meal[$key] = array_values($ingredients);
+                        $meal[$key] = array_values(array_filter($ingredients));
                     }
                     unset($meal['opciones']);
                 }
                 return $meal;
-            }, $plan['comidas_sugeridas']);
+            }, $plan['comidas']);
         }
 
         return $plan;
