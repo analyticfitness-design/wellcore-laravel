@@ -441,6 +441,7 @@
                             <span class="font-data text-4xl font-bold text-wc-text">$299,000</span>
                             <span class="text-sm text-wc-text-tertiary">{{ __('home.plan_cop_mes') }}</span>
                         </div>
+                        <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $73</span> / mes <span class="opacity-60">(aprox.)</span></p>
                     </div>
                     <div class="mt-6 flex-1 space-y-3">
                         @foreach([
@@ -483,6 +484,7 @@
                             <span class="font-data text-4xl font-bold text-wc-text">$399,000</span>
                             <span class="text-sm text-wc-text-tertiary">{{ __('home.plan_cop_mes') }}</span>
                         </div>
+                        <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $97</span> / mes <span class="opacity-60">(aprox.)</span></p>
                     </div>
                     <div class="mt-6 flex-1 space-y-3">
                         @foreach([
@@ -525,6 +527,7 @@
                             <span class="font-data text-4xl font-bold text-wc-text">$549,000</span>
                             <span class="text-sm text-wc-text-tertiary">{{ __('home.plan_cop_mes') }}</span>
                         </div>
+                        <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $134</span> / mes <span class="opacity-60">(aprox.)</span></p>
                     </div>
                     <div class="mt-6 flex-1 space-y-3">
                         @foreach([
