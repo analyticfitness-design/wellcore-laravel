@@ -149,8 +149,8 @@
 
                     {{-- Wompi Widget Container --}}
                     @if($wompiPublicKey && $paymentReference)
-                        <script>
-                            window.__wompiConfig = @json([
+                        @php
+                            $wompiConfigForJs = [
                                 'currency' => $currency,
                                 'amountInCents' => $amountInCents,
                                 'reference' => $paymentReference,
@@ -160,7 +160,10 @@
                                 'email' => $email,
                                 'fullName' => $nombre,
                                 'phoneNumber' => $whatsapp,
-                            ]);
+                            ];
+                        @endphp
+                        <script>
+                            window.__wompiConfig = {!! json_encode($wompiConfigForJs, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!};
                         </script>
                         <div class="mt-8 rounded-xl border border-wc-border bg-wc-bg-tertiary p-6"
                              x-data="{
