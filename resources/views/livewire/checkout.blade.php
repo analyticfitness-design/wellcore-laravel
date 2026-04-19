@@ -1,52 +1,68 @@
 @assets
 <script>
-document.addEventListener('alpine:init', () => {
-    Alpine.data('wompiCheckout', () => ({
-        ready: false,
-        checkout: null,
-        cfg: null,
-        init() {
-            const el = document.getElementById('wompi-cfg-json');
-            if (el) { try { this.cfg = JSON.parse(el.textContent); } catch (e) { console.error('wompi cfg parse', e); } }
-            this.loadWompi();
-        },
-        loadWompi() {
-            if (window.WidgetCheckout) { this.ready = true; return; }
-            const script = document.createElement('script');
-            script.src = 'https://checkout.wompi.co/widget.js';
-            script.onload = () => { this.ready = true; };
-            script.onerror = () => { console.error('Failed to load Wompi widget script'); this.ready = true; };
-            document.head.appendChild(script);
-            setTimeout(() => { this.ready = true; }, 6000);
-        },
-        openWompi() {
-            if (!window.WidgetCheckout) {
-                alert('La pasarela de pago no cargo correctamente. Recarga la pagina e intenta de nuevo.');
-                return;
-            }
-            const cfg = this.cfg || {};
-            this.checkout = new WidgetCheckout({
-                currency: cfg.currency,
-                amountInCents: cfg.amountInCents,
-                reference: cfg.reference,
-                publicKey: cfg.publicKey,
-                signature: { integrity: cfg.signature },
-                redirectUrl: cfg.redirectUrl,
-                customerData: {
-                    email: cfg.email,
-                    fullName: cfg.fullName,
-                    phoneNumber: cfg.phoneNumber,
-                },
-            });
-            this.checkout.open(function(result) {
-                const transaction = result.transaction;
-                if (transaction && transaction.redirectUrl) {
-                    window.location.href = transaction.redirectUrl;
+(function () {
+    function registerWompiCheckout() {
+        if (!window.Alpine || !window.Alpine.data) return false;
+        window.Alpine.data('wompiCheckout', () => ({
+            ready: false,
+            checkout: null,
+            cfg: null,
+            init() {
+                const el = document.getElementById('wompi-cfg-json');
+                if (el) { try { this.cfg = JSON.parse(el.textContent); } catch (e) { console.error('wompi cfg parse', e); } }
+                this.loadWompi();
+            },
+            loadWompi() {
+                if (window.WidgetCheckout) { this.ready = true; return; }
+                const s = document.createElement('script');
+                s.src = 'https://checkout.wompi.co/widget.js';
+                s.onload = () => { this.ready = true; };
+                s.onerror = () => { console.error('Failed to load Wompi widget script'); this.ready = true; };
+                document.head.appendChild(s);
+                setTimeout(() => { this.ready = true; }, 6000);
+            },
+            openWompi() {
+                if (!window.WidgetCheckout) {
+                    alert('La pasarela de pago no cargo correctamente. Recarga la pagina e intenta de nuevo.');
+                    return;
                 }
-            });
-        }
-    }));
-});
+                const cfg = this.cfg || {};
+                // Wompi requiere phoneNumberPrefix separado (ej. '+57') y phoneNumber solo dígitos locales
+                let rawPhone = String(cfg.phoneNumber || '').replace(/\s+/g, '');
+                let prefix = '+57';
+                if (rawPhone.startsWith('+')) {
+                    const m = rawPhone.match(/^(\+\d{1,3})(.*)$/);
+                    if (m) { prefix = m[1]; rawPhone = m[2]; }
+                }
+                rawPhone = rawPhone.replace(/\D/g, '');
+                this.checkout = new WidgetCheckout({
+                    currency: cfg.currency,
+                    amountInCents: cfg.amountInCents,
+                    reference: cfg.reference,
+                    publicKey: cfg.publicKey,
+                    signature: { integrity: cfg.signature },
+                    redirectUrl: cfg.redirectUrl,
+                    customerData: {
+                        email: cfg.email,
+                        fullName: cfg.fullName,
+                        phoneNumber: rawPhone,
+                        phoneNumberPrefix: prefix,
+                    },
+                });
+                this.checkout.open(function (result) {
+                    const transaction = result.transaction;
+                    if (transaction && transaction.redirectUrl) {
+                        window.location.href = transaction.redirectUrl;
+                    }
+                });
+            }
+        }));
+        return true;
+    }
+    if (!registerWompiCheckout()) {
+        document.addEventListener('alpine:init', registerWompiCheckout);
+    }
+})();
 </script>
 @endassets
 
