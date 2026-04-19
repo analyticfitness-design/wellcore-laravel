@@ -18,14 +18,6 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
-// Temporary seed route — remove after running once in production
-Route::get('/seed-catalog-gifs-k7x9', function () {
-    $cmd = app(\App\Console\Commands\SeedCatalogGifs::class);
-    \Illuminate\Support\Facades\Artisan::call('wellcore:seed-catalog-gifs');
-    $output = \Illuminate\Support\Facades\Artisan::output();
-    return response()->json(['ok' => true, 'output' => $output]);
-});
-
 // Temporary GIF debug route — remove after diagnosis
 Route::get('/debug-gif', function () {
     if (function_exists('opcache_reset')) {
