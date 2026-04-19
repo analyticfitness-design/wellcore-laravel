@@ -124,11 +124,18 @@ const bottomNav = [
       :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
       class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col border-r border-wc-border bg-wc-bg-secondary transition-transform duration-300 ease-in-out lg:translate-x-0"
     >
-      <!-- Logo -->
+      <!-- Logo (theme-aware) -->
       <div class="flex h-16 items-center gap-3 border-b border-wc-border px-5">
-        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-wc-accent">
-          <span class="font-display text-base leading-none text-white">W</span>
-        </div>
+        <img
+          src="/images/logo-coach-dark.png"
+          alt="WellCore"
+          class="hidden h-9 w-9 object-contain dark:block"
+        />
+        <img
+          src="/images/logo-coach-light.png"
+          alt="WellCore"
+          class="block h-9 w-9 object-contain dark:hidden"
+        />
         <span class="font-display text-xl tracking-wider text-wc-text">WELLCORE</span>
       </div>
 
