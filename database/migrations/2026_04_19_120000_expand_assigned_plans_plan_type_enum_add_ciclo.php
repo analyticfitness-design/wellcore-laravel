@@ -7,6 +7,7 @@ return new class extends Migration
 {
     public function up(): void
     {
+        DB::statement("SET SESSION sql_mode = ''");
         DB::statement("
             ALTER TABLE assigned_plans
             MODIFY COLUMN plan_type ENUM(
