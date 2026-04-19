@@ -57,6 +57,29 @@ const planCiclo = ref({
   fecha_ultima_menstruacion: '', duracion_ciclo_dias: null,
   sintomas: '', anticonceptivo: '', notas: '',
 });
+const planSuplementacion = ref({
+  objetivo: '',
+  suplementos: [],
+  notas_coach: '',
+});
+
+const FRECUENCIA_SUPLEMENTO_OPTIONS = [
+  { value: 'diario', label: 'Diario' },
+  { value: 'dias_entrenamiento', label: 'Dias de entrenamiento' },
+  { value: '3_veces_semana', label: '3 veces por semana' },
+  { value: 'ciclico', label: 'Ciclico' },
+];
+
+function emptySuplemento() {
+  return { nombre: '', dosis: '', momento: '', frecuencia: '', notas: '' };
+}
+function addSuplemento() {
+  if (!planSuplementacion.value.suplementos) planSuplementacion.value.suplementos = [];
+  planSuplementacion.value.suplementos.push(emptySuplemento());
+}
+function removeSuplemento(idx) {
+  planSuplementacion.value.suplementos.splice(idx, 1);
+}
 
 const missingFields = ref([]);
 const step = ref(0);
@@ -120,8 +143,9 @@ const steps = computed(() => {
   list.push({ key: 'cliente', label: 'Cliente y Plan' });
   list.push({ key: 'datos', label: 'Datos Generales' });
   list.push({ key: 'entrenamiento', label: 'Entrenamiento' });
-  if (isMetodoOrElite.value) list.push({ key: 'nutricion', label: 'Nutricion' });
-  if (isMetodoOrElite.value) list.push({ key: 'habitos', label: 'Habitos' });
+  list.push({ key: 'nutricion', label: 'Nutricion' });
+  list.push({ key: 'habitos', label: 'Habitos' });
+  list.push({ key: 'suplementacion', label: 'Suplementacion' });
   if (isElite.value) list.push({ key: 'ciclo', label: 'Ciclo Hormonal' });
   list.push({ key: 'revision', label: 'Revision y Envio' });
   return list;
@@ -187,6 +211,13 @@ function hydrate(t) {
   if (t.plan_ciclo) {
     planCiclo.value = { ...planCiclo.value, ...t.plan_ciclo };
   }
+  if (t.plan_suplementacion) {
+    const ps = { ...t.plan_suplementacion };
+    if (!Array.isArray(ps.suplementos)) ps.suplementos = [];
+    // Ensure each supplemento has all fields
+    ps.suplementos = ps.suplementos.map(s => ({ ...emptySuplemento(), ...s }));
+    planSuplementacion.value = { ...planSuplementacion.value, ...ps };
+  }
   if (t.datos_generales?.plan) {
     // fine
   } else if (t.plan_type) {
@@ -224,14 +255,9 @@ async function runSave(payload) {
 // Deep watchers for sections — per-field PUTs
 watch(datosGenerales, (val) => scheduleSave({ datos_generales: val }), { deep: true });
 watch(planEntrenamiento, (val) => scheduleSave({ plan_entrenamiento: val }), { deep: true });
-watch(planNutricional, (val) => {
-  if (!isMetodoOrElite.value) return;
-  scheduleSave({ plan_nutricional: val });
-}, { deep: true });
-watch(planHabitos, (val) => {
-  if (!isMetodoOrElite.value) return;
-  scheduleSave({ plan_habitos: val });
-}, { deep: true });
+watch(planNutricional, (val) => scheduleSave({ plan_nutricional: val }), { deep: true });
+watch(planHabitos, (val) => scheduleSave({ plan_habitos: val }), { deep: true });
+watch(planSuplementacion, (val) => scheduleSave({ plan_suplementacion: val }), { deep: true });
 watch(planCiclo, (val) => {
   if (!isElite.value) return;
   scheduleSave({ plan_ciclo: val });
@@ -276,7 +302,9 @@ async function submitTicket() {
     await runSave({
       datos_generales: datosGenerales.value,
       plan_entrenamiento: planEntrenamiento.value,
-      ...(isMetodoOrElite.value ? { plan_nutricional: planNutricional.value, plan_habitos: planHabitos.value } : {}),
+      plan_nutricional: planNutricional.value,
+      plan_habitos: planHabitos.value,
+      plan_suplementacion: planSuplementacion.value,
       ...(isElite.value ? { plan_ciclo: planCiclo.value } : {}),
     });
     const { data } = await api.post(`/api/v/coach/plan-tickets/${ticketId.value}/submit`);
@@ -468,8 +496,8 @@ onBeforeUnmount(() => {
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <label
                     v-for="opt in [
-                      { value: 'esencial', label: 'Esencial', desc: 'Entrenamiento + datos generales.' },
-                      { value: 'metodo', label: 'Metodo', desc: 'Entrenamiento + nutricion + habitos.' },
+                      { value: 'esencial', label: 'Esencial', desc: 'Entrenamiento, nutricion, habitos y suplementacion.' },
+                      { value: 'metodo', label: 'Metodo', desc: 'Plan completo con seguimiento avanzado.' },
                       { value: 'elite', label: 'Elite', desc: 'Plan completo + ciclo hormonal.' },
                     ]"
                     :key="opt.value"
@@ -784,6 +812,118 @@ onBeforeUnmount(() => {
           </fieldset>
         </section>
 
+        <!-- STEP: suplementacion -->
+        <section v-else-if="currentStepKey === 'suplementacion'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-5">
+          <h2 class="font-display text-xl tracking-wide text-wc-text">Plan de suplementacion</h2>
+          <fieldset :disabled="!isEditable" class="space-y-5">
+            <div>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Objetivo del stack</label>
+              <textarea
+                v-model="planSuplementacion.objetivo"
+                rows="2"
+                placeholder="Para que se optimiza — ej. Rendimiento base, Recomposicion, Recuperacion..."
+                class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
+              ></textarea>
+            </div>
+
+            <div>
+              <div class="mb-2 flex items-center justify-between">
+                <label class="block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Suplementos</label>
+                <button
+                  type="button"
+                  @click="addSuplemento"
+                  class="inline-flex items-center gap-1 rounded-lg bg-wc-accent px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90"
+                >
+                  <span class="text-base leading-none">+</span> Anadir suplemento
+                </button>
+              </div>
+
+              <div
+                v-if="!planSuplementacion.suplementos || planSuplementacion.suplementos.length === 0"
+                class="rounded-lg border-2 border-dashed border-red-500/30 bg-red-500/5 p-4 text-center text-xs text-red-400"
+              >
+                Agrega al menos un suplemento.
+              </div>
+
+              <div v-else class="space-y-3">
+                <div
+                  v-for="(sup, idx) in planSuplementacion.suplementos"
+                  :key="idx"
+                  class="rounded-lg border border-wc-border bg-wc-bg-secondary p-3 space-y-2"
+                >
+                  <div class="flex items-start justify-between gap-2">
+                    <p class="text-xs font-semibold text-wc-text-tertiary">#{{ idx + 1 }}</p>
+                    <button
+                      type="button"
+                      @click="removeSuplemento(idx)"
+                      class="rounded-md border border-red-500/30 px-2 py-0.5 text-[11px] font-medium text-red-400 hover:bg-red-500/10"
+                    >Eliminar</button>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                      <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Nombre</label>
+                      <input
+                        v-model="sup.nombre"
+                        type="text"
+                        placeholder="Ej: Proteina de Suero, Creatina Monohidrato"
+                        class="w-full rounded-md border border-wc-border bg-wc-bg-tertiary px-2 py-1.5 text-xs text-wc-text focus:border-wc-accent focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Dosis</label>
+                      <input
+                        v-model="sup.dosis"
+                        type="text"
+                        placeholder="Ej: 30g, 5g"
+                        class="w-full rounded-md border border-wc-border bg-wc-bg-tertiary px-2 py-1.5 text-xs text-wc-text focus:border-wc-accent focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Momento</label>
+                      <input
+                        v-model="sup.momento"
+                        type="text"
+                        placeholder="Ej: Post-entrenamiento, Antes de dormir"
+                        class="w-full rounded-md border border-wc-border bg-wc-bg-tertiary px-2 py-1.5 text-xs text-wc-text focus:border-wc-accent focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Frecuencia</label>
+                      <select
+                        v-model="sup.frecuencia"
+                        class="w-full rounded-md border border-wc-border bg-wc-bg-tertiary px-2 py-1.5 text-xs text-wc-text focus:border-wc-accent focus:outline-none"
+                      >
+                        <option value="">Selecciona...</option>
+                        <option v-for="f in FRECUENCIA_SUPLEMENTO_OPTIONS" :key="f.value" :value="f.value">{{ f.label }}</option>
+                      </select>
+                    </div>
+                    <div class="sm:col-span-2">
+                      <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Notas (opcional)</label>
+                      <input
+                        v-model="sup.notas"
+                        type="text"
+                        placeholder="Ej: tomar con agua, evitar con cafeina"
+                        class="w-full rounded-md border border-wc-border bg-wc-bg-tertiary px-2 py-1.5 text-xs text-wc-text focus:border-wc-accent focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Notas del coach para el stack (opcional)</label>
+              <textarea
+                v-model="planSuplementacion.notas_coach"
+                rows="3"
+                placeholder="Indicaciones generales, advertencias, periodo de ciclado..."
+                class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
+              ></textarea>
+            </div>
+          </fieldset>
+        </section>
+
         <!-- STEP: ciclo -->
         <section v-else-if="currentStepKey === 'ciclo'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-5">
           <h2 class="font-display text-xl tracking-wide text-wc-text">6. Ciclo hormonal</h2>
@@ -843,13 +983,28 @@ onBeforeUnmount(() => {
                 <p class="text-xs text-wc-text-tertiary">Nivel</p>
                 <p class="font-medium text-wc-text">{{ humanLabel(planEntrenamiento.nivel) || '-' }}</p>
               </div>
-              <div v-if="isMetodoOrElite" class="rounded-lg bg-wc-bg-secondary p-3">
+              <div class="rounded-lg bg-wc-bg-secondary p-3">
                 <p class="text-xs text-wc-text-tertiary">Nutricion</p>
                 <p class="font-medium text-wc-text">{{ planNutricional.num_comidas || '-' }} comidas · {{ humanLabel(planNutricional.metodologia) || 'sin metodologia' }}</p>
               </div>
-              <div v-if="isMetodoOrElite" class="rounded-lg bg-wc-bg-secondary p-3">
+              <div class="rounded-lg bg-wc-bg-secondary p-3">
                 <p class="text-xs text-wc-text-tertiary">Habitos</p>
                 <p class="font-medium text-wc-text">{{ planHabitos.areas_foco?.length || 0 }} areas de foco</p>
+              </div>
+              <div class="rounded-lg bg-wc-bg-secondary p-3 sm:col-span-2">
+                <p class="text-xs text-wc-text-tertiary">Suplementacion</p>
+                <p class="font-medium text-wc-text">
+                  {{ planSuplementacion.suplementos?.length || 0 }} suplemento(s)
+                  <span v-if="planSuplementacion.objetivo" class="text-wc-text-tertiary"> · {{ planSuplementacion.objetivo }}</span>
+                </p>
+                <ul v-if="planSuplementacion.suplementos?.length" class="mt-2 space-y-1 text-xs text-wc-text-secondary">
+                  <li v-for="(s, i) in planSuplementacion.suplementos" :key="i" class="flex flex-wrap gap-x-2">
+                    <span class="font-semibold text-wc-text">{{ s.nombre || '(sin nombre)' }}</span>
+                    <span v-if="s.dosis">· {{ s.dosis }}</span>
+                    <span v-if="s.momento">· {{ s.momento }}</span>
+                    <span v-if="s.frecuencia">· {{ humanLabel(s.frecuencia) }}</span>
+                  </li>
+                </ul>
               </div>
               <div v-if="isElite" class="rounded-lg bg-wc-bg-secondary p-3 sm:col-span-2">
                 <p class="text-xs text-wc-text-tertiary">Ciclo hormonal</p>

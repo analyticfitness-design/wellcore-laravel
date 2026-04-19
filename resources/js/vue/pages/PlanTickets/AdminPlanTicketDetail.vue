@@ -37,8 +37,15 @@ const isMetodoOrElite = computed(() => ['metodo','elite'].includes(planType.valu
 const isElite = computed(() => planType.value === 'elite');
 
 const expandedSections = ref({
-  datos: true, entrenamiento: true, nutricion: true, habitos: true, ciclo: true,
+  datos: true, entrenamiento: true, nutricion: true, habitos: true, suplementacion: true, ciclo: true,
 });
+
+const FRECUENCIA_SUPLEMENTO_LABELS = {
+  diario: 'Diario',
+  dias_entrenamiento: 'Dias de entrenamiento',
+  '3_veces_semana': '3 veces por semana',
+  ciclico: 'Ciclico',
+};
 
 function planTypeMeta(t) { return PLAN_TYPE_META[t] || PLAN_TYPE_META.esencial; }
 function statusMeta(s) { return STATUS_META[s] || STATUS_META.borrador; }
@@ -133,6 +140,9 @@ const planEntrenamiento = computed(() => ticket.value?.plan_entrenamiento || {})
 const planNutricional = computed(() => ticket.value?.plan_nutricional || {});
 const planHabitos = computed(() => ticket.value?.plan_habitos || {});
 const planCiclo = computed(() => ticket.value?.plan_ciclo || {});
+const planSuplementacion = computed(() => ticket.value?.plan_suplementacion || {});
+const suplementos = computed(() => planSuplementacion.value?.suplementos || []);
+function frecuenciaLabel(v) { return FRECUENCIA_SUPLEMENTO_LABELS[v] || humanLabel(v); }
 const splitEntries = computed(() => {
   const s = planEntrenamiento.value?.split || {};
   return Object.entries(s);
@@ -303,7 +313,7 @@ const splitEntries = computed(() => {
         </section>
 
         <!-- Nutricion -->
-        <section v-if="isMetodoOrElite && planNutricional" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
+        <section v-if="planNutricional" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
           <button @click="toggleSection('nutricion')" class="w-full flex items-center justify-between p-5 hover:bg-wc-bg-secondary/30 transition">
             <h2 class="font-display text-lg tracking-wide text-wc-text">Plan nutricional</h2>
             <svg class="h-4 w-4 transition-transform text-wc-text-tertiary" :class="expandedSections.nutricion ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -330,7 +340,7 @@ const splitEntries = computed(() => {
         </section>
 
         <!-- Habitos -->
-        <section v-if="isMetodoOrElite && planHabitos" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
+        <section v-if="planHabitos" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
           <button @click="toggleSection('habitos')" class="w-full flex items-center justify-between p-5 hover:bg-wc-bg-secondary/30 transition">
             <h2 class="font-display text-lg tracking-wide text-wc-text">Plan de habitos</h2>
             <svg class="h-4 w-4 transition-transform text-wc-text-tertiary" :class="expandedSections.habitos ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -347,6 +357,56 @@ const splitEntries = computed(() => {
             <div><p class="text-xs text-wc-text-tertiary">Rutina matutina</p><p class="whitespace-pre-wrap font-medium text-wc-text">{{ planHabitos.rutina_matutina || '-' }}</p></div>
             <div><p class="text-xs text-wc-text-tertiary">Rutina nocturna</p><p class="whitespace-pre-wrap font-medium text-wc-text">{{ planHabitos.rutina_nocturna || '-' }}</p></div>
             <div><p class="text-xs text-wc-text-tertiary">Otros</p><p class="whitespace-pre-wrap font-medium text-wc-text">{{ planHabitos.otros || '-' }}</p></div>
+          </div>
+        </section>
+
+        <!-- Suplementacion -->
+        <section class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
+          <button @click="toggleSection('suplementacion')" class="w-full flex items-center justify-between p-5 hover:bg-wc-bg-secondary/30 transition">
+            <h2 class="font-display text-lg tracking-wide text-wc-text">Plan de suplementacion</h2>
+            <svg class="h-4 w-4 transition-transform text-wc-text-tertiary" :class="expandedSections.suplementacion ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+          </button>
+          <div v-show="expandedSections.suplementacion" class="border-t border-wc-border p-5 space-y-4 text-sm">
+            <div>
+              <p class="text-xs text-wc-text-tertiary">Objetivo del stack</p>
+              <p class="whitespace-pre-wrap font-medium text-wc-text">{{ planSuplementacion.objetivo || '-' }}</p>
+            </div>
+
+            <div>
+              <p class="text-xs text-wc-text-tertiary mb-2">Suplementos ({{ suplementos.length }})</p>
+              <div v-if="suplementos.length === 0" class="rounded-lg bg-wc-bg-secondary p-3 text-xs text-wc-text-tertiary">
+                Sin suplementos capturados.
+              </div>
+              <div v-else class="overflow-x-auto">
+                <table class="w-full text-xs">
+                  <thead>
+                    <tr class="border-b border-wc-border text-left text-wc-text-tertiary">
+                      <th class="py-2 pr-3 font-semibold">Nombre</th>
+                      <th class="py-2 pr-3 font-semibold">Dosis</th>
+                      <th class="py-2 pr-3 font-semibold">Momento</th>
+                      <th class="py-2 pr-3 font-semibold">Frecuencia</th>
+                      <th class="py-2 font-semibold">Notas</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(s, i) in suplementos" :key="i" class="border-b border-wc-border/50 last:border-0">
+                      <td class="py-2 pr-3 font-medium text-wc-text">{{ s.nombre || '-' }}</td>
+                      <td class="py-2 pr-3 text-wc-text">{{ s.dosis || '-' }}</td>
+                      <td class="py-2 pr-3 text-wc-text">{{ s.momento || '-' }}</td>
+                      <td class="py-2 pr-3 text-wc-text">{{ s.frecuencia ? frecuenciaLabel(s.frecuencia) : '-' }}</td>
+                      <td class="py-2 text-wc-text-secondary">{{ s.notas || '-' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div>
+              <p class="text-xs text-wc-text-tertiary">Notas del coach</p>
+              <p class="whitespace-pre-wrap font-medium text-wc-text">{{ planSuplementacion.notas_coach || '-' }}</p>
+            </div>
           </div>
         </section>
 

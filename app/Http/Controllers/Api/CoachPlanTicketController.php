@@ -87,6 +87,7 @@ class CoachPlanTicketController extends Controller
             'plan_entrenamiento' => ['nullable', 'array'],
             'plan_nutricional' => ['nullable', 'array'],
             'plan_habitos' => ['nullable', 'array'],
+            'plan_suplementacion' => ['nullable', 'array'],
             'plan_ciclo' => ['nullable', 'array'],
             'notas_coach' => ['nullable', 'string'],
         ]);
@@ -108,6 +109,7 @@ class CoachPlanTicketController extends Controller
             'plan_entrenamiento' => $validated['plan_entrenamiento'] ?? [],
             'plan_nutricional' => $validated['plan_nutricional'] ?? null,
             'plan_habitos' => $validated['plan_habitos'] ?? null,
+            'plan_suplementacion' => $validated['plan_suplementacion'] ?? null,
             'plan_ciclo' => $validated['plan_ciclo'] ?? null,
             'notas_coach' => $validated['notas_coach'] ?? null,
         ]);
@@ -152,6 +154,7 @@ class CoachPlanTicketController extends Controller
             'plan_entrenamiento' => ['sometimes', 'array'],
             'plan_nutricional' => ['sometimes', 'nullable', 'array'],
             'plan_habitos' => ['sometimes', 'nullable', 'array'],
+            'plan_suplementacion' => ['sometimes', 'nullable', 'array'],
             'plan_ciclo' => ['sometimes', 'nullable', 'array'],
             'notas_coach' => ['sometimes', 'nullable', 'string'],
         ]);
@@ -182,7 +185,7 @@ class CoachPlanTicketController extends Controller
 
         if (! empty($missing)) {
             return response()->json([
-                'error' => 'Faltan datos obligatorios.',
+                'error' => 'Ticket incompleto',
                 'missing' => $missing,
             ], 422);
         }
@@ -231,6 +234,8 @@ class CoachPlanTicketController extends Controller
         $datos = $ticket->datos_generales ?? [];
         $entreno = $ticket->plan_entrenamiento ?? [];
         $nutricional = $ticket->plan_nutricional ?? [];
+        $habitos = $ticket->plan_habitos ?? [];
+        $suplementacion = $ticket->plan_suplementacion ?? [];
         $ciclo = $ticket->plan_ciclo ?? [];
 
         if (empty($datos['nombre'] ?? null)) {
@@ -245,21 +250,62 @@ class CoachPlanTicketController extends Controller
             $missing[] = 'plan_entrenamiento.split';
         }
 
+        if (empty($nutricional['objetivo'] ?? null)) {
+            $missing[] = 'plan_nutricional.objetivo';
+        }
+
+        if (! $this->hasHabitosContent($habitos)) {
+            $missing[] = 'plan_habitos';
+        }
+
+        if (! $this->hasSuplementacionContent($suplementacion)) {
+            $missing[] = 'plan_suplementacion';
+        }
+
         $planType = $ticket->plan_type instanceof PlanType
             ? $ticket->plan_type
             : PlanType::tryFrom((string) $ticket->plan_type);
 
-        if ($planType === PlanType::Metodo || $planType === PlanType::Elite) {
-            if (empty($nutricional['objetivo'] ?? null)) {
-                $missing[] = 'plan_nutricional.objetivo';
-            }
-        }
-
-        if ($planType === PlanType::Elite && empty($ciclo)) {
+        if ($planType === PlanType::Elite && ! $this->hasCicloContent($ciclo)) {
             $missing[] = 'plan_ciclo';
         }
 
         return $missing;
+    }
+
+    protected function hasHabitosContent(?array $habitos): bool
+    {
+        if (empty($habitos)) {
+            return false;
+        }
+
+        if (! empty($habitos['areas_foco'] ?? null)) {
+            return true;
+        }
+
+        $items = $habitos['habitos'] ?? null;
+
+        return is_array($items) && count($items) > 0;
+    }
+
+    protected function hasSuplementacionContent(?array $suplementacion): bool
+    {
+        if (empty($suplementacion)) {
+            return false;
+        }
+
+        if (! empty($suplementacion['objetivo'] ?? null)) {
+            return true;
+        }
+
+        $items = $suplementacion['suplementos'] ?? null;
+
+        return is_array($items) && count($items) > 0;
+    }
+
+    protected function hasCicloContent(?array $ciclo): bool
+    {
+        return ! empty($ciclo);
     }
 
     protected function notifyAdminsOfNewTicket(PlanTicket $ticket): void

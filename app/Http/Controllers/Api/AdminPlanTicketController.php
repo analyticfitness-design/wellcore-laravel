@@ -137,6 +137,7 @@ class AdminPlanTicketController extends Controller
                 'plan_entrenamiento' => $ticket->plan_entrenamiento ?? (object) [],
                 'plan_nutricional' => $ticket->plan_nutricional ?? (object) [],
                 'plan_habitos' => $ticket->plan_habitos ?? (object) [],
+                'plan_suplementacion' => $ticket->plan_suplementacion ?? (object) [],
                 'plan_ciclo' => $ticket->plan_ciclo ?? (object) [],
             ],
             'notas_coach' => $ticket->notas_coach,
