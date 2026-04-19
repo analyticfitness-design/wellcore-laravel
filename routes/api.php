@@ -20,31 +20,6 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
-// Temporary migrate runner — remove after use
-Route::get('/run-migrate-k7x9', function () {
-    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-    $output = \Illuminate\Support\Facades\Artisan::output();
-    return response($output)->header('Content-Type', 'text/plain; charset=utf-8');
-});
-
-// Temporary log tail — remove after diagnosis
-Route::get('/debug-log-k7x9', function () {
-    $logFile = storage_path('logs/laravel.log');
-    if (! file_exists($logFile)) {
-        return response()->json(['error' => 'log file not found', 'path' => $logFile]);
-    }
-    $size = filesize($logFile);
-    // Grab last 60k, then extract the last error block (message line)
-    $offset = max(0, $size - 80000);
-    $content = file_get_contents($logFile, false, null, $offset);
-    // Find last occurrence of 'local.ERROR'
-    // Extract just the ERROR message lines (not full stacktrace)
-    $lines = explode("\n", $content);
-    $errorLines = array_values(array_filter($lines, fn ($l) => str_contains($l, '.ERROR:')));
-    $extract = implode("\n\n", array_slice($errorLines, -10));
-    return response($extract)->header('Content-Type', 'text/plain; charset=utf-8');
-});
-
 // Temporary GIF debug route — remove after diagnosis
 Route::get('/debug-gif', function () {
     if (function_exists('opcache_reset')) {
