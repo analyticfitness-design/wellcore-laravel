@@ -68,13 +68,32 @@ class CoachController extends Controller
     }
 
     /**
-     * Get client IDs assigned to this coach via assigned_plans.
+     * Get client IDs related to this coach.
+     * Unions several signals because there is no explicit coach↔client pivot:
+     * assigned_plans.assigned_by + coach_messages.coach_id + coach_notes.coach_id + plan_tickets.coach_id.
      */
     protected function getCoachClientIds(int $coachId): Collection
     {
-        return AssignedPlan::where('assigned_by', $coachId)
-            ->pluck('client_id')
-            ->unique();
+        $fromClientsFk = \Illuminate\Support\Facades\Schema::hasColumn('clients', 'coach_id')
+            ? \DB::table('clients')->where('coach_id', $coachId)->pluck('id')
+            : collect();
+        $fromPlans = \DB::table('assigned_plans')->where('assigned_by', $coachId)->pluck('client_id');
+        $fromMessages = \DB::table('coach_messages')->where('coach_id', $coachId)->pluck('client_id');
+        $fromNotes = \Illuminate\Support\Facades\Schema::hasTable('coach_notes')
+            ? \DB::table('coach_notes')->where('coach_id', $coachId)->pluck('client_id')
+            : collect();
+        $fromTickets = \Illuminate\Support\Facades\Schema::hasTable('plan_tickets')
+            ? \DB::table('plan_tickets')->where('coach_id', $coachId)->pluck('client_id')
+            : collect();
+
+        return $fromClientsFk
+            ->concat($fromPlans)
+            ->concat($fromMessages)
+            ->concat($fromNotes)
+            ->concat($fromTickets)
+            ->filter()
+            ->unique()
+            ->values();
     }
 
     // ─── Dashboard ──────────────────────────────────────────────────────
