@@ -16,11 +16,13 @@ use App\Models\RiseProgram;
 use App\Models\RiseTracking;
 use App\Models\WorkoutLog;
 use App\Models\WorkoutSession;
+use App\Services\ImagePipelineService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class RiseController extends Controller
 {
@@ -606,15 +608,22 @@ class RiseController extends Controller
 
         $photosByDate = [];
         foreach ($grouped as $date => $datePhotos) {
+            $frente = $datePhotos->firstWhere('tipo', 'frente');
+            $perfil = $datePhotos->firstWhere('tipo', 'perfil');
+            $espalda = $datePhotos->firstWhere('tipo', 'espalda');
+
             $photosByDate[] = [
                 'date' => $date,
                 'formatted' => Carbon::parse($date)->translatedFormat('d M Y'),
-                'frente' => $datePhotos->firstWhere('tipo', 'frente')?->filename,
-                'frente_id' => $datePhotos->firstWhere('tipo', 'frente')?->id,
-                'perfil' => $datePhotos->firstWhere('tipo', 'perfil')?->filename,
-                'perfil_id' => $datePhotos->firstWhere('tipo', 'perfil')?->id,
-                'espalda' => $datePhotos->firstWhere('tipo', 'espalda')?->filename,
-                'espalda_id' => $datePhotos->firstWhere('tipo', 'espalda')?->id,
+                'frente' => $frente?->filename,
+                'frente_url' => self::resolvePhotoUrl($frente?->filename),
+                'frente_id' => $frente?->id,
+                'perfil' => $perfil?->filename,
+                'perfil_url' => self::resolvePhotoUrl($perfil?->filename),
+                'perfil_id' => $perfil?->id,
+                'espalda' => $espalda?->filename,
+                'espalda_url' => self::resolvePhotoUrl($espalda?->filename),
+                'espalda_id' => $espalda?->id,
             ];
         }
 
@@ -650,11 +659,6 @@ class RiseController extends Controller
         }
 
         $uploadDate = $request->input('upload_date');
-        $uploadDir = public_path('uploads/photos');
-
-        if (! is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
 
         $tiposToUpload = [
             'frente' => $request->file('photo_frente'),
@@ -662,16 +666,24 @@ class RiseController extends Controller
             'espalda' => $request->file('photo_espalda'),
         ];
 
+        $pipeline = app(ImagePipelineService::class);
+
         foreach ($tiposToUpload as $tipo => $photo) {
             if ($photo === null) {
                 continue;
             }
 
-            $extension = $photo->getClientOriginalExtension() ?: 'jpg';
-            $filename = "{$client->id}_{$uploadDate}_{$tipo}_".time().".{$extension}";
-            $destPath = $uploadDir.DIRECTORY_SEPARATOR.$filename;
-
-            copy($photo->getPathname(), $destPath);
+            try {
+                $result = $pipeline->processUpload(
+                    file: $photo,
+                    disk: 'public',
+                    directory: "progress/{$client->id}",
+                    maxWidth: 1600,
+                    quality: 85,
+                );
+            } catch (\InvalidArgumentException $e) {
+                return response()->json(['error' => "{$tipo}: {$e->getMessage()}"], 422);
+            }
 
             ProgressPhoto::where('client_id', $client->id)
                 ->where('photo_date', $uploadDate)
@@ -682,7 +694,7 @@ class RiseController extends Controller
                 'client_id' => $client->id,
                 'photo_date' => $uploadDate,
                 'tipo' => $tipo,
-                'filename' => $filename,
+                'filename' => $result['path_webp'],
             ]);
         }
 
@@ -707,9 +719,19 @@ class RiseController extends Controller
             return response()->json(['error' => 'Foto no encontrada.'], 404);
         }
 
-        $filePath = public_path('uploads/photos/'.$photo->filename);
-        if (file_exists($filePath)) {
-            unlink($filePath);
+        if ($photo->filename) {
+            $fallbackJpg = preg_replace('/\.webp$/i', '.jpg', $photo->filename);
+            $fallbackPng = preg_replace('/\.webp$/i', '.png', $photo->filename);
+            Storage::disk('public')->delete([
+                $photo->filename,
+                $fallbackJpg,
+                $fallbackPng,
+            ]);
+
+            $legacyPath = public_path('uploads/photos/'.$photo->filename);
+            if (file_exists($legacyPath)) {
+                unlink($legacyPath);
+            }
         }
 
         $photo->delete();
@@ -871,7 +893,6 @@ class RiseController extends Controller
                 array_map(fn ($d) => is_array($d) ? $this->normalizeDay($d) : $d, $dias)
             );
         }
-
 
         // Current week from program start date
         $startDate = Carbon::parse($riseProgram->start_date ?? now());
@@ -1403,5 +1424,30 @@ class RiseController extends Controller
         }
 
         return $plan;
+    }
+
+    /**
+     * Resolve a progress_photos.filename value to a browser-consumable URL.
+     *
+     * Handles three historical formats:
+     *  - Absolute URL or path already starting with '/' (use as-is).
+     *  - Relative path inside the 'public' disk (e.g. 'progress/42/xxx.webp') → '/storage/...'.
+     *  - Bare basename from the legacy vanilla app (e.g. '10_frente_2026-03-07.jpg') → '/uploads/photos/...'.
+     */
+    private static function resolvePhotoUrl(?string $filename): ?string
+    {
+        if (! $filename) {
+            return null;
+        }
+
+        if (str_starts_with($filename, '/') || str_starts_with($filename, 'http')) {
+            return $filename;
+        }
+
+        if (str_contains($filename, '/')) {
+            return Storage::disk('public')->url($filename);
+        }
+
+        return '/uploads/photos/'.$filename;
     }
 }

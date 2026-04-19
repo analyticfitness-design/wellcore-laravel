@@ -5,18 +5,17 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
 use App\Mail\ReferralInvitation;
+use App\Models\AcademyContent;
+use App\Models\Admin;
 use App\Models\AssignedPlan;
-use App\Models\VideoCheckin;
 use App\Models\BiometricLog;
 use App\Models\Challenge;
 use App\Models\ChallengeParticipant;
 use App\Models\Client;
 use App\Models\ClientProfile;
 use App\Models\CoachMessage;
-use App\Models\CommunityPost;
-use App\Models\AcademyContent;
 use App\Models\CoachVideoTip;
-use App\Models\FoodAnalysis;
+use App\Models\CommunityPost;
 use App\Models\HabitLog;
 use App\Models\PersonalRecord;
 use App\Models\PostComment;
@@ -24,7 +23,9 @@ use App\Models\PostReaction;
 use App\Models\ProgressPhoto;
 use App\Models\Referral;
 use App\Models\SupplementLog;
+use App\Models\VideoCheckin;
 use App\Services\AIService;
+use App\Services\ImagePipelineService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -47,15 +48,15 @@ class SocialController extends Controller
      */
     public function communityIndex(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
-        $page    = max(1, (int) $request->query('page', 1));
+        $page = max(1, (int) $request->query('page', 1));
         $perPage = min(50, max(5, (int) $request->query('per_page', 10)));
 
         $communityStats = Cache::remember('community:stats', 300, function () {
             return [
-                'total_posts'    => CommunityPost::where('visible', true)->count(),
+                'total_posts' => CommunityPost::where('visible', true)->count(),
                 'active_members' => Client::where('status', 'activo')->count(),
             ];
         });
@@ -87,33 +88,33 @@ class SocialController extends Controller
             ]);
 
         $postsData = $posts->getCollection()->map(fn ($post) => [
-            'id'              => $post->id,
-            'client_id'       => $post->client_id,
-            'client_name'     => $post->client?->name ?? 'Anonimo',
-            'content'         => $post->content,
-            'post_type'       => $post->post_type,
-            'created_at'      => $post->created_at?->toIso8601String(),
-            'reactions_count'  => $post->reactions_count,
-            'comments_count'   => $post->comments_count,
-            'my_reactions'     => $myReactions[$post->id] ?? [],
-            'reaction_counts'  => $reactionCountsAll[$post->id] ?? [],
-            'comments'         => $post->comments->map(fn ($c) => [
-                'id'          => $c->id,
+            'id' => $post->id,
+            'client_id' => $post->client_id,
+            'client_name' => $post->client?->name ?? 'Anonimo',
+            'content' => $post->content,
+            'post_type' => $post->post_type,
+            'created_at' => $post->created_at?->toIso8601String(),
+            'reactions_count' => $post->reactions_count,
+            'comments_count' => $post->comments_count,
+            'my_reactions' => $myReactions[$post->id] ?? [],
+            'reaction_counts' => $reactionCountsAll[$post->id] ?? [],
+            'comments' => $post->comments->map(fn ($c) => [
+                'id' => $c->id,
                 'client_name' => $c->client?->name ?? 'Anonimo',
-                'client_id'   => $c->client_id,
-                'content'     => $c->content,
-                'created_at'  => $c->created_at?->toIso8601String(),
+                'client_id' => $c->client_id,
+                'content' => $c->content,
+                'created_at' => $c->created_at?->toIso8601String(),
             ])->toArray(),
         ])->toArray();
 
         return response()->json([
-            'posts'           => $postsData,
+            'posts' => $postsData,
             'community_stats' => $communityStats,
-            'pagination'      => [
+            'pagination' => [
                 'current_page' => $posts->currentPage(),
-                'last_page'    => $posts->lastPage(),
-                'per_page'     => $posts->perPage(),
-                'total'        => $posts->total(),
+                'last_page' => $posts->lastPage(),
+                'per_page' => $posts->perPage(),
+                'total' => $posts->total(),
             ],
         ]);
     }
@@ -125,31 +126,31 @@ class SocialController extends Controller
      */
     public function communityCreate(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $request->validate([
-            'content'   => 'required|string|max:1000',
+            'content' => 'required|string|max:1000',
             'post_type' => 'required|in:text,achievement,pr,photo',
         ]);
 
-        $content  = $request->input('content');
+        $content = $request->input('content');
         $postType = $request->input('post_type');
 
         if ($postType === 'achievement' && ! str_starts_with($content, 'Logro: ')) {
-            $content = 'Logro: ' . $content;
+            $content = 'Logro: '.$content;
         } elseif ($postType === 'pr' && ! str_starts_with($content, 'Nuevo PR: ')) {
-            $content = 'Nuevo PR: ' . $content;
+            $content = 'Nuevo PR: '.$content;
         }
 
         $post = CommunityPost::create([
             'client_id' => $clientId,
-            'content'   => $content,
+            'content' => $content,
             'post_type' => $postType,
         ]);
 
         return response()->json([
-            'id'         => $post->id,
+            'id' => $post->id,
             'created_at' => $post->created_at?->toIso8601String(),
         ], 201);
     }
@@ -161,7 +162,7 @@ class SocialController extends Controller
      */
     public function communityReact(Request $request, int $id): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $request->validate([
@@ -180,15 +181,15 @@ class SocialController extends Controller
             $toggled = false;
         } else {
             PostReaction::create([
-                'post_id'       => $id,
-                'client_id'     => $clientId,
+                'post_id' => $id,
+                'client_id' => $clientId,
                 'reaction_type' => $reactionType,
             ]);
             $toggled = true;
         }
 
         return response()->json([
-            'toggled'       => $toggled,
+            'toggled' => $toggled,
             'reaction_type' => $reactionType,
         ]);
     }
@@ -200,7 +201,7 @@ class SocialController extends Controller
      */
     public function communityComment(Request $request, int $id): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $request->validate([
@@ -208,15 +209,15 @@ class SocialController extends Controller
         ]);
 
         $comment = PostComment::create([
-            'post_id'   => $id,
+            'post_id' => $id,
             'client_id' => $clientId,
-            'content'   => $request->input('content'),
+            'content' => $request->input('content'),
         ]);
 
         return response()->json([
-            'id'          => $comment->id,
+            'id' => $comment->id,
             'client_name' => $client->name ?? 'Anonimo',
-            'created_at'  => $comment->created_at?->toIso8601String(),
+            'created_at' => $comment->created_at?->toIso8601String(),
         ], 201);
     }
 
@@ -228,7 +229,7 @@ class SocialController extends Controller
      */
     public function communityDelete(Request $request, int $id): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $deleted = CommunityPost::where('id', $id)
@@ -251,7 +252,7 @@ class SocialController extends Controller
      */
     public function challenges(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $challenges = Challenge::where('is_active', true)
@@ -265,25 +266,25 @@ class SocialController extends Controller
 
         $data = $challenges->map(function (Challenge $challenge) {
             $participation = $challenge->participants->first();
-            $progressPct   = ($participation && $challenge->goal_value)
+            $progressPct = ($participation && $challenge->goal_value)
                 ? min(100, round(($participation->progress / $challenge->goal_value) * 100, 1))
                 : 0;
 
             return [
-                'id'             => $challenge->id,
-                'title'          => $challenge->title,
-                'description'    => $challenge->description,
-                'start_date'     => $challenge->start_date?->format('Y-m-d'),
-                'end_date'       => $challenge->end_date?->format('Y-m-d'),
-                'goal_value'     => $challenge->goal_value,
-                'goal_unit'      => $challenge->goal_unit,
-                'reward'         => $challenge->reward,
-                'joined'         => $participation !== null,
-                'completed'      => $participation?->completed ?? false,
-                'progress'       => $participation?->progress ?? 0,
-                'progress_pct'   => $progressPct,
-                'participation'  => $participation ? [
-                    'id'        => $participation->id,
+                'id' => $challenge->id,
+                'title' => $challenge->title,
+                'description' => $challenge->description,
+                'start_date' => $challenge->start_date?->format('Y-m-d'),
+                'end_date' => $challenge->end_date?->format('Y-m-d'),
+                'goal_value' => $challenge->goal_value,
+                'goal_unit' => $challenge->goal_unit,
+                'reward' => $challenge->reward,
+                'joined' => $participation !== null,
+                'completed' => $participation?->completed ?? false,
+                'progress' => $participation?->progress ?? 0,
+                'progress_pct' => $progressPct,
+                'participation' => $participation ? [
+                    'id' => $participation->id,
                     'joined_at' => $participation->joined_at,
                 ] : null,
             ];
@@ -299,7 +300,7 @@ class SocialController extends Controller
      */
     public function joinChallenge(Request $request, int $id): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $exists = ChallengeParticipant::where('challenge_id', $id)
@@ -320,14 +321,14 @@ class SocialController extends Controller
 
         $participant = ChallengeParticipant::create([
             'challenge_id' => $id,
-            'client_id'    => $clientId,
-            'progress'     => 0,
-            'completed'    => false,
-            'joined_at'    => now(),
+            'client_id' => $clientId,
+            'progress' => 0,
+            'completed' => false,
+            'joined_at' => now(),
         ]);
 
         return response()->json([
-            'joined'         => true,
+            'joined' => true,
             'participation_id' => $participant->id,
         ], 201);
     }
@@ -341,7 +342,7 @@ class SocialController extends Controller
      */
     public function chatIndex(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         // Determine coach from most recent assigned plan
@@ -349,22 +350,22 @@ class SocialController extends Controller
             ->orderByDesc('created_at')
             ->first();
 
-        $coach    = null;
+        $coach = null;
         $hasCoach = false;
         if ($assignedPlan && $assignedPlan->assigned_by) {
-            $coach = \App\Models\Admin::find($assignedPlan->assigned_by);
+            $coach = Admin::find($assignedPlan->assigned_by);
         }
 
         if (! $coach) {
             return response()->json([
-                'has_coach'  => false,
+                'has_coach' => false,
                 'coach_name' => 'Coach no asignado',
-                'messages'   => [],
+                'messages' => [],
             ]);
         }
 
-        $hasCoach  = true;
-        $coachId   = $coach->id;
+        $hasCoach = true;
+        $coachId = $coach->id;
         $coachName = $coach->name ?? 'Coach';
 
         // Mark unread messages as read
@@ -382,19 +383,19 @@ class SocialController extends Controller
             ->reverse()
             ->values()
             ->map(fn ($m) => [
-                'id'         => $m->id,
-                'message'    => $m->message,
-                'direction'  => $m->direction,
-                'read_at'    => $m->read_at,
+                'id' => $m->id,
+                'message' => $m->message,
+                'direction' => $m->direction,
+                'read_at' => $m->read_at,
                 'created_at' => $m->created_at?->toIso8601String(),
             ])
             ->toArray();
 
         return response()->json([
-            'has_coach'  => $hasCoach,
-            'coach_id'   => $coachId,
+            'has_coach' => $hasCoach,
+            'coach_id' => $coachId,
             'coach_name' => $coachName,
-            'messages'   => $messages,
+            'messages' => $messages,
         ]);
     }
 
@@ -405,7 +406,7 @@ class SocialController extends Controller
      */
     public function chatSend(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $request->validate([
@@ -419,7 +420,7 @@ class SocialController extends Controller
 
         $coach = null;
         if ($assignedPlan && $assignedPlan->assigned_by) {
-            $coach = \App\Models\Admin::find($assignedPlan->assigned_by);
+            $coach = Admin::find($assignedPlan->assigned_by);
         }
 
         if (! $coach) {
@@ -427,14 +428,14 @@ class SocialController extends Controller
         }
 
         $msg = CoachMessage::create([
-            'coach_id'  => $coach->id,
+            'coach_id' => $coach->id,
             'client_id' => $clientId,
-            'message'   => $request->input('message'),
+            'message' => $request->input('message'),
             'direction' => 'client_to_coach',
         ]);
 
         return response()->json([
-            'id'         => $msg->id,
+            'id' => $msg->id,
             'created_at' => $msg->created_at?->toIso8601String(),
         ], 201);
     }
@@ -448,7 +449,7 @@ class SocialController extends Controller
      */
     public function nutrition(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $assignedPlan = AssignedPlan::where('client_id', $clientId)
@@ -464,11 +465,11 @@ class SocialController extends Controller
                 : json_decode($assignedPlan->content, true);
         }
 
-        $macros    = $this->parseMacros($plan);
-        $meals     = $this->parseMeals($plan);
-        $extras    = $this->parseExtras($plan);
-        $water     = $this->loadWaterData($clientId, $plan);
-        $weight    = $this->loadWeightData($clientId, $plan);
+        $macros = $this->parseMacros($plan);
+        $meals = $this->parseMeals($plan);
+        $extras = $this->parseExtras($plan);
+        $water = $this->loadWaterData($clientId, $plan);
+        $weight = $this->loadWeightData($clientId, $plan);
 
         // Show onboarding tutorial if client has never logged a biometric weight
         $showTutorial = ! BiometricLog::where('client_id', $clientId)
@@ -477,14 +478,14 @@ class SocialController extends Controller
             ->exists();
 
         return response()->json([
-            'has_plan'        => $plan !== null,
-            'plan_raw'        => $plan,
-            'macros'          => $macros,
-            'meals'           => $meals,
-            'extras'          => $extras,
-            'water'           => $water,
-            'weight'          => $weight,
-            'show_tutorial'   => $showTutorial,
+            'has_plan' => $plan !== null,
+            'plan_raw' => $plan,
+            'macros' => $macros,
+            'meals' => $meals,
+            'extras' => $extras,
+            'water' => $water,
+            'weight' => $weight,
+            'show_tutorial' => $showTutorial,
         ]);
     }
 
@@ -506,7 +507,7 @@ class SocialController extends Controller
      */
     public function toggleWater(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $request->validate([
@@ -514,7 +515,7 @@ class SocialController extends Controller
         ]);
 
         $amount = (int) $request->input('amount', 250);
-        $today  = now()->toDateString();
+        $today = now()->toDateString();
 
         $log = HabitLog::where('client_id', $clientId)
             ->where('habit_type', 'agua')
@@ -527,10 +528,10 @@ class SocialController extends Controller
             $newValue = (int) $log->value;
         } else {
             HabitLog::create([
-                'client_id'  => $clientId,
-                'log_date'   => $today,
+                'client_id' => $clientId,
+                'log_date' => $today,
                 'habit_type' => 'agua',
-                'value'      => $amount,
+                'value' => $amount,
             ]);
             $newValue = $amount;
         }
@@ -549,18 +550,18 @@ class SocialController extends Controller
      */
     public function habits(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
-        $today      = now()->toDateString();
+        $today = now()->toDateString();
         $todayCarbon = Carbon::today();
 
         $habitDefs = [
-            'agua'          => ['label' => 'Agua', 'icon' => 'water', 'tip' => 'Tu cuerpo necesita al menos 2 litros diarios para un rendimiento optimo.'],
-            'sueno'         => ['label' => 'Sueno', 'icon' => 'moon', 'tip' => 'Dormir 7-9 horas mejora tu recuperacion muscular y equilibrio hormonal.'],
+            'agua' => ['label' => 'Agua', 'icon' => 'water', 'tip' => 'Tu cuerpo necesita al menos 2 litros diarios para un rendimiento optimo.'],
+            'sueno' => ['label' => 'Sueno', 'icon' => 'moon', 'tip' => 'Dormir 7-9 horas mejora tu recuperacion muscular y equilibrio hormonal.'],
             'entrenamiento' => ['label' => 'Entrenamiento', 'icon' => 'dumbbell', 'tip' => 'La consistencia supera la intensidad. Cada sesion cuenta.'],
-            'nutricion'     => ['label' => 'Nutricion', 'icon' => 'apple', 'tip' => 'Cumplir tu plan de nutricion es lo que realmente transforma tu cuerpo.'],
-            'suplementos'   => ['label' => 'Suplementos', 'icon' => 'pill', 'tip' => 'Toma tus suplementos a la misma hora cada dia para maxima absorcion.'],
+            'nutricion' => ['label' => 'Nutricion', 'icon' => 'apple', 'tip' => 'Cumplir tu plan de nutricion es lo que realmente transforma tu cuerpo.'],
+            'suplementos' => ['label' => 'Suplementos', 'icon' => 'pill', 'tip' => 'Toma tus suplementos a la misma hora cada dia para maxima absorcion.'],
         ];
 
         $totalHabits = count($habitDefs);
@@ -579,15 +580,13 @@ class SocialController extends Controller
 
         $todayHabits = [];
         foreach ($habitDefs as $type => $meta) {
-            $todayLogged = $last90Logs->contains(fn ($l) =>
-                $l->habit_type === $type &&
+            $todayLogged = $last90Logs->contains(fn ($l) => $l->habit_type === $type &&
                 $l->log_date->format('Y-m-d') === $today
             );
-            $streak    = 0;
+            $streak = 0;
             $checkDate = $todayLogged ? now()->copy() : now()->subDay();
             for ($i = 0; $i < 90; $i++) {
-                $hasLog = $last90Logs->contains(fn ($l) =>
-                    $l->habit_type === $type &&
+                $hasLog = $last90Logs->contains(fn ($l) => $l->habit_type === $type &&
                     $l->log_date->format('Y-m-d') === $checkDate->format('Y-m-d')
                 );
                 if ($hasLog) {
@@ -605,15 +604,15 @@ class SocialController extends Controller
                 ->count();
             $compliance = min(100, round(($daysCompleted / 30) * 100));
 
-            $logEntry  = $todayLogs[$type] ?? null;
+            $logEntry = $todayLogs[$type] ?? null;
             $completed = $logEntry !== null && (int) $logEntry->value >= 1;
 
             $todayHabits[$type] = [
-                'label'      => $meta['label'],
-                'icon'       => $meta['icon'],
-                'tip'        => $meta['tip'],
-                'completed'  => $completed,
-                'streak'     => $streak,
+                'label' => $meta['label'],
+                'icon' => $meta['icon'],
+                'tip' => $meta['tip'],
+                'completed' => $completed,
+                'streak' => $streak,
                 'compliance' => $compliance,
             ];
         }
@@ -622,7 +621,7 @@ class SocialController extends Controller
 
         // Weekly overview
         $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY);
-        $weekLogs    = HabitLog::where('client_id', $clientId)
+        $weekLogs = HabitLog::where('client_id', $clientId)
             ->whereBetween('log_date', [
                 $startOfWeek->toDateString(),
                 $startOfWeek->copy()->addDays(6)->toDateString(),
@@ -630,15 +629,15 @@ class SocialController extends Controller
             ->get()
             ->groupBy(fn ($log) => $log->log_date->format('Y-m-d'));
 
-        $weeklyData             = [];
-        $weeklyPossibleDays     = 0;
-        $weeklyCompletedHabits  = 0;
+        $weeklyData = [];
+        $weeklyPossibleDays = 0;
+        $weeklyCompletedHabits = 0;
 
         for ($i = 0; $i < 7; $i++) {
-            $day         = $startOfWeek->copy()->addDays($i);
-            $dateKey     = $day->format('Y-m-d');
+            $day = $startOfWeek->copy()->addDays($i);
+            $dateKey = $day->format('Y-m-d');
             $isFutureDay = $day->gt($todayCarbon);
-            $dayLogs     = $weekLogs->get($dateKey, collect());
+            $dayLogs = $weekLogs->get($dateKey, collect());
             $dayCompleted = $dayLogs->filter(fn ($l) => (int) $l->value >= 1)->count();
 
             if (! $isFutureDay) {
@@ -647,18 +646,18 @@ class SocialController extends Controller
             }
 
             $weeklyData[] = [
-                'date'      => $dateKey,
-                'dayName'   => $day->locale('es')->isoFormat('dd'),
+                'date' => $dateKey,
+                'dayName' => $day->locale('es')->isoFormat('dd'),
                 'dayNumber' => $day->format('d'),
-                'isToday'   => $day->isToday(),
-                'isFuture'  => $isFutureDay,
+                'isToday' => $day->isToday(),
+                'isFuture' => $isFutureDay,
                 'completed' => $dayCompleted,
-                'total'     => $totalHabits,
+                'total' => $totalHabits,
             ];
         }
 
         $weeklyComplianceMax = $weeklyPossibleDays * $totalHabits;
-        $weeklyCompliance    = $weeklyComplianceMax > 0
+        $weeklyCompliance = $weeklyComplianceMax > 0
             ? min(100, (int) round(($weeklyCompletedHabits / $weeklyComplianceMax) * 100))
             : 0;
 
@@ -672,13 +671,13 @@ class SocialController extends Controller
 
         $heatmapData = [];
         for ($i = 29; $i >= 0; $i--) {
-            $date    = now()->subDays($i);
+            $date = now()->subDays($i);
             $dateKey = $date->format('Y-m-d');
             $dayLogs = $heatmapCounts->get($dateKey, 0);
 
             $heatmapData[] = [
-                'date'  => $dateKey,
-                'day'   => $date->format('d'),
+                'date' => $dateKey,
+                'day' => $date->format('d'),
                 'count' => $dayLogs,
                 'total' => $totalHabits,
                 'level' => $totalHabits > 0 ? min(4, intdiv($dayLogs * 4, $totalHabits)) : 0,
@@ -686,12 +685,12 @@ class SocialController extends Controller
         }
 
         return response()->json([
-            'today_habits'      => $todayHabits,
-            'completed_today'   => $completedToday,
-            'total_habits'      => $totalHabits,
-            'weekly_data'       => $weeklyData,
+            'today_habits' => $todayHabits,
+            'completed_today' => $completedToday,
+            'total_habits' => $totalHabits,
+            'weekly_data' => $weeklyData,
             'weekly_compliance' => $weeklyCompliance,
-            'heatmap_data'      => $heatmapData,
+            'heatmap_data' => $heatmapData,
         ]);
     }
 
@@ -702,7 +701,7 @@ class SocialController extends Controller
      */
     public function toggleHabit(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $request->validate([
@@ -710,7 +709,7 @@ class SocialController extends Controller
         ]);
 
         $habitType = $request->input('habit_type');
-        $today     = now()->toDateString();
+        $today = now()->toDateString();
 
         $log = HabitLog::where('client_id', $clientId)
             ->where('log_date', $today)
@@ -722,10 +721,10 @@ class SocialController extends Controller
             $completed = (bool) $log->value;
         } else {
             HabitLog::create([
-                'client_id'  => $clientId,
-                'log_date'   => $today,
+                'client_id' => $clientId,
+                'log_date' => $today,
                 'habit_type' => $habitType,
-                'value'      => true,
+                'value' => true,
             ]);
             $completed = true;
         }
@@ -739,7 +738,7 @@ class SocialController extends Controller
         $allCompleted = $completedCount >= 5;
 
         return response()->json([
-            'completed'     => $completed,
+            'completed' => $completed,
             'all_completed' => $allCompleted,
         ]);
     }
@@ -759,27 +758,27 @@ class SocialController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        $total     = $referrals->count();
+        $total = $referrals->count();
         $converted = $referrals->where('status', 'converted')->count();
-        $pending   = $referrals->where('status', 'pending')->count();
-        $tasa      = $total > 0 ? round(($converted / $total) * 100, 1) : 0;
+        $pending = $referrals->where('status', 'pending')->count();
+        $tasa = $total > 0 ? round(($converted / $total) * 100, 1) : 0;
 
-        $referralCode = base64_encode($client->id . ':' . substr(md5($client->id . $client->email), 0, 8));
-        $referralLink = config('app.url') . '/inscripcion?ref=' . urlencode($referralCode);
+        $referralCode = base64_encode($client->id.':'.substr(md5($client->id.$client->email), 0, 8));
+        $referralLink = config('app.url').'/inscripcion?ref='.urlencode($referralCode);
 
         return response()->json([
             'referrals' => $referrals->map(fn ($r) => [
-                'id'             => $r->id,
+                'id' => $r->id,
                 'referred_email' => $r->referred_email,
-                'status'         => $r->status,
+                'status' => $r->status,
                 'reward_granted' => $r->reward_granted,
-                'created_at'     => $r->created_at?->toIso8601String(),
+                'created_at' => $r->created_at?->toIso8601String(),
             ])->toArray(),
             'stats' => [
-                'total'     => $total,
+                'total' => $total,
                 'converted' => $converted,
-                'pending'   => $pending,
-                'tasa'      => $tasa,
+                'pending' => $pending,
+                'tasa' => $tasa,
             ],
             'referral_link' => $referralLink,
             'referral_code' => $referralCode,
@@ -810,15 +809,15 @@ class SocialController extends Controller
         }
 
         Referral::create([
-            'referrer_id'    => $client->id,
+            'referrer_id' => $client->id,
             'referred_email' => $email,
-            'status'         => 'pending',
+            'status' => 'pending',
             'reward_granted' => false,
-            'created_at'     => now(),
+            'created_at' => now(),
         ]);
 
-        $referralCode = base64_encode($client->id . ':' . substr(md5($client->id . $client->email), 0, 8));
-        $referralLink = config('app.url') . '/inscripcion?ref=' . urlencode($referralCode);
+        $referralCode = base64_encode($client->id.':'.substr(md5($client->id.$client->email), 0, 8));
+        $referralLink = config('app.url').'/inscripcion?ref='.urlencode($referralCode);
 
         Mail::to($email)
             ->queue(new ReferralInvitation(
@@ -827,7 +826,7 @@ class SocialController extends Controller
             ));
 
         return response()->json([
-            'sent'  => true,
+            'sent' => true,
             'email' => $email,
         ], 201);
     }
@@ -841,7 +840,7 @@ class SocialController extends Controller
      */
     public function supplements(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $selectedDate = $request->query('date', now()->toDateString());
@@ -862,10 +861,10 @@ class SocialController extends Controller
 
         $timingLabels = [
             'manana' => 'Manana',
-            'tarde'  => 'Tarde',
-            'noche'  => 'Noche',
-            'pre'    => 'Pre-entreno',
-            'post'   => 'Post-entreno',
+            'tarde' => 'Tarde',
+            'noche' => 'Noche',
+            'pre' => 'Pre-entreno',
+            'post' => 'Post-entreno',
         ];
 
         $supplements = [];
@@ -874,13 +873,13 @@ class SocialController extends Controller
             $todayLogs = SupplementLog::where('client_id', $clientId)
                 ->where('log_date', $selectedDate)
                 ->get()
-                ->groupBy(fn ($l) => $l->supplement_name . '|' . $l->timing);
+                ->groupBy(fn ($l) => $l->supplement_name.'|'.$l->timing);
 
             foreach ($supplementPlan['suplementos'] as $supp) {
-                $name    = $supp['nombre'] ?? $supp['name'] ?? '';
-                $dose    = $supp['dosis'] ?? $supp['dose'] ?? '';
+                $name = $supp['nombre'] ?? $supp['name'] ?? '';
+                $dose = $supp['dosis'] ?? $supp['dose'] ?? '';
                 $timings = $supp['horarios'] ?? $supp['timing'] ?? ['manana'];
-                $notes   = $supp['notas'] ?? $supp['notes'] ?? '';
+                $notes = $supp['notas'] ?? $supp['notes'] ?? '';
 
                 if (! is_array($timings)) {
                     $timings = [$timings];
@@ -888,12 +887,12 @@ class SocialController extends Controller
 
                 $timingStatus = [];
                 foreach ($timings as $t) {
-                    $key = $name . '|' . $t;
+                    $key = $name.'|'.$t;
                     $log = $todayLogs->get($key)?->first();
                     $timingStatus[] = [
                         'timing' => $t,
-                        'label'  => $timingLabels[$t] ?? ucfirst($t),
-                        'taken'  => $log && $log->taken,
+                        'label' => $timingLabels[$t] ?? ucfirst($t),
+                        'taken' => $log && $log->taken,
                     ];
                 }
 
@@ -901,10 +900,10 @@ class SocialController extends Controller
                 $anyTaken = collect($timingStatus)->contains(fn ($ts) => $ts['taken']);
 
                 $supplements[] = [
-                    'name'     => $name,
-                    'dose'     => $dose,
-                    'notes'    => $notes,
-                    'timings'  => $timingStatus,
+                    'name' => $name,
+                    'dose' => $dose,
+                    'notes' => $notes,
+                    'timings' => $timingStatus,
                     'allTaken' => $allTaken,
                     'anyTaken' => $anyTaken,
                 ];
@@ -913,13 +912,13 @@ class SocialController extends Controller
 
         // Weekly adherence
         $weekStart = Carbon::parse($selectedDate)->subDays(6);
-        $weekLogs  = SupplementLog::where('client_id', $clientId)
+        $weekLogs = SupplementLog::where('client_id', $clientId)
             ->whereBetween('log_date', [$weekStart->toDateString(), $selectedDate])
             ->where('taken', true)
             ->get();
 
         $totalExpected = 0;
-        $totalTaken    = 0;
+        $totalTaken = 0;
         if ($supplementPlan && isset($supplementPlan['suplementos'])) {
             foreach ($supplementPlan['suplementos'] as $supp) {
                 $timings = $supp['horarios'] ?? $supp['timing'] ?? ['manana'];
@@ -935,7 +934,7 @@ class SocialController extends Controller
         // Daily adherence sparkline
         $dailyAdherence = [];
         for ($i = 6; $i >= 0; $i--) {
-            $date    = Carbon::parse($selectedDate)->subDays($i);
+            $date = Carbon::parse($selectedDate)->subDays($i);
             $dayLogs = $weekLogs->filter(fn ($l) => $l->log_date->toDateString() === $date->toDateString());
             $expectedPerDay = 0;
             if ($supplementPlan && isset($supplementPlan['suplementos'])) {
@@ -948,28 +947,28 @@ class SocialController extends Controller
                 }
             }
             $dailyAdherence[] = [
-                'day'        => $date->locale('es')->isoFormat('dd'),
-                'date'       => $date->format('d'),
-                'taken'      => $dayLogs->count(),
-                'expected'   => $expectedPerDay,
-                'pct'        => $expectedPerDay > 0 ? min(100, round(($dayLogs->count() / $expectedPerDay) * 100)) : 0,
+                'day' => $date->locale('es')->isoFormat('dd'),
+                'date' => $date->format('d'),
+                'taken' => $dayLogs->count(),
+                'expected' => $expectedPerDay,
+                'pct' => $expectedPerDay > 0 ? min(100, round(($dayLogs->count() / $expectedPerDay) * 100)) : 0,
                 'isSelected' => $date->format('Y-m-d') === $selectedDate,
             ];
         }
 
-        $isToday        = $selectedDate === now()->toDateString();
-        $totalToday     = count($supplements);
+        $isToday = $selectedDate === now()->toDateString();
+        $totalToday = count($supplements);
         $completedToday = collect($supplements)->where('allTaken', true)->count();
 
         return response()->json([
-            'has_plan'         => $supplementPlan !== null,
-            'supplements'      => $supplements,
-            'selected_date'    => $selectedDate,
-            'is_today'         => $isToday,
-            'total_today'      => $totalToday,
-            'completed_today'  => $completedToday,
+            'has_plan' => $supplementPlan !== null,
+            'supplements' => $supplements,
+            'selected_date' => $selectedDate,
+            'is_today' => $isToday,
+            'total_today' => $totalToday,
+            'completed_today' => $completedToday,
             'weekly_adherence' => $weeklyAdherence,
-            'daily_adherence'  => $dailyAdherence,
+            'daily_adherence' => $dailyAdherence,
         ]);
     }
 
@@ -980,13 +979,13 @@ class SocialController extends Controller
      */
     public function toggleSupplement(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $request->validate([
             'supplement_name' => 'required|string|max:255',
-            'timing'          => 'required|string|max:50',
-            'date'            => 'nullable|date|before_or_equal:today',
+            'timing' => 'required|string|max:50',
+            'date' => 'nullable|date|before_or_equal:today',
         ]);
 
         $selectedDate = $request->input('date', now()->toDateString());
@@ -996,7 +995,7 @@ class SocialController extends Controller
         }
 
         $supplementName = $request->input('supplement_name');
-        $timing         = $request->input('timing');
+        $timing = $request->input('timing');
 
         $log = SupplementLog::where('client_id', $clientId)
             ->where('log_date', $selectedDate)
@@ -1009,11 +1008,11 @@ class SocialController extends Controller
             $taken = $log->taken;
         } else {
             SupplementLog::create([
-                'client_id'       => $clientId,
-                'log_date'        => $selectedDate,
+                'client_id' => $clientId,
+                'log_date' => $selectedDate,
                 'supplement_name' => $supplementName,
-                'timing'          => $timing,
-                'taken'           => true,
+                'timing' => $timing,
+                'taken' => true,
             ]);
             $taken = true;
         }
@@ -1030,7 +1029,7 @@ class SocialController extends Controller
      */
     public function photos(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $photos = ProgressPhoto::where('client_id', $clientId)
@@ -1039,11 +1038,11 @@ class SocialController extends Controller
             ->get(['id', 'photo_date', 'tipo', 'filename'])
             ->groupBy(fn ($photo) => $photo->photo_date->format('Y-m-d'))
             ->map(fn ($group) => $group->map(fn ($p) => [
-                'id'         => $p->id,
+                'id' => $p->id,
                 'photo_date' => $p->photo_date->format('Y-m-d'),
-                'tipo'       => $p->tipo,
-                'filename'   => $p->filename,
-                'url'        => Storage::disk('public')->url($p->filename),
+                'tipo' => $p->tipo,
+                'filename' => $p->filename,
+                'url' => self::resolvePhotoUrl($p->filename),
             ])->toArray())
             ->toArray();
 
@@ -1057,44 +1056,41 @@ class SocialController extends Controller
      */
     public function uploadPhoto(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $request->validate([
             'photo_date' => 'required|date',
-            'tipo'       => 'required|in:frente,perfil,espalda',
-            'photo'      => 'required|image|max:5120',
+            'tipo' => 'required|in:frente,perfil,espalda',
+            'photo' => 'required|image|max:5120',
         ]);
 
-        $photo = $request->file('photo');
         $uploadDate = $request->input('photo_date');
         $tipo = $request->input('tipo');
 
-        $relativePath = sprintf(
-            'progress/%d/%s_%s.%s',
-            $clientId,
-            $uploadDate,
-            $tipo,
-            $photo->getClientOriginalExtension()
-        );
-
-        $photo->storeAs(
-            dirname($relativePath),
-            basename($relativePath),
-            'public'
-        );
+        try {
+            $result = app(ImagePipelineService::class)->processUpload(
+                file: $request->file('photo'),
+                disk: 'public',
+                directory: "progress/{$clientId}",
+                maxWidth: 1600,
+                quality: 85,
+            );
+        } catch (\InvalidArgumentException $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
 
         $record = ProgressPhoto::create([
-            'client_id'  => $clientId,
+            'client_id' => $clientId,
             'photo_date' => $uploadDate,
-            'tipo'       => $tipo,
-            'filename'   => $relativePath,
+            'tipo' => $tipo,
+            'filename' => $result['path_webp'],
         ]);
 
         return response()->json([
-            'id'       => $record->id,
-            'url'      => Storage::disk('public')->url($relativePath),
-            'filename' => $relativePath,
+            'id' => $record->id,
+            'url' => self::resolvePhotoUrl($result['path_webp']),
+            'filename' => $result['path_webp'],
         ], 201);
     }
 
@@ -1105,7 +1101,7 @@ class SocialController extends Controller
      */
     public function deletePhoto(Request $request, int $id): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $photo = ProgressPhoto::where('client_id', $clientId)
@@ -1116,9 +1112,10 @@ class SocialController extends Controller
             return response()->json(['error' => 'Foto no encontrada.'], 404);
         }
 
-        // Delete file from storage
-        if ($photo->filename && Storage::disk('public')->exists($photo->filename)) {
-            Storage::disk('public')->delete($photo->filename);
+        if ($photo->filename) {
+            $fallback = preg_replace('/\.webp$/i', '.jpg', $photo->filename);
+            $fallbackPng = preg_replace('/\.webp$/i', '.png', $photo->filename);
+            Storage::disk('public')->delete([$photo->filename, $fallback, $fallbackPng]);
         }
 
         $photo->delete();
@@ -1135,11 +1132,11 @@ class SocialController extends Controller
      */
     public function records(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $category = $request->query('category', 'all');
-        $search   = $request->query('search', '');
+        $search = $request->query('search', '');
 
         $query = PersonalRecord::where('client_id', $clientId)
             ->orderByDesc('achieved_at')
@@ -1150,18 +1147,18 @@ class SocialController extends Controller
         }
 
         if (strlen($search) > 0) {
-            $query->where('exercise', 'like', '%' . $search . '%');
+            $query->where('exercise', 'like', '%'.$search.'%');
         }
 
-        $records    = $query->limit(500)->get();
+        $records = $query->limit(500)->get();
         $currentPrs = $records->where('is_current', true)->keyBy('exercise');
 
         $hasFilters = $category !== 'all' || strlen($search) > 0;
 
         if ($hasFilters) {
-            $totalPrs       = $records->where('is_current', true)->count();
+            $totalPrs = $records->where('is_current', true)->count();
             $totalExercises = $records->where('is_current', true)->unique('exercise')->count();
-            $thisMonth      = $records->where('achieved_at', '>=', now()->startOfMonth())->count();
+            $thisMonth = $records->where('achieved_at', '>=', now()->startOfMonth())->count();
         } else {
             $stats = Cache::remember("pr:stats:{$clientId}", 60, function () use ($clientId) {
                 $row = PersonalRecord::where('client_id', $clientId)
@@ -1176,34 +1173,34 @@ class SocialController extends Controller
                 return $row ? $row->toArray() : ['total_exercises' => 0, 'total_prs' => 0, 'this_month' => 0];
             });
 
-            $totalPrs       = (int) ($stats['total_prs'] ?? 0);
+            $totalPrs = (int) ($stats['total_prs'] ?? 0);
             $totalExercises = (int) ($stats['total_exercises'] ?? 0);
-            $thisMonth      = (int) ($stats['this_month'] ?? 0);
+            $thisMonth = (int) ($stats['this_month'] ?? 0);
         }
 
         return response()->json([
             'records' => $records->map(fn ($r) => [
-                'id'           => $r->id,
-                'exercise'     => $r->exercise,
-                'category'     => $r->category,
-                'weight'       => $r->weight,
-                'reps'         => $r->reps,
+                'id' => $r->id,
+                'exercise' => $r->exercise,
+                'category' => $r->category,
+                'weight' => $r->weight,
+                'reps' => $r->reps,
                 'duration_sec' => $r->duration_sec,
-                'distance_km'  => $r->distance_km,
-                'notes'        => $r->notes,
-                'achieved_at'  => $r->achieved_at?->format('Y-m-d'),
-                'is_current'   => (bool) $r->is_current,
+                'distance_km' => $r->distance_km,
+                'notes' => $r->notes,
+                'achieved_at' => $r->achieved_at?->format('Y-m-d'),
+                'is_current' => (bool) $r->is_current,
             ])->toArray(),
             'current_prs' => $currentPrs->map(fn ($r) => [
-                'id'       => $r->id,
+                'id' => $r->id,
                 'exercise' => $r->exercise,
-                'weight'   => $r->weight,
-                'reps'     => $r->reps,
+                'weight' => $r->weight,
+                'reps' => $r->reps,
             ])->toArray(),
             'stats' => [
-                'total_prs'       => $totalPrs,
+                'total_prs' => $totalPrs,
                 'total_exercises' => $totalExercises,
-                'this_month'      => $thisMonth,
+                'this_month' => $thisMonth,
             ],
         ]);
     }
@@ -1227,14 +1224,14 @@ class SocialController extends Controller
      */
     public function aiNutritionAnalyze(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $request->validate([
             'photo' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
-        $apiKey      = config('wellcore.ai.api_key', '');
+        $apiKey = config('wellcore.ai.api_key', '');
         $aiAvailable = str_starts_with($apiKey, 'sk-ant') || strlen($apiKey) > 20;
 
         if (! $aiAvailable) {
@@ -1242,9 +1239,9 @@ class SocialController extends Controller
         }
 
         try {
-            $photo    = $request->file('photo');
-            $path     = $photo->getRealPath();
-            $base64   = base64_encode(file_get_contents($path));
+            $photo = $request->file('photo');
+            $path = $photo->getRealPath();
+            $base64 = base64_encode(file_get_contents($path));
             $mimeType = $photo->getMimeType();
 
             $aiService = app(AIService::class);
@@ -1284,10 +1281,10 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
                 return response()->json(['error' => 'No se pudo interpretar el analisis.'], 422);
             }
 
-            $data['fiber_g']           = isset($data['fiber_g']) ? (float) $data['fiber_g'] : null;
-            $data['ingredients']       = isset($data['ingredients']) && is_array($data['ingredients']) ? $data['ingredients'] : [];
+            $data['fiber_g'] = isset($data['fiber_g']) ? (float) $data['fiber_g'] : null;
+            $data['ingredients'] = isset($data['ingredients']) && is_array($data['ingredients']) ? $data['ingredients'] : [];
             $data['confidence_reason'] = $data['confidence_reason'] ?? '';
-            $data['meal_type']         = $data['meal_type'] ?? '';
+            $data['meal_type'] = $data['meal_type'] ?? '';
 
             return response()->json([
                 'analysis' => $data,
@@ -1308,7 +1305,7 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
      */
     public function videoCheckinHistory(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $checkins = VideoCheckin::where('client_id', $clientId)
@@ -1322,18 +1319,18 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
             ->count();
 
         return response()->json([
-            'checkins'      => $checkins->map(fn ($c) => [
-                'id'             => $c->id,
-                'media_type'     => $c->media_type,
-                'media_url'      => $c->media_url,
-                'media_full_url' => asset('storage/' . $c->media_url),
-                'exercise_name'  => $c->exercise_name,
-                'notes'          => $c->notes,
-                'status'         => $c->status,
+            'checkins' => $checkins->map(fn ($c) => [
+                'id' => $c->id,
+                'media_type' => $c->media_type,
+                'media_url' => $c->media_url,
+                'media_full_url' => asset('storage/'.$c->media_url),
+                'exercise_name' => $c->exercise_name,
+                'notes' => $c->notes,
+                'status' => $c->status,
                 'coach_response' => $c->coach_response ?? null,
-                'ai_response'    => $c->ai_response ?? null,
-                'ai_used'        => (bool) $c->ai_used,
-                'created_at'     => $c->created_at?->toIso8601String(),
+                'ai_response' => $c->ai_response ?? null,
+                'ai_used' => (bool) $c->ai_used,
+                'created_at' => $c->created_at?->toIso8601String(),
                 'created_at_human' => $c->created_at?->diffForHumans(),
             ])->toArray(),
             'monthly_count' => $monthlyCount,
@@ -1348,21 +1345,21 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
      */
     public function videoCheckinSubmit(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         // Detect media type from extension before validation so we can apply the
         // correct max-size rule.
-        $file      = $request->file('media_file');
+        $file = $request->file('media_file');
         $extension = $file ? strtolower($file->getClientOriginalExtension()) : '';
-        $isImage   = in_array($extension, ['jpg', 'jpeg', 'png'], true);
+        $isImage = in_array($extension, ['jpg', 'jpeg', 'png'], true);
         $mediaType = $isImage ? 'image' : 'video';
-        $maxKb     = $isImage ? 10240 : 102400; // 10 MB image / 100 MB video
+        $maxKb = $isImage ? 10240 : 102400; // 10 MB image / 100 MB video
 
         $request->validate([
-            'media_file'    => "required|file|mimes:mp4,mov,webm,jpg,jpeg,png|max:{$maxKb}",
+            'media_file' => "required|file|mimes:mp4,mov,webm,jpg,jpeg,png|max:{$maxKb}",
             'exercise_name' => 'required|string|max:200',
-            'notes'         => 'nullable|string|max:2000',
+            'notes' => 'nullable|string|max:2000',
         ]);
 
         // Enforce monthly limit of 4.
@@ -1379,28 +1376,28 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
             ], 422);
         }
 
-        $storedPath = $request->file('media_file')->store('checkins/' . $clientId, 'public');
+        $storedPath = $request->file('media_file')->store('checkins/'.$clientId, 'public');
 
         $coachId = AssignedPlan::where('client_id', $clientId)
             ->orderByDesc('created_at')
             ->value('assigned_by');
 
         $checkin = VideoCheckin::create([
-            'client_id'           => $clientId,
-            'coach_id'            => $coachId,
-            'media_type'          => $mediaType,
-            'media_url'           => $storedPath,
-            'exercise_name'       => trim($request->input('exercise_name')),
-            'notes'               => $request->input('notes') ? trim($request->input('notes')) : null,
-            'status'              => 'pending',
-            'ai_used'             => false,
+            'client_id' => $clientId,
+            'coach_id' => $coachId,
+            'media_type' => $mediaType,
+            'media_url' => $storedPath,
+            'exercise_name' => trim($request->input('exercise_name')),
+            'notes' => $request->input('notes') ? trim($request->input('notes')) : null,
+            'status' => 'pending',
+            'ai_used' => false,
             'plan_uses_this_month' => $monthlyCount + 1,
-            'created_at'          => now(),
+            'created_at' => now(),
         ]);
 
         return response()->json([
             'message' => 'Check-in enviado correctamente.',
-            'id'      => $checkin->id,
+            'id' => $checkin->id,
         ], 201);
     }
 
@@ -1415,7 +1412,7 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
             return ['protein_g' => 0, 'carb_g' => 0, 'fat_g' => 0, 'total_calories' => 0, 'has_macros' => false, 'percentages' => ['protein' => 0, 'carbs' => 0, 'fat' => 0]];
         }
 
-        $macros     = $plan['macros'] ?? [];
+        $macros = $plan['macros'] ?? [];
         $day0macros = $plan['dias'][0]['macros'] ?? [];
 
         $proteinGrams = (int) ($macros['proteina_g'] ?? $macros['proteina'] ?? $macros['protein_g'] ?? $macros['protein'] ?? $macros['proteina_g_dia']
@@ -1441,17 +1438,17 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
         $total = $proteinGrams + $carbGrams + $fatGrams;
         $percentages = $total > 0 ? [
             'protein' => (int) round(($proteinGrams / $total) * 100),
-            'carbs'   => (int) round(($carbGrams / $total) * 100),
-            'fat'     => (int) round(($fatGrams / $total) * 100),
+            'carbs' => (int) round(($carbGrams / $total) * 100),
+            'fat' => (int) round(($fatGrams / $total) * 100),
         ] : ['protein' => 0, 'carbs' => 0, 'fat' => 0];
 
         return [
-            'protein_g'      => $proteinGrams,
-            'carb_g'         => $carbGrams,
-            'fat_g'          => $fatGrams,
+            'protein_g' => $proteinGrams,
+            'carb_g' => $carbGrams,
+            'fat_g' => $fatGrams,
             'total_calories' => $totalCalories,
-            'has_macros'     => $hasMacros,
-            'percentages'    => $percentages,
+            'has_macros' => $hasMacros,
+            'percentages' => $percentages,
         ];
     }
 
@@ -1496,16 +1493,16 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
             $macros = $meal['macros'] ?? [];
 
             return [
-                'nombre'    => $meal['nombre'] ?? $meal['name'] ?? $meal['label'] ?? 'Comida',
-                'hora'      => $meal['hora'] ?? $meal['time'] ?? null,
-                'calorias'  => (int) ($meal['calorias'] ?? $meal['calories'] ?? $meal['kcal'] ?? $meal['cal'] ?? 0),
+                'nombre' => $meal['nombre'] ?? $meal['name'] ?? $meal['label'] ?? 'Comida',
+                'hora' => $meal['hora'] ?? $meal['time'] ?? null,
+                'calorias' => (int) ($meal['calorias'] ?? $meal['calories'] ?? $meal['kcal'] ?? $meal['cal'] ?? 0),
                 'alimentos' => $meal['alimentos'] ?? $meal['foods'] ?? $meal['items'] ?? [],
-                'opciones'  => $meal['opciones'] ?? $meal['options'] ?? [],
-                'notas'     => $meal['notas'] ?? $meal['notes'] ?? null,
-                'macros'    => [
-                    'proteina'      => (int) ($macros['proteina_g'] ?? $macros['proteina'] ?? $macros['protein_g'] ?? $macros['protein'] ?? 0),
+                'opciones' => $meal['opciones'] ?? $meal['options'] ?? [],
+                'notas' => $meal['notas'] ?? $meal['notes'] ?? null,
+                'macros' => [
+                    'proteina' => (int) ($macros['proteina_g'] ?? $macros['proteina'] ?? $macros['protein_g'] ?? $macros['protein'] ?? 0),
                     'carbohidratos' => (int) ($macros['carbs_g'] ?? $macros['carbohidratos_g'] ?? $macros['carbohidratos'] ?? $macros['carbs'] ?? 0),
-                    'grasas'        => (int) ($macros['grasas_g'] ?? $macros['grasa_g'] ?? $macros['grasas'] ?? $macros['fat_g'] ?? $macros['fat'] ?? 0),
+                    'grasas' => (int) ($macros['grasas_g'] ?? $macros['grasa_g'] ?? $macros['grasas'] ?? $macros['fat_g'] ?? $macros['fat'] ?? 0),
                 ],
             ];
         }, $raw);
@@ -1521,20 +1518,20 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
         }
 
         $extras = [
-            'coach_notes'      => $plan['notas_coach'] ?? $plan['coach_notes'] ?? null,
-            'objetivo'         => $plan['objetivo'] ?? $plan['objetivo_general'] ?? null,
-            'tips'             => is_array($plan['tips'] ?? null) ? $plan['tips'] : (is_array($plan['tips_nutricionales'] ?? null) ? $plan['tips_nutricionales'] : []),
+            'coach_notes' => $plan['notas_coach'] ?? $plan['coach_notes'] ?? null,
+            'objetivo' => $plan['objetivo'] ?? $plan['objetivo_general'] ?? null,
+            'tips' => is_array($plan['tips'] ?? null) ? $plan['tips'] : (is_array($plan['tips_nutricionales'] ?? null) ? $plan['tips_nutricionales'] : []),
             'comidas_sugeridas' => is_array($plan['comidas_sugeridas'] ?? null) ? $plan['comidas_sugeridas'] : [],
-            'rest_day_info'    => null,
-            'hydration_note'   => null,
+            'rest_day_info' => null,
+            'hydration_note' => null,
         ];
 
         if (isset($plan['plan_dia_descanso'])) {
             $rest = $plan['plan_dia_descanso'];
             $extras['rest_day_info'] = [
-                'descripcion'       => $rest['descripcion'] ?? null,
+                'descripcion' => $rest['descripcion'] ?? null,
                 'calorias_objetivo' => (int) ($rest['calorias_objetivo'] ?? 0),
-                'ajustes'           => $rest['ajustes'] ?? [],
+                'ajustes' => $rest['ajustes'] ?? [],
             ];
         }
 
@@ -1565,7 +1562,7 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
             ->first();
 
         return [
-            'goal_ml'     => $waterGoalMl,
+            'goal_ml' => $waterGoalMl,
             'consumed_ml' => $todayWater ? (int) $todayWater->value : 0,
         ];
     }
@@ -1600,7 +1597,7 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
         }
 
         if ($search = $request->query('search')) {
-            $query->where('title', 'like', '%' . $search . '%');
+            $query->where('title', 'like', '%'.$search.'%');
         }
 
         $videos = $query->limit(50)->get(['id', 'title', 'video_url', 'thumbnail_url', 'duration_sec']);
@@ -1622,8 +1619,8 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
 
         if ($search = $request->query('search')) {
             $query->where(fn ($q) => $q
-                ->where('title', 'like', '%' . $search . '%')
-                ->orWhere('description', 'like', '%' . $search . '%')
+                ->where('title', 'like', '%'.$search.'%')
+                ->orWhere('description', 'like', '%'.$search.'%')
             );
         }
 
@@ -1644,7 +1641,7 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
             ->values();
 
         return response()->json([
-            'contents'   => $contents,
+            'contents' => $contents,
             'categories' => $categories,
         ]);
     }
@@ -1656,7 +1653,7 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
     {
         $profile = ClientProfile::where('client_id', $clientId)->first();
 
-        $weightGoalKg   = null;
+        $weightGoalKg = null;
         $currentWeightKg = null;
 
         if ($plan && isset($plan['peso_objetivo'])) {
@@ -1678,8 +1675,33 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
         }
 
         return [
-            'goal_kg'    => $weightGoalKg,
+            'goal_kg' => $weightGoalKg,
             'current_kg' => $currentWeightKg,
         ];
+    }
+
+    /**
+     * Resolve a progress_photos.filename value to a browser-consumable URL.
+     *
+     * Handles three historical formats:
+     *  - Absolute URL or path already starting with '/' (use as-is).
+     *  - Relative path inside the 'public' disk (e.g. 'progress/42/xxx.webp') → '/storage/...'.
+     *  - Bare basename from the legacy vanilla app (e.g. '10_frente_2026-03-07.jpg') → '/uploads/photos/...'.
+     */
+    private static function resolvePhotoUrl(?string $filename): ?string
+    {
+        if (! $filename) {
+            return null;
+        }
+
+        if (str_starts_with($filename, '/') || str_starts_with($filename, 'http')) {
+            return $filename;
+        }
+
+        if (str_contains($filename, '/')) {
+            return Storage::disk('public')->url($filename);
+        }
+
+        return '/uploads/photos/'.$filename;
     }
 }

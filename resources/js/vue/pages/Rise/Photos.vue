@@ -236,7 +236,7 @@ onMounted(() => {
           <div class="space-y-2">
             <p class="text-center text-xs font-medium text-wc-text-secondary">{{ firstDate }}</p>
             <div class="aspect-[3/4] overflow-hidden rounded-lg border border-wc-border bg-wc-bg-secondary">
-              <img v-if="photosByDate[photosByDate.length - 1]?.frente" :src="'/uploads/photos/' + photosByDate[photosByDate.length - 1].frente" alt="Foto inicial" class="h-full w-full object-cover" loading="lazy">
+              <img v-if="photosByDate[photosByDate.length - 1]?.frente" :src="photosByDate[photosByDate.length - 1].frente_url || ('/uploads/photos/' + photosByDate[photosByDate.length - 1].frente)" alt="Foto inicial" class="h-full w-full object-cover" loading="lazy">
               <div v-else class="flex h-full w-full flex-col items-center justify-center text-wc-text-tertiary">
                 <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3 3h18M3 3v18m0-18h.257" />
@@ -249,7 +249,7 @@ onMounted(() => {
           <div class="space-y-2">
             <p class="text-center text-xs font-medium text-wc-text-secondary">{{ latestDate }}</p>
             <div class="aspect-[3/4] overflow-hidden rounded-lg border border-wc-border bg-wc-bg-secondary">
-              <img v-if="photosByDate[0]?.frente" :src="'/uploads/photos/' + photosByDate[0].frente" alt="Foto actual" class="h-full w-full object-cover" loading="lazy">
+              <img v-if="photosByDate[0]?.frente" :src="photosByDate[0].frente_url || ('/uploads/photos/' + photosByDate[0].frente)" alt="Foto actual" class="h-full w-full object-cover" loading="lazy">
               <div v-else class="flex h-full w-full flex-col items-center justify-center text-wc-text-tertiary">
                 <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3 3h18M3 3v18m0-18h.257" />
@@ -274,7 +274,7 @@ onMounted(() => {
           <div v-for="(tipo, label) in { frente: 'Frente', perfil: 'Perfil', espalda: 'Espalda' }" :key="tipo" class="space-y-1.5">
             <p class="text-center text-[10px] font-medium uppercase tracking-wider text-wc-text-tertiary">{{ label }}</p>
             <div class="relative aspect-[3/4] overflow-hidden rounded-lg border border-wc-border bg-wc-bg-secondary">
-              <img v-if="group[tipo]" :src="'/uploads/photos/' + group[tipo]" :alt="label" class="h-full w-full object-cover" loading="lazy">
+              <img v-if="group[tipo]" :src="group[tipo + '_url'] || ('/uploads/photos/' + group[tipo])" :alt="label" class="h-full w-full object-cover" loading="lazy">
               <div v-else class="flex h-full w-full flex-col items-center justify-center text-wc-text-tertiary">
                 <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
