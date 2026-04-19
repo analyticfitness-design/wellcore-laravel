@@ -27,9 +27,13 @@ Route::get('/debug-log-k7x9', function () {
         return response()->json(['error' => 'log file not found', 'path' => $logFile]);
     }
     $size = filesize($logFile);
-    $offset = max(0, $size - 20000);
+    // Grab last 60k, then extract the last error block (message line)
+    $offset = max(0, $size - 80000);
     $content = file_get_contents($logFile, false, null, $offset);
-    return response($content)->header('Content-Type', 'text/plain; charset=utf-8');
+    // Find last occurrence of 'local.ERROR'
+    $pos = strrpos($content, 'local.ERROR:');
+    $extract = $pos !== false ? substr($content, $pos, 4000) : substr($content, -4000);
+    return response($extract)->header('Content-Type', 'text/plain; charset=utf-8');
 });
 
 // Temporary GIF debug route — remove after diagnosis
