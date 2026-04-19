@@ -31,8 +31,10 @@ Route::get('/debug-log-k7x9', function () {
     $offset = max(0, $size - 80000);
     $content = file_get_contents($logFile, false, null, $offset);
     // Find last occurrence of 'local.ERROR'
-    $pos = strrpos($content, 'local.ERROR:');
-    $extract = $pos !== false ? substr($content, $pos, 4000) : substr($content, -4000);
+    // Extract just the ERROR message lines (not full stacktrace)
+    $lines = explode("\n", $content);
+    $errorLines = array_values(array_filter($lines, fn ($l) => str_contains($l, '.ERROR:')));
+    $extract = implode("\n\n", array_slice($errorLines, -10));
     return response($extract)->header('Content-Type', 'text/plain; charset=utf-8');
 });
 
