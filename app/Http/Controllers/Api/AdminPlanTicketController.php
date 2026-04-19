@@ -12,6 +12,7 @@ use App\Models\PlanTicket;
 use App\Models\PlanTicketAttachment;
 use App\Models\PlanTicketComment;
 use App\Models\WellcoreNotification;
+use App\Services\PlanTicketExportService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -32,13 +33,9 @@ class AdminPlanTicketController extends Controller
         'otro',
     ];
 
-    private const SECTION_INSTRUCTIONS = [
-        'entrenamiento' => 'Formato JSON entrenamiento con semanas[].dias[].ejercicios[]. Cada ejercicio incluir gif_url del catálogo CATALOGO_GIF_265.md. Seguir metodología en TESIS_ENTRENAMIENTO_WELLCORE.md.',
-        'nutricion' => 'Formato con comidas_sugeridas[], opciones en formato "Opción N: ing1 (Xg) + ing2 (Yg) + ing3 (Zg)". Backend separa automáticamente por " + ". Seguir TESIS_NUTRICION_WELLCORE.md.',
-        'habitos' => 'Formato con areas_foco[] y habitos[] estructurados. Incluir frecuencia, descripción y meta medible.',
-        'suplementacion' => 'Formato con suplementos[] de nombre/dosis/momento/frecuencia.',
-        'ciclo' => 'Solo Elite. Formato con compounds, phases, labs, pct. Seguir METODOLOGIAS_ELITE_COMPLETAS.md.',
-    ];
+    public function __construct(
+        private readonly PlanTicketExportService $exportService,
+    ) {}
 
     protected function resolveAdminOrFail(Request $request): Admin
     {
@@ -144,36 +141,7 @@ class AdminPlanTicketController extends Controller
             return response()->json(['error' => 'Ticket no encontrado.'], 404);
         }
 
-        $planType = $ticket->plan_type?->value;
-
-        $payload = [
-            'ticket_id' => $ticket->id,
-            'client' => [
-                'id' => $ticket->client_id,
-                'name' => $ticket->client_name,
-            ],
-            'coach' => $ticket->coach_name,
-            'plan_type' => $planType,
-            'instructions' => [
-                'global' => "Plan tipo {$planType} para cliente del sistema WellCore. Los 4-5 JSONs que siguen se suben separadamente via /api/v/admin/clients/{id}/plans. Usar catálogo de ejercicios en CATALOGO_GIF_265.md y metodologías en TESIS_ENTRENAMIENTO_WELLCORE.md + TESIS_NUTRICION_WELLCORE.md + METODOLOGIAS_ELITE_COMPLETAS.md.",
-                'entrenamiento' => self::SECTION_INSTRUCTIONS['entrenamiento'],
-                'nutricion' => self::SECTION_INSTRUCTIONS['nutricion'],
-                'habitos' => self::SECTION_INSTRUCTIONS['habitos'],
-                'suplementacion' => self::SECTION_INSTRUCTIONS['suplementacion'],
-                'ciclo' => self::SECTION_INSTRUCTIONS['ciclo'],
-            ],
-            'sections' => [
-                'entrenamiento' => $ticket->plan_entrenamiento ?? (object) [],
-                'nutricion' => $ticket->plan_nutricional ?? (object) [],
-                'habitos' => $ticket->plan_habitos ?? (object) [],
-                'suplementacion' => $ticket->plan_suplementacion ?? (object) [],
-                'ciclo' => $ticket->plan_type === PlanType::Elite ? ($ticket->plan_ciclo ?? (object) []) : null,
-            ],
-            'datos_generales' => $ticket->datos_generales ?? (object) [],
-            'notas_coach' => $ticket->notas_coach,
-        ];
-
-        return response()->json($payload);
+        return response()->json($this->exportService->buildFullExport($ticket));
     }
 
     // ─── Export Section ─────────────────────────────────────────────────
@@ -192,15 +160,7 @@ class AdminPlanTicketController extends Controller
             return $this->exportJson($request, $id);
         }
 
-        $map = [
-            'entrenamiento' => $ticket->plan_entrenamiento,
-            'nutricion' => $ticket->plan_nutricional,
-            'habitos' => $ticket->plan_habitos,
-            'suplementacion' => $ticket->plan_suplementacion,
-            'ciclo' => $ticket->plan_ciclo,
-        ];
-
-        if (! array_key_exists($section, $map)) {
+        if (! array_key_exists($section, PlanTicketExportService::SECTION_INSTRUCTIONS)) {
             return response()->json(['error' => 'Seccion invalida.'], 422);
         }
 
@@ -208,13 +168,7 @@ class AdminPlanTicketController extends Controller
             return response()->json(['error' => 'Ciclo solo disponible para Elite.'], 422);
         }
 
-        return response()->json([
-            'client_id' => $ticket->client_id,
-            'plan_type' => $ticket->plan_type?->value,
-            'section' => $section,
-            'instructions' => self::SECTION_INSTRUCTIONS[$section],
-            'brief' => $map[$section] ?? (object) [],
-        ]);
+        return response()->json($this->exportService->buildSectionExport($ticket, $section));
     }
 
     // ─── Update Status ──────────────────────────────────────────────────
