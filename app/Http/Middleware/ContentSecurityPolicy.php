@@ -17,11 +17,11 @@ class ContentSecurityPolicy
 
             $csp = implode('; ', [
                 "default-src 'self'",
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net" . $viteDev,
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://checkout.wompi.co" . $viteDev,
                 "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com" . $viteDev,
                 "font-src 'self' https://fonts.gstatic.com",
                 "img-src 'self' data: https: blob:",
-                "connect-src 'self' https://api.anthropic.com https://sandbox.wompi.co https://production.wompi.co https://www.google-analytics.com https://www.facebook.com https://connect.facebook.net wss:" . $viteDev,
+                "connect-src 'self' https://api.anthropic.com https://sandbox.wompi.co https://production.wompi.co https://checkout.wompi.co https://www.google-analytics.com https://www.facebook.com https://connect.facebook.net wss:" . $viteDev,
                 "frame-src 'self' https://checkout.wompi.co https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com",
                 "base-uri 'self'",
                 "form-action 'self'",
