@@ -1076,7 +1076,7 @@ class SocialController extends Controller
                 maxWidth: 1600,
                 quality: 85,
             );
-        } catch (\InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException|\RuntimeException $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
 

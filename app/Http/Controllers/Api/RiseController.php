@@ -681,7 +681,7 @@ class RiseController extends Controller
                     maxWidth: 1600,
                     quality: 85,
                 );
-            } catch (\InvalidArgumentException $e) {
+            } catch (\InvalidArgumentException|\RuntimeException $e) {
                 return response()->json(['error' => "{$tipo}: {$e->getMessage()}"], 422);
             }
 
@@ -1097,6 +1097,19 @@ class RiseController extends Controller
             $xpEarned = $session->awardXp();
         } catch (\Throwable) {
         }
+
+        // Mark adherence for today on rise_tracking so dashboard KPIs
+        // (streak, workoutsThisWeek, overallAdherence, weekly grid) pick up
+        // the completed workout. Prior to this, finishing a RISE workout
+        // only wrote to workout_sessions, leaving rise_tracking empty and
+        // the dashboard stuck at 0.
+        $logDate = ($session->session_date ?? now())->toDateString();
+        RiseTracking::updateOrCreate(
+            ['client_id' => $client->id, 'log_date' => $logDate],
+            ['training_done' => true],
+        );
+
+        Cache::forget("rise:dashboard:{$client->id}");
 
         return response()->json([
             'completed' => true,
