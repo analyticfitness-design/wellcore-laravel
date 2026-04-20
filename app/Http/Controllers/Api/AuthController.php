@@ -217,7 +217,10 @@ class AuthController extends Controller
             return response()->json(['authenticated' => false], 401);
         }
 
-        $userType = UserType::from($authToken->user_type);
+        // AuthToken casts user_type to UserType enum, so from() would throw.
+        $userType = $authToken->user_type instanceof UserType
+            ? $authToken->user_type
+            : UserType::from((string) $authToken->user_type);
         $user = $userType === UserType::Admin
             ? Admin::find($authToken->user_id)
             : Client::find($authToken->user_id);
@@ -261,7 +264,10 @@ class AuthController extends Controller
             return response()->json(['message' => 'Sesion expirada.'], 401);
         }
 
-        $userType = UserType::from($authToken->user_type);
+        // AuthToken casts user_type to UserType enum, so from() would throw.
+        $userType = $authToken->user_type instanceof UserType
+            ? $authToken->user_type
+            : UserType::from((string) $authToken->user_type);
         $user = $userType === UserType::Admin
             ? Admin::find($authToken->user_id)
             : Client::find($authToken->user_id);
