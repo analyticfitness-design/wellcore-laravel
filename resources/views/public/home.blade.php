@@ -171,7 +171,7 @@
     {{-- ================================================================== --}}
     {{-- 3. SOCIAL PROOF BAR                                                --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg cv-auto-sm">
         <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8" data-animate="fadeIn">
             <p class="text-center text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ __('home.proof_label') }}</p>
             <div class="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-semibold uppercase tracking-widest text-wc-text-tertiary">
@@ -193,7 +193,7 @@
     {{-- ================================================================== --}}
     {{-- 4. WHY WELLCORE                                                    --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg-tertiary">
+    <section class="bg-wc-bg-tertiary cv-auto">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
             <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.why_eyebrow') }}</p>
             <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('home.why_title') }}</h2>
@@ -250,7 +250,7 @@
     {{-- ================================================================== --}}
     {{-- 5. COMMUNITY                                                       --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg cv-auto">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
             <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.community_eyebrow') }}</p>
             <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('home.community_title') }}</h2>
@@ -386,7 +386,7 @@
     {{-- ================================================================== --}}
     {{-- 6. COMO FUNCIONA                                                   --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg-tertiary">
+    <section class="bg-wc-bg-tertiary cv-auto">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
             <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.process_eyebrow') }}</p>
             <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('home.process_title') }}</h2>
@@ -426,7 +426,7 @@
     {{-- ================================================================== --}}
     {{-- 7. PLANS                                                           --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg cv-auto-lg">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="scaleIn">
             <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.plans_eyebrow') }}</p>
             <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('home.plans_title') }}</h2>
@@ -564,7 +564,7 @@
     {{-- ================================================================== --}}
     {{-- 8. RESULTS / TESTIMONIALS                                          --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg-tertiary">
+    <section class="bg-wc-bg-tertiary cv-auto">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
             <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.testimonials_eyebrow') }}</p>
             <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('home.testimonials_title') }}</h2>
@@ -614,7 +614,7 @@
     {{-- ================================================================== --}}
     {{-- 9. COACHES                                                         --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg cv-auto">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
             <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
                 {{-- Left --}}
@@ -709,7 +709,7 @@
     @php
         $articles = array_slice(\App\Http\Controllers\BlogController::getArticles(), 0, 3);
     @endphp
-    <section class="bg-wc-bg-tertiary">
+    <section class="bg-wc-bg-tertiary cv-auto">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
             <div class="flex items-end justify-between">
                 <div>
@@ -759,7 +759,7 @@
     {{-- ================================================================== --}}
     {{-- 11. FAQ                                                            --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg" x-data="{ active: null }">
+    <section class="bg-wc-bg cv-auto" x-data="{ active: null }">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="text-center">
                 <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.faq_eyebrow') }}</p>

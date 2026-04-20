@@ -1,5 +1,33 @@
 /* WellCore Scroll Animations */
 
+/* ─── Content Visibility (skip offscreen render/layout) ─── */
+.cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 800px;
+}
+.cv-auto-sm {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 400px;
+}
+.cv-auto-lg {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 1200px;
+}
+
+/* Promote gradient/shimmer backgrounds to their own compositor layer so the
+   browser doesn't report them as "non-composited animations" on mobile. */
+.gradient-animated,
+.hero-gradient,
+.text-gradient-accent,
+.shimmer,
+.skeleton-premium,
+.badge-shine::after {
+    will-change: background-position, transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+
 /* Base state: hidden before animation */
 [data-animate] {
     opacity: 0;
