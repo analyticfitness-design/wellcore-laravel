@@ -253,6 +253,10 @@ Route::prefix('v/coach')->middleware('throttle:api')->group(function () {
     Route::get('/features', [CoachController::class, 'features']);
     Route::get('/resources', [CoachController::class, 'resources']);
 
+    // Onboarding checklist persistente (P5.3)
+    Route::get('/onboarding', [CoachController::class, 'onboardingGet']);
+    Route::post('/onboarding', [CoachController::class, 'onboardingSet']);
+
     // Impersonation (coach → client)
     Route::post('/clients/{id}/impersonate', [CoachController::class, 'impersonate'])->middleware('throttle:impersonate')->whereNumber('id');
     Route::post('/impersonate/end', [CoachController::class, 'endImpersonation']);

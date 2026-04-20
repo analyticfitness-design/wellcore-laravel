@@ -18,6 +18,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
     'whatsapp',
     'must_change_password',
     'active',
+    'onboarding_state',
     'last_login_at',
 ])]
 #[Hidden(['password_hash'])]
@@ -40,6 +41,7 @@ class Admin extends Authenticatable
             'last_login_at' => 'datetime',
             'must_change_password' => 'boolean',
             'active' => 'boolean',
+            'onboarding_state' => 'array',
         ];
     }
 

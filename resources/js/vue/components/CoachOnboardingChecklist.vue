@@ -72,6 +72,27 @@ function saveCompleted() {
     } catch {
         // ignore quota errors
     }
+    // Doble escritura: persistir en backend para que cruce devices / navegadores.
+    // Falla silenciosa — localStorage ya sirvió como fuente principal.
+    api.post('/api/v/coach/onboarding', {
+        items: completed.value,
+        dismissed: dismissed.value,
+    }).catch(() => { /* offline o 404 si no migrada: ignorar */ });
+}
+
+async function loadFromBackend() {
+    try {
+        const { data } = await api.get('/api/v/coach/onboarding');
+        if (data && data.items && Object.keys(data.items).length > 0) {
+            // Si backend tiene MAS items marcados que local, adoptar backend.
+            completed.value = { ...completed.value, ...data.items };
+            localStorage.setItem(ITEMS_KEY, JSON.stringify(completed.value));
+        }
+        if (data?.dismissed && !dismissed.value) {
+            dismissed.value = true;
+            localStorage.setItem(DISMISS_KEY, '1');
+        }
+    } catch { /* ignore */ }
 }
 
 const completedCount = computed(() => checklist.filter(i => completed.value[i.id]).length);
@@ -139,7 +160,8 @@ watch(allDone, (done) => {
     }
 });
 
-onMounted(() => {
+onMounted(async () => {
+    await loadFromBackend();
     autoDetectCompletions();
 });
 </script>

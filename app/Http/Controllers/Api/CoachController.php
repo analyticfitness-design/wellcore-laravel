@@ -1485,6 +1485,43 @@ class CoachController extends Controller
         ]);
     }
 
+    // ─── Onboarding checklist (P5.3) ────────────────────────────────────
+
+    public function onboardingGet(Request $request): JsonResponse
+    {
+        $coach = $this->resolveCoachOrFail($request);
+        $raw = $coach->onboarding_state ?? null;
+        $state = is_array($raw) ? $raw : (is_string($raw) ? (json_decode($raw, true) ?? []) : []);
+
+        return response()->json([
+            'state' => $state,
+            'dismissed' => (bool) ($state['dismissed'] ?? false),
+            'items' => $state['items'] ?? [],
+        ]);
+    }
+
+    public function onboardingSet(Request $request): JsonResponse
+    {
+        $coach = $this->resolveCoachOrFail($request);
+        $validated = $request->validate([
+            'items' => 'nullable|array',
+            'items.brand' => 'nullable|integer',
+            'items.clients' => 'nullable|integer',
+            'items.ticket' => 'nullable|integer',
+            'items.checkin' => 'nullable|integer',
+            'dismissed' => 'nullable|boolean',
+        ]);
+        $state = [
+            'items' => $validated['items'] ?? [],
+            'dismissed' => (bool) ($validated['dismissed'] ?? false),
+            'updated_at' => now()->toIso8601String(),
+        ];
+        $coach->onboarding_state = $state;
+        $coach->save();
+
+        return response()->json(['ok' => true, 'state' => $state]);
+    }
+
     // ─── Impersonation ─────────────────────────────────────────────────
 
     /**

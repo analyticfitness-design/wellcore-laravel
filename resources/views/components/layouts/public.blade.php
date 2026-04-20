@@ -17,17 +17,10 @@
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
-    <!-- Fonts (async load via media=print trick — non-blocking) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-    @php
-        // Reducido de 17 pesos → 6 pesos críticos (−60 KB aprox)
-        $wcFontsUrl = 'https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Raleway:wght@400;600&family=Barlow:wght@400;700&display=swap';
-    @endphp
-    <link rel="preload" as="style" href="{{ $wcFontsUrl }}">
-    <link rel="stylesheet" href="{{ $wcFontsUrl }}" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="{{ $wcFontsUrl }}"></noscript>
+    <!-- Fonts self-hosted (same-origin, sin round-trip a fonts.gstatic.com) -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/oswald-700-latin.woff2" crossorigin>
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/raleway-400-latin.woff2" crossorigin>
+    <link rel="stylesheet" href="/fonts/wellcore-fonts.css">
 
     {{-- Preload critical resources (WebP w/ PNG fallback via type negotiation) --}}
     <link rel="preload" href="/images/logo-dark.webp" as="image" type="image/webp">
