@@ -105,7 +105,11 @@ class AdminCoachManagementController extends Controller
             'whatsapp' => 'nullable|string|max:30',
             'password' => ['required', 'string', 'min:10', 'max:255', 'regex:'.self::PASSWORD_POLICY_REGEX],
         ], [
+            'password.min'   => 'La contrasena debe tener al menos :min caracteres.',
             'password.regex' => 'La contrasena debe incluir mayuscula, minuscula, numero y simbolo.',
+            'name.required'  => 'El nombre es obligatorio.',
+            'username.required' => 'El usuario es obligatorio.',
+            'username.unique'   => 'Este usuario ya existe, elige otro.',
         ]);
 
         $coach = DB::transaction(function () use ($validated) {
