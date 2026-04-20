@@ -40,6 +40,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const isImpersonating = computed(() => localStorage.getItem('wc_impersonating') === 'true');
     const isAuthenticated = computed(() => !!token.value);
+    const forcePasswordChange = computed(() => localStorage.getItem('wc_force_password_change') === 'true');
 
     function setAuth(data) {
         token.value = data.token;
@@ -56,6 +57,31 @@ export const useAuthStore = defineStore('auth', () => {
             userPortal.value = data.redirectUrl;
             localStorage.setItem('wc_user_portal', data.redirectUrl);
         }
+        if (typeof data.force_password_change !== 'undefined') {
+            if (data.force_password_change) {
+                localStorage.setItem('wc_force_password_change', 'true');
+            } else {
+                localStorage.removeItem('wc_force_password_change');
+            }
+        }
+    }
+
+    async function refreshMe() {
+        try {
+            const resp = await axios.get('/api/v/auth/me', {
+                headers: { Authorization: `Bearer ${token.value}` },
+            });
+            if (resp.data && resp.data.authenticated) {
+                if (resp.data.force_password_change) {
+                    localStorage.setItem('wc_force_password_change', 'true');
+                } else {
+                    localStorage.removeItem('wc_force_password_change');
+                }
+            }
+            return resp.data;
+        } catch {
+            return null;
+        }
     }
 
     function clearAuth() {
@@ -70,6 +96,7 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.removeItem('wc_impersonating');
         localStorage.removeItem('wc_admin_token');
         localStorage.removeItem('wc_user_portal');
+        localStorage.removeItem('wc_force_password_change');
     }
 
     async function login(identity, password, rememberMe = false) {
@@ -115,6 +142,8 @@ export const useAuthStore = defineStore('auth', () => {
         resetPassword,
         userPortal,
         isImpersonating,
+        forcePasswordChange,
+        refreshMe,
         setAuth,
         clearAuth,
     };

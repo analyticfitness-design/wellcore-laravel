@@ -75,12 +75,17 @@ class AuthController extends Controller
         $redirectUrl = $this->resolveRedirectUrl($user, $userType);
         session()->put('wc_user_portal', $redirectUrl);
 
+        $forcePasswordChange = $userType === UserType::Admin
+            ? (bool) ($user->must_change_password ?? false)
+            : false;
+
         return response()->json([
             'token' => $token,
             'userType' => $userType->value,
             'userId' => $user->id,
             'name' => $user->name ?? $user->username ?? 'Usuario',
             'redirectUrl' => $redirectUrl,
+            'force_password_change' => $forcePasswordChange,
         ]);
     }
 
@@ -221,11 +226,101 @@ class AuthController extends Controller
             return response()->json(['authenticated' => false], 401);
         }
 
+        $forcePasswordChange = false;
+        if ($userType === UserType::Admin) {
+            $forcePasswordChange = (bool) ($user->must_change_password ?? false);
+        }
+
         return response()->json([
             'authenticated' => true,
             'userType' => $authToken->user_type,
             'userId' => $authToken->user_id,
             'name' => $user->name ?? $user->username ?? 'Usuario',
+            'force_password_change' => $forcePasswordChange,
+        ]);
+    }
+
+    /**
+     * P2.4 — POST /api/v/auth/change-password
+     * Body: { current_password, new_password, new_password_confirmation }
+     * Rate-limited 5/min per user.
+     */
+    public function changePassword(Request $request): JsonResponse
+    {
+        $token = $request->bearerToken() ?? session('wc_token');
+
+        if (! $token) {
+            return response()->json(['message' => 'No autenticado.'], 401);
+        }
+
+        $authToken = AuthToken::where('token', $token)
+            ->where('expires_at', '>', now())
+            ->first();
+
+        if (! $authToken) {
+            return response()->json(['message' => 'Sesion expirada.'], 401);
+        }
+
+        $userType = UserType::from($authToken->user_type);
+        $user = $userType === UserType::Admin
+            ? Admin::find($authToken->user_id)
+            : Client::find($authToken->user_id);
+
+        if (! $user) {
+            return response()->json(['message' => 'Usuario no encontrado.'], 401);
+        }
+
+        $validated = $request->validate([
+            'current_password' => 'required|string|min:1',
+            'new_password' => [
+                'required',
+                'string',
+                'min:10',
+                'max:255',
+                'confirmed',
+                'regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/',
+            ],
+        ], [
+            'new_password.regex' => 'La contrasena debe incluir mayuscula, minuscula, numero y simbolo.',
+            'new_password.min' => 'Minimo 10 caracteres.',
+            'new_password.confirmed' => 'La confirmacion no coincide.',
+        ]);
+
+        if (! password_verify($validated['current_password'], $user->password_hash)) {
+            return response()->json([
+                'message' => 'La contrasena actual es incorrecta.',
+            ], 422);
+        }
+
+        if (password_verify($validated['new_password'], $user->password_hash)) {
+            return response()->json([
+                'message' => 'La nueva contrasena debe ser distinta de la actual.',
+            ], 422);
+        }
+
+        $updates = ['password_hash' => password_hash($validated['new_password'], PASSWORD_BCRYPT)];
+
+        if ($userType === UserType::Admin) {
+            $updates['must_change_password'] = false;
+            // password_changed_at may not yet exist in prod — guard.
+            if (\Illuminate\Support\Facades\Schema::hasColumn('admins', 'password_changed_at')) {
+                $updates['password_changed_at'] = now();
+            }
+        }
+
+        DB::table($userType === UserType::Admin ? 'admins' : 'clients')
+            ->where('id', $user->id)
+            ->update($updates);
+
+        // Invalidate all other sessions for this user, keep current token.
+        AuthToken::where('user_id', $user->id)
+            ->where('user_type', $authToken->user_type)
+            ->where('token', '!=', $token)
+            ->delete();
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'Contrasena actualizada.',
         ]);
     }
 

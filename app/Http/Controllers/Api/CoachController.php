@@ -32,6 +32,7 @@ use App\Models\TrainingLog;
 use App\Models\VideoCheckin;
 use App\Models\WellcoreNotification;
 use App\Services\PushNotificationService;
+use App\Traits\Auditable;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -42,6 +43,7 @@ use Illuminate\Support\Str;
 class CoachController extends Controller
 {
     use AuthenticatesVueRequests;
+    use Auditable;
 
     /**
      * Resolve the authenticated Admin (coach/admin/superadmin/jefe) or abort.
@@ -1521,6 +1523,11 @@ class CoachController extends Controller
             'user_agent' => substr((string) $request->userAgent(), 0, 500),
         ]);
 
+        $this->audit('impersonation.start', $client, [
+            'coach_id' => $coach->id,
+            'expires_at' => $expiresAt->toIso8601String(),
+        ], $client->name ?? ('client#'.$client->id));
+
         return response()->json([
             'token' => $token,
             'client_id' => $client->id,
@@ -1551,6 +1558,11 @@ class CoachController extends Controller
         }
 
         AuthToken::where('token', $validated['token'])->delete();
+
+        $this->audit('impersonation.end', null, [
+            'impersonation_log_id' => $log?->id,
+            'target_client_id' => $log?->target_client_id,
+        ], $log?->target_client_name);
 
         return response()->json(['ok' => true]);
     }

@@ -102,6 +102,9 @@ const routes = [
     { path: '/admin/chat-analytics', name: 'admin-chat-analytics', component: () => import('../pages/Admin/ChatAnalytics.vue'), meta: { auth: true, title: 'Chat Analytics — WellCore Admin' } },
     { path: '/admin/tickets', name: 'admin-tickets', component: () => import('../pages/Admin/TicketManager.vue'), meta: { auth: true, title: 'Tickets — WellCore Admin' } },
     { path: '/admin/client-requests', name: 'admin-client-requests', component: () => import('../pages/Admin/ClientRequests.vue'), meta: { auth: true, title: 'Solicitudes de Coaches — WellCore Admin' } },
+    { path: '/admin/audit-log', name: 'admin-audit-log', component: () => import('../pages/Admin/AuditLog.vue'), meta: { auth: true, title: 'Audit Log — WellCore Admin' } },
+    { path: '/admin/change-password', name: 'admin-change-password', component: () => import('../pages/Auth/ChangePassword.vue'), meta: { auth: true, title: 'Cambiar Contrasena — WellCore' } },
+    { path: '/coach/change-password', name: 'coach-change-password', component: () => import('../pages/Auth/ChangePassword.vue'), meta: { auth: true, title: 'Cambiar Contrasena — WellCore' } },
     { path: '/admin/referrals', name: 'admin-referrals', component: () => import('../pages/Admin/ReferralRewards.vue'), meta: { auth: true, title: 'Referidos — WellCore Admin' } },
     { path: '/admin/campaigns', name: 'admin-campaigns', component: () => import('../pages/Admin/CampaignTracker.vue'), meta: { auth: true, title: 'Campanas — WellCore Admin' } },
     { path: '/admin/send-invitation', name: 'admin-send-invitation', component: () => import('../pages/Admin/SendPlanInvitation.vue'), meta: { auth: true, title: 'Enviar Invitacion — WellCore Admin' } },
@@ -134,6 +137,19 @@ router.beforeEach((to, from, next) => {
     // Auth-required routes: redirect to login if not logged in
     if (to.meta.auth && !authStore.isAuthenticated) {
         return next('/login');
+    }
+
+    // P2.4 — force password change if flagged. Allow logout + change-password pages through.
+    if (
+        authStore.isAuthenticated &&
+        authStore.forcePasswordChange &&
+        !['admin-change-password', 'coach-change-password', 'login'].includes(to.name)
+    ) {
+        const portal = authStore.userPortal || '/admin';
+        const target = portal === '/coach' ? '/coach/change-password' : '/admin/change-password';
+        if (to.path !== target) {
+            return next(target);
+        }
     }
 
     // Portal guard: RISE users should not access /client/* and vice versa

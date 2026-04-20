@@ -96,6 +96,7 @@ const navSections = [
         items: [
             { name: 'Referidos', to: '/admin/referrals', icon: 'referrals', routeName: 'admin-referrals' },
             { name: 'Herramientas', to: '/admin/tools', icon: 'tools', routeName: 'admin-tools' },
+            { name: 'Audit Log', to: '/admin/audit-log', icon: 'tools', routeName: 'admin-audit-log' },
             { name: 'Configuracion', to: '/admin/settings', icon: 'settings', routeName: 'admin-settings' },
         ],
     },

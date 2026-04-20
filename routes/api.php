@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdminAuditLogController;
 use App\Http\Controllers\Api\AdminClientRequestController;
 use App\Http\Controllers\Api\AdminCoachManagementController;
 use App\Http\Controllers\Api\AdminController;
@@ -97,6 +98,7 @@ Route::prefix('v/auth')
         Route::post('/reset-password', [AuthController::class, 'resetPassword']);
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/me', [AuthController::class, 'me']);
+        Route::post('/change-password', [AuthController::class, 'changePassword'])->middleware('throttle:change-password');
     });
 
 // Vue SPA Public Forms API
@@ -240,7 +242,7 @@ Route::prefix('v/coach')->middleware('throttle:api')->group(function () {
     Route::get('/resources', [CoachController::class, 'resources']);
 
     // Impersonation (coach → client)
-    Route::post('/clients/{id}/impersonate', [CoachController::class, 'impersonate'])->whereNumber('id');
+    Route::post('/clients/{id}/impersonate', [CoachController::class, 'impersonate'])->middleware('throttle:impersonate')->whereNumber('id');
     Route::post('/impersonate/end', [CoachController::class, 'endImpersonation']);
 
     // Client action requests (delete/deactivate/edit)
@@ -310,11 +312,14 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
 
     // Coach management (full CRUD + reset password)
     Route::get('/coaches/manage', [AdminCoachManagementController::class, 'index']);
-    Route::post('/coaches/manage', [AdminCoachManagementController::class, 'store']);
+    Route::post('/coaches/manage', [AdminCoachManagementController::class, 'store'])->middleware('throttle:coach-create');
     Route::get('/coaches/manage/{id}', [AdminCoachManagementController::class, 'show'])->whereNumber('id');
     Route::put('/coaches/manage/{id}', [AdminCoachManagementController::class, 'update'])->whereNumber('id');
     Route::post('/coaches/manage/{id}/reset-password', [AdminCoachManagementController::class, 'resetPassword'])->whereNumber('id');
     Route::delete('/coaches/manage/{id}', [AdminCoachManagementController::class, 'destroy'])->whereNumber('id');
+
+    // Audit log (read-only, superadmin only)
+    Route::get('/audit-logs', [AdminAuditLogController::class, 'index']);
 
     // Client action requests (admin inbox)
     Route::get('/client-requests', [AdminClientRequestController::class, 'index']);

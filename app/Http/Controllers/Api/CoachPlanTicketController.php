@@ -579,15 +579,52 @@ class CoachPlanTicketController extends Controller
             'file' => [
                 'required',
                 'file',
-                'max:10240',
+                'max:10240', // 10MB (Laravel uses KB)
+                'mimes:jpg,jpeg,png,webp,heic,pdf,doc,docx',
                 'mimetypes:image/jpeg,image/png,image/webp,image/heic,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             ],
             'category' => ['nullable', 'string', Rule::in(['foto_progreso', 'laboratorio', 'documento_medico', 'otro'])],
         ]);
 
         $file = $validated['file'];
-        $extension = $file->getClientOriginalExtension() ?: $file->extension();
-        $storedName = Str::uuid()->toString().($extension ? ".{$extension}" : '');
+
+        // P2.7 — Real MIME validation via finfo (not trust client-declared mime/ext).
+        $allowedMimes = [
+            'image/jpeg', 'image/png', 'image/webp', 'image/heic',
+            'application/pdf', 'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            // Some servers report docx as zip; allow only if extension is .docx.
+            'application/zip',
+        ];
+        $realMime = @mime_content_type($file->getRealPath()) ?: $file->getClientMimeType();
+        if (! in_array($realMime, $allowedMimes, true)) {
+            return response()->json(['error' => 'Tipo de archivo no permitido.'], 422);
+        }
+
+        // Reject dangerous extensions regardless of MIME.
+        $originalExt = strtolower((string) $file->getClientOriginalExtension());
+        $blockedExts = ['php', 'phtml', 'phar', 'pl', 'py', 'sh', 'exe', 'bat', 'cmd', 'htaccess', 'js', 'jsp', 'asp', 'aspx'];
+        if (in_array($originalExt, $blockedExts, true)) {
+            return response()->json(['error' => 'Extension de archivo no permitida.'], 422);
+        }
+
+        // Hard size cap (defense in depth even if ini allows more).
+        if ($file->getSize() > 10 * 1024 * 1024) {
+            return response()->json(['error' => 'El archivo excede 10 MB.'], 422);
+        }
+
+        // Whitelist extension from the real MIME, not from the client-declared one.
+        $extFromMime = match ($realMime) {
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/webp' => 'webp',
+            'image/heic' => 'heic',
+            'application/pdf' => 'pdf',
+            'application/msword' => 'doc',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip' => 'docx',
+            default => 'bin',
+        };
+        $storedName = Str::uuid()->toString().'.'.$extFromMime;
         $path = $file->storeAs("plan-tickets/{$ticket->id}", $storedName, 'public');
 
         $attachment = PlanTicketAttachment::create([
@@ -597,7 +634,7 @@ class CoachPlanTicketController extends Controller
             'uploaded_by_name' => $coach->name ?? $coach->username ?? 'Coach',
             'original_name' => $file->getClientOriginalName(),
             'stored_name' => $storedName,
-            'mime' => $file->getClientMimeType() ?: 'application/octet-stream',
+            'mime' => $realMime ?: ($file->getClientMimeType() ?: 'application/octet-stream'),
             'size_bytes' => $file->getSize() ?: 0,
             'category' => $validated['category'] ?? null,
             'disk' => 'public',

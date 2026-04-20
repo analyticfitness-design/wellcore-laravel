@@ -10,6 +10,7 @@ use App\Models\Admin;
 use App\Models\Client;
 use App\Models\ClientActionRequest;
 use App\Models\WellcoreNotification;
+use App\Traits\Auditable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 class AdminClientRequestController extends Controller
 {
     use AuthenticatesVueRequests;
+    use Auditable;
 
     protected function resolveAdminOrFail(Request $request): Admin
     {
@@ -124,6 +126,12 @@ class AdminClientRequestController extends Controller
             ]);
         });
 
+        $this->audit('client_request.approve', $req, [
+            'request_action' => $req->action,
+            'client_id' => $req->client_id,
+            'coach_id' => $req->coach_id,
+        ], $req->client_name);
+
         return response()->json(['approved' => true]);
     }
 
@@ -154,6 +162,13 @@ class AdminClientRequestController extends Controller
                 'link' => '/coach/clients/'.$req->client_id,
             ]);
         });
+
+        $this->audit('client_request.reject', $req, [
+            'request_action' => $req->action,
+            'client_id' => $req->client_id,
+            'coach_id' => $req->coach_id,
+            'admin_notas' => $validated['admin_notas'],
+        ], $req->client_name);
 
         return response()->json(['rejected' => true]);
     }

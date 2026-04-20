@@ -11,6 +11,7 @@ use App\Models\Admin;
 use App\Models\AuthToken;
 use App\Models\Client;
 use App\Models\CoachProfile;
+use App\Traits\Auditable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +23,10 @@ use Illuminate\Support\Str;
 class AdminCoachManagementController extends Controller
 {
     use AuthenticatesVueRequests;
+    use Auditable;
+
+    /** Strong password policy (P2.4): min 10, upper, lower, digit, symbol. */
+    protected const PASSWORD_POLICY_REGEX = '/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/';
 
     protected function resolveAdminOrFail(Request $request): Admin
     {
@@ -98,7 +103,9 @@ class AdminCoachManagementController extends Controller
             'username' => 'required|string|max:50|unique:admins,username',
             'email' => 'nullable|email|max:150',
             'whatsapp' => 'nullable|string|max:30',
-            'password' => 'required|string|min:10|max:255',
+            'password' => ['required', 'string', 'min:10', 'max:255', 'regex:'.self::PASSWORD_POLICY_REGEX],
+        ], [
+            'password.regex' => 'La contrasena debe incluir mayuscula, minuscula, numero y simbolo.',
         ]);
 
         $coach = DB::transaction(function () use ($validated) {
@@ -125,6 +132,11 @@ class AdminCoachManagementController extends Controller
         });
 
         $this->sendCredentialsEmail($coach, $validated['password'], isReset: false);
+
+        $this->audit('coach.create', $coach, [
+            'username' => $coach->username,
+            'email' => $coach->email,
+        ], $coach->name);
 
         return response()->json([
             'created' => true,
@@ -174,7 +186,14 @@ class AdminCoachManagementController extends Controller
             'active' => 'nullable|boolean',
         ]);
 
-        $coach->update(array_filter($validated, fn ($v) => $v !== null));
+        $before = $coach->only(['name', 'email', 'whatsapp', 'active']);
+        $changes = array_filter($validated, fn ($v) => $v !== null);
+        $coach->update($changes);
+
+        $this->audit('coach.update', $coach, [
+            'before' => $before,
+            'after' => $changes,
+        ], $coach->name);
 
         return response()->json(['updated' => true]);
     }
@@ -185,7 +204,8 @@ class AdminCoachManagementController extends Controller
 
         $coach = Admin::where('role', 'coach')->findOrFail($id);
 
-        $newPassword = Str::password(12, letters: true, numbers: true, symbols: false);
+        // Generate a password that satisfies PASSWORD_POLICY_REGEX.
+        $newPassword = $this->generatePolicyCompliantPassword(12);
 
         $coach->update([
             'password_hash' => Hash::make($newPassword),
@@ -198,6 +218,10 @@ class AdminCoachManagementController extends Controller
             ->delete();
 
         $sent = $this->sendCredentialsEmail($coach, $newPassword, isReset: true);
+
+        $this->audit('coach.reset_password', $coach, [
+            'email_sent' => $sent,
+        ], $coach->name);
 
         return response()->json([
             'ok' => true,
@@ -228,7 +252,28 @@ class AdminCoachManagementController extends Controller
             ->where('user_type', 'admin')
             ->delete();
 
+        $this->audit('coach.delete', $coach, [], $coach->name);
+
         return response()->json(['deactivated' => true]);
+    }
+
+    /**
+     * Build a random password that satisfies the policy regex
+     * (>=10 chars + upper + lower + digit + symbol).
+     */
+    protected function generatePolicyCompliantPassword(int $length = 12): string
+    {
+        $length = max(10, $length);
+        $upper = chr(random_int(65, 90));
+        $lower = chr(random_int(97, 122));
+        $digit = (string) random_int(0, 9);
+        $symbols = '!@#$%&*?';
+        $symbol = $symbols[random_int(0, strlen($symbols) - 1)];
+        $rest = Str::password($length - 4, letters: true, numbers: true, symbols: false);
+        $raw = str_split($upper.$lower.$digit.$symbol.$rest);
+        shuffle($raw);
+
+        return implode('', $raw);
     }
 
     protected function sendCredentialsEmail(Admin $coach, string $password, bool $isReset): bool
