@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\ClientStatus;
+use App\Enums\TicketPriority;
+use App\Enums\TicketStatus;
 use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
@@ -12,11 +15,12 @@ use App\Models\Client;
 use App\Models\ClientProfile;
 use App\Models\ClientXp;
 use App\Models\CoachMessage;
+use App\Models\CoachProfile;
 use App\Models\CoachRating;
-use App\Models\Ticket;
 use App\Models\HabitLog;
 use App\Models\Metric;
 use App\Models\Payment;
+use App\Models\Ticket;
 use App\Models\TrainingLog;
 use App\Models\WeightLog;
 use App\Models\WellcoreNotification;
@@ -27,7 +31,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Symfony\Component\HttpFoundation\Response;
 
 class ClientController extends Controller
 {
@@ -48,7 +55,7 @@ class ClientController extends Controller
         $client = $this->resolveClientOrFail($request);
 
         return response()->json([
-            'status' => $client->status instanceof \App\Enums\ClientStatus
+            'status' => $client->status instanceof ClientStatus
                 ? $client->status->value
                 : 'activo',
         ]);
@@ -65,7 +72,7 @@ class ClientController extends Controller
      */
     public function dashboard(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         // Greeting based on time of day (never cached)
@@ -73,7 +80,7 @@ class ClientController extends Controller
         $greeting = match (true) {
             $hour < 12 => 'Buenos dias',
             $hour < 18 => 'Buenas tardes',
-            default    => 'Buenas noches',
+            default => 'Buenas noches',
         };
 
         $clientName = explode(' ', $client->name ?? 'Usuario')[0];
@@ -103,66 +110,66 @@ class ClientController extends Controller
 
         return response()->json([
             // Greeting
-            'greeting'          => $greeting,
-            'clientName'        => $clientName,
-            'planLabel'         => $planLabel,
+            'greeting' => $greeting,
+            'clientName' => $clientName,
+            'planLabel' => $planLabel,
 
             // Stats
-            'streakDays'        => $cached['streakDays'],
+            'streakDays' => $cached['streakDays'],
             'checkinsThisMonth' => $cached['checkinsThisMonth'],
-            'xpTotal'           => $cached['xpTotal'],
-            'level'             => $cached['level'],
-            'xpForNextLevel'    => $cached['xpForNextLevel'],
-            'xpProgress'        => $cached['xpProgress'],
-            'trainedThisWeek'   => $cached['trainedThisWeek'],
+            'xpTotal' => $cached['xpTotal'],
+            'level' => $cached['level'],
+            'xpForNextLevel' => $cached['xpForNextLevel'],
+            'xpProgress' => $cached['xpProgress'],
+            'trainedThisWeek' => $cached['trainedThisWeek'],
 
             // Weekly overview
-            'weekDays'          => $cached['weekDays'],
+            'weekDays' => $cached['weekDays'],
 
             // Recent activity
-            'recentActivity'    => $cached['recentActivity'],
+            'recentActivity' => $cached['recentActivity'],
 
             // Daily missions (fresh)
-            'dailyMissions'     => $dailyMissions,
+            'dailyMissions' => $dailyMissions,
 
             // Check-in countdown
-            'daysUntilCheckin'  => $cached['daysUntilCheckin'],
-            'nextCheckinDate'   => $cached['nextCheckinDate'],
+            'daysUntilCheckin' => $cached['daysUntilCheckin'],
+            'nextCheckinDate' => $cached['nextCheckinDate'],
 
             // Weekly summary (last week)
-            'lastWeekWorkouts'  => $cached['lastWeekWorkouts'],
-            'lastWeekCheckins'  => $cached['lastWeekCheckins'],
-            'lastWeekWeight'    => $cached['lastWeekWeight'],
-            'hasLastWeekData'   => ($cached['lastWeekWorkouts'] > 0 || $cached['lastWeekCheckins'] > 0),
+            'lastWeekWorkouts' => $cached['lastWeekWorkouts'],
+            'lastWeekCheckins' => $cached['lastWeekCheckins'],
+            'lastWeekWeight' => $cached['lastWeekWeight'],
+            'hasLastWeekData' => ($cached['lastWeekWorkouts'] > 0 || $cached['lastWeekCheckins'] > 0),
 
             // Coach info
-            'coachName'         => $cached['coachName'],
-            'coachInitials'     => $cached['coachInitials'],
+            'coachName' => $cached['coachName'],
+            'coachInitials' => $cached['coachInitials'],
 
             // Streak calendar (90 days)
-            'streakCalendar'    => $cached['streakCalendar'],
-            'calendarStreak'    => $cached['calendarStreak'],
+            'streakCalendar' => $cached['streakCalendar'],
+            'calendarStreak' => $cached['calendarStreak'],
 
             // Weight chart (90 days)
-            'weightChartData'   => $cached['weightChartData'],
+            'weightChartData' => $cached['weightChartData'],
 
             // Plan info
-            'hasActivePlan'     => $planInfo['hasActivePlan'],
-            'planPhase'         => $planInfo['planPhase'],
-            'planDaysActive'    => $planInfo['planDaysActive'],
+            'hasActivePlan' => $planInfo['hasActivePlan'],
+            'planPhase' => $planInfo['planPhase'],
+            'planDaysActive' => $planInfo['planDaysActive'],
 
             // Plan progress timeline
-            'weeksActive'       => $planProgress['weeksActive'],
-            'totalWeeks'        => $planProgress['totalWeeks'],
-            'progressPercent'   => $planProgress['progressPercent'],
-            'startDate'         => $planProgress['startDate'],
+            'weeksActive' => $planProgress['weeksActive'],
+            'totalWeeks' => $planProgress['totalWeeks'],
+            'progressPercent' => $planProgress['progressPercent'],
+            'startDate' => $planProgress['startDate'],
 
             // Daily quote
-            'dailyQuote'        => $dailyQuote,
+            'dailyQuote' => $dailyQuote,
 
             // Onboarding
             'onboardingCompleted' => (bool) ($client->onboarding_completed ?? false),
-            'planType'            => strtolower($client->plan?->value ?? 'esencial'),
+            'planType' => strtolower($client->plan?->value ?? 'esencial'),
         ]);
     }
 
@@ -172,15 +179,15 @@ class ClientController extends Controller
     private function buildDashboardCache(int $clientId): array
     {
         // --- Stats ---
-        $xp            = ClientXp::where('client_id', $clientId)->first();
-        $streakDays    = $xp?->streak_days ?? 0;
-        $xpTotal       = $xp?->xp_total ?? 0;
+        $xp = ClientXp::where('client_id', $clientId)->first();
+        $streakDays = $xp?->streak_days ?? 0;
+        $xpTotal = $xp?->xp_total ?? 0;
 
         // XP formula: level = floor(xp / 200) + 1
-        $currentLevel      = (int) floor($xpTotal / 200) + 1;
+        $currentLevel = (int) floor($xpTotal / 200) + 1;
         $xpForCurrentLevel = ($currentLevel - 1) * 200;
-        $xpForNext         = $currentLevel * 200;
-        $xpProgress        = ($xpForNext > $xpForCurrentLevel)
+        $xpForNext = $currentLevel * 200;
+        $xpProgress = ($xpForNext > $xpForCurrentLevel)
             ? (int) round(($xpTotal - $xpForCurrentLevel) / ($xpForNext - $xpForCurrentLevel) * 100)
             : 100;
 
@@ -205,18 +212,18 @@ class ClientController extends Controller
             ->toArray();
 
         $dayLabels = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
-        $today     = now()->dayOfWeekIso;
-        $weekDays  = [];
+        $today = now()->dayOfWeekIso;
+        $weekDays = [];
         for ($i = 1; $i <= 7; $i++) {
             $weekDays[] = [
-                'label'     => $dayLabels[$i - 1],
+                'label' => $dayLabels[$i - 1],
                 'completed' => in_array($i, $logs),
-                'isToday'   => $i === $today,
+                'isToday' => $i === $today,
             ];
         }
 
         // --- Recent activity ---
-        $activities = new Collection();
+        $activities = new Collection;
 
         $trainingLogs = TrainingLog::where('client_id', $clientId)
             ->where('completed', true)
@@ -225,9 +232,9 @@ class ClientController extends Controller
             ->get();
         foreach ($trainingLogs as $log) {
             $activities->push([
-                'type'        => 'training',
+                'type' => 'training',
                 'description' => 'Entrenamiento completado',
-                'date'        => Carbon::parse($log->log_date),
+                'date' => Carbon::parse($log->log_date),
             ]);
         }
 
@@ -237,9 +244,9 @@ class ClientController extends Controller
             ->get();
         foreach ($checkins as $checkin) {
             $activities->push([
-                'type'        => 'checkin',
+                'type' => 'checkin',
                 'description' => 'Check-in semanal enviado',
-                'date'        => Carbon::parse($checkin->checkin_date),
+                'date' => Carbon::parse($checkin->checkin_date),
             ]);
         }
 
@@ -249,9 +256,9 @@ class ClientController extends Controller
             ->get();
         foreach ($payments as $payment) {
             $activities->push([
-                'type'        => 'payment',
-                'description' => 'Pago registrado — ' . ($payment->plan?->label() ?? 'Plan'),
-                'date'        => Carbon::parse($payment->created_at),
+                'type' => 'payment',
+                'description' => 'Pago registrado — '.($payment->plan?->label() ?? 'Plan'),
+                'date' => Carbon::parse($payment->created_at),
             ]);
         }
 
@@ -259,9 +266,9 @@ class ClientController extends Controller
             ->sortByDesc('date')
             ->take(5)
             ->map(fn ($item) => [
-                'type'        => $item['type'],
+                'type' => $item['type'],
                 'description' => $item['description'],
-                'timeAgo'     => $item['date']->diffForHumans(),
+                'timeAgo' => $item['date']->diffForHumans(),
             ])
             ->values()
             ->toArray();
@@ -272,19 +279,19 @@ class ClientController extends Controller
             ->first();
 
         if ($lastCheckin) {
-            $nextDate       = Carbon::parse($lastCheckin->checkin_date)->addDays(7);
-            $daysUntil      = (int) now()->startOfDay()->diffInDays($nextDate->copy()->startOfDay(), false);
+            $nextDate = Carbon::parse($lastCheckin->checkin_date)->addDays(7);
+            $daysUntil = (int) now()->startOfDay()->diffInDays($nextDate->copy()->startOfDay(), false);
             $nextCheckinStr = $nextDate->translatedFormat('l j M');
         } else {
-            $daysUntil      = 0;
+            $daysUntil = 0;
             $nextCheckinStr = now()->translatedFormat('l j M');
         }
 
         // --- Weekly summary (last week) ---
-        $lastIsoWeek   = now()->subWeek()->isoWeek();
-        $lastIsoYear   = now()->subWeek()->isoWeekYear;
+        $lastIsoWeek = now()->subWeek()->isoWeek();
+        $lastIsoYear = now()->subWeek()->isoWeekYear;
         $lastWeekStart = now()->subWeek()->startOfWeek()->toDateString();
-        $lastWeekEnd   = now()->subWeek()->endOfWeek()->toDateString();
+        $lastWeekEnd = now()->subWeek()->endOfWeek()->toDateString();
 
         $lastWeekWorkouts = TrainingLog::where('client_id', $clientId)
             ->where('year_num', $lastIsoYear)
@@ -305,9 +312,9 @@ class ClientController extends Controller
         $lastWeekWeight = $latestWeight ? number_format((float) $latestWeight, 1) : null;
 
         // --- Coach info ---
-        $coachName     = 'Tu Coach WellCore';
+        $coachName = 'Tu Coach WellCore';
         $coachInitials = 'WC';
-        $coachId       = AssignedPlan::where('client_id', $clientId)
+        $coachId = AssignedPlan::where('client_id', $clientId)
             ->whereNotNull('assigned_by')
             ->orderByDesc('valid_from')
             ->value('assigned_by');
@@ -323,8 +330,8 @@ class ClientController extends Controller
             $coach = Admin::find($coachId);
             if ($coach && $coach->name) {
                 $coachName = $coach->name;
-                $parts     = explode(' ', trim($coach->name));
-                $initials  = strtoupper(substr($parts[0] ?? '', 0, 1) . substr($parts[1] ?? '', 0, 1));
+                $parts = explode(' ', trim($coach->name));
+                $initials = strtoupper(substr($parts[0] ?? '', 0, 1).substr($parts[1] ?? '', 0, 1));
                 $coachInitials = $initials ?: 'WC';
             }
         }
@@ -338,7 +345,7 @@ class ClientController extends Controller
             ->pluck('count', 'date')
             ->toArray();
 
-        $streak    = 0;
+        $streak = 0;
         $checkDate = now()->copy();
         if (! isset($calendarLogs[$checkDate->format('Y-m-d')])) {
             $checkDate->subDay();
@@ -356,32 +363,32 @@ class ClientController extends Controller
             ->orderBy('log_date')
             ->get()
             ->map(fn ($log) => [
-                'date'    => Carbon::parse($log->log_date)->format('d M'),
-                'weight'  => round((float) $log->weight_kg, 1),
+                'date' => Carbon::parse($log->log_date)->format('d M'),
+                'weight' => round((float) $log->weight_kg, 1),
                 'bodyFat' => $log->body_fat_pct ? round((float) $log->body_fat_pct, 1) : null,
             ])
             ->toArray();
 
         return [
-            'streakDays'        => $streakDays,
-            'xpTotal'           => $xpTotal,
-            'level'             => $currentLevel,
-            'xpForNextLevel'    => $xpForNext,
-            'xpProgress'        => $xpProgress,
+            'streakDays' => $streakDays,
+            'xpTotal' => $xpTotal,
+            'level' => $currentLevel,
+            'xpForNextLevel' => $xpForNext,
+            'xpProgress' => $xpProgress,
             'checkinsThisMonth' => $checkinsMonth,
-            'trainedThisWeek'   => $trainedWeek,
-            'weekDays'          => $weekDays,
-            'recentActivity'    => $recentActivity,
-            'daysUntilCheckin'  => $daysUntil,
-            'nextCheckinDate'   => $nextCheckinStr,
-            'lastWeekWorkouts'  => $lastWeekWorkouts,
-            'lastWeekCheckins'  => $lastWeekCheckins,
-            'lastWeekWeight'    => $lastWeekWeight,
-            'coachName'         => $coachName,
-            'coachInitials'     => $coachInitials,
-            'streakCalendar'    => $calendarLogs,
-            'calendarStreak'    => $streak,
-            'weightChartData'   => $weightChartData,
+            'trainedThisWeek' => $trainedWeek,
+            'weekDays' => $weekDays,
+            'recentActivity' => $recentActivity,
+            'daysUntilCheckin' => $daysUntil,
+            'nextCheckinDate' => $nextCheckinStr,
+            'lastWeekWorkouts' => $lastWeekWorkouts,
+            'lastWeekCheckins' => $lastWeekCheckins,
+            'lastWeekWeight' => $lastWeekWeight,
+            'coachName' => $coachName,
+            'coachInitials' => $coachInitials,
+            'streakCalendar' => $calendarLogs,
+            'calendarStreak' => $streak,
+            'weightChartData' => $weightChartData,
         ];
     }
 
@@ -402,7 +409,7 @@ class ClientController extends Controller
             }
 
             return [
-                'plan_type'  => (string) $plan->plan_type,
+                'plan_type' => (string) $plan->plan_type,
                 'valid_from' => (string) $plan->getRawOriginal('valid_from'),
             ];
         });
@@ -410,14 +417,14 @@ class ClientController extends Controller
         if ($planData && isset($planData['plan_type'])) {
             return [
                 'hasActivePlan' => true,
-                'planPhase'     => $planData['plan_type'],
+                'planPhase' => $planData['plan_type'],
                 'planDaysActive' => (int) Carbon::parse($planData['valid_from'])->diffInDays(now()),
             ];
         }
 
         return [
-            'hasActivePlan'  => false,
-            'planPhase'      => null,
+            'hasActivePlan' => false,
+            'planPhase' => null,
             'planDaysActive' => 0,
         ];
     }
@@ -434,9 +441,9 @@ class ClientController extends Controller
         $progressPercent = (int) min(100, ($weeksActive / $totalWeeks) * 100);
 
         return [
-            'startDate'       => $startDate,
-            'weeksActive'     => $weeksActive,
-            'totalWeeks'      => $totalWeeks,
+            'startDate' => $startDate,
+            'weeksActive' => $weeksActive,
+            'totalWeeks' => $totalWeeks,
             'progressPercent' => $progressPercent,
         ];
     }
@@ -512,28 +519,28 @@ class ClientController extends Controller
 
         return [
             [
-                'key'       => 'training',
-                'title'     => 'Completar entrenamiento',
+                'key' => 'training',
+                'title' => 'Completar entrenamiento',
                 'completed' => $trainedToday,
-                'icon'      => 'dumbbell',
+                'icon' => 'dumbbell',
             ],
             [
-                'key'       => 'checkin',
-                'title'     => 'Hacer check-in semanal',
+                'key' => 'checkin',
+                'title' => 'Hacer check-in semanal',
                 'completed' => $checkinThisWeek,
-                'icon'      => 'checkin',
+                'icon' => 'checkin',
             ],
             [
-                'key'       => 'weight',
-                'title'     => 'Registrar peso',
+                'key' => 'weight',
+                'title' => 'Registrar peso',
                 'completed' => $weightThisWeek,
-                'icon'      => 'scale',
+                'icon' => 'scale',
             ],
             [
-                'key'       => 'nutrition',
-                'title'     => 'Revisar plan de nutricion',
+                'key' => 'nutrition',
+                'title' => 'Revisar plan de nutricion',
                 'completed' => $nutritionToday,
-                'icon'      => 'nutrition',
+                'icon' => 'nutrition',
             ],
         ];
     }
@@ -548,7 +555,7 @@ class ClientController extends Controller
      */
     public function metrics(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         // Recent history — last 20 entries
@@ -567,7 +574,7 @@ class ClientController extends Controller
             ->values();
 
         // Weight delta (current vs. one month ago)
-        $currentWeight  = $history->first()?->peso;
+        $currentWeight = $history->first()?->peso;
         $monthAgoWeight = Metric::where('client_id', $clientId)
             ->whereNotNull('peso')
             ->where('log_date', '<=', now()->subMonth()->toDateString())
@@ -585,7 +592,7 @@ class ClientController extends Controller
             ->orderBy('log_date')
             ->get(['log_date', 'peso'])
             ->map(fn ($m) => [
-                'date'  => $m->log_date->format('d/m'),
+                'date' => $m->log_date->format('d/m'),
                 'value' => (float) $m->peso,
             ]);
 
@@ -598,7 +605,7 @@ class ClientController extends Controller
             ->get()
             ->map(fn ($r) => [
                 'week' => (string) $r->yw,
-                'cnt'  => (int) $r->cnt,
+                'cnt' => (int) $r->cnt,
             ]);
 
         // Body composition — latest entry with both values
@@ -609,10 +616,10 @@ class ClientController extends Controller
             ->first(['porcentaje_grasa', 'porcentaje_musculo', 'log_date']);
 
         $composition = $latestComposition ? [
-            'grasa'   => (float) $latestComposition->porcentaje_grasa,
+            'grasa' => (float) $latestComposition->porcentaje_grasa,
             'musculo' => (float) $latestComposition->porcentaje_musculo,
-            'otro'    => max(0, round(100 - (float) $latestComposition->porcentaje_grasa - (float) $latestComposition->porcentaje_musculo, 1)),
-            'date'    => $latestComposition->log_date->format('d/m/Y'),
+            'otro' => max(0, round(100 - (float) $latestComposition->porcentaje_grasa - (float) $latestComposition->porcentaje_musculo, 1)),
+            'date' => $latestComposition->log_date->format('d/m/Y'),
         ] : null;
 
         // Training volume — last 12 weeks
@@ -624,7 +631,7 @@ class ClientController extends Controller
             ->orderBy('yw')
             ->get()
             ->map(fn ($r) => [
-                'week'     => (string) $r->yw,
+                'week' => (string) $r->yw,
                 'sessions' => (int) $r->sessions,
             ]);
 
@@ -634,15 +641,15 @@ class ClientController extends Controller
             ->exists();
 
         return response()->json([
-            'history'           => $history,
-            'chartData'         => $chartData,
-            'currentWeight'     => $currentWeight,
-            'weightChange'      => $weightChange,
-            'weightTrend'       => $weightTrend,
-            'weeklyCheckins'    => $weeklyCheckins,
+            'history' => $history,
+            'chartData' => $chartData,
+            'currentWeight' => $currentWeight,
+            'weightChange' => $weightChange,
+            'weightTrend' => $weightTrend,
+            'weeklyCheckins' => $weeklyCheckins,
             'latestComposition' => $composition,
-            'trainingVolume'    => $trainingVolume,
-            'showTutorial'      => $showTutorial,
+            'trainingVolume' => $trainingVolume,
+            'showTutorial' => $showTutorial,
         ]);
     }
 
@@ -654,19 +661,19 @@ class ClientController extends Controller
      */
     public function storeMetric(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $validated = $request->validate([
-            'peso'               => 'required|numeric|min:20|max:300',
+            'peso' => 'required|numeric|min:20|max:300',
             'porcentaje_musculo' => 'nullable|numeric|min:0|max:100',
-            'porcentaje_grasa'   => 'nullable|numeric|min:0|max:100',
-            'notas'              => 'nullable|string|max:500',
-            'chest'              => 'nullable|numeric|min:30|max:200',
-            'waist'              => 'nullable|numeric|min:30|max:200',
-            'hip'                => 'nullable|numeric|min:30|max:200',
-            'thigh'              => 'nullable|numeric|min:20|max:100',
-            'arm'                => 'nullable|numeric|min:15|max:60',
+            'porcentaje_grasa' => 'nullable|numeric|min:0|max:100',
+            'notas' => 'nullable|string|max:500',
+            'chest' => 'nullable|numeric|min:30|max:200',
+            'waist' => 'nullable|numeric|min:30|max:200',
+            'hip' => 'nullable|numeric|min:30|max:200',
+            'thigh' => 'nullable|numeric|min:20|max:100',
+            'arm' => 'nullable|numeric|min:15|max:60',
         ]);
 
         $logDate = now()->toDateString();
@@ -674,10 +681,10 @@ class ClientController extends Controller
         Metric::updateOrCreate(
             ['client_id' => $clientId, 'log_date' => $logDate],
             [
-                'peso'               => $validated['peso'],
+                'peso' => $validated['peso'],
                 'porcentaje_musculo' => $validated['porcentaje_musculo'] ?? null,
-                'porcentaje_grasa'   => $validated['porcentaje_grasa'] ?? null,
-                'notas'              => $validated['notas'] ?? null,
+                'porcentaje_grasa' => $validated['porcentaje_grasa'] ?? null,
+                'notas' => $validated['notas'] ?? null,
             ]
         );
 
@@ -713,7 +720,7 @@ class ClientController extends Controller
 
         return response()->json([
             'message' => 'Metrica guardada exitosamente.',
-            'peso'    => $validated['peso'],
+            'peso' => $validated['peso'],
         ]);
     }
 
@@ -726,24 +733,24 @@ class ClientController extends Controller
      */
     public function profile(Request $request): JsonResponse
     {
-        $client  = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $profile = $client->profile;
 
         return response()->json([
-            'name'             => $client->name ?? '',
-            'email'            => $client->email ?? '',
-            'city'             => $client->city ?? '',
-            'bio'              => $client->bio ?? '',
-            'birthDate'        => $client->birth_date?->format('Y-m-d') ?? '',
-            'avatarUrl'        => $client->avatar_url ?? null,
-            'peso'             => $profile?->peso ?? '',
-            'altura'           => $profile?->altura ?? '',
-            'objetivo'         => $profile?->objetivo ?? '',
-            'whatsapp'         => $profile?->whatsapp ?? '',
-            'nivel'            => $profile?->nivel ?? '',
-            'lugarEntreno'     => $profile?->lugar_entreno ?? '',
-            'diasDisponibles'  => $profile?->dias_disponibles ?? [],
-            'restricciones'    => $profile?->restricciones ?? '',
+            'name' => $client->name ?? '',
+            'email' => $client->email ?? '',
+            'city' => $client->city ?? '',
+            'bio' => $client->bio ?? '',
+            'birthDate' => $client->birth_date?->format('Y-m-d') ?? '',
+            'avatarUrl' => $client->avatar_url ?? null,
+            'peso' => $profile?->peso ?? '',
+            'altura' => $profile?->altura ?? '',
+            'objetivo' => $profile?->objetivo ?? '',
+            'whatsapp' => $profile?->whatsapp ?? '',
+            'nivel' => $profile?->nivel ?? '',
+            'lugarEntreno' => $profile?->lugar_entreno ?? '',
+            'diasDisponibles' => $profile?->dias_disponibles ?? [],
+            'restricciones' => $profile?->restricciones ?? '',
         ]);
     }
 
@@ -757,40 +764,40 @@ class ClientController extends Controller
         $client = $this->resolveClientOrFail($request);
 
         $validated = $request->validate([
-            'name'             => 'required|string|max:255',
-            'email'            => ['required', 'email', 'max:255', Rule::unique('clients', 'email')->ignore($client->id)],
-            'city'             => 'nullable|string|max:100',
-            'bio'              => 'nullable|string|max:1000',
-            'birthDate'        => 'nullable|date',
-            'peso'             => 'nullable|numeric|min:30|max:300',
-            'altura'           => 'nullable|numeric|min:100|max:250',
-            'objetivo'         => 'nullable|string|max:500',
-            'whatsapp'         => 'nullable|string|max:20',
-            'nivel'            => 'nullable|in:principiante,intermedio,avanzado',
-            'lugarEntreno'     => 'nullable|in:gym,casa,ambos',
-            'diasDisponibles'  => 'nullable|array',
-            'restricciones'    => 'nullable|string|max:1000',
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email', 'max:255', Rule::unique('clients', 'email')->ignore($client->id)],
+            'city' => 'nullable|string|max:100',
+            'bio' => 'nullable|string|max:1000',
+            'birthDate' => 'nullable|date',
+            'peso' => 'nullable|numeric|min:30|max:300',
+            'altura' => 'nullable|numeric|min:100|max:250',
+            'objetivo' => 'nullable|string|max:500',
+            'whatsapp' => 'nullable|string|max:20',
+            'nivel' => 'nullable|in:principiante,intermedio,avanzado',
+            'lugarEntreno' => 'nullable|in:gym,casa,ambos',
+            'diasDisponibles' => 'nullable|array',
+            'restricciones' => 'nullable|string|max:1000',
         ]);
 
         $client->update([
-            'name'       => $validated['name'],
-            'email'      => $validated['email'],
-            'city'       => $validated['city'] ?? null,
-            'bio'        => $validated['bio'] ?? null,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'city' => $validated['city'] ?? null,
+            'bio' => $validated['bio'] ?? null,
             'birth_date' => $validated['birthDate'] ?? null,
         ]);
 
         ClientProfile::updateOrCreate(
             ['client_id' => $client->id],
             [
-                'peso'              => $validated['peso'] ?? null,
-                'altura'            => $validated['altura'] ?? null,
-                'objetivo'          => $validated['objetivo'] ?? null,
-                'whatsapp'          => $validated['whatsapp'] ?? null,
-                'nivel'             => $validated['nivel'] ?? null,
-                'lugar_entreno'     => $validated['lugarEntreno'] ?? null,
-                'dias_disponibles'  => $validated['diasDisponibles'] ?? [],
-                'restricciones'     => $validated['restricciones'] ?? null,
+                'peso' => $validated['peso'] ?? null,
+                'altura' => $validated['altura'] ?? null,
+                'objetivo' => $validated['objetivo'] ?? null,
+                'whatsapp' => $validated['whatsapp'] ?? null,
+                'nivel' => $validated['nivel'] ?? null,
+                'lugar_entreno' => $validated['lugarEntreno'] ?? null,
+                'dias_disponibles' => $validated['diasDisponibles'] ?? [],
+                'restricciones' => $validated['restricciones'] ?? null,
             ]
         );
 
@@ -809,7 +816,7 @@ class ClientController extends Controller
         $client = $this->resolveClientOrFail($request);
 
         return response()->json([
-            'name'  => $client->name ?? '',
+            'name' => $client->name ?? '',
             'email' => $client->email ?? '',
             'phone' => $client->phone ?? '',
         ]);
@@ -826,13 +833,13 @@ class ClientController extends Controller
         $client = $this->resolveClientOrFail($request);
 
         $validated = $request->validate([
-            'name'  => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => ['required', 'email', 'max:255', Rule::unique('clients', 'email')->ignore($client->id)],
             'phone' => 'nullable|string|max:30',
         ]);
 
         $data = [
-            'name'  => $validated['name'],
+            'name' => $validated['name'],
             'email' => $validated['email'],
         ];
 
@@ -857,7 +864,7 @@ class ClientController extends Controller
 
         $validated = $request->validate([
             'currentPassword' => 'required|string',
-            'newPassword'     => 'required|string|min:8',
+            'newPassword' => 'required|string|min:8',
             'confirmPassword' => 'required|string',
         ]);
 
@@ -889,7 +896,7 @@ class ClientController extends Controller
      */
     public function notifications(Request $request): JsonResponse
     {
-        $client   = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
         $rows = WellcoreNotification::where('user_id', $clientId)
@@ -899,11 +906,11 @@ class ClientController extends Controller
             ->get(['id', 'title', 'body', 'link', 'read_at', 'created_at']);
 
         $notifications = $rows->map(fn ($n) => [
-            'id'         => $n->id,
-            'title'      => $n->title,
-            'body'       => $n->body,
-            'link'       => $n->link,
-            'read_at'    => $n->read_at?->toIso8601String(),
+            'id' => $n->id,
+            'title' => $n->title,
+            'body' => $n->body,
+            'link' => $n->link,
+            'read_at' => $n->read_at?->toIso8601String(),
             'created_at' => $n->created_at?->diffForHumans(),
         ])->toArray();
 
@@ -911,7 +918,7 @@ class ClientController extends Controller
 
         return response()->json([
             'notifications' => $notifications,
-            'unreadCount'   => $unreadCount,
+            'unreadCount' => $unreadCount,
         ]);
     }
 
@@ -985,9 +992,9 @@ class ClientController extends Controller
             ->orderByDesc('created_at')
             ->get(['id', 'rating', 'comment', 'created_at'])
             ->map(fn ($r) => [
-                'id'         => $r->id,
-                'rating'     => $r->rating,
-                'comment'    => $r->comment,
+                'id' => $r->id,
+                'rating' => $r->rating,
+                'comment' => $r->comment,
                 'created_at' => $r->created_at?->format('d M Y'),
             ])->toArray();
 
@@ -996,14 +1003,14 @@ class ClientController extends Controller
             : null;
 
         return response()->json([
-            'coachId'   => $coachId,
-            'coach'     => $coach ? [
-                'name'      => $coach->name,
-                'bio'       => $coach->bio,
+            'coachId' => $coachId,
+            'coach' => $coach ? [
+                'name' => $coach->name,
+                'bio' => $coach->bio,
                 'photo_url' => $coach->photo_url,
-                'city'      => $coach->city,
+                'city' => $coach->city,
             ] : null,
-            'ratings'   => $ratings,
+            'ratings' => $ratings,
             'avgRating' => $avgRating,
         ]);
     }
@@ -1016,12 +1023,12 @@ class ClientController extends Controller
         $client = $this->resolveClientOrFail($request);
 
         $validated = $request->validate([
-            'rating'  => 'required|integer|min:1|max:5',
+            'rating' => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string|max:1000',
         ], [
             'rating.required' => 'Selecciona una calificación de 1 a 5 estrellas.',
-            'rating.min'      => 'La calificación mínima es 1 estrella.',
-            'rating.max'      => 'La calificación máxima es 5 estrellas.',
+            'rating.min' => 'La calificación mínima es 1 estrella.',
+            'rating.max' => 'La calificación máxima es 5 estrellas.',
         ]);
 
         $coachId = DB::table('coach_messages')
@@ -1040,6 +1047,7 @@ class ClientController extends Controller
 
         if ($recent) {
             $next = $recent->created_at->addDays(7)->format('d/m/Y');
+
             return response()->json([
                 'message' => "Ya calificaste a tu coach esta semana. Podrás calificar nuevamente el {$next}.",
             ], 422);
@@ -1047,17 +1055,17 @@ class ClientController extends Controller
 
         $newRating = CoachRating::create([
             'client_id' => $client->id,
-            'coach_id'  => $coachId,
-            'rating'    => $validated['rating'],
-            'comment'   => $validated['comment'] ?? null,
+            'coach_id' => $coachId,
+            'rating' => $validated['rating'],
+            'comment' => $validated['comment'] ?? null,
         ]);
 
         return response()->json([
             'message' => '¡Valoración enviada! Gracias por tu feedback.',
-            'rating'  => [
-                'id'         => $newRating->id,
-                'rating'     => $newRating->rating,
-                'comment'    => $newRating->comment,
+            'rating' => [
+                'id' => $newRating->id,
+                'rating' => $newRating->rating,
+                'comment' => $newRating->comment,
                 'created_at' => $newRating->created_at->format('d M Y'),
             ],
         ]);
@@ -1086,9 +1094,9 @@ class ClientController extends Controller
      */
     public function tickets(Request $request): JsonResponse
     {
-        $client     = $this->resolveClientOrFail($request);
+        $client = $this->resolveClientOrFail($request);
         $clientName = $client->name;
-        $status     = $request->query('status', 'all');
+        $status = $request->query('status', 'all');
 
         $query = Ticket::where('client_name', $clientName)->orderByDesc('created_at');
 
@@ -1097,15 +1105,15 @@ class ClientController extends Controller
         }
 
         $tickets = $query->get()->map(fn ($t) => [
-            'id'          => $t->id,
+            'id' => $t->id,
             'ticket_type' => (string) $t->ticket_type,
             'description' => $t->description,
-            'priority'    => $t->priority instanceof \App\Enums\TicketPriority ? $t->priority->value : (string) $t->priority,
-            'status'      => $t->status instanceof \App\Enums\TicketStatus ? $t->status->value : (string) $t->status,
-            'response'    => $t->response,
-            'deadline'    => $t->deadline?->format('d M Y, H:i'),
+            'priority' => $t->priority instanceof TicketPriority ? $t->priority->value : (string) $t->priority,
+            'status' => $t->status instanceof TicketStatus ? $t->status->value : (string) $t->status,
+            'response' => $t->response,
+            'deadline' => $t->deadline?->format('d M Y, H:i'),
             'resolved_at' => $t->resolved_at?->diffForHumans(),
-            'created_at'  => $t->created_at?->diffForHumans(),
+            'created_at' => $t->created_at?->diffForHumans(),
         ]);
 
         $statsRaw = Ticket::where('client_name', $clientName)
@@ -1115,10 +1123,10 @@ class ClientController extends Controller
             ->toArray();
 
         $stats = [
-            'total'       => (int) array_sum($statsRaw),
-            'open'        => (int) ($statsRaw['open'] ?? 0),
+            'total' => (int) array_sum($statsRaw),
+            'open' => (int) ($statsRaw['open'] ?? 0),
             'in_progress' => (int) ($statsRaw['in_progress'] ?? 0),
-            'closed'      => (int) ($statsRaw['closed'] ?? 0),
+            'closed' => (int) ($statsRaw['closed'] ?? 0),
         ];
 
         return response()->json(['tickets' => $tickets, 'stats' => $stats]);
@@ -1134,12 +1142,12 @@ class ClientController extends Controller
         $validated = $request->validate([
             'ticket_type' => 'required|in:rutina_nueva,cambio_rutina,nutricion,habitos,invitacion_cliente,otro',
             'description' => 'required|string|min:10|max:2000',
-            'priority'    => 'required|in:normal,alta',
+            'priority' => 'required|in:normal,alta',
         ], [
             'ticket_type.required' => 'Selecciona el tipo de solicitud.',
-            'ticket_type.in'       => 'Tipo de solicitud no válido.',
+            'ticket_type.in' => 'Tipo de solicitud no válido.',
             'description.required' => 'La descripción es obligatoria.',
-            'description.min'      => 'La descripción debe tener al menos 10 caracteres.',
+            'description.min' => 'La descripción debe tener al menos 10 caracteres.',
         ]);
 
         $coachId = DB::table('coach_messages')
@@ -1148,29 +1156,88 @@ class ClientController extends Controller
             ->value('coach_id');
 
         $ticket = Ticket::create([
-            'id'          => (string) \Illuminate\Support\Str::uuid(),
+            'id' => (string) Str::uuid(),
             'client_name' => $client->name,
-            'coach_id'    => $coachId !== null ? (string) $coachId : '',
+            'coach_id' => $coachId !== null ? (string) $coachId : '',
             'ticket_type' => $validated['ticket_type'],
             'description' => $validated['description'],
-            'priority'    => $validated['priority'],
-            'status'      => 'open',
-            'deadline'    => now()->addHours(48),
+            'priority' => $validated['priority'],
+            'status' => 'open',
+            'deadline' => now()->addHours(48),
         ]);
 
         return response()->json([
             'message' => 'Solicitud enviada. Tu coach responderá en 48 horas.',
-            'ticket'  => [
-                'id'          => $ticket->id,
+            'ticket' => [
+                'id' => $ticket->id,
                 'ticket_type' => (string) $ticket->ticket_type,
                 'description' => $ticket->description,
-                'priority'    => $ticket->priority instanceof \App\Enums\TicketPriority ? $ticket->priority->value : (string) $ticket->priority,
-                'status'      => 'open',
-                'response'    => null,
-                'deadline'    => $ticket->deadline->format('d M Y, H:i'),
+                'priority' => $ticket->priority instanceof TicketPriority ? $ticket->priority->value : (string) $ticket->priority,
+                'status' => 'open',
+                'response' => null,
+                'deadline' => $ticket->deadline->format('d M Y, H:i'),
                 'resolved_at' => null,
-                'created_at'  => 'hace un momento',
+                'created_at' => 'hace un momento',
             ],
         ], 201);
+    }
+
+    // ─── My Coach (Branding) ─────────────────────────────────────────────
+
+    /**
+     * GET /api/v/client/my-coach
+     *
+     * Return the assigned coach's branding (logo, color, nombre comercial, tagline)
+     * so the client UI can render coach-personalized identity.
+     *
+     * Resolution order (no explicit FK exists on `clients`):
+     *   1. clients.coach_id (if column exists)
+     *   2. latest assigned_plans.assigned_by
+     *   3. latest coach_messages.coach_id
+     *
+     * Returns 204 No Content when the client has no coach assigned.
+     */
+    public function myCoach(Request $request): Response
+    {
+        $client = $this->resolveClientOrFail($request);
+
+        $coachId = null;
+        if (Schema::hasColumn('clients', 'coach_id')) {
+            $coachId = DB::table('clients')->where('id', $client->id)->value('coach_id');
+        }
+
+        if (! $coachId) {
+            $coachId = AssignedPlan::where('client_id', $client->id)
+                ->whereNotNull('assigned_by')
+                ->orderByDesc('valid_from')
+                ->value('assigned_by');
+        }
+
+        if (! $coachId) {
+            $coachId = CoachMessage::where('client_id', $client->id)
+                ->whereNotNull('coach_id')
+                ->orderByDesc('created_at')
+                ->value('coach_id');
+        }
+
+        if (! $coachId) {
+            return response()->noContent();
+        }
+
+        $coach = Admin::find($coachId);
+        if (! $coach) {
+            return response()->noContent();
+        }
+
+        $profile = CoachProfile::where('admin_id', $coach->id)->first();
+
+        return response()->json([
+            'name' => $coach->name,
+            'logo_url' => $profile?->logo_url,
+            'logo_url_webp' => $profile?->logo_url_webp,
+            'primary_color' => $profile?->color_primary ?? '#DC2626',
+            'nombre_comercial' => $profile?->nombre_comercial,
+            'tagline' => $profile?->tagline,
+        ]);
     }
 }

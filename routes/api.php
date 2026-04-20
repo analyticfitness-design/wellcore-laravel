@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\AdminPlanTicketController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClientController;
+use App\Http\Controllers\Api\CoachBrandController;
 use App\Http\Controllers\Api\CoachClientRequestController;
 use App\Http\Controllers\Api\CoachController;
 use App\Http\Controllers\Api\CoachPlanTicketController;
@@ -135,6 +136,7 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
     Route::get('/tickets', [ClientController::class, 'tickets']);
     Route::post('/tickets', [ClientController::class, 'createTicket']);
     Route::post('/notifications/{id}/read', [ClientController::class, 'markRead']);
+    Route::get('/my-coach', [ClientController::class, 'myCoach']);
 });
 
 // Training (Phase 5)
@@ -236,8 +238,11 @@ Route::prefix('v/coach')->middleware('throttle:api')->group(function () {
     Route::post('/notes', [CoachController::class, 'createNote']);
     Route::put('/notes/{id}', [CoachController::class, 'updateNote'])->where('id', '[0-9]+');
     Route::delete('/notes/{id}', [CoachController::class, 'deleteNote'])->where('id', '[0-9]+');
-    Route::get('/brand', [CoachController::class, 'brand']);
-    Route::put('/brand', [CoachController::class, 'updateBrand']);
+    // Coach branding (P4 Mi Marca) — owned by CoachBrandController
+    Route::get('/brand', [CoachBrandController::class, 'show']);
+    Route::put('/brand', [CoachBrandController::class, 'update']);
+    Route::post('/brand/logo', [CoachBrandController::class, 'uploadLogo']);
+    Route::delete('/brand/logo', [CoachBrandController::class, 'deleteLogo']);
     Route::get('/features', [CoachController::class, 'features']);
     Route::get('/resources', [CoachController::class, 'resources']);
 

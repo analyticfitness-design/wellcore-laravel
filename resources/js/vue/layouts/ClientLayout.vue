@@ -20,6 +20,9 @@ const accountInactive = ref(false);
 const accountStatusValue = ref('inactivo');
 const accountCheckDone = ref(false);
 
+// Coach branding (P4)
+const coachBrand = ref(null); // { name, logo_url, logo_url_webp, primary_color, nombre_comercial, tagline }
+
 onMounted(async () => {
     try {
         await api.get('/api/v/client/account-status');
@@ -30,6 +33,16 @@ onMounted(async () => {
         }
     } finally {
         accountCheckDone.value = true;
+    }
+
+    // Fetch coach branding (non-blocking, silent if no coach assigned)
+    try {
+        const res = await api.get('/api/v/client/my-coach');
+        if (res.status === 200 && res.data) {
+            coachBrand.value = res.data;
+        }
+    } catch (e) {
+        // silent — no coach or endpoint unavailable
     }
 });
 
@@ -153,7 +166,10 @@ const bottomNav = [
 </script>
 
 <template>
-  <div class="min-h-screen bg-wc-bg text-wc-text">
+  <div
+    class="min-h-screen bg-wc-bg text-wc-text"
+    :style="coachBrand?.primary_color ? { '--coach-accent': coachBrand.primary_color } : {}"
+  >
 
     <!-- Coach-initiated impersonation banner (only visible in coach's browser session) -->
     <CoachImpersonationBanner />
@@ -196,9 +212,18 @@ const bottomNav = [
       class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col border-r border-wc-border bg-wc-bg-secondary transition-transform duration-300 ease-in-out lg:translate-x-0"
     >
       <!-- Logo -->
-      <div class="flex h-20 items-center justify-center border-b border-wc-border px-4">
-        <img src="/images/logo-client-dark.webp" alt="WellCore Fitness" class="hidden h-16 w-auto object-contain dark:block" />
-        <img src="/images/logo-client-light.webp" alt="WellCore Fitness" class="block h-16 w-auto object-contain dark:hidden" />
+      <div class="flex h-20 items-center justify-center gap-2 border-b border-wc-border px-4">
+        <img src="/images/logo-client-dark.webp" alt="WellCore Fitness" class="hidden h-12 w-auto object-contain dark:block" />
+        <img src="/images/logo-client-light.webp" alt="WellCore Fitness" class="block h-12 w-auto object-contain dark:hidden" />
+
+        <!-- Coach logo (P4) -->
+        <template v-if="coachBrand && coachBrand.logo_url">
+          <span class="h-8 w-px bg-wc-border"></span>
+          <picture :title="coachBrand.nombre_comercial || coachBrand.name">
+            <source v-if="coachBrand.logo_url_webp" :srcset="coachBrand.logo_url_webp" type="image/webp" />
+            <img :src="coachBrand.logo_url" :alt="coachBrand.nombre_comercial || coachBrand.name || 'Coach'" class="h-8 w-auto max-w-[72px] object-contain" />
+          </picture>
+        </template>
       </div>
 
       <!-- Navigation -->
