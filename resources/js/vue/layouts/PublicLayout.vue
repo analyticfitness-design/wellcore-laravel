@@ -18,8 +18,14 @@ function toggleDarkMode() {
       <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <!-- Logo -->
         <a href="/" class="flex shrink-0 items-center">
-          <img src="/images/logo-dark.png" alt="WellCore Fitness" class="h-10 dark:hidden">
-          <img src="/images/logo-light.png" alt="WellCore Fitness" class="hidden h-10 dark:block">
+          <picture class="dark:hidden">
+            <source srcset="/images/logo-dark.webp" type="image/webp">
+            <img src="/images/logo-dark.png" alt="WellCore Fitness" width="158" height="40" fetchpriority="high" decoding="async" class="h-10 w-auto">
+          </picture>
+          <picture class="hidden dark:block">
+            <source srcset="/images/logo-light.webp" type="image/webp">
+            <img src="/images/logo-light.png" alt="WellCore Fitness" width="158" height="40" fetchpriority="high" decoding="async" class="h-10 w-auto">
+          </picture>
         </a>
 
         <!-- Desktop Nav -->
@@ -122,8 +128,14 @@ function toggleDarkMode() {
         <!-- Top: Brand + Social -->
         <div class="grid grid-cols-1 items-center gap-8 border-b border-wc-border py-12 lg:grid-cols-2">
           <div>
-            <img src="/images/logo-dark.png" alt="WellCore Fitness" class="h-10 dark:hidden">
-            <img src="/images/logo-light.png" alt="WellCore Fitness" class="hidden h-10 dark:block">
+            <picture class="dark:hidden">
+              <source srcset="/images/logo-dark.webp" type="image/webp">
+              <img src="/images/logo-dark.png" alt="WellCore Fitness" width="158" height="40" loading="lazy" decoding="async" class="h-10 w-auto">
+            </picture>
+            <picture class="hidden dark:block">
+              <source srcset="/images/logo-light.webp" type="image/webp">
+              <img src="/images/logo-light.png" alt="WellCore Fitness" width="158" height="40" loading="lazy" decoding="async" class="h-10 w-auto">
+            </picture>
             <p class="mt-4 max-w-md text-sm text-wc-text-secondary">
               Coaching fitness basado en ciencia. Entrenamiento personalizado, nutricion y seguimiento para alcanzar tu mejor version.
             </p>

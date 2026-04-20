@@ -78,8 +78,14 @@ async function resetPassword() {
 
           <!-- Logo -->
           <div class="mb-6 text-center">
-            <img src="/images/logo-dark.png" class="h-10 mx-auto dark:hidden" alt="WellCore">
-            <img src="/images/logo-light.png" class="hidden h-10 mx-auto dark:block" alt="WellCore">
+            <picture class="dark:hidden">
+              <source srcset="/images/logo-dark.webp" type="image/webp">
+              <img src="/images/logo-dark.png" alt="WellCore Fitness" width="158" height="40" fetchpriority="high" decoding="async" class="h-10 w-auto mx-auto">
+            </picture>
+            <picture class="hidden dark:block">
+              <source srcset="/images/logo-light.webp" type="image/webp">
+              <img src="/images/logo-light.png" alt="WellCore Fitness" width="158" height="40" fetchpriority="high" decoding="async" class="h-10 w-auto mx-auto">
+            </picture>
           </div>
 
           <!-- Success State -->
