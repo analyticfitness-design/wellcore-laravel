@@ -3,12 +3,14 @@ import { ref, computed } from 'vue';
 import axios from 'axios';
 
 export const useAuthStore = defineStore('auth', () => {
-    // If the Laravel session injected auth data (e.g. after impersonation),
-    // sync it to localStorage so the SPA uses the correct token.
+    // Si Laravel inyecto auth data en sesion (login vía Livewire), sincronizar
+    // a localStorage SOLO si localStorage esta vacio. En flow SPA-only (login
+    // via /api/v/auth/login + impersonation API), localStorage es la fuente
+    // de verdad — sobreescribir rompia la impersonacion coach -> cliente.
     if (window.__WC_SESSION) {
         const s = window.__WC_SESSION;
-        // Always sync token from session if present
-        if (s.token) {
+        const hasLocalToken = !!localStorage.getItem('wc_token');
+        if (s.token && !hasLocalToken) {
             localStorage.setItem('wc_token', s.token);
             localStorage.setItem('wc_user_type', s.userType || 'client');
             localStorage.setItem('wc_user_id', String(s.userId || ''));
@@ -16,20 +18,17 @@ export const useAuthStore = defineStore('auth', () => {
                 localStorage.setItem('wc_user_name', s.userName);
             }
         }
-        if (s.portal) {
+        if (s.portal && !localStorage.getItem('wc_user_portal')) {
             localStorage.setItem('wc_user_portal', s.portal);
         }
-        // Always sync impersonation state from session (source of truth)
-        if (s.impersonating) {
+        // Solo sincronizar flag de impersonacion si viene del server (Livewire
+        // impersonation legacy). El flujo SPA usa wc_impersonating_by_coach
+        // escrito desde ClientList.vue.
+        if (s.impersonating && !localStorage.getItem('wc_impersonating_by_coach')) {
             localStorage.setItem('wc_impersonating', 'true');
-        } else {
-            localStorage.removeItem('wc_impersonating');
         }
-        // Sync admin token so stop-impersonation form POST can include it as fallback
-        if (s.adminToken) {
+        if (s.adminToken && !localStorage.getItem('wc_token_backup')) {
             localStorage.setItem('wc_admin_token', s.adminToken);
-        } else {
-            localStorage.removeItem('wc_admin_token');
         }
     }
 
