@@ -86,14 +86,15 @@ class CoachManagement extends Component
         $this->validate([
             'newName'     => 'required|string|max:100',
             'newUsername'  => 'required|string|max:50|unique:admins,username',
-            'newPassword'  => 'required|string|min:8|max:255',
+            'newPassword'  => ['required', 'string', 'min:10', 'max:255', 'regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/'],
             'newRole'      => ['required', Rule::in(array_column(UserRole::cases(), 'value'))],
         ], [
             'newName.required'     => 'El nombre es obligatorio.',
             'newUsername.required'  => 'El usuario es obligatorio.',
             'newUsername.unique'    => 'Ese usuario ya existe.',
             'newPassword.required'  => 'La contrasena es obligatoria.',
-            'newPassword.min'       => 'La contrasena debe tener al menos 8 caracteres.',
+            'newPassword.min'       => 'La contrasena debe tener al menos 10 caracteres.',
+            'newPassword.regex'     => 'La contrasena debe incluir mayuscula, minuscula, numero y simbolo.',
         ]);
 
         $admin = Admin::create([
