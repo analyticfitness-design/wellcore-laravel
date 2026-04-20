@@ -161,6 +161,9 @@ class CoachController extends Controller
             'recentMessages' => $recentMessages,
             'clientProgressData' => $chartData['clientProgressData'],
             'checkinFrequencyData' => $chartData['checkinFrequencyData'],
+            // P5.3 onboarding checklist: coach account age in days + flag for "first week"
+            'coachCreatedAt' => $coach->created_at?->toIso8601String(),
+            'coachDaysOld' => $coach->created_at ? (int) $coach->created_at->diffInDays(now()) : null,
         ]);
     }
 
@@ -1528,6 +1531,23 @@ class CoachController extends Controller
             'expires_at' => $expiresAt->toIso8601String(),
         ], $client->name ?? ('client#'.$client->id));
 
+        // Guardar token del coach ANTES de sobreescribir la sesion, para que
+        // stop-impersonation pueda restaurarla, y setear nueva sesion = cliente
+        // impersonado. Sin esto, vue.blade.php reinyecta __WC_SESSION con el
+        // token del coach al hard-redirect y sobreescribe el de impersonacion,
+        // causando 403 "Acceso solo para clientes" en /api/v/client/*.
+        $coachBearerToken = $request->bearerToken()
+            ?? session('wc_token')
+            ?? '';
+        session([
+            'wc_admin_token'   => $coachBearerToken, // para stop-impersonation
+            'wc_token'         => $token,
+            'wc_user_type'     => 'client',
+            'wc_user_id'       => $client->id,
+            'wc_user_name'     => $client->name ?? 'Cliente',
+            'wc_user_portal'   => '/client',
+        ]);
+
         return response()->json([
             'token' => $token,
             'client_id' => $client->id,
@@ -1563,6 +1583,27 @@ class CoachController extends Controller
             'impersonation_log_id' => $log?->id,
             'target_client_id' => $log?->target_client_id,
         ], $log?->target_client_name);
+
+        // Restaurar la sesion Laravel al coach para que vue.blade.php no
+        // reinyecte __WC_SESSION con el token del cliente impersonado al
+        // redirigir a /coach. El backup del coach lo guardamos en wc_admin_token.
+        $coachToken = session('wc_admin_token') ?: $request->bearerToken();
+        if ($coachToken) {
+            $coachAuthToken = AuthToken::where('token', $coachToken)
+                ->where('expires_at', '>', now())
+                ->first();
+            if ($coachAuthToken) {
+                $coach = \App\Models\Admin::find($coachAuthToken->user_id);
+                session([
+                    'wc_token'       => $coachToken,
+                    'wc_user_type'   => 'admin',
+                    'wc_user_id'     => $coachAuthToken->user_id,
+                    'wc_user_name'   => $coach?->name ?? $coach?->username ?? 'Coach',
+                    'wc_user_portal' => '/coach',
+                ]);
+                session()->forget('wc_admin_token');
+            }
+        }
 
         return response()->json(['ok' => true]);
     }
