@@ -640,20 +640,7 @@ class TrainingController extends Controller
             ]);
         }
 
-        $xpEarned = 0;
-        try {
-            $xpEarned = $session->awardXp();
-            $this->updateClientXp($clientId, $xpEarned);
-        } catch (\Throwable $e) {
-            \Log::warning('TrainingController: awardXp failed', [
-                'session_id' => $session->id,
-                'error' => $e->getMessage(),
-            ]);
-        }
-
-        // Write to training_logs so the weekly calendar + dashboard KPIs reflect
-        // this workout (without this, only workout_sessions gets the update and
-        // the TrainingView grid stays empty for real workouts).
+        // Write training_log FIRST so recalculateStreak() sees today's entry
         try {
             TrainingLog::updateOrCreate(
                 ['client_id' => $clientId, 'log_date' => now()->toDateString()],
@@ -665,6 +652,17 @@ class TrainingController extends Controller
             );
         } catch (\Throwable $e) {
             \Log::warning('TrainingController: training_log write failed', [
+                'session_id' => $session->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        $xpEarned = 0;
+        try {
+            $xpEarned = $session->awardXp();
+            $this->updateClientXp($clientId, $xpEarned);
+        } catch (\Throwable $e) {
+            \Log::warning('TrainingController: awardXp failed', [
                 'session_id' => $session->id,
                 'error' => $e->getMessage(),
             ]);
