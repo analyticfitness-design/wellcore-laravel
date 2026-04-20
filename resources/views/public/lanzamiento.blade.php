@@ -415,7 +415,7 @@
                 <div class="space-y-10">
                     @foreach([
                         ['year' => '2023', 'title' => 'El Inicio', 'desc' => 'WellCore nace en Bucaramanga con 12 clientes fundadores y la vision de hacer coaching fitness accesible para toda LATAM.', 'side' => 'left'],
-                        ['year' => '2024', 'title' => 'Crecimiento', 'desc' => 'Superamos 200 clientes activos. Lanzamos el programa RISE. Incorporamos 8 coaches certificados en la plataforma.', 'side' => 'right'],
+                        ['year' => '2024', 'title' => 'Crecimiento', 'desc' => 'Superamos 200 clientes activos. Incorporamos 8 coaches certificados en la plataforma.', 'side' => 'right'],
                         ['year' => '2025', 'title' => 'La Mision', 'desc' => 'Comenzamos la migracion tecnologica. 500 clientes. Primer sistema de inteligencia artificial propio entrenado en datos WellCore.', 'side' => 'left'],
                         ['year' => 'Abril 2026', 'title' => 'Lanzamiento Oficial', 'desc' => 'La nueva plataforma llega con todo. IA nativa, experiencia premium y una comunidad que ya cambio vidas. Tu momento es ahora.', 'side' => 'right', 'accent' => true],
                     ] as $milestone)
@@ -612,7 +612,7 @@
                     ['quote' => 'Probe el trial de 3 dias y al segundo dia ya sabia que me quedaba. La plataforma es increible y el coach siempre esta disponible.', 'name' => 'Laura M.', 'city' => 'Cali', 'plan' => 'Metodo'],
                     ['quote' => 'Los WellCoins me mantienen motivado cada semana. Es como un juego pero con resultados reales. Llevo 6 meses sin fallar un entreno.', 'name' => 'Carlos R.', 'city' => 'Bucaramanga', 'plan' => 'Esencial'],
                     ['quote' => 'Trabajo hasta las 10pm y siempre encuentro tiempo para revisar mi plan. La app es rapida, intuitiva y funciona sin internet en el gym.', 'name' => 'Andrea S.', 'city' => 'Barranquilla', 'plan' => 'Metodo'],
-                    ['quote' => 'El programa RISE me cambio la vida. Ahora entreno con el plan Elite y siento que tengo un entrenador personal al precio de un cafe.', 'name' => 'Diego V.', 'city' => 'Pereira', 'plan' => 'Elite'],
+                    ['quote' => 'Empece con un plan basico y ahora entreno con el plan Elite. Siento que tengo un entrenador personal al precio de un cafe.', 'name' => 'Diego V.', 'city' => 'Pereira', 'plan' => 'Elite'],
                 ] as $index => $testimonial)
                 <div class="card-hover-lift scroll-reveal flex flex-col rounded-2xl border border-wc-border bg-wc-bg-tertiary p-6"
                      data-animate="fadeInUp" data-delay="{{ ($index % 3 + 1) * 100 }}">

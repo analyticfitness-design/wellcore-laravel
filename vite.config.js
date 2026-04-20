@@ -29,10 +29,12 @@ export default defineConfig({
         },
     },
     build: {
+        // Target modern browsers (all w/ native ESM + top-level await).
+        // Removes ~46 KB of legacy polyfills that Lighthouse flagged.
+        target: 'es2022',
+        cssTarget: 'chrome100',
         rollupOptions: {
             output: {
-                // Split vendor chunks so changes in app code don't invalidate
-                // cached vendor bundles at the browser level.
                 manualChunks(id) {
                     if (id.includes('node_modules/chart.js')) return 'chart';
                     if (id.includes('node_modules/axios')) return 'axios';
@@ -40,6 +42,11 @@ export default defineConfig({
                 },
             },
         },
+    },
+    esbuild: {
+        // Strip console.* from production bundles; keep console.error/warn.
+        pure: ['console.log', 'console.debug', 'console.info'],
+        legalComments: 'none',
     },
     server: {
         host: 'localhost',

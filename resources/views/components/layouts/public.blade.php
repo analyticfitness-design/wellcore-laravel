@@ -22,9 +22,9 @@
     <link rel="preload" as="font" type="font/woff2" href="/fonts/raleway-400-latin.woff2" crossorigin>
     <link rel="stylesheet" href="/fonts/wellcore-fonts.css">
 
-    {{-- Preload critical resources (WebP w/ PNG fallback via type negotiation) --}}
-    <link rel="preload" href="/images/logo-dark.webp" as="image" type="image/webp">
-    <link rel="preload" href="/images/logo-light.webp" as="image" type="image/webp">
+    {{-- Preload logos optimizados (320px AVIF, -91% vs full-size) --}}
+    <link rel="preload" href="/images/logo-dark-320.avif" as="image" type="image/avif" fetchpriority="high">
+    <link rel="preload" href="/images/logo-light-320.avif" as="image" type="image/avif" fetchpriority="high">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     {{-- Alpine standalone self-hosted (CDN unpkg bloqueado por CSP; CDN propio respeta same-origin) --}}
@@ -72,19 +72,21 @@
             {{-- Logo (switches between dark/light versions) --}}
             <a href="{{ route('home') }}" class="flex shrink-0 items-center" aria-label="Inicio WellCore Fitness">
                 <picture class="dark:hidden">
-                    <source srcset="/images/logo-dark.webp" type="image/webp">
-                    <img src="/images/logo-dark.png" alt="WellCore Fitness" width="158" height="40" class="h-10 w-auto" fetchpriority="high" decoding="async">
+                    <source srcset="/images/logo-dark-320.avif 320w, /images/logo-dark-640.avif 640w" sizes="158px" type="image/avif">
+                    <source srcset="/images/logo-dark-320.webp 320w, /images/logo-dark-640.webp 640w" sizes="158px" type="image/webp">
+                    <img src="/images/logo-dark-320.webp" alt="WellCore Fitness" width="158" height="40" class="h-10 w-auto" fetchpriority="high" decoding="async">
                 </picture>
                 <picture class="hidden dark:block">
-                    <source srcset="/images/logo-light.webp" type="image/webp">
-                    <img src="/images/logo-light.png" alt="WellCore Fitness" width="158" height="40" class="h-10 w-auto" fetchpriority="high" decoding="async">
+                    <source srcset="/images/logo-light-320.avif 320w, /images/logo-light-640.avif 640w" sizes="158px" type="image/avif">
+                    <source srcset="/images/logo-light-320.webp 320w, /images/logo-light-640.webp 640w" sizes="158px" type="image/webp">
+                    <img src="/images/logo-light-320.webp" alt="WellCore Fitness" width="158" height="40" class="h-10 w-auto" fetchpriority="high" decoding="async">
                 </picture>
             </a>
 
             {{-- Desktop Nav Links (8 links â€” need lg breakpoint) --}}
             <div class="hidden items-center gap-5 lg:flex xl:gap-7">
                 <a href="{{ route('metodo') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('metodo') ? '!text-wc-text' : '' }}">{{ __('nav.metodo') }}</a>
-                <a href="{{ route('reto-rise') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('reto-rise') ? '!text-wc-text' : '' }}">{{ __('nav.rise') }}</a>
+                {{-- RISE cerrado: se oculta del nav público (legacy clientes siguen accediendo por /rise) --}}
                 <a href="{{ route('nosotros') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('nosotros') ? '!text-wc-text' : '' }}">{{ __('nav.nosotros') }}</a>
                 <a href="{{ route('proceso') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('proceso') ? '!text-wc-text' : '' }}">{{ __('nav.proceso') }}</a>
                 <a href="{{ route('planes') }}" class="text-sm font-medium text-wc-text-secondary hover:text-wc-text {{ request()->routeIs('planes') ? '!text-wc-text' : '' }}">{{ __('nav.planes') }}</a>
@@ -162,7 +164,7 @@
              class="border-t border-wc-border bg-wc-bg lg:hidden">
             <div class="space-y-1 px-4 py-4" x-on:click="mobileMenu = false">
                 <a href="{{ route('metodo') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('metodo') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">{{ __('nav.metodo') }}</a>
-                <a href="{{ route('reto-rise') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('reto-rise') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">{{ __('nav.rise') }}</a>
+                {{-- RISE cerrado: oculto del menu movil --}}
                 <a href="{{ route('nosotros') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('nosotros') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">{{ __('nav.nosotros') }}</a>
                 <a href="{{ route('proceso') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('proceso') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">{{ __('nav.proceso') }}</a>
                 <a href="{{ route('planes') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('planes') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">{{ __('nav.planes') }}</a>
@@ -192,12 +194,14 @@
             <div class="grid grid-cols-1 items-center gap-8 border-b border-wc-border py-12 lg:grid-cols-2">
                 <div>
                     <picture class="dark:hidden">
-                        <source srcset="/images/logo-dark.webp" type="image/webp">
-                        <img src="/images/logo-dark.png" alt="WellCore Fitness" width="158" height="40" class="h-10 w-auto" loading="lazy" decoding="async">
+                        <source srcset="/images/logo-dark-320.avif" type="image/avif">
+                        <source srcset="/images/logo-dark-320.webp" type="image/webp">
+                        <img src="/images/logo-dark-320.webp" alt="WellCore Fitness" width="158" height="40" class="h-10 w-auto" loading="lazy" decoding="async">
                     </picture>
                     <picture class="hidden dark:block">
-                        <source srcset="/images/logo-light.webp" type="image/webp">
-                        <img src="/images/logo-light.png" alt="WellCore Fitness" width="158" height="40" class="h-10 w-auto" loading="lazy" decoding="async">
+                        <source srcset="/images/logo-light-320.avif" type="image/avif">
+                        <source srcset="/images/logo-light-320.webp" type="image/webp">
+                        <img src="/images/logo-light-320.webp" alt="WellCore Fitness" width="158" height="40" class="h-10 w-auto" loading="lazy" decoding="async">
                     </picture>
                     <p class="mt-4 max-w-md text-sm text-wc-text-secondary">
                         {{ __('footer.brand_desc') }}
@@ -260,7 +264,7 @@
                         <li><a href="{{ route('blog.index') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.blog') }}</a></li>
                         <li><a href="{{ route('faq') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.faq') }}</a></li>
                         <li><a href="{{ route('nosotros') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.nosotros') }}</a></li>
-                        <li><a href="{{ route('reto-rise') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.rise') }}</a></li>
+                        {{-- RISE cerrado: oculto del footer --}}
                     </ul>
                 </div>
                 <div>

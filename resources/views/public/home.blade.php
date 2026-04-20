@@ -18,20 +18,10 @@
     {{-- Reading progress bar --}}
     <div class="scroll-progress"></div>
 
-    {{-- ================================================================== --}}
-    {{-- 1. RISE BANNER                                                     --}}
-    {{-- ================================================================== --}}
-    <div class="border-b border-wc-border bg-wc-accent/5">
-        <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
-            <p class="text-xs text-wc-text-secondary">
-                {!! __('home.rise_banner') !!}
-            </p>
-            <a href="{{ route('reto-rise') }}" class="btn-press rounded bg-wc-accent px-3 py-1 text-xs font-semibold text-white hover:bg-wc-accent-hover">{{ __('home.rise_banner_cta') }}</a>
-        </div>
-    </div>
+    {{-- RISE banner removido — inscripciones cerradas (2026-04) --}}
 
     {{-- ================================================================== --}}
-    {{-- 2. HERO                                                            --}}
+    {{-- HERO                                                               --}}
     {{-- ================================================================== --}}
     <section class="hero-gradient relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
@@ -413,7 +403,7 @@
             </div>
 
             <div class="mt-8 text-center">
-                <a href="{{ route('proceso') }}" class="inline-flex items-center gap-2 text-sm font-medium text-wc-accent hover:text-wc-accent-hover">
+                <a href="{{ route('proceso') }}" aria-label="Ver proceso completo WellCore" class="inline-flex items-center gap-2 text-sm font-medium text-wc-accent hover:text-wc-accent-hover">
                     {{ __('home.process_ver_completo') }}
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                 </a>
@@ -716,7 +706,7 @@
                     <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.blog_eyebrow') }}</p>
                     <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('home.blog_title') }}</h2>
                 </div>
-                <a href="{{ route('blog.index') }}" class="hidden items-center gap-2 text-sm font-medium text-wc-accent hover:text-wc-accent-hover sm:inline-flex">
+                <a href="{{ route('blog.index') }}" aria-label="Ver todos los articulos del blog WellCore" class="hidden items-center gap-2 text-sm font-medium text-wc-accent hover:text-wc-accent-hover sm:inline-flex">
                     {{ __('home.blog_ver_todos') }}
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                 </a>
@@ -746,7 +736,7 @@
             </div>
 
             <div class="mt-8 text-center sm:hidden">
-                <a href="{{ route('blog.index') }}" class="inline-flex items-center gap-2 text-sm font-medium text-wc-accent hover:text-wc-accent-hover">
+                <a href="{{ route('blog.index') }}" aria-label="Ver todos los articulos del blog WellCore" class="inline-flex items-center gap-2 text-sm font-medium text-wc-accent hover:text-wc-accent-hover">
                     {{ __('home.blog_ver_todos') }}
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                 </a>

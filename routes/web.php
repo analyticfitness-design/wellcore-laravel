@@ -107,9 +107,8 @@ Route::get('/metodo', function () {
 Route::get('/proceso', function () {
     return view('public.proceso');
 })->name('proceso');
-Route::get('/reto-rise', function () {
-    return view('public.rise');
-})->name('reto-rise');
+// RISE publico cerrado: redirige al home (clientes RISE existentes siguen con acceso en /rise)
+Route::get('/reto-rise', fn () => redirect('/', 301))->name('reto-rise');
 Route::get('/coaches', function () {
     return view('public.coaches');
 })->name('coaches');
@@ -131,8 +130,8 @@ Route::get('/fit', fn () => view('public.fit'))->name('fit');
 Route::get('/presencial', fn () => view('public.presencial'))->name('presencial');
 Route::get('/presencial/inscripcion', fn () => view('vue'))->name('presencial.form');
 
-// RISE Enrollment
-Route::get('/rise-enroll', fn () => view('vue'))->name('rise.enroll');
+// RISE Enrollment cerrado — inscripciones no abiertas al publico
+Route::get('/rise-enroll', fn () => redirect('/planes', 301))->name('rise.enroll');
 
 // Invitation intake form — public, guest-only
 Route::get('/unirse/{code}', ClientIntakeForm::class)
