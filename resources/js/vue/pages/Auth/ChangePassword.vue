@@ -51,11 +51,18 @@ async function submit() {
     );
     success.value = 'Contrasena actualizada. Redirigiendo...';
     localStorage.removeItem('wc_force_password_change');
+    // Clear flag in store so router guard deja pasar (sino crea loop).
+    if (authStore && 'forcePasswordChange' in authStore) {
+      authStore.forcePasswordChange = false;
+    }
+    // Refresh /me to pull fresh state (must_change_password=0) before navegar.
+    try { if (typeof authStore.refreshMe === 'function') await authStore.refreshMe(); } catch (_) {}
     setTimeout(() => {
-      const portal = authStore.userType === 'admin' ? '/admin' : '/coach';
-      // Coach has userType=admin in our system, but redirects to /coach.
-      router.push(localStorage.getItem('wc_user_portal') || portal);
-    }, 800);
+      const stored = localStorage.getItem('wc_user_portal');
+      const portal = stored || (authStore.userType === 'admin' ? '/admin' : '/client');
+      // Use replace to avoid back-button returning to change-password.
+      router.replace(portal);
+    }, 600);
   } catch (e) {
     error.value =
       e?.response?.data?.message ||
