@@ -43,7 +43,9 @@ return new class extends Migration
         if (! Schema::hasTable('client_medals')) {
             Schema::create('client_medals', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('client_id');
+                // IMPORTANT: clients.id es `int unsigned` (legacy DB schema),
+                // no bigint. Usar unsignedInteger para coincidir con FK.
+                $table->unsignedInteger('client_id');
                 $table->unsignedBigInteger('medal_id');
                 $table->unsignedInteger('current_progress')->default(0);
                 $table->timestamp('achieved_at')->nullable();
