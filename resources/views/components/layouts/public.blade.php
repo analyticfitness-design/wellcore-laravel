@@ -34,8 +34,8 @@
     <link rel="preload" href="/images/logo-light.webp" as="image" type="image/webp">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    {{-- Alpine standalone: bloques Livewire (@livewireScripts) no se necesitan aqui, pero Alpine si (darkMode, dropdowns, mobile menu) --}}
-    <script defer src="https://unpkg.com/alpinejs@3.13.5/dist/cdn.min.js"></script>
+    {{-- Alpine standalone self-hosted (CDN unpkg bloqueado por CSP; CDN propio respeta same-origin) --}}
+    <script defer src="/js/alpine.min.js"></script>
 
     <x-seo-meta :title="$title ?? 'WellCore Fitness'" :description="$description ?? 'Coaching fitness basado en ciencia.'" />
     <x-hreflang />
