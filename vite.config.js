@@ -28,6 +28,19 @@ export default defineConfig({
             '@': '/resources/js/vue',
         },
     },
+    build: {
+        rollupOptions: {
+            output: {
+                // Split vendor chunks so changes in app code don't invalidate
+                // cached vendor bundles at the browser level.
+                manualChunks(id) {
+                    if (id.includes('node_modules/chart.js')) return 'chart';
+                    if (id.includes('node_modules/axios')) return 'axios';
+                    if (/node_modules\/(vue|vue-router|pinia|@vue)\b/.test(id)) return 'vue-core';
+                },
+            },
+        },
+    },
     server: {
         host: 'localhost',
         watch: {

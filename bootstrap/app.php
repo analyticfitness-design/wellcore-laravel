@@ -27,6 +27,10 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\ContentSecurityPolicy::class,
         ]);
 
+        // Global (all routes) — cache headers for static/hashed assets.
+        // Safe no-op for HTML responses; only sets Cache-Control on asset paths.
+        $middleware->append(\App\Http\Middleware\SetAssetCacheHeaders::class);
+
         $middleware->alias([
             'auth' => \App\Http\Middleware\EnsureAuthenticated::class,
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,

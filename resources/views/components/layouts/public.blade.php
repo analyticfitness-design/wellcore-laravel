@@ -17,15 +17,20 @@
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
-    <!-- Fonts -->
+    <!-- Fonts (async load via media=print trick — non-blocking) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swapfamily=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swapfamily=JetBrains+Mono:wght@400;500family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swapdisplay=swap" rel="stylesheet">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    @php
+        $wcFontsUrl = 'https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swap';
+    @endphp
+    <link rel="preload" as="style" href="{{ $wcFontsUrl }}">
+    <link rel="stylesheet" href="{{ $wcFontsUrl }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ $wcFontsUrl }}"></noscript>
 
     {{-- Preload critical resources (WebP w/ PNG fallback via type negotiation) --}}
     <link rel="preload" href="/images/logo-dark.webp" as="image" type="image/webp">
     <link rel="preload" href="/images/logo-light.webp" as="image" type="image/webp">
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
@@ -37,7 +42,7 @@
 
     @if(config('app.meta_pixel_id'))
     <!-- Meta Pixel -->
-    <script>
+    <script defer>
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
     n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
     n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
