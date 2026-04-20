@@ -4,17 +4,10 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-/**
- * P2.3 Audit Log — additive migration.
- *
- * If audit_logs does not exist: create it with the target schema (actor_*,
- * target_*, diff, ip, user_agent, created_at).
- *
- * If audit_logs already exists (old legacy schema with user_*/model_*/old_values/
- * new_values), only ADD the missing columns so both Services (AuditService
- * using user_*) and the new Auditable trait (using actor_*) can coexist
- * until we consolidate. NEVER drops or renames columns.
- */
+// P2.3 Audit Log — additive migration.
+// If audit_logs does not exist, creates it with the target schema.
+// If it exists (legacy schema), only ADDs missing columns so both old and
+// new code can coexist. Never drops or renames.
 return new class extends Migration
 {
     public function up(): void
