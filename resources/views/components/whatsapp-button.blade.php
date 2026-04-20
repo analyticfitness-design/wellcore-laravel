@@ -89,7 +89,7 @@
         <div class="flex items-center justify-between border-b border-wc-border bg-wc-accent px-4 py-3">
             <div class="flex items-center gap-3">
                 <div class="flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
-                    <img src="/images/logo-icon-light.png" alt="WellCore" class="h-8 w-8 rounded-full object-contain" loading="lazy" decoding="async">
+                    <picture><source srcset="/images/logo-icon-light.webp" type="image/webp"><img src="/images/logo-icon-light.png" alt="WellCore" width="32" height="32" class="h-8 w-8 rounded-full object-contain" loading="lazy" decoding="async"></picture>
                 </div>
                 <div>
                     <p class="text-sm font-semibold text-white">WellCore</p>
@@ -116,8 +116,8 @@
                     {{-- Assistant message --}}
                     <div x-show="msg.role === 'assistant'" class="flex gap-2">
                         <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full">
-                            <img src="/images/logo-icon-dark.png" alt="W" class="h-9 w-9 rounded-full object-contain dark:hidden" loading="lazy" decoding="async">
-                            <img src="/images/logo-icon-light.png" alt="W" class="hidden h-9 w-9 rounded-full object-contain dark:block" loading="lazy" decoding="async">
+                            <picture class="dark:hidden"><source srcset="/images/logo-icon-dark.webp" type="image/webp"><img src="/images/logo-icon-dark.png" alt="W" width="36" height="36" class="h-9 w-9 rounded-full object-contain" loading="lazy" decoding="async"></picture>
+                            <picture class="hidden dark:block"><source srcset="/images/logo-icon-light.webp" type="image/webp"><img src="/images/logo-icon-light.png" alt="W" width="36" height="36" class="h-9 w-9 rounded-full object-contain" loading="lazy" decoding="async"></picture>
                         </div>
                         <div class="max-w-[85%] rounded-xl rounded-tl-sm bg-wc-bg-tertiary px-3 py-2 text-sm text-wc-text-secondary" x-text="msg.text"></div>
                     </div>
@@ -145,8 +145,8 @@
             {{-- Loading indicator with typing animation --}}
             <div x-show="loading" class="flex gap-2">
                 <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
-                    <img src="/images/logo-icon-dark.png" alt="W" class="h-6 w-6 rounded-full object-contain dark:hidden" loading="lazy">
-                    <img src="/images/logo-icon-light.png" alt="W" class="hidden h-6 w-6 rounded-full object-contain dark:block" loading="lazy">
+                    <picture class="dark:hidden"><source srcset="/images/logo-icon-dark.webp" type="image/webp"><img src="/images/logo-icon-dark.png" alt="W" width="24" height="24" class="h-6 w-6 rounded-full object-contain" loading="lazy"></picture>
+                    <picture class="hidden dark:block"><source srcset="/images/logo-icon-light.webp" type="image/webp"><img src="/images/logo-icon-light.png" alt="W" width="24" height="24" class="h-6 w-6 rounded-full object-contain" loading="lazy"></picture>
                 </div>
                 <div class="rounded-xl rounded-tl-sm bg-wc-bg-tertiary px-4 py-3">
                     <div class="flex items-center gap-1.5">

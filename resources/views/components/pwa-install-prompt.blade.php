@@ -36,8 +36,14 @@
     <div class="p-5">
         <div class="flex items-start gap-4">
             <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-wc-accent/10">
-                <img src="/images/logo-icon-dark.png" alt="WellCore" class="h-8 w-8 dark:hidden">
-                <img src="/images/logo-icon-light.png" alt="WellCore" class="hidden h-8 w-8 dark:block">
+                <picture class="dark:hidden">
+                    <source srcset="/images/logo-icon-dark.webp" type="image/webp">
+                    <img src="/images/logo-icon-dark.png" alt="WellCore" width="32" height="32" class="h-8 w-8" loading="lazy" decoding="async">
+                </picture>
+                <picture class="hidden dark:block">
+                    <source srcset="/images/logo-icon-light.webp" type="image/webp">
+                    <img src="/images/logo-icon-light.png" alt="WellCore" width="32" height="32" class="h-8 w-8" loading="lazy" decoding="async">
+                </picture>
             </div>
             <div class="flex-1">
                 <p class="text-sm font-semibold text-wc-text">Instala WellCore</p>
