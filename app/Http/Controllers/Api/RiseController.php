@@ -164,7 +164,7 @@ class RiseController extends Controller
         $overallAdherence = 0;
         if ($daysElapsed > 0) {
             $trainingDone = RiseTracking::where('client_id', $clientId)->where('training_done', true)->count();
-            $overallAdherence = round(($trainingDone / $daysElapsed) * 100, 0);
+            $overallAdherence = min(100, round(($trainingDone / $daysElapsed) * 100, 0));
         }
 
         // Weekly grid

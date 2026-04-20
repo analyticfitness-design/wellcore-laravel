@@ -737,9 +737,40 @@ class SocialController extends Controller
 
         $allCompleted = $completedCount >= 5;
 
+        // Compute current streak for this specific habit_type.
+        // Walks backwards from today (or yesterday if today is not logged yet)
+        // counting consecutive days the habit was completed.
+        $habitDates = HabitLog::where('client_id', $clientId)
+            ->where('habit_type', $habitType)
+            ->where('value', '>=', 1)
+            ->orderByDesc('log_date')
+            ->limit(400)
+            ->pluck('log_date')
+            ->map(fn ($d) => Carbon::parse($d)->format('Y-m-d'))
+            ->unique()
+            ->flip();
+
+        $streak = 0;
+        $todayStr = now()->format('Y-m-d');
+        $yesterdayStr = now()->subDay()->format('Y-m-d');
+        $cursor = match (true) {
+            $habitDates->has($todayStr) => Carbon::parse($todayStr),
+            $habitDates->has($yesterdayStr) => Carbon::parse($yesterdayStr),
+            default => null,
+        };
+
+        if ($cursor) {
+            while ($habitDates->has($cursor->format('Y-m-d'))) {
+                $streak++;
+                $cursor->subDay();
+            }
+        }
+
         return response()->json([
             'completed' => $completed,
             'all_completed' => $allCompleted,
+            'completed_today' => $completedCount,
+            'streak' => $streak,
         ]);
     }
 

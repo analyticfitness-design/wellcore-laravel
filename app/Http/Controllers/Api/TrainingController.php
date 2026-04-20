@@ -102,7 +102,6 @@ class TrainingController extends Controller
             }
         }
 
-
         // Habits (last 30 days)
         $habitData = $this->buildHabitData($clientId);
 
@@ -225,7 +224,14 @@ class TrainingController extends Controller
             $completed = true;
         }
 
+        // Keep client_xp.streak_days in sync with training_logs so the dashboard
+        // streak (driven by client_xp) and the calendar streak share one source.
+        if ($completed) {
+            $this->recalculateStreak($clientId);
+        }
+
         Cache::forget("training:month_sessions:{$clientId}:".now()->format('Y-m'));
+        Cache::forget("dashboard:{$clientId}");
 
         return response()->json([
             'date' => $date,
@@ -645,6 +651,28 @@ class TrainingController extends Controller
             ]);
         }
 
+        // Write to training_logs so the weekly calendar + dashboard KPIs reflect
+        // this workout (without this, only workout_sessions gets the update and
+        // the TrainingView grid stays empty for real workouts).
+        try {
+            TrainingLog::updateOrCreate(
+                ['client_id' => $clientId, 'log_date' => now()->toDateString()],
+                [
+                    'completed' => true,
+                    'year_num' => (int) now()->isoFormat('GGGG'),
+                    'week_num' => (int) now()->isoFormat('W'),
+                ]
+            );
+        } catch (\Throwable $e) {
+            \Log::warning('TrainingController: training_log write failed', [
+                'session_id' => $session->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        Cache::forget("dashboard:{$clientId}");
+        Cache::forget("training:month_sessions:{$clientId}:".now()->format('Y-m'));
+
         // Count PRs from this session
         $prCount = WorkoutLog::where('session_id', $session->id)
             ->where('completed', true)
@@ -1054,6 +1082,7 @@ class TrainingController extends Controller
                     }
                     unset($meal['opciones']);
                 }
+
                 return $meal;
             }, $plan['comidas']);
         }
@@ -1478,6 +1507,10 @@ class TrainingController extends Controller
 
     /**
      * Update client XP and streak. Ported from WorkoutPlayer.php updateClientXp().
+     *
+     * XP is additive (per-session). Streak is always recomputed from training_logs
+     * so every training action (toggleTrainingDay or finishWorkout) converges on
+     * a single source of truth.
      */
     private function updateClientXp(int $clientId, int $xpEarned): void
     {
@@ -1494,25 +1527,79 @@ class TrainingController extends Controller
 
         $clientXp->xp_total += $xpEarned;
         $clientXp->level = max(1, (int) floor($clientXp->xp_total / 200) + 1);
+        $clientXp->save();
 
-        $today = now()->toDateString();
-        $yesterday = now()->subDay()->toDateString();
+        $this->recalculateStreak($clientId);
+    }
 
-        if ($clientXp->streak_last_date === null) {
-            $clientXp->streak_days = 1;
-        } elseif ($clientXp->streak_last_date->toDateString() === $yesterday) {
-            $clientXp->streak_days += 1;
-        } elseif ($clientXp->streak_last_date->toDateString() === $today) {
-            // Already logged today
-        } else {
-            if ($clientXp->streak_protected) {
-                $clientXp->streak_protected = false;
-            } else {
-                $clientXp->streak_days = 1;
-            }
+    /**
+     * Recalculate client_xp.streak_days from training_logs so the dashboard
+     * streak and the calendar streak share a single source of truth.
+     *
+     * Streak = number of consecutive days (ending today, or yesterday if today
+     * is not yet logged) with a completed training_log entry.
+     */
+    private function recalculateStreak(int $clientId): void
+    {
+        $clientXp = ClientXp::firstOrCreate(
+            ['client_id' => $clientId],
+            [
+                'xp_total' => 0,
+                'level' => 1,
+                'streak_days' => 0,
+                'streak_last_date' => null,
+                'streak_protected' => false,
+            ]
+        );
+
+        $completedDates = TrainingLog::where('client_id', $clientId)
+            ->where('completed', true)
+            ->orderByDesc('log_date')
+            ->limit(400)
+            ->pluck('log_date')
+            ->map(fn ($d) => Carbon::parse($d)->format('Y-m-d'))
+            ->unique()
+            ->values();
+
+        if ($completedDates->isEmpty()) {
+            $clientXp->streak_days = 0;
+            $clientXp->streak_last_date = null;
+            $clientXp->save();
+
+            return;
         }
 
-        $clientXp->streak_last_date = $today;
+        $todayStr = now()->format('Y-m-d');
+        $yesterdayStr = now()->subDay()->format('Y-m-d');
+
+        $cursor = match (true) {
+            $completedDates->contains($todayStr) => $todayStr,
+            $completedDates->contains($yesterdayStr) => $yesterdayStr,
+            default => null,
+        };
+
+        if ($cursor === null) {
+            if (! $clientXp->streak_protected) {
+                $clientXp->streak_days = 0;
+            } else {
+                $clientXp->streak_protected = false;
+            }
+            $clientXp->save();
+
+            return;
+        }
+
+        $streak = 0;
+        $dateSet = $completedDates->flip();
+        $pointer = Carbon::parse($cursor);
+
+        while ($dateSet->has($pointer->format('Y-m-d'))) {
+            $streak++;
+            $pointer->subDay();
+        }
+
+        $clientXp->streak_days = $streak;
+        $clientXp->streak_last_date = $cursor;
         $clientXp->save();
     }
 }

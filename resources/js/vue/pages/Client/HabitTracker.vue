@@ -40,7 +40,7 @@ async function fetchHabits() {
 async function toggleHabit(type) {
     togglingHabit.value = type;
     try {
-        const response = await api.post('/api/v/client/habits/toggle', { type });
+        const response = await api.post('/api/v/client/habits/toggle', { habit_type: type });
         const d        = response.data;
         if (todayHabits.value[type]) {
             todayHabits.value[type].completed = d.completed ?? !todayHabits.value[type].completed;
