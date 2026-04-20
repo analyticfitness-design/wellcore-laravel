@@ -226,11 +226,19 @@ class MedalService
             return null;
         }
 
+        // Find a usable timestamp column (schema varies: logged_at, log_date, created_at).
+        $dateCol = collect(['logged_at', 'log_date', 'date', 'created_at'])
+            ->first(fn ($c) => Schema::hasColumn('nutrition_logs', $c));
+
+        if (! $dateCol) {
+            return null;
+        }
+
         return (int) DB::table('nutrition_logs')
             ->where('client_id', $client->id)
-            ->where('logged_at', '>=', now()->subDays(90)->startOfDay())
+            ->where($dateCol, '>=', now()->subDays(90)->startOfDay())
             ->distinct()
-            ->count(DB::raw('DATE(logged_at)'));
+            ->count(DB::raw("DATE({$dateCol})"));
     }
 
     /**
