@@ -34,18 +34,33 @@ class MedalController extends Controller
         $client = $this->resolveClientOrFail($request);
 
         // Re-evaluate on read so the UI is always correct even if an event was missed.
-        $this->medals->checkAll($client);
+        try {
+            $this->medals->checkAll($client);
+        } catch (\Throwable $e) {
+            \Log::warning('medal.checkAll.failed', ['client_id' => $client->id, 'err' => $e->getMessage(), 'file' => $e->getFile().':'.$e->getLine()]);
+            if ($request->query('debug') === '1') {
+                return response()->json(['error' => $e->getMessage(), 'file' => $e->getFile().':'.$e->getLine()], 500);
+            }
+        }
 
-        $medals = $this->hydrateMedalsWithPivot($client);
+        try {
+            $medals = $this->hydrateMedalsWithPivot($client);
 
-        $achievedCount = $medals->filter(
-            static fn (Medal $m) => $m->pivot && $m->pivot->achieved_at !== null,
-        )->count();
+            $achievedCount = $medals->filter(
+                static fn (Medal $m) => $m->pivot && $m->pivot->achieved_at !== null,
+            )->count();
 
-        return response()->json([
-            'stats' => $this->buildStats($client, $achievedCount, $medals->count()),
-            'medals' => MedalResource::collection($medals),
-        ]);
+            return response()->json([
+                'stats' => $this->buildStats($client, $achievedCount, $medals->count()),
+                'medals' => MedalResource::collection($medals),
+            ]);
+        } catch (\Throwable $e) {
+            \Log::error('medal.index.failed', ['client_id' => $client->id, 'err' => $e->getMessage(), 'file' => $e->getFile().':'.$e->getLine(), 'trace' => $e->getTraceAsString()]);
+            if ($request->query('debug') === '1') {
+                return response()->json(['error' => $e->getMessage(), 'file' => $e->getFile().':'.$e->getLine(), 'trace' => explode("\n", $e->getTraceAsString())], 500);
+            }
+            throw $e;
+        }
     }
 
     /**
