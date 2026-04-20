@@ -22,9 +22,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swapfamily=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swapfamily=JetBrains+Mono:wght@400;500family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swapdisplay=swap" rel="stylesheet">
 
-    {{-- Preload critical resources --}}
-    <link rel="preload" href="/images/logo-dark.png" as="image">
-    <link rel="preload" href="/images/logo-light.png" as="image">
+    {{-- Preload critical resources (WebP w/ PNG fallback via type negotiation) --}}
+    <link rel="preload" href="/images/logo-dark.webp" as="image" type="image/webp">
+    <link rel="preload" href="/images/logo-light.webp" as="image" type="image/webp">
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -58,8 +58,14 @@
         <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             {{-- Logo (switches between dark/light versions) --}}
             <a href="{{ route('home') }}" class="flex shrink-0 items-center">
-                <img src="/images/logo-dark.png" alt="WellCore Fitness" class="h-10 dark:hidden">
-                <img src="/images/logo-light.png" alt="WellCore Fitness" class="hidden h-10 dark:block">
+                <picture class="dark:hidden">
+                    <source srcset="/images/logo-dark.webp" type="image/webp">
+                    <img src="/images/logo-dark.png" alt="WellCore Fitness" width="158" height="40" class="h-10 w-auto" fetchpriority="high" decoding="async">
+                </picture>
+                <picture class="hidden dark:block">
+                    <source srcset="/images/logo-light.webp" type="image/webp">
+                    <img src="/images/logo-light.png" alt="WellCore Fitness" width="158" height="40" class="h-10 w-auto" fetchpriority="high" decoding="async">
+                </picture>
             </a>
 
             {{-- Desktop Nav Links (8 links â€” need lg breakpoint) --}}
@@ -167,8 +173,14 @@
             {{-- Top: Brand statement + Newsletter --}}
             <div class="grid grid-cols-1 items-center gap-8 border-b border-wc-border py-12 lg:grid-cols-2">
                 <div>
-                    <img src="/images/logo-dark.png" alt="WellCore Fitness" class="h-10 dark:hidden">
-                    <img src="/images/logo-light.png" alt="WellCore Fitness" class="hidden h-10 dark:block">
+                    <picture class="dark:hidden">
+                        <source srcset="/images/logo-dark.webp" type="image/webp">
+                        <img src="/images/logo-dark.png" alt="WellCore Fitness" width="158" height="40" class="h-10 w-auto" loading="lazy" decoding="async">
+                    </picture>
+                    <picture class="hidden dark:block">
+                        <source srcset="/images/logo-light.webp" type="image/webp">
+                        <img src="/images/logo-light.png" alt="WellCore Fitness" width="158" height="40" class="h-10 w-auto" loading="lazy" decoding="async">
+                    </picture>
                     <p class="mt-4 max-w-md text-sm text-wc-text-secondary">
                         {{ __('footer.brand_desc') }}
                     </p>
