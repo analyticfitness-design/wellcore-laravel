@@ -9,10 +9,15 @@ const showTour = ref(false);
 
 onMounted(() => {
   try {
-    if (localStorage.getItem('coach_tour_completed') !== '1') {
-      // Small delay so sidebar DOM is painted
-      setTimeout(() => { showTour.value = true; }, 400);
+    // Tour solo en primeros 3 logins o hasta que el coach lo complete.
+    if (localStorage.getItem('coach_tour_completed') === '1') return;
+    const shown = parseInt(localStorage.getItem('coach_tour_shown_count') || '0', 10);
+    if (shown >= 3) {
+      localStorage.setItem('coach_tour_completed', '1');
+      return;
     }
+    localStorage.setItem('coach_tour_shown_count', String(shown + 1));
+    setTimeout(() => { showTour.value = true; }, 400);
   } catch {}
 });
 

@@ -347,8 +347,10 @@ const bottomNav = [
           <!-- Dark Mode Toggle -->
           <button
             @click="toggleDarkMode"
+            type="button"
             class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text"
             title="Cambiar modo"
+            aria-label="Cambiar modo oscuro"
           >
             <!-- Moon (light mode) -->
             <svg class="h-5 w-5 dark:hidden" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

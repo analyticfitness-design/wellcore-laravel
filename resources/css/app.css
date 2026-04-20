@@ -40,7 +40,9 @@
     --color-wc-bg-tertiary: #FFFFFF;
     --color-wc-text: #1A1A1A;
     --color-wc-text-secondary: #4B5563;
-    --color-wc-text-tertiary: #6B7280;
+    /* P5.4 A11y: prior #6B7280 failed WCAG AA (4.27:1 over bg, 3.99:1 over bg-secondary).
+       New #5F6B7A → 5.09:1 over bg, 4.78:1 over bg-secondary. Keeps hierarchy vs secondary (#4B5563). */
+    --color-wc-text-tertiary: #5F6B7A;
     --color-wc-border: rgba(0, 0, 0, 0.12);
 
     /* Spacing */
@@ -58,7 +60,9 @@
     --color-wc-bg-tertiary: #18181B;
     --color-wc-text: #FAFAFA;
     --color-wc-text-secondary: rgba(250, 250, 250, 0.64);
-    --color-wc-text-tertiary: rgba(250, 250, 250, 0.4);
+    /* P5.4 A11y: prior 0.4 alpha failed WCAG AA (3.37:1 over bg, 3.53:1 over bg-secondary).
+       Bumped to 0.56 → ~5.9:1 over bg. Preserves hierarchy vs secondary (0.64 alpha). */
+    --color-wc-text-tertiary: rgba(250, 250, 250, 0.56);
     --color-wc-border: rgba(255, 255, 255, 0.08);
     --color-wc-accent-light: rgba(220, 38, 38, 0.15);
 }

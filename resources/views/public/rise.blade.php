@@ -77,7 +77,7 @@
                             {{-- Header --}}
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <h3 class="font-display text-lg tracking-wide text-wc-text">RISE <span class="text-wc-text-tertiary">&mdash;</span> {{ __('rise.mockup_week') }}</h3>
+                                    <h2 class="font-display text-lg tracking-wide text-wc-text">RISE <span class="text-wc-text-tertiary">&mdash;</span> {{ __('rise.mockup_week') }}</h2>
                                 </div>
                                 <span class="rounded-full bg-wc-accent/10 px-3 py-1 text-[10px] font-semibold text-wc-accent">{{ __('rise.mockup_status') }}</span>
                             </div>

@@ -102,7 +102,7 @@
                     </div>
                 </div>
             </div>
-            <button x-on:click="chatOpen = false" class="flex h-8 w-8 items-center justify-center rounded-lg text-white/60 hover:bg-white/10 hover:text-white">
+            <button x-on:click="chatOpen = false" type="button" aria-label="Cerrar chat" class="flex h-8 w-8 items-center justify-center rounded-lg text-white/60 hover:bg-white/10 hover:text-white">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
@@ -173,6 +173,7 @@
                 >
                 <button
                     type="submit"
+                    aria-label="Enviar mensaje"
                     class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-wc-accent text-white hover:bg-wc-accent-hover disabled:opacity-50"
                     :disabled="loading || !newMessage.trim()"
                 >

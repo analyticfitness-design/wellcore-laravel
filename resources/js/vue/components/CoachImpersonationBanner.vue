@@ -41,7 +41,9 @@ async function endImpersonation() {
   if (backup.token)    localStorage.setItem('wc_token', backup.token);
   if (backup.userType) localStorage.setItem('wc_user_type', backup.userType);
   if (backup.userId)   localStorage.setItem('wc_user_id', backup.userId);
-  if (backup.userName) localStorage.setItem('wc_user_name', backup.userName);
+  // Siempre restaurar userName (aunque sea vacio) para que no quede el del
+  // cliente impersonado en el avatar del coach.
+  localStorage.setItem('wc_user_name', backup.userName || '');
   if (backup.portal)   localStorage.setItem('wc_user_portal', backup.portal);
 
   // Cleanup impersonation keys

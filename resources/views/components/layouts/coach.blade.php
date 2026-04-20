@@ -159,7 +159,10 @@
             <div class="flex items-center gap-3">
                 <button
                     x-on:click="sidebarOpen = !sidebarOpen"
+                    type="button"
                     class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text lg:hidden"
+                    :aria-label="sidebarOpen ? 'Cerrar menu' : 'Abrir menu'"
+                    :aria-expanded="sidebarOpen"
                 >
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -172,8 +175,10 @@
                 {{-- Dark Mode Toggle --}}
                 <button
                     x-on:click="darkMode = !darkMode"
+                    type="button"
                     class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text"
                     title="Cambiar modo"
+                    aria-label="Cambiar modo oscuro"
                 >
                     <template x-if="!darkMode">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

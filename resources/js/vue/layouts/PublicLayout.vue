@@ -17,7 +17,7 @@ function toggleDarkMode() {
     <nav class="sticky top-0 z-50 border-b border-wc-border bg-wc-bg/80 backdrop-blur-xl">
       <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <!-- Logo -->
-        <a href="/" class="flex shrink-0 items-center">
+        <a href="/" class="flex shrink-0 items-center" aria-label="Inicio WellCore Fitness">
           <picture class="dark:hidden">
             <source srcset="/images/logo-dark.webp" type="image/webp">
             <img src="/images/logo-dark.png" alt="WellCore Fitness" width="158" height="40" fetchpriority="high" decoding="async" class="h-10 w-auto">
@@ -54,8 +54,10 @@ function toggleDarkMode() {
           <!-- Dark Mode Toggle -->
           <button
             @click="toggleDarkMode"
+            type="button"
             class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text"
             title="Cambiar modo"
+            aria-label="Cambiar modo oscuro"
           >
             <!-- Moon (light mode) -->
             <svg class="h-[18px] w-[18px] dark:hidden" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -75,7 +77,10 @@ function toggleDarkMode() {
           <!-- Hamburger -->
           <button
             @click="mobileMenu = !mobileMenu"
+            type="button"
             class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text lg:hidden"
+            :aria-label="mobileMenu ? 'Cerrar menu' : 'Abrir menu'"
+            :aria-expanded="mobileMenu"
           >
             <svg v-if="!mobileMenu" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />

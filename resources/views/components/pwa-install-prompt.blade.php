@@ -49,7 +49,7 @@
                 <p class="text-sm font-semibold text-wc-text">Instala WellCore</p>
                 <p class="mt-1 text-xs text-wc-text-secondary">Accede mas rapido desde tu pantalla de inicio. Sin descargar nada.</p>
             </div>
-            <button @click="dismiss()" class="shrink-0 text-wc-text-tertiary hover:text-wc-text">
+            <button @click="dismiss()" type="button" aria-label="Cerrar aviso de instalacion" class="shrink-0 text-wc-text-tertiary hover:text-wc-text">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
             </button>
         </div>

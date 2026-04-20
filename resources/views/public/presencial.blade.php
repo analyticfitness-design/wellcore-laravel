@@ -41,7 +41,7 @@
                             <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 0 1 15 0Z" /></svg>
                         </div>
                         <div>
-                            <h3 class="font-display text-xl tracking-wide text-wc-text">{{ __('presencial.location_heading') }}</h3>
+                            <h2 class="font-display text-xl tracking-wide text-wc-text">{{ __('presencial.location_heading') }}</h2>
                             <p class="mt-2 text-sm text-wc-text-secondary">{{ __('presencial.location_city') }}</p>
                             <p class="mt-1 text-sm text-wc-text-tertiary">{{ __('presencial.location_detail') }}</p>
                             <div class="mt-4 flex items-center gap-2">

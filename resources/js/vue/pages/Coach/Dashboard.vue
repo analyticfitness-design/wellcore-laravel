@@ -2,6 +2,7 @@
 import { ref, onMounted, onBeforeUnmount, computed, nextTick } from 'vue';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
+import CoachOnboardingChecklist from '../../components/CoachOnboardingChecklist.vue';
 
 const api = useApi();
 const loading = ref(true);
@@ -9,6 +10,7 @@ const error = ref(null);
 
 const greeting = ref('');
 const coachName = ref('');
+const coachDaysOld = ref(null); // P5.3: days since coach account created_at
 
 const stats = ref({
     activeClients: 0,
@@ -123,6 +125,7 @@ async function loadDashboard() {
 
         greeting.value = data.greeting || computeGreeting();
         coachName.value = data.coachName || localStorage.getItem('wc_user_name')?.split(' ')[0] || 'Coach';
+        coachDaysOld.value = data.coachDaysOld ?? null;
 
         stats.value = {
             activeClients: data.activeClients ?? 0,
@@ -215,6 +218,9 @@ onBeforeUnmount(() => {
           </RouterLink>
         </div>
       </div>
+
+      <!-- P5.3 Onboarding checklist (first 7 days only, dismissible) -->
+      <CoachOnboardingChecklist :days-old="coachDaysOld" />
 
       <!-- Loading skeleton -->
       <template v-if="loading">
