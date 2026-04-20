@@ -32,9 +32,9 @@ async function fetchTraining() {
     });
     const d = response.data;
     days.value = d.days || [];
-    completedCount.value = d.completedCount || 0;
-    monthSessions.value = d.monthSessions || 0;
-    isCurrentWeek.value = d.isCurrentWeek !== undefined ? d.isCurrentWeek : true;
+    completedCount.value = d.completed_count || 0;
+    monthSessions.value = d.month_sessions || 0;
+    isCurrentWeek.value = d.is_current_week !== undefined ? d.is_current_week : true;
     week.value = d.week || week.value;
     year.value = d.year || year.value;
   } catch (err) {
@@ -63,11 +63,18 @@ async function toggleDay(date) {
   }
 }
 
+function isoWeeksInYear(y) {
+  // A year has 53 ISO weeks if Jan 1 or Dec 31 is Thursday
+  const jan1 = new Date(y, 0, 1).getDay();
+  const dec31 = new Date(y, 11, 31).getDay();
+  return jan1 === 4 || dec31 === 4 ? 53 : 52;
+}
+
 function previousWeek() {
   week.value--;
   if (week.value < 1) {
-    week.value = 52;
     year.value--;
+    week.value = isoWeeksInYear(year.value);
   }
   fetchTraining();
 }

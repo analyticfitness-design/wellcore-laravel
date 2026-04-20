@@ -526,7 +526,7 @@ const weekMarkers = computed(() => {
               ></div>
             </div>
             <p class="mt-1 text-[10px] text-wc-text-tertiary">
-              {{ ((data.xpTotal || 0) % (data.xpForNextLevel || 200)).toLocaleString() }} / {{ (data.xpForNextLevel || 200).toLocaleString() }} XP
+              {{ ((data.xpTotal || 0) - (data.xpCurrentLevelFloor || 0)).toLocaleString() }} / 200 XP
             </p>
           </div>
         </div>

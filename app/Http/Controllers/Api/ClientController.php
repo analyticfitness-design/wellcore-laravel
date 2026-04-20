@@ -120,6 +120,7 @@ class ClientController extends Controller
             'xpTotal' => $cached['xpTotal'],
             'level' => $cached['level'],
             'xpForNextLevel' => $cached['xpForNextLevel'],
+            'xpCurrentLevelFloor' => $cached['xpCurrentLevelFloor'] ?? 0,
             'xpProgress' => $cached['xpProgress'],
             'trainedThisWeek' => $cached['trainedThisWeek'],
 
@@ -196,15 +197,17 @@ class ClientController extends Controller
             ->whereMonth('checkin_date', now()->month)
             ->count();
 
+        $isoYear = (int) now()->isoFormat('GGGG');
+
         $trainedWeek = TrainingLog::where('client_id', $clientId)
-            ->where('year_num', now()->year)
+            ->where('year_num', $isoYear)
             ->where('week_num', now()->isoWeek())
             ->where('completed', true)
             ->count();
 
         // --- Weekly overview ---
         $logs = TrainingLog::where('client_id', $clientId)
-            ->where('year_num', now()->year)
+            ->where('year_num', $isoYear)
             ->where('week_num', now()->isoWeek())
             ->where('completed', true)
             ->pluck('log_date')
@@ -374,6 +377,7 @@ class ClientController extends Controller
             'xpTotal' => $xpTotal,
             'level' => $currentLevel,
             'xpForNextLevel' => $xpForNext,
+            'xpCurrentLevelFloor' => $xpForCurrentLevel,
             'xpProgress' => $xpProgress,
             'checkinsThisMonth' => $checkinsMonth,
             'trainedThisWeek' => $trainedWeek,
@@ -506,9 +510,12 @@ class ClientController extends Controller
             ])
             ->exists();
 
-        $weightThisWeek = WeightLog::where('client_id', $clientId)
-            ->where('week_number', now()->isoWeek())
-            ->where('year', now()->year)
+        $weightThisWeek = Metric::where('client_id', $clientId)
+            ->whereNotNull('peso')
+            ->whereBetween('log_date', [
+                now()->startOfWeek()->toDateString(),
+                now()->endOfWeek()->toDateString(),
+            ])
             ->exists();
 
         $nutritionToday = HabitLog::where('client_id', $clientId)

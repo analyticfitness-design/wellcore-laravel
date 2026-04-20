@@ -590,6 +590,60 @@ class TrainingController extends Controller
     }
 
     /**
+     * POST /api/v/client/workout/uncomplete-set
+     */
+    public function uncompleteSet(Request $request): JsonResponse
+    {
+        $client = $this->resolveClientOrFail($request);
+
+        $validated = $request->validate([
+            'session_id'     => 'required|integer',
+            'exercise_name'  => 'required|string|max:200',
+            'set_number'     => 'required|integer|min:1',
+            'exercise_index' => 'nullable|integer',
+        ]);
+
+        $session = WorkoutSession::where('id', $validated['session_id'])
+            ->where('client_id', $client->id)
+            ->where('completed', false)
+            ->first();
+
+        if (! $session) {
+            return response()->json(['error' => 'Sesion no encontrada.'], 404);
+        }
+
+        WorkoutLog::where('session_id', $validated['session_id'])
+            ->where('exercise_name', $validated['exercise_name'])
+            ->where('set_number', $validated['set_number'])
+            ->delete();
+
+        return response()->json(['uncompleted' => true]);
+    }
+
+    /**
+     * POST /api/v/client/workout/abandon
+     */
+    public function abandonWorkout(Request $request): JsonResponse
+    {
+        $client = $this->resolveClientOrFail($request);
+
+        $validated = $request->validate([
+            'session_id' => 'required|integer',
+        ]);
+
+        $session = WorkoutSession::where('id', $validated['session_id'])
+            ->where('client_id', $client->id)
+            ->where('completed', false)
+            ->first();
+
+        if ($session) {
+            $session->delete();
+        }
+
+        return response()->json(['abandoned' => true]);
+    }
+
+    /**
      * POST /api/v/client/workout/finish
      *
      * Finish workout session. Ports WorkoutPlayer.php completeWorkout() logic.

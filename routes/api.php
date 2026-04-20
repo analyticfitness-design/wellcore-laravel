@@ -148,6 +148,8 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
     Route::get('/workout/{day?}', [TrainingController::class, 'workout'])->where('day', '[0-9]+');
     Route::post('/workout/start', [TrainingController::class, 'startWorkout']);
     Route::post('/workout/complete-set', [TrainingController::class, 'completeSet']);
+    Route::post('/workout/uncomplete-set', [TrainingController::class, 'uncompleteSet']);
+    Route::post('/workout/abandon', [TrainingController::class, 'abandonWorkout']);
     Route::post('/workout/finish', [TrainingController::class, 'finishWorkout']);
     Route::get('/workout-summary/{sessionId}', [TrainingController::class, 'workoutSummary'])->where('sessionId', '[0-9]+|latest');
     Route::post('/workout-summary/{sessionId}/feeling', [TrainingController::class, 'saveWorkoutFeeling'])->where('sessionId', '[0-9]+|latest');
