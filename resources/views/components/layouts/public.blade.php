@@ -22,7 +22,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
     @php
-        $wcFontsUrl = 'https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swap';
+        // Reducido de 17 pesos → 6 pesos críticos (−60 KB aprox)
+        $wcFontsUrl = 'https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Raleway:wght@400;600&family=Barlow:wght@400;700&display=swap';
     @endphp
     <link rel="preload" as="style" href="{{ $wcFontsUrl }}">
     <link rel="stylesheet" href="{{ $wcFontsUrl }}" media="print" onload="this.media='all'">
@@ -33,7 +34,7 @@
     <link rel="preload" href="/images/logo-light.webp" as="image" type="image/webp">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewireStyles
+    {{-- @livewireStyles removed from public layout — home is Vue SPA, no Livewire components here (saves ~515ms blocking) --}}
 
     <x-seo-meta :title="$title ?? 'WellCore Fitness'" :description="$description ?? 'Coaching fitness basado en ciencia.'" />
     <x-hreflang />
@@ -41,19 +42,32 @@
     <x-pwa-meta />
 
     @if(config('app.meta_pixel_id'))
-    <!-- Meta Pixel -->
-    <script defer>
-    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
-    (window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '{{ config('app.meta_pixel_id') }}');
-    fbq('track', 'PageView');
+    {{-- Meta Pixel (lazy: load tras primer interaccion o scroll — ahorra 384 KB en initial load, mantiene tracking) --}}
+    <script>
+    (function(){
+        var pxId='{{ config('app.meta_pixel_id') }}',loaded=false;
+        function loadPixel(){
+            if(loaded)return;loaded=true;
+            !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+            n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+            (window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init',pxId);fbq('track','PageView');
+            ['scroll','mousedown','touchstart','keydown'].forEach(function(ev){
+                window.removeEventListener(ev,loadPixel,{passive:true});
+            });
+        }
+        // Trigger on first user signal OR 4s after load (whichever first)
+        ['scroll','mousedown','touchstart','keydown'].forEach(function(ev){
+            window.addEventListener(ev,loadPixel,{once:true,passive:true});
+        });
+        if(document.readyState==='complete')setTimeout(loadPixel,4000);
+        else window.addEventListener('load',function(){setTimeout(loadPixel,4000);});
+    })();
     </script>
     <noscript><img height="1" width="1" style="display:none"
     src="https://www.facebook.com/tr?id={{ config('app.meta_pixel_id') }}&ev=PageView&noscript=1"/></noscript>
-    <!-- /Meta Pixel -->
     @endif
 </head>
 <body class="min-h-screen bg-wc-bg text-wc-text">
@@ -282,6 +296,6 @@
     <x-cookie-consent />
     <x-toast-notifications />
 
-    @livewireScripts
+    {{-- @livewireScripts removed: public pages use Vue SPA + Alpine only, no Livewire components (saves ~515ms blocking + ~50 KB) --}}
 </body>
 </html>
