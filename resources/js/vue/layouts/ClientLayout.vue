@@ -130,6 +130,7 @@ const navSections = [
         items: [
             { name: 'Metricas', to: '/client/metrics', icon: 'metrics', routeName: 'client-metrics' },
             { name: 'Fotos', to: '/client/photos', icon: 'photos', routeName: 'client-photos' },
+            { name: 'Logros', to: '/client/logros', icon: 'trophy', routeName: 'client-logros' },
             { name: 'Bienestar', to: '/client/mindfulness', icon: 'mindfulness', routeName: 'client-mindfulness' },
         ],
     },
@@ -298,6 +299,10 @@ const bottomNav = [
                 <!-- Referrals -->
                 <svg v-else-if="item.icon === 'referrals'" class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+                </svg>
+                <!-- Trophy / Logros -->
+                <svg v-else-if="item.icon === 'trophy'" class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.006 0H9.497m5.006 0a4.5 4.5 0 0 0 1.307-6.075A4.5 4.5 0 0 0 12 6a4.5 4.5 0 0 0-3.81 7.05 4.5 4.5 0 0 0 1.307 1.2M16.5 7.5h3.375c.621 0 1.125.504 1.125 1.125V11.25a3 3 0 0 1-3 3h-1.125M7.5 7.5H4.125C3.504 7.5 3 8.004 3 8.625V11.25a3 3 0 0 0 3 3h1.125" />
                 </svg>
                 {{ item.name }}
               </RouterLink>

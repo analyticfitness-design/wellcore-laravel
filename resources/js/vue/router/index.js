@@ -42,6 +42,7 @@ const routes = [
     { path: '/client/supplements', name: 'client-supplements', component: () => import('../pages/Client/SupplementTracker.vue'), meta: { auth: true, title: 'Suplementacion — WellCore' } },
     { path: '/client/photos', name: 'client-photos', component: () => import('../pages/Client/ProgressPhotos.vue'), meta: { auth: true, title: 'Fotos — WellCore' } },
     { path: '/client/records', name: 'client-records', component: () => import('../pages/Client/PersonalRecords.vue'), meta: { auth: true, title: 'Personal Records — WellCore' } },
+    { path: '/client/logros', name: 'client-logros', component: () => import('../pages/Client/Logros.vue'), meta: { auth: true, title: 'Logros — WellCore' } },
     { path: '/client/ai-nutrition', name: 'client-ai-nutrition', component: () => import('../pages/Client/AINutrition.vue'), meta: { auth: true, title: 'Analisis IA — WellCore' } },
     { path: '/client/recipes', name: 'client-recipes', component: () => import('../pages/Client/RecipeDatabase.vue'), meta: { auth: true, title: 'Recetas — WellCore' } },
     { path: '/client/audio', name: 'client-audio', component: () => import('../pages/Client/AudioPlayer.vue'), meta: { auth: true, title: 'Audio Coaching — WellCore' } },
