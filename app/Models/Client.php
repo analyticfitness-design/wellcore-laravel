@@ -6,6 +6,7 @@ use App\Enums\ClientStatus;
 use App\Enums\PlanType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -135,5 +136,12 @@ class Client extends Authenticatable
     public function shopOrders(): HasMany
     {
         return $this->hasMany(ShopOrder::class);
+    }
+
+    public function medals(): BelongsToMany
+    {
+        return $this->belongsToMany(Medal::class, 'client_medals')
+            ->withPivot(['current_progress', 'achieved_at'])
+            ->withTimestamps();
     }
 }

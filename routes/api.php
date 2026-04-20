@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\CoachClientRequestController;
 use App\Http\Controllers\Api\CoachController;
 use App\Http\Controllers\Api\CoachPlanTicketController;
 use App\Http\Controllers\Api\EjerciciosController;
+use App\Http\Controllers\Api\MedalController;
 use App\Http\Controllers\Api\NutritionController;
 use App\Http\Controllers\Api\PublicFormController;
 use App\Http\Controllers\Api\RiseController;
@@ -190,6 +191,12 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
     Route::get('/academia', [SocialController::class, 'academia']);
     Route::get('/video-checkins', [SocialController::class, 'videoCheckinHistory']);
     Route::post('/video-checkin', [SocialController::class, 'videoCheckinSubmit']);
+});
+
+// Medals & Achievements (Phase 1 — Backend)
+Route::prefix('v/client')->middleware('throttle:api')->group(function () {
+    Route::get('/medals', [MedalController::class, 'index']);
+    Route::get('/medals/unlocked', [MedalController::class, 'unlocked']);
 });
 
 // Rise (Phase 7 — authenticated client, Bearer token)

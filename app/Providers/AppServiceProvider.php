@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\WorkoutSession;
+use App\Observers\WorkoutSessionObserver;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
@@ -27,6 +29,8 @@ class AppServiceProvider extends ServiceProvider
         }
 
         $this->configureRateLimiting();
+
+        WorkoutSession::observe(WorkoutSessionObserver::class);
     }
 
     /**
