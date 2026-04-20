@@ -7,6 +7,7 @@ use App\Enums\PlanType;
 use App\Models\Admin;
 use App\Models\AssignedPlan;
 use App\Models\Client;
+use App\Models\RiseProgram;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -53,8 +54,16 @@ class ClientDetail extends Component
     public function updatePlan(): void
     {
         $client = Client::findOrFail($this->clientId);
+        $previousPlan = $client->plan?->value ?? '';
         $client->plan = $this->editPlan;
         $client->save();
+
+        // Close active RISE enrollment when migrating away from RISE
+        if ($previousPlan === 'rise' && $this->editPlan !== 'rise') {
+            RiseProgram::where('client_id', $this->clientId)
+                ->whereIn('status', ['active', 'activo'])
+                ->update(['status' => 'completed', 'end_date' => now()->toDateString()]);
+        }
 
         $this->successMessage = 'Plan actualizado a ' . PlanType::from($this->editPlan)->label();
     }
