@@ -1093,7 +1093,8 @@ class SocialController extends Controller
         $request->validate([
             'photo_date' => 'required|date',
             'tipo' => 'required|in:frente,perfil,espalda',
-            'photo' => 'required|image|max:5120',
+            // 12MB max. Frontend convierte HEIC iPhone -> JPEG antes de subir.
+            'photo' => 'required|image|max:12288',
         ]);
 
         $uploadDate = $request->input('photo_date');
@@ -1259,7 +1260,8 @@ class SocialController extends Controller
         $clientId = $client->id;
 
         $request->validate([
-            'photo' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+            // 12MB max. Frontend convierte HEIC -> JPEG antes.
+            'photo' => 'required|image|mimes:jpg,jpeg,png,webp|max:12288',
         ]);
 
         $apiKey = config('wellcore.ai.api_key', '');

@@ -22,7 +22,7 @@ class ImagePipelineService
 {
     private const ALLOWED_MIMES = ['image/jpeg', 'image/png', 'image/webp'];
 
-    private const MAX_INPUT_BYTES = 10 * 1024 * 1024;
+    private const MAX_INPUT_BYTES = 12 * 1024 * 1024;
 
     /**
      * Memory headroom required to decode a raw RGBA bitmap plus copies

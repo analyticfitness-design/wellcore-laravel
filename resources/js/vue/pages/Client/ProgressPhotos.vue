@@ -101,10 +101,58 @@ async function fetchPhotos() {
 }
 
 // --- File handling ---
-function onFileSelect(angle, event) {
-  const file = event.target.files?.[0];
-  if (!file) return;
+const MAX_FILE_MB = 12;
+const HEIC_MIMES = ['image/heic', 'image/heif', 'image/heic-sequence', 'image/heif-sequence'];
+
+function isHeic(file) {
+  const type = (file.type || '').toLowerCase();
+  const name = (file.name || '').toLowerCase();
+  return HEIC_MIMES.includes(type) || name.endsWith('.heic') || name.endsWith('.heif');
+}
+
+async function convertHeicToJpeg(file) {
+  // Dynamic import para no inflar bundle inicial con heic2any (~140KB)
+  const mod = await import('heic2any');
+  const heic2any = mod.default || mod;
+  const blob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
+  const jpegBlob = Array.isArray(blob) ? blob[0] : blob;
+  return new File([jpegBlob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), { type: 'image/jpeg' });
+}
+
+async function onFileSelect(angle, event) {
+  const rawFile = event.target.files?.[0];
+  if (!rawFile) return;
   fieldErrors.value[angle] = null;
+
+  // Validación de tamaño ANTES de procesar (previene abrir HEIC de 30MB)
+  if (rawFile.size > MAX_FILE_MB * 1024 * 1024) {
+    fieldErrors.value[angle] = `La foto pesa más de ${MAX_FILE_MB}MB. Reduce el tamaño.`;
+    event.target.value = '';
+    return;
+  }
+
+  let file = rawFile;
+
+  // Conversión HEIC → JPEG en browser (iPhone por default sube HEIC)
+  if (isHeic(rawFile)) {
+    try {
+      fieldErrors.value[angle] = 'Convirtiendo formato HEIC...';
+      file = await convertHeicToJpeg(rawFile);
+      fieldErrors.value[angle] = null;
+      // Re-validar tamaño tras conversión
+      if (file.size > MAX_FILE_MB * 1024 * 1024) {
+        fieldErrors.value[angle] = `Tras convertir pesa más de ${MAX_FILE_MB}MB.`;
+        event.target.value = '';
+        return;
+      }
+    } catch (e) {
+      console.error('HEIC conversion error:', e);
+      fieldErrors.value[angle] = 'No se pudo convertir HEIC. Cambia formato a JPEG en Ajustes > Cámara > Formatos > Más compatible.';
+      event.target.value = '';
+      return;
+    }
+  }
+
   uploadFiles.value[angle] = file;
 
   // Preview via object URL
@@ -444,7 +492,7 @@ onMounted(fetchPhotos);
                 <input
                   :id="'photo-' + angle"
                   type="file"
-                  accept="image/*"
+                  accept="image/*,.heic,.heif"
                   class="hidden"
                   @change="onFileSelect(angle, $event)"
                 />
