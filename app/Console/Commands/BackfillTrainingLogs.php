@@ -7,6 +7,7 @@ use App\Models\WorkoutSession;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Backfill training_logs.completed from historical workout_sessions.
@@ -48,22 +49,38 @@ class BackfillTrainingLogs extends Command
             return self::SUCCESS;
         }
 
+        // Pre-load valid client IDs — skip workout_sessions de clientes borrados
+        // (FK training_logs -> clients CASCADE ya debió haberlos removido, pero
+        // workout_sessions no tiene esa restriccion, por eso hay huerfanos).
+        $validClientIds = DB::table('clients')->pluck('id')->all();
+        $validSet = array_flip($validClientIds);
+
         $created = 0;
         $promoted = 0;
         $alreadyOk = 0;
+        $skippedOrphan = 0;
         $touchedClients = [];
 
         $query->orderBy('id')->chunkById(500, function ($sessions) use (
             $dryRun,
+            $validSet,
             &$created,
             &$promoted,
             &$alreadyOk,
+            &$skippedOrphan,
             &$touchedClients,
         ) {
             foreach ($sessions as $session) {
                 $sessionDate = Carbon::parse($session->session_date ?? $session->created_at);
                 $logDate = $sessionDate->toDateString();
                 $clientId = (int) $session->client_id;
+
+                // Skip huerfanos: workout_sessions sin cliente en clients.
+                if (! isset($validSet[$clientId])) {
+                    $skippedOrphan++;
+
+                    continue;
+                }
 
                 $existing = TrainingLog::where('client_id', $clientId)
                     ->where('log_date', $logDate)
@@ -109,6 +126,7 @@ class BackfillTrainingLogs extends Command
                 ['training_logs rows created', $created],
                 ['rows updated (completed false -> true)', $promoted],
                 ['rows already completed=true', $alreadyOk],
+                ['skipped orphan sessions (no client)', $skippedOrphan],
                 ['distinct clients touched', count($touchedClients)],
                 ['dry-run', $dryRun ? 'yes' : 'no'],
             ],
