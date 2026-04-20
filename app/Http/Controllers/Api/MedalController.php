@@ -113,7 +113,7 @@ class MedalController extends Controller
             'totalWorkouts' => $totalWorkouts,
             'totalXP' => $totalXp,
             'level' => $level,
-            'xpCurrentLevel' => $totalXp - $xpForLevel($level),
+            'xpCurrentLevel' => max(0, $totalXp - $xpForLevel($level)),
             'xpNextLevel' => $xpForLevel($level + 1) - $xpForLevel($level),
             'achievedMedals' => $achievedMedals,
             'totalMedals' => $totalMedals,
