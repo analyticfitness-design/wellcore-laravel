@@ -9,8 +9,23 @@ export const useAuthStore = defineStore('auth', () => {
     // de verdad — sobreescribir rompia la impersonacion coach -> cliente.
     if (window.__WC_SESSION) {
         const s = window.__WC_SESSION;
-        const hasLocalToken = !!localStorage.getItem('wc_token');
-        if (s.token && !hasLocalToken) {
+        const currentLocalToken = localStorage.getItem('wc_token');
+        const hasLocalToken = !!currentLocalToken;
+        const isImpersonationStart = s.impersonating && s.token && s.token !== currentLocalToken;
+
+        if (isImpersonationStart) {
+            // Admin/coach just impersonated: server-side session is authoritative.
+            // Stash the current (admin) token as the backup before overwriting.
+            if (currentLocalToken && !localStorage.getItem('wc_admin_token')) {
+                localStorage.setItem('wc_admin_token', currentLocalToken);
+            }
+            localStorage.setItem('wc_token', s.token);
+            localStorage.setItem('wc_user_type', s.userType || 'client');
+            localStorage.setItem('wc_user_id', String(s.userId || ''));
+            if (s.userName) {
+                localStorage.setItem('wc_user_name', s.userName);
+            }
+        } else if (s.token && !hasLocalToken) {
             localStorage.setItem('wc_token', s.token);
             localStorage.setItem('wc_user_type', s.userType || 'client');
             localStorage.setItem('wc_user_id', String(s.userId || ''));
@@ -21,13 +36,10 @@ export const useAuthStore = defineStore('auth', () => {
         if (s.portal && !localStorage.getItem('wc_user_portal')) {
             localStorage.setItem('wc_user_portal', s.portal);
         }
-        // Solo sincronizar flag de impersonacion si viene del server (Livewire
-        // impersonation legacy). El flujo SPA usa wc_impersonating_by_coach
-        // escrito desde ClientList.vue.
-        if (s.impersonating && !localStorage.getItem('wc_impersonating_by_coach')) {
+        if (s.impersonating) {
             localStorage.setItem('wc_impersonating', 'true');
         }
-        if (s.adminToken && !localStorage.getItem('wc_token_backup')) {
+        if (s.adminToken && !localStorage.getItem('wc_admin_token')) {
             localStorage.setItem('wc_admin_token', s.adminToken);
         }
     }
