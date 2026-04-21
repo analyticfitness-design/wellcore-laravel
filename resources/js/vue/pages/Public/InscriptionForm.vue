@@ -160,10 +160,18 @@ function selectPlan(planId) {
   errors.value = {};
 }
 
+function scrollToFirstError() {
+  setTimeout(() => {
+    const el = document.querySelector('[data-error="true"]');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 50);
+}
+
 async function submit() {
   const stepErrors = validateStep(step.value);
   if (Object.keys(stepErrors).length > 0) {
     errors.value = stepErrors;
+    scrollToFirstError();
     return;
   }
 
@@ -177,6 +185,7 @@ async function submit() {
   } catch (err) {
     if (err.response?.data?.errors) {
       errors.value = err.response.data.errors;
+      scrollToFirstError();
     } else if (err.response?.data?.message) {
       errorMessage.value = err.response.data.message;
     } else {
@@ -592,17 +601,7 @@ async function submit() {
                   <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Notas adicionales</label>
                   <textarea v-model="form.notas" rows="3" placeholder="Algo mas que quieras que sepamos..." class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
                 </div>
-                <div>
-                  <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Contrasena *</label>
-                  <input v-model="form.password" type="password" placeholder="Minimo 8 caracteres" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
-                  <p v-if="fieldError('password')" class="mt-1 text-xs text-red-500">{{ fieldError('password') }}</p>
-                </div>
-                <div>
-                  <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Confirmar contrasena *</label>
-                  <input v-model="form.password_confirmation" type="password" placeholder="Repite tu contrasena" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
-                  <p v-if="fieldError('password_confirmation')" class="mt-1 text-xs text-red-500">{{ fieldError('password_confirmation') }}</p>
-                </div>
-                <div>
+                <div :data-error="!!fieldError('terminos') || null" class="rounded-lg border p-4" :class="fieldError('terminos') ? 'border-red-500 bg-red-500/5' : 'border-wc-border bg-wc-bg-secondary'">
                   <label class="flex cursor-pointer items-start gap-3">
                     <input v-model="form.terminos" type="checkbox" class="mt-0.5 h-4 w-4 rounded border-wc-border bg-wc-bg-secondary text-wc-accent focus:ring-wc-accent/30">
                     <span class="text-sm text-wc-text-secondary">
@@ -610,7 +609,17 @@ async function submit() {
                       y la <a href="/privacidad" target="_blank" class="text-wc-accent hover:underline">Politica de Privacidad</a> *
                     </span>
                   </label>
-                  <p v-if="fieldError('terminos')" class="mt-1 text-xs text-red-500">{{ fieldError('terminos') }}</p>
+                  <p v-if="fieldError('terminos')" class="mt-2 text-xs font-medium text-red-500">{{ fieldError('terminos') }}</p>
+                </div>
+                <div>
+                  <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Contrasena *</label>
+                  <input v-model="form.password" type="password" placeholder="Minimo 8 caracteres" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent" :class="fieldError('password') ? 'border-red-500' : ''">
+                  <p v-if="fieldError('password')" :data-error="true" class="mt-1 text-xs text-red-500">{{ fieldError('password') }}</p>
+                </div>
+                <div>
+                  <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Confirmar contrasena *</label>
+                  <input v-model="form.password_confirmation" type="password" placeholder="Repite tu contrasena" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent" :class="fieldError('password_confirmation') ? 'border-red-500' : ''">
+                  <p v-if="fieldError('password_confirmation')" :data-error="true" class="mt-1 text-xs text-red-500">{{ fieldError('password_confirmation') }}</p>
                 </div>
               </div>
             </div>
