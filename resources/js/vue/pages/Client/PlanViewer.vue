@@ -401,7 +401,13 @@ const planFrecuencia = computed(() => {
 
 const planSplit = computed(() => {
   if (!trainingPlan.value) return null;
-  return trainingPlan.value.split || trainingPlan.value.metodologia || null;
+  const s = trainingPlan.value.split || trainingPlan.value.metodologia || null;
+  if (!s || typeof s === 'object') return null;
+  if (typeof s === 'string') {
+    try { const p = JSON.parse(s); if (typeof p === 'object') return null; } catch {}
+    return s;
+  }
+  return null;
 });
 
 const semanas = computed(() => {
@@ -410,12 +416,10 @@ const semanas = computed(() => {
   return s;
 });
 
-// Weekly schedule from dias_semana field (object or JSON string)
-// Used when the plan has no semanas array but has a dias_semana map like
-// { "Lunes": "Glúteos + Piernas", "Martes": "Hombros + Tríceps", ... }
+// Weekly overview from split/dias_semana/schedule — shown as day cards above the weeks accordion
 const weeklySchedule = computed(() => {
   if (!trainingPlan.value) return [];
-  const raw = trainingPlan.value.dias_semana ?? trainingPlan.value.schedule ?? null;
+  const raw = trainingPlan.value.split ?? trainingPlan.value.dias_semana ?? trainingPlan.value.schedule ?? null;
   if (!raw) return [];
   let obj = raw;
   if (typeof raw === 'string') {
@@ -1044,8 +1048,8 @@ onBeforeUnmount(() => {
               </div>
             </div>
 
-            <!-- Weekly schedule (dias_semana object — shown when no semanas array) -->
-            <div v-if="semanas.length === 0 && weeklySchedule.length > 0" class="space-y-3">
+            <!-- Weekly overview (split/dias_semana — always shown when available) -->
+            <div v-if="weeklySchedule.length > 0" class="mb-5 space-y-3">
               <h3 class="font-display text-base tracking-widest uppercase text-wc-text-secondary">Horario semanal</h3>
               <div class="grid gap-3 sm:grid-cols-2">
                 <div
