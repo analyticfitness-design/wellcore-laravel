@@ -160,7 +160,8 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
     Route::get('/nutrition/macros-today', [NutritionController::class, 'macrosToday']);
     Route::post('/nutrition/swap', [NutritionController::class, 'createSwap']);
     Route::delete('/nutrition/swap/{id}', [NutritionController::class, 'deleteSwap'])->where('id', '[0-9]+');
-    Route::post('/ai-nutrition/estimate', [NutritionController::class, 'estimateFood']);
+    // AI food estimation — elite only
+    Route::post('/ai-nutrition/estimate', [NutritionController::class, 'estimateFood'])->middleware('ensure.plan:elite');
 });
 
 // Social & Resources (Phase 6)
@@ -188,8 +189,9 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
     Route::get('/photos/{id}/view', [SocialController::class, 'viewPhoto'])->where('id', '[0-9]+');
     Route::delete('/photos/{id}', [SocialController::class, 'deletePhoto'])->where('id', '[0-9]+');
     Route::get('/records', [SocialController::class, 'records']);
-    Route::get('/ai-nutrition', [SocialController::class, 'aiNutritionHistory']);
-    Route::post('/ai-nutrition/analyze', [SocialController::class, 'aiNutritionAnalyze']);
+    // AI nutrition history + analysis — elite only
+    Route::get('/ai-nutrition', [SocialController::class, 'aiNutritionHistory'])->middleware('ensure.plan:elite');
+    Route::post('/ai-nutrition/analyze', [SocialController::class, 'aiNutritionAnalyze'])->middleware('ensure.plan:elite');
     Route::get('/videos', [SocialController::class, 'videos']);
     Route::get('/academia', [SocialController::class, 'academia']);
     Route::get('/video-checkins', [SocialController::class, 'videoCheckinHistory']);
@@ -204,7 +206,8 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
 });
 
 // Rise (Phase 7 — authenticated client, Bearer token)
-Route::prefix('v/rise')->middleware('throttle:api')->group(function () {
+// Plan gating: metodo, elite, rise, presencial can access RISE (not esencial/trial)
+Route::prefix('v/rise')->middleware(['throttle:api', 'ensure.plan:metodo,elite,rise,presencial'])->group(function () {
     Route::get('/dashboard', [RiseController::class, 'dashboard']);
     Route::get('/program', [RiseController::class, 'program']);
     Route::get('/habits', [RiseController::class, 'habits']);

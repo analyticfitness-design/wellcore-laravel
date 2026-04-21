@@ -22,6 +22,10 @@
     @vite(['resources/css/app.css', 'resources/js/vue/app.js'])
 </head>
 <body class="min-h-screen bg-wc-bg text-wc-text">
+    <!-- SVG sprite para WcIcon — debe estar al inicio del body -->
+    <div aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+        @include('partials.wc-sprite')
+    </div>
     <div id="vue-app"></div>
     @if(session('wc_token'))
     <script>

@@ -46,9 +46,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(SetAssetCacheHeaders::class);
 
         $middleware->alias([
-            'auth' => EnsureAuthenticated::class,
-            'guest' => RedirectIfAuthenticated::class,
-            'role' => EnsureRole::class,
+            'auth'         => EnsureAuthenticated::class,
+            'guest'        => RedirectIfAuthenticated::class,
+            'role'         => EnsureRole::class,
+            'ensure.plan'  => \App\Http\Middleware\EnsurePlan::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
