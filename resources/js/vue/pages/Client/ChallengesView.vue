@@ -1,9 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
+const toast = useToast();
 
 // State
 const loading = ref(true);
@@ -46,9 +48,9 @@ async function joinChallenge(challengeId) {
     } catch (err) {
         const status = err.response?.status;
         if (status === 404 || status === 405) {
-            alert('Proximamente disponible');
+            toast.info('Proximamente disponible.');
         } else {
-            alert(err.response?.data?.message || 'No se pudo unir al reto. Intenta de nuevo.');
+            toast.apiError(err, 'No se pudo unir al reto. Intenta de nuevo.');
         }
     } finally {
         joiningId.value = null;

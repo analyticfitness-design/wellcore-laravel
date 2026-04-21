@@ -2,10 +2,12 @@
 import { ref, computed, onMounted } from 'vue';
 import { Replace, X as XIcon, Search as SearchIcon, CheckCircle2, AlertTriangle, Flame, RefreshCw } from 'lucide-vue-next';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
 import { RECIPES } from '../../data/recipes';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
+const globalToast = useToast();
 
 // State
 const loading = ref(true);
@@ -102,12 +104,18 @@ async function fetchNutrition() {
 // Water tracker
 const addingWater = ref(false);
 async function addWater(ml) {
+    if (addingWater.value) return;
+
+    // Optimistic update con rollback.
+    const prev = waterConsumed.value;
+    waterConsumed.value = prev + ml;
     addingWater.value = true;
     try {
         const response = await api.post('/api/v/client/nutrition/water', { amount: ml });
-        waterConsumed.value = response.data.water_consumed_ml ?? (waterConsumed.value + ml);
-    } catch {
-        // Fail silently
+        waterConsumed.value = response.data.water_consumed_ml ?? waterConsumed.value;
+    } catch (err) {
+        waterConsumed.value = prev;
+        globalToast.apiError(err, 'No pudimos registrar tu hidratación.');
     } finally {
         addingWater.value = false;
     }
@@ -181,7 +189,11 @@ async function dismissTutorial() {
     try {
         await api.post('/api/v/client/nutrition/dismiss-tutorial');
     } catch {
-        // non-critical
+        // Fallback: persistir en localStorage si el backend falla,
+        // así no vuelve a mostrarse en esta sesión.
+        try {
+            localStorage.setItem('wc_nutrition_tutorial_dismissed', '1');
+        } catch { /* storage lleno — ignorar */ }
     }
 }
 

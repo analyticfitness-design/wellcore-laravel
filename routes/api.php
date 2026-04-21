@@ -128,14 +128,14 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
     Route::put('/profile', [ClientController::class, 'updateProfile']);
     Route::get('/settings', [ClientController::class, 'settings']);
     Route::put('/settings', [ClientController::class, 'updateSettings']);
-    Route::put('/settings/password', [ClientController::class, 'changePassword']);
+    Route::put('/settings/password', [ClientController::class, 'changePassword'])->middleware('throttle:change-password');
     Route::post('/onboarding/complete', [ClientController::class, 'completeOnboarding']);
     Route::get('/coach-feedback', [ClientController::class, 'coachFeedback']);
     Route::post('/coach-feedback', [ClientController::class, 'submitCoachFeedback']);
     Route::get('/notifications', [ClientController::class, 'notifications']);
     Route::post('/notifications/read-all', [ClientController::class, 'markAllRead']);
     Route::get('/tickets', [ClientController::class, 'tickets']);
-    Route::post('/tickets', [ClientController::class, 'createTicket']);
+    Route::post('/tickets', [ClientController::class, 'createTicket'])->middleware('throttle:ticket-create');
     Route::post('/notifications/{id}/read', [ClientController::class, 'markRead']);
     Route::get('/my-coach', [ClientController::class, 'myCoach']);
 });
@@ -154,7 +154,7 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
     Route::get('/workout-summary/{sessionId}', [TrainingController::class, 'workoutSummary'])->where('sessionId', '[0-9]+|latest');
     Route::post('/workout-summary/{sessionId}/feeling', [TrainingController::class, 'saveWorkoutFeeling'])->where('sessionId', '[0-9]+|latest');
     Route::get('/checkin', [TrainingController::class, 'checkin']);
-    Route::post('/checkin', [TrainingController::class, 'submitCheckin']);
+    Route::post('/checkin', [TrainingController::class, 'submitCheckin'])->middleware('throttle:checkin');
 
     // Nutrition — Recipe Meal Swaps & AI Estimation
     Route::get('/nutrition/macros-today', [NutritionController::class, 'macrosToday']);
@@ -166,9 +166,9 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
 // Social & Resources (Phase 6)
 Route::prefix('v/client')->middleware('throttle:api')->group(function () {
     Route::get('/community', [SocialController::class, 'communityIndex']);
-    Route::post('/community', [SocialController::class, 'communityCreate']);
-    Route::post('/community/{id}/react', [SocialController::class, 'communityReact'])->where('id', '[0-9]+');
-    Route::post('/community/{id}/comment', [SocialController::class, 'communityComment'])->where('id', '[0-9]+');
+    Route::post('/community', [SocialController::class, 'communityCreate'])->middleware('throttle:community-write');
+    Route::post('/community/{id}/react', [SocialController::class, 'communityReact'])->where('id', '[0-9]+')->middleware('throttle:community-write');
+    Route::post('/community/{id}/comment', [SocialController::class, 'communityComment'])->where('id', '[0-9]+')->middleware('throttle:community-write');
     Route::delete('/community/{id}', [SocialController::class, 'communityDelete'])->where('id', '[0-9]+');
     Route::get('/challenges', [SocialController::class, 'challenges']);
     Route::post('/challenges/{id}/join', [SocialController::class, 'joinChallenge'])->where('id', '[0-9]+');
@@ -180,11 +180,12 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
     Route::get('/habits', [SocialController::class, 'habits']);
     Route::post('/habits/toggle', [SocialController::class, 'toggleHabit']);
     Route::get('/referrals', [SocialController::class, 'referrals']);
-    Route::post('/referrals/invite', [SocialController::class, 'sendReferralInvite']);
+    Route::post('/referrals/invite', [SocialController::class, 'sendReferralInvite'])->middleware('throttle:referrals');
     Route::get('/supplements', [SocialController::class, 'supplements']);
     Route::post('/supplements/toggle', [SocialController::class, 'toggleSupplement']);
     Route::get('/photos', [SocialController::class, 'photos']);
     Route::post('/photos', [SocialController::class, 'uploadPhoto']);
+    Route::get('/photos/{id}/view', [SocialController::class, 'viewPhoto'])->where('id', '[0-9]+');
     Route::delete('/photos/{id}', [SocialController::class, 'deletePhoto'])->where('id', '[0-9]+');
     Route::get('/records', [SocialController::class, 'records']);
     Route::get('/ai-nutrition', [SocialController::class, 'aiNutritionHistory']);
@@ -192,6 +193,7 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
     Route::get('/videos', [SocialController::class, 'videos']);
     Route::get('/academia', [SocialController::class, 'academia']);
     Route::get('/video-checkins', [SocialController::class, 'videoCheckinHistory']);
+    Route::get('/video-checkins/{id}/view', [SocialController::class, 'viewVideoCheckin'])->where('id', '[0-9]+');
     Route::post('/video-checkin', [SocialController::class, 'videoCheckinSubmit']);
 });
 

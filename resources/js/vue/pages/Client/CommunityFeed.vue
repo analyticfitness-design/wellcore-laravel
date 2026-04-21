@@ -1,11 +1,13 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
 import { useAuthStore } from '../../stores/auth';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
 const authStore = useAuthStore();
+const toast = useToast();
 
 // ── State ────────────────────────────────────────────────────────────
 const loading = ref(true);
@@ -152,9 +154,8 @@ async function createPost() {
   } catch (err) {
     if (err.response?.status === 422) {
       postErrors.value = err.response.data.errors || {};
-    } else {
-      postErrors.value = { content: [err.response?.data?.message || 'Error al publicar'] };
     }
+    toast.apiError(err, 'No pudimos publicar tu post.');
   } finally {
     submittingPost.value = false;
   }
@@ -183,7 +184,7 @@ async function toggleReaction(postId, reactionType) {
     await api.post(`/api/v/client/community/${postId}/react`, {
       reaction_type: reactionType,
     });
-  } catch {
+  } catch (err) {
     // Revert optimistic update
     if (wasActive) {
       post.my_reactions = [...post.my_reactions, reactionType];
@@ -193,6 +194,7 @@ async function toggleReaction(postId, reactionType) {
       counts[reactionType] = Math.max(0, (counts[reactionType] || 1) - 1);
     }
     post.reaction_counts = { ...counts };
+    toast.apiError(err, 'No pudimos registrar tu reacción.');
   }
 }
 
@@ -203,8 +205,18 @@ function toggleComments(postId) {
 
 // ── Add comment ──────────────────────────────────────────────────────
 async function addComment(postId) {
+  // Anti doble-submit
+  if (submittingComment.value[postId]) return;
+
   const text = (commentTexts.value[postId] || '').trim();
-  if (!text || text.length > 500) return;
+  if (!text) {
+    toast.warn('Escribe un comentario antes de enviar.');
+    return;
+  }
+  if (text.length > 500) {
+    toast.warn('El comentario es muy largo (máx. 500).');
+    return;
+  }
 
   submittingComment.value[postId] = true;
   try {
@@ -225,8 +237,8 @@ async function addComment(postId) {
       });
       post.comments_count = (post.comments_count || 0) + 1;
     }
-  } catch {
-    // Fail silently
+  } catch (err) {
+    toast.apiError(err, 'No pudimos publicar tu comentario.');
   } finally {
     submittingComment.value[postId] = false;
   }
@@ -244,8 +256,9 @@ async function deletePost(postId) {
     await api.delete(`/api/v/client/community/${postId}`);
     posts.value = posts.value.filter(p => p.id !== postId);
     communityStats.value.total_posts = Math.max(0, communityStats.value.total_posts - 1);
-  } catch {
-    // Fail silently
+    toast.success('Post eliminado.');
+  } catch (err) {
+    toast.apiError(err, 'No pudimos eliminar el post.');
   } finally {
     deletingPost.value = null;
     confirmDeleteId.value = null;
@@ -612,9 +625,10 @@ function getReactionCount(post, type) {
                       type="text"
                       v-model="commentTexts[post.id]"
                       @keydown.enter="addComment(post.id)"
+                      :disabled="submittingComment[post.id]"
                       placeholder="Comentar..."
                       maxlength="500"
-                      class="flex-1 rounded-xl border border-wc-border bg-wc-bg px-3 py-1.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent/50 focus:outline-none focus:ring-1 focus:ring-wc-accent/20"
+                      class="flex-1 rounded-xl border border-wc-border bg-wc-bg px-3 py-1.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent/50 focus:outline-none focus:ring-1 focus:ring-wc-accent/20 disabled:opacity-60"
                     />
                     <button
                       @click="addComment(post.id)"

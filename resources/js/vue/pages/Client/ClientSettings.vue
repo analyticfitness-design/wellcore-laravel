@@ -1,9 +1,11 @@
 <script setup>
 import { ref, reactive, onMounted, watch } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
+const toast = useToast();
 
 // Tab state
 const tab = ref('perfil');
@@ -111,6 +113,8 @@ async function updateProfile() {
     } catch (err) {
         if (err.response?.status === 422) {
             profileErrors.value = err.response.data.errors || {};
+        } else {
+            toast.apiError(err, 'No pudimos guardar los cambios.');
         }
     } finally {
         savingProfile.value = false;
@@ -119,9 +123,22 @@ async function updateProfile() {
 
 // Change password
 async function changePassword() {
-    savingPassword.value = true;
     passwordErrors.value = {};
     passwordError.value = null;
+
+    // Client-side: passwords must match
+    if (passwordForm.value.password !== passwordForm.value.password_confirmation) {
+        passwordErrors.value = { password_confirmation: ['Las contraseñas no coinciden.'] };
+        return;
+    }
+
+    // Client-side: minimum length
+    if (passwordForm.value.password.length < 10) {
+        passwordErrors.value = { password: ['La contraseña debe tener al menos 10 caracteres.'] };
+        return;
+    }
+
+    savingPassword.value = true;
     try {
         await api.put('/api/v/client/settings/password', {
             current_password: passwordForm.value.current_password,
@@ -135,7 +152,7 @@ async function changePassword() {
         if (err.response?.status === 422) {
             passwordErrors.value = err.response.data.errors || {};
         } else {
-            passwordError.value = err.response?.data?.message || 'Error al cambiar contrasena';
+            toast.apiError(err, 'No pudimos guardar los cambios.');
         }
     } finally {
         savingPassword.value = false;
@@ -602,8 +619,9 @@ onMounted(() => {
               type="password"
               id="new-password"
               autocomplete="new-password"
+              minlength="10"
               class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
-              placeholder="Minimo 8 caracteres"
+              placeholder="Minimo 10 caracteres"
             >
             <p v-if="passwordErrors.password" class="mt-1 text-xs text-red-500">{{ passwordErrors.password[0] }}</p>
           </div>
@@ -616,6 +634,7 @@ onMounted(() => {
               type="password"
               id="confirm-password"
               autocomplete="new-password"
+              minlength="10"
               class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
               placeholder="Repite la nueva contrasena"
             >

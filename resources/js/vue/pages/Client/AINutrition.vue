@@ -1,9 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
+const toast = useToast();
+
+const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 // State
 const loading = ref(false);
@@ -25,6 +30,21 @@ const analysisHistory = ref([]);
 function onFileSelect(event) {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    // Validación de tamaño
+    if (file.size > MAX_FILE_SIZE) {
+        toast.error('La imagen no puede pesar más de 10MB.');
+        event.target.value = '';
+        return;
+    }
+
+    // Validación de MIME
+    if (file.type && !ALLOWED_MIME.includes(file.type)) {
+        toast.error('Formato no válido. Usa JPG, PNG, WebP o HEIC.');
+        event.target.value = '';
+        return;
+    }
+
     selectedFile.value = file;
 
     const reader = new FileReader();
@@ -55,13 +75,13 @@ async function analyzePhoto() {
         const formData = new FormData();
         formData.append('image', selectedFile.value);
 
-        const response = await api.post('/api/v/client/ai-nutrition/analyze', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        const response = await api.post('/api/v/client/ai-nutrition/analyze', formData);
 
         analysisResult.value = response.data.analysis || response.data;
+        toast.success('Análisis listo.');
     } catch (err) {
         error.value = err.response?.data?.message || 'Error al analizar la imagen';
+        toast.apiError(err, 'No pudimos analizar tu foto. Intenta con otra imagen.');
     } finally {
         analyzing.value = false;
     }
@@ -147,7 +167,7 @@ function formatDate(dateStr) {
           </div>
           <p class="mt-3 text-sm font-medium text-wc-text">Toca para subir una foto</p>
           <p class="mt-1 text-xs text-wc-text-tertiary">JPG, PNG hasta 10MB</p>
-          <input type="file" accept="image/*" class="hidden" @change="onFileSelect" />
+          <input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" class="hidden" :disabled="analyzing" @change="onFileSelect" />
         </label>
 
         <!-- Error -->

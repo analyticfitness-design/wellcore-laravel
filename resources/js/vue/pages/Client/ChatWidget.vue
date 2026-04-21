@@ -1,9 +1,11 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
+const toast = useToast();
 
 // State
 const loading = ref(true);
@@ -88,6 +90,9 @@ async function sendMessage() {
     } catch (err) {
         if (err.response?.status === 422) {
             validationErrors.value = err.response.data.errors || {};
+        } else {
+            // Preserve typed text and show error — do NOT clear newMessage
+            toast.apiError(err, 'No se pudo enviar el mensaje. Reintenta.');
         }
     } finally {
         sending.value = false;
@@ -266,6 +271,7 @@ onBeforeUnmount(() => {
                   rows="1"
                   maxlength="2000"
                   placeholder="Escribe un mensaje..."
+                  aria-label="Escribir mensaje para tu coach"
                   class="block w-full resize-none rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
                   :disabled="sending"
                   @keydown="handleKeydown"

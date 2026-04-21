@@ -6,11 +6,13 @@ use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable([
     'id',
     'coach_id',
     'coach_name',
+    'client_id',
     'client_name',
     'client_plan',
     'ticket_type',
@@ -43,5 +45,10 @@ class Ticket extends Model
             'deadline' => 'datetime',
             'resolved_at' => 'datetime',
         ];
+    }
+
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\AssignedPlan;
+use App\Models\AuthToken;
 use App\Models\BiometricLog;
 use App\Models\Checkin;
 use App\Models\Client;
@@ -22,15 +23,16 @@ use App\Models\Metric;
 use App\Models\Payment;
 use App\Models\Ticket;
 use App\Models\TrainingLog;
-use App\Models\WeightLog;
 use App\Models\WellcoreNotification;
 use App\Models\WorkoutSession;
+use App\Services\ClientCacheService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -92,7 +94,7 @@ class ClientController extends Controller
         }
 
         // ── L2 cache: all DB-heavy data, 5-minute TTL ──
-        $cached = Cache::remember("dashboard:{$clientId}", 300, function () use ($clientId) {
+        $cached = Cache::remember("dashboard:{$clientId}", 90, function () use ($clientId) {
             return $this->buildDashboardCache($clientId);
         });
 
@@ -725,8 +727,10 @@ class ClientController extends Controller
             $bioData
         );
 
+        ClientCacheService::invalidateDashboard($clientId);
+
         return response()->json([
-            'message' => 'Metrica guardada exitosamente.',
+            'message' => 'Métrica guardada exitosamente.',
             'peso' => $validated['peso'],
         ]);
     }
@@ -869,29 +873,53 @@ class ClientController extends Controller
     {
         $client = $this->resolveClientOrFail($request);
 
+        // Aceptamos tanto 'confirmPassword' (legacy del frontend Vue) como
+        // 'newPassword_confirmation' (estándar Laravel 'confirmed').
+        if ($request->filled('confirmPassword') && ! $request->filled('newPassword_confirmation')) {
+            $request->merge(['newPassword_confirmation' => $request->input('confirmPassword')]);
+        }
+
         $validated = $request->validate([
-            'currentPassword' => 'required|string',
-            'newPassword' => 'required|string|min:8',
-            'confirmPassword' => 'required|string',
+            'currentPassword' => ['required', 'string'],
+            'newPassword' => [
+                'required',
+                'string',
+                'confirmed',
+                'min:10',
+                'regex:/[A-Z]/',
+                'regex:/[a-z]/',
+                'regex:/[0-9]/',
+                'different:currentPassword',
+            ],
+        ], [
+            'newPassword.min' => 'La contraseña debe tener al menos 10 caracteres.',
+            'newPassword.regex' => 'La contraseña debe incluir mayúscula, minúscula y número.',
+            'newPassword.confirmed' => 'La confirmación de la contraseña no coincide.',
+            'newPassword.different' => 'La contraseña nueva debe ser distinta de la actual.',
         ]);
 
         if (! password_verify($validated['currentPassword'], $client->password_hash)) {
             return response()->json([
-                'message' => 'La contrasena actual es incorrecta.',
-            ], 422);
-        }
-
-        if ($validated['newPassword'] !== $validated['confirmPassword']) {
-            return response()->json([
-                'message' => 'Las contrasenas no coinciden.',
+                'message' => 'Tu contraseña actual no es correcta.',
             ], 422);
         }
 
         $client->update([
-            'password_hash' => bcrypt($validated['newPassword']),
+            'password_hash' => password_hash($validated['newPassword'], PASSWORD_BCRYPT),
         ]);
 
-        return response()->json(['message' => 'Contrasena actualizada exitosamente.']);
+        // Invalida todos los demás tokens — mantiene viva sólo la sesión actual.
+        $currentToken = $request->bearerToken();
+        if ($currentToken) {
+            AuthToken::where('user_id', $client->id)
+                ->where('user_type', 'client')
+                ->where('token', '!=', $currentToken)
+                ->delete();
+        }
+
+        return response()->json([
+            'message' => 'Contraseña actualizada. Cerramos tu sesión en los otros dispositivos por seguridad.',
+        ]);
     }
 
     // ─── Notifications ──────────────────────────────────────────────────
@@ -1089,7 +1117,7 @@ class ClientController extends Controller
 
         $client->update(['onboarding_completed' => true]);
 
-        Cache::forget("dashboard:{$client->id}");
+        ClientCacheService::invalidateDashboard($client->id);
 
         return response()->json(['message' => 'Onboarding completado.']);
     }
@@ -1098,14 +1126,26 @@ class ClientController extends Controller
 
     /**
      * GET /api/v/client/tickets
+     *
+     * Scopea por client_id (prevención IDOR). Incluye fallback a client_name
+     * para tickets históricos donde el backfill no pudo completar.
      */
     public function tickets(Request $request): JsonResponse
     {
         $client = $this->resolveClientOrFail($request);
+        $clientId = $client->id;
         $clientName = $client->name;
         $status = $request->query('status', 'all');
 
-        $query = Ticket::where('client_name', $clientName)->orderByDesc('created_at');
+        $baseQuery = fn () => Ticket::query()
+            ->where(function ($q) use ($clientId, $clientName) {
+                $q->where('client_id', $clientId)
+                    ->orWhere(function ($inner) use ($clientName) {
+                        $inner->whereNull('client_id')->where('client_name', $clientName);
+                    });
+            });
+
+        $query = $baseQuery()->orderByDesc('created_at');
 
         if ($status !== 'all') {
             $query->where('status', $status);
@@ -1123,7 +1163,7 @@ class ClientController extends Controller
             'created_at' => $t->created_at?->diffForHumans(),
         ]);
 
-        $statsRaw = Ticket::where('client_name', $clientName)
+        $statsRaw = $baseQuery()
             ->selectRaw('status, COUNT(*) as cnt')
             ->groupBy('status')
             ->pluck('cnt', 'status')
@@ -1162,16 +1202,28 @@ class ClientController extends Controller
             ->orderByDesc('created_at')
             ->value('coach_id');
 
-        $ticket = Ticket::create([
-            'id' => (string) Str::uuid(),
-            'client_name' => $client->name,
-            'coach_id' => $coachId !== null ? (string) $coachId : '',
-            'ticket_type' => $validated['ticket_type'],
-            'description' => $validated['description'],
-            'priority' => $validated['priority'],
-            'status' => 'open',
-            'deadline' => now()->addHours(48),
-        ]);
+        try {
+            $ticket = Ticket::create([
+                'id' => (string) Str::uuid(),
+                'client_id' => $client->id,
+                'client_name' => $client->name,
+                'coach_id' => $coachId !== null ? (string) $coachId : '',
+                'ticket_type' => $validated['ticket_type'],
+                'description' => $validated['description'],
+                'priority' => $validated['priority'],
+                'status' => 'open',
+                'deadline' => now()->addHours(48),
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('createTicket failed', [
+                'user_id' => $client->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'message' => 'No pudimos enviar tu solicitud. Intenta de nuevo en unos segundos.',
+            ], 500);
+        }
 
         return response()->json([
             'message' => 'Solicitud enviada. Tu coach responderá en 48 horas.',

@@ -84,5 +84,42 @@ class AppServiceProvider extends ServiceProvider
 
             return Limit::perMinute(5)->by($key);
         });
+
+        // Phase 1 audit — sensitive write endpoints, throttled per user
+        RateLimiter::for('checkin', function ($request) {
+            $userId = optional($request->user())->id;
+            $key = $userId ? ('user:'.$userId) : ('ip:'.$request->ip());
+
+            return Limit::perHour(5)->by($key)->response(fn () => response()->json([
+                'message' => 'Ya enviaste tu check-in. Puedes enviar otro en una hora.',
+            ], 429));
+        });
+
+        RateLimiter::for('community-write', function ($request) {
+            $userId = optional($request->user())->id;
+            $key = $userId ? ('user:'.$userId) : ('ip:'.$request->ip());
+
+            return Limit::perHour(20)->by($key)->response(fn () => response()->json([
+                'message' => 'Publicaste demasiado rápido. Espera unos minutos.',
+            ], 429));
+        });
+
+        RateLimiter::for('referrals', function ($request) {
+            $userId = optional($request->user())->id;
+            $key = $userId ? ('user:'.$userId) : ('ip:'.$request->ip());
+
+            return Limit::perDay(10)->by($key)->response(fn () => response()->json([
+                'message' => 'Alcanzaste el límite de invitaciones por hoy.',
+            ], 429));
+        });
+
+        RateLimiter::for('ticket-create', function ($request) {
+            $userId = optional($request->user())->id;
+            $key = $userId ? ('user:'.$userId) : ('ip:'.$request->ip());
+
+            return Limit::perHour(5)->by($key)->response(fn () => response()->json([
+                'message' => 'Enviaste demasiadas solicitudes. Intenta de nuevo en una hora.',
+            ], 429));
+        });
     }
 }

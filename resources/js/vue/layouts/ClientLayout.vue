@@ -7,6 +7,7 @@ import NotificationBell from '../components/NotificationBell.vue';
 import CoachImpersonationBanner from '../components/CoachImpersonationBanner.vue';
 import MedalUnlockCelebration from '../components/MedalUnlockCelebration.vue';
 import LevelUpCelebration from '../components/LevelUpCelebration.vue';
+import ToastContainer from '../components/ui/ToastContainer.vue';
 import { useMedals } from '../composables/useMedals';
 
 // Celebraciones globales — disparadas desde cualquier vista via fetchMedals()
@@ -493,6 +494,9 @@ const bottomNav = [
     <!-- Global celebration overlays — disparadas por fetchMedals() desde cualquier vista -->
     <MedalUnlockCelebration :medal="newMedal" @close="clearNewMedal" />
     <LevelUpCelebration :event="levelUp" @close="clearLevelUp" />
+
+    <!-- Global toast notifications -->
+    <ToastContainer />
 
   </div>
 </template>

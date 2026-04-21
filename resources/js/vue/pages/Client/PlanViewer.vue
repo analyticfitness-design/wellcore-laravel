@@ -2,6 +2,7 @@
 import { ref, computed, reactive, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import AiFoodEstimator from '../../components/AiFoodEstimator.vue';
 import {
@@ -54,6 +55,11 @@ function getBloodworkStatusLabel(status) {
 
 const api = useApi();
 const router = useRouter();
+const toast = useToast();
+
+// Modal de confirmación para eliminar bloodwork (reemplaza confirm() nativo)
+const showDeleteBwConfirm = ref(false);
+const bwPendingDeleteId = ref(null);
 
 // State
 const loading = ref(true);
@@ -821,13 +827,32 @@ async function saveBloodwork() {
   }
 }
 
-async function deleteBloodwork(id) {
-  if (!confirm('\u00bfEliminar este resultado?')) return;
+function deleteBloodwork(id) {
+  requestDeleteBloodwork(id);
+}
+
+function requestDeleteBloodwork(id) {
+  bwPendingDeleteId.value = id;
+  showDeleteBwConfirm.value = true;
+}
+
+function cancelDeleteBloodwork() {
+  showDeleteBwConfirm.value = false;
+  bwPendingDeleteId.value = null;
+}
+
+async function confirmDeleteBloodwork() {
+  const id = bwPendingDeleteId.value;
+  if (!id) return;
+  showDeleteBwConfirm.value = false;
   try {
     await api.delete(`/api/v/client/bloodwork/${id}`);
     bloodworkResults.value = bloodworkResults.value.filter(r => r.id !== id);
-  } catch (e) {
-    // silent
+    toast.success('Resultado eliminado.');
+  } catch (err) {
+    toast.apiError(err, 'No pudimos eliminar el resultado.');
+  } finally {
+    bwPendingDeleteId.value = null;
   }
 }
 
@@ -2471,7 +2496,7 @@ onBeforeUnmount(() => {
 
                       <div>
                         <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">&#x1F4CA; Valor</label>
-                        <input type="number" step="0.01" v-model="bwForm.value" placeholder="ej: 95.5" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
+                        <input type="number" step="0.01" v-model.number="bwForm.value" placeholder="ej: 95.5" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
                         <span v-if="bwErrors.value" class="mt-1 block text-sm text-red-400">{{ bwErrors.value[0] }}</span>
                       </div>
 
@@ -2576,6 +2601,48 @@ onBeforeUnmount(() => {
         </div>
       </template>
     </div>
+
+    <!-- Delete bloodwork confirmation modal -->
+    <Transition name="fade">
+      <div
+        v-if="showDeleteBwConfirm"
+        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4"
+        role="dialog"
+        aria-modal="true"
+        @click.self="cancelDeleteBloodwork"
+        @keydown.escape.stop="cancelDeleteBloodwork"
+      >
+        <div class="w-full max-w-sm rounded-2xl border border-wc-border bg-wc-bg-secondary p-6 shadow-xl">
+          <div class="mb-4 flex items-start gap-3">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
+              <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-display text-lg tracking-wide text-wc-text">Eliminar resultado</h3>
+              <p class="mt-1 text-sm text-wc-text-secondary">Esta acción no se puede deshacer.</p>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button
+              type="button"
+              @click="cancelDeleteBloodwork"
+              class="flex-1 rounded-xl border border-wc-border bg-wc-bg-tertiary py-2.5 text-sm font-medium text-wc-text-secondary hover:text-wc-text"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              @click="confirmDeleteBloodwork"
+              class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-red-700"
+            >
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
   </ClientLayout>
 </template>
 

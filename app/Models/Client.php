@@ -16,6 +16,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
     'client_code',
     'name',
     'email',
+    'timezone',
     'password_hash',
     'google_id',
     'plan',

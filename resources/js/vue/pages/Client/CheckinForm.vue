@@ -2,10 +2,12 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useApi } from '../../composables/useApi';
 import { useMedals } from '../../composables/useMedals';
+import { useToast } from '../../composables/useToast';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
 const { fetchMedals } = useMedals();
+const toast = useToast();
 
 // ─── Bienestar options (static, module-level) ─────────────────────
 const bienestarLabels = [
@@ -147,6 +149,7 @@ async function submitCheckin() {
     lastBienestar.value = bienestar.value;
     lastDiasEntrenados.value = diasEntrenados.value;
     showSuccess.value = true;
+    toast.success('Check-in enviado.');
     // Detecta medallas / level-up ganados por este check-in
     fetchMedals().catch(() => {});
 
@@ -171,10 +174,10 @@ async function submitCheckin() {
       } else if (err.response.data.error) {
         formErrors.value.submit = err.response.data.error;
       }
-    } else if (err.response?.data?.message) {
-      formErrors.value.submit = err.response.data.message;
+      toast.apiError(err, 'Revisa los datos del formulario.');
     } else {
-      formErrors.value.submit = 'Error al enviar el check-in';
+      formErrors.value.submit = err.response?.data?.message || 'Error al enviar el check-in';
+      toast.apiError(err, 'No pudimos enviar tu check-in.');
     }
   } finally {
     submitting.value = false;

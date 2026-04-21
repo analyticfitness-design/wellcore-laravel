@@ -38,6 +38,19 @@ return [
             'report' => false,
         ],
 
+        'private' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private'),
+            // El frontend NUNCA debe usar esta URL directamente; usa la ruta
+            // autenticada (/api/v/client/photos/{id}/view). Se define aquí sólo
+            // para que Storage::disk('private')->url() no lance excepción.
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/private-storage',
+            'visibility' => 'private',
+            'serve' => false,
+            'throw' => false,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

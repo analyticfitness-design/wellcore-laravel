@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
+import { localDateStr } from '../../composables/useDate';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import PlanOnboarding from '../../components/PlanOnboarding.vue';
 
@@ -75,7 +76,7 @@ function generateCalendarDays() {
 
     const cursor = new Date(start);
     while (cursor <= end) {
-        const dateStr = cursor.toISOString().split('T')[0];
+        const dateStr = localDateStr(cursor);
         const isFuture = cursor > today;
         const ninetyDaysAgo = new Date(today);
         ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);

@@ -107,9 +107,16 @@ function formatDate(dateStr) {
 
 // ── Save metric ──
 async function saveMetric() {
-  saving.value = true;
   saveError.value = null;
   formErrors.value = {};
+
+  // Client-side validation: peso is required
+  if (!form.value.peso) {
+    formErrors.value = { peso: ['El peso es obligatorio.'] };
+    return;
+  }
+
+  saving.value = true;
 
   try {
     await api.post('/api/v/client/metrics', {
@@ -463,7 +470,7 @@ onBeforeUnmount(() => {
               <input
                 type="number"
                 id="peso"
-                v-model="form.peso"
+                v-model.number="form.peso"
                 step="0.1"
                 min="20"
                 max="300"
@@ -479,7 +486,7 @@ onBeforeUnmount(() => {
               <input
                 type="number"
                 id="porcentajeMusculo"
-                v-model="form.porcentajeMusculo"
+                v-model.number="form.porcentajeMusculo"
                 step="0.1"
                 min="0"
                 max="100"
@@ -495,7 +502,7 @@ onBeforeUnmount(() => {
               <input
                 type="number"
                 id="porcentajeGrasa"
-                v-model="form.porcentajeGrasa"
+                v-model.number="form.porcentajeGrasa"
                 step="0.1"
                 min="0"
                 max="100"
@@ -535,27 +542,27 @@ onBeforeUnmount(() => {
             <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
               <div>
                 <label for="chest" class="mb-1 block text-sm font-medium text-wc-text">Pecho (cm)</label>
-                <input type="number" id="chest" v-model="form.chest" step="0.1" min="30" max="200" placeholder="95.0"
+                <input type="number" id="chest" v-model.number="form.chest" step="0.1" min="30" max="200" placeholder="95.0"
                   class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
               <div>
                 <label for="waist" class="mb-1 block text-sm font-medium text-wc-text">Cintura (cm)</label>
-                <input type="number" id="waist" v-model="form.waist" step="0.1" min="30" max="200" placeholder="80.0"
+                <input type="number" id="waist" v-model.number="form.waist" step="0.1" min="30" max="200" placeholder="80.0"
                   class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
               <div>
                 <label for="hip" class="mb-1 block text-sm font-medium text-wc-text">Cadera (cm)</label>
-                <input type="number" id="hip" v-model="form.hip" step="0.1" min="30" max="200" placeholder="95.0"
+                <input type="number" id="hip" v-model.number="form.hip" step="0.1" min="30" max="200" placeholder="95.0"
                   class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
               <div>
                 <label for="thigh" class="mb-1 block text-sm font-medium text-wc-text">Muslo (cm)</label>
-                <input type="number" id="thigh" v-model="form.thigh" step="0.1" min="20" max="100" placeholder="55.0"
+                <input type="number" id="thigh" v-model.number="form.thigh" step="0.1" min="20" max="100" placeholder="55.0"
                   class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
               <div>
                 <label for="arm" class="mb-1 block text-sm font-medium text-wc-text">Brazo (cm)</label>
-                <input type="number" id="arm" v-model="form.arm" step="0.1" min="15" max="60" placeholder="32.0"
+                <input type="number" id="arm" v-model.number="form.arm" step="0.1" min="15" max="60" placeholder="32.0"
                   class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
               </div>
             </div>

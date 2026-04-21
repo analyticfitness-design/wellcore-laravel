@@ -25,6 +25,7 @@ use App\Models\Referral;
 use App\Models\SupplementLog;
 use App\Models\VideoCheckin;
 use App\Services\AIService;
+use App\Services\ClientCacheService;
 use App\Services\ImagePipelineService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -33,6 +34,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class SocialController extends Controller
 {
@@ -149,6 +151,8 @@ class SocialController extends Controller
             'post_type' => $postType,
         ]);
 
+        ClientCacheService::invalidateDashboard($clientId);
+
         return response()->json([
             'id' => $post->id,
             'created_at' => $post->created_at?->toIso8601String(),
@@ -165,26 +169,40 @@ class SocialController extends Controller
         $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
-        $request->validate([
-            'reaction_type' => 'required|string|max:20',
+        $validated = $request->validate([
+            'reaction_type' => [
+                'required',
+                Rule::in(['fire', 'muscle', 'heart', 'rocket', 'clap', 'trophy']),
+            ],
+        ], [
+            'reaction_type.required' => 'Selecciona una reacción.',
+            'reaction_type.in' => 'Esa reacción no es válida.',
         ]);
 
-        $reactionType = $request->input('reaction_type');
+        $reactionType = $validated['reaction_type'];
 
-        $existing = PostReaction::where('post_id', $id)
-            ->where('client_id', $clientId)
-            ->where('reaction_type', $reactionType)
+        $post = CommunityPost::where('id', $id)
+            ->where('visible', true)
             ->first();
 
-        if ($existing) {
-            $existing->delete();
+        if (! $post) {
+            return response()->json([
+                'message' => 'Esta publicación ya no está disponible.',
+            ], 404);
+        }
+
+        // firstOrCreate evita la race condition del patrón first-then-create.
+        $reaction = PostReaction::firstOrCreate([
+            'post_id' => $id,
+            'client_id' => $clientId,
+            'reaction_type' => $reactionType,
+        ]);
+
+        // Si ya existía, destoggleamos: borramos y devolvemos toggled=false.
+        if (! $reaction->wasRecentlyCreated) {
+            $reaction->delete();
             $toggled = false;
         } else {
-            PostReaction::create([
-                'post_id' => $id,
-                'client_id' => $clientId,
-                'reaction_type' => $reactionType,
-            ]);
             $toggled = true;
         }
 
@@ -208,6 +226,16 @@ class SocialController extends Controller
             'content' => 'required|string|min:1|max:500',
         ]);
 
+        $post = CommunityPost::where('id', $id)
+            ->where('visible', true)
+            ->first();
+
+        if (! $post) {
+            return response()->json([
+                'message' => 'Esta publicación ya no está disponible.',
+            ], 404);
+        }
+
         $comment = PostComment::create([
             'post_id' => $id,
             'client_id' => $clientId,
@@ -216,7 +244,7 @@ class SocialController extends Controller
 
         return response()->json([
             'id' => $comment->id,
-            'client_name' => $client->name ?? 'Anonimo',
+            'client_name' => $client->name ?? 'Anónimo',
             'created_at' => $comment->created_at?->toIso8601String(),
         ], 201);
     }
@@ -232,13 +260,21 @@ class SocialController extends Controller
         $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
-        $deleted = CommunityPost::where('id', $id)
-            ->where('client_id', $clientId)
-            ->update(['visible' => false]);
+        $post = CommunityPost::where('id', $id)->first();
 
-        if (! $deleted) {
-            return response()->json(['message' => 'Post no encontrado o no tienes permiso'], 404);
+        if (! $post) {
+            return response()->json([
+                'message' => 'Esta publicación ya no está disponible.',
+            ], 404);
         }
+
+        if ((int) $post->client_id !== (int) $clientId) {
+            return response()->json([
+                'message' => 'No puedes eliminar esta publicación.',
+            ], 403);
+        }
+
+        $post->update(['visible' => false]);
 
         return response()->json(['deleted' => true]);
     }
@@ -536,6 +572,8 @@ class SocialController extends Controller
             $newValue = $amount;
         }
 
+        ClientCacheService::invalidateDashboard($clientId);
+
         return response()->json([
             'water_consumed_ml' => $newValue,
         ]);
@@ -765,6 +803,8 @@ class SocialController extends Controller
                 $cursor->subDay();
             }
         }
+
+        ClientCacheService::invalidateDashboard($clientId);
 
         return response()->json([
             'completed' => $completed,
@@ -1048,6 +1088,8 @@ class SocialController extends Controller
             $taken = true;
         }
 
+        ClientCacheService::invalidateDashboard($clientId);
+
         return response()->json(['taken' => $taken]);
     }
 
@@ -1073,11 +1115,44 @@ class SocialController extends Controller
                 'photo_date' => $p->photo_date->format('Y-m-d'),
                 'tipo' => $p->tipo,
                 'filename' => $p->filename,
-                'url' => self::resolvePhotoUrl($p->filename),
+                'url' => self::resolvePhotoUrl($p->filename, (int) $p->id),
             ])->toArray())
             ->toArray();
 
         return response()->json(['photos' => $photos]);
+    }
+
+    /**
+     * GET /api/v/client/photos/{id}/view
+     *
+     * Sirve la foto privada sólo al dueño. Valida ownership y devuelve el
+     * archivo binario. Soporta rutas nuevas (disco private) y legacy (public/uploads).
+     */
+    public function viewPhoto(Request $request, int $id)
+    {
+        $client = $this->resolveClientOrFail($request);
+
+        $photo = ProgressPhoto::where('client_id', $client->id)
+            ->where('id', $id)
+            ->first();
+
+        if (! $photo || ! $photo->filename) {
+            return response()->json(['message' => 'Foto no encontrada.'], 404);
+        }
+
+        $filename = $photo->filename;
+
+        // Nueva ruta en disco privado.
+        if (Storage::disk('private')->exists($filename)) {
+            return Storage::disk('private')->response($filename);
+        }
+
+        // Legacy: disco public (fotos antiguas — no se migran).
+        if (Storage::disk('public')->exists($filename)) {
+            return Storage::disk('public')->response($filename);
+        }
+
+        return response()->json(['message' => 'Archivo no disponible.'], 404);
     }
 
     /**
@@ -1101,15 +1176,32 @@ class SocialController extends Controller
         $tipo = $request->input('tipo');
 
         try {
+            // Disco 'private' → URLs firmadas/vía endpoint autenticado, no públicas.
             $result = app(ImagePipelineService::class)->processUpload(
                 file: $request->file('photo'),
-                disk: 'public',
+                disk: 'private',
                 directory: "progress/{$clientId}",
                 maxWidth: 1600,
                 quality: 85,
             );
         } catch (\InvalidArgumentException|\RuntimeException $e) {
-            return response()->json(['error' => $e->getMessage()], 422);
+            Log::warning('uploadPhoto validation failed', [
+                'user_id' => $clientId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'message' => 'No pudimos procesar tu foto. Asegúrate de que sea una imagen válida.',
+            ], 422);
+        } catch (\Throwable $e) {
+            Log::error('uploadPhoto pipeline error', [
+                'user_id' => $clientId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'message' => 'No pudimos subir tu foto. Intenta de nuevo.',
+            ], 500);
         }
 
         $record = ProgressPhoto::create([
@@ -1119,9 +1211,11 @@ class SocialController extends Controller
             'filename' => $result['path_webp'],
         ]);
 
+        ClientCacheService::invalidateDashboard($clientId);
+
         return response()->json([
             'id' => $record->id,
-            'url' => self::resolvePhotoUrl($result['path_webp']),
+            'url' => self::resolvePhotoUrl($result['path_webp'], (int) $record->id),
             'filename' => $result['path_webp'],
         ], 201);
     }
@@ -1147,7 +1241,11 @@ class SocialController extends Controller
         if ($photo->filename) {
             $fallback = preg_replace('/\.webp$/i', '.jpg', $photo->filename);
             $fallbackPng = preg_replace('/\.webp$/i', '.png', $photo->filename);
-            Storage::disk('public')->delete([$photo->filename, $fallback, $fallbackPng]);
+            $files = [$photo->filename, $fallback, $fallbackPng];
+
+            // Borra en ambos discos — fotos antiguas viven en public/, nuevas en private/.
+            Storage::disk('private')->delete($files);
+            Storage::disk('public')->delete($files);
         }
 
         $photo->delete();
@@ -1356,7 +1454,7 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
                 'id' => $c->id,
                 'media_type' => $c->media_type,
                 'media_url' => $c->media_url,
-                'media_full_url' => asset('storage/'.$c->media_url),
+                'media_full_url' => self::resolveVideoCheckinUrl($c->media_url, (int) $c->id),
                 'exercise_name' => $c->exercise_name,
                 'notes' => $c->notes,
                 'status' => $c->status,
@@ -1369,6 +1467,57 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
             'monthly_count' => $monthlyCount,
             'monthly_limit' => 4,
         ]);
+    }
+
+    /**
+     * GET /api/v/client/video-checkins/{id}/view
+     *
+     * Sirve el media privado del video check-in sólo al dueño.
+     */
+    public function viewVideoCheckin(Request $request, int $id)
+    {
+        $client = $this->resolveClientOrFail($request);
+
+        $checkin = VideoCheckin::where('client_id', $client->id)
+            ->where('id', $id)
+            ->first();
+
+        if (! $checkin || ! $checkin->media_url) {
+            return response()->json(['message' => 'Archivo no encontrado.'], 404);
+        }
+
+        $path = $checkin->media_url;
+
+        if (Storage::disk('private')->exists($path)) {
+            return Storage::disk('private')->response($path);
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->response($path);
+        }
+
+        return response()->json(['message' => 'Archivo no disponible.'], 404);
+    }
+
+    /**
+     * URL firmada/autenticada para media de video check-in.
+     */
+    private static function resolveVideoCheckinUrl(?string $path, int $id): ?string
+    {
+        if (! $path) {
+            return null;
+        }
+
+        if (str_starts_with($path, 'http')) {
+            return $path;
+        }
+
+        if (Storage::disk('private')->exists($path)) {
+            return url('/api/v/client/video-checkins/'.$id.'/view');
+        }
+
+        // Legacy: disco public.
+        return asset('storage/'.$path);
     }
 
     /**
@@ -1403,13 +1552,25 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
 
         if ($monthlyCount >= 4) {
             return response()->json([
+                'message' => 'Has alcanzado el límite de 4 video check-ins este mes.',
                 'errors' => [
                     'media_file' => ['Has alcanzado el límite de 4 video check-ins este mes.'],
                 ],
             ], 422);
         }
 
-        $storedPath = $request->file('media_file')->store('checkins/'.$clientId, 'public');
+        try {
+            $storedPath = $request->file('media_file')->store('checkins/'.$clientId, 'private');
+        } catch (\Throwable $e) {
+            Log::error('videoCheckinSubmit store failed', [
+                'user_id' => $clientId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'message' => 'No pudimos subir tu check-in. Intenta de nuevo.',
+            ], 500);
+        }
 
         $coachId = AssignedPlan::where('client_id', $clientId)
             ->orderByDesc('created_at')
@@ -1721,7 +1882,7 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
      *  - Relative path inside the 'public' disk (e.g. 'progress/42/xxx.webp') → '/storage/...'.
      *  - Bare basename from the legacy vanilla app (e.g. '10_frente_2026-03-07.jpg') → '/uploads/photos/...'.
      */
-    private static function resolvePhotoUrl(?string $filename): ?string
+    private static function resolvePhotoUrl(?string $filename, ?int $photoId = null): ?string
     {
         if (! $filename) {
             return null;
@@ -1731,6 +1892,12 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
             return $filename;
         }
 
+        // Foto en disco privado (nueva subida) → endpoint autenticado.
+        if ($photoId !== null && Storage::disk('private')->exists($filename)) {
+            return url('/api/v/client/photos/'.$photoId.'/view');
+        }
+
+        // Legacy: disco public (fotos antiguas no migradas).
         if (str_contains($filename, '/')) {
             return Storage::disk('public')->url($filename);
         }

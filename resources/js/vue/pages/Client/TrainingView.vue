@@ -1,9 +1,12 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
+import { localDateStr } from '../../composables/useDate';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
+const toast = useToast();
 
 // State
 const loading = ref(true);
@@ -46,18 +49,23 @@ async function fetchTraining() {
 
 async function toggleDay(date) {
   if (toggling.value) return;
+
+  // Optimistic toggle con rollback
+  const day = days.value.find(d => d.date === date);
+  if (!day) return;
+  const prevCompleted = day.completed;
+  const prevCount = completedCount.value;
+  day.completed = !prevCompleted;
+  completedCount.value = days.value.filter(d => d.completed).length;
+
   toggling.value = true;
   try {
     await api.post('/api/v/client/training/toggle', { date });
-    // Optimistic update
-    const day = days.value.find(d => d.date === date);
-    if (day) {
-      day.completed = !day.completed;
-      completedCount.value = days.value.filter(d => d.completed).length;
-    }
   } catch (err) {
-    // Refetch on error
-    await fetchTraining();
+    // Rollback al estado previo
+    day.completed = prevCompleted;
+    completedCount.value = prevCount;
+    toast.apiError(err, 'No pudimos actualizar el día. Intenta de nuevo.');
   } finally {
     toggling.value = false;
   }
@@ -98,8 +106,7 @@ function goToCurrentWeek() {
 }
 
 function isFuture(dateStr) {
-  const today = new Date().toISOString().split('T')[0];
-  return dateStr > today;
+  return dateStr > localDateStr();
 }
 
 onMounted(() => {

@@ -1,16 +1,19 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
+import { localDateStr } from '../../composables/useDate';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
+const toast = useToast();
 
 // State
 const loading = ref(true);
 const error = ref(null);
 const supplementPlan = ref(null);
 const supplements = ref([]);
-const selectedDate = ref(new Date().toISOString().split('T')[0]);
+const selectedDate = ref(localDateStr());
 const completedToday = ref(0);
 const totalToday = ref(0);
 const weeklyAdherence = ref(0);
@@ -41,6 +44,17 @@ async function fetchSupplements() {
 
 // Toggle supplement
 async function toggleSupplement(supplementId) {
+    // Anti doble-submit por mismo supplement.
+    if (togglingId.value === supplementId) return;
+
+    // Optimistic toggle con rollback.
+    const supp = supplements.value.find(s => s.id === supplementId);
+    if (!supp) return;
+    const prevCompleted = supp.completed;
+    const prevTotal = completedToday.value;
+    supp.completed = !prevCompleted;
+    completedToday.value = prevTotal + (supp.completed ? 1 : -1);
+
     togglingId.value = supplementId;
     try {
         const response = await api.post('/api/v/client/supplements/toggle', {
@@ -48,13 +62,14 @@ async function toggleSupplement(supplementId) {
             date: selectedDate.value,
         });
         const d = response.data;
-        const supp = supplements.value.find(s => s.id === supplementId);
         if (supp) {
-            supp.completed = d.completed ?? !supp.completed;
+            supp.completed = d.completed ?? supp.completed;
         }
         completedToday.value = d.completed_today ?? completedToday.value;
-    } catch {
-        // Fail silently
+    } catch (err) {
+        supp.completed = prevCompleted;
+        completedToday.value = prevTotal;
+        toast.apiError(err, 'No pudimos actualizar tu suplemento.');
     } finally {
         togglingId.value = null;
     }
@@ -62,23 +77,23 @@ async function toggleSupplement(supplementId) {
 
 // Date navigation
 const isToday = computed(() => {
-    return selectedDate.value === new Date().toISOString().split('T')[0];
+    return selectedDate.value === localDateStr();
 });
 
 function goToDate(direction) {
-    const d = new Date(selectedDate.value);
+    const d = new Date(selectedDate.value + 'T12:00:00');
     if (direction === 'prev') {
         d.setDate(d.getDate() - 1);
     } else if (direction === 'next') {
         if (isToday.value) return;
         d.setDate(d.getDate() + 1);
     }
-    selectedDate.value = d.toISOString().split('T')[0];
+    selectedDate.value = localDateStr(d);
     fetchSupplements();
 }
 
 function goToToday() {
-    selectedDate.value = new Date().toISOString().split('T')[0];
+    selectedDate.value = localDateStr();
     fetchSupplements();
 }
 

@@ -1,9 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
+const toast = useToast();
 
 // State
 const loading = ref(true);
@@ -94,7 +96,7 @@ async function saveProfile() {
         if (err.response?.status === 422) {
             formErrors.value = err.response.data.errors || {};
         } else {
-            error.value = err.response?.data?.message || 'Error al guardar';
+            toast.apiError(err, 'No pudimos guardar tu perfil. Intenta de nuevo.');
         }
     } finally {
         saving.value = false;
@@ -169,6 +171,7 @@ onMounted(() => {
 
     <!-- Form -->
     <form v-else @submit.prevent="saveProfile">
+      <fieldset :disabled="saving" class="contents">
       <div class="grid gap-8 lg:grid-cols-2">
 
         <!-- Left Column: Personal Info -->
@@ -285,7 +288,7 @@ onMounted(() => {
               <div>
                 <label for="peso" class="mb-1.5 block text-sm font-medium text-wc-text">Peso (kg)</label>
                 <input
-                  v-model="form.peso"
+                  v-model.number="form.peso"
                   type="number"
                   step="0.1"
                   id="peso"
@@ -297,7 +300,7 @@ onMounted(() => {
               <div>
                 <label for="altura" class="mb-1.5 block text-sm font-medium text-wc-text">Altura (cm)</label>
                 <input
-                  v-model="form.altura"
+                  v-model.number="form.altura"
                   type="number"
                   step="0.1"
                   id="altura"
@@ -354,8 +357,9 @@ onMounted(() => {
             </div>
 
             <!-- Dias Disponibles -->
-            <div>
-              <label class="mb-2 block text-sm font-medium text-wc-text-secondary">Dias disponibles</label>
+            <fieldset>
+              <legend class="sr-only">Dias disponibles para entrenar</legend>
+              <p class="mb-2 text-sm font-medium text-wc-text-secondary" aria-hidden="true">Dias disponibles</p>
               <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
                 <label
                   v-for="dia in diasSemana"
@@ -376,7 +380,7 @@ onMounted(() => {
                   <span class="text-wc-text-secondary">{{ dia }}</span>
                 </label>
               </div>
-            </div>
+            </fieldset>
 
             <!-- Restricciones -->
             <div>
@@ -409,6 +413,7 @@ onMounted(() => {
           <span v-else>Guardando...</span>
         </button>
       </div>
+      </fieldset>
     </form>
   </ClientLayout>
 </template>

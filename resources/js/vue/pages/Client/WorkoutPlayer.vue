@@ -2,11 +2,13 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import ExerciseMediaModal from '../../components/workout/ExerciseMediaModal.vue';
 import { getEmbedUrl } from '../../composables/useExerciseMedia';
 
 const api = useApi();
+const toast = useToast();
 const route = useRoute();
 const router = useRouter();
 
@@ -22,6 +24,7 @@ const sessionId = ref(null);
 const weightUnit = ref(localStorage.getItem('wc_weight_unit') || 'kg');
 const saving = ref(false);
 const abandoning = ref(false);
+const starting = ref(false);
 
 // Elite plan week support
 const hasProgressions = ref(false);
@@ -308,13 +311,15 @@ function parseInitialReps(repsStr) {
 async function toggleSet(exIndex, setIndex) {
   const sets = getSetRows(exIndex);
   const set = sets[setIndex];
-  set.completed = !set.completed;
+  const prevCompleted = set.completed;
+  set.completed = !prevCompleted;
 
   if (set.completed && workoutStarted.value) {
     // Validate reps > 0
     const reps = parseInt(set.reps) || 0;
     if (reps <= 0) {
       set.completed = false;
+      toast.warn('Ingresa las repeticiones antes de marcar.');
       return;
     }
     if (navigator.vibrate) navigator.vibrate(50);
@@ -337,7 +342,9 @@ async function toggleSet(exIndex, setIndex) {
         set.is_pr = true;
       }
     } catch (err) {
-      // Silently handle
+      set.completed = prevCompleted;
+      toast.apiError(err, 'No pudimos guardar ese set. Verifica tu conexión.');
+      return;
     }
 
     // Start rest timer for this exercise
@@ -357,7 +364,8 @@ async function toggleSet(exIndex, setIndex) {
         set_number: setIndex + 1,
       });
     } catch (err) {
-      // Silently handle
+      set.completed = prevCompleted;
+      toast.apiError(err, 'No pudimos deshacer el set. Intenta de nuevo.');
     }
   }
 }
@@ -386,7 +394,8 @@ async function completeCardioSet(exIndex, setIndex, duration, speed, incline) {
         reps: duration,
       });
     } catch (err) {
-      // Silently handle
+      set.completed = false;
+      toast.apiError(err, 'No pudimos guardar ese set.');
     }
   }
 }
@@ -405,7 +414,8 @@ async function uncompleteCardioSet(exIndex, setIndex) {
         set_number: setIndex + 1,
       });
     } catch (err) {
-      // Silently handle
+      set.completed = true;
+      toast.apiError(err, 'No pudimos deshacer ese set. Intenta de nuevo.');
     }
   }
 }
@@ -471,25 +481,23 @@ function stopTimer() {
 }
 
 // Re-sync timers when page becomes visible again (mobile background resume)
-if (typeof document !== 'undefined') {
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-      // Re-sync workout timer
-      if (workoutStarted.value && workoutStartTimestamp > 0) {
-        elapsed.value = Math.floor((Date.now() - workoutStartTimestamp) / 1000);
-      }
-      // Re-sync rest timer
-      if (showRestTimer.value && restStartedAt > 0) {
-        const elapsedRest = Math.floor((Date.now() - restStartedAt) / 1000);
-        const remaining = Math.max(0, restDurationTotal - elapsedRest);
-        restSeconds.value = remaining;
-        if (remaining <= 0) {
-          clearInterval(restInterval);
-          showRestTimer.value = false;
-        }
+function handleVisibilityChange() {
+  if (document.visibilityState === 'visible') {
+    // Re-sync workout timer
+    if (workoutStarted.value && workoutStartTimestamp > 0) {
+      elapsed.value = Math.floor((Date.now() - workoutStartTimestamp) / 1000);
+    }
+    // Re-sync rest timer
+    if (showRestTimer.value && restStartedAt > 0) {
+      const elapsedRest = Math.floor((Date.now() - restStartedAt) / 1000);
+      const remaining = Math.max(0, restDurationTotal - elapsedRest);
+      restSeconds.value = remaining;
+      if (remaining <= 0) {
+        clearInterval(restInterval);
+        showRestTimer.value = false;
       }
     }
-  });
+  }
 }
 
 // ── Weight unit ──
@@ -615,6 +623,9 @@ async function fetchWorkout() {
 }
 
 async function startWorkout() {
+  // Anti doble-click: bloquea si ya está arrancando o si ya inició.
+  if (starting.value || workoutStarted.value) return;
+  starting.value = true;
   workoutStarted.value = true;
   startTimer();
   try {
@@ -628,7 +639,12 @@ async function startWorkout() {
       setData.value = response.data.setData;
     }
   } catch (err) {
-    // Keep going even if API fails
+    // Revert on error — user can retry
+    workoutStarted.value = false;
+    stopTimer();
+    toast.apiError(err, 'No pudimos iniciar tu entrenamiento. Intenta de nuevo.');
+  } finally {
+    starting.value = false;
   }
   await nextTick();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -639,8 +655,6 @@ async function finishWorkout() {
   // Haptic feedback
   if (navigator.vibrate) navigator.vibrate([50, 30, 100]);
   saving.value = true;
-  stopTimer();
-  clearRestTimer();
   try {
     const response = await api.post('/api/v/client/workout/finish', {
       session_id: sessionId.value,
@@ -648,9 +662,12 @@ async function finishWorkout() {
       set_data: setData.value,
     });
     const sid = response.data.session_id || sessionId.value;
+    stopTimer();
+    clearRestTimer();
     router.push({ name: 'client-workout-summary', params: { sessionId: sid } });
   } catch (err) {
-    router.push({ name: 'client-workout-summary', params: { sessionId: sessionId.value || 'latest' } });
+    // NO navegar — mantener al usuario en la página para que pueda reintentar.
+    toast.apiError(err, 'No pudimos finalizar tu entrenamiento. Intenta de nuevo.');
   } finally {
     saving.value = false;
   }
@@ -666,7 +683,10 @@ async function abandonWorkout() {
     await api.post('/api/v/client/workout/abandon', {
       session_id: sessionId.value,
     });
-  } catch (err) { /* silent */ }
+    toast.info('Entrenamiento abandonado.');
+  } catch (err) {
+    toast.apiError(err, 'No pudimos registrar el abandono.');
+  }
   finally {
     abandoning.value = false;
   }
@@ -679,11 +699,17 @@ async function abandonWorkout() {
 
 onMounted(() => {
   fetchWorkout();
+  if (typeof document !== 'undefined') {
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+  }
 });
 
 onBeforeUnmount(() => {
   stopTimer();
   clearRestTimer();
+  if (typeof document !== 'undefined') {
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }
   if (audioCtx) {
     audioCtx.close().catch(() => {});
     audioCtx = null;
@@ -1015,9 +1041,12 @@ onBeforeUnmount(() => {
             <div class="pt-2 pb-4">
               <button
                 @click="startWorkout"
-                class="wc-btn-energy btn-ripple w-full rounded-2xl py-4 text-center shadow-lg shadow-wc-accent/20 hover:bg-red-700 transition-colors"
+                :disabled="starting || workoutStarted"
+                class="wc-btn-energy btn-ripple w-full rounded-2xl py-4 text-center shadow-lg shadow-wc-accent/20 hover:bg-red-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <span class="font-display text-xl tracking-widest text-white">INICIAR ENTRENAMIENTO</span>
+                <span class="font-display text-xl tracking-widest text-white">
+                  {{ starting ? 'INICIANDO...' : 'INICIAR ENTRENAMIENTO' }}
+                </span>
               </button>
             </div>
           </div>

@@ -2,10 +2,13 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useApi } from '../../composables/useApi';
 import { useMedals } from '../../composables/useMedals';
+import { useToast } from '../../composables/useToast';
+import { localDateStr } from '../../composables/useDate';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
 const { fetchMedals } = useMedals();
+const toast = useToast();
 
 // --- State ---
 const loading = ref(true);
@@ -13,7 +16,7 @@ const error = ref(null);
 const photos = ref({});            // { 'YYYY-MM-DD': [ { id, photo_date, tipo, filename, url } ] }
 
 // Upload form
-const uploadDate = ref(new Date().toISOString().split('T')[0]);
+const uploadDate = ref(localDateStr());
 const uploadFiles = ref({ frente: null, perfil: null, espalda: null });
 const uploadPreviews = ref({ frente: null, perfil: null, espalda: null });
 const uploading = ref(false);
@@ -33,8 +36,9 @@ const compareMode = ref(false);
 const compareDate1 = ref('');
 const compareDate2 = ref('');
 
-// Deleting
+// Deleting — inline confirm state replaces native confirm()
 const deletingId = ref(null);
+const pendingDeleteId = ref(null);
 
 // --- Constants ---
 const ANGLES = ['frente', 'perfil', 'espalda'];
@@ -249,14 +253,24 @@ function photoCount(date) {
 }
 
 // --- Delete ---
-async function deletePhoto(photoId) {
-  if (!confirm('Seguro que deseas eliminar esta foto?')) return;
+function requestDeletePhoto(photoId) {
+  pendingDeleteId.value = photoId;
+}
+
+function cancelDeletePhoto() {
+  pendingDeleteId.value = null;
+}
+
+async function confirmDeletePhoto() {
+  const photoId = pendingDeleteId.value;
+  if (!photoId) return;
+  pendingDeleteId.value = null;
   deletingId.value = photoId;
   try {
     await api.delete(`/api/v/client/photos/${photoId}`);
     await fetchPhotos();
-  } catch {
-    // Fail silently
+  } catch (err) {
+    toast.apiError(err, 'No pudimos eliminar la foto. Intenta de nuevo.');
   } finally {
     deletingId.value = null;
   }
@@ -639,9 +653,19 @@ onMounted(fetchPhotos);
                           class="aspect-[3/4] w-full object-cover"
                           loading="lazy"
                         />
-                        <!-- Delete button on hover -->
+                        <!-- Delete button on hover — inline confirm replaces native confirm() -->
+                        <template v-if="pendingDeleteId === getPhotoByAngle(getPhotosForDate(date), angle).id">
+                          <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/70">
+                            <p class="text-xs font-semibold text-white">Eliminar foto?</p>
+                            <div class="flex gap-2">
+                              <button @click="confirmDeletePhoto" class="rounded-lg bg-red-600 px-3 py-1 text-xs font-semibold text-white hover:bg-red-700">Eliminar</button>
+                              <button @click="cancelDeletePhoto" class="rounded-lg bg-wc-bg-secondary px-3 py-1 text-xs font-semibold text-wc-text hover:bg-wc-bg-tertiary">Cancelar</button>
+                            </div>
+                          </div>
+                        </template>
                         <button
-                          @click="deletePhoto(getPhotoByAngle(getPhotosForDate(date), angle).id)"
+                          v-else
+                          @click="requestDeletePhoto(getPhotoByAngle(getPhotosForDate(date), angle).id)"
                           :disabled="deletingId === getPhotoByAngle(getPhotosForDate(date), angle).id"
                           class="absolute right-1.5 top-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-500"
                           aria-label="Eliminar foto"

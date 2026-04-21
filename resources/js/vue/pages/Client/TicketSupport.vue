@@ -194,14 +194,23 @@
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
       >
-        <div v-if="showForm" class="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center">
+        <div
+          v-if="showForm"
+          class="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center"
+          @keydown.escape.window="closeForm"
+        >
           <!-- Backdrop -->
           <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="closeForm"></div>
 
           <!-- Modal -->
-          <div class="relative z-10 w-full max-w-lg rounded-2xl border border-wc-border bg-wc-bg-secondary p-6 shadow-2xl">
+          <div
+            class="relative z-10 w-full max-w-lg rounded-2xl border border-wc-border bg-wc-bg-secondary p-6 shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="ticket-modal-title"
+          >
             <div class="mb-5 flex items-center justify-between">
-              <h2 class="font-display text-2xl tracking-wide text-wc-text">NUEVA SOLICITUD</h2>
+              <h2 id="ticket-modal-title" class="font-display text-2xl tracking-wide text-wc-text">NUEVA SOLICITUD</h2>
               <button @click="closeForm" class="flex h-8 w-8 items-center justify-center rounded-lg border border-wc-border text-wc-text-secondary hover:text-wc-text transition-colors">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -306,8 +315,10 @@
 import { ref, reactive, computed, onMounted } from 'vue';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
 
 const api = useApi();
+const toast = useToast();
 
 // State
 const loading      = ref(true);
@@ -364,6 +375,8 @@ async function fetchTickets() {
     const response = await api.get('/api/v/client/tickets');
     tickets.value = response.data.tickets ?? [];
     Object.assign(stats, response.data.stats ?? {});
+  } catch (err) {
+    toast.apiError(err, 'No pudimos cargar tus tickets.');
   } finally {
     loading.value = false;
   }
@@ -404,7 +417,7 @@ async function submitTicket() {
     formErrors.ticketType = 'Selecciona el tipo de solicitud.';
     return;
   }
-  if (form.description.length < 10) {
+  if (form.description.trim().length < 10) {
     formErrors.description = 'La descripción debe tener al menos 10 caracteres.';
     return;
   }

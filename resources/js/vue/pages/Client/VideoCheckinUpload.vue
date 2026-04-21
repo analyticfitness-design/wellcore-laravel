@@ -325,6 +325,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
 
 // -------------------------------------------------------------------
 // Types
@@ -351,6 +352,7 @@ let successTimer: ReturnType<typeof setTimeout> | null = null;
 // State
 // -------------------------------------------------------------------
 const api = useApi();
+const toast = useToast();
 
 const loading = ref(false);
 const submitting = ref(false);
@@ -401,6 +403,11 @@ function detectFileType(file: File): 'image' | 'video' {
 }
 
 function setFile(file: File) {
+  // Validate file size: max 100MB
+  if (file.size > 100 * 1024 * 1024) {
+    toast.error('El archivo no puede pesar más de 100MB.');
+    return;
+  }
   if (previewUrl.value) {
     URL.revokeObjectURL(previewUrl.value);
   }
@@ -483,6 +490,8 @@ async function submitCheckin() {
   } catch (err: any) {
     if (err.response?.status === 422) {
       fieldErrors.value = err.response.data.errors ?? {};
+    } else {
+      toast.apiError(err, 'No pudimos subir el video. Intenta de nuevo.');
     }
   } finally {
     submitting.value = false;

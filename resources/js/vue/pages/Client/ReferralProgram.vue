@@ -1,9 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
+const toast = useToast();
 
 // State
 const loading = ref(true);
@@ -39,32 +41,30 @@ async function fetchReferrals() {
 
 // Copy link
 async function copyLink() {
-    try {
-        await navigator.clipboard.writeText(referralLink.value);
+    navigator.clipboard.writeText(referralLink.value).then(() => {
         copied.value = true;
         setTimeout(() => { copied.value = false; }, 2500);
-    } catch {
-        // Fallback
-        const textarea = document.createElement('textarea');
-        textarea.value = referralLink.value;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        copied.value = true;
-        setTimeout(() => { copied.value = false; }, 2500);
-    }
+    }).catch(() => {
+        toast.info('Copia el link manualmente: ' + referralLink.value);
+    });
 }
 
 // Send invite
 async function sendInvite() {
-    if (!inviteEmail.value.trim()) return;
-    inviteSending.value = true;
+    const email = inviteEmail.value.trim();
     inviteError.value = null;
 
+    // Client-side email validation
+    if (!email) return;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        inviteError.value = 'Escribe un email válido.';
+        return;
+    }
+
+    inviteSending.value = true;
     try {
         const response = await api.post('/api/v/client/referrals/invite', {
-            email: inviteEmail.value.trim(),
+            email,
         });
         inviteEmail.value = '';
         showSuccess.value = true;

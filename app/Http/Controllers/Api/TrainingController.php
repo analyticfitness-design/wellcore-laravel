@@ -15,6 +15,7 @@ use App\Models\WellcoreNotification;
 use App\Models\WorkoutLog;
 use App\Models\WorkoutPr;
 use App\Models\WorkoutSession;
+use App\Services\ClientCacheService;
 use App\Services\ExerciseMediaService;
 use App\Services\PushNotificationService;
 use Carbon\Carbon;
@@ -22,6 +23,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TrainingController extends Controller
 {
@@ -142,6 +144,11 @@ class TrainingController extends Controller
         $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
+        $request->validate([
+            'year' => 'nullable|integer|between:2020,2035',
+            'week' => 'nullable|integer|between:1,53',
+        ]);
+
         $year = (int) $request->query('year', now()->isoFormat('GGGG'));
         $week = (int) $request->query('week', now()->isoFormat('W'));
 
@@ -231,7 +238,7 @@ class TrainingController extends Controller
         }
 
         Cache::forget("training:month_sessions:{$clientId}:".now()->format('Y-m'));
-        Cache::forget("dashboard:{$clientId}");
+        ClientCacheService::invalidateDashboard($clientId);
 
         return response()->json([
             'date' => $date,
@@ -492,52 +499,48 @@ class TrainingController extends Controller
 
         $request->validate([
             'session_id' => 'required|integer',
-            'exercise_index' => 'required|integer|min:0',
-            'set_number' => 'required|integer|min:1',
+            'exercise_index' => 'required|integer|min:0|max:500',
+            'set_number' => 'required|integer|min:1|max:50',
             'exercise_name' => 'required|string|max:255',
-            'weight' => 'nullable|numeric|min:0',
-            'reps' => 'required|integer|min:1',
-            'target_reps' => 'nullable|string',
-            'target_weight' => 'nullable|numeric',
-            // Cardio fields
+            // Anti-cheat: límites realistas humanos.
+            'weight' => 'nullable|numeric|min:0|max:500',
+            'reps' => 'required|integer|min:0|max:100',
+            'target_reps' => 'nullable|string|max:50',
+            'target_weight' => 'nullable|numeric|min:0|max:500',
             'is_cardio' => 'nullable|boolean',
-            'duration_minutes' => 'nullable|integer|min:0',
-            'speed_kmh' => 'nullable|numeric|min:0',
-            'incline_percent' => 'nullable|integer|min:0',
+            'duration_minutes' => 'nullable|integer|min:0|max:300',
+            'duration_seconds' => 'nullable|integer|min:0|max:7200',
+            'speed_kmh' => 'nullable|numeric|min:0|max:40',
+            'incline_percent' => 'nullable|integer|min:0|max:40',
         ]);
 
-        $sessionId = $request->input('session_id');
-        $exerciseIndex = $request->input('exercise_index');
-        $setNumber = $request->input('set_number');
+        $sessionId = (int) $request->input('session_id');
+        $exerciseIndex = (int) $request->input('exercise_index');
+        $setNumber = (int) $request->input('set_number');
         $exerciseName = $request->input('exercise_name');
         $weight = (float) ($request->input('weight', 0));
         $reps = (int) $request->input('reps');
         $isCardio = (bool) $request->input('is_cardio', false);
 
-        // Verify session belongs to client
+        // Verifica que la sesión pertenezca al cliente.
         $session = WorkoutSession::where('id', $sessionId)
             ->where('client_id', $clientId)
             ->where('completed', false)
             ->first();
 
         if (! $session) {
-            return response()->json(['error' => 'Sesion no encontrada o ya completada.'], 404);
+            return response()->json([
+                'message' => 'No encontramos esa sesión de entrenamiento.',
+            ], 404);
         }
-
-        // Upsert the workout log
-        $existing = WorkoutLog::where('session_id', $sessionId)
-            ->where('exercise_name', $exerciseName)
-            ->where('set_number', $setNumber)
-            ->where('block_order', $exerciseIndex)
-            ->first();
 
         $logData = $isCardio ? [
             'weight_kg' => 0,
-            'reps' => $request->input('duration_minutes', 0),
+            'reps' => (int) $request->input('duration_minutes', 0),
             'is_cardio' => true,
-            'duration_minutes' => $request->input('duration_minutes', 0),
-            'speed_kmh' => $request->input('speed_kmh', 0),
-            'incline_percent' => $request->input('incline_percent', 0),
+            'duration_minutes' => (int) $request->input('duration_minutes', 0),
+            'speed_kmh' => (float) $request->input('speed_kmh', 0),
+            'incline_percent' => (int) $request->input('incline_percent', 0),
             'completed' => true,
         ] : [
             'weight_kg' => $weight,
@@ -545,42 +548,69 @@ class TrainingController extends Controller
             'completed' => true,
         ];
 
-        if ($existing) {
-            $existing->update($logData);
-        } else {
-            WorkoutLog::create(array_merge($logData, [
-                'session_id' => $sessionId,
-                'client_id' => $clientId,
-                'exercise_name' => $exerciseName,
-                'block_type' => 'normal',
-                'block_order' => $exerciseIndex,
-                'set_number' => $setNumber,
-                'target_reps' => $request->input('target_reps'),
-                'target_weight' => $request->input('target_weight'),
-                'is_pr' => false,
-            ]));
-        }
+        try {
+            $isPr = DB::transaction(function () use (
+                $sessionId, $clientId, $exerciseName, $exerciseIndex, $setNumber,
+                $logData, $isCardio, $weight, $reps, $request
+            ): bool {
+                // Upsert atómico — evita race condition entre lecturas concurrentes.
+                $now = now();
+                WorkoutLog::upsert(
+                    [array_merge($logData, [
+                        'session_id' => $sessionId,
+                        'client_id' => $clientId,
+                        'exercise_name' => $exerciseName,
+                        'block_type' => 'normal',
+                        'block_order' => $exerciseIndex,
+                        'set_number' => $setNumber,
+                        'target_reps' => $request->input('target_reps'),
+                        'target_weight' => $request->input('target_weight'),
+                        'is_pr' => false,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ])],
+                    uniqueBy: ['session_id', 'exercise_name', 'set_number', 'block_order'],
+                    update: array_keys($logData) + ['target_reps', 'target_weight', 'updated_at']
+                );
 
-        // Check for PR (non-cardio only)
-        $isPr = false;
-        if (! $isCardio && $weight > 0) {
-            try {
-                $pr = WorkoutPr::checkAndAward($clientId, $exerciseName, $weight, $reps);
-                if ($pr) {
-                    $isPr = true;
-                    WorkoutLog::where('session_id', $sessionId)
-                        ->where('exercise_name', $exerciseName)
-                        ->where('set_number', $setNumber)
-                        ->where('block_order', $exerciseIndex)
-                        ->update(['is_pr' => true]);
+                if ($isCardio || $weight <= 0) {
+                    return false;
                 }
-            } catch (\Throwable $e) {
-                \Log::warning('WorkoutPr::checkAndAward failed', [
-                    'client_id' => $clientId,
-                    'exercise' => $exerciseName,
-                    'error' => $e->getMessage(),
-                ]);
-            }
+
+                try {
+                    $pr = WorkoutPr::checkAndAward($clientId, $exerciseName, $weight, $reps);
+                } catch (\Throwable $e) {
+                    Log::warning('WorkoutPr::checkAndAward failed', [
+                        'user_id' => $clientId,
+                        'exercise' => $exerciseName,
+                        'error' => $e->getMessage(),
+                    ]);
+
+                    return false;
+                }
+
+                if (! $pr) {
+                    return false;
+                }
+
+                WorkoutLog::where('session_id', $sessionId)
+                    ->where('exercise_name', $exerciseName)
+                    ->where('set_number', $setNumber)
+                    ->where('block_order', $exerciseIndex)
+                    ->update(['is_pr' => true]);
+
+                return true;
+            });
+        } catch (\Throwable $e) {
+            Log::error('completeSet failed', [
+                'user_id' => $clientId,
+                'session_id' => $sessionId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'message' => 'No pudimos guardar la serie. Intenta de nuevo.',
+            ], 500);
         }
 
         return response()->json([
@@ -597,9 +627,9 @@ class TrainingController extends Controller
         $client = $this->resolveClientOrFail($request);
 
         $validated = $request->validate([
-            'session_id'     => 'required|integer',
-            'exercise_name'  => 'required|string|max:200',
-            'set_number'     => 'required|integer|min:1',
+            'session_id' => 'required|integer',
+            'exercise_name' => 'required|string|max:200',
+            'set_number' => 'required|integer|min:1',
             'exercise_index' => 'nullable|integer',
         ]);
 
@@ -722,7 +752,7 @@ class TrainingController extends Controller
             ]);
         }
 
-        Cache::forget("dashboard:{$clientId}");
+        ClientCacheService::invalidateDashboard($clientId);
         Cache::forget("training:month_sessions:{$clientId}:".now()->format('Y-m'));
 
         // Count PRs from this session
@@ -884,10 +914,12 @@ class TrainingController extends Controller
         $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
+        $timezone = $this->resolveClientTimezone($client);
+
         $showTutorial = ! Checkin::where('client_id', $clientId)->exists();
 
-        $dayOfWeek = now()->timezone('America/Bogota')->dayOfWeek;
-        $isCheckinAvailable = in_array($dayOfWeek, [Carbon::FRIDAY, Carbon::SATURDAY]);
+        $dayOfWeek = now($timezone)->dayOfWeek;
+        $isCheckinAvailable = in_array($dayOfWeek, [Carbon::FRIDAY, Carbon::SATURDAY], true);
 
         $cached = Cache::remember("checkin:recent:{$clientId}", 300, function () use ($clientId) {
             return Checkin::where('client_id', $clientId)
@@ -897,8 +929,7 @@ class TrainingController extends Controller
                 ->toArray();
         });
 
-        // Check if already submitted this week
-        $weekLabel = now()->isoFormat('GGGG').'-W'.str_pad(now()->isoFormat('W'), 2, '0', STR_PAD_LEFT);
+        $weekLabel = $this->weekLabelForTimezone($timezone);
         $alreadySubmitted = Checkin::where('client_id', $clientId)
             ->where('week_label', $weekLabel)
             ->exists();
@@ -909,6 +940,7 @@ class TrainingController extends Controller
             'already_submitted' => $alreadySubmitted,
             'week_label' => $weekLabel,
             'recent_checkins' => $cached,
+            'timezone' => $timezone,
         ]);
     }
 
@@ -930,14 +962,17 @@ class TrainingController extends Controller
             'comentario' => 'nullable|string|max:1000',
         ]);
 
-        $dayOfWeek = now()->timezone('America/Bogota')->dayOfWeek;
-        if (! in_array($dayOfWeek, [Carbon::FRIDAY, Carbon::SATURDAY])) {
+        $timezone = $this->resolveClientTimezone($client);
+
+        $dayOfWeek = now($timezone)->dayOfWeek;
+        if (! in_array($dayOfWeek, [Carbon::FRIDAY, Carbon::SATURDAY], true)) {
             return response()->json([
-                'error' => 'El check-in semanal solo esta disponible los viernes y sabados.',
+                'message' => 'El check-in semanal solo está disponible los viernes y sábados.',
+                'timezone' => $timezone,
             ], 422);
         }
 
-        $weekLabel = now()->isoFormat('GGGG').'-W'.str_pad(now()->isoFormat('W'), 2, '0', STR_PAD_LEFT);
+        $weekLabel = $this->weekLabelForTimezone($timezone);
 
         $alreadySubmitted = Checkin::where('client_id', $clientId)
             ->where('week_label', $weekLabel)
@@ -945,25 +980,37 @@ class TrainingController extends Controller
 
         if ($alreadySubmitted) {
             return response()->json([
-                'error' => 'Ya enviaste tu check-in esta semana.',
+                'message' => 'Ya enviaste tu check-in esta semana.',
+                'timezone' => $timezone,
             ], 422);
         }
 
-        $checkin = Checkin::create([
-            'client_id' => $clientId,
-            'week_label' => $weekLabel,
-            'checkin_date' => now()->toDateString(),
-            'bienestar' => $request->input('bienestar'),
-            'dias_entrenados' => $request->input('dias_entrenados'),
-            'nutricion' => $request->input('nutricion'),
-            'comentario' => $request->input('comentario'),
-            'rpe' => $request->input('rpe'),
-            'created_at' => now(),
-        ]);
+        try {
+            $checkin = Checkin::create([
+                'client_id' => $clientId,
+                'week_label' => $weekLabel,
+                'checkin_date' => now($timezone)->toDateString(),
+                'bienestar' => $request->input('bienestar'),
+                'dias_entrenados' => $request->input('dias_entrenados'),
+                'nutricion' => $request->input('nutricion'),
+                'comentario' => $request->input('comentario'),
+                'rpe' => $request->input('rpe'),
+                'created_at' => now(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('submitCheckin failed', [
+                'user_id' => $clientId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'message' => 'No pudimos guardar tu check-in. Intenta de nuevo.',
+            ], 500);
+        }
 
         Cache::forget("checkin:recent:{$clientId}");
+        ClientCacheService::invalidateDashboard($clientId);
 
-        // Notify assigned coach about new check-in
         $coachId = AssignedPlan::where('client_id', $clientId)->where('active', true)->value('assigned_by');
         if ($coachId) {
             WellcoreNotification::create([
@@ -983,7 +1030,36 @@ class TrainingController extends Controller
         return response()->json([
             'saved' => true,
             'checkin_id' => $checkin->id,
+            'timezone' => $timezone,
         ]);
+    }
+
+    /**
+     * Resuelve la zona horaria del cliente (cae a America/Bogota si no hay).
+     */
+    private function resolveClientTimezone(mixed $client): string
+    {
+        $tz = is_object($client) && isset($client->timezone) ? $client->timezone : null;
+
+        if (! is_string($tz) || $tz === '') {
+            return 'America/Bogota';
+        }
+
+        if (! in_array($tz, timezone_identifiers_list(), true)) {
+            return 'America/Bogota';
+        }
+
+        return $tz;
+    }
+
+    /**
+     * ISO week label (YYYY-Www) en la timezone del cliente.
+     */
+    private function weekLabelForTimezone(string $timezone): string
+    {
+        $now = now($timezone);
+
+        return $now->isoFormat('GGGG').'-W'.str_pad($now->isoFormat('W'), 2, '0', STR_PAD_LEFT);
     }
 
     // ─── Private helpers ───────────────────────────────────────────────

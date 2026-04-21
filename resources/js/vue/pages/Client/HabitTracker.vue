@@ -2,10 +2,13 @@
 import { ref, computed, onMounted } from 'vue';
 import { useApi } from '../../composables/useApi';
 import { useMedals } from '../../composables/useMedals';
+import { useToast } from '../../composables/useToast';
+import { localDateStr } from '../../composables/useDate';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
 const { fetchMedals } = useMedals();
+const toast = useToast();
 
 // ─── State ──────────────────────────────────────────────────────────────────
 const loading        = ref(true);
@@ -40,12 +43,25 @@ async function fetchHabits() {
 
 // ─── Toggle ──────────────────────────────────────────────────────────────────
 async function toggleHabit(type) {
+    // Anti doble-submit por mismo hábito.
+    if (togglingHabit.value === type) return;
+
+    // Optimistic toggle con rollback.
+    const habit = todayHabits.value[type];
+    if (!habit) return;
+    const prevCompleted = habit.completed;
+    const prevStreak = habit.streak;
+    const prevTotal = completedToday.value;
+
+    habit.completed = !prevCompleted;
+    completedToday.value = prevTotal + (habit.completed ? 1 : -1);
+
     togglingHabit.value = type;
     try {
         const response = await api.post('/api/v/client/habits/toggle', { habit_type: type });
         const d        = response.data;
         if (todayHabits.value[type]) {
-            todayHabits.value[type].completed = d.completed ?? !todayHabits.value[type].completed;
+            todayHabits.value[type].completed = d.completed ?? todayHabits.value[type].completed;
         }
         completedToday.value = d.completed_today ?? completedToday.value;
         if (d.streak !== undefined && todayHabits.value[type]) {
@@ -57,8 +73,12 @@ async function toggleHabit(type) {
             // Dia perfecto: puede gatillar medalla "habito-forjado"
             fetchMedals().catch(() => {});
         }
-    } catch {
-        // fail silently
+    } catch (err) {
+        // Rollback
+        habit.completed = prevCompleted;
+        habit.streak = prevStreak;
+        completedToday.value = prevTotal;
+        toast.apiError(err, 'No pudimos actualizar tu hábito.');
     } finally {
         togglingHabit.value = null;
     }
@@ -86,7 +106,7 @@ const formattedDate = computed(() => {
 });
 
 // ─── Heatmap helpers ─────────────────────────────────────────────────────────
-const TODAY_STR = new Date().toISOString().split('T')[0];
+const TODAY_STR = localDateStr();
 
 // level 0–4 from backend; map to Tailwind bg classes
 const LEVEL_CLASSES = [
