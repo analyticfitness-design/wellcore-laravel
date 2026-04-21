@@ -64,7 +64,7 @@ class FixGifAliases extends Command
 
         foreach ($plans as $p) {
             $content = json_decode($p->content, true);
-            if (!$content) continue;
+            if (!$content || !is_array($content)) continue;
             $before = $total;
             $this->fixPlan($content, $normFixes, $total);
             if ($total > $before) {
@@ -85,7 +85,7 @@ class FixGifAliases extends Command
 
         foreach ($rises as $r) {
             $prog = json_decode($r->personalized_program, true);
-            if (!$prog || empty($prog['plan_entrenamiento'])) continue;
+            if (!$prog || !is_array($prog) || empty($prog['plan_entrenamiento']) || !is_array($prog['plan_entrenamiento'])) continue;
             $before = $total;
             $this->fixPlan($prog['plan_entrenamiento'], $normFixes, $total);
             if ($total > $before) {
