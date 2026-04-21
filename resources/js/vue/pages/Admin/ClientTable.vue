@@ -198,6 +198,7 @@ function getOnlineStatus(lastLoginAt) {
 
   const now = new Date();
   const login = new Date(lastLoginAt);
+  if (isNaN(login.getTime())) return { dot: 'bg-wc-text-tertiary/30', text: '-', label: '', isOnline: false };
   const diffMs = now - login;
   const diffMin = diffMs / 60000;
   const diffHours = diffMs / 3600000;

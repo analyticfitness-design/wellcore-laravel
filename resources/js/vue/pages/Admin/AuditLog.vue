@@ -1,8 +1,9 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import axios from 'axios';
+import { ref, onMounted } from 'vue';
+import { useApi } from '../../composables/useApi';
 import AdminLayout from '../../layouts/AdminLayout.vue';
 
+const api = useApi();
 const logs = ref([]);
 const loading = ref(false);
 const error = ref('');
@@ -17,8 +18,6 @@ const filters = ref({
   page: 1,
 });
 
-const token = computed(() => localStorage.getItem('wc_token') || '');
-
 async function load() {
   loading.value = true;
   error.value = '';
@@ -27,10 +26,7 @@ async function load() {
     Object.keys(params).forEach((k) => {
       if (params[k] === '' || params[k] === null) delete params[k];
     });
-    const resp = await axios.get('/api/v/admin/audit-logs', {
-      headers: { Authorization: `Bearer ${token.value}` },
-      params,
-    });
+    const resp = await api.get('/api/v/admin/audit-logs', { params });
     logs.value = resp.data.logs || [];
     pagination.value = resp.data.pagination || { current_page: 1, last_page: 1, total: 0 };
   } catch (e) {

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useApi } from '../../composables/useApi';
 import AdminLayout from '../../layouts/AdminLayout.vue';
 
@@ -69,10 +69,12 @@ function clearFilters() {
 }
 
 function goToPage(p) {
-  if (p < 1 || (pagination.value && p > pagination.value.last_page)) return;
+  if (!pagination.value || p < 1 || p > pagination.value.last_page) return;
   page.value = p;
   fetchPayments();
 }
+
+onBeforeUnmount(() => clearTimeout(debounceTimer));
 
 // ─── Helpers ──────────────────────────────────────────────────────────
 
