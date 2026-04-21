@@ -28,6 +28,8 @@ import { useConfetti } from '../../composables/useConfetti';
 import { useHaptics } from '../../composables/useHaptics';
 import { useSound } from '../../composables/useSound';
 import { useCountUp } from '../../composables/useCountUp';
+import { useStagger } from '../../composables/useStagger';
+import { useTypewriter } from '../../composables/useTypewriter';
 import { useReducedMotion } from '../../composables/useReducedMotion';
 import WcIcon from '../ui/WcIcon.vue';
 
@@ -111,6 +113,11 @@ onBeforeUnmount(() => {
 const heroValueRef = ref(null);
 useCountUp(heroValueRef, () => activeData.value?.hero?.value, { duration: 1200 });
 
+const statsGridRef = ref(null);
+useStagger(statsGridRef, { delay: 80, duration: 400 });
+
+const displayedQuote = useTypewriter(() => activeData.value?.quote || '', { speed: 28 });
+
 const statsToRender = computed(() => (activeData.value.stats || []).slice(0, 6));
 </script>
 
@@ -161,7 +168,7 @@ const statsToRender = computed(() => (activeData.value.stats || []).slice(0, 6))
           </p>
 
           <!-- Bento grid -->
-          <div class="mt-4 grid grid-cols-6 auto-rows-[70px] gap-2 text-sm">
+          <div ref="statsGridRef" class="mt-4 grid grid-cols-6 auto-rows-[70px] gap-2 text-sm">
             <slot name="hero" :data="activeData.hero" :preset-config="presetConfig">
               <div
                 v-if="activeData.hero"
@@ -218,7 +225,7 @@ const statsToRender = computed(() => (activeData.value.stats || []).slice(0, 6))
                 <i class="ph-fill ph-quotes" style="font-size:11px" :class="`text-${presetConfig.accentColor}-400`"></i>
                 <p class="text-[9px] tracking-wider uppercase font-bold" :class="`text-${presetConfig.accentColor}-400`">Tu coach</p>
               </div>
-              <p class="mt-0.5 text-sm italic text-wc-text-secondary leading-snug">"{{ activeData.quote }}"</p>
+              <p class="mt-0.5 text-sm italic text-wc-text-secondary leading-snug">"{{ displayedQuote }}"</p>
             </div>
           </div>
 
