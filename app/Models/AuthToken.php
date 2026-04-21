@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'fingerprint',
     'ip_address',
     'expires_at',
+    'last_used_at',
 ])]
 class AuthToken extends Model
 {
@@ -27,9 +28,10 @@ class AuthToken extends Model
     protected function casts(): array
     {
         return [
-            'user_type' => UserType::class,
-            'expires_at' => 'datetime',
-            'created_at' => 'datetime',
+            'user_type'    => UserType::class,
+            'expires_at'   => 'datetime',
+            'created_at'   => 'datetime',
+            'last_used_at' => 'datetime',
         ];
     }
 

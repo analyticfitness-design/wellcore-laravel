@@ -59,12 +59,14 @@ class AuthController extends Controller
         $token = bin2hex(random_bytes(32));
 
         AuthToken::create([
-            'user_type' => $userType->value,
-            'user_id' => $user->id,
-            'token' => $token,
-            'ip_address' => $request->ip(),
-            'expires_at' => now()->addDays(30),
-            'created_at' => now(),
+            'user_type'    => $userType->value,
+            'user_id'      => $user->id,
+            'token'        => $token,
+            'ip_address'   => $request->ip(),
+            'fingerprint'  => $request->userAgent(),
+            'expires_at'   => now()->addDays(7),
+            'created_at'   => now(),
+            'last_used_at' => now(),
         ]);
 
         // Store in session for Livewire compatibility

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\AuthToken;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -26,3 +27,13 @@ Schedule::command('wellcore:expire-trials')->hourly(); // Check trial expiration
 Schedule::command('wellcore:smart-notifications')->dailyAt('09:00');
 Schedule::command('wellcore:churn-detection')->dailyAt('10:00');
 Schedule::command('wellcore:match-gifs-from-json --reset')->weeklyOn(1, '03:00'); // Monday 3am — remap GIFs for all new plans
+
+// Prune expired auth tokens and inactive sessions older than 14 days
+Schedule::call(function () {
+    AuthToken::where('expires_at', '<', now())
+        ->orWhere(function ($q) {
+            $q->whereNotNull('last_used_at')
+              ->where('last_used_at', '<', now()->subDays(14));
+        })
+        ->delete();
+})->daily()->name('auth-tokens:prune');

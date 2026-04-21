@@ -43,6 +43,11 @@ class WellCoreGuard implements Guard
 
         $this->currentToken = $authToken;
 
+        // Update last_used_at throttled to every 5 min to avoid N writes per session
+        if ($authToken->last_used_at === null || $authToken->last_used_at->diffInMinutes(now()) > 5) {
+            $authToken->updateQuietly(['last_used_at' => now()]);
+        }
+
         $this->user = match ($authToken->user_type->value) {
             'admin' => Admin::find($authToken->user_id),
             'client' => Client::find($authToken->user_id),
