@@ -1,9 +1,11 @@
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useMedals } from '../../composables/useMedals';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
+const { fetchMedals } = useMedals();
 
 // ─── Bienestar options (static, module-level) ─────────────────────
 const bienestarLabels = [
@@ -145,6 +147,8 @@ async function submitCheckin() {
     lastBienestar.value = bienestar.value;
     lastDiasEntrenados.value = diasEntrenados.value;
     showSuccess.value = true;
+    // Detecta medallas / level-up ganados por este check-in
+    fetchMedals().catch(() => {});
 
     // Reset form
     bienestar.value = null;

@@ -1,7 +1,17 @@
 <script setup>
-import { ref, computed, onUnmounted } from 'vue';
+import { ref, computed, onUnmounted, onMounted } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
+import MedalUnlockCelebration from '../components/MedalUnlockCelebration.vue';
+import LevelUpCelebration from '../components/LevelUpCelebration.vue';
+import { useMedals } from '../composables/useMedals';
+
+const { newMedal, levelUp, clearNewMedal, clearLevelUp, fetchMedals: initMedals } = useMedals();
+
+// Inicializa estado al montar el layout; los fetches posteriores comparan diff.
+onMounted(() => {
+    initMedals().catch(() => {});
+});
 
 const authStore = useAuthStore();
 const route = useRoute();
@@ -356,6 +366,10 @@ const bottomNav = [
         </RouterLink>
       </div>
     </nav>
+
+    <!-- Global celebration overlays -->
+    <MedalUnlockCelebration :medal="newMedal" @close="clearNewMedal" />
+    <LevelUpCelebration :event="levelUp" @close="clearLevelUp" />
 
   </div>
 </template>

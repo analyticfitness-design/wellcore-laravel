@@ -2,7 +2,10 @@
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
+import { useMedals } from '../../composables/useMedals';
 import ClientLayout from '../../layouts/ClientLayout.vue';
+
+const { fetchMedals } = useMedals();
 
 const api = useApi();
 const route = useRoute();
@@ -228,6 +231,8 @@ async function shareToCommunity() {
 
 onMounted(() => {
   fetchSummary();
+  // Detecta medallas nuevas / level-up ganados por esta sesion
+  fetchMedals().catch(() => {});
   confettiTimer = setTimeout(() => { showConfetti.value = false; }, 4000);
 });
 

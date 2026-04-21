@@ -5,6 +5,12 @@ import { useAuthStore } from '../stores/auth';
 import { useApi } from '../composables/useApi';
 import NotificationBell from '../components/NotificationBell.vue';
 import CoachImpersonationBanner from '../components/CoachImpersonationBanner.vue';
+import MedalUnlockCelebration from '../components/MedalUnlockCelebration.vue';
+import LevelUpCelebration from '../components/LevelUpCelebration.vue';
+import { useMedals } from '../composables/useMedals';
+
+// Celebraciones globales — disparadas desde cualquier vista via fetchMedals()
+const { newMedal, levelUp, clearNewMedal, clearLevelUp, fetchMedals: initMedals } = useMedals();
 
 const authStore = useAuthStore();
 const api = useApi();
@@ -34,6 +40,10 @@ onMounted(async () => {
     } finally {
         accountCheckDone.value = true;
     }
+
+    // Inicializa estado de medallas/nivel para detectar diffs en fetches posteriores.
+    // Este fetch NUNCA dispara celebracion (es el primero, isFirstLoad=true).
+    initMedals().catch(() => {});
 
     // Fetch coach branding (non-blocking, silent if no coach assigned)
     try {
@@ -479,6 +489,10 @@ const bottomNav = [
         </RouterLink>
       </div>
     </nav>
+
+    <!-- Global celebration overlays — disparadas por fetchMedals() desde cualquier vista -->
+    <MedalUnlockCelebration :medal="newMedal" @close="clearNewMedal" />
+    <LevelUpCelebration :event="levelUp" @close="clearLevelUp" />
 
   </div>
 </template>

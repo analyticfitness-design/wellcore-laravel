@@ -1,9 +1,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useMedals } from '../../composables/useMedals';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
+const { fetchMedals } = useMedals();
 
 // ─── State ──────────────────────────────────────────────────────────────────
 const loading        = ref(true);
@@ -52,6 +54,8 @@ async function toggleHabit(type) {
         if (completedToday.value === totalHabits.value && totalHabits.value > 0) {
             showConfetti.value = true;
             setTimeout(() => { showConfetti.value = false; }, 3000);
+            // Dia perfecto: puede gatillar medalla "habito-forjado"
+            fetchMedals().catch(() => {});
         }
     } catch {
         // fail silently

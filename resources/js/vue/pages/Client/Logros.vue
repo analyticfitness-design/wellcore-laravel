@@ -2,8 +2,8 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import MedalHex from '../../components/MedalHex.vue';
-import MedalUnlockCelebration from '../../components/MedalUnlockCelebration.vue';
-import LevelUpCelebration from '../../components/LevelUpCelebration.vue';
+// Nota: MedalUnlockCelebration y LevelUpCelebration se montan en ClientLayout
+// (globales), para que aparezcan en cualquier vista tras un fetchMedals().
 import { useMedals } from '../../composables/useMedals';
 
 const {
@@ -11,13 +11,9 @@ const {
     stats,
     loading,
     error,
-    newMedal,
-    levelUp,
     unlockedCount,
     totalCount,
     fetchMedals,
-    clearNewMedal,
-    clearLevelUp,
 } = useMedals();
 
 // ── Tier filter ──────────────────────────────────────────────────────────────
@@ -91,12 +87,6 @@ const xpProgressPct = computed(() => {
 
 // ── Lifecycle ────────────────────────────────────────────────────────────────
 onMounted(fetchMedals);
-
-// Close the celebration overlay callback — and if the user was watching a
-// detail sheet about that same medal, refresh its reference (pivot changed).
-function onCelebrationClose() {
-    clearNewMedal();
-}
 </script>
 
 <template>
@@ -383,9 +373,7 @@ function onCelebrationClose() {
       </div>
     </Transition>
 
-    <!-- Celebration overlays -->
-    <MedalUnlockCelebration :medal="newMedal" @close="onCelebrationClose" />
-    <LevelUpCelebration :event="levelUp" @close="clearLevelUp" />
+    <!-- Celebraciones ahora estan en ClientLayout.vue (globales) -->
   </ClientLayout>
 </template>
 

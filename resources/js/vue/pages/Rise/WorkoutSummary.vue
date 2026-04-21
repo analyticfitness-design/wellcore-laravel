@@ -2,7 +2,10 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
+import { useMedals } from '../../composables/useMedals';
 import RiseLayout from '../../layouts/RiseLayout.vue';
+
+const { fetchMedals } = useMedals();
 
 const api = useApi();
 const route = useRoute();
@@ -84,6 +87,8 @@ async function saveFeedback() {
 
 onMounted(() => {
     fetchSummary();
+    // Detecta medallas nuevas / level-up post-sesion
+    fetchMedals().catch(() => {});
 });
 </script>
 

@@ -1,9 +1,11 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useMedals } from '../../composables/useMedals';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
+const { fetchMedals } = useMedals();
 
 // --- State ---
 const loading = ref(true);
@@ -203,6 +205,8 @@ async function uploadPhotos() {
     showSuccess.value = true;
     showConfetti.value = true;
     confettiTimer = setTimeout(() => { showConfetti.value = false; }, 4000);
+    // Detecta medallas / level-up post-upload
+    fetchMedals().catch(() => {});
 
     // Refresh gallery
     await fetchPhotos();
