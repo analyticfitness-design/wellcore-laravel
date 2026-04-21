@@ -9,7 +9,7 @@
      x-transition:leave-start="translate-y-0 opacity-100"
      x-transition:leave-end="translate-y-8 opacity-0"
      x-cloak
-     class="fixed bottom-20 right-6 z-40 w-80 overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-secondary/95 shadow-2xl shadow-black/10 backdrop-blur-xl sm:bottom-6 sm:right-6">
+     class="fixed bottom-20 left-6 z-40 w-80 overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-secondary/95 shadow-2xl shadow-black/10 backdrop-blur-xl sm:bottom-6 sm:left-6">
 
     <div class="p-5">
         {{-- Cookie icon + title --}}
