@@ -405,8 +405,24 @@ const planSplit = computed(() => {
 });
 
 const semanas = computed(() => {
-  if (!trainingPlan.value?.semanas) return [];
-  return trainingPlan.value.semanas;
+  const s = trainingPlan.value?.semanas;
+  if (!s || !Array.isArray(s)) return [];
+  return s;
+});
+
+// Weekly schedule from dias_semana field (object or JSON string)
+// Used when the plan has no semanas array but has a dias_semana map like
+// { "Lunes": "Glúteos + Piernas", "Martes": "Hombros + Tríceps", ... }
+const weeklySchedule = computed(() => {
+  if (!trainingPlan.value) return [];
+  const raw = trainingPlan.value.dias_semana ?? trainingPlan.value.schedule ?? null;
+  if (!raw) return [];
+  let obj = raw;
+  if (typeof raw === 'string') {
+    try { obj = JSON.parse(raw); } catch { return []; }
+  }
+  if (typeof obj !== 'object' || Array.isArray(obj) || obj === null) return [];
+  return Object.entries(obj).map(([day, muscles]) => ({ day, muscles: String(muscles) }));
 });
 
 // Week accordion state
@@ -1025,6 +1041,28 @@ onBeforeUnmount(() => {
               <div>
                 <p class="text-sm font-semibold uppercase tracking-wider text-wc-accent/70">Objetivo del plan</p>
                 <p class="mt-0.5 text-sm leading-relaxed text-wc-text-secondary">{{ planObjetivo }}</p>
+              </div>
+            </div>
+
+            <!-- Weekly schedule (dias_semana object — shown when no semanas array) -->
+            <div v-if="semanas.length === 0 && weeklySchedule.length > 0" class="space-y-3">
+              <h3 class="font-display text-base tracking-widest uppercase text-wc-text-secondary">Horario semanal</h3>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <div
+                  v-for="(entry, idx) in weeklySchedule"
+                  :key="idx"
+                  class="flex items-start gap-3 rounded-xl border border-wc-border bg-wc-bg-tertiary p-4"
+                >
+                  <!-- Day indicator -->
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
+                    <span class="font-display text-xs tracking-wider text-wc-accent leading-none">{{ entry.day.slice(0, 3).toUpperCase() }}</span>
+                  </div>
+                  <!-- Content -->
+                  <div class="min-w-0 flex-1 pt-0.5">
+                    <p class="font-display text-sm tracking-wider text-wc-text leading-tight">{{ entry.day.toUpperCase() }}</p>
+                    <p class="mt-1 text-sm leading-snug text-wc-text-secondary">{{ entry.muscles }}</p>
+                  </div>
+                </div>
               </div>
             </div>
 
