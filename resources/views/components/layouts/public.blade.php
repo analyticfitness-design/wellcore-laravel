@@ -27,8 +27,8 @@
     <link rel="preload" href="/images/logo-light-320.avif" as="image" type="image/avif" fetchpriority="high">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    {{-- Alpine standalone self-hosted (CDN unpkg bloqueado por CSP; CDN propio respeta same-origin) --}}
-    <script defer src="/js/alpine.min.js"></script>
+    {{-- Alpine: se carga en el footer condicionalmente, despues de saber si Livewire rendero (ver final de body).
+         NUNCA cargar Alpine standalone + Livewire a la vez: duplica instancias y rompe el morph (wire:click deja de actualizar el DOM). --}}
 
     <x-seo-meta :title="$title ?? 'WellCore Fitness'" :description="$description ?? 'Coaching fitness basado en ciencia.'" />
     <x-hreflang />
@@ -299,6 +299,10 @@
     <x-cookie-consent />
     <x-toast-notifications />
 
-    {{-- @livewireScripts removed: public pages use Vue SPA + Alpine only, no Livewire components (saves ~515ms blocking + ~50 KB) --}}
+    {{-- Alpine standalone SOLO si Livewire no rendero un componente (Livewire bundlea su propio Alpine).
+         Cargar ambos duplica instancias → rompe wire:click y el morph del DOM (bug de forms de inscripcion). --}}
+    @unless(\Livewire\Livewire::componentHasBeenRendered())
+        <script defer src="/js/alpine.min.js"></script>
+    @endunless
 </body>
 </html>
