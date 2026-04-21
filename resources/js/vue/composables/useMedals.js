@@ -32,6 +32,12 @@ export function useMedals() {
     const newMedal = ref(null); // la última medalla recién desbloqueada
     const isFirstLoad = ref(true);
 
+    // ── Level-up detection ───────────────────────────────────────────────────
+    // Mismo patrón que newMedal: guardamos el nivel del último fetch y, si el
+    // nuevo es mayor, exponemos `levelUp` para que la UI dispare celebración.
+    const previousLevel = ref(null);
+    const levelUp = ref(null); // { from, to, totalXP, xpGained }
+
     // ── Ordenamiento: logradas > en progreso (>0%) > bloqueadas ──────────────
     function sortMedals(list) {
         return [...list].sort((a, b) => {
@@ -73,7 +79,26 @@ export function useMedals() {
             );
 
             medals.value = sortMedals(incoming);
-            stats.value = res.data?.stats ?? null;
+            const incomingStats = res.data?.stats ?? null;
+
+            // Level-up detection — solo después del primer load, ignoramos el
+            // primer fetch (que inicializa previousLevel sin disparar celebración).
+            if (!isFirstLoad.value && incomingStats && previousLevel.value !== null) {
+                const from = previousLevel.value;
+                const to = Number(incomingStats.level ?? 0);
+                if (to > from) {
+                    const prevTotalXP = Number(stats.value?.totalXP ?? 0);
+                    levelUp.value = {
+                        from,
+                        to,
+                        totalXP: Number(incomingStats.totalXP ?? 0),
+                        xpGained: Math.max(0, Number(incomingStats.totalXP ?? 0) - prevTotalXP),
+                    };
+                }
+            }
+            previousLevel.value = Number(incomingStats?.level ?? previousLevel.value ?? 0);
+
+            stats.value = incomingStats;
             isFirstLoad.value = false;
         } catch (e) {
             error.value = e.response?.data?.message || 'Error al cargar medallas';
@@ -86,6 +111,10 @@ export function useMedals() {
 
     function clearNewMedal() {
         newMedal.value = null;
+    }
+
+    function clearLevelUp() {
+        levelUp.value = null;
     }
 
     // ── Computed views ───────────────────────────────────────────────────────
@@ -116,6 +145,7 @@ export function useMedals() {
         loading,
         error,
         newMedal,
+        levelUp,
 
         // computed
         unlocked,
@@ -127,5 +157,6 @@ export function useMedals() {
         // actions
         fetchMedals,
         clearNewMedal,
+        clearLevelUp,
     };
 }

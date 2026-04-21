@@ -3,6 +3,7 @@ import { ref, computed, onMounted, watch } from 'vue';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import MedalHex from '../../components/MedalHex.vue';
 import MedalUnlockCelebration from '../../components/MedalUnlockCelebration.vue';
+import LevelUpCelebration from '../../components/LevelUpCelebration.vue';
 import { useMedals } from '../../composables/useMedals';
 
 const {
@@ -11,10 +12,12 @@ const {
     loading,
     error,
     newMedal,
+    levelUp,
     unlockedCount,
     totalCount,
     fetchMedals,
     clearNewMedal,
+    clearLevelUp,
 } = useMedals();
 
 // ── Tier filter ──────────────────────────────────────────────────────────────
@@ -380,8 +383,9 @@ function onCelebrationClose() {
       </div>
     </Transition>
 
-    <!-- Celebration overlay -->
+    <!-- Celebration overlays -->
     <MedalUnlockCelebration :medal="newMedal" @close="onCelebrationClose" />
+    <LevelUpCelebration :event="levelUp" @close="clearLevelUp" />
   </ClientLayout>
 </template>
 
