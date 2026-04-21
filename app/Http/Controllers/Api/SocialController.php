@@ -591,8 +591,9 @@ class SocialController extends Controller
         $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
-        $today = now()->toDateString();
-        $todayCarbon = Carbon::today();
+        $tz = filled($client->timezone) ? $client->timezone : 'UTC';
+        $today = now($tz)->toDateString();
+        $todayCarbon = Carbon::today($tz);
 
         $habitDefs = [
             'agua' => ['label' => 'Agua', 'icon' => 'water', 'tip' => 'Tu cuerpo necesita al menos 2 litros diarios para un rendimiento optimo.'],

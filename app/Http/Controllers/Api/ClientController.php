@@ -77,8 +77,9 @@ class ClientController extends Controller
         $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
-        // Greeting based on time of day (never cached)
-        $hour = (int) now()->format('H');
+        // Greeting based on client's local time (fallback to UTC if no timezone set)
+        $tz = filled($client->timezone) ? $client->timezone : 'UTC';
+        $hour = (int) now($tz)->format('H');
         $greeting = match (true) {
             $hour < 12 => 'Buenos dias',
             $hour < 18 => 'Buenas tardes',
