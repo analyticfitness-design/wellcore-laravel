@@ -4,6 +4,7 @@ import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import MedalUnlockCelebration from '../components/MedalUnlockCelebration.vue';
 import LevelUpCelebration from '../components/LevelUpCelebration.vue';
+import BentoCelebration from '../components/celebrations/BentoCelebration.vue';
 import { useMedals } from '../composables/useMedals';
 
 const { newMedal, levelUp, clearNewMedal, clearLevelUp, fetchMedals: initMedals } = useMedals();
@@ -370,6 +371,13 @@ const bottomNav = [
     <!-- Global celebration overlays -->
     <MedalUnlockCelebration :medal="newMedal" @close="clearNewMedal" />
     <LevelUpCelebration :event="levelUp" @close="clearLevelUp" />
+
+    <!-- BentoCelebration global singleton — vía useCelebration().celebrate() -->
+    <BentoCelebration
+      :global="true"
+      @cta-click="(preset) => console.log('[celebration] cta:', preset)"
+      @share="(evt) => console.log('[celebration] share:', evt)"
+    />
 
   </div>
 </template>

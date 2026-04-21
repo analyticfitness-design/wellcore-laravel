@@ -8,6 +8,7 @@ import CoachImpersonationBanner from '../components/CoachImpersonationBanner.vue
 import MedalUnlockCelebration from '../components/MedalUnlockCelebration.vue';
 import LevelUpCelebration from '../components/LevelUpCelebration.vue';
 import ToastContainer from '../components/ui/ToastContainer.vue';
+import BentoCelebration from '../components/celebrations/BentoCelebration.vue';
 import { useMedals } from '../composables/useMedals';
 
 // Celebraciones globales — disparadas desde cualquier vista via fetchMedals()
@@ -494,6 +495,13 @@ const bottomNav = [
     <!-- Global celebration overlays — disparadas por fetchMedals() desde cualquier vista -->
     <MedalUnlockCelebration :medal="newMedal" @close="clearNewMedal" />
     <LevelUpCelebration :event="levelUp" @close="clearLevelUp" />
+
+    <!-- BentoCelebration global singleton — vía useCelebration().celebrate() -->
+    <BentoCelebration
+      :global="true"
+      @cta-click="(preset) => console.log('[celebration] cta:', preset)"
+      @share="(evt) => console.log('[celebration] share:', evt)"
+    />
 
     <!-- Global toast notifications -->
     <ToastContainer />
