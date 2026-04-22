@@ -1,0 +1,1943 @@
+<!doctype html>
+<html lang="es" class="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>WellCore — Bento celebraciones · SF Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Raleway:wght@300;400;500;600;700;800&family=Barlow:wght@500;700&display=swap" rel="stylesheet">
+
+<!-- ─── SF Pro (Apple system font) — cdnfonts.com + fallback local ─── -->
+<!-- En Apple devices se resuelve nativamente via -apple-system, BlinkMacSystemFont -->
+<!-- En Windows/Android carga SF Pro Display/Text via cdnfonts y SF Pro Rounded como respaldo -->
+<link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
+<link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/sf-pro-text" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/sf-mono" rel="stylesheet">
+
+<!-- Font-load detector: agrega clase 'sf-loaded' al body cuando SF Pro cargo -->
+<script>
+  (function(){
+    if (!('fonts' in document)) return;
+    Promise.all([
+      document.fonts.load('700 16px "SF Pro Display"'),
+      document.fonts.load('400 16px "Raleway"'),
+      document.fonts.load('700 16px "Oswald"'),
+    ]).then(()=>{ document.documentElement.classList.add('sf-loaded'); });
+  })();
+</script>
+
+<!-- ─── Phosphor Icons (MIT) — 6 pesos, 9072 iconos ─── -->
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css"/>
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css"/>
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css"/>
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      fontFamily: {
+        // HERO titles (font-display) → Oswald bold condensed, carácter deportivo WellCore
+        display: ['"Oswald"','"SF Pro Display"','-apple-system','BlinkMacSystemFont','ui-sans-serif','system-ui'],
+        // Body, UI, labels → Raleway (elegancia + personalidad WellCore) → SF Pro Text fallback
+        sans: ['"Raleway"','"SF Pro Text"','"SF Pro Display"','-apple-system','BlinkMacSystemFont','ui-sans-serif','system-ui'],
+        // Numbers / stats → SF Pro Display tabular (precision Apple)
+        data: ['"SF Pro Display"','-apple-system','BlinkMacSystemFont','ui-sans-serif','system-ui'],
+        mono: ['"SF Mono"','ui-monospace','SFMono-Regular','Menlo','monospace'],
+      },
+      colors: {
+        wc: {
+          bg: '#0a0a0b',
+          'bg-2': '#111114',
+          'bg-3': '#17171c',
+          border: '#26262e',
+          accent: '#DC2626',
+          'accent-soft': '#f87171',
+          text: '#ffffff',
+          'text-2': '#a1a1aa',
+          'text-3': '#71717a',
+        },
+      },
+      keyframes: {
+        pop: { '0%':{transform:'scale(.88)',opacity:'0'}, '70%':{transform:'scale(1.02)'}, '100%':{transform:'scale(1)',opacity:'1'} },
+        rise: { '0%':{transform:'translateY(16px)',opacity:'0'}, '100%':{transform:'translateY(0)',opacity:'1'} },
+        shimmer: { '0%':{backgroundPosition:'-200% 0'}, '100%':{backgroundPosition:'200% 0'} },
+        ping2: { '0%':{transform:'scale(1)',opacity:'.55'}, '100%':{transform:'scale(1.9)',opacity:'0'} },
+        drawcheck: { '0%':{strokeDashoffset:'80'}, '100%':{strokeDashoffset:'0'} },
+        drawring: { '0%':{strokeDashoffset:'301'}, '100%':{strokeDashoffset:'0'} },
+        breathe: { '0%,100%':{transform:'scale(1)',opacity:'.45'}, '50%':{transform:'scale(1.08)',opacity:'.85'} },
+        bar: { '0%':{width:'0%'}, '100%':{width:'var(--bar,100%)'} },
+        float: { '0%,100%':{transform:'translateY(0)'}, '50%':{transform:'translateY(-4px)'} },
+      },
+      animation: {
+        pop: 'pop .5s cubic-bezier(.2,.8,.2,1) both',
+        rise: 'rise .55s cubic-bezier(.2,.8,.2,1) both',
+        shimmer: 'shimmer 2.5s linear infinite',
+        ping2: 'ping2 1.8s ease-out infinite',
+        drawcheck: 'drawcheck .7s ease-out .25s forwards',
+        drawring: 'drawring 1.4s ease-out forwards',
+        breathe: 'breathe 2.6s ease-in-out infinite',
+        bar: 'bar 1.2s ease-out forwards',
+        float: 'float 3s ease-in-out infinite',
+      },
+    },
+  },
+}
+</script>
+<style>
+  /* ──── TRIPLE HYBRID: Oswald (hero) + Raleway (body) + SF Pro Display (data) ──── */
+  html,body{background:#0a0a0b;color:#fff;font-family:'Raleway','SF Pro Text','SF Pro Display',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;letter-spacing:-0.003em}
+  /* H1-H6 default: Raleway (los h2.font-display sobrescriben a Oswald) */
+  h1,h2,h3,h4,h5,h6{font-family:'Raleway','SF Pro Display',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;letter-spacing:-0.015em;font-weight:600}
+  /* .font-display → Oswald (hero titles tipo "Piernas", "Subiste de nivel", tag "WELLCORE") */
+  .font-display{font-family:'Oswald','SF Pro Display',-apple-system,BlinkMacSystemFont,system-ui,sans-serif !important;letter-spacing:0;font-weight:700}
+  /* .font-data → SF Pro Display tabular (numbers "10.0 kg", "+540 XP") */
+  .font-data{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,system-ui,sans-serif !important;font-feature-settings:'tnum' 1,'ss01' 1;letter-spacing:-0.01em}
+  code{font-family:'SF Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
+  .wc-grid-bg{background-image:radial-gradient(circle at 50% 0,rgba(220,38,38,.08),transparent 60%),linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:auto,24px 24px,24px 24px}
+  .pill{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04)}
+  .tick path{stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;fill:none;stroke-dasharray:80;stroke-dashoffset:80;animation:drawcheck .7s ease-out .25s forwards}
+  .ring-track{stroke:rgba(255,255,255,.06)}
+  .ring-accent{stroke:#DC2626;stroke-linecap:round;transform-origin:center;transform:rotate(-90deg);stroke-dasharray:301;animation:drawring 1.4s ease-out forwards}
+  .noise{position:absolute;inset:0;opacity:.04;pointer-events:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.7'/></svg>")}
+  .hero-accent{background:radial-gradient(circle at 20% 20%,rgba(220,38,38,.35),transparent 55%),linear-gradient(180deg,rgba(220,38,38,.18),rgba(220,38,38,.04))}
+  .hero-emerald{background:radial-gradient(circle at 20% 20%,rgba(16,185,129,.3),transparent 55%),linear-gradient(180deg,rgba(16,185,129,.16),rgba(16,185,129,.04))}
+  .hero-amber{background:radial-gradient(circle at 20% 20%,rgba(245,158,11,.32),transparent 55%),linear-gradient(180deg,rgba(245,158,11,.16),rgba(245,158,11,.04))}
+  .hero-violet{background:radial-gradient(circle at 20% 20%,rgba(139,92,246,.35),transparent 55%),linear-gradient(180deg,rgba(139,92,246,.16),rgba(139,92,246,.04))}
+  .hero-blue{background:radial-gradient(circle at 20% 20%,rgba(59,130,246,.32),transparent 55%),linear-gradient(180deg,rgba(59,130,246,.16),rgba(59,130,246,.04))}
+  .hologram{background:conic-gradient(from 210deg at 50% 50%, #DC2626, #f59e0b, #10b981, #3b82f6, #8b5cf6, #DC2626);filter:blur(0)}
+  .shine{background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.18) 50%,transparent 75%);background-size:220% 100%;animation:shimmer 3s linear infinite}
+  .bar-fill{animation:bar 1.2s cubic-bezier(.2,.8,.2,1) forwards}
+  .dot-ok{box-shadow:0 0 0 4px rgba(16,185,129,.15)}
+  .hex{clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+</style>
+</head>
+<body class="wc-grid-bg min-h-screen">
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- SVG SPRITE · 10 iconos custom WellCore · usar <svg><use href="#id"/></svg> -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+  <defs>
+    <!-- Gradients reusables -->
+    <linearGradient id="g-red" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f87171"/><stop offset="100%" stop-color="#DC2626"/></linearGradient>
+    <linearGradient id="g-amber" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fde68a"/><stop offset="60%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#b45309"/></linearGradient>
+    <linearGradient id="g-emerald" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6ee7b7"/><stop offset="100%" stop-color="#059669"/></linearGradient>
+    <linearGradient id="g-blue" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#93c5fd"/><stop offset="100%" stop-color="#2563eb"/></linearGradient>
+    <linearGradient id="g-violet" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c4b5fd"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient>
+
+    <!-- 1 · WellCore logo mark (square rounded + W pulse) -->
+    <symbol id="wc-logo" viewBox="0 0 48 48">
+      <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#g-red)"/>
+      <path d="M10 19 L16 33 L22 22 L26 22 L32 33 L38 19" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="24" cy="22" r="2" fill="#fff"/>
+    </symbol>
+
+    <!-- 2 · Hexagon medal (brand medallion, fill by number) -->
+    <symbol id="wc-medal-hex" viewBox="0 0 48 48">
+      <polygon points="24,3 43,14 43,34 24,45 5,34 5,14" fill="url(#g-amber)" stroke="#fef3c7" stroke-width="0.8"/>
+      <polygon points="24,9 37,17 37,31 24,39 11,31 11,17" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="0.7"/>
+    </symbol>
+
+    <!-- 3 · XP Lightning bolt -->
+    <symbol id="wc-xp-bolt" viewBox="0 0 48 48">
+      <path d="M28 3 L10 27 H22 L20 45 L38 21 H26 Z" fill="url(#g-amber)" stroke="#fff" stroke-opacity="0.3" stroke-width="0.6" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- 4 · Flame streak -->
+    <symbol id="wc-flame" viewBox="0 0 48 48">
+      <path d="M24 4 C 30 14, 38 18, 38 30 C 38 40, 31 44, 24 44 C 17 44, 10 40, 10 30 C 10 23, 16 20, 19 14 C 21 18, 21 22, 23 20 C 26 16, 25 11, 24 4 Z" fill="url(#g-red)" stroke="#fca5a5" stroke-width="0.8"/>
+      <path d="M24 18 C 27 24, 31 26, 31 32 C 31 37, 27 39, 24 39 C 21 39, 17 37, 17 32 C 17 28, 22 26, 24 18 Z" fill="#fbbf24"/>
+    </symbol>
+
+    <!-- 5 · Camera frame (photos) -->
+    <symbol id="wc-camera" viewBox="0 0 48 48">
+      <rect x="3" y="11" width="42" height="30" rx="6" fill="url(#g-emerald)" opacity="0.15"/>
+      <rect x="3" y="11" width="42" height="30" rx="6" fill="none" stroke="url(#g-emerald)" stroke-width="2.2"/>
+      <path d="M16 11 L19 6 H29 L32 11" fill="none" stroke="url(#g-emerald)" stroke-width="2.2" stroke-linejoin="round"/>
+      <circle cx="24" cy="26" r="8" fill="none" stroke="url(#g-emerald)" stroke-width="2"/>
+      <circle cx="24" cy="26" r="3" fill="url(#g-emerald)"/>
+      <circle cx="38" cy="18" r="1.5" fill="url(#g-emerald)"/>
+    </symbol>
+
+    <!-- 6 · Barbell (workout) -->
+    <symbol id="wc-barbell" viewBox="0 0 48 48">
+      <rect x="2" y="16" width="7" height="16" rx="2" fill="url(#g-red)"/>
+      <rect x="39" y="16" width="7" height="16" rx="2" fill="url(#g-red)"/>
+      <rect x="9" y="19" width="4" height="10" rx="1" fill="url(#g-red)" opacity="0.85"/>
+      <rect x="35" y="19" width="4" height="10" rx="1" fill="url(#g-red)" opacity="0.85"/>
+      <rect x="13" y="22.5" width="22" height="3" rx="1.5" fill="url(#g-red)"/>
+    </symbol>
+
+    <!-- 7 · Check premium (brand success) -->
+    <symbol id="wc-check" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="22" fill="url(#g-emerald)" opacity="0.15"/>
+      <circle cx="24" cy="24" r="16" fill="url(#g-emerald)"/>
+      <path d="M15 24 L22 31 L33 18" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- 8 · Coach shield -->
+    <symbol id="wc-coach" viewBox="0 0 48 48">
+      <path d="M24 3 L42 9 V24 C 42 34, 34 42, 24 45 C 14 42, 6 34, 6 24 V9 Z" fill="url(#g-blue)" opacity="0.18"/>
+      <path d="M24 3 L42 9 V24 C 42 34, 34 42, 24 45 C 14 42, 6 34, 6 24 V9 Z" fill="none" stroke="url(#g-blue)" stroke-width="2.3" stroke-linejoin="round"/>
+      <circle cx="24" cy="20" r="5.5" fill="url(#g-blue)"/>
+      <path d="M14 34 C 14 29, 19 27, 24 27 C 29 27, 34 29, 34 34" fill="url(#g-blue)"/>
+    </symbol>
+
+    <!-- 9 · WellCoin (referral currency) -->
+    <symbol id="wc-coin" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="22" fill="url(#g-amber)"/>
+      <circle cx="24" cy="24" r="17" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="1"/>
+      <path d="M13 19 L17 30 L21 22 L24 27 L27 22 L31 30 L35 19" stroke="#fff" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- 10 · Level ring (progress) -->
+    <symbol id="wc-level-ring" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="20" fill="url(#g-violet)" opacity="0.12"/>
+      <circle cx="24" cy="24" r="18" fill="none" stroke="rgba(139,92,246,0.2)" stroke-width="3"/>
+      <circle cx="24" cy="24" r="18" fill="none" stroke="url(#g-violet)" stroke-width="3" stroke-linecap="round" stroke-dasharray="95 18" transform="rotate(-90 24 24)"/>
+    </symbol>
+  </defs>
+</svg>
+
+<style>
+  /* Size defaults para <i class="ph ph-*"> y <svg.wc-icon> */
+  [class*="ph-"]:before, [class^="ph-"]:before { font-size: inherit; line-height: 1; }
+  .wc-icon { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; }
+</style>
+
+<!-- HEADER -->
+<header class="mx-auto max-w-7xl px-4 pt-10 pb-6 sm:px-6">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <p class="text-xs font-semibold tracking-[0.22em] text-wc-accent uppercase">WellCore · Design System de Celebraciones</p>
+      <h1 class="mt-2 font-display text-4xl tracking-wide sm:text-5xl">Bento modals · Phosphor + SVG custom</h1>
+      <p class="mt-2 max-w-2xl text-sm text-wc-text-2">15 modales reales de la plataforma auditados y rediseñados. Tipografía triple-hybrid: Oswald + Raleway + SF Pro. Iconos Phosphor + 10 SVGs custom WellCore. Bento 6-col con hero card 4×2.</p>
+    </div>
+    <div class="flex flex-col items-end gap-2">
+      <div class="flex items-center gap-2 pill rounded-full px-3 py-1.5 text-xs">
+        <span class="inline-block h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_0_4px_rgba(52,211,153,.2)]"></span>
+        <span class="text-wc-text-2">Grid 6-col · <strong class="text-white">Oswald + Raleway + SF Pro Data</strong></span>
+      </div>
+      <div class="sf-status flex items-center gap-2 rounded-full border border-red-500/40 bg-red-500/10 px-3 py-1 text-[10px]" id="sf-status">
+        <span class="sf-dot inline-block h-2 w-2 rounded-full bg-red-400 animate-pulse"></span>
+        <span class="sf-label text-red-200">SF Pro cargando... (fallback activo)</span>
+      </div>
+      <style>
+        html.sf-loaded #sf-status { border-color: rgba(34, 197, 94, 0.4); background: rgba(34, 197, 94, 0.1); }
+        html.sf-loaded #sf-status .sf-dot { background: rgb(74, 222, 128); animation: none; box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.2); }
+        html.sf-loaded #sf-status .sf-label::before { content: "✓ Oswald + Raleway + SF Pro cargadas"; color: rgb(187, 247, 208); }
+        html.sf-loaded #sf-status .sf-label { font-size: 0; }
+      </style>
+    </div>
+  </div>
+</header>
+
+
+<!-- =========================================================== -->
+<!-- AUDITORIA: 15 MODALES REALES (grep-verificados) + 3 bonus  -->
+<!-- =========================================================== -->
+<section class="mx-auto max-w-7xl px-4 pb-12 sm:px-6">
+  <div class="rounded-2xl border border-wc-border bg-gradient-to-br from-wc-accent/10 via-wc-bg-2 to-wc-bg-2 p-6 mb-6">
+    <p class="text-xs font-semibold tracking-[0.22em] text-wc-accent uppercase">Auditoría real · 15 modales verificados con grep</p>
+    <h2 class="mt-2 font-display text-4xl tracking-wide">Inventario 1-a-1</h2>
+    <p class="mt-2 max-w-3xl text-sm text-wc-text-2">Cada modal/celebración de éxito que existe hoy — evidencia con archivo y línea. El #15 <strong class="text-violet-300">LevelUpCelebration</strong> se añadió en esta sesión (antes no existía). Revisa y marca qué rediseñar.</p>
+    <div class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 text-[10px]">
+      <div class="rounded-lg pill p-2"><p class="text-wc-text-3 uppercase tracking-wider">Full-modal</p><p class="font-data text-lg font-bold">10</p></div>
+      <div class="rounded-lg pill p-2"><p class="text-wc-text-3 uppercase tracking-wider">Toast plano</p><p class="font-data text-lg font-bold">4</p></div>
+      <div class="rounded-lg pill p-2"><p class="text-wc-text-3 uppercase tracking-wider">Nuevo</p><p class="font-data text-lg font-bold text-violet-300">1</p></div>
+      <div class="rounded-lg pill p-2"><p class="text-wc-text-3 uppercase tracking-wider">Bonus / estado</p><p class="font-data text-lg font-bold text-wc-text-3">3</p></div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+    <!-- 1. ProgressPhotos.vue -->
+    <article class="rounded-2xl border border-wc-border bg-wc-bg-2 overflow-hidden">
+      <header class="flex items-center justify-between gap-2 px-4 py-3 border-b border-wc-border">
+        <div>
+          <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-wc-accent">01 / 15</p>
+          <h3 class="font-display text-lg tracking-wide">Fotos guardadas</h3>
+        </div>
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-emerald-300">→ Bento 02</span>
+      </header>
+      <div class="grid grid-cols-2 gap-0 divide-x divide-wc-border">
+        <!-- ACTUAL -->
+        <div class="p-4 bg-[#0a0a0e]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-text-3 mb-2">Actual</p>
+          <div class="rounded-xl bg-gradient-to-br from-[#0C1015] to-[#131F2B] p-4 text-center">
+            <i class="ph-fill ph-image-square text-emerald-300" style="font-size:26px"></i>
+            <p class="text-[8px] tracking-[0.28em] text-wc-text-3 uppercase mt-2">WellCore ·</p>
+            <p class="font-display text-base mt-1">Fotos guardadas!</p>
+            <div class="mt-2 rounded-lg bg-white/5 py-2">
+              <p class="font-data text-xl font-bold">+3</p>
+              <p class="text-[8px] text-wc-text-3">ángulos registrados</p>
+            </div>
+            <p class="mt-2 text-[9px] text-wc-text-2">Tu progreso queda registrado.</p>
+            <button class="mt-2 w-full rounded-md bg-wc-accent py-1.5 text-[10px] font-bold">LISTO!</button>
+          </div>
+        </div>
+        <!-- PROPUESTA -->
+        <div class="p-4 bg-[#070709]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-emerald-400 mb-2">Bento 02</p>
+          <div class="rounded-xl bg-[#0b0b10] border border-wc-border p-3">
+            <div class="flex items-center gap-1.5">
+              <svg class="wc-icon" style="width:16px;height:16px"><use href="#wc-logo"/></svg>
+              <span class="font-display text-[10px] tracking-widest">WELLCORE</span>
+            </div>
+            <p class="mt-2 font-display text-base leading-none">Registro<br/><span class="text-wc-text-3 text-sm">guardado</span></p>
+            <div class="mt-2 grid grid-cols-6 gap-1 text-[8px]">
+              <div class="col-span-4 row-span-2 rounded-lg hero-emerald border border-emerald-500/30 p-2">
+                <p class="text-[7px] text-emerald-300 uppercase tracking-wider">Hoy · 3 ángulos</p>
+                <div class="mt-1 grid grid-cols-3 gap-0.5">
+                  <div class="aspect-[3/4] bg-wc-bg-3 rounded-sm"></div>
+                  <div class="aspect-[3/4] bg-wc-bg-3 rounded-sm"></div>
+                  <div class="aspect-[3/4] bg-wc-bg-3 rounded-sm"></div>
+                </div>
+              </div>
+              <div class="col-span-2 rounded-lg bg-wc-bg-3 border border-wc-border p-1.5"><p class="text-[7px] text-wc-text-3">Total</p><p class="font-data text-sm font-bold">+3</p></div>
+              <div class="col-span-2 rounded-lg bg-wc-bg-3 border border-wc-border p-1.5"><p class="text-[7px] text-wc-text-3">Histórico</p><p class="font-data text-sm font-bold">48</p></div>
+            </div>
+            <button class="mt-2 w-full rounded-md bg-wc-accent py-1.5 text-[9px] font-bold">Ver línea</button>
+          </div>
+        </div>
+      </div>
+      <footer class="px-4 py-2 border-t border-wc-border bg-wc-bg text-[10px] text-wc-text-3 flex items-center justify-between">
+        <code class="text-wc-text-2">ProgressPhotos.vue</code>
+        <span>Post-upload 3 ángulos · auto-dismiss 4s</span>
+      </footer>
+    </article>
+
+    <!-- 2. MedalUnlockCelebration.vue -->
+    <article class="rounded-2xl border border-wc-border bg-wc-bg-2 overflow-hidden">
+      <header class="flex items-center justify-between gap-2 px-4 py-3 border-b border-wc-border">
+        <div>
+          <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-wc-accent">02 / 15</p>
+          <h3 class="font-display text-lg tracking-wide">Medalla desbloqueada</h3>
+        </div>
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-amber-300">→ Bento 03</span>
+      </header>
+      <div class="grid grid-cols-2 gap-0 divide-x divide-wc-border">
+        <div class="p-4 bg-[#0a0a0e]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-text-3 mb-2">Actual</p>
+          <div class="rounded-xl bg-black p-4 text-center">
+            <div class="relative mx-auto h-16 w-16">
+              <div class="hex h-16 w-16 bg-amber-500 flex items-center justify-center">
+                <span class="font-display text-xl">7</span>
+              </div>
+            </div>
+            <p class="mt-2 text-[8px] tracking-[0.28em] uppercase text-amber-400">Medalla desbloqueada</p>
+            <p class="mt-1 font-display text-sm">Semana de Fuego</p>
+            <p class="text-[9px] text-wc-text-3">7 días consecutivos</p>
+            <div class="mt-2 rounded-full bg-emerald-500/20 text-emerald-300 py-1 text-[9px] font-bold">+200 XP</div>
+            <button class="mt-2 w-full rounded-md bg-wc-accent py-1.5 text-[10px] font-bold">CONTINUAR</button>
+          </div>
+        </div>
+        <div class="p-4 bg-[#070709]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-amber-400 mb-2">Bento 03</p>
+          <div class="rounded-xl bg-[#0b0b10] border border-wc-border p-3">
+            <div class="flex items-center gap-1.5"><svg class="wc-icon" style="width:16px;height:16px"><use href="#wc-medal-hex"/></svg><span class="font-display text-[10px] tracking-widest">WELLCORE</span></div>
+            <p class="mt-2 font-display text-base leading-none">Semana<br/><span class="text-amber-400 text-sm">de Fuego</span></p>
+            <div class="mt-2 grid grid-cols-6 gap-1 text-[8px]">
+              <div class="col-span-4 row-span-2 rounded-lg hero-amber border border-amber-500/30 p-2 flex items-center justify-center">
+                <div class="hex h-10 w-10 bg-gradient-to-br from-amber-300 to-amber-600 flex items-center justify-center"><span class="font-display text-sm">7</span></div>
+              </div>
+              <div class="col-span-2 rounded-lg bg-wc-bg-3 border border-amber-500/20 p-1.5"><p class="text-[7px] text-amber-400">XP</p><p class="font-data text-sm font-bold">+200</p></div>
+              <div class="col-span-2 rounded-lg bg-wc-bg-3 border border-wc-border p-1.5"><p class="text-[7px] text-wc-text-3">Nivel</p><p class="font-data text-sm font-bold">3</p></div>
+            </div>
+            <button class="mt-2 w-full rounded-md bg-wc-accent py-1.5 text-[9px] font-bold">Ver logros</button>
+          </div>
+        </div>
+      </div>
+      <footer class="px-4 py-2 border-t border-wc-border bg-wc-bg text-[10px] text-wc-text-3 flex items-center justify-between">
+        <code class="text-wc-text-2">MedalUnlockCelebration.vue</code>
+        <span>Componente reusable · auto-close 4.2s</span>
+      </footer>
+    </article>
+
+    <!-- 3. WorkoutSummary.vue (Client) -->
+    <article class="rounded-2xl border border-wc-border bg-wc-bg-2 overflow-hidden">
+      <header class="flex items-center justify-between gap-2 px-4 py-3 border-b border-wc-border">
+        <div>
+          <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-wc-accent">03 / 15</p>
+          <h3 class="font-display text-lg tracking-wide">Sesión completa (Client)</h3>
+        </div>
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-wc-accent-soft">→ Bento 01</span>
+      </header>
+      <div class="grid grid-cols-2 gap-0 divide-x divide-wc-border">
+        <div class="p-4 bg-[#0a0a0e]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-text-3 mb-2">Actual</p>
+          <div class="rounded-xl bg-gradient-to-br from-[#0C1015] to-[#131F2B] p-4 text-center">
+            <i class="ph-fill ph-trophy text-amber-400" style="font-size:26px"></i>
+            <p class="text-[8px] tracking-[0.28em] uppercase text-wc-text-3 mt-1">WELLCORE</p>
+            <p class="font-display text-base mt-1">¡Lo lograste!</p>
+            <p class="text-[9px] text-wc-text-3">Piernas — Cuádriceps...</p>
+            <div class="mt-2 grid grid-cols-2 gap-1 text-[9px]">
+              <div class="rounded bg-emerald-500/10 p-1"><p>DURACIÓN</p><p class="font-bold">1:00</p></div>
+              <div class="rounded bg-amber-500/10 p-1"><p>PR</p><p class="font-bold">10.0 kg</p></div>
+              <div class="rounded bg-blue-500/10 p-1"><p>REPS</p><p class="font-bold">4</p></div>
+              <div class="rounded bg-violet-500/10 p-1"><p>SETS</p><p class="font-bold">1/1</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="p-4 bg-[#070709]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-accent-soft mb-2">Bento 01</p>
+          <div class="rounded-xl bg-[#0b0b10] border border-wc-border p-3">
+            <div class="flex items-center gap-1.5"><svg class="wc-icon" style="width:16px;height:16px"><use href="#wc-logo"/></svg><span class="font-display text-[10px] tracking-widest">WELLCORE</span></div>
+            <p class="mt-2 font-display text-base leading-none">Piernas<br/><span class="text-wc-text-3 text-sm">día 1/5</span></p>
+            <div class="mt-2 grid grid-cols-6 gap-1 text-[8px]">
+              <div class="col-span-4 row-span-2 rounded-lg hero-accent border border-wc-accent/30 p-2">
+                <p class="text-[7px] text-wc-accent-soft uppercase tracking-wider">PR peso</p>
+                <p class="font-data text-lg font-bold mt-1">10.0 kg</p>
+              </div>
+              <div class="col-span-2 rounded-lg bg-wc-bg-3 border border-wc-border p-1.5"><p class="text-[7px] text-wc-text-3">Dur.</p><p class="font-data text-sm font-bold">1:00</p></div>
+              <div class="col-span-2 rounded-lg bg-wc-bg-3 border border-wc-border p-1.5"><p class="text-[7px] text-wc-text-3">Reps</p><p class="font-data text-sm font-bold">4</p></div>
+            </div>
+            <button class="mt-2 w-full rounded-md bg-wc-accent py-1.5 text-[9px] font-bold">Ver detalle</button>
+          </div>
+        </div>
+      </div>
+      <footer class="px-4 py-2 border-t border-wc-border bg-wc-bg text-[10px] text-wc-text-3 flex items-center justify-between">
+        <code class="text-wc-text-2">WorkoutSummary.vue (Client)</code>
+        <span>Post-sesión · confetti 4s</span>
+      </footer>
+    </article>
+
+    <!-- 4. WorkoutSummary.vue (Rise) -->
+    <article class="rounded-2xl border border-wc-border bg-wc-bg-2 overflow-hidden">
+      <header class="flex items-center justify-between gap-2 px-4 py-3 border-b border-wc-border">
+        <div>
+          <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-wc-accent">04 / 15</p>
+          <h3 class="font-display text-lg tracking-wide">Sesión completa (Rise)</h3>
+        </div>
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-wc-accent-soft">→ Bento 01</span>
+      </header>
+      <div class="grid grid-cols-2 gap-0 divide-x divide-wc-border">
+        <div class="p-4 bg-[#0a0a0e]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-text-3 mb-2">Actual</p>
+          <div class="rounded-xl bg-gradient-to-br from-[#0C1015] to-[#131F2B] p-4 text-center">
+            <i class="ph-fill ph-lightning text-wc-accent-soft" style="font-size:26px"></i>
+            <p class="mt-1 font-display text-sm">Sesión RISE completa</p>
+            <p class="text-[9px] text-wc-text-3">Día 23 — Semana 4</p>
+            <div class="mt-2 h-12 rounded bg-wc-bg flex items-end gap-0.5 p-1">
+              <span class="w-1 h-3 bg-wc-accent"></span><span class="w-1 h-5 bg-wc-accent"></span><span class="w-1 h-4 bg-wc-accent"></span><span class="w-1 h-7 bg-wc-accent"></span><span class="w-1 h-6 bg-wc-accent"></span><span class="w-1 h-9 bg-wc-accent"></span><span class="w-1 h-8 bg-wc-accent/60"></span>
+            </div>
+            <p class="text-[8px] text-wc-text-3 mt-1">¿Cómo te sentiste?</p>
+          </div>
+        </div>
+        <div class="p-4 bg-[#070709]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-accent-soft mb-2">Bento 01 adaptado</p>
+          <div class="rounded-xl bg-[#0b0b10] border border-wc-border p-3">
+            <div class="flex items-center gap-1.5"><svg class="wc-icon" style="width:16px;height:16px"><use href="#wc-logo"/></svg><span class="font-display text-[10px] tracking-widest">RISE</span></div>
+            <p class="mt-2 font-display text-base leading-none">Día 23<br/><span class="text-wc-text-3 text-sm">semana 4</span></p>
+            <div class="mt-2 grid grid-cols-6 gap-1 text-[8px]">
+              <div class="col-span-4 row-span-2 rounded-lg hero-accent border border-wc-accent/30 p-2">
+                <p class="text-[7px] text-wc-accent-soft uppercase tracking-wider">Volumen semanal</p>
+                <div class="mt-1 h-8 flex items-end gap-0.5">
+                  <span class="w-1 h-2 bg-wc-accent/40 rounded-sm"></span><span class="w-1 h-3 bg-wc-accent/60 rounded-sm"></span><span class="w-1 h-4 bg-wc-accent/80 rounded-sm"></span><span class="w-1 h-6 bg-wc-accent rounded-sm"></span><span class="w-1 h-5 bg-wc-accent rounded-sm"></span>
+                </div>
+              </div>
+              <div class="col-span-2 rounded-lg bg-wc-bg-3 border p-1.5"><p class="text-[7px] text-wc-text-3">Adherencia</p><p class="font-data text-sm font-bold">92%</p></div>
+              <div class="col-span-2 rounded-lg bg-wc-bg-3 border p-1.5"><p class="text-[7px] text-wc-text-3">Racha</p><p class="font-data text-sm font-bold">12d</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="px-4 py-2 border-t border-wc-border bg-wc-bg text-[10px] text-wc-text-3 flex items-center justify-between">
+        <code class="text-wc-text-2">WorkoutSummary.vue (Rise)</code>
+        <span>Post-sesión RISE · volumen histórico</span>
+      </footer>
+    </article>
+
+    <!-- 5. CheckinForm.vue -->
+    <article class="rounded-2xl border border-wc-border bg-wc-bg-2 overflow-hidden">
+      <header class="flex items-center justify-between gap-2 px-4 py-3 border-b border-wc-border">
+        <div>
+          <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-wc-accent">05 / 15</p>
+          <h3 class="font-display text-lg tracking-wide">Check-in enviado</h3>
+        </div>
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-blue-300">→ Bento 04</span>
+      </header>
+      <div class="grid grid-cols-2 gap-0 divide-x divide-wc-border">
+        <div class="p-4 bg-[#0a0a0e]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-text-3 mb-2">Actual</p>
+          <div class="rounded-xl bg-gradient-to-br from-[#0C1015] to-[#131F2B] p-4 text-center">
+            <svg class="wc-icon" style="width:26px;height:26px"><use href="#wc-barbell"/></svg>
+            <p class="mt-1 font-display text-sm">¡Check-in completo!</p>
+            <p class="text-[9px] text-wc-text-3 mt-1">Tu coach revisa en 24 h</p>
+            <div class="mt-2 rounded bg-emerald-500/10 p-1 text-[9px]">
+              <p>BIENESTAR: 8/10</p>
+              <p>DÍAS: 4/5</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-4 bg-[#070709]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-blue-400 mb-2">Bento 04</p>
+          <div class="rounded-xl bg-[#0b0b10] border border-wc-border p-3">
+            <div class="flex items-center gap-1.5"><svg class="wc-icon" style="width:16px;height:16px"><use href="#wc-coach"/></svg><span class="font-display text-[10px] tracking-widest">WELLCORE</span></div>
+            <p class="mt-2 font-display text-base leading-none">Check-in<br/><span class="text-wc-text-3 text-sm">enviado</span></p>
+            <div class="mt-2 grid grid-cols-6 gap-1 text-[8px]">
+              <div class="col-span-4 row-span-2 rounded-lg hero-blue border border-blue-500/30 p-2">
+                <div class="flex items-center gap-1.5"><div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center font-display text-[8px]">D</div><p class="text-[7px]">Tu coach · Daniel</p></div>
+                <div class="mt-1.5 h-1.5 rounded-full bg-wc-border"><div class="h-full w-[86%] rounded-full bg-blue-500"></div></div>
+                <p class="text-[7px] text-blue-200 mt-0.5">86% objetivos</p>
+              </div>
+              <div class="col-span-2 rounded-lg bg-wc-bg-3 border p-1.5"><p class="text-[7px] text-wc-text-3">Peso</p><p class="font-data text-sm font-bold">49.0</p></div>
+              <div class="col-span-2 rounded-lg bg-wc-bg-3 border p-1.5"><p class="text-[7px] text-wc-text-3">Ánimo</p><p class="font-data text-sm font-bold">8/10</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="px-4 py-2 border-t border-wc-border bg-wc-bg text-[10px] text-wc-text-3 flex items-center justify-between">
+        <code class="text-wc-text-2">CheckinForm.vue</code>
+        <span>Post-submit semanal</span>
+      </footer>
+    </article>
+
+    <!-- 6. VideoCheckinUpload.vue -->
+    <article class="rounded-2xl border border-wc-border bg-wc-bg-2 overflow-hidden">
+      <header class="flex items-center justify-between gap-2 px-4 py-3 border-b border-wc-border">
+        <div>
+          <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-wc-accent">06 / 15</p>
+          <h3 class="font-display text-lg tracking-wide">Video check-in subido</h3>
+        </div>
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-blue-300">→ Bento 04 mini</span>
+      </header>
+      <div class="grid grid-cols-2 gap-0 divide-x divide-wc-border">
+        <div class="p-4 bg-[#0a0a0e]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-text-3 mb-2">Actual — toast</p>
+          <div class="rounded-lg bg-emerald-500/10 border border-emerald-500/30 p-3 flex items-center gap-2">
+            <svg class="wc-icon" style="width:24px;height:24px"><use href="#wc-check"/></svg>
+            <p class="text-[10px] text-emerald-200">Check-in enviado correctamente. Tu coach lo verá pronto.</p>
+          </div>
+        </div>
+        <div class="p-4 bg-[#070709]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-blue-400 mb-2">Toast compacto</p>
+          <div class="rounded-lg bg-[#0b0b10] border border-blue-500/30 p-3 flex items-center gap-2">
+            <div class="h-8 w-8 rounded-lg hero-blue border border-blue-500/30 flex items-center justify-center">
+              <svg class="h-4 w-4 text-blue-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12.5 10 17.5 19 7.5"/></svg>
+            </div>
+            <div class="flex-1">
+              <p class="text-[10px] font-semibold">Video enviado</p>
+              <p class="text-[9px] text-wc-text-3">Coach revisa en 24 h</p>
+            </div>
+            <span class="pill rounded-full px-1.5 py-0.5 text-[8px] text-blue-300">1.2 MB</span>
+          </div>
+        </div>
+      </div>
+      <footer class="px-4 py-2 border-t border-wc-border bg-wc-bg text-[10px] text-wc-text-3 flex items-center justify-between">
+        <code class="text-wc-text-2">VideoCheckinUpload.vue</code>
+        <span>Flash notification · 3.5s</span>
+      </footer>
+    </article>
+
+    <!-- 7. HabitTracker.vue -->
+    <article class="rounded-2xl border border-wc-border bg-wc-bg-2 overflow-hidden">
+      <header class="flex items-center justify-between gap-2 px-4 py-3 border-b border-wc-border">
+        <div>
+          <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-wc-accent">07 / 15</p>
+          <h3 class="font-display text-lg tracking-wide">Hábitos completos (día)</h3>
+        </div>
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-emerald-300">→ Bento nuevo</span>
+      </header>
+      <div class="grid grid-cols-2 gap-0 divide-x divide-wc-border">
+        <div class="p-4 bg-[#0a0a0e]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-text-3 mb-2">Actual — confetti</p>
+          <div class="rounded-xl bg-black p-4 relative overflow-hidden">
+            <i class="ph-fill ph-confetti absolute top-2 left-2 text-amber-400" style="font-size:12px"></i>
+            <i class="ph-fill ph-confetti absolute top-4 right-4 text-amber-400" style="font-size:12px"></i>
+            <i class="ph-fill ph-confetti absolute bottom-3 left-6 text-amber-400" style="font-size:12px"></i>
+            <div class="text-center">
+              <svg class="wc-icon mx-auto" style="width:28px;height:28px"><use href="#wc-flame"/></svg>
+              <p class="font-display text-sm mt-1">Día perfecto</p>
+              <p class="text-[9px] text-wc-text-3">6/6 hábitos</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-4 bg-[#070709]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-emerald-400 mb-2">Bento hábitos</p>
+          <div class="rounded-xl bg-[#0b0b10] border border-wc-border p-3">
+            <div class="flex items-center gap-1.5"><svg class="wc-icon" style="width:16px;height:16px"><use href="#wc-logo"/></svg><span class="font-display text-[10px] tracking-widest">WELLCORE</span></div>
+            <p class="mt-2 font-display text-base leading-none">Día<br/><span class="text-emerald-400 text-sm">perfecto</span></p>
+            <div class="mt-2 grid grid-cols-6 gap-1 text-[8px]">
+              <div class="col-span-4 row-span-2 rounded-lg hero-emerald border border-emerald-500/30 p-2">
+                <p class="text-[7px] text-emerald-300 uppercase tracking-wider">6 de 6 hábitos</p>
+                <div class="mt-1 grid grid-cols-6 gap-0.5">
+                  <span class="h-1.5 bg-emerald-400 rounded-full"></span><span class="h-1.5 bg-emerald-400 rounded-full"></span><span class="h-1.5 bg-emerald-400 rounded-full"></span><span class="h-1.5 bg-emerald-400 rounded-full"></span><span class="h-1.5 bg-emerald-400 rounded-full"></span><span class="h-1.5 bg-emerald-400 rounded-full"></span>
+                </div>
+                <div class="mt-1 grid grid-cols-3 gap-0.5 text-[6px]">
+                  <i class="ph-fill ph-drop text-emerald-300" style="font-size:14px"></i><i class="ph-fill ph-moon-stars text-emerald-300" style="font-size:14px"></i><svg class="wc-icon" style="width:14px;height:14px"><use href="#wc-barbell"/></svg><i class="ph-fill ph-carrot text-emerald-300" style="font-size:14px"></i><i class="ph-fill ph-pill text-emerald-300" style="font-size:14px"></i><i class="ph-fill ph-person-simple text-emerald-300" style="font-size:14px"></i>
+                </div>
+              </div>
+              <div class="col-span-2 rounded-lg bg-wc-bg-3 border p-1.5"><p class="text-[7px] text-wc-text-3">Racha</p><p class="font-data text-sm font-bold">3d</p></div>
+              <div class="col-span-2 rounded-lg bg-wc-bg-3 border p-1.5"><p class="text-[7px] text-wc-text-3">Mes</p><p class="font-data text-sm font-bold">18/30</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="px-4 py-2 border-t border-wc-border bg-wc-bg text-[10px] text-wc-text-3 flex items-center justify-between">
+        <code class="text-wc-text-2">HabitTracker.vue</code>
+        <span>Overlay confetti · allComplete=true</span>
+      </footer>
+    </article>
+
+    <!-- 8. Measurements.vue (Rise) -->
+    <article class="rounded-2xl border border-wc-border bg-wc-bg-2 overflow-hidden">
+      <header class="flex items-center justify-between gap-2 px-4 py-3 border-b border-wc-border">
+        <div>
+          <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-wc-accent">08 / 15</p>
+          <h3 class="font-display text-lg tracking-wide">Mediciones guardadas</h3>
+        </div>
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-wc-text-2">→ Toast simple</span>
+      </header>
+      <div class="grid grid-cols-2 gap-0 divide-x divide-wc-border">
+        <div class="p-4 bg-[#0a0a0e]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-text-3 mb-2">Actual — toast plano</p>
+          <div class="rounded-md bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-[10px] text-emerald-300">✓ Mediciones guardadas</div>
+        </div>
+        <div class="p-4 bg-[#070709]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-emerald-400 mb-2">Toast enriquecido</p>
+          <div class="rounded-lg bg-[#0b0b10] border border-emerald-500/30 p-2.5 flex items-center gap-2">
+            <div class="h-7 w-7 rounded-md hero-emerald border border-emerald-500/30 flex items-center justify-center text-emerald-300 text-xs">✓</div>
+            <div class="flex-1">
+              <p class="text-[10px] font-semibold">Mediciones guardadas</p>
+              <div class="flex items-center gap-2 text-[8px] text-wc-text-3 mt-0.5">
+                <span>−0.3 kg</span><span>·</span><span>cintura −1 cm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="px-4 py-2 border-t border-wc-border bg-wc-bg text-[10px] text-wc-text-3 flex items-center justify-between">
+        <code class="text-wc-text-2">Measurements.vue (Rise)</code>
+        <span>Toast simple · 3s</span>
+      </footer>
+    </article>
+
+    <!-- 9. MetricsTracker.vue -->
+    <article class="rounded-2xl border border-wc-border bg-wc-bg-2 overflow-hidden">
+      <header class="flex items-center justify-between gap-2 px-4 py-3 border-b border-wc-border">
+        <div>
+          <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-wc-accent">09 / 15</p>
+          <h3 class="font-display text-lg tracking-wide">Métricas registradas</h3>
+        </div>
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-emerald-300">→ Bento mini stats</span>
+      </header>
+      <div class="grid grid-cols-2 gap-0 divide-x divide-wc-border">
+        <div class="p-4 bg-[#0a0a0e]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-text-3 mb-2">Actual</p>
+          <div class="rounded-xl bg-gradient-to-br from-[#0C1015] to-[#131F2B] p-3 text-center">
+            <i class="ph-fill ph-chart-line-up text-emerald-400" style="font-size:22px"></i>
+            <p class="font-display text-sm mt-1">Métricas guardadas</p>
+            <p class="text-[9px] text-wc-text-3">Peso · Cintura · Cadera</p>
+          </div>
+        </div>
+        <div class="p-4 bg-[#070709]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-emerald-400 mb-2">Bento mini</p>
+          <div class="rounded-xl bg-[#0b0b10] border border-wc-border p-3">
+            <p class="font-display text-sm leading-none">Registrado<br/><span class="text-wc-text-3 text-xs">hoy</span></p>
+            <div class="mt-2 grid grid-cols-3 gap-1 text-[8px]">
+              <div class="rounded-lg hero-emerald border border-emerald-500/30 p-1.5"><p class="text-[7px] text-emerald-300">Peso</p><p class="font-data text-sm font-bold">49.0<span class="text-[8px]">kg</span></p><p class="text-[7px] text-emerald-400">−0.3</p></div>
+              <div class="rounded-lg bg-wc-bg-3 border p-1.5"><p class="text-[7px] text-wc-text-3">Cintura</p><p class="font-data text-sm font-bold">72<span class="text-[8px]">cm</span></p></div>
+              <div class="rounded-lg bg-wc-bg-3 border p-1.5"><p class="text-[7px] text-wc-text-3">Cadera</p><p class="font-data text-sm font-bold">94<span class="text-[8px]">cm</span></p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="px-4 py-2 border-t border-wc-border bg-wc-bg text-[10px] text-wc-text-3 flex items-center justify-between">
+        <code class="text-wc-text-2">MetricsTracker.vue</code>
+        <span>Overlay con confetti</span>
+      </footer>
+    </article>
+
+    <!-- 10. LevelUpCelebration.vue — IMPLEMENTADO en esta sesión -->
+    <article class="rounded-2xl border border-violet-500/40 bg-wc-bg-2 overflow-hidden ring-1 ring-violet-500/20">
+      <header class="flex items-center justify-between gap-2 px-4 py-3 border-b border-wc-border">
+        <div>
+          <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-violet-400">10 / 15 · ✨ NUEVO</p>
+          <h3 class="font-display text-lg tracking-wide">Level up</h3>
+        </div>
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-violet-300 bg-violet-500/10 border-violet-500/30">✓ implementado</span>
+      </header>
+      <div class="grid grid-cols-2 gap-0 divide-x divide-wc-border">
+        <div class="p-4 bg-[#0a0a0e]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-text-3 mb-2">Antes — no existía</p>
+          <div class="rounded-xl bg-gradient-to-br from-[#0C1015] to-[#131F2B] p-4 text-center">
+            <p class="text-[9px] text-wc-text-3 italic">El cliente subía de nivel en silencio. Solo veía el número actualizado en /logros sin feedback.</p>
+            <div class="mt-3 h-10 w-10 mx-auto rounded-full bg-wc-bg-3 opacity-40"></div>
+            <p class="mt-2 text-[8px] text-wc-text-3 uppercase tracking-widest">Sin celebración</p>
+          </div>
+        </div>
+        <div class="p-4 bg-[#070709]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-violet-400 mb-2">Ahora — Bento 05 en producción</p>
+          <div class="rounded-xl bg-[#0b0b10] border border-wc-border p-3">
+            <div class="flex items-center gap-1.5"><svg class="wc-icon" style="width:16px;height:16px"><use href="#wc-level-ring"/></svg><span class="font-display text-[10px] tracking-widest">WELLCORE</span></div>
+            <p class="mt-2 font-display text-base leading-none">Subiste<br/><span class="text-violet-400 text-sm">de nivel</span></p>
+            <div class="mt-2 grid grid-cols-6 gap-1 text-[8px]">
+              <div class="col-span-4 row-span-2 rounded-lg hero-violet border border-violet-500/30 p-2 flex items-center justify-center">
+                <div class="h-12 w-12 rounded-full border-4 border-violet-400/50 border-t-violet-400 flex items-center justify-center font-display text-lg">4</div>
+              </div>
+              <div class="col-span-2 rounded-lg bg-wc-bg-3 border border-violet-500/20 p-1.5"><p class="text-[7px] text-violet-400">XP</p><p class="font-data text-sm font-bold">2,040</p></div>
+              <div class="col-span-2 rounded-lg bg-wc-bg-3 border p-1.5"><p class="text-[7px] text-wc-text-3">Ganados</p><p class="font-data text-sm font-bold">+540</p></div>
+              <div class="col-span-6 rounded-lg bg-wc-bg-3 border border-violet-500/20 p-1.5 italic text-[8px] text-wc-text-2">"Nivel elite. Pocos llegan hasta aquí."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="px-4 py-2 border-t border-wc-border bg-wc-bg text-[10px] text-wc-text-3 flex items-center justify-between">
+        <code class="text-violet-200">components/LevelUpCelebration.vue</code>
+        <span>Global (ClientLayout + RiseLayout) · 8 frases rotativas</span>
+      </footer>
+    </article>
+
+    <!-- 11. ReferralProgram.vue -->
+    <article class="rounded-2xl border border-wc-border bg-wc-bg-2 overflow-hidden">
+      <header class="flex items-center justify-between gap-2 px-4 py-3 border-b border-wc-border">
+        <div>
+          <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-wc-accent">11 / 15</p>
+          <h3 class="font-display text-lg tracking-wide">Invitación enviada</h3>
+        </div>
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-wc-text-2">→ Toast simple</span>
+      </header>
+      <div class="grid grid-cols-2 gap-0 divide-x divide-wc-border">
+        <div class="p-4 bg-[#0a0a0e]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-text-3 mb-2">Actual</p>
+          <div class="rounded-md bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-[10px] text-emerald-300">✓ Invitación enviada exitosamente</div>
+        </div>
+        <div class="p-4 bg-[#070709]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-emerald-400 mb-2">Toast enriquecido</p>
+          <div class="rounded-lg bg-[#0b0b10] border border-emerald-500/30 p-2.5 flex items-center gap-2">
+            <div class="h-7 w-7 rounded-md bg-emerald-500/20 flex items-center justify-center"><i class="ph-fill ph-paper-plane-tilt text-emerald-300" style="font-size:14px"></i></div>
+            <div class="flex-1">
+              <p class="text-[10px] font-semibold">Invitación enviada</p>
+              <p class="text-[8px] text-wc-text-3">Maria · ganas +500 WellCoins si se inscribe</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="px-4 py-2 border-t border-wc-border bg-wc-bg text-[10px] text-wc-text-3 flex items-center justify-between">
+        <code class="text-wc-text-2">ReferralProgram.vue</code>
+        <span>Flash · 4s</span>
+      </footer>
+    </article>
+
+    <!-- 12. ProfileEditor.vue -->
+    <article class="rounded-2xl border border-wc-border bg-wc-bg-2 overflow-hidden">
+      <header class="flex items-center justify-between gap-2 px-4 py-3 border-b border-wc-border">
+        <div>
+          <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-wc-accent">12 / 15</p>
+          <h3 class="font-display text-lg tracking-wide">Perfil actualizado</h3>
+        </div>
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-wc-text-2">→ Toast simple</span>
+      </header>
+      <div class="grid grid-cols-2 gap-0 divide-x divide-wc-border">
+        <div class="p-4 bg-[#0a0a0e]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-text-3 mb-2">Actual</p>
+          <div class="rounded-md bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-[10px] text-emerald-300">✓ Perfil actualizado</div>
+        </div>
+        <div class="p-4 bg-[#070709]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-emerald-400 mb-2">Toast neutral</p>
+          <div class="rounded-lg bg-[#0b0b10] border border-wc-border p-2.5 flex items-center gap-2">
+            <div class="h-7 w-7 rounded-md bg-wc-accent/20 flex items-center justify-center"><i class="ph-fill ph-user-gear text-wc-accent-soft" style="font-size:14px"></i></div>
+            <div class="flex-1">
+              <p class="text-[10px] font-semibold">Perfil actualizado</p>
+              <p class="text-[8px] text-wc-text-3">3 campos guardados</p>
+            </div>
+            <span class="text-[9px] text-emerald-400">✓</span>
+          </div>
+        </div>
+      </div>
+      <footer class="px-4 py-2 border-t border-wc-border bg-wc-bg text-[10px] text-wc-text-3 flex items-center justify-between">
+        <code class="text-wc-text-2">ProfileEditor.vue</code>
+        <span>Toast · 3s</span>
+      </footer>
+    </article>
+
+    <!-- 13. CoachFeedback.vue -->
+    <article class="rounded-2xl border border-wc-border bg-wc-bg-2 overflow-hidden">
+      <header class="flex items-center justify-between gap-2 px-4 py-3 border-b border-wc-border">
+        <div>
+          <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-wc-accent">13 / 15</p>
+          <h3 class="font-display text-lg tracking-wide">Valoración coach enviada</h3>
+        </div>
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-wc-text-2">→ Bento coach</span>
+      </header>
+      <div class="grid grid-cols-2 gap-0 divide-x divide-wc-border">
+        <div class="p-4 bg-[#0a0a0e]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-text-3 mb-2">Actual — Vue SPA</p>
+          <div class="rounded-md bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-[10px] text-emerald-300">✓ Valoración enviada. ¡Gracias por tu feedback!</div>
+        </div>
+        <div class="p-4 bg-[#070709]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-blue-400 mb-2">Bento coach mini</p>
+          <div class="rounded-xl bg-[#0b0b10] border border-wc-border p-3">
+            <p class="font-display text-sm leading-none">Gracias<br/><span class="text-wc-text-3 text-xs">por tu valoración</span></p>
+            <div class="mt-2 flex items-center gap-2 rounded-lg hero-blue border border-blue-500/30 p-2">
+              <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center font-display text-xs">D</div>
+              <div class="flex-1">
+                <p class="text-[9px] font-semibold">Daniel Esparza</p>
+                <div class="flex gap-0.5 text-amber-400"><i class="ph-fill ph-star" style="font-size:10px"></i><i class="ph-fill ph-star" style="font-size:10px"></i><i class="ph-fill ph-star" style="font-size:10px"></i><i class="ph-fill ph-star" style="font-size:10px"></i><i class="ph-fill ph-star" style="font-size:10px"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="px-4 py-2 border-t border-wc-border bg-wc-bg text-[10px] text-wc-text-3 flex items-center justify-between">
+        <code class="text-wc-text-2">pages/Client/CoachFeedback.vue:99</code>
+        <span>Vue SPA · showSuccess ref</span>
+      </footer>
+    </article>
+
+    <!-- 14. TicketSupport.vue -->
+    <article class="rounded-2xl border border-wc-border bg-wc-bg-2 overflow-hidden">
+      <header class="flex items-center justify-between gap-2 px-4 py-3 border-b border-wc-border">
+        <div>
+          <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-wc-accent">14 / 15</p>
+          <h3 class="font-display text-lg tracking-wide">Ticket soporte creado</h3>
+        </div>
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-wc-text-2">→ Toast neutral</span>
+      </header>
+      <div class="grid grid-cols-2 gap-0 divide-x divide-wc-border">
+        <div class="p-4 bg-[#0a0a0e]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-text-3 mb-2">Actual</p>
+          <div class="rounded-md bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-[10px] text-emerald-300">✓ Ticket creado correctamente</div>
+        </div>
+        <div class="p-4 bg-[#070709]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-emerald-400 mb-2">Toast con contexto</p>
+          <div class="rounded-lg bg-[#0b0b10] border border-wc-border p-2.5 flex items-center gap-2">
+            <div class="h-7 w-7 rounded-md bg-wc-accent/20 flex items-center justify-center"><i class="ph-fill ph-ticket text-wc-accent-soft" style="font-size:14px"></i></div>
+            <div class="flex-1">
+              <p class="text-[10px] font-semibold">Ticket #042 creado</p>
+              <p class="text-[8px] text-wc-text-3">Te responderemos en 24 h al chat</p>
+            </div>
+            <span class="pill rounded-full px-1.5 py-0.5 text-[8px] text-emerald-400">Abierto</span>
+          </div>
+        </div>
+      </div>
+      <footer class="px-4 py-2 border-t border-wc-border bg-wc-bg text-[10px] text-wc-text-3 flex items-center justify-between">
+        <code class="text-wc-text-2">pages/Client/TicketSupport.vue:318</code>
+        <span>showSuccess ref · Vue SPA</span>
+      </footer>
+    </article>
+
+    <!-- 15. CoachOnboardingChecklist.vue -->
+    <article class="rounded-2xl border border-wc-border bg-wc-bg-2 overflow-hidden">
+      <header class="flex items-center justify-between gap-2 px-4 py-3 border-b border-wc-border">
+        <div>
+          <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-wc-accent">15 / 15</p>
+          <h3 class="font-display text-lg tracking-wide">Onboarding coach completo</h3>
+        </div>
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-blue-300">→ Bento coach</span>
+      </header>
+      <div class="grid grid-cols-2 gap-0 divide-x divide-wc-border">
+        <div class="p-4 bg-[#0a0a0e]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-wc-text-3 mb-2">Actual — inline celebrationVisible</p>
+          <div class="rounded-xl bg-gradient-to-br from-[#0C1015] to-[#131F2B] p-3">
+            <div class="flex items-center gap-2">
+              <i class="ph-fill ph-confetti text-amber-400" style="font-size:26px"></i>
+              <div>
+                <p class="font-display text-xs">¡Onboarding completo!</p>
+                <p class="text-[9px] text-wc-text-3">4 de 4 pasos</p>
+              </div>
+            </div>
+            <div class="mt-2 grid grid-cols-4 gap-0.5">
+              <span class="h-1 rounded bg-emerald-500"></span>
+              <span class="h-1 rounded bg-emerald-500"></span>
+              <span class="h-1 rounded bg-emerald-500"></span>
+              <span class="h-1 rounded bg-emerald-500"></span>
+            </div>
+          </div>
+        </div>
+        <div class="p-4 bg-[#070709]">
+          <p class="text-[9px] font-semibold tracking-widest uppercase text-blue-400 mb-2">Bento welcome</p>
+          <div class="rounded-xl bg-[#0b0b10] border border-wc-border p-3">
+            <div class="flex items-center gap-1.5"><svg class="wc-icon" style="width:16px;height:16px"><use href="#wc-coach"/></svg><span class="font-display text-[10px] tracking-widest">WELLCORE COACH</span></div>
+            <p class="mt-2 font-display text-base leading-none">Listo<br/><span class="text-wc-text-3 text-sm">para arrancar</span></p>
+            <div class="mt-2 grid grid-cols-6 gap-1 text-[8px]">
+              <div class="col-span-4 row-span-2 rounded-lg hero-blue border border-blue-500/30 p-2">
+                <p class="text-[7px] text-blue-300 uppercase tracking-wider">Setup completado</p>
+                <div class="mt-1.5 space-y-1 text-[8px]">
+                  <div class="flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>Marca</div>
+                  <div class="flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>Clientes asignados</div>
+                  <div class="flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>Primer ticket</div>
+                  <div class="flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>Check-in review</div>
+                </div>
+              </div>
+              <div class="col-span-2 rounded-lg bg-wc-bg-3 border p-1.5"><p class="text-[7px] text-wc-text-3">Tour</p><p class="font-data text-xs font-bold">3/3</p></div>
+              <div class="col-span-2 rounded-lg bg-wc-bg-3 border p-1.5"><p class="text-[7px] text-wc-text-3">Clientes</p><p class="font-data text-xs font-bold">5</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="px-4 py-2 border-t border-wc-border bg-wc-bg text-[10px] text-wc-text-3 flex items-center justify-between">
+        <code class="text-wc-text-2">components/CoachOnboardingChecklist.vue:56</code>
+        <span>celebrationVisible · auto-hide 5s</span>
+      </footer>
+    </article>
+
+  </div>
+
+  <!-- BONUS: Estados persistentes (no son modales pop-up pero cuentan) -->
+  <div class="mt-8 mb-4">
+    <p class="text-xs font-semibold tracking-[0.22em] text-wc-text-3 uppercase">Bonus · 3 estados relacionados (no son modales)</p>
+  </div>
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+
+    <article class="rounded-2xl border border-wc-border bg-wc-bg-2 p-4 border-dashed">
+      <div class="flex items-center justify-between mb-2">
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-wc-text-2">A · estado</span>
+        <span class="text-[9px] text-wc-text-3">persistente, no pop-up</span>
+      </div>
+      <h4 class="font-display text-sm tracking-wide">Mindfulness · Sesión completada</h4>
+      <p class="mt-1 text-[10px] text-wc-text-2">Muestra badge verde inline tras completar una sesión de respiración. No se oculta automáticamente.</p>
+      <div class="mt-3 rounded-md bg-emerald-500/10 border border-emerald-500/30 px-2 py-1 text-[10px] text-emerald-300 inline-block">✓ Sesión completada</div>
+      <footer class="mt-3 pt-2 border-t border-wc-border text-[9px] text-wc-text-3"><code>pages/Client/Mindfulness.vue:93</code></footer>
+    </article>
+
+    <article class="rounded-2xl border border-wc-border bg-wc-bg-2 p-4 border-dashed">
+      <div class="flex items-center justify-between mb-2">
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-wc-text-2">B · duplicado</span>
+        <span class="text-[9px] text-amber-400">revisar</span>
+      </div>
+      <h4 class="font-display text-sm tracking-wide">ClientSettings · Perfil actualizado</h4>
+      <p class="mt-1 text-[10px] text-wc-text-2">Duplica con #12 ProfileEditor. Lógicamente pertenecen al mismo flujo de editar datos.</p>
+      <div class="mt-3 rounded-md bg-emerald-500/10 border border-emerald-500/30 px-2 py-1 text-[10px] text-emerald-300 inline-block">✓ Perfil actualizado correctamente</div>
+      <footer class="mt-3 pt-2 border-t border-wc-border text-[9px] text-wc-text-3"><code>pages/Client/ClientSettings.vue:185</code></footer>
+    </article>
+
+    <article class="rounded-2xl border border-red-500/30 bg-red-500/5 p-4 border-dashed">
+      <div class="flex items-center justify-between mb-2">
+        <span class="pill rounded-full px-2 py-0.5 text-[10px] text-red-300">C · legacy</span>
+        <span class="text-[9px] text-red-400">deprecar</span>
+      </div>
+      <h4 class="font-display text-sm tracking-wide">Livewire progress-photos</h4>
+      <p class="mt-1 text-[10px] text-wc-text-2">Vista Livewire/Alpine anterior a la migración a Vue. Ya existe reemplazo en #01 ProgressPhotos.vue. Confirmar que ninguna ruta la sigue consumiendo y eliminar.</p>
+      <footer class="mt-3 pt-2 border-t border-red-500/20 text-[9px] text-wc-text-3"><code>livewire/client/progress-photos.blade.php</code></footer>
+    </article>
+
+  </div>
+
+  <!-- RESUMEN ACCION -->
+  <div class="mt-6 rounded-2xl border border-wc-border bg-wc-bg-2 p-6 grid grid-cols-1 gap-4 md:grid-cols-5 text-sm">
+    <div class="md:col-span-2">
+      <p class="text-xs font-semibold tracking-[0.22em] text-wc-accent uppercase">Plan 1-a-1</p>
+      <h3 class="mt-2 font-display text-2xl">Prioridad sugerida</h3>
+      <p class="mt-2 text-wc-text-2 text-xs">Por volumen diario de uso + impacto percibido. Si quieres cambiar orden, dime cuáles primero.</p>
+    </div>
+    <ol class="md:col-span-3 space-y-2 text-xs">
+      <li class="flex items-center gap-2 rounded-lg border border-violet-500/40 bg-violet-500/5 px-3 py-2"><span class="inline-flex h-5 w-5 items-center justify-center rounded bg-violet-500 text-[10px] font-bold">✓</span><strong class="text-violet-300">#10 LevelUpCelebration — hecho este session</strong><span class="ml-auto text-violet-300">en producción</span></li>
+      <li class="flex items-center gap-2 rounded-lg pill px-3 py-2"><span class="inline-flex h-5 w-5 items-center justify-center rounded bg-wc-accent text-[10px] font-bold">1</span>#03 WorkoutSummary Client — se ve cada día<span class="ml-auto text-wc-text-3">alto impacto</span></li>
+      <li class="flex items-center gap-2 rounded-lg pill px-3 py-2"><span class="inline-flex h-5 w-5 items-center justify-center rounded bg-emerald-500 text-[10px] font-bold">2</span>#01 ProgressPhotos — se ve semanal<span class="ml-auto text-wc-text-3">alto impacto</span></li>
+      <li class="flex items-center gap-2 rounded-lg pill px-3 py-2"><span class="inline-flex h-5 w-5 items-center justify-center rounded bg-blue-500 text-[10px] font-bold">3</span>#05 CheckinForm — se ve semanal<span class="ml-auto text-wc-text-3">alto impacto</span></li>
+      <li class="flex items-center gap-2 rounded-lg pill px-3 py-2"><span class="inline-flex h-5 w-5 items-center justify-center rounded bg-amber-500 text-[10px] font-bold">4</span>#02 MedalUnlockCelebration — ocasional pero memorable<span class="ml-auto text-wc-text-3">medio</span></li>
+      <li class="flex items-center gap-2 rounded-lg pill px-3 py-2"><span class="inline-flex h-5 w-5 items-center justify-center rounded bg-wc-bg-3 text-[10px] font-bold">5-9</span>Rise #04 · Hábitos #07 · Métricas #09 · Video #06 · Onboarding #15<span class="ml-auto text-wc-text-3">medio</span></li>
+      <li class="flex items-center gap-2 rounded-lg pill px-3 py-2"><span class="inline-flex h-5 w-5 items-center justify-center rounded bg-wc-bg-3 text-[10px] font-bold">10+</span>Toasts simples: Mediciones #08 · Referral #11 · Perfil #12 · Coach #13 · Ticket #14<span class="ml-auto text-wc-text-3">bajo</span></li>
+      <li class="flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/5 px-3 py-2"><span class="inline-flex h-5 w-5 items-center justify-center rounded bg-red-500 text-[10px] font-bold">✕</span>Bonus C · Legacy progress-photos Livewire · deprecar<span class="ml-auto text-red-400">limpiar</span></li>
+    </ol>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- EXTENSIÓN · 10 modales adicionales encontrados en 2da auditoría         -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="mt-10 rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-wc-bg-2 to-wc-bg-2 p-6">
+    <div class="flex items-start justify-between flex-wrap gap-3">
+      <div>
+        <p class="text-xs font-semibold tracking-[0.22em] text-amber-300 uppercase flex items-center gap-1.5"><i class="ph-fill ph-warning-circle" style="font-size:13px"></i>Extensión · 10 modales que faltaban</p>
+        <h3 class="mt-2 font-display text-3xl tracking-wide">2da pasada · +10 encontrados</h3>
+        <p class="mt-1 text-xs text-wc-text-2 max-w-2xl">Estos son modales/estados de éxito que la primera auditoría no capturó. Categorizados por flujo. Son prioridad media/baja (menos visibles que los 15 del inventario principal) pero completan el mapa total.</p>
+      </div>
+      <div class="grid grid-cols-3 gap-2 text-[10px]">
+        <div class="pill rounded-lg p-2"><p class="text-wc-text-3 uppercase tracking-wider">Public forms</p><p class="font-data text-lg font-bold">3</p></div>
+        <div class="pill rounded-lg p-2"><p class="text-wc-text-3 uppercase tracking-wider">Admin ops</p><p class="font-data text-lg font-bold">2</p></div>
+        <div class="pill rounded-lg p-2"><p class="text-wc-text-3 uppercase tracking-wider">Toasts/misc</p><p class="font-data text-lg font-bold">5</p></div>
+      </div>
+    </div>
+
+    <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+
+      <!-- 16 · Plan Onboarding welcome -->
+      <article class="rounded-xl border border-wc-border bg-wc-bg-2 p-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold text-violet-300">16 · Welcome</span>
+          <span class="text-[9px] text-violet-300 font-bold">ALTO IMPACTO</span>
+        </div>
+        <h4 class="font-display text-sm tracking-wide flex items-center gap-2"><i class="ph-fill ph-rocket-launch text-violet-400" style="font-size:16px"></i>¡Bienvenido a WellCore!</h4>
+        <p class="mt-1 text-[11px] text-wc-text-2">Modal multi-paso al primer login del cliente. Se lanza desde Dashboard si <code class="text-[9px]">!onboardingCompleted</code>. 3 pasos: bienvenida → tour breve → "¡Comienza ahora!"</p>
+        <footer class="mt-3 pt-2 border-t border-wc-border text-[9px] text-wc-text-3 flex items-center justify-between"><code>components/PlanOnboarding.vue</code><span>→ Bento welcome violeta</span></footer>
+      </article>
+
+      <!-- 17 · Inscripción pública -->
+      <article class="rounded-xl border border-wc-border bg-wc-bg-2 p-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold text-emerald-300">17 · Public form</span>
+          <span class="text-[9px] text-wc-text-3">Post-submit</span>
+        </div>
+        <h4 class="font-display text-sm tracking-wide flex items-center gap-2"><i class="ph-fill ph-check-circle text-emerald-400" style="font-size:16px"></i>Inscripción exitosa</h4>
+        <p class="mt-1 text-[11px] text-wc-text-2">Estado tras enviar el form de inscripción al plan (Esencial/Metodo/Elite). Muestra next-steps: revisar email, pago pendiente, etc. Landing-side, no usa layout cliente.</p>
+        <footer class="mt-3 pt-2 border-t border-wc-border text-[9px] text-wc-text-3 flex items-center justify-between"><code>pages/Public/InscriptionForm.vue:9</code><span>→ Bento standalone</span></footer>
+      </article>
+
+      <!-- 18 · Presencial form -->
+      <article class="rounded-xl border border-wc-border bg-wc-bg-2 p-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold text-emerald-300">18 · Public form</span>
+          <span class="text-[9px] text-wc-text-3">Post-submit</span>
+        </div>
+        <h4 class="font-display text-sm tracking-wide flex items-center gap-2"><i class="ph-fill ph-map-pin text-emerald-400" style="font-size:16px"></i>Solicitud presencial enviada</h4>
+        <p class="mt-1 text-[11px] text-wc-text-2">Cliente solicita coaching presencial (Bucaramanga). Estado success muestra contacto del coach presencial + agendar.</p>
+        <footer class="mt-3 pt-2 border-t border-wc-border text-[9px] text-wc-text-3 flex items-center justify-between"><code>pages/Public/PresencialForm.vue:7</code><span>→ Bento standalone</span></footer>
+      </article>
+
+      <!-- 19 · Coach application -->
+      <article class="rounded-xl border border-wc-border bg-wc-bg-2 p-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold text-blue-300">19 · Public form</span>
+          <span class="text-[9px] text-wc-text-3">Post-submit</span>
+        </div>
+        <h4 class="font-display text-sm tracking-wide flex items-center gap-2"><svg class="wc-icon" style="width:16px;height:16px"><use href="#wc-coach"/></svg>Aplicación coach recibida</h4>
+        <p class="mt-1 text-[11px] text-wc-text-2">Coach nuevo aplica a unirse a WellCore. Success state con confirmación + próximos pasos (entrevista, certificaciones).</p>
+        <footer class="mt-3 pt-2 border-t border-wc-border text-[9px] text-wc-text-3 flex items-center justify-between"><code>pages/Public/CoachApplication.vue:7</code><span>→ Bento coach-apply</span></footer>
+      </article>
+
+      <!-- 20 · Admin ClientDetail plan/coach success -->
+      <article class="rounded-xl border border-wc-border bg-wc-bg-2 p-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold text-wc-accent-soft">20 · Admin</span>
+          <span class="text-[9px] text-wc-text-3">Inline message</span>
+        </div>
+        <h4 class="font-display text-sm tracking-wide flex items-center gap-2"><i class="ph-fill ph-user-gear text-wc-accent-soft" style="font-size:16px"></i>Cliente actualizado</h4>
+        <p class="mt-1 text-[11px] text-wc-text-2">Banner verde inline 5s cuando admin cambia plan, estado o asigna coach. Mensajes dinámicos: "Plan actualizado a Elite", "Coach X asignado", etc.</p>
+        <footer class="mt-3 pt-2 border-t border-wc-border text-[9px] text-wc-text-3 flex items-center justify-between"><code>pages/Admin/ClientDetail.vue:200</code><span>→ Toast consistente</span></footer>
+      </article>
+
+      <!-- 21 · SendPlanInvitation -->
+      <article class="rounded-xl border border-wc-border bg-wc-bg-2 p-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold text-wc-accent-soft">21 · Admin</span>
+          <span class="text-[9px] text-wc-text-3">Green banner</span>
+        </div>
+        <h4 class="font-display text-sm tracking-wide flex items-center gap-2"><i class="ph-fill ph-envelope-open text-wc-accent-soft" style="font-size:16px"></i>Invitación enviada (admin)</h4>
+        <p class="mt-1 text-[11px] text-wc-text-2">Admin envía invitación de plan a email. Response message en banner verde inline. Diferente a #11 ReferralProgram (cliente).</p>
+        <footer class="mt-3 pt-2 border-t border-wc-border text-[9px] text-wc-text-3 flex items-center justify-between"><code>pages/Admin/SendPlanInvitation.vue:55</code><span>→ Toast consistente</span></footer>
+      </article>
+
+      <!-- 22 · AINutrition análisis -->
+      <article class="rounded-xl border border-wc-border bg-wc-bg-2 p-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold text-emerald-300">22 · Toast</span>
+          <span class="text-[9px] text-wc-text-3">useToast</span>
+        </div>
+        <h4 class="font-display text-sm tracking-wide flex items-center gap-2"><i class="ph-fill ph-sparkle text-emerald-400" style="font-size:16px"></i>Análisis de nutrición listo</h4>
+        <p class="mt-1 text-[11px] text-wc-text-2">Cliente sube foto de comida → AI analiza macros → toast "Análisis listo." usando el toast global existente. Simple pero frecuente.</p>
+        <footer class="mt-3 pt-2 border-t border-wc-border text-[9px] text-wc-text-3 flex items-center justify-between"><code>pages/Client/AINutrition.vue:81</code><span>→ Toast AI badge</span></footer>
+      </article>
+
+      <!-- 23 · Community post eliminado -->
+      <article class="rounded-xl border border-wc-border bg-wc-bg-2 p-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold text-wc-text-2">23 · Toast</span>
+          <span class="text-[9px] text-wc-text-3">Destructive</span>
+        </div>
+        <h4 class="font-display text-sm tracking-wide flex items-center gap-2"><i class="ph-fill ph-trash text-wc-text-2" style="font-size:16px"></i>Post eliminado</h4>
+        <p class="mt-1 text-[11px] text-wc-text-2">Cliente borra su post en la comunidad. Toast neutro (no es celebración, es confirmación de acción destructiva).</p>
+        <footer class="mt-3 pt-2 border-t border-wc-border text-[9px] text-wc-text-3 flex items-center justify-between"><code>pages/Client/CommunityFeed.vue:259</code><span>→ Toast destructive</span></footer>
+      </article>
+
+      <!-- 24 · PlanViewer resultado eliminado -->
+      <article class="rounded-xl border border-wc-border bg-wc-bg-2 p-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold text-wc-text-2">24 · Toast</span>
+          <span class="text-[9px] text-wc-text-3">Destructive</span>
+        </div>
+        <h4 class="font-display text-sm tracking-wide flex items-center gap-2"><i class="ph-fill ph-trash text-wc-text-2" style="font-size:16px"></i>Resultado eliminado</h4>
+        <p class="mt-1 text-[11px] text-wc-text-2">Cliente borra una serie registrada en plan. Toast destructive (mismo patrón que #23).</p>
+        <footer class="mt-3 pt-2 border-t border-wc-border text-[9px] text-wc-text-3 flex items-center justify-between"><code>pages/Client/PlanViewer.vue:851</code><span>→ Toast destructive</span></footer>
+      </article>
+
+      <!-- 25 · Pago exitoso -->
+      <article class="rounded-xl border border-wc-border bg-wc-bg-2 p-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold text-amber-300">25 · Payment</span>
+          <span class="text-[9px] text-amber-300 font-bold">CRÍTICO</span>
+        </div>
+        <h4 class="font-display text-sm tracking-wide flex items-center gap-2"><svg class="wc-icon" style="width:16px;height:16px"><use href="#wc-coin"/></svg>Pago exitoso</h4>
+        <p class="mt-1 text-[11px] text-wc-text-2">Landing estática después de Wompi checkout. Blade legacy. <strong class="text-amber-300">Primera impresión post-pago</strong> del cliente — merece upgrade de Bento prioritario.</p>
+        <footer class="mt-3 pt-2 border-t border-wc-border text-[9px] text-wc-text-3 flex items-center justify-between"><code>views/public/pago-exitoso.blade.php</code><span>→ Bento payment-success</span></footer>
+      </article>
+
+    </div>
+
+    <!-- Destructive toast pattern note -->
+    <div class="mt-5 rounded-xl border border-red-500/20 bg-red-500/5 p-3 text-[11px] text-wc-text-2">
+      <p class="flex items-center gap-1.5 text-red-200 font-semibold mb-1"><i class="ph-fill ph-info" style="font-size:13px"></i>Nota de sistema · Toasts destructivos (#23, #24)</p>
+      No son celebraciones — son confirmaciones de borrado. Deben usar <strong class="text-white">pattern visual distinto</strong>: icono rojo sutil, sin gradient hero, texto neutro. Definir como variante <code class="text-[10px]">&lt;BentoToast preset="destructive"&gt;</code> con color wc-text-tertiary (no rojo-amenaza, es solo confirmación).
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SPECS FINALES v2 — Phosphor + SVG WellCore custom           -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="mx-auto max-w-7xl px-4 pb-12 sm:px-6">
+  <div class="rounded-2xl border border-wc-accent/30 bg-gradient-to-br from-wc-accent/10 to-wc-bg-2 p-6 mb-8">
+    <p class="text-xs font-semibold tracking-[0.22em] text-wc-accent uppercase">Specs v2 · Phosphor + SVG brand · SF Pro</p>
+    <h2 class="mt-2 font-display text-4xl tracking-wide">Diseños finales completos</h2>
+    <p class="mt-2 max-w-3xl text-sm text-wc-text-2">Cada modal usa <strong class="text-white">Phosphor Icons</strong> (9,072 iconos, 6 pesos) para UI genérica + <strong class="text-white">10 SVGs custom WellCore</strong> (hexágono medalla, XP bolt, flama racha, cámara, barbell, check premium, coach shield, WellCoin, level ring, logo). Typography SF Pro. Mobile 320px, Bento 6-col grid.</p>
+    <div class="mt-4 flex flex-wrap gap-2 text-[10px]">
+      <span class="pill rounded-full px-2 py-1 flex items-center gap-1"><i class="ph-fill ph-image-square text-emerald-300"></i> ph-fill</span>
+      <span class="pill rounded-full px-2 py-1 flex items-center gap-1"><i class="ph-bold ph-barbell text-wc-accent-soft"></i> ph-bold</span>
+      <span class="pill rounded-full px-2 py-1 flex items-center gap-1"><i class="ph-duotone ph-trophy text-amber-300"></i> ph-duotone</span>
+      <span class="pill rounded-full px-2 py-1 flex items-center gap-1"><svg class="wc-icon" style="width:12px;height:12px"><use href="#wc-medal-hex"/></svg> wc-custom-svg</span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+
+    <!-- SPEC #01 · Fotos · Phosphor + wc-camera -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2"><span class="pill rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-emerald-300 uppercase">01 · Fotos</span><code class="text-[10px] text-wc-text-3">ProgressPhotos.vue</code></div>
+      <div class="relative mx-auto w-full max-w-[320px] rounded-[28px] overflow-hidden bg-[#0b0b10] border border-wc-border p-5 animate-pop">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2"><svg class="wc-icon" style="width:24px;height:24px"><use href="#wc-logo"/></svg><span class="font-display text-sm tracking-widest font-bold">WELLCORE</span></div>
+          <span class="text-[10px] text-wc-text-3">Semana 04 · 2026</span>
+        </div>
+        <h2 class="mt-4 font-display text-4xl leading-none tracking-tight font-bold">Registro<br/><span class="text-wc-text-3 font-medium">guardado</span></h2>
+        <p class="mt-2 text-xs tracking-[0.22em] uppercase text-emerald-400 flex items-center gap-1.5 font-semibold"><i class="ph-fill ph-image-square" style="font-size:14px"></i>3 ángulos subidos</p>
+        <div class="mt-4 grid grid-cols-6 auto-rows-[70px] gap-2 text-sm">
+          <div class="col-span-4 row-span-2 rounded-2xl border border-emerald-500/30 p-3 relative overflow-hidden hero-emerald">
+            <div class="noise"></div>
+            <div class="relative flex items-center gap-2"><svg class="wc-icon" style="width:18px;height:18px"><use href="#wc-camera"/></svg><p class="text-[10px] tracking-wider uppercase text-emerald-300 font-bold">Hoy · 3 tomas</p></div>
+            <div class="relative mt-2 grid grid-cols-3 gap-1.5">
+              <div class="aspect-[3/4] rounded-lg bg-gradient-to-b from-wc-bg-3 to-wc-bg-2 border border-emerald-500/20 flex flex-col items-center justify-end p-1.5"><i class="ph-bold ph-person text-emerald-300/60" style="font-size:22px"></i><span class="mt-0.5 text-[7px] font-bold text-emerald-200 tracking-wider">FRONTAL</span></div>
+              <div class="aspect-[3/4] rounded-lg bg-gradient-to-b from-wc-bg-3 to-wc-bg-2 border border-emerald-500/20 flex flex-col items-center justify-end p-1.5"><i class="ph-bold ph-person text-emerald-300/60 -scale-x-100" style="font-size:22px"></i><span class="mt-0.5 text-[7px] font-bold text-emerald-200 tracking-wider">LATERAL</span></div>
+              <div class="aspect-[3/4] rounded-lg bg-gradient-to-b from-wc-bg-3 to-wc-bg-2 border border-emerald-500/20 flex flex-col items-center justify-end p-1.5"><i class="ph-bold ph-person text-emerald-300/60" style="font-size:22px;transform:scaleX(-1) rotate(180deg)"></i><span class="mt-0.5 text-[7px] font-bold text-emerald-200 tracking-wider">ESPALDA</span></div>
+            </div>
+          </div>
+          <div class="col-span-2 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph ph-images text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Total</p></div><p class="font-data text-xl font-bold mt-0.5">+3</p></div>
+          <div class="col-span-2 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph ph-clock-counter-clockwise text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Histórico</p></div><p class="font-data text-xl font-bold mt-0.5">48</p></div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph ph-flow-arrow text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Línea de tiempo</p></div><div class="mt-1 flex items-center gap-0.5"><span class="h-2 flex-1 rounded bg-emerald-500/70"></span><span class="h-2 flex-1 rounded bg-emerald-500/50"></span><span class="h-2 flex-1 rounded bg-emerald-500/30"></span><span class="h-2 flex-1 rounded bg-wc-border"></span></div><p class="font-data text-[9px] text-wc-text-3 mt-1">3 / 5 semanas</p></div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-calendar-dot text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Próxima</p></div><p class="font-data text-sm font-bold mt-0.5">27 abr</p><p class="text-[9px] text-wc-text-3">en 7 días</p></div>
+        </div>
+        <button class="mt-4 w-full rounded-xl bg-wc-accent py-3 text-sm font-semibold shadow-[0_10px_30px_-10px_rgba(220,38,38,.5)] flex items-center justify-center gap-2"><span>Ver línea de tiempo</span><i class="ph-bold ph-arrow-right" style="font-size:14px"></i></button>
+      </div>
+    </div>
+
+    <!-- SPEC #02 · Medalla · wc-medal-hex + wc-xp-bolt -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2"><span class="pill rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-amber-300 uppercase">02 · Medalla</span><code class="text-[10px] text-wc-text-3">MedalUnlockCelebration.vue</code></div>
+      <div class="relative mx-auto w-full max-w-[320px] rounded-[28px] overflow-hidden bg-[#0b0b10] border border-wc-border p-5 animate-pop">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2"><svg class="wc-icon" style="width:24px;height:24px"><use href="#wc-logo"/></svg><span class="font-display text-sm tracking-widest font-bold">WELLCORE</span></div>
+          <span class="text-[10px] text-wc-text-3 flex items-center gap-1"><i class="ph-fill ph-trophy text-amber-400" style="font-size:11px"></i>Logro 07/15</span>
+        </div>
+        <h2 class="mt-4 font-display text-4xl leading-none tracking-tight font-bold">Semana<br/><span class="text-amber-400">de Fuego</span></h2>
+        <p class="mt-2 text-xs tracking-[0.22em] uppercase text-amber-400 flex items-center gap-1.5 font-semibold"><i class="ph-fill ph-sparkle" style="font-size:14px"></i>Plata desbloqueada</p>
+        <div class="mt-4 grid grid-cols-6 auto-rows-[70px] gap-2 text-sm">
+          <div class="col-span-4 row-span-2 rounded-2xl border border-amber-500/30 p-3 flex flex-col items-center justify-center relative overflow-hidden hero-amber">
+            <div class="noise"></div>
+            <div class="relative animate-float"><div class="absolute inset-0 blur-xl opacity-50 animate-breathe"><svg class="wc-icon" style="width:80px;height:80px"><use href="#wc-medal-hex"/></svg></div><svg class="relative wc-icon" style="width:80px;height:80px"><use href="#wc-medal-hex"/></svg><div class="absolute inset-0 flex items-center justify-center"><span class="font-display text-3xl text-white drop-shadow-lg font-black">7</span></div></div>
+            <p class="relative mt-2 text-[10px] tracking-wider uppercase font-bold text-amber-200">7 días consecutivos</p>
+          </div>
+          <div class="col-span-2 rounded-2xl bg-wc-bg-3 border border-amber-500/20 p-3"><div class="flex items-center gap-1"><svg class="wc-icon" style="width:11px;height:11px"><use href="#wc-xp-bolt"/></svg><p class="text-[9px] tracking-wider uppercase text-amber-400 font-bold">XP</p></div><p class="font-data text-xl font-bold mt-0.5">+200</p></div>
+          <div class="col-span-2 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-ladder-simple text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Nivel</p></div><p class="font-data text-xl font-bold mt-0.5">3</p></div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-duotone ph-arrow-fat-up text-amber-400" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Al nivel 4</p></div><div class="mt-1 h-2 rounded-full bg-wc-border overflow-hidden"><div class="h-full bg-gradient-to-r from-amber-400 to-amber-500 bar-fill" style="--bar:64%"></div></div><p class="font-data text-[9px] text-wc-text-3 mt-1">450 / 700 XP</p></div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-medal text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Colección</p></div><div class="mt-1 flex items-center gap-0.5"><svg class="wc-icon" style="width:14px;height:14px"><use href="#wc-medal-hex"/></svg><svg class="wc-icon" style="width:14px;height:14px"><use href="#wc-medal-hex"/></svg><svg class="wc-icon" style="width:14px;height:14px;opacity:.5"><use href="#wc-medal-hex"/></svg><svg class="wc-icon" style="width:14px;height:14px;opacity:.2"><use href="#wc-medal-hex"/></svg></div><p class="font-data text-[9px] font-bold mt-1">7 / 15</p></div>
+        </div>
+        <button class="mt-4 w-full rounded-xl bg-wc-accent py-3 text-sm font-semibold shadow-[0_10px_30px_-10px_rgba(220,38,38,.5)] flex items-center justify-center gap-2"><span>Ver logros</span><i class="ph-bold ph-arrow-right" style="font-size:14px"></i></button>
+      </div>
+    </div>
+
+    <!-- SPEC #03 · Workout Client · wc-barbell + wc-flame -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2"><span class="pill rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-wc-accent-soft uppercase">03 · Workout</span><code class="text-[10px] text-wc-text-3">WorkoutSummary.vue</code></div>
+      <div class="relative mx-auto w-full max-w-[320px] rounded-[28px] overflow-hidden bg-[#0b0b10] border border-wc-border p-5 animate-pop">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2"><svg class="wc-icon" style="width:24px;height:24px"><use href="#wc-logo"/></svg><span class="font-display text-sm tracking-widest font-bold">WELLCORE</span></div>
+          <span class="text-[10px] text-wc-text-3">Lun 20 Abr · 18:42</span>
+        </div>
+        <h2 class="mt-4 font-display text-4xl leading-none tracking-tight font-bold">Piernas<br/><span class="text-wc-text-3 font-medium">día 1/5</span></h2>
+        <p class="mt-2 text-xs tracking-[0.22em] uppercase text-emerald-400 flex items-center gap-1.5 font-semibold"><i class="ph-fill ph-check-circle" style="font-size:14px"></i>Sesión completa</p>
+        <div class="mt-4 grid grid-cols-6 auto-rows-[70px] gap-2 text-sm">
+          <div class="col-span-4 row-span-2 rounded-2xl border border-wc-accent/30 p-3 flex flex-col justify-between relative overflow-hidden hero-accent">
+            <div class="noise"></div>
+            <div class="relative flex items-center justify-between"><div class="flex items-center gap-1.5"><svg class="wc-icon" style="width:16px;height:16px"><use href="#wc-barbell"/></svg><p class="text-[10px] tracking-wider uppercase text-wc-accent-soft font-bold">PR peso máximo</p></div><span class="pill rounded-full px-2 py-0.5 text-[9px] font-bold text-wc-accent-soft flex items-center gap-1"><i class="ph-fill ph-trend-up" style="font-size:10px"></i>+2.5 kg</span></div>
+            <div class="relative"><p class="font-data text-[44px] leading-none font-black">10.0<span class="text-lg text-wc-text-3 font-bold"> kg</span></p><p class="text-[11px] text-wc-text-2 mt-0.5">Sentadilla c/barra</p></div>
+          </div>
+          <div class="col-span-2 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph ph-timer text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Duración</p></div><p class="font-data text-xl font-bold mt-0.5">1:00</p></div>
+          <div class="col-span-2 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph ph-arrow-clockwise text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Reps</p></div><p class="font-data text-xl font-bold mt-0.5">4</p></div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-stack text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Sets</p></div><div class="mt-1 flex items-center gap-1"><span class="h-2 w-5 rounded bg-wc-accent"></span><span class="h-2 w-5 rounded bg-wc-border"></span><span class="h-2 w-5 rounded bg-wc-border"></span></div><p class="font-data text-[10px] font-bold mt-1">1/3</p></div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><svg class="wc-icon" style="width:11px;height:11px"><use href="#wc-flame"/></svg><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Racha</p></div><p class="font-data text-xl font-bold mt-0.5">5 <span class="text-[10px] text-wc-text-3 font-normal">días</span></p></div>
+        </div>
+        <button class="mt-4 w-full rounded-xl bg-wc-accent py-3 text-sm font-semibold shadow-[0_10px_30px_-10px_rgba(220,38,38,.5)] flex items-center justify-center gap-2"><span>Ver detalle</span><i class="ph-bold ph-arrow-right" style="font-size:14px"></i></button>
+      </div>
+    </div>
+
+    <!-- SPEC #04 · Workout Rise -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2"><span class="pill rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-wc-accent-soft uppercase">04 · Rise</span><code class="text-[10px] text-wc-text-3">Rise/WorkoutSummary.vue</code></div>
+      <div class="relative mx-auto w-full max-w-[320px] rounded-[28px] overflow-hidden bg-[#0b0b10] border border-wc-border p-5 animate-pop">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2"><svg class="wc-icon" style="width:24px;height:24px"><use href="#wc-logo"/></svg><span class="font-display text-sm tracking-widest font-bold">RISE</span></div>
+          <span class="text-[10px] text-wc-text-3">Día 23 · Sem 4</span>
+        </div>
+        <h2 class="mt-4 font-display text-4xl leading-none tracking-tight font-bold">Lo logras<br/><span class="text-wc-text-3 font-medium">tú</span></h2>
+        <p class="mt-2 text-xs tracking-[0.22em] uppercase text-emerald-400 flex items-center gap-1.5 font-semibold"><i class="ph-fill ph-lightning" style="font-size:14px"></i>Sesión RISE completa</p>
+        <div class="mt-4 grid grid-cols-6 auto-rows-[70px] gap-2 text-sm">
+          <div class="col-span-6 row-span-2 rounded-2xl border border-wc-accent/30 p-3 relative overflow-hidden hero-accent">
+            <div class="noise"></div>
+            <div class="relative flex items-center justify-between"><div class="flex items-center gap-1.5"><i class="ph-fill ph-chart-bar text-wc-accent-soft" style="font-size:16px"></i><p class="text-[10px] tracking-wider uppercase text-wc-accent-soft font-bold">Volumen semanal · kg totales</p></div><span class="pill rounded-full px-2 py-0.5 text-[9px] font-bold text-emerald-400 flex items-center gap-1"><i class="ph-fill ph-trend-up" style="font-size:10px"></i>+18%</span></div>
+            <div class="relative mt-2 h-14 flex items-end gap-1.5">
+              <div class="flex-1 flex items-end gap-1"><span class="w-3 h-3 bg-wc-accent/30 rounded-sm"></span><span class="w-3 h-5 bg-wc-accent/50 rounded-sm"></span><span class="w-3 h-6 bg-wc-accent/70 rounded-sm"></span><span class="w-3 h-8 bg-wc-accent/85 rounded-sm"></span><span class="w-3 h-10 bg-wc-accent rounded-sm"></span><span class="w-3 h-11 bg-wc-accent rounded-sm"></span><span class="w-3 h-14 bg-wc-accent rounded-sm shadow-[0_0_12px_rgba(220,38,38,.7)]"></span></div>
+              <div class="text-right"><p class="font-data text-xl font-black text-white leading-none">2,840</p><p class="text-[9px] text-wc-text-3 mt-0.5">kg semana</p></div>
+            </div>
+          </div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-target text-emerald-400" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Adherencia</p></div><p class="font-data text-xl font-bold mt-0.5">92%</p></div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-smiley-wink text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Sentir</p></div><div class="mt-1 flex gap-1"><i class="ph-fill ph-smiley text-wc-text-3" style="font-size:14px"></i><i class="ph-fill ph-smiley-meh text-wc-text-3" style="font-size:14px"></i><i class="ph-fill ph-smiley text-emerald-400" style="font-size:16px"></i><i class="ph-fill ph-fire text-wc-text-3" style="font-size:14px"></i></div></div>
+        </div>
+        <button class="mt-4 w-full rounded-xl bg-wc-accent py-3 text-sm font-semibold shadow-[0_10px_30px_-10px_rgba(220,38,38,.5)] flex items-center justify-center gap-2"><span>Siguiente día</span><i class="ph-bold ph-arrow-right" style="font-size:14px"></i></button>
+      </div>
+    </div>
+
+    <!-- SPEC #05 · Check-in · wc-coach -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2"><span class="pill rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-blue-300 uppercase">05 · Check-in</span><code class="text-[10px] text-wc-text-3">CheckinForm.vue</code></div>
+      <div class="relative mx-auto w-full max-w-[320px] rounded-[28px] overflow-hidden bg-[#0b0b10] border border-wc-border p-5 animate-pop">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2"><svg class="wc-icon" style="width:24px;height:24px"><use href="#wc-logo"/></svg><span class="font-display text-sm tracking-widest font-bold">WELLCORE</span></div>
+          <span class="text-[10px] text-wc-text-3">Sem 04 · Abr 2026</span>
+        </div>
+        <h2 class="mt-4 font-display text-4xl leading-none tracking-tight font-bold">Check-in<br/><span class="text-wc-text-3 font-medium">enviado</span></h2>
+        <p class="mt-2 text-xs tracking-[0.22em] uppercase text-blue-400 flex items-center gap-1.5 font-semibold"><i class="ph-fill ph-chats-circle" style="font-size:14px"></i>Coach revisa en 24 h</p>
+        <div class="mt-4 grid grid-cols-6 auto-rows-[70px] gap-2 text-sm">
+          <div class="col-span-4 row-span-2 rounded-2xl border border-blue-500/30 p-3 relative overflow-hidden hero-blue">
+            <div class="noise"></div>
+            <div class="relative flex items-center gap-3">
+              <div class="relative"><div class="absolute inset-0 rounded-full bg-blue-500 blur-md animate-breathe"></div><svg class="relative wc-icon" style="width:48px;height:48px"><use href="#wc-coach"/></svg></div>
+              <div class="flex-1"><p class="text-[10px] tracking-wider uppercase font-bold text-blue-200">Tu coach</p><p class="font-bold text-sm">Daniel Esparza</p></div>
+            </div>
+            <div class="relative mt-2.5"><div class="flex items-center justify-between mb-1"><p class="text-[10px] tracking-wider uppercase text-wc-text-3">Objetivos sem.</p><span class="text-[10px] font-bold text-blue-200">86%</span></div><div class="h-2 rounded-full bg-wc-border overflow-hidden"><div class="h-full bg-gradient-to-r from-blue-400 to-blue-500 bar-fill" style="--bar:86%"></div></div></div>
+          </div>
+          <div class="col-span-2 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-scales text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Peso</p></div><p class="font-data text-xl font-bold mt-0.5">49.0<span class="text-[9px] text-wc-text-3 font-normal"> kg</span></p><p class="text-[10px] text-emerald-400 font-semibold flex items-center gap-0.5"><i class="ph-fill ph-trend-down" style="font-size:9px"></i>0.3</p></div>
+          <div class="col-span-2 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-smiley text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Ánimo</p></div><p class="font-data text-xl font-bold mt-0.5">8<span class="text-xs text-wc-text-3">/10</span></p></div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><svg class="wc-icon" style="width:11px;height:11px"><use href="#wc-barbell"/></svg><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Entrenos</p></div><p class="font-data text-xl font-bold mt-0.5">4<span class="text-sm text-wc-text-3"> / 5</span></p></div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-carrot text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Nutrición</p></div><p class="font-data text-xl font-bold mt-0.5">92%</p></div>
+        </div>
+        <button class="mt-4 w-full rounded-xl bg-wc-accent py-3 text-sm font-semibold shadow-[0_10px_30px_-10px_rgba(220,38,38,.5)] flex items-center justify-center gap-2"><span>Ir al dashboard</span><i class="ph-bold ph-arrow-right" style="font-size:14px"></i></button>
+      </div>
+    </div>
+
+    <!-- SPEC #06 · Video check-in -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2"><span class="pill rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-blue-300 uppercase">06 · Video</span><code class="text-[10px] text-wc-text-3">VideoCheckinUpload.vue</code></div>
+      <div class="relative mx-auto w-full max-w-[320px] rounded-[28px] overflow-hidden bg-[#0b0b10] border border-wc-border p-5 animate-pop">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2"><svg class="wc-icon" style="width:24px;height:24px"><use href="#wc-logo"/></svg><span class="font-display text-sm tracking-widest font-bold">WELLCORE</span></div>
+          <span class="text-[10px] text-wc-text-3 flex items-center gap-1"><i class="ph ph-upload-simple" style="font-size:11px"></i>Upload · 00:42</span>
+        </div>
+        <h2 class="mt-4 font-display text-4xl leading-none tracking-tight font-bold">Video<br/><span class="text-wc-text-3 font-medium">enviado</span></h2>
+        <p class="mt-2 text-xs tracking-[0.22em] uppercase text-blue-400 flex items-center gap-1.5 font-semibold"><i class="ph-fill ph-video-camera" style="font-size:14px"></i>Procesando en segundo plano</p>
+        <div class="mt-4 grid grid-cols-6 auto-rows-[70px] gap-2 text-sm">
+          <div class="col-span-6 row-span-2 rounded-2xl border border-blue-500/30 p-3 relative overflow-hidden hero-blue">
+            <div class="noise"></div>
+            <div class="relative flex items-center gap-3">
+              <div class="relative h-14 w-20 rounded-xl bg-gradient-to-br from-blue-900 to-[#020617] border border-blue-400/30 flex items-center justify-center overflow-hidden">
+                <i class="ph-fill ph-play-circle text-blue-200" style="font-size:32px"></i>
+                <div class="absolute bottom-0 right-0 bg-black/60 px-1.5 py-0.5 text-[8px] font-bold text-white rounded-tl-md">0:42</div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-[10px] tracking-wider uppercase font-bold text-blue-200 truncate">video_20abr.mp4</p>
+                <p class="text-[11px] text-wc-text-2 flex items-center gap-1"><i class="ph ph-file-video" style="font-size:11px"></i>1.2 MB</p>
+                <p class="text-[10px] font-bold text-emerald-400 flex items-center gap-1 mt-0.5"><i class="ph-fill ph-check-circle" style="font-size:11px"></i>Subido</p>
+              </div>
+            </div>
+            <div class="relative mt-2.5 h-1.5 rounded-full bg-wc-border overflow-hidden"><div class="h-full bg-gradient-to-r from-blue-400 to-blue-500 w-full"></div></div>
+          </div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-chat-centered-text text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Respuesta</p></div><p class="font-data text-sm font-bold mt-0.5">~24 h</p></div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph ph-paper-plane-tilt text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Esta semana</p></div><p class="font-data text-xl font-bold mt-0.5">3</p></div>
+        </div>
+        <button class="mt-4 w-full rounded-xl bg-wc-accent py-3 text-sm font-semibold shadow-[0_10px_30px_-10px_rgba(220,38,38,.5)] flex items-center justify-center gap-2"><i class="ph-fill ph-chats-circle" style="font-size:14px"></i><span>Ir al chat</span></button>
+      </div>
+    </div>
+
+    <!-- SPEC #07 · Día perfecto hábitos -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2"><span class="pill rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-emerald-300 uppercase">07 · Día perfecto</span><code class="text-[10px] text-wc-text-3">HabitTracker.vue</code></div>
+      <div class="relative mx-auto w-full max-w-[320px] rounded-[28px] overflow-hidden bg-[#0b0b10] border border-wc-border p-5 animate-pop">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2"><svg class="wc-icon" style="width:24px;height:24px"><use href="#wc-logo"/></svg><span class="font-display text-sm tracking-widest font-bold">WELLCORE</span></div>
+          <span class="text-[10px] text-wc-text-3">Mar 21 Abr</span>
+        </div>
+        <h2 class="mt-4 font-display text-4xl leading-none tracking-tight font-bold">Día<br/><span class="text-emerald-400">perfecto</span></h2>
+        <p class="mt-2 text-xs tracking-[0.22em] uppercase text-emerald-400 flex items-center gap-1.5 font-semibold"><i class="ph-fill ph-checks" style="font-size:14px"></i>5 de 5 hábitos</p>
+        <div class="mt-4 grid grid-cols-6 auto-rows-[70px] gap-2 text-sm">
+          <div class="col-span-6 row-span-2 rounded-2xl border border-emerald-500/30 p-3 relative overflow-hidden hero-emerald">
+            <div class="noise"></div>
+            <div class="relative flex items-center justify-between"><div class="flex items-center gap-1.5"><svg class="wc-icon" style="width:14px;height:14px"><use href="#wc-check"/></svg><p class="text-[10px] tracking-wider uppercase text-emerald-300 font-bold">Hábitos del día</p></div><span class="text-[10px] font-bold text-emerald-200">5/5</span></div>
+            <div class="relative mt-3 grid grid-cols-5 gap-2">
+              <div class="flex flex-col items-center gap-1"><div class="h-10 w-10 rounded-xl bg-emerald-500/20 border border-emerald-400 flex items-center justify-center"><i class="ph-fill ph-drop text-emerald-300" style="font-size:20px"></i></div><span class="text-[8px] text-emerald-200 font-semibold">Agua</span></div>
+              <div class="flex flex-col items-center gap-1"><div class="h-10 w-10 rounded-xl bg-emerald-500/20 border border-emerald-400 flex items-center justify-center"><i class="ph-fill ph-moon-stars text-emerald-300" style="font-size:20px"></i></div><span class="text-[8px] text-emerald-200 font-semibold">Sueño</span></div>
+              <div class="flex flex-col items-center gap-1"><div class="h-10 w-10 rounded-xl bg-emerald-500/20 border border-emerald-400 flex items-center justify-center"><svg class="wc-icon" style="width:20px;height:20px"><use href="#wc-barbell"/></svg></div><span class="text-[8px] text-emerald-200 font-semibold">Entreno</span></div>
+              <div class="flex flex-col items-center gap-1"><div class="h-10 w-10 rounded-xl bg-emerald-500/20 border border-emerald-400 flex items-center justify-center"><i class="ph-fill ph-carrot text-emerald-300" style="font-size:20px"></i></div><span class="text-[8px] text-emerald-200 font-semibold">Nutri</span></div>
+              <div class="flex flex-col items-center gap-1"><div class="h-10 w-10 rounded-xl bg-emerald-500/20 border border-emerald-400 flex items-center justify-center"><i class="ph-fill ph-pill text-emerald-300" style="font-size:20px"></i></div><span class="text-[8px] text-emerald-200 font-semibold">Suple</span></div>
+            </div>
+          </div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><svg class="wc-icon" style="width:11px;height:11px"><use href="#wc-flame"/></svg><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Racha</p></div><p class="font-data text-xl font-bold mt-0.5">3 <span class="text-[10px] text-wc-text-3 font-normal">días</span></p></div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-calendar-check text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Este mes</p></div><p class="font-data text-xl font-bold mt-0.5">18<span class="text-xs text-wc-text-3"> / 30</span></p></div>
+        </div>
+        <button class="mt-4 w-full rounded-xl bg-wc-accent py-3 text-sm font-semibold shadow-[0_10px_30px_-10px_rgba(220,38,38,.5)] flex items-center justify-center gap-2"><span>Seguir mañana</span><i class="ph-bold ph-arrow-right" style="font-size:14px"></i></button>
+      </div>
+    </div>
+
+    <!-- SPEC #08 · Mediciones toast -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2"><span class="pill rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-emerald-300 uppercase">08 · Mediciones</span><code class="text-[10px] text-wc-text-3">Rise/Measurements.vue</code></div>
+      <div class="relative mx-auto w-full max-w-[320px] rounded-[28px] overflow-hidden bg-[#0b0b10] border border-wc-border p-5">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-3 flex items-center gap-1"><i class="ph ph-bell" style="font-size:11px"></i>Toast enriquecido · esquina inf.</p>
+        <div class="mt-3 rounded-2xl bg-gradient-to-br from-emerald-900/40 to-[#0b0b10] border border-emerald-500/30 p-3 flex items-start gap-3 animate-rise">
+          <div class="h-11 w-11 rounded-xl hero-emerald border border-emerald-500/40 flex items-center justify-center shrink-0"><svg class="wc-icon" style="width:28px;height:28px"><use href="#wc-check"/></svg></div>
+          <div class="flex-1">
+            <p class="text-sm font-bold">Mediciones guardadas</p>
+            <p class="text-[11px] text-wc-text-2 mt-0.5 flex items-center gap-1"><i class="ph ph-ruler" style="font-size:11px"></i>Peso, cintura y cadera</p>
+            <div class="mt-2 grid grid-cols-3 gap-1.5">
+              <div class="rounded-lg bg-wc-bg-3 border border-wc-border p-1.5"><div class="flex items-center gap-1"><i class="ph-fill ph-scales text-emerald-400" style="font-size:10px"></i><p class="text-[8px] text-wc-text-3 uppercase font-semibold">Peso</p></div><p class="font-data text-sm font-bold">49.0<span class="text-[9px] text-emerald-400"> ↓</span></p></div>
+              <div class="rounded-lg bg-wc-bg-3 border border-wc-border p-1.5"><div class="flex items-center gap-1"><i class="ph-fill ph-ruler text-emerald-400" style="font-size:10px"></i><p class="text-[8px] text-wc-text-3 uppercase font-semibold">Cintura</p></div><p class="font-data text-sm font-bold">72<span class="text-[9px] text-emerald-400"> ↓</span></p></div>
+              <div class="rounded-lg bg-wc-bg-3 border border-wc-border p-1.5"><div class="flex items-center gap-1"><i class="ph-fill ph-ruler text-wc-text-3" style="font-size:10px"></i><p class="text-[8px] text-wc-text-3 uppercase font-semibold">Cadera</p></div><p class="font-data text-sm font-bold">94</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-16 rounded-lg bg-wc-bg-2 border border-wc-border/50 p-2 text-[9px] text-wc-text-3 italic flex items-center gap-1"><i class="ph ph-info" style="font-size:11px"></i>Auto-dismiss 4s · click para histórico</div>
+      </div>
+    </div>
+
+    <!-- SPEC #09 · Métricas sparkline -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2"><span class="pill rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-emerald-300 uppercase">09 · Métricas</span><code class="text-[10px] text-wc-text-3">MetricsTracker.vue</code></div>
+      <div class="relative mx-auto w-full max-w-[320px] rounded-[28px] overflow-hidden bg-[#0b0b10] border border-wc-border p-5 animate-pop">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2"><svg class="wc-icon" style="width:24px;height:24px"><use href="#wc-logo"/></svg><span class="font-display text-sm tracking-widest font-bold">WELLCORE</span></div>
+          <span class="text-[10px] text-wc-text-3">Hoy · 21 Abr</span>
+        </div>
+        <h2 class="mt-4 font-display text-4xl leading-none tracking-tight font-bold">Progreso<br/><span class="text-wc-text-3 font-medium">registrado</span></h2>
+        <p class="mt-2 text-xs tracking-[0.22em] uppercase text-emerald-400 flex items-center gap-1.5 font-semibold"><i class="ph-fill ph-chart-line-up" style="font-size:14px"></i>3 métricas actualizadas</p>
+        <div class="mt-4 grid grid-cols-6 auto-rows-[70px] gap-2 text-sm">
+          <div class="col-span-6 row-span-2 rounded-2xl border border-emerald-500/30 p-3 relative overflow-hidden hero-emerald">
+            <div class="noise"></div>
+            <div class="relative flex items-center justify-between"><div class="flex items-center gap-1.5"><i class="ph-fill ph-scales text-emerald-300" style="font-size:14px"></i><p class="text-[10px] tracking-wider uppercase text-emerald-300 font-bold">Peso · últimos 30 días</p></div><span class="pill rounded-full px-2 py-0.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/10 flex items-center gap-1"><i class="ph-fill ph-trend-down" style="font-size:10px"></i>0.3 kg</span></div>
+            <div class="relative mt-2 h-16">
+              <svg viewBox="0 0 100 40" class="h-full w-full" preserveAspectRatio="none"><defs><linearGradient id="areaGrad2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#10b981" stop-opacity="0.5"/><stop offset="100%" stop-color="#10b981" stop-opacity="0"/></linearGradient></defs><path d="M0,22 L10,24 L20,19 L30,22 L40,17 L50,19 L60,14 L70,12 L80,13 L90,10 L100,8 L100,40 L0,40 Z" fill="url(#areaGrad2)"/><path d="M0,22 L10,24 L20,19 L30,22 L40,17 L50,19 L60,14 L70,12 L80,13 L90,10 L100,8" fill="none" stroke="#10b981" stroke-width="1.5"/><circle cx="100" cy="8" r="2" fill="#10b981"/></svg>
+            </div>
+            <div class="relative mt-0.5 flex items-center justify-between"><p class="text-[10px] text-wc-text-3">49.3 → <span class="text-white font-bold">49.0 kg</span></p><p class="text-[9px] text-wc-text-3">30d atrás · hoy</p></div>
+          </div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-ruler text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">IMC</p></div><p class="font-data text-xl font-bold mt-0.5">22.1</p></div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-drop-half text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Grasa %</p></div><p class="font-data text-xl font-bold mt-0.5">18.4<span class="text-xs text-wc-text-3">%</span></p></div>
+        </div>
+        <button class="mt-4 w-full rounded-xl bg-wc-accent py-3 text-sm font-semibold shadow-[0_10px_30px_-10px_rgba(220,38,38,.5)] flex items-center justify-center gap-2"><span>Ver gráfico completo</span><i class="ph-bold ph-arrow-right" style="font-size:14px"></i></button>
+      </div>
+    </div>
+
+    <!-- SPEC #10 · Level up · wc-level-ring + wc-xp-bolt -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2"><span class="pill rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-violet-300 uppercase bg-violet-500/10 border-violet-500/30 border">10 · Level up ✓</span><code class="text-[10px] text-wc-text-3">LevelUpCelebration.vue</code></div>
+      <div class="relative mx-auto w-full max-w-[320px] rounded-[28px] overflow-hidden bg-[#0b0b10] border border-violet-500/40 p-5 animate-pop ring-1 ring-violet-500/20 shadow-[0_30px_80px_-20px_rgba(139,92,246,.4)]">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2"><svg class="wc-icon" style="width:24px;height:24px"><use href="#wc-logo"/></svg><span class="font-display text-sm tracking-widest font-bold">WELLCORE</span></div>
+          <span class="text-[10px] text-wc-text-3 flex items-center gap-1"><i class="ph-fill ph-ladder-simple text-violet-400" style="font-size:11px"></i>Lvl 3 → 4</span>
+        </div>
+        <h2 class="mt-4 font-display text-4xl leading-none tracking-tight font-bold">Subiste<br/><span class="text-violet-400">de nivel</span></h2>
+        <p class="mt-2 text-xs tracking-[0.22em] uppercase text-violet-400 flex items-center gap-1.5 font-semibold"><i class="ph-fill ph-arrow-fat-up" style="font-size:14px"></i>Ahora eres nivel 4</p>
+        <div class="mt-4 grid grid-cols-6 auto-rows-[70px] gap-2 text-sm">
+          <div class="col-span-4 row-span-2 rounded-2xl border border-violet-500/30 p-3 flex flex-col items-center justify-center relative overflow-hidden hero-violet">
+            <div class="noise"></div>
+            <div class="relative h-[110px] w-[110px] animate-float">
+              <svg viewBox="0 0 110 110" class="h-full w-full"><defs><linearGradient id="gradL" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient></defs><circle cx="55" cy="55" r="48" stroke-width="6" fill="none" class="ring-track"/><circle cx="55" cy="55" r="48" stroke-width="6" fill="none" stroke="url(#gradL)" stroke-linecap="round" stroke-dasharray="301" stroke-dashoffset="0" style="transform:rotate(-90deg);transform-origin:center"/></svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center"><p class="text-[9px] tracking-wider uppercase text-violet-300 font-bold">Nivel</p><p class="font-display text-3xl leading-none font-black">4</p></div>
+            </div>
+          </div>
+          <div class="col-span-2 rounded-2xl bg-wc-bg-3 border border-violet-500/20 p-3"><div class="flex items-center gap-1"><svg class="wc-icon" style="width:11px;height:11px"><use href="#wc-xp-bolt"/></svg><p class="text-[9px] tracking-wider uppercase text-violet-400 font-bold">XP Total</p></div><p class="font-data text-xl font-bold mt-0.5">2,040</p></div>
+          <div class="col-span-2 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-plus-circle text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Ganados</p></div><p class="font-data text-xl font-bold mt-0.5">+540</p></div>
+          <div class="col-span-6 rounded-2xl bg-wc-bg-3 border border-violet-500/20 p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-quotes text-violet-400" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-violet-400 font-bold">Tu coach</p></div><p class="mt-0.5 text-sm italic text-wc-text-2 leading-snug">"Nivel elite. Pocos llegan hasta aquí."</p></div>
+        </div>
+        <button class="mt-4 w-full rounded-xl bg-wc-accent py-3 text-sm font-semibold shadow-[0_10px_30px_-10px_rgba(220,38,38,.5)] flex items-center justify-center gap-2"><span>Continuar</span><i class="ph-bold ph-arrow-right" style="font-size:14px"></i></button>
+      </div>
+    </div>
+
+    <!-- SPEC #11 · Referral · wc-coin -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2"><span class="pill rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-emerald-300 uppercase">11 · Referral</span><code class="text-[10px] text-wc-text-3">ReferralProgram.vue</code></div>
+      <div class="relative mx-auto w-full max-w-[320px] rounded-[28px] overflow-hidden bg-[#0b0b10] border border-wc-border p-5">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-3 flex items-center gap-1"><i class="ph-fill ph-envelope-simple" style="font-size:11px"></i>Toast con recompensa</p>
+        <div class="mt-3 rounded-2xl bg-gradient-to-br from-emerald-900/30 to-[#0b0b10] border border-emerald-500/30 p-3 flex items-start gap-3 animate-rise">
+          <div class="h-11 w-11 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center shrink-0"><i class="ph-fill ph-paper-plane-tilt text-emerald-300" style="font-size:22px"></i></div>
+          <div class="flex-1">
+            <p class="text-sm font-bold">Invitación enviada</p>
+            <p class="text-[11px] text-wc-text-2 mt-0.5">maria@correo.com la recibirá en segundos</p>
+            <div class="mt-2 rounded-lg bg-wc-bg-3 border border-emerald-500/20 p-2.5 flex items-center justify-between">
+              <div><p class="text-[9px] text-emerald-400 tracking-wider uppercase font-bold flex items-center gap-1"><i class="ph-fill ph-gift" style="font-size:10px"></i>Ganas si se inscribe</p><p class="font-data text-lg font-bold">+500 <span class="text-xs text-wc-text-3">WellCoins</span></p></div>
+              <svg class="wc-icon" style="width:44px;height:44px"><use href="#wc-coin"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPEC #12 · Perfil toast -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2"><span class="pill rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-wc-accent-soft uppercase">12 · Perfil</span><code class="text-[10px] text-wc-text-3">ProfileEditor.vue</code></div>
+      <div class="relative mx-auto w-full max-w-[320px] rounded-[28px] overflow-hidden bg-[#0b0b10] border border-wc-border p-5">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-3 flex items-center gap-1"><i class="ph ph-user-gear" style="font-size:11px"></i>Toast con diff de campos</p>
+        <div class="mt-3 rounded-2xl bg-wc-bg-2 border border-wc-border p-3 flex items-start gap-3 animate-rise">
+          <div class="h-11 w-11 rounded-xl bg-wc-accent/15 border border-wc-accent/40 flex items-center justify-center shrink-0"><svg class="wc-icon" style="width:28px;height:28px"><use href="#wc-check"/></svg></div>
+          <div class="flex-1">
+            <p class="text-sm font-bold">Perfil actualizado</p>
+            <p class="text-[11px] text-wc-text-2 mt-0.5">3 campos guardados</p>
+            <div class="mt-2 space-y-1 text-[10px]">
+              <div class="flex items-center gap-1.5 text-wc-text-3"><i class="ph-fill ph-check-circle text-emerald-400" style="font-size:10px"></i>Objetivo · <span class="text-white font-semibold">Hipertrofia</span></div>
+              <div class="flex items-center gap-1.5 text-wc-text-3"><i class="ph-fill ph-check-circle text-emerald-400" style="font-size:10px"></i>Teléfono actualizado</div>
+              <div class="flex items-center gap-1.5 text-wc-text-3"><i class="ph-fill ph-check-circle text-emerald-400" style="font-size:10px"></i>Altura · <span class="text-white font-semibold">172 cm</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPEC #13 · Coach feedback · wc-coach -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2"><span class="pill rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-blue-300 uppercase">13 · Valoración</span><code class="text-[10px] text-wc-text-3">CoachFeedback.vue</code></div>
+      <div class="relative mx-auto w-full max-w-[320px] rounded-[28px] overflow-hidden bg-[#0b0b10] border border-wc-border p-5 animate-pop">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2"><svg class="wc-icon" style="width:24px;height:24px"><use href="#wc-logo"/></svg><span class="font-display text-sm tracking-widest font-bold">WELLCORE</span></div>
+          <span class="text-[10px] text-wc-text-3">Feedback mensual</span>
+        </div>
+        <h2 class="mt-4 font-display text-4xl leading-none tracking-tight font-bold">Gracias<br/><span class="text-wc-text-3 font-medium">por tu voz</span></h2>
+        <div class="mt-4 rounded-2xl border border-blue-500/30 p-3 relative overflow-hidden hero-blue">
+          <div class="noise"></div>
+          <div class="relative flex items-center gap-3">
+            <svg class="wc-icon" style="width:48px;height:48px"><use href="#wc-coach"/></svg>
+            <div class="flex-1"><p class="text-[10px] tracking-wider uppercase text-blue-200 font-bold">Tu coach</p><p class="text-sm font-bold">Daniel Esparza</p><div class="flex gap-0.5 mt-0.5 text-amber-400"><i class="ph-fill ph-star" style="font-size:14px"></i><i class="ph-fill ph-star" style="font-size:14px"></i><i class="ph-fill ph-star" style="font-size:14px"></i><i class="ph-fill ph-star" style="font-size:14px"></i><i class="ph-fill ph-star" style="font-size:14px"></i></div></div>
+          </div>
+          <p class="relative mt-3 text-xs italic text-wc-text-2 flex gap-1"><i class="ph-fill ph-quotes text-blue-400 shrink-0" style="font-size:12px"></i>Buena comunicación, adapta el plan a mis tiempos.</p>
+        </div>
+        <div class="mt-3 grid grid-cols-3 gap-2 text-[10px]">
+          <div class="rounded-lg bg-wc-bg-3 border border-wc-border p-2 text-center"><i class="ph-fill ph-hand-heart text-blue-400" style="font-size:14px"></i><p class="text-[8px] text-wc-text-3 uppercase font-semibold mt-0.5">Atención</p><p class="font-data text-base font-bold">5/5</p></div>
+          <div class="rounded-lg bg-wc-bg-3 border border-wc-border p-2 text-center"><i class="ph-fill ph-list-checks text-blue-400" style="font-size:14px"></i><p class="text-[8px] text-wc-text-3 uppercase font-semibold mt-0.5">Plan</p><p class="font-data text-base font-bold">5/5</p></div>
+          <div class="rounded-lg bg-wc-bg-3 border border-wc-border p-2 text-center"><i class="ph-fill ph-trend-up text-blue-400" style="font-size:14px"></i><p class="text-[8px] text-wc-text-3 uppercase font-semibold mt-0.5">Resultados</p><p class="font-data text-base font-bold">4/5</p></div>
+        </div>
+        <button class="mt-4 w-full rounded-xl bg-wc-accent py-3 text-sm font-semibold shadow-[0_10px_30px_-10px_rgba(220,38,38,.5)] flex items-center justify-center gap-2"><i class="ph-bold ph-arrow-left" style="font-size:14px"></i><span>Volver</span></button>
+      </div>
+    </div>
+
+    <!-- SPEC #14 · Ticket soporte -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2"><span class="pill rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-wc-accent-soft uppercase">14 · Ticket</span><code class="text-[10px] text-wc-text-3">TicketSupport.vue</code></div>
+      <div class="relative mx-auto w-full max-w-[320px] rounded-[28px] overflow-hidden bg-[#0b0b10] border border-wc-border p-5">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-wc-text-3 flex items-center gap-1"><i class="ph-fill ph-ticket" style="font-size:11px"></i>Toast con tracking</p>
+        <div class="mt-3 rounded-2xl bg-gradient-to-br from-[#1a0b0b] to-[#0b0b10] border border-wc-accent/30 p-3 flex items-start gap-3 animate-rise">
+          <div class="h-11 w-11 rounded-xl bg-wc-accent/20 border border-wc-accent/40 flex items-center justify-center shrink-0"><i class="ph-fill ph-ticket text-wc-accent-soft" style="font-size:22px"></i></div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <p class="text-sm font-bold">Ticket #042 creado</p>
+              <span class="pill rounded-full px-1.5 py-0.5 text-[8px] text-emerald-400 bg-emerald-500/10 font-bold flex items-center gap-0.5"><i class="ph-fill ph-circle-notch" style="font-size:8px"></i>Abierto</span>
+            </div>
+            <p class="text-[11px] text-wc-text-2 mt-0.5 flex items-center gap-1"><i class="ph ph-clock" style="font-size:11px"></i>Respuesta en 24 h al chat</p>
+            <div class="mt-2 rounded-lg bg-wc-bg-3 border border-wc-border p-2">
+              <div class="flex items-center gap-2">
+                <div class="h-5 w-5 rounded-full bg-wc-accent/20 flex items-center justify-center text-[9px] font-bold">42</div>
+                <div class="flex-1 min-w-0"><p class="text-[10px] font-semibold truncate">No me llega el correo de check-in</p></div>
+              </div>
+              <div class="mt-2 flex items-center gap-2 text-[8px]">
+                <div class="flex items-center gap-1 text-emerald-400"><i class="ph-fill ph-check-circle" style="font-size:10px"></i>Recibido</div>
+                <div class="flex-1 h-0.5 bg-gradient-to-r from-emerald-400 to-wc-border rounded"></div>
+                <div class="flex items-center gap-1 text-wc-text-3"><i class="ph ph-circle" style="font-size:10px"></i>Revisión</div>
+                <div class="flex-1 h-0.5 bg-wc-border rounded"></div>
+                <div class="flex items-center gap-1 text-wc-text-3"><i class="ph ph-circle" style="font-size:10px"></i>Resuelto</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPEC #15 · Onboarding coach · wc-coach -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2"><span class="pill rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-blue-300 uppercase">15 · Onboarding</span><code class="text-[10px] text-wc-text-3">CoachOnboardingChecklist.vue</code></div>
+      <div class="relative mx-auto w-full max-w-[320px] rounded-[28px] overflow-hidden bg-[#0b0b10] border border-wc-border p-5 animate-pop">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2"><svg class="wc-icon" style="width:24px;height:24px"><use href="#wc-logo"/></svg><span class="font-display text-sm tracking-widest font-bold">WELLCORE · COACH</span></div>
+          <span class="text-[10px] text-wc-text-3 flex items-center gap-1"><i class="ph-fill ph-checks" style="font-size:11px"></i>4/4</span>
+        </div>
+        <h2 class="mt-4 font-display text-4xl leading-none tracking-tight font-bold">Listo<br/><span class="text-wc-text-3 font-medium">para arrancar</span></h2>
+        <p class="mt-2 text-xs tracking-[0.22em] uppercase text-blue-400 flex items-center gap-1.5 font-semibold"><svg class="wc-icon" style="width:14px;height:14px"><use href="#wc-coach"/></svg>Setup completado</p>
+        <div class="mt-4 grid grid-cols-6 auto-rows-[70px] gap-2 text-sm">
+          <div class="col-span-6 row-span-2 rounded-2xl border border-blue-500/30 p-3 relative overflow-hidden hero-blue">
+            <div class="noise"></div>
+            <div class="relative flex items-center gap-1.5 mb-2"><svg class="wc-icon" style="width:14px;height:14px"><use href="#wc-coach"/></svg><p class="text-[10px] tracking-wider uppercase text-blue-300 font-bold">Primeros pasos</p></div>
+            <div class="relative space-y-1 text-[11px]">
+              <div class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-emerald-400" style="font-size:14px"></i><span>Mi marca personalizada</span></div>
+              <div class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-emerald-400" style="font-size:14px"></i><span>Clientes asignados</span></div>
+              <div class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-emerald-400" style="font-size:14px"></i><span>Primer ticket creado</span></div>
+              <div class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-emerald-400" style="font-size:14px"></i><span>Check-in respondido</span></div>
+            </div>
+          </div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-graduation-cap text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Tour</p></div><p class="font-data text-xl font-bold mt-0.5">3<span class="text-xs text-wc-text-3"> / 3</span></p></div>
+          <div class="col-span-3 rounded-2xl bg-wc-bg-3 border border-wc-border p-3"><div class="flex items-center gap-1"><i class="ph-fill ph-users-three text-wc-text-3" style="font-size:11px"></i><p class="text-[9px] tracking-wider uppercase text-wc-text-3">Clientes</p></div><p class="font-data text-xl font-bold mt-0.5">5</p></div>
+        </div>
+        <button class="mt-4 w-full rounded-xl bg-wc-accent py-3 text-sm font-semibold shadow-[0_10px_30px_-10px_rgba(220,38,38,.5)] flex items-center justify-center gap-2"><i class="ph-fill ph-house" style="font-size:14px"></i><span>Al dashboard</span></button>
+      </div>
+    </div>
+
+  </div>
+  <!-- SPECS SUMMARY FOOTER -->
+  <div class="mt-10 rounded-2xl border border-wc-border bg-wc-bg-2 p-6">
+    <p class="text-xs font-semibold tracking-[0.2em] uppercase text-wc-accent">Patrón común · system de diseño</p>
+    <div class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6 text-[11px]">
+      <div class="rounded-lg pill p-3"><p class="text-wc-text-3 text-[9px] uppercase tracking-wider">Ancho</p><p class="font-data font-bold">320 px</p></div>
+      <div class="rounded-lg pill p-3"><p class="text-wc-text-3 text-[9px] uppercase tracking-wider">Radio</p><p class="font-data font-bold">28 px</p></div>
+      <div class="rounded-lg pill p-3"><p class="text-wc-text-3 text-[9px] uppercase tracking-wider">Grid</p><p class="font-data font-bold">6-col</p></div>
+      <div class="rounded-lg pill p-3"><p class="text-wc-text-3 text-[9px] uppercase tracking-wider">Hero</p><p class="font-data font-bold">4×2</p></div>
+      <div class="rounded-lg pill p-3"><p class="text-wc-text-3 text-[9px] uppercase tracking-wider">Fila</p><p class="font-data font-bold">70 px</p></div>
+      <div class="rounded-lg pill p-3"><p class="text-wc-text-3 text-[9px] uppercase tracking-wider">CTA</p><p class="font-data font-bold">wc-accent</p></div>
+    </div>
+    <div class="mt-4 grid grid-cols-5 gap-2 text-[10px]">
+      <div class="rounded-lg bg-wc-bg-3 border border-wc-accent/40 p-2"><p class="text-wc-accent-soft">Workout · Default</p><p class="text-wc-text-3 mt-1">#DC2626</p></div>
+      <div class="rounded-lg bg-wc-bg-3 border border-emerald-500/40 p-2"><p class="text-emerald-300">Fotos · Métricas</p><p class="text-wc-text-3 mt-1">#10b981</p></div>
+      <div class="rounded-lg bg-wc-bg-3 border border-amber-500/40 p-2"><p class="text-amber-300">Medallas</p><p class="text-wc-text-3 mt-1">#f59e0b</p></div>
+      <div class="rounded-lg bg-wc-bg-3 border border-blue-500/40 p-2"><p class="text-blue-300">Check-in · Coach</p><p class="text-wc-text-3 mt-1">#3b82f6</p></div>
+      <div class="rounded-lg bg-wc-bg-3 border border-violet-500/40 p-2"><p class="text-violet-300">Level up</p><p class="text-wc-text-3 mt-1">#8b5cf6</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- LAB · EXPLORACIÓN DE ESTILOS — diferentes direcciones visuales           -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<section class="mx-auto max-w-7xl px-4 pb-12 sm:px-6">
+  <!-- Preload SF-like + icon-style fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+  <div class="rounded-2xl border border-violet-500/40 bg-gradient-to-br from-violet-600/10 via-wc-bg-2 to-wc-bg-2 p-6 mb-8">
+    <p class="text-xs font-semibold tracking-[0.22em] text-violet-300 uppercase">Lab · 8 direcciones visuales + sistemas de iconos</p>
+    <h2 class="mt-2 font-display text-4xl tracking-wide">Dónde llevamos el Bento</h2>
+    <p class="mt-2 max-w-3xl text-sm text-wc-text-2">Tomo el mismo modal (Level up) y lo renderizo en 8 estilos de diseño radicalmente distintos. Abajo, 6 sistemas de iconos con el mismo set para comparar calidad. Escoge estilo + librería, lo aplico al resto de modales.</p>
+    <div class="mt-4 flex flex-wrap gap-2 text-[10px]">
+      <span class="pill rounded-full px-2.5 py-1">1 · Bento actual</span>
+      <span class="pill rounded-full px-2.5 py-1">2 · iOS 26 Liquid Glass</span>
+      <span class="pill rounded-full px-2.5 py-1">3 · Claymorphic</span>
+      <span class="pill rounded-full px-2.5 py-1">4 · Swiss editorial</span>
+      <span class="pill rounded-full px-2.5 py-1">5 · Neon terminal</span>
+      <span class="pill rounded-full px-2.5 py-1">6 · Aurora mesh</span>
+      <span class="pill rounded-full px-2.5 py-1">7 · Duolingo pop</span>
+      <span class="pill rounded-full px-2.5 py-1">8 · Brutalist mono</span>
+    </div>
+  </div>
+
+  <!-- ═══════════ 8 ESTILOS VISUALES ═══════════ -->
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+
+    <!-- STYLE 1 · BENTO ACTUAL (baseline) -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center justify-between"><span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold tracking-widest text-violet-300 uppercase">01 · Bento WC</span><span class="text-[9px] text-wc-text-3">actual</span></div>
+      <div class="rounded-[28px] bg-[#0b0b10] border border-wc-border p-5 h-[440px] flex flex-col">
+        <div class="flex items-center justify-between"><div class="flex items-center gap-2"><span class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-violet-500">✓</span><span class="font-display text-sm tracking-widest">WELLCORE</span></div><span class="text-[10px] text-wc-text-3">Lvl 3 → 4</span></div>
+        <h3 class="mt-3 font-display text-3xl leading-none">Subiste<br/><span class="text-violet-400">de nivel</span></h3>
+        <div class="mt-3 grid grid-cols-6 gap-1.5 text-[10px] flex-1">
+          <div class="col-span-4 row-span-2 rounded-xl hero-violet border border-violet-500/30 flex items-center justify-center"><div class="h-16 w-16 rounded-full border-4 border-violet-400/40 border-t-violet-400 flex items-center justify-center font-display text-2xl">4</div></div>
+          <div class="col-span-2 rounded-xl bg-wc-bg-3 border border-wc-border p-2"><p class="text-[8px] text-violet-400">XP</p><p class="font-data font-bold">2,040</p></div>
+          <div class="col-span-2 rounded-xl bg-wc-bg-3 border border-wc-border p-2"><p class="text-[8px] text-wc-text-3">+540</p></div>
+        </div>
+        <button class="mt-3 rounded-lg bg-wc-accent py-2 text-xs font-bold">Continuar</button>
+      </div>
+      <p class="text-[10px] text-wc-text-3 italic">Grid 6-col · tipografía sans · accent por categoría</p>
+    </div>
+
+    <!-- STYLE 2 · iOS 26 LIQUID GLASS -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center justify-between"><span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold tracking-widest text-sky-300 uppercase">02 · Liquid Glass</span><span class="text-[9px] text-wc-text-3">iOS 26</span></div>
+      <div class="relative rounded-[40px] h-[440px] flex flex-col p-5 overflow-hidden" style="background: radial-gradient(ellipse at 30% 20%, rgba(139,92,246,0.45), transparent 55%), radial-gradient(ellipse at 80% 80%, rgba(14,165,233,0.35), transparent 55%), #0a0a14; font-family: 'SF Pro Display', -apple-system, system-ui, sans-serif">
+        <div class="absolute inset-0 backdrop-blur-3xl" style="background: linear-gradient(135deg, rgba(255,255,255,0.04), transparent 40%), rgba(255,255,255,0.02)"></div>
+        <div class="relative flex items-center justify-between">
+          <div class="flex items-center gap-2"><div class="h-7 w-7 rounded-[10px] flex items-center justify-center" style="background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.08)); backdrop-filter: blur(20px); border: 0.5px solid rgba(255,255,255,0.3); box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset"><span class="text-white text-xs">✨</span></div><span class="text-sm font-semibold tracking-tight">WellCore</span></div>
+          <span class="text-[10px] text-white/60 font-medium">Level 3 → 4</span>
+        </div>
+        <h3 class="relative mt-4 text-[34px] leading-[0.95] font-bold tracking-[-0.02em]">Level Up<br/><span style="background: linear-gradient(135deg, #fff, rgba(255,255,255,0.5)); -webkit-background-clip: text; -webkit-text-fill-color: transparent">You rose</span></h3>
+        <div class="relative mt-4 flex-1 space-y-2">
+          <div class="rounded-[22px] p-4 flex items-center justify-between" style="background: linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04)); backdrop-filter: blur(30px) saturate(180%); border: 0.5px solid rgba(255,255,255,0.2); box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 20px 50px -10px rgba(0,0,0,0.5)">
+            <div><p class="text-[10px] uppercase tracking-wider text-white/60 font-semibold">Level</p><p class="text-4xl font-bold tracking-tight">4</p></div>
+            <div class="h-16 w-16 rounded-full flex items-center justify-center" style="background: conic-gradient(from -90deg, #a78bfa 0%, #7c3aed 100%, transparent 100%); mask: radial-gradient(circle, transparent 58%, black 60%); -webkit-mask: radial-gradient(circle, transparent 58%, black 60%)"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="rounded-2xl p-3" style="background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02)); backdrop-filter: blur(20px); border: 0.5px solid rgba(255,255,255,0.15)"><p class="text-[10px] text-white/60">Total XP</p><p class="text-lg font-semibold tabular-nums">2,040</p></div>
+            <div class="rounded-2xl p-3" style="background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02)); backdrop-filter: blur(20px); border: 0.5px solid rgba(255,255,255,0.15)"><p class="text-[10px] text-white/60">Earned</p><p class="text-lg font-semibold text-emerald-300">+540</p></div>
+          </div>
+        </div>
+        <button class="relative mt-3 rounded-full py-3 text-sm font-semibold" style="background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.75)); color: #000; box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 10px 30px rgba(0,0,0,0.3)">Continue</button>
+      </div>
+      <p class="text-[10px] text-wc-text-3 italic">Multi-layer blur · conic gradients · tipografía SF · botón blanco iOS</p>
+    </div>
+
+    <!-- STYLE 3 · CLAYMORPHIC -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center justify-between"><span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold tracking-widest text-pink-300 uppercase">03 · Claymorphic</span><span class="text-[9px] text-wc-text-3">3D soft</span></div>
+      <div class="rounded-[40px] h-[440px] flex flex-col p-6 relative overflow-hidden" style="background: linear-gradient(180deg, #FEE4EA, #F7D9E3); font-family: 'Space Grotesk', sans-serif">
+        <div class="flex items-center justify-between">
+          <div class="h-8 w-8 rounded-2xl flex items-center justify-center text-[16px]" style="background: linear-gradient(135deg, #fff, #f5e1e9); box-shadow: 4px 4px 10px rgba(180,80,120,0.25), -3px -3px 8px rgba(255,255,255,0.9)">🏆</div>
+          <span class="text-[10px] font-bold text-pink-600 uppercase tracking-widest">Level Up</span>
+        </div>
+        <h3 class="mt-3 text-[30px] font-bold leading-[0.95] text-stone-800">Subiste<br/>de nivel!</h3>
+        <div class="mt-4 flex-1 flex flex-col justify-center items-center">
+          <div class="relative h-28 w-28 rounded-full flex items-center justify-center" style="background: linear-gradient(135deg, #fcd4df, #f7a8bf); box-shadow: 10px 10px 24px rgba(180,80,120,0.3), -8px -8px 20px rgba(255,255,255,0.9), inset 2px 2px 4px rgba(255,255,255,0.7)">
+            <div class="h-20 w-20 rounded-full flex items-center justify-center" style="background: linear-gradient(135deg, #f472b6, #db2777); box-shadow: inset 4px 4px 8px rgba(200,40,100,0.4), inset -3px -3px 8px rgba(255,200,220,0.7)"><span class="text-5xl font-black text-white">4</span></div>
+          </div>
+          <div class="mt-4 flex gap-2">
+            <div class="rounded-2xl px-4 py-2" style="background: linear-gradient(135deg, #fff, #f5e1e9); box-shadow: 4px 4px 10px rgba(180,80,120,0.2), -3px -3px 8px rgba(255,255,255,0.9)"><p class="text-[9px] text-stone-500 uppercase">XP</p><p class="text-sm font-bold text-stone-800">+540</p></div>
+            <div class="rounded-2xl px-4 py-2" style="background: linear-gradient(135deg, #fff, #f5e1e9); box-shadow: 4px 4px 10px rgba(180,80,120,0.2), -3px -3px 8px rgba(255,255,255,0.9)"><p class="text-[9px] text-stone-500 uppercase">Total</p><p class="text-sm font-bold text-stone-800">2,040</p></div>
+          </div>
+        </div>
+        <button class="rounded-full py-3 text-sm font-bold text-white" style="background: linear-gradient(135deg, #f472b6, #db2777); box-shadow: 6px 6px 14px rgba(180,60,100,0.4), -4px -4px 10px rgba(255,255,255,0.8), inset 2px 2px 4px rgba(255,180,210,0.5)">Continuar ✨</button>
+      </div>
+      <p class="text-[10px] text-wc-text-3 italic">Dual shadow 3D · fondo pastel · no encaja con marca roja WC</p>
+    </div>
+
+    <!-- STYLE 4 · SWISS EDITORIAL -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center justify-between"><span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold tracking-widest text-stone-300 uppercase">04 · Swiss</span><span class="text-[9px] text-wc-text-3">editorial</span></div>
+      <div class="rounded-none h-[440px] flex flex-col p-6 bg-white text-black font-sans">
+        <div class="flex items-center justify-between border-b-2 border-black pb-2">
+          <p class="font-mono text-[10px] font-bold tracking-[0.3em]">WELLCORE · №026</p>
+          <p class="font-mono text-[10px]">21.04.26</p>
+        </div>
+        <p class="mt-6 font-mono text-[10px] tracking-[0.3em] uppercase">Level up report</p>
+        <h3 class="mt-1 text-[48px] font-black leading-[0.9] tracking-tight">Nivel 4.<br/><span class="italic font-serif font-light" style="font-family: 'Instrument Serif', serif">Alcanzado.</span></h3>
+        <div class="mt-6 flex-1 border-t border-b border-black divide-y divide-black/20">
+          <div class="flex justify-between py-2.5"><p class="font-mono text-xs text-black/60">Nivel previo</p><p class="font-mono text-xs font-bold">03</p></div>
+          <div class="flex justify-between py-2.5"><p class="font-mono text-xs text-black/60">Nivel actual</p><p class="font-mono text-xs font-bold">04</p></div>
+          <div class="flex justify-between py-2.5"><p class="font-mono text-xs text-black/60">XP acumulado</p><p class="font-mono text-xs font-bold">2,040</p></div>
+          <div class="flex justify-between py-2.5"><p class="font-mono text-xs text-black/60">XP de este ciclo</p><p class="font-mono text-xs font-bold">+540</p></div>
+        </div>
+        <p class="mt-3 text-xs italic leading-snug" style="font-family: 'Instrument Serif', serif">"Nivel elite. Pocos llegan hasta aquí." — tu coach</p>
+        <button class="mt-3 rounded-none bg-black py-3 text-xs font-black text-white uppercase tracking-[0.25em]">Continuar →</button>
+      </div>
+      <p class="text-[10px] text-wc-text-3 italic">Fondo blanco · Instrument Serif italic · monospace data · tipografía grande</p>
+    </div>
+
+    <!-- STYLE 5 · NEON TERMINAL -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center justify-between"><span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold tracking-widest text-green-300 uppercase">05 · Neon terminal</span><span class="text-[9px] text-wc-text-3">cyber</span></div>
+      <div class="rounded-lg h-[440px] flex flex-col p-5 relative overflow-hidden" style="background: #020617; font-family: 'JetBrains Mono', monospace; border: 1px solid #10b981; box-shadow: 0 0 40px rgba(16,185,129,0.25), inset 0 0 20px rgba(16,185,129,0.08)">
+        <div class="absolute inset-0 pointer-events-none" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(16,185,129,0.03) 2px, rgba(16,185,129,0.03) 3px)"></div>
+        <div class="relative">
+          <p class="text-[9px] text-emerald-400">$ wellcore --event=level_up --user=silvia</p>
+          <p class="text-[9px] text-emerald-400/60 mt-0.5">&gt; parsing event...OK</p>
+          <p class="text-[9px] text-emerald-400/60">&gt; threshold crossed: 500 XP</p>
+        </div>
+        <div class="relative mt-4 border-t border-emerald-500/30 pt-3">
+          <p class="text-[10px] text-emerald-300">[ LEVEL_UP ]</p>
+          <h3 class="mt-1 text-3xl text-emerald-400 font-bold" style="text-shadow: 0 0 20px rgba(16,185,129,0.7)">level_03 &gt;&gt; 04</h3>
+        </div>
+        <div class="relative mt-4 flex-1 space-y-2 text-xs text-emerald-300">
+          <div class="rounded border border-emerald-500/30 p-2 bg-emerald-900/10"><p class="text-[9px] text-emerald-400/60">TOTAL_XP</p><p class="text-lg text-emerald-300">2040</p><div class="mt-1 flex gap-0.5">
+            <span class="h-2 w-2 bg-emerald-400"></span><span class="h-2 w-2 bg-emerald-400"></span><span class="h-2 w-2 bg-emerald-400"></span><span class="h-2 w-2 bg-emerald-400/70"></span><span class="h-2 w-2 bg-emerald-400/40"></span><span class="h-2 w-2 bg-emerald-500/20"></span><span class="h-2 w-2 bg-emerald-500/20"></span><span class="h-2 w-2 bg-emerald-500/20"></span>
+          </div></div>
+          <div class="rounded border border-emerald-500/30 p-2 bg-emerald-900/10"><p class="text-[9px] text-emerald-400/60">XP_DELTA</p><p class="text-lg text-emerald-300">+540</p></div>
+          <div class="text-[9px] text-emerald-400/80 animate-pulse">&gt; awaiting input_<span class="inline-block w-2 h-3 bg-emerald-400 align-middle"></span></div>
+        </div>
+        <button class="rounded-none border border-emerald-500 py-2 text-xs text-emerald-300 font-bold hover:bg-emerald-500 hover:text-black transition-colors" style="text-shadow: 0 0 10px rgba(16,185,129,0.5)">[ CONTINUE ]</button>
+      </div>
+      <p class="text-[10px] text-wc-text-3 italic">Monospace · scanlines · glow text · estética dev — raro para fitness</p>
+    </div>
+
+    <!-- STYLE 6 · AURORA MESH -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center justify-between"><span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold tracking-widest text-fuchsia-300 uppercase">06 · Aurora mesh</span><span class="text-[9px] text-wc-text-3">painterly</span></div>
+      <div class="rounded-[32px] h-[440px] flex flex-col p-5 relative overflow-hidden" style="background-color: #0a0515; background-image: radial-gradient(at 12% 8%, hsla(280,75%,55%,0.55) 0px, transparent 50%), radial-gradient(at 85% 15%, hsla(220,90%,60%,0.4) 0px, transparent 50%), radial-gradient(at 70% 90%, hsla(340,80%,55%,0.5) 0px, transparent 50%), radial-gradient(at 15% 80%, hsla(190,90%,50%,0.35) 0px, transparent 50%)">
+        <div class="absolute inset-0" style="backdrop-filter: blur(80px); -webkit-backdrop-filter: blur(80px)"></div>
+        <div class="relative flex items-center justify-between">
+          <div class="h-7 w-7 rounded-lg bg-white/15 border border-white/25 flex items-center justify-center backdrop-blur-md">✨</div>
+          <span class="text-[10px] text-white/70 font-light">Lvl 3 → 4</span>
+        </div>
+        <h3 class="relative mt-4 text-[34px] leading-[0.95] font-light tracking-tight" style="background: linear-gradient(110deg, #fff 30%, #f0b9ff 60%, #fff 90%); -webkit-background-clip: text; -webkit-text-fill-color: transparent">Subiste<br/><span class="font-black">de nivel.</span></h3>
+        <div class="relative mt-4 flex-1 flex items-center justify-center">
+          <div class="relative h-36 w-36">
+            <div class="absolute inset-0 rounded-full blur-2xl opacity-70" style="background: conic-gradient(from 0deg, #d946ef, #8b5cf6, #3b82f6, #06b6d4, #d946ef)"></div>
+            <div class="relative h-full w-full rounded-full flex items-center justify-center backdrop-blur-xl" style="background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), transparent 70%), rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2)">
+              <span class="text-7xl font-light text-white" style="font-family: 'Instrument Serif', serif">4</span>
+            </div>
+          </div>
+        </div>
+        <div class="relative flex justify-between text-[11px] text-white/70 mb-3">
+          <div><p class="text-[9px] uppercase tracking-widest">Total</p><p class="text-base font-light">2,040 XP</p></div>
+          <div class="text-right"><p class="text-[9px] uppercase tracking-widest">Ganados</p><p class="text-base font-light text-fuchsia-200">+540</p></div>
+        </div>
+        <button class="relative rounded-full py-3 text-sm font-medium text-white" style="background: rgba(255,255,255,0.12); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2)">Continuar</button>
+      </div>
+      <p class="text-[10px] text-wc-text-3 italic">Gradient mesh · blur heavy · Instrument Serif · sutil premium</p>
+    </div>
+
+    <!-- STYLE 7 · DUOLINGO POP -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center justify-between"><span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold tracking-widest text-yellow-300 uppercase">07 · Duo pop</span><span class="text-[9px] text-wc-text-3">cartoon</span></div>
+      <div class="rounded-[32px] h-[440px] flex flex-col p-5 relative overflow-hidden" style="background: #FFD60A; font-family: 'Nunito', 'Space Grotesk', sans-serif">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2"><div class="h-8 w-8 rounded-xl bg-white flex items-center justify-center text-lg" style="box-shadow: 0 4px 0 #F9A826">🎉</div><span class="text-sm font-black text-stone-800">WELLCORE</span></div>
+        </div>
+        <div class="mt-3 flex-1 flex flex-col items-center justify-center">
+          <div class="relative">
+            <div class="absolute -inset-2 rounded-full bg-white/50 blur-lg animate-pulse"></div>
+            <div class="relative h-24 w-24 rounded-full bg-white flex items-center justify-center" style="box-shadow: 0 8px 0 #F9A826">
+              <span class="text-6xl font-black text-yellow-600">4</span>
+            </div>
+          </div>
+          <h3 class="mt-4 text-4xl font-black text-stone-800 tracking-tight">¡Nivel 4!</h3>
+          <p class="mt-1 text-sm font-bold text-stone-700">+540 XP ganados 💪</p>
+          <div class="mt-4 flex gap-2">
+            <div class="rounded-2xl bg-white px-3 py-1.5 text-xs font-black text-stone-800" style="box-shadow: 0 4px 0 #F9A826">🔥 Racha 2</div>
+            <div class="rounded-2xl bg-white px-3 py-1.5 text-xs font-black text-stone-800" style="box-shadow: 0 4px 0 #F9A826">⚡ 2,040 XP</div>
+          </div>
+        </div>
+        <button class="rounded-2xl bg-white py-3 text-sm font-black text-stone-800 uppercase tracking-wider" style="box-shadow: 0 5px 0 #F9A826">¡Seguir! 🚀</button>
+      </div>
+      <p class="text-[10px] text-wc-text-3 italic">Amarillo vivo · botones con box-shadow sólido · emojis centrales — joven/divertido</p>
+    </div>
+
+    <!-- STYLE 8 · BRUTALIST MONO -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center justify-between"><span class="pill rounded-full px-2 py-0.5 text-[10px] font-bold tracking-widest text-red-300 uppercase">08 · Brutalist</span><span class="text-[9px] text-wc-text-3">zine</span></div>
+      <div class="rounded-none h-[440px] flex flex-col relative overflow-hidden border-4 border-black" style="background: #EEE; font-family: 'JetBrains Mono', monospace">
+        <div class="bg-black text-white p-3 flex items-center justify-between">
+          <span class="text-[11px] font-bold">WELLCORE/026_LEVELUP.EVT</span>
+          <span class="text-[11px]">[◼◼◼◻◻]</span>
+        </div>
+        <div class="p-5 flex-1 flex flex-col">
+          <p class="text-[10px] font-bold">&gt; LEVEL_UP.DETECTED</p>
+          <h3 class="mt-2 text-[72px] font-black leading-[0.85] text-black" style="letter-spacing: -0.05em">04<span class="text-wc-accent">.</span></h3>
+          <div class="mt-2 flex items-baseline gap-2 text-black">
+            <span class="text-[10px] bg-wc-accent text-white px-1.5 py-0.5">+1</span>
+            <p class="text-[11px] font-bold">PREV=03 · DELTA=+540XP</p>
+          </div>
+          <div class="mt-4 flex-1 bg-white border-2 border-black p-2">
+            <p class="text-[9px] text-black/50">TOTAL_XP</p>
+            <p class="text-2xl font-black tabular-nums">2,040</p>
+            <div class="mt-2 h-4 border-2 border-black flex">
+              <div class="bg-black" style="width: 65%"></div>
+              <div class="bg-white flex-1"></div>
+            </div>
+            <p class="text-[9px] mt-1">65% → NIVEL_05</p>
+          </div>
+          <button class="mt-3 bg-wc-accent border-2 border-black py-2.5 text-[11px] font-black text-white uppercase hover:bg-black transition-colors">[ CONTINUE ]</button>
+        </div>
+      </div>
+      <p class="text-[10px] text-wc-text-3 italic">Bordes gruesos · monospace · alto contraste · diagonal violenta</p>
+    </div>
+
+  </div>
+
+  <!-- ═══════════ SISTEMAS DE ICONOS ═══════════ -->
+  <div class="mt-12 rounded-2xl border border-wc-border bg-wc-bg-2 p-6">
+    <p class="text-xs font-semibold tracking-[0.22em] text-wc-accent uppercase">Icon systems · 6 librerías comparadas</p>
+    <h3 class="mt-2 font-display text-3xl tracking-wide">Nivel de calidad por librería</h3>
+    <p class="mt-2 text-sm text-wc-text-2 max-w-2xl">Mismos 6 iconos (workout/check-in/medalla/fotos/level/coach) renderizados con diferentes sistemas. Escoge según calidad visual, licencia y esfuerzo de integración.</p>
+
+    <div class="mt-6 overflow-x-auto">
+      <table class="w-full text-sm" style="min-width: 900px">
+        <thead>
+          <tr class="border-b border-wc-border text-left text-[10px] uppercase tracking-widest text-wc-text-3">
+            <th class="py-3 pr-4 font-semibold">Librería</th>
+            <th class="px-2 py-3 font-semibold text-center">Workout</th>
+            <th class="px-2 py-3 font-semibold text-center">Check-in</th>
+            <th class="px-2 py-3 font-semibold text-center">Medalla</th>
+            <th class="px-2 py-3 font-semibold text-center">Fotos</th>
+            <th class="px-2 py-3 font-semibold text-center">Level</th>
+            <th class="px-2 py-3 font-semibold text-center">Coach</th>
+            <th class="px-4 py-3 font-semibold">Notas</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-wc-border">
+          <!-- Heroicons -->
+          <tr>
+            <td class="py-4 pr-4">
+              <div class="flex items-center gap-2"><span class="font-semibold">Heroicons</span><span class="pill rounded-full px-1.5 py-0.5 text-[9px] text-emerald-400">MIT</span></div>
+              <p class="text-[10px] text-wc-text-3 mt-0.5">Tailwind Labs · 316 iconos</p>
+            </td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-wc-accent-soft" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM3 12a.75.75 0 0 1 .75-.75h.75a.75.75 0 1 1 0 1.5h-.75A.75.75 0 0 1 3 12Zm1.5-5.561a.75.75 0 0 1 1.061 0l.53.53a.75.75 0 0 1-1.06 1.06l-.531-.53a.75.75 0 0 1 0-1.06Zm13 0a.75.75 0 0 1 0 1.061l-.53.53a.75.75 0 1 1-1.06-1.06l.53-.53a.75.75 0 0 1 1.06 0ZM12 3a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-1.5 0v-.75A.75.75 0 0 1 12 3Zm5.25 9a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 0 1.5h-.75a.75.75 0 0 1-.75-.75ZM12 8.25a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5Z"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-blue-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-amber-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9a9.75 9.75 0 1 1 9 0ZM15 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-emerald-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-violet-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 18.75 7.5-7.5 7.5 7.5m-15-6 7.5-7.5 7.5 7.5"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-blue-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg></td>
+            <td class="px-4 text-xs text-wc-text-2">Ya en uso. Consistente. Stroke 1.5. Variante solid disponible. <strong class="text-emerald-400">Baseline.</strong></td>
+          </tr>
+
+          <!-- Phosphor -->
+          <tr>
+            <td class="py-4 pr-4">
+              <div class="flex items-center gap-2"><span class="font-semibold">Phosphor</span><span class="pill rounded-full px-1.5 py-0.5 text-[9px] text-emerald-400">MIT</span></div>
+              <p class="text-[10px] text-wc-text-3 mt-0.5">6 pesos · 9,072 iconos</p>
+            </td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-wc-accent-soft" fill="currentColor" viewBox="0 0 256 256"><path d="M212,104H192V56a16,16,0,0,0-16-16H152a16,16,0,0,0-16,16v48H120V56a16,16,0,0,0-16-16H80A16,16,0,0,0,64,56v48H44a16,16,0,0,0-16,16v16a16,16,0,0,0,16,16V184a16,16,0,0,0,16,16H88a16,16,0,0,0,16-16V136h32v48a16,16,0,0,0,16,16h28a16,16,0,0,0,16-16V152a16,16,0,0,0,16-16V120A16,16,0,0,0,212,104Z" opacity="0.2"/><path d="M248,120v16a8,8,0,0,1-8,8H216v40a16,16,0,0,1-16,16H176a16,16,0,0,1-16-16V136H96v48a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V144H16a8,8,0,0,1-8-8V120a8,8,0,0,1,8-8H40V72A16,16,0,0,1,56,56H80A16,16,0,0,1,96,72v40h64V72a16,16,0,0,1,16-16h24a16,16,0,0,1,16,16v40h24A8,8,0,0,1,248,120Z"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-blue-400" fill="currentColor" viewBox="0 0 256 256"><path d="M176,104l-56,56L86.63,126.63,38.33,174.93A8,8,0,0,0,48,184H208a8,8,0,0,0,9.66-9.07Z" opacity="0.2"/><path d="M176,104l-56,56L86.63,126.63,38.33,174.93a8,8,0,0,0,11.31,11.31L91.3,144.58l28.7,28.7L232,61.28,220.69,50Z" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-amber-400" fill="currentColor" viewBox="0 0 256 256"><path d="M208,64V24H48V64a48,48,0,0,0,56,47.32V152H84a24,24,0,0,0-24,24v24h8a16,16,0,0,0,16,16h88a16,16,0,0,0,16-16v-24a24,24,0,0,0-24-24H152V111.32A48,48,0,0,0,208,64Z"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-emerald-400" fill="currentColor" viewBox="0 0 256 256"><path d="M208,56H180.28L166.65,35.56A8,8,0,0,0,160,32H96a8,8,0,0,0-6.65,3.56L75.71,56H48A24,24,0,0,0,24,80V192a24,24,0,0,0,24,24H208a24,24,0,0,0,24-24V80A24,24,0,0,0,208,56ZM128,176a36,36,0,1,1,36-36A36,36,0,0,1,128,176Z"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-violet-400" fill="currentColor" viewBox="0 0 256 256"><path d="M205.66,165.66l-72,72a8,8,0,0,1-11.32,0l-72-72a8,8,0,0,1,11.32-11.32L120,212.69V48a8,8,0,0,1,16,0V212.69l58.34-58.35a8,8,0,0,1,11.32,11.32Z" transform="rotate(180 128 128)"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-blue-400" fill="currentColor" viewBox="0 0 256 256"><path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"/></svg></td>
+            <td class="px-4 text-xs text-wc-text-2"><strong class="text-white">Top-tier calidad</strong>. 6 pesos (thin/light/regular/bold/fill/duotone). Más visual que Heroicons.</td>
+          </tr>
+
+          <!-- Lucide -->
+          <tr>
+            <td class="py-4 pr-4">
+              <div class="flex items-center gap-2"><span class="font-semibold">Lucide</span><span class="pill rounded-full px-1.5 py-0.5 text-[9px] text-emerald-400">ISC</span></div>
+              <p class="text-[10px] text-wc-text-3 mt-0.5">Fork de Feather · 1,400+ iconos</p>
+            </td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-wc-accent-soft" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m6.5 6.5 11 11"/><path d="m21 21-1-1"/><path d="m3 3 1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/><path d="m3 10 7-7"/><path d="m14 21 7-7"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-blue-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-amber-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-violet-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-blue-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></td>
+            <td class="px-4 text-xs text-wc-text-2">Muy liviano. 1 peso solo pero muy pulido. Similar filosofía a Heroicons.</td>
+          </tr>
+
+          <!-- SF Symbols -->
+          <tr>
+            <td class="py-4 pr-4">
+              <div class="flex items-center gap-2"><span class="font-semibold">SF Symbols</span><span class="pill rounded-full px-1.5 py-0.5 text-[9px] text-red-400">Apple-only</span></div>
+              <p class="text-[10px] text-wc-text-3 mt-0.5">6,900+ iconos Apple</p>
+            </td>
+            <td class="px-2 text-center" colspan="6">
+              <div class="p-3 rounded-lg bg-red-500/5 border border-red-500/20 text-[11px] text-red-200 max-w-md mx-auto leading-snug">
+                ⚠ <strong>Licencia propietaria de Apple.</strong> Solo permitido en apps que corren en plataformas Apple (iOS/macOS/visionOS). NO se pueden usar en web. Alternativa: <strong class="text-white">SF Pro font</strong> (misma estética) es licenciable para web.
+              </div>
+            </td>
+            <td class="px-4 text-xs text-red-200">❌ No aplicable para web.</td>
+          </tr>
+
+          <!-- Tabler -->
+          <tr>
+            <td class="py-4 pr-4">
+              <div class="flex items-center gap-2"><span class="font-semibold">Tabler</span><span class="pill rounded-full px-1.5 py-0.5 text-[9px] text-emerald-400">MIT</span></div>
+              <p class="text-[10px] text-wc-text-3 mt-0.5">4,876 iconos · 2 pesos</p>
+            </td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-wc-accent-soft" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 13h18M5 10h14M9 21l3-6 3 6M7 21h10M12 3v12"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-blue-400" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 11l3 3l8 -8"/><path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-amber-400" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M12 15l-3 6l3 -2l3 2l-3 -6"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-emerald-400" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 8h.01"/><path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"/><path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5"/><path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-violet-400" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-7 w-7 mx-auto text-blue-400" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/></svg></td>
+            <td class="px-4 text-xs text-wc-text-2">Versión <strong>outline</strong> y <strong>filled</strong>. Íconos fitness específicos: barbell, dumbbell, stretching, run, yoga.</td>
+          </tr>
+
+          <!-- Iconify custom -->
+          <tr>
+            <td class="py-4 pr-4">
+              <div class="flex items-center gap-2"><span class="font-semibold">WellCore custom</span><span class="pill rounded-full px-1.5 py-0.5 text-[9px] text-violet-400">brand</span></div>
+              <p class="text-[10px] text-wc-text-3 mt-0.5">~20 SVGs diseñados · 0 libs</p>
+            </td>
+            <td class="px-2 text-center"><svg class="h-8 w-8 mx-auto" viewBox="0 0 48 48"><defs><linearGradient id="gWk" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f87171"/><stop offset="100%" stop-color="#DC2626"/></linearGradient></defs><rect x="4" y="18" width="40" height="12" rx="4" fill="url(#gWk)" opacity="0.15"/><rect x="8" y="22" width="32" height="4" rx="2" fill="url(#gWk)"/><rect x="4" y="16" width="6" height="16" rx="2" fill="url(#gWk)"/><rect x="38" y="16" width="6" height="16" rx="2" fill="url(#gWk)"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-8 w-8 mx-auto" viewBox="0 0 48 48"><defs><linearGradient id="gCk" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#2563eb"/></linearGradient></defs><circle cx="24" cy="24" r="20" fill="url(#gCk)" opacity="0.15"/><circle cx="24" cy="24" r="16" fill="none" stroke="url(#gCk)" stroke-width="3"/><path d="M16 24 L22 30 L32 18" stroke="url(#gCk)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-8 w-8 mx-auto" viewBox="0 0 48 48"><defs><linearGradient id="gMd" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fde68a"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs><polygon points="24,4 44,16 44,32 24,44 4,32 4,16" fill="url(#gMd)" stroke="#f59e0b" stroke-width="2"/><text x="24" y="30" text-anchor="middle" font-family="'SF Pro Display', system-ui" font-size="16" font-weight="700" fill="#fff">7</text></svg></td>
+            <td class="px-2 text-center"><svg class="h-8 w-8 mx-auto" viewBox="0 0 48 48"><defs><linearGradient id="gPh" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#34d399"/><stop offset="100%" stop-color="#059669"/></linearGradient></defs><rect x="4" y="10" width="40" height="30" rx="4" fill="url(#gPh)" opacity="0.2"/><rect x="4" y="10" width="40" height="30" rx="4" fill="none" stroke="url(#gPh)" stroke-width="2.5"/><circle cx="24" cy="26" r="8" fill="none" stroke="url(#gPh)" stroke-width="2.5"/><circle cx="35" cy="16" r="2" fill="url(#gPh)"/></svg></td>
+            <td class="px-2 text-center"><svg class="h-8 w-8 mx-auto" viewBox="0 0 48 48"><defs><linearGradient id="gLv" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient></defs><circle cx="24" cy="24" r="20" fill="url(#gLv)" opacity="0.2"/><circle cx="24" cy="24" r="16" fill="none" stroke="url(#gLv)" stroke-width="3" stroke-dasharray="70 30" transform="rotate(-90 24 24)"/><text x="24" y="29" text-anchor="middle" font-family="'SF Pro Display', system-ui" font-size="14" font-weight="700" fill="#fff">4</text></svg></td>
+            <td class="px-2 text-center"><svg class="h-8 w-8 mx-auto" viewBox="0 0 48 48"><defs><linearGradient id="gCo" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#2563eb"/></linearGradient></defs><circle cx="24" cy="16" r="7" fill="url(#gCo)"/><path d="M10 40 Q 10 28 24 28 T 38 40" fill="url(#gCo)"/><circle cx="34" cy="12" r="5" fill="#10b981" stroke="#0b0b10" stroke-width="2"/><path d="M31 12 L33 14 L37 10" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></td>
+            <td class="px-4 text-xs text-wc-text-2"><strong class="text-violet-300">Máximo nivel de marca.</strong> Gradientes, profundidad, detalles específicos. Esfuerzo: diseñar ~20 iconos clave. Combina con Phosphor/Lucide para resto.</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-6 grid grid-cols-1 gap-3 md:grid-cols-2">
+      <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-emerald-400">Recomendación técnica</p>
+        <p class="mt-2 text-sm font-semibold">Phosphor (MIT) + ~10 SVG custom WellCore</p>
+        <p class="mt-1 text-xs text-wc-text-2">Phosphor cubre 95% de necesidades (UI general, acciones), y diseñamos ~10 iconos brand-specific para: hexágono medalla, trofeo XP, checkmark premium, confeti piece, racha llama, progreso ring. Todos en SVG optimizado con gradientes WC.</p>
+      </div>
+      <div class="rounded-xl border border-violet-500/30 bg-violet-500/5 p-4">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-violet-400">Opción "budget infinito"</p>
+        <p class="mt-2 text-sm font-semibold">Lottie animado para cada milestone</p>
+        <p class="mt-1 text-xs text-wc-text-2">Contratar motion designer para ~15 animaciones Lottie JSON (level-up ring, medal unlock, confetti burst, etc). Se reproducen con lottie-web. Cada modal tiene su animación única de 2-3s. Esfuerzo: USD 200-400 por animación.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ DECISION MATRIX ═══════════ -->
+  <div class="mt-8 rounded-2xl border border-wc-border bg-gradient-to-br from-wc-accent/5 to-wc-bg-2 p-6">
+    <p class="text-xs font-semibold tracking-[0.22em] text-wc-accent uppercase">Matrix de decisión · cómo escoger</p>
+    <h3 class="mt-2 font-display text-3xl tracking-wide">Qué combinación aplicamos</h3>
+    <div class="mt-4 overflow-x-auto">
+      <table class="w-full text-xs" style="min-width: 700px">
+        <thead>
+          <tr class="border-b border-wc-border text-left text-[9px] uppercase tracking-widest text-wc-text-3">
+            <th class="py-2 pr-4">Perfil WellCore</th>
+            <th class="px-2 py-2">Estilo base</th>
+            <th class="px-2 py-2">Icon library</th>
+            <th class="px-2 py-2">Esfuerzo</th>
+            <th class="px-2 py-2">Impacto visual</th>
+            <th class="px-2 py-2">Mi pick</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-wc-border">
+          <tr>
+            <td class="py-3 pr-4 font-semibold">Mínimo viable</td>
+            <td class="px-2">Bento WC (actual)</td>
+            <td class="px-2">Heroicons (ya en uso)</td>
+            <td class="px-2 text-emerald-400">1 día</td>
+            <td class="px-2">8/10</td>
+            <td class="px-2"></td>
+          </tr>
+          <tr class="bg-wc-accent/5 border-l-2 border-wc-accent">
+            <td class="py-3 pr-4 font-semibold text-white">Premium balanceado</td>
+            <td class="px-2">Bento WC + gradient heroes</td>
+            <td class="px-2">Phosphor + 10 SVG custom</td>
+            <td class="px-2 text-amber-400">3-4 días</td>
+            <td class="px-2">9.5/10</td>
+            <td class="px-2"><span class="pill rounded-full px-2 py-0.5 text-[9px] text-wc-accent-soft font-bold">← recomendado</span></td>
+          </tr>
+          <tr>
+            <td class="py-3 pr-4 font-semibold">Aspiracional</td>
+            <td class="px-2">Liquid Glass + Bento hybrid</td>
+            <td class="px-2">Phosphor duotone + Lottie</td>
+            <td class="px-2 text-red-400">1-2 semanas</td>
+            <td class="px-2">10/10</td>
+            <td class="px-2"></td>
+          </tr>
+          <tr>
+            <td class="py-3 pr-4 font-semibold">Diferenciado raro</td>
+            <td class="px-2">Aurora mesh o Brutalist</td>
+            <td class="px-2">Custom art direction</td>
+            <td class="px-2 text-red-400">2-3 semanas</td>
+            <td class="px-2">9/10 + riesgo</td>
+            <td class="px-2"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-5 text-[11px] text-wc-text-2 leading-relaxed max-w-3xl">
+      <strong class="text-white">Mi lectura honesta:</strong> Los estilos 3/5/7/8 (Clay, Terminal, Duo, Brutalist) no encajan con la marca WellCore adulta/premium — sirven como inspiración pero romperían coherencia. El estilo 2 (Liquid Glass iOS) es el más aspiracional pero requiere ajuste de paleta para mantener el rojo #DC2626 como protagonista. El estilo 6 (Aurora) es el más "2026-style" pero pierde la legibilidad de datos que Bento da. <strong class="text-white">Mi recomendación es quedarnos en Bento WC pero subir su nivel con:</strong> iconos Phosphor duotone + 10 SVG brand-custom + animaciones sutiles (el ring ya hace eso). Eso da 95% del impacto de "Liquid Glass" con 30% del esfuerzo.
+    </div>
+  </div>
+</section>
+
+<footer class="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
+  <div class="rounded-2xl border border-wc-border bg-wc-bg-2 p-6">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div>
+        <p class="text-xs font-semibold tracking-[0.2em] uppercase text-wc-accent">Type system · SF Pro aplicado</p>
+        <p class="mt-1 text-sm text-wc-text-2 max-w-xl">Todo el gallery ahora renderiza con <strong class="text-white">SF Pro Display</strong> (títulos + data) y <strong class="text-white">SF Pro Text</strong> (body). En Mac/iOS se resuelve nativo via <code class="text-white">-apple-system</code>, en Windows/Android se cargan los WOFF desde sf.abarba.me. Siguiente paso: aplicar la misma familia en la plataforma real via <code class="text-white">resources/css/app.css</code>.</p>
+      </div>
+      <div class="flex gap-3 text-xs">
+        <div class="pill rounded-lg px-3 py-2"><span class="text-wc-text-3">Display · Oswald</span><br/><span class="font-display text-base font-bold tracking-tight">WELLCORE</span></div>
+        <div class="pill rounded-lg px-3 py-2"><span class="text-wc-text-3">Body · Raleway</span><br/><span class="text-base font-medium">Aa 123</span></div>
+        <div class="pill rounded-lg px-3 py-2"><span class="text-wc-text-3">Data · SF Pro</span><br/><span class="font-data text-base font-bold">10.0 kg</span></div>
+        <div class="pill rounded-lg px-3 py-2"><span class="text-wc-text-3">Mono · SF Mono</span><br/><code class="text-base">Aa 123</code></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

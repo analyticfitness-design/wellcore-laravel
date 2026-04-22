@@ -357,6 +357,44 @@
                                                     </div>
                                                 </div>
                                             @endif
+
+                                            {{-- Daily Nutrition Summary --}}
+                                            @php
+                                                $resumenNutri = $dia['resumen_nutricional_dia'] ?? null;
+                                            @endphp
+                                            @if($resumenNutri)
+                                                <div class="flex items-start gap-3 border-t border-green-500/20 bg-gradient-to-r from-green-500/8 to-transparent px-4 py-3">
+                                                    <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-green-500/15">
+                                                        <svg class="h-3.5 w-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                        </svg>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <p class="text-[10px] font-bold uppercase tracking-wider text-green-400">Aporte Nutricional del Día</p>
+                                                        <div class="mt-2 grid grid-cols-2 gap-2">
+                                                            <div class="rounded-lg bg-wc-bg-tertiary p-2">
+                                                                <p class="text-[10px] text-wc-text-tertiary">Calorías</p>
+                                                                <p class="mt-0.5 text-sm font-bold text-wc-text">{{ $resumenNutri['calorias'] ?? 0 }} kcal</p>
+                                                            </div>
+                                                            <div class="rounded-lg bg-wc-bg-tertiary p-2">
+                                                                <p class="text-[10px] text-wc-text-tertiary">Proteína</p>
+                                                                <p class="mt-0.5 text-sm font-bold text-wc-text">{{ $resumenNutri['proteina_g'] ?? 0 }}g</p>
+                                                            </div>
+                                                            <div class="rounded-lg bg-wc-bg-tertiary p-2">
+                                                                <p class="text-[10px] text-wc-text-tertiary">Carbohidratos</p>
+                                                                <p class="mt-0.5 text-sm font-bold text-wc-text">{{ $resumenNutri['carbohidratos_g'] ?? 0 }}g</p>
+                                                            </div>
+                                                            <div class="rounded-lg bg-wc-bg-tertiary p-2">
+                                                                <p class="text-[10px] text-wc-text-tertiary">Grasas</p>
+                                                                <p class="mt-0.5 text-sm font-bold text-wc-text">{{ $resumenNutri['grasas_g'] ?? 0 }}g</p>
+                                                            </div>
+                                                        </div>
+                                                        @if(!empty($resumenNutri['nota']))
+                                                            <p class="mt-2 text-xs leading-relaxed text-wc-text-secondary">{{ $resumenNutri['nota'] }}</p>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @endif
                                         </div>
                                     @empty
                                         <div class="rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-6 text-center">
