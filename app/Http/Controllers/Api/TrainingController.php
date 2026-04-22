@@ -567,10 +567,9 @@ class TrainingController extends Controller
                         'target_weight' => $request->input('target_weight'),
                         'is_pr' => false,
                         'created_at' => $now,
-                        'updated_at' => $now,
                     ])],
                     uniqueBy: ['session_id', 'exercise_name', 'set_number', 'block_order'],
-                    update: array_keys($logData) + ['target_reps', 'target_weight', 'updated_at']
+                    update: array_merge(array_keys($logData), ['target_reps', 'target_weight'])
                 );
 
                 if ($isCardio || $weight <= 0) {
