@@ -84,7 +84,7 @@ class NutritionPlan extends Component
     {
         // Top-level macros first; fall back to first day's macros (carb-cycling plans store
         // per-day macros under dias[0]['macros'] with standard keys proteina_g / carbohidratos_g / grasas_g)
-        $macros = $this->plan['macros'] ?? [];
+        $macros = $this->plan['macros'] ?? $this->plan['macros_objetivo'] ?? [];
         $day0macros = $this->plan['dias'][0]['macros'] ?? [];
 
         // Support multiple key conventions across AI-generated plan formats:
@@ -161,7 +161,7 @@ class NutritionPlan extends Component
         return [
             'nombre'    => $meal['nombre'] ?? $meal['name'] ?? $meal['label'] ?? 'Comida',
             'calorias'  => (int) ($meal['calorias'] ?? $meal['calories'] ?? $meal['kcal'] ?? $meal['cal'] ?? 0),
-            'alimentos' => $meal['alimentos'] ?? $meal['foods'] ?? $meal['items'] ?? [],
+            'alimentos' => $meal['alimentos'] ?? $meal['foods'] ?? $meal['items'] ?? $meal['opciones'] ?? [],
             'notas'     => $meal['notas'] ?? $meal['notes'] ?? null,
             'macros'    => [
                 'proteina'     => (int) ($macros['proteina_g'] ?? $macros['proteina'] ?? $macros['protein_g'] ?? $macros['protein'] ?? 0),
@@ -173,7 +173,7 @@ class NutritionPlan extends Component
 
     private function parseExtras(): void
     {
-        $this->coachNotes   = $this->plan['notas_coach'] ?? $this->plan['coach_notes'] ?? null;
+        $this->coachNotes   = $this->plan['notas_coach'] ?? $this->plan['nota_coach'] ?? $this->plan['coach_notes'] ?? null;
         $this->planObjetivo = $this->plan['objetivo'] ?? $this->plan['objetivo_general'] ?? null;
 
         // Rest day summary
