@@ -246,13 +246,22 @@ const bottomNav = [
               <RouterLink
                 :to="item.to"
                 :class="[
-                  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                  'group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                   isActive(item.routeName)
                     ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text'
                     : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text'
                 ]"
               >
-                <WcIcon :name="item.icon" :size="18" class="shrink-0" />
+                <WcIcon
+                  :name="item.icon"
+                  :size="22"
+                  :class="[
+                    'shrink-0 transition-all duration-200',
+                    isActive(item.routeName)
+                      ? ''
+                      : 'grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100'
+                  ]"
+                />
                 {{ item.name }}
               </RouterLink>
             </li>
@@ -265,9 +274,9 @@ const bottomNav = [
         <button
           @click="handleLogout"
           :disabled="loggingOut"
-          class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text transition-colors disabled:opacity-50"
+          class="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text transition-colors disabled:opacity-50"
         >
-          <WcIcon name="wc-arrow-left" :size="18" class="shrink-0" />
+          <WcIcon name="wc-arrow-left" :size="22" class="shrink-0 grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-200" />
           {{ loggingOut ? 'Cerrando...' : 'Cerrar sesion' }}
         </button>
       </div>
@@ -386,11 +395,20 @@ const bottomNav = [
           :key="item.routeName"
           :to="item.to"
           :class="[
-            'flex flex-col items-center gap-0.5 px-3 py-1 transition-colors',
+            'group flex flex-col items-center gap-0.5 px-3 py-1 transition-colors',
             isActive(item.routeName) ? 'text-wc-accent' : 'text-wc-text-tertiary'
           ]"
         >
-          <WcIcon :name="item.icon" :size="20" class="shrink-0" />
+          <WcIcon
+            :name="item.icon"
+            :size="22"
+            :class="[
+              'shrink-0 transition-all duration-200',
+              isActive(item.routeName)
+                ? ''
+                : 'grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100'
+            ]"
+          />
           <span class="text-[10px] font-medium">{{ item.name }}</span>
         </RouterLink>
       </div>
