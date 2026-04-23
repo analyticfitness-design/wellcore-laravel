@@ -556,6 +556,7 @@ class TrainingController extends Controller
                 // Note: updated_at omitted — production workout_logs only has created_at.
                 WorkoutLog::upsert(
                     [array_merge($logData, [
+                        'client_id' => $clientId,
                         'session_id' => $sessionId,
                         'exercise_name' => $exerciseName,
                         'block_type' => 'normal',

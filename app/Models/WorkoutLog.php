@@ -13,6 +13,7 @@ class WorkoutLog extends Model
     const UPDATED_AT = null;
 
     protected $fillable = [
+        'client_id',
         'session_id',
         'exercise_name',
         'block_type',
