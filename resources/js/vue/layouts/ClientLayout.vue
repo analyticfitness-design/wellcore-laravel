@@ -254,7 +254,7 @@ const bottomNav = [
               >
                 <WcIcon
                   :name="item.icon"
-                  :size="22"
+                  :size="26"
                   :class="[
                     'shrink-0 transition-all duration-200',
                     isActive(item.routeName)
@@ -401,7 +401,7 @@ const bottomNav = [
         >
           <WcIcon
             :name="item.icon"
-            :size="22"
+            :size="26"
             :class="[
               'shrink-0 transition-all duration-200',
               isActive(item.routeName)
