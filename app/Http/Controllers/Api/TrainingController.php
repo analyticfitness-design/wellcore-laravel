@@ -553,7 +553,7 @@ class TrainingController extends Controller
                 $logData, $isCardio, $weight, $reps, $request
             ): bool {
                 // Upsert atómico — evita race condition entre lecturas concurrentes.
-                $now = now();
+                // Note: updated_at omitted — production workout_logs only has created_at.
                 WorkoutLog::upsert(
                     [array_merge($logData, [
                         'session_id' => $sessionId,
@@ -564,11 +564,10 @@ class TrainingController extends Controller
                         'target_reps' => $request->input('target_reps'),
                         'target_weight' => $request->input('target_weight'),
                         'is_pr' => false,
-                        'created_at' => $now,
-                        'updated_at' => $now,
+                        'created_at' => now(),
                     ])],
                     uniqueBy: ['session_id', 'exercise_name', 'set_number', 'block_order'],
-                    update: array_merge(array_keys($logData), ['target_reps', 'target_weight', 'updated_at'])
+                    update: array_merge(array_keys($logData), ['target_reps', 'target_weight'])
                 );
 
                 if ($isCardio || $weight <= 0) {
