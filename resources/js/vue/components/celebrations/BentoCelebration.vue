@@ -143,7 +143,7 @@ const statsToRender = computed(() => (activeData.value.stats || []).slice(0, 6))
           <!-- Header -->
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <WcIcon name="wc:logo" :size="24" />
+              <WcIcon name="wc-logo" :size="24" />
               <span class="font-display text-sm tracking-widest font-bold">WELLCORE</span>
             </div>
             <span v-if="activeData.metadata" class="text-[10px] text-wc-text-tertiary">{{ activeData.metadata }}</span>

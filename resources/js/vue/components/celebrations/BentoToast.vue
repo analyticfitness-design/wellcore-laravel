@@ -22,15 +22,15 @@ const emit = defineEmits(['update:open', 'close']);
 const haptic = useHaptics();
 
 const STYLES = {
-    success:     { border: 'border-emerald-500/30', bg: 'from-emerald-900/30 to-[#0b0b10]', icon: 'wc:check',              iconColor: 'text-emerald-300' },
-    info:        { border: 'border-blue-500/30',    bg: 'from-blue-900/30 to-[#0b0b10]',    icon: 'ph-fill ph-info',       iconColor: 'text-blue-300' },
-    warning:     { border: 'border-amber-500/30',   bg: 'from-amber-900/30 to-[#0b0b10]',   icon: 'ph-fill ph-warning',    iconColor: 'text-amber-300' },
-    destructive: { border: 'border-wc-border',      bg: 'from-wc-bg-secondary to-[#0b0b10]', icon: 'ph-fill ph-trash',     iconColor: 'text-wc-text-tertiary' },
-    referral:    { border: 'border-emerald-500/30', bg: 'from-emerald-900/30 to-[#0b0b10]', icon: 'ph-fill ph-paper-plane-tilt', iconColor: 'text-emerald-300' },
-    ticket:      { border: 'border-wc-accent/30',   bg: 'from-[#1a0b0b] to-[#0b0b10]',     icon: 'ph-fill ph-ticket',     iconColor: 'text-wc-accent-soft' },
-    measurements:{ border: 'border-emerald-500/30', bg: 'from-emerald-900/30 to-[#0b0b10]', icon: 'wc:check',             iconColor: 'text-emerald-300' },
-    profile:     { border: 'border-wc-border',      bg: 'from-wc-bg-secondary to-[#0b0b10]', icon: 'wc:check',            iconColor: 'text-wc-accent-soft' },
-    video:       { border: 'border-blue-500/30',    bg: 'from-blue-900/30 to-[#0b0b10]',   icon: 'ph-fill ph-video-camera', iconColor: 'text-blue-300' },
+    success:     { border: 'border-emerald-500/30', bg: 'from-emerald-900/30 to-[#0b0b10]', icon: 'wc-check',        iconColor: 'text-emerald-300' },
+    info:        { border: 'border-blue-500/30',    bg: 'from-blue-900/30 to-[#0b0b10]',    icon: 'wc-sparkle-magic', iconColor: 'text-blue-300' },
+    warning:     { border: 'border-amber-500/30',   bg: 'from-amber-900/30 to-[#0b0b10]',   icon: 'wc-bell',         iconColor: 'text-amber-300' },
+    destructive: { border: 'border-wc-border',      bg: 'from-wc-bg-secondary to-[#0b0b10]', icon: 'wc-trash',       iconColor: 'text-wc-text-tertiary' },
+    referral:    { border: 'border-emerald-500/30', bg: 'from-emerald-900/30 to-[#0b0b10]', icon: 'wc-share',        iconColor: 'text-emerald-300' },
+    ticket:      { border: 'border-wc-accent/30',   bg: 'from-[#1a0b0b] to-[#0b0b10]',     icon: 'wc-ticket',       iconColor: 'text-wc-accent-soft' },
+    measurements:{ border: 'border-emerald-500/30', bg: 'from-emerald-900/30 to-[#0b0b10]', icon: 'wc-check',        iconColor: 'text-emerald-300' },
+    profile:     { border: 'border-wc-border',      bg: 'from-wc-bg-secondary to-[#0b0b10]', icon: 'wc-check',      iconColor: 'text-wc-accent-soft' },
+    video:       { border: 'border-blue-500/30',    bg: 'from-blue-900/30 to-[#0b0b10]',   icon: 'wc-video',        iconColor: 'text-blue-300' },
 };
 
 function getStyle() { return STYLES[props.preset] || STYLES.success; }
