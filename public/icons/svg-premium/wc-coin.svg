@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <!-- Outer coin gradient: 4 stops gold -->
+    <linearGradient id="wcCoinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="25%" stop-color="#fbbf24"/>
+      <stop offset="70%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#78350f"/>
+    </linearGradient>
+    <!-- Inner raised area gradient -->
+    <linearGradient id="wcCoinInner" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="40%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <!-- W letter embossed gradient -->
+    <linearGradient id="wcCoinW" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#92400e"/>
+      <stop offset="50%" stop-color="#78350f"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </linearGradient>
+    <!-- W letter highlight -->
+    <linearGradient id="wcCoinWHi" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <!-- Glow -->
+    <filter id="wcCoinGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Drop shadow -->
+    <filter id="wcCoinShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#451a03" flood-opacity="0.5"/>
+    </filter>
+    <!-- Brushed texture -->
+    <pattern id="wcCoinBrushed" x="0" y="0" width="3" height="3" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="1.5" x2="3" y2="1.5" stroke="rgba(255,255,255,0.04)" stroke-width="0.2"/>
+    </pattern>
+  </defs>
+
+  <!-- Outer coin shadow -->
+  <circle cx="24" cy="26.5" r="22" fill="#000" opacity="0.25"/>
+
+  <!-- Outer coin with rim -->
+  <circle cx="24" cy="24" r="22" fill="url(#wcCoinGrad)" filter="url(#wcCoinShadow)" stroke="#fde68a" stroke-width="0.8"/>
+  <!-- Brushed texture -->
+  <circle cx="24" cy="24" r="22" fill="url(#wcCoinBrushed)" opacity="0.5"/>
+  <!-- Outer rim highlight -->
+  <circle cx="24" cy="24" r="21.5" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.4"/>
+
+  <!-- Inner raised area shadow -->
+  <circle cx="24" cy="24.5" r="18" fill="#000" opacity="0.15"/>
+
+  <!-- Inner raised area -->
+  <circle cx="24" cy="24" r="18" fill="url(#wcCoinInner)" stroke="#b45309" stroke-width="0.5"/>
+  <!-- Inner highlight -->
+  <circle cx="24" cy="24" r="17.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+  <!-- Inner shadow -->
+  <circle cx="24" cy="24" r="18.5" fill="none" stroke="rgba(0,0,0,0.1)" stroke-width="0.3"/>
+
+  <!-- W letter embossed (shadow/depth) -->
+  <path d="M15 18 L18.5 30.5 L24 22 L29.5 30.5 L33 18"
+        fill="none" stroke="#451a03" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5" transform="translate(0,0.6)"/>
+  <!-- W letter main -->
+  <path d="M15 18 L18.5 30.5 L24 22 L29.5 30.5 L33 18"
+        fill="none" stroke="url(#wcCoinW)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#wcCoinGlow)"/>
+  <!-- W letter highlight -->
+  <path d="M15 17.5 L18.5 30 L24 21.5 L29.5 30 L33 17.5"
+        fill="none" stroke="url(#wcCoinWHi)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+
+  <!-- Laurel leaves decoration left -->
+  <path d="M10 20 Q8 18 9 16 Q11 17 10 20" fill="#047857" opacity="0.8"/>
+  <path d="M9 24 Q7 22 8 20 Q10 21 9 24" fill="#047857" opacity="0.8"/>
+  <path d="M10 28 Q8 26 9 24 Q11 25 10 28" fill="#047857" opacity="0.8"/>
+
+  <!-- Laurel leaves decoration right -->
+  <path d="M38 20 Q40 18 39 16 Q37 17 38 20" fill="#047857" opacity="0.8"/>
+  <path d="M39 24 Q41 22 40 20 Q38 21 39 24" fill="#047857" opacity="0.8"/>
+  <path d="M38 28 Q40 26 39 24 Q37 25 38 28" fill="#047857" opacity="0.8"/>
+
+  <!-- Edge ridges -->
+  <circle cx="24" cy="24" r="20" fill="none" stroke="#fde68a" stroke-width="0.4" stroke-dasharray="1 2" opacity="0.6"/>
+
+  <!-- Shine highlight arc -->
+  <path d="M12 12 Q24 6 36 12" fill="none" stroke="#fff" stroke-width="1" opacity="0.25" stroke-linecap="round"/>
+  <!-- Secondary shine -->
+  <path d="M14 14 Q24 9 34 14" fill="none" stroke="#fff" stroke-width="0.5" opacity="0.15" stroke-linecap="round"/>
+</svg>

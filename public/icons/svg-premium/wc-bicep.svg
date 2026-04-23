@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bicepBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f87171"/>
+      <stop offset="50%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#991b1b"/>
+    </linearGradient>
+    <linearGradient id="bicepInner" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fca5a5"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+    <linearGradient id="bicepBand" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#374151"/>
+      <stop offset="50%" stop-color="#1f2937"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+    <filter id="bicepGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="bicepShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#7f1d1d" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Upper arm / shoulder -->
+  <path d="M8 12 C8 8, 14 6, 18 8 L20 14 L14 18 Z" fill="url(#bicepBand)" filter="url(#bicepShadow)"/>
+  <path d="M9 11 C10 9, 13 8, 16 9" fill="none" stroke="#4b5563" stroke-width="0.5" stroke-linecap="round"/>
+
+  <!-- Wrist band -->
+  <rect x="34" y="30" width="8" height="6" rx="2" fill="url(#bicepBand)" transform="rotate(15 38 33)" filter="url(#bicepShadow)"/>
+  <rect x="35" y="31" width="6" height="4" rx="1" fill="none" stroke="#4b5563" stroke-width="0.4" transform="rotate(15 38 33)"/>
+
+  <!-- Bicep muscle main shape -->
+  <path d="M14 14 C22 10, 32 14, 36 24 C38 30, 34 36, 28 36 C20 36, 12 28, 12 20 C12 16, 12 14, 14 14Z" 
+        fill="url(#bicepBody)" filter="url(#bicepShadow)"/>
+  
+  <!-- Inner muscle highlight -->
+  <path d="M16 16 C22 13, 29 16, 32 24 C33 28, 30 32, 26 32 C20 32, 15 26, 15 20 C15 17, 15 16, 16 16Z" 
+        fill="url(#bicepInner)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+
+  <!-- Muscle definition line -->
+  <path d="M20 18 C24 20, 28 24, 30 28" fill="none" stroke="#991b1b" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+  <path d="M18 22 C22 24, 26 28, 28 32" fill="none" stroke="#7f1d1d" stroke-width="0.8" stroke-linecap="round" opacity="0.4"/>
+
+  <!-- Vein detail -->
+  <path d="M22 20 C25 21, 27 23, 26 25" fill="none" stroke="#fca5a5" stroke-width="0.6" stroke-linecap="round" opacity="0.3"/>
+
+  <!-- Highlight shine -->
+  <path d="M16 16 C20 14, 26 16, 29 22" fill="none" stroke="#fff" stroke-width="0.8" opacity="0.2" stroke-linecap="round"/>
+
+  <!-- Power lines / energy -->
+  <path d="M36 16 L40 12" stroke="#fbbf24" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+  <path d="M38 20 L42 18" stroke="#fbbf24" stroke-width="0.8" stroke-linecap="round" opacity="0.6"/>
+  <circle cx="40" cy="12" r="0.8" fill="#fbbf24" opacity="0.8"/>
+  <circle cx="42" cy="18" r="0.6" fill="#fde68a" opacity="0.7"/>
+</svg>

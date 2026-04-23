@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="dbBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f87171"/>
+      <stop offset="50%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#991b1b"/>
+    </linearGradient>
+    <linearGradient id="dbInner" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fca5a5"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+    <linearGradient id="dbHandle" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#9ca3af"/>
+      <stop offset="50%" stop-color="#4b5563"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+    <filter id="dbGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="dbShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#7f1d1d" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Left outer weight -->
+  <rect x="2" y="14" width="7" height="20" rx="2.5" fill="url(#dbBody)" filter="url(#dbShadow)"/>
+  <rect x="3" y="16" width="5" height="16" rx="1.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+
+  <!-- Left inner weight -->
+  <rect x="9" y="17" width="4" height="14" rx="1.5" fill="url(#dbBody)" filter="url(#dbShadow)"/>
+  <rect x="9.5" y="18" width="3" height="12" rx="1" fill="url(#dbInner)" opacity="0.6"/>
+
+  <!-- Handle -->
+  <rect x="13" y="22" width="22" height="4" rx="2" fill="url(#dbHandle)" filter="url(#dbShadow)"/>
+  <rect x="14" y="23" width="20" height="2" rx="1" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+
+  <!-- Handle knurling texture -->
+  <line x1="16" y1="23" x2="16" y2="25" stroke="#6b7280" stroke-width="0.3" opacity="0.5"/>
+  <line x1="17.5" y1="23" x2="17.5" y2="25" stroke="#6b7280" stroke-width="0.3" opacity="0.5"/>
+  <line x1="19" y1="23" x2="19" y2="25" stroke="#6b7280" stroke-width="0.3" opacity="0.5"/>
+  <line x1="29" y1="23" x2="29" y2="25" stroke="#6b7280" stroke-width="0.3" opacity="0.5"/>
+  <line x1="30.5" y1="23" x2="30.5" y2="25" stroke="#6b7280" stroke-width="0.3" opacity="0.5"/>
+  <line x1="32" y1="23" x2="32" y2="25" stroke="#6b7280" stroke-width="0.3" opacity="0.5"/>
+
+  <!-- Right inner weight -->
+  <rect x="35" y="17" width="4" height="14" rx="1.5" fill="url(#dbBody)" filter="url(#dbShadow)"/>
+  <rect x="35.5" y="18" width="3" height="12" rx="1" fill="url(#dbInner)" opacity="0.6"/>
+
+  <!-- Right outer weight -->
+  <rect x="39" y="14" width="7" height="20" rx="2.5" fill="url(#dbBody)" filter="url(#dbShadow)"/>
+  <rect x="40" y="16" width="5" height="16" rx="1.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+
+  <!-- Center highlight ring -->
+  <circle cx="24" cy="24" r="2" fill="#DC2626" opacity="0.6"/>
+  <circle cx="24" cy="24" r="1" fill="#fff" opacity="0.4"/>
+
+  <!-- Power accents -->
+  <circle cx="5" cy="10" r="0.6" fill="#fbbf24" opacity="0.7"/>
+  <circle cx="43" cy="10" r="0.5" fill="#fbbf24" opacity="0.6"/>
+  <circle cx="24" cy="8" r="0.4" fill="#fef3c7" opacity="0.8"/>
+</svg>

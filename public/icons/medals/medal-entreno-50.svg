@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="me50Out" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DAA520"/>
+      <stop offset="35%" stop-color="#B8860B"/>
+      <stop offset="70%" stop-color="#8B6914"/>
+      <stop offset="100%" stop-color="#5C4D26"/>
+    </linearGradient>
+    <linearGradient id="me50In" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#F4D03F"/>
+      <stop offset="50%" stop-color="#DAA520"/>
+      <stop offset="100%" stop-color="#8B6914"/>
+    </linearGradient>
+    <linearGradient id="me50Iron" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E5E7EB"/>
+      <stop offset="50%" stop-color="#9CA3AF"/>
+      <stop offset="100%" stop-color="#374151"/>
+    </linearGradient>
+    <linearGradient id="me50Red" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="50%" stop-color="#B91C1C"/>
+      <stop offset="100%" stop-color="#7F1D1D"/>
+    </linearGradient>
+    <filter id="me50Shad" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#3D2B07" flood-opacity="0.7"/>
+    </filter>
+  </defs>
+
+  <!-- Base shadow -->
+  <polygon points="25,4 45,15 45,37 25,48 5,37 5,15" fill="#3D2B07" opacity="0.5"/>
+
+  <!-- Outer beveled hex -->
+  <polygon points="24,2 44,13 44,35 24,46 4,35 4,13" fill="url(#me50Out)" filter="url(#me50Shad)"/>
+  <polygon points="24,3 43,14 43,34 24,45 5,34 5,14" fill="none" stroke="#FDE68A" stroke-width="0.4" opacity="0.5"/>
+
+  <!-- Inner recessed hex -->
+  <polygon points="24,7 39,16 39,32 24,41 9,32 9,16" fill="url(#me50In)"/>
+
+  <!-- Engraved ring -->
+  <polygon points="24,10 36,17 36,31 24,38 12,31 12,17" fill="none" stroke="#8B6914" stroke-width="0.6"/>
+  <polygon points="24,11 35,17.5 35,30.5 24,37 13,30.5 13,17.5" fill="none" stroke="#FDE68A" stroke-width="0.3" opacity="0.4"/>
+
+  <!-- Abstract weight plates as geometric facets -->
+  <rect x="9" y="19" width="7" height="11" rx="3.5" fill="url(#me50Red)" opacity="0.8"/>
+  <rect x="10" y="20.5" width="5" height="8" rx="2.5" fill="none" stroke="#EF4444" stroke-width="0.3" opacity="0.4"/>
+  <rect x="32" y="19" width="7" height="11" rx="3.5" fill="url(#me50Red)" opacity="0.8"/>
+  <rect x="33" y="20.5" width="5" height="8" rx="2.5" fill="none" stroke="#EF4444" stroke-width="0.3" opacity="0.4"/>
+
+  <!-- Bar shaft with brushed texture -->
+  <rect x="16" y="23.5" width="16" height="2.5" rx="1.25" fill="url(#me50Iron)"/>
+  <line x1="17" y1="24.5" x2="31" y2="24.5" stroke="#4B5563" stroke-width="0.2" opacity="0.5"/>
+
+  <!-- Center gem -->
+  <circle cx="24" cy="24.5" r="2.5" fill="url(#me50Out)" stroke="#FDE68A" stroke-width="0.4"/>
+  <circle cx="24" cy="24.5" r="1" fill="#FDE68A" opacity="0.6"/>
+
+  <!-- Radiating strength lines -->
+  <line x1="24" y1="13" x2="24" y2="16" stroke="#FDE68A" stroke-width="0.5" opacity="0.4" stroke-linecap="round"/>
+  <line x1="24" y1="33" x2="24" y2="36" stroke="#FDE68A" stroke-width="0.5" opacity="0.4" stroke-linecap="round"/>
+  <line x1="10" y1="18" x2="12" y2="20" stroke="#FDE68A" stroke-width="0.4" opacity="0.3" stroke-linecap="round"/>
+  <line x1="36" y1="28" x2="38" y2="30" stroke="#FDE68A" stroke-width="0.4" opacity="0.3" stroke-linecap="round"/>
+  <line x1="10" y1="30" x2="12" y2="28" stroke="#FDE68A" stroke-width="0.4" opacity="0.3" stroke-linecap="round"/>
+  <line x1="36" y1="20" x2="38" y2="18" stroke="#FDE68A" stroke-width="0.4" opacity="0.3" stroke-linecap="round"/>
+
+  <!-- Brushed texture -->
+  <line x1="4" y1="13" x2="44" y2="35" stroke="#FDE68A" stroke-width="0.15" opacity="0.1"/>
+  <line x1="4" y1="18" x2="44" y2="40" stroke="#FDE68A" stroke-width="0.15" opacity="0.1"/>
+  <line x1="4" y1="23" x2="44" y2="45" stroke="#FDE68A" stroke-width="0.15" opacity="0.1"/>
+
+  <!-- Corner facets -->
+  <polygon points="24,2 28,4 24,6 20,4" fill="#FDE68A" opacity="0.35"/>
+  <polygon points="44,13 44,17 40,15" fill="#FDE68A" opacity="0.25"/>
+  <polygon points="44,35 44,31 40,33" fill="#8B6914" opacity="0.35"/>
+  <polygon points="24,46 20,44 24,42 28,44" fill="#8B6914" opacity="0.35"/>
+  <polygon points="4,35 4,31 8,33" fill="#8B6914" opacity="0.35"/>
+  <polygon points="4,13 8,15 4,17" fill="#FDE68A" opacity="0.25"/>
+</svg>

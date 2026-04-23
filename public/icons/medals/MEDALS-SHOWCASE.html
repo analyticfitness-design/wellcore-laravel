@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WellCore · Medallas Premium — Showcase</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0b; --bg-2: #111114; --bg-3: #17171c; --border: #26262e;
+    --accent: #DC2626; --accent-soft: #f87171;
+    --text: #fff; --text-2: #a1a1aa; --text-3: #71717a;
+    --bronze: #8B5A2B; --silver: #C0C0C0; --gold: #FFD700;
+    --platino: #00FFFF; --legendario: #DC2626;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Raleway', sans-serif; line-height:1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width:1200px; margin:0 auto; padding:40px 24px; }
+  h1 { font-family:'Oswald',sans-serif; font-size:2.8em; font-weight:700; }
+  h1 span { color: var(--accent); }
+  .subtitle { color: var(--text-2); font-size:1.1em; margin-top:12px; }
+  h2 { font-family:'Oswald',sans-serif; font-size:1.5em; font-weight:700; margin-top:40px; padding-bottom:12px; border-bottom:2px solid var(--border); }
+
+  .stats-bar {
+    margin:30px 0; padding:20px; background:var(--bg-2); border:1px solid var(--border); border-radius:16px;
+    display:flex; flex-wrap:wrap; gap:24px; justify-content:space-around;
+  }
+  .stats-bar .st { text-align:center; }
+  .stats-bar .st-num { font-family:'Oswald',sans-serif; font-size:2.2em; }
+  .stats-bar .st-lbl { font-size:0.75em; color:var(--text-3); text-transform:uppercase; letter-spacing:0.06em; }
+
+  .medal-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:24px; margin:24px 0; }
+  @media(max-width:768px){ .medal-grid{grid-template-columns:repeat(2, 1fr);} }
+
+  .medal-card {
+    background: var(--bg-2); border:1px solid var(--border); border-radius:16px;
+    padding:20px 12px 16px; text-align:center; transition: transform 0.2s;
+  }
+  .medal-card:hover { transform: translateY(-3px); border-color: rgba(220,38,38,0.3); }
+
+  .medal-name { font-family:'Oswald',sans-serif; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; margin-top:12px; min-height:28px; display:flex; align-items:center; justify-content:center; }
+  .medal-tier { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-top:4px; padding:2px 8px; border-radius:10px; display:inline-block; }
+  .tier-bronce { color: var(--bronze); background:rgba(139,90,43,0.15); border:1px solid rgba(139,90,43,0.3); }
+  .tier-plata { color: var(--silver); background:rgba(192,192,192,0.12); border:1px solid rgba(192,192,192,0.25); }
+  .tier-oro { color: var(--gold); background:rgba(255,215,0,0.12); border:1px solid rgba(255,215,0,0.25); }
+  .tier-platino { color: var(--platino); background:rgba(0,255,255,0.1); border:1px solid rgba(0,255,255,0.2); }
+  .tier-legendario { color: var(--legendario); background:rgba(220,38,38,0.15); border:1px solid rgba(220,38,38,0.3); }
+
+  /* Hex container */
+  .hex-wrap { position:relative; width:110px; height:110px; margin:0 auto; }
+  .hex {
+    width:100%; height:100%; position:relative; overflow:hidden;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background:#1C1C1E;
+  }
+  .hex img {
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  }
+  .hex-locked img { filter: grayscale(0.65) brightness(0.45) contrast(1.1); }
+
+  /* Locked demo label */
+  .locked-label { font-size:9px; color:var(--text-3); margin-top:6px; }
+
+  .comparison { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px; }
+  .comparison .col { background:var(--bg-3); border-radius:12px; padding:12px; }
+  .comparison .col h4 { font-family:'Oswald',sans-serif; font-size:12px; color:var(--text-3); margin-bottom:8px; text-transform:uppercase; }
+
+  .footer { text-align:center; color:var(--text-3); font-size:0.85em; margin-top:50px; padding-top:30px; border-top:1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+    <img src="../svg-premium/wc-logo.svg" width="36" height="36" alt="WellCore">
+    <span style="font-family:'Oswald',sans-serif; font-size:1em; letter-spacing:0.05em;">WELLCORE FITNESS</span>
+  </div>
+
+  <h1>Medallas Premium · <span>Showcase</span></h1>
+  <p class="subtitle">15 medallas únicas con identidad visual propia. Hexágono 3D + iconografía + tier metalizado.</p>
+
+  <div class="stats-bar">
+    <div class="st"><div class="st-num" style="color:var(--bronze);">15</div><div class="st-lbl">Medallas</div></div>
+    <div class="st"><div class="st-num" style="color:var(--silver);">5</div><div class="st-lbl">Tiers</div></div>
+    <div class="st"><div class="st-num" style="color:var(--gold);">6</div><div class="st-lbl">Categorias</div></div>
+    <div class="st"><div class="st-num" style="color:var(--platino);">~47KB</div><div class="st-lbl">Peso total</div></div>
+  </div>
+
+  <h2>Modo Logrado (Achieved)</h2>
+  <div id="achievedGrid" class="medal-grid"></div>
+
+  <h2>Modo Bloqueado (Locked)</h2>
+  <p style="color:var(--text-3); font-size:0.9em; margin-bottom:16px;">Filtro CSS <code>grayscale(0.65) brightness(0.45)</code> aplicado al SVG para indicar progreso pendiente.</p>
+  <div id="lockedGrid" class="medal-grid"></div>
+
+  <h2>Comparativa: Antes vs Ahora</h2>
+  <div class="comparison">
+    <div class="col">
+      <h4>Antes — Texto plano</h4>
+      <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+        <div style="width:80px; height:80px; background:#1C1C1E; clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); display:grid; place-items:center; font-family:Oswald; font-size:18px; font-weight:700; color:#FAFAFA;">★</div>
+        <div style="width:80px; height:80px; background:#1C1C1E; clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); display:grid; place-items:center; font-family:Oswald; font-size:18px; font-weight:700; color:#FAFAFA;">7</div>
+        <div style="width:80px; height:80px; background:#1C1C1E; clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); display:grid; place-items:center; font-family:Oswald; font-size:18px; font-weight:700; color:#FAFAFA;">PR</div>
+        <div style="width:80px; height:80px; background:#1C1C1E; clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); display:grid; place-items:center; font-family:Oswald; font-size:18px; font-weight:700; color:#FAFAFA;">200</div>
+      </div>
+    </div>
+    <div class="col">
+      <h4>Ahora — SVG Premium</h4>
+      <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+        <div style="width:80px; height:80px; clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); overflow:hidden;"><img src="medal-el-inicio.svg" width="80" height="80"></div>
+        <div style="width:80px; height:80px; clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); overflow:hidden;"><img src="medal-semana-fuego.svg" width="80" height="80"></div>
+        <div style="width:80px; height:80px; clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); overflow:hidden;"><img src="medal-primer-pr.svg" width="80" height="80"></div>
+        <div style="width:80px; height:80px; clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); overflow:hidden;"><img src="medal-entreno-200.svg" width="80" height="80"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Integracion en MedalHex.vue</h2>
+  <div style="background:var(--bg-2); border:1px solid var(--border); border-radius:16px; padding:24px; margin:20px 0;">
+    <p style="color:var(--text-2); font-size:0.9em; margin-bottom:12px;"><strong>Cambio realizado:</strong> El componente ahora busca automaticamente <code>/icons/medals/medal-{slug}.svg</code> y lo renderiza como fondo del hexagono.</p>
+    <pre style="background:#050508; border:1px solid var(--border); border-radius:12px; padding:14px 16px; font-family:'Courier New',monospace; font-size:0.78em; color:var(--text-3); overflow-x:auto;">
+&lt;!-- MedalHex.vue --&gt;
+&lt;img
+  v-if="medalSvgUrl"
+  class="hex-svg-bg"
+  :src="medalSvgUrl"
+  :alt="medal.name"
+  draggable="false"
+/&gt;
+
+&lt;!-- Fallback a texto cuando no existe SVG --&gt;
+&lt;span v-if="!medalSvgUrl" class="hex-icon"&gt;{{ medal.iconLabel }}&lt;/span&gt;</pre>
+    <p style="color:var(--text-2); font-size:0.9em; margin-top:12px;">Para medallas bloqueadas: <code>filter: grayscale(0.65) brightness(0.45) contrast(1.1)</code></p>
+  </div>
+
+  <div class="footer">
+    <p><strong>WellCore Fitness · Medallas Premium</strong></p>
+    <p>15 medallas unicas · 5 tiers · Self-contained · Integrado en MedalHex.vue</p>
+    <p style="margin-top:8px; color:var(--text-3);">Carpeta: <code>public/icons/medals/</code></p>
+  </div>
+
+</div>
+
+<script>
+const medals = [
+  {slug:'el-inicio', name:'El Inicio', tier:'bronce', cls:'tier-bronze'},
+  {slug:'semana-fuego', name:'Semana de Fuego', tier:'plata', cls:'tier-plata'},
+  {slug:'mes-fuego', name:'Mes de Fuego', tier:'oro', cls:'tier-oro'},
+  {slug:'entreno-10', name:'Entreno N° 10', tier:'bronce', cls:'tier-bronce'},
+  {slug:'entreno-50', name:'Entreno N° 50', tier:'oro', cls:'tier-oro'},
+  {slug:'entreno-200', name:'Entreno N° 200', tier:'legendario', cls:'tier-legendario'},
+  {slug:'primer-pr', name:'Primer PR', tier:'bronce', cls:'tier-bronce'},
+  {slug:'10-records', name:'10 Records', tier:'oro', cls:'tier-oro'},
+  {slug:'monstruo-fuerza', name:'Monstruo de Fuerza', tier:'platino', cls:'tier-platino'},
+  {slug:'semana-macros', name:'Semana de Macros', tier:'plata', cls:'tier-plata'},
+  {slug:'mes-limpio', name:'Mes Limpio', tier:'oro', cls:'tier-oro'},
+  {slug:'nutricion-elite', name:'Nutricion Elite', tier:'platino', cls:'tier-platino'},
+  {slug:'habito-forjado', name:'Habito Forjado', tier:'plata', cls:'tier-plata'},
+  {slug:'madrugador', name:'Madrugador', tier:'plata', cls:'tier-plata'},
+  {slug:'wellcore-elite', name:'WellCore Elite', tier:'legendario', cls:'tier-legendario'},
+];
+
+function renderCard(m, locked) {
+  return `
+    <div class="medal-card">
+      <div class="hex-wrap">
+        <div class="hex ${locked ? 'hex-locked' : ''}">
+          <img src="medal-${m.slug}.svg" alt="${m.name}" draggable="false">
+        </div>
+      </div>
+      <div class="medal-name">${m.name}</div>
+      <div class="medal-tier ${m.cls}">${m.tier}</div>
+      ${locked ? '<div class="locked-label">Bloqueado</div>' : ''}
+    </div>
+  `;
+}
+
+document.getElementById('achievedGrid').innerHTML = medals.map(m => renderCard(m, false)).join('');
+document.getElementById('lockedGrid').innerHTML = medals.map(m => renderCard(m, true)).join('');
+</script>
+
+</body>
+</html>

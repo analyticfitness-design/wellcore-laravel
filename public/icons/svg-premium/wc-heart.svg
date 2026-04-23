@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="heartBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f87171"/>
+      <stop offset="50%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#991b1b"/>
+    </linearGradient>
+    <linearGradient id="heartInner" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fca5a5"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+    <linearGradient id="heartCore" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef2f2"/>
+      <stop offset="100%" stop-color="#f87171"/>
+    </linearGradient>
+    <filter id="heartGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="heartShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#7f1d1d" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Outer heart -->
+  <path d="M24 44 C24 44, 4 32, 4 18 C4 10, 10 4, 17 4 C21 4, 24 7, 24 10 C24 7, 27 4, 31 4 C38 4, 44 10, 44 18 C44 32, 24 44, 24 44Z" 
+        fill="url(#heartBody)" filter="url(#heartShadow)" stroke="#fca5a5" stroke-width="0.6"/>
+
+  <!-- Inner heart highlight -->
+  <path d="M24 40 C24 40, 8 30, 8 18 C8 12, 12 8, 17 8 C20 8, 22 10, 23 12 C24 10, 26 8, 29 8 C34 8, 38 12, 38 18 C38 30, 24 40, 24 40Z" 
+        fill="url(#heartInner)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+
+  <!-- Center bright core -->
+  <path d="M24 34 C24 34, 14 27, 14 20 C14 16, 17 14, 20 14 C22 14, 23 15, 24 17 C25 15, 26 14, 28 14 C31 14, 34 16, 34 20 C34 27, 24 34, 24 34Z" 
+        fill="url(#heartCore)" filter="url(#heartGlow)" opacity="0.7"/>
+
+  <!-- Shine highlight -->
+  <ellipse cx="14" cy="12" rx="3" ry="2" fill="#fff" opacity="0.2" transform="rotate(-20 14 12)"/>
+  <ellipse cx="16" cy="14" rx="1.5" ry="1" fill="#fff" opacity="0.3" transform="rotate(-20 16 14)"/>
+
+  <!-- Pulse line -->
+  <path d="M4 24 L8 24 L10 18 L13 30 L16 22 L20 24 L24 24" fill="none" stroke="#fca5a5" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/>
+  <path d="M44 24 L40 24 L38 18 L35 30 L32 22 L28 24 L24 24" fill="none" stroke="#fca5a5" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/>
+
+  <!-- Small sparkles -->
+  <circle cx="6" cy="8" r="0.7" fill="#fca5a5" opacity="0.8"/>
+  <circle cx="42" cy="10" r="0.6" fill="#fca5a5" opacity="0.7"/>
+  <circle cx="24" cy="2" r="0.5" fill="#fef2f2" opacity="0.9"/>
+</svg>

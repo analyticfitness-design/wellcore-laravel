@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="pillBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6ee7b7"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <linearGradient id="pillHalf" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="pillCap" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <filter id="pillGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="pillShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#064e3b" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Main capsule body -->
+  <rect x="8" y="20" width="32" height="16" rx="8" fill="url(#pillBody)" filter="url(#pillShadow)"/>
+  <rect x="9" y="21" width="30" height="14" rx="7" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+
+  <!-- Left half (emerald) -->
+  <rect x="8" y="20" width="16" height="16" rx="8" fill="url(#pillHalf)"/>
+  <path d="M8 28 L24 28" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+
+  <!-- Right half (amber cap) -->
+  <rect x="24" y="20" width="16" height="16" rx="8" fill="url(#pillCap)"/>
+  <path d="M24 28 L40 28" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+
+  <!-- Center dividing line -->
+  <line x1="24" y1="20" x2="24" y2="36" stroke="#fff" stroke-width="1" opacity="0.4"/>
+
+  <!-- Shine on capsule -->
+  <path d="M12 22 Q24 21, 36 22" fill="none" stroke="#fff" stroke-width="0.8" opacity="0.3" stroke-linecap="round"/>
+  <ellipse cx="14" cy="24" rx="2" ry="1.5" fill="#fff" opacity="0.2"/>
+  <ellipse cx="34" cy="24" rx="2" ry="1.5" fill="#fff" opacity="0.2"/>
+
+  <!-- Small pills in background -->
+  <rect x="4" y="10" width="10" height="5" rx="2.5" fill="#10b981" opacity="0.4" transform="rotate(-15 9 12.5)"/>
+  <rect x="34" y="8" width="10" height="5" rx="2.5" fill="#f59e0b" opacity="0.4" transform="rotate(15 39 10.5)"/>
+  <rect x="38" y="36" width="8" height="4" rx="2" fill="#10b981" opacity="0.3" transform="rotate(20 42 38)"/>
+
+  <!-- Sparkle accents -->
+  <circle cx="6" cy="28" r="0.6" fill="#34d399" opacity="0.7"/>
+  <circle cx="42" cy="26" r="0.5" fill="#fbbf24" opacity="0.7"/>
+</svg>

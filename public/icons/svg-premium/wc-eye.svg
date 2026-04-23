@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="wcEyeBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="30%" stop-color="#3b82f6"/>
+      <stop offset="70%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <linearGradient id="wcEyeIris" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#93c5fd"/>
+      <stop offset="50%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="wcEyePupil" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <filter id="wcEyeGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="wcEyeShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#1e3a8a" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- Ground shadow -->
+  <ellipse cx="24" cy="42" rx="12" ry="2" fill="#000" opacity="0.25"/>
+
+  <!-- Eye outer shape (shield horizontal) shadow -->
+  <path d="M4 24 Q4 14 24 10 Q44 14 44 24 Q44 34 24 38 Q4 34 4 24Z" fill="#000" opacity="0.2" transform="translate(0,0.8)"/>
+
+  <!-- Eye outer shape -->
+  <path d="M4 24 Q4 14 24 10 Q44 14 44 24 Q44 34 24 38 Q4 34 4 24Z" fill="url(#wcEyeBase)" filter="url(#wcEyeShadow)"/>
+  <!-- Eye highlight edge -->
+  <path d="M5 24 Q5 15 24 11.5 Q43 15 43 24" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+
+  <!-- Iris ring 1 -->
+  <circle cx="24" cy="24" r="11" fill="none" stroke="url(#wcEyeIris)" stroke-width="1" opacity="0.5"/>
+  <!-- Iris ring 2 -->
+  <circle cx="24" cy="24" r="8.5" fill="none" stroke="url(#wcEyeIris)" stroke-width="0.8" opacity="0.4"/>
+  <!-- Iris ring 3 -->
+  <circle cx="24" cy="24" r="6" fill="none" stroke="url(#wcEyeIris)" stroke-width="0.6" opacity="0.3"/>
+
+  <!-- Iris fill -->
+  <circle cx="24" cy="24" r="9" fill="url(#wcEyeIris)" opacity="0.3"/>
+
+  <!-- Pupil -->
+  <circle cx="24" cy="24" r="4.5" fill="url(#wcEyePupil)"/>
+  <circle cx="24" cy="24" r="3.5" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.4"/>
+
+  <!-- Pupil highlight -->
+  <circle cx="22.5" cy="22.5" r="1.5" fill="#fff" opacity="0.5"/>
+  <circle cx="25.5" cy="25" r="0.6" fill="#fff" opacity="0.25"/>
+
+  <!-- Eyebrow -->
+  <path d="M8 16 Q24 8 40 16" fill="none" stroke="url(#wcEyeBase)" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+  <path d="M8 15.5 Q24 7.5 40 15.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <!-- Progress ring gradient: 4 stops violet -->
+    <linearGradient id="wcRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ddd6fe"/>
+      <stop offset="30%" stop-color="#8b5cf6"/>
+      <stop offset="70%" stop-color="#5b21b6"/>
+      <stop offset="100%" stop-color="#3b0764"/>
+    </linearGradient>
+    <!-- Inner energy ring gradient -->
+    <linearGradient id="wcRingActive" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e9d5ff"/>
+      <stop offset="50%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+    <!-- Center fill gradient -->
+    <radialGradient id="wcRingCenter" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0f0a1e"/>
+    </radialGradient>
+    <!-- Glow filter -->
+    <filter id="wcRingGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Strong glow for top dot -->
+    <filter id="wcRingDotGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Drop shadow -->
+    <filter id="wcRingShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Outer ring shadow -->
+  <circle cx="24" cy="25.5" r="20" fill="none" stroke="#000" stroke-width="2" opacity="0.25"/>
+
+  <!-- Outer ring background -->
+  <circle cx="24" cy="24" r="20" fill="none" stroke="#1e1b4b" stroke-width="2" filter="url(#wcRingShadow)"/>
+
+  <!-- Dashed track -->
+  <circle cx="24" cy="24" r="20" fill="none" stroke="#312e81" stroke-width="2"
+          stroke-dasharray="3 3" opacity="0.5"/>
+
+  <!-- Active progress ring (75%) -->
+  <circle cx="24" cy="24" r="20" fill="none" stroke="url(#wcRingGrad)" stroke-width="3"
+          stroke-linecap="round" stroke-dasharray="94 31.4" transform="rotate(-90 24 24)"
+          filter="url(#wcRingGlow)"/>
+  <!-- Active ring inner highlight -->
+  <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"
+          stroke-linecap="round" stroke-dasharray="94 31.4" transform="rotate(-90 24 24)"/>
+
+  <!-- Inner energy ring -->
+  <circle cx="24" cy="24" r="14" fill="none" stroke="url(#wcRingActive)" stroke-width="0.8"
+          opacity="0.45" stroke-dasharray="2 4"/>
+
+  <!-- Center circle shadow -->
+  <circle cx="24" cy="24.5" r="10" fill="#000" opacity="0.3"/>
+
+  <!-- Center level circle -->
+  <circle cx="24" cy="24" r="10" fill="url(#wcRingCenter)" stroke="#4c1d95" stroke-width="0.5"/>
+  <!-- Center highlight -->
+  <circle cx="24" cy="24" r="9.5" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.4"/>
+
+  <!-- Level number "12" as paths (no font dependency) -->
+  <!-- Number 1 -->
+  <path d="M19.5 20 L20.5 19 L20.5 29" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" filter="url(#wcRingGlow)"/>
+  <!-- Number 2 -->
+  <path d="M22.5 21 Q22.5 19.5 24 19.5 Q25.5 19.5 25.5 21 Q25.5 22.5 24 24 Q22.5 25.5 22.5 27.5 L25.5 27.5"
+        fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" filter="url(#wcRingGlow)"/>
+  <!-- Number highlight -->
+  <path d="M19.7 20.2 L20.5 19.5 L20.5 28.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M22.7 21.2 Q22.7 19.8 24 19.8 Q25.3 19.8 25.3 21.2 Q25.3 22.5 23.8 24 Q22.5 25.3 22.5 27.2 L25.2 27.2"
+        fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Particle dots -->
+  <circle cx="24" cy="4" r="1.5" fill="#ddd6fe" filter="url(#wcRingDotGlow)"/>
+  <circle cx="24" cy="4" r="0.6" fill="#fff" opacity="0.8"/>
+
+  <circle cx="38" cy="12" r="0.9" fill="#a78bfa" opacity="0.75"/>
+  <circle cx="42" cy="28" r="0.7" fill="#8b5cf6" opacity="0.55"/>
+  <circle cx="38" cy="38" r="0.5" fill="#7c3aed" opacity="0.4"/>
+  <circle cx="10" cy="38" r="0.5" fill="#6d28d9" opacity="0.35"/>
+
+  <!-- Highlight arc -->
+  <path d="M24 4 A20 20 0 0 1 42 16" fill="none" stroke="#fff" stroke-width="0.6" opacity="0.25" stroke-linecap="round"/>
+  <!-- Secondary highlight arc -->
+  <path d="M24 6 A18 18 0 0 1 39 16" fill="none" stroke="#fff" stroke-width="0.3" opacity="0.15" stroke-linecap="round"/>
+
+  <!-- Energy pulse rings (static decoration) -->
+  <circle cx="24" cy="24" r="17" fill="none" stroke="#5b21b6" stroke-width="0.3" opacity="0.25" stroke-dasharray="1 5"/>
+</svg>

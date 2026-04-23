@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="sparkMain" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="sparkSub" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="sparkTiny" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <filter id="sparkGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="sparkShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#92400e" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Main large sparkle -->
+  <g filter="url(#sparkShadow)">
+    <path d="M24 4 L27 18 L42 21 L27 24 L24 40 L21 24 L6 21 L21 18Z" fill="url(#sparkMain)" filter="url(#sparkGlow)"/>
+    <path d="M24 8 L26 17 L36 19 L26 21 L24 32 L22 21 L12 19 L22 17Z" fill="url(#sparkSub)"/>
+    <circle cx="24" cy="20" r="2" fill="#fff" opacity="0.8"/>
+  </g>
+
+  <!-- Medium sparkle top-right -->
+  <g transform="translate(10, -6) scale(0.7)">
+    <path d="M34 10 L35.5 18 L44 19 L35.5 20 L34 28 L32.5 20 L24 19 L32.5 18Z" fill="url(#sparkMain)" filter="url(#sparkGlow)"/>
+    <circle cx="34" cy="19" r="1.2" fill="#fff" opacity="0.7"/>
+  </g>
+
+  <!-- Medium sparkle bottom-left -->
+  <g transform="translate(-6, 8) scale(0.6)">
+    <path d="M14 28 L15.5 34 L22 35 L15.5 36 L14 42 L12.5 36 L6 35 L12.5 34Z" fill="url(#sparkSub)" filter="url(#sparkGlow)"/>
+    <circle cx="14" cy="35" r="1" fill="#fff" opacity="0.6"/>
+  </g>
+
+  <!-- Small sparkle bottom-right -->
+  <g transform="translate(6, 6) scale(0.45)">
+    <path d="M38 34 L39 39 L44 40 L39 41 L38 46 L37 41 L32 40 L37 39Z" fill="url(#sparkTiny)" filter="url(#sparkGlow)"/>
+  </g>
+
+  <!-- Tiny sparkle top-left -->
+  <g transform="translate(-10, -8) scale(0.35)">
+    <path d="M12 12 L12.5 16 L16 16.5 L12.5 17 L12 21 L11.5 17 L8 16.5 L11.5 16Z" fill="url(#sparkTiny)" filter="url(#sparkGlow)"/>
+  </g>
+
+  <!-- Glow orbs -->
+  <circle cx="10" cy="10" r="0.8" fill="#fef3c7" opacity="0.6"/>
+  <circle cx="40" cy="14" r="0.6" fill="#fde68a" opacity="0.7"/>
+  <circle cx="8" cy="38" r="0.5" fill="#fbbf24" opacity="0.5"/>
+  <circle cx="42" cy="36" r="0.7" fill="#fef3c7" opacity="0.6"/>
+  <circle cx="24" cy="46" r="0.4" fill="#f59e0b" opacity="0.5"/>
+</svg>

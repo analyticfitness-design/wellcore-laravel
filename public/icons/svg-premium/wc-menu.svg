@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="wcMenuBar1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d4d4d8"/>
+      <stop offset="50%" stop-color="#a1a1aa"/>
+      <stop offset="100%" stop-color="#71717a"/>
+    </linearGradient>
+    <linearGradient id="wcMenuBar2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a1a1aa"/>
+      <stop offset="50%" stop-color="#71717a"/>
+      <stop offset="100%" stop-color="#52525b"/>
+    </linearGradient>
+    <linearGradient id="wcMenuBar3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#71717a"/>
+      <stop offset="50%" stop-color="#52525b"/>
+      <stop offset="100%" stop-color="#3f3f46"/>
+    </linearGradient>
+    <linearGradient id="wcMenuAccent" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f87171"/>
+      <stop offset="100%" stop-color="#DC2626"/>
+    </linearGradient>
+    <filter id="wcMenuShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Ground shadow -->
+  <ellipse cx="24" cy="43" rx="10" ry="1.5" fill="#000" opacity="0.25"/>
+
+  <!-- Base plate shadow -->
+  <rect x="5" y="8.5" width="38" height="32" rx="4" fill="#000" opacity="0.2"/>
+
+  <!-- Base plate -->
+  <rect x="5" y="8" width="38" height="32" rx="4" fill="#18181b" filter="url(#wcMenuShadow)"/>
+  <!-- Base highlight -->
+  <rect x="5.5" y="8.5" width="37" height="3" rx="1.5" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.4"/>
+
+  <!-- Red accent bar left -->
+  <rect x="5" y="12" width="3" height="24" rx="1.5" fill="url(#wcMenuAccent)"/>
+
+  <!-- Bar 1 (short) -->
+  <rect x="12" y="15" width="26" height="5" rx="2.5" fill="url(#wcMenuBar1)"/>
+  <rect x="12.5" y="15.5" width="25" height="2" rx="1" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.3"/>
+
+  <!-- Bar 2 (medium) -->
+  <rect x="12" y="23" width="20" height="5" rx="2.5" fill="url(#wcMenuBar2)"/>
+  <rect x="12.5" y="23.5" width="19" height="2" rx="1" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.3"/>
+
+  <!-- Bar 3 (tall) -->
+  <rect x="12" y="31" width="30" height="5" rx="2.5" fill="url(#wcMenuBar3)"/>
+  <rect x="12.5" y="31.5" width="29" height="2" rx="1" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.3"/>
+</svg>

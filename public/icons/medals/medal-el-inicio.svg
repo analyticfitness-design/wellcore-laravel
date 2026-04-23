@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="miOut" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B87333"/>
+      <stop offset="35%" stop-color="#8B5A2B"/>
+      <stop offset="70%" stop-color="#5C3A1E"/>
+      <stop offset="100%" stop-color="#3E2723"/>
+    </linearGradient>
+    <linearGradient id="miIn" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#A67B5B"/>
+      <stop offset="50%" stop-color="#6D4C33"/>
+      <stop offset="100%" stop-color="#3E2723"/>
+    </linearGradient>
+    <linearGradient id="miGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4A574"/>
+      <stop offset="50%" stop-color="#B87333"/>
+      <stop offset="100%" stop-color="#8B5A2B"/>
+    </linearGradient>
+    <linearGradient id="miLight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E8D5C4"/>
+      <stop offset="100%" stop-color="#B87333"/>
+    </linearGradient>
+    <filter id="miShad" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#1A0F0A" flood-opacity="0.7"/>
+    </filter>
+    <filter id="miGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <pattern id="miPat" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="4" y2="4" stroke="#8B5A2B" stroke-width="0.2" opacity="0.15"/>
+    </pattern>
+  </defs>
+
+  <!-- Base shadow -->
+  <polygon points="25,4 45,15 45,37 25,48 5,37 5,15" fill="#1A0F0A" opacity="0.5"/>
+
+  <!-- Outer beveled hex -->
+  <polygon points="24,2 44,13 44,35 24,46 4,35 4,13" fill="url(#miOut)" filter="url(#miShad)"/>
+  <polygon points="24,3 43,14 43,34 24,45 5,34 5,14" fill="none" stroke="#D4A574" stroke-width="0.4" opacity="0.5"/>
+
+  <!-- Inner recessed hex -->
+  <polygon points="24,7 39,16 39,32 24,41 9,32 9,16" fill="url(#miIn)"/>
+  <polygon points="24,7 39,16 39,32 24,41 9,32 9,16" fill="url(#miPat)"/>
+
+  <!-- Engraved ring -->
+  <polygon points="24,10 36,17 36,31 24,38 12,31 12,17" fill="none" stroke="#5C3A1E" stroke-width="0.6"/>
+  <polygon points="24,11 35,17.5 35,30.5 24,37 13,30.5 13,17.5" fill="none" stroke="#D4A574" stroke-width="0.3" opacity="0.4"/>
+
+  <!-- Abstract seed/origin form -->
+  <ellipse cx="24" cy="24" rx="7" ry="10" fill="url(#miGold)" filter="url(#miGlow)"/>
+  <ellipse cx="24" cy="24" rx="4.5" ry="6.5" fill="url(#miIn)"/>
+  <ellipse cx="24" cy="22" rx="2" ry="3" fill="url(#miLight)" opacity="0.8"/>
+
+  <!-- Radiating energy lines -->
+  <line x1="24" y1="10" x2="24" y2="14" stroke="#D4A574" stroke-width="0.6" stroke-linecap="round" opacity="0.6"/>
+  <line x1="24" y1="34" x2="24" y2="38" stroke="#D4A574" stroke-width="0.6" stroke-linecap="round" opacity="0.6"/>
+  <line x1="10" y1="17" x2="13" y2="19" stroke="#D4A574" stroke-width="0.6" stroke-linecap="round" opacity="0.5"/>
+  <line x1="35" y1="29" x2="38" y2="31" stroke="#D4A574" stroke-width="0.6" stroke-linecap="round" opacity="0.5"/>
+  <line x1="10" y1="31" x2="13" y2="29" stroke="#D4A574" stroke-width="0.6" stroke-linecap="round" opacity="0.5"/>
+  <line x1="35" y1="19" x2="38" y2="17" stroke="#D4A574" stroke-width="0.6" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Brushed metal texture overlay -->
+  <line x1="4" y1="13" x2="44" y2="35" stroke="#D4A574" stroke-width="0.2" opacity="0.08"/>
+  <line x1="4" y1="18" x2="44" y2="40" stroke="#D4A574" stroke-width="0.2" opacity="0.08"/>
+  <line x1="4" y1="23" x2="44" y2="45" stroke="#D4A574" stroke-width="0.2" opacity="0.08"/>
+  <line x1="4" y1="28" x2="44" y2="50" stroke="#D4A574" stroke-width="0.2" opacity="0.08"/>
+  <line x1="4" y1="8" x2="44" y2="30" stroke="#D4A574" stroke-width="0.2" opacity="0.08"/>
+
+  <!-- Corner facets -->
+  <polygon points="24,2 28,4 24,6 20,4" fill="#D4A574" opacity="0.3"/>
+  <polygon points="44,13 44,17 40,15" fill="#D4A574" opacity="0.2"/>
+  <polygon points="44,35 44,31 40,33" fill="#5C3A1E" opacity="0.3"/>
+  <polygon points="24,46 20,44 24,42 28,44" fill="#5C3A1E" opacity="0.3"/>
+  <polygon points="4,35 4,31 8,33" fill="#5C3A1E" opacity="0.3"/>
+  <polygon points="4,13 8,15 4,17" fill="#D4A574" opacity="0.2"/>
+</svg>

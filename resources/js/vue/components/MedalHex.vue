@@ -48,6 +48,12 @@ const progressPct = computed(() => {
 
 const tierClass = computed(() => `tier-${props.medal.tier}`);
 
+const medalSvgUrl = computed(() => {
+    const slug = props.medal?.slug;
+    if (!slug) return null;
+    return `/icons/medals/medal-${slug}.svg`;
+});
+
 function handleClick() {
     if (props.interactive) emit('click', props.medal);
 }
@@ -78,7 +84,16 @@ function handleClick() {
       </template>
 
       <!-- Hex body -->
-      <div class="hex" :class="{ 'hex-locked': !medal.achieved }">
+      <div class="hex" :class="{ 'hex-locked': !medal.achieved, 'hex-has-svg': medalSvgUrl }">
+        <!-- Medal SVG background -->
+        <img
+          v-if="medalSvgUrl"
+          class="hex-svg-bg"
+          :src="medalSvgUrl"
+          :alt="medal.name"
+          draggable="false"
+        />
+
         <!-- Stripes (only if achieved) -->
         <div
           v-if="medal.achieved && stripeBackground"
@@ -92,8 +107,9 @@ function handleClick() {
         <!-- Shimmer sweep (only if achieved) -->
         <div v-if="medal.achieved" class="hex-shimmer"></div>
 
-        <!-- Icon / label inside hex -->
+        <!-- Icon / label inside hex (fallback when no SVG) -->
         <span
+          v-if="!medalSvgUrl"
           class="hex-icon"
           :class="{ 'hex-icon-locked': !medal.achieved }"
         >{{ medal.iconLabel || '★' }}</span>
@@ -198,6 +214,24 @@ function handleClick() {
     box-shadow:
         inset 0 0 0 1px rgba(220,38,38,0.18),
         inset 0 2px 4px rgba(0,0,0,0.6);
+}
+.hex-has-svg .hex-svg-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+.hex-locked.hex-has-svg .hex-svg-bg {
+    filter: grayscale(0.65) brightness(0.45) contrast(1.1);
+}
+.hex-has-svg .hex-stripes,
+.hex-has-svg .hex-overlay-top,
+.hex-has-svg .hex-shimmer,
+.hex-has-svg .tier-badge,
+.hex-has-svg .achieved-check {
+    z-index: 2;
 }
 
 .hex-stripes {

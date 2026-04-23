@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="mmadOut" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D1D5DB"/>
+      <stop offset="35%" stop-color="#9CA3AF"/>
+      <stop offset="70%" stop-color="#6B7280"/>
+      <stop offset="100%" stop-color="#374151"/>
+    </linearGradient>
+    <linearGradient id="mmadIn" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#E5E7EB"/>
+      <stop offset="50%" stop-color="#9CA3AF"/>
+      <stop offset="100%" stop-color="#4B5563"/>
+    </linearGradient>
+    <linearGradient id="mmadSun" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#DC2626"/>
+    </linearGradient>
+    <linearGradient id="mmadCore" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="100%" stop-color="#FDBA74"/>
+    </linearGradient>
+    <filter id="mmadShad" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#111827" flood-opacity="0.6"/>
+    </filter>
+    <filter id="mmadGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Base shadow -->
+  <polygon points="25,4 45,15 45,37 25,48 5,37 5,15" fill="#111827" opacity="0.4"/>
+
+  <!-- Outer beveled hex -->
+  <polygon points="24,2 44,13 44,35 24,46 4,35 4,13" fill="url(#mmadOut)" filter="url(#mmadShad)"/>
+  <polygon points="24,3 43,14 43,34 24,45 5,34 5,14" fill="none" stroke="#F3F4F6" stroke-width="0.4" opacity="0.5"/>
+
+  <!-- Inner recessed hex -->
+  <polygon points="24,7 39,16 39,32 24,41 9,32 9,16" fill="url(#mmadIn)"/>
+
+  <!-- Engraved ring -->
+  <polygon points="24,10 36,17 36,31 24,38 12,31 12,17" fill="none" stroke="#4B5563" stroke-width="0.6"/>
+  <polygon points="24,11 35,17.5 35,30.5 24,37 13,30.5 13,17.5" fill="none" stroke="#F3F4F6" stroke-width="0.3" opacity="0.4"/>
+
+  <!-- Abstract dawn - rising sun geometric form -->
+  <path d="M12 30 Q24 22, 36 30Z" fill="url(#mmadSun)" opacity="0.4" filter="url(#mmadGlow)"/>
+  <path d="M14 28 Q24 21, 34 28Z" fill="url(#mmadCore)" opacity="0.5"/>
+
+  <!-- Sun disc -->
+  <circle cx="24" cy="26" r="5" fill="url(#mmadSun)" filter="url(#mmadGlow)"/>
+  <circle cx="24" cy="26" r="3" fill="#FEF3C7" opacity="0.6"/>
+  <circle cx="24" cy="26" r="1.5" fill="#fff" opacity="0.8"/>
+
+  <!-- Geometric rays -->
+  <line x1="24" y1="16" x2="24" y2="19" stroke="#FDE047" stroke-width="0.8" opacity="0.6" stroke-linecap="round"/>
+  <line x1="15" y1="19" x2="17" y2="21" stroke="#FDE047" stroke-width="0.6" opacity="0.5" stroke-linecap="round"/>
+  <line x1="33" y1="19" x2="31" y2="21" stroke="#FDE047" stroke-width="0.6" opacity="0.5" stroke-linecap="round"/>
+  <line x1="11" y1="26" x2="14" y2="26" stroke="#F59E0B" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+  <line x1="37" y1="26" x2="34" y2="26" stroke="#F59E0B" stroke-width="0.6" opacity="0.4" stroke-linecap="round"/>
+
+  <!-- Abstract clock mark suggesting AM -->
+  <circle cx="32" cy="18" r="3.5" fill="none" stroke="#3B82F6" stroke-width="0.6" opacity="0.5"/>
+  <line x1="32" y1="18" x2="32" y2="15.8" stroke="#3B82F6" stroke-width="0.5" stroke-linecap="round"/>
+  <line x1="32" y1="18" x2="33.5" y2="18" stroke="#3B82F6" stroke-width="0.5" stroke-linecap="round"/>
+
+  <!-- Brushed texture -->
+  <line x1="4" y1="13" x2="44" y2="35" stroke="#E5E7EB" stroke-width="0.15" opacity="0.1"/>
+  <line x1="4" y1="18" x2="44" y2="40" stroke="#E5E7EB" stroke-width="0.15" opacity="0.1"/>
+  <line x1="4" y1="23" x2="44" y2="45" stroke="#E5E7EB" stroke-width="0.15" opacity="0.1"/>
+
+  <!-- Corner facets -->
+  <polygon points="24,2 28,4 24,6 20,4" fill="#F3F4F6" opacity="0.3"/>
+  <polygon points="44,13 44,17 40,15" fill="#F3F4F6" opacity="0.2"/>
+  <polygon points="44,35 44,31 40,33" fill="#374151" opacity="0.3"/>
+  <polygon points="24,46 20,44 24,42 28,44" fill="#374151" opacity="0.3"/>
+  <polygon points="4,35 4,31 8,33" fill="#374151" opacity="0.3"/>
+  <polygon points="4,13 8,15 4,17" fill="#F3F4F6" opacity="0.2"/>
+</svg>

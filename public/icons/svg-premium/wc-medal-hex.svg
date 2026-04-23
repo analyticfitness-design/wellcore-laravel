@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <!-- Outer hex gold: 4 stops for jewelry depth -->
+    <linearGradient id="wcHexGoldTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="30%" stop-color="#fbbf24"/>
+      <stop offset="70%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#78350f"/>
+    </linearGradient>
+    <!-- Inner hex gold (recessed) -->
+    <linearGradient id="wcHexGoldInner" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="40%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+    <!-- Star gradient -->
+    <linearGradient id="wcHexStarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff"/>
+      <stop offset="50%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <!-- Glow for star -->
+    <filter id="wcHexGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Drop shadow for 3D lift -->
+    <filter id="wcHexShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#451a03" flood-opacity="0.55"/>
+    </filter>
+    <!-- Brushed metal texture -->
+    <pattern id="wcHexBrushed" x="0" y="0" width="3" height="3" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="1.5" x2="3" y2="1.5" stroke="rgba(255,255,255,0.06)" stroke-width="0.2"/>
+    </pattern>
+  </defs>
+
+  <!-- Outer hex shadow layer -->
+  <polygon points="24,4 44,15.5 44,36.5 24,48 4,36.5 4,15.5"
+           fill="#000" opacity="0.25" transform="translate(0,1.5)"/>
+
+  <!-- Outer hexagon with bevel -->
+  <polygon points="24,3 43,14 43,34 24,45 5,34 5,14"
+           fill="url(#wcHexGoldTop)" filter="url(#wcHexShadow)" stroke="#fde68a" stroke-width="0.8"/>
+
+  <!-- Brushed texture overlay -->
+  <polygon points="24,3 43,14 43,34 24,45 5,34 5,14"
+           fill="url(#wcHexBrushed)" opacity="0.5"/>
+
+  <!-- Outer bevel highlight -->
+  <polygon points="24,4.5 41.5,14.5 41.5,33.5 24,43.5 6.5,33.5 6.5,14.5"
+           fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="0.6"/>
+
+  <!-- Outer bevel shadow -->
+  <polygon points="24,5.5 40.5,15 40.5,32 24,41 7.5,32 7.5,15"
+           fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="0.4"/>
+
+  <!-- Inner hexagon for depth -->
+  <polygon points="24,7 39,16 39,32 24,41 9,32 9,16"
+           fill="url(#wcHexGoldInner)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+
+  <!-- Inner recessed shadow -->
+  <polygon points="24,8.5 37,16.5 37,31 24,39 11,31 11,16.5"
+           fill="none" stroke="rgba(0,0,0,0.15)" stroke-width="0.5"/>
+
+  <!-- Center star emblem (outer shadow) -->
+  <polygon points="24,13.5 26.8,20.5 33.5,20.5 27.8,24.8 29.8,31.5 24,27.5 18.2,31.5 20.2,24.8 14.5,20.5 21.2,20.5"
+           fill="#92400e" opacity="0.4" transform="translate(0,0.6)"/>
+
+  <!-- Center star emblem main -->
+  <polygon points="24,14 26.5,20.5 33,20.5 27.5,24.5 29.5,31 24,27 18.5,31 20.5,24.5 15,20.5 21.5,20.5"
+           fill="url(#wcHexStarGrad)" opacity="0.95" filter="url(#wcHexGlow)"/>
+
+  <!-- Star highlight -->
+  <polygon points="24,15 26,20.5 31.5,20.5 27,24 28.5,29 24,26 19.5,29 21,24 16.5,20.5 22,20.5"
+           fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.3"/>
+
+  <!-- Decorative border lines -->
+  <polygon points="24,9 37,17 37,31 24,39 11,31 11,17"
+           fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+
+  <!-- Rivets at corners with 3D depth -->
+  <circle cx="24" cy="6" r="1.1" fill="#78350f" opacity="0.4"/>
+  <circle cx="24" cy="6" r="0.8" fill="#fde68a" opacity="0.9"/>
+  <circle cx="23.8" cy="5.8" r="0.3" fill="#fff" opacity="0.6"/>
+
+  <circle cx="41" cy="14.5" r="1.1" fill="#78350f" opacity="0.4"/>
+  <circle cx="41" cy="14.5" r="0.8" fill="#fde68a" opacity="0.9"/>
+  <circle cx="40.8" cy="14.3" r="0.3" fill="#fff" opacity="0.6"/>
+
+  <circle cx="41" cy="33.5" r="1.1" fill="#78350f" opacity="0.4"/>
+  <circle cx="41" cy="33.5" r="0.8" fill="#fde68a" opacity="0.9"/>
+  <circle cx="40.8" cy="33.3" r="0.3" fill="#fff" opacity="0.6"/>
+
+  <circle cx="24" cy="42" r="1.1" fill="#78350f" opacity="0.4"/>
+  <circle cx="24" cy="42" r="0.8" fill="#fde68a" opacity="0.9"/>
+  <circle cx="23.8" cy="41.8" r="0.3" fill="#fff" opacity="0.6"/>
+
+  <circle cx="7" cy="33.5" r="1.1" fill="#78350f" opacity="0.4"/>
+  <circle cx="7" cy="33.5" r="0.8" fill="#fde68a" opacity="0.9"/>
+  <circle cx="6.8" cy="33.3" r="0.3" fill="#fff" opacity="0.6"/>
+
+  <circle cx="7" cy="14.5" r="1.1" fill="#78350f" opacity="0.4"/>
+  <circle cx="7" cy="14.5" r="0.8" fill="#fde68a" opacity="0.9"/>
+  <circle cx="6.8" cy="14.3" r="0.3" fill="#fff" opacity="0.6"/>
+
+  <!-- Top highlight arc -->
+  <path d="M10 14 Q24 6 38 14" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.6" stroke-linecap="round"/>
+</svg>

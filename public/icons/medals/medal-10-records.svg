@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="m10rOut" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DAA520"/>
+      <stop offset="35%" stop-color="#B8860B"/>
+      <stop offset="70%" stop-color="#8B6914"/>
+      <stop offset="100%" stop-color="#5C4D26"/>
+    </linearGradient>
+    <linearGradient id="m10rIn" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#F4D03F"/>
+      <stop offset="50%" stop-color="#DAA520"/>
+      <stop offset="100%" stop-color="#8B6914"/>
+    </linearGradient>
+    <linearGradient id="m10rStar" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF7ED"/>
+      <stop offset="50%" stop-color="#FDE68A"/>
+      <stop offset="100%" stop-color="#DAA520"/>
+    </linearGradient>
+    <filter id="m10rShad" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#3D2B07" flood-opacity="0.7"/>
+    </filter>
+    <filter id="m10rGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Base shadow -->
+  <polygon points="25,4 45,15 45,37 25,48 5,37 5,15" fill="#3D2B07" opacity="0.5"/>
+
+  <!-- Outer beveled hex -->
+  <polygon points="24,2 44,13 44,35 24,46 4,35 4,13" fill="url(#m10rOut)" filter="url(#m10rShad)"/>
+  <polygon points="24,3 43,14 43,34 24,45 5,34 5,14" fill="none" stroke="#FDE68A" stroke-width="0.4" opacity="0.5"/>
+
+  <!-- Inner recessed hex -->
+  <polygon points="24,7 39,16 39,32 24,41 9,32 9,16" fill="url(#m10rIn)"/>
+
+  <!-- Engraved ring -->
+  <polygon points="24,10 36,17 36,31 24,38 12,31 12,17" fill="none" stroke="#8B6914" stroke-width="0.6"/>
+  <polygon points="24,11 35,17.5 35,30.5 24,37 13,30.5 13,17.5" fill="none" stroke="#FDE68A" stroke-width="0.3" opacity="0.4"/>
+
+  <!-- Geometric star / record form - faceted diamond shape -->
+  <polygon points="24,10 29,19 38,20 31,26 33,35 24,30 15,35 17,26 10,20 19,19" fill="url(#m10rStar)" filter="url(#m10rGlow)"/>
+  <polygon points="24,13 27,19 34,20 29,24 30,31 24,28 18,31 19,24 14,20 21,19" fill="url(#m10rIn)" opacity="0.5"/>
+  <polygon points="24,16 25.5,20.5 30,21 27,24 27.5,28 24,25.5 20.5,28 21,24 18,21 22.5,20.5" fill="url(#m10rStar)" opacity="0.7"/>
+
+  <!-- Record ring marks -->
+  <circle cx="24" cy="24" r="4" fill="none" stroke="#FDE68A" stroke-width="0.4" opacity="0.4"/>
+  <circle cx="24" cy="24" r="2.5" fill="none" stroke="#FDE68A" stroke-width="0.3" opacity="0.3"/>
+  <circle cx="24" cy="24" r="1" fill="#FDE68A" opacity="0.5"/>
+
+  <!-- Radiant marks -->
+  <line x1="24" y1="8" x2="24" y2="10" stroke="#FDE68A" stroke-width="0.5" opacity="0.5" stroke-linecap="round"/>
+  <line x1="8" y1="16" x2="10" y2="17" stroke="#FDE68A" stroke-width="0.4" opacity="0.4" stroke-linecap="round"/>
+  <line x1="8" y1="32" x2="10" y2="31" stroke="#FDE68A" stroke-width="0.4" opacity="0.4" stroke-linecap="round"/>
+  <line x1="24" y1="38" x2="24" y2="40" stroke="#FDE68A" stroke-width="0.5" opacity="0.5" stroke-linecap="round"/>
+  <line x1="38" y1="32" x2="40" y2="31" stroke="#FDE68A" stroke-width="0.4" opacity="0.4" stroke-linecap="round"/>
+  <line x1="38" y1="16" x2="40" y2="17" stroke="#FDE68A" stroke-width="0.4" opacity="0.4" stroke-linecap="round"/>
+
+  <!-- Brushed texture -->
+  <line x1="4" y1="13" x2="44" y2="35" stroke="#FDE68A" stroke-width="0.15" opacity="0.1"/>
+  <line x1="4" y1="18" x2="44" y2="40" stroke="#FDE68A" stroke-width="0.15" opacity="0.1"/>
+  <line x1="4" y1="23" x2="44" y2="45" stroke="#FDE68A" stroke-width="0.15" opacity="0.1"/>
+
+  <!-- Corner facets -->
+  <polygon points="24,2 28,4 24,6 20,4" fill="#FDE68A" opacity="0.35"/>
+  <polygon points="44,13 44,17 40,15" fill="#FDE68A" opacity="0.25"/>
+  <polygon points="44,35 44,31 40,33" fill="#8B6914" opacity="0.35"/>
+  <polygon points="24,46 20,44 24,42 28,44" fill="#8B6914" opacity="0.35"/>
+  <polygon points="4,35 4,31 8,33" fill="#8B6914" opacity="0.35"/>
+  <polygon points="4,13 8,15 4,17" fill="#FDE68A" opacity="0.25"/>
+</svg>

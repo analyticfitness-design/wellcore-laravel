@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="wcSearchBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4d4d8"/>
+      <stop offset="30%" stop-color="#a1a1aa"/>
+      <stop offset="70%" stop-color="#71717a"/>
+      <stop offset="100%" stop-color="#52525b"/>
+    </linearGradient>
+    <linearGradient id="wcSearchLens" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e4e4e7"/>
+      <stop offset="50%" stop-color="#a1a1aa"/>
+      <stop offset="100%" stop-color="#52525b"/>
+    </linearGradient>
+    <linearGradient id="wcSearchRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f87171"/>
+      <stop offset="100%" stop-color="#DC2626"/>
+    </linearGradient>
+    <filter id="wcSearchGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="wcSearchShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- Ground shadow -->
+  <ellipse cx="22" cy="43" rx="10" ry="2" fill="#000" opacity="0.25"/>
+
+  <!-- Handle shadow -->
+  <line x1="32" y1="34" x2="40" y2="42" stroke="#000" stroke-width="5" stroke-linecap="round" opacity="0.2"/>
+
+  <!-- Lens hexagonal shadow -->
+  <polygon points="24,6 36,12 36,26 24,32 12,26 12,12" fill="#000" opacity="0.2" transform="translate(0.8,0.8)"/>
+
+  <!-- Lens hexagonal outer -->
+  <polygon points="24,6 36,12 36,26 24,32 12,26 12,12" fill="url(#wcSearchBase)" filter="url(#wcSearchShadow)"/>
+  <!-- Hex bevel highlight -->
+  <polygon points="24,7.5 34.5,12.8 34.5,25.2 24,30.5 13.5,25.2 13.5,12.8" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+
+  <!-- Inner hex recessed -->
+  <polygon points="24,10 33,14.5 33,23.5 24,28 15,23.5 15,14.5" fill="#27272a" opacity="0.5"/>
+
+  <!-- Lens glass -->
+  <circle cx="24" cy="19" r="7" fill="url(#wcSearchLens)"/>
+  <circle cx="24" cy="19" r="6" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.4"/>
+
+  <!-- Lens reflection -->
+  <circle cx="21.5" cy="16.5" r="2" fill="#fff" opacity="0.3"/>
+  <circle cx="26" cy="21" r="1" fill="#fff" opacity="0.15"/>
+
+  <!-- Red ring accent (WellCore) -->
+  <circle cx="24" cy="19" r="4" fill="none" stroke="url(#wcSearchRing)" stroke-width="1" filter="url(#wcSearchGlow)"/>
+
+  <!-- Scanning waves -->
+  <circle cx="24" cy="19" r="5.5" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.3" stroke-dasharray="2 3"/>
+
+  <!-- Handle -->
+  <line x1="32" y1="33" x2="40" y2="41" stroke="url(#wcSearchBase)" stroke-width="5" stroke-linecap="round" filter="url(#wcSearchShadow)"/>
+  <line x1="32" y1="33" x2="40" y2="41" stroke="url(#wcSearchLens)" stroke-width="3" stroke-linecap="round"/>
+  <!-- Handle grip texture -->
+  <line x1="33.2" y1="34.2" x2="34.8" y2="35.8" stroke="#52525b" stroke-width="0.5" stroke-linecap="round"/>
+  <line x1="35.2" y1="36.2" x2="36.8" y2="37.8" stroke="#52525b" stroke-width="0.5" stroke-linecap="round"/>
+  <line x1="37.2" y1="38.2" x2="38.8" y2="39.8" stroke="#52525b" stroke-width="0.5" stroke-linecap="round"/>
+</svg>

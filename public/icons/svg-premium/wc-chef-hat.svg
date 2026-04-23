@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="wcChefBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f3f4f6"/>
+      <stop offset="30%" stop-color="#e5e7eb"/>
+      <stop offset="70%" stop-color="#d1d5db"/>
+      <stop offset="100%" stop-color="#9ca3af"/>
+    </linearGradient>
+    <linearGradient id="wcChefBand" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#374151"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+    <filter id="wcChefShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Ground shadow -->
+  <ellipse cx="24" cy="43" rx="9" ry="1.5" fill="#000" opacity="0.2"/>
+
+  <!-- Crown shadow -->
+  <path d="M14 28 Q14 6 24 6 Q34 6 34 28Z" fill="#000" opacity="0.2"/>
+
+  <!-- Crown top -->
+  <path d="M14 28 Q14 6 24 6 Q34 6 34 28Z" fill="url(#wcChefBase)" filter="url(#wcChefShadow)"/>
+  <path d="M15 27 Q15 8 24 8 Q33 8 33 27" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+
+  <!-- Pleats -->
+  <path d="M18 28 Q18 14 20 10" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="0.5"/>
+  <path d="M22 28 Q22 12 24 8" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="0.5"/>
+  <path d="M26 28 Q26 12 24 8" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="0.5"/>
+  <path d="M30 28 Q30 14 28 10" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="0.5"/>
+
+  <!-- Band -->
+  <rect x="13" y="28" width="22" height="6" rx="1.5" fill="url(#wcChefBand)" filter="url(#wcChefShadow)"/>
+  <rect x="13.5" y="28.5" width="21" height="2" rx="1" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.3"/>
+
+  <!-- W embroidery -->
+  <path d="M19 31 L20 34 L22 31 L24 34 L26 31" fill="none" stroke="#DC2626" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+</svg>

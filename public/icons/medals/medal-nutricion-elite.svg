@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="mneOut" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0891B2"/>
+      <stop offset="35%" stop-color="#0E7490"/>
+      <stop offset="70%" stop-color="#155E75"/>
+      <stop offset="100%" stop-color="#164E63"/>
+    </linearGradient>
+    <linearGradient id="mneIn" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#22D3EE"/>
+      <stop offset="50%" stop-color="#0891B2"/>
+      <stop offset="100%" stop-color="#0C4A6E"/>
+    </linearGradient>
+    <linearGradient id="mneHalo" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#CFFAFE"/>
+      <stop offset="50%" stop-color="#22D3EE"/>
+      <stop offset="100%" stop-color="#0891B2"/>
+    </linearGradient>
+    <linearGradient id="mneEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#065F46"/>
+    </linearGradient>
+    <filter id="mneShad" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#021C2D" flood-opacity="0.8"/>
+    </filter>
+    <filter id="mneGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Base shadow -->
+  <polygon points="25,4 45,15 45,37 25,48 5,37 5,15" fill="#021C2D" opacity="0.6"/>
+
+  <!-- Outer beveled hex -->
+  <polygon points="24,2 44,13 44,35 24,46 4,35 4,13" fill="url(#mneOut)" filter="url(#mneShad)"/>
+  <polygon points="24,3 43,14 43,34 24,45 5,34 5,14" fill="none" stroke="#67E8F9" stroke-width="0.4" opacity="0.5"/>
+
+  <!-- Inner recessed hex -->
+  <polygon points="24,7 39,16 39,32 24,41 9,32 9,16" fill="url(#mneIn)"/>
+
+  <!-- Engraved ring -->
+  <polygon points="24,10 36,17 36,31 24,38 12,31 12,17" fill="none" stroke="#0C4A6E" stroke-width="0.6"/>
+  <polygon points="24,11 35,17.5 35,30.5 24,37 13,30.5 13,17.5" fill="none" stroke="#67E8F9" stroke-width="0.3" opacity="0.4"/>
+
+  <!-- Elite halo rings -->
+  <circle cx="24" cy="24" r="12" fill="none" stroke="url(#mneHalo)" stroke-width="0.5" opacity="0.3" stroke-dasharray="3 3"/>
+  <circle cx="24" cy="24" r="9" fill="none" stroke="#22D3EE" stroke-width="0.4" opacity="0.25"/>
+  <circle cx="24" cy="24" r="6" fill="none" stroke="#67E8F9" stroke-width="0.6" opacity="0.3" filter="url(#mneGlow)"/>
+
+  <!-- Abstract elite core - geometric perfection -->
+  <polygon points="24,14 29,21 27,28 21,28 19,21" fill="url(#mneEmerald)" opacity="0.7" filter="url(#mneGlow)"/>
+  <polygon points="24,17 27,21 26,25 22,25 21,21" fill="#CFFAFE" opacity="0.4"/>
+  <circle cx="24" cy="22" r="1.5" fill="#CFFAFE" opacity="0.8"/>
+
+  <!-- Crown arc suggesting elite status -->
+  <path d="M16 16 Q24 10, 32 16" fill="none" stroke="#22D3EE" stroke-width="0.8" opacity="0.5" stroke-linecap="round"/>
+  <path d="M18 14 Q24 9, 30 14" fill="none" stroke="#67E8F9" stroke-width="0.5" opacity="0.3" stroke-linecap="round"/>
+
+  <!-- Brushed texture -->
+  <line x1="4" y1="13" x2="44" y2="35" stroke="#67E8F9" stroke-width="0.15" opacity="0.08"/>
+  <line x1="4" y1="18" x2="44" y2="40" stroke="#67E8F9" stroke-width="0.15" opacity="0.08"/>
+  <line x1="4" y1="23" x2="44" y2="45" stroke="#67E8F9" stroke-width="0.15" opacity="0.08"/>
+
+  <!-- Corner facets -->
+  <polygon points="24,2 28,4 24,6 20,4" fill="#67E8F9" opacity="0.3"/>
+  <polygon points="44,13 44,17 40,15" fill="#67E8F9" opacity="0.2"/>
+  <polygon points="44,35 44,31 40,33" fill="#0C4A6E" opacity="0.4"/>
+  <polygon points="24,46 20,44 24,42 28,44" fill="#0C4A6E" opacity="0.4"/>
+  <polygon points="4,35 4,31 8,33" fill="#0C4A6E" opacity="0.4"/>
+  <polygon points="4,13 8,15 4,17" fill="#67E8F9" opacity="0.2"/>
+</svg>

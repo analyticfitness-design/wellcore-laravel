@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="diaTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c4b5fd"/>
+      <stop offset="50%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#5b21b6"/>
+    </linearGradient>
+    <linearGradient id="diaFacet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+    <linearGradient id="diaCenter" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e9d5ff"/>
+      <stop offset="50%" stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="diaGlowC" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#67e8f9"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+    <filter id="diaGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="diaShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#4c1d95" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Outer glow ring -->
+  <circle cx="24" cy="24" r="22" fill="none" stroke="#8b5cf6" stroke-width="0.5" opacity="0.3" stroke-dasharray="2 3"/>
+
+  <!-- Diamond top crown -->
+  <polygon points="24,4 36,14 12,14" fill="url(#diaTop)" filter="url(#diaShadow)"/>
+  
+  <!-- Left top facet -->
+  <polygon points="12,14 24,4 24,24 8,20" fill="url(#diaFacet)" opacity="0.9"/>
+  <!-- Right top facet -->
+  <polygon points="36,14 24,4 24,24 40,20" fill="url(#diaFacet)" opacity="0.85"/>
+  <!-- Center top facet -->
+  <polygon points="12,14 24,24 36,14" fill="url(#diaCenter)" opacity="0.95"/>
+
+  <!-- Diamond bottom pavilion -->
+  <polygon points="8,20 24,24 24,44" fill="url(#diaFacet)" opacity="0.9"/>
+  <polygon points="40,20 24,24 24,44" fill="url(#diaFacet)" opacity="0.85"/>
+  <polygon points="8,20 24,44 40,20" fill="url(#diaCenter)" opacity="0.8"/>
+
+  <!-- Highlight lines -->
+  <line x1="24" y1="4" x2="24" y2="44" stroke="rgba(255,255,255,0.25)" stroke-width="0.6"/>
+  <line x1="8" y1="20" x2="40" y2="20" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+  <line x1="12" y1="14" x2="24" y2="44" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+  <line x1="36" y1="14" x2="24" y2="44" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+
+  <!-- Center bright core -->
+  <polygon points="24,16 27,22 24,28 21,22" fill="url(#diaGlowC)" filter="url(#diaGlow)" opacity="0.9"/>
+  <polygon points="24,18 26,22 24,26 22,22" fill="#fff" opacity="0.7"/>
+
+  <!-- Sparkle points -->
+  <circle cx="10" cy="8" r="0.7" fill="#c4b5fd" opacity="0.9"/>
+  <circle cx="38" cy="10" r="0.5" fill="#a78bfa" opacity="0.7"/>
+  <circle cx="8" cy="36" r="0.6" fill="#8b5cf6" opacity="0.6"/>
+  <circle cx="40" cy="38" r="0.8" fill="#c4b5fd" opacity="0.8"/>
+  <circle cx="24" cy="2" r="0.5" fill="#fff" opacity="0.8"/>
+
+  <!-- Edge bevel highlights -->
+  <polygon points="24,4 36,14 12,14" fill="none" stroke="#e9d5ff" stroke-width="0.5" opacity="0.4"/>
+  <polygon points="8,20 24,44 40,20" fill="none" stroke="#a78bfa" stroke-width="0.5" opacity="0.3"/>
+</svg>

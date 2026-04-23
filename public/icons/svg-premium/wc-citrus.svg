@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="wcCitrusBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="30%" stop-color="#fbbf24"/>
+      <stop offset="70%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#78350f"/>
+    </linearGradient>
+    <linearGradient id="wcCitrusInner" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <filter id="wcCitrusGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="wcCitrusShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#78350f" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Ground shadow -->
+  <ellipse cx="24" cy="43" rx="9" ry="1.5" fill="#000" opacity="0.25"/>
+
+  <!-- Orange shadow -->
+  <circle cx="24" cy="24.5" r="14" fill="#000" opacity="0.2"/>
+
+  <!-- Orange outer -->
+  <circle cx="24" cy="24" r="14" fill="url(#wcCitrusBase)" filter="url(#wcCitrusShadow)"/>
+  <circle cx="24" cy="24" r="13.5" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+
+  <!-- Orange inner -->
+  <circle cx="24" cy="24" r="12" fill="url(#wcCitrusInner)"/>
+
+  <!-- Segments -->
+  <line x1="24" y1="12" x2="24" y2="36" stroke="#d97706" stroke-width="0.5" opacity="0.5"/>
+  <line x1="12" y1="24" x2="36" y2="24" stroke="#d97706" stroke-width="0.5" opacity="0.5"/>
+  <line x1="15.5" y1="15.5" x2="32.5" y2="32.5" stroke="#d97706" stroke-width="0.5" opacity="0.5"/>
+  <line x1="32.5" y1="15.5" x2="15.5" y2="32.5" stroke="#d97706" stroke-width="0.5" opacity="0.5"/>
+
+  <!-- Center core -->
+  <circle cx="24" cy="24" r="2" fill="#fff" opacity="0.5"/>
+
+  <!-- Leaf -->
+  <path d="M34 10 Q38 6 40 10 Q42 14 38 16 Q34 14 34 10Z" fill="#22c55e"/>
+  <path d="M34 10 Q36 12 38 14" fill="none" stroke="#16a34a" stroke-width="0.5"/>
+
+  <!-- Juice drop -->
+  <path d="M36 36 Q36 38 34 38 Q32 38 32 36 Q32 34 34 32 Q36 34 36 36Z" fill="#fbbf24" filter="url(#wcCitrusGlow)"/>
+</svg>

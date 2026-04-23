@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="wcMoonBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="30%" stop-color="#7c3aed"/>
+      <stop offset="70%" stop-color="#5b21b6"/>
+      <stop offset="100%" stop-color="#2e1065"/>
+    </linearGradient>
+    <linearGradient id="wcMoonInner" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <filter id="wcMoonGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="wcMoonShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#2e1065" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Ground shadow -->
+  <ellipse cx="22" cy="43" rx="10" ry="2" fill="#000" opacity="0.25"/>
+
+  <!-- Moon shadow -->
+  <path d="M24 6 C34 6 42 14 42 24 C42 34 34 42 24 42 C19 42 15 40 12 37 C18 37 24 31 24 24 C24 17 18 11 12 11 C15 8 19 6 24 6Z" fill="#000" opacity="0.2" transform="translate(0.8,0.8)"/>
+
+  <!-- Moon body -->
+  <path d="M24 6 C34 6 42 14 42 24 C42 34 34 42 24 42 C19 42 15 40 12 37 C18 37 24 31 24 24 C24 17 18 11 12 11 C15 8 19 6 24 6Z" fill="url(#wcMoonBase)" filter="url(#wcMoonShadow)"/>
+
+  <!-- Moon highlight edge -->
+  <path d="M24 7.5 C33 7.5 40.5 14.5 40.5 24 C40.5 33 33 40 24 40" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.5" stroke-linecap="round"/>
+
+  <!-- Crater 1 -->
+  <circle cx="30" cy="18" r="3" fill="rgba(0,0,0,0.15)" stroke="rgba(255,255,255,0.08)" stroke-width="0.3"/>
+  <circle cx="30" cy="18" r="2.2" fill="none" stroke="rgba(0,0,0,0.1)" stroke-width="0.3"/>
+
+  <!-- Crater 2 -->
+  <circle cx="34" cy="28" r="2.2" fill="rgba(0,0,0,0.15)" stroke="rgba(255,255,255,0.08)" stroke-width="0.3"/>
+
+  <!-- Crater 3 -->
+  <circle cx="22" cy="32" r="2" fill="rgba(0,0,0,0.12)" stroke="rgba(255,255,255,0.06)" stroke-width="0.3"/>
+
+  <!-- Crater 4 small -->
+  <circle cx="36" cy="20" r="1.2" fill="rgba(0,0,0,0.1)"/>
+
+  <!-- Crescent highlight -->
+  <path d="M13 13 C18 13 22 18 22 24 C22 30 18 35 13 35" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.6" stroke-linecap="round"/>
+
+  <!-- Stars -->
+  <circle cx="10" cy="12" r="1" fill="#c4b5fd" filter="url(#wcMoonGlow)" opacity="0.8"/>
+  <circle cx="8" cy="16" r="0.6" fill="#a78bfa" opacity="0.6"/>
+  <circle cx="44" cy="14" r="0.8" fill="#c4b5fd" opacity="0.5"/>
+  <circle cx="40" cy="38" r="0.7" fill="#a78bfa" opacity="0.4"/>
+  <circle cx="6" cy="36" r="0.5" fill="#c4b5fd" opacity="0.5"/>
+</svg>

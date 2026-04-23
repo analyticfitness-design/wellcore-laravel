@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="wcLeafBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="30%" stop-color="#22c55e"/>
+      <stop offset="70%" stop-color="#16a34a"/>
+      <stop offset="100%" stop-color="#14532d"/>
+    </linearGradient>
+    <linearGradient id="wcLeafVein" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#86efac"/>
+      <stop offset="100%" stop-color="#4ade80"/>
+    </linearGradient>
+    <filter id="wcLeafGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="wcLeafShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#14532d" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- Ground shadow -->
+  <ellipse cx="24" cy="43" rx="8" ry="1.5" fill="#000" opacity="0.25"/>
+
+  <!-- Leaf shadow -->
+  <path d="M24 6 Q36 14 36 24 Q36 34 24 40 Q12 34 12 24 Q12 14 24 6Z" fill="#000" opacity="0.2" transform="translate(0,0.8)"/>
+
+  <!-- Leaf body -->
+  <path d="M24 6 Q36 14 36 24 Q36 34 24 40 Q12 34 12 24 Q12 14 24 6Z" fill="url(#wcLeafBase)" filter="url(#wcLeafShadow)"/>
+  <path d="M24 7 Q35 15 35 24 Q35 33 24 39" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+
+  <!-- Central vein -->
+  <path d="M24 8 L24 39" fill="none" stroke="url(#wcLeafVein)" stroke-width="1" stroke-linecap="round" filter="url(#wcLeafGlow)"/>
+
+  <!-- Side veins left -->
+  <path d="M24 14 L16 18" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5" stroke-linecap="round"/>
+  <path d="M24 20 L14 24" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5" stroke-linecap="round"/>
+  <path d="M24 26 L16 30" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5" stroke-linecap="round"/>
+  <path d="M24 32 L18 35" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5" stroke-linecap="round"/>
+
+  <!-- Side veins right -->
+  <path d="M24 14 L32 18" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5" stroke-linecap="round"/>
+  <path d="M24 20 L34 24" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5" stroke-linecap="round"/>
+  <path d="M24 26 L32 30" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5" stroke-linecap="round"/>
+  <path d="M24 32 L30 35" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5" stroke-linecap="round"/>
+
+  <!-- Dew drop -->
+  <path d="M28 16 Q28 18 26 18 Q24 18 24 16 Q24 14 26 12 Q28 14 28 16Z" fill="#a7f3d0" filter="url(#wcLeafGlow)" opacity="0.8"/>
+  <circle cx="25.5" cy="15.5" r="0.5" fill="#fff" opacity="0.7"/>
+</svg>

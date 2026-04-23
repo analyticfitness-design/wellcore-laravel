@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="wcBedBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="30%" stop-color="#3b82f6"/>
+      <stop offset="70%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <linearGradient id="wcBedPillow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#93c5fd"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="wcBedMoon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <filter id="wcBedGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="wcBedShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#1e3a8a" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- Ground shadow -->
+  <ellipse cx="24" cy="43" rx="12" ry="2" fill="#000" opacity="0.25"/>
+
+  <!-- Headboard shadow -->
+  <rect x="8" y="10.5" width="4" height="22" rx="1" fill="#000" opacity="0.2"/>
+  <rect x="36" y="10.5" width="4" height="22" rx="1" fill="#000" opacity="0.2"/>
+
+  <!-- Headboard left -->
+  <rect x="8" y="10" width="4" height="22" rx="1" fill="url(#wcBedBase)" filter="url(#wcBedShadow)"/>
+  <!-- Headboard right -->
+  <rect x="36" y="10" width="4" height="22" rx="1" fill="url(#wcBedBase)" filter="url(#wcBedShadow)"/>
+
+  <!-- Mattress shadow -->
+  <rect x="10" y="20.5" width="28" height="14" rx="2" fill="#000" opacity="0.2"/>
+
+  <!-- Mattress -->
+  <rect x="10" y="20" width="28" height="14" rx="2" fill="url(#wcBedBase)" filter="url(#wcBedShadow)"/>
+  <rect x="10.5" y="20.5" width="27" height="3" rx="1.5" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.4"/>
+
+  <!-- Pillow -->
+  <rect x="13" y="17" width="10" height="5" rx="2.5" fill="url(#wcBedPillow)"/>
+  <rect x="13.5" y="17.5" width="9" height="2" rx="1" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.3"/>
+
+  <!-- Moon above -->
+  <path d="M32 8 Q36 8 36 12 Q36 16 32 16 Q34 14 34 12 Q34 10 32 8Z" fill="url(#wcBedMoon)" filter="url(#wcBedGlow)"/>
+
+  <!-- Zzz -->
+  <text x="28" y="14" font-family="Oswald,sans-serif" font-size="6" font-weight="700" fill="#c4b5fd" opacity="0.7">Z</text>
+  <text x="32" y="11" font-family="Oswald,sans-serif" font-size="4" font-weight="700" fill="#a78bfa" opacity="0.5">z</text>
+</svg>

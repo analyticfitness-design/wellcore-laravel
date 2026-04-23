@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="flagPole" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#9ca3af"/>
+      <stop offset="50%" stop-color="#4b5563"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+    <linearGradient id="flagRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f87171"/>
+      <stop offset="50%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#991b1b"/>
+    </linearGradient>
+    <linearGradient id="flagDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#374151"/>
+      <stop offset="50%" stop-color="#1f2937"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+    <filter id="flagGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="flagShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#7f1d1d" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Base / ground -->
+  <ellipse cx="16" cy="43" rx="8" ry="3" fill="#1f2937" opacity="0.6"/>
+
+  <!-- Pole -->
+  <rect x="14" y="4" width="4" height="40" rx="2" fill="url(#flagPole)" filter="url(#flagShadow)"/>
+  <rect x="15" y="5" width="2" height="38" rx="1" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+
+  <!-- Pole top ball -->
+  <circle cx="16" cy="4" r="3" fill="url(#flagPole)" filter="url(#flagShadow)"/>
+  <circle cx="15.2" cy="3.2" r="1" fill="#fff" opacity="0.4"/>
+
+  <!-- Flag fabric dark section -->
+  <path d="M18 8 L42 8 L38 20 L42 32 L18 32Z" fill="url(#flagDark)" filter="url(#flagShadow)"/>
+  
+  <!-- Flag fabric red section -->
+  <path d="M18 8 L36 8 L33 18 L36 28 L18 28Z" fill="url(#flagRed)" filter="url(#flagShadow)"/>
+
+  <!-- Inner flag highlight -->
+  <path d="M18 10 L32 10 L30 18 L32 26 L18 26Z" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+
+  <!-- WellCore W on flag -->
+  <path d="M22 14 L24 21 L26 16 L28 21 L30 14" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#flagGlow)"/>
+  <circle cx="26" cy="18" r="1" fill="#fff" opacity="0.8"/>
+
+  <!-- Flag fold/shadow lines -->
+  <path d="M18 8 L20 20 L18 32" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="0.5"/>
+  <path d="M36 8 L34 20 L36 28" fill="none" stroke="rgba(0,0,0,0.15)" stroke-width="0.5"/>
+
+  <!-- Motion lines -->
+  <line x1="42" y1="10" x2="46" y2="8" stroke="#f87171" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="42" y1="20" x2="46" y2="20" stroke="#f87171" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="42" y1="30" x2="46" y2="32" stroke="#f87171" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/>
+</svg>

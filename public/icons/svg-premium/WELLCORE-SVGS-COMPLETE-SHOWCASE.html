@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WellCore · SVGs Premium Completos — Showcase</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0b; --bg-2: #111114; --bg-3: #17171c; --border: #26262e;
+    --accent: #DC2626; --accent-soft: #f87171;
+    --emerald: #10b981; --emerald-soft: #34d399;
+    --amber: #f59e0b; --amber-soft: #fbbf24;
+    --blue: #3b82f6; --blue-soft: #60a5fa;
+    --violet: #8b5cf6; --violet-soft: #a78bfa;
+    --text: #fff; --text-2: #a1a1aa; --text-3: #71717a;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Raleway', sans-serif; line-height:1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width:1400px; margin:0 auto; padding:40px 24px; }
+  h1 { font-family:'Oswald',sans-serif; font-size:2.8em; font-weight:700; letter-spacing:-0.02em; line-height:0.95; }
+  h1 span { color: var(--accent); }
+  .subtitle { color: var(--text-2); font-size:1.1em; margin-top:12px; }
+  h2 { font-family:'Oswald',sans-serif; font-size:1.5em; font-weight:700; margin-top:50px; padding-bottom:12px; border-bottom:2px solid var(--border); }
+
+  .stats-bar {
+    margin:30px 0; padding:20px; background:var(--bg-2); border:1px solid var(--border); border-radius:16px;
+    display:flex; flex-wrap:wrap; gap:24px; justify-content:space-around;
+  }
+  .stats-bar .st { text-align:center; }
+  .stats-bar .st-num { font-family:'Oswald',sans-serif; font-size:2.2em; }
+  .stats-bar .st-lbl { font-size:0.75em; color:var(--text-3); text-transform:uppercase; letter-spacing:0.06em; }
+
+  .grid-3 { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px; margin:24px 0; }
+  @media(max-width:768px){ .grid-3{grid-template-columns:1fr;} }
+
+  .icon-card {
+    background: var(--bg-2); border:1px solid var(--border); border-radius:20px;
+    padding:24px; transition: transform 0.3s, box-shadow 0.3s; position:relative; overflow:hidden;
+  }
+  .icon-card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.4); border-color: var(--border); }
+
+  .icon-card .top-bar {
+    display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;
+  }
+  .icon-card .name { font-family:'Oswald',sans-serif; font-size:1em; letter-spacing:0.04em; }
+  .icon-card .cat {
+    font-size:0.65em; font-weight:700; text-transform:uppercase; letter-spacing:0.08em;
+    padding:3px 10px; border-radius:12px;
+  }
+  .cat-red { background:rgba(220,38,38,0.15); color:var(--accent-soft); border:1px solid rgba(220,38,38,0.25); }
+  .cat-green { background:rgba(16,185,129,0.15); color:var(--emerald-soft); border:1px solid rgba(16,185,129,0.25); }
+  .cat-amber { background:rgba(245,158,11,0.15); color:var(--amber-soft); border:1px solid rgba(245,158,11,0.25); }
+  .cat-blue { background:rgba(59,130,246,0.15); color:var(--blue-soft); border:1px solid rgba(59,130,246,0.25); }
+  .cat-violet { background:rgba(139,92,246,0.15); color:var(--violet-soft); border:1px solid rgba(139,92,246,0.25); }
+
+  .icon-display {
+    display:flex; align-items:center; justify-content:center; gap:24px; padding:24px;
+    background: var(--bg-3); border-radius:16px; margin-bottom:16px;
+  }
+  .icon-display .size-box { text-align:center; }
+  .icon-display .size-box .lbl { font-size:0.65em; color:var(--text-3); text-transform:uppercase; letter-spacing:0.06em; margin-top:8px; }
+  .icon-display img { filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
+
+  .code-block {
+    background: #050508; border:1px solid var(--border); border-radius:12px;
+    padding:14px 16px; font-family: 'Courier New', monospace; font-size:0.78em;
+    color:var(--text-3); overflow-x:auto; white-space:nowrap;
+  }
+  .code-block .tag { color:var(--accent-soft); }
+  .code-block .attr { color:var(--blue-soft); }
+  .code-block .val { color:var(--emerald-soft); }
+
+  .size-demo {
+    margin:40px 0; padding:30px; background:var(--bg-2); border:1px solid var(--border); border-radius:20px;
+    text-align:center;
+  }
+  .size-demo h3 { font-family:'Oswald',sans-serif; font-size:1.2em; margin-bottom:20px; color:var(--text); }
+  .size-row { display:flex; align-items:flex-end; justify-content:center; gap:40px; flex-wrap:wrap; }
+  .size-item { text-align:center; }
+  .size-item .dim { font-size:0.7em; color:var(--text-3); margin-top:10px; text-transform:uppercase; letter-spacing:0.06em; }
+
+  .comparison-table {
+    width:100%; border-collapse:collapse; margin:20px 0; font-size:0.9em;
+  }
+  .comparison-table th, .comparison-table td {
+    padding:14px 16px; text-align:left; border-bottom:1px solid var(--border);
+  }
+  .comparison-table th {
+    font-family:'Oswald',sans-serif; font-weight:700; text-transform:uppercase;
+    font-size:0.8em; letter-spacing:0.06em; color:var(--text-3); background:var(--bg-3);
+  }
+  .comparison-table tr:hover td { background:rgba(255,255,255,0.02); }
+  .comparison-table img { vertical-align:middle; margin-right:8px; }
+
+  .legend-bar {
+    display:flex; flex-wrap:wrap; gap:12px; margin:20px 0;
+  }
+  .legend-bar .badge {
+    font-size:0.75em; padding:4px 12px; border-radius:20px; border:1px solid var(--border);
+    display:flex; align-items:center; gap:6px;
+  }
+  .legend-bar .dot { width:8px; height:8px; border-radius:50%; }
+
+  .footer { text-align:center; color:var(--text-3); font-size:0.85em; margin-top:60px; padding-top:30px; border-top:1px solid var(--border); }
+  .missing-note { color:var(--text-3); font-size:0.8em; margin-top:4px; }
+  .missing-note .new { color:var(--emerald-soft); font-weight:700; }
+  .missing-note .exist { color:var(--amber-soft); font-weight:700; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+    <img src="wc-logo.svg" width="36" height="36" alt="WellCore">
+    <span style="font-family:'Oswald',sans-serif; font-size:1em; letter-spacing:0.05em;">WELLCORE FITNESS</span>
+  </div>
+
+  <h1>SVGs Premium · <span>Showcase Completo</span></h1>
+  <p class="subtitle">33 iconos vectoriales premium auditados y generados. Escalables, self-contained, zero-cost.</p>
+
+  <div class="stats-bar">
+    <div class="st"><div class="st-num" style="color:var(--amber);">33</div><div class="st-lbl">SVGs premium</div></div>
+    <div class="st"><div class="st-num" style="color:var(--emerald);">7</div><div class="st-lbl">Categorias</div></div>
+    <div class="st"><div class="st-num" style="color:var(--blue);">~90KB</div><div class="st-lbl">Peso total</div></div>
+    <div class="st"><div class="st-num" style="color:var(--violet);">48-512</div><div class="st-lbl">px escalable</div></div>
+    <div class="st"><div class="st-num" style="color:var(--accent);">100%</div><div class="st-lbl">Cobertura logros</div></div>
+  </div>
+
+  <div class="legend-bar">
+    <div class="badge"><span class="dot" style="background:var(--accent);"></span>Entrenamiento</div>
+    <div class="badge"><span class="dot" style="background:var(--amber);"></span>Logros</div>
+    <div class="badge"><span class="dot" style="background:var(--emerald);"></span>Progreso / Habito</div>
+    <div class="badge"><span class="dot" style="background:var(--blue);"></span>Coach / Social / Onboarding</div>
+    <div class="badge"><span class="dot" style="background:var(--violet);"></span>Milestones / Especial</div>
+    <div class="badge"><span class="dot" style="background:#fff;"></span>Brand</div>
+  </div>
+
+  <h2>Galeria completa — 33 iconos</h2>
+  <div id="gallery" class="grid-3"></div>
+
+  <h2>Demo de escalabilidad</h2>
+  <p style="color:var(--text-2); margin-bottom:20px;">Los SVGs mantienen nitidez a cualquier tamano. Mismo archivo, multiples resoluciones.</p>
+
+  <div class="size-demo">
+    <h3>wc-trophy.svg</h3>
+    <div class="size-row">
+      <div class="size-item"><img src="wc-trophy.svg" width="48" height="48" alt="48px"><div class="dim">48 px</div></div>
+      <div class="size-item"><img src="wc-trophy.svg" width="96" height="96" alt="96px"><div class="dim">96 px</div></div>
+      <div class="size-item"><img src="wc-trophy.svg" width="192" height="192" alt="192px"><div class="dim">192 px</div></div>
+      <div class="size-item"><img src="wc-trophy.svg" width="384" height="384" alt="384px"><div class="dim">384 px</div></div>
+    </div>
+  </div>
+
+  <h2>Tabla de auditoria: Antes vs Ahora</h2>
+  <table class="comparison-table" id="auditTable">
+    <thead>
+      <tr><th>Icono</th><th>Uso en app</th><th>Categoria</th><th>Estado</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Como usar en tu proyecto</h2>
+  <div style="background:var(--bg-2); border:1px solid var(--border); border-radius:16px; padding:24px; margin:20px 0;">
+    <p style="color:var(--text-2); font-size:0.9em; margin-bottom:16px;"><strong>1. Copia los SVGs</strong> a tu carpeta de assets:</p>
+    <div class="code-block">public/icons/svg-premium/wc-logo.svg<br>public/icons/svg-premium/wc-trophy.svg<br>...</div>
+
+    <p style="color:var(--text-2); font-size:0.9em; margin:16px 0 12px;"><strong>2. Usalos inline o como imagen:</strong></p>
+    <div class="code-block">
+      <span class="comment">&lt;!-- Opcion A: Imagen --&gt;</span><br>
+      <span class="tag">&lt;img</span> <span class="attr">src</span>=<span class="val">"/icons/svg-premium/wc-trophy.svg"</span> <span class="attr">width</span>=<span class="val">"48"</span> <span class="attr">height</span>=<span class="val">"48"</span><span class="tag">&gt;</span><br><br>
+      <span class="comment">&lt;!-- Opcion B: Componente Vue --&gt;</span><br>
+      <span class="tag">&lt;WcIcon</span> <span class="attr">name</span>=<span class="val">"trophy"</span> <span class="attr">variant</span>=<span class="val">"svg-premium"</span> <span class="attr">:size</span>=<span class="val">"48"</span> <span class="tag">/&gt;</span>
+    </div>
+
+    <p style="color:var(--text-2); font-size:0.9em; margin:16px 0 12px;"><strong>3. IDs unicos por archivo (sin collisiones):</strong></p>
+    <div class="code-block">
+      &lt;linearGradient id="trophyBody"&gt;...&lt;/linearGradient&gt;<br>
+      &lt;filter id="trophyGlow"&gt;...&lt;/filter&gt;
+    </div>
+  </div>
+
+  <div class="footer">
+    <p><strong>WellCore Fitness · SVGs Premium Completos</strong></p>
+    <p>33 iconos vectoriales · Escalables · Self-contained · Marca 2026</p>
+    <p style="margin-top:8px; color:var(--text-3);">Carpeta: <code>public/icons/svg-premium/</code></p>
+  </div>
+
+</div>
+
+<script>
+const icons = [
+  // BRAND
+  {file:'wc-logo.svg', name:'wc-logo', cat:'brand', cls:'cat-red', use:'Marca / App icon / Logo', status:'original'},
+  // ENTRENAMIENTO
+  {file:'wc-barbell.svg', name:'wc-barbell', cat:'entrenamiento', cls:'cat-red', use:'Entrenamientos / Levantamiento', status:'original'},
+  {file:'wc-dumbbell.svg', name:'wc-dumbbell', cat:'entrenamiento', cls:'cat-red', use:'Ejercicios / Dashboard', status:'nuevo'},
+  {file:'wc-bicep.svg', name:'wc-bicep', cat:'entrenamiento', cls:'cat-red', use:'Logro: Ganancia Muscular', status:'nuevo'},
+  {file:'wc-fire.svg', name:'wc-fire', cat:'entrenamiento', cls:'cat-red', use:'Logro: Primer/Consistente/Dedicacion', status:'nuevo'},
+  // LOGROS
+  {file:'wc-trophy.svg', name:'wc-trophy', cat:'logros', cls:'cat-amber', use:'Logro: Centurion / Campeon / PR', status:'nuevo'},
+  {file:'wc-crown.svg', name:'wc-crown', cat:'logros', cls:'cat-amber', use:'Logro: Leyenda del Gym / WellCore', status:'nuevo'},
+  {file:'wc-medal-hex.svg', name:'wc-medal-hex', cat:'logros', cls:'cat-amber', use:'Medallas / Celebraciones', status:'original'},
+  {file:'wc-coin.svg', name:'wc-coin', cat:'logros', cls:'cat-amber', use:'WellCoins / Economia', status:'original'},
+  {file:'wc-xp-bolt.svg', name:'wc-xp-bolt', cat:'logros', cls:'cat-amber', use:'XP / Energia / Nivel', status:'original'},
+  {file:'wc-star.svg', name:'wc-star', cat:'logros', cls:'cat-amber', use:'Logro: Transformacion / RISE / Feedback', status:'nuevo'},
+  {file:'wc-diamond.svg', name:'wc-diamond', cat:'logros', cls:'cat-violet', use:'Logro: Acero Puro / Inquebrantable', status:'nuevo'},
+  {file:'wc-flag.svg', name:'wc-flag', cat:'logros', cls:'cat-red', use:'Logro: Retador / Challenges', status:'nuevo'},
+  {file:'wc-megaphone.svg', name:'wc-megaphone', cat:'logros', cls:'cat-violet', use:'Logro: Influencer WellCore', status:'nuevo'},
+  {file:'wc-share.svg', name:'wc-share', cat:'logros', cls:'cat-blue', use:'Logro: Embajador / Referidos', status:'nuevo'},
+  {file:'wc-chat.svg', name:'wc-chat', cat:'logros', cls:'cat-blue', use:'Logro: Voz Activa / Comunidad', status:'nuevo'},
+  // PROGRESO / HABITO
+  {file:'wc-camera.svg', name:'wc-camera', cat:'progreso', cls:'cat-green', use:'Fotos / Evidencia Visual', status:'original'},
+  {file:'wc-check.svg', name:'wc-check', cat:'progreso', cls:'cat-green', use:'Check-ins / Completado', status:'original'},
+  {file:'wc-scale.svg', name:'wc-scale', cat:'progreso', cls:'cat-green', use:'Logro: Primeros 5 kg / Peso', status:'nuevo'},
+  {file:'wc-target.svg', name:'wc-target', cat:'progreso', cls:'cat-red', use:'Logro: Precision Nutricional', status:'nuevo'},
+  {file:'wc-heart.svg', name:'wc-heart', cat:'progreso', cls:'cat-red', use:'Salud / AI Plan Generator', status:'nuevo'},
+  {file:'wc-water.svg', name:'wc-water', cat:'progreso', cls:'cat-blue', use:'Habito: Hidratacion', status:'nuevo'},
+  {file:'wc-pill.svg', name:'wc-pill', cat:'progreso', cls:'cat-green', use:'Habito: Suplementacion', status:'nuevo'},
+  {file:'wc-apple.svg', name:'wc-apple', cat:'progreso', cls:'cat-green', use:'Logro: Nutricion / Dieta', status:'nuevo'},
+  {file:'wc-calendar.svg', name:'wc-calendar', cat:'progreso', cls:'cat-blue', use:'Logro: 1 Mes / 3 Meses', status:'nuevo'},
+  // COACH / SOCIAL / ONBOARDING
+  {file:'wc-coach.svg', name:'wc-coach', cat:'coach', cls:'cat-blue', use:'Perfil Coach / Sistema', status:'original'},
+  {file:'wc-user.svg', name:'wc-user', cat:'coach', cls:'cat-blue', use:'Logro: Identidad Completa', status:'nuevo'},
+  {file:'wc-rocket.svg', name:'wc-rocket', cat:'coach', cls:'cat-blue', use:'Logro: Primer Paso / Onboarding', status:'nuevo'},
+  // MILESTONES / ESPECIAL
+  {file:'wc-level-ring.svg', name:'wc-level-ring', cat:'milestones', cls:'cat-violet', use:'Nivel / HUD / Level-up', status:'original'},
+  {file:'wc-flame.svg', name:'wc-flame', cat:'milestones', cls:'cat-violet', use:'Rachas / Streaks / Fuego', status:'original'},
+  {file:'wc-sun.svg', name:'wc-sun', cat:'milestones', cls:'cat-amber', use:'Logro: Madrugador', status:'nuevo'},
+  {file:'wc-moon.svg', name:'wc-moon', cat:'milestones', cls:'cat-violet', use:'Logro: Nocturno', status:'nuevo'},
+  {file:'wc-sparkles.svg', name:'wc-sparkles', cat:'milestones', cls:'cat-amber', use:'Celebraciones / Magic', status:'nuevo'},
+];
+
+const catLabel = {
+  brand: 'Brand', entrenamiento: 'Entrenamiento', logros: 'Logros',
+  progreso: 'Progreso / Habito', coach: 'Coach / Social', milestones: 'Milestones / Especial'
+};
+
+function renderGallery() {
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = icons.map(ic => `
+    <div class="icon-card">
+      <div class="top-bar">
+        <span class="name">${ic.name}</span>
+        <span class="cat ${ic.cls}">${catLabel[ic.cat]}</span>
+      </div>
+      <div class="icon-display">
+        <div class="size-box">
+          <img src="${ic.file}" width="48" height="48" alt="${ic.name}">
+          <div class="lbl">48px</div>
+        </div>
+        <div class="size-box">
+          <img src="${ic.file}" width="96" height="96" alt="${ic.name}">
+          <div class="lbl">96px</div>
+        </div>
+      </div>
+      <div class="code-block"><span class="tag">&lt;img</span> <span class="attr">src</span>=<span class="val">"${ic.file}"</span> <span class="attr">width</span>=<span class="val">"48"</span> <span class="attr">height</span>=<span class="val">"48"</span><span class="tag">&gt;</span></div>
+      <div class="missing-note">Uso: ${ic.use} <span class="${ic.status==='nuevo'?'new':'exist'}">[${ic.status.toUpperCase()}]</span></div>
+    </div>
+  `).join('');
+}
+
+function renderTable() {
+  const tbody = document.querySelector('#auditTable tbody');
+  tbody.innerHTML = icons.map(ic => `
+    <tr>
+      <td><img src="${ic.file}" width="24" height="24" alt=""> <strong>${ic.name}</strong></td>
+      <td>${ic.use}</td>
+      <td>${catLabel[ic.cat]}</td>
+      <td><span class="${ic.status==='nuevo'?'new':'exist'}">${ic.status==='nuevo'?'NUEVO':'ORIGINAL'}</span></td>
+    </tr>
+  `).join('');
+}
+
+renderGallery();
+renderTable();
+</script>
+
+</body>
+</html>

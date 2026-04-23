@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="wcDocBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#93c5fd"/>
+      <stop offset="30%" stop-color="#3b82f6"/>
+      <stop offset="70%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <linearGradient id="wcDocFold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#bfdbfe"/>
+      <stop offset="100%" stop-color="#60a5fa"/>
+    </linearGradient>
+    <linearGradient id="wcDocLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#93c5fd"/>
+    </linearGradient>
+    <filter id="wcDocShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#1e3a8a" flood-opacity="0.4"/>
+    </filter>
+    <filter id="wcDocGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Ground shadow -->
+  <ellipse cx="24" cy="43" rx="10" ry="2" fill="#000" opacity="0.25"/>
+
+  <!-- Document shadow -->
+  <rect x="9" y="7.5" width="30" height="36" rx="3" fill="#000" opacity="0.2"/>
+
+  <!-- Document body -->
+  <rect x="9" y="7" width="30" height="36" rx="3" fill="url(#wcDocBase)" filter="url(#wcDocShadow)"/>
+  <!-- Body highlight -->
+  <rect x="9.5" y="7.5" width="29" height="3" rx="1.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+
+  <!-- Top-right fold shadow -->
+  <path d="M33 7 L39 13 L39 14 L32 7Z" fill="#000" opacity="0.25"/>
+
+  <!-- Top-right fold -->
+  <path d="M33 7 L39 13 L33 13Z" fill="url(#wcDocFold)" stroke="rgba(255,255,255,0.25)" stroke-width="0.4"/>
+  <!-- Fold highlight -->
+  <path d="M33.5 7.5 L38 12 L33.5 12Z" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.3"/>
+
+  <!-- Fold shadow line -->
+  <line x1="33" y1="13" x2="39" y2="13" stroke="rgba(0,0,0,0.15)" stroke-width="0.5"/>
+  <line x1="33" y1="7" x2="33" y2="13" stroke="rgba(0,0,0,0.15)" stroke-width="0.5"/>
+
+  <!-- Text lines (progress bars style) -->
+  <rect x="14" y="18" width="16" height="2.5" rx="1.25" fill="url(#wcDocLine)" opacity="0.9"/>
+  <rect x="14" y="23" width="20" height="2.5" rx="1.25" fill="url(#wcDocLine)" opacity="0.7"/>
+  <rect x="14" y="28" width="12" height="2.5" rx="1.25" fill="url(#wcDocLine)" opacity="0.5"/>
+  <rect x="14" y="33" width="18" height="2.5" rx="1.25" fill="url(#wcDocLine)" opacity="0.6"/>
+
+  <!-- WellCore seal/stamp corner -->
+  <circle cx="33" cy="34" r="4" fill="#1e3a8a" opacity="0.6"/>
+  <circle cx="33" cy="34" r="3.5" fill="none" stroke="#DC2626" stroke-width="0.8"/>
+  <path d="M31 34 L33 36 L35 32" fill="none" stroke="#DC2626" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

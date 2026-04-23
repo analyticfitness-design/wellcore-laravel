@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="wcShieldHBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="30%" stop-color="#3b82f6"/>
+      <stop offset="70%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <linearGradient id="wcShieldHCross" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff"/>
+      <stop offset="100%" stop-color="#bfdbfe"/>
+    </linearGradient>
+    <linearGradient id="wcShieldHAura" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#93c5fd"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <filter id="wcShieldHGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="wcShieldHShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#1e3a8a" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- Ground shadow -->
+  <ellipse cx="24" cy="43" rx="9" ry="1.5" fill="#000" opacity="0.25"/>
+
+  <!-- Aura rings -->
+  <circle cx="24" cy="23" r="18" fill="none" stroke="url(#wcShieldHAura)" stroke-width="0.5" opacity="0.2" stroke-dasharray="2 4"/>
+  <circle cx="24" cy="23" r="15" fill="none" stroke="url(#wcShieldHAura)" stroke-width="0.6" opacity="0.15"/>
+
+  <!-- Shield shadow -->
+  <path d="M24 5 L42 11 C42 11 44 28 40 35 C36 42 24 44 24 44 C24 44 12 42 8 35 C4 28 6 11 6 11 L24 5Z" fill="#000" opacity="0.2" transform="translate(0,0.8)"/>
+
+  <!-- Shield body -->
+  <path d="M24 5 L42 11 C42 11 44 28 40 35 C36 42 24 44 24 44 C24 44 12 42 8 35 C4 28 6 11 6 11 L24 5Z" fill="url(#wcShieldHBase)" filter="url(#wcShieldHShadow)"/>
+  <path d="M24 6 L41 11.5 C41 11.5 43 27 39 34 C35.5 40.5 24 42.5 24 42.5 C24 42.5 12.5 40.5 9 34 C5.5 27 7 11.5 7 11.5 L24 6Z" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.6"/>
+
+  <!-- Inner recessed -->
+  <path d="M24 9 L38 13.5 C38 13.5 39.5 26 36.5 32 C33.5 38 24 39.5 24 39.5 C24 39.5 14.5 38 11.5 32 C8.5 26 10 13.5 10 13.5 L24 9Z" fill="rgba(0,0,0,0.15)"/>
+
+  <!-- Cross -->
+  <rect x="20" y="16" width="8" height="18" rx="2" fill="url(#wcShieldHCross)" filter="url(#wcShieldHGlow)"/>
+  <rect x="14" y="22" width="20" height="6" rx="2" fill="url(#wcShieldHCross)" filter="url(#wcShieldHGlow)"/>
+
+  <!-- Cross highlight -->
+  <rect x="20.5" y="16.5" width="7" height="3" rx="1.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.4"/>
+  <rect x="14.5" y="22.5" width="4" height="5" rx="1.5" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.4"/>
+</svg>
