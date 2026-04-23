@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WellCore · Master Showcase V3</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0b;
+      --card: #111114;
+      --card-hover: #1a1a1e;
+      --border: #222226;
+      --border-hover: #333338;
+      --text-primary: #f5f5f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #52525b;
+      --accent: #DC2626;
+      --accent-glow: rgba(220, 38, 38, 0.25);
+      --nav-blue: #3b82f6;
+      --health-green: #10b981;
+      --nutrition-amber: #f59e0b;
+      --energy-gold: #fbbf24;
+      --neutral-gray: #a1a1aa;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 48px 24px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 48px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-subtitle {
+      font-size: 16px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      margin-bottom: 24px;
+    }
+
+    .stats-bar {
+      display: inline-flex;
+      gap: 32px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 32px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: 'Oswald', sans-serif;
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: 56px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 24px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .section-count {
+      font-family: 'Oswald', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .section-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-left: auto;
+      font-weight: 500;
+    }
+
+    /* Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 12px 14px;
+      text-align: center;
+      transition: all 0.2s ease;
+      cursor: default;
+    }
+
+    .card:hover {
+      background: var(--card-hover);
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-icon img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+    }
+
+    .card-name {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-primary);
+      word-break: break-word;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+
+    .card-meta {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+    }
+
+    .card-meta.tier-bronze { color: #D4A574; }
+    .card-meta.tier-silver { color: #C0C0C0; }
+    .card-meta.tier-gold { color: #DAA520; }
+    .card-meta.tier-platinum { color: #67E8F9; }
+    .card-meta.tier-legendary { color: #FCA5A5; }
+
+    /* Category color dots */
+    .cat-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+    .cat-dot.nav { background: var(--nav-blue); }
+    .cat-dot.dashboard { background: var(--nav-blue); }
+    .cat-dot.health { background: var(--health-green); }
+    .cat-dot.nutrition { background: var(--nutrition-amber); }
+    .cat-dot.extra { background: var(--energy-gold); }
+    .cat-dot.unique { background: var(--accent); }
+    .cat-dot.medal { background: var(--neutral-gray); }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .footer span {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    @media (max-width: 640px) {
+      .header-title { font-size: 32px; }
+      .stats-bar { gap: 20px; padding: 12px 20px; }
+      .stat-value { font-size: 22px; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; }
+      .card { padding: 16px 8px 12px; }
+      .card-icon, .card-icon img { width: 48px; height: 48px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <header class="header">
+      <h1 class="header-title">WellCore · Master Showcase V3</h1>
+      <p class="header-subtitle">Sistema completo de iconografía vectorial premium</p>
+      <div class="stats-bar">
+        <div class="stat-item">
+          <div class="stat-value">76</div>
+          <div class="stat-label">SVGs Premium</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">15</div>
+          <div class="stat-label">Medallas</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">91</div>
+          <div class="stat-label">Assets Totales</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">0</div>
+          <div class="stat-label">Dependencias Externas</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- V2 Únicos (10) -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">V2 Únicos</h2>
+        <span class="section-count">10</span>
+        <span class="section-desc">Rediseño premium original</span>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-logo.svg" alt="wc-logo"></div>
+          <div class="card-name">wc-logo</div>
+          <div class="card-meta"><span class="cat-dot unique"></span>Identidad</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-medal-hex.svg" alt="wc-medal-hex"></div>
+          <div class="card-name">wc-medal-hex</div>
+          <div class="card-meta"><span class="cat-dot unique"></span>Logros</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-barbell.svg" alt="wc-barbell"></div>
+          <div class="card-name">wc-barbell</div>
+          <div class="card-meta"><span class="cat-dot unique"></span>Entrenamiento</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-camera.svg" alt="wc-camera"></div>
+          <div class="card-name">wc-camera</div>
+          <div class="card-meta"><span class="cat-dot unique"></span>Social</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-check.svg" alt="wc-check"></div>
+          <div class="card-name">wc-check</div>
+          <div class="card-meta"><span class="cat-dot unique"></span>UI</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-coach.svg" alt="wc-coach"></div>
+          <div class="card-name">wc-coach</div>
+          <div class="card-meta"><span class="cat-dot unique"></span>Coaching</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-coin.svg" alt="wc-coin"></div>
+          <div class="card-name">wc-coin</div>
+          <div class="card-meta"><span class="cat-dot unique"></span>Monetización</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-flame.svg" alt="wc-flame"></div>
+          <div class="card-name">wc-flame</div>
+          <div class="card-meta"><span class="cat-dot unique"></span>Energía</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-level-ring.svg" alt="wc-level-ring"></div>
+          <div class="card-name">wc-level-ring</div>
+          <div class="card-meta"><span class="cat-dot unique"></span>Progreso</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-xp-bolt.svg" alt="wc-xp-bolt"></div>
+          <div class="card-name">wc-xp-bolt</div>
+          <div class="card-meta"><span class="cat-dot unique"></span>XP</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Paquete A — Navegación Core (18) -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Paquete A — Navegación Core</h2>
+        <span class="section-count">18</span>
+        <span class="section-desc">Iconos de navegación y UI</span>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-home.svg" alt="wc-home"></div>
+          <div class="card-name">wc-home</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Navegación</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-document.svg" alt="wc-document"></div>
+          <div class="card-name">wc-document</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Navegación</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-photo.svg" alt="wc-photo"></div>
+          <div class="card-name">wc-photo</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Navegación</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-video.svg" alt="wc-video"></div>
+          <div class="card-name">wc-video</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Navegación</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-chart.svg" alt="wc-chart"></div>
+          <div class="card-name">wc-chart</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Navegación</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-users.svg" alt="wc-users"></div>
+          <div class="card-name">wc-users</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Navegación</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-chat-bubble.svg" alt="wc-chat-bubble"></div>
+          <div class="card-name">wc-chat-bubble</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Navegación</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-sparkle-magic.svg" alt="wc-sparkle-magic"></div>
+          <div class="card-name">wc-sparkle-magic</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Navegación</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-settings.svg" alt="wc-settings"></div>
+          <div class="card-name">wc-settings</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Navegación</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-arrow-right.svg" alt="wc-arrow-right"></div>
+          <div class="card-name">wc-arrow-right</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Navegación</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-arrow-left.svg" alt="wc-arrow-left"></div>
+          <div class="card-name">wc-arrow-left</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Navegación</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-plus.svg" alt="wc-plus"></div>
+          <div class="card-name">wc-plus</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Navegación</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-x-close.svg" alt="wc-x-close"></div>
+          <div class="card-name">wc-x-close</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Navegación</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-bell.svg" alt="wc-bell"></div>
+          <div class="card-name">wc-bell</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Navegación</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-menu.svg" alt="wc-menu"></div>
+          <div class="card-name">wc-menu</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Navegación</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-search.svg" alt="wc-search"></div>
+          <div class="card-name">wc-search</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Navegación</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-moon.svg" alt="wc-moon"></div>
+          <div class="card-name">wc-moon</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Tema</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-sun.svg" alt="wc-sun"></div>
+          <div class="card-name">wc-sun</div>
+          <div class="card-meta"><span class="cat-dot nav"></span>Tema</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Paquete B — Dashboard/Admin (12) -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Paquete B — Dashboard / Admin</h2>
+        <span class="section-count">12</span>
+        <span class="section-desc">Iconos de gestión y analytics</span>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-chart-line-up.svg" alt="wc-chart-line-up"></div>
+          <div class="card-name">wc-chart-line-up</div>
+          <div class="card-meta"><span class="cat-dot dashboard"></span>Dashboard</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-credit-card.svg" alt="wc-credit-card"></div>
+          <div class="card-name">wc-credit-card</div>
+          <div class="card-meta"><span class="cat-dot dashboard"></span>Dashboard</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-ticket.svg" alt="wc-ticket"></div>
+          <div class="card-name">wc-ticket</div>
+          <div class="card-meta"><span class="cat-dot dashboard"></span>Dashboard</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-wrench.svg" alt="wc-wrench"></div>
+          <div class="card-name">wc-wrench</div>
+          <div class="card-meta"><span class="cat-dot dashboard"></span>Dashboard</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-building.svg" alt="wc-building"></div>
+          <div class="card-name">wc-building</div>
+          <div class="card-meta"><span class="cat-dot dashboard"></span>Dashboard</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-envelope.svg" alt="wc-envelope"></div>
+          <div class="card-name">wc-envelope</div>
+          <div class="card-meta"><span class="cat-dot dashboard"></span>Dashboard</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-trash.svg" alt="wc-trash"></div>
+          <div class="card-name">wc-trash</div>
+          <div class="card-meta"><span class="cat-dot dashboard"></span>Dashboard</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-edit.svg" alt="wc-edit"></div>
+          <div class="card-name">wc-edit</div>
+          <div class="card-meta"><span class="cat-dot dashboard"></span>Dashboard</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-download.svg" alt="wc-download"></div>
+          <div class="card-name">wc-download</div>
+          <div class="card-meta"><span class="cat-dot dashboard"></span>Dashboard</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-filter.svg" alt="wc-filter"></div>
+          <div class="card-name">wc-filter</div>
+          <div class="card-meta"><span class="cat-dot dashboard"></span>Dashboard</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-lock.svg" alt="wc-lock"></div>
+          <div class="card-name">wc-lock</div>
+          <div class="card-meta"><span class="cat-dot dashboard"></span>Dashboard</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-eye.svg" alt="wc-eye"></div>
+          <div class="card-name">wc-eye</div>
+          <div class="card-meta"><span class="cat-dot dashboard"></span>Dashboard</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Paquete C — Salud & Nutrición (15) -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Paquete C — Salud & Nutrición</h2>
+        <span class="section-count">15</span>
+        <span class="section-desc">Iconos de salud y alimentos</span>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-activity.svg" alt="wc-activity"></div>
+          <div class="card-name">wc-activity</div>
+          <div class="card-meta"><span class="cat-dot health"></span>Salud</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-brain.svg" alt="wc-brain"></div>
+          <div class="card-name">wc-brain</div>
+          <div class="card-meta"><span class="cat-dot health"></span>Salud</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-bone.svg" alt="wc-bone"></div>
+          <div class="card-name">wc-bone</div>
+          <div class="card-meta"><span class="cat-dot health"></span>Salud</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-bed.svg" alt="wc-bed"></div>
+          <div class="card-name">wc-bed</div>
+          <div class="card-meta"><span class="cat-dot health"></span>Salud</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-flask.svg" alt="wc-flask"></div>
+          <div class="card-name">wc-flask</div>
+          <div class="card-meta"><span class="cat-dot health"></span>Salud</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-thermometer.svg" alt="wc-thermometer"></div>
+          <div class="card-name">wc-thermometer</div>
+          <div class="card-meta"><span class="cat-dot health"></span>Salud</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-salad.svg" alt="wc-salad"></div>
+          <div class="card-name">wc-salad</div>
+          <div class="card-meta"><span class="cat-dot nutrition"></span>Nutrición</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-chef-hat.svg" alt="wc-chef-hat"></div>
+          <div class="card-name">wc-chef-hat</div>
+          <div class="card-meta"><span class="cat-dot nutrition"></span>Nutrición</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-coffee.svg" alt="wc-coffee"></div>
+          <div class="card-name">wc-coffee</div>
+          <div class="card-meta"><span class="cat-dot nutrition"></span>Nutrición</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-fish.svg" alt="wc-fish"></div>
+          <div class="card-name">wc-fish</div>
+          <div class="card-meta"><span class="cat-dot nutrition"></span>Nutrición</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-soup.svg" alt="wc-soup"></div>
+          <div class="card-name">wc-soup</div>
+          <div class="card-meta"><span class="cat-dot nutrition"></span>Nutrición</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-citrus.svg" alt="wc-citrus"></div>
+          <div class="card-name">wc-citrus</div>
+          <div class="card-meta"><span class="cat-dot nutrition"></span>Nutrición</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-leaf.svg" alt="wc-leaf"></div>
+          <div class="card-name">wc-leaf</div>
+          <div class="card-meta"><span class="cat-dot nutrition"></span>Nutrición</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-shield-health.svg" alt="wc-shield-health"></div>
+          <div class="card-name">wc-shield-health</div>
+          <div class="card-meta"><span class="cat-dot health"></span>Salud</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-dna.svg" alt="wc-dna"></div>
+          <div class="card-name">wc-dna</div>
+          <div class="card-meta"><span class="cat-dot health"></span>Salud</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Premium Extras (21) -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Premium Extras</h2>
+        <span class="section-count">21</span>
+        <span class="section-desc">Logros, social y entrenamiento</span>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-apple.svg" alt="wc-apple"></div>
+          <div class="card-name">wc-apple</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-bicep.svg" alt="wc-bicep"></div>
+          <div class="card-name">wc-bicep</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-calendar.svg" alt="wc-calendar"></div>
+          <div class="card-name">wc-calendar</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-chat.svg" alt="wc-chat"></div>
+          <div class="card-name">wc-chat</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-crown.svg" alt="wc-crown"></div>
+          <div class="card-name">wc-crown</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-diamond.svg" alt="wc-diamond"></div>
+          <div class="card-name">wc-diamond</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-dumbbell.svg" alt="wc-dumbbell"></div>
+          <div class="card-name">wc-dumbbell</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-fire.svg" alt="wc-fire"></div>
+          <div class="card-name">wc-fire</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-flag.svg" alt="wc-flag"></div>
+          <div class="card-name">wc-flag</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-heart.svg" alt="wc-heart"></div>
+          <div class="card-name">wc-heart</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-megaphone.svg" alt="wc-megaphone"></div>
+          <div class="card-name">wc-megaphone</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-pill.svg" alt="wc-pill"></div>
+          <div class="card-name">wc-pill</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-rocket.svg" alt="wc-rocket"></div>
+          <div class="card-name">wc-rocket</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-scale.svg" alt="wc-scale"></div>
+          <div class="card-name">wc-scale</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-share.svg" alt="wc-share"></div>
+          <div class="card-name">wc-share</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-sparkles.svg" alt="wc-sparkles"></div>
+          <div class="card-name">wc-sparkles</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-star.svg" alt="wc-star"></div>
+          <div class="card-name">wc-star</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-target.svg" alt="wc-target"></div>
+          <div class="card-name">wc-target</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-trophy.svg" alt="wc-trophy"></div>
+          <div class="card-name">wc-trophy</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-user.svg" alt="wc-user"></div>
+          <div class="card-name">wc-user</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./svg-premium/wc-water.svg" alt="wc-water"></div>
+          <div class="card-name">wc-water</div>
+          <div class="card-meta"><span class="cat-dot extra"></span>Extra</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Medallas (15) -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Medallas</h2>
+        <span class="section-count">15</span>
+        <span class="section-desc">Sistema de logros con tiers metálicos</span>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon"><img src="./medals/medal-el-inicio.svg" alt="medal-el-inicio"></div>
+          <div class="card-name">medal-el-inicio</div>
+          <div class="card-meta tier-bronze"><span class="cat-dot medal"></span>Bronce</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./medals/medal-semana-fuego.svg" alt="medal-semana-fuego"></div>
+          <div class="card-name">medal-semana-fuego</div>
+          <div class="card-meta tier-silver"><span class="cat-dot medal"></span>Plata</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./medals/medal-mes-fuego.svg" alt="medal-mes-fuego"></div>
+          <div class="card-name">medal-mes-fuego</div>
+          <div class="card-meta tier-gold"><span class="cat-dot medal"></span>Oro</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./medals/medal-entreno-10.svg" alt="medal-entreno-10"></div>
+          <div class="card-name">medal-entreno-10</div>
+          <div class="card-meta tier-bronze"><span class="cat-dot medal"></span>Bronce</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./medals/medal-entreno-50.svg" alt="medal-entreno-50"></div>
+          <div class="card-name">medal-entreno-50</div>
+          <div class="card-meta tier-gold"><span class="cat-dot medal"></span>Oro</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./medals/medal-entreno-200.svg" alt="medal-entreno-200"></div>
+          <div class="card-name">medal-entreno-200</div>
+          <div class="card-meta tier-legendary"><span class="cat-dot medal"></span>Legendario</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./medals/medal-primer-pr.svg" alt="medal-primer-pr"></div>
+          <div class="card-name">medal-primer-pr</div>
+          <div class="card-meta tier-bronze"><span class="cat-dot medal"></span>Bronce</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./medals/medal-10-records.svg" alt="medal-10-records"></div>
+          <div class="card-name">medal-10-records</div>
+          <div class="card-meta tier-gold"><span class="cat-dot medal"></span>Oro</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./medals/medal-monstruo-fuerza.svg" alt="medal-monstruo-fuerza"></div>
+          <div class="card-name">medal-monstruo-fuerza</div>
+          <div class="card-meta tier-platinum"><span class="cat-dot medal"></span>Platino</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./medals/medal-semana-macros.svg" alt="medal-semana-macros"></div>
+          <div class="card-name">medal-semana-macros</div>
+          <div class="card-meta tier-silver"><span class="cat-dot medal"></span>Plata</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./medals/medal-mes-limpio.svg" alt="medal-mes-limpio"></div>
+          <div class="card-name">medal-mes-limpio</div>
+          <div class="card-meta tier-gold"><span class="cat-dot medal"></span>Oro</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./medals/medal-nutricion-elite.svg" alt="medal-nutricion-elite"></div>
+          <div class="card-name">medal-nutricion-elite</div>
+          <div class="card-meta tier-platinum"><span class="cat-dot medal"></span>Platino</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./medals/medal-habito-forjado.svg" alt="medal-habito-forjado"></div>
+          <div class="card-name">medal-habito-forjado</div>
+          <div class="card-meta tier-silver"><span class="cat-dot medal"></span>Plata</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./medals/medal-madrugador.svg" alt="medal-madrugador"></div>
+          <div class="card-name">medal-madrugador</div>
+          <div class="card-meta tier-silver"><span class="cat-dot medal"></span>Plata</div>
+        </div>
+        <div class="card">
+          <div class="card-icon"><img src="./medals/medal-wellcore-elite.svg" alt="medal-wellcore-elite"></div>
+          <div class="card-name">medal-wellcore-elite</div>
+          <div class="card-meta tier-legendary"><span class="cat-dot medal"></span>Legendario</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>WellCore Fitness · Sistema de Iconografía Vectorial Premium V3 · <span>91 Assets</span> · Self-Contained · Zero Dependencies</p>
+    </footer>
+
+  </div>
+</body>
+</html>
