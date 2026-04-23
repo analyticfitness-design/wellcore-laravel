@@ -311,8 +311,8 @@ const bottomNav = [
             title="Cambiar modo"
             aria-label="Cambiar modo oscuro"
           >
-            <WcIcon name="wc-moon" :size="20" class="dark:hidden" />
-            <WcIcon name="wc-sun" :size="20" class="hidden dark:block" />
+            <span class="dark:hidden"><WcIcon name="wc-moon" :size="20" /></span>
+            <span class="hidden dark:block"><WcIcon name="wc-sun" :size="20" /></span>
           </button>
 
           <!-- User avatar + name -->
