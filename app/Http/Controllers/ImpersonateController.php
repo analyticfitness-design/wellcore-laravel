@@ -87,22 +87,11 @@ class ImpersonateController extends Controller
      */
     public function stop(\Illuminate\Http\Request $request): RedirectResponse
     {
+        // Token must come from the PHP session — the POST body fallback was removed
+        // because it allowed any holder of a leaked admin token to hijack an admin session
+        // without having initiated a real impersonation.
         $adminToken = session('wc_admin_token');
 
-        // Fallback: Vue SPA may not maintain the PHP session reliably.
-        // Accept the admin token from the POST body and validate it against the DB.
-        if (!$adminToken && $request->filled('admin_token')) {
-            $candidate = $request->input('admin_token');
-            $valid = \App\Models\AuthToken::where('token', $candidate)
-                ->where('user_type', \App\Enums\UserType::Admin->value)
-                ->where('expires_at', '>', now())
-                ->exists();
-            if ($valid) {
-                $adminToken = $candidate;
-            }
-        }
-
-        // Guard: only proceed if there is a valid admin token.
         if (!$adminToken) {
             return redirect('/login');
         }

@@ -25,6 +25,7 @@ const state = reactive({
 const MAX_TOASTS = 5;
 const DEFAULT_DURATION = 4000;
 const ERROR_DURATION = 6000;
+const DEDUP_WINDOW_MS = 1500;
 
 let nextId = 1;
 
@@ -34,6 +35,14 @@ function removeToast(id) {
 }
 
 function push(type, message, opts = {}) {
+  // Deduplicación: ignorar si ya existe un toast idéntico (mismo type+message)
+  // creado en los últimos DEDUP_WINDOW_MS milisegundos.
+  const now = Date.now();
+  const duplicate = state.toasts.find(
+    (t) => t.type === type && t.message === message && now - t.createdAt < DEDUP_WINDOW_MS
+  );
+  if (duplicate) return duplicate.id;
+
   const id = nextId++;
   const duration =
     typeof opts.duration === 'number'
@@ -48,6 +57,7 @@ function push(type, message, opts = {}) {
     title: opts.title || null,
     message,
     duration,
+    createdAt: now,
   };
 
   state.toasts.push(toast);

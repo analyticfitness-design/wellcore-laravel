@@ -315,10 +315,26 @@ async function toggleSet(exIndex, setIndex) {
   set.completed = !prevCompleted;
 
   if (set.completed && workoutStarted.value) {
+    // Guard: sesión aún no confirmada por el backend (race con startWorkout)
+    if (!sessionId.value) {
+      set.completed = prevCompleted;
+      toast.warn('Espera un momento, iniciando entrenamiento...');
+      return;
+    }
+
+    // Guard: evitar envíos concurrentes al mismo set (4 taps rápidos)
+    const setKey = `${exIndex}-${setIndex}`;
+    if (set._saving) {
+      set.completed = prevCompleted;
+      return;
+    }
+    set._saving = true;
+
     // Validate reps > 0
     const reps = parseInt(set.reps) || 0;
     if (reps <= 0) {
       set.completed = false;
+      set._saving = false;
       toast.warn('Ingresa las repeticiones antes de marcar.');
       return;
     }
@@ -345,6 +361,8 @@ async function toggleSet(exIndex, setIndex) {
       set.completed = prevCompleted;
       toast.apiError(err, 'No pudimos guardar ese set. Verifica tu conexión.');
       return;
+    } finally {
+      set._saving = false;
     }
 
     // Start rest timer for this exercise
@@ -599,7 +617,10 @@ async function fetchWorkout() {
       showTutorial.value = true;
     }
 
-    // Resume session if exists
+    // Resume session if exists — loadDayExercises se llama PRIMERO para inicializar
+    // setData vacío, y LUEGO sobrescribimos con los datos guardados del backend.
+    loadDayExercises();
+
     if (d.activeSession) {
       sessionId.value = d.activeSession.id;
       workoutStarted.value = true;
@@ -613,8 +634,6 @@ async function fetchWorkout() {
         setData.value = d.activeSession.setData;
       }
     }
-
-    loadDayExercises();
   } catch (err) {
     error.value = err.response?.data?.message || 'Error al cargar el entrenamiento';
   } finally {
@@ -626,7 +645,9 @@ async function startWorkout() {
   // Anti doble-click: bloquea si ya está arrancando o si ya inició.
   if (starting.value || workoutStarted.value) return;
   starting.value = true;
-  workoutStarted.value = true;
+  // Arrancamos el timer inmediatamente para UX fluida, pero NO marcamos
+  // workoutStarted=true hasta tener el session_id — esto evita que toggleSet
+  // dispare requests con session_id=null durante el vuelo del POST.
   startTimer();
   try {
     const response = await api.post('/api/v/client/workout/start', {
@@ -634,6 +655,7 @@ async function startWorkout() {
       week: hasProgressions.value ? currentWeek.value : null,
     });
     sessionId.value = response.data.session_id || null;
+    workoutStarted.value = true;
     // Re-populate setData with previous weights if returned
     if (response.data.setData) {
       setData.value = response.data.setData;

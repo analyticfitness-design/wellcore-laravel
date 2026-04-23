@@ -78,6 +78,21 @@ class AdminController extends Controller
         return $admin;
     }
 
+    /**
+     * Resolve superadmin/jefe only — for privileged operations like coach creation/role changes.
+     */
+    protected function resolveSuperAdminOrFail(Request $request): Admin
+    {
+        $admin = $this->resolveAdminOrFail($request);
+        $role = $admin->role?->value ?? $admin->role ?? '';
+
+        if (! in_array($role, ['superadmin', 'jefe'])) {
+            abort(403, 'Solo superadmins pueden realizar esta acción.');
+        }
+
+        return $admin;
+    }
+
     // ─── Dashboard ──────────────────────────────────────────────────────
 
     /**
@@ -1044,19 +1059,19 @@ class AdminController extends Controller
      */
     public function addCoach(Request $request): JsonResponse
     {
-        $this->resolveAdminOrFail($request);
+        $this->resolveSuperAdminOrFail($request);
 
         $validated = $request->validate([
             'name' => 'required|string|max:100',
             'username' => 'required|string|max:50|unique:admins,username',
             'password' => 'required|string|min:8|max:255',
-            'role' => ['required', Rule::in(array_column(UserRole::cases(), 'value'))],
+            'role' => ['required', Rule::in(['coach', 'admin'])],
         ]);
 
         $admin = Admin::create([
             'name' => $validated['name'],
             'username' => $validated['username'],
-            'password' => Hash::make($validated['password']),
+            'password_hash' => Hash::make($validated['password']),
             'role' => $validated['role'],
         ]);
 
@@ -1082,13 +1097,18 @@ class AdminController extends Controller
      */
     public function updateCoach(Request $request, int $id): JsonResponse
     {
-        $this->resolveAdminOrFail($request);
+        $requestingAdmin = $this->resolveAdminOrFail($request);
 
         $admin = Admin::findOrFail($id);
 
+        // Solo superadmin puede cambiar roles o modificar otros admins de igual/mayor rango
+        if ($request->has('role') || $request->has('password')) {
+            $this->resolveSuperAdminOrFail($request);
+        }
+
         $validated = $request->validate([
             'name' => 'nullable|string|max:100',
-            'role' => ['nullable', Rule::in(array_column(UserRole::cases(), 'value'))],
+            'role' => ['nullable', Rule::in(['coach', 'admin'])],
             'password' => 'nullable|string|min:8|max:255',
             'bio' => 'nullable|string|max:2000',
             'city' => 'nullable|string|max:100',
@@ -1108,7 +1128,7 @@ class AdminController extends Controller
         ], fn ($v) => $v !== null);
 
         if (isset($validated['password'])) {
-            $adminUpdates['password'] = Hash::make($validated['password']);
+            $adminUpdates['password_hash'] = Hash::make($validated['password']);
         }
 
         if (! empty($adminUpdates)) {

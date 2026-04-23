@@ -14,13 +14,15 @@ class WorkoutSession extends Model
         'client_id',
         'plan_id',
         'day_name',
-        'day_index',
         'session_date',
-        'duration_minutes',
+        'duration_sec',
         'feeling',
         'notes',
         'completed',
-        'total_volume',
+        'total_volume_kg',
+        'total_reps',
+        'total_sets',
+        'xp_earned',
     ];
 
     protected $casts = [
@@ -40,11 +42,14 @@ class WorkoutSession extends Model
 
     public function calculateTotals(): void
     {
-        $this->total_volume = (int) $this->logs()
+        $this->total_volume_kg = (float) $this->logs()
             ->where('completed', true)
             ->selectRaw('SUM(COALESCE(weight_kg, 0) * COALESCE(reps, 0)) as volume')
             ->value('volume');
 
+        $completedLogs = $this->logs()->where('completed', true)->get();
+        $this->total_reps = $completedLogs->sum('reps');
+        $this->total_sets = $completedLogs->count();
         $this->save();
     }
 
@@ -59,14 +64,16 @@ class WorkoutSession extends Model
 
     public function formattedDuration(): string
     {
-        $minutes = $this->duration_minutes ?? 0;
+        $totalSec = $this->duration_sec ?? 0;
+        $minutes = (int) floor($totalSec / 60);
+        $seconds = $totalSec % 60;
 
         if ($minutes >= 60) {
             $h = intdiv($minutes, 60);
             $m = $minutes % 60;
-            return sprintf('%d:%02d:%00d', $h, $m, 0);
+            return sprintf('%d:%02d:%02d', $h, $m, $seconds);
         }
 
-        return sprintf('%d:%02d', $minutes, 0);
+        return sprintf('%d:%02d', $minutes, $seconds);
     }
 }

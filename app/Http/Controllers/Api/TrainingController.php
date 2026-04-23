@@ -365,7 +365,7 @@ class TrainingController extends Controller
         }
 
         $currentDay = $days[$currentDayIndex] ?? null;
-        $dayName = $currentDay['nombre'] ?? $currentDay['name'] ?? $currentDay['dia'] ?? 'Dia '.($currentDayIndex + 1);
+        $dayName = $this->resolveDayName($currentDay ?? [], $currentDayIndex);
         $muscleGroup = $currentDay['grupo_muscular'] ?? $currentDay['muscle_group'] ?? $currentDay['musculo'] ?? '';
         $exercises = $currentDay['ejercicios'] ?? $currentDay['exercises'] ?? $currentDay['ejercicios_dia'] ?? [];
 
@@ -403,7 +403,7 @@ class TrainingController extends Controller
         // Build full days array including exercises so Vue can switch days client-side
         $fullDays = array_map(fn ($d, $i) => [
             'index' => $i,
-            'nombre' => $d['nombre'] ?? $d['name'] ?? $d['dia'] ?? 'Dia '.($i + 1),
+            'nombre' => $this->resolveDayName($d, $i),
             'grupo_muscular' => $d['grupo_muscular'] ?? $d['muscle_group'] ?? '',
             'ejercicios' => ($i === $currentDayIndex) ? $exercises : ($d['ejercicios'] ?? $d['exercises'] ?? $d['ejercicios_dia'] ?? []),
         ], $days, array_keys($days));
@@ -453,17 +453,16 @@ class TrainingController extends Controller
             ->first();
 
         $planId = $plan?->id;
-        $dayName = 'Día '.($dayIndex + 1);
+        $dayName = $this->resolveDayName([], $dayIndex);
 
         if ($plan) {
             $content = is_array($plan->content) ? $plan->content : json_decode($plan->content, true);
 
             if ($weekNum && isset($content['semanas'][$weekNum - 1])) {
                 $dias = $content['semanas'][$weekNum - 1]['dias'] ?? [];
-                $dayName = $dias[$dayIndex]['nombre'] ?? $dias[$dayIndex]['dia'] ?? $dayName;
+                $dayName = $this->resolveDayName($dias[$dayIndex] ?? [], $dayIndex);
             } elseif (isset($content['dias'][$dayIndex])) {
-                $day = $content['dias'][$dayIndex];
-                $dayName = $day['nombre'] ?? $day['dia'] ?? $day['name'] ?? $dayName;
+                $dayName = $this->resolveDayName($content['dias'][$dayIndex], $dayIndex);
             }
         }
 
@@ -558,7 +557,6 @@ class TrainingController extends Controller
                 WorkoutLog::upsert(
                     [array_merge($logData, [
                         'session_id' => $sessionId,
-                        'client_id' => $clientId,
                         'exercise_name' => $exerciseName,
                         'block_type' => 'normal',
                         'block_order' => $exerciseIndex,
@@ -567,9 +565,10 @@ class TrainingController extends Controller
                         'target_weight' => $request->input('target_weight'),
                         'is_pr' => false,
                         'created_at' => $now,
+                        'updated_at' => $now,
                     ])],
                     uniqueBy: ['session_id', 'exercise_name', 'set_number', 'block_order'],
-                    update: array_merge(array_keys($logData), ['target_reps', 'target_weight'])
+                    update: array_merge(array_keys($logData), ['target_reps', 'target_weight', 'updated_at'])
                 );
 
                 if ($isCardio || $weight <= 0) {
@@ -709,7 +708,7 @@ class TrainingController extends Controller
 
         $session->update([
             'completed' => true,
-            'duration_minutes' => max(1, (int) round($durationSec / 60)),
+            'duration_sec' => $durationSec,
             'feeling' => $request->input('feeling'),
             'notes' => $request->input('notes'),
         ]);
@@ -744,6 +743,7 @@ class TrainingController extends Controller
         try {
             $xpEarned = $session->awardXp();
             $this->updateClientXp($clientId, $xpEarned);
+            $session->update(['xp_earned' => $xpEarned]);
         } catch (\Throwable $e) {
             \Log::warning('TrainingController: awardXp failed', [
                 'session_id' => $session->id,
@@ -1728,5 +1728,15 @@ class TrainingController extends Controller
         $clientXp->streak_days = $streak;
         $clientXp->streak_last_date = $cursor;
         $clientXp->save();
+    }
+
+    /**
+     * Fuente única de verdad para el nombre del día de entrenamiento.
+     * Extrae el nombre del JSON del plan o genera el fallback canónico "Día N".
+     * Garantiza que fetchWorkout() y startWorkout() usen exactamente el mismo string.
+     */
+    private function resolveDayName(array $dayData, int $dayIndex): string
+    {
+        return $dayData['nombre'] ?? $dayData['name'] ?? $dayData['dia'] ?? 'Día '.($dayIndex + 1);
     }
 }
