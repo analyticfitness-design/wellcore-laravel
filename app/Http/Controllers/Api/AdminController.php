@@ -2545,7 +2545,7 @@ class AdminController extends Controller
         $plan = $client->plan?->value ?? null;
 
         $sections = [
-            $this->buildPersonalSection($profile),
+            $this->buildPersonalSection($client, $profile),
             $this->buildFitnessSection($profile),
         ];
 
@@ -2563,112 +2563,160 @@ class AdminController extends Controller
             }
         }
 
+        $rawJson = array_merge(
+            ['nombre' => $client->name, 'email' => $client->email, 'plan' => $plan],
+            $profile->toArray()
+        );
+
         return response()->json([
             'hasIntake' => true,
             'plan' => $plan,
             'submittedAt' => $profile->updated_at,
             'sections' => $sections,
-            'rawJson' => $profile->toArray(),
+            'rawJson' => $rawJson,
         ]);
     }
 
-    private function buildPersonalSection(ClientProfile $profile): array
+    private function buildPersonalSection(Client $client, ClientProfile $profile): array
     {
+        $generoMap = ['hombre' => 'Hombre', 'mujer' => 'Mujer', 'otro' => 'Otro / Prefiero no decir'];
+
         return [
             'key' => 'personal',
             'title' => 'Datos Personales',
             'icon' => 'user',
-            'fields' => [
-                ['label' => 'Edad',     'value' => $profile->edad,     'unit' => 'años'],
-                ['label' => 'Peso',     'value' => $profile->peso,     'unit' => 'kg'],
-                ['label' => 'Altura',   'value' => $profile->altura,   'unit' => 'cm'],
-                ['label' => 'Género',   'value' => $profile->genero],
-                ['label' => 'Ciudad',   'value' => $profile->ciudad],
-                ['label' => 'WhatsApp', 'value' => $profile->whatsapp],
-            ],
+            'fields' => array_filter([
+                ['label' => 'Nombre completo', 'value' => $client->name],
+                ['label' => 'Email',           'value' => $client->email],
+                ['label' => 'WhatsApp',        'value' => $profile->whatsapp],
+                ['label' => 'Edad',            'value' => $profile->edad,   'unit' => 'años'],
+                ['label' => 'Peso',            'value' => $profile->peso,   'unit' => 'kg'],
+                ['label' => 'Altura',          'value' => $profile->altura, 'unit' => 'cm'],
+                ['label' => 'Género',          'value' => $generoMap[$profile->genero] ?? $profile->genero],
+                ['label' => 'Ciudad',          'value' => $profile->ciudad],
+            ], fn ($f) => ! is_null($f['value']) && $f['value'] !== ''),
         ];
     }
 
     private function buildFitnessSection(ClientProfile $profile): array
     {
+        $objetivoMap = [
+            'perder_grasa'    => 'Perder grasa',
+            'ganar_musculo'   => 'Ganar músculo',
+            'recomposicion'   => 'Recomposición corporal',
+            'rendimiento'     => 'Mejorar rendimiento',
+            'salud_general'   => 'Salud general',
+            'tonificar'       => 'Tonificar',
+        ];
+        $nivelMap = [
+            'principiante' => 'Principiante',
+            'intermedio'   => 'Intermedio',
+            'avanzado'     => 'Avanzado',
+        ];
+        $lugarMap = [
+            'gym'              => 'Gimnasio',
+            'casa_con_equipo'  => 'Casa con equipo',
+            'casa_sin_equipo'  => 'Casa sin equipo',
+            'aire_libre'       => 'Aire libre',
+            'mixto'            => 'Mixto',
+        ];
+
         $dias = $profile->dias_disponibles;
-        $diasValue = is_array($dias) ? implode(', ', $dias) : $dias;
+        $diasValue = is_array($dias) ? implode(', ', array_map('ucfirst', $dias)) : $dias;
+
+        $lesiones = $profile->restricciones;
 
         return [
             'key' => 'fitness',
             'title' => 'Fitness & Entrenamiento',
             'icon' => 'dumbbell',
-            'fields' => [
-                ['label' => 'Objetivo',              'value' => $profile->objetivo],
-                ['label' => 'Nivel',                 'value' => $profile->nivel],
-                ['label' => 'Lugar de entreno',      'value' => $profile->lugar_entreno],
+            'fields' => array_filter([
+                ['label' => 'Objetivo principal',    'value' => $objetivoMap[$profile->objetivo] ?? $profile->objetivo],
+                ['label' => 'Nivel de experiencia',  'value' => $nivelMap[$profile->nivel] ?? $profile->nivel],
+                ['label' => 'Lugar de entreno',      'value' => $lugarMap[$profile->lugar_entreno] ?? $profile->lugar_entreno],
                 ['label' => 'Días disponibles',      'value' => $diasValue],
-                ['label' => 'Restricciones / Lesiones', 'value' => $profile->restricciones ?: 'Ninguna'],
-            ],
+                ['label' => 'Lesiones / Restricciones', 'value' => $lesiones ?: 'Ninguna'],
+            ], fn ($f) => ! is_null($f['value']) && $f['value'] !== ''),
         ];
     }
 
     private function buildNutritionSection(ClientProfile $profile): ?array
     {
         $macros = $profile->macros;
-
-        if (empty($macros)) {
+        if (empty($macros) || ! is_array($macros)) {
             return null;
         }
 
-        $fields = [];
+        // Advanced Elite keys live in macros too — exclude them from nutrition section
+        $advancedKeys = ['objetivo_composicion', 'historial_medico', 'ciclo_hormonal', 'bloodwork_disponible'];
 
-        if (is_array($macros)) {
-            foreach ($macros as $key => $value) {
-                $fields[] = ['label' => ucfirst((string) $key), 'value' => $value];
-            }
+        $trabajoMap   = ['sedentario' => 'Sedentario / Escritorio', 'moderado' => 'Moderado', 'activo' => 'Trabajo activo / físico'];
+        $suenoMap     = ['5_menos' => '5h o menos', '6_7' => '6-7 horas', '8_mas' => '8 horas o más'];
+        $estresMap    = ['bajo' => 'Bajo', 'moderado' => 'Moderado', 'alto' => 'Alto', 'muy_alto' => 'Muy alto'];
+        $comidasMap   = ['2' => '2 comidas', '3' => '3 comidas', '4' => '4 comidas', '5_mas' => '5 o más comidas'];
+
+        $intolerancias = $macros['intolerancias'] ?? [];
+        if (is_array($intolerancias)) {
+            $intolerancias = implode(', ', $intolerancias) ?: 'Ninguna';
         }
+
+        $fields = array_filter([
+            ['label' => 'Actividad laboral',         'value' => $trabajoMap[$macros['trabajo_tipo'] ?? ''] ?? ($macros['trabajo_tipo'] ?? null)],
+            ['label' => 'Horas de sueño',            'value' => $suenoMap[$macros['horas_sueno'] ?? ''] ?? ($macros['horas_sueno'] ?? null)],
+            ['label' => 'Nivel de estrés',           'value' => $estresMap[$macros['nivel_estres'] ?? ''] ?? ($macros['nivel_estres'] ?? null)],
+            ['label' => 'Comidas por día',           'value' => $comidasMap[$macros['comidas_por_dia'] ?? ''] ?? ($macros['comidas_por_dia'] ?? null)],
+            ['label' => 'Intolerancias alimentarias','value' => $intolerancias ?: null],
+            ['label' => 'Otras intolerancias',       'value' => ($macros['otras_intolerancias'] ?? '') ?: null],
+            ['label' => 'Alimentos a evitar',        'value' => ($macros['alimentos_evitar'] ?? '') ?: null],
+            ['label' => 'Suplementos actuales',      'value' => ($macros['suplementos_actuales'] ?? '') ?: null],
+        ], fn ($f) => ! is_null($f['value']) && $f['value'] !== '');
+
+        $fields = array_values($fields);
 
         if (empty($fields)) {
             return null;
         }
 
         return [
-            'key' => 'nutrition',
-            'title' => 'Nutrición & Macros',
-            'icon' => 'nutrition',
+            'key'    => 'nutrition',
+            'title'  => 'Nutrición & Estilo de Vida',
+            'icon'   => 'nutrition',
             'fields' => $fields,
         ];
     }
 
     private function buildAdvancedSection(ClientProfile $profile): ?array
     {
-        $intakeData = $profile->intake_data;
-
-        if (empty($intakeData)) {
+        // Elite advanced fields are merged into macros (not intake_data) in ClientIntakeForm::submit()
+        $macros = $profile->macros;
+        if (empty($macros) || ! is_array($macros)) {
             return null;
         }
 
-        if (is_string($intakeData)) {
-            $intakeData = json_decode($intakeData, associative: true);
-        }
+        $composicionMap = [
+            'perder_grasa_rapido'  => 'Pérdida de grasa rápida',
+            'recomposicion_lenta'  => 'Recomposición lenta',
+            'volumen_limpio'       => 'Volumen limpio',
+            'mantenimiento'        => 'Mantenimiento',
+        ];
 
-        if (! is_array($intakeData) || empty($intakeData)) {
+        $fields = array_filter([
+            ['label' => 'Objetivo de composición', 'value' => $composicionMap[$macros['objetivo_composicion'] ?? ''] ?? ($macros['objetivo_composicion'] ?? null)],
+            ['label' => 'Historial médico',         'value' => ($macros['historial_medico'] ?? '') ?: null],
+            ['label' => 'Ciclo hormonal',            'value' => ($macros['ciclo_hormonal'] ?? '') === 'si' ? 'Sí' : (isset($macros['ciclo_hormonal']) ? 'No' : null)],
+            ['label' => 'Bloodwork disponible',      'value' => ($macros['bloodwork_disponible'] ?? '') === 'si' ? 'Sí' : (isset($macros['bloodwork_disponible']) ? 'No' : null)],
+        ], fn ($f) => ! is_null($f['value']) && $f['value'] !== '');
+
+        $fields = array_values($fields);
+
+        if (empty($fields)) {
             return null;
-        }
-
-        $fields = [];
-
-        foreach ($intakeData as $key => $value) {
-            if (is_array($value)) {
-                $value = implode(', ', $value);
-            }
-
-            $fields[] = [
-                'label' => ucwords(str_replace(['_', '-'], ' ', (string) $key)),
-                'value' => $value,
-            ];
         }
 
         return [
-            'key' => 'advanced',
-            'title' => 'Información Avanzada (Elite)',
-            'icon' => 'star',
+            'key'    => 'advanced',
+            'title'  => 'Información Avanzada (Elite)',
+            'icon'   => 'star',
             'fields' => $fields,
         ];
     }
