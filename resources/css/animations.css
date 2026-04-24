@@ -355,12 +355,13 @@
 
 /* ─── Line Draw (for timeline/process lines) ─── */
 @keyframes line-draw {
-    from { height: 0; }
-    to { height: 100%; }
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
 }
 
 .line-draw {
     overflow: hidden;
+    transform-origin: top;
 }
 
 @supports (animation-timeline: view()) {
@@ -368,13 +369,14 @@
         animation: line-draw linear both;
         animation-timeline: view();
         animation-range: entry 0% exit 80%;
+        transform-origin: top;
     }
 }
 
 /* ─── Badge Shine Effect ─── */
 @keyframes badge-shine {
-    0% { left: -100%; }
-    20%, 100% { left: 100%; }
+    0% { transform: translateX(-100%); }
+    20%, 100% { transform: translateX(100%); }
 }
 
 .badge-shine {
@@ -384,7 +386,7 @@
 .badge-shine::after {
     content: '';
     position: absolute;
-    top: 0; left: -100%;
+    top: 0; left: 0;
     width: 100%; height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
     animation: badge-shine 3s ease-in-out infinite;
