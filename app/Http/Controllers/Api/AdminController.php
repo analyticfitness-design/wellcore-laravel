@@ -2620,6 +2620,8 @@ class AdminController extends Controller
     private function buildPersonalSection(Client $client, ClientProfile $profile): array
     {
         $generoMap = ['hombre' => 'Hombre', 'mujer' => 'Mujer', 'otro' => 'Otro / Prefiero no decir'];
+        $macros = $profile->macros ?? [];
+        $pais = $macros['pais'] ?? null;
 
         return [
             'key' => 'personal',
@@ -2634,6 +2636,7 @@ class AdminController extends Controller
                 ['label' => 'Altura',          'value' => $profile->altura, 'unit' => 'cm'],
                 ['label' => 'Género',          'value' => $generoMap[$profile->genero] ?? $profile->genero],
                 ['label' => 'Ciudad',          'value' => $profile->ciudad],
+                ['label' => 'País',            'value' => $pais],
             ], fn ($f) => ! is_null($f['value']) && $f['value'] !== ''),
         ];
     }
@@ -2664,6 +2667,10 @@ class AdminController extends Controller
         $dias = $profile->dias_disponibles;
         $diasValue = is_array($dias) ? implode(', ', array_map('ucfirst', $dias)) : $dias;
 
+        $macros = $profile->macros ?? [];
+        $duracion = $macros['duracion_sesion'] ?? null;
+        $tieneMap = ['si' => 'Sí', 'no' => 'No'];
+        $tieneLesiones = isset($macros['tiene_lesiones']) ? ($tieneMap[$macros['tiene_lesiones']] ?? $macros['tiene_lesiones']) : null;
         $lesiones = $profile->restricciones;
 
         return [
@@ -2671,11 +2678,13 @@ class AdminController extends Controller
             'title' => 'Fitness & Entrenamiento',
             'icon' => 'dumbbell',
             'fields' => array_filter([
-                ['label' => 'Objetivo principal',    'value' => $objetivoMap[$profile->objetivo] ?? $profile->objetivo],
-                ['label' => 'Nivel de experiencia',  'value' => $nivelMap[$profile->nivel] ?? $profile->nivel],
-                ['label' => 'Lugar de entreno',      'value' => $lugarMap[$profile->lugar_entreno] ?? $profile->lugar_entreno],
-                ['label' => 'Días disponibles',      'value' => $diasValue],
-                ['label' => 'Lesiones / Restricciones', 'value' => $lesiones ?: 'Ninguna'],
+                ['label' => 'Objetivo principal',       'value' => $objetivoMap[$profile->objetivo] ?? $profile->objetivo],
+                ['label' => 'Nivel de experiencia',     'value' => $nivelMap[$profile->nivel] ?? $profile->nivel],
+                ['label' => 'Lugar de entreno',         'value' => $lugarMap[$profile->lugar_entreno] ?? $profile->lugar_entreno],
+                ['label' => 'Días disponibles',         'value' => $diasValue],
+                ['label' => 'Duración de sesión',       'value' => $duracion ? $duracion . ' min' : null],
+                ['label' => 'Tiene lesiones',           'value' => $tieneLesiones],
+                ['label' => 'Lesiones / Restricciones', 'value' => $lesiones ?: ($tieneLesiones === 'No' ? 'Ninguna' : null)],
             ], fn ($f) => ! is_null($f['value']) && $f['value'] !== ''),
         ];
     }
@@ -2687,8 +2696,8 @@ class AdminController extends Controller
             return null;
         }
 
-        // Advanced Elite keys live in macros too — exclude them from nutrition section
-        $advancedKeys = ['objetivo_composicion', 'historial_medico', 'ciclo_hormonal', 'bloodwork_disponible'];
+        // Fitness base + advanced Elite keys — exclude from nutrition section
+        $advancedKeys = ['objetivo_composicion', 'historial_medico', 'ciclo_hormonal', 'bloodwork_disponible', 'pais', 'duracion_sesion', 'tiene_lesiones'];
 
         $trabajoMap   = ['sedentario' => 'Sedentario / Escritorio', 'moderado' => 'Moderado', 'activo' => 'Trabajo activo / físico'];
         $suenoMap     = ['5_menos' => '5h o menos', '6_7' => '6-7 horas', '8_mas' => '8 horas o más'];
@@ -2759,5 +2768,157 @@ class AdminController extends Controller
             'icon'   => 'star',
             'fields' => $fields,
         ];
+    }
+
+    /**
+     * GET /api/v/admin/clients/{id}/activity
+     *
+     * Returns a unified activity timeline for a client: workouts, check-ins,
+     * payments, logins, and coach messages — merged and sorted by date DESC.
+     */
+    public function clientActivity(Request $request, int $id): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $client = Client::find($id);
+        if (! $client) {
+            return response()->json(['error' => 'Cliente no encontrado'], 404);
+        }
+
+        $events = collect();
+
+        // ── Workout sessions ───────────────────────────────────────────────
+        try {
+            $sessions = DB::table('workout_sessions')
+                ->where('client_id', $id)
+                ->orderByDesc('session_date')
+                ->limit(30)
+                ->get(['id', 'day_name', 'session_date', 'completed', 'duration_sec', 'total_volume_kg', 'xp_earned', 'created_at']);
+
+            foreach ($sessions as $s) {
+                $duration = $s->duration_sec ? round($s->duration_sec / 60) . ' min' : null;
+                $volume = $s->total_volume_kg ? number_format($s->total_volume_kg, 0) . ' kg' : null;
+                $desc = implode(' · ', array_filter([
+                    $s->completed ? 'Completado' : 'Abandonado',
+                    $duration,
+                    $volume ? $volume . ' volumen' : null,
+                    $s->xp_earned ? '+' . $s->xp_earned . ' XP' : null,
+                ]));
+                $events->push([
+                    'type'  => $s->completed ? 'workout' : 'workout_abandoned',
+                    'title' => $s->day_name ?: 'Entrenamiento',
+                    'desc'  => $desc,
+                    'date'  => $s->session_date ?? $s->created_at,
+                    'meta'  => ['session_id' => $s->id],
+                ]);
+            }
+        } catch (\Throwable) {}
+
+        // ── Check-ins ──────────────────────────────────────────────────────
+        try {
+            $checkins = DB::table('checkins')
+                ->where('client_id', $id)
+                ->orderByDesc('created_at')
+                ->limit(20)
+                ->get(['id', 'weight', 'created_at', 'notes']);
+
+            foreach ($checkins as $c) {
+                $desc = $c->weight ? 'Peso: ' . $c->weight . ' kg' : 'Sin peso registrado';
+                $events->push([
+                    'type'  => 'checkin',
+                    'title' => 'Check-in semanal',
+                    'desc'  => $desc,
+                    'date'  => $c->created_at,
+                    'meta'  => [],
+                ]);
+            }
+        } catch (\Throwable) {}
+
+        // ── Payments ───────────────────────────────────────────────────────
+        try {
+            $payments = DB::table('payments')
+                ->where('client_id', $id)
+                ->orderByDesc('created_at')
+                ->limit(15)
+                ->get(['id', 'amount', 'currency', 'status', 'created_at', 'plan']);
+
+            foreach ($payments as $p) {
+                $amount = $p->amount ? number_format((float) $p->amount, 0, '.', ',') . ' ' . ($p->currency ?? 'COP') : '';
+                $events->push([
+                    'type'  => 'payment',
+                    'title' => 'Pago ' . ($p->plan ?? ''),
+                    'desc'  => implode(' · ', array_filter([$amount, ucfirst($p->status ?? '')])),
+                    'date'  => $p->created_at,
+                    'meta'  => ['status' => $p->status],
+                ]);
+            }
+        } catch (\Throwable) {}
+
+        // ── Auth tokens (login/access events) ─────────────────────────────
+        try {
+            $tokens = DB::table('auth_tokens')
+                ->where('user_id', $id)
+                ->where('user_type', 'client')
+                ->orderByDesc('created_at')
+                ->limit(10)
+                ->get(['created_at', 'last_used_at']);
+
+            foreach ($tokens as $t) {
+                $events->push([
+                    'type'  => 'login',
+                    'title' => 'Inicio de sesion',
+                    'desc'  => 'Nuevo token de acceso generado',
+                    'date'  => $t->created_at,
+                    'meta'  => [],
+                ]);
+                if ($t->last_used_at && $t->last_used_at !== $t->created_at) {
+                    $events->push([
+                        'type'  => 'access',
+                        'title' => 'Ultimo acceso',
+                        'desc'  => 'Actividad en la plataforma',
+                        'date'  => $t->last_used_at,
+                        'meta'  => [],
+                    ]);
+                }
+            }
+        } catch (\Throwable) {}
+
+        // ── Coach messages ─────────────────────────────────────────────────
+        try {
+            $messages = DB::table('coach_messages')
+                ->where('client_id', $id)
+                ->orderByDesc('created_at')
+                ->limit(10)
+                ->get(['id', 'message', 'sender_type', 'created_at']);
+
+            foreach ($messages as $m) {
+                $from = $m->sender_type === 'coach' ? 'Coach' : 'Cliente';
+                $events->push([
+                    'type'  => 'message',
+                    'title' => "Mensaje de {$from}",
+                    'desc'  => mb_strlen($m->message) > 80
+                        ? mb_substr($m->message, 0, 80) . '…'
+                        : $m->message,
+                    'date'  => $m->created_at,
+                    'meta'  => [],
+                ]);
+            }
+        } catch (\Throwable) {}
+
+        // ── Sort + limit ───────────────────────────────────────────────────
+        $sorted = $events
+            ->filter(fn ($e) => ! empty($e['date']))
+            ->sortByDesc('date')
+            ->values()
+            ->take(60)
+            ->map(function ($e) {
+                $e['date_iso'] = $e['date'];
+                return $e;
+            });
+
+        return response()->json([
+            'events' => $sorted,
+            'total'  => $sorted->count(),
+        ]);
     }
 }

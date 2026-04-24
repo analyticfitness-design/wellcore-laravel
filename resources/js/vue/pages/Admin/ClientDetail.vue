@@ -38,6 +38,9 @@ const intakeLoading = ref(false);
 const jsonCopied = ref(false);
 let jsonCopyTimer = null;
 
+const activityData = ref(null);
+const activityLoading = ref(false);
+
 async function fetchIntake() {
   intakeLoading.value = true;
   try {
@@ -83,6 +86,45 @@ function formatIntakeDate(dateStr) {
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return dateStr;
   return d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+async function fetchActivity() {
+  activityLoading.value = true;
+  try {
+    const res = await api.get(`/api/v/admin/clients/${route.params.id}/activity`);
+    activityData.value = res.data;
+  } catch (e) {
+    activityData.value = null;
+  } finally {
+    activityLoading.value = false;
+  }
+}
+
+function formatActivityDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  const now = new Date();
+  const diffMs = now - d;
+  const diffDays = Math.floor(diffMs / 86400000);
+  if (diffDays === 0) return 'Hoy ' + d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+  if (diffDays === 1) return 'Ayer ' + d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+  if (diffDays < 7) return diffDays + ' días atrás';
+  return d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+const ACTIVITY_ICON = {
+  workout: { bg: 'bg-emerald-500/15', text: 'text-emerald-400', label: 'W' },
+  workout_abandoned: { bg: 'bg-zinc-500/15', text: 'text-zinc-400', label: 'W' },
+  checkin: { bg: 'bg-sky-500/15', text: 'text-sky-400', label: 'C' },
+  payment: { bg: 'bg-amber-500/15', text: 'text-amber-400', label: '$' },
+  login: { bg: 'bg-violet-500/15', text: 'text-violet-400', label: 'L' },
+  access: { bg: 'bg-violet-500/10', text: 'text-violet-300', label: '·' },
+  message: { bg: 'bg-wc-bg-secondary', text: 'text-wc-text-tertiary', label: 'M' },
+};
+
+function getActivityIcon(type) {
+  return ACTIVITY_ICON[type] || ACTIVITY_ICON.message;
 }
 
 function startImpersonation() {
@@ -264,6 +306,7 @@ function dismissSuccess() {
 onMounted(() => {
   fetchClient();
   fetchIntake();
+  fetchActivity();
 });
 
 onBeforeUnmount(() => {
@@ -845,22 +888,88 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- ============== TAB: ACTIVITY ============== -->
-      <div v-else-if="activeTab === 'activity'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-        <div v-if="client.activity && client.activity.length" class="divide-y divide-wc-border">
-          <div v-for="(entry, idx) in client.activity" :key="idx" class="flex items-center gap-3 py-3">
-            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-wc-bg-secondary">
-              <svg class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <div v-else-if="activeTab === 'activity'" class="space-y-4">
+
+        <!-- Header stats -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
+            <p class="font-data text-2xl font-bold text-emerald-400">{{ client?.stats?.completed_workouts ?? client?.total_workouts ?? 0 }}</p>
+            <p class="text-xs text-wc-text-tertiary mt-1">Entrenamientos</p>
+          </div>
+          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
+            <p class="font-data text-2xl font-bold text-sky-400">{{ client?.current_streak ?? 0 }}</p>
+            <p class="text-xs text-wc-text-tertiary mt-1">Racha días</p>
+          </div>
+          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
+            <p class="font-data text-2xl font-bold text-violet-400">{{ client?.stats?.total_checkins ?? 0 }}</p>
+            <p class="text-xs text-wc-text-tertiary mt-1">Check-ins</p>
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
+          <div class="border-b border-wc-border px-5 py-3 flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-wc-text">Timeline de actividad</h3>
+            <span v-if="activityData" class="text-xs text-wc-text-tertiary">{{ activityData.total }} eventos</span>
+          </div>
+
+          <!-- Loading skeleton -->
+          <div v-if="activityLoading" class="p-5 space-y-4">
+            <div v-for="i in 6" :key="i" class="flex items-start gap-3">
+              <div class="h-8 w-8 shrink-0 rounded-full bg-wc-bg-secondary animate-pulse"></div>
+              <div class="flex-1 space-y-2">
+                <div class="h-3 w-1/3 rounded bg-wc-bg-secondary animate-pulse"></div>
+                <div class="h-2.5 w-2/3 rounded bg-wc-bg-secondary animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Events -->
+          <div v-else-if="activityData?.events?.length" class="relative px-5 py-4">
+            <!-- Vertical line -->
+            <div class="absolute left-[calc(1.25rem+1rem)] top-4 bottom-4 w-px bg-wc-border"></div>
+
+            <div class="space-y-5">
+              <div v-for="(evt, idx) in activityData.events" :key="idx" class="flex items-start gap-4 relative">
+                <!-- Icon dot -->
+                <div class="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+                     :class="getActivityIcon(evt.type).bg + ' ' + getActivityIcon(evt.type).text">
+                  {{ getActivityIcon(evt.type).label }}
+                </div>
+
+                <!-- Content -->
+                <div class="min-w-0 flex-1 pb-1">
+                  <div class="flex items-start justify-between gap-2">
+                    <p class="text-sm font-medium text-wc-text leading-tight">{{ evt.title }}</p>
+                    <span class="shrink-0 text-[10px] text-wc-text-tertiary whitespace-nowrap">{{ formatActivityDate(evt.date_iso) }}</span>
+                  </div>
+                  <p v-if="evt.desc" class="mt-0.5 text-xs text-wc-text-tertiary leading-relaxed">{{ evt.desc }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty state -->
+          <div v-else class="flex flex-col items-center py-12 text-center">
+            <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-wc-bg-secondary">
+              <svg class="h-6 w-6 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
               </svg>
             </div>
-            <div class="min-w-0 flex-1">
-              <p class="text-sm text-wc-text truncate">{{ entry.description }}</p>
-              <p class="text-xs text-wc-text-tertiary">{{ entry.time }}</p>
-            </div>
+            <p class="text-sm font-medium text-wc-text">Sin actividad registrada</p>
+            <p class="mt-1 text-xs text-wc-text-tertiary">Este cliente aún no tiene eventos en el sistema</p>
           </div>
         </div>
-        <div v-else class="py-8 text-center">
-          <p class="text-sm text-wc-text-tertiary">Sin actividad registrada</p>
+
+        <!-- Legend -->
+        <div class="flex flex-wrap gap-3 px-1">
+          <div v-for="(style, type) in { workout: 'Entrenamiento', checkin: 'Check-in', payment: 'Pago', login: 'Inicio sesion', message: 'Mensaje' }"
+               :key="type"
+               class="flex items-center gap-1.5">
+            <div class="h-3 w-3 rounded-full flex-shrink-0"
+                 :class="getActivityIcon(type).bg.replace('/15', '/40').replace('/10', '/30')"></div>
+            <span class="text-[10px] text-wc-text-tertiary">{{ style }}</span>
+          </div>
         </div>
       </div>
 

@@ -419,10 +419,15 @@ class ClientIntakeForm extends Component
                     'onboarding_completed' => 0,
                 ]);
 
-                // Build macros data structure for extra plan info
-                $macros = null;
+                // Base fitness fields — saved for every plan type
+                $macros = [
+                    'pais' => $this->pais ?: 'Colombia',
+                    'duracion_sesion' => $this->duracion_sesion,
+                    'tiene_lesiones' => $this->tiene_lesiones,
+                ];
+
                 if ($this->isStepForNutricion()) {
-                    $macros = [
+                    $macros = array_merge($macros, [
                         'trabajo_tipo' => $this->trabajo_tipo,
                         'horas_sueno' => $this->horas_sueno,
                         'nivel_estres' => $this->nivel_estres,
@@ -431,11 +436,11 @@ class ClientIntakeForm extends Component
                         'alimentos_evitar' => $this->alimentos_evitar,
                         'comidas_por_dia' => $this->comidas_por_dia,
                         'suplementos_actuales' => $this->suplementos_actuales,
-                    ];
+                    ]);
                 }
 
                 if ($this->isStepForAdvanced()) {
-                    $macros = array_merge($macros ?? [], [
+                    $macros = array_merge($macros, [
                         'objetivo_composicion' => $this->objetivo_composicion,
                         'historial_medico' => $this->historial_medico,
                         'ciclo_hormonal' => $this->ciclo_hormonal,
