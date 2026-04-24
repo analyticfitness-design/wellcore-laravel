@@ -3,10 +3,28 @@
 <script nonce="@cspNonce">if(localStorage.getItem('darkMode')!=='false')document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark')</script>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>WellCore Fitness</title>
     <meta name="description" content="Coaching fitness basado en ciencia. Entrenamiento personalizado, nutricion y seguimiento para alcanzar tu mejor version.">
+
+    {{-- PWA / app-shell metas --}}
+    <meta name="theme-color" content="#09090B" id="wc-theme-color">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="WellCore">
+    <meta name="application-name" content="WellCore">
+    <script nonce="@cspNonce">
+        // Sincroniza el theme-color con el modo actual (dark/light).
+        // Se ejecuta inline para evitar flicker en el status bar mobile.
+        (function () {
+            var meta = document.getElementById('wc-theme-color');
+            if (!meta) return;
+            var isDark = document.documentElement.classList.contains('dark');
+            meta.setAttribute('content', isDark ? '#09090B' : '#FAFAF8');
+        })();
+    </script>
 
     <!-- Favicons -->
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
