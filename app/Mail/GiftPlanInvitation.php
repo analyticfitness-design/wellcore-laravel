@@ -90,7 +90,7 @@ class GiftPlanInvitation extends Mailable implements ShouldQueue
             'esencial' => [
                 'name' => 'ESENCIAL',
                 'badge' => 'Tu primer paso',
-                'price' => '$299.000',
+                'price' => '$254.150',
                 'priceSuffix' => 'COP/mes',
                 'billingNote' => 'Primer mes regalado. Sin compromiso.',
                 'ctaText' => 'ACTIVAR MI REGALO',
@@ -108,7 +108,7 @@ class GiftPlanInvitation extends Mailable implements ShouldQueue
             'metodo' => [
                 'name' => 'METODO',
                 'badge' => 'Mas popular',
-                'price' => '$399.000',
+                'price' => '$339.150',
                 'priceSuffix' => 'COP/mes',
                 'billingNote' => 'Primer mes regalado. Sin compromiso.',
                 'ctaText' => 'ACTIVAR MI REGALO',
@@ -127,7 +127,7 @@ class GiftPlanInvitation extends Mailable implements ShouldQueue
             'elite' => [
                 'name' => 'ELITE',
                 'badge' => 'Premium',
-                'price' => '$549.000',
+                'price' => '$466.650',
                 'priceSuffix' => 'COP/mes',
                 'billingNote' => 'Primer mes regalado. Sin compromiso.',
                 'ctaText' => 'ACTIVAR MI REGALO',

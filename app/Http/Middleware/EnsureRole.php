@@ -12,6 +12,9 @@ class EnsureRole
     {
         $user = auth('wellcore')->user();
         if (!$user) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json(['message' => 'Unauthenticated.'], 401);
+            }
             return redirect('/login');
         }
 
@@ -23,6 +26,9 @@ class EnsureRole
         }
 
         if (!in_array($userRole, $roles)) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json(['message' => 'No tienes permisos para acceder a este recurso.'], 403);
+            }
             abort(403);
         }
 

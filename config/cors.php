@@ -5,11 +5,11 @@ return [
 
     'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 
-    'allowed_origins' => [
-        'http://wellcore-laravel.test',
+    'allowed_origins' => array_values(array_filter([
+        env('APP_ENV') === 'local' ? 'http://wellcore-laravel.test' : null,
         'https://wellcorefitness.com',
         'https://www.wellcorefitness.com',
-    ],
+    ])),
 
     'allowed_origins_patterns' => [],
 

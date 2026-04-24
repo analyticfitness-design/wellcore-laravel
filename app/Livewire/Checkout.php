@@ -41,24 +41,41 @@ class Checkout extends Component
     // Status
     public string $paymentError = '';
 
-    protected array $plans = [
-        'rise' => ['name' => 'RISE', 'price' => 99900, 'desc' => 'Programa de 30 dias — entrenamiento + nutricion + habitos'],
-        'esencial' => ['name' => 'Esencial', 'price' => 299000, 'desc' => 'Entrenamiento personalizado + guia nutricional basica'],
-        'metodo' => ['name' => 'Metodo', 'price' => 399000, 'desc' => 'Entreno + Nutricion + Ajustes semanales con coach'],
-        'elite' => ['name' => 'Elite', 'price' => 549000, 'desc' => 'Todo incluido + Check-ins 1:1 + Protocolo habitos'],
-    ];
+    /**
+     * Plans se cargan desde config/plans.php (SSOT).
+     * NO hardcodear precios aquí — cambiar en config/plans.php.
+     */
+    protected function getPlans(): array
+    {
+        $plans = [];
+        foreach (['rise', 'esencial', 'metodo', 'elite'] as $key) {
+            $cfg = config("plans.{$key}");
+            $plans[$key] = [
+                'name' => $cfg['name'],
+                'price' => (int) $cfg['price_cop'],
+                'desc' => $cfg['desc'] ?? '',
+            ];
+        }
+
+        return $plans;
+    }
 
     public function mount(): void
     {
-        if (request()->has('plan') && array_key_exists(request('plan'), $this->plans)) {
+        $plans = $this->getPlans();
+        if (request()->has('plan') && array_key_exists(request('plan'), $plans)) {
             $this->selectPlan(request('plan'));
         }
     }
 
     public function selectPlan(string $plan): void
     {
+        $plans = $this->getPlans();
+        if (! array_key_exists($plan, $plans)) {
+            return;
+        }
         $this->plan = $plan;
-        $this->price = $this->plans[$plan]['price'];
+        $this->price = $plans[$plan]['price'];
         $this->step = 2;
         $this->paymentError = '';
     }
@@ -159,7 +176,9 @@ class Checkout extends Component
 
     public function getPlanInfo(): array
     {
-        return $this->plans[$this->plan] ?? ['name' => '', 'price' => 0, 'desc' => ''];
+        $plans = $this->getPlans();
+
+        return $plans[$this->plan] ?? ['name' => '', 'price' => 0, 'desc' => ''];
     }
 
     public function render()
@@ -167,7 +186,7 @@ class Checkout extends Component
         return view('livewire.checkout', [
             'planInfo' => $this->getPlanInfo(),
             'total' => $this->getTotal(),
-            'allPlans' => $this->plans,
+            'allPlans' => $this->getPlans(),
         ])->layout('components.layouts.public', [
             'title' => 'Pagar - WellCore Fitness',
             'description' => 'Completa tu pago y comienza tu transformacion con WellCore Fitness.',

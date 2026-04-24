@@ -253,7 +253,10 @@ Route::middleware('auth:wellcore')->group(function () {
         }
         session()->flush();
 
-        return redirect('/login');
+        return redirect('/login')
+            ->header('Clear-Site-Data', '"cache", "cookies", "storage"')
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate')
+            ->header('Pragma', 'no-cache');
     })->name('logout');
 
     Route::post('/admin/impersonate/{clientId}', [ImpersonateController::class, 'start'])

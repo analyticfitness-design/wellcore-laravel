@@ -64,7 +64,7 @@ Route::prefix('v/shop')->group(function () {
 });
 
 // Client (authenticated — Bearer token required)
-Route::prefix('v/client')->middleware('throttle:api')->group(function () {
+Route::prefix('v/client')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
     Route::get('/account-status', [ClientController::class, 'accountStatus']);
     Route::get('/dashboard', [ClientController::class, 'dashboard']);
     Route::get('/metrics', [ClientController::class, 'metrics']);
@@ -86,7 +86,7 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
 });
 
 // Training (Phase 5)
-Route::prefix('v/client')->middleware('throttle:api')->group(function () {
+Route::prefix('v/client')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
     Route::get('/plan', [TrainingController::class, 'plan']);
     Route::get('/training', [TrainingController::class, 'training']);
     Route::post('/training/toggle', [TrainingController::class, 'toggleTrainingDay']);
@@ -110,7 +110,7 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
 });
 
 // Social & Resources (Phase 6)
-Route::prefix('v/client')->middleware('throttle:api')->group(function () {
+Route::prefix('v/client')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
     Route::get('/community', [SocialController::class, 'communityIndex']);
     Route::post('/community', [SocialController::class, 'communityCreate'])->middleware('throttle:community-write');
     Route::post('/community/{id}/react', [SocialController::class, 'communityReact'])->where('id', '[0-9]+')->middleware('throttle:community-write');
@@ -145,14 +145,14 @@ Route::prefix('v/client')->middleware('throttle:api')->group(function () {
 });
 
 // Medals & Achievements (Phase 1 — Backend)
-Route::prefix('v/client')->middleware('throttle:api')->group(function () {
+Route::prefix('v/client')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
     Route::get('/medals', [MedalController::class, 'index']);
     Route::get('/medals/unlocked', [MedalController::class, 'unlocked']);
 });
 
 // Rise (Phase 7 — authenticated client, Bearer token)
 // Plan gating: metodo, elite, rise, presencial can access RISE (not esencial/trial)
-Route::prefix('v/rise')->middleware(['throttle:api', 'ensure.plan:metodo,elite,rise,presencial'])->group(function () {
+Route::prefix('v/rise')->middleware(['auth:wellcore', 'throttle:api', 'ensure.plan:metodo,elite,rise,presencial'])->group(function () {
     Route::get('/dashboard', [RiseController::class, 'dashboard']);
     Route::get('/program', [RiseController::class, 'program']);
     Route::get('/habits', [RiseController::class, 'habits']);
@@ -178,7 +178,7 @@ Route::prefix('v/rise')->middleware(['throttle:api', 'ensure.plan:metodo,elite,r
 });
 
 // Coach (Phase 8 — authenticated admin with coach/admin/superadmin/jefe role)
-Route::prefix('v/coach')->middleware('throttle:api')->group(function () {
+Route::prefix('v/coach')->middleware(['auth:wellcore', 'throttle:api', 'role:coach,admin,superadmin,jefe'])->group(function () {
     Route::get('/dashboard', [CoachController::class, 'dashboard']);
     Route::get('/clients', [CoachController::class, 'clients']);
     Route::get('/kanban', [CoachController::class, 'kanban']);
@@ -240,7 +240,7 @@ Route::prefix('v/coach')->middleware('throttle:api')->group(function () {
 });
 
 // Admin (Phase 9 — authenticated admin with admin/superadmin/jefe role)
-Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
+Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:admin,superadmin,jefe'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard']);
     Route::get('/feed', [AdminController::class, 'feed']);
     Route::get('/clients', [AdminController::class, 'clients']);

@@ -65,9 +65,9 @@
                     <p class="mt-1 text-sm text-wc-text-secondary">Elige el plan que mejor se adapte a tus objetivos.</p>
                     <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         @foreach([
-                            'esencial'   => ['Esencial',   '$299,000/mes',          'Entrenamiento personalizado',               false],
-                            'metodo'     => ['Metodo',     '$399,000/mes',          'Entreno + Nutricion + Seguimiento',          true],
-                            'elite'      => ['Elite',      '$549,000/mes',          'Todo incluido + Check-ins 1:1',             false],
+                            'esencial'   => ['Esencial',   '$254,150/mes',          'Entrenamiento personalizado',               false],
+                            'metodo'     => ['Metodo',     '$339,150/mes',          'Entreno + Nutricion + Seguimiento',          true],
+                            'elite'      => ['Elite',      '$466,650/mes',          'Todo incluido + Check-ins 1:1',             false],
                             'rise'       => ['RISE',       '$99,900 pago unico',    'Programa grupal de 8 semanas',              false],
                             'presencial' => ['Presencial', '$450,000–$650,000/mes', 'Coaching 1:1 presencial en Bogota',         false],
                         ] as $key => [$name, $price, $desc, $popular])
