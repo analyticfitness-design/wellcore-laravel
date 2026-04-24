@@ -8,6 +8,8 @@ import PlanOnboarding from '../../components/PlanOnboarding.vue';
 import DashboardHero from '../../components/dashboard/DashboardHero.vue';
 import DashboardPlanAlert from '../../components/dashboard/DashboardPlanAlert.vue';
 import DashboardStats from '../../components/dashboard/DashboardStats.vue';
+import DashboardCheckin from '../../components/dashboard/DashboardCheckin.vue';
+import DashboardMissions from '../../components/dashboard/DashboardMissions.vue';
 
 const api = useApi();
 const router = useRouter();
@@ -160,25 +162,6 @@ const trainedRingOffset = computed(() => {
     return circumference - (circumference * trained / 7);
 });
 
-// ── Mission status class ──
-function getMissionStatusClass(completed) {
-    return completed
-        ? 'border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10'
-        : 'border-wc-border bg-wc-bg-tertiary hover:bg-wc-bg-secondary';
-}
-
-// ── Mission route mapping (API returns route keys, we map to Vue routes) ──
-const missionRouteMap = {
-    training: '/client/training',
-    checkin: '/client/checkin',
-    weight: '/client/metrics',
-    nutrition: '/client/nutrition',
-};
-
-function getMissionRoute(mission) {
-    return missionRouteMap[mission.key] || mission.route || '/client/dashboard';
-}
-
 // ── Recent activity type icons ──
 function getActivityIconData(type) {
     switch (type) {
@@ -282,12 +265,6 @@ const weeklySummaryMessage = computed(() => {
     if (w >= 3) return { label: 'Buen ritmo', colorClass: 'text-sky-600 dark:text-sky-400', desc: `${w} entrenamientos esta semana. Vas por buen camino.` };
     if (w >= 1) return { label: 'En camino', colorClass: 'text-amber-600 dark:text-amber-400', desc: 'Cada sesion cuenta. Intenta sumar una mas esta semana.' };
     return { label: 'Nueva semana', colorClass: 'text-wc-accent', desc: 'Es un nuevo comienzo. Tu primera sesion te espera.' };
-});
-
-// ── Completed missions count ──
-const completedMissionsCount = computed(() => {
-    if (!data.value?.dailyMissions) return 0;
-    return data.value.dailyMissions.filter(m => m.completed).length;
 });
 
 // ── Week markers for plan progress bar (desktop) ──
@@ -601,67 +578,13 @@ const weekMarkers = computed(() => {
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- CHECK-IN COUNTDOWN                                            -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <RouterLink
-        v-if="data.daysUntilCheckin !== undefined"
-        to="/client/checkin"
-        :class="[
-          'group block rounded-xl border p-4 sm:p-5 transition-colors',
-          data.daysUntilCheckin <= 0
-            ? 'border-wc-accent/40 bg-wc-accent/10 hover:bg-wc-accent/15'
-            : data.daysUntilCheckin <= 2
-              ? 'border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/15'
-              : 'border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10'
-        ]"
-      >
-        <div class="flex items-center gap-4">
-          <!-- Icon -->
-          <div :class="[
-            'flex h-11 w-11 shrink-0 items-center justify-center rounded-xl',
-            data.daysUntilCheckin <= 0 ? 'bg-wc-accent/20' : data.daysUntilCheckin <= 2 ? 'bg-amber-500/20' : 'bg-emerald-500/15'
-          ]">
-            <svg v-if="data.daysUntilCheckin <= 0" class="h-5 w-5 text-wc-accent animate-pulse" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-            </svg>
-            <svg v-else-if="data.daysUntilCheckin <= 2" class="h-5 w-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-            <svg v-else class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-            </svg>
-          </div>
-
-          <!-- Text -->
-          <div class="min-w-0 flex-1">
-            <p v-if="data.daysUntilCheckin <= 0" class="text-sm font-semibold uppercase tracking-wide text-wc-accent">Check-in pendiente</p>
-            <p v-else-if="data.daysUntilCheckin <= 2" class="text-sm font-semibold text-amber-600 dark:text-amber-400">
-              Check-in en {{ data.daysUntilCheckin }} dia{{ data.daysUntilCheckin !== 1 ? 's' : '' }}
-            </p>
-            <p v-else class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-              Proximo check-in en {{ data.daysUntilCheckin }} dias
-            </p>
-            <p v-if="data.daysUntilCheckin <= 0" class="mt-0.5 text-sm text-wc-text-secondary">Tu check-in semanal esta listo. Envialo ahora.</p>
-            <p v-else class="mt-0.5 text-sm text-wc-text-secondary capitalize">{{ data.nextCheckinDate || '' }}</p>
-          </div>
-
-          <!-- Live countdown timer (if < 24h) -->
-          <div
-            v-if="showCheckinTimer && data.daysUntilCheckin > 0"
-            :class="[
-              'cd-digits hidden items-center gap-1 font-data text-lg font-bold sm:flex',
-              data.daysUntilCheckin <= 2 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'
-            ]"
-          >
-            <span>{{ checkinHours }}</span><span class="text-wc-text-tertiary">:</span>
-            <span>{{ checkinMinutes }}</span><span class="text-wc-text-tertiary">:</span>
-            <span>{{ checkinSeconds }}</span>
-          </div>
-
-          <!-- Arrow -->
-          <svg class="h-4 w-4 shrink-0 text-wc-text-tertiary group-hover:text-wc-text transition-colors" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-          </svg>
-        </div>
-      </RouterLink>
+      <DashboardCheckin
+        :data="data"
+        :show-checkin-timer="showCheckinTimer"
+        :checkin-hours="checkinHours"
+        :checkin-minutes="checkinMinutes"
+        :checkin-seconds="checkinSeconds"
+      />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- WEEKLY SUMMARY (last week)                                    -->
@@ -722,70 +645,7 @@ const weekMarkers = computed(() => {
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- DAILY MISSIONS                                                -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div v-if="data.dailyMissions && data.dailyMissions.length > 0">
-        <div class="mb-3 flex items-center justify-between">
-          <h2 class="text-lg font-semibold text-wc-text">Misiones diarias</h2>
-          <span class="text-sm text-wc-text-secondary">
-            {{ completedMissionsCount }}/{{ data.dailyMissions.length }} completadas
-          </span>
-        </div>
-        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <RouterLink
-            v-for="(mission, idx) in data.dailyMissions"
-            :key="mission.key || idx"
-            :to="getMissionRoute(mission)"
-            :class="[
-              'group flex items-center gap-3 rounded-xl border p-4 transition-colors',
-              getMissionStatusClass(mission.completed)
-            ]"
-          >
-            <!-- Status icon -->
-            <div :class="[
-              'flex h-9 w-9 shrink-0 items-center justify-center rounded-full',
-              mission.completed ? 'bg-emerald-500/15' : 'border-2 border-wc-border'
-            ]">
-              <!-- Completed checkmark -->
-              <svg v-if="mission.completed" class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-              </svg>
-              <!-- Type-specific icons for incomplete missions -->
-              <template v-else>
-                <!-- Dumbbell icon for training -->
-                <svg v-if="mission.key === 'training' || mission.icon === 'dumbbell'" class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                </svg>
-                <!-- Check-in icon -->
-                <svg v-else-if="mission.key === 'checkin' || mission.icon === 'checkin'" class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
-                <!-- Scale icon for weight -->
-                <svg v-else-if="mission.key === 'weight' || mission.icon === 'scale'" class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.589-1.202L18.75 4.97Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.589-1.202L5.25 4.97Z" />
-                </svg>
-                <!-- Nutrition/book icon -->
-                <svg v-else class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
-                </svg>
-              </template>
-            </div>
-
-            <!-- Text -->
-            <div class="min-w-0 flex-1">
-              <p :class="['text-base font-medium leading-tight', mission.completed ? 'text-emerald-600 dark:text-emerald-400' : 'text-wc-text']">
-                {{ mission.title }}
-              </p>
-              <p class="mt-0.5 text-sm text-wc-text-secondary">
-                {{ mission.completed ? 'Completada' : 'Pendiente' }}
-              </p>
-            </div>
-
-            <!-- Arrow (incomplete only) -->
-            <svg v-if="!mission.completed" class="h-4 w-4 shrink-0 text-wc-text-tertiary group-hover:text-wc-text transition-colors" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-            </svg>
-          </RouterLink>
-        </div>
-      </div>
+      <DashboardMissions :missions="data.dailyMissions || []" />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- WEEKLY TRAINING OVERVIEW + RECENT ACTIVITY                    -->
