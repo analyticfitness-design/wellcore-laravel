@@ -531,18 +531,18 @@ body {
 }
 
 .tb-phase {
-  font-size: 12px; font-weight: 600;
+  font-size: 14px; font-weight: 600;
   color: var(--color-wc-text);
   background: rgba(220,38,38,.14);
   border: 1px solid rgba(220,38,38,.22);
-  padding: 4px 12px;
+  padding: 6px 16px;
   border-radius: 9999px;
-  display: flex; align-items: center; gap: 6px;
+  display: flex; align-items: center; gap: 7px;
   white-space: nowrap;
 }
 .tb-phase::before {
   content: "";
-  width: 6px; height: 6px;
+  width: 7px; height: 7px;
   border-radius: 50%;
   background: var(--color-wc-accent);
 }
