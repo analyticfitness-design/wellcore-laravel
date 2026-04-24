@@ -111,11 +111,22 @@ class ClientController extends Controller
         // Daily missions (always fresh — never cached)
         $dailyMissions = $this->loadDailyMissions($clientId);
 
+        // Plan week + phase for topbar badge (Blade layout + Vue SPA)
+        $plan = $client->plan;
+        $weekNum = 1;
+        if ($plan) {
+            $startDate = $plan->created_at ?? now();
+            $weekNum = max(1, min(12, (int) ceil(now()->diffInDays($startDate) / 7)));
+        }
+        $phaseMap = [1=>'Adaptación',2=>'Adaptación',3=>'Adaptación',4=>'Hipertrofia',5=>'Hipertrofia',6=>'Hipertrofia',7=>'Fuerza Máx.',8=>'Fuerza Máx.',9=>'Fuerza Máx.',10=>'Peak',11=>'Peak',12=>'Peak'];
+
         return response()->json([
             // Greeting
             'greeting' => $greeting,
             'clientName' => $clientName,
             'planLabel' => $planLabel,
+            'currentWeek' => $weekNum,
+            'phaseName'   => $phaseMap[$weekNum] ?? 'Activo',
 
             // Stats
             'streakDays' => $cached['streakDays'],

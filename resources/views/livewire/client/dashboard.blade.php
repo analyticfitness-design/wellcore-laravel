@@ -221,8 +221,9 @@
             </a>
         </div>
     @else
-        <div class="wc-glass flex items-center gap-3 rounded-xl border border-wc-border bg-wc-bg-tertiary px-4 py-3">
+        <div class="wc-glass flex items-center gap-3 rounded-xl border border-emerald-500/20 bg-wc-bg-tertiary px-4 py-3">
             <div class="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10">
+                <span class="live-dot" aria-hidden="true"></span>
                 <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                 </svg>
@@ -245,7 +246,7 @@
     </div>
     <div wire:loading.remove class="relative wc-grain grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {{-- Streak with Flame Animation --}}
-        <div class="relative z-10 rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift wc-lift stat-glow-red">
+        <div class="sc-r relative z-10 rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift wc-lift stat-glow-red">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ __('client_dashboard.streak') }}</span>
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10 {{ $streakDays >= 3 ? 'flame-active' : '' }}">
@@ -259,7 +260,7 @@
         </div>
 
         {{-- Check-ins this month --}}
-        <div class="relative z-10 rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift wc-lift stat-glow-emerald">
+        <div class="sc-g relative z-10 rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift wc-lift stat-glow-emerald">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ __('client_dashboard.checkins') }}</span>
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
@@ -273,7 +274,7 @@
         </div>
 
         {{-- XP + Level --}}
-        <div class="relative z-10 rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift wc-lift stat-glow-violet">
+        <div class="sc-p relative z-10 rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift wc-lift stat-glow-violet">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ __('client_dashboard.level', ['level' => $level]) }}</span>
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10">
@@ -297,7 +298,7 @@
         </div>
 
         {{-- Days trained this week — Progress Ring --}}
-        <div class="relative z-10 rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift wc-lift stat-glow-amber">
+        <div class="sc-a relative z-10 rounded-card border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 card-hover-lift wc-lift stat-glow-amber">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ __('client_dashboard.this_week') }}</span>
             </div>
@@ -436,25 +437,22 @@
                         $isBeforeRange = $date->lt($today->copy()->subDays(90));
 
                         if ($isFuture || $isBeforeRange) {
-                            $colorClass = 'bg-wc-bg-secondary/30';
-                        } elseif ($count >= 5) {
-                            $colorClass = 'bg-wc-accent';
+                            $hmClass = 'hm-cell'; // no intensity
                         } elseif ($count >= 4) {
-                            $colorClass = 'bg-wc-accent/80';
+                            $hmClass = 'hm-cell h4';
                         } elseif ($count >= 3) {
-                            $colorClass = 'bg-wc-accent/60';
-                        } elseif ($count === 2) {
-                            $colorClass = 'bg-wc-accent/40';
+                            $hmClass = 'hm-cell h3';
+                        } elseif ($count >= 2) {
+                            $hmClass = 'hm-cell h2';
                         } elseif ($count === 1) {
-                            $colorClass = 'bg-wc-accent/20';
+                            $hmClass = 'hm-cell h1';
                         } else {
-                            $colorClass = 'bg-wc-bg-secondary';
+                            $hmClass = 'hm-cell';
                         }
-
                         $isToday = $date->isSameDay($today);
                     @endphp
                     <div
-                        class="h-2.5 w-2.5 rounded-[2px] {{ $colorClass }} sm:h-3 sm:w-3 sm:rounded-sm transition-all duration-150 hover:scale-125 hover:z-10 relative {{ $isToday ? 'ring-1 ring-wc-text/30' : '' }}"
+                        class="{{ $hmClass }} h-2.5 w-2.5 rounded-[2px] sm:h-3 sm:w-3 sm:rounded-sm transition-all duration-150 hover:scale-125 hover:z-10 relative {{ $isToday ? 'ring-1 ring-wc-text/30' : '' }}"
                         title="{{ $date->translatedFormat('D j M Y') }}{{ $count ? ' — ' . $count . ' sesion(es)' : '' }}"
                         x-data="{ tooltip: false }"
                         @mouseenter="tooltip = true"
@@ -808,7 +806,7 @@
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             @foreach($dailyMissions as $mission)
                 <a href="{{ $mission['route'] }}"
-                   class="group flex items-center gap-3 rounded-xl border p-4 transition-colors
+                   class="mc-mission {{ $mission['completed'] ? 'mc-done' : 'mc-pending' }} group flex items-center gap-3 rounded-xl border p-4 transition-colors
                           {{ $mission['completed']
                               ? 'border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10'
                               : 'border-wc-border bg-wc-bg-tertiary hover:bg-wc-bg-secondary' }}">
@@ -880,7 +878,7 @@
 
             <div class="mt-5 flex items-center justify-between gap-2 sm:justify-start sm:gap-4">
                 @foreach($weekDays as $day)
-                    <div class="flex flex-col items-center gap-2">
+                    <div class="{{ $day['completed'] ? 'wday-done' : ($day['isToday'] ? 'wday-today' : 'wday-rest') }} flex flex-col items-center gap-2">
                         <span class="text-[11px] font-medium text-wc-text-tertiary {{ $day['isToday'] ? '!text-wc-accent font-semibold' : '' }}">
                             {{ $day['label'] }}
                         </span>
@@ -933,6 +931,7 @@
                                 @else bg-wc-bg-secondary
                                 @endif
                             ">
+                                <span class="act-dot act-dot--{{ $activity['type'] }}" aria-hidden="true"></span>
                                 @if($activity['type'] === 'training')
                                     <svg class="h-3.5 w-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />

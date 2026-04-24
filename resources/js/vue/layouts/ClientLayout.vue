@@ -64,8 +64,13 @@ onMounted(async () => {
     // Fetch plan phase for topbar badge
     try {
         const planRes = await api.get('/api/v/client/dashboard');
-        if (planRes.status === 200 && planRes.data?.planLabel) {
-            planPhaseText.value = planRes.data.planLabel;
+        if (planRes.status === 200) {
+            const d = planRes.data;
+            if (d?.currentWeek && d?.phaseName) {
+                planPhaseText.value = `Semana ${d.currentWeek} — ${d.phaseName}`;
+            } else if (d?.planLabel) {
+                planPhaseText.value = d.planLabel;
+            }
         }
     } catch (_) {
         // silent — badge won't show if endpoint unavailable

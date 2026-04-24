@@ -44,7 +44,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swapfamily=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swapfamily=JetBrains+Mono:wght@400;500family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swapdisplay=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
@@ -329,7 +329,19 @@
                 </button>
                 {{-- Plan phase badge --}}
                 @if($client && $client->plan)
-                    <div class="tb-phase hidden sm:flex">{{ $client->plan->label() }}</div>
+                    @php
+                        $assignedStart = $client->plan->created_at ?? now();
+                        $weekNum = max(1, (int) ceil(now()->diffInDays($assignedStart) / 7));
+                        $weekNum = min($weekNum, 12);
+                        $phaseMap = [
+                            1 => 'Adaptación', 2 => 'Adaptación', 3 => 'Adaptación',
+                            4 => 'Hipertrofia', 5 => 'Hipertrofia', 6 => 'Hipertrofia',
+                            7 => 'Fuerza Máx.', 8 => 'Fuerza Máx.', 9 => 'Fuerza Máx.',
+                            10 => 'Peak', 11 => 'Peak', 12 => 'Peak',
+                        ];
+                        $phaseName = $phaseMap[$weekNum] ?? 'Activo';
+                    @endphp
+                    <div class="tb-phase hidden sm:flex">Semana {{ $weekNum }} &mdash; {{ $phaseName }}</div>
                 @endif
             </div>
 
