@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MedalResource;
 use App\Models\Client;
+use App\Models\ClientXp;
 use App\Models\Medal;
 use App\Services\MedalService;
 use Illuminate\Http\JsonResponse;
@@ -94,16 +95,19 @@ class MedalController extends Controller
     /**
      * Computes display stats: level/XP curve, streak, totals.
      *
-     * Level formula (spec §13): level n requires n² × 500 XP cumulative.
+     * Reads XP from client_xp.xp_total (same source as Dashboard) so both
+     * views show the same number. Level formula: floor(xp / 200) + 1, with
+     * each level requiring 200 XP — matches TrainingController/ClientController.
      */
     private function buildStats(Client $client, int $achievedMedals, int $totalMedals): array
     {
-        $totalXp = (int) ($client->total_xp ?? 0);
-        $level = max(1, (int) floor(sqrt($totalXp / 500)));
-        $xpForLevel = static fn (int $l) => $l * $l * 500;
+        $clientXpRow = ClientXp::where('client_id', $client->id)->first();
+        $totalXp = (int) ($clientXpRow?->xp_total ?? 0);
+        $level = max(1, (int) floor($totalXp / 200) + 1);
+        $xpForCurrentLevel = ($level - 1) * 200;
 
         $displayName = $this->displayName($client);
-        $streak = (int) ($client->xp?->streak_days ?? $client->current_streak ?? 0);
+        $streak = (int) ($clientXpRow?->streak_days ?? $client->current_streak ?? 0);
         $totalWorkouts = (int) ($client->total_workouts ?? 0);
 
         return [
@@ -113,8 +117,8 @@ class MedalController extends Controller
             'totalWorkouts' => $totalWorkouts,
             'totalXP' => $totalXp,
             'level' => $level,
-            'xpCurrentLevel' => max(0, $totalXp - $xpForLevel($level)),
-            'xpNextLevel' => $xpForLevel($level + 1) - $xpForLevel($level),
+            'xpCurrentLevel' => max(0, $totalXp - $xpForCurrentLevel),
+            'xpNextLevel' => 200,
             'achievedMedals' => $achievedMedals,
             'totalMedals' => $totalMedals,
         ];
