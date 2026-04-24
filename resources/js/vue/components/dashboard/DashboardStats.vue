@@ -1,9 +1,20 @@
 <script setup>
-defineProps({
+import { computed } from 'vue';
+import { useViewportAnimate } from '../../composables/dashboard/useViewportAnimate';
+
+const props = defineProps({
     data: { type: Object, required: true },
     xpProgress: { type: Number, default: 0 },
     trainedRingOffset: { type: Number, default: 251 },
 });
+
+// Fase 8: ring + XP bar animan desde valor inicial (vacío) al entrar al viewport.
+// Esto da "feel" nativo de app donde los indicadores se "rellenan" ante tus ojos.
+const { targetRef: ringRef, visible: ringVisible } = useViewportAnimate({ threshold: 0.4 });
+const { targetRef: xpRef, visible: xpVisible } = useViewportAnimate({ threshold: 0.4 });
+
+const ringOffsetAnimated = computed(() => (ringVisible.value ? props.trainedRingOffset : 251));
+const xpProgressAnimated = computed(() => (xpVisible.value ? props.xpProgress : 0));
 </script>
 
 <template>
@@ -49,11 +60,11 @@ defineProps({
       <p class="mt-3 font-display text-3xl text-wc-accent" style="line-height:1">{{ (data.xpTotal || 0).toLocaleString() }}</p>
       <p class="mt-1 text-sm font-medium text-wc-text-secondary">XP total</p>
       <!-- XP Progress bar -->
-      <div class="mt-3">
+      <div ref="xpRef" class="mt-3">
         <div class="h-1.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
           <div
-            class="h-full rounded-full bg-violet-500 transition-all duration-500"
-            :style="{ width: xpProgress + '%' }"
+            class="h-full rounded-full bg-violet-500 transition-all duration-[900ms] ease-[cubic-bezier(.22,1,.36,1)]"
+            :style="{ width: xpProgressAnimated + '%' }"
           ></div>
         </div>
         <p class="mt-1 text-[10px] text-wc-text-tertiary">
@@ -68,14 +79,14 @@ defineProps({
         <span class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Esta semana</span>
       </div>
       <div class="mt-3 flex items-center gap-3">
-        <svg width="60" height="60" viewBox="0 0 86 86" class="shrink-0">
+        <svg ref="ringRef" width="60" height="60" viewBox="0 0 86 86" class="shrink-0">
           <circle cx="43" cy="43" r="40" fill="none" stroke="var(--color-wc-border)" stroke-width="6" />
           <circle
             cx="43" cy="43" r="40" fill="none" stroke="#DC2626" stroke-width="6"
             stroke-linecap="round"
             :stroke-dasharray="251"
-            :stroke-dashoffset="trainedRingOffset"
-            class="transition-all duration-700"
+            :stroke-dashoffset="ringOffsetAnimated"
+            class="transition-all duration-[900ms] ease-[cubic-bezier(.22,1,.36,1)]"
             style="transform: rotate(-90deg); transform-origin: center;"
           />
           <text x="43" y="43" text-anchor="middle" dominant-baseline="central"

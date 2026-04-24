@@ -1,13 +1,15 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useHaptics } from '../../composables/useHaptics';
+import { useCelebration } from '../../composables/useCelebration';
 
 const props = defineProps({
     missions: { type: Array, default: () => [] },
 });
 
 const haptics = useHaptics();
+const celebration = useCelebration();
 
 // Mission route mapping (API returns route keys, we map to Vue routes)
 const missionRouteMap = {
@@ -33,6 +35,33 @@ function handleMissionTap() {
 }
 
 const completedCount = computed(() => props.missions.filter(m => m.completed).length);
+
+// Fase 8: celebrate al completar una misión que antes estaba pending.
+// Comparamos snapshots del array y si una mission pasó pending → completed,
+// disparamos haptic success + celebración visual (reusando BentoCelebration global).
+let lastSnapshot = [];
+watch(() => props.missions, (next) => {
+    if (!Array.isArray(next)) return;
+    if (lastSnapshot.length === 0) {
+        lastSnapshot = next.map(m => ({ key: m.key, completed: !!m.completed }));
+        return;
+    }
+    // Buscar transición pending → completed
+    for (const mission of next) {
+        const prev = lastSnapshot.find(p => p.key === mission.key);
+        if (prev && !prev.completed && mission.completed) {
+            haptics.pattern('success');
+            if (celebration?.celebrate) {
+                celebration.celebrate('mission-complete', {
+                    title: '¡Misión completada!',
+                    message: mission.title || 'Un paso más hacia tu objetivo',
+                });
+            }
+            break;
+        }
+    }
+    lastSnapshot = next.map(m => ({ key: m.key, completed: !!m.completed }));
+}, { deep: true });
 </script>
 
 <template>
