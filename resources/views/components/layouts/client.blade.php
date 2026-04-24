@@ -11,10 +11,11 @@
 
     <title>{{ $title ?? 'Dashboard' }} â€” WellCore</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {{-- Font preloads críticos (FCP) --}}
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/oswald-700-latin.woff2" crossorigin>
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/raleway-400-latin.woff2" crossorigin>
+    {{-- Self-hosted fonts --}}
+    <link rel="stylesheet" href="/fonts/wellcore-fonts.css">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
