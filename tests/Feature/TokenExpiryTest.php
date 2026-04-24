@@ -127,17 +127,17 @@ describe('Token Expiry', function () {
     // ─── Missing / malformed tokens ───────────────────────────────────────
 
     test('missing bearer token returns 401 json on client api endpoint', function () {
-        // Controllers call abort(401, 'Token invalido o expirado.') — not the Laravel default message.
+        // EnsureAuthenticated middleware returns 'Unauthenticated.' when no token is present.
         $this->getJson('/api/v/client/dashboard')
             ->assertStatus(401)
-            ->assertJson(['message' => 'Token invalido o expirado.']);
+            ->assertJson(['message' => 'Unauthenticated.']);
     });
 
     test('missing bearer token returns 401 json on admin api endpoint', function () {
-        // Controllers call abort(401, 'Token invalido o expirado.') — not the Laravel default message.
+        // EnsureAuthenticated middleware returns 'Unauthenticated.' when no token is present.
         $this->getJson('/api/v/admin/dashboard')
             ->assertStatus(401)
-            ->assertJson(['message' => 'Token invalido o expirado.']);
+            ->assertJson(['message' => 'Unauthenticated.']);
     });
 
     test('malformed bearer token returns 401 json on client api endpoint', function () {

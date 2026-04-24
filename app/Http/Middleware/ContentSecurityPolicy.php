@@ -43,6 +43,11 @@ class ContentSecurityPolicy
             $response->header('X-Frame-Options', 'SAMEORIGIN');
             $response->header('Referrer-Policy', 'strict-origin-when-cross-origin');
             $response->header('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+            $response->header('X-XSS-Protection', '1; mode=block');
+
+            if (app()->environment('production')) {
+                $response->header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+            }
         }
 
         return $response;

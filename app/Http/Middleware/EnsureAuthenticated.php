@@ -14,8 +14,8 @@ class EnsureAuthenticated
         $token = $this->resolveToken($request);
 
         if (! $token) {
-            if ($request->expectsJson()) {
-                return response()->json(['error' => 'Unauthenticated.'], 401);
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json(['message' => 'Unauthenticated.'], 401);
             }
 
             return redirect('/login');
@@ -34,8 +34,8 @@ class EnsureAuthenticated
                 // session store not initialized — ignore
             }
 
-            if ($request->expectsJson()) {
-                return response()->json(['error' => 'Token expired or invalid.'], 401);
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json(['message' => 'Token expired or invalid.'], 401);
             }
 
             return redirect('/login');

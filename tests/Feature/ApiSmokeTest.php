@@ -29,17 +29,17 @@ describe('API Smoke Tests', function () {
     // ─── Sad paths — unauthenticated / unauthorized ──────────────────────
 
     test('GET /api/v/client/dashboard without auth returns 401 json', function () {
-        // Controllers abort(401, 'Token invalido o expirado.') — not the default 'Unauthenticated.' message.
+        // EnsureAuthenticated middleware returns 'Unauthenticated.' when no token is present.
         $this->getJson('/api/v/client/dashboard')
             ->assertStatus(401)
-            ->assertJson(['message' => 'Token invalido o expirado.']);
+            ->assertJson(['message' => 'Unauthenticated.']);
     });
 
     test('GET /api/v/admin/dashboard without auth returns 401 json', function () {
-        // Controllers abort(401, 'Token invalido o expirado.') — not the default 'Unauthenticated.' message.
+        // EnsureAuthenticated middleware returns 'Unauthenticated.' when no token is present.
         $this->getJson('/api/v/admin/dashboard')
             ->assertStatus(401)
-            ->assertJson(['message' => 'Token invalido o expirado.']);
+            ->assertJson(['message' => 'Unauthenticated.']);
     });
 
     test('POST /api/v/wompi/webhook with invalid payload returns 403', function () {
@@ -214,10 +214,10 @@ describe('API Smoke Tests', function () {
     // ─── Coach endpoint smoke ─────────────────────────────────────────────
 
     test('GET /api/v/coach/dashboard without auth returns 401 json', function () {
-        // CoachController aborts with 'Token invalido o expirado.' — consistent with admin/client.
+        // EnsureAuthenticated middleware returns 'Unauthenticated.' when no token is present.
         $this->getJson('/api/v/coach/dashboard')
             ->assertStatus(401)
-            ->assertJson(['message' => 'Token invalido o expirado.']);
+            ->assertJson(['message' => 'Unauthenticated.']);
     });
 
     // ─── Training endpoint smoke (E.5) ────────────────────────────────────
@@ -225,7 +225,7 @@ describe('API Smoke Tests', function () {
     test('GET /api/v/client/training without auth returns 401 json', function () {
         $this->getJson('/api/v/client/training')
             ->assertStatus(401)
-            ->assertJson(['message' => 'Token invalido o expirado.']);
+            ->assertJson(['message' => 'Unauthenticated.']);
     });
 
     test('GET /api/v/client/training with valid active client token returns 200 with days array', function () {
