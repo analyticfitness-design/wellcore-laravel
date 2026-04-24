@@ -1139,6 +1139,58 @@ body {
 .hp-plan-card.hp-plan-feat .hp-plan-cta { background:var(--color-wc-accent); border-color:var(--color-wc-accent); color:#fff; }
 .hp-plan-card.hp-plan-feat .hp-plan-cta:hover { background:var(--color-wc-accent-hover,#B91C1C); }
 
+/* ═══ Promo Abril — banner + descuento ═══ */
+.hp-plan-promo {
+  display:flex; align-items:center; gap:14px;
+  background:linear-gradient(90deg,rgba(220,38,38,.18),rgba(245,158,11,.12));
+  border:1px solid rgba(220,38,38,.32);
+  border-radius:14px; padding:14px 20px;
+  margin:24px auto 32px; max-width:680px;
+  position:relative; overflow:hidden;
+}
+.hp-plan-promo::before {
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(circle at 10% 50%,rgba(220,38,38,.2),transparent 60%);
+  pointer-events:none;
+}
+.hp-plan-promo-flame { font-size:28px; flex-shrink:0; filter:drop-shadow(0 0 8px rgba(245,158,11,.6)); position:relative; z-index:1; animation:hp-flame-pulse 1.8s ease-in-out infinite; }
+@keyframes hp-flame-pulse { 0%,100%{transform:scale(1) rotate(-2deg)} 50%{transform:scale(1.08) rotate(2deg)} }
+.hp-plan-promo-text { display:flex; flex-direction:column; gap:2px; position:relative; z-index:1; }
+.hp-plan-promo-text strong {
+  font-family:var(--font-display); font-size:15px; font-weight:700;
+  text-transform:uppercase; letter-spacing:.05em;
+  color:var(--color-wc-text);
+}
+.hp-plan-promo-text span { font-size:12.5px; color:var(--color-wc-text-secondary); }
+
+/* Precio viejo tachado encima del nuevo */
+.hp-plan-price-old {
+  font-family:var(--font-display); font-size:17px; font-weight:600;
+  color:var(--color-wc-text-tertiary); text-decoration:line-through;
+  text-decoration-color:var(--color-wc-accent); text-decoration-thickness:2px;
+  margin-top:12px; line-height:1;
+}
+
+/* Badge -15% en la esquina de cada tarjeta */
+.hp-plan-discount-badge {
+  position:absolute; top:14px; right:14px; z-index:2;
+  background:linear-gradient(135deg,#F59E0B,#DC2626);
+  color:#fff; font-family:var(--font-display);
+  font-size:13px; font-weight:800; letter-spacing:.02em;
+  padding:4px 10px; border-radius:9999px;
+  box-shadow:0 4px 12px rgba(245,158,11,.35);
+  transform:rotate(6deg);
+}
+/* En tarjeta destacada, el badge -15% va debajo del "MEJOR VALOR" */
+.hp-plan-discount-badge-feat { top:40px; }
+
+@media (max-width:600px) {
+  .hp-plan-promo { flex-direction:row; padding:12px 16px; gap:10px; }
+  .hp-plan-promo-flame { font-size:22px; }
+  .hp-plan-promo-text strong { font-size:13px; }
+  .hp-plan-promo-text span { font-size:11.5px; }
+}
+
 /* ════════ TRUST CARDS v3 ════════ */
 .hp-trust { padding:40px 0; }
 .hp-trust-grid {
@@ -1442,6 +1494,10 @@ body {
 .hp-sticky-cta-price { font-weight:500; opacity:.85; font-size:13px; }
 @media (max-width:767px) {
   body:has(.hp-sticky-cta) { padding-bottom:76px; }
+  /* Chat widget sube encima del sticky CTA en mobile para evitar solape */
+  body:has(.hp-sticky-cta) [x-data*="chatOpen"].fixed.bottom-6 { bottom:88px !important; }
+  /* PWA install prompt también sube por encima del sticky CTA */
+  body:has(.hp-sticky-cta) [x-data*="deferredPrompt"].fixed.bottom-20 { bottom:96px !important; }
 }
 
 /* ─── Reduced motion — hp-* ─── */

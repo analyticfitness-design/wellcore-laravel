@@ -475,13 +475,24 @@
             <h2 class="hp-h2 mt-4">{{ __('home.plans_title') }}</h2>
             <p class="hp-lead mt-4">{{ __('home.plans_subtitle') }}</p>
 
+            {{-- Banner Promo Abril --}}
+            <div class="hp-plan-promo">
+                <span class="hp-plan-promo-flame">🔥</span>
+                <div class="hp-plan-promo-text">
+                    <strong>Promoción Abril</strong>
+                    <span>15% OFF en todos los planes · hasta el 30 de abril</span>
+                </div>
+            </div>
+
             <div class="hp-plan-grid">
                 {{-- ESENCIAL --}}
                 <div class="hp-plan-card">
+                    <span class="hp-plan-discount-badge">-15%</span>
                     <div>
                         <p class="hp-plan-name">{{ __('home.plan_esencial_name') }}</p>
-                        <p class="hp-plan-price mt-3">$299,000 <span class="hp-plan-price-period">{{ __('home.plan_cop_mes') }}</span></p>
-                        <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $73</span> / mes <span class="opacity-60">(aprox.)</span></p>
+                        <p class="hp-plan-price-old">$299,000</p>
+                        <p class="hp-plan-price mt-1">$254,150 <span class="hp-plan-price-period">{{ __('home.plan_cop_mes') }}</span></p>
+                        <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $62</span> / mes <span class="opacity-60 line-through">USD $73</span></p>
                     </div>
                     <ul class="hp-plan-features">
                         @foreach([
@@ -516,10 +527,12 @@
                 {{-- MÉTODO --}}
                 <div class="hp-plan-card hp-plan-feat">
                     <span class="hp-plan-badge">{{ __('home.plan_mejor_valor') }}</span>
+                    <span class="hp-plan-discount-badge hp-plan-discount-badge-feat">-15%</span>
                     <div>
                         <p class="hp-plan-name">{{ __('home.plan_metodo_name') }}</p>
-                        <p class="hp-plan-price mt-3">$399,000 <span class="hp-plan-price-period">{{ __('home.plan_cop_mes') }}</span></p>
-                        <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $97</span> / mes <span class="opacity-60">(aprox.)</span></p>
+                        <p class="hp-plan-price-old">$399,000</p>
+                        <p class="hp-plan-price mt-1">$339,150 <span class="hp-plan-price-period">{{ __('home.plan_cop_mes') }}</span></p>
+                        <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $82</span> / mes <span class="opacity-60 line-through">USD $97</span></p>
                     </div>
                     <ul class="hp-plan-features">
                         @foreach([
@@ -553,10 +566,12 @@
 
                 {{-- ELITE --}}
                 <div class="hp-plan-card">
+                    <span class="hp-plan-discount-badge">-15%</span>
                     <div>
                         <p class="hp-plan-name">{{ __('home.plan_elite_name') }}</p>
-                        <p class="hp-plan-price mt-3">$549,000 <span class="hp-plan-price-period">{{ __('home.plan_cop_mes') }}</span></p>
-                        <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $134</span> / mes <span class="opacity-60">(aprox.)</span></p>
+                        <p class="hp-plan-price-old">$549,000</p>
+                        <p class="hp-plan-price mt-1">$466,650 <span class="hp-plan-price-period">{{ __('home.plan_cop_mes') }}</span></p>
+                        <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $114</span> / mes <span class="opacity-60 line-through">USD $134</span></p>
                     </div>
                     <ul class="hp-plan-features">
                         @foreach([
