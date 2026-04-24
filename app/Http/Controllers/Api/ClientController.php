@@ -63,6 +63,20 @@ class ClientController extends Controller
         ]);
     }
 
+    /**
+     * GET /api/v/client/plan-status
+     *
+     * Reports the current plan-lock state for the authenticated client.
+     * Used by Vue SPA to decide whether to render the renewal overlay.
+     */
+    public function planStatus(Request $request): JsonResponse
+    {
+        $client = $this->resolveClientOrFail($request);
+        $lockService = app(\App\Services\PlanLockService::class);
+
+        return response()->json($lockService->status($client));
+    }
+
     // ─── Dashboard ──────────────────────────────────────────────────────
 
     /**

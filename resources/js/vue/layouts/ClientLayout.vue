@@ -5,6 +5,7 @@ import { useAuthStore } from '../stores/auth';
 import { useApi } from '../composables/useApi';
 import NotificationBell from '../components/NotificationBell.vue';
 import CoachImpersonationBanner from '../components/CoachImpersonationBanner.vue';
+import RenewalBanner from '../components/RenewalBanner.vue';
 import MedalUnlockCelebration from '../components/MedalUnlockCelebration.vue';
 import LevelUpCelebration from '../components/LevelUpCelebration.vue';
 import ToastContainer from '../components/ui/ToastContainer.vue';
@@ -304,6 +305,9 @@ const bottomNav = [
 
     <!-- Main wrapper (offset by sidebar on lg+) -->
     <div class="lg:pl-60" :class="{ 'pt-10': isImpersonating }">
+
+      <!-- Plan renewal warning banner (shows only when plan is in grace window) -->
+      <RenewalBanner />
 
       <!-- Top bar -->
       <header class="sticky z-30 flex h-16 items-center justify-between border-b border-wc-border bg-wc-bg/80 px-4 backdrop-blur-xl sm:px-6" :class="isImpersonating ? 'top-10' : 'top-0'">

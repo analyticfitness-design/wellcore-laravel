@@ -41,6 +41,10 @@ class Checkout extends Component
     // Status
     public string $paymentError = '';
 
+    // Renovación: cuando el cliente viene de /renovar en lugar de /pagar
+    public bool $isRenewal = false;
+    public ?int $renewalClientId = null;
+
     /**
      * Plans se cargan desde config/plans.php (SSOT).
      * NO hardcodear precios aquí — cambiar en config/plans.php.
@@ -63,8 +67,47 @@ class Checkout extends Component
     public function mount(): void
     {
         $plans = $this->getPlans();
+
+        // Renovación: viene del flujo /renovar (path) o query renewal=1 y hay cliente autenticado.
+        if (request()->is('renovar') || request()->boolean('renewal')) {
+            $this->isRenewal = true;
+            $this->prefillFromAuthenticatedClient();
+        }
+
         if (request()->has('plan') && array_key_exists(request('plan'), $plans)) {
             $this->selectPlan(request('plan'));
+        }
+    }
+
+    /**
+     * Pre-llena datos del cliente autenticado cuando es una renovación.
+     * Así no tiene que re-ingresar nombre/email/whatsapp.
+     */
+    protected function prefillFromAuthenticatedClient(): void
+    {
+        try {
+            $guard = app(\App\Auth\WellCoreGuard::class);
+            $user = $guard->user();
+
+            if (! $user instanceof \App\Models\Client) {
+                return;
+            }
+
+            $this->renewalClientId = $user->id;
+            $this->nombre = $user->name ?? '';
+            $this->email = $user->email ?? '';
+            $this->whatsapp = $user->phone ?? '';
+
+            // Pre-selecciona el plan actual del cliente
+            $planValue = $user->plan instanceof \App\Enums\PlanType
+                ? $user->plan->value
+                : (string) ($user->plan ?? '');
+
+            if (in_array($planValue, ['esencial', 'metodo', 'elite'], true)) {
+                $this->selectPlan($planValue);
+            }
+        } catch (\Throwable) {
+            // Sin cliente autenticado, continúa como guest
         }
     }
 
@@ -138,7 +181,19 @@ class Checkout extends Component
 
         $total = $this->getTotal();
         $this->amountInCents = $total * 100; // COP is already in whole pesos; Wompi needs cents
-        $this->paymentReference = $wompi->generateReference();
+
+        // Renovación: prefijo RENEWAL-{clientId}-{timestamp} para distinguir en analytics
+        // y que el webhook sepa activar el plan via ActivateRenewalAction.
+        if ($this->isRenewal && $this->renewalClientId) {
+            $this->paymentReference = sprintf(
+                'RENEWAL-%d-%s',
+                $this->renewalClientId,
+                strtoupper(bin2hex(random_bytes(4))).'-'.time()
+            );
+        } else {
+            $this->paymentReference = $wompi->generateReference();
+        }
+
         $this->currency = 'COP';
 
         $widgetData = $wompi->getWidgetData(
@@ -155,6 +210,7 @@ class Checkout extends Component
 
         // Create the payment record in pending status
         Payment::create([
+            'client_id' => $this->renewalClientId, // null para checkout normal; cliente autenticado para renovación
             'email' => $this->email,
             'buyer_name' => $this->nombre,
             'buyer_phone' => $this->whatsapp,

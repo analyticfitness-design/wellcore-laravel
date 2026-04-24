@@ -3,10 +3,13 @@ import { ref, computed, onMounted } from 'vue';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
 import { localDateStr } from '../../composables/useDate';
+import { usePlanLock } from '../../composables/usePlanLock';
 import ClientLayout from '../../layouts/ClientLayout.vue';
+import LockOverlay from '../../components/LockOverlay.vue';
 
 const api = useApi();
 const toast = useToast();
+const { isLocked } = usePlanLock();
 
 // State
 const loading = ref(true);
@@ -116,6 +119,9 @@ onMounted(() => {
 
 <template>
   <ClientLayout>
+    <div class="relative">
+      <LockOverlay v-if="isLocked" />
+      <div :class="isLocked ? 'pointer-events-none blur-sm select-none' : ''" :aria-hidden="isLocked ? 'true' : undefined">
     <div class="space-y-6">
       <!-- Title -->
       <div class="flex items-center justify-between">
@@ -230,6 +236,8 @@ onMounted(() => {
           </div>
         </div>
       </template>
+    </div>
+      </div>
     </div>
   </ClientLayout>
 </template>

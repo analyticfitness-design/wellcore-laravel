@@ -3,8 +3,10 @@ import { ref, computed, reactive, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
+import { usePlanLock } from '../../composables/usePlanLock';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import AiFoodEstimator from '../../components/AiFoodEstimator.vue';
+import LockOverlay from '../../components/LockOverlay.vue';
 import {
   FlaskConical, Dumbbell, Pill, Fish, Sun, Citrus, Star, Moon,
   Atom, Leaf, Zap, Dna, Flame, Bone, TestTube, Bed,
@@ -56,6 +58,7 @@ function getBloodworkStatusLabel(status) {
 const api = useApi();
 const router = useRouter();
 const toast = useToast();
+const { isLocked } = usePlanLock();
 
 // Modal de confirmación para eliminar bloodwork (reemplaza confirm() nativo)
 const showDeleteBwConfirm = ref(false);
@@ -909,6 +912,9 @@ onBeforeUnmount(() => {
 
 <template>
   <ClientLayout>
+    <div class="relative">
+      <LockOverlay v-if="isLocked" />
+      <div :class="isLocked ? 'pointer-events-none blur-sm select-none' : ''" :aria-hidden="isLocked ? 'true' : undefined">
     <div class="space-y-6">
       <!-- Header -->
       <div class="mb-8">
@@ -2685,6 +2691,8 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </Transition>
+      </div>
+    </div>
   </ClientLayout>
 </template>
 

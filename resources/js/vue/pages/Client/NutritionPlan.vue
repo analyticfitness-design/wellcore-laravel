@@ -3,11 +3,14 @@ import { ref, computed, onMounted } from 'vue';
 import { Replace, X as XIcon, Search as SearchIcon, CheckCircle2, AlertTriangle, Flame, RefreshCw } from 'lucide-vue-next';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
+import { usePlanLock } from '../../composables/usePlanLock';
 import { RECIPES } from '../../data/recipes';
 import ClientLayout from '../../layouts/ClientLayout.vue';
+import LockOverlay from '../../components/LockOverlay.vue';
 
 const api = useApi();
 const globalToast = useToast();
+const { isLocked } = usePlanLock();
 
 // State
 const loading = ref(true);
@@ -392,6 +395,9 @@ onMounted(() => {
 
 <template>
   <ClientLayout>
+    <div class="relative">
+      <LockOverlay v-if="isLocked" />
+      <div :class="isLocked ? 'pointer-events-none blur-sm select-none' : ''" :aria-hidden="isLocked ? 'true' : undefined">
     <!-- Loading Skeleton -->
     <div v-if="loading" class="space-y-6">
       <div class="space-y-2">
@@ -1122,6 +1128,8 @@ onMounted(() => {
         </div>
       </div>
     </Transition>
+      </div>
+    </div>
   </ClientLayout>
 </template>
 

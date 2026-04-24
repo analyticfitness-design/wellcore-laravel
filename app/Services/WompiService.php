@@ -387,7 +387,48 @@ class WompiService
         try {
             $client = $payment->client_id ? Client::find($payment->client_id) : null;
 
-            // 1. Send welcome email to client
+            // 0. Renewal? Extend the plan and skip welcome/first-timer flows.
+            if ($payment->isRenewal()) {
+                $renewalAction = app(\App\Actions\ActivateRenewalAction::class);
+                $newPlan = $renewalAction->execute($payment);
+
+                $this->logEvent('webhook.renewal_activated', [
+                    'payment_id' => $payment->id,
+                    'client_id' => $payment->client_id,
+                    'new_plan_id' => $newPlan?->id,
+                    'expires_at' => $newPlan?->expires_at?->toDateString(),
+                ]);
+
+                // Send renewal confirmation email (reuse PaymentConfirmation, skip WelcomeMail).
+                $recipientEmail = $client?->email ?? $payment->email ?? null;
+                if ($recipientEmail) {
+                    $planName = $payment->plan instanceof PlanType
+                        ? $payment->plan->value
+                        : ($payment->plan ?? 'Plan WellCore');
+
+                    Mail::to($recipientEmail)->queue(new PaymentConfirmation(
+                        clientName: $client?->name ?? $payment->buyer_name ?? 'Cliente',
+                        amount: number_format((float) $payment->amount, 0, '.', '.'),
+                        currency: $payment->currency ?? 'COP',
+                        plan: $planName.' · Renovación',
+                        reference: $payment->wompi_reference ?? (string) $payment->id,
+                    ));
+                }
+
+                // Notify admin
+                WellcoreNotification::create([
+                    'user_type' => UserType::Admin,
+                    'user_id' => 1,
+                    'type' => 'renewal_approved',
+                    'title' => 'Renovación aprobada',
+                    'body' => 'Cliente #'.$payment->client_id.' renovó su plan por $'
+                        .number_format((float) $payment->amount, 0, '.', '.').' '.($payment->currency ?? 'COP'),
+                ]);
+
+                return;
+            }
+
+            // 1. Send welcome email to client (solo para primer pago, no para renovaciones)
             if ($client && $client->email) {
                 $planName = $payment->plan instanceof PlanType
                     ? $payment->plan->value

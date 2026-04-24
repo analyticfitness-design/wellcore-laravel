@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -13,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'version',
     'assigned_by',
     'valid_from',
+    'expires_at',
     'active',
 ])]
 class AssignedPlan extends Model
@@ -26,6 +29,7 @@ class AssignedPlan extends Model
         return [
             'content' => 'array',
             'valid_from' => 'date',
+            'expires_at' => 'date',
             'active' => 'boolean',
             'created_at' => 'datetime',
         ];
@@ -39,5 +43,65 @@ class AssignedPlan extends Model
     public function assignedBy(): BelongsTo
     {
         return $this->belongsTo(Admin::class, 'assigned_by');
+    }
+
+    /**
+     * ¿Plan expiró hoy o antes? Si no tiene expires_at, se considera no-expirable.
+     */
+    public function isExpired(): bool
+    {
+        if (! $this->expires_at) {
+            return false;
+        }
+
+        return Carbon::parse($this->expires_at)->startOfDay()->lessThanOrEqualTo(Carbon::now()->startOfDay());
+    }
+
+    /**
+     * Días restantes hasta expiración. Negativo si ya expiró. Null si no tiene fecha.
+     */
+    public function daysUntilExpiry(): ?int
+    {
+        if (! $this->expires_at) {
+            return null;
+        }
+
+        return (int) Carbon::now()->startOfDay()->diffInDays(
+            Carbon::parse($this->expires_at)->startOfDay(),
+            false
+        );
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('active', true);
+    }
+
+    public function scopeForClient(Builder $query, int $clientId): Builder
+    {
+        return $query->where('client_id', $clientId);
+    }
+
+    /**
+     * Auto-calcula expires_at = valid_from + 30 días para planes mensuales
+     * si no viene explícito. Esto garantiza que cualquier coach/admin que crea
+     * un AssignedPlan active el lock correctamente sin tener que recordar el campo.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (AssignedPlan $plan) {
+            if ($plan->expires_at) {
+                return;
+            }
+
+            $monthlyPlans = ['esencial', 'metodo', 'elite'];
+
+            if (! in_array($plan->plan_type, $monthlyPlans, true)) {
+                return;
+            }
+
+            $from = $plan->valid_from ? Carbon::parse($plan->valid_from) : Carbon::now();
+            $plan->expires_at = $from->copy()->addDays(30)->toDateString();
+        });
     }
 }

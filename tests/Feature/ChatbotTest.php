@@ -13,7 +13,8 @@ test('chatbot responds to plans question', function () {
     ]);
 
     $response->assertStatus(200)->assertJsonStructure(['message']);
-    $this->assertStringContainsString('299', $response->json('message'));
+    // Chatbot should mention the current (promo-adjusted) Esencial price in COP
+    $this->assertStringContainsString('254,150', $response->json('message'));
 });
 
 test('chatbot responds to greeting', function () {

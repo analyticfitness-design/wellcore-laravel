@@ -66,6 +66,7 @@ Route::prefix('v/shop')->group(function () {
 // Client (authenticated — Bearer token required)
 Route::prefix('v/client')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
     Route::get('/account-status', [ClientController::class, 'accountStatus']);
+    Route::get('/plan-status', [ClientController::class, 'planStatus']);
     Route::get('/dashboard', [ClientController::class, 'dashboard']);
     Route::get('/metrics', [ClientController::class, 'metrics']);
     Route::post('/metrics', [ClientController::class, 'storeMetric']);

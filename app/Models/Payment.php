@@ -45,4 +45,14 @@ class Payment extends Model
     {
         return $this->belongsTo(Client::class);
     }
+
+    /**
+     * Un pago es de renovación si su reference Wompi empieza con "RENEWAL-".
+     * Reference de alta nueva empieza con "WC-".
+     */
+    public function isRenewal(): bool
+    {
+        return is_string($this->wompi_reference)
+            && str_starts_with($this->wompi_reference, 'RENEWAL-');
+    }
 }

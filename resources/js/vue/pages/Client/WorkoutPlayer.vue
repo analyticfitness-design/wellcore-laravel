@@ -3,14 +3,17 @@ import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
+import { usePlanLock } from '../../composables/usePlanLock';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import ExerciseMediaModal from '../../components/workout/ExerciseMediaModal.vue';
+import LockOverlay from '../../components/LockOverlay.vue';
 import { getEmbedUrl } from '../../composables/useExerciseMedia';
 
 const api = useApi();
 const toast = useToast();
 const route = useRoute();
 const router = useRouter();
+const { isLocked } = usePlanLock();
 
 // ── State ──
 const loading = ref(true);
@@ -743,6 +746,9 @@ onBeforeUnmount(() => {
 
 <template>
   <ClientLayout>
+    <div class="relative">
+      <LockOverlay v-if="isLocked" />
+      <div :class="isLocked ? 'pointer-events-none blur-sm select-none' : ''" :aria-hidden="isLocked ? 'true' : undefined">
     <div class="min-h-screen" :class="{ 'pb-[320px]': workoutStarted }">
 
       <!-- ════════════════════════════════════════════════ -->
@@ -1703,6 +1709,8 @@ onBeforeUnmount(() => {
       :show="mediaModal.show"
       @close="closeMedia"
     />
+      </div>
+    </div>
   </ClientLayout>
 </template>
 
