@@ -220,4 +220,66 @@ describe('API Smoke Tests', function () {
             ->assertJson(['message' => 'Token invalido o expirado.']);
     });
 
+    // ─── Training endpoint smoke (E.5) ────────────────────────────────────
+
+    test('GET /api/v/client/training without auth returns 401 json', function () {
+        $this->getJson('/api/v/client/training')
+            ->assertStatus(401)
+            ->assertJson(['message' => 'Token invalido o expirado.']);
+    });
+
+    test('GET /api/v/client/training with valid active client token returns 200 with days array', function () {
+        $client = Client::where('status', 'activo')->first();
+        if (! $client) {
+            $this->markTestSkipped('No active clients in database');
+        }
+
+        $token = bin2hex(random_bytes(32));
+        $this->tokens[] = $token;
+
+        AuthToken::create([
+            'user_type'  => 'client',
+            'user_id'    => $client->id,
+            'token'      => $token,
+            'expires_at' => now()->addDay(),
+        ]);
+
+        $response = $this->withHeaders(['Authorization' => "Bearer {$token}"])
+            ->getJson('/api/v/client/training');
+
+        $response->assertStatus(200);
+
+        // TrainingController::training() always returns a 7-element 'days' array
+        // (ISO week calendar) and metadata keys.
+        $response->assertJsonStructure([
+            'days' => [
+                '*' => ['date', 'dayNumber', 'dayName', 'isToday', 'completed'],
+            ],
+        ]);
+
+        expect($response->json('days'))->toHaveCount(7);
+    });
+
+    test('GET /api/v/client/training with admin token returns 403', function () {
+        $admin = Admin::whereIn('role', ['admin', 'superadmin', 'jefe'])->first();
+        if (! $admin) {
+            $this->markTestSkipped('No admin in database');
+        }
+
+        $token = bin2hex(random_bytes(32));
+        $this->tokens[] = $token;
+
+        AuthToken::create([
+            'user_type'  => 'admin',
+            'user_id'    => $admin->id,
+            'token'      => $token,
+            'expires_at' => now()->addDay(),
+        ]);
+
+        // resolveClientOrFail() aborts with 403 for admin user_type.
+        $this->withHeaders(['Authorization' => "Bearer {$token}"])
+            ->getJson('/api/v/client/training')
+            ->assertStatus(403);
+    });
+
 });
