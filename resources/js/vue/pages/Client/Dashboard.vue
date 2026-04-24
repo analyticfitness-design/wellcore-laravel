@@ -16,6 +16,8 @@ import DashboardTimeline from '../../components/dashboard/DashboardTimeline.vue'
 import DashboardHeatmap from '../../components/dashboard/DashboardHeatmap.vue';
 import DashboardWeight from '../../components/dashboard/DashboardWeight.vue';
 import DashboardWeeklySummary from '../../components/dashboard/DashboardWeeklySummary.vue';
+import DashboardWeeklyGrid from '../../components/dashboard/DashboardWeeklyGrid.vue';
+import DashboardProgressCollapsible from '../../components/dashboard/DashboardProgressCollapsible.vue';
 import { useStaggerIn } from '../../composables/dashboard/useStaggerIn';
 
 // Stagger entry: aplica data-stagger-index + fade-in progresivo a las secciones
@@ -318,12 +320,12 @@ const weekMarkers = computed(() => {
     <div v-else-if="data" ref="staggerRoot" class="space-y-6">
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- GREETING SECTION + QUICK ACTIONS (desktop)                    -->
+      <!-- 1. HERO — greeting + plan badge + CTAs desktop                -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <DashboardHero :data="data" :greeting="greeting" :motivational-quote="motivationalQuote" />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- DAILY MOTIVATIONAL QUOTE                                      -->
+      <!-- 2. QUOTE motivacional del coach                                -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <div v-if="data.dailyQuote" class="wc-topline flex items-start gap-3 rounded-xl border border-wc-border/50 bg-wc-bg-tertiary/50 px-4 py-3">
         <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 mt-0.5">
@@ -340,37 +342,19 @@ const weekMarkers = computed(() => {
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- PLAN ALERT                                                    -->
+      <!-- 3. PLAN ALERT (con live-dot verde)                             -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <DashboardPlanAlert :data="data" />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- STATS CARDS                                                   -->
+      <!-- 4. MISIONES DIARIAS ⬆ (subido de pos.11)                      -->
+      <!--    Acciones del día — prioridad máxima above-the-fold mobile   -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <DashboardStats :data="data" :xp-progress="xpProgress" :trained-ring-offset="trainedRingOffset" />
+      <DashboardMissions :missions="data.dailyMissions || []" />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- PLAN PROGRESS TIMELINE                                        -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <DashboardTimeline :data="data" :week-markers="weekMarkers" />
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- STREAK CALENDAR (90-day heatmap)                              -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <DashboardHeatmap :data="data" :calendar-days="calendarDays" />
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- WEIGHT CHART (CSS bar chart)                                  -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <DashboardWeight :weight-chart-data="data.weightChartData || []" />
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- COACH CARD                                                    -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <DashboardCoach :data="data" />
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- CHECK-IN COUNTDOWN                                            -->
+      <!-- 5. CHECK-IN COUNTDOWN ⬆ (subido de pos.9)                     -->
+      <!--    Si está pendiente/urgente, usuario lo ve inmediato          -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <DashboardCheckin
         :data="data"
@@ -381,63 +365,35 @@ const weekMarkers = computed(() => {
       />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- WEEKLY SUMMARY (last week)                                    -->
+      <!-- 6. STATS CARDS (racha · check-ins · XP · esta semana)          -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <DashboardWeeklySummary :data="data" :weekly-summary-message="weeklySummaryMessage" />
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- DAILY MISSIONS                                                -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <DashboardMissions :missions="data.dailyMissions || []" />
+      <DashboardStats :data="data" :xp-progress="xpProgress" :trained-ring-offset="trainedRingOffset" />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- WEEKLY TRAINING OVERVIEW + RECENT ACTIVITY                    -->
+      <!-- 7. SEMANA DE ENTRENAMIENTO (Lun-Dom)                           -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <DashboardWeeklyGrid :week-days="data.weekDays || []" />
 
-        <!-- Weekly training overview (Mon-Sun with checkmarks) -->
-        <div v-if="data.weekDays && data.weekDays.length > 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 lg:col-span-2">
-          <h2 class="text-lg font-semibold text-wc-text">Semana de entrenamiento</h2>
-          <p class="mt-1 text-sm text-wc-text-secondary">Semana {{ new Date().toLocaleDateString('es', { year: 'numeric' }).split('/').pop() }}</p>
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- 8. COACH CARD                                                  -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <DashboardCoach :data="data" />
 
-          <div class="mt-5 flex items-center justify-between gap-2 sm:justify-start sm:gap-4">
-            <div v-for="(day, idx) in data.weekDays" :key="idx" class="flex flex-col items-center gap-2">
-              <span :class="['text-sm font-medium text-wc-text-secondary', day.isToday ? '!text-wc-accent !font-semibold' : '']">
-                {{ day.label }}
-              </span>
-              <!-- Completed day -->
-              <div v-if="day.completed" class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/15 sm:h-12 sm:w-12">
-                <svg class="h-5 w-5 text-emerald-500 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                </svg>
-              </div>
-              <!-- Pending day -->
-              <div v-else :class="['flex h-10 w-10 items-center justify-center rounded-full border-2 border-wc-border sm:h-12 sm:w-12', day.isToday ? '!border-wc-accent/40' : '']">
-                <div v-if="day.isToday" class="h-2 w-2 rounded-full bg-wc-accent"></div>
-              </div>
-            </div>
-          </div>
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- 9. TU PROGRESO (colapsable): Timeline + Heatmap + Peso + Resumen -->
+      <!--    Desktop: abierto por default. Mobile: cerrado por default.  -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <DashboardProgressCollapsible>
+        <DashboardTimeline :data="data" :week-markers="weekMarkers" />
+        <DashboardHeatmap :data="data" :calendar-days="calendarDays" />
+        <DashboardWeight :weight-chart-data="data.weightChartData || []" />
+        <DashboardWeeklySummary :data="data" :weekly-summary-message="weeklySummaryMessage" />
+      </DashboardProgressCollapsible>
 
-          <!-- Legend -->
-          <div class="mt-5 flex items-center gap-4 text-sm text-wc-text-secondary">
-            <div class="flex items-center gap-1.5">
-              <div class="h-2.5 w-2.5 rounded-full bg-emerald-500/40"></div>
-              Completado
-            </div>
-            <div class="flex items-center gap-1.5">
-              <div class="h-2.5 w-2.5 rounded-full border border-wc-border"></div>
-              Pendiente
-            </div>
-            <div class="flex items-center gap-1.5">
-              <div class="h-2.5 w-2.5 rounded-full bg-wc-accent"></div>
-              Hoy
-            </div>
-          </div>
-        </div>
-
-        <!-- Recent activity -->
-        <DashboardActivity :activities="data.recentActivity || []" />
-      </div>
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- 10. ACTIVIDAD RECIENTE (últimos 4 items)                       -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <DashboardActivity :activities="data.recentActivity || []" />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- MOBILE QUICK ACTIONS                                          -->
