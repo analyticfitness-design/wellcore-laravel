@@ -176,12 +176,10 @@ html:not(.dark) .hp-hero a[class*="border-wc-border"]:hover {
 }
 
 /* ═════════════════════════════════════════════════════════════
-   CARDS HÍBRIDAS · Translucent Glass + Accent Line Lateral + Offset Shadow
-   Light cards (NO dark) · solo hero es dark inverted
+   Stats cards · LIGHT CLEAN con TOP accent line por color
+   Card blanco · número grande en color accent · label gris
+   Specificity boost con .rounded-xl.bg-wc-bg-tertiary para ganarle a la regla glass
    ═════════════════════════════════════════════════════════════ */
-
-/* Stats cards · DARK INVERTED con TOP accent line por color
-   Specificity boost con .rounded-xl.bg-wc-bg-tertiary para ganarle a la regla glass */
 html:not(.dark) .sc-r.rounded-xl.bg-wc-bg-tertiary,
 html:not(.dark) .sc-g.rounded-xl.bg-wc-bg-tertiary,
 html:not(.dark) .sc-p.rounded-xl.bg-wc-bg-tertiary,
@@ -190,18 +188,18 @@ html:not(.dark) .sc-r,
 html:not(.dark) .sc-g,
 html:not(.dark) .sc-p,
 html:not(.dark) .sc-a {
-    background: #0F0F0F !important;
+    background: #FFFFFF !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    border: 1px solid rgba(255, 255, 255, 0.06) !important;
-    color: #FAFAF8;
+    border: 1px solid #EDE7D8 !important;
+    color: #0F0F0F;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 2px 8px rgba(15, 15, 15, 0.04) !important;
     transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* TOP accent line 3px por color con glow */
+/* TOP accent line 3px por color (sin glow fuerte sobre fondo blanco) */
 html:not(.dark) .sc-r::before,
 html:not(.dark) .sc-g::before,
 html:not(.dark) .sc-p::before,
@@ -214,75 +212,88 @@ html:not(.dark) .sc-a::before {
     height: 3px;
     z-index: 1;
 }
-html:not(.dark) .sc-r::before { background: #DC2626; box-shadow: 0 0 12px rgba(220, 38, 38, 0.6); }
-html:not(.dark) .sc-g::before { background: #10B981; box-shadow: 0 0 12px rgba(16, 185, 129, 0.6); }
-html:not(.dark) .sc-p::before { background: #A78BFA; box-shadow: 0 0 12px rgba(167, 139, 250, 0.6); }
-html:not(.dark) .sc-a::before { background: #F59E0B; box-shadow: 0 0 12px rgba(245, 158, 11, 0.6); }
+html:not(.dark) .sc-r::before { background: #DC2626; }
+html:not(.dark) .sc-g::before { background: #10B981; }
+html:not(.dark) .sc-p::before { background: #A78BFA; }
+html:not(.dark) .sc-a::before { background: #F59E0B; }
 
-/* Hover */
-html:not(.dark) .sc-r:hover { box-shadow: 0 8px 30px rgba(220, 38, 38, 0.2); transform: translateY(-3px); }
-html:not(.dark) .sc-g:hover { box-shadow: 0 8px 30px rgba(16, 185, 129, 0.2); transform: translateY(-3px); }
-html:not(.dark) .sc-p:hover { box-shadow: 0 8px 30px rgba(167, 139, 250, 0.2); transform: translateY(-3px); }
-html:not(.dark) .sc-a:hover { box-shadow: 0 8px 30px rgba(245, 158, 11, 0.2); transform: translateY(-3px); }
+/* Hover sutil */
+html:not(.dark) .sc-r:hover { box-shadow: 0 6px 20px rgba(220, 38, 38, 0.15); transform: translateY(-2px); }
+html:not(.dark) .sc-g:hover { box-shadow: 0 6px 20px rgba(16, 185, 129, 0.15); transform: translateY(-2px); }
+html:not(.dark) .sc-p:hover { box-shadow: 0 6px 20px rgba(167, 139, 250, 0.15); transform: translateY(-2px); }
+html:not(.dark) .sc-a:hover { box-shadow: 0 6px 20px rgba(245, 158, 11, 0.15); transform: translateY(-2px); }
 
-/* Textos en stats dark */
+/* Labels (RACHA, CHECK-INS, etc.) gris */
 html:not(.dark) .sc-r .text-wc-text,
 html:not(.dark) .sc-g .text-wc-text,
 html:not(.dark) .sc-p .text-wc-text,
-html:not(.dark) .sc-a .text-wc-text { color: #FAFAF8 !important; }
+html:not(.dark) .sc-a .text-wc-text { color: #6B7280 !important; }
+
+/* Texto tertiary (dias consecutivos, este mes, XP total) */
 html:not(.dark) .sc-r .text-wc-text-tertiary,
 html:not(.dark) .sc-g .text-wc-text-tertiary,
 html:not(.dark) .sc-p .text-wc-text-tertiary,
-html:not(.dark) .sc-a .text-wc-text-tertiary { color: rgba(250, 250, 248, 0.5) !important; }
+html:not(.dark) .sc-a .text-wc-text-tertiary { color: #9CA3AF !important; }
 
-/* Números grandes en color accent con glow */
-html:not(.dark) .sc-r p.font-data { color: #EF4444 !important; text-shadow: 0 0 20px rgba(220, 38, 38, 0.35); }
-html:not(.dark) .sc-g p.font-data { color: #34D399 !important; text-shadow: 0 0 20px rgba(16, 185, 129, 0.35); }
-html:not(.dark) .sc-p p.font-data { color: #C4B5FD !important; text-shadow: 0 0 20px rgba(167, 139, 250, 0.35); }
-html:not(.dark) .sc-a p.font-data { color: #FBBF24 !important; text-shadow: 0 0 20px rgba(245, 158, 11, 0.35); }
+/* Números grandes en color accent sin glow */
+html:not(.dark) .sc-r p.font-data { color: #DC2626 !important; text-shadow: none; }
+html:not(.dark) .sc-g p.font-data { color: #10B981 !important; text-shadow: none; }
+html:not(.dark) .sc-p p.font-data { color: #A78BFA !important; text-shadow: none; }
+html:not(.dark) .sc-a p.font-data { color: #F59E0B !important; text-shadow: none; }
 
-/* Icon bg chips en stats dark */
-html:not(.dark) .sc-r .bg-orange-500\/10 { background: rgba(220, 38, 38, 0.18) !important; }
-html:not(.dark) .sc-g .bg-emerald-500\/10 { background: rgba(16, 185, 129, 0.18) !important; }
-html:not(.dark) .sc-p .bg-violet-500\/10 { background: rgba(167, 139, 250, 0.18) !important; }
+/* Icon bg chips suaves */
+html:not(.dark) .sc-r .bg-orange-500\/10 { background: #FEE2E2 !important; }
+html:not(.dark) .sc-g .bg-emerald-500\/10 { background: #D1FAE5 !important; }
+html:not(.dark) .sc-p .bg-violet-500\/10 { background: #EDE9FE !important; }
 
 /* XP progress bar bg */
-html:not(.dark) .sc-p .bg-wc-bg-secondary { background: rgba(255, 255, 255, 0.08) !important; }
-html:not(.dark) .sc-a svg circle[stroke="var(--color-wc-border)"] { stroke: rgba(255, 255, 255, 0.1) !important; }
+html:not(.dark) .sc-p .bg-wc-bg-secondary { background: #EDE7D8 !important; }
+html:not(.dark) .sc-a svg circle[stroke="var(--color-wc-border)"] { stroke: #E2DCCC !important; }
 
 /* ═════════════════════════════════════════════════════════════
-   Coach Card · Dark inverted (specificity boost)
+   Coach Card · Light clean con avatar rojo + botón rojo
    ═════════════════════════════════════════════════════════════ */
 html:not(.dark) .coach-card.rounded-xl.bg-wc-bg-tertiary,
 html:not(.dark) .coach-card {
-    background: #0F0F0F !important;
+    background: #FFFFFF !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    border: 1px solid rgba(255, 255, 255, 0.06) !important;
-    color: #FAFAF8;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid #EDE7D8 !important;
+    color: #0F0F0F;
+    box-shadow: 0 2px 8px rgba(15, 15, 15, 0.04) !important;
 }
 html:not(.dark) .coach-card p,
 html:not(.dark) .coach-card .text-wc-text,
-html:not(.dark) .coach-card [class*="text-wc-text"]:not(.text-wc-text-tertiary) { color: #FAFAF8 !important; }
-html:not(.dark) .coach-card .text-wc-text-secondary { color: rgba(250, 250, 248, 0.72) !important; }
-html:not(.dark) .coach-card .text-wc-text-tertiary { color: rgba(250, 250, 248, 0.55) !important; }
+html:not(.dark) .coach-card [class*="text-wc-text"]:not(.text-wc-text-tertiary):not(.text-wc-text-secondary) { color: #0F0F0F !important; }
+html:not(.dark) .coach-card .text-wc-text-secondary { color: #6B7280 !important; }
+html:not(.dark) .coach-card .text-wc-text-tertiary { color: #9CA3AF !important; }
 
 /* ═════════════════════════════════════════════════════════════
    Misiones diarias · los 4 items a.group.rounded-xl.bg-wc-bg-tertiary
+   Completadas → verde claro · Pendientes → blanco limpio
+   (el componente debería diferenciar con una clase; si no, todas light)
    ═════════════════════════════════════════════════════════════ */
 html:not(.dark) a.group.rounded-xl.border.bg-wc-bg-tertiary {
-    background: #0F0F0F !important;
-    border-color: rgba(255, 255, 255, 0.06) !important;
-    color: #FAFAF8;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    background: #FFFFFF !important;
+    border-color: #EDE7D8 !important;
+    color: #0F0F0F;
+    box-shadow: 0 2px 8px rgba(15, 15, 15, 0.04);
 }
 html:not(.dark) a.group.rounded-xl.border.bg-wc-bg-tertiary:hover {
-    background: #1A1A1A !important;
+    background: #F9FAFB !important;
+    box-shadow: 0 4px 14px rgba(15, 15, 15, 0.06);
 }
-html:not(.dark) a.group.rounded-xl.border.bg-wc-bg-tertiary .text-wc-text { color: #FAFAF8 !important; }
-html:not(.dark) a.group.rounded-xl.border.bg-wc-bg-tertiary .text-wc-text-secondary { color: rgba(250, 250, 248, 0.72) !important; }
-html:not(.dark) a.group.rounded-xl.border.bg-wc-bg-tertiary .text-wc-text-tertiary { color: rgba(250, 250, 248, 0.5) !important; }
+html:not(.dark) a.group.rounded-xl.border.bg-wc-bg-tertiary .text-wc-text { color: #0F0F0F !important; }
+html:not(.dark) a.group.rounded-xl.border.bg-wc-bg-tertiary .text-wc-text-secondary { color: #6B7280 !important; }
+html:not(.dark) a.group.rounded-xl.border.bg-wc-bg-tertiary .text-wc-text-tertiary { color: #9CA3AF !important; }
+
+/* Misiones completadas · tint verde (heurística por svg check verde dentro) */
+html:not(.dark) a.group.rounded-xl.border.bg-wc-bg-tertiary:has(.text-emerald-500),
+html:not(.dark) a.group.rounded-xl.border.bg-wc-bg-tertiary:has(.text-green-500),
+html:not(.dark) a.group.rounded-xl.border.bg-wc-bg-tertiary:has([class*="text-emerald"]) {
+    background: #ECFDF5 !important;
+    border-color: #A7F3D0 !important;
+}
 
 /* ═════════════════════════════════════════════════════════════
    WC-TOPLINE (Quote motivacional) · Glass con accent line lateral ámbar
