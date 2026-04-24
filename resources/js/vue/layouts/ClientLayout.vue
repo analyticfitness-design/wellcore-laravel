@@ -32,6 +32,9 @@ const accountCheckDone = ref(false);
 // Coach branding (P4)
 const coachBrand = ref(null); // { name, logo_url, logo_url_webp, primary_color, nombre_comercial, tagline }
 
+// Plan phase badge (topbar)
+const planPhaseText = ref('');
+
 onMounted(async () => {
     try {
         await api.get('/api/v/client/account-status');
@@ -56,6 +59,16 @@ onMounted(async () => {
         }
     } catch (e) {
         // silent — no coach or endpoint unavailable
+    }
+
+    // Fetch plan phase for topbar badge
+    try {
+        const planRes = await api.get('/api/v/client/dashboard');
+        if (planRes.status === 200 && planRes.data?.planLabel) {
+            planPhaseText.value = planRes.data.planLabel;
+        }
+    } catch (_) {
+        // silent — badge won't show if endpoint unavailable
     }
 });
 
@@ -287,7 +300,7 @@ const bottomNav = [
 
       <!-- Top bar -->
       <header class="sticky z-30 flex h-16 items-center justify-between border-b border-wc-border bg-wc-bg/80 px-4 backdrop-blur-xl sm:px-6" :class="isImpersonating ? 'top-10' : 'top-0'">
-        <!-- Left: hamburger (mobile) -->
+        <!-- Left: hamburger + plan phase -->
         <div class="flex items-center gap-3">
           <button
             @click="sidebarOpen = !sidebarOpen"
@@ -296,6 +309,10 @@ const bottomNav = [
           >
             <WcIcon name="wc-menu" :size="20" />
           </button>
+          <!-- Plan phase badge -->
+          <div v-if="planPhaseText" class="tb-phase hidden sm:flex">
+            {{ planPhaseText }}
+          </div>
         </div>
 
         <!-- Right: dark mode, user info -->

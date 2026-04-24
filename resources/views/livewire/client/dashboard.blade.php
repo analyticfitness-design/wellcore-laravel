@@ -172,17 +172,17 @@
             @endif
         </div>
 
-        {{-- Quick actions (desktop) --}}
-        <div class="hidden sm:flex items-center gap-2">
+        {{-- Quick actions (todos los tamaños) --}}
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mt-3 sm:mt-0">
             <a href="{{ route('client.plan') }}"
-               class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors btn-ripple btn-press">
+               class="inline-flex items-center justify-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors btn-ripple btn-press">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
                 {{ __('client_dashboard.log_workout') }}
             </a>
             <a href="{{ route('client.checkin') }}"
-               class="inline-flex items-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2 text-sm font-medium text-wc-text hover:bg-wc-bg-secondary transition-colors">
+               class="inline-flex items-center justify-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2 text-sm font-medium text-wc-text hover:bg-wc-bg-secondary transition-colors">
                 {{ __('client_dashboard.do_checkin') }}
             </a>
         </div>
@@ -586,6 +586,37 @@
             </div>
         @endif
     </div>
+
+    {{-- Chart.js dark/light theme observer --}}
+    <script nonce="@cspNonce">
+    (function() {
+        function applyChartTheme(chart, isDark) {
+            chart.options.plugins.tooltip.backgroundColor = isDark ? 'rgba(24,24,27,.95)' : '#fff';
+            chart.options.plugins.tooltip.titleColor = isDark ? '#FAFAFA' : '#1A1A1A';
+            chart.options.plugins.tooltip.bodyColor = isDark ? 'rgba(250,250,250,.7)' : '#4B5563';
+            chart.options.plugins.tooltip.borderColor = isDark ? 'rgba(255,255,255,.1)' : 'rgba(0,0,0,.1)';
+            chart.options.plugins.tooltip.borderWidth = 1;
+            if (chart.options.scales.x) {
+                chart.options.scales.x.ticks.color = isDark ? 'rgba(250,250,250,.38)' : '#9CA3AF';
+                chart.options.scales.x.grid.color = isDark ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.05)';
+            }
+            if (chart.options.scales.y) {
+                chart.options.scales.y.ticks.color = isDark ? 'rgba(250,250,250,.38)' : '#9CA3AF';
+                chart.options.scales.y.grid.color = isDark ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.05)';
+            }
+            chart.update('none');
+        }
+        const chartObserver = new MutationObserver(function() {
+            document.querySelectorAll('canvas').forEach(function(canvas) {
+                const c = Chart.getChart(canvas);
+                if (c) {
+                    applyChartTheme(c, document.documentElement.classList.contains('dark'));
+                }
+            });
+        });
+        chartObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    })();
+    </script>
 
     {{-- ITEM 3: Coach Avatar Card --}}
     <div class="flex items-center gap-4 rounded-card border border-wc-border bg-wc-bg-tertiary p-4 card-hover-lift">

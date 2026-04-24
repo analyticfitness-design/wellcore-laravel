@@ -317,7 +317,7 @@
 
         {{-- Top bar --}}
         <header class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-wc-border bg-wc-bg/80 backdrop-blur-xl px-4 sm:px-6">
-            {{-- Left: hamburger (mobile) + page title --}}
+            {{-- Left: hamburger (mobile) + plan phase --}}
             <div class="flex items-center gap-3">
                 <button
                     x-on:click="sidebarOpen = !sidebarOpen"
@@ -327,6 +327,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
                 </button>
+                {{-- Plan phase badge --}}
+                @if($client && $client->plan)
+                    <div class="tb-phase hidden sm:flex">{{ $client->plan->label() }}</div>
+                @endif
             </div>
 
             {{-- Right: user info, dark mode, etc. --}}
@@ -355,13 +359,6 @@
                         </span>
                     </template>
                 </button>
-
-                {{-- Plan badge --}}
-                @if($client && $client->plan)
-                    <span class="hidden sm:inline-flex rounded-full bg-wc-accent/10 px-2.5 py-0.5 text-xs font-semibold text-wc-accent">
-                        {{ $client->plan->label() }}
-                    </span>
-                @endif
 
                 {{-- User avatar + name --}}
                 <div class="flex items-center gap-2">
