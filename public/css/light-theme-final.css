@@ -57,7 +57,8 @@ html:not(.dark) [wire\:id] {
    HERO · Watermark Giant + Dark Inverted
    ═════════════════════════════════════════════════════════════ */
 
-html:not(.dark) .hp-hero {
+html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium {
     background: linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 60%, #27272A 100%);
     color: #FAFAF8;
     border-radius: 20px;
@@ -71,7 +72,8 @@ html:not(.dark) .hp-hero {
 }
 
 /* Orbs rojos dramáticos en el hero */
-html:not(.dark) .hp-hero::before {
+html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium::before {
     content: "";
     position: absolute;
     top: -80px;
@@ -85,7 +87,8 @@ html:not(.dark) .hp-hero::before {
     z-index: 0;
 }
 
-html:not(.dark) .hp-hero::after {
+html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium::after {
     content: attr(data-week);
     position: absolute;
     top: -20px;
@@ -102,10 +105,12 @@ html:not(.dark) .hp-hero::after {
 }
 
 @media (max-width: 640px) {
-    html:not(.dark) .hp-hero {
+    html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium {
         padding: 24px 22px !important;
     }
-    html:not(.dark) .hp-hero::after {
+    html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium::after {
         font-size: 180px;
         top: -10px;
         right: 4%;
@@ -113,15 +118,20 @@ html:not(.dark) .hp-hero::after {
 }
 
 /* Todos los textos del hero blancos */
-html:not(.dark) .hp-hero > div,
-html:not(.dark) .hp-hero h1,
-html:not(.dark) .hp-hero p,
-html:not(.dark) .hp-hero span {
+html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium > div,
+html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium h1,
+html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium p,
+html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium span {
     position: relative;
     z-index: 1;
 }
 
-html:not(.dark) .hp-hero h1 {
+html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium h1 {
     color: #FAFAF8 !important;
     font-weight: 800;
     letter-spacing: -0.02em;
@@ -129,33 +139,38 @@ html:not(.dark) .hp-hero h1 {
 }
 
 /* Plan badge dentro del hero */
-html:not(.dark) .hp-hero .bg-wc-accent\/10 {
+html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium .bg-wc-accent\/10 {
     background: #DC2626 !important;
     color: #fff !important;
     box-shadow: 0 4px 16px rgba(220, 38, 38, 0.5);
     border: 1px solid #EF4444;
 }
 
-html:not(.dark) .hp-hero .text-wc-accent {
+html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium .text-wc-accent {
     color: #fff !important;
 }
 
 /* Quick action buttons dentro del hero */
-html:not(.dark) .hp-hero a.bg-wc-accent {
+html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium a.bg-wc-accent {
     background: #DC2626 !important;
     color: #fff !important;
     box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5), 3px 3px 0 rgba(220, 38, 38, 0.7);
     transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
     font-weight: 700;
 }
-html:not(.dark) .hp-hero a.bg-wc-accent:hover {
+html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium a.bg-wc-accent:hover {
     background: #EF4444 !important;
     transform: translate(-2px, -2px);
     box-shadow: 0 8px 24px rgba(220, 38, 38, 0.6), 5px 5px 0 rgba(220, 38, 38, 0.8);
 }
 
 /* Ghost button en hero */
-html:not(.dark) .hp-hero a[class*="border-wc-border"] {
+html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium a[class*="border-wc-border"] {
     background: rgba(255, 255, 255, 0.08) !important;
     color: #FAFAF8 !important;
     border-color: rgba(255, 255, 255, 0.2) !important;
@@ -163,13 +178,15 @@ html:not(.dark) .hp-hero a[class*="border-wc-border"] {
     -webkit-backdrop-filter: blur(12px);
     font-weight: 600;
 }
-html:not(.dark) .hp-hero a[class*="border-wc-border"]:hover {
+html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium a[class*="border-wc-border"]:hover {
     background: rgba(255, 255, 255, 0.15) !important;
     border-color: rgba(255, 255, 255, 0.35) !important;
 }
 
 /* Orb accent light */
-html:not(.dark) .hp-hero .wc-orb-tr {
+html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium .wc-orb-tr {
     background: radial-gradient(circle, rgba(220, 38, 38, 0.4), transparent 60%) !important;
     filter: blur(40px);
 }
@@ -398,14 +415,16 @@ html:not(.dark) [wire\:loading\.remove] > div.rounded-xl {
     html:not(.dark) .sc-g,
     html:not(.dark) .sc-p,
     html:not(.dark) .sc-a,
-    html:not(.dark) .hp-hero a {
+    html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium a {
         transition: none;
     }
     html:not(.dark) .sc-r:hover,
     html:not(.dark) .sc-g:hover,
     html:not(.dark) .sc-p:hover,
     html:not(.dark) .sc-a:hover,
-    html:not(.dark) .hp-hero a:hover {
+    html:not(.dark) .hp-hero,
+html:not(.dark) .wc-hero-premium a:hover {
         transform: none;
     }
 }
