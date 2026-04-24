@@ -819,6 +819,41 @@ body {
   .xp-fill, .ring-fg { transition: none; }
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   Dashboard-v2 · Fase 5: Densidad mobile
+   Overrides solo en <640px para hacer el dashboard más app-like en mobile:
+   - Tipografía hero/stats más compacta
+   - Spacing tight entre secciones
+   - Border-radius 16px (rounded-2xl estilo app nativo)
+   - Padding reducido en cards
+   Desktop (≥640px) queda intacto.
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 639px) {
+  /* Hero: greeting más compacto, padding reducido */
+  .wc-hero-premium h1 { font-size: 1.5rem; line-height: 1.15; letter-spacing: -0.01em; }
+  .wc-hero-premium .p-5 { padding: 1rem; }
+
+  /* Stat cards: números 2xl en lugar de 3xl + padding reducido */
+  .sc-r .font-display,
+  .sc-g .font-display,
+  .sc-p .font-display,
+  .sc-a .font-display { font-size: 1.75rem; }
+
+  /* Border radius más app-native en cards principales */
+  .sc-r, .sc-g, .sc-p, .sc-a,
+  .coach-card,
+  .wc-glass { border-radius: 1rem; }
+
+  /* Spacing más tight entre secciones del dashboard */
+  main .space-y-6 > * + * { margin-top: 1rem; }
+
+  /* Cards grid: gap reducido */
+  main .gap-4 { gap: 0.75rem; }
+
+  /* Heatmap header: más compacto */
+  .prog-wrap { padding: 4px 0 4px; }
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    HOMEPAGE v3 — Tokens & Clases .hp-* (Sprint 1–3)
    ═══════════════════════════════════════════════════════════════════════════ */
