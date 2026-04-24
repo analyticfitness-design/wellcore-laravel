@@ -144,6 +144,7 @@ Route::get('/unirse/{code}', ClientIntakeForm::class)
 
 Route::get('/inscripcion', fn () => view('vue'))->name('inscripcion')->middleware('throttle:inscription');
 Route::get('/pagar', Checkout::class)->name('pagar');
+Route::get('/renovar', Checkout::class)->name('renovar')->defaults('renewal', 1);
 Route::get('/pago-exitoso', [PaymentController::class, 'result'])->name('pago-exitoso');
 Route::get('/pago-confirmado', [PaymentController::class, 'result'])->name('pago-confirmado');
 
@@ -285,16 +286,6 @@ Route::get('/v/{any}', fn ($any) => redirect('/'.$any, 301))->where('any', '.*')
 // Exercise GIFs — public, no auth required (used in <img> tags)
 Route::get('/media/gif/{slug}', [\App\Http\Controllers\Media\GifController::class, 'serve'])
     ->where('slug', '[\w\-]+');
-
-// TEMP — Wave 2 trustProxies verification. Remove after confirming real IP in prod logs.
-Route::get('/debug/ip', function () {
-    return response()->json([
-        'ip'               => request()->ip(),
-        'x_forwarded_for'  => request()->header('X-Forwarded-For'),
-        'x_real_ip'        => request()->header('X-Real-IP'),
-        'trusted_proxies'  => config('trustedproxy.proxies'),
-    ]);
-})->middleware('throttle:5,1');
 
 // DEV ONLY routes — disabled in production
 if (app()->environment('local', 'testing')) {
