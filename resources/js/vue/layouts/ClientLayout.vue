@@ -10,6 +10,7 @@ import LevelUpCelebration from '../components/LevelUpCelebration.vue';
 import ToastContainer from '../components/ui/ToastContainer.vue';
 import BentoCelebration from '../components/celebrations/BentoCelebration.vue';
 import WcIcon from '../components/ui/WcIcon.vue';
+import DashboardFab from '../components/dashboard/DashboardFab.vue';
 import { useMedals } from '../composables/useMedals';
 
 // Celebraciones globales — disparadas desde cualquier vista via fetchMedals()
@@ -449,6 +450,9 @@ const bottomNav = [
 
     <!-- Global toast notifications -->
     <ToastContainer />
+
+    <!-- Floating Action Button (mobile only, solo cuando cuenta activa) -->
+    <DashboardFab v-if="!accountInactive && accountCheckDone" />
 
   </div>
 </template>
