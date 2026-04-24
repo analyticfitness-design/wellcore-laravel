@@ -19,11 +19,9 @@ use App\Http\Controllers\Api\RiseController;
 use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\SocialController;
 use App\Http\Controllers\Api\TrainingController;
-use App\Services\ExerciseMediaService;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 // debug-gif endpoint removed — was public DoS vector (opcache_reset + hardcoded client_id)
@@ -44,7 +42,7 @@ Route::prefix('v/auth')
     ->group(function () {
         Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
         Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-        Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+        Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:login');
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/me', [AuthController::class, 'me']);
         Route::post('/change-password', [AuthController::class, 'changePassword'])->middleware('throttle:change-password');
@@ -247,6 +245,7 @@ Route::prefix('v/admin')->middleware('throttle:api')->group(function () {
     Route::get('/feed', [AdminController::class, 'feed']);
     Route::get('/clients', [AdminController::class, 'clients']);
     Route::get('/clients/{id}', [AdminController::class, 'clientDetail'])->where('id', '[0-9]+');
+    Route::get('/clients/{id}/intake', [AdminController::class, 'clientIntake'])->whereNumber('id');
     Route::put('/clients/{id}', [AdminController::class, 'updateClient'])->where('id', '[0-9]+');
     Route::delete('/clients/{id}', [AdminController::class, 'deleteClient'])->where('id', '[0-9]+');
     Route::get('/payments', [AdminController::class, 'payments']);

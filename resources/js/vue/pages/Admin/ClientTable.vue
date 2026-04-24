@@ -702,7 +702,12 @@ onMounted(fetchClients);
                   <!-- Ultima sesion (online indicator) -->
                   <td class="px-4 py-3">
                     <template v-if="client.last_login_at">
-                      <div class="flex items-center gap-1.5">
+                      <div
+                        class="flex items-center gap-1.5"
+                        :title="getOnlineStatus(client.last_login_at).isOnline
+                          ? 'Online ahora'
+                          : `Ultima sesion: ${getOnlineStatus(client.last_login_at).text}`"
+                      >
                         <span class="h-2 w-2 shrink-0 rounded-full" :class="getOnlineStatus(client.last_login_at).dot"></span>
                         <span class="font-data text-[11px]" :class="getOnlineStatus(client.last_login_at).label">
                           {{ getOnlineStatus(client.last_login_at).text }}

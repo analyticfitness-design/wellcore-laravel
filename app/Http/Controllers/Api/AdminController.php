@@ -728,11 +728,11 @@ class AdminController extends Controller
                 'status' => $p->status?->value ?? $p->status,
             ]);
 
-        // Last login from auth_tokens
+        // Last login from auth_tokens — prefer last_used_at (real activity), fall back to created_at
         $lastLogin = AuthToken::where('user_id', $id)
             ->where('user_type', UserType::Client)
-            ->orderByDesc('created_at')
-            ->value('created_at');
+            ->orderByRaw('COALESCE(last_used_at, created_at) DESC')
+            ->value(DB::raw('COALESCE(last_used_at, created_at)'));
 
         return response()->json([
             'client' => [
@@ -2522,5 +2522,154 @@ class AdminController extends Controller
                 'message' => 'Error al enviar el regalo: '.$e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * GET /api/v/admin/clients/{id}/intake
+     *
+     * Return the structured intake form data for a client.
+     * Sections vary by plan: Esencial (personal+fitness), Metodo (+nutrition),
+     * Elite (+nutrition+advanced).
+     */
+    public function clientIntake(Request $request, int $id): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $client = Client::findOrFail($id);
+        $profile = ClientProfile::where('client_id', $id)->first();
+
+        if (! $profile) {
+            return response()->json(['hasIntake' => false]);
+        }
+
+        $plan = $client->plan?->value ?? null;
+
+        $sections = [
+            $this->buildPersonalSection($profile),
+            $this->buildFitnessSection($profile),
+        ];
+
+        if (in_array($plan, ['metodo', 'elite'], strict: true)) {
+            $nutritionSection = $this->buildNutritionSection($profile);
+            if ($nutritionSection !== null) {
+                $sections[] = $nutritionSection;
+            }
+        }
+
+        if ($plan === 'elite') {
+            $advancedSection = $this->buildAdvancedSection($profile);
+            if ($advancedSection !== null) {
+                $sections[] = $advancedSection;
+            }
+        }
+
+        return response()->json([
+            'hasIntake' => true,
+            'plan' => $plan,
+            'submittedAt' => $profile->updated_at,
+            'sections' => $sections,
+            'rawJson' => $profile->toArray(),
+        ]);
+    }
+
+    private function buildPersonalSection(ClientProfile $profile): array
+    {
+        return [
+            'key' => 'personal',
+            'title' => 'Datos Personales',
+            'icon' => 'user',
+            'fields' => [
+                ['label' => 'Edad',     'value' => $profile->edad,     'unit' => 'años'],
+                ['label' => 'Peso',     'value' => $profile->peso,     'unit' => 'kg'],
+                ['label' => 'Altura',   'value' => $profile->altura,   'unit' => 'cm'],
+                ['label' => 'Género',   'value' => $profile->genero],
+                ['label' => 'Ciudad',   'value' => $profile->ciudad],
+                ['label' => 'WhatsApp', 'value' => $profile->whatsapp],
+            ],
+        ];
+    }
+
+    private function buildFitnessSection(ClientProfile $profile): array
+    {
+        $dias = $profile->dias_disponibles;
+        $diasValue = is_array($dias) ? implode(', ', $dias) : $dias;
+
+        return [
+            'key' => 'fitness',
+            'title' => 'Fitness & Entrenamiento',
+            'icon' => 'dumbbell',
+            'fields' => [
+                ['label' => 'Objetivo',              'value' => $profile->objetivo],
+                ['label' => 'Nivel',                 'value' => $profile->nivel],
+                ['label' => 'Lugar de entreno',      'value' => $profile->lugar_entreno],
+                ['label' => 'Días disponibles',      'value' => $diasValue],
+                ['label' => 'Restricciones / Lesiones', 'value' => $profile->restricciones ?: 'Ninguna'],
+            ],
+        ];
+    }
+
+    private function buildNutritionSection(ClientProfile $profile): ?array
+    {
+        $macros = $profile->macros;
+
+        if (empty($macros)) {
+            return null;
+        }
+
+        $fields = [];
+
+        if (is_array($macros)) {
+            foreach ($macros as $key => $value) {
+                $fields[] = ['label' => ucfirst((string) $key), 'value' => $value];
+            }
+        }
+
+        if (empty($fields)) {
+            return null;
+        }
+
+        return [
+            'key' => 'nutrition',
+            'title' => 'Nutrición & Macros',
+            'icon' => 'nutrition',
+            'fields' => $fields,
+        ];
+    }
+
+    private function buildAdvancedSection(ClientProfile $profile): ?array
+    {
+        $intakeData = $profile->intake_data;
+
+        if (empty($intakeData)) {
+            return null;
+        }
+
+        if (is_string($intakeData)) {
+            $intakeData = json_decode($intakeData, associative: true);
+        }
+
+        if (! is_array($intakeData) || empty($intakeData)) {
+            return null;
+        }
+
+        $fields = [];
+
+        foreach ($intakeData as $key => $value) {
+            if (is_array($value)) {
+                $value = implode(', ', $value);
+            }
+
+            $fields[] = [
+                'label' => ucwords(str_replace(['_', '-'], ' ', (string) $key)),
+                'value' => $value,
+            ];
+        }
+
+        return [
+            'key' => 'advanced',
+            'title' => 'Información Avanzada (Elite)',
+            'icon' => 'star',
+            'fields' => $fields,
+        ];
     }
 }

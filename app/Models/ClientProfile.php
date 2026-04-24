@@ -41,6 +41,7 @@ class ClientProfile extends Model
             'altura' => 'decimal:1',
             'dias_disponibles' => 'array',
             'macros' => 'array',
+            'intake_data' => 'array',
             'rise_start_date' => 'date',
             'updated_at' => 'datetime',
         ];

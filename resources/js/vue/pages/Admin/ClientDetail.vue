@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import AdminLayout from '../../layouts/AdminLayout.vue';
@@ -33,6 +33,58 @@ const savingPlan = ref(false);
 
 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
 
+const intakeData = ref(null);
+const intakeLoading = ref(false);
+const jsonCopied = ref(false);
+let jsonCopyTimer = null;
+
+async function fetchIntake() {
+  intakeLoading.value = true;
+  try {
+    const res = await api.get(`/api/v/admin/clients/${route.params.id}/intake`);
+    intakeData.value = res.data;
+  } catch (e) {
+    intakeData.value = null;
+  } finally {
+    intakeLoading.value = false;
+  }
+}
+
+function copyJson() {
+  if (!intakeData.value?.rawJson) return;
+  const text = typeof intakeData.value.rawJson === 'string'
+    ? intakeData.value.rawJson
+    : JSON.stringify(intakeData.value.rawJson, null, 2);
+  navigator.clipboard.writeText(text).then(() => {
+    jsonCopied.value = true;
+    clearTimeout(jsonCopyTimer);
+    jsonCopyTimer = setTimeout(() => { jsonCopied.value = false; }, 2000);
+  });
+}
+
+function highlightJson(raw) {
+  if (!raw) return '';
+  const text = typeof raw === 'string' ? raw : JSON.stringify(raw, null, 2);
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
+      if (/^"/.test(match)) {
+        if (/:$/.test(match)) return `<span class="text-sky-400">${match}</span>`;
+        return `<span class="text-emerald-400">${match}</span>`;
+      }
+      if (/true|false/.test(match)) return `<span class="text-violet-400">${match}</span>`;
+      if (/null/.test(match)) return `<span class="text-zinc-500">${match}</span>`;
+      return `<span class="text-amber-400">${match}</span>`;
+    });
+}
+
+function formatIntakeDate(dateStr) {
+  if (!dateStr) return '-';
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
 function startImpersonation() {
     const token = localStorage.getItem('wc_token') ?? '';
     const form = document.createElement('form');
@@ -50,6 +102,7 @@ function startImpersonation() {
 
 const tabs = [
   { key: 'info', label: 'Informacion' },
+  { key: 'intake', label: 'Intake' },
   { key: 'plans', label: 'Planes' },
   { key: 'checkins', label: 'Check-ins' },
   { key: 'payments', label: 'Pagos' },
@@ -210,6 +263,12 @@ function dismissSuccess() {
 
 onMounted(() => {
   fetchClient();
+  fetchIntake();
+});
+
+onBeforeUnmount(() => {
+  clearTimeout(successTimer);
+  clearTimeout(jsonCopyTimer);
 });
 </script>
 
@@ -507,6 +566,131 @@ onMounted(() => {
           </div>
 
         </div>
+      </div>
+
+      <!-- ============== TAB: INTAKE ============== -->
+      <div v-else-if="activeTab === 'intake'" class="space-y-5">
+
+        <!-- Loading skeleton -->
+        <template v-if="intakeLoading">
+          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="h-5 w-32 animate-pulse rounded-lg bg-wc-bg-secondary"></div>
+              <div class="h-4 w-40 animate-pulse rounded-lg bg-wc-bg-secondary"></div>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div v-for="n in 6" :key="n" class="h-16 animate-pulse rounded-lg bg-wc-bg-secondary"></div>
+            </div>
+          </div>
+        </template>
+
+        <!-- No intake -->
+        <div
+          v-else-if="!intakeData || !intakeData.hasIntake"
+          class="rounded-xl border border-wc-border bg-wc-bg-tertiary"
+        >
+          <div class="flex flex-col items-center justify-center gap-4 py-20 text-center">
+            <div class="flex h-16 w-16 items-center justify-center rounded-2xl border border-wc-border bg-wc-bg-secondary">
+              <svg class="h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z" />
+              </svg>
+            </div>
+            <div>
+              <p class="font-display text-2xl tracking-wide text-wc-text">Sin datos de intake</p>
+              <p class="mt-1 text-sm text-wc-text-secondary">El cliente aun no completo el formulario de inscripcion</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Intake content -->
+        <template v-else>
+
+          <!-- Header strip -->
+          <div class="flex flex-col gap-3 rounded-xl border border-wc-border bg-wc-bg-secondary px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex items-center gap-3">
+              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-wc-accent/10">
+                <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Intake completado</p>
+                <p class="font-data text-sm font-semibold text-wc-text">{{ formatIntakeDate(intakeData.submittedAt) }}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span v-if="intakeData.plan" class="inline-flex rounded-full px-3 py-1 text-xs font-semibold capitalize" :class="getPlanColor(intakeData.plan)">
+                Plan {{ intakeData.plan }}
+              </span>
+              <span class="inline-flex rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-500">
+                Formulario completado
+              </span>
+            </div>
+          </div>
+
+          <!-- Sections grid -->
+          <div class="grid gap-4 lg:grid-cols-2">
+            <div
+              v-for="section in intakeData.sections"
+              :key="section.key"
+              class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden"
+            >
+              <!-- Section header -->
+              <div class="flex items-center gap-2.5 border-b border-wc-border bg-wc-bg-secondary px-5 py-3">
+                <span class="text-base leading-none">{{ section.icon }}</span>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-wc-text">{{ section.title }}</h3>
+              </div>
+
+              <!-- Fields -->
+              <div class="divide-y divide-wc-border/50">
+                <div
+                  v-for="field in section.fields"
+                  :key="field.label"
+                  class="flex items-start justify-between gap-3 px-5 py-3"
+                >
+                  <span class="shrink-0 text-xs text-wc-text-tertiary leading-5">{{ field.label }}</span>
+                  <span class="text-right text-sm font-medium text-wc-text leading-5 max-w-[55%]">
+                    {{ field.value || '-' }}<span v-if="field.unit && field.value" class="ml-0.5 text-xs text-wc-text-tertiary">{{ field.unit }}</span>
+                  </span>
+                </div>
+                <div v-if="!section.fields || section.fields.length === 0" class="px-5 py-4">
+                  <p class="text-xs text-wc-text-tertiary">Sin campos registrados</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- JSON viewer -->
+          <div v-if="intakeData.rawJson" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
+            <div class="flex items-center justify-between border-b border-wc-border bg-wc-bg-secondary px-5 py-3">
+              <div class="flex items-center gap-2">
+                <svg class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
+                </svg>
+                <span class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">JSON para Claude</span>
+              </div>
+              <button
+                @click="copyJson"
+                class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+                :class="jsonCopied
+                  ? 'bg-emerald-500/10 text-emerald-400'
+                  : 'border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:border-wc-accent/40 hover:text-wc-text'"
+              >
+                <svg v-if="jsonCopied" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+                <svg v-else class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184" />
+                </svg>
+                {{ jsonCopied ? 'Copiado' : 'Copiar JSON' }}
+              </button>
+            </div>
+            <div class="overflow-x-auto bg-black/40 p-5">
+              <pre class="font-mono text-xs leading-relaxed text-wc-text-secondary whitespace-pre-wrap break-words" v-html="highlightJson(intakeData.rawJson)"></pre>
+            </div>
+          </div>
+
+        </template>
       </div>
 
       <!-- ============== TAB: PLANS ============== -->

@@ -6,7 +6,7 @@ use App\Enums\ClientStatus;
 use App\Enums\UserRole;
 use App\Models\AuthToken;
 use App\Models\Client;
-use Illuminate\Support\Facades\DB;
+use App\Models\ClientProfile;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -27,17 +27,22 @@ class ClientTable extends Component
     public string $statusFilter = '';
 
     public string $sortBy = 'created_at';
+
     public string $sortDir = 'desc';
 
     // Deactivate confirmation state
-    public bool    $showDeactivateModal  = false;
-    public ?int    $deactivateClientId   = null;
+    public bool $showDeactivateModal = false;
+
+    public ?int $deactivateClientId = null;
 
     // Delete confirmation state
-    public bool    $showDeleteModal  = false;
-    public ?int    $deleteClientId   = null;
-    public string  $deleteClientName = '';
-    public string  $deactivateClientName = '';
+    public bool $showDeleteModal = false;
+
+    public ?int $deleteClientId = null;
+
+    public string $deleteClientName = '';
+
+    public string $deactivateClientName = '';
 
     public function updatingSearch(): void
     {
@@ -80,6 +85,7 @@ class ClientTable extends Component
 
         if (! $admin || $admin->role !== UserRole::Superadmin) {
             $this->dispatch('toast', type: 'error', message: 'No tienes permisos para realizar esta accion.');
+
             return;
         }
 
@@ -87,18 +93,19 @@ class ClientTable extends Component
 
         if (! $client) {
             $this->dispatch('toast', type: 'error', message: 'Cliente no encontrado.');
+
             return;
         }
 
-        $this->deactivateClientId   = $clientId;
+        $this->deactivateClientId = $clientId;
         $this->deactivateClientName = $client->name ?? 'Cliente';
-        $this->showDeactivateModal  = true;
+        $this->showDeactivateModal = true;
     }
 
     public function cancelDeactivate(): void
     {
-        $this->showDeactivateModal  = false;
-        $this->deactivateClientId   = null;
+        $this->showDeactivateModal = false;
+        $this->deactivateClientId = null;
         $this->deactivateClientName = '';
     }
 
@@ -109,11 +116,13 @@ class ClientTable extends Component
         if (! $admin || $admin->role !== UserRole::Superadmin) {
             $this->dispatch('toast', type: 'error', message: 'No tienes permisos para realizar esta accion.');
             $this->cancelDeactivate();
+
             return;
         }
 
         if (! $this->deactivateClientId) {
             $this->cancelDeactivate();
+
             return;
         }
 
@@ -122,6 +131,7 @@ class ClientTable extends Component
         if (! $client) {
             $this->dispatch('toast', type: 'error', message: 'Cliente no encontrado.');
             $this->cancelDeactivate();
+
             return;
         }
 
@@ -142,6 +152,7 @@ class ClientTable extends Component
 
         if (! $admin || $admin->role !== UserRole::Superadmin) {
             $this->dispatch('toast', type: 'error', message: 'No tienes permisos para realizar esta accion.');
+
             return;
         }
 
@@ -149,18 +160,19 @@ class ClientTable extends Component
 
         if (! $client) {
             $this->dispatch('toast', type: 'error', message: 'Cliente no encontrado.');
+
             return;
         }
 
-        $this->deleteClientId   = $clientId;
+        $this->deleteClientId = $clientId;
         $this->deleteClientName = $client->name ?? 'Cliente';
-        $this->showDeleteModal  = true;
+        $this->showDeleteModal = true;
     }
 
     public function cancelDelete(): void
     {
-        $this->showDeleteModal  = false;
-        $this->deleteClientId   = null;
+        $this->showDeleteModal = false;
+        $this->deleteClientId = null;
         $this->deleteClientName = '';
     }
 
@@ -171,11 +183,13 @@ class ClientTable extends Component
         if (! $admin || $admin->role !== UserRole::Superadmin) {
             $this->dispatch('toast', type: 'error', message: 'No tienes permisos para realizar esta accion.');
             $this->cancelDelete();
+
             return;
         }
 
         if (! $this->deleteClientId) {
             $this->cancelDelete();
+
             return;
         }
 
@@ -184,14 +198,15 @@ class ClientTable extends Component
         if (! $client) {
             $this->dispatch('toast', type: 'error', message: 'Cliente no encontrado.');
             $this->cancelDelete();
+
             return;
         }
 
         $name = $client->name ?? 'Cliente';
 
         // Delete related records
-        \App\Models\ClientProfile::where('client_id', $client->id)->delete();
-        \App\Models\AuthToken::where('user_id', $client->id)->where('user_type', 'client')->delete();
+        ClientProfile::where('client_id', $client->id)->delete();
+        AuthToken::where('user_id', $client->id)->where('user_type', 'client')->delete();
         $client->delete();
 
         $this->cancelDelete();
@@ -203,10 +218,10 @@ class ClientTable extends Component
     {
         $query = Client::query()
             ->addSelect([
-                'last_login_at' => AuthToken::select('created_at')
+                'last_login_at' => AuthToken::selectRaw('COALESCE(last_used_at, created_at)')
                     ->whereColumn('user_id', 'clients.id')
                     ->where('user_type', 'client')
-                    ->latest('created_at')
+                    ->orderByRaw('COALESCE(last_used_at, created_at) DESC')
                     ->limit(1),
             ]);
 
@@ -215,8 +230,8 @@ class ClientTable extends Component
             $search = $this->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('client_code', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('client_code', 'like', "%{$search}%");
             });
         }
 
@@ -239,7 +254,7 @@ class ClientTable extends Component
             && auth('wellcore')->user()->role === UserRole::Superadmin;
 
         return view('livewire.admin.client-table', [
-            'clients'      => $clients,
+            'clients' => $clients,
             'isSuperadmin' => $isSuperadmin,
         ]);
     }

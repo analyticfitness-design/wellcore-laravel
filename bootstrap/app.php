@@ -2,12 +2,14 @@
 
 use App\Http\Middleware\ContentSecurityPolicy;
 use App\Http\Middleware\EnsureAuthenticated;
+use App\Http\Middleware\EnsurePlan;
 use App\Http\Middleware\EnsureRole;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetAssetCacheHeaders;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\TrackReferral;
 use App\Http\Middleware\TrackUtmParameters;
+use App\Http\Middleware\UpdateLastSeen;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -46,11 +48,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(SetAssetCacheHeaders::class);
 
         $middleware->alias([
-            'auth'         => EnsureAuthenticated::class,
-            'guest'        => RedirectIfAuthenticated::class,
-            'role'         => EnsureRole::class,
-            'ensure.plan'  => \App\Http\Middleware\EnsurePlan::class,
+            'auth' => EnsureAuthenticated::class,
+            'guest' => RedirectIfAuthenticated::class,
+            'role' => EnsureRole::class,
+            'ensure.plan' => EnsurePlan::class,
+            'update.last.seen' => UpdateLastSeen::class,
         ]);
+
+        // Track real client activity — runs after response, skips impersonation sessions.
+        // Self-gates: only acts on /api/v/client/* routes.
+        $middleware->append(UpdateLastSeen::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Report to Sentry when available (install sentry/sentry-laravel to activate)
