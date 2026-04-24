@@ -17,11 +17,21 @@ import DashboardHeatmap from '../../components/dashboard/DashboardHeatmap.vue';
 import DashboardWeight from '../../components/dashboard/DashboardWeight.vue';
 import DashboardWeeklySummary from '../../components/dashboard/DashboardWeeklySummary.vue';
 import DashboardWeeklyGrid from '../../components/dashboard/DashboardWeeklyGrid.vue';
+import PullToRefreshIndicator from '../../components/dashboard/PullToRefreshIndicator.vue';
 import { useStaggerIn } from '../../composables/dashboard/useStaggerIn';
+import { usePullToRefresh } from '../../composables/dashboard/usePullToRefresh';
+import { useHaptics } from '../../composables/useHaptics';
 
 // Stagger entry: aplica data-stagger-index + fade-in progresivo a las secciones
 // hijas directas del contenedor. Respeta prefers-reduced-motion.
 const staggerRoot = useStaggerIn();
+const haptics = useHaptics();
+
+// Pull-to-refresh: refetch dashboard + haptic success al completar
+const { pullDistance, isRefreshing } = usePullToRefresh(async () => {
+    await fetchDashboard();
+    haptics.pattern('success');
+});
 
 const api = useApi();
 const router = useRouter();
@@ -249,6 +259,9 @@ const weekMarkers = computed(() => {
 
 <template>
   <ClientLayout>
+    <!-- Pull-to-refresh indicator (mobile only) -->
+    <PullToRefreshIndicator :distance="pullDistance" :refreshing="isRefreshing" />
+
     <!-- Loading Skeleton -->
     <div v-if="loading" class="space-y-6">
       <!-- Greeting skeleton -->
