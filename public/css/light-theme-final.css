@@ -192,26 +192,25 @@ html:not(.dark) .wc-hero-premium .wc-orb-tr {
 }
 
 /* ═════════════════════════════════════════════════════════════
-   CARDS DARK INVERTED (Stats, Plan Alert, Quote, Weekly, Missions, Activity)
+   CARDS HÍBRIDAS · Translucent Glass + Accent Line Lateral + Offset Shadow
+   Light cards (NO dark) · solo hero es dark inverted
    ═════════════════════════════════════════════════════════════ */
 
-/* Stats cards base · dark inverted */
+/* Stats cards base · glass translúcido */
 html:not(.dark) .sc-r,
 html:not(.dark) .sc-g,
 html:not(.dark) .sc-p,
 html:not(.dark) .sc-a {
-    background: #0F0F0F !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    color: #FAFAF8;
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(226, 220, 204, 0.8) !important;
     position: relative;
     overflow: hidden;
-    box-shadow:
-        0 4px 20px rgba(0, 0, 0, 0.08),
-        0 1px 3px rgba(0, 0, 0, 0.05);
     transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Top accent line 3px por color */
+/* Accent line LATERAL izquierda 4px por color */
 html:not(.dark) .sc-r::before,
 html:not(.dark) .sc-g::before,
 html:not(.dark) .sc-p::before,
@@ -219,86 +218,69 @@ html:not(.dark) .sc-a::before {
     content: "";
     position: absolute;
     top: 0;
+    bottom: 0;
     left: 0;
-    right: 0;
-    height: 3px;
+    width: 4px;
     z-index: 1;
 }
-html:not(.dark) .sc-r::before { background: #DC2626; box-shadow: 0 0 12px rgba(220, 38, 38, 0.6); }
-html:not(.dark) .sc-g::before { background: #10B981; box-shadow: 0 0 12px rgba(16, 185, 129, 0.6); }
-html:not(.dark) .sc-p::before { background: #A78BFA; box-shadow: 0 0 12px rgba(167, 139, 250, 0.6); }
-html:not(.dark) .sc-a::before { background: #F59E0B; box-shadow: 0 0 12px rgba(245, 158, 11, 0.6); }
+html:not(.dark) .sc-r { box-shadow: 4px 4px 0 rgba(220, 38, 38, 0.18), 0 2px 8px rgba(0, 0, 0, 0.04); }
+html:not(.dark) .sc-g { box-shadow: 4px 4px 0 rgba(16, 185, 129, 0.18), 0 2px 8px rgba(0, 0, 0, 0.04); }
+html:not(.dark) .sc-p { box-shadow: 4px 4px 0 rgba(167, 139, 250, 0.22), 0 2px 8px rgba(0, 0, 0, 0.04); }
+html:not(.dark) .sc-a { box-shadow: 4px 4px 0 rgba(245, 158, 11, 0.22), 0 2px 8px rgba(0, 0, 0, 0.04); }
 
-/* Hover effect accent glow */
-html:not(.dark) .sc-r:hover { box-shadow: 0 8px 30px rgba(220, 38, 38, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1); transform: translateY(-3px); }
-html:not(.dark) .sc-g:hover { box-shadow: 0 8px 30px rgba(16, 185, 129, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1); transform: translateY(-3px); }
-html:not(.dark) .sc-p:hover { box-shadow: 0 8px 30px rgba(167, 139, 250, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1); transform: translateY(-3px); }
-html:not(.dark) .sc-a:hover { box-shadow: 0 8px 30px rgba(245, 158, 11, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1); transform: translateY(-3px); }
+html:not(.dark) .sc-r::before { background: #DC2626; }
+html:not(.dark) .sc-g::before { background: #10B981; }
+html:not(.dark) .sc-p::before { background: #A78BFA; }
+html:not(.dark) .sc-a::before { background: #F59E0B; }
 
-/* Text dentro de stats cards → blanco */
-html:not(.dark) .sc-r .text-wc-text,
-html:not(.dark) .sc-g .text-wc-text,
-html:not(.dark) .sc-p .text-wc-text,
-html:not(.dark) .sc-a .text-wc-text {
-    color: #FAFAF8 !important;
-}
-html:not(.dark) .sc-r .text-wc-text-tertiary,
-html:not(.dark) .sc-g .text-wc-text-tertiary,
-html:not(.dark) .sc-p .text-wc-text-tertiary,
-html:not(.dark) .sc-a .text-wc-text-tertiary {
-    color: rgba(250, 250, 248, 0.5) !important;
-}
+/* Hover effect: shadow más intensa + micro lift */
+html:not(.dark) .sc-r:hover { box-shadow: 6px 6px 0 rgba(220, 38, 38, 0.28), 0 4px 14px rgba(0, 0, 0, 0.06); transform: translate(-2px, -2px); }
+html:not(.dark) .sc-g:hover { box-shadow: 6px 6px 0 rgba(16, 185, 129, 0.28), 0 4px 14px rgba(0, 0, 0, 0.06); transform: translate(-2px, -2px); }
+html:not(.dark) .sc-p:hover { box-shadow: 6px 6px 0 rgba(167, 139, 250, 0.32), 0 4px 14px rgba(0, 0, 0, 0.06); transform: translate(-2px, -2px); }
+html:not(.dark) .sc-a:hover { box-shadow: 6px 6px 0 rgba(245, 158, 11, 0.32), 0 4px 14px rgba(0, 0, 0, 0.06); transform: translate(-2px, -2px); }
 
-/* Números grandes en color del tipo */
-html:not(.dark) .sc-r p.font-data { color: #EF4444 !important; text-shadow: 0 0 20px rgba(220, 38, 38, 0.35); }
-html:not(.dark) .sc-g p.font-data { color: #34D399 !important; text-shadow: 0 0 20px rgba(16, 185, 129, 0.35); }
-html:not(.dark) .sc-p p.font-data { color: #C4B5FD !important; text-shadow: 0 0 20px rgba(167, 139, 250, 0.35); }
-html:not(.dark) .sc-a p.font-data { color: #FBBF24 !important; text-shadow: 0 0 20px rgba(245, 158, 11, 0.35); }
-
-/* Iconos en color con glow */
-html:not(.dark) .sc-r .bg-orange-500\/10 { background: rgba(220, 38, 38, 0.18) !important; }
-html:not(.dark) .sc-g .bg-emerald-500\/10 { background: rgba(16, 185, 129, 0.18) !important; }
-html:not(.dark) .sc-p .bg-violet-500\/10 { background: rgba(167, 139, 250, 0.18) !important; }
-
-/* XP progress bar · dark bg */
-html:not(.dark) .sc-p .bg-wc-bg-secondary {
-    background: rgba(255, 255, 255, 0.08) !important;
-}
-
-/* SVG circle background del ring amarillo · claro en dark card */
-html:not(.dark) .sc-a svg circle[stroke="var(--color-wc-border)"] {
-    stroke: rgba(255, 255, 255, 0.1) !important;
-}
+/* Números grandes mantienen color accent con leve glow */
+html:not(.dark) .sc-r p.font-data { color: #DC2626 !important; }
+html:not(.dark) .sc-g p.font-data { color: #10B981 !important; }
+html:not(.dark) .sc-p p.font-data { color: #7C3AED !important; }
+html:not(.dark) .sc-a p.font-data { color: #D97706 !important; }
 
 /* ═════════════════════════════════════════════════════════════
-   WC-TOPLINE (Quote motivacional) · Dark inverted
+   WC-TOPLINE (Quote motivacional) · Glass con accent line lateral ámbar
    ═════════════════════════════════════════════════════════════ */
 
 html:not(.dark) .wc-topline {
-    background: #0F0F0F !important;
-    border-color: rgba(255, 255, 255, 0.08) !important;
+    background: rgba(255, 255, 255, 0.65) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(226, 220, 204, 0.8) !important;
     position: relative;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 4px 4px 0 rgba(245, 158, 11, 0.2), 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 html:not(.dark) .wc-topline::before {
-    background: linear-gradient(90deg, transparent, #F59E0B, #F59E0B 60%, transparent) !important;
-    box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: auto;
+    width: 4px;
+    height: auto;
+    background: #F59E0B !important;
+    box-shadow: none;
 }
 
-html:not(.dark) .wc-topline .text-wc-text-tertiary { color: rgba(250, 250, 248, 0.65) !important; }
-html:not(.dark) .wc-topline .text-wc-text-tertiary\/60 { color: rgba(245, 158, 11, 0.9) !important; }
-html:not(.dark) .wc-topline p { color: rgba(250, 250, 248, 0.75) !important; }
-html:not(.dark) .wc-topline .bg-amber-500\/10 { background: rgba(245, 158, 11, 0.2) !important; }
-
 /* ═════════════════════════════════════════════════════════════
-   Plan Alert · Dark inverted
+   Plan Alert · Glass con borde rojo prominente
    ═════════════════════════════════════════════════════════════ */
 
 html:not(.dark) [class*="bg-wc-accent/5"] {
-    background: #0F0F0F !important;
-    border-color: rgba(220, 38, 38, 0.4) !important;
-    box-shadow: 0 4px 20px rgba(220, 38, 38, 0.1), 0 1px 3px rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(220, 38, 38, 0.25) !important;
+    box-shadow: 4px 4px 0 rgba(220, 38, 38, 0.22), 0 2px 8px rgba(0, 0, 0, 0.04);
     position: relative;
     overflow: hidden;
 }
@@ -307,67 +289,35 @@ html:not(.dark) [class*="bg-wc-accent/5"]::before {
     content: "";
     position: absolute;
     top: 0;
+    bottom: 0;
     left: 0;
-    right: 0;
-    height: 3px;
+    right: auto;
+    height: auto;
+    width: 4px;
     background: #DC2626;
-    box-shadow: 0 0 12px rgba(220, 38, 38, 0.6);
-}
-
-html:not(.dark) [class*="bg-wc-accent/5"] .text-wc-text {
-    color: #FAFAF8 !important;
-}
-html:not(.dark) [class*="bg-wc-accent/5"] .text-wc-text-tertiary {
-    color: rgba(250, 250, 248, 0.6) !important;
-}
-html:not(.dark) [class*="bg-wc-accent/5"] .bg-wc-accent\/10 {
-    background: rgba(220, 38, 38, 0.25) !important;
+    box-shadow: none;
 }
 
 /* ═════════════════════════════════════════════════════════════
-   Cards generales · rounded-card bg-wc-bg-tertiary → Dark inverted
+   Cards generales · Glass translúcido con borde sutil
    Incluye: Racha calendar, weight chart, coach card, weekly, missions, activity
    ═════════════════════════════════════════════════════════════ */
 
 html:not(.dark) .rounded-card.bg-wc-bg-tertiary,
 html:not(.dark) .rounded-xl.bg-wc-bg-tertiary {
-    background: #0F0F0F !important;
-    border-color: rgba(255, 255, 255, 0.08) !important;
-    color: #FAFAF8;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(226, 220, 204, 0.8) !important;
+    box-shadow: 4px 4px 0 rgba(15, 15, 15, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
     position: relative;
     transition: all 0.25s;
 }
 
 html:not(.dark) .rounded-card.bg-wc-bg-tertiary:hover,
 html:not(.dark) .rounded-xl.bg-wc-bg-tertiary:hover {
-    box-shadow: 0 8px 30px rgba(220, 38, 38, 0.08), 0 2px 6px rgba(0, 0, 0, 0.08);
-}
-
-/* Text overrides dentro de cards dark */
-html:not(.dark) .rounded-card.bg-wc-bg-tertiary .text-wc-text,
-html:not(.dark) .rounded-xl.bg-wc-bg-tertiary .text-wc-text {
-    color: #FAFAF8 !important;
-}
-html:not(.dark) .rounded-card.bg-wc-bg-tertiary .text-wc-text-secondary,
-html:not(.dark) .rounded-xl.bg-wc-bg-tertiary .text-wc-text-secondary {
-    color: rgba(250, 250, 248, 0.72) !important;
-}
-html:not(.dark) .rounded-card.bg-wc-bg-tertiary .text-wc-text-tertiary,
-html:not(.dark) .rounded-xl.bg-wc-bg-tertiary .text-wc-text-tertiary {
-    color: rgba(250, 250, 248, 0.5) !important;
-}
-
-/* Borders internas */
-html:not(.dark) .rounded-card.bg-wc-bg-tertiary .border-wc-border,
-html:not(.dark) .rounded-xl.bg-wc-bg-tertiary .border-wc-border {
-    border-color: rgba(255, 255, 255, 0.08) !important;
-}
-
-/* Bg-wc-bg-secondary en cards dark = bg-darker internal */
-html:not(.dark) .rounded-card.bg-wc-bg-tertiary .bg-wc-bg-secondary,
-html:not(.dark) .rounded-xl.bg-wc-bg-tertiary .bg-wc-bg-secondary {
-    background: rgba(255, 255, 255, 0.04) !important;
+    box-shadow: 6px 6px 0 rgba(220, 38, 38, 0.14), 0 4px 14px rgba(0, 0, 0, 0.06);
+    transform: translate(-2px, -2px);
 }
 
 /* ═════════════════════════════════════════════════════════════
@@ -397,13 +347,15 @@ html:not(.dark) .wc-grain::after {
 }
 
 /* ═════════════════════════════════════════════════════════════
-   Daily missions grid · dark inverted
+   Daily missions grid · Glass translúcido
    ═════════════════════════════════════════════════════════════ */
 
 html:not(.dark) [wire\:loading\.remove] > div.rounded-xl {
-    background: #0F0F0F !important;
-    border-color: rgba(255, 255, 255, 0.08) !important;
-    color: #FAFAF8;
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(226, 220, 204, 0.8) !important;
+    box-shadow: 4px 4px 0 rgba(15, 15, 15, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 /* ═════════════════════════════════════════════════════════════
