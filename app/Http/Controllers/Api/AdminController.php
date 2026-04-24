@@ -1691,13 +1691,18 @@ class AdminController extends Controller
             return response()->json(['error' => 'Ya existe un cliente con este email'], 409);
         }
 
-        // Create client
+        // Create client — generate a random password if none was provided in extras
+        $plainPassword = null;
+        if (! isset($extras['password_hash'])) {
+            $plainPassword = \Illuminate\Support\Str::random(16);
+        }
+
         $client = Client::create([
             'nombre' => $inscription->nombre,
             'apellido' => $inscription->apellido ?? '',
             'email' => $inscription->email,
             'telefono' => $inscription->whatsapp ?? $inscription->telefono ?? '',
-            'password_hash' => $extras['password_hash'] ?? bcrypt('WellCore2026!'),
+            'password_hash' => $extras['password_hash'] ?? bcrypt($plainPassword),
             'plan' => $inscription->plan ?? 'metodo',
             'status' => 'pendiente',
             'ciudad' => $inscription->ciudad ?? '',
@@ -1734,6 +1739,21 @@ class AdminController extends Controller
             Log::warning('Welcome email failed for client '.$client->id.': '.$e->getMessage());
         }
 
+        // If a random password was generated, send credentials to the client
+        if ($plainPassword !== null) {
+            try {
+                Mail::raw(
+                    "Bienvenido a WellCore Fitness!\n\nTus credenciales de acceso:\nEmail: {$client->email}\nPassword: {$plainPassword}\n\nIngresa en: https://wellcorefitness.com/login",
+                    fn ($m) => $m->to($client->email)->subject('Bienvenido a WellCore — tus credenciales')
+                );
+            } catch (\Throwable $e) {
+                Log::warning('AdminController: welcome email failed, returning plain password in response', [
+                    'client_id' => $client->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
         // Notify admin
         WellcoreNotification::create([
             'user_type' => 'admin',
@@ -1749,6 +1769,7 @@ class AdminController extends Controller
             'client_id' => $client->id,
             'client_name' => $client->nombre,
             'message' => "Cliente {$client->nombre} creado exitosamente",
+            'generated_password' => $plainPassword, // null if custom password_hash was provided
         ]);
     }
 

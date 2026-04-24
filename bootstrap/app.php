@@ -53,6 +53,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => EnsureRole::class,
             'ensure.plan' => EnsurePlan::class,
             'update.last.seen' => UpdateLastSeen::class,
+            'api.bearer' => \App\Http\Middleware\ApiBearerAuth::class,
         ]);
 
         // Track real client activity — runs after response, skips impersonation sessions.

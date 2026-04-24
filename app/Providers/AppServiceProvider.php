@@ -39,11 +39,13 @@ class AppServiceProvider extends ServiceProvider
     protected function configureRateLimiting(): void
     {
         RateLimiter::for('api', function ($request) {
-            return Limit::perMinute(60)->by($request->ip());
+            $key = optional($request->user())->id ?? $request->ip();
+            return Limit::perMinute(60)->by($key);
         });
 
         RateLimiter::for('login', function ($request) {
-            return Limit::perMinute(5)->by($request->ip());
+            $key = optional($request->user())->id ?? $request->ip();
+            return Limit::perMinute(5)->by($key);
         });
 
         RateLimiter::for('chat', function ($request) {

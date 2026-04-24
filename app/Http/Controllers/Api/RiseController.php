@@ -649,9 +649,9 @@ class RiseController extends Controller
 
         $request->validate([
             'upload_date' => 'required|date',
-            'photo_frente' => 'nullable|image|max:12288',
-            'photo_perfil' => 'nullable|image|max:12288',
-            'photo_espalda' => 'nullable|image|max:12288',
+            'photo_frente' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:12288'],
+            'photo_perfil' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:12288'],
+            'photo_espalda' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:12288'],
         ]);
 
         if (! $request->hasFile('photo_frente') && ! $request->hasFile('photo_perfil') && ! $request->hasFile('photo_espalda')) {

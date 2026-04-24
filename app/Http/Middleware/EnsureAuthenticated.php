@@ -64,8 +64,15 @@ class EnsureAuthenticated
 
         // 3. Check admin_token in POST body (impersonation from Vue SPA where PHP session may be absent).
         //    Also seed the session so WellCoreGuard can resolve the user in subsequent middleware.
+        //    Security: validate that the token belongs to an admin before seeding the session.
         if ($request->filled('admin_token')) {
             $bodyToken = $request->input('admin_token');
+            $t = \App\Models\AuthToken::where('token', $bodyToken)
+                ->where('expires_at', '>', now())
+                ->first();
+            if (! $t || $t->user_type !== \App\Enums\UserType::Admin) {
+                return null; // non-admin token: treat as absent, do NOT seed session
+            }
             session(['wc_token' => $bodyToken]);
             return $bodyToken;
         }

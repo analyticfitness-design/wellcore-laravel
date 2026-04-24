@@ -1171,7 +1171,7 @@ class SocialController extends Controller
             'photo_date' => 'required|date',
             'tipo' => 'required|in:frente,perfil,espalda',
             // 12MB max. Frontend convierte HEIC iPhone -> JPEG antes de subir.
-            'photo' => 'required|image|max:12288',
+            'photo' => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:12288'],
         ]);
 
         $uploadDate = $request->input('photo_date');

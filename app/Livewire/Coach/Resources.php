@@ -122,7 +122,9 @@ class Resources extends Component
             'content_type' => $this->acContentType,
             'audience' => $this->acAudience,
             'description' => $this->acDescription ?: null,
-            'body_html' => $this->acBodyHtml ?: null,
+            'body_html' => $this->acBodyHtml
+                ? strip_tags($this->acBodyHtml, '<p><br><strong><em><ul><li><ol><h1><h2><h3><a><code><pre><blockquote><img>')
+                : null,
             'content_url' => $this->acContentUrl ?: null,
             'thumbnail_url' => $this->acThumbnailUrl ?: null,
             'sort_order' => $this->acSortOrder,
