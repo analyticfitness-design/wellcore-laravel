@@ -175,50 +175,68 @@
                         <div class="hp-lb-url">wellcorefitness.com/client</div>
                     </div>
                     <div class="hp-laptop-screen">
-                        <div class="hp-dash-orb" aria-hidden="true"></div>
-                        <div class="hp-dash-top">
-                            <span class="hp-dash-plan-badge">Plan Método · Activo</span>
-                            <span class="hp-dash-streak">🔥 14 días</span>
+                        {{-- Topbar --}}
+                        <div class="hp-db-topbar">
+                            <span class="hp-db-week-pill">Semana 3 — Fuerza</span>
+                            <div class="hp-db-avatar">D</div>
                         </div>
-                        <div class="hp-dash-name">Buenas noches, Daniela</div>
-                        <div class="hp-dash-week-sub">Semana 3 · Fuerza Máxima</div>
-                        <div class="hp-dash-week">
-                            <div class="hp-dw done"><span class="hp-dw-n">13</span>L</div>
-                            <div class="hp-dw done"><span class="hp-dw-n">14</span>M</div>
-                            <div class="hp-dw done"><span class="hp-dw-n">15</span>X</div>
-                            <div class="hp-dw"><span class="hp-dw-n">16</span>J</div>
-                            <div class="hp-dw cur"><span class="hp-dw-n">17</span>V</div>
-                            <div class="hp-dw"><span class="hp-dw-n">18</span>S</div>
-                            <div class="hp-dw"><span class="hp-dw-n">19</span>D</div>
-                        </div>
-                        <div class="hp-dash-ex">
-                            <span class="hp-ex-num">1</span>
-                            <span class="hp-ex-gif">🏋️</span>
-                            <div class="hp-ex-info">
-                                <div class="hp-ex-name">Sentadilla libre</div>
-                                <div class="hp-ex-chips">
-                                    <span class="hp-ex-ch">4×6</span>
-                                    <span class="hp-ex-ch">85kg</span>
-                                    <span class="hp-ex-ch hp-ex-pr">PR 🏆</span>
+                        {{-- Body: sidebar + main --}}
+                        <div class="hp-db-body">
+                            {{-- Sidebar --}}
+                            <div class="hp-db-sidebar">
+                                <div class="hp-db-logo">W/CORE</div>
+                                <div class="hp-db-sect">ENTR.</div>
+                                <div class="hp-db-item hp-db-active">Dashboard</div>
+                                <div class="hp-db-item">Mi Plan</div>
+                                <div class="hp-db-item">Entren.</div>
+                                <div class="hp-db-sect">PROG.</div>
+                                <div class="hp-db-item">Métricas</div>
+                                <div class="hp-db-item">Logros</div>
+                                <div class="hp-db-sect">SOCIAL</div>
+                                <div class="hp-db-item">Chat</div>
+                            </div>
+                            {{-- Main content --}}
+                            <div class="hp-db-main">
+                                {{-- Hero welcome card --}}
+                                <div class="hp-db-hero">
+                                    <div class="hp-db-orb" aria-hidden="true"></div>
+                                    <div class="hp-db-greeting">Buenas noches, Daniela</div>
+                                    <div class="hp-db-meta">
+                                        <span class="hp-db-plan-tag">Plan Método · Activo</span>
+                                        <span class="hp-db-streak">🔥 14 días</span>
+                                    </div>
+                                    <div class="hp-db-quote">"La excelencia no es un evento, es un hábito que defiendes cada día."</div>
+                                </div>
+                                {{-- Plan activo card --}}
+                                <div class="hp-db-card hp-db-card-plan">
+                                    <span class="hp-db-ci">✓</span>
+                                    <span class="hp-db-ct">Plan activo — Día <strong>37</strong></span>
+                                    <span class="hp-db-dot-g"></span>
+                                </div>
+                                {{-- Stats row con colores de borde superior --}}
+                                <div class="hp-db-stats">
+                                    <div class="hp-db-stat" style="--sc:#F59E0B">
+                                        <div class="hp-dbs-top">RACHA 🔥</div>
+                                        <div class="hp-dbs-val">14</div>
+                                        <div class="hp-dbs-sub">días consec.</div>
+                                    </div>
+                                    <div class="hp-db-stat" style="--sc:#10B981">
+                                        <div class="hp-dbs-top">CHECK-INS ✓</div>
+                                        <div class="hp-dbs-val">6</div>
+                                        <div class="hp-dbs-sub">este mes</div>
+                                    </div>
+                                    <div class="hp-db-stat" style="--sc:#A78BFA">
+                                        <div class="hp-dbs-top">NIVEL 3 ★</div>
+                                        <div class="hp-dbs-val">520</div>
+                                        <div class="hp-dbs-sub">XP total</div>
+                                    </div>
+                                    <div class="hp-db-stat" style="--sc:#F59E0B">
+                                        <div class="hp-dbs-top">ESTA SEM.</div>
+                                        <div class="hp-dbs-val">4<span class="hp-dbs-slash">/7</span></div>
+                                        <div class="hp-dbs-sub">días entren.</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="hp-dash-ex">
-                            <span class="hp-ex-num">2</span>
-                            <span class="hp-ex-gif">💪</span>
-                            <div class="hp-ex-info">
-                                <div class="hp-ex-name">Press banca</div>
-                                <div class="hp-ex-chips">
-                                    <span class="hp-ex-ch">4×8</span>
-                                    <span class="hp-ex-ch">72.5kg</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="hp-dash-stats">
-                            <div class="hp-ds-b"><div class="hp-ds-n" style="color:#DC2626">14</div><div class="hp-ds-l">Racha</div></div>
-                            <div class="hp-ds-b"><div class="hp-ds-n" style="color:#10B981">6</div><div class="hp-ds-l">Check-ins</div></div>
-                            <div class="hp-ds-b"><div class="hp-ds-n" style="color:#A78BFA">Nv 2</div><div class="hp-ds-l">Nivel</div></div>
-                            <div class="hp-ds-b"><div class="hp-ds-n" style="color:#F59E0B">4/7</div><div class="hp-ds-l">Semana</div></div>
                         </div>
                     </div>
                 </div>

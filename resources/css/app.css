@@ -1156,55 +1156,125 @@ body {
   font-size:9px; color:rgba(250,250,250,.3); padding:2px 10px; text-align:center;
   font-family:var(--font-mono); letter-spacing:.02em;
 }
-.hp-laptop-screen { background:#111113; border-radius:0 0 6px 6px; padding:16px 18px; position:relative; overflow:hidden; }
-
-/* Dashboard widget dentro del laptop */
-.hp-dash-orb {
-  position:absolute; top:-16px; right:-16px;
-  width:100px; height:100px; border-radius:50%;
-  background:rgba(220,38,38,.18); filter:blur(28px); pointer-events:none; z-index:0;
+/* ═══ LAPTOP SCREEN — dashboard real layout ═══ */
+.hp-laptop-screen {
+  background:#111113; border-radius:0 0 6px 6px;
+  padding:0; position:relative; overflow:hidden;
+  display:flex; flex-direction:column;
 }
-.hp-dash-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; position:relative; z-index:1; }
-.hp-dash-plan-badge {
-  font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:.1em;
-  color:#DC2626; background:rgba(220,38,38,.14); border:1px solid rgba(220,38,38,.2); padding:2px 9px; border-radius:9999px;
+/* Topbar */
+.hp-db-topbar {
+  background:#0A0A0C; border-bottom:1px solid rgba(255,255,255,.07);
+  height:22px; display:flex; align-items:center;
+  justify-content:space-between; padding:0 8px; flex-shrink:0;
 }
-.hp-dash-streak { font-size:10px; color:rgba(250,250,250,.55); }
-.hp-dash-name { font-family:var(--font-display); font-size:16px; font-weight:700; text-transform:uppercase; color:#FAFAFA; margin-bottom:2px; position:relative; z-index:1; }
-.hp-dash-week-sub { font-size:8.5px; color:rgba(250,250,250,.38); margin-bottom:10px; position:relative; z-index:1; }
-.hp-dash-week { display:flex; gap:4px; margin-bottom:10px; position:relative; z-index:1; }
-.hp-dw {
-  flex:1; padding:4px 1px; border-radius:5px; text-align:center;
-  border:1px solid rgba(255,255,255,.07); background:#0F0F11;
-  font-size:7.5px; font-weight:600; color:rgba(250,250,250,.38);
+.hp-db-week-pill {
+  font-size:6.5px; font-weight:700; letter-spacing:.05em;
+  color:#fff; background:rgba(220,38,38,.18);
+  border:1px solid rgba(220,38,38,.32); border-radius:20px; padding:2px 6px;
 }
-.hp-dw-n { display:block; font-family:var(--font-display); font-size:10px; font-weight:700; line-height:1; margin-bottom:2px; }
-.hp-dw.done { background:rgba(220,38,38,.08); border-color:rgba(220,38,38,.2); color:#DC2626; }
-.hp-dw.cur { background:#DC2626; border-color:#DC2626; color:#fff; box-shadow:0 2px 8px rgba(220,38,38,.4); }
-.hp-dash-ex {
-  display:flex; align-items:center; gap:7px;
-  background:#0F0F11; border:1px solid rgba(255,255,255,.07);
-  border-radius:7px; padding:7px 9px; margin-bottom:5px; position:relative; z-index:1;
-}
-.hp-ex-num {
-  width:16px; height:16px; border-radius:50%; background:#DC2626;
-  color:#fff; font-size:7.5px; font-weight:700;
+.hp-db-week-pill::before { content:'● '; color:#DC2626; font-size:5px; }
+.hp-db-avatar {
+  width:15px; height:15px; border-radius:50%;
+  background:#DC2626; font-size:6.5px; font-weight:700; color:#fff;
   display:flex; align-items:center; justify-content:center; flex-shrink:0;
 }
-.hp-ex-gif {
-  width:28px; height:28px; border-radius:5px; background:#18181B;
-  border:1px solid rgba(255,255,255,.07);
-  display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0;
+/* Body: sidebar + main */
+.hp-db-body { display:flex; flex:1; }
+/* Sidebar */
+.hp-db-sidebar {
+  width:52px; background:#0D0D0F;
+  border-right:1px solid rgba(255,255,255,.06);
+  padding:7px 0; flex-shrink:0;
+  display:flex; flex-direction:column; gap:1px;
 }
-.hp-ex-info { flex:1; min-width:0; }
-.hp-ex-name { font-family:var(--font-display); font-size:10.5px; font-weight:600; text-transform:uppercase; color:#FAFAFA; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.hp-ex-chips { display:flex; gap:3px; margin-top:2px; }
-.hp-ex-ch { font-size:7px; font-weight:700; padding:1px 4px; border-radius:3px; background:rgba(220,38,38,.1); color:#DC2626; border:1px solid rgba(220,38,38,.15); }
-.hp-ex-pr { background:rgba(245,158,11,.1) !important; color:#F59E0B !important; border-color:rgba(245,158,11,.2) !important; }
-.hp-dash-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; margin-top:7px; position:relative; z-index:1; }
-.hp-ds-b { background:#0F0F11; border:1px solid rgba(255,255,255,.07); border-radius:5px; padding:5px 3px; text-align:center; }
-.hp-ds-n { font-family:var(--font-display); font-size:13px; font-weight:700; line-height:1; }
-.hp-ds-l { font-size:6px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:rgba(250,250,250,.38); margin-top:2px; }
+.hp-db-logo {
+  font-family:var(--font-display); font-size:7.5px; font-weight:900;
+  color:#DC2626; padding:0 6px 5px; letter-spacing:.05em;
+  border-bottom:1px solid rgba(255,255,255,.06); margin-bottom:3px;
+}
+.hp-db-sect {
+  font-size:5px; font-weight:800; text-transform:uppercase;
+  letter-spacing:.12em; color:rgba(250,250,250,.22);
+  padding:4px 6px 2px;
+}
+.hp-db-item {
+  font-size:6.5px; color:rgba(250,250,250,.42);
+  padding:3px 6px; white-space:nowrap;
+  overflow:hidden; text-overflow:ellipsis;
+}
+.hp-db-item.hp-db-active {
+  background:rgba(220,38,38,.14); color:#DC2626;
+  border-left:2px solid #DC2626; font-weight:700;
+}
+/* Main content */
+.hp-db-main {
+  flex:1; min-width:0; padding:7px 9px;
+  display:flex; flex-direction:column; gap:5px;
+}
+/* Hero welcome card */
+.hp-db-hero {
+  background:#18181B; border:1px solid rgba(255,255,255,.08);
+  border-radius:6px; padding:9px 11px;
+  position:relative; overflow:hidden; flex-shrink:0;
+}
+.hp-db-orb {
+  position:absolute; top:-20px; right:-20px;
+  width:90px; height:90px; border-radius:50%;
+  background:radial-gradient(circle,rgba(220,38,38,.38) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hp-db-greeting {
+  font-family:var(--font-display); font-size:13px; font-weight:700;
+  text-transform:uppercase; color:#FAFAFA; line-height:1.1;
+  position:relative; z-index:1;
+}
+.hp-db-meta {
+  display:flex; align-items:center; gap:5px;
+  margin:3px 0; position:relative; z-index:1;
+}
+.hp-db-plan-tag {
+  font-size:6.5px; font-weight:700; text-transform:uppercase; letter-spacing:.08em;
+  background:rgba(220,38,38,.18); color:#DC2626;
+  border:1px solid rgba(220,38,38,.28); border-radius:3px; padding:1px 4px;
+}
+.hp-db-streak { font-size:7.5px; color:rgba(250,250,250,.45); }
+.hp-db-quote {
+  font-size:6.5px; font-style:italic; color:rgba(250,250,250,.38);
+  line-height:1.4; position:relative; z-index:1;
+}
+/* Plan activo card */
+.hp-db-card {
+  background:#18181B; border:1px solid rgba(255,255,255,.08);
+  border-top:2px solid #10B981; border-radius:5px;
+  padding:4px 8px; display:flex; align-items:center;
+  gap:5px; font-size:7px; color:rgba(250,250,250,.6); flex-shrink:0;
+}
+.hp-db-ci { color:#10B981; font-size:8px; font-weight:700; }
+.hp-db-ct { flex:1; }
+.hp-db-ct strong { color:#FAFAFA; }
+.hp-db-dot-g {
+  width:6px; height:6px; border-radius:50%;
+  background:#10B981; box-shadow:0 0 4px rgba(16,185,129,.55); flex-shrink:0;
+}
+/* Stats row — colored top border via CSS var --sc */
+.hp-db-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; flex-shrink:0; }
+.hp-db-stat {
+  background:#18181B; border:1px solid rgba(255,255,255,.07);
+  border-top:2px solid var(--sc); border-radius:5px;
+  padding:5px 3px; text-align:center;
+}
+.hp-dbs-top {
+  font-size:5.5px; font-weight:800; text-transform:uppercase;
+  letter-spacing:.05em; color:rgba(250,250,250,.32);
+  margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.hp-dbs-val {
+  font-family:var(--font-display); font-size:14px; font-weight:700;
+  line-height:1; color:var(--sc);
+}
+.hp-dbs-slash { font-size:8px; opacity:.5; }
+.hp-dbs-sub { font-size:5px; color:rgba(250,250,250,.28); margin-top:1px; }
 
 /* Phone overlay encima del laptop (≥1280px) */
 .hp-phone-overlay { position:absolute; bottom:6px; right:-24px; z-index:4; display:none; }
