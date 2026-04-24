@@ -12,6 +12,10 @@ import DashboardCheckin from '../../components/dashboard/DashboardCheckin.vue';
 import DashboardMissions from '../../components/dashboard/DashboardMissions.vue';
 import DashboardCoach from '../../components/dashboard/DashboardCoach.vue';
 import DashboardActivity from '../../components/dashboard/DashboardActivity.vue';
+import DashboardTimeline from '../../components/dashboard/DashboardTimeline.vue';
+import DashboardHeatmap from '../../components/dashboard/DashboardHeatmap.vue';
+import DashboardWeight from '../../components/dashboard/DashboardWeight.vue';
+import DashboardWeeklySummary from '../../components/dashboard/DashboardWeeklySummary.vue';
 
 const api = useApi();
 const router = useRouter();
@@ -55,16 +59,8 @@ onMounted(() => {
     fetchDashboard();
 });
 
-// ── Streak calendar helpers ──
-function getCalendarColor(count) {
-    if (count >= 5) return 'bg-wc-accent';
-    if (count >= 4) return 'bg-wc-accent/80';
-    if (count >= 3) return 'bg-wc-accent/60';
-    if (count === 2) return 'bg-wc-accent/40';
-    if (count === 1) return 'bg-wc-accent/20';
-    return 'bg-wc-bg-secondary';
-}
-
+// ── Streak calendar: genera los 90 días alineados Lun-Dom para el heatmap.
+//    El color/count lo calcula DashboardHeatmap a partir de data.streakCalendar.
 function generateCalendarDays() {
     const today = new Date();
     const days = [];
@@ -103,17 +99,6 @@ function generateCalendarDays() {
 }
 
 const calendarDays = generateCalendarDays();
-
-function getCalendarCount(dateStr) {
-    if (!data.value?.streakCalendar) return 0;
-    return data.value.streakCalendar[dateStr] || 0;
-}
-
-// ── Weight chart helpers ──
-function getWeightBarHeight(weight, min, range) {
-    if (range === 0) return 50;
-    return ((weight - min) / range) * 70 + 30;
-}
 
 // ── Check-in countdown (module-level timer — not reactive) ──
 const checkinHours = ref('00');
@@ -362,168 +347,17 @@ const weekMarkers = computed(() => {
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- PLAN PROGRESS TIMELINE                                        -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div v-if="data.hasActivePlan" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-        <div class="mb-4 flex items-center justify-between">
-          <h2 class="text-lg font-semibold text-wc-text">Tu progreso</h2>
-          <span class="text-sm text-wc-text-secondary">
-            Semana {{ Math.min(data.weeksActive || 0, data.totalWeeks || 12) }} de {{ data.totalWeeks || 12 }}
-          </span>
-        </div>
-
-        <div class="relative">
-          <div class="h-2.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
-            <div
-              class="prog-line-fg transition-all duration-700 ease-out"
-              :style="{ width: (data.progressPercent || 0) + '%' }"
-            ></div>
-          </div>
-          <div
-            class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-700"
-            :style="{ left: (data.progressPercent || 0) + '%' }"
-          >
-            <div class="prog-indicator h-5 w-5 rounded-full border-[3px] border-wc-accent bg-wc-bg-tertiary"></div>
-          </div>
-        </div>
-
-        <!-- Week markers -->
-        <div class="mt-3 flex items-center justify-between">
-          <div class="text-left">
-            <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Inicio</p>
-            <p class="text-sm text-wc-text-secondary">{{ data.startDate || '--' }}</p>
-          </div>
-          <!-- Desktop week dots -->
-          <div class="hidden items-center gap-0 flex-1 mx-4 sm:flex">
-            <div v-for="marker in weekMarkers" :key="marker.week" class="flex flex-1 flex-col items-center">
-              <div :class="marker.isActive ? 'prog-mk-on' : 'prog-mk-off'"></div>
-              <span v-if="marker.showLabel" class="mt-1 text-xs text-wc-text-tertiary">{{ marker.week }}</span>
-            </div>
-          </div>
-          <div class="text-right">
-            <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">
-              {{ (data.weeksActive || 0) >= (data.totalWeeks || 12) ? 'Continuo' : 'Semana 12' }}
-            </p>
-            <p class="text-sm font-semibold text-wc-accent">{{ data.progressPercent || 0 }}%</p>
-          </div>
-        </div>
-      </div>
+      <DashboardTimeline :data="data" :week-markers="weekMarkers" />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- STREAK CALENDAR (90-day heatmap)                              -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
-        <div class="mb-3 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-orange-500/10">
-              <svg class="h-4 w-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
-                <path fill-rule="evenodd" d="M12.963 2.286a.75.75 0 0 0-1.071-.136 9.742 9.742 0 0 0-3.539 6.176A7.547 7.547 0 0 1 6.648 6.61a.75.75 0 0 0-1.152.082A9 9 0 1 0 15.68 4.534a7.46 7.46 0 0 1-2.717-2.248ZM15.75 14.25a3.75 3.75 0 1 1-7.313-1.172c.628.465 1.35.81 2.133 1a5.99 5.99 0 0 1 1.925-3.546 3.75 3.75 0 0 1 3.255 3.718Z" clip-rule="evenodd" />
-              </svg>
-            </div>
-            <h3 class="text-lg font-semibold text-wc-text">Racha de entrenamiento</h3>
-            <span v-if="(data.calendarStreak || 0) > 0" class="inline-flex items-center gap-1 rounded-full bg-orange-500/10 px-2 py-0.5 text-xs font-bold text-orange-500">
-              {{ data.calendarStreak }} dia{{ data.calendarStreak !== 1 ? 's' : '' }} seguido{{ data.calendarStreak !== 1 ? 's' : '' }}
-            </span>
-          </div>
-          <span class="hidden text-sm text-wc-text-tertiary sm:inline">Ultimos 90 dias</span>
-        </div>
-
-        <!-- Calendar grid -->
-        <div class="flex gap-0.5 overflow-x-auto pb-1">
-          <!-- Day labels -->
-          <div class="flex flex-col gap-0.5 pr-1 shrink-0">
-            <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">L</span>
-            <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">M</span>
-            <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">X</span>
-            <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">J</span>
-            <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">V</span>
-            <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">S</span>
-            <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">D</span>
-          </div>
-
-          <!-- Grid -->
-          <div class="grid grid-flow-col grid-rows-7 gap-0.5 flex-1">
-            <div
-              v-for="day in calendarDays"
-              :key="day.date"
-              :class="[
-                'h-2.5 w-2.5 rounded-[2px] sm:h-3 sm:w-3 sm:rounded-sm transition-all duration-150 hover:scale-125 hover:z-10 relative',
-                day.isFuture || day.isBeforeRange
-                  ? 'bg-wc-bg-secondary/30'
-                  : getCalendarColor(getCalendarCount(day.date)),
-                day.isToday ? 'ring-1 ring-wc-text/30' : ''
-              ]"
-              :style="day.isFuture ? 'opacity: 0.2' : ''"
-              :title="day.displayDate + (getCalendarCount(day.date) ? ' - ' + getCalendarCount(day.date) + ' sesion(es)' : '')"
-            ></div>
-          </div>
-        </div>
-
-        <!-- Legend -->
-        <div class="mt-2 flex items-center justify-between">
-          <span class="text-xs text-wc-text-tertiary sm:hidden">Ultimos 90 dias</span>
-          <div class="ml-auto flex items-center gap-1 text-sm text-wc-text-tertiary">
-            <span>Menos</span>
-            <div class="h-2 w-2 rounded-[2px] bg-wc-bg-secondary sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
-            <div class="h-2 w-2 rounded-[2px] bg-wc-accent/40 sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
-            <div class="h-2 w-2 rounded-[2px] bg-wc-accent/70 sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
-            <div class="h-2 w-2 rounded-[2px] bg-wc-accent sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
-            <span>Mas</span>
-          </div>
-        </div>
-      </div>
+      <DashboardHeatmap :data="data" :calendar-days="calendarDays" />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- WEIGHT CHART (CSS bar chart)                                  -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div v-if="data.weightChartData && data.weightChartData.length > 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-        <div class="mb-4 flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-wc-text">Tendencia de peso</h3>
-          <span class="text-sm text-wc-text-tertiary">Ultimos 90 dias</span>
-        </div>
-
-        <div class="flex items-end justify-center gap-1 sm:gap-2 overflow-x-auto" style="height: 140px;">
-          <div
-            v-for="(entry, idx) in data.weightChartData"
-            :key="idx"
-            class="group relative flex w-8 sm:w-10 shrink-0 flex-col items-center justify-end"
-            style="height: 100%;"
-          >
-            <!-- Tooltip -->
-            <div class="pointer-events-none absolute -top-8 z-10 hidden rounded bg-wc-bg-secondary px-2 py-1 text-xs font-medium text-wc-text shadow-lg group-hover:block">
-              {{ Number(entry.weight).toFixed(1) }} kg
-            </div>
-            <!-- Bar -->
-            <div
-              class="w-full rounded-t bg-wc-accent/80 transition-all group-hover:bg-wc-accent"
-              :style="{
-                height: getWeightBarHeight(
-                  entry.weight,
-                  Math.min(...data.weightChartData.map(e => e.weight)),
-                  Math.max(...data.weightChartData.map(e => e.weight)) - Math.min(...data.weightChartData.map(e => e.weight)) || 1
-                ) + '%'
-              }"
-            ></div>
-            <!-- Label -->
-            <span class="mt-1 w-full truncate text-center text-xs text-wc-text-tertiary">
-              {{ entry.date ? String(entry.date).slice(0, 5) : '' }}
-            </span>
-          </div>
-        </div>
-
-        <div class="mt-2 flex justify-between text-sm text-wc-text-tertiary">
-          <span>Min: {{ Math.min(...data.weightChartData.map(e => e.weight)).toFixed(1) }} kg</span>
-          <span>Max: {{ Math.max(...data.weightChartData.map(e => e.weight)).toFixed(1) }} kg</span>
-        </div>
-      </div>
-      <!-- Weight chart empty state -->
-      <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-        <div class="flex flex-col items-center justify-center h-48 text-center">
-          <svg class="h-8 w-8 text-wc-text-tertiary/40" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
-          </svg>
-          <p class="mt-2 text-sm text-wc-text-tertiary">Sin datos de peso aun</p>
-          <RouterLink to="/client/metrics" class="mt-2 text-sm text-wc-accent hover:underline">Registrar peso</RouterLink>
-        </div>
-      </div>
+      <DashboardWeight :weight-chart-data="data.weightChartData || []" />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- COACH CARD                                                    -->
@@ -544,58 +378,7 @@ const weekMarkers = computed(() => {
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- WEEKLY SUMMARY (last week)                                    -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div v-if="data.hasLastWeekData" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-        <div class="mb-4 flex items-center gap-2">
-          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-500/10">
-            <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
-            </svg>
-          </div>
-          <h2 class="text-lg font-semibold text-wc-text">Resumen semanal</h2>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          <div class="rounded-xl bg-wc-bg-secondary px-4 py-3 text-center">
-            <p class="font-data text-2xl font-bold text-wc-text">{{ data.lastWeekWorkouts || 0 }}</p>
-            <p class="mt-0.5 text-sm text-wc-text-tertiary">Entrenamientos</p>
-          </div>
-          <div class="rounded-xl bg-wc-bg-secondary px-4 py-3 text-center">
-            <p class="font-data text-2xl font-bold text-wc-text">{{ data.lastWeekCheckins || 0 }}</p>
-            <p class="mt-0.5 text-sm text-wc-text-tertiary">Check-ins</p>
-          </div>
-          <div class="col-span-2 rounded-xl bg-wc-bg-secondary px-4 py-3 text-center sm:col-span-1">
-            <p class="font-data text-2xl font-bold text-wc-text">{{ data.lastWeekWeight || '--' }}</p>
-            <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ data.lastWeekWeight ? 'kg actuales' : 'Sin registro' }}</p>
-          </div>
-        </div>
-
-        <!-- Motivational text based on performance -->
-        <div class="mt-4 rounded-xl border border-wc-accent/10 bg-wc-accent/5 px-4 py-2.5">
-          <p class="text-sm text-wc-text-tertiary">
-            <span :class="['font-semibold', weeklySummaryMessage.colorClass]">{{ weeklySummaryMessage.label }}</span>
-            &mdash; {{ weeklySummaryMessage.desc }}
-          </p>
-        </div>
-      </div>
-      <!-- Weekly summary empty state (first week) -->
-      <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-        <div class="mb-3 flex items-center gap-2">
-          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-500/10">
-            <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
-            </svg>
-          </div>
-          <h2 class="text-lg font-semibold text-wc-text">Resumen semanal</h2>
-        </div>
-        <div class="flex items-center gap-3 rounded-xl border border-wc-accent/10 bg-wc-accent/5 px-4 py-3">
-          <svg class="h-5 w-5 shrink-0 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
-          </svg>
-          <p class="text-sm text-wc-text-secondary">
-            <span class="font-semibold text-wc-text">Tu primera semana</span> &mdash; Completa tu primer entrenamiento y check-in para ver tu resumen aqui.
-          </p>
-        </div>
-      </div>
+      <DashboardWeeklySummary :data="data" :weekly-summary-message="weeklySummaryMessage" />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- DAILY MISSIONS                                                -->
