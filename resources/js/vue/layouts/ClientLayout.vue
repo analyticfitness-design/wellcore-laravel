@@ -11,6 +11,7 @@ import ToastContainer from '../components/ui/ToastContainer.vue';
 import BentoCelebration from '../components/celebrations/BentoCelebration.vue';
 import WcIcon from '../components/ui/WcIcon.vue';
 import DashboardFab from '../components/dashboard/DashboardFab.vue';
+import InstallPrompt from '../components/dashboard/InstallPrompt.vue';
 import { useMedals } from '../composables/useMedals';
 
 // Celebraciones globales — disparadas desde cualquier vista via fetchMedals()
@@ -453,6 +454,9 @@ const bottomNav = [
 
     <!-- Floating Action Button (mobile only, solo cuando cuenta activa) -->
     <DashboardFab v-if="!accountInactive && accountCheckDone" />
+
+    <!-- PWA install prompt (condicional: beforeinstallprompt + 2+ visits) -->
+    <InstallPrompt v-if="!accountInactive && accountCheckDone" />
 
   </div>
 </template>

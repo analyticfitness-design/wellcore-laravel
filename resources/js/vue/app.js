@@ -18,3 +18,14 @@ const pinia = createPinia();
 app.use(pinia);
 app.use(router);
 app.mount('#vue-app');
+
+// Service Worker — registro opt-in post-mount (no bloquea render inicial).
+// El SW está en /public/sw.js (compartido con el portal Livewire).
+// Cache-first para assets; network-first para HTML; skip /api/*.
+if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {
+            // Silent fail — PWA no es crítico para el funcionamiento del app.
+        });
+    });
+}
