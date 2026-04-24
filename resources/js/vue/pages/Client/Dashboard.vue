@@ -6,6 +6,8 @@ import { localDateStr } from '../../composables/useDate';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import PlanOnboarding from '../../components/PlanOnboarding.vue';
 import DashboardHero from '../../components/dashboard/DashboardHero.vue';
+import DashboardPlanAlert from '../../components/dashboard/DashboardPlanAlert.vue';
+import DashboardStats from '../../components/dashboard/DashboardStats.vue';
 
 const api = useApi();
 const router = useRouter();
@@ -401,122 +403,12 @@ const weekMarkers = computed(() => {
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- PLAN ALERT                                                    -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div v-if="!data.hasActivePlan" class="flex items-start gap-4 rounded-xl border border-wc-accent/30 bg-wc-accent/5 p-4">
-        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
-          <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-          </svg>
-        </div>
-        <div class="min-w-0 flex-1">
-          <p class="text-sm font-semibold text-wc-text">No tienes un plan activo</p>
-          <p class="mt-0.5 text-sm text-wc-text-secondary">Contacta a tu coach para que te asigne un plan de entrenamiento.</p>
-        </div>
-        <RouterLink
-          to="/client/chat"
-          class="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-wc-accent px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-wc-accent-hover"
-        >
-          Contactar coach
-        </RouterLink>
-      </div>
-      <div v-else class="wc-glass flex items-center gap-3 rounded-xl border border-wc-border bg-wc-bg-tertiary px-4 py-3">
-        <div class="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10">
-          <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-        </div>
-        <span class="relative z-10 min-w-0 flex-1 text-sm text-wc-text-secondary">
-          Plan
-          <span v-if="data.planPhase" class="font-semibold capitalize text-wc-text">{{ data.planPhase }}</span>
-          activo &mdash; Dia <span class="font-semibold text-wc-text">{{ data.planDaysActive }}</span>
-        </span>
-        <span class="live-dot shrink-0"></span>
-      </div>
+      <DashboardPlanAlert :data="data" />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- STATS CARDS                                                   -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div class="relative wc-grain grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        <!-- Streak with Flame -->
-        <div class="sc-r relative overflow-hidden wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Racha</span>
-            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10">
-              <svg :class="['h-4 w-4 text-orange-500', (data.streakDays || 0) >= 3 ? 'flame' : '']" viewBox="0 0 24 24" fill="currentColor">
-                <path fill-rule="evenodd" d="M12.963 2.286a.75.75 0 0 0-1.071-.136 9.742 9.742 0 0 0-3.539 6.176A7.547 7.547 0 0 1 6.648 6.61a.75.75 0 0 0-1.152.082A9 9 0 1 0 15.68 4.534a7.46 7.46 0 0 1-2.717-2.248ZM15.75 14.25a3.75 3.75 0 1 1-7.313-1.172c.628.465 1.35.81 2.133 1a5.99 5.99 0 0 1 1.925-3.546 3.75 3.75 0 0 1 3.255 3.718Z" clip-rule="evenodd" />
-              </svg>
-            </div>
-          </div>
-          <p class="mt-3 font-display text-3xl text-wc-accent" style="line-height:1">{{ data.streakDays || 0 }}</p>
-          <p class="mt-1 text-sm font-medium text-wc-text-secondary">dias consecutivos</p>
-        </div>
-
-        <!-- Check-ins this month -->
-        <div class="sc-g relative overflow-hidden wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Check-ins</span>
-            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
-              <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>
-            </div>
-          </div>
-          <p class="mt-3 font-display text-3xl text-wc-accent" style="line-height:1">{{ data.checkinsThisMonth || 0 }}</p>
-          <p class="mt-1 text-sm font-medium text-wc-text-secondary">este mes</p>
-        </div>
-
-        <!-- XP + Level -->
-        <div class="sc-p relative overflow-hidden wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Nivel {{ data.level || 1 }}</span>
-            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10">
-              <svg class="h-4 w-4 text-violet-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-              </svg>
-            </div>
-          </div>
-          <p class="mt-3 font-display text-3xl text-wc-accent" style="line-height:1">{{ (data.xpTotal || 0).toLocaleString() }}</p>
-          <p class="mt-1 text-sm font-medium text-wc-text-secondary">XP total</p>
-          <!-- XP Progress bar -->
-          <div class="mt-3">
-            <div class="h-1.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
-              <div
-                class="h-full rounded-full bg-violet-500 transition-all duration-500"
-                :style="{ width: xpProgress + '%' }"
-              ></div>
-            </div>
-            <p class="mt-1 text-[10px] text-wc-text-tertiary">
-              {{ ((data.xpTotal || 0) - (data.xpCurrentLevelFloor || 0)).toLocaleString() }} / 200 XP
-            </p>
-          </div>
-        </div>
-
-        <!-- Days trained this week — Progress Ring -->
-        <div class="sc-a relative overflow-hidden wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Esta semana</span>
-          </div>
-          <div class="mt-3 flex items-center gap-3">
-            <svg width="60" height="60" viewBox="0 0 86 86" class="shrink-0">
-              <circle cx="43" cy="43" r="40" fill="none" stroke="var(--color-wc-border)" stroke-width="6" />
-              <circle
-                cx="43" cy="43" r="40" fill="none" stroke="#DC2626" stroke-width="6"
-                stroke-linecap="round"
-                :stroke-dasharray="251"
-                :stroke-dashoffset="trainedRingOffset"
-                class="transition-all duration-700"
-                style="transform: rotate(-90deg); transform-origin: center;"
-              />
-              <text x="43" y="43" text-anchor="middle" dominant-baseline="central"
-                    fill="var(--color-wc-text)" font-family="var(--font-data)" font-size="18" font-weight="700">
-                {{ data.trainedThisWeek || 0 }}/7
-              </text>
-            </svg>
-            <div>
-              <p class="text-sm font-medium text-wc-text-secondary">dias entrenados</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <DashboardStats :data="data" :xp-progress="xpProgress" :trained-ring-offset="trainedRingOffset" />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- PLAN PROGRESS TIMELINE                                        -->
