@@ -124,30 +124,30 @@
     {{-- ================================================================== --}}
     {{-- 4. WHY WELLCORE                                                    --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg-tertiary cv-auto">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
-            <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.why_eyebrow') }}</p>
-            <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('home.why_title') }}</h2>
-            <p class="mt-4 max-w-2xl text-sm text-wc-text-tertiary">{{ __('home.why_subtitle') }}</p>
+    <section class="hp-sec hp-why">
+        <div class="hp-wrap">
+            <p class="hp-eyebrow">{{ __('home.why_eyebrow') }}</p>
+            <h2 class="hp-h2 mt-4">{{ __('home.why_title') }}</h2>
+            <p class="hp-lead mt-4">{{ __('home.why_subtitle') }}</p>
 
             {{-- Stats grid --}}
-            <div class="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4" data-animate="fadeIn">
-                <div class="scroll-reveal card-hover-lift card-glow rounded-xl border border-wc-accent/30 bg-wc-accent/5 p-5 text-center">
+            <div class="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div class="rounded-xl border border-wc-accent/30 bg-wc-accent/5 p-5 text-center">
                     <p class="counter-highlight font-data text-3xl font-bold text-wc-accent"><span data-counter="94" data-counter-suffix="%">0%</span></p>
                     <p class="mt-1 text-sm font-semibold text-wc-text">{{ __('home.why_stat1_label') }}</p>
                     <p class="mt-1 text-xs text-wc-text-tertiary">{{ __('home.why_stat1_desc') }}</p>
                 </div>
-                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg p-5 text-center">
+                <div class="rounded-xl border border-wc-border bg-wc-bg-secondary p-5 text-center">
                     <p class="counter-highlight font-data text-3xl font-bold text-wc-text"><span data-counter="20" data-counter-suffix="+">0</span></p>
                     <p class="mt-1 text-sm font-semibold text-wc-text">{{ __('home.why_stat2_label') }}</p>
                     <p class="mt-1 text-xs text-wc-text-tertiary">{{ __('home.why_stat2_desc') }}</p>
                 </div>
-                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg p-5 text-center">
+                <div class="rounded-xl border border-wc-border bg-wc-bg-secondary p-5 text-center">
                     <p class="counter-highlight font-data text-3xl font-bold text-wc-text"><span data-counter="8" data-counter-suffix="{{ __('home.why_stat3_suffix') }}">0</span></p>
                     <p class="mt-1 text-sm font-semibold text-wc-text">{{ __('home.why_stat3_label') }}</p>
                     <p class="mt-1 text-xs text-wc-text-tertiary">{{ __('home.why_stat3_desc') }}</p>
                 </div>
-                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg p-5 text-center">
+                <div class="rounded-xl border border-wc-border bg-wc-bg-secondary p-5 text-center">
                     <p class="counter-highlight font-data text-3xl font-bold text-wc-text"><span data-counter="100" data-counter-suffix="%">0%</span></p>
                     <p class="mt-1 text-sm font-semibold text-wc-text">{{ __('home.why_stat4_label') }}</p>
                     <p class="mt-1 text-xs text-wc-text-tertiary">{{ __('home.why_stat4_desc') }}</p>
@@ -155,21 +155,18 @@
             </div>
 
             {{-- 3 Pillars --}}
-            <div class="stagger-grid mt-14 grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div class="hp-why-grid">
                 @foreach([
-                    ['01', __('home.pillar1_title'), __('home.pillar1_desc'), 'M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 0-6.23.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5', 100],
-                    ['02', __('home.pillar2_title'), __('home.pillar2_desc'), 'M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z', 200],
-                    ['03', __('home.pillar3_title'), __('home.pillar3_desc'), 'M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342', 300],
-                ] as [$num, $title, $desc, $iconPath, $delay])
-                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg p-8 transition-colors hover:border-wc-accent/30" data-animate="fadeInUp" data-animate-delay="{{ $delay }}">
-                    <div class="flex items-center gap-3">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-wc-accent/10">
-                            <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $iconPath }}" /></svg>
-                        </div>
-                        <span class="font-data text-2xl font-bold text-wc-accent/20">{{ $num }}</span>
+                    ['01', __('home.pillar1_title'), __('home.pillar1_desc'), 'M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 0-6.23.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5'],
+                    ['02', __('home.pillar2_title'), __('home.pillar2_desc'), 'M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z'],
+                    ['03', __('home.pillar3_title'), __('home.pillar3_desc'), 'M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342'],
+                ] as [$num, $title, $desc, $iconPath])
+                <div class="hp-why-card">
+                    <div class="hp-why-icon">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $iconPath }}" /></svg>
                     </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ $title }}</h3>
-                    <p class="mt-2 text-sm text-wc-text-secondary">{{ $desc }}</p>
+                    <h3 class="hp-why-title">{{ $title }}</h3>
+                    <p class="hp-why-desc">{{ $desc }}</p>
                 </div>
                 @endforeach
             </div>
@@ -181,32 +178,36 @@
     {{-- ================================================================== --}}
     {{-- 5. COMMUNITY                                                       --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg cv-auto">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
-            <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.community_eyebrow') }}</p>
-            <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('home.community_title') }}</h2>
-            <p class="mt-4 max-w-2xl text-sm text-wc-text-tertiary">{{ __('home.community_subtitle') }}</p>
+    <section class="hp-sec hp-com">
+        <div class="hp-wrap">
+            <p class="hp-eyebrow">{{ __('home.community_eyebrow') }}</p>
+            <h2 class="hp-h2 mt-4">{{ __('home.community_title') }}</h2>
+            <p class="hp-lead mt-4">{{ __('home.community_subtitle') }}</p>
 
             {{-- Community stats --}}
-            <div class="mt-8 flex flex-wrap gap-6" data-animate="fadeIn">
-                <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                    <span class="counter-highlight font-data text-lg font-bold text-wc-accent" data-counter="20" data-counter-suffix="+">0</span> {{ __('home.community_stat_miembros') }}
+            <div class="hp-com-stats mt-10">
+                <div class="hp-com-stat">
+                    <p class="hp-com-stat-num"><em>20</em>+</p>
+                    <p class="hp-com-stat-label">{{ __('home.community_stat_miembros') }}</p>
                 </div>
-                <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                    <span class="counter-highlight font-data text-lg font-bold text-wc-accent" data-counter="3">0</span> {{ __('home.community_stat_retos') }}
+                <div class="hp-com-stat">
+                    <p class="hp-com-stat-num"><em>94</em>%</p>
+                    <p class="hp-com-stat-label">{{ __('home.community_stat_adherencia') }}</p>
                 </div>
-                <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                    <span class="counter-highlight font-data text-lg font-bold text-wc-accent" data-counter="94" data-counter-suffix="%">0%</span> {{ __('home.community_stat_adherencia') }}
+                <div class="hp-com-stat">
+                    <p class="hp-com-stat-num"><em>3</em></p>
+                    <p class="hp-com-stat-label">{{ __('home.community_stat_retos') }}</p>
                 </div>
-                <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                    <span class="counter-highlight font-data text-lg font-bold text-wc-accent" data-counter="500" data-counter-suffix="+">0</span> {{ __('home.community_stat_logros') }}
+                <div class="hp-com-stat">
+                    <p class="hp-com-stat-num"><em>500</em>+</p>
+                    <p class="hp-com-stat-label">{{ __('home.community_stat_logros') }}</p>
                 </div>
             </div>
 
             {{-- 3 feature cards --}}
-            <div class="stagger-grid mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
                 {{-- Activity Feed --}}
-                <div class="scroll-reveal card-hover-lift card-glow rounded-xl border border-wc-border bg-wc-bg-tertiary p-6" data-animate="fadeInUp" data-animate-delay="100">
+                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
                     <div class="flex items-center gap-2">
                         <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
                         <h3 class="text-base font-semibold text-wc-text">{{ __('home.community_feed_title') }}</h3>
@@ -243,7 +244,7 @@
                 </div>
 
                 {{-- Challenges --}}
-                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-6" data-animate="fadeInUp" data-animate-delay="200">
+                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
                     <div class="flex items-center gap-2">
                         <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" /></svg>
                         <h3 class="text-base font-semibold text-wc-text">{{ __('home.community_challenges_title') }}</h3>
@@ -274,7 +275,7 @@
                 </div>
 
                 {{-- Gamification --}}
-                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-6" data-animate="fadeInUp" data-animate-delay="300">
+                <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
                     <div class="flex items-center gap-2">
                         <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" /></svg>
                         <h3 class="text-base font-semibold text-wc-text">{{ __('home.community_gamification_title') }}</h3>
@@ -317,34 +318,35 @@
     {{-- ================================================================== --}}
     {{-- 6. COMO FUNCIONA                                                   --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg-tertiary cv-auto">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
-            <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.process_eyebrow') }}</p>
-            <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('home.process_title') }}</h2>
-            <p class="mt-4 max-w-2xl text-sm text-wc-text-tertiary">{{ __('home.process_subtitle') }}</p>
+    <section class="hp-sec hp-phases">
+        <div class="hp-wrap">
+            <p class="hp-eyebrow">{{ __('home.process_eyebrow') }}</p>
+            <h2 class="hp-h2 mt-4">{{ __('home.process_title') }}</h2>
+            <p class="hp-lead mt-4">{{ __('home.process_subtitle') }}</p>
 
-            <div class="stagger-grid mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="hp-phases-grid">
                 @foreach([
-                    [__('home.process_step1_num'), __('home.process_step1_title'), __('home.process_step1_time'), __('home.process_step1_desc'), 100],
-                    [__('home.process_step2_num'), __('home.process_step2_title'), __('home.process_step2_time'), __('home.process_step2_desc'), 200],
-                    [__('home.process_step3_num'), __('home.process_step3_title'), __('home.process_step3_time'), __('home.process_step3_desc'), 300],
-                    [__('home.process_step4_num'), __('home.process_step4_title'), __('home.process_step4_time'), __('home.process_step4_desc'), 400],
-                ] as [$num, $title, $time, $desc, $delay])
-                <div class="scroll-reveal card-hover-lift rounded-xl border border-wc-border bg-wc-bg p-6 transition-colors hover:border-wc-accent/30" data-animate="fadeInUp" data-animate-delay="{{ $delay }}">
-                    <div class="flex items-center gap-3">
-                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-wc-accent/10">
-                            <span class="font-data text-sm font-bold text-wc-accent">{{ $num }}</span>
-                        </div>
-                        <span class="text-xs font-medium text-wc-text-tertiary">{{ $time }}</span>
+                    [__('home.process_step1_num'), __('home.process_step1_title'), __('home.process_step1_time'), __('home.process_step1_desc'), 'M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z'],
+                    [__('home.process_step2_num'), __('home.process_step2_title'), __('home.process_step2_time'), __('home.process_step2_desc'), 'M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5m.75-9 3-3 2.148 2.148A12.061 12.061 0 0 1 16.5 7.605'],
+                    [__('home.process_step3_num'), __('home.process_step3_title'), __('home.process_step3_time'), __('home.process_step3_desc'), 'M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z'],
+                    [__('home.process_step4_num'), __('home.process_step4_title'), __('home.process_step4_time'), __('home.process_step4_desc'), 'M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z'],
+                ] as [$num, $title, $time, $desc, $iconPath])
+                <div class="hp-phase-card">
+                    <span class="hp-phase-num">{{ $num }}</span>
+                    <div class="hp-phase-icon">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $iconPath }}" /></svg>
                     </div>
-                    <h3 class="mt-4 text-base font-semibold text-wc-text">{{ $title }}</h3>
-                    <p class="mt-2 text-sm text-wc-text-secondary">{{ $desc }}</p>
+                    <div>
+                        <h3 class="hp-phase-title">{{ $title }}</h3>
+                        <p class="hp-phase-desc mt-1">{{ $time }}</p>
+                    </div>
+                    <p class="hp-phase-desc">{{ $desc }}</p>
                 </div>
                 @endforeach
             </div>
 
-            <div class="mt-8 text-center">
-                <a href="{{ route('proceso') }}" aria-label="Ver proceso completo WellCore" class="inline-flex items-center gap-2 text-sm font-medium text-wc-accent hover:text-wc-accent-hover">
+            <div class="mt-10 text-center">
+                <a href="{{ route('proceso') }}" aria-label="Ver proceso completo WellCore" class="inline-flex items-center gap-2 text-sm font-semibold text-wc-accent hover:text-wc-accent-hover">
                     {{ __('home.process_ver_completo') }}
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                 </a>
@@ -357,24 +359,21 @@
     {{-- ================================================================== --}}
     {{-- 7. PLANS                                                           --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg cv-auto-lg">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="scaleIn">
-            <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.plans_eyebrow') }}</p>
-            <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('home.plans_title') }}</h2>
-            <p class="mt-4 max-w-2xl text-sm text-wc-text-tertiary">{{ __('home.plans_subtitle') }}</p>
+    <section class="hp-sec hp-plan">
+        <div class="hp-wrap">
+            <p class="hp-eyebrow">{{ __('home.plans_eyebrow') }}</p>
+            <h2 class="hp-h2 mt-4">{{ __('home.plans_title') }}</h2>
+            <p class="hp-lead mt-4">{{ __('home.plans_subtitle') }}</p>
 
-            <div class="stagger-grid mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div class="hp-plan-grid">
                 {{-- ESENCIAL --}}
-                <div class="scroll-reveal card-hover-lift flex flex-col rounded-xl border border-wc-border bg-wc-bg-tertiary p-8" data-animate="fadeInUp" data-animate-delay="100">
+                <div class="hp-plan-card">
                     <div>
-                        <h3 class="font-display text-2xl tracking-wide text-wc-text">{{ __('home.plan_esencial_name') }}</h3>
-                        <div class="mt-2 flex items-baseline gap-1">
-                            <span class="font-data text-4xl font-bold text-wc-text">$299,000</span>
-                            <span class="text-sm text-wc-text-tertiary">{{ __('home.plan_cop_mes') }}</span>
-                        </div>
+                        <p class="hp-plan-name">{{ __('home.plan_esencial_name') }}</p>
+                        <p class="hp-plan-price mt-3">$299,000 <span class="hp-plan-price-period">{{ __('home.plan_cop_mes') }}</span></p>
                         <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $73</span> / mes <span class="opacity-60">(aprox.)</span></p>
                     </div>
-                    <div class="mt-6 flex-1 space-y-3">
+                    <ul class="hp-plan-features">
                         @foreach([
                             [true, __('home.feat_entrenamiento_personalizado')],
                             [true, __('home.feat_portal_cliente')],
@@ -388,36 +387,31 @@
                             [false, __('home.feat_nutricion_personalizada')],
                             [false, __('home.feat_checkin_semanal')],
                         ] as [$included, $feature])
-                        <div class="flex items-start gap-2">
+                        <li class="hp-plan-feature {{ $included ? '' : 'opacity-40' }}">
                             @if($included)
-                                <svg class="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                                <span class="text-sm text-wc-text-secondary">{{ $feature }}</span>
+                                <svg class="hp-plan-feature-icon h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                {{ $feature }}
                             @else
-                                <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
-                                <span class="text-sm text-wc-text-tertiary line-through">{{ $feature }}</span>
+                                <svg class="h-4 w-4 shrink-0 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                                <span class="line-through">{{ $feature }}</span>
                             @endif
-                        </div>
+                        </li>
                         @endforeach
-                    </div>
-                    <a href="{{ route('inscripcion') }}?plan=esencial" class="btn-press mt-8 inline-flex w-full items-center justify-center rounded-lg border border-wc-border px-8 py-3 text-base font-medium text-wc-text hover:bg-wc-bg-secondary">
+                    </ul>
+                    <a href="{{ route('inscripcion') }}?plan=esencial" class="hp-plan-cta btn-press">
                         {{ __('home.plan_cta_esencial') }}
                     </a>
                 </div>
 
-                {{-- METODO --}}
-                <div class="scroll-reveal card-hover-lift card-glow relative flex flex-col rounded-xl border-2 border-wc-accent bg-wc-bg-tertiary p-8" data-animate="fadeInUp" data-animate-delay="200">
-                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                        <span class="rounded-full bg-wc-accent px-4 py-1 text-xs font-semibold text-white">{{ __('home.plan_mejor_valor') }}</span>
-                    </div>
+                {{-- MÉTODO --}}
+                <div class="hp-plan-card hp-plan-feat">
+                    <span class="hp-plan-badge">{{ __('home.plan_mejor_valor') }}</span>
                     <div>
-                        <h3 class="font-display text-2xl tracking-wide text-wc-text">{{ __('home.plan_metodo_name') }}</h3>
-                        <div class="mt-2 flex items-baseline gap-1">
-                            <span class="font-data text-4xl font-bold text-wc-text">$399,000</span>
-                            <span class="text-sm text-wc-text-tertiary">{{ __('home.plan_cop_mes') }}</span>
-                        </div>
+                        <p class="hp-plan-name">{{ __('home.plan_metodo_name') }}</p>
+                        <p class="hp-plan-price mt-3">$399,000 <span class="hp-plan-price-period">{{ __('home.plan_cop_mes') }}</span></p>
                         <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $97</span> / mes <span class="opacity-60">(aprox.)</span></p>
                     </div>
-                    <div class="mt-6 flex-1 space-y-3">
+                    <ul class="hp-plan-features">
                         @foreach([
                             [true, __('home.feat_todo_esencial')],
                             [true, __('home.feat_nutricion_100')],
@@ -431,36 +425,31 @@
                             [false, __('home.feat_checkin_semanal')],
                             [false, __('home.feat_videollamada_mensual')],
                         ] as [$included, $feature])
-                        <div class="flex items-start gap-2">
+                        <li class="hp-plan-feature {{ $included ? '' : 'opacity-40' }}">
                             @if($included)
-                                <svg class="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                                <span class="text-sm text-wc-text-secondary">{{ $feature }}</span>
+                                <svg class="hp-plan-feature-icon h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                {{ $feature }}
                             @else
-                                <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
-                                <span class="text-sm text-wc-text-tertiary line-through">{{ $feature }}</span>
+                                <svg class="h-4 w-4 shrink-0 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                                <span class="line-through">{{ $feature }}</span>
                             @endif
-                        </div>
+                        </li>
                         @endforeach
-                    </div>
-                    <a href="{{ route('inscripcion') }}?plan=metodo" class="btn-press mt-8 inline-flex w-full items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
+                    </ul>
+                    <a href="{{ route('inscripcion') }}?plan=metodo" class="hp-plan-cta btn-press">
                         {{ __('home.plan_cta_metodo') }}
                     </a>
                 </div>
 
                 {{-- ELITE --}}
-                <div class="scroll-reveal card-hover-lift relative flex flex-col rounded-xl border border-wc-border bg-wc-bg-tertiary p-8" data-animate="fadeInUp" data-animate-delay="300">
-                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                        <span class="rounded-full border border-wc-accent bg-wc-accent/10 px-4 py-1 text-xs font-semibold text-wc-accent">{{ __('home.plan_solo_cupos') }}</span>
-                    </div>
+                <div class="hp-plan-card">
+                    <span class="hp-plan-badge" style="background:transparent;border:1px solid var(--color-wc-accent);color:var(--color-wc-accent);">{{ __('home.plan_solo_cupos') }}</span>
                     <div>
-                        <h3 class="font-display text-2xl tracking-wide text-wc-text">{{ __('home.plan_elite_name') }}</h3>
-                        <div class="mt-2 flex items-baseline gap-1">
-                            <span class="font-data text-4xl font-bold text-wc-text">$549,000</span>
-                            <span class="text-sm text-wc-text-tertiary">{{ __('home.plan_cop_mes') }}</span>
-                        </div>
+                        <p class="hp-plan-name">{{ __('home.plan_elite_name') }}</p>
+                        <p class="hp-plan-price mt-3">$549,000 <span class="hp-plan-price-period">{{ __('home.plan_cop_mes') }}</span></p>
                         <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $134</span> / mes <span class="opacity-60">(aprox.)</span></p>
                     </div>
-                    <div class="mt-6 flex-1 space-y-3">
+                    <ul class="hp-plan-features">
                         @foreach([
                             [true, __('home.feat_todo_metodo')],
                             [true, __('home.feat_checkin_semanal')],
@@ -474,13 +463,13 @@
                             [true, __('home.feat_plan_viaje')],
                             [true, __('home.feat_soporte_8h')],
                         ] as [$included, $feature])
-                        <div class="flex items-start gap-2">
-                            <svg class="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                            <span class="text-sm text-wc-text-secondary">{{ $feature }}</span>
-                        </div>
+                        <li class="hp-plan-feature">
+                            <svg class="hp-plan-feature-icon h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                            {{ $feature }}
+                        </li>
                         @endforeach
-                    </div>
-                    <a href="{{ route('inscripcion') }}?plan=elite" class="btn-press mt-8 inline-flex w-full items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
+                    </ul>
+                    <a href="{{ route('inscripcion') }}?plan=elite" class="hp-plan-cta btn-press">
                         {{ __('home.plan_cta_elite') }}
                     </a>
                 </div>
@@ -690,14 +679,14 @@
     {{-- ================================================================== --}}
     {{-- 11. FAQ                                                            --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg cv-auto" x-data="{ active: null }">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
+    <section class="hp-sec hp-faq" x-data="{ active: null }">
+        <div class="hp-wrap">
             <div class="text-center">
                 <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.faq_eyebrow') }}</p>
-                <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('home.faq_title') }}</h2>
+                <h2 class="hp-h2 mt-3">{{ __('home.faq_title') }}</h2>
             </div>
 
-            <div class="mx-auto mt-12 max-w-3xl divide-y divide-wc-border">
+            <div class="hp-faq-list">
                 @foreach([
                     [__('home.faq_q1'), __('home.faq_a1')],
                     [__('home.faq_q2'), __('home.faq_a2')],
@@ -708,15 +697,16 @@
                     [__('home.faq_q7'), __('home.faq_a7')],
                     [__('home.faq_q8'), __('home.faq_a8')],
                 ] as $index => [$question, $answer])
-                <div>
-                    <button x-on:click="active = active === {{ $index }} ? null : {{ $index }}" class="flex w-full items-center justify-between py-5 text-left">
-                        <span class="text-sm font-semibold text-wc-text">{{ $question }}</span>
-                        <svg class="ml-4 h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-200" :class="{ 'rotate-180': active === {{ $index }} }" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+                <div class="hp-faq-item">
+                    <button
+                        x-on:click="active = active === {{ $index }} ? null : {{ $index }}"
+                        :aria-expanded="(active === {{ $index }}).toString()"
+                        class="hp-faq-trigger">
+                        {{ $question }}
+                        <span class="hp-faq-icon" aria-hidden="true">+</span>
                     </button>
                     <div x-show="active === {{ $index }}" x-collapse x-cloak>
-                        <div class="pb-5">
-                            <p class="text-sm leading-relaxed text-wc-text-secondary">{{ $answer }}</p>
-                        </div>
+                        <div class="hp-faq-body">{{ $answer }}</div>
                     </div>
                 </div>
                 @endforeach
@@ -730,33 +720,26 @@
     {{-- ================================================================== --}}
     {{-- 12. FINAL CTA                                                      --}}
     {{-- ================================================================== --}}
-    <section class="gradient-animated bg-wc-bg-tertiary">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="scaleIn">
-            <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg p-10 sm:p-16">
-                <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
-                <div class="relative text-center">
-                    <div class="inline-flex items-center gap-2 rounded-full border border-wc-border bg-wc-bg-secondary px-4 py-1.5">
-                        <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
-                        <span class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.cta_badge') }}</span>
-                    </div>
-                    <h2 class="mt-6 font-display text-3xl tracking-wide text-wc-text sm:text-5xl">{{ __('home.cta_title') }}</h2>
-                    <p class="mx-auto mt-4 max-w-lg text-wc-text-secondary">{{ __('home.cta_subtitle') }}</p>
-                    <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                        <a href="{{ route('planes') }}" class="pulse-glow btn-press inline-flex items-center justify-center rounded-lg bg-wc-accent px-8 py-3 text-base font-medium text-white hover:bg-wc-accent-hover">
-                            {{ __('home.cta_btn_planes') }}
-                            <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
-                        </a>
-                        <a href="{{ route('inscripcion') }}" class="btn-press inline-flex items-center justify-center rounded-lg border border-wc-border px-8 py-3 text-base font-medium text-wc-text hover:bg-wc-bg-secondary">
-                            {{ __('home.cta_btn_consulta') }}
-                        </a>
-                    </div>
-                    <div class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-wc-text-tertiary">
-                        <span>{{ __('home.cta_trust1') }}</span>
-                        <span class="hidden sm:inline">&middot;</span>
-                        <span>{{ __('home.cta_trust2') }}</span>
-                        <span class="hidden sm:inline">&middot;</span>
-                        <span>{{ __('home.cta_trust3') }}</span>
-                    </div>
+    <section class="hp-cta">
+        <div class="hp-wrap">
+            <div class="hp-cta-inner">
+                <h2 class="hp-cta-h2">{{ __('home.cta_title') }}</h2>
+                <p class="hp-cta-sub">{{ __('home.cta_subtitle') }}</p>
+                <div class="flex flex-col items-center gap-4 sm:flex-row">
+                    <a href="{{ route('planes') }}" class="hp-btn-white btn-press">
+                        {{ __('home.cta_btn_planes') }}
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+                    </a>
+                    <a href="{{ route('inscripcion') }}" class="btn-press inline-flex items-center justify-center rounded-full border-2 px-8 py-3.5 text-base font-semibold text-white transition-all" style="border-color:rgba(255,255,255,.35);hover:border-color:rgba(255,255,255,.7)">
+                        {{ __('home.cta_btn_consulta') }}
+                    </a>
+                </div>
+                <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm" style="color:rgba(255,255,255,.65)">
+                    <span>{{ __('home.cta_trust1') }}</span>
+                    <span class="hidden sm:inline" style="opacity:.4">&middot;</span>
+                    <span>{{ __('home.cta_trust2') }}</span>
+                    <span class="hidden sm:inline" style="opacity:.4">&middot;</span>
+                    <span>{{ __('home.cta_trust3') }}</span>
                 </div>
             </div>
         </div>
