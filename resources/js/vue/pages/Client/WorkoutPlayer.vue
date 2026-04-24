@@ -378,6 +378,7 @@ async function toggleSet(exIndex, setIndex) {
       await api.post('/api/v/client/workout/uncomplete-set', {
         session_id: sessionId.value,
         exercise_index: exIndex,
+        exercise_name: exName(exercises.value[exIndex]),
         set_index: setIndex,
         set_number: setIndex + 1,
       });
@@ -428,6 +429,7 @@ async function uncompleteCardioSet(exIndex, setIndex) {
       await api.post('/api/v/client/workout/uncomplete-set', {
         session_id: sessionId.value,
         exercise_index: exIndex,
+        exercise_name: exName(exercises.value[exIndex]),
         set_index: setIndex,
         set_number: setIndex + 1,
       });
