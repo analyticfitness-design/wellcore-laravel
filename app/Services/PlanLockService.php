@@ -24,16 +24,39 @@ class PlanLockService
     private const CACHE_TTL_SECONDS = 300; // 5 min
 
     /**
-     * Obtiene el plan activo más reciente del cliente (el que tiene el expires_at más lejano).
+     * Obtiene el assigned_plan activo más reciente del cliente (cualquier tipo:
+     * nutricion, entrenamiento, habitos, suplementacion). El expires_at de ese
+     * plan determina cuándo expira la suscripción del cliente.
+     *
+     * Retorna null si el cliente NO está en un plan mensual (esencial/metodo/elite),
+     * porque esos planes no se lockean (rise/presencial/trial siguen flujos distintos).
      */
     public function getActivePlan(Client $client): ?AssignedPlan
     {
+        if (! $this->isMonthlyPlan($client)) {
+            return null;
+        }
+
         return AssignedPlan::query()
             ->forClient($client->id)
             ->active()
+            ->whereNotNull('expires_at')
             ->orderByDesc('expires_at')
             ->orderByDesc('valid_from')
             ->first();
+    }
+
+    /**
+     * ¿El cliente tiene un plan mensual (esencial / metodo / elite)?
+     * Solo esos planes están sujetos al lock de 30 días.
+     */
+    private function isMonthlyPlan(Client $client): bool
+    {
+        $plan = $client->plan instanceof \App\Enums\PlanType
+            ? $client->plan->value
+            : (string) ($client->plan ?? '');
+
+        return in_array($plan, ['esencial', 'metodo', 'elite'], true);
     }
 
     public function isLocked(Client $client): bool

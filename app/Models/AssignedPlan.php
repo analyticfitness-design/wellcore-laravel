@@ -83,20 +83,18 @@ class AssignedPlan extends Model
     }
 
     /**
-     * Auto-calcula expires_at = valid_from + 30 días para planes mensuales
-     * si no viene explícito. Esto garantiza que cualquier coach/admin que crea
-     * un AssignedPlan active el lock correctamente sin tener que recordar el campo.
+     * Auto-calcula expires_at = valid_from + 30 días si no viene explícito.
+     *
+     * Aplica a TODOS los planes asignados (nutricion, entrenamiento, habitos,
+     * suplementacion, etc.) porque el "plan_type" aquí describe el contenido,
+     * no el nivel de suscripción. El PlanLockService decide si el cliente
+     * está bloqueado cruzando clients.plan (esencial/metodo/elite) con el
+     * expires_at del assigned_plan más reciente.
      */
     protected static function booted(): void
     {
         static::creating(function (AssignedPlan $plan) {
             if ($plan->expires_at) {
-                return;
-            }
-
-            $monthlyPlans = ['esencial', 'metodo', 'elite'];
-
-            if (! in_array($plan->plan_type, $monthlyPlans, true)) {
                 return;
             }
 

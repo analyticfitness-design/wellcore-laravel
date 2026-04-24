@@ -12,12 +12,12 @@ use Illuminate\Support\Facades\DB;
  * Aplica la renovación de un cliente después de que Wompi aprueba el pago.
  *
  * Reglas:
- * - Marca TODOS los planes activos del cliente como inactivos.
- * - Crea un nuevo AssignedPlan con valid_from=hoy, active=true.
- * - El hook `creating` del modelo AssignedPlan calcula expires_at = hoy + 30 días.
+ * - Extiende TODOS los planes activos del cliente (entrenamiento/nutricion/habitos/supl)
+ *   30 días más desde hoy, actualizando valid_from y expires_at.
+ * - Si el cliente no tenía ningún plan, no hace nada (el coach tendrá que asignar).
  * - Invalida el cache de PlanLockService.
  *
- * Transaccional para no dejar el cliente en estado inconsistente.
+ * Transaccional — o se actualizan todos los planes o ninguno.
  */
 class ActivateRenewalAction
 {
@@ -29,45 +29,33 @@ class ActivateRenewalAction
             return null;
         }
 
-        $planType = $payment->plan?->value ?? null;
+        return DB::transaction(function () use ($payment) {
+            $today = Carbon::now()->toDateString();
+            $newExpiresAt = Carbon::now()->addDays(30)->toDateString();
 
-        if (! $planType) {
-            return null;
-        }
-
-        return DB::transaction(function () use ($payment, $planType) {
-            // Preservar contenido del plan anterior para que el coach no pierda el plan subido.
-            $previous = AssignedPlan::query()
-                ->forClient($payment->client_id)
-                ->where('plan_type', $planType)
-                ->active()
-                ->latest('id')
-                ->first();
-
-            // Desactivar planes previos del mismo tipo.
+            // Actualiza TODOS los planes asignados activos del cliente con nuevas fechas.
+            // No los reemplaza (preserva contenido del coach); solo extiende fechas.
             AssignedPlan::query()
                 ->forClient($payment->client_id)
-                ->where('plan_type', $planType)
                 ->active()
-                ->update(['active' => false]);
+                ->update([
+                    'valid_from' => $today,
+                    'expires_at' => $newExpiresAt,
+                ]);
 
-            $new = AssignedPlan::create([
-                'client_id' => $payment->client_id,
-                'plan_type' => $planType,
-                'content' => $previous?->content ?? ['renewed' => true],
-                'version' => ($previous?->version ?? 0) + 1,
-                'valid_from' => Carbon::now()->toDateString(),
-                'active' => true,
-                'assigned_by' => $previous?->assigned_by,
-                // expires_at se calcula automáticamente en el hook `creating` del modelo.
-            ]);
+            // Retorna el plan más reciente para logs / email de confirmación.
+            $latest = AssignedPlan::query()
+                ->forClient($payment->client_id)
+                ->active()
+                ->orderByDesc('expires_at')
+                ->first();
 
             // Flush cache del lock service — el próximo request del cliente verá el plan activo.
             if ($payment->client) {
                 $this->lockService->flushCache($payment->client);
             }
 
-            return $new;
+            return $latest;
         });
     }
 }

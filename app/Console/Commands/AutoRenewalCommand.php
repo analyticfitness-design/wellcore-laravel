@@ -40,12 +40,14 @@ class AutoRenewalCommand extends Command
         $flagged = 0;
         $today = Carbon::now()->startOfDay();
 
-        // Clientes con un plan activo que expira en los próximos 5 días o ya expiró
+        // Clientes con plan asignado activo que expira en los próximos 5 días o ya expiró.
+        // NO filtramos por plan_type aquí porque assigned_plans.plan_type describe el contenido
+        // (nutricion/entrenamiento/etc), no el nivel de pago. El filtro real es el client.plan
+        // mensual (esencial/metodo/elite) que aplicamos dentro del loop.
         $plans = AssignedPlan::query()
             ->active()
             ->whereNotNull('expires_at')
             ->whereNotNull('client_id')
-            ->whereIn('plan_type', ['esencial', 'metodo', 'elite'])
             ->whereBetween('expires_at', [
                 $today->copy()->subDays(7)->toDateString(), // ya expiró hace ≤7 días
                 $today->copy()->addDays(5)->toDateString(), // expira en ≤5 días
@@ -53,10 +55,32 @@ class AutoRenewalCommand extends Command
             ->with('client')
             ->get();
 
+        $monthlyPlans = ['esencial', 'metodo', 'elite'];
+
+        // Deduplicar por cliente: un cliente puede tener varios planes (entrenamiento/nutricion/habitos/supl)
+        // pero solo queremos enviar 1 email y crear 1 notificación por cliente por día.
+        // Nos quedamos con el plan más reciente (expires_at más lejano) por cliente.
+        $plansByClient = [];
         foreach ($plans as $plan) {
+            $existing = $plansByClient[$plan->client_id] ?? null;
+            if (! $existing || Carbon::parse($plan->expires_at)->greaterThan(Carbon::parse($existing->expires_at))) {
+                $plansByClient[$plan->client_id] = $plan;
+            }
+        }
+
+        foreach ($plansByClient as $plan) {
             $client = $plan->client;
 
             if (! $client || $client->status !== \App\Enums\ClientStatus::Activo) {
+                continue;
+            }
+
+            $clientPlan = $client->plan instanceof PlanType
+                ? $client->plan->value
+                : (string) ($client->plan ?? '');
+
+            // Solo lockeamos planes mensuales — los demás (rise/presencial/trial) siguen otro flujo
+            if (! in_array($clientPlan, $monthlyPlans, true)) {
                 continue;
             }
 
@@ -72,13 +96,13 @@ class AutoRenewalCommand extends Command
                     ->exists();
 
                 if (! $sentToday) {
-                    $this->sendReminderEmail($client, $plan, $expiresAt);
+                    $this->sendReminderEmail($client, $clientPlan, $expiresAt);
                     WellcoreNotification::create([
                         'user_type' => UserType::Client,
                         'user_id' => $client->id,
                         'type' => 'renewal_reminder',
                         'title' => 'Tu plan expira pronto',
-                        'body' => "Tu plan {$plan->plan_type} expira en {$daysUntilExpiry} días.",
+                        'body' => "Tu plan {$clientPlan} expira en {$daysUntilExpiry} días.",
                     ]);
                     $reminded++;
                 }
@@ -100,7 +124,7 @@ class AutoRenewalCommand extends Command
                         'user_id' => 1,
                         'type' => 'renewal_needed',
                         'title' => 'Renovacion pendiente',
-                        'body' => "{$client->name} (#{$client->id}) — plan {$plan->plan_type} expiró hace {$daysPast} días",
+                        'body' => "{$client->name} (#{$client->id}) — plan {$clientPlan} expiró hace {$daysPast} días",
                     ]);
                     $flagged++;
                 }
@@ -115,12 +139,9 @@ class AutoRenewalCommand extends Command
         return self::SUCCESS;
     }
 
-    private function sendReminderEmail(Client $client, AssignedPlan $plan, Carbon $expiresAt): void
+    private function sendReminderEmail(Client $client, string $planName, Carbon $expiresAt): void
     {
-        $planName = $plan->plan_type instanceof PlanType
-            ? $plan->plan_type->value
-            : (string) $plan->plan_type;
-
+        // planName viene ya normalizado desde el caller (esencial|metodo|elite)
         $renewalAmount = (int) config("plans.{$planName}.price_cop", 0);
 
         try {
