@@ -1,19 +1,33 @@
 <script setup>
 import { RouterLink } from 'vue-router';
+import { useHaptics } from '../../composables/useHaptics';
 
-defineProps({
+const props = defineProps({
     data: { type: Object, required: true },
     showCheckinTimer: { type: Boolean, default: false },
     checkinHours: { type: String, default: '00' },
     checkinMinutes: { type: String, default: '00' },
     checkinSeconds: { type: String, default: '00' },
 });
+
+const haptics = useHaptics();
+
+function handleCheckinTap() {
+    // Si el check-in está URGENT (pendiente), pattern más intenso para señalizar prioridad.
+    // Si es regular countdown, tap suave.
+    if ((props.data.daysUntilCheckin ?? 99) <= 0) {
+        haptics.pattern('success');
+    } else {
+        haptics.light();
+    }
+}
 </script>
 
 <template>
   <RouterLink
     v-if="data.daysUntilCheckin !== undefined"
     to="/client/checkin"
+    @click="handleCheckinTap"
     :class="[
       'group block rounded-xl border p-4 sm:p-5 transition-colors',
       data.daysUntilCheckin <= 0

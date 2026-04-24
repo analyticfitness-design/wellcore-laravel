@@ -1,9 +1,12 @@
 <script setup>
 import { RouterLink } from 'vue-router';
+import { useHaptics } from '../../composables/useHaptics';
 
 defineProps({
     data: { type: Object, required: true },
 });
+
+const haptics = useHaptics();
 </script>
 
 <template>
@@ -17,6 +20,7 @@ defineProps({
     </div>
     <RouterLink
       to="/client/chat"
+      @click="haptics.light()"
       class="inline-flex items-center gap-1.5 rounded-full bg-wc-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-wc-accent-hover shadow-lg shadow-wc-accent/20"
     >
       <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

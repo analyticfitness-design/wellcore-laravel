@@ -1,10 +1,13 @@
 <script setup>
 import { computed } from 'vue';
 import { RouterLink } from 'vue-router';
+import { useHaptics } from '../../composables/useHaptics';
 
 const props = defineProps({
     missions: { type: Array, default: () => [] },
 });
+
+const haptics = useHaptics();
 
 // Mission route mapping (API returns route keys, we map to Vue routes)
 const missionRouteMap = {
@@ -24,6 +27,11 @@ function getMissionStatusClass(completed) {
         : 'border-wc-border bg-wc-bg-tertiary hover:bg-wc-bg-secondary';
 }
 
+function handleMissionTap() {
+    // Tap feedback suave — respeta OS vibration setting.
+    haptics.light();
+}
+
 const completedCount = computed(() => props.missions.filter(m => m.completed).length);
 </script>
 
@@ -40,6 +48,7 @@ const completedCount = computed(() => props.missions.filter(m => m.completed).le
         v-for="(mission, idx) in missions"
         :key="mission.key || idx"
         :to="getMissionRoute(mission)"
+        @click="handleMissionTap"
         :class="[
           'group flex items-center gap-3 rounded-xl border p-4 transition-colors',
           getMissionStatusClass(mission.completed)
