@@ -49,7 +49,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- Light Theme FINAL · Hero Watermark + Dark Inverted Cards (solo light mode) --}}
-    <link rel="stylesheet" href="{{ asset('css/light-theme-final.css') }}?v=1">
+    <link rel="stylesheet" href="{{ asset('css/light-theme-final.css') }}?v=2">
 
     @livewireStyles
 </head>

@@ -28,20 +28,51 @@ html:not(.dark) [wire\:id] {
 }
 
 /* ═════════════════════════════════════════════════════════════
-   HERO · Watermark Giant + Dark Inverted
+   HERO · Light Clean Card (ref Image #10)
+   Card blanco · badge rosa · título negro · watermark "3" rojo claro
    ═════════════════════════════════════════════════════════════ */
 
 html:not(.dark) .hp-hero,
 html:not(.dark) .wc-hero-premium {
-    background: linear-gradient(135deg, #0F0F0F 0%, #18181B 100%) !important;
-    color: #FAFAF8;
+    background: #FFFFFF !important;
+    color: #0F0F0F;
     border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    border: 1px solid #EDE7D8;
+    box-shadow: 0 2px 10px rgba(15, 15, 15, 0.04), 0 1px 3px rgba(15, 15, 15, 0.03);
     overflow: hidden;
     position: relative;
 }
 
-/* Cards internas dentro del hero → transparentes (heredan hero dark) */
+/* Watermark decorativo — número/letra gigante rojo claro en esquina derecha */
+html:not(.dark) .wc-hero-premium::after,
+html:not(.dark) .hp-hero::after {
+    content: "3";
+    position: absolute;
+    right: -0.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: "Bebas Neue", "Barlow", sans-serif;
+    font-size: 16rem;
+    font-weight: 900;
+    line-height: 1;
+    color: #FEE2E2;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+    letter-spacing: -0.05em;
+}
+
+/* Inner glass container → transparente sobre el card blanco */
+html:not(.dark) .wc-hero-premium > div.relative,
+html:not(.dark) .hp-hero > div.relative {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Cards internas dentro del hero → transparentes */
 html:not(.dark) .hp-hero .rounded-card,
 html:not(.dark) .hp-hero .rounded-xl,
 html:not(.dark) .wc-hero-premium .rounded-card,
@@ -55,7 +86,7 @@ html:not(.dark) .wc-hero-premium [class*="bg-wc-bg-tertiary"] {
     box-shadow: none !important;
 }
 
-/* Ocultar orbs internos del componente Vue en light mode — hero queda limpio */
+/* Ocultar orbs rojos internos — card queda limpio */
 html:not(.dark) .wc-hero-premium .wc-orb-tr,
 html:not(.dark) .wc-hero-premium [class*="pointer-events-none"][class*="rounded-full"],
 html:not(.dark) .hp-hero .wc-orb-tr,
@@ -63,78 +94,85 @@ html:not(.dark) .hp-hero [class*="pointer-events-none"][class*="rounded-full"] {
     display: none !important;
 }
 
-/* Todos los textos del hero blancos */
-html:not(.dark) .hp-hero,
-html:not(.dark) .wc-hero-premium > div,
-html:not(.dark) .hp-hero,
+/* Título negro bold */
 html:not(.dark) .wc-hero-premium h1,
-html:not(.dark) .hp-hero,
-html:not(.dark) .wc-hero-premium p,
-html:not(.dark) .hp-hero,
-html:not(.dark) .wc-hero-premium span {
+html:not(.dark) .hp-hero h1 {
+    color: #0F0F0F !important;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-shadow: none;
     position: relative;
     z-index: 1;
 }
 
-html:not(.dark) .hp-hero,
-html:not(.dark) .wc-hero-premium h1 {
-    color: #FAFAF8 !important;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+/* Quote motivacional gris */
+html:not(.dark) .wc-hero-premium p,
+html:not(.dark) .hp-hero p {
+    color: #6B7280 !important;
+    font-style: normal;
+    position: relative;
+    z-index: 1;
 }
 
-/* Plan badge dentro del hero */
-html:not(.dark) .hp-hero,
-html:not(.dark) .wc-hero-premium .bg-wc-accent\/10 {
+/* Icono de comillas más sutil (gris en vez de rojo) */
+html:not(.dark) .wc-hero-premium svg.text-wc-accent\/60,
+html:not(.dark) .hp-hero svg.text-wc-accent\/60 {
+    color: #9CA3AF !important;
+}
+
+/* Plan badge → rojo claro + texto rojo (estilo Image #10) */
+html:not(.dark) .wc-hero-premium .bg-wc-accent\/10,
+html:not(.dark) .hp-hero .bg-wc-accent\/10 {
+    background: #FEE2E2 !important;
+    color: #DC2626 !important;
+    border: none;
+    box-shadow: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+}
+
+html:not(.dark) .wc-hero-premium .text-wc-accent,
+html:not(.dark) .hp-hero .text-wc-accent {
+    color: #DC2626 !important;
+}
+
+/* Botón primario (Registrar) — rojo sólido con glow */
+html:not(.dark) .wc-hero-premium a.bg-wc-accent,
+html:not(.dark) .hp-hero a.bg-wc-accent {
     background: #DC2626 !important;
     color: #fff !important;
-    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.5);
-    border: 1px solid #EF4444;
-}
-
-html:not(.dark) .hp-hero,
-html:not(.dark) .wc-hero-premium .text-wc-accent {
-    color: #fff !important;
-}
-
-/* Quick action buttons dentro del hero */
-html:not(.dark) .hp-hero,
-html:not(.dark) .wc-hero-premium a.bg-wc-accent {
-    background: #DC2626 !important;
-    color: #fff !important;
-    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5), 3px 3px 0 rgba(220, 38, 38, 0.7);
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.35), 0 2px 6px rgba(220, 38, 38, 0.25);
     transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
     font-weight: 700;
+    position: relative;
+    z-index: 2;
 }
-html:not(.dark) .hp-hero,
-html:not(.dark) .wc-hero-premium a.bg-wc-accent:hover {
+html:not(.dark) .wc-hero-premium a.bg-wc-accent:hover,
+html:not(.dark) .hp-hero a.bg-wc-accent:hover {
     background: #EF4444 !important;
-    transform: translate(-2px, -2px);
-    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.6), 5px 5px 0 rgba(220, 38, 38, 0.8);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.45), 0 3px 8px rgba(220, 38, 38, 0.3);
 }
 
-/* Ghost button en hero */
-html:not(.dark) .hp-hero,
-html:not(.dark) .wc-hero-premium a[class*="border-wc-border"] {
-    background: rgba(255, 255, 255, 0.08) !important;
-    color: #FAFAF8 !important;
-    border-color: rgba(255, 255, 255, 0.2) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+/* Botón secundario (Check-in) — outline blanco */
+html:not(.dark) .wc-hero-premium a[class*="border-wc-border"],
+html:not(.dark) .hp-hero a[class*="border-wc-border"] {
+    background: #FFFFFF !important;
+    color: #0F0F0F !important;
+    border: 1px solid #E2DCCC !important;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     font-weight: 600;
+    position: relative;
+    z-index: 2;
 }
-html:not(.dark) .hp-hero,
-html:not(.dark) .wc-hero-premium a[class*="border-wc-border"]:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border-color: rgba(255, 255, 255, 0.35) !important;
-}
-
-/* Orb accent light */
-html:not(.dark) .hp-hero,
-html:not(.dark) .wc-hero-premium .wc-orb-tr {
-    background: radial-gradient(circle, rgba(220, 38, 38, 0.4), transparent 60%) !important;
-    filter: blur(40px);
+html:not(.dark) .wc-hero-premium a[class*="border-wc-border"]:hover,
+html:not(.dark) .hp-hero a[class*="border-wc-border"]:hover {
+    background: #F9FAFB !important;
+    border-color: #D1D5DB !important;
 }
 
 /* ═════════════════════════════════════════════════════════════

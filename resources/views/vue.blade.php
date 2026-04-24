@@ -40,7 +40,7 @@
     @vite(['resources/css/app.css', 'resources/js/vue/app.js'])
 
     {{-- Light Theme FINAL · Hero Watermark + Dark Inverted Cards (solo light mode) --}}
-    <link rel="stylesheet" href="{{ asset('css/light-theme-final.css') }}?v=8">
+    <link rel="stylesheet" href="{{ asset('css/light-theme-final.css') }}?v=9">
 </head>
 <body class="min-h-screen bg-wc-bg text-wc-text">
     <!-- SVG sprite para WcIcon — debe estar al inicio del body -->
