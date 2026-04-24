@@ -38,7 +38,7 @@ class NewCoachCredentials extends Mailable implements ShouldQueue
                 'username' => $this->username,
                 'temporaryPassword' => $this->temporaryPassword,
                 'isReset' => $this->isReset,
-                'loginUrl' => 'https://www.wellcorefitness.com/login',
+                'loginUrl' => rtrim(config('wellcore.base_url', 'https://wellcorefitness.com'), '/') . '/login',
             ],
         );
     }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<script>
+<script nonce="@cspNonce">
     // FOUC: aplicar clase dark antes de que Alpine cargue
     if (localStorage.getItem('darkMode') === 'true') document.documentElement.classList.add('dark');
     // Alpine store â€” toggle controlado por usuario

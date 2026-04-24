@@ -3,6 +3,8 @@ import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import RiseLayout from '../../layouts/RiseLayout.vue';
+import ExerciseMediaModal from '../../components/workout/ExerciseMediaModal.vue';
+import { getEmbedUrl } from '../../composables/useExerciseMedia';
 
 const api = useApi();
 const route = useRoute();
@@ -36,6 +38,14 @@ const confirmAbandon = ref(false);
 
 // Expanded coach notes (per exercise index)
 const expandedNotes = ref({});
+
+// Exercise media modal
+const mediaModal = ref({ show: false, exercise: null });
+function openMedia(ex) { mediaModal.value = { show: true, exercise: ex }; }
+function closeMedia() { mediaModal.value = { show: false, exercise: null }; }
+
+// Inline media toggle during active workout (per exercise index)
+const showActiveMedia = ref({});
 
 // Variation toggle per exercise index
 const activeVariations = ref({});
@@ -879,8 +889,12 @@ onBeforeUnmount(() => {
                 ]"
               >
                 <div class="flex items-stretch">
-                  <!-- Thumbnail column -->
-                  <div class="relative w-20 shrink-0 overflow-hidden bg-wc-bg-secondary" :class="isVariationActive(exIndex) && exercise.variacion ? 'ring-1 ring-wc-accent/40' : ''">
+                  <!-- Thumbnail column — clickable to open media modal -->
+                  <div
+                    class="relative w-20 shrink-0 overflow-hidden bg-wc-bg-secondary cursor-pointer"
+                    :class="isVariationActive(exIndex) && exercise.variacion ? 'ring-1 ring-wc-accent/40' : ''"
+                    @click="openMedia(exercise)"
+                  >
                     <img
                       v-if="displayThumbnail(exercise, exIndex)"
                       :src="displayThumbnail(exercise, exIndex)"
@@ -1146,11 +1160,38 @@ onBeforeUnmount(() => {
                     </Transition>
                   </div>
 
-                  <!-- Video link -->
-                  <a v-if="exVideoUrl(exercise)" :href="exVideoUrl(exercise)" target="_blank" rel="noopener" class="mt-2 inline-flex items-center gap-1.5 text-[11px] font-medium text-wc-accent hover:text-red-400 transition-colors">
-                    <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                    Ver demo
-                  </a>
+                  <!-- Video/GIF del ejercicio activo (colapsable) -->
+                  <div v-if="exVideoUrl(exercise) || displayImage(exercise, exIndex)" class="mt-3">
+                    <button
+                      @click="showActiveMedia[exIndex] = !showActiveMedia[exIndex]"
+                      class="flex items-center gap-2 text-xs text-wc-text-tertiary hover:text-wc-text transition-colors"
+                    >
+                      <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                      <span>{{ showActiveMedia[exIndex] ? 'Ocultar video' : 'Ver ejercicio' }}</span>
+                    </button>
+                    <div v-show="showActiveMedia[exIndex]" class="mt-2 overflow-hidden rounded-xl border border-wc-border"
+                         :class="isVariationActive(exIndex) && exercise.variacion ? 'ring-1 ring-wc-accent/30' : ''"
+                    >
+                      <div v-if="showActiveMedia[exIndex + '_playing'] && getEmbedUrl(exVideoUrl(exercise))" class="aspect-video w-full">
+                        <iframe
+                          :src="getEmbedUrl(exVideoUrl(exercise)) + '&autoplay=1'"
+                          class="h-full w-full"
+                          frameborder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          referrerpolicy="strict-origin-when-cross-origin"
+                          allowfullscreen
+                        ></iframe>
+                      </div>
+                      <div v-else class="relative cursor-pointer group" @click="getEmbedUrl(exVideoUrl(exercise)) ? (showActiveMedia[exIndex + '_playing'] = true) : null">
+                        <img v-if="displayImage(exercise, exIndex)" :src="displayImage(exercise, exIndex)" :alt="displayName(exercise, exIndex)" class="w-full object-contain max-h-64 bg-wc-bg" />
+                        <div v-if="getEmbedUrl(exVideoUrl(exercise))" class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
+                          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-red-600 shadow-lg group-hover:scale-110 transition-transform">
+                            <svg class="h-5 w-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <!-- ═══ CARDIO TABLE ═══ -->
@@ -1589,6 +1630,13 @@ onBeforeUnmount(() => {
       </Transition>
 
     </div>
+
+    <!-- Modal de media del ejercicio -->
+    <ExerciseMediaModal
+      :exercise="mediaModal.exercise"
+      :show="mediaModal.show"
+      @close="closeMedia"
+    />
   </RiseLayout>
 </template>
 

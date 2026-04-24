@@ -111,81 +111,85 @@ class AdminController extends Controller
         $endOfPrevMonth = $now->copy()->subMonth()->endOfMonth();
 
         // Production stats — plan tickets + checkins + support
-        $productionAgg = PlanTicket::query()
-            ->selectRaw("
-                SUM(CASE WHEN status = 'pendiente' THEN 1 ELSE 0 END) as pendientes,
-                SUM(CASE WHEN status = 'en_revision' THEN 1 ELSE 0 END) as en_revision,
-                SUM(CASE WHEN status = 'completado' AND completed_at >= ? THEN 1 ELSE 0 END) as completados_mes,
-                SUM(CASE WHEN status = 'rechazado' AND rejected_at >= ? THEN 1 ELSE 0 END) as rechazados_mes,
-                SUM(CASE WHEN status IN ('pendiente','en_revision') AND deadline_at IS NOT NULL AND deadline_at < ? THEN 1 ELSE 0 END) as overdue
-            ", [$startOfMonth, $startOfMonth, $now])
-            ->first();
+        $production = Cache::remember('admin_dashboard_production_'.date('Y-m-d-H'), 60, function () use ($startOfMonth, $now) {
+            $productionAgg = PlanTicket::query()
+                ->selectRaw("
+                    SUM(CASE WHEN status = 'pendiente' THEN 1 ELSE 0 END) as pendientes,
+                    SUM(CASE WHEN status = 'en_revision' THEN 1 ELSE 0 END) as en_revision,
+                    SUM(CASE WHEN status = 'completado' AND completed_at >= ? THEN 1 ELSE 0 END) as completados_mes,
+                    SUM(CASE WHEN status = 'rechazado' AND rejected_at >= ? THEN 1 ELSE 0 END) as rechazados_mes,
+                    SUM(CASE WHEN status IN ('pendiente','en_revision') AND deadline_at IS NOT NULL AND deadline_at < ? THEN 1 ELSE 0 END) as overdue
+                ", [$startOfMonth, $startOfMonth, $now])
+                ->first();
 
-        $checkinsSinResponder = Checkin::whereNull('coach_reply')->count();
+            $checkinsSinResponder = Checkin::whereNull('coach_reply')->count();
+            $supportOpen = Ticket::whereIn('status', ['open', 'in_progress'])->count();
+            $clientRequestsPendientes = ClientActionRequest::where('status', 'pendiente')->count();
 
-        $supportOpen = Ticket::whereIn('status', ['open', 'in_progress'])->count();
-
-        $clientRequestsPendientes = ClientActionRequest::where('status', 'pendiente')->count();
-
-        $production = [
-            'plan_tickets_pendientes' => (int) ($productionAgg->pendientes ?? 0),
-            'plan_tickets_en_revision' => (int) ($productionAgg->en_revision ?? 0),
-            'plan_tickets_completados_este_mes' => (int) ($productionAgg->completados_mes ?? 0),
-            'plan_tickets_rechazados_este_mes' => (int) ($productionAgg->rechazados_mes ?? 0),
-            'plan_tickets_overdue' => (int) ($productionAgg->overdue ?? 0),
-            'checkins_sin_responder_global' => $checkinsSinResponder,
-            'support_tickets_abiertos' => $supportOpen,
-            'client_requests_pendientes' => $clientRequestsPendientes,
-        ];
+            return [
+                'plan_tickets_pendientes' => (int) ($productionAgg->pendientes ?? 0),
+                'plan_tickets_en_revision' => (int) ($productionAgg->en_revision ?? 0),
+                'plan_tickets_completados_este_mes' => (int) ($productionAgg->completados_mes ?? 0),
+                'plan_tickets_rechazados_este_mes' => (int) ($productionAgg->rechazados_mes ?? 0),
+                'plan_tickets_overdue' => (int) ($productionAgg->overdue ?? 0),
+                'checkins_sin_responder_global' => $checkinsSinResponder,
+                'support_tickets_abiertos' => $supportOpen,
+                'client_requests_pendientes' => $clientRequestsPendientes,
+            ];
+        });
 
         // Financial — MRR current vs previous, pending payments, new inscriptions
-        $mrrActual = (int) Payment::where('status', 'approved')
-            ->where('created_at', '>=', $startOfMonth)
-            ->sum('amount');
+        $financial = Cache::remember('admin_dashboard_financial_'.date('Y-m-d-H'), 60, function () use ($startOfMonth, $startOfPrevMonth, $endOfPrevMonth) {
+            $mrrActual = (int) Payment::where('status', 'approved')
+                ->where('created_at', '>=', $startOfMonth)
+                ->sum('amount');
 
-        $mrrAnterior = (int) Payment::where('status', 'approved')
-            ->whereBetween('created_at', [$startOfPrevMonth, $endOfPrevMonth])
-            ->sum('amount');
+            $mrrAnterior = (int) Payment::where('status', 'approved')
+                ->whereBetween('created_at', [$startOfPrevMonth, $endOfPrevMonth])
+                ->sum('amount');
 
-        $mrrDelta = $mrrAnterior > 0
-            ? round((($mrrActual - $mrrAnterior) / $mrrAnterior) * 100, 2)
-            : ($mrrActual > 0 ? 100.0 : 0.0);
+            $mrrDelta = $mrrAnterior > 0
+                ? round((($mrrActual - $mrrAnterior) / $mrrAnterior) * 100, 2)
+                : ($mrrActual > 0 ? 100.0 : 0.0);
 
-        $pagosPendientes = (int) Payment::where('status', 'pending')->sum('amount');
+            $pagosPendientes = (int) Payment::where('status', 'pending')->sum('amount');
 
-        $nuevasInscripciones = Inscription::where('created_at', '>=', $startOfMonth)->count();
+            $nuevasInscripciones = Inscription::where('created_at', '>=', $startOfMonth)->count();
 
-        $financial = [
-            'mrr_actual_cop' => $mrrActual,
-            'mrr_mes_anterior_cop' => $mrrAnterior,
-            'mrr_delta_pct' => $mrrDelta,
-            'pagos_pendientes_cop' => $pagosPendientes,
-            'nuevas_inscripciones_este_mes' => $nuevasInscripciones,
-        ];
+            return [
+                'mrr_actual_cop' => $mrrActual,
+                'mrr_mes_anterior_cop' => $mrrAnterior,
+                'mrr_delta_pct' => $mrrDelta,
+                'pagos_pendientes_cop' => $pagosPendientes,
+                'nuevas_inscripciones_este_mes' => $nuevasInscripciones,
+            ];
+        });
 
         // Operational — client + coach counts + retention
-        $clientesAgg = Client::selectRaw("
-                SUM(CASE WHEN status = 'activo' THEN 1 ELSE 0 END) as activos,
-                SUM(CASE WHEN fecha_inicio >= ? THEN 1 ELSE 0 END) as nuevos_mes,
-                SUM(CASE WHEN status IN ('inactivo','suspendido') AND updated_at >= ? THEN 1 ELSE 0 END) as bajas_mes
-            ", [$startOfMonth, $startOfMonth])
-            ->first();
+        $operational = Cache::remember('admin_dashboard_operational_'.date('Y-m-d-H'), 60, function () use ($startOfMonth) {
+            $clientesAgg = Client::selectRaw("
+                    SUM(CASE WHEN status = 'activo' THEN 1 ELSE 0 END) as activos,
+                    SUM(CASE WHEN fecha_inicio >= ? THEN 1 ELSE 0 END) as nuevos_mes,
+                    SUM(CASE WHEN status IN ('inactivo','suspendido') AND updated_at >= ? THEN 1 ELSE 0 END) as bajas_mes
+                ", [$startOfMonth, $startOfMonth])
+                ->first();
 
-        $coachesActivos = Admin::where('role', 'coach')->count();
+            $coachesActivos = Admin::where('role', 'coach')->count();
 
-        $activos = (int) ($clientesAgg->activos ?? 0);
-        $bajasMes = (int) ($clientesAgg->bajas_mes ?? 0);
-        $retencionDenominator = $activos + $bajasMes;
-        $retencion = $retencionDenominator > 0
-            ? round(($activos / $retencionDenominator) * 100, 2)
-            : 100.0;
+            $activos = (int) ($clientesAgg->activos ?? 0);
+            $bajasMes = (int) ($clientesAgg->bajas_mes ?? 0);
+            $retencionDenominator = $activos + $bajasMes;
+            $retencion = $retencionDenominator > 0
+                ? round(($activos / $retencionDenominator) * 100, 2)
+                : 100.0;
 
-        $operational = [
-            'clientes_activos' => $activos,
-            'clientes_nuevos_mes' => (int) ($clientesAgg->nuevos_mes ?? 0),
-            'coaches_activos' => $coachesActivos,
-            'tasa_retencion_mes_pct' => $retencion,
-        ];
+            return [
+                'clientes_activos' => $activos,
+                'clientes_nuevos_mes' => (int) ($clientesAgg->nuevos_mes ?? 0),
+                'coaches_activos' => $coachesActivos,
+                'tasa_retencion_mes_pct' => $retencion,
+            ];
+        });
 
         // Dynamic alerts
         $alerts = $this->buildDashboardAlerts($production, $financial, $operational);
@@ -231,10 +235,10 @@ class AdminController extends Controller
         ];
 
         $stats = [
-            'activeClients' => $activos,
-            'monthlyRevenue' => number_format((float) $mrrActual, 0, ',', '.'),
-            'pendingCheckins' => $checkinsSinResponder,
-            'newInscriptions' => $nuevasInscripciones,
+            'activeClients' => $operational['clientes_activos'],
+            'monthlyRevenue' => number_format((float) $financial['mrr_actual_cop'], 0, ',', '.'),
+            'pendingCheckins' => $production['checkins_sin_responder_global'],
+            'newInscriptions' => $financial['nuevas_inscripciones_este_mes'],
         ];
 
         // Recent inscriptions
@@ -1007,12 +1011,22 @@ class AdminController extends Controller
             $sortBy = 'created_at';
         }
 
-        $admins = $query->orderBy($sortBy, $sortDir === 'asc' ? 'asc' : 'desc')
+        $admins = $query->with('coachProfile')
+            ->orderBy($sortBy, $sortDir === 'asc' ? 'asc' : 'desc')
             ->paginate(25);
 
-        $adminsData = collect($admins->items())->map(function ($admin) {
-            $profile = CoachProfile::where('admin_id', $admin->id)->first();
-            $clientCount = AssignedPlan::where('assigned_by', $admin->id)->distinct('client_id')->count('client_id');
+        $adminIds = collect($admins->items())->pluck('id')->all();
+        $clientCountsByAdmin = empty($adminIds)
+            ? []
+            : AssignedPlan::whereIn('assigned_by', $adminIds)
+                ->select('assigned_by', DB::raw('COUNT(DISTINCT client_id) as total'))
+                ->groupBy('assigned_by')
+                ->pluck('total', 'assigned_by')
+                ->all();
+
+        $adminsData = collect($admins->items())->map(function ($admin) use ($clientCountsByAdmin) {
+            $profile = $admin->coachProfile;
+            $clientCount = $clientCountsByAdmin[$admin->id] ?? 0;
 
             $specs = [];
             if ($profile && $profile->specializations) {
@@ -1326,6 +1340,11 @@ class AdminController extends Controller
 
         $paginated = $query->orderBy($sortBy, $sortDir === 'asc' ? 'asc' : 'desc')->paginate(20);
 
+        $coachIds = collect($paginated->items())->pluck('coach_id')->filter()->unique()->values()->all();
+        $coachNamesById = empty($coachIds)
+            ? []
+            : Admin::whereIn('id', $coachIds)->pluck('name', 'id')->all();
+
         $plans = collect($paginated->items())->map(fn ($p) => [
             'id' => $p->id,
             'name' => $p->name,
@@ -1335,7 +1354,7 @@ class AdminController extends Controller
             'is_public' => (bool) $p->is_public,
             'ai_generated' => (bool) $p->ai_generated,
             'coach_id' => $p->coach_id,
-            'coach_name' => $p->coach_id ? Admin::find($p->coach_id)?->name : null,
+            'coach_name' => $p->coach_id ? ($coachNamesById[$p->coach_id] ?? null) : null,
             'created_at' => $p->created_at?->format('d M Y'),
         ]);
 

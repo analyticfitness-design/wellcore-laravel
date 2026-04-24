@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" class="dark">
-<script>if(localStorage.getItem('darkMode')!=='false')document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark')</script>
+<script nonce="@cspNonce">if(localStorage.getItem('darkMode')!=='false')document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark')</script>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,7 +28,7 @@
     </div>
     <div id="vue-app"></div>
     @if(session('wc_token'))
-    <script>
+    <script nonce="@cspNonce">
         window.__WC_SESSION = {
             token: @json(session('wc_token')),
             userType: @json(session('wc_user_type', 'client')),

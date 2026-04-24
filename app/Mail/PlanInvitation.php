@@ -50,7 +50,7 @@ class PlanInvitation extends Mailable implements ShouldQueue
 
     protected function getPlanData(): array
     {
-        $baseUrl = 'https://wellcorefitness.com';
+        $baseUrl = rtrim(config('wellcore.base_url', 'https://wellcorefitness.com'), '/');
 
         $loginUrl = "{$baseUrl}/login";
 

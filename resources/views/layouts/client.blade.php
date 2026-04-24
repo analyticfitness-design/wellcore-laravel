@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<script>
+<script nonce="@cspNonce">
     // FOUC: aplicar clase dark antes de que Alpine cargue
     if (localStorage.getItem('darkMode') === 'true') document.documentElement.classList.add('dark');
     // Alpine store â€” toggle controlado por usuario
@@ -600,7 +600,7 @@
     <livewire:client.rest-timer />
 
     {{-- Training Completion Sound --}}
-    <script>
+    <script nonce="@cspNonce">
         function playCompletionSound() {
             if (localStorage.getItem('wc_sound_enabled') === 'false') return;
             try {

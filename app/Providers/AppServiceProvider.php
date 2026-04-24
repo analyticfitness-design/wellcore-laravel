@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\WorkoutSession;
 use App\Observers\WorkoutSessionObserver;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -29,8 +30,33 @@ class AppServiceProvider extends ServiceProvider
         }
 
         $this->configureRateLimiting();
+        $this->configureCsp();
 
         WorkoutSession::observe(WorkoutSessionObserver::class);
+    }
+
+    /**
+     * Register CSP Blade directive and configure Livewire nonce support.
+     *
+     * The @cspNonce directive emits the per-request nonce that was set by
+     * ContentSecurityPolicy middleware. Use it on every inline <script>:
+     *   <script nonce="@cspNonce">...</script>
+     *
+     * Livewire::useScriptTagAttributes() propagates the nonce automatically
+     * to all Livewire-injected <script> tags so Livewire works without
+     * needing 'unsafe-inline' to be trusted by modern browsers.
+     */
+    protected function configureCsp(): void
+    {
+        // Blade directive — outputs the nonce value already HTML-escaped via e()
+        Blade::directive('cspNonce', function () {
+            return "<?php echo e(request()->attributes->get('csp_nonce', '')); ?>";
+        });
+
+        // Livewire 3: propagate nonce to all injected script tags
+        \Livewire\Livewire::useScriptTagAttributes([
+            'nonce' => fn () => request()->attributes->get('csp_nonce', ''),
+        ]);
     }
 
     /**

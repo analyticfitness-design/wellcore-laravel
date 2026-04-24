@@ -16,6 +16,7 @@ use App\Models\RiseProgram;
 use App\Models\RiseTracking;
 use App\Models\WorkoutLog;
 use App\Models\WorkoutSession;
+use App\Services\ExerciseMediaService;
 use App\Services\ImagePipelineService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -27,6 +28,8 @@ use Illuminate\Support\Facades\Storage;
 class RiseController extends Controller
 {
     use AuthenticatesVueRequests;
+
+    public function __construct(private ExerciseMediaService $media) {}
 
     // ─── Dashboard ──────────────────────────────────────────────────────
 
@@ -889,9 +892,16 @@ class RiseController extends Controller
         foreach ($trainingPlan['semanas'] as $weekIndex => $weekData) {
             $weekNumber = $weekIndex + 1;
             $dias = $weekData['dias'] ?? [];
-            $allWeeksDays[$weekNumber] = array_values(
+            $normalized = array_values(
                 array_map(fn ($d) => is_array($d) ? $this->normalizeDay($d) : $d, $dias)
             );
+            foreach ($normalized as &$dia) {
+                if (! empty($dia['ejercicios'])) {
+                    $this->media->enrichWithMedia($dia['ejercicios']);
+                }
+            }
+            unset($dia);
+            $allWeeksDays[$weekNumber] = $normalized;
         }
 
         // Current week from program start date
