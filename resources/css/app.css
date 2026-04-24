@@ -1118,6 +1118,114 @@ body {
 @media (max-width:640px) { .hp-hero-phone { width:240px; } }
 .hp-anim-d6 { animation-delay:.6s; }
 
+/* ════════ HERO — DOS COLUMNAS (desktop) ════════ */
+@media (min-width: 1024px) {
+  .hp-hero-inner { display:grid; grid-template-columns:1fr 1fr; text-align:left; gap:56px; align-items:center; }
+}
+.hp-hero-left { display:flex; flex-direction:column; align-items:center; gap:28px; }
+@media (min-width: 1024px) {
+  .hp-hero-left { align-items:flex-start; }
+  .hp-hero-ctas { justify-content:flex-start; }
+}
+.hp-hero-phone-mobile { display:block; }
+@media (min-width: 1024px) { .hp-hero-phone-mobile { display:none !important; } }
+
+/* Columna derecha — oculta en mobile */
+.hp-hero-right { display:none; position:relative; padding:52px 28px 52px 10px; }
+@media (min-width: 1024px) { .hp-hero-right { display:flex; justify-content:center; } }
+
+/* ════════ LAPTOP / BROWSER FRAME ════════ */
+.hp-laptop {
+  background:#1C1C1E; border-radius:14px 14px 6px 6px;
+  border:1.5px solid rgba(255,255,255,.14);
+  box-shadow:0 28px 70px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.04), inset 0 1px 0 rgba(255,255,255,.06);
+  width:100%; max-width:420px; position:relative; z-index:2;
+}
+.hp-laptop::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,transparent,#DC2626 30%,#DC2626 70%,transparent);
+  border-radius:14px 14px 0 0;
+}
+.hp-laptop-bar {
+  height:30px; background:#0F0F11; border-radius:12px 12px 0 0;
+  display:flex; align-items:center; gap:5px; padding:0 12px;
+}
+.hp-lb-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+.hp-lb-url {
+  flex:1; margin:0 8px; background:#18181B; border-radius:5px;
+  font-size:9px; color:rgba(250,250,250,.3); padding:2px 10px; text-align:center;
+  font-family:var(--font-mono); letter-spacing:.02em;
+}
+.hp-laptop-screen { background:#111113; border-radius:0 0 6px 6px; padding:16px 18px; position:relative; overflow:hidden; }
+
+/* Dashboard widget dentro del laptop */
+.hp-dash-orb {
+  position:absolute; top:-16px; right:-16px;
+  width:100px; height:100px; border-radius:50%;
+  background:rgba(220,38,38,.18); filter:blur(28px); pointer-events:none; z-index:0;
+}
+.hp-dash-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; position:relative; z-index:1; }
+.hp-dash-plan-badge {
+  font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:.1em;
+  color:#DC2626; background:rgba(220,38,38,.14); border:1px solid rgba(220,38,38,.2); padding:2px 9px; border-radius:9999px;
+}
+.hp-dash-streak { font-size:10px; color:rgba(250,250,250,.55); }
+.hp-dash-name { font-family:var(--font-display); font-size:16px; font-weight:700; text-transform:uppercase; color:#FAFAFA; margin-bottom:2px; position:relative; z-index:1; }
+.hp-dash-week-sub { font-size:8.5px; color:rgba(250,250,250,.38); margin-bottom:10px; position:relative; z-index:1; }
+.hp-dash-week { display:flex; gap:4px; margin-bottom:10px; position:relative; z-index:1; }
+.hp-dw {
+  flex:1; padding:4px 1px; border-radius:5px; text-align:center;
+  border:1px solid rgba(255,255,255,.07); background:#0F0F11;
+  font-size:7.5px; font-weight:600; color:rgba(250,250,250,.38);
+}
+.hp-dw-n { display:block; font-family:var(--font-display); font-size:10px; font-weight:700; line-height:1; margin-bottom:2px; }
+.hp-dw.done { background:rgba(220,38,38,.08); border-color:rgba(220,38,38,.2); color:#DC2626; }
+.hp-dw.cur { background:#DC2626; border-color:#DC2626; color:#fff; box-shadow:0 2px 8px rgba(220,38,38,.4); }
+.hp-dash-ex {
+  display:flex; align-items:center; gap:7px;
+  background:#0F0F11; border:1px solid rgba(255,255,255,.07);
+  border-radius:7px; padding:7px 9px; margin-bottom:5px; position:relative; z-index:1;
+}
+.hp-ex-num {
+  width:16px; height:16px; border-radius:50%; background:#DC2626;
+  color:#fff; font-size:7.5px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.hp-ex-gif {
+  width:28px; height:28px; border-radius:5px; background:#18181B;
+  border:1px solid rgba(255,255,255,.07);
+  display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0;
+}
+.hp-ex-info { flex:1; min-width:0; }
+.hp-ex-name { font-family:var(--font-display); font-size:10.5px; font-weight:600; text-transform:uppercase; color:#FAFAFA; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.hp-ex-chips { display:flex; gap:3px; margin-top:2px; }
+.hp-ex-ch { font-size:7px; font-weight:700; padding:1px 4px; border-radius:3px; background:rgba(220,38,38,.1); color:#DC2626; border:1px solid rgba(220,38,38,.15); }
+.hp-ex-pr { background:rgba(245,158,11,.1) !important; color:#F59E0B !important; border-color:rgba(245,158,11,.2) !important; }
+.hp-dash-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; margin-top:7px; position:relative; z-index:1; }
+.hp-ds-b { background:#0F0F11; border:1px solid rgba(255,255,255,.07); border-radius:5px; padding:5px 3px; text-align:center; }
+.hp-ds-n { font-family:var(--font-display); font-size:13px; font-weight:700; line-height:1; }
+.hp-ds-l { font-size:6px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:rgba(250,250,250,.38); margin-top:2px; }
+
+/* Phone overlay encima del laptop (≥1280px) */
+.hp-phone-overlay { position:absolute; bottom:6px; right:-24px; z-index:4; display:none; }
+@media (min-width: 1280px) { .hp-phone-overlay { display:block; } }
+.hp-hero-phone-sm { width:160px !important; box-shadow:0 20px 50px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.08) !important; }
+
+/* Chips flotantes */
+@keyframes hp-float-chip { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-7px) rotate(.4deg)} }
+.hp-float-chip {
+  position:absolute; background:rgba(20,20,23,.92); backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.12); border-radius:12px;
+  padding:9px 13px; box-shadow:0 4px 24px rgba(0,0,0,.5);
+  display:flex; align-items:center; gap:9px; white-space:nowrap; z-index:5;
+  animation:hp-float-chip 5s ease-in-out infinite;
+}
+.hp-fc-pr { top:14px; right:-4px; animation-delay:-1.5s; }
+.hp-fc-checkin { bottom:60px; left:-4px; animation-delay:-3.2s; }
+.hp-fc-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.hp-fc-title { font-size:11px; font-weight:700; color:#FAFAFA; }
+.hp-fc-sub { font-size:9px; color:rgba(250,250,250,.4); margin-top:1px; }
+
 /* ════════ STICKY CTA MOBILE ════════ */
 .hp-sticky-cta {
   position:fixed; bottom:12px; left:12px; right:12px; z-index:50;

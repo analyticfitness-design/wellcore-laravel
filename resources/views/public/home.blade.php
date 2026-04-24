@@ -86,69 +86,164 @@
 
         <div class="hp-wrap hp-hero-inner">
 
-            {{-- Badge --}}
-            <div class="hp-hero-badge hp-anim-up">
-                <span class="hp-hero-badge-dot"></span>
-                {{ __('home.hero_badge') }}
+            {{-- ── LEFT: texto ──────────────────────────────────────────── --}}
+            <div class="hp-hero-left">
+
+                {{-- Badge --}}
+                <div class="hp-hero-badge hp-anim-up">
+                    <span class="hp-hero-badge-dot"></span>
+                    {{ __('home.hero_badge') }}
+                </div>
+
+                {{-- Headline --}}
+                <h1 class="hp-hero-h1 hp-anim-up hp-anim-d1">
+                    {{ __('home.hero_title_1') }}<br>
+                    <em>{{ __('home.hero_title_3') }}</em>
+                </h1>
+
+                {{-- Subtitle --}}
+                <p class="hp-hero-sub hp-anim-up hp-anim-d2">{{ __('home.hero_subtitle') }}</p>
+
+                {{-- CTAs --}}
+                <div class="hp-hero-ctas hp-anim-up hp-anim-d3">
+                    <a href="{{ route('inscripcion') }}" class="hp-btn-primary btn-press pulse-glow">
+                        {{ __('home.cta_comenzar') }}
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                        </svg>
+                    </a>
+                    <a href="{{ route('planes') }}" class="hp-btn-ghost btn-press">
+                        {{ __('home.cta_ver_planes') }}
+                    </a>
+                </div>
+
+                {{-- Phone mockup (solo mobile — en desktop se muestra en la columna derecha) --}}
+                <div class="hp-hero-mockup hp-hero-phone-mobile hp-anim-up hp-anim-d4" aria-hidden="true">
+                    <div class="hp-hero-phone">
+                        <picture>
+                            <source srcset="{{ asset('images/hero/dashboard-mobile.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/hero/dashboard-mobile.webp') }}"
+                                 alt="" width="280" height="575"
+                                 loading="eager" fetchpriority="high">
+                        </picture>
+                    </div>
+                </div>
+
+                {{-- Proof strip --}}
+                <div class="hp-hero-proof hp-anim-up hp-anim-d5">
+                    <div class="hp-hero-proof-item">
+                        <span class="hp-hero-proof-icon font-bold text-wc-accent font-data">94%</span>
+                        {{ __('home.hero_stat_adherencia') }}
+                    </div>
+                    <div class="hp-hero-proof-item">
+                        <span class="hp-hero-proof-icon font-bold text-wc-accent">1:1</span>
+                        {{ __('home.hero_stat_coaching') }}
+                    </div>
+                    <div class="hp-hero-proof-item">
+                        <span class="hp-hero-proof-icon font-bold text-wc-accent font-data">100%</span>
+                        {{ __('home.hero_stat_personalizado') }}
+                    </div>
+                </div>
+
+                {{-- Plan chips --}}
+                <div class="flex flex-wrap gap-2 justify-center lg:justify-start hp-anim-up hp-anim-d6">
+                    <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Esencial <span class="font-data font-semibold text-wc-text">$299k</span></span>
+                    <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Método <span class="font-data font-semibold text-wc-text">$399k</span></span>
+                    <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Elite <span class="font-data font-semibold text-wc-text">$549k</span></span>
+                </div>
+
             </div>
 
-            {{-- Headline --}}
-            <h1 class="hp-hero-h1 hp-anim-up hp-anim-d1">
-                {{ __('home.hero_title_1') }}<br>
-                <em>{{ __('home.hero_title_3') }}</em>
-            </h1>
+            {{-- ── RIGHT: mockups dashboard ──────────────────────────────── --}}
+            <div class="hp-hero-right hp-anim-up hp-anim-d2" aria-hidden="true">
 
-            {{-- Subtitle --}}
-            <p class="hp-hero-sub hp-anim-up hp-anim-d2">{{ __('home.hero_subtitle') }}</p>
-
-            {{-- CTAs --}}
-            <div class="hp-hero-ctas hp-anim-up hp-anim-d3">
-                <a href="{{ route('inscripcion') }}" class="hp-btn-primary btn-press pulse-glow">
-                    {{ __('home.cta_comenzar') }}
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                    </svg>
-                </a>
-                <a href="{{ route('planes') }}" class="hp-btn-ghost btn-press">
-                    {{ __('home.cta_ver_planes') }}
-                </a>
-            </div>
-
-            {{-- Dashboard mockup --}}
-            <div class="hp-hero-mockup hp-anim-up hp-anim-d4" aria-hidden="true">
-                <div class="hp-hero-phone">
-                    <picture>
-                        <source srcset="{{ asset('images/hero/dashboard-mobile.avif') }}" type="image/avif">
-                        <img src="{{ asset('images/hero/dashboard-mobile.webp') }}"
-                             alt=""
-                             width="280" height="575"
-                             loading="eager"
-                             fetchpriority="high">
-                    </picture>
+                {{-- Chip flotante: PR --}}
+                <div class="hp-float-chip hp-fc-pr">
+                    <span class="hp-fc-dot" style="background:#F59E0B"></span>
+                    <div>
+                        <div class="hp-fc-title">🏆 Nuevo PR</div>
+                        <div class="hp-fc-sub">Sentadilla 120 kg × 5</div>
+                    </div>
                 </div>
-            </div>
 
-            {{-- Proof strip --}}
-            <div class="hp-hero-proof hp-anim-up hp-anim-d5">
-                <div class="hp-hero-proof-item">
-                    <span class="hp-hero-proof-icon font-bold text-wc-accent font-data">94%</span>
-                    {{ __('home.hero_stat_adherencia') }}
+                {{-- Laptop / browser frame --}}
+                <div class="hp-laptop">
+                    <div class="hp-laptop-bar">
+                        <span class="hp-lb-dot" style="background:#FF5F57"></span>
+                        <span class="hp-lb-dot" style="background:#FEBC2E"></span>
+                        <span class="hp-lb-dot" style="background:#28C840"></span>
+                        <div class="hp-lb-url">wellcorefitness.com/client</div>
+                    </div>
+                    <div class="hp-laptop-screen">
+                        <div class="hp-dash-orb" aria-hidden="true"></div>
+                        <div class="hp-dash-top">
+                            <span class="hp-dash-plan-badge">Plan Método · Activo</span>
+                            <span class="hp-dash-streak">🔥 14 días</span>
+                        </div>
+                        <div class="hp-dash-name">Buenas noches, Daniela</div>
+                        <div class="hp-dash-week-sub">Semana 3 · Fuerza Máxima</div>
+                        <div class="hp-dash-week">
+                            <div class="hp-dw done"><span class="hp-dw-n">13</span>L</div>
+                            <div class="hp-dw done"><span class="hp-dw-n">14</span>M</div>
+                            <div class="hp-dw done"><span class="hp-dw-n">15</span>X</div>
+                            <div class="hp-dw"><span class="hp-dw-n">16</span>J</div>
+                            <div class="hp-dw cur"><span class="hp-dw-n">17</span>V</div>
+                            <div class="hp-dw"><span class="hp-dw-n">18</span>S</div>
+                            <div class="hp-dw"><span class="hp-dw-n">19</span>D</div>
+                        </div>
+                        <div class="hp-dash-ex">
+                            <span class="hp-ex-num">1</span>
+                            <span class="hp-ex-gif">🏋️</span>
+                            <div class="hp-ex-info">
+                                <div class="hp-ex-name">Sentadilla libre</div>
+                                <div class="hp-ex-chips">
+                                    <span class="hp-ex-ch">4×6</span>
+                                    <span class="hp-ex-ch">85kg</span>
+                                    <span class="hp-ex-ch hp-ex-pr">PR 🏆</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hp-dash-ex">
+                            <span class="hp-ex-num">2</span>
+                            <span class="hp-ex-gif">💪</span>
+                            <div class="hp-ex-info">
+                                <div class="hp-ex-name">Press banca</div>
+                                <div class="hp-ex-chips">
+                                    <span class="hp-ex-ch">4×8</span>
+                                    <span class="hp-ex-ch">72.5kg</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hp-dash-stats">
+                            <div class="hp-ds-b"><div class="hp-ds-n" style="color:#DC2626">14</div><div class="hp-ds-l">Racha</div></div>
+                            <div class="hp-ds-b"><div class="hp-ds-n" style="color:#10B981">6</div><div class="hp-ds-l">Check-ins</div></div>
+                            <div class="hp-ds-b"><div class="hp-ds-n" style="color:#A78BFA">Nv 2</div><div class="hp-ds-l">Nivel</div></div>
+                            <div class="hp-ds-b"><div class="hp-ds-n" style="color:#F59E0B">4/7</div><div class="hp-ds-l">Semana</div></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="hp-hero-proof-item">
-                    <span class="hp-hero-proof-icon font-bold text-wc-accent">1:1</span>
-                    {{ __('home.hero_stat_coaching') }}
-                </div>
-                <div class="hp-hero-proof-item">
-                    <span class="hp-hero-proof-icon font-bold text-wc-accent font-data">100%</span>
-                    {{ __('home.hero_stat_personalizado') }}
-                </div>
-            </div>
 
-            {{-- Plan chips --}}
-            <div class="flex flex-wrap gap-2 justify-center hp-anim-up hp-anim-d6">
-                <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Esencial <span class="font-data font-semibold text-wc-text">$299k</span></span>
-                <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Método <span class="font-data font-semibold text-wc-text">$399k</span></span>
-                <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Elite <span class="font-data font-semibold text-wc-text">$549k</span></span>
+                {{-- Phone overlay (solo en pantallas ≥ 1280px) --}}
+                <div class="hp-phone-overlay">
+                    <div class="hp-hero-phone hp-hero-phone-sm">
+                        <picture>
+                            <source srcset="{{ asset('images/hero/dashboard-mobile.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/hero/dashboard-mobile.webp') }}"
+                                 alt="" width="180" height="370"
+                                 loading="eager" fetchpriority="high">
+                        </picture>
+                    </div>
+                </div>
+
+                {{-- Chip flotante: Check-in --}}
+                <div class="hp-float-chip hp-fc-checkin">
+                    <span class="hp-fc-dot" style="background:#10B981;box-shadow:0 0 6px rgba(16,185,129,.6)"></span>
+                    <div>
+                        <div class="hp-fc-title">Check-in enviado ✓</div>
+                        <div class="hp-fc-sub">Coach respondió en 20 min</div>
+                    </div>
+                </div>
+
             </div>
 
         </div>
