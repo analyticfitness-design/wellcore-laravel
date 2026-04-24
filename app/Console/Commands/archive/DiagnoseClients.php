@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Archive;
 
 use App\Models\AssignedPlan;
 use App\Models\Client;
@@ -9,7 +9,8 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 
-class DiagnoseClients extends Command
+// ARCHIVED — contains hardcoded client PII emails. Run manually via tinker if needed.
+class DiagnoseClients
 {
     protected $signature = 'wellcore:diagnose-clients';
 

@@ -8,6 +8,7 @@ Sitemap: https://wellcorefitness.com/sitemap.xml
 Disallow: /client/
 Disallow: /coach/
 Disallow: /admin/
+Disallow: /rise/
 Disallow: /api/
 Disallow: /dev-login/
 Disallow: /livewire/

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Archive;
 
-use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-final class FixRisePrograms extends Command
+// ARCHIVED — contains hardcoded client names and personal nutrition plans. Run manually via tinker if needed.
+final class FixRisePrograms
 {
-    protected $signature = 'wellcore:fix-rise-programs';
+    protected string $signature = 'wellcore:fix-rise-programs';
 
-    protected $description = 'Corrige personalized_program en rise_programs para 6 clientes RISE';
+    protected string $description = 'Corrige personalized_program en rise_programs para 6 clientes RISE';
 
     public function handle(): int
     {

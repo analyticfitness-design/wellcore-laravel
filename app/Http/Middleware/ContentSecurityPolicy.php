@@ -30,7 +30,6 @@ class ContentSecurityPolicy
             $response->header('Content-Security-Policy', $csp);
             $response->header('X-Content-Type-Options', 'nosniff');
             $response->header('X-Frame-Options', 'SAMEORIGIN');
-            $response->header('X-XSS-Protection', '1; mode=block');
             $response->header('Referrer-Policy', 'strict-origin-when-cross-origin');
             $response->header('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
         }

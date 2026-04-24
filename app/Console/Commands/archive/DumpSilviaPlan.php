@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Archive;
 
-use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-final class DumpSilviaPlan extends Command
+// ARCHIVED — contains hardcoded client_id=54 (Silvia). Run manually via tinker if needed.
+final class DumpSilviaPlan
 {
-    protected $signature = 'wellcore:dump-silvia';
-    protected $description = 'Dump Silvia plan for inspection';
+    protected string $signature = 'wellcore:dump-silvia';
+    protected string $description = 'Dump Silvia plan for inspection';
 
     public function handle(): int
     {

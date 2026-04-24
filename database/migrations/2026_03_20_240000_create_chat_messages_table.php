@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('session_id', 64)->index();
             $table->enum('role', ['user', 'assistant']);
-            $table->text('content');
+            $table->text('message');
             $table->string('page_url', 500)->nullable();
             $table->string('ip_hash', 64)->nullable();
             $table->string('user_agent', 255)->nullable();

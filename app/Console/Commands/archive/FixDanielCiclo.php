@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Archive;
 
-use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-final class FixDanielCiclo extends Command
+// ARCHIVED — contains hardcoded client_id=37 (Daniel Esparza). Run manually via tinker if needed.
+final class FixDanielCiclo
 {
-    protected $signature = 'wellcore:fix-daniel-ciclo';
+    protected string $signature = 'wellcore:fix-daniel-ciclo';
 
-    protected $description = 'Corrige fases y labs del ciclo hormonal de Daniel Esparza (client_id=37)';
+    protected string $description = 'Corrige fases y labs del ciclo hormonal de Daniel Esparza (client_id=37)';
 
     public function handle(): int
     {
