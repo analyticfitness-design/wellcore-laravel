@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use App\Mail\CheckinReminder;
 use App\Models\AutoMessageLog;
-use App\Models\Client;
 use App\Models\Checkin;
+use App\Models\Client;
 use App\Models\TrainingLog;
 use App\Models\WellcoreNotification;
 use Illuminate\Console\Command;
@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Mail;
 class BehavioralTriggersCommand extends Command
 {
     protected $signature = 'wellcore:behavioral-triggers';
+
     protected $description = 'Send behavioral trigger notifications to clients based on activity patterns';
 
     public function handle(): int
@@ -36,13 +37,13 @@ class BehavioralTriggersCommand extends Command
                     ->where('date_sent', today())
                     ->exists();
 
-                if (!$alreadySent) {
+                if (! $alreadySent) {
                     WellcoreNotification::create([
                         'user_type' => 'client',
                         'user_id' => $client->id,
                         'type' => 'behavioral_trigger',
                         'title' => 'Te extrañamos en el gym',
-                        'body' => 'Llevas ' . $lastTraining->log_date->diffInDays(now()) . ' dias sin entrenar. Cada dia cuenta.',
+                        'body' => 'Llevas '.$lastTraining->log_date->diffInDays(now()).' dias sin entrenar. Cada dia cuenta.',
                     ]);
 
                     AutoMessageLog::create([
@@ -60,13 +61,13 @@ class BehavioralTriggersCommand extends Command
                 ->where('checkin_date', '>=', now()->startOfWeek())
                 ->exists();
 
-            if (!$hasCheckin && now()->dayOfWeek >= 5) { // Friday+
+            if (! $hasCheckin && now()->dayOfWeek >= 5) { // Friday+
                 $alreadySent = AutoMessageLog::where('client_id', $client->id)
                     ->where('trigger_type', 'missed_checkin')
                     ->where('date_sent', today())
                     ->exists();
 
-                if (!$alreadySent) {
+                if (! $alreadySent) {
                     WellcoreNotification::create([
                         'user_type' => 'client',
                         'user_id' => $client->id,
@@ -76,7 +77,11 @@ class BehavioralTriggersCommand extends Command
                     ]);
 
                     if ($client->email) {
-                        Mail::to($client->email)->queue(new CheckinReminder($client));
+                        try {
+                            Mail::to($client->email)->queue(new CheckinReminder($client));
+                        } catch (\Throwable $e) {
+                            \Log::error('BehavioralTriggers mail failed', ['client_id' => $client->id, 'error' => $e->getMessage()]);
+                        }
                     }
 
                     AutoMessageLog::create([
@@ -91,6 +96,7 @@ class BehavioralTriggersCommand extends Command
         }
 
         $this->info("Triggered {$triggered} notifications.");
+
         return self::SUCCESS;
     }
 }

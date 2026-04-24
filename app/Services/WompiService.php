@@ -12,6 +12,7 @@ use App\Models\PageVisit;
 use App\Models\Payment;
 use App\Models\PaymentLog;
 use App\Models\WellcoreNotification;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -343,11 +344,18 @@ class WompiService
         $newStatus = $this->mapWompiStatus($wompiStatus);
         $oldStatus = $payment->status;
 
-        $payment->update([
-            'status' => $newStatus,
-            'wompi_transaction_id' => $transactionId,
-            'payment_method' => $paymentMethodType ?? $payment->payment_method,
-        ]);
+        // Atomically update payment status + activate client so both succeed or both roll back.
+        DB::transaction(function () use ($payment, $newStatus, $transactionId, $paymentMethodType, $oldStatus) {
+            $payment->update([
+                'status' => $newStatus,
+                'wompi_transaction_id' => $transactionId,
+                'payment_method' => $paymentMethodType ?? $payment->payment_method,
+            ]);
+
+            if ($newStatus === PaymentStatus::Approved && $oldStatus !== PaymentStatus::Approved && $payment->client_id) {
+                Client::where('id', $payment->client_id)->update(['status' => 'activo']);
+            }
+        });
 
         $this->logEvent('webhook.payment_updated', [
             'payment_id' => $payment->id,
@@ -378,11 +386,6 @@ class WompiService
     {
         try {
             $client = $payment->client_id ? Client::find($payment->client_id) : null;
-
-            // 0. Activate client status
-            if ($payment->client_id) {
-                Client::where('id', $payment->client_id)->update(['status' => 'activo']);
-            }
 
             // 1. Send welcome email to client
             if ($client && $client->email) {

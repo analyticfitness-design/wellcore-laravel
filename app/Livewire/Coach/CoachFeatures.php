@@ -27,42 +27,66 @@ class CoachFeatures extends Component
 
     // ─── Pods ───────────────────────────────────────────────
     public bool $showCreatePodModal = false;
+
     public string $podName = '';
+
     public string $podDescription = '';
+
     public int $podMaxMembers = 8;
 
     public ?int $viewingPodId = null;
+
     public string $podMessageText = '';
+
     public bool $showAddMemberModal = false;
+
     public string $memberSearch = '';
 
     public ?int $editingPodId = null;
+
     public bool $showEditPodModal = false;
+
     public string $editPodName = '';
+
     public string $editPodDescription = '';
+
     public int $editPodMaxMembers = 8;
+
     public bool $editPodIsActive = true;
 
     // ─── Availability ───────────────────────────────────────
     public bool $showSlotModal = false;
+
     public ?int $editingSlotId = null;
+
     public int $slotDay = 1;
+
     public string $slotStart = '09:00';
+
     public string $slotEnd = '10:00';
+
     public ?int $deletingSlotId = null;
 
     // ─── Audio ──────────────────────────────────────────────
     public bool $showAudioModal = false;
+
     public ?int $editingAudioId = null;
+
     public string $audioTitle = '';
+
     public string $audioUrl = '';
+
     public int $audioDuration = 0;
+
     public string $audioCategory = 'general';
+
     public ?int $deletingAudioId = null;
 
     // ─── Video Check-ins ────────────────────────────────────
     public string $videoStatusFilter = 'all';
+
     public ?int $expandedCheckinId = null;
+
     public string $coachResponse = '';
 
     // ─── Messages ───────────────────────────────────────────
@@ -194,6 +218,7 @@ class CoachFeatures extends Component
         $currentCount = PodMember::where('pod_id', $pod->id)->count();
         if ($currentCount >= $pod->max_members) {
             $this->successMessage = 'El pod ha alcanzado el maximo de miembros.';
+
             return;
         }
 
@@ -587,7 +612,7 @@ class CoachFeatures extends Component
             5 => 'Viernes',
             6 => 'Sabado',
             7 => 'Domingo',
-            default => 'Dia ' . $day,
+            default => 'Dia '.$day,
         };
     }
 
@@ -658,7 +683,7 @@ class CoachFeatures extends Component
                 ->limit(100)
                 ->get()
                 ->map(function ($msg) use ($coachId) {
-                    $isCoach = ($msg->client_id == $coachId);
+                    $isCoach = ((int) $msg->client_id === (int) $coachId);
                     $client = $isCoach ? null : Client::find($msg->client_id);
 
                     return [
@@ -685,7 +710,7 @@ class CoachFeatures extends Component
                 ->orderBy('name');
 
             if ($this->memberSearch !== '') {
-                $query->where('name', 'like', '%' . $this->memberSearch . '%');
+                $query->where('name', 'like', '%'.$this->memberSearch.'%');
             }
 
             $availableClients = $query->get(['id', 'name'])->map(fn ($c) => [
@@ -696,7 +721,7 @@ class CoachFeatures extends Component
         }
 
         // ─── Availability ─────────────────────────────────────
-        $slots = CoachAvailability::where('coach_id', $coachId)
+        $availabilitySlots = CoachAvailability::where('coach_id', $coachId)
             ->orderBy('day_of_week')
             ->orderBy('time_start')
             ->get()
@@ -716,7 +741,7 @@ class CoachFeatures extends Component
                 'day' => $d,
                 'name' => $this->dayName($d),
                 'short' => mb_substr($this->dayName($d), 0, 3),
-                'slots' => $slots->where('day_of_week', $d)->values()->toArray(),
+                'slots' => $availabilitySlots->where('day_of_week', $d)->values()->toArray(),
             ];
         }
 
@@ -781,7 +806,7 @@ class CoachFeatures extends Component
             'viewingPod' => $viewingPod,
             'availableClients' => $availableClients,
             'weeklySlots' => $weeklySlots,
-            'slots' => $slots,
+            'availabilitySlots' => $availabilitySlots,
             'audios' => $audios,
             'audioCategories' => $audioCategories,
             'checkins' => $checkins,

@@ -36,6 +36,7 @@ class Payment extends Model
             'plan' => PlanType::class,
             'status' => PaymentStatus::class,
             'payu_response' => 'array',
+            // amount = pesos COP (e.g. 95000.00). Wompi uses amount_in_cents (int, e.g. 9500000).
             'amount' => 'decimal:2',
         ];
     }

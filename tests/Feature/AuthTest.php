@@ -20,21 +20,23 @@ test('faq page loads', function () {
     $this->get('/faq')->assertStatus(200);
 });
 
-test('client dashboard requires authentication', function () {
-    $this->get('/client')->assertRedirect('/login');
+// SPA design: /client, /admin, /coach serve the Vue SPA shell (always 200).
+// Auth is enforced at the API layer — Vue Router redirects to /login on 401.
+test('client dashboard loads spa shell', function () {
+    $this->get('/client')->assertStatus(200);
 });
 
-test('admin dashboard requires authentication', function () {
-    $this->get('/admin')->assertRedirect('/login');
+test('admin dashboard loads spa shell', function () {
+    $this->get('/admin')->assertStatus(200);
 });
 
-test('coach dashboard requires authentication', function () {
-    $this->get('/coach')->assertRedirect('/login');
+test('coach dashboard loads spa shell', function () {
+    $this->get('/coach')->assertStatus(200);
 });
 
 test('authenticated client can access dashboard', function () {
     $client = Client::first();
-    if (!$client) {
+    if (! $client) {
         $this->markTestSkipped('No clients in database');
     }
 
@@ -56,7 +58,7 @@ test('authenticated client can access dashboard', function () {
 
 test('authenticated admin can access admin dashboard', function () {
     $admin = Admin::first();
-    if (!$admin) {
+    if (! $admin) {
         $this->markTestSkipped('No admins in database');
     }
 

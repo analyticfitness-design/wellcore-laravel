@@ -11,12 +11,14 @@ describe('Architecture', function () {
 
     arch('models extend Eloquent Model')
         ->expect('App\Models')
-        ->toExtend('Illuminate\Database\Eloquent\Model');
+        ->toExtend('Illuminate\Database\Eloquent\Model')
+        ->ignoring('App\Models\Concerns'); // traits in Concerns don't extend Model
 
     arch('controllers extend base Controller')
         ->expect('App\Http\Controllers')
         ->toExtend('App\Http\Controllers\Controller')
-        ->ignoring('App\Http\Controllers\Controller'); // base class itself is abstract
+        ->ignoring('App\Http\Controllers\Controller')   // base class itself
+        ->ignoring('App\Http\Controllers\Api\Concerns'); // traits don't extend Controller
 
     arch('events implement ShouldBroadcast')
         ->expect('App\Events')

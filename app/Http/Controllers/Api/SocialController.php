@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\HabitType;
 use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
 use App\Mail\ReferralInvitation;
@@ -744,7 +745,7 @@ class SocialController extends Controller
         $clientId = $client->id;
 
         $request->validate([
-            'habit_type' => 'required|string|in:agua,sueno,entrenamiento,nutricion,suplementos',
+            'habit_type' => ['required', 'string', Rule::enum(HabitType::class)],
         ]);
 
         $habitType = $request->input('habit_type');

@@ -30,8 +30,9 @@ test('faq page loads', function () {
     $this->get('/faq')->assertStatus(200);
 });
 
-test('rise page loads', function () {
-    $this->get('/reto-rise')->assertStatus(200);
+test('rise spa shell loads', function () {
+    // /reto-rise is a 301 redirect; /rise serves the Vue SPA shell (always 200)
+    $this->get('/rise')->assertStatus(200);
 });
 
 test('blog page loads', function () {

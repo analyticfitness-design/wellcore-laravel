@@ -85,6 +85,11 @@ Route::get('/health', function () {
 // Sitemap (public, no auth required)
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
+// robots.txt served as a route so tests can hit it (nginx serves the static file in production)
+Route::get('/robots.txt', function () {
+    return response(file_get_contents(public_path('robots.txt')), 200, ['Content-Type' => 'text/plain']);
+})->name('robots');
+
 // Chatbot API (public, no auth required)
 Route::post('/api/chat', [ChatController::class, 'send'])->name('api.chat')->middleware('throttle:chat');
 

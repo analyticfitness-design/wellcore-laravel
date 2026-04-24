@@ -373,14 +373,14 @@
             {{-- Slot summary --}}
             <div class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-4">
                 <div class="flex items-center gap-6 text-sm">
-                    <span class="text-wc-text-secondary">Total: <span class="font-semibold text-wc-text">{{ $slots->count() }}</span> horarios</span>
+                    <span class="text-wc-text-secondary">Total: <span class="font-semibold text-wc-text">{{ collect($availabilitySlots)->count() }}</span> horarios</span>
                     <span class="flex items-center gap-1.5">
                         <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
-                        <span class="text-wc-text-secondary">Activo: <span class="font-semibold text-emerald-400">{{ $slots->where('is_active', true)->count() }}</span></span>
+                        <span class="text-wc-text-secondary">Activo: <span class="font-semibold text-emerald-400">{{ collect($availabilitySlots)->where('is_active', true)->count() }}</span></span>
                     </span>
                     <span class="flex items-center gap-1.5">
                         <span class="h-2.5 w-2.5 rounded-full bg-zinc-500"></span>
-                        <span class="text-wc-text-secondary">Inactivo: <span class="font-semibold text-zinc-400">{{ $slots->where('is_active', false)->count() }}</span></span>
+                        <span class="text-wc-text-secondary">Inactivo: <span class="font-semibold text-zinc-400">{{ collect($availabilitySlots)->where('is_active', false)->count() }}</span></span>
                     </span>
                 </div>
             </div>

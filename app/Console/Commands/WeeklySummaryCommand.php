@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Mail\WeeklySummary;
-use App\Models\Client;
-use App\Models\TrainingLog;
 use App\Models\Checkin;
+use App\Models\Client;
 use App\Models\HabitLog;
+use App\Models\TrainingLog;
 use App\Models\WellcoreNotification;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Mail;
 class WeeklySummaryCommand extends Command
 {
     protected $signature = 'wellcore:weekly-summary';
+
     protected $description = 'Generate weekly summary notifications for all active clients';
 
     public function handle(): int
@@ -41,11 +42,11 @@ class WeeklySummaryCommand extends Command
                     ->count();
 
                 $summaryData = [
-                    'train_days'   => $trainDays,
-                    'has_checkin'  => $hasCheckin,
-                    'habit_count'  => $habitCount,
-                    'week_start'   => $weekStart->toDateString(),
-                    'week_end'     => $weekEnd->toDateString(),
+                    'train_days' => $trainDays,
+                    'has_checkin' => $hasCheckin,
+                    'habit_count' => $habitCount,
+                    'week_start' => $weekStart->toDateString(),
+                    'week_end' => $weekEnd->toDateString(),
                 ];
 
                 WellcoreNotification::create([
@@ -53,14 +54,18 @@ class WeeklySummaryCommand extends Command
                     'user_id' => $client->id,
                     'type' => 'weekly_summary',
                     'title' => 'Resumen de tu semana',
-                    'body' => "Entrenaste {$trainDays} dias, " .
-                              ($hasCheckin ? 'completaste tu check-in' : 'no hiciste check-in') .
-                              " y registraste {$habitCount} habitos. " .
+                    'body' => "Entrenaste {$trainDays} dias, ".
+                              ($hasCheckin ? 'completaste tu check-in' : 'no hiciste check-in').
+                              " y registraste {$habitCount} habitos. ".
                               ($trainDays >= 4 ? 'Excelente semana!' : 'La proxima semana sera mejor!'),
                 ]);
 
                 if ($client->email) {
-                    Mail::to($client->email)->queue(new WeeklySummary($client, $summaryData));
+                    try {
+                        Mail::to($client->email)->queue(new WeeklySummary($client, $summaryData));
+                    } catch (\Throwable $e) {
+                        \Log::error('WeeklySummary mail failed', ['client_id' => $client->id, 'error' => $e->getMessage()]);
+                    }
                 }
 
                 $generated++;
@@ -68,6 +73,7 @@ class WeeklySummaryCommand extends Command
         });
 
         $this->info("Generated {$generated} weekly summaries.");
+
         return self::SUCCESS;
     }
 }

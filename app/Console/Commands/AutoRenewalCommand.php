@@ -43,12 +43,16 @@ class AutoRenewalCommand extends Command
                     ? $lastPayment->plan->value
                     : ($lastPayment->plan ?? 'Plan WellCore');
 
-                Mail::to($client->email)->queue(new PlanExpiring(
-                    clientName: $client->name ?? 'Cliente',
-                    planName: $planName,
-                    expiryDate: $lastPayment->created_at->addDays(30)->format('d/m/Y'),
-                    renewalAmount: number_format((float) $lastPayment->amount, 0, '.', '.'),
-                ));
+                try {
+                    Mail::to($client->email)->queue(new PlanExpiring(
+                        clientName: $client->name ?? 'Cliente',
+                        planName: $planName,
+                        expiryDate: $lastPayment->created_at->addDays(30)->format('d/m/Y'),
+                        renewalAmount: number_format((float) $lastPayment->amount, 0, '.', '.'),
+                    ));
+                } catch (\Throwable $e) {
+                    \Log::error('AutoRenewal mail failed', ['client_id' => $client->id, 'error' => $e->getMessage()]);
+                }
                 $reminded++;
             }
 

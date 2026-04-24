@@ -13,7 +13,6 @@ use App\Models\TrainingLog;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -24,8 +23,11 @@ class Analytics extends Component
 
     // Client Comparison Tool
     public array $selectedClients = [];
+
     public array $comparisonData = [];
+
     public bool $showComparison = false;
+
     public array $myClientsList = [];
 
     public function placeholder()
@@ -35,39 +37,58 @@ class Analytics extends Component
 
     // Client Overview
     public int $totalClients = 0;
+
     public int $activeClients = 0;
+
     public int $inactiveClients = 0;
+
     public float $retentionRate = 0;
+
     public string $retentionTrend = 'neutral'; // up, down, neutral
 
     // Response Performance
     public float $avgResponseHours = 0;
+
     public float $checkinReplyRate = 0;
+
     public int $totalCheckins = 0;
+
     public int $repliedCheckins = 0;
+
     public string $responseTrend = 'neutral';
 
     // Checkin Completion
     public float $checkinCompletionRate = 0;
+
     public int $expectedCheckins = 0;
+
     public int $actualCheckins = 0;
 
     // Client Progress
     public float $avgBienestar = 0;
+
     public float $avgDiasEntrenados = 0;
+
     public float $nutritionAdherenceRate = 0;
+
     public string $bienestarTrend = 'neutral';
+
     public string $trainingTrend = 'neutral';
 
     // Messages
     public int $messagesSent = 0;
+
     public int $messagesReceived = 0;
+
     public int $totalMessages = 0;
 
     // Revenue
     public float $totalRevenue = 0;
+
     public float $monthlyRevenue = 0;
+
     public int $payingClients = 0;
+
     public string $revenueTrend = 'neutral';
 
     // Bienestar trend data (last 8 weeks)
@@ -89,9 +110,13 @@ class Analytics extends Component
 
     // SLA breakdown
     public int $slaUnder12h = 0;
+
     public int $sla12to24h = 0;
+
     public int $sla24to48h = 0;
+
     public int $slaOver48h = 0;
+
     public string $slaGrade = 'N/A';
 
     // Adherence per client
@@ -99,16 +124,21 @@ class Analytics extends Component
 
     // Training heatmap (last 4 weeks)
     public array $trainingHeatmap = [];
+
     public array $heatmapWeeks = [];
 
     // Biometric insights
     public float $avgWeightChange = 0;
+
     public float $avgBodyFat = 0;
+
     public float $avgSleepHours = 0;
+
     public int $clientsWithBiometrics = 0;
 
     // Coach Score (composite 0-100)
     public float $coachScore = 0;
+
     public string $coachScoreLabel = '';
 
     // At-risk clients
@@ -139,11 +169,11 @@ class Analytics extends Component
             ->where('status', 'activo')
             ->orderBy('name')
             ->get(['id', 'name', 'plan', 'avatar_url'])
-            ->map(fn($c) => [
+            ->map(fn ($c) => [
                 'id' => $c->id,
                 'name' => $c->name,
                 'plan' => $c->plan?->value ?? 'sin plan',
-                'initials' => collect(explode(' ', $c->name))->map(fn($w) => mb_strtoupper(mb_substr($w, 0, 1)))->take(2)->join(''),
+                'initials' => collect(explode(' ', $c->name))->map(fn ($w) => mb_strtoupper(mb_substr($w, 0, 1)))->take(2)->join(''),
             ])
             ->toArray();
     }
@@ -199,13 +229,13 @@ class Analytics extends Component
 
             // First biometric (for delta calculations)
             $firstBio = BiometricLog::where('client_id', $clientId)
-                ->when($dateFrom, fn($q) => $q->where('log_date', '>=', $dateFrom))
+                ->when($dateFrom, fn ($q) => $q->where('log_date', '>=', $dateFrom))
                 ->orderBy('log_date')
                 ->first();
 
             // Check-in stats in period
             $checkinQuery = Checkin::where('client_id', $clientId)
-                ->when($dateFrom, fn($q) => $q->where('created_at', '>=', $dateFrom));
+                ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom));
 
             $checkinCount = $checkinQuery->clone()->count();
             $avgBienestar = round((float) $checkinQuery->clone()->whereNotNull('bienestar')->avg('bienestar'), 1);
@@ -218,11 +248,11 @@ class Analytics extends Component
 
             // Training completion in period
             $trainingTotal = TrainingLog::where('client_id', $clientId)
-                ->when($dateFrom, fn($q) => $q->where('log_date', '>=', $dateFrom))
+                ->when($dateFrom, fn ($q) => $q->where('log_date', '>=', $dateFrom))
                 ->count();
             $trainingCompleted = TrainingLog::where('client_id', $clientId)
                 ->where('completed', true)
-                ->when($dateFrom, fn($q) => $q->where('log_date', '>=', $dateFrom))
+                ->when($dateFrom, fn ($q) => $q->where('log_date', '>=', $dateFrom))
                 ->count();
             $trainingRate = $trainingTotal > 0 ? round(($trainingCompleted / $trainingTotal) * 100, 1) : 0;
 
@@ -245,14 +275,14 @@ class Analytics extends Component
 
             // Avg sleep
             $avgSleep = round((float) BiometricLog::where('client_id', $clientId)
-                ->when($dateFrom, fn($q) => $q->where('log_date', '>=', $dateFrom))
+                ->when($dateFrom, fn ($q) => $q->where('log_date', '>=', $dateFrom))
                 ->whereNotNull('sleep_hours')
                 ->where('sleep_hours', '>', 0)
                 ->avg('sleep_hours'), 1);
 
             // Avg steps
             $avgSteps = (int) BiometricLog::where('client_id', $clientId)
-                ->when($dateFrom, fn($q) => $q->where('log_date', '>=', $dateFrom))
+                ->when($dateFrom, fn ($q) => $q->where('log_date', '>=', $dateFrom))
                 ->whereNotNull('steps')
                 ->where('steps', '>', 0)
                 ->avg('steps');
@@ -262,7 +292,7 @@ class Analytics extends Component
                 'name' => $client->name,
                 'plan' => $client->plan?->value ?? 'sin plan',
                 'color' => $colors[$idx] ?? 'gray-500',
-                'initials' => collect(explode(' ', $client->name))->map(fn($w) => mb_strtoupper(mb_substr($w, 0, 1)))->take(2)->join(''),
+                'initials' => collect(explode(' ', $client->name))->map(fn ($w) => mb_strtoupper(mb_substr($w, 0, 1)))->take(2)->join(''),
                 'weight_kg' => $latestBio?->weight_kg,
                 'weight_delta' => $weightDelta,
                 'body_fat_pct' => $latestBio?->body_fat_pct,
@@ -375,7 +405,7 @@ class Analytics extends Component
         $avgSeconds = Checkin::whereIn('client_id', $this->coachClientIds)
             ->whereNotNull('replied_at')
             ->whereNotNull('created_at')
-            ->when($dateFrom, fn($q) => $q->where('created_at', '>=', $dateFrom))
+            ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
             ->selectRaw('AVG(TIMESTAMPDIFF(SECOND, created_at, replied_at)) as avg_seconds')
             ->value('avg_seconds');
 
@@ -386,8 +416,8 @@ class Analytics extends Component
         $prevAvg = Checkin::whereIn('client_id', $this->coachClientIds)
             ->whereNotNull('replied_at')
             ->whereNotNull('created_at')
-            ->when($prevFrom, fn($q) => $q->where('created_at', '>=', $prevFrom))
-            ->when($dateFrom, fn($q) => $q->where('created_at', '<', $dateFrom))
+            ->when($prevFrom, fn ($q) => $q->where('created_at', '>=', $prevFrom))
+            ->when($dateFrom, fn ($q) => $q->where('created_at', '<', $dateFrom))
             ->selectRaw('AVG(TIMESTAMPDIFF(SECOND, created_at, replied_at)) as avg_seconds')
             ->value('avg_seconds');
 
@@ -447,8 +477,8 @@ class Analytics extends Component
         $prevFrom = $dateFrom ? (clone $dateFrom)->subMonth() : null;
         $prevBienestar = Checkin::whereIn('client_id', $this->coachClientIds)
             ->whereNotNull('bienestar')
-            ->when($prevFrom, fn($q) => $q->where('created_at', '>=', $prevFrom))
-            ->when($dateFrom, fn($q) => $q->where('created_at', '<', $dateFrom))
+            ->when($prevFrom, fn ($q) => $q->where('created_at', '>=', $prevFrom))
+            ->when($dateFrom, fn ($q) => $q->where('created_at', '<', $dateFrom))
             ->avg('bienestar');
 
         if ($prevBienestar) {
@@ -458,8 +488,8 @@ class Analytics extends Component
         // Training trend
         $prevDias = Checkin::whereIn('client_id', $this->coachClientIds)
             ->whereNotNull('dias_entrenados')
-            ->when($prevFrom, fn($q) => $q->where('created_at', '>=', $prevFrom))
-            ->when($dateFrom, fn($q) => $q->where('created_at', '<', $dateFrom))
+            ->when($prevFrom, fn ($q) => $q->where('created_at', '>=', $prevFrom))
+            ->when($dateFrom, fn ($q) => $q->where('created_at', '<', $dateFrom))
             ->avg('dias_entrenados');
 
         if ($prevDias) {
@@ -503,7 +533,7 @@ class Analytics extends Component
         // Paying clients in period
         $this->payingClients = Payment::whereIn('client_id', $this->coachClientIds)
             ->where('status', 'approved')
-            ->when($dateFrom, fn($q) => $q->where('created_at', '>=', $dateFrom))
+            ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
             ->distinct('client_id')
             ->count('client_id');
 
@@ -515,7 +545,7 @@ class Analytics extends Component
             ->sum('amount');
 
         $this->revenueTrend = $this->monthlyRevenue >= $lastMonthRevenue ? 'up' : 'down';
-        if ($lastMonthRevenue == 0 && $this->monthlyRevenue == 0) {
+        if ((float) $lastMonthRevenue === 0.0 && (float) $this->monthlyRevenue === 0.0) {
             $this->revenueTrend = 'neutral';
         }
     }
@@ -551,7 +581,7 @@ class Analytics extends Component
 
         // Bulk aggregate all checkin stats in a single query instead of per-client queries
         $checkinStats = Checkin::whereIn('client_id', $this->coachClientIds)
-            ->when($dateFrom, fn($q) => $q->where('created_at', '>=', $dateFrom))
+            ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
             ->selectRaw('client_id, COUNT(*) as checkin_count, AVG(dias_entrenados) as avg_dias, AVG(bienestar) as avg_bienestar')
             ->groupBy('client_id')
             ->get()
@@ -576,7 +606,7 @@ class Analytics extends Component
         }
 
         // Sort by avg_dias descending
-        usort($clientStats, fn($a, $b) => $b['avg_dias'] <=> $a['avg_dias']);
+        usort($clientStats, fn ($a, $b) => $b['avg_dias'] <=> $a['avg_dias']);
 
         $this->topClients = array_slice($clientStats, 0, 5);
     }
@@ -588,7 +618,7 @@ class Analytics extends Component
         $clients = Client::whereIn('id', $this->coachClientIds)
             ->whereNotNull('plan')
             ->get()
-            ->groupBy(fn($c) => $c->plan?->value ?? 'otro');
+            ->groupBy(fn ($c) => $c->plan?->value ?? 'otro');
 
         foreach ($clients as $plan => $group) {
             $this->planDistribution[] = [
@@ -601,7 +631,7 @@ class Analytics extends Component
         }
 
         // Sort by count descending
-        usort($this->planDistribution, fn($a, $b) => $b['count'] <=> $a['count']);
+        usort($this->planDistribution, fn ($a, $b) => $b['count'] <=> $a['count']);
     }
 
     protected function loadRevenueChart(): void
@@ -655,7 +685,7 @@ class Analytics extends Component
     protected function loadSlaBreakdown(?Carbon $dateFrom): void
     {
         try {
-            $cacheKey = 'coach_sla_' . auth('wellcore')->id() . '_' . $this->dateRange;
+            $cacheKey = 'coach_sla_'.auth('wellcore')->id().'_'.$this->dateRange;
             $sla = Cache::remember($cacheKey, 300, function () use ($dateFrom) {
                 $replied = Checkin::whereIn('client_id', $this->coachClientIds)
                     ->whereNotNull('replied_at')
@@ -698,7 +728,7 @@ class Analytics extends Component
     protected function loadAdherenceByClient(?Carbon $dateFrom): void
     {
         try {
-            $cacheKey = 'coach_adherence_' . auth('wellcore')->id() . '_' . $this->dateRange;
+            $cacheKey = 'coach_adherence_'.auth('wellcore')->id().'_'.$this->dateRange;
             $this->adherenceByClient = Cache::remember($cacheKey, 300, function () use ($dateFrom) {
                 $clients = Client::whereIn('id', $this->coachClientIds)
                     ->where('status', 'activo')
@@ -735,10 +765,10 @@ class Analytics extends Component
                     $ci = $checkinAgg->get($client->id);
                     $tr = $trainingAgg->get($client->id);
 
-                    $checkinCount      = (int) ($ci?->checkin_count ?? 0);
-                    $avgBienestar      = round((float) ($ci?->avg_bienestar ?? 0), 1);
-                    $avgDias           = round((float) ($ci?->avg_dias ?? 0), 1);
-                    $trainingTotal     = (int) ($tr?->total ?? 0);
+                    $checkinCount = (int) ($ci?->checkin_count ?? 0);
+                    $avgBienestar = round((float) ($ci?->avg_bienestar ?? 0), 1);
+                    $avgDias = round((float) ($ci?->avg_dias ?? 0), 1);
+                    $trainingTotal = (int) ($tr?->total ?? 0);
                     $trainingCompleted = (int) ($tr?->completed_count ?? 0);
 
                     $result[] = [
@@ -766,7 +796,7 @@ class Analytics extends Component
     protected function loadTrainingHeatmap(): void
     {
         try {
-            $cacheKey = 'coach_heatmap_' . auth('wellcore')->id();
+            $cacheKey = 'coach_heatmap_'.auth('wellcore')->id();
             $heatmap = Cache::remember($cacheKey, 300, function () {
                 $clients = Client::whereIn('id', $this->coachClientIds)
                     ->where('status', 'activo')
@@ -788,7 +818,7 @@ class Analytics extends Component
 
                 // Bulk-load all training logs for all clients/weeks in two queries instead of (clients × weeks × 2)
                 $heatmapStart = now()->subWeeks(3)->startOfWeek()->toDateString();
-                $heatmapEnd   = now()->endOfWeek()->toDateString();
+                $heatmapEnd = now()->endOfWeek()->toDateString();
                 $clientIds = $clients->pluck('id');
 
                 $allLogs = TrainingLog::whereIn('client_id', $clientIds)
@@ -805,11 +835,11 @@ class Analytics extends Component
                     $weekData = [];
                     foreach ($weeks as $week) {
                         $weekLogs = $clientLogs->filter(
-                            fn($log) => $log->log_date >= $week['start'] && $log->log_date <= $week['end']
+                            fn ($log) => $log->log_date >= $week['start'] && $log->log_date <= $week['end']
                         );
                         $weekData[] = [
                             'completed' => $weekLogs->where('completed', true)->count(),
-                            'total'     => $weekLogs->count(),
+                            'total' => $weekLogs->count(),
                         ];
                     }
                     $rows[] = [
@@ -832,7 +862,7 @@ class Analytics extends Component
     protected function loadBiometricInsights(?Carbon $dateFrom): void
     {
         try {
-            $cacheKey = 'coach_bio_' . auth('wellcore')->id() . '_' . $this->dateRange;
+            $cacheKey = 'coach_bio_'.auth('wellcore')->id().'_'.$this->dateRange;
             $bio = Cache::remember($cacheKey, 300, function () use ($dateFrom) {
                 // Clients with biometric data
                 $clientsWithBio = BiometricLog::whereIn('client_id', $this->coachClientIds)
@@ -899,7 +929,7 @@ class Analytics extends Component
     protected function loadAtRiskClients(?Carbon $dateFrom): void
     {
         try {
-            $cacheKey = 'coach_risk_' . auth('wellcore')->id() . '_' . $this->dateRange;
+            $cacheKey = 'coach_risk_'.auth('wellcore')->id().'_'.$this->dateRange;
             $this->atRiskClients = Cache::remember($cacheKey, 300, function () use ($dateFrom) {
                 $clients = Client::whereIn('id', $this->coachClientIds)
                     ->where('status', 'activo')
@@ -938,13 +968,13 @@ class Analytics extends Component
                     // Low bienestar (avg < 5 in period)
                     $avgB = $agg?->avg_bienestar;
                     if ($avgB !== null && $avgB < 5) {
-                        $reasons[] = 'Bienestar bajo (' . round($avgB, 1) . '/10)';
+                        $reasons[] = 'Bienestar bajo ('.round($avgB, 1).'/10)';
                     }
 
                     // Low training (avg < 2 days/week)
                     $avgD = $agg?->avg_dias;
                     if ($avgD !== null && $avgD < 2) {
-                        $reasons[] = 'Entrenamiento bajo (' . round($avgD, 1) . ' dias/sem)';
+                        $reasons[] = 'Entrenamiento bajo ('.round($avgD, 1).' dias/sem)';
                     }
 
                     if (! empty($reasons)) {

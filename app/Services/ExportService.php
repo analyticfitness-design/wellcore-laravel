@@ -177,8 +177,13 @@ class ExportService
             // UTF-8 BOM for Excel compatibility with Spanish chars
             fwrite($handle, "\xEF\xBB\xBF");
 
-            foreach ($generator() as $row) {
-                fputcsv($handle, $row);
+            try {
+                foreach ($generator() as $row) {
+                    fputcsv($handle, $row);
+                }
+            } catch (\Throwable $e) {
+                \Log::error('ExportService stream failed', ['error' => $e->getMessage()]);
+                fputcsv($handle, ['ERROR', 'Export failed: '.$e->getMessage()]);
             }
 
             fclose($handle);
