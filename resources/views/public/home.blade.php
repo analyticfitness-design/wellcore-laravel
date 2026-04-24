@@ -23,134 +23,66 @@
     {{-- ================================================================== --}}
     {{-- HERO                                                               --}}
     {{-- ================================================================== --}}
-    <section class="hero-gradient relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
-        {{-- Parallax decorative orbs --}}
-        <div class="parallax-hero" aria-hidden="true">
-            <div class="parallax-orb parallax-orb-1" data-parallax-speed="0.2"></div>
-            <div class="parallax-orb parallax-orb-2" data-parallax-speed="0.35"></div>
-            <div class="parallax-orb parallax-orb-3" data-parallax-speed="0.15"></div>
-            <div class="parallax-orb parallax-orb-4" data-parallax-speed="0.25"></div>
-            <div class="parallax-orb parallax-orb-5" data-parallax-speed="0.1"></div>
-        </div>
-        <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36" data-animate="fadeInUp">
-            <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-                {{-- Left --}}
-                <div class="max-w-3xl">
-                    <div class="inline-flex items-center gap-2 rounded-full border border-wc-border bg-wc-bg-secondary px-4 py-1.5">
-                        <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
-                        <span class="text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">{{ __('home.hero_badge') }}</span>
-                    </div>
+    {{-- ╔══════════════════════════════════════════════════════════╗ --}}
+    {{-- ║  HERO v3 — Centered, full-viewport, hp-* design system  ║ --}}
+    {{-- ╚══════════════════════════════════════════════════════════╝ --}}
+    <section class="hp-hero">
+        <div class="hp-hero-orb hp-hero-orb-1" aria-hidden="true"></div>
+        <div class="hp-hero-orb hp-hero-orb-2" aria-hidden="true"></div>
 
-                    <h1 class="mt-6 font-display text-5xl leading-none tracking-wide text-wc-text sm:text-6xl lg:text-8xl">
-                        {{ __('home.hero_title_1') }}<br>
-                        <span class="italic text-wc-text-secondary">{{ __('home.hero_title_2') }}</span>
-                        <span class="text-gradient-accent font-bold text-wc-accent">{{ __('home.hero_title_3') }}</span>
-                    </h1>
+        <div class="hp-wrap hp-hero-inner">
 
-                    <p class="mt-6 max-w-xl text-lg text-wc-text-secondary">
-                        {{ __('home.hero_subtitle') }}
-                    </p>
+            {{-- Badge --}}
+            <div class="hp-hero-badge hp-anim-up">
+                <span class="hp-hero-badge-dot"></span>
+                {{ __('home.hero_badge') }}
+            </div>
 
-                    <div class="mt-6 flex flex-wrap gap-6" data-animate="fadeIn">
-                        <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                            <span class="counter-highlight font-data text-lg font-bold text-wc-accent" data-counter="94" data-counter-suffix="%">94%</span> {{ __('home.hero_stat_adherencia') }}
-                        </div>
-                        <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                            <span class="counter-highlight font-data text-lg font-bold text-wc-accent">1:1</span> {{ __('home.hero_stat_coaching') }}
-                        </div>
-                        <div class="flex items-center gap-2 text-sm text-wc-text-secondary">
-                            <span class="counter-highlight font-data text-lg font-bold text-wc-accent" data-counter="100" data-counter-suffix="%">100%</span> {{ __('home.hero_stat_personalizado') }}
-                        </div>
-                    </div>
+            {{-- Headline --}}
+            <h1 class="hp-hero-h1 hp-anim-up hp-anim-d1">
+                {{ __('home.hero_title_1') }}<br>
+                <em>{{ __('home.hero_title_3') }}</em>
+            </h1>
 
-                    <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                        <a href="{{ route('inscripcion') }}" class="pulse-glow btn-press inline-flex w-full items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover sm:w-auto">
-                            {{ __('home.cta_comenzar') }}
-                            <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
-                        </a>
-                        <a href="{{ route('planes') }}" class="btn-press inline-flex items-center justify-center rounded-full px-8 py-3.5 text-base font-semibold text-wc-text hover:bg-wc-bg-secondary">
-                            {{ __('home.cta_ver_planes') }}
-                        </a>
-                    </div>
+            {{-- Subtitle --}}
+            <p class="hp-hero-sub hp-anim-up hp-anim-d2">{{ __('home.hero_subtitle') }}</p>
 
-                    <p class="mt-3 text-xs text-wc-text-tertiary">{{ __('home.hero_no_card') }}</p>
+            {{-- CTAs --}}
+            <div class="hp-hero-ctas hp-anim-up hp-anim-d3">
+                <a href="{{ route('inscripcion') }}" class="hp-btn-primary btn-press pulse-glow">
+                    {{ __('home.cta_comenzar') }}
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                    </svg>
+                </a>
+                <a href="{{ route('planes') }}" class="hp-btn-ghost btn-press">
+                    {{ __('home.cta_ver_planes') }}
+                </a>
+            </div>
 
-                    <div class="mt-5 flex flex-wrap gap-2">
-                        <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Esencial <span class="font-data font-semibold text-wc-text">$299k</span></span>
-                        <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Metodo <span class="font-data font-semibold text-wc-text">$399k</span></span>
-                        <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Elite <span class="font-data font-semibold text-wc-text">$549k</span></span>
-                    </div>
+            {{-- Proof strip --}}
+            <div class="hp-hero-proof hp-anim-up hp-anim-d4">
+                <div class="hp-hero-proof-item">
+                    <span class="hp-hero-proof-icon font-bold text-wc-accent font-data">94%</span>
+                    {{ __('home.hero_stat_adherencia') }}
                 </div>
-
-                {{-- Right — Dashboard Mockup --}}
-                <div class="hidden lg:block">
-                    <div class="animate-float-slow rounded-xl border border-wc-border bg-wc-bg shadow-2xl shadow-black/10">
-                        {{-- Browser chrome --}}
-                        <div class="flex items-center gap-2 border-b border-wc-border px-4 py-3">
-                            <span class="h-3 w-3 rounded-full bg-red-500"></span>
-                            <span class="h-3 w-3 rounded-full bg-yellow-500"></span>
-                            <span class="h-3 w-3 rounded-full bg-green-500"></span>
-                            <div class="ml-3 flex-1 rounded-md bg-wc-bg-secondary px-3 py-1">
-                                <span class="text-xs text-wc-text-tertiary">app.wellcorefitness.com</span>
-                            </div>
-                        </div>
-                        {{-- Dashboard content --}}
-                        <div class="flex">
-                            {{-- Sidebar placeholder --}}
-                            <div class="w-14 shrink-0 border-r border-wc-border bg-wc-bg-secondary p-2">
-                                <div class="mb-3 h-8 w-8 rounded-lg bg-wc-accent/20"></div>
-                                <div class="space-y-2">
-                                    <div class="h-6 w-6 mx-auto rounded bg-wc-bg-tertiary"></div>
-                                    <div class="h-6 w-6 mx-auto rounded bg-wc-accent/10"></div>
-                                    <div class="h-6 w-6 mx-auto rounded bg-wc-bg-tertiary"></div>
-                                    <div class="h-6 w-6 mx-auto rounded bg-wc-bg-tertiary"></div>
-                                </div>
-                            </div>
-                            {{-- Main area --}}
-                            <div class="flex-1 p-4">
-                                {{-- Stats row --}}
-                                <div class="grid grid-cols-4 gap-2">
-                                    <div class="rounded-lg border border-wc-border bg-wc-bg-tertiary p-2 text-center">
-                                        <p class="font-data text-lg font-bold text-wc-accent">1,250</p>
-                                        <p class="text-[10px] text-wc-text-tertiary">{{ __('home.mockup_xp_total') }}</p>
-                                    </div>
-                                    <div class="rounded-lg border border-wc-border bg-wc-bg-tertiary p-2 text-center">
-                                        <p class="font-data text-lg font-bold text-emerald-400">94%</p>
-                                        <p class="text-[10px] text-wc-text-tertiary">{{ __('home.mockup_adherencia') }}</p>
-                                    </div>
-                                    <div class="rounded-lg border border-wc-border bg-wc-bg-tertiary p-2 text-center">
-                                        <p class="font-data text-lg font-bold text-wc-text">18</p>
-                                        <p class="text-[10px] text-wc-text-tertiary">{{ __('home.mockup_semana') }}</p>
-                                    </div>
-                                    <div class="rounded-lg border border-wc-border bg-wc-bg-tertiary p-2 text-center">
-                                        <p class="font-data text-lg font-bold text-amber-400">5</p>
-                                        <p class="text-[10px] text-wc-text-tertiary">{{ __('home.mockup_racha_dias') }}</p>
-                                    </div>
-                                </div>
-                                {{-- Progress bar --}}
-                                <div class="mt-3 rounded-lg border border-wc-border bg-wc-bg-tertiary p-3">
-                                    <div class="flex items-center justify-between text-xs">
-                                        <span class="text-wc-text-secondary">{{ __('home.mockup_progreso_semanal') }}</span>
-                                        <span class="font-data font-semibold text-wc-text">4/5</span>
-                                    </div>
-                                    <div class="mt-2 h-2 w-full rounded-full bg-wc-bg-secondary">
-                                        <div class="h-2 w-4/5 rounded-full bg-wc-accent"></div>
-                                    </div>
-                                </div>
-                                {{-- Mission card --}}
-                                <div class="mt-3 rounded-lg border border-wc-accent/30 bg-wc-accent/5 p-3">
-                                    <div class="flex items-center gap-2">
-                                        <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
-                                        <span class="text-xs font-semibold text-wc-accent">{{ __('home.mockup_mision_hoy') }}</span>
-                                    </div>
-                                    <p class="mt-1 text-xs text-wc-text-secondary">{{ __('home.mockup_mision_desc') }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="hp-hero-proof-item">
+                    <span class="hp-hero-proof-icon font-bold text-wc-accent">1:1</span>
+                    {{ __('home.hero_stat_coaching') }}
+                </div>
+                <div class="hp-hero-proof-item">
+                    <span class="hp-hero-proof-icon font-bold text-wc-accent font-data">100%</span>
+                    {{ __('home.hero_stat_personalizado') }}
                 </div>
             </div>
+
+            {{-- Plan chips --}}
+            <div class="flex flex-wrap gap-2 justify-center hp-anim-up hp-anim-d5">
+                <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Esencial <span class="font-data font-semibold text-wc-text">$299k</span></span>
+                <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Método <span class="font-data font-semibold text-wc-text">$399k</span></span>
+                <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Elite <span class="font-data font-semibold text-wc-text">$549k</span></span>
+            </div>
+
         </div>
     </section>
 
@@ -158,22 +90,31 @@
 
     <div class="section-divider"></div>
 
-    {{-- ================================================================== --}}
-    {{-- 3. SOCIAL PROOF BAR                                                --}}
-    {{-- ================================================================== --}}
-    <section class="bg-wc-bg cv-auto-sm">
-        <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8" data-animate="fadeIn">
-            <p class="text-center text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ __('home.proof_label') }}</p>
-            <div class="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-semibold uppercase tracking-widest text-wc-text-tertiary">
-                <span>NSCA</span>
-                <span class="text-wc-border">|</span>
-                <span>ISSN</span>
-                <span class="text-wc-border">|</span>
-                <span>ACSM</span>
-                <span class="text-wc-border">|</span>
-                <span>Precision Nutrition</span>
-                <span class="text-wc-border">|</span>
-                <span>PubMed &middot; Evidencia</span>
+    {{-- ╔══════════════════════════════════════════════════════════╗ --}}
+    {{-- ║  SOCIAL PROOF BAR v3 — Stats + Certifications           ║ --}}
+    {{-- ╚══════════════════════════════════════════════════════════╝ --}}
+    <section class="hp-sp-bar">
+        <div class="hp-wrap">
+            <div class="hp-sp-inner">
+                <div class="hp-sp-item">
+                    <p class="hp-sp-num"><em>500</em>+</p>
+                    <p class="hp-sp-label">{{ __('home.community_stat_logros') }}</p>
+                </div>
+                <div class="hp-sp-div" aria-hidden="true"></div>
+                <div class="hp-sp-item">
+                    <p class="hp-sp-num"><em>94</em>%</p>
+                    <p class="hp-sp-label">{{ __('home.why_stat1_label') }}</p>
+                </div>
+                <div class="hp-sp-div" aria-hidden="true"></div>
+                <div class="hp-sp-item">
+                    <p class="hp-sp-num"><em>20</em>+</p>
+                    <p class="hp-sp-label">{{ __('home.community_stat_miembros') }}</p>
+                </div>
+                <div class="hp-sp-div" aria-hidden="true"></div>
+                <div class="hp-sp-item">
+                    <p class="hp-sp-num text-base font-display font-bold leading-tight">NSCA · ISSN<br><span class="text-sm">· ACSM</span></p>
+                    <p class="hp-sp-label">{{ __('home.proof_label') }}</p>
+                </div>
             </div>
         </div>
     </section>
