@@ -16,6 +16,11 @@ import DashboardTimeline from '../../components/dashboard/DashboardTimeline.vue'
 import DashboardHeatmap from '../../components/dashboard/DashboardHeatmap.vue';
 import DashboardWeight from '../../components/dashboard/DashboardWeight.vue';
 import DashboardWeeklySummary from '../../components/dashboard/DashboardWeeklySummary.vue';
+import { useStaggerIn } from '../../composables/dashboard/useStaggerIn';
+
+// Stagger entry: aplica data-stagger-index + fade-in progresivo a las secciones
+// hijas directas del contenedor. Respeta prefers-reduced-motion.
+const staggerRoot = useStaggerIn();
 
 const api = useApi();
 const router = useRouter();
@@ -310,7 +315,7 @@ const weekMarkers = computed(() => {
     </div>
 
     <!-- Dashboard Content -->
-    <div v-else-if="data" class="space-y-6">
+    <div v-else-if="data" ref="staggerRoot" class="space-y-6">
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- GREETING SECTION + QUICK ACTIONS (desktop)                    -->

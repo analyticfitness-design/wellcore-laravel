@@ -794,6 +794,25 @@ body {
 .act-dot-payment  { background: #A78BFA; }
 .act-dot-default  { background: rgba(255,255,255,.2); }
 
+/* ── Dashboard-v2 · Fase 3: Stagger entry animations ────────────── */
+/* Aplicado por useStaggerIn composable. Zero cost si el attribute no está. */
+[data-stagger-index] {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity .4s cubic-bezier(.22,1,.36,1),
+    transform .4s cubic-bezier(.22,1,.36,1);
+  transition-delay: var(--stagger-delay, 0ms);
+  will-change: opacity, transform;
+}
+[data-stagger-index].in {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-stagger-index] { opacity: 1; transform: none; transition: none; }
+}
+
 /* Reduced motion — incluye shimmer-prog */
 @media (prefers-reduced-motion: reduce) {
   .flame, .live-dot, .prog-line-fg { animation: none; }
