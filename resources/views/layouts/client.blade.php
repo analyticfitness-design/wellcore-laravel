@@ -47,6 +47,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- Light Theme FINAL · Hero Watermark + Dark Inverted Cards (solo light mode) --}}
+    <link rel="stylesheet" href="{{ asset('css/light-theme-final.css') }}?v=1">
+
     @livewireStyles
 </head>
 <body class="min-h-screen bg-wc-bg text-wc-text overflow-x-hidden">

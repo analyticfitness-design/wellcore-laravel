@@ -149,7 +149,7 @@
     </div>
 
     {{-- Greeting section --}}
-    <div class="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between overflow-hidden">
+    <div class="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between overflow-hidden hp-hero" data-week="{{ $weeksActive ?? 0 }}">
         <div class="wc-orb-tr" aria-hidden="true"></div>
         <div>
             <h1
