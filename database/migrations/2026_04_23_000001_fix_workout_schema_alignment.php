@@ -48,22 +48,22 @@ return new class extends Migration
         });
 
         // ── workout_logs: UNIQUE index for upsert correctness ─────────────────
-        // Drop the non-unique composite index first to replace with UNIQUE.
-        Schema::table('workout_logs', function (Blueprint $table) {
-            // Drop old non-unique composite index if it exists
-            try {
-                $table->dropIndex('idx_wlogs_session_exercise_set');
-            } catch (\Throwable $e) {
-                // Index may not exist in all environments
-            }
+        // Check outside the closure so PHP logic runs before Blueprint SQL compiles.
+        $nonUniqueExists = collect(\DB::select("SHOW INDEX FROM `workout_logs`"))
+            ->contains(fn ($i) => $i->Key_name === 'idx_wlogs_session_exercise_set');
 
-            if (! $this->uniqueIndexExists('workout_logs', 'uq_workout_log_set')) {
+        if ($nonUniqueExists) {
+            \DB::statement("ALTER TABLE `workout_logs` DROP INDEX `idx_wlogs_session_exercise_set`");
+        }
+
+        if (! $this->uniqueIndexExists('workout_logs', 'uq_workout_log_set')) {
+            Schema::table('workout_logs', function (Blueprint $table) {
                 $table->unique(
                     ['session_id', 'exercise_name', 'set_number', 'block_order'],
                     'uq_workout_log_set'
                 );
-            }
-        });
+            });
+        }
     }
 
     public function down(): void
