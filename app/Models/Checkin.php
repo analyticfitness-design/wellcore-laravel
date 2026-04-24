@@ -27,6 +27,11 @@ class Checkin extends Model
 
     public $timestamps = false;
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new \App\Scopes\OwnedByClientScope());
+    }
+
     protected function casts(): array
     {
         return [

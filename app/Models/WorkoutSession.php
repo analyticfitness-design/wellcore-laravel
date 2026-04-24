@@ -25,6 +25,11 @@ class WorkoutSession extends Model
         'xp_earned',
     ];
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new \App\Scopes\OwnedByClientScope());
+    }
+
     protected $casts = [
         'session_date' => 'date',
         'completed' => 'boolean',

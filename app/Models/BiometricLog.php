@@ -31,6 +31,11 @@ class BiometricLog extends Model
 
     public $timestamps = true;
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new \App\Scopes\OwnedByClientScope());
+    }
+
     protected function casts(): array
     {
         return [

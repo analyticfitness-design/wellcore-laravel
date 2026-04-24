@@ -31,8 +31,21 @@ class AppServiceProvider extends ServiceProvider
 
         $this->configureRateLimiting();
         $this->configureCsp();
+        $this->registerPolicies();
 
         WorkoutSession::observe(WorkoutSessionObserver::class);
+    }
+
+    protected function registerPolicies(): void
+    {
+        \Illuminate\Support\Facades\Gate::policy(
+            \App\Models\Client::class,
+            \App\Policies\ClientPolicy::class
+        );
+        \Illuminate\Support\Facades\Gate::policy(
+            \App\Models\PlanTicket::class,
+            \App\Policies\PlanTicketPolicy::class
+        );
     }
 
     /**
