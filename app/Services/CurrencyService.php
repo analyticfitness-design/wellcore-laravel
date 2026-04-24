@@ -85,12 +85,11 @@ class CurrencyService
 
     public static function getPlanPrices(string $currency = 'COP'): array
     {
-        $basePrices = [
-            'esencial' => 299000,
-            'metodo' => 399000,
-            'elite' => 549000,
-            'rise' => 99900,
-        ];
+        // Lee de config/plans.php (SSOT). NO hardcodear precios aquí.
+        $basePrices = [];
+        foreach (['esencial', 'metodo', 'elite', 'rise'] as $plan) {
+            $basePrices[$plan] = (int) config("plans.{$plan}.price_cop", 0);
+        }
 
         $converted = [];
         foreach ($basePrices as $plan => $priceCOP) {

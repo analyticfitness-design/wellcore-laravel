@@ -7,15 +7,15 @@
         '@type' => 'Service',
         'name' => 'WellCore Fitness Coaching',
         'provider' => ['@type' => 'Organization', 'name' => 'WellCore Fitness'],
-        'description' => 'Planes de coaching fitness personalizado desde $299.000 COP/mes.',
+        'description' => 'Planes de coaching fitness personalizado desde $'.number_format(config('plans.esencial.price_cop'), 0, '.', '.').' COP/mes.',
         'areaServed' => ['@type' => 'Place', 'name' => 'Latinoamerica'],
         'hasOfferCatalog' => [
             '@type' => 'OfferCatalog',
             'name' => 'Planes WellCore',
             'itemListElement' => [
-                ['@type' => 'Offer', 'name' => 'Esencial', 'price' => '299000', 'priceCurrency' => 'COP'],
-                ['@type' => 'Offer', 'name' => 'Metodo', 'price' => '399000', 'priceCurrency' => 'COP'],
-                ['@type' => 'Offer', 'name' => 'Elite', 'price' => '549000', 'priceCurrency' => 'COP'],
+                ['@type' => 'Offer', 'name' => 'Esencial', 'price' => (string) config('plans.esencial.price_cop'), 'priceCurrency' => 'COP'],
+                ['@type' => 'Offer', 'name' => 'Metodo', 'price' => (string) config('plans.metodo.price_cop'), 'priceCurrency' => 'COP'],
+                ['@type' => 'Offer', 'name' => 'Elite', 'price' => (string) config('plans.elite.price_cop'), 'priceCurrency' => 'COP'],
             ],
         ],
     ]" />
@@ -48,14 +48,14 @@
             billing: 'mensual',
             locale: '{{ app()->getLocale() }}',
             pricesCOP: {
-                mensual:     { esencial: '$299,000', metodo: '$399,000', elite: '$549,000', savingsEsencial: null, savingsMetodo: null, savingsElite: null },
-                trimestral:  { esencial: '$269,100', metodo: '$359,100', elite: '$494,100', savingsEsencial: '$89,700', savingsMetodo: '$119,700', savingsElite: '$164,700' },
-                anual:       { esencial: '$239,200', metodo: '$319,200', elite: '$439,200', savingsEsencial: '$716,400', savingsMetodo: '$956,400', savingsElite: '$1,318,400' }
+                mensual:     { esencial: '$254,150', metodo: '$339,150', elite: '$466,650', savingsEsencial: null, savingsMetodo: null, savingsElite: null },
+                trimestral:  { esencial: '$228,735', metodo: '$305,235', elite: '$419,985', savingsEsencial: '$76,245', savingsMetodo: '$101,745', savingsElite: '$139,995' },
+                anual:       { esencial: '$203,320', metodo: '$271,320', elite: '$373,320', savingsEsencial: '$609,960', savingsMetodo: '$813,960', savingsElite: '$1,119,960' }
             },
             pricesUSD: {
-                mensual:     { esencial: '$65', metodo: '$95', elite: '$150', savingsEsencial: null, savingsMetodo: null, savingsElite: null },
-                trimestral:  { esencial: '$59', metodo: '$86', elite: '$135', savingsEsencial: '$18', savingsMetodo: '$27', savingsElite: '$45' },
-                anual:       { esencial: '$52', metodo: '$76', elite: '$120', savingsEsencial: '$156', savingsMetodo: '$228', savingsElite: '$360' }
+                mensual:     { esencial: '$62', metodo: '$82', elite: '$114', savingsEsencial: null, savingsMetodo: null, savingsElite: null },
+                trimestral:  { esencial: '$56', metodo: '$74', elite: '$103', savingsEsencial: '$18', savingsMetodo: '$24', savingsElite: '$33' },
+                anual:       { esencial: '$50', metodo: '$66', elite: '$91', savingsEsencial: '$144', savingsMetodo: '$192', savingsElite: '$276' }
             },
             get prices() { return this.locale === 'en' ? this.pricesUSD : this.pricesCOP },
             get esencial() { return this.prices[this.billing].esencial },

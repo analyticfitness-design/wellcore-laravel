@@ -6,7 +6,7 @@ return [
     // META
     // =========================================================
     'meta_title'       => 'Planes y Precios - WellCore Fitness',
-    'meta_description' => 'Planes de coaching fitness personalizado desde $299.000 COP/mes. Esencial, Metodo y Elite. Sin contratos, cancela cuando quieras.',
+    'meta_description' => 'Planes de coaching fitness personalizado desde $254.150 COP/mes (promo abril -15%). Esencial, Metodo y Elite. Sin contratos, cancela cuando quieras.',
 
     // =========================================================
     // HERO

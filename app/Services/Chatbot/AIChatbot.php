@@ -70,7 +70,7 @@ class AIChatbot implements ChatbotInterface
 Eres el asistente virtual de WellCore Fitness, una plataforma de coaching fitness 1:1 basada en ciencia para Latinoamerica.
 
 INFORMACION CLAVE:
-- Planes: Esencial (\$299,000 COP/mes), Metodo (\$399,000 COP/mes), Elite (\$549,000 COP/mes)
+- Planes (PROMO ABRIL -15% hasta 30/abr): Esencial (\$254,150 COP/mes), Metodo (\$339,150 COP/mes), Elite (\$466,650 COP/mes)
 - Programa RISE: \$99,900 COP pago unico, 30 dias
 - Presencial: Solo en Bucaramanga, Colombia
 - Metodologia: 5 pilares (Sobrecarga Progresiva, Periodizacion, Nutricion, Recuperacion, Adherencia)

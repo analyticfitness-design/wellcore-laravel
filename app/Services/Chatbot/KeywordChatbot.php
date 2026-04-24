@@ -9,7 +9,7 @@ class KeywordChatbot implements ChatbotInterface
     private array $responses = [
         [
             'keywords' => ['plan', 'precio', 'precios', 'costo', 'cuanto cuesta', 'cuanto vale', 'mensualidad', 'tarifa'],
-            'response' => 'Ofrecemos 3 planes: Esencial ($299,000 COP/mes), Metodo ($399,000 COP/mes) y Elite ($549,000 COP/mes). Cada uno con diferentes niveles de acompanamiento. Puedes verlos en detalle en /planes',
+            'response' => 'Ofrecemos 3 planes con promo abril -15%: Esencial ($254,150 COP/mes), Metodo ($339,150 COP/mes) y Elite ($466,650 COP/mes). Cada uno con diferentes niveles de acompanamiento. Puedes verlos en detalle en /planes',
         ],
         [
             'keywords' => ['metodo', 'como funciona', 'metodologia', 'sistema', 'enfoque'],
@@ -88,7 +88,7 @@ class KeywordChatbot implements ChatbotInterface
     private array $responsesEn = [
         [
             'keywords' => ['plan', 'price', 'pricing', 'cost', 'how much', 'fee', 'monthly', 'rate'],
-            'response' => 'We offer 3 plans: Essential ($299,000 COP/mo), Method ($399,000 COP/mo) and Elite ($549,000 COP/mo). Each includes different levels of coaching support. See full details at /planes',
+            'response' => 'April promo -15% on all plans: Essential ($254,150 COP/mo), Method ($339,150 COP/mo) and Elite ($466,650 COP/mo). Each includes different levels of coaching support. See full details at /planes',
         ],
         [
             'keywords' => ['method', 'how it works', 'methodology', 'system', 'approach'],
@@ -163,7 +163,7 @@ class KeywordChatbot implements ChatbotInterface
         ],
         [
             'keywords' => ['colombia', 'cop', 'pesos', 'moneda', 'colombiano'],
-            'response' => 'Todos nuestros precios estan en pesos colombianos (COP). Esencial: $299,000/mes, Metodo: $399,000/mes, Elite: $549,000/mes, RISE: $99,900 pago unico. Aceptamos tarjeta, transferencia y Nequi.',
+            'response' => 'Todos nuestros precios estan en pesos colombianos (COP) con promo abril -15%. Esencial: $254,150/mes, Metodo: $339,150/mes, Elite: $466,650/mes, RISE: $99,900 pago unico. Aceptamos tarjeta, transferencia y Nequi.',
         ],
         [
             'keywords' => ['nequi', 'daviplata', 'transferencia', 'bancolombia', 'pse'],

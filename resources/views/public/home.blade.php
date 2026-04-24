@@ -47,11 +47,11 @@
         ])->toArray(),
     ]" />
 
-    {{-- 4. Product (3 planes) --}}
+    {{-- 4. Product (3 planes) — precios desde config/plans.php (SSOT) --}}
     @foreach([
-        ['esencial', 'Esencial', 299000, 'home.plan_esencial_name'],
-        ['metodo', 'Método', 399000, 'home.plan_metodo_name'],
-        ['elite', 'Elite', 549000, 'home.plan_elite_name'],
+        ['esencial', 'Esencial', (int) config('plans.esencial.price_cop'), 'home.plan_esencial_name'],
+        ['metodo', 'Método', (int) config('plans.metodo.price_cop'), 'home.plan_metodo_name'],
+        ['elite', 'Elite', (int) config('plans.elite.price_cop'), 'home.plan_elite_name'],
     ] as [$slug, $name, $price, $key])
     <x-json-ld :data="[
         '@context' => 'https://schema.org',
@@ -147,9 +147,9 @@
 
                 {{-- Plan chips --}}
                 <div class="flex flex-wrap gap-2 justify-center lg:justify-start hp-anim-up hp-anim-d6">
-                    <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Esencial <span class="font-data font-semibold text-wc-text">$299k</span></span>
-                    <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Método <span class="font-data font-semibold text-wc-text">$399k</span></span>
-                    <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Elite <span class="font-data font-semibold text-wc-text">$549k</span></span>
+                    <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Esencial <span class="font-data font-semibold text-wc-text">$254k</span></span>
+                    <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Método <span class="font-data font-semibold text-wc-text">$339k</span></span>
+                    <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Elite <span class="font-data font-semibold text-wc-text">$466k</span></span>
                 </div>
 
             </div>
