@@ -26,6 +26,9 @@ import './animations.js';
 import { initPushSubscription } from './push-subscription.js';
 initPushSubscription();
 
+// Coach Dashboard: Alpine coachSidebar store + counter animations + swipe gestures
+import './coach-dashboard';
+
 // PWA Service Worker registration
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

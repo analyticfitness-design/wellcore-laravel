@@ -5,24 +5,27 @@ import { useAuthStore } from '../stores/auth';
 import NotificationBell from '../components/NotificationBell.vue';
 import CoachOnboardingTour from '../components/CoachOnboardingTour.vue';
 
+const props = defineProps({
+    urgentCount: { type: Number, default: 0 }
+});
+
 const showTour = ref(false);
 
 onMounted(() => {
-  try {
-    // Tour solo en primeros 3 logins o hasta que el coach lo complete.
-    if (localStorage.getItem('coach_tour_completed') === '1') return;
-    const shown = parseInt(localStorage.getItem('coach_tour_shown_count') || '0', 10);
-    if (shown >= 3) {
-      localStorage.setItem('coach_tour_completed', '1');
-      return;
-    }
-    localStorage.setItem('coach_tour_shown_count', String(shown + 1));
-    setTimeout(() => { showTour.value = true; }, 400);
-  } catch {}
+    try {
+        if (localStorage.getItem('coach_tour_completed') === '1') return;
+        const shown = parseInt(localStorage.getItem('coach_tour_shown_count') || '0', 10);
+        if (shown >= 3) {
+            localStorage.setItem('coach_tour_completed', '1');
+            return;
+        }
+        localStorage.setItem('coach_tour_shown_count', String(shown + 1));
+        setTimeout(() => { showTour.value = true; }, 400);
+    } catch {}
 });
 
 function onTourDone() {
-  showTour.value = false;
+    showTour.value = false;
 }
 
 const authStore = useAuthStore();
@@ -31,6 +34,13 @@ const router = useRouter();
 
 const sidebarOpen = ref(false);
 const loggingOut = ref(false);
+const fabOpen = ref(false);
+
+const sidebarCollapsed = ref(localStorage.getItem('coachSidebarCollapsed') === 'true');
+function toggleSidebarCollapse() {
+    sidebarCollapsed.value = !sidebarCollapsed.value;
+    localStorage.setItem('coachSidebarCollapsed', String(sidebarCollapsed.value));
+}
 
 const userName = computed(() => {
     return localStorage.getItem('wc_user_name') || 'Coach';
@@ -63,46 +73,38 @@ function closeSidebar() {
 // Close sidebar on route change
 const unwatch = router.afterEach(() => {
     sidebarOpen.value = false;
+    fabOpen.value = false;
 });
 
 onUnmounted(() => {
     if (unwatch) unwatch();
 });
 
-// Navigation sections
+// Navigation sections — 3 groups
 const navSections = [
     {
-        label: 'Coach',
+        label: 'Principal',
         items: [
-            { name: 'Dashboard', to: '/coach', icon: 'dashboard', routeName: 'coach-dashboard' },
+            { name: 'Inicio', to: '/coach', icon: 'dashboard', routeName: 'coach-dashboard' },
             { name: 'Clientes', to: '/coach/clients', icon: 'clients', routeName: 'coach-clients' },
-            { name: 'Kanban', to: '/coach/kanban', icon: 'kanban', routeName: 'coach-kanban' },
+            { name: 'Check-ins', to: '/coach/checkins', icon: 'checkins', routeName: 'coach-checkins', badge: 'pendingCheckins' },
+            { name: 'Mensajes', to: '/coach/messages', icon: 'messages', routeName: 'coach-messages', badge: 'unreadMessages' },
         ],
     },
     {
-        label: 'Comunicacion',
+        label: 'Trabajo',
         items: [
-            { name: 'Check-ins', to: '/coach/checkins', icon: 'checkins', routeName: 'coach-checkins' },
-            { name: 'Mensajes', to: '/coach/messages', icon: 'messages', routeName: 'coach-messages' },
+            { name: 'Tickets', to: '/coach/plan-tickets', icon: 'plans', routeName: 'coach-plan-tickets' },
+            { name: 'Planes', to: '/coach/plans', icon: 'plans', routeName: 'coach-plans' },
+            { name: 'Kanban', to: '/coach/kanban', icon: 'kanban', routeName: 'coach-kanban' },
             { name: 'Broadcast', to: '/coach/broadcast', icon: 'broadcast', routeName: 'coach-broadcast' },
         ],
     },
     {
-        label: 'Seguimiento',
+        label: 'Insights',
         items: [
-            { name: 'Tickets de Plan', to: '/coach/plan-tickets', icon: 'plans', routeName: 'coach-plan-tickets' },
-            { name: 'Planes', to: '/coach/plans', icon: 'plans', routeName: 'coach-plans' },
-            { name: 'Analitica', to: '/coach/analytics', icon: 'analytics', routeName: 'coach-analytics' },
+            { name: 'Analítica', to: '/coach/analytics', icon: 'analytics', routeName: 'coach-analytics' },
             { name: 'Notas', to: '/coach/notes', icon: 'notes', routeName: 'coach-notes' },
-        ],
-    },
-    {
-        label: 'Mi Espacio',
-        items: [
-            { name: 'Perfil', to: '/coach/profile', icon: 'profile', routeName: 'coach-profile' },
-            { name: 'Mi Marca', to: '/coach/brand', icon: 'brand', routeName: 'coach-brand' },
-            { name: 'Herramientas', to: '/coach/features', icon: 'features', routeName: 'coach-features' },
-            { name: 'Recursos', to: '/coach/resources', icon: 'resources', routeName: 'coach-resources' },
         ],
     },
 ];
@@ -120,13 +122,13 @@ const TOUR_MAP = {
 };
 function tourAttr(routeName) { return TOUR_MAP[routeName] || null; }
 
-// Mobile bottom nav items (5 max)
+// Mobile bottom nav — null = FAB spacer
 const bottomNav = [
-    { name: 'Dashboard', to: '/coach', icon: 'dashboard', routeName: 'coach-dashboard' },
+    { name: 'Inicio', to: '/coach', icon: 'dashboard', routeName: 'coach-dashboard' },
     { name: 'Clientes', to: '/coach/clients', icon: 'clients', routeName: 'coach-clients' },
-    { name: 'Mensajes', to: '/coach/messages', icon: 'messages', routeName: 'coach-messages' },
-    { name: 'Planes', to: '/coach/plans', icon: 'plans', routeName: 'coach-plans' },
-    { name: 'Perfil', to: '/coach/profile', icon: 'profile', routeName: 'coach-profile' },
+    null, // FAB spacer
+    { name: 'Check-ins', to: '/coach/checkins', icon: 'checkins', routeName: 'coach-checkins', badge: 'pendingCheckins' },
+    { name: 'Mensajes', to: '/coach/messages', icon: 'messages', routeName: 'coach-messages', badge: 'unreadMessages' },
 ];
 </script>
 
@@ -151,28 +153,28 @@ const bottomNav = [
 
     <!-- Sidebar -->
     <aside
-      :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-      class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col border-r border-wc-border bg-wc-bg-secondary transition-transform duration-300 ease-in-out lg:translate-x-0"
+      :class="[sidebarOpen ? 'translate-x-0' : '-translate-x-full', sidebarCollapsed ? 'lg:w-[4.5rem]' : 'lg:w-60']"
+      class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col border-r border-wc-border bg-wc-bg-secondary transition-all duration-300 ease-in-out lg:translate-x-0"
     >
       <!-- Logo (theme-aware) -->
-      <div class="flex h-16 items-center gap-3 border-b border-wc-border px-5">
+      <div class="flex h-16 items-center gap-3 border-b border-wc-border px-5 overflow-hidden">
         <img
           src="/images/logo-coach-dark.png"
           alt="WellCore"
-          class="hidden h-9 w-9 object-contain dark:block"
+          class="hidden h-9 w-9 object-contain shrink-0 dark:block"
         />
         <img
           src="/images/logo-coach-light.png"
           alt="WellCore"
-          class="block h-9 w-9 object-contain dark:hidden"
+          class="block h-9 w-9 object-contain shrink-0 dark:hidden"
         />
-        <span class="font-display text-xl tracking-wider text-wc-text">WELLCORE</span>
+        <span v-if="!sidebarCollapsed" class="font-display text-xl tracking-wider text-wc-text">WELLCORE</span>
       </div>
 
       <!-- Navigation -->
       <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-6">
         <div v-for="section in navSections" :key="section.label">
-          <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">{{ section.label }}</p>
+          <p v-if="!sidebarCollapsed" class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">{{ section.label }}</p>
           <ul class="space-y-0.5">
             <li v-for="item in section.items" :key="item.routeName">
               <RouterLink
@@ -180,6 +182,7 @@ const bottomNav = [
                 :data-tour="tourAttr(item.routeName)"
                 :class="[
                   'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                  sidebarCollapsed ? 'justify-center' : '',
                   isActive(item.routeName)
                     ? 'border-l-2 border-wc-accent bg-wc-accent/10 text-wc-text'
                     : 'text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text'
@@ -237,30 +240,42 @@ const bottomNav = [
                 <svg v-else-if="item.icon === 'resources'" class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
                 </svg>
-                {{ item.name }}
+                <span v-if="!sidebarCollapsed" class="truncate">{{ item.name }}</span>
               </RouterLink>
             </li>
           </ul>
         </div>
       </nav>
 
-      <!-- Sidebar footer / Logout -->
+      <!-- Sidebar footer -->
       <div class="border-t border-wc-border px-3 py-3">
         <button
           @click="handleLogout"
           :disabled="loggingOut"
+          :class="sidebarCollapsed ? 'justify-center' : ''"
           class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text transition-colors disabled:opacity-50"
         >
           <svg class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
           </svg>
-          {{ loggingOut ? 'Cerrando...' : 'Cerrar sesion' }}
+          <span v-if="!sidebarCollapsed">{{ loggingOut ? 'Cerrando...' : 'Cerrar sesion' }}</span>
+        </button>
+      </div>
+
+      <!-- Collapse toggle (desktop only) -->
+      <div class="hidden lg:block border-t border-wc-border p-3">
+        <button @click="toggleSidebarCollapse()" class="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-wc-text-tertiary hover:bg-wc-bg-tertiary transition-colors text-sm">
+          <svg class="w-4 h-4 transition-transform shrink-0" :class="sidebarCollapsed ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg>
+          <span v-if="!sidebarCollapsed" class="text-xs font-medium">Colapsar</span>
         </button>
       </div>
     </aside>
 
-    <!-- Main wrapper (offset by sidebar on lg+) -->
-    <div class="lg:pl-60">
+    <!-- Main wrapper (dynamic margin based on sidebar state) -->
+    <div
+      :class="sidebarCollapsed ? 'lg:ml-[4.5rem]' : 'lg:ml-60'"
+      class="min-h-screen transition-all duration-300 pb-24 lg:pb-8"
+    >
 
       <!-- Top bar -->
       <header class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-wc-border bg-wc-bg/80 px-4 backdrop-blur-xl sm:px-6">
@@ -275,6 +290,11 @@ const bottomNav = [
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
           </button>
+          <!-- Urgent count badge (mobile topbar) -->
+          <span v-if="props.urgentCount > 0" class="lg:hidden inline-flex items-center gap-1 rounded-full bg-wc-accent/15 px-2 py-0.5 text-[10px] font-bold text-wc-accent">
+            <span class="w-1.5 h-1.5 rounded-full bg-wc-accent animate-pulse"></span>
+            {{ props.urgentCount }}
+          </span>
         </div>
 
         <!-- Right: dark mode, coach badge, user info -->
@@ -313,47 +333,112 @@ const bottomNav = [
       </header>
 
       <!-- Page content -->
-      <main class="px-4 py-6 pb-20 sm:px-6 lg:px-8 lg:pb-6">
+      <main class="py-2 lg:py-6">
         <slot />
       </main>
     </div>
 
-    <!-- Mobile Bottom Navigation -->
-    <nav class="fixed inset-x-0 bottom-0 z-40 border-t border-wc-border bg-wc-bg/95 backdrop-blur-xl lg:hidden">
-      <div class="flex items-center justify-around px-2 pb-2 pt-2">
-        <RouterLink
-          v-for="item in bottomNav"
-          :key="item.routeName"
-          :to="item.to"
-          :class="[
-            'flex flex-col items-center gap-0.5 px-3 py-1 transition-colors',
-            isActive(item.routeName) ? 'text-wc-accent' : 'text-wc-text-tertiary'
-          ]"
-        >
-          <!-- Dashboard -->
-          <svg v-if="item.icon === 'dashboard'" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
-          </svg>
-          <!-- Clients -->
-          <svg v-else-if="item.icon === 'clients'" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-          </svg>
-          <!-- Messages -->
-          <svg v-else-if="item.icon === 'messages'" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-          </svg>
-          <!-- Plans -->
-          <svg v-else-if="item.icon === 'plans'" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z" />
-          </svg>
-          <!-- Profile -->
-          <svg v-else-if="item.icon === 'profile'" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-          </svg>
-          <span class="text-[10px] font-medium">{{ item.name }}</span>
-        </RouterLink>
+    <!-- Mobile bottom nav -->
+    <nav class="lg:hidden fixed bottom-0 inset-x-0 z-30 border-t pb-safe"
+         style="background:var(--color-wc-bg-secondary); border-color:var(--color-wc-border)">
+      <div class="flex items-center justify-around h-16 px-2 relative">
+        <template v-for="(item, i) in bottomNav" :key="i">
+          <!-- FAB spacer -->
+          <div v-if="item === null" class="w-14" aria-hidden="true"></div>
+          <!-- Nav item -->
+          <RouterLink
+            v-else
+            :to="item.to"
+            class="nav-tap flex flex-col items-center gap-0.5 py-2 px-3 transition-colors relative"
+            :class="isActive(item.routeName) ? 'text-wc-accent' : 'text-wc-text-tertiary'"
+          >
+            <!-- Dashboard -->
+            <svg v-if="item.icon === 'dashboard'" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+            </svg>
+            <!-- Clients -->
+            <svg v-else-if="item.icon === 'clients'" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+            </svg>
+            <!-- Check-ins -->
+            <svg v-else-if="item.icon === 'checkins'" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            <!-- Messages -->
+            <svg v-else-if="item.icon === 'messages'" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+            </svg>
+            <span class="text-[9px] font-semibold">{{ item.name }}</span>
+          </RouterLink>
+        </template>
       </div>
+
+      <!-- FAB button -->
+      <button
+        @click="fabOpen = !fabOpen"
+        class="absolute left-1/2 -translate-x-1/2 -top-7 w-14 h-14 rounded-full bg-wc-accent shadow-lg flex items-center justify-center transition-transform"
+        :class="fabOpen ? 'rotate-45' : ''"
+        aria-label="Acciones rápidas"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      </button>
     </nav>
+
+    <!-- FAB backdrop -->
+    <Transition
+      enter-active-class="transition-opacity duration-200"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition-opacity duration-200"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div v-if="fabOpen" class="lg:hidden fixed inset-0 z-40 bg-black/60" @click="fabOpen = false"></div>
+    </Transition>
+
+    <!-- FAB bottom sheet -->
+    <Transition
+      enter-active-class="transition-transform duration-300"
+      enter-from-class="translate-y-full"
+      enter-to-class="translate-y-0"
+      leave-active-class="transition-transform duration-200"
+      leave-from-class="translate-y-0"
+      leave-to-class="translate-y-full"
+    >
+      <div v-if="fabOpen" class="lg:hidden fixed bottom-0 inset-x-0 z-50 pb-safe rounded-t-2xl border-t"
+           style="background:var(--color-wc-bg-secondary); border-color:var(--color-wc-border)">
+        <div class="p-4 space-y-1">
+          <div class="w-10 h-1 rounded-full bg-wc-border mx-auto mb-4"></div>
+          <RouterLink to="/coach/clients" @click="fabOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-card hover:bg-wc-bg-tertiary transition-colors">
+            <div class="w-10 h-10 rounded-lg bg-wc-accent/15 flex items-center justify-center shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-wc-accent)" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
+            </div>
+            <div>
+              <div class="font-medium text-wc-text text-sm">Agregar cliente</div>
+              <div class="text-xs text-wc-text-tertiary">Invitar nuevo cliente al programa</div>
+            </div>
+          </RouterLink>
+          <RouterLink to="/coach/messages" @click="fabOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-card hover:bg-wc-bg-tertiary transition-colors">
+            <div class="w-10 h-10 rounded-lg bg-blue-500/15 flex items-center justify-center shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"></path></svg>
+            </div>
+            <div>
+              <div class="font-medium text-wc-text text-sm">Enviar broadcast</div>
+              <div class="text-xs text-wc-text-tertiary">Mensaje a todos los clientes</div>
+            </div>
+          </RouterLink>
+          <RouterLink to="/coach/checkins" @click="fabOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-card hover:bg-wc-bg-tertiary transition-colors">
+            <div class="w-10 h-10 rounded-lg bg-emerald-500/15 flex items-center justify-center shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path></svg>
+            </div>
+            <div>
+              <div class="font-medium text-wc-text text-sm">Revisar check-ins</div>
+              <div class="text-xs text-wc-text-tertiary">Responder check-ins pendientes</div>
+            </div>
+          </RouterLink>
+        </div>
+      </div>
+    </Transition>
 
     <!-- First-visit onboarding tour -->
     <CoachOnboardingTour v-if="showTour" @done="onTourDone" />

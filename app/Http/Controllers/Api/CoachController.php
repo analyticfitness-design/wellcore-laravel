@@ -28,6 +28,7 @@ use App\Models\PodMember;
 use App\Models\PodMessage;
 use App\Models\Referral;
 use App\Models\ReferralStat;
+use App\Models\Ticket;
 use App\Models\TrainingLog;
 use App\Models\VideoCheckin;
 use App\Models\WellcoreNotification;
@@ -42,8 +43,8 @@ use Illuminate\Support\Str;
 
 class CoachController extends Controller
 {
-    use AuthenticatesVueRequests;
     use Auditable;
+    use AuthenticatesVueRequests;
 
     /**
      * Resolve the authenticated Admin (coach/admin/superadmin/jefe) or abort.
@@ -150,6 +151,56 @@ class CoachController extends Controller
         // Chart data
         $chartData = $this->loadCoachChartData($coachId, $clientIds);
 
+        // ── New redesign fields ──────────────────────────────────────────
+
+        // 1. urgentClientsCount: checkins without reply older than 48 h
+        $urgentClientsCount = Checkin::whereIn('client_id', $clientIds)
+            ->whereNull('coach_reply')
+            ->where('checkin_date', '<=', now()->subHours(48)->toDateTimeString())
+            ->distinct('client_id')
+            ->count('client_id');
+
+        // 2. todayDateLabel: e.g. "MIÉRCOLES 24 ABR"
+        $todayDateLabel = mb_strtoupper(
+            Carbon::now()->locale('es')->isoFormat('dddd D MMM')
+        );
+
+        // 3. openTickets count
+        $openTickets = Ticket::where('coach_id', $coachId)
+            ->whereIn('status', ['open', 'in_progress'])
+            ->count();
+
+        // 4. openTicketsList: up to 5, sorted by priority
+        $rawTickets = Ticket::where('coach_id', $coachId)
+            ->whereIn('status', ['open', 'in_progress'])
+            ->orderByRaw("FIELD(priority, 'urgent', 'high', 'normal', 'low')")
+            ->limit(5)
+            ->get();
+
+        $ticketClientIds = $rawTickets->pluck('client_id')->filter()->unique();
+        $ticketClientsById = $ticketClientIds->isNotEmpty()
+            ? Client::whereIn('id', $ticketClientIds)->get()->keyBy('id')
+            : collect();
+
+        $openTicketsList = $rawTickets->map(function ($t) use ($ticketClientsById) {
+            $client = $ticketClientsById->get($t->client_id);
+
+            return [
+                'id' => $t->id,
+                'title' => $t->title ?? 'Ticket sin título',
+                'client_name' => $client?->name ?? 'Cliente',
+                'status' => $t->status instanceof \BackedEnum ? $t->status->value : $t->status,
+                'priority' => $t->priority instanceof \BackedEnum ? $t->priority->value : $t->priority,
+                'created_ago' => Carbon::parse($t->created_at)->diffForHumans(),
+            ];
+        })->toArray();
+
+        // 5. todayActivity: up to 10 events from the last 24 h (checkins, trainings, messages)
+        $todayActivity = $this->loadTodayActivity($coachId, $clientIds);
+
+        // 6. sparklines: 7-day series for 4 KPIs
+        $sparklines = $this->loadSparklines($coachId, $clientIds, $activeClients);
+
         return response()->json([
             'greeting' => $greeting,
             'coachName' => $coachName,
@@ -164,6 +215,13 @@ class CoachController extends Controller
             // P5.3 onboarding checklist: coach account age in days + flag for "first week"
             'coachCreatedAt' => $coach->created_at?->toIso8601String(),
             'coachDaysOld' => $coach->created_at ? (int) $coach->created_at->diffInDays(now()) : null,
+            // Redesign fields
+            'urgentClientsCount' => $urgentClientsCount,
+            'todayDateLabel' => $todayDateLabel,
+            'openTickets' => $openTickets,
+            'openTicketsList' => $openTicketsList,
+            'todayActivity' => $todayActivity,
+            'sparklines' => $sparklines,
         ]);
     }
 
@@ -262,6 +320,110 @@ class CoachController extends Controller
             ->toArray();
 
         return compact('clientProgressData', 'checkinFrequencyData');
+    }
+
+    protected function loadTodayActivity(int $coachId, $clientIds): array
+    {
+        $events = [];
+
+        $todayCheckins = Checkin::whereIn('client_id', $clientIds)
+            ->whereDate('checkin_date', today())
+            ->limit(5)
+            ->get();
+
+        foreach ($todayCheckins as $c) {
+            $events[] = [
+                'type' => 'checkin',
+                'client_id' => $c->client_id,
+                'created_at' => $c->created_at ?? $c->checkin_date,
+            ];
+        }
+
+        $todayTrainings = TrainingLog::whereIn('client_id', $clientIds)
+            ->whereDate('log_date', today())
+            ->where('completed', true)
+            ->limit(5)
+            ->get();
+
+        foreach ($todayTrainings as $t) {
+            $events[] = [
+                'type' => 'training',
+                'client_id' => $t->client_id,
+                'created_at' => $t->created_at,
+            ];
+        }
+
+        $todayMessages = CoachMessage::where('coach_id', $coachId)
+            ->where('direction', 'client_to_coach')
+            ->whereDate('created_at', today())
+            ->limit(5)
+            ->get();
+
+        foreach ($todayMessages as $m) {
+            $events[] = [
+                'type' => 'message',
+                'client_id' => $m->client_id,
+                'created_at' => $m->created_at,
+            ];
+        }
+
+        if (empty($events)) {
+            return [];
+        }
+
+        $activityClientIds = collect($events)->pluck('client_id')->unique();
+        $activityClients = Client::whereIn('id', $activityClientIds)->get()->keyBy('id');
+
+        return collect($events)
+            ->sortByDesc('created_at')
+            ->take(10)
+            ->map(function ($e) use ($activityClients) {
+                $client = $activityClients->get($e['client_id']);
+
+                return [
+                    'type' => $e['type'],
+                    'client_name' => $client?->name ?? 'Cliente',
+                    'time_ago' => Carbon::parse($e['created_at'])->diffForHumans(),
+                    'color' => match ($e['type']) {
+                        'checkin' => 'success',
+                        'training' => 'info',
+                        default => 'accent',
+                    },
+                ];
+            })
+            ->values()
+            ->toArray();
+    }
+
+    protected function loadSparklines(int $coachId, $clientIds, int $activeClients): array
+    {
+        $last7Days = collect(range(6, 0))->map(fn ($i) => now()->subDays($i)->format('Y-m-d'));
+
+        $checkinsByDay = Checkin::whereIn('client_id', $clientIds)
+            ->where('checkin_date', '>=', now()->subDays(6)->toDateString())
+            ->selectRaw('DATE(checkin_date) as d, COUNT(*) as cnt')
+            ->groupBy('d')
+            ->pluck('cnt', 'd');
+
+        $messagesByDay = CoachMessage::where('coach_id', $coachId)
+            ->where('direction', 'client_to_coach')
+            ->where('created_at', '>=', now()->subDays(6)->startOfDay())
+            ->selectRaw('DATE(created_at) as d, COUNT(*) as cnt')
+            ->groupBy('d')
+            ->pluck('cnt', 'd');
+
+        $ticketsByDay = Ticket::where('coach_id', $coachId)
+            ->where('created_at', '>=', now()->subDays(6)->startOfDay())
+            ->selectRaw('DATE(created_at) as d, COUNT(*) as cnt')
+            ->groupBy('d')
+            ->pluck('cnt', 'd');
+
+        return [
+            'clients' => $last7Days->map(fn () => $activeClients)->values()->toArray(),
+            'checkins' => $last7Days->map(fn ($d) => (int) ($checkinsByDay[$d] ?? 0))->values()->toArray(),
+            'messages' => $last7Days->map(fn ($d) => (int) ($messagesByDay[$d] ?? 0))->values()->toArray(),
+            'tickets' => $last7Days->map(fn ($d) => (int) ($ticketsByDay[$d] ?? 0))->values()->toArray(),
+        ];
     }
 
     // ─── Clients ────────────────────────────────────────────────────────
@@ -1577,12 +1739,12 @@ class CoachController extends Controller
             ?? session('wc_token')
             ?? '';
         session([
-            'wc_admin_token'   => $coachBearerToken, // para stop-impersonation
-            'wc_token'         => $token,
-            'wc_user_type'     => 'client',
-            'wc_user_id'       => $client->id,
-            'wc_user_name'     => $client->name ?? 'Cliente',
-            'wc_user_portal'   => '/client',
+            'wc_admin_token' => $coachBearerToken, // para stop-impersonation
+            'wc_token' => $token,
+            'wc_user_type' => 'client',
+            'wc_user_id' => $client->id,
+            'wc_user_name' => $client->name ?? 'Cliente',
+            'wc_user_portal' => '/client',
         ]);
 
         return response()->json([
@@ -1630,12 +1792,12 @@ class CoachController extends Controller
                 ->where('expires_at', '>', now())
                 ->first();
             if ($coachAuthToken) {
-                $coach = \App\Models\Admin::find($coachAuthToken->user_id);
+                $coach = Admin::find($coachAuthToken->user_id);
                 session([
-                    'wc_token'       => $coachToken,
-                    'wc_user_type'   => 'admin',
-                    'wc_user_id'     => $coachAuthToken->user_id,
-                    'wc_user_name'   => $coach?->name ?? $coach?->username ?? 'Coach',
+                    'wc_token' => $coachToken,
+                    'wc_user_type' => 'admin',
+                    'wc_user_id' => $coachAuthToken->user_id,
+                    'wc_user_name' => $coach?->name ?? $coach?->username ?? 'Coach',
                     'wc_user_portal' => '/coach',
                 ]);
                 session()->forget('wc_admin_token');

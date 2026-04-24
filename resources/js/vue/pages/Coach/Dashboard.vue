@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, computed, nextTick } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import CoachOnboardingChecklist from '../../components/CoachOnboardingChecklist.vue';
@@ -10,7 +10,7 @@ const error = ref(null);
 
 const greeting = ref('');
 const coachName = ref('');
-const coachDaysOld = ref(null); // P5.3: days since coach account created_at
+const coachDaysOld = ref(null);
 
 const stats = ref({
     activeClients: 0,
@@ -21,58 +21,31 @@ const stats = ref({
 const attentionClients = ref([]);
 const recentMessages = ref([]);
 
-// Chart data
+// New fields
+const urgentClientsCount = ref(0);
+const todayDateLabel = ref('');
+const openTickets = ref(0);
+const openTicketsList = ref([]);
+const todayActivity = ref([]);
+const sparklines = ref({ clients: [], checkins: [], messages: [], tickets: [] });
+const fabOpen = ref(false);
+
+// Chart data (preserved from original)
 const clientProgressData = ref([]);
 const checkinFrequencyData = ref([]);
 
-// Animated counter targets — module-level to avoid proxy overhead
+// Animated counters
 const animatedCounters = ref({
     activeClients: 0,
     pendingCheckins: 0,
     unreadMessages: 0,
     ticketsThisMonth: 0,
+    openTickets: 0,
 });
+
+// Module-level handles — not reactive
 let counterObserver = null;
 let counterAnimationFrames = [];
-
-const maxProgressSessions = computed(() => {
-    if (clientProgressData.value.length === 0) return 1;
-    return Math.max(...clientProgressData.value.map(d => d.sessions), 1);
-});
-
-const maxCheckinCount = computed(() => {
-    if (checkinFrequencyData.value.length === 0) return 1;
-    return Math.max(...checkinFrequencyData.value.map(d => d.count), 1);
-});
-
-// SVG line chart coordinates for check-in frequency
-const checkinPointCoords = computed(() => {
-    const data = checkinFrequencyData.value;
-    if (!data || data.length === 0) return [];
-    const max = Math.max(...data.map(d => d.count), 1);
-    const padding = 20;
-    const chartHeight = 200 - padding * 2;
-    const stepX = data.length > 1 ? ((data.length - 1) * 80) / (data.length - 1) : 0;
-
-    return data.map((d, i) => ({
-        x: padding + i * stepX,
-        y: padding + chartHeight - (d.count / max) * chartHeight,
-    }));
-});
-
-const checkinLinePoints = computed(() => {
-    return checkinPointCoords.value.map(p => `${p.x},${p.y}`).join(' ');
-});
-
-const checkinAreaPoints = computed(() => {
-    const coords = checkinPointCoords.value;
-    if (coords.length === 0) return '';
-    const padding = 20;
-    const first = coords[0];
-    const last = coords[coords.length - 1];
-    const linePoints = coords.map(p => `${p.x},${p.y}`).join(' ');
-    return `${first.x},${200 - padding} ${linePoints} ${last.x},${200 - padding}`;
-});
 
 function animateCounter(key, target, duration = 1200) {
     const start = animatedCounters.value[key];
@@ -81,10 +54,8 @@ function animateCounter(key, target, duration = 1200) {
     function step(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        // Ease-out cubic
         const eased = 1 - Math.pow(1 - progress, 3);
         animatedCounters.value[key] = Math.round(start + (target - start) * eased);
-
         if (progress < 1) {
             const frameId = requestAnimationFrame(step);
             counterAnimationFrames.push(frameId);
@@ -107,6 +78,7 @@ function setupCounterObserver() {
                     animateCounter('pendingCheckins', stats.value.pendingCheckins, 1000);
                     animateCounter('unreadMessages', stats.value.unreadMessages, 1000);
                     animateCounter('ticketsThisMonth', stats.value.ticketsThisMonth);
+                    animateCounter('openTickets', openTickets.value, 1000);
                     counterObserver?.disconnect();
                 }
             });
@@ -115,6 +87,23 @@ function setupCounterObserver() {
     );
 
     counterObserver.observe(statsGrid);
+}
+
+function sparklinePoints(data, width = 60, height = 24) {
+    if (!data || data.length < 2) return '';
+    const max = Math.max(...data, 1);
+    return data.map((v, i) => {
+        const x = (i / (data.length - 1)) * width;
+        const y = height - (v / max) * (height - 4) - 2;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+}
+
+function computeGreeting() {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Buenos dias';
+    if (hour < 18) return 'Buenas tardes';
+    return 'Buenas noches';
 }
 
 async function loadDashboard() {
@@ -138,7 +127,15 @@ async function loadDashboard() {
         clientProgressData.value = data.clientProgressData || [];
         checkinFrequencyData.value = data.checkinFrequencyData || [];
 
-        // Fetch plan tickets created in the last 30 days (in parallel, non-blocking already awaited)
+        // New fields
+        urgentClientsCount.value = data.urgentClientsCount ?? 0;
+        todayDateLabel.value = data.todayDateLabel ?? '';
+        openTickets.value = data.openTickets ?? 0;
+        openTicketsList.value = data.openTicketsList ?? [];
+        todayActivity.value = data.todayActivity ?? [];
+        sparklines.value = data.sparklines ?? { clients: [], checkins: [], messages: [], tickets: [] };
+
+        // Fallback: fetch tickets this month if API doesn't include it
         try {
             const tr = await api.get('/api/v/coach/plan-tickets');
             const list = tr.data?.tickets || [];
@@ -160,13 +157,6 @@ async function loadDashboard() {
     }
 }
 
-function computeGreeting() {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Buenos dias';
-    if (hour < 18) return 'Buenas tardes';
-    return 'Buenas noches';
-}
-
 onMounted(loadDashboard);
 
 onBeforeUnmount(() => {
@@ -177,375 +167,300 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <CoachLayout>
-    <div class="space-y-6">
+  <CoachLayout :urgent-count="urgentClientsCount">
+    <div>
 
-      <!-- Greeting section -->
-      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">
-            {{ greeting || 'Hola' }}, {{ coachName || 'Coach' }}
-          </h1>
-          <p class="mt-1 text-sm text-wc-text-tertiary">Panel de coach -- resumen de tu equipo</p>
+      <!-- MOBILE: Hero + Quick Actions (lg:hidden) -->
+      <div class="lg:hidden px-4 pt-3">
+        <!-- Hero card: gradient rojo si hay urgentes, verde si todo OK -->
+        <div
+          :class="urgentClientsCount > 0 ? 'wc-hero-accent' : 'wc-hero-emerald'"
+          class="wc-noise rounded-card border-l-[3px] p-4 mb-3"
+          :style="{ borderLeftColor: urgentClientsCount > 0 ? 'var(--color-wc-accent)' : '#10B981' }"
+        >
+          <div class="font-mono text-[10px] text-wc-text-tertiary uppercase tracking-wider">{{ todayDateLabel }}</div>
+          <div v-if="urgentClientsCount > 0" class="mt-2">
+            <div class="font-display text-xl uppercase text-wc-text">{{ urgentClientsCount }} CLIENTES NECESITAN ATENCIÓN</div>
+            <div class="text-sm text-wc-text-secondary mt-0.5">{{ stats.pendingCheckins }} check-ins · {{ stats.unreadMessages }} sin leer</div>
+          </div>
+          <div v-else class="mt-2 font-display text-xl uppercase text-emerald-400">AL DÍA · SIN PENDIENTES</div>
+          <div class="mt-3">
+            <div class="h-1.5 rounded-full bg-wc-border overflow-hidden">
+              <div
+                class="h-full rounded-full transition-all duration-700"
+                :class="urgentClientsCount > 0 ? 'bg-wc-accent' : 'bg-emerald-500'"
+                :style="{ width: urgentClientsCount > 0 ? '25%' : '100%' }"
+              ></div>
+            </div>
+          </div>
         </div>
-        <div class="hidden sm:flex items-center gap-2">
-          <RouterLink
-            to="/coach/checkins"
-            class="btn-press inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors"
-          >
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-            Revisar check-ins
+
+        <!-- Quick actions strip (scroll horizontal) -->
+        <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 mb-3">
+          <RouterLink to="/coach/checkins" class="nav-tap shrink-0 flex flex-col items-center justify-center gap-1 relative rounded-card bg-wc-bg-tertiary border border-wc-border px-3 py-3 min-w-[72px] h-[72px]">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="11" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg>
+            <span class="text-[10px] font-medium text-wc-text-secondary">Check-ins</span>
+            <span v-if="stats.pendingCheckins > 0" class="absolute top-1.5 right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-wc-accent text-[8px] font-bold text-white flex items-center justify-center">{{ stats.pendingCheckins }}</span>
           </RouterLink>
-          <RouterLink
-            to="/coach/messages"
-            class="btn-press inline-flex items-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2 text-sm font-medium text-wc-text hover:bg-wc-bg-secondary transition-colors"
-          >
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-            </svg>
-            Enviar mensaje
+          <RouterLink to="/coach/messages" class="nav-tap shrink-0 flex flex-col items-center justify-center gap-1 relative rounded-card bg-wc-bg-tertiary border border-wc-border px-3 py-3 min-w-[72px] h-[72px]">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"></path></svg>
+            <span class="text-[10px] font-medium text-wc-text-secondary">Mensajes</span>
+            <span v-if="stats.unreadMessages > 0" class="absolute top-1.5 right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-wc-accent text-[8px] font-bold text-white flex items-center justify-center">{{ stats.unreadMessages }}</span>
           </RouterLink>
-          <RouterLink
-            to="/coach/plan-tickets/nuevo"
-            class="btn-press inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors"
-          >
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586M12 12.75h.008v.008H12v-.008ZM12 15.75h.008v.008H12v-.008ZM12 18.75h.008v.008H12v-.008Z" />
-            </svg>
-            Crear ticket de plan
+          <RouterLink to="/coach/plan-tickets" class="nav-tap shrink-0 flex flex-col items-center justify-center gap-1 rounded-card bg-wc-bg-tertiary border border-wc-border px-3 py-3 min-w-[72px] h-[72px]">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <span class="text-[10px] font-medium text-wc-text-secondary">Tickets</span>
+          </RouterLink>
+          <RouterLink to="/coach/analytics" class="nav-tap shrink-0 flex flex-col items-center justify-center gap-1 rounded-card bg-wc-bg-tertiary border border-wc-border px-3 py-3 min-w-[72px] h-[72px]">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            <span class="text-[10px] font-medium text-wc-text-secondary">Analítica</span>
           </RouterLink>
         </div>
       </div>
 
-      <!-- P5.3 Onboarding checklist (first 7 days only, dismissible) -->
-      <CoachOnboardingChecklist :days-old="coachDaysOld" />
+      <!-- DESKTOP: Alert bar + Hero heading (hidden lg:block) -->
+      <div class="hidden lg:block px-6 pt-6">
+        <!-- Alert bar: solo si hay urgentes -->
+        <div v-if="urgentClientsCount > 0" class="flex items-center justify-between px-5 py-3 rounded-card border-l-4 bg-wc-accent/10 border-wc-accent mb-5">
+          <div class="flex items-center gap-2 text-sm text-wc-text">
+            <svg class="w-4 h-4 text-wc-accent shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <span>{{ urgentClientsCount }} clientes necesitan atención urgente hoy</span>
+          </div>
+          <RouterLink to="/coach/checkins" class="text-sm font-medium text-wc-accent hover:underline shrink-0">Ver todos →</RouterLink>
+        </div>
+
+        <!-- H1 Hero desktop -->
+        <div class="mb-6">
+          <div class="font-mono text-xs text-wc-text-tertiary uppercase tracking-widest mb-1">{{ todayDateLabel }}</div>
+          <h1 class="font-display text-4xl uppercase tracking-wide text-wc-text">HOY</h1>
+          <p class="mt-1 text-sm text-wc-text-secondary">
+            <template v-if="urgentClientsCount > 0">
+              {{ urgentClientsCount }} clientes en riesgo · {{ stats.pendingCheckins }} check-ins pendientes · {{ stats.unreadMessages }} mensajes sin leer
+            </template>
+            <template v-else>Todo al día · Sin pendientes urgentes</template>
+          </p>
+          <div class="mt-4 flex items-center gap-2">
+            <RouterLink to="/coach/checkins" class="inline-flex items-center gap-2 rounded-button border border-wc-border px-4 py-2 text-sm font-medium text-wc-text hover:bg-wc-bg-tertiary transition-colors">
+              Revisar check-ins
+            </RouterLink>
+            <RouterLink to="/coach/messages" class="inline-flex items-center gap-2 rounded-button border border-wc-border px-4 py-2 text-sm font-medium text-wc-text hover:bg-wc-bg-tertiary transition-colors">
+              Enviar mensaje
+            </RouterLink>
+            <RouterLink to="/coach/plan-tickets/nuevo" class="inline-flex items-center gap-2 rounded-button bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors">
+              + Crear ticket
+            </RouterLink>
+          </div>
+        </div>
+      </div>
 
       <!-- Loading skeleton -->
       <template v-if="loading">
-        <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          <div v-for="n in 4" :key="n" class="animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
-            <div class="flex items-center justify-between">
-              <div class="h-3 w-20 rounded bg-wc-border/50"></div>
-              <div class="h-8 w-8 rounded-lg bg-wc-border/30"></div>
-            </div>
-            <div class="mt-4 h-8 w-12 rounded bg-wc-border/50"></div>
-            <div class="mt-2 h-3 w-16 rounded bg-wc-border/30"></div>
-          </div>
-        </div>
-        <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <div v-for="n in 2" :key="'chart-'+n" class="animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 h-72"></div>
-        </div>
-        <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <div class="animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 h-64 lg:col-span-2"></div>
-          <div class="animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 h-64"></div>
+        <div class="px-4 lg:px-6 grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+          <div v-for="n in 4" :key="n" class="animate-pulse rounded-card border border-wc-border bg-wc-bg-tertiary h-[130px]"></div>
         </div>
       </template>
 
-      <!-- Error state -->
-      <div v-else-if="error" class="rounded-xl border border-red-500/30 bg-red-500/5 p-8 text-center">
-        <svg class="mx-auto h-10 w-10 text-red-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-        </svg>
-        <p class="mt-3 text-sm font-medium text-red-400">{{ error }}</p>
-        <button
-          @click="loadDashboard"
-          class="mt-4 inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors"
-        >
-          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
-          </svg>
-          Reintentar
-        </button>
+      <!-- Error -->
+      <div v-else-if="error" class="px-4 lg:px-6 rounded-card border border-red-500/30 bg-red-500/5 p-8 text-center">
+        <p class="text-sm text-red-400">{{ error }}</p>
+        <button @click="loadDashboard" class="mt-4 inline-flex items-center gap-2 rounded-button bg-wc-accent px-4 py-2 text-sm font-medium text-white">Reintentar</button>
       </div>
 
       <!-- Main content -->
       <template v-else>
 
-        <!-- Stats cards with glow + hover lift + animated counters -->
-        <div id="stats-grid" class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          <!-- Active Clients -->
-          <div class="card-hover-lift stat-glow-emerald rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Clientes activos</span>
-              <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/10">
-                <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-                </svg>
-              </div>
-            </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ animatedCounters.activeClients }}</p>
-            <p class="mt-0.5 text-xs text-wc-text-tertiary">asignados a ti</p>
+        <!-- KPI Stats Grid: 2x2 mobile, 4x1 desktop — hero gradients -->
+        <div id="stats-grid" class="px-4 lg:px-6 grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+          <!-- Clientes activos (blue) -->
+          <div class="wc-hero-blue wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
+            <svg v-if="sparklines.clients.length" class="absolute top-3 right-3 opacity-50" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
+              <polyline :points="sparklinePoints(sparklines.clients)" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="mt-6 font-display text-4xl leading-none text-wc-text font-data">{{ animatedCounters.activeClients }}</div>
+            <div class="mt-1 text-[10px] font-bold uppercase tracking-wider text-wc-text-secondary">CLIENTES ACTIVOS</div>
           </div>
 
-          <!-- Pending Check-ins -->
-          <div class="card-hover-lift stat-glow-amber rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Check-ins pendientes</span>
-              <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10">
-                <svg class="h-4 w-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
-              </div>
-            </div>
-            <p class="mt-3 font-data text-3xl font-bold" :class="stats.pendingCheckins > 0 ? 'text-orange-500' : 'text-wc-text'">{{ animatedCounters.pendingCheckins }}</p>
-            <p class="mt-0.5 text-xs text-wc-text-tertiary">sin responder</p>
+          <!-- Check-ins (amber) -->
+          <div class="wc-hero-amber wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
+            <svg v-if="sparklines.checkins.length" class="absolute top-3 right-3 opacity-50" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
+              <polyline :points="sparklinePoints(sparklines.checkins)" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="mt-6 font-display text-4xl leading-none text-wc-text font-data">{{ animatedCounters.pendingCheckins }}</div>
+            <div class="mt-1 text-[10px] font-bold uppercase tracking-wider text-wc-text-secondary">CHECK-INS</div>
           </div>
 
-          <!-- Unread Messages -->
-          <div class="card-hover-lift stat-glow-red rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Mensajes</span>
-              <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-wc-accent/10">
-                <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-                </svg>
-              </div>
-            </div>
-            <p class="mt-3 font-data text-3xl font-bold" :class="stats.unreadMessages > 0 ? 'text-wc-accent' : 'text-wc-text'">{{ animatedCounters.unreadMessages }}</p>
-            <p class="mt-0.5 text-xs text-wc-text-tertiary">no leidos</p>
+          <!-- Mensajes (accent rojo) -->
+          <div class="wc-hero-accent wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
+            <svg v-if="sparklines.messages.length" class="absolute top-3 right-3 opacity-50" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
+              <polyline :points="sparklinePoints(sparklines.messages)" fill="none" stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="mt-6 font-display text-4xl leading-none text-wc-text font-data">{{ animatedCounters.unreadMessages }}</div>
+            <div class="mt-1 text-[10px] font-bold uppercase tracking-wider text-wc-text-secondary">MENSAJES</div>
           </div>
 
-          <!-- Tickets this month -->
-          <RouterLink
-            to="/coach/plan-tickets"
-            class="card-hover-lift stat-glow-violet rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 block cursor-pointer"
-          >
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Tickets</span>
-              <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
-                <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z" />
-                </svg>
-              </div>
-            </div>
-            <p class="mt-3 font-data text-3xl font-bold text-wc-text">{{ animatedCounters.ticketsThisMonth }}</p>
-            <p class="mt-0.5 text-xs text-wc-text-tertiary">este mes</p>
-          </RouterLink>
-        </div>
-
-        <!-- Charts: Client Progress + Check-in Frequency -->
-        <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-
-          <!-- Client Progress (Horizontal Bar Chart — CSS) -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-sm font-semibold text-wc-text">Progreso de Clientes</h3>
-              <span class="text-xs text-wc-text-tertiary">Ultimas 4 semanas</span>
-            </div>
-
-            <div v-if="clientProgressData.length > 0" class="space-y-3">
-              <div v-for="(item, idx) in clientProgressData" :key="idx" class="group flex items-center gap-3">
-                <span class="w-16 shrink-0 truncate text-right text-xs font-medium text-wc-text-secondary">{{ item.name }}</span>
-                <div class="relative h-6 flex-1 overflow-hidden rounded bg-wc-bg-secondary">
-                  <div
-                    class="absolute inset-y-0 left-0 rounded bg-wc-accent/70 transition-all duration-1000 ease-out group-hover:bg-wc-accent"
-                    :style="{ width: (item.sessions / maxProgressSessions * 100) + '%' }"
-                  ></div>
-                </div>
-                <span class="w-6 shrink-0 text-right font-data text-xs font-bold text-wc-text">{{ item.sessions }}</span>
-              </div>
-            </div>
-
-            <div v-else class="flex flex-col items-center justify-center h-52 text-center">
-              <svg class="h-8 w-8 text-wc-text-tertiary/40" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
-              </svg>
-              <p class="mt-2 text-sm text-wc-text-tertiary">Sin datos de entrenamiento</p>
-            </div>
-          </div>
-
-          <!-- Check-in Frequency (Line-area Chart — CSS/SVG) -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-sm font-semibold text-wc-text">Frecuencia de Check-ins</h3>
-              <span class="text-xs text-wc-text-tertiary">Ultimas 8 semanas</span>
-            </div>
-
-            <div v-if="checkinFrequencyData.length > 0" class="relative h-52">
-              <!-- SVG line chart -->
-              <svg class="h-full w-full" :viewBox="`0 0 ${(checkinFrequencyData.length - 1) * 80 + 40} 200`" preserveAspectRatio="none">
-                <!-- Grid lines -->
-                <line x1="0" y1="50" :x2="(checkinFrequencyData.length - 1) * 80 + 40" y2="50"
-                      stroke="currentColor" stroke-width="0.5" class="text-wc-border" />
-                <line x1="0" y1="100" :x2="(checkinFrequencyData.length - 1) * 80 + 40" y2="100"
-                      stroke="currentColor" stroke-width="0.5" class="text-wc-border" />
-                <line x1="0" y1="150" :x2="(checkinFrequencyData.length - 1) * 80 + 40" y2="150"
-                      stroke="currentColor" stroke-width="0.5" class="text-wc-border" />
-
-                <!-- Area fill -->
-                <polygon
-                  :points="checkinAreaPoints"
-                  fill="rgba(139, 92, 246, 0.08)"
-                />
-
-                <!-- Line -->
-                <polyline
-                  :points="checkinLinePoints"
-                  fill="none"
-                  stroke="#8B5CF6"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="checkin-line"
-                />
-
-                <!-- Data points -->
-                <circle
-                  v-for="(pt, idx) in checkinPointCoords"
-                  :key="idx"
-                  :cx="pt.x"
-                  :cy="pt.y"
-                  r="4"
-                  fill="#8B5CF6"
-                  stroke="#8B5CF6"
-                  stroke-width="1"
-                  class="transition-all duration-200 hover:r-[7]"
-                />
-              </svg>
-
-              <!-- X-axis labels -->
-              <div class="mt-2 flex justify-between px-1">
-                <span
-                  v-for="(item, idx) in checkinFrequencyData"
-                  :key="idx"
-                  class="text-[10px] text-wc-text-tertiary"
-                >{{ item.week }}</span>
-              </div>
-            </div>
-
-            <div v-else class="flex flex-col items-center justify-center h-52 text-center">
-              <svg class="h-8 w-8 text-wc-text-tertiary/40" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>
-              <p class="mt-2 text-sm text-wc-text-tertiary">Sin datos de check-ins</p>
-            </div>
+          <!-- Tickets (emerald) -->
+          <div class="wc-hero-emerald wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
+            <svg v-if="sparklines.tickets.length" class="absolute top-3 right-3 opacity-50" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
+              <polyline :points="sparklinePoints(sparklines.tickets)" fill="none" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="mt-6 font-display text-4xl leading-none text-wc-text font-data">{{ animatedCounters.openTickets }}</div>
+            <div class="mt-1 text-[10px] font-bold uppercase tracking-wider text-wc-text-secondary">TICKETS ABIERTOS</div>
           </div>
         </div>
 
-        <!-- Attention clients + Recent messages -->
-        <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <!-- Onboarding checklist -->
+        <div class="px-4 lg:px-6">
+          <CoachOnboardingChecklist :days-old="coachDaysOld" />
+        </div>
 
-          <!-- Clients needing attention -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 lg:col-span-2">
-            <div class="flex items-center justify-between">
-              <h2 class="font-display text-lg tracking-wide text-wc-text">Clientes que necesitan atencion</h2>
-              <RouterLink to="/coach/clients" class="text-xs font-medium text-wc-accent hover:underline">Ver todos</RouterLink>
-            </div>
+        <!-- Main content grid: 8-4 desktop -->
+        <div class="px-4 lg:px-6 lg:grid lg:grid-cols-12 lg:gap-5">
 
-            <div v-if="attentionClients.length > 0" class="mt-4 space-y-3">
-              <div
-                v-for="client in attentionClients"
-                :key="client.id"
-                class="card-hover-lift flex items-center gap-4 rounded-lg border border-wc-border bg-wc-bg-secondary p-3"
-              >
-                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent/15">
-                  <span class="text-sm font-semibold text-wc-accent">{{ (client.name || 'C').charAt(0) }}</span>
-                </div>
-                <div class="min-w-0 flex-1">
-                  <div class="flex items-center gap-2">
-                    <p class="text-sm font-medium text-wc-text truncate">{{ client.name }}</p>
-                    <span class="inline-flex shrink-0 rounded-full bg-wc-accent/10 px-2 py-0.5 text-[10px] font-semibold text-wc-accent">
-                      {{ client.plan }}
-                    </span>
-                  </div>
-                  <div class="mt-0.5 flex items-center gap-3 text-xs text-wc-text-tertiary">
-                    <span class="flex items-center gap-1">
-                      <svg class="h-3 w-3 text-orange-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                      </svg>
-                      {{ client.pending_checkins }} check-in{{ client.pending_checkins > 1 ? 's' : '' }} pendiente{{ client.pending_checkins > 1 ? 's' : '' }}
-                    </span>
-                    <span>{{ client.oldest_checkin }}</span>
+          <!-- Left column (8/12) -->
+          <div class="lg:col-span-8">
+
+            <!-- ATENCIÓN URGENTE -->
+            <section class="mb-5">
+              <div class="flex items-center justify-between mb-3">
+                <h2 class="font-display text-sm uppercase tracking-wider text-wc-text">ATENCIÓN URGENTE</h2>
+                <span v-if="urgentClientsCount > 0" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-wc-accent/15 text-wc-accent">{{ urgentClientsCount }} CLIENTES</span>
+              </div>
+
+              <template v-if="attentionClients.length">
+                <div v-for="client in attentionClients" :key="client.id" class="mb-2 rounded-card border-l-[3px] bg-wc-bg-tertiary border border-wc-border p-3" style="border-left-color:var(--color-wc-accent)">
+                  <div class="flex items-start justify-between gap-2">
+                    <div class="flex items-center gap-2 min-w-0">
+                      <div class="w-8 h-8 rounded-full bg-wc-accent/20 flex items-center justify-center text-wc-accent text-xs font-bold shrink-0">
+                        {{ (client.name || 'C').charAt(0).toUpperCase() }}
+                      </div>
+                      <div class="min-w-0">
+                        <div class="font-medium text-wc-text text-sm truncate">{{ client.name }}</div>
+                        <div class="text-[11px] text-wc-text-tertiary">Sin responder: {{ client.oldest_checkin }}</div>
+                      </div>
+                    </div>
+                    <div class="flex flex-col items-end gap-1 shrink-0">
+                      <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400">{{ client.pending_checkins }}d</span>
+                      <RouterLink to="/coach/checkins" class="text-[10px] font-medium text-wc-accent hover:underline">Responder →</RouterLink>
+                    </div>
                   </div>
                 </div>
-                <RouterLink
-                  to="/coach/checkins"
-                  class="btn-press flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-tertiary text-wc-text-secondary hover:text-wc-accent hover:border-wc-accent/30 transition-colors"
-                >
-                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                  </svg>
-                </RouterLink>
+              </template>
+              <div v-else class="rounded-card border border-wc-border bg-wc-bg-tertiary p-6 text-center">
+                <div class="text-2xl mb-2">✓</div>
+                <div class="font-medium text-wc-text text-sm">Todos los check-ins respondidos</div>
+                <div class="text-xs text-wc-text-tertiary">Buen trabajo</div>
               </div>
-            </div>
+            </section>
 
-            <div v-else class="mt-6 flex flex-col items-center py-8 text-center">
-              <svg class="h-10 w-10 text-emerald-500/40" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-              </svg>
-              <p class="mt-2 text-sm text-wc-text-tertiary">Todos los check-ins respondidos</p>
-              <p class="text-xs text-wc-text-tertiary">Buen trabajo</p>
-            </div>
+            <!-- ACTIVIDAD HOY -->
+            <section class="mb-5">
+              <h2 class="font-display text-sm uppercase tracking-wider text-wc-text mb-3">ACTIVIDAD HOY</h2>
+              <template v-if="todayActivity.length">
+                <div class="relative">
+                  <div class="absolute left-[15px] top-0 bottom-0 w-px bg-wc-border"></div>
+                  <div class="space-y-3 pl-8">
+                    <div v-for="(event, i) in todayActivity" :key="i" class="relative">
+                      <div
+                        class="absolute -left-[25px] w-3 h-3 rounded-full border-2"
+                        :class="{
+                          'bg-emerald-500 border-wc-bg': event.type === 'checkin',
+                          'bg-blue-500 border-wc-bg': event.type === 'training',
+                          'bg-wc-accent border-wc-bg': event.type === 'message',
+                        }"
+                      ></div>
+                      <div class="text-sm text-wc-text">
+                        <span v-if="event.type === 'checkin'">{{ event.client_name }} envió su check-in semanal</span>
+                        <span v-else-if="event.type === 'training'">{{ event.client_name }} registró entrenamiento</span>
+                        <span v-else>Nuevo mensaje de {{ event.client_name }}</span>
+                      </div>
+                      <div class="text-[11px] text-wc-text-tertiary">{{ event.time_ago }}</div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <div v-else class="text-sm text-wc-text-tertiary">Sin actividad en las últimas 24 horas</div>
+            </section>
+
+            <!-- GRÁFICAS (colapsadas) -->
+            <section class="mb-5">
+              <details class="group">
+                <summary class="flex items-center gap-2 cursor-pointer list-none">
+                  <h2 class="font-display text-sm uppercase tracking-wider text-wc-text">ANÁLISIS DE LA SEMANA</h2>
+                  <svg class="w-3 h-3 text-wc-text-tertiary ml-auto transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </summary>
+                <div class="mt-3 grid lg:grid-cols-2 gap-4">
+                  <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4">
+                    <div class="text-xs font-medium text-wc-text-secondary mb-3">Check-ins · 7 días</div>
+                    <svg viewBox="0 0 200 60" class="w-full h-16" aria-hidden="true">
+                      <polyline v-if="sparklines.checkins.length" :points="sparklinePoints(sparklines.checkins, 200, 56)" fill="none" stroke="var(--color-wc-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4">
+                    <div class="text-xs font-medium text-wc-text-secondary mb-3">Mensajes · 7 días</div>
+                    <svg viewBox="0 0 200 60" class="w-full h-16" aria-hidden="true">
+                      <polyline v-if="sparklines.messages.length" :points="sparklinePoints(sparklines.messages, 200, 56)" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </div>
+              </details>
+            </section>
+
           </div>
 
-          <!-- Recent messages -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-            <div class="flex items-center justify-between">
-              <h2 class="font-display text-lg tracking-wide text-wc-text">Mensajes recientes</h2>
-              <RouterLink to="/coach/messages" class="text-xs font-medium text-wc-accent hover:underline">Ver todos</RouterLink>
-            </div>
+          <!-- Right column (4/12) -->
+          <div class="lg:col-span-4">
 
-            <ul v-if="recentMessages.length > 0" class="mt-4 space-y-3">
-              <li v-for="(msg, idx) in recentMessages" :key="idx" class="flex items-start gap-3">
-                <div class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full" :class="msg.is_read ? 'bg-wc-bg-secondary' : 'bg-wc-accent/10'">
-                  <svg class="h-3.5 w-3.5" :class="msg.is_read ? 'text-wc-text-tertiary' : 'text-wc-accent'" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-                  </svg>
+            <!-- MENSAJES RECIENTES -->
+            <section class="mb-5">
+              <div class="flex items-center justify-between mb-3">
+                <h2 class="font-display text-sm uppercase tracking-wider text-wc-text">MENSAJES</h2>
+                <RouterLink to="/coach/messages" class="text-[11px] text-wc-accent hover:underline">Ver todos →</RouterLink>
+              </div>
+              <template v-if="recentMessages.length">
+                <div v-for="(msg, i) in recentMessages" :key="i" class="flex items-center gap-2 py-2 border-b border-wc-border last:border-0">
+                  <div class="relative shrink-0">
+                    <div class="w-8 h-8 rounded-full bg-wc-bg-secondary flex items-center justify-center text-xs font-bold text-wc-text">
+                      {{ (msg.client_name || 'C').charAt(0).toUpperCase() }}
+                    </div>
+                    <span v-if="!msg.is_read" class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-wc-accent border-2 border-wc-bg-tertiary"></span>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center justify-between gap-1">
+                      <span class="text-sm font-medium text-wc-text truncate">{{ msg.client_name }}</span>
+                      <span class="text-[10px] text-wc-text-tertiary shrink-0">{{ msg.time_ago }}</span>
+                    </div>
+                    <div class="text-xs text-wc-text-tertiary truncate">{{ msg.message }}</div>
+                  </div>
                 </div>
-                <div class="min-w-0 flex-1">
-                  <p class="text-sm font-medium" :class="msg.is_read ? 'text-wc-text' : 'text-wc-accent'">{{ msg.client_name }}</p>
-                  <p class="text-xs text-wc-text-secondary truncate">{{ msg.message }}</p>
-                  <p class="text-[11px] text-wc-text-tertiary">{{ msg.time_ago }}</p>
-                </div>
-                <div v-if="!msg.is_read" class="mt-2 h-2 w-2 shrink-0 rounded-full bg-wc-accent"></div>
-              </li>
-            </ul>
+              </template>
+              <div v-else class="text-sm text-wc-text-tertiary">Sin mensajes recientes</div>
+            </section>
 
-            <div v-else class="mt-6 flex flex-col items-center py-4 text-center">
-              <svg class="h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-              </svg>
-              <p class="mt-2 text-sm text-wc-text-tertiary">Sin mensajes recientes</p>
-            </div>
+            <!-- TICKETS -->
+            <section class="mb-5">
+              <div class="flex items-center justify-between mb-3">
+                <h2 class="font-display text-sm uppercase tracking-wider text-wc-text">TICKETS</h2>
+                <RouterLink to="/coach/plan-tickets" class="text-[11px] text-wc-accent hover:underline">Ver todos →</RouterLink>
+              </div>
+              <template v-if="openTicketsList.length">
+                <div v-for="ticket in openTicketsList" :key="ticket.id" class="flex items-center justify-between py-2 border-b border-wc-border last:border-0">
+                  <div class="min-w-0">
+                    <div class="text-sm font-medium text-wc-text truncate">{{ ticket.title }}</div>
+                    <div class="text-[11px] text-wc-text-tertiary">{{ ticket.client_name }} · {{ ticket.created_ago }}</div>
+                  </div>
+                  <span class="ml-2 shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded"
+                    :class="ticket.priority === 'urgent' || ticket.priority === 'high' ? 'bg-red-500/20 text-red-400' : 'bg-amber-500/20 text-amber-400'">
+                    {{ (ticket.priority || 'low').toUpperCase() }}
+                  </span>
+                </div>
+              </template>
+              <div v-else class="text-sm text-wc-text-tertiary">Sin tickets abiertos</div>
+            </section>
+
           </div>
         </div>
-
-        <!-- Mobile quick actions (sm:hidden) -->
-        <div class="grid grid-cols-1 gap-3 sm:hidden">
-          <RouterLink
-            to="/coach/checkins"
-            class="btn-press flex items-center justify-center gap-2 rounded-lg bg-wc-accent px-4 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors"
-          >
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-            Revisar check-ins
-          </RouterLink>
-          <RouterLink
-            to="/coach/messages"
-            class="btn-press flex items-center justify-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-3 text-sm font-medium text-wc-text hover:bg-wc-bg-secondary transition-colors"
-          >
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-            </svg>
-            Enviar mensaje
-          </RouterLink>
-          <RouterLink
-            to="/coach/clients"
-            class="btn-press flex items-center justify-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-3 text-sm font-medium text-wc-text hover:bg-wc-bg-secondary transition-colors"
-          >
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-            </svg>
-            Ver mis clientes
-          </RouterLink>
-        </div>
-
       </template>
 
     </div>
   </CoachLayout>
 </template>
-

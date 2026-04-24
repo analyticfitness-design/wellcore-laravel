@@ -6,10 +6,11 @@ use App\Models\AssignedPlan;
 use App\Models\Checkin;
 use App\Models\Client;
 use App\Models\CoachMessage;
+use App\Models\Ticket;
 use App\Models\TrainingLog;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -17,77 +18,123 @@ use Livewire\Component;
 class Dashboard extends Component
 {
     public string $greeting = '';
+
     public string $coachName = '';
+
+    public string $todayDateLabel = '';
 
     // Stats
     public int $activeClients = 0;
+
     public int $pendingCheckins = 0;
+
     public int $unreadMessages = 0;
+
     public int $plansThisMonth = 0;
 
-    // Clients needing attention
+    public int $urgentClientsCount = 0;
+
+    public int $openTickets = 0;
+
+    // Lists
     public array $attentionClients = [];
 
-    // Recent messages
     public array $recentMessages = [];
 
-    // Chart data
+    public array $todayActivity = [];
+
+    public array $pendingCheckinsList = [];
+
+    public array $openTicketsList = [];
+
+    // Chart / sparkline data
     public array $clientProgressData = [];
+
     public array $checkinFrequencyData = [];
+
+    public array $sparklines = [];
 
     public function mount(): void
     {
         $coach = auth('wellcore')->user();
         $coachId = $coach->id;
 
-        // Greeting based on time of day
         $hour = (int) now()->format('H');
-        if ($hour < 12) {
-            $this->greeting = 'Buenos dias';
-        } elseif ($hour < 18) {
-            $this->greeting = 'Buenas tardes';
-        } else {
-            $this->greeting = 'Buenas noches';
-        }
+        $this->greeting = match (true) {
+            $hour < 12 => 'Buenos dias',
+            $hour < 18 => 'Buenas tardes',
+            default => 'Buenas noches',
+        };
 
         $this->coachName = explode(' ', $coach->name ?? 'Coach')[0];
+        $this->todayDateLabel = mb_strtoupper(now()->locale('es')->isoFormat('dddd D MMM'));
 
-        // Get client IDs assigned to this coach via assigned_plans
         $clientIds = AssignedPlan::where('assigned_by', $coachId)
             ->pluck('client_id')
-            ->unique();
+            ->unique()
+            ->values();
 
-        // Active clients
-        $clients = Client::whereIn('id', $clientIds)
-            ->where('status', 'activo')
-            ->get();
-        $this->activeClients = $clients->count();
+        $cached = Cache::remember("coach_dashboard:{$coachId}", 300, function () use ($coachId, $clientIds) {
+            return [
+                'activeClients' => Client::whereIn('id', $clientIds)->where('status', 'activo')->count(),
+                'pendingCheckins' => Checkin::whereIn('client_id', $clientIds)->whereNull('coach_reply')->count(),
+                'unreadMessages' => CoachMessage::where('coach_id', $coachId)->where('direction', 'client_to_coach')->whereNull('read_at')->count(),
+                'plansThisMonth' => AssignedPlan::where('assigned_by', $coachId)->whereYear('created_at', now()->year)->whereMonth('created_at', now()->month)->count(),
+                'urgentClientsCount' => $this->computeUrgentCount($clientIds),
+                'openTickets' => $this->computeOpenTickets($coachId),
+                'attentionClients' => $this->loadAttentionClients($clientIds),
+                'recentMessages' => $this->loadRecentMessages($coachId),
+                'todayActivity' => $this->loadTodayActivity($clientIds, $coachId),
+                'pendingCheckinsList' => $this->loadPendingCheckinsList($clientIds),
+                'openTicketsList' => $this->loadOpenTickets($coachId),
+                'sparklines' => $this->loadSparklines($clientIds, $coachId),
+                'clientProgressData' => $this->loadClientProgressData($clientIds),
+                'checkinFrequencyData' => $this->loadCheckinFrequencyData($clientIds),
+            ];
+        });
 
-        // Pending check-ins (no coach reply yet)
-        $this->pendingCheckins = Checkin::whereIn('client_id', $clientIds)
-            ->whereNull('coach_reply')
-            ->count();
-
-        // Unread messages from clients
-        $this->unreadMessages = CoachMessage::where('coach_id', $coachId)
-            ->where('direction', 'client_to_coach')
-            ->whereNull('read_at')
-            ->count();
-
-        // Plans assigned this month
-        $this->plansThisMonth = AssignedPlan::where('assigned_by', $coachId)
-            ->whereYear('created_at', now()->year)
-            ->whereMonth('created_at', now()->month)
-            ->count();
-
-        $this->loadAttentionClients($clientIds);
-        $this->loadRecentMessages($coachId);
-        $this->loadChartData($clientIds);
+        $this->activeClients = $cached['activeClients'];
+        $this->pendingCheckins = $cached['pendingCheckins'];
+        $this->unreadMessages = $cached['unreadMessages'];
+        $this->plansThisMonth = $cached['plansThisMonth'];
+        $this->urgentClientsCount = $cached['urgentClientsCount'];
+        $this->openTickets = $cached['openTickets'];
+        $this->attentionClients = $cached['attentionClients'];
+        $this->recentMessages = $cached['recentMessages'];
+        $this->todayActivity = $cached['todayActivity'];
+        $this->pendingCheckinsList = $cached['pendingCheckinsList'];
+        $this->openTicketsList = $cached['openTicketsList'];
+        $this->sparklines = $cached['sparklines'];
+        $this->clientProgressData = $cached['clientProgressData'];
+        $this->checkinFrequencyData = $cached['checkinFrequencyData'];
     }
 
-    protected function loadAttentionClients($clientIds): void
+    // -------------------------------------------------------------------------
+    // Private scalar helpers (used inside the Cache closure)
+    // -------------------------------------------------------------------------
+
+    private function computeUrgentCount(Collection $clientIds): int
     {
-        // Clients with unreplied check-ins, ordered by oldest unreplied
+        return Checkin::whereIn('client_id', $clientIds)
+            ->whereNull('coach_reply')
+            ->where('checkin_date', '<=', now()->subHours(48)->toDateTimeString())
+            ->distinct('client_id')
+            ->count('client_id');
+    }
+
+    private function computeOpenTickets(int $coachId): int
+    {
+        return Ticket::where('coach_id', $coachId)
+            ->whereIn('status', ['open', 'in_progress'])
+            ->count();
+    }
+
+    // -------------------------------------------------------------------------
+    // Load methods (return arrays — no Eloquent collections)
+    // -------------------------------------------------------------------------
+
+    protected function loadAttentionClients(Collection $clientIds): array
+    {
         $pendingByClient = Checkin::whereIn('client_id', $clientIds)
             ->whereNull('coach_reply')
             ->selectRaw('client_id, COUNT(*) as pending_count, MIN(checkin_date) as oldest_checkin')
@@ -96,36 +143,44 @@ class Dashboard extends Component
             ->limit(5)
             ->get();
 
-        // Eager-load clients and last messages to avoid N+1 queries
+        if ($pendingByClient->isEmpty()) {
+            return [];
+        }
+
         $pendingClientIds = $pendingByClient->pluck('client_id');
-        $clientsById = Client::whereIn('id', $pendingClientIds)
-            ->get()
-            ->keyBy('id');
-        $lastMessagesByClient = CoachMessage::whereIn('client_id', $pendingClientIds)
+
+        $clientsById = Client::whereIn('id', $pendingClientIds)->get()->keyBy('id');
+        $lastMsgByClient = CoachMessage::whereIn('client_id', $pendingClientIds)
             ->orderByDesc('created_at')
             ->get()
             ->unique('client_id')
             ->keyBy('client_id');
 
-        $this->attentionClients = [];
+        $result = [];
         foreach ($pendingByClient as $row) {
             $client = $clientsById->get($row->client_id);
-            if (!$client) continue;
+            if (! $client) {
+                continue;
+            }
 
-            $lastMessage = $lastMessagesByClient->get($row->client_id);
+            $lastMessage = $lastMsgByClient->get($row->client_id);
 
-            $this->attentionClients[] = [
+            $result[] = [
                 'id' => $client->id,
                 'name' => $client->name,
                 'plan' => $client->plan?->label() ?? 'Sin plan',
                 'pending_checkins' => $row->pending_count,
                 'oldest_checkin' => Carbon::parse($row->oldest_checkin)->diffForHumans(),
-                'last_message' => $lastMessage ? Carbon::parse($lastMessage->created_at)->diffForHumans() : 'Sin mensajes',
+                'last_message' => $lastMessage
+                    ? Carbon::parse($lastMessage->created_at)->diffForHumans()
+                    : 'Sin mensajes',
             ];
         }
+
+        return $result;
     }
 
-    protected function loadRecentMessages(int $coachId): void
+    protected function loadRecentMessages(int $coachId): array
     {
         $messages = CoachMessage::where('coach_id', $coachId)
             ->where('direction', 'client_to_coach')
@@ -133,28 +188,239 @@ class Dashboard extends Component
             ->limit(5)
             ->get();
 
-        // Eager-load clients to avoid N+1 queries
-        $messageClientIds = $messages->pluck('client_id')->unique();
-        $clientsById = Client::whereIn('id', $messageClientIds)
+        if ($messages->isEmpty()) {
+            return [];
+        }
+
+        $clientsById = Client::whereIn('id', $messages->pluck('client_id')->unique())
             ->get()
             ->keyBy('id');
 
-        $this->recentMessages = [];
+        $result = [];
         foreach ($messages as $msg) {
             $client = $clientsById->get($msg->client_id);
-            $this->recentMessages[] = [
+            $result[] = [
                 'client_name' => $client->name ?? 'Cliente',
                 'message' => str()->limit($msg->message, 80),
                 'time_ago' => Carbon::parse($msg->created_at)->diffForHumans(),
                 'is_read' => $msg->read_at !== null,
             ];
         }
+
+        return $result;
     }
 
-    protected function loadChartData($clientIds): void
+    protected function loadUrgentClients(Collection $clientIds): array
     {
-        // Client progress: training sessions per client (last 4 weeks)
-        $this->clientProgressData = TrainingLog::whereIn('client_id', $clientIds)
+        $cutoff = now()->subHours(48)->toDateTimeString();
+
+        $unrepliedCheckins = Checkin::whereIn('client_id', $clientIds)
+            ->whereNull('coach_reply')
+            ->where('checkin_date', '<=', $cutoff)
+            ->selectRaw('client_id, MIN(checkin_date) as oldest_checkin')
+            ->groupBy('client_id')
+            ->orderBy('oldest_checkin')
+            ->limit(5)
+            ->get();
+
+        if ($unrepliedCheckins->isEmpty()) {
+            return [];
+        }
+
+        $urgentIds = $unrepliedCheckins->pluck('client_id');
+        $clientsById = Client::whereIn('id', $urgentIds)->get()->keyBy('id');
+        $lastMsgByClient = CoachMessage::whereIn('client_id', $urgentIds)
+            ->orderByDesc('created_at')
+            ->get()
+            ->unique('client_id')
+            ->keyBy('client_id');
+
+        $result = [];
+        foreach ($unrepliedCheckins as $row) {
+            $client = $clientsById->get($row->client_id);
+            if (! $client) {
+                continue;
+            }
+
+            $lastMessage = $lastMsgByClient->get($row->client_id);
+            $daysWithout = Carbon::parse($row->oldest_checkin)->diffInDays(now());
+
+            $tags = ['SIN RESPONDER'];
+            if ($daysWithout >= 7) {
+                $tags[] = 'SIN CHECK-IN';
+            }
+
+            $result[] = [
+                'id' => $client->id,
+                'name' => $client->name,
+                'plan' => $client->plan?->label() ?? 'Sin plan',
+                'days_without_reply' => $daysWithout,
+                'last_message_ago' => $lastMessage
+                    ? Carbon::parse($lastMessage->created_at)->diffForHumans()
+                    : 'Sin mensajes',
+                'tags' => $tags,
+            ];
+        }
+
+        return $result;
+    }
+
+    protected function loadTodayActivity(Collection $clientIds, int $coachId): array
+    {
+        $checkins = Checkin::whereIn('client_id', $clientIds)
+            ->whereDate('checkin_date', today())
+            ->get(['client_id', 'checkin_date as created_at_raw'])
+            ->map(fn ($r) => ['type' => 'checkin', 'client_id' => $r->client_id, 'created_at' => $r->created_at_raw]);
+
+        $trainings = TrainingLog::whereIn('client_id', $clientIds)
+            ->whereDate('log_date', today())
+            ->where('completed', true)
+            ->get(['client_id', 'log_date as created_at_raw'])
+            ->map(fn ($r) => ['type' => 'training', 'client_id' => $r->client_id, 'created_at' => $r->created_at_raw]);
+
+        $messages = CoachMessage::where('coach_id', $coachId)
+            ->whereDate('created_at', today())
+            ->where('direction', 'client_to_coach')
+            ->get(['client_id', 'created_at'])
+            ->map(fn ($r) => ['type' => 'message', 'client_id' => $r->client_id, 'created_at' => (string) $r->created_at]);
+
+        $events = collect($checkins)->merge($trainings)->merge($messages);
+
+        if ($events->isEmpty()) {
+            return [];
+        }
+
+        $allClientIds = $events->pluck('client_id')->unique();
+        $clientsById = Client::whereIn('id', $allClientIds)->get()->keyBy('id');
+
+        $colorMap = [
+            'checkin' => 'success',
+            'training' => 'info',
+            'message' => 'accent',
+        ];
+
+        return $events
+            ->sortByDesc('created_at')
+            ->take(10)
+            ->map(function (array $event) use ($clientsById, $colorMap) {
+                $client = $clientsById->get($event['client_id']);
+
+                return [
+                    'type' => $event['type'],
+                    'client_name' => $client->name ?? 'Cliente',
+                    'time_ago' => Carbon::parse($event['created_at'])->diffForHumans(),
+                    'color' => $colorMap[$event['type']],
+                ];
+            })
+            ->values()
+            ->toArray();
+    }
+
+    protected function loadPendingCheckinsList(Collection $clientIds): array
+    {
+        $checkins = Checkin::whereIn('client_id', $clientIds)
+            ->whereNull('coach_reply')
+            ->orderBy('checkin_date')
+            ->limit(8)
+            ->get(['client_id', 'checkin_date']);
+
+        if ($checkins->isEmpty()) {
+            return [];
+        }
+
+        $clientsById = Client::whereIn('id', $checkins->pluck('client_id')->unique())
+            ->get()
+            ->keyBy('id');
+
+        $result = [];
+        foreach ($checkins as $checkin) {
+            $client = $clientsById->get($checkin->client_id);
+            $date = Carbon::parse($checkin->checkin_date);
+            $result[] = [
+                'client_name' => $client->name ?? 'Cliente',
+                'checkin_date_label' => $date->diffForHumans(),
+                'week_number' => $date->weekOfYear,
+            ];
+        }
+
+        return $result;
+    }
+
+    protected function loadOpenTickets(int $coachId): array
+    {
+        $tickets = Ticket::where('coach_id', $coachId)
+            ->whereIn('status', ['open', 'in_progress'])
+            ->orderByRaw("FIELD(priority, 'urgent', 'high', 'normal', 'low')")
+            ->limit(5)
+            ->get(['id', 'client_id', 'client_name', 'description', 'status', 'priority', 'created_at']);
+
+        if ($tickets->isEmpty()) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($tickets as $ticket) {
+            $result[] = [
+                'id' => $ticket->id,
+                'title' => str()->limit($ticket->description, 60),
+                'client_name' => $ticket->client_name ?? 'Cliente',
+                'status' => $ticket->status instanceof \BackedEnum ? $ticket->status->value : $ticket->status,
+                'priority' => $ticket->priority instanceof \BackedEnum ? $ticket->priority->value : $ticket->priority,
+                'created_ago' => Carbon::parse($ticket->created_at)->diffForHumans(),
+            ];
+        }
+
+        return $result;
+    }
+
+    protected function loadSparklines(Collection $clientIds, int $coachId): array
+    {
+        $days = collect(range(6, 0))->map(fn ($i) => now()->subDays($i)->toDateString());
+        $since = $days->first();
+
+        // Checkins per day
+        $checkinRows = Checkin::whereIn('client_id', $clientIds)
+            ->where('checkin_date', '>=', $since)
+            ->selectRaw('DATE(checkin_date) as day, COUNT(*) as cnt')
+            ->groupBy('day')
+            ->pluck('cnt', 'day');
+
+        // Messages per day
+        $messageRows = CoachMessage::where('coach_id', $coachId)
+            ->where('created_at', '>=', $since)
+            ->selectRaw('DATE(created_at) as day, COUNT(*) as cnt')
+            ->groupBy('day')
+            ->pluck('cnt', 'day');
+
+        // Tickets per day
+        $ticketRows = Ticket::where('coach_id', $coachId)
+            ->where('created_at', '>=', $since)
+            ->selectRaw('DATE(created_at) as day, COUNT(*) as cnt')
+            ->groupBy('day')
+            ->pluck('cnt', 'day');
+
+        // Active clients count is static — repeat for all 7 days
+        $activeCount = Client::whereIn('id', $clientIds)->where('status', 'activo')->count();
+
+        $fillSeries = function (Collection $rows) use ($days): array {
+            return $days->map(fn ($day) => (int) ($rows[$day] ?? 0))->values()->toArray();
+        };
+
+        return [
+            'clients' => $days->map(fn () => $activeCount)->values()->toArray(),
+            'checkins' => $fillSeries($checkinRows),
+            'messages' => $fillSeries($messageRows),
+            'tickets' => $fillSeries($ticketRows),
+        ];
+    }
+
+    // -------------------------------------------------------------------------
+    // Chart helpers (kept for backward compat — now called inside cache closure)
+    // -------------------------------------------------------------------------
+
+    protected function loadClientProgressData(Collection $clientIds): array
+    {
+        return TrainingLog::whereIn('client_id', $clientIds)
             ->where('completed', true)
             ->where('log_date', '>=', now()->subWeeks(4)->toDateString())
             ->join('clients', 'training_logs.client_id', '=', 'clients.id')
@@ -168,23 +434,35 @@ class Dashboard extends Component
                 'sessions' => (int) $row->sessions,
             ])
             ->toArray();
+    }
 
-        // Check-in frequency: check-ins per week (last 8 weeks)
-        $this->checkinFrequencyData = Checkin::whereIn('client_id', $clientIds)
+    protected function loadCheckinFrequencyData(Collection $clientIds): array
+    {
+        return Checkin::whereIn('client_id', $clientIds)
             ->where('checkin_date', '>=', now()->subWeeks(8)->toDateString())
-            ->selectRaw("YEARWEEK(checkin_date, 1) as yw, COUNT(*) as count")
+            ->selectRaw('YEARWEEK(checkin_date, 1) as yw, COUNT(*) as count')
             ->groupBy('yw')
             ->orderBy('yw')
             ->get()
             ->map(function ($row) {
-                $year = substr($row->yw, 0, 4);
                 $week = substr($row->yw, 4);
+
                 return [
-                    'week' => 'Sem ' . $week,
+                    'week' => 'Sem '.$week,
                     'count' => (int) $row->count,
                 ];
             })
             ->toArray();
+    }
+
+    // -------------------------------------------------------------------------
+    // Legacy wrapper kept for backward compatibility with any existing blade
+    // references to loadChartData(). Delegates to the split methods.
+    // -------------------------------------------------------------------------
+    protected function loadChartData(Collection $clientIds): void
+    {
+        $this->clientProgressData = $this->loadClientProgressData($clientIds);
+        $this->checkinFrequencyData = $this->loadCheckinFrequencyData($clientIds);
     }
 
     public function render()
