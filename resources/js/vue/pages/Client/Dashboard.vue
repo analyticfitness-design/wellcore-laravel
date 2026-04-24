@@ -10,6 +10,8 @@ import DashboardPlanAlert from '../../components/dashboard/DashboardPlanAlert.vu
 import DashboardStats from '../../components/dashboard/DashboardStats.vue';
 import DashboardCheckin from '../../components/dashboard/DashboardCheckin.vue';
 import DashboardMissions from '../../components/dashboard/DashboardMissions.vue';
+import DashboardCoach from '../../components/dashboard/DashboardCoach.vue';
+import DashboardActivity from '../../components/dashboard/DashboardActivity.vue';
 
 const api = useApi();
 const router = useRouter();
@@ -161,36 +163,6 @@ const trainedRingOffset = computed(() => {
     const trained = Math.min(data.value.trainedThisWeek || 0, 7);
     return circumference - (circumference * trained / 7);
 });
-
-// ── Recent activity type icons ──
-function getActivityIconData(type) {
-    switch (type) {
-        case 'training':
-            return {
-                bgClass: 'bg-emerald-500/10',
-                iconClass: 'text-emerald-500',
-                path: 'm4.5 12.75 6 6 9-13.5',
-            };
-        case 'checkin':
-            return {
-                bgClass: 'bg-sky-500/10',
-                iconClass: 'text-sky-500',
-                path: 'M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
-            };
-        case 'payment':
-            return {
-                bgClass: 'bg-violet-500/10',
-                iconClass: 'text-violet-500',
-                path: 'M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z',
-            };
-        default:
-            return {
-                bgClass: 'bg-wc-bg-secondary',
-                iconClass: 'text-wc-text-tertiary',
-                path: 'M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
-            };
-    }
-}
 
 // ── Plan-specific motivational quotes (client-side, varies by day of week) ──
 const PLAN_QUOTES = {
@@ -556,24 +528,7 @@ const weekMarkers = computed(() => {
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- COACH CARD                                                    -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div v-if="data.coachName" class="coach-card flex items-center gap-4 rounded-xl border bg-wc-bg-tertiary p-4">
-        <div class="coach-avatar flex h-11 w-11 shrink-0 items-center justify-center rounded-full">
-          <span class="font-display text-sm tracking-wide text-wc-accent">{{ data.coachInitials || 'WC' }}</span>
-        </div>
-        <div class="min-w-0 flex-1">
-          <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Tu coach</p>
-          <p class="truncate text-base font-semibold text-wc-text">{{ data.coachName }}</p>
-        </div>
-        <RouterLink
-          to="/client/chat"
-          class="inline-flex items-center gap-1.5 rounded-full bg-wc-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-wc-accent-hover shadow-lg shadow-wc-accent/20"
-        >
-          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-          </svg>
-          Enviar mensaje
-        </RouterLink>
-      </div>
+      <DashboardCoach :data="data" />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- CHECK-IN COUNTDOWN                                            -->
@@ -693,29 +648,7 @@ const weekMarkers = computed(() => {
         </div>
 
         <!-- Recent activity -->
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-          <h2 class="text-lg font-semibold text-wc-text">Actividad reciente</h2>
-
-          <ul v-if="data.recentActivity && data.recentActivity.length > 0" class="mt-4 space-y-3">
-            <li v-for="(activity, idx) in data.recentActivity" :key="idx" class="flex items-start gap-3">
-              <!-- Color dot -->
-              <span :class="['act-dot', `act-dot-${activity.type || 'default'}`]"></span>
-              <!-- Text -->
-              <div class="min-w-0 flex-1">
-                <p class="text-sm font-medium text-wc-text">{{ activity.description }}</p>
-                <p class="text-xs text-wc-text-secondary">{{ activity.timeAgo }}</p>
-              </div>
-            </li>
-          </ul>
-
-          <!-- Empty activity state -->
-          <div v-else class="mt-6 flex flex-col items-center py-4 text-center">
-            <svg class="h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-            <p class="mt-2 text-sm text-wc-text-tertiary">Sin actividad reciente</p>
-          </div>
-        </div>
+        <DashboardActivity :activities="data.recentActivity || []" />
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
