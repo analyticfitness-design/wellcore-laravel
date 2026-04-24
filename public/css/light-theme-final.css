@@ -59,62 +59,26 @@ html:not(.dark) [wire\:id] {
 
 html:not(.dark) .hp-hero,
 html:not(.dark) .wc-hero-premium {
-    background: linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 60%, #27272A 100%);
+    background: linear-gradient(135deg, #0F0F0F 0%, #18181B 100%) !important;
     color: #FAFAF8;
     border-radius: 20px;
-    padding: 36px 40px !important;
-    margin: 8px 0;
-    box-shadow:
-        0 20px 60px rgba(220, 38, 38, 0.2),
-        0 8px 24px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
     overflow: hidden;
     position: relative;
 }
 
-/* Orbs rojos dramáticos en el hero */
-html:not(.dark) .hp-hero,
-html:not(.dark) .wc-hero-premium::before {
-    content: "";
-    position: absolute;
-    top: -80px;
-    right: -60px;
-    width: 400px;
-    height: 400px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(220, 38, 38, 0.35), transparent 60%);
-    filter: blur(60px);
-    pointer-events: none;
-    z-index: 0;
-}
-
-html:not(.dark) .hp-hero,
-html:not(.dark) .wc-hero-premium::after {
-    content: attr(data-week);
-    position: absolute;
-    top: -20px;
-    right: 8%;
-    font-family: 'Oswald', Impact, sans-serif;
-    font-weight: 900;
-    font-size: 280px;
-    line-height: 0.8;
-    color: rgba(220, 38, 38, 0.12);
-    letter-spacing: -0.05em;
-    pointer-events: none;
-    z-index: 0;
-    user-select: none;
-}
-
-@media (max-width: 640px) {
-    html:not(.dark) .hp-hero,
-html:not(.dark) .wc-hero-premium {
-        padding: 24px 22px !important;
-    }
-    html:not(.dark) .hp-hero,
-html:not(.dark) .wc-hero-premium::after {
-        font-size: 180px;
-        top: -10px;
-        right: 4%;
-    }
+/* Cards internas dentro del hero → transparentes (heredan hero dark) */
+html:not(.dark) .hp-hero .rounded-card,
+html:not(.dark) .hp-hero .rounded-xl,
+html:not(.dark) .wc-hero-premium .rounded-card,
+html:not(.dark) .wc-hero-premium .rounded-xl,
+html:not(.dark) .hp-hero [class*="bg-wc-bg-tertiary"],
+html:not(.dark) .wc-hero-premium [class*="bg-wc-bg-tertiary"] {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
 }
 
 /* Todos los textos del hero blancos */
