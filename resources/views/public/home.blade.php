@@ -114,8 +114,22 @@
                 </a>
             </div>
 
+            {{-- Dashboard mockup --}}
+            <div class="hp-hero-mockup hp-anim-up hp-anim-d4" aria-hidden="true">
+                <div class="hp-hero-phone">
+                    <picture>
+                        <source srcset="{{ asset('images/hero/dashboard-mobile.avif') }}" type="image/avif">
+                        <img src="{{ asset('images/hero/dashboard-mobile.webp') }}"
+                             alt=""
+                             width="280" height="575"
+                             loading="eager"
+                             fetchpriority="high">
+                    </picture>
+                </div>
+            </div>
+
             {{-- Proof strip --}}
-            <div class="hp-hero-proof hp-anim-up hp-anim-d4">
+            <div class="hp-hero-proof hp-anim-up hp-anim-d5">
                 <div class="hp-hero-proof-item">
                     <span class="hp-hero-proof-icon font-bold text-wc-accent font-data">94%</span>
                     {{ __('home.hero_stat_adherencia') }}
@@ -131,7 +145,7 @@
             </div>
 
             {{-- Plan chips --}}
-            <div class="flex flex-wrap gap-2 justify-center hp-anim-up hp-anim-d5">
+            <div class="flex flex-wrap gap-2 justify-center hp-anim-up hp-anim-d6">
                 <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Esencial <span class="font-data font-semibold text-wc-text">$299k</span></span>
                 <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Método <span class="font-data font-semibold text-wc-text">$399k</span></span>
                 <span class="rounded-full border border-wc-border px-3 py-1 text-xs text-wc-text-secondary">Elite <span class="font-data font-semibold text-wc-text">$549k</span></span>
