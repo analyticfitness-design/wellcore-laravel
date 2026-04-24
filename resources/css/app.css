@@ -734,6 +734,23 @@ body {
   .cd-btn { width: 100%; text-align: center; }
 }
 
+/* ── Sprint 3 Vue-SPA: semantic hooks ────────────────────────────── */
+/* 3a: Progress bar markers */
+.prog-mk-on  { width:6px; height:6px; border-radius:50%; background:rgba(220,38,38,.65); box-shadow:0 0 5px rgba(220,38,38,.45); transition:all .3s; }
+.prog-mk-off { width:4px; height:4px; border-radius:50%; background:var(--color-wc-border); }
+.prog-indicator { box-shadow: 0 0 0 5px rgba(220,38,38,.15), 0 0 18px rgba(220,38,38,.4); }
+
+/* 3b: Coach card — accent border + gradient tint */
+.coach-card {
+  border-color: rgba(220,38,38,.22);
+  box-shadow: 0 0 0 1px rgba(220,38,38,.06), 0 4px 16px rgba(220,38,38,.08);
+  background-image: linear-gradient(135deg, rgba(220,38,38,.04) 0%, transparent 42%);
+}
+.coach-avatar { background:rgba(220,38,38,.12); border:1.5px solid rgba(220,38,38,.25); }
+
+/* 3c: Countdown digits — tabular nums + tight tracking */
+.cd-digits { font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .flame, .live-dot, .prog-line-fg { animation: none; }

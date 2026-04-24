@@ -582,7 +582,7 @@ const weekMarkers = computed(() => {
             class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-700"
             :style="{ left: (data.progressPercent || 0) + '%' }"
           >
-            <div class="h-5 w-5 rounded-full border-[3px] border-wc-accent bg-wc-bg-tertiary shadow-lg shadow-wc-accent/30"></div>
+            <div class="prog-indicator h-5 w-5 rounded-full border-[3px] border-wc-accent bg-wc-bg-tertiary"></div>
           </div>
         </div>
 
@@ -595,9 +595,7 @@ const weekMarkers = computed(() => {
           <!-- Desktop week dots -->
           <div class="hidden items-center gap-0 flex-1 mx-4 sm:flex">
             <div v-for="marker in weekMarkers" :key="marker.week" class="flex flex-1 flex-col items-center">
-              <div
-                :class="marker.isActive ? 'h-1.5 w-1.5 rounded-full bg-wc-accent/60' : 'h-1 w-1 rounded-full bg-wc-border'"
-              ></div>
+              <div :class="marker.isActive ? 'prog-mk-on' : 'prog-mk-off'"></div>
               <span v-if="marker.showLabel" class="mt-1 text-xs text-wc-text-tertiary">{{ marker.week }}</span>
             </div>
           </div>
@@ -731,8 +729,8 @@ const weekMarkers = computed(() => {
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- COACH CARD                                                    -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div v-if="data.coachName" class="flex items-center gap-4 rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-wc-accent/10">
+      <div v-if="data.coachName" class="coach-card flex items-center gap-4 rounded-xl border bg-wc-bg-tertiary p-4">
+        <div class="coach-avatar flex h-11 w-11 shrink-0 items-center justify-center rounded-full">
           <span class="font-display text-sm tracking-wide text-wc-accent">{{ data.coachInitials || 'WC' }}</span>
         </div>
         <div class="min-w-0 flex-1">
@@ -799,7 +797,7 @@ const weekMarkers = computed(() => {
           <div
             v-if="showCheckinTimer && data.daysUntilCheckin > 0"
             :class="[
-              'hidden items-center gap-1 font-data text-lg font-bold tabular-nums sm:flex',
+              'cd-digits hidden items-center gap-1 font-data text-lg font-bold sm:flex',
               data.daysUntilCheckin <= 2 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'
             ]"
           >
