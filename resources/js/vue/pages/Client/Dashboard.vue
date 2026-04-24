@@ -467,11 +467,12 @@ const weekMarkers = computed(() => {
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
         </div>
-        <span class="relative z-10 text-sm text-wc-text-secondary">
+        <span class="relative z-10 min-w-0 flex-1 text-sm text-wc-text-secondary">
           Plan
           <span v-if="data.planPhase" class="font-semibold capitalize text-wc-text">{{ data.planPhase }}</span>
           activo &mdash; Dia <span class="font-semibold text-wc-text">{{ data.planDaysActive }}</span>
         </span>
+        <span class="live-dot shrink-0"></span>
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -482,8 +483,8 @@ const weekMarkers = computed(() => {
         <div class="sc-r relative overflow-hidden wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
           <div class="flex items-center justify-between">
             <span class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Racha</span>
-            <div :class="['flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10', (data.streakDays || 0) >= 3 ? 'animate-pulse' : '']">
-              <svg class="h-4 w-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10">
+              <svg :class="['h-4 w-4 text-orange-500', (data.streakDays || 0) >= 3 ? 'flame' : '']" viewBox="0 0 24 24" fill="currentColor">
                 <path fill-rule="evenodd" d="M12.963 2.286a.75.75 0 0 0-1.071-.136 9.742 9.742 0 0 0-3.539 6.176A7.547 7.547 0 0 1 6.648 6.61a.75.75 0 0 0-1.152.082A9 9 0 1 0 15.68 4.534a7.46 7.46 0 0 1-2.717-2.248ZM15.75 14.25a3.75 3.75 0 1 1-7.313-1.172c.628.465 1.35.81 2.133 1a5.99 5.99 0 0 1 1.925-3.546 3.75 3.75 0 0 1 3.255 3.718Z" clip-rule="evenodd" />
               </svg>
             </div>
@@ -574,7 +575,7 @@ const weekMarkers = computed(() => {
         <div class="relative">
           <div class="h-2.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
             <div
-              class="h-full rounded-full bg-gradient-to-r from-wc-accent to-red-400 transition-all duration-700 ease-out"
+              class="prog-line-fg transition-all duration-700 ease-out"
               :style="{ width: (data.progressPercent || 0) + '%' }"
             ></div>
           </div>
@@ -988,16 +989,12 @@ const weekMarkers = computed(() => {
 
           <ul v-if="data.recentActivity && data.recentActivity.length > 0" class="mt-4 space-y-3">
             <li v-for="(activity, idx) in data.recentActivity" :key="idx" class="flex items-start gap-3">
-              <!-- Type-specific icon -->
-              <div :class="['mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full', getActivityIconData(activity.type).bgClass]">
-                <svg :class="['h-3.5 w-3.5', getActivityIconData(activity.type).iconClass]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" :d="getActivityIconData(activity.type).path" />
-                </svg>
-              </div>
+              <!-- Color dot -->
+              <span :class="['act-dot', `act-dot-${activity.type || 'default'}`]"></span>
               <!-- Text -->
               <div class="min-w-0 flex-1">
-                <p class="text-base font-medium text-wc-text">{{ activity.description }}</p>
-                <p class="text-sm text-wc-text-secondary">{{ activity.timeAgo }}</p>
+                <p class="text-sm font-medium text-wc-text">{{ activity.description }}</p>
+                <p class="text-xs text-wc-text-secondary">{{ activity.timeAgo }}</p>
               </div>
             </li>
           </ul>

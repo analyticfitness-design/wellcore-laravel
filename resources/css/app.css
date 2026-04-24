@@ -751,7 +751,50 @@ body {
 /* 3c: Countdown digits — tabular nums + tight tracking */
 .cd-digits { font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
 
-/* Reduced motion */
+/* ── Sprint 4: Animations + Activity dots ────────────────────────── */
+
+/* 4a: Live-dot — ripple verde para plan activo */
+.live-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #10B981;
+  flex-shrink: 0;
+  animation: pulse-live 2s ease-in-out infinite;
+}
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16,185,129,.4); }
+  50%       { opacity: .8; box-shadow: 0 0 0 6px rgba(16,185,129,0); }
+}
+
+/* 4b: Flame — glow pulsante en icono racha cuando streak ≥ 3 */
+.flame { display: inline-block; animation: flame 1.5s ease-in-out infinite; }
+@keyframes flame {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(220,38,38,.5)); transform: scale(1); }
+  50%       { filter: drop-shadow(0 0 7px rgba(220,38,38,.8)); transform: scale(1.1); }
+}
+
+/* 4c: Shimmer fill para la barra de progreso del plan */
+.prog-line-fg {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--color-wc-accent), #ef4444, var(--color-wc-accent));
+  background-size: 200% 100%;
+  animation: shimmer-prog 3s ease-in-out infinite;
+}
+@keyframes shimmer-prog {
+  0%, 100% { background-position: 0% 0%; }
+  50%       { background-position: 100% 0%; }
+}
+
+/* 4d: Activity feed — puntos de color por tipo */
+.act-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.act-dot-training { background: #DC2626; }
+.act-dot-checkin  { background: #10B981; }
+.act-dot-weight   { background: #3B82F6; }
+.act-dot-payment  { background: #A78BFA; }
+.act-dot-default  { background: rgba(255,255,255,.2); }
+
+/* Reduced motion — incluye shimmer-prog */
 @media (prefers-reduced-motion: reduce) {
   .flame, .live-dot, .prog-line-fg { animation: none; }
   .xp-fill, .ring-fg { transition: none; }
