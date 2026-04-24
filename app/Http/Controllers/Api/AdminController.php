@@ -486,7 +486,8 @@ class AdminController extends Controller
 
         // Payments
         if ($typeFilter === 'all' || $typeFilter === 'payments') {
-            $payments = Payment::when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
+            $payments = Payment::with('client:id,name')
+                ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
                 ->latest('created_at')->limit(50)->get()
                 ->map(fn ($p) => [
                     'type' => 'payment',
@@ -915,33 +916,37 @@ class AdminController extends Controller
         $dateFrom = $request->query('date_from', '');
         $dateTo = $request->query('date_to', '');
         $perPage = $request->integer('per_page', 25);
+        $now = now();
 
-        // Stats
-        $totalRevenue = number_format((float) Payment::where('status', 'approved')->sum('amount'), 0, ',', '.');
-        $monthRevenue = number_format(
-            (float) Payment::where('status', 'approved')
-                ->whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)
-                ->sum('amount'),
-            0, ',', '.'
-        );
-        $pendingPayments = Payment::where('status', 'pending')->count();
+        // Payments stats — cached 60s to avoid recalculating on every dashboard open
+        $paymentStats = Cache::remember('admin_payments_stats_'.date('Y-m'), 60, function () use ($now) {
+            $totalRevenue = number_format((float) Payment::where('status', 'approved')->sum('amount'), 0, ',', '.');
+            $monthRevenue = number_format(
+                (float) Payment::where('status', 'approved')
+                    ->where('created_at', '>=', $now->copy()->startOfMonth())
+                    ->where('created_at', '<', $now->copy()->addMonth()->startOfMonth())
+                    ->sum('amount'),
+                0, ',', '.'
+            );
+            $pendingPayments = Payment::where('status', 'pending')->count();
+            $activeClients = Client::where('status', 'activo')->count();
+            $totalApproved = (float) Payment::where('status', 'approved')->sum('amount');
+            $avgPerClient = $activeClients > 0 ? number_format($totalApproved / $activeClients, 0, ',', '.') : '0';
 
-        $activeClients = Client::where('status', 'activo')->count();
-        $totalApproved = (float) Payment::where('status', 'approved')->sum('amount');
-        $avgPerClient = $activeClients > 0 ? number_format($totalApproved / $activeClients, 0, ',', '.') : '0';
+            return compact('totalRevenue', 'monthRevenue', 'pendingPayments', 'avgPerClient');
+        });
 
         // Payments list
-        $query = Payment::query()->with('client');
+        $query = Payment::query()->with('client:id,name');
 
         if ($statusFilter !== '') {
             $query->where('status', $statusFilter);
         }
         if ($dateFrom !== '') {
-            $query->whereDate('created_at', '>=', $dateFrom);
+            $query->where('created_at', '>=', Carbon::parse($dateFrom)->startOfDay());
         }
         if ($dateTo !== '') {
-            $query->whereDate('created_at', '<=', $dateTo);
+            $query->where('created_at', '<', Carbon::parse($dateTo)->addDay()->startOfDay());
         }
 
         $paginated = $query->latest('created_at')->paginate($perPage);
@@ -960,12 +965,7 @@ class AdminController extends Controller
         ]);
 
         return response()->json([
-            'stats' => [
-                'totalRevenue' => $totalRevenue,
-                'monthRevenue' => $monthRevenue,
-                'pendingPayments' => $pendingPayments,
-                'avgPerClient' => $avgPerClient,
-            ],
+            'stats' => $paymentStats,
             'payments' => $payments,
             'pagination' => [
                 'current_page' => $paginated->currentPage(),
@@ -1099,6 +1099,8 @@ class AdminController extends Controller
                 'public_visible' => true,
             ]);
         }
+
+        Cache::forget('admin_coach_stats');
 
         return response()->json(['created' => true, 'id' => $admin->id], 201);
     }
@@ -1249,6 +1251,7 @@ class AdminController extends Controller
         AuthToken::where('user_id', $id)->where('user_type', 'admin')->delete();
         CoachProfile::where('admin_id', $id)->delete();
         $admin->delete();
+        Cache::forget('admin_coach_stats');
 
         return response()->json(['deleted' => true]);
     }
@@ -1282,12 +1285,22 @@ class AdminController extends Controller
     {
         $this->resolveAdminOrFail($request);
 
-        return response()->json([
-            'total' => Admin::count(),
-            'coaches' => Admin::where('role', 'coach')->count(),
-            'with_profile' => CoachProfile::count(),
-            'clients' => AssignedPlan::where('active', true)->distinct('client_id')->count('client_id'),
-        ]);
+        $stats = Cache::remember('admin_coach_stats', 60, function () {
+            // Single aggregated query instead of 4 separate counts
+            $adminAgg = Admin::selectRaw("
+                COUNT(*) as total,
+                SUM(CASE WHEN role = 'coach' THEN 1 ELSE 0 END) as coaches
+            ")->first();
+
+            return [
+                'total' => (int) ($adminAgg->total ?? 0),
+                'coaches' => (int) ($adminAgg->coaches ?? 0),
+                'with_profile' => CoachProfile::count(),
+                'clients' => AssignedPlan::where('active', true)->distinct('client_id')->count('client_id'),
+            ];
+        });
+
+        return response()->json($stats);
     }
 
     // ─── Plans ──────────────────────────────────────────────────────────
@@ -1358,16 +1371,28 @@ class AdminController extends Controller
             'created_at' => $p->created_at?->format('d M Y'),
         ]);
 
-        // Stats counts
-        $stats = [
-            'total' => PlanTemplate::count(),
-            'entrenamiento' => PlanTemplate::where('plan_type', 'entrenamiento')->count(),
-            'nutricion' => PlanTemplate::where('plan_type', 'nutricion')->count(),
-            'habitos' => PlanTemplate::where('plan_type', 'habitos')->count(),
-            'suplementacion' => PlanTemplate::where('plan_type', 'suplementacion')->count(),
-            'ciclo' => PlanTemplate::where('plan_type', 'ciclo')->count(),
-            'ai_generated' => PlanTemplate::where('ai_generated', true)->count(),
-        ];
+        // Stats counts — single aggregation query, cached 60s
+        $stats = Cache::remember('admin_plans_stats', 60, function () {
+            $agg = PlanTemplate::selectRaw("
+                COUNT(*) as total,
+                SUM(CASE WHEN plan_type = 'entrenamiento' THEN 1 ELSE 0 END) as entrenamiento,
+                SUM(CASE WHEN plan_type = 'nutricion' THEN 1 ELSE 0 END) as nutricion,
+                SUM(CASE WHEN plan_type = 'habitos' THEN 1 ELSE 0 END) as habitos,
+                SUM(CASE WHEN plan_type = 'suplementacion' THEN 1 ELSE 0 END) as suplementacion,
+                SUM(CASE WHEN plan_type = 'ciclo' THEN 1 ELSE 0 END) as ciclo,
+                SUM(CASE WHEN ai_generated = 1 THEN 1 ELSE 0 END) as ai_generated
+            ")->first();
+
+            return [
+                'total' => (int) ($agg->total ?? 0),
+                'entrenamiento' => (int) ($agg->entrenamiento ?? 0),
+                'nutricion' => (int) ($agg->nutricion ?? 0),
+                'habitos' => (int) ($agg->habitos ?? 0),
+                'suplementacion' => (int) ($agg->suplementacion ?? 0),
+                'ciclo' => (int) ($agg->ciclo ?? 0),
+                'ai_generated' => (int) ($agg->ai_generated ?? 0),
+            ];
+        });
 
         // Coaches for filter dropdown
         $coaches = Admin::whereIn('role', ['coach', 'admin', 'superadmin'])
@@ -1455,6 +1480,8 @@ class AdminController extends Controller
             'coach_id' => $validated['coach_id'] ?? null,
             'ai_generated' => false,
         ]);
+
+        Cache::forget('admin_plans_stats');
 
         return response()->json(['created' => true, 'id' => $plan->id], 201);
     }
@@ -1579,6 +1606,8 @@ class AdminController extends Controller
             'coach_id' => array_key_exists('coach_id', $validated) ? ($validated['coach_id'] ?: null) : $plan->coach_id,
         ]);
 
+        Cache::forget('admin_plans_stats');
+
         return response()->json(['updated' => true]);
     }
 
@@ -1593,6 +1622,7 @@ class AdminController extends Controller
         $this->resolveAdminOrFail($request);
 
         PlanTemplate::findOrFail($id)->delete();
+        Cache::forget('admin_plans_stats');
 
         return response()->json(['deleted' => true]);
     }
@@ -1827,12 +1857,22 @@ class AdminController extends Controller
 
         $paginated = $query->orderBy($sortBy, $sortDir === 'asc' ? 'asc' : 'desc')->paginate(20);
 
-        $stats = [
-            'total' => Invitation::count(),
-            'pending' => Invitation::where('status', 'pending')->count(),
-            'used' => Invitation::where('status', 'used')->count(),
-            'expired' => Invitation::where('status', 'expired')->count(),
-        ];
+        // Stats — single aggregation, cached 60s
+        $stats = Cache::remember('admin_invitations_stats', 60, function () {
+            $agg = Invitation::selectRaw("
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending,
+                SUM(CASE WHEN status = 'used' THEN 1 ELSE 0 END) as used,
+                SUM(CASE WHEN status = 'expired' THEN 1 ELSE 0 END) as expired
+            ")->first();
+
+            return [
+                'total' => (int) ($agg->total ?? 0),
+                'pending' => (int) ($agg->pending ?? 0),
+                'used' => (int) ($agg->used ?? 0),
+                'expired' => (int) ($agg->expired ?? 0),
+            ];
+        });
 
         $items = collect($paginated->items())->map(function ($inv) {
             $rawStatus = $inv->getRawOriginal('status') ?? 'pending';
@@ -1906,6 +1946,8 @@ class AdminController extends Controller
             'created_at' => now(),
         ]);
 
+        Cache::forget('admin_invitations_stats');
+
         $intakeUrl = url('/unirse/'.$code);
 
         return response()->json([
@@ -1934,6 +1976,7 @@ class AdminController extends Controller
         }
 
         $invitation->delete();
+        Cache::forget('admin_invitations_stats');
 
         return response()->json(['deleted' => true]);
     }
@@ -1953,14 +1996,24 @@ class AdminController extends Controller
         $search = $request->query('search', '');
         $statusFilter = $request->query('status', 'all');
 
-        // Overview stats
-        $totalPrograms = RiseProgram::count();
-        $activePrograms = RiseProgram::whereIn('status', ['active', 'activo'])->count();
-        $totalTracking = RiseTracking::count();
-        $totalMeasurements = RiseMeasurement::count();
+        // Overview stats — single aggregation per table, cached 60s
+        $overview = Cache::remember('admin_rise_overview', 60, function () {
+            $riseAgg = RiseProgram::selectRaw("
+                COUNT(*) as total_programs,
+                SUM(CASE WHEN status IN ('active','activo') THEN 1 ELSE 0 END) as active_programs
+            ")->first();
+
+            return [
+                'totalPrograms' => (int) ($riseAgg->total_programs ?? 0),
+                'activePrograms' => (int) ($riseAgg->active_programs ?? 0),
+                'totalTracking' => RiseTracking::count(),
+                'totalMeasurements' => RiseMeasurement::count(),
+                'totalRevenue' => (float) Payment::where('plan', 'rise')->where('status', 'approved')->sum('amount'),
+            ];
+        });
 
         // Participants
-        $query = RiseProgram::query()->with('client');
+        $query = RiseProgram::query()->with('client:id,name');
 
         if ($search !== '') {
             $query->whereHas('client', function ($q) use ($search) {
@@ -1987,19 +2040,8 @@ class AdminController extends Controller
             'created_at' => $p->created_at?->format('d M Y'),
         ]);
 
-        // RISE payments
-        $risePayments = Payment::where('plan', 'rise')
-            ->where('status', 'approved')
-            ->sum('amount');
-
         return response()->json([
-            'overview' => [
-                'totalPrograms' => $totalPrograms,
-                'activePrograms' => $activePrograms,
-                'totalTracking' => $totalTracking,
-                'totalMeasurements' => $totalMeasurements,
-                'totalRevenue' => (float) $risePayments,
-            ],
+            'overview' => $overview,
             'participants' => $participants,
             'pagination' => [
                 'current_page' => $programs->currentPage(),

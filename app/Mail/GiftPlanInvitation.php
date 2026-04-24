@@ -56,7 +56,7 @@ class GiftPlanInvitation extends Mailable implements ShouldQueue
 
     protected function getPlanData(): array
     {
-        $baseUrl = rtrim(config('wellcore.base_url', 'https://wellcorefitness.com'), '/');
+        $baseUrl = rtrim(config('wellcore.base_url', config('app.url')), '/');
         $loginUrl = "{$baseUrl}/login";
 
         $giftSteps = [
