@@ -479,7 +479,7 @@ const weekMarkers = computed(() => {
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <div class="relative wc-grain grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <!-- Streak with Flame -->
-        <div class="wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
+        <div class="sc-r relative overflow-hidden wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
           <div class="flex items-center justify-between">
             <span class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Racha</span>
             <div :class="['flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10', (data.streakDays || 0) >= 3 ? 'animate-pulse' : '']">
@@ -493,7 +493,7 @@ const weekMarkers = computed(() => {
         </div>
 
         <!-- Check-ins this month -->
-        <div class="wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
+        <div class="sc-g relative overflow-hidden wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
           <div class="flex items-center justify-between">
             <span class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Check-ins</span>
             <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
@@ -507,7 +507,7 @@ const weekMarkers = computed(() => {
         </div>
 
         <!-- XP + Level -->
-        <div class="wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
+        <div class="sc-p relative overflow-hidden wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
           <div class="flex items-center justify-between">
             <span class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Nivel {{ data.level || 1 }}</span>
             <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10">
@@ -533,7 +533,7 @@ const weekMarkers = computed(() => {
         </div>
 
         <!-- Days trained this week — Progress Ring -->
-        <div class="wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
+        <div class="sc-a relative overflow-hidden wc-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5 transition-transform hover:-translate-y-0.5">
           <div class="flex items-center justify-between">
             <span class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Esta semana</span>
           </div>
