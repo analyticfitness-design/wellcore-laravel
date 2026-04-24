@@ -55,6 +55,14 @@ html:not(.dark) .wc-hero-premium [class*="bg-wc-bg-tertiary"] {
     box-shadow: none !important;
 }
 
+/* Ocultar orbs internos del componente Vue en light mode — hero queda limpio */
+html:not(.dark) .wc-hero-premium .wc-orb-tr,
+html:not(.dark) .wc-hero-premium [class*="pointer-events-none"][class*="rounded-full"],
+html:not(.dark) .hp-hero .wc-orb-tr,
+html:not(.dark) .hp-hero [class*="pointer-events-none"][class*="rounded-full"] {
+    display: none !important;
+}
+
 /* Todos los textos del hero blancos */
 html:not(.dark) .hp-hero,
 html:not(.dark) .wc-hero-premium > div,
