@@ -299,6 +299,19 @@
     <x-cookie-consent />
     <x-toast-notifications />
 
+    {{-- Sticky CTA mobile (solo en home y páginas públicas clave) --}}
+    @if(request()->routeIs('home') || request()->routeIs('planes') || request()->routeIs('proceso'))
+    <div class="hp-sticky-cta md:hidden" role="region" aria-label="Acción principal">
+        <a href="{{ route('inscripcion') }}" class="hp-sticky-cta-btn">
+            <span class="hp-sticky-cta-label">Empezar</span>
+            <span class="hp-sticky-cta-price">desde $299k</span>
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+            </svg>
+        </a>
+    </div>
+    @endif
+
     {{-- Alpine standalone SOLO si Livewire no rendero un componente (Livewire bundlea su propio Alpine).
          Cargar ambos duplica instancias → rompe wire:click y el morph del DOM (bug de forms de inscripcion). --}}
     @unless(\Livewire\Livewire::componentHasBeenRendered())

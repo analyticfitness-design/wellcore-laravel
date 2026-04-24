@@ -820,48 +820,6 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   Dashboard-v2 · Fase 11: Dark mode polish final
-   Acentos más saturados + shadows con tint accent en cards destacadas.
-   ══════════════════════════════════════════════════════════════════════════ */
-.dark .coach-card {
-  box-shadow:
-    0 0 0 1px rgba(220,38,38,.08),
-    0 6px 20px rgba(220,38,38,.12),
-    0 2px 4px rgba(0,0,0,.3);
-}
-.dark .sc-r:hover,
-.dark .sc-g:hover,
-.dark .sc-p:hover,
-.dark .sc-a:hover {
-  box-shadow:
-    0 4px 16px rgba(0,0,0,.4),
-    0 0 0 1px rgba(255,255,255,.04);
-}
-
-/* Live-dot en dark: glow más intenso para que sobresalga */
-.dark .live-dot {
-  box-shadow: 0 0 8px rgba(16,185,129,.6);
-}
-
-/* Flame glow refinado en dark */
-.dark .flame {
-  filter: drop-shadow(0 0 3px rgba(220,38,38,.6));
-}
-
-/* Light mode: sombras más suaves, menos contrast pero con tint rojo en hover */
-html:not(.dark) .coach-card {
-  box-shadow:
-    0 1px 2px rgba(0,0,0,.04),
-    0 4px 12px rgba(220,38,38,.06);
-}
-html:not(.dark) .sc-r:hover,
-html:not(.dark) .sc-g:hover,
-html:not(.dark) .sc-p:hover,
-html:not(.dark) .sc-a:hover {
-  box-shadow: 0 4px 16px rgba(0,0,0,.08);
-}
-
-/* ══════════════════════════════════════════════════════════════════════════
    Dashboard-v2 · Fase 5: Densidad mobile
    Overrides solo en <640px para hacer el dashboard más app-like en mobile:
    - Tipografía hero/stats más compacta
@@ -948,7 +906,7 @@ html:not(.dark) .sc-a:hover {
 
 /* ════════ HERO ════════ */
 .hp-hero {
-  min-height: 100svh; display: grid; place-items: center;
+  min-height: 88svh; display: grid; place-items: center;
   position: relative; overflow: hidden;
   background: var(--color-wc-bg);
   padding-block: 80px 40px;
@@ -1139,6 +1097,49 @@ html:not(.dark) .sc-a:hover {
 .hp-btn-white { display:inline-flex; align-items:center; gap:8px; background:#fff; color:var(--color-wc-accent); font-size:16px; font-weight:800; padding:16px 36px; border-radius:9999px; text-decoration:none; border:none; cursor:pointer; transition:transform .2s, box-shadow .2s; box-shadow:0 4px 20px rgba(0,0,0,.2); }
 .hp-btn-white:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(0,0,0,.3); }
 .hp-btn-white:active { transform:scale(.97); }
+
+/* ════════ HERO MOCKUP (phone frame) ════════ */
+.hp-hero-mockup { display:flex; justify-content:center; margin-top:8px; pointer-events:none; }
+.hp-hero-phone {
+  position:relative; width:280px; aspect-ratio:9/19;
+  background:#0A0A0B; border-radius:38px;
+  padding:8px; border:1.5px solid rgba(255,255,255,.12);
+  box-shadow:
+    0 40px 80px -20px rgba(220,38,38,.25),
+    0 20px 40px -10px rgba(0,0,0,.5),
+    inset 0 0 0 1px rgba(255,255,255,.04);
+  overflow:hidden;
+}
+.hp-hero-phone::before {
+  content:''; position:absolute; top:14px; left:50%; transform:translateX(-50%);
+  width:80px; height:22px; background:#000; border-radius:9999px; z-index:2;
+}
+.hp-hero-phone img { width:100%; height:100%; object-fit:cover; border-radius:30px; display:block; user-select:none; -webkit-user-drag:none; }
+@media (max-width:640px) { .hp-hero-phone { width:240px; } }
+.hp-anim-d6 { animation-delay:.6s; }
+
+/* ════════ STICKY CTA MOBILE ════════ */
+.hp-sticky-cta {
+  position:fixed; bottom:12px; left:12px; right:12px; z-index:50;
+  padding:6px; border-radius:9999px;
+  background:rgba(9,9,11,.85); backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
+  animation:hp-fadeup .5s cubic-bezier(.22,1,.36,1) .8s both;
+}
+.hp-sticky-cta-btn {
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  width:100%; padding:14px 20px; border-radius:9999px;
+  background:var(--color-wc-accent); color:#fff;
+  text-decoration:none; font-weight:700; font-size:15px;
+  transition:background .2s, transform .15s;
+}
+.hp-sticky-cta-btn:active { transform:scale(.97); }
+.hp-sticky-cta-label { font-weight:800; }
+.hp-sticky-cta-price { font-weight:500; opacity:.85; font-size:13px; }
+@media (max-width:767px) {
+  body:has(.hp-sticky-cta) { padding-bottom:76px; }
+}
 
 /* ─── Reduced motion — hp-* ─── */
 @media (prefers-reduced-motion: reduce) {

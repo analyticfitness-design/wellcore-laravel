@@ -2,18 +2,72 @@
     <x-slot:title>{{ __('home.meta_title') }}</x-slot:title>
     <x-slot:description>{{ __('home.meta_description') }}</x-slot:description>
 
+    {{-- 1. Organization --}}
+    <x-json-ld :data="[
+        '@context' => 'https://schema.org',
+        '@type' => 'Organization',
+        'name' => 'WellCore Fitness',
+        'url' => url('/'),
+        'logo' => asset('images/logo-light-320.avif'),
+        'description' => 'Coaching fitness 1:1 basado en ciencia para Latinoamérica.',
+        'sameAs' => [
+            'https://www.instagram.com/wellcore.fitness/',
+            'https://www.youtube.com/@Wellcorefitness',
+        ],
+        'address' => [
+            '@type' => 'PostalAddress',
+            'addressCountry' => 'CO',
+        ],
+    ]" />
+
+    {{-- 2. WebSite --}}
     <x-json-ld :data="[
         '@context' => 'https://schema.org',
         '@type' => 'WebSite',
         'name' => 'WellCore Fitness',
         'url' => url('/'),
-        'description' => 'Coaching fitness 1:1 basado en ciencia para Latinoamerica.',
         'potentialAction' => [
             '@type' => 'SearchAction',
             'target' => url('/blog?q={search_term_string}'),
             'query-input' => 'required name=search_term_string',
         ],
     ]" />
+
+    {{-- 3. FAQPage --}}
+    <x-json-ld :data="[
+        '@context' => 'https://schema.org',
+        '@type' => 'FAQPage',
+        'mainEntity' => collect(range(1,8))->map(fn($i) => [
+            '@type' => 'Question',
+            'name' => __('home.faq_q'.$i),
+            'acceptedAnswer' => [
+                '@type' => 'Answer',
+                'text' => __('home.faq_a'.$i),
+            ],
+        ])->toArray(),
+    ]" />
+
+    {{-- 4. Product (3 planes) --}}
+    @foreach([
+        ['esencial', 'Esencial', 299000, 'home.plan_esencial_name'],
+        ['metodo', 'Método', 399000, 'home.plan_metodo_name'],
+        ['elite', 'Elite', 549000, 'home.plan_elite_name'],
+    ] as [$slug, $name, $price, $key])
+    <x-json-ld :data="[
+        '@context' => 'https://schema.org',
+        '@type' => 'Product',
+        'name' => 'WellCore '.$name,
+        'description' => __($key),
+        'brand' => ['@type' => 'Brand', 'name' => 'WellCore Fitness'],
+        'offers' => [
+            '@type' => 'Offer',
+            'url' => url('/inscripcion?plan='.$slug),
+            'priceCurrency' => 'COP',
+            'price' => $price,
+            'availability' => 'https://schema.org/InStock',
+        ],
+    ]" />
+    @endforeach
 
     {{-- Reading progress bar --}}
     <div class="scroll-progress"></div>
@@ -112,8 +166,11 @@
                 </div>
                 <div class="hp-sp-div" aria-hidden="true"></div>
                 <div class="hp-sp-item">
-                    <p class="hp-sp-num text-base font-display font-bold leading-tight">NSCA · ISSN<br><span class="text-sm">· ACSM</span></p>
-                    <p class="hp-sp-label">{{ __('home.proof_label') }}</p>
+                    <p class="hp-sp-num text-base font-display font-bold leading-tight tracking-wide">
+                        ENTRENAMIENTO<br>
+                        <span class="text-sm opacity-70">· NUTRICIÓN · SEGUIMIENTO</span>
+                    </p>
+                    <p class="hp-sp-label">MÉTODO INTEGRAL</p>
                 </div>
             </div>
         </div>
@@ -443,7 +500,6 @@
 
                 {{-- ELITE --}}
                 <div class="hp-plan-card">
-                    <span class="hp-plan-badge" style="background:transparent;border:1px solid var(--color-wc-accent);color:var(--color-wc-accent);">{{ __('home.plan_solo_cupos') }}</span>
                     <div>
                         <p class="hp-plan-name">{{ __('home.plan_elite_name') }}</p>
                         <p class="hp-plan-price mt-3">$549,000 <span class="hp-plan-price-period">{{ __('home.plan_cop_mes') }}</span></p>
