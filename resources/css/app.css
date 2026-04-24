@@ -595,10 +595,11 @@ body {
 .dark .sc { box-shadow: 0 1px 3px rgba(0,0,0,.4), 0 4px 12px rgba(0,0,0,.3); }
 .sc:hover { transform: translateY(-2px); }
 .sc::before { content:""; position:absolute; top:0; left:0; right:0; height:2px; }
-.sc-r::before { background: linear-gradient(90deg,transparent,#DC2626,transparent); }
-.sc-g::before { background: linear-gradient(90deg,transparent,#10B981,transparent); }
-.sc-p::before { background: linear-gradient(90deg,transparent,#A78BFA,transparent); }
-.sc-a::before { background: linear-gradient(90deg,transparent,#F59E0B,transparent); }
+.sc-r::before,.sc-g::before,.sc-p::before,.sc-a::before { content:""; position:absolute; top:0; left:0; right:0; height:3px; border-radius:2px 2px 0 0; }
+.sc-r::before { background: linear-gradient(90deg,transparent,#DC2626 40%,#DC2626 60%,transparent); }
+.sc-g::before { background: linear-gradient(90deg,transparent,#10B981 40%,#10B981 60%,transparent); }
+.sc-p::before { background: linear-gradient(90deg,transparent,#A78BFA 40%,#A78BFA 60%,transparent); }
+.sc-a::before { background: linear-gradient(90deg,transparent,#F59E0B 40%,#F59E0B 60%,transparent); }
 .sc-label {
   font-size: 9.5px; font-weight: 700; text-transform: uppercase;
   letter-spacing: .12em; color: var(--color-wc-text-tertiary);
