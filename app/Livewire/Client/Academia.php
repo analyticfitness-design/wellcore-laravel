@@ -47,8 +47,9 @@ class Academia extends Component
                 ->values();
         });
 
+        // Fetch body_html only for the selected item (avoids loading large HTML for all 100 items).
         $selectedContent = $this->selectedContentId
-            ? $contents->firstWhere('id', $this->selectedContentId)
+            ? AcademyContent::where('active', true)->find($this->selectedContentId)
             : null;
 
         return view('livewire.client.academia', compact('contents', 'categories', 'selectedContent'));

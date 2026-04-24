@@ -52,6 +52,14 @@ Fitness coaching platform serving LATAM market with personalized training, nutri
 - php artisan wellcore:behavioral-triggers (test behavioral triggers)
 - php artisan wellcore:weekly-summary (test weekly summaries)
 
+## Deploy Pipeline (REQUIRED after class changes)
+After any changes that add/rename classes (new controllers, services, middleware, commands):
+```
+php artisan optimize:clear && composer dump-autoload
+```
+This is critical after class cache issues — the SocialController::aiNutritionHistory route
+has historically broken after deploys that skip cache clearing.
+
 ## Design System
 - Tokens in resources/css/app.css (@theme block)
 - Colors: wc-bg, wc-bg-secondary, wc-bg-tertiary, wc-accent (#DC2626), wc-text, wc-border
