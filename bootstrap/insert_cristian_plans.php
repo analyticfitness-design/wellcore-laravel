@@ -23,16 +23,25 @@ try {
 $clientId = 78;
 $now      = date('Y-m-d H:i:s');
 
-// 1) Datos del cliente (whatsapp/telefono y nombre)
-$stmt = $pdo->prepare("SELECT id, name, email, whatsapp, telefono FROM clients WHERE id = ? LIMIT 1");
+// 1) Datos del cliente (descubrir cual columna tiene el numero)
+$cols = [];
+$stmt = $pdo->query("SHOW COLUMNS FROM clients");
+while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) { $cols[] = $r['Field']; }
+$candidates = array_intersect(['whatsapp', 'phone', 'telefono', 'celular', 'wa_phone', 'mobile'], $cols);
+echo "Candidatos de columna telefono encontrados: " . implode(', ', $candidates) . "\n";
+
+$selectCols = array_merge(['id', 'name', 'email'], $candidates);
+$sql = "SELECT " . implode(',', $selectCols) . " FROM clients WHERE id = ? LIMIT 1";
+$stmt = $pdo->prepare($sql);
 $stmt->execute([$clientId]);
 $cli = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$cli) {
     die("ERROR: cliente $clientId no existe\n");
 }
 echo "Cliente: " . $cli['name'] . " <" . $cli['email'] . ">\n";
-echo "WhatsApp DB: " . ($cli['whatsapp'] ?: '(vacio)') . "\n";
-echo "Telefono DB: " . ($cli['telefono'] ?: '(vacio)') . "\n";
+foreach ($candidates as $col) {
+    echo "  $col DB: " . ($cli[$col] ?: '(vacio)') . "\n";
+}
 
 // 2) Insertar notificacion in-app (si NO existe ya una identica reciente)
 $stmt = $pdo->prepare("SELECT id FROM notifications WHERE user_type='client' AND user_id=? AND type='plan_assigned' AND created_at > DATE_SUB(NOW(), INTERVAL 1 DAY) LIMIT 1");
@@ -53,7 +62,10 @@ if ($exists) {
 }
 
 // 3) Generar link wa.me con mensaje pre-llenado
-$wa = $cli['whatsapp'] ?: ($cli['telefono'] ?: '');
+$wa = '';
+foreach ($candidates as $col) {
+    if (!empty($cli[$col])) { $wa = $cli[$col]; break; }
+}
 $wa = preg_replace('/\D+/', '', $wa); // solo digitos
 if ($wa) {
     $msg = "Hola Cristian! 👋\n\n"
