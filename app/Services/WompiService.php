@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Actions\ActivateRenewalAction;
 use App\Enums\PaymentStatus;
 use App\Enums\PlanType;
 use App\Enums\UserType;
@@ -389,7 +390,7 @@ class WompiService
 
             // 0. Renewal? Extend the plan and skip welcome/first-timer flows.
             if ($payment->isRenewal()) {
-                $renewalAction = app(\App\Actions\ActivateRenewalAction::class);
+                $renewalAction = app(ActivateRenewalAction::class);
                 $newPlan = $renewalAction->execute($payment);
 
                 $this->logEvent('webhook.renewal_activated', [
@@ -612,6 +613,26 @@ class WompiService
             'redirect_url' => $redirectUrl ?: route('pago-confirmado'),
             'sandbox' => $this->sandbox,
         ];
+    }
+
+    /**
+     * Determina si una referencia Wompi pertenece a una invitación de coach.
+     * Prefijo: "WCI-" (coach invitation).
+     * Referencia normal: "WC-XXXXXXXX-TIMESTAMP"
+     * Referencia renovación: "RENEWAL-..."
+     */
+    public function isCoachInvitationReference(string $reference): bool
+    {
+        return str_starts_with($reference, 'WCI-');
+    }
+
+    /**
+     * Extrae el invitation code de una referencia WCI-{code}.
+     * Ejemplo: "WCI-a1b2c3d4e5f6..." → "a1b2c3d4e5f6..."
+     */
+    public function extractInvitationCode(string $reference): string
+    {
+        return substr($reference, 4);
     }
 
     /**

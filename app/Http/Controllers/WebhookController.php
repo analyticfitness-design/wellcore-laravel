@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CoachInvitationStatus;
+use App\Models\CoachInvitation;
+use App\Models\Payment;
+use App\Services\CoachInvitationService;
 use App\Services\WompiService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,12 +28,12 @@ class WebhookController extends Controller
 
         Log::info('Wompi webhook received', [
             'event' => $payload['event'] ?? 'unknown',
-            'has_signature' => !empty($signature),
+            'has_signature' => ! empty($signature),
             'ip' => $request->ip(),
         ]);
 
         // Verify webhook signature
-        if (!$wompi->verifyWebhookSignature($payload, $signature)) {
+        if (! $wompi->verifyWebhookSignature($payload, $signature)) {
             Log::warning('Wompi webhook: invalid signature', [
                 'ip' => $request->ip(),
                 'event' => $payload['event'] ?? 'unknown',
@@ -45,6 +49,33 @@ class WebhookController extends Controller
         $event = $payload['event'] ?? '';
 
         if ($event === 'transaction.updated') {
+            $reference = $payload['data']['transaction']['reference'] ?? null;
+            $wompiStatus = $payload['data']['transaction']['status'] ?? '';
+
+            // --- Pre-hook: Coach Invitation ---
+            // Corre ANTES de handleWebhook() para que payment.client_id esté seteado
+            // cuando runPostApprovalAutomation() intente enviar el WelcomeMail.
+            if ($reference && $wompi->isCoachInvitationReference($reference) && $wompiStatus === 'APPROVED') {
+                $code = $wompi->extractInvitationCode($reference);
+                $coachInvitation = CoachInvitation::where('code', $code)->first();
+
+                if ($coachInvitation && $coachInvitation->status !== CoachInvitationStatus::Paid) {
+                    $payment = Payment::where('wompi_reference', $reference)->first();
+                    if ($payment) {
+                        try {
+                            app(CoachInvitationService::class)->handlePaymentApproved($payment, $coachInvitation);
+                        } catch (\Throwable $e) {
+                            // Log but do NOT block the main webhook processing
+                            Log::error('CoachInvitation pre-hook failed', [
+                                'code' => $code,
+                                'error' => $e->getMessage(),
+                            ]);
+                        }
+                    }
+                }
+            }
+            // --- Fin pre-hook ---
+
             $processed = $wompi->handleWebhook($payload);
 
             return response()->json([
