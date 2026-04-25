@@ -47,7 +47,7 @@
     {{ $planDetails['name'] }}
   </h2>
   <p style="color:#FAFAFA;font-size:24px;font-weight:bold;margin:0 0 16px;font-family:Arial,sans-serif;">
-    ${{ number_format((float)$invitation->amount, 0, '.', '.') }} {{ $invitation->currency }}@if($invitation->plan->value !== 'rise')/mes@endif
+    ${{ number_format((float)$invitation->amount, 0, '.', '.') }} {{ $invitation->currency }}{{ $invitation->plan !== \App\Enums\PlanType::Rise ? '/mes' : '' }}
   </p>
 
   {{-- Features del plan --}}

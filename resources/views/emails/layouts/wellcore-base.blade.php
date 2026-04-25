@@ -11,7 +11,7 @@
   <![endif]-->
   <title>@yield('title', 'WellCore Fitness')</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600&display=swap');
+    @@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@@400;600&display=swap');
     * { box-sizing: border-box; }
     body, #bodyTable { margin: 0; padding: 0; background-color: #09090B; width: 100% !important; }
     img { border: 0; display: block; max-width: 100%; height: auto; }
