@@ -272,7 +272,7 @@ onBeforeUnmount(() => {
         <div id="stats-grid" class="px-4 lg:px-6 grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
           <!-- Clientes activos — rojo primario -->
           <div class="wc-stat-primary wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
-            <svg v-if="sparklines.clients.length" class="absolute top-3 right-3 opacity-40" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
+            <svg v-if="sparklines.clients.length" class="absolute top-3 right-3 opacity-65" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
               <polyline :points="sparklinePoints(sparklines.clients)" fill="none" stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <div class="mt-6 font-display text-4xl leading-none text-wc-text font-data">{{ animatedCounters.activeClients }}</div>
@@ -281,7 +281,7 @@ onBeforeUnmount(() => {
 
           <!-- Check-ins — cálido (atención/pendiente) -->
           <div class="wc-stat-warm wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
-            <svg v-if="sparklines.checkins.length" class="absolute top-3 right-3 opacity-40" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
+            <svg v-if="sparklines.checkins.length" class="absolute top-3 right-3 opacity-65" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
               <polyline :points="sparklinePoints(sparklines.checkins)" fill="none" stroke="#B45309" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <div class="mt-6 font-display text-4xl leading-none text-wc-text font-data">{{ animatedCounters.pendingCheckins }}</div>
@@ -290,7 +290,7 @@ onBeforeUnmount(() => {
 
           <!-- Mensajes — rojo primario -->
           <div class="wc-stat-primary wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
-            <svg v-if="sparklines.messages.length" class="absolute top-3 right-3 opacity-40" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
+            <svg v-if="sparklines.messages.length" class="absolute top-3 right-3 opacity-65" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
               <polyline :points="sparklinePoints(sparklines.messages)" fill="none" stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <div class="mt-6 font-display text-4xl leading-none text-wc-text font-data">{{ animatedCounters.unreadMessages }}</div>
@@ -299,7 +299,7 @@ onBeforeUnmount(() => {
 
           <!-- Tickets — muted oscuro con toque rojo -->
           <div class="wc-stat-muted wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
-            <svg v-if="sparklines.tickets.length" class="absolute top-3 right-3 opacity-40" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
+            <svg v-if="sparklines.tickets.length" class="absolute top-3 right-3 opacity-65" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
               <polyline :points="sparklinePoints(sparklines.tickets)" fill="none" stroke="rgba(220,38,38,0.6)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <div class="mt-6 font-display text-4xl leading-none text-wc-text font-data">{{ animatedCounters.openTickets }}</div>
@@ -407,12 +407,12 @@ onBeforeUnmount(() => {
           </div>
 
           <!-- Right column (4/12) -->
-          <div class="lg:col-span-4">
+          <div class="lg:col-span-4 mt-4 lg:mt-0">
 
             <!-- MENSAJES RECIENTES -->
-            <section class="mb-5">
+            <section class="pb-5 mb-6 border-b border-wc-border/60">
               <div class="flex items-center justify-between mb-3">
-                <h2 class="font-display text-sm uppercase tracking-wider text-wc-text">MENSAJES</h2>
+                <h2 class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">MENSAJES</h2>
                 <RouterLink to="/coach/messages" class="text-[11px] text-wc-accent hover:underline">Ver todos →</RouterLink>
               </div>
               <template v-if="recentMessages.length">
@@ -438,7 +438,7 @@ onBeforeUnmount(() => {
             <!-- TICKETS -->
             <section class="mb-5">
               <div class="flex items-center justify-between mb-3">
-                <h2 class="font-display text-sm uppercase tracking-wider text-wc-text">TICKETS</h2>
+                <h2 class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">TICKETS</h2>
                 <RouterLink to="/coach/plan-tickets" class="text-[11px] text-wc-accent hover:underline">Ver todos →</RouterLink>
               </div>
               <template v-if="openTicketsList.length">
