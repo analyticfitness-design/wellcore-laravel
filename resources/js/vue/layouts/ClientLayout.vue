@@ -70,13 +70,10 @@ onMounted(async () => {
         if (planRes.status === 200) {
             const d = planRes.data;
             if (d?.currentWeek) {
-                // Solo agrega "de N" si el plan es estructurado multi-semana (Método/Elite).
-                // Planes renovables semanal (Esencial/RISE/Presencial) no tienen totalWeeks > 1
-                // y muestran solo "Semana X · Fase: YYY".
-                const total = Number(d.totalWeeks) || 0;
-                const suffix = total > 1 ? ` de ${total}` : '';
+                // Todos los planes son mensuales renovables — no se muestra "de N".
+                // Solo "Semana X · Fase: YYY" (o solo "Semana X" si no hay fase).
                 const phase = d.phaseName ? ` · Fase: ${d.phaseName}` : '';
-                planPhaseText.value = `Semana ${d.currentWeek}${suffix}${phase}`;
+                planPhaseText.value = `Semana ${d.currentWeek}${phase}`;
             } else if (d?.planLabel) {
                 planPhaseText.value = d.planLabel;
             }

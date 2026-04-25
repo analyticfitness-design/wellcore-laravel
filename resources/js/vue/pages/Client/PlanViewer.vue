@@ -949,47 +949,14 @@ onBeforeUnmount(() => {
       <LockOverlay v-if="isLocked" />
       <div :class="isLocked ? 'pointer-events-none blur-sm select-none' : ''" :aria-hidden="isLocked ? 'true' : undefined">
     <div class="space-y-6">
-      <!-- Header -->
-      <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">MI PLAN</h1>
-          <p v-if="planTypeLabel || currentPhaseName || totalWeeks > 1" class="mt-1 text-sm text-wc-text-secondary">
-            <template v-if="planTypeLabel">Plan {{ planTypeLabel }}</template>
-            <template v-if="currentPhaseName"><span class="mx-1.5 text-wc-text-tertiary">·</span>Fase {{ currentPhaseName }}</template>
-            <template v-if="totalWeeks > 1"><span class="mx-1.5 text-wc-text-tertiary">·</span>{{ totalWeeks }} semanas</template>
-          </p>
-          <p v-else class="mt-1 text-sm text-wc-text-secondary">Tu programacion personalizada, disenada por tu coach</p>
-        </div>
-
-        <!-- Week navigator (only if plan has multiple weeks) -->
-        <div
-          v-if="totalWeeks > 1"
-          class="inline-flex shrink-0 items-center gap-1 rounded-full border border-wc-border bg-wc-bg-tertiary p-1"
-          role="group"
-          aria-label="Navegador de semanas"
-        >
-          <button
-            type="button"
-            @click="prevWeek"
-            :disabled="currentWeek <= 1"
-            class="flex h-9 w-9 items-center justify-center rounded-full text-wc-text-secondary transition-colors hover:bg-wc-bg-secondary hover:text-wc-text focus:outline-none focus:ring-2 focus:ring-wc-accent disabled:cursor-not-allowed disabled:opacity-30"
-            aria-label="Semana anterior"
-          >
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
-          </button>
-          <span class="font-display text-sm font-bold uppercase tracking-widest text-wc-text px-3">
-            Semana <span class="font-data tabular-nums text-wc-accent">{{ currentWeek }}</span> / {{ totalWeeks }}
-          </span>
-          <button
-            type="button"
-            @click="nextWeek"
-            :disabled="currentWeek >= totalWeeks"
-            class="flex h-9 w-9 items-center justify-center rounded-full text-wc-text-secondary transition-colors hover:bg-wc-bg-secondary hover:text-wc-text focus:outline-none focus:ring-2 focus:ring-wc-accent disabled:cursor-not-allowed disabled:opacity-30"
-            aria-label="Semana siguiente"
-          >
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
-          </button>
-        </div>
+      <!-- Header: todos los planes son mensuales renovables — no hay "N semanas" ni navegador -->
+      <div class="mb-8">
+        <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">MI PLAN</h1>
+        <p v-if="planTypeLabel || currentPhaseName" class="mt-1 text-sm text-wc-text-secondary">
+          <template v-if="planTypeLabel">Plan {{ planTypeLabel }}</template>
+          <template v-if="currentPhaseName"><span class="mx-1.5 text-wc-text-tertiary">·</span>Fase {{ currentPhaseName }}</template>
+        </p>
+        <p v-else class="mt-1 text-sm text-wc-text-secondary">Tu programacion personalizada, disenada por tu coach</p>
       </div>
 
       <!-- Loading skeleton -->
