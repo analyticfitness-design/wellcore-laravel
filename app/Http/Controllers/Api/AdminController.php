@@ -842,19 +842,37 @@ class AdminController extends Controller
 
             $planType = $validated['assign_plan_type'] ?? 'entrenamiento';
 
-            AssignedPlan::where('client_id', $id)
+            // SAFE coach reassignment — no destruye planes con contenido real.
+            // Threshold: si content > 500 bytes asumimos que tiene plan estructurado
+            // (semanas[], ejercicios, etc.). Stubs de "Asignado desde admin panel"
+            // pesan ~68 bytes. Esto evita que Daniela/Silvia/etc. pierdan su plan
+            // cuando se reasigna coach.
+            $existingPlan = AssignedPlan::where('client_id', $id)
                 ->where('plan_type', $planType)
                 ->where('active', true)
-                ->update(['active' => false]);
+                ->orderByDesc('valid_from')
+                ->first();
 
-            AssignedPlan::create([
-                'client_id' => $id,
-                'plan_type' => $planType,
-                'content' => json_encode(['coach_assigned' => true, 'notes' => 'Asignado desde admin panel']),
-                'version' => 1,
-                'active' => true,
-                'assigned_by' => $coach->id,
-            ]);
+            if ($existingPlan && strlen((string) $existingPlan->content) > 500) {
+                // Plan real con contenido → solo actualizar assigned_by (cambio de coach).
+                $existingPlan->update(['assigned_by' => $coach->id]);
+            } else {
+                // Sin plan o solo stub → flujo original (desactivar+crear stub para nuevo coach).
+                AssignedPlan::where('client_id', $id)
+                    ->where('plan_type', $planType)
+                    ->where('active', true)
+                    ->update(['active' => false]);
+
+                AssignedPlan::create([
+                    'client_id' => $id,
+                    'plan_type' => $planType,
+                    'content' => json_encode(['coach_assigned' => true, 'notes' => 'Asignado desde admin panel']),
+                    'version' => 1,
+                    'active' => true,
+                    'assigned_by' => $coach->id,
+                    'valid_from' => now()->toDateString(),
+                ]);
+            }
 
             $messages[] = 'Coach '.$coach->name.' asignado.';
 

@@ -95,22 +95,36 @@ class ClientDetail extends Component
             return;
         }
 
-        // Deactivate existing active plan of same type for this client
-        AssignedPlan::where('client_id', $this->clientId)
+        // SAFE coach reassignment — no destruye planes con contenido real.
+        // Threshold: si content > 500 bytes asumimos que tiene plan estructurado
+        // (semanas[], ejercicios, etc.). Stubs de "Asignado desde admin panel"
+        // pesan ~68 bytes. Esto evita que clientes pierdan su plan al reasignar coach.
+        $existingPlan = AssignedPlan::where('client_id', $this->clientId)
             ->where('plan_type', $this->assignPlanType)
             ->where('active', true)
-            ->update(['active' => false]);
+            ->orderByDesc('valid_from')
+            ->first();
 
-        // Create new assignment
-        AssignedPlan::create([
-            'client_id' => $this->clientId,
-            'plan_type' => $this->assignPlanType,
-            'content' => json_encode(['coach_assigned' => true, 'notes' => 'Asignado desde admin panel']),
-            'version' => 1,
-            'assigned_by' => $coach->id,
-            'valid_from' => now()->toDateString(),
-            'active' => true,
-        ]);
+        if ($existingPlan && strlen((string) $existingPlan->content) > 500) {
+            // Plan real con contenido → solo actualizar assigned_by (cambio de coach).
+            $existingPlan->update(['assigned_by' => $coach->id]);
+        } else {
+            // Sin plan o solo stub → desactivar lo que haya y crear stub.
+            AssignedPlan::where('client_id', $this->clientId)
+                ->where('plan_type', $this->assignPlanType)
+                ->where('active', true)
+                ->update(['active' => false]);
+
+            AssignedPlan::create([
+                'client_id' => $this->clientId,
+                'plan_type' => $this->assignPlanType,
+                'content' => json_encode(['coach_assigned' => true, 'notes' => 'Asignado desde admin panel']),
+                'version' => 1,
+                'assigned_by' => $coach->id,
+                'valid_from' => now()->toDateString(),
+                'active' => true,
+            ]);
+        }
 
         $this->showCoachModal = false;
         $this->successMessage = 'Coach ' . $coach->name . ' asignado correctamente al plan de ' . $this->assignPlanType;
