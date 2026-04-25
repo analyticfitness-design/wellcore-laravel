@@ -70,7 +70,8 @@ onMounted(async () => {
         if (planRes.status === 200) {
             const d = planRes.data;
             if (d?.currentWeek && d?.phaseName) {
-                planPhaseText.value = `Semana ${d.currentWeek} — ${d.phaseName}`;
+                const weeks = d.totalWeeks || 12;
+                planPhaseText.value = `Semana ${d.currentWeek} de ${weeks} · Fase: ${d.phaseName}`;
             } else if (d?.planLabel) {
                 planPhaseText.value = d.planLabel;
             }
