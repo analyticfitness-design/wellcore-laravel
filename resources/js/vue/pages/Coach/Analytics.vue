@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
+import WcPageHeader from '../../components/WcPageHeader.vue';
 
 const api = useApi();
 const loading = ref(true);
@@ -56,22 +57,19 @@ onMounted(loadAnalytics);
   <CoachLayout>
     <div class="space-y-6">
 
-      <!-- Header -->
-      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">Analytics</h1>
-          <p class="mt-1 text-sm text-wc-text-tertiary">Rendimiento y metricas de tu equipo</p>
-        </div>
-        <div class="flex items-center gap-1 rounded-lg border border-wc-border bg-wc-bg-secondary p-1">
-          <button
-            v-for="r in [{ key: 'month', label: 'Mes' }, { key: 'quarter', label: 'Trimestre' }, { key: 'year', label: 'Ano' }, { key: 'all', label: 'Todo' }]"
-            :key="r.key"
-            @click="switchRange(r.key)"
-            class="rounded-md px-3 py-1.5 text-xs font-medium transition-colors"
-            :class="dateRange === r.key ? 'bg-wc-accent text-white shadow-sm' : 'text-wc-text-secondary hover:text-wc-text hover:bg-wc-bg-tertiary'"
-          >{{ r.label }}</button>
-        </div>
-      </div>
+      <WcPageHeader contextLabel="PRINCIPAL" title="ANALYTICS" subtitle="Rendimiento y métricas de tu equipo">
+        <template #actions>
+          <div class="flex items-center gap-1 rounded-button border border-wc-border bg-wc-bg-secondary p-1">
+            <button
+              v-for="r in [{ key: 'month', label: 'Mes' }, { key: 'quarter', label: 'Trimestre' }, { key: 'year', label: 'Año' }, { key: 'all', label: 'Todo' }]"
+              :key="r.key"
+              @click="switchRange(r.key)"
+              class="rounded-button px-3 py-1.5 text-xs font-medium transition-colors"
+              :class="dateRange === r.key ? 'bg-wc-accent text-white shadow-sm' : 'text-wc-text-secondary hover:text-wc-text hover:bg-wc-bg-tertiary'"
+            >{{ r.label }}</button>
+          </div>
+        </template>
+      </WcPageHeader>
 
       <!-- Loading -->
       <div v-if="loading" class="flex items-center gap-2 text-sm text-wc-text-tertiary">
@@ -85,7 +83,7 @@ onMounted(loadAnalytics);
       <template v-else>
 
         <!-- Coach Score Hero -->
-        <div v-if="coachScore > 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+        <div v-if="coachScore > 0" class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
           <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-center gap-4">
               <div class="relative flex h-20 w-20 shrink-0 items-center justify-center">
@@ -94,20 +92,20 @@ onMounted(loadAnalytics);
                   <circle cx="40" cy="40" r="34" fill="none" stroke-width="6"
                     :stroke-dasharray="`${coachScore * 2.136} 213.6`"
                     stroke-linecap="round"
-                    :class="coachScore >= 75 ? 'text-emerald-500' : coachScore >= 50 ? 'text-amber-500' : 'text-red-500'" />
+                    :class="coachScore >= 75 ? 'text-wc-text/40' : coachScore >= 50 ? 'text-wc-accent/60' : 'text-wc-accent'" />
                 </svg>
                 <span class="absolute font-data text-xl font-bold text-wc-text">{{ coachScore }}</span>
               </div>
               <div>
-                <h2 class="font-display text-lg tracking-wide text-wc-text">Coach Score</h2>
-                <p class="text-sm font-semibold" :class="coachScore >= 75 ? 'text-emerald-500' : coachScore >= 50 ? 'text-amber-500' : 'text-red-500'">{{ coachScoreLabel }}</p>
+                <h2 class="font-display text-lg uppercase tracking-wide text-wc-text">Coach Score</h2>
+                <p class="text-sm font-semibold" :class="coachScore >= 75 ? 'text-wc-text' : coachScore >= 50 ? 'text-wc-accent/60' : 'text-wc-accent'">{{ coachScoreLabel }}</p>
                 <p class="mt-0.5 text-xs text-wc-text-tertiary">Puntuacion compuesta de rendimiento</p>
               </div>
             </div>
             <div class="grid grid-cols-2 gap-x-6 gap-y-1.5 text-xs sm:grid-cols-3">
               <div class="flex items-center justify-between gap-2">
                 <span class="text-wc-text-tertiary">Respuesta</span>
-                <span class="font-data font-semibold" :class="avgResponseHours <= 24 ? 'text-emerald-500' : avgResponseHours <= 48 ? 'text-amber-500' : 'text-red-500'">{{ avgResponseHours }}h</span>
+                <span class="font-data font-semibold" :class="avgResponseHours <= 24 ? 'text-wc-text' : avgResponseHours <= 48 ? 'text-wc-accent/60' : 'text-wc-accent'">{{ avgResponseHours }}h</span>
               </div>
               <div class="flex items-center justify-between gap-2">
                 <span class="text-wc-text-tertiary">Reply Rate</span>
@@ -136,43 +134,43 @@ onMounted(loadAnalytics);
         <!-- SLA + Revenue -->
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <!-- SLA Breakdown -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-            <h3 class="text-sm font-semibold text-wc-text mb-4">SLA de Respuesta</h3>
+          <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+            <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary mb-4">SLA de Respuesta</p>
             <div class="space-y-3">
               <div class="flex items-center justify-between">
                 <span class="text-xs text-wc-text-tertiary">Dentro de 24h</span>
-                <span class="font-data text-sm font-semibold text-emerald-500">{{ slaBreakdown.within24h }}%</span>
+                <span class="font-data text-sm font-semibold text-wc-text">{{ slaBreakdown.within24h }}%</span>
               </div>
               <div class="h-2 w-full rounded-full bg-wc-bg-secondary">
-                <div class="h-2 rounded-full bg-emerald-500" :style="{ width: slaBreakdown.within24h + '%' }"></div>
+                <div class="h-2 rounded-full bg-wc-text/40" :style="{ width: slaBreakdown.within24h + '%' }"></div>
               </div>
               <div class="flex items-center justify-between">
                 <span class="text-xs text-wc-text-tertiary">24-48h</span>
-                <span class="font-data text-sm font-semibold text-amber-500">{{ slaBreakdown.within48h }}%</span>
+                <span class="font-data text-sm font-semibold text-wc-accent/60">{{ slaBreakdown.within48h }}%</span>
               </div>
               <div class="h-2 w-full rounded-full bg-wc-bg-secondary">
-                <div class="h-2 rounded-full bg-amber-500" :style="{ width: slaBreakdown.within48h + '%' }"></div>
+                <div class="h-2 rounded-full bg-wc-accent/60" :style="{ width: slaBreakdown.within48h + '%' }"></div>
               </div>
               <div class="flex items-center justify-between">
-                <span class="text-xs text-wc-text-tertiary">Mas de 48h</span>
-                <span class="font-data text-sm font-semibold text-red-500">{{ slaBreakdown.over48h }}%</span>
+                <span class="text-xs text-wc-text-tertiary">Más de 48h</span>
+                <span class="font-data text-sm font-semibold text-wc-accent">{{ slaBreakdown.over48h }}%</span>
               </div>
               <div class="h-2 w-full rounded-full bg-wc-bg-secondary">
-                <div class="h-2 rounded-full bg-red-500" :style="{ width: slaBreakdown.over48h + '%' }"></div>
+                <div class="h-2 rounded-full bg-wc-accent" :style="{ width: slaBreakdown.over48h + '%' }"></div>
               </div>
             </div>
           </div>
 
           <!-- Revenue -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-            <h3 class="text-sm font-semibold text-wc-text mb-4">Revenue</h3>
+          <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+            <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary mb-4">Revenue</p>
             <div class="grid grid-cols-3 gap-4">
               <div class="text-center">
                 <p class="font-data text-2xl font-bold text-wc-text">${{ revenueStats.total.toLocaleString() }}</p>
                 <p class="text-[10px] text-wc-text-tertiary">Total</p>
               </div>
               <div class="text-center">
-                <p class="font-data text-2xl font-bold text-emerald-500">${{ revenueStats.monthly.toLocaleString() }}</p>
+                <p class="font-data text-2xl font-bold text-wc-text">${{ revenueStats.monthly.toLocaleString() }}</p>
                 <p class="text-[10px] text-wc-text-tertiary">Mensual</p>
               </div>
               <div class="text-center">
@@ -184,9 +182,9 @@ onMounted(loadAnalytics);
         </div>
 
         <!-- Client Overview Table -->
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
+        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary overflow-hidden">
           <div class="px-5 py-3 border-b border-wc-border">
-            <h3 class="text-sm font-semibold text-wc-text">Resumen de Clientes</h3>
+            <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">Resumen de Clientes</p>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-sm">
@@ -202,7 +200,7 @@ onMounted(loadAnalytics);
                 <tr v-for="c in clientOverview" :key="c.id" class="hover:bg-wc-bg-secondary/30">
                   <td class="px-4 py-2.5 font-medium text-wc-text">{{ c.name }}</td>
                   <td class="px-4 py-2.5 text-center">
-                    <span class="font-data font-semibold" :class="(c.bienestar || 0) >= 7 ? 'text-emerald-500' : (c.bienestar || 0) >= 4 ? 'text-amber-500' : 'text-red-500'">{{ c.bienestar || '-' }}</span>
+                    <span class="font-data font-semibold" :class="(c.bienestar || 0) >= 7 ? 'text-wc-text' : (c.bienestar || 0) >= 4 ? 'text-wc-accent/60' : 'text-wc-accent'">{{ c.bienestar || '-' }}</span>
                   </td>
                   <td class="px-4 py-2.5 text-center font-data text-wc-text">{{ c.checkins || 0 }}</td>
                   <td class="px-4 py-2.5 text-center font-data text-wc-text">{{ c.adherence || 0 }}%</td>
