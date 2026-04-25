@@ -178,5 +178,14 @@ class AppServiceProvider extends ServiceProvider
                 'message' => 'Enviaste demasiadas solicitudes. Intenta de nuevo en una hora.',
             ], 429));
         });
+
+        RateLimiter::for('coach-inv-create', function ($request) {
+            $userId = optional($request->user())->id;
+            $key = $userId ? ('user:'.$userId) : ('ip:'.$request->ip());
+
+            return Limit::perDay(50)->by($key)->response(fn () => response()->json([
+                'message' => 'Alcanzaste el límite de invitaciones por hoy (50 por día).',
+            ], 429));
+        });
     }
 }

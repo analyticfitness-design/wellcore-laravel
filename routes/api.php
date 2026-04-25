@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\AdminPlanTicketController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClientController;
+use App\Http\Controllers\Api\Coach\InvitationController;
 use App\Http\Controllers\Api\CoachBrandController;
 use App\Http\Controllers\Api\CoachClientRequestController;
 use App\Http\Controllers\Api\CoachController;
@@ -238,6 +239,14 @@ Route::prefix('v/coach')->middleware(['auth:wellcore', 'throttle:api', 'role:coa
     Route::get('/notifications', [CoachPlanTicketController::class, 'notifications']);
     Route::post('/notifications/read-all', [CoachPlanTicketController::class, 'markAllNotificationsRead']);
     Route::post('/notifications/{id}/read', [CoachPlanTicketController::class, 'markNotificationRead'])->whereNumber('id');
+
+    // Coach Invitations
+    Route::get('/invitations', [InvitationController::class, 'index']);
+    Route::post('/invitations', [InvitationController::class, 'store'])->middleware('throttle:coach-inv-create');
+    Route::post('/invitations/preview', [InvitationController::class, 'preview']);
+    Route::get('/invitations/{id}', [InvitationController::class, 'show'])->whereNumber('id');
+    Route::post('/invitations/{id}/resend', [InvitationController::class, 'resend'])->whereNumber('id');
+    Route::delete('/invitations/{id}', [InvitationController::class, 'destroy'])->whereNumber('id');
 });
 
 // Admin (Phase 9 — authenticated admin with admin/superadmin/jefe role)

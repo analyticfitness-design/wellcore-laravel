@@ -3,8 +3,10 @@
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CoachImpersonateController;
+use App\Http\Controllers\CoachInvitationPublicController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ImpersonateController;
+use App\Http\Controllers\Media\GifController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SitemapController;
@@ -20,11 +22,11 @@ use Illuminate\Support\Facades\Route;
 // Serve progress photos — local first, then proxy from PHP vanilla service via Docker network
 Route::get('/uploads/photos/{filename}', function (string $filename) {
     // Security: only allow safe filenames (no path traversal)
-    if (!preg_match('/^[\w\-\.]+\.(jpg|jpeg|png|webp|gif)$/i', $filename)) {
+    if (! preg_match('/^[\w\-\.]+\.(jpg|jpeg|png|webp|gif)$/i', $filename)) {
         abort(404);
     }
 
-    $localPath = public_path('uploads/photos/' . $filename);
+    $localPath = public_path('uploads/photos/'.$filename);
     if (file_exists($localPath)) {
         return response()->file($localPath);
     }
@@ -38,15 +40,17 @@ Route::get('/uploads/photos/{filename}', function (string $filename) {
             $content = @file_get_contents($url, false, $ctx);
             if ($content !== false && strlen($content) > 0) {
                 $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-                $mime = match($ext) {
+                $mime = match ($ext) {
                     'jpg', 'jpeg' => 'image/jpeg',
                     'png' => 'image/png',
                     'webp' => 'image/webp',
                     default => 'image/jpeg',
                 };
+
                 return response($content, 200)->header('Content-Type', $mime);
             }
-        } catch (\Throwable) {}
+        } catch (Throwable) {
+        }
     }
 
     abort(404);
@@ -209,6 +213,15 @@ Route::view('/rise/chat', 'vue')->name('rise.chat');
 Route::view('/rise/profile', 'vue')->name('rise.profile');
 Route::get('/rise/{any}', fn () => view('vue'))->where('any', '.*');
 
+// Public invitation routes (no auth required)
+Route::get('/invitacion/{code}', [CoachInvitationPublicController::class, 'resolve'])
+    ->middleware('throttle:120,1')
+    ->name('coach.invitation.resolve');
+
+Route::get('/invitacion-pixel/{code}', [CoachInvitationPublicController::class, 'pixel'])
+    ->middleware('throttle:60,1')
+    ->name('coach.invitation.pixel');
+
 // Coach portal
 Route::view('/coach', 'vue')->name('coach.dashboard');
 Route::view('/coach/clients', 'vue')->name('coach.clients');
@@ -223,6 +236,7 @@ Route::view('/coach/resources', 'vue')->name('coach.resources');
 Route::view('/coach/features', 'vue')->name('coach.features');
 Route::view('/coach/profile', 'vue')->name('coach.profile');
 Route::view('/coach/brand', 'vue')->name('coach.brand');
+Route::view('/coach/invitations', 'vue')->name('coach.invitations');
 Route::get('/coach/{any}', fn () => view('vue'))->where('any', '.*');
 
 // Admin portal
@@ -284,7 +298,7 @@ Route::post('/admin/coach-impersonate/stop', [CoachImpersonateController::class,
 Route::get('/v/{any}', fn ($any) => redirect('/'.$any, 301))->where('any', '.*');
 
 // Exercise GIFs — public, no auth required (used in <img> tags)
-Route::get('/media/gif/{slug}', [\App\Http\Controllers\Media\GifController::class, 'serve'])
+Route::get('/media/gif/{slug}', [GifController::class, 'serve'])
     ->where('slug', '[\w\-]+');
 
 // DEV ONLY routes — disabled in production
@@ -304,4 +318,3 @@ if (app()->environment('local', 'testing')) {
         return redirect('/client');
     });
 }
-
