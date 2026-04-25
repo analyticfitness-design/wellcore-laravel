@@ -26,6 +26,7 @@ use App\Models\TrainingLog;
 use App\Models\WellcoreNotification;
 use App\Models\WorkoutSession;
 use App\Services\ClientCacheService;
+use App\Services\PlanLockService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -72,7 +73,7 @@ class ClientController extends Controller
     public function planStatus(Request $request): JsonResponse
     {
         $client = $this->resolveClientOrFail($request);
-        $lockService = app(\App\Services\PlanLockService::class);
+        $lockService = app(PlanLockService::class);
 
         return response()->json($lockService->status($client));
     }
@@ -113,11 +114,13 @@ class ClientController extends Controller
             return $this->buildDashboardCache($clientId);
         });
 
-        // Plan info (has its own cache key)
+        // Plan info (has its own cache key — includes currentWeek, totalWeeks, phaseName)
         $planInfo = $this->loadPlanInfo($clientId);
 
-        // Plan progress (no DB queries — reads created_at only)
-        $planProgress = $this->loadPlanProgress($client);
+        // Plan progress (no DB queries — reads created_at only).
+        // Recibe totalWeeks desde planInfo para mantener consistencia con el JSON
+        // del plan (Esencial=4, RISE=4, Trial=1, Método=12, Elite=variable).
+        $planProgress = $this->loadPlanProgress($client, $planInfo['totalWeeks']);
 
         // Daily quote (deterministic per day-of-year)
         $dailyQuote = $this->getDailyQuote();
@@ -125,22 +128,13 @@ class ClientController extends Controller
         // Daily missions (always fresh — never cached)
         $dailyMissions = $this->loadDailyMissions($clientId);
 
-        // Plan week + phase for topbar badge (Blade layout + Vue SPA)
-        $plan = $client->plan;
-        $weekNum = 1;
-        if ($plan) {
-            $startDate = $plan->created_at ?? now();
-            $weekNum = max(1, min(12, (int) ceil(now()->diffInDays($startDate) / 7)));
-        }
-        $phaseMap = [1=>'Adaptación',2=>'Adaptación',3=>'Adaptación',4=>'Hipertrofia',5=>'Hipertrofia',6=>'Hipertrofia',7=>'Fuerza Máx.',8=>'Fuerza Máx.',9=>'Fuerza Máx.',10=>'Peak',11=>'Peak',12=>'Peak'];
-
         return response()->json([
             // Greeting
             'greeting' => $greeting,
             'clientName' => $clientName,
             'planLabel' => $planLabel,
-            'currentWeek' => $weekNum,
-            'phaseName'   => $phaseMap[$weekNum] ?? 'Activo',
+            'currentWeek' => $planInfo['currentWeek'],
+            'phaseName' => $planInfo['phaseName'],
 
             // Stats
             'streakDays' => $cached['streakDays'],
@@ -426,51 +420,117 @@ class ClientController extends Controller
 
     /**
      * Plan info with its own cache key (mirrors Livewire loadPlanInfo).
+     *
+     * Returns: hasActivePlan, planPhase, planDaysActive, currentWeek, totalWeeks, phaseName.
+     *
+     * `phaseName` se lee desde assigned_plans.content.semanas[currentWeek-1].fase
+     * (schema unificado del plan). Si la fase trae sufijo "· RIR 2" lo recortamos
+     * para que el topbar quede compacto. Fallback: 'Activo'.
      */
     private function loadPlanInfo(int $clientId): array
     {
         $planData = Cache::remember("client_plan_v3_{$clientId}", 300, function () use ($clientId) {
             $plan = AssignedPlan::where('client_id', $clientId)
-                ->where('active', 1)
+                ->where('plan_type', 'entrenamiento')
+                ->where('active', true)
                 ->orderByDesc('valid_from')
-                ->select('plan_type', 'valid_from')
+                ->select('plan_type', 'valid_from', 'content')
                 ->first();
 
             if (! $plan) {
                 return null;
             }
 
+            $content = $this->normalizePlanContent($plan->content);
+            $semanas = is_array($content['semanas'] ?? null) ? $content['semanas'] : [];
+
             return [
                 'plan_type' => (string) $plan->plan_type,
                 'valid_from' => (string) $plan->getRawOriginal('valid_from'),
+                'semanas' => $semanas,
             ];
         });
 
-        if ($planData && isset($planData['plan_type'])) {
+        if (! $planData || ! isset($planData['plan_type'])) {
             return [
-                'hasActivePlan' => true,
-                'planPhase' => $planData['plan_type'],
-                'planDaysActive' => (int) Carbon::parse($planData['valid_from'])->diffInDays(now()),
+                'hasActivePlan' => false,
+                'planPhase' => null,
+                'planDaysActive' => 0,
+                'currentWeek' => 1,
+                // totalWeeks=0 significa "plan renovable semanal" (Esencial/RISE/Presencial/Trial).
+                // El frontend no mostrará "de N" cuando sea 0. Método/Elite lo sobrescriben
+                // abajo con count(semanas).
+                'totalWeeks' => 0,
+                'phaseName' => 'Activo',
             ];
         }
 
+        $validFrom = Carbon::parse($planData['valid_from']);
+        $semanas = $planData['semanas'] ?? [];
+        // Solo cuando el plan viene con semanas[] estructuradas (Método/Elite) hay un total
+        // definido. Planes renovables semanales (Esencial/RISE/Presencial) → 0.
+        $totalWeeks = count($semanas);
+
+        // Semana actual basada en valid_from del plan (no created_at del cliente).
+        $weeksElapsed = (int) floor($validFrom->diffInDays(now()) / 7) + 1;
+        // Si hay semanas estructuradas, clampar al rango. Si no, la semana cuenta libre.
+        $currentWeek = $totalWeeks > 0
+            ? max(1, min($totalWeeks, $weeksElapsed))
+            : max(1, $weeksElapsed);
+
+        // Si currentWeek excede semanas[], usamos la última. Garantizado por min() arriba.
+        $weekIndex = $currentWeek - 1;
+        $phaseName = 'Activo';
+
+        if (isset($semanas[$weekIndex]['fase']) && filled($semanas[$weekIndex]['fase'])) {
+            $faseRaw = trim((string) $semanas[$weekIndex]['fase']);
+            $phaseName = trim(explode('·', $faseRaw)[0]) ?: 'Activo';
+        }
+
         return [
-            'hasActivePlan' => false,
-            'planPhase' => null,
-            'planDaysActive' => 0,
+            'hasActivePlan' => true,
+            'planPhase' => $planData['plan_type'],
+            'planDaysActive' => (int) $validFrom->diffInDays(now()),
+            'currentWeek' => $currentWeek,
+            'totalWeeks' => $totalWeeks,
+            'phaseName' => $phaseName,
         ];
     }
 
     /**
-     * Plan progress timeline (mirrors Livewire loadPlanProgress).
+     * Normaliza el campo content de assigned_plans (puede venir array, JSON
+     * string, o null). Devuelve siempre array — vacío si parsea mal.
      */
-    private function loadPlanProgress(Client $client): array
+    private function normalizePlanContent(mixed $content): array
+    {
+        if (is_array($content)) {
+            return $content;
+        }
+
+        if (! is_string($content) || $content === '') {
+            return [];
+        }
+
+        $decoded = json_decode($content, true);
+
+        return is_array($decoded) ? $decoded : [];
+    }
+
+    /**
+     * Plan progress timeline (mirrors Livewire loadPlanProgress).
+     *
+     * `$totalWeeks` viene del JSON del plan asignado (count(semanas[])); 0
+     * cuando el plan es renovable semanal (Esencial/RISE/Presencial/Trial) y
+     * no tiene un total estructurado. En ese caso progressPercent = 0.
+     */
+    private function loadPlanProgress(Client $client, int $totalWeeks = 0): array
     {
         $createdAt = $client->created_at ?? $client->fecha_inicio ?? now();
         $startDate = Carbon::parse($createdAt)->format('d M Y');
         $weeksActive = (int) max(1, ceil(Carbon::parse($createdAt)->diffInWeeks(now())));
-        $totalWeeks = 12;
-        $progressPercent = (int) min(100, ($weeksActive / $totalWeeks) * 100);
+        $progressPercent = $totalWeeks > 0
+            ? (int) min(100, ($weeksActive / $totalWeeks) * 100)
+            : 0;
 
         return [
             'startDate' => $startDate,
