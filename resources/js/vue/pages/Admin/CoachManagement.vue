@@ -2,6 +2,7 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { useApi } from '../../composables/useApi';
 import AdminLayout from '../../layouts/AdminLayout.vue';
+import EmailPreview from '../Coach/Invitations/EmailPreview.vue';
 
 const api = useApi();
 
@@ -37,6 +38,12 @@ const editForm      = ref({ name: '', email: '', whatsapp: '', active: true });
 // ─── Confirm modals ───────────────────────────────────────────────────────────
 const confirmReset     = ref({ show: false, coach: null, loading: false, error: '' });
 const confirmDelete    = ref({ show: false, coach: null, loading: false, error: '' });
+
+// ─── Preview del email de credenciales ────────────────────────────────────────
+const previewing     = ref(false);
+const previewHtml    = ref('');
+const previewSeen    = ref(false);
+const previewError   = ref('');
 
 // ─── Password strength ────────────────────────────────────────────────────────
 const passwordStrength = computed(() => {
@@ -97,9 +104,34 @@ watch(statusFilter, () => fetchCoaches());
 
 // ─── Create coach ─────────────────────────────────────────────────────────────
 function openCreate() {
-  createForm.value  = { name: '', username: '', email: '', whatsapp: '', password: '' };
+  createForm.value   = { name: '', username: '', email: '', whatsapp: '', password: '' };
   createErrors.value = {};
+  previewHtml.value  = '';
+  previewSeen.value  = false;
+  previewError.value = '';
   showCreateModal.value = true;
+}
+
+async function handlePreview() {
+  previewError.value = '';
+  const f = createForm.value;
+  if (!f.name.trim()) { previewError.value = 'El nombre es obligatorio para la vista previa.'; return; }
+  if (!f.email.trim()) { previewError.value = 'El email es obligatorio para la vista previa.'; return; }
+  if (!f.username.trim()) { previewError.value = 'El usuario es obligatorio para la vista previa.'; return; }
+  previewing.value = true;
+  try {
+    const { data } = await api.post('/api/v/admin/coaches/manage/preview', {
+      name:     f.name.trim(),
+      username: f.username.trim(),
+      email:    f.email.trim(),
+    });
+    previewHtml.value = data.html ?? '';
+    previewSeen.value = true;
+  } catch {
+    previewError.value = 'No se pudo generar la vista previa. Verifica los datos e intenta de nuevo.';
+  } finally {
+    previewing.value = false;
+  }
 }
 
 async function submitCreate() {
@@ -385,78 +417,130 @@ onMounted(fetchCoaches);
       <div v-if="showCreateModal" class="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="showCreateModal = false"></div>
         <Transition name="slide-up">
-          <div v-if="showCreateModal" class="relative z-10 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-wc-border bg-wc-bg-secondary p-6 shadow-2xl">
-            <div class="mb-5 flex items-start justify-between">
-              <h2 class="font-display text-2xl tracking-wide text-wc-text">NUEVO COACH</h2>
-              <button @click="showCreateModal = false" class="flex h-8 w-8 items-center justify-center rounded-lg border border-wc-border text-wc-text-secondary hover:text-wc-text">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
-              </button>
-            </div>
+          <div v-if="showCreateModal" class="relative z-10 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-wc-border bg-wc-bg-secondary shadow-2xl">
 
-            <form @submit.prevent="submitCreate" class="space-y-4">
-              <div>
-                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">Nombre <span class="text-wc-accent">*</span></label>
-                <input v-model="createForm.name" type="text" placeholder="Nombre completo"
-                       class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none"
-                       :class="createErrors.name ? 'border-wc-accent' : ''" />
-                <p v-if="createErrors.name" class="mt-1 text-xs text-wc-accent">{{ createErrors.name[0] }}</p>
+            <Transition name="fade" mode="out-in">
+
+              <!-- Vista previa del email -->
+              <div v-if="previewHtml" key="preview" class="p-6">
+                <EmailPreview
+                  :html="previewHtml"
+                  @back="previewHtml = ''"
+                  @confirm="previewHtml = ''; submitCreate()"
+                />
               </div>
 
-              <div>
-                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">Usuario <span class="text-wc-accent">*</span></label>
-                <input v-model="createForm.username" type="text" placeholder="usuario_login" @input="createForm.username = createForm.username.replace(/\s+/g, '')"
-                       class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none font-mono"
-                       :class="createErrors.username ? 'border-wc-accent' : ''" />
-                <p class="mt-1 text-[10px] text-wc-text-tertiary">Sin espacios. Debe ser unico.</p>
-                <p v-if="createErrors.username" class="mt-1 text-xs text-wc-accent">{{ createErrors.username[0] }}</p>
-              </div>
-
-              <div>
-                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">Email</label>
-                <input v-model="createForm.email" type="email" placeholder="coach@ejemplo.com"
-                       class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none"
-                       :class="createErrors.email ? 'border-wc-accent' : ''" />
-                <p v-if="createErrors.email" class="mt-1 text-xs text-wc-accent">{{ createErrors.email[0] }}</p>
-              </div>
-
-              <div>
-                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">WhatsApp</label>
-                <input v-model="createForm.whatsapp" type="tel" placeholder="+57 300 123 4567"
-                       class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none"
-                       :class="createErrors.whatsapp ? 'border-wc-accent' : ''" />
-                <p v-if="createErrors.whatsapp" class="mt-1 text-xs text-wc-accent">{{ createErrors.whatsapp[0] }}</p>
-              </div>
-
-              <div>
-                <div class="mb-1.5 flex items-center justify-between">
-                  <label class="block text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">Contrasena <span class="text-wc-accent">*</span></label>
-                  <button type="button" @click="generatePassword" class="text-[11px] font-medium text-wc-accent hover:underline">Generar aleatoria</button>
+              <!-- Formulario de creacion -->
+              <div v-else key="form" class="p-6 space-y-4">
+                <div class="mb-5 flex items-start justify-between">
+                  <h2 class="font-display text-2xl tracking-wide text-wc-text">NUEVO COACH</h2>
+                  <button @click="showCreateModal = false" class="flex h-8 w-8 items-center justify-center rounded-lg border border-wc-border text-wc-text-secondary hover:text-wc-text">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                  </button>
                 </div>
-                <input v-model="createForm.password" type="text"
-                       placeholder="Minimo 10 caracteres"
-                       class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 font-mono text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none"
-                       :class="createErrors.password ? 'border-wc-accent' : ''" />
-                <div v-if="createForm.password" class="mt-1.5">
-                  <div class="flex gap-1">
-                    <div v-for="n in 4" :key="n" class="h-1 flex-1 rounded-full transition-colors"
-                         :class="n <= passwordStrength ? strengthColor : 'bg-wc-border'"></div>
+
+                <Transition name="fade">
+                  <div v-if="previewError"
+                       class="flex items-start gap-3 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+                    <svg class="mt-0.5 h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                    </svg>
+                    <span>{{ previewError }}</span>
                   </div>
-                  <p class="mt-1 text-[10px] text-wc-text-tertiary">Fortaleza: {{ strengthLabel }}</p>
-                </div>
-                <p v-if="createErrors.password" class="mt-1 text-xs text-wc-accent">{{ createErrors.password[0] }}</p>
+                </Transition>
+
+                <form @submit.prevent class="space-y-4">
+                  <div>
+                    <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">Nombre <span class="text-wc-accent">*</span></label>
+                    <input v-model="createForm.name" type="text" placeholder="Nombre completo"
+                           class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none"
+                           :class="createErrors.name ? 'border-wc-accent' : ''" />
+                    <p v-if="createErrors.name" class="mt-1 text-xs text-wc-accent">{{ createErrors.name[0] }}</p>
+                  </div>
+
+                  <div>
+                    <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">Usuario <span class="text-wc-accent">*</span></label>
+                    <input v-model="createForm.username" type="text" placeholder="usuario_login" @input="createForm.username = createForm.username.replace(/\s+/g, '')"
+                           class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none font-mono"
+                           :class="createErrors.username ? 'border-wc-accent' : ''" />
+                    <p class="mt-1 text-[10px] text-wc-text-tertiary">Sin espacios. Debe ser unico.</p>
+                    <p v-if="createErrors.username" class="mt-1 text-xs text-wc-accent">{{ createErrors.username[0] }}</p>
+                  </div>
+
+                  <div>
+                    <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">Email</label>
+                    <input v-model="createForm.email" type="email" placeholder="coach@ejemplo.com"
+                           class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none"
+                           :class="createErrors.email ? 'border-wc-accent' : ''" />
+                    <p v-if="createErrors.email" class="mt-1 text-xs text-wc-accent">{{ createErrors.email[0] }}</p>
+                  </div>
+
+                  <div>
+                    <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">WhatsApp</label>
+                    <input v-model="createForm.whatsapp" type="tel" placeholder="+57 300 123 4567"
+                           class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none"
+                           :class="createErrors.whatsapp ? 'border-wc-accent' : ''" />
+                    <p v-if="createErrors.whatsapp" class="mt-1 text-xs text-wc-accent">{{ createErrors.whatsapp[0] }}</p>
+                  </div>
+
+                  <div>
+                    <div class="mb-1.5 flex items-center justify-between">
+                      <label class="block text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">Contrasena <span class="text-wc-accent">*</span></label>
+                      <button type="button" @click="generatePassword" class="text-[11px] font-medium text-wc-accent hover:underline">Generar aleatoria</button>
+                    </div>
+                    <input v-model="createForm.password" type="text"
+                           placeholder="Minimo 10 caracteres"
+                           class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 font-mono text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none"
+                           :class="createErrors.password ? 'border-wc-accent' : ''" />
+                    <div v-if="createForm.password" class="mt-1.5">
+                      <div class="flex gap-1">
+                        <div v-for="n in 4" :key="n" class="h-1 flex-1 rounded-full transition-colors"
+                             :class="n <= passwordStrength ? strengthColor : 'bg-wc-border'"></div>
+                      </div>
+                      <p class="mt-1 text-[10px] text-wc-text-tertiary">Fortaleza: {{ strengthLabel }}</p>
+                    </div>
+                    <p v-if="createErrors.password" class="mt-1 text-xs text-wc-accent">{{ createErrors.password[0] }}</p>
+                  </div>
+
+                  <div class="flex items-center justify-between gap-3 border-t border-wc-border pt-4">
+                    <button type="button" @click="showCreateModal = false"
+                            class="rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2.5 text-sm font-medium text-wc-text-secondary transition-colors hover:text-wc-text">
+                      Cancelar
+                    </button>
+                    <div class="flex items-center gap-3">
+                      <button
+                        type="button"
+                        @click="handlePreview"
+                        :disabled="previewing"
+                        class="inline-flex items-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2 text-sm font-semibold text-wc-text hover:bg-zinc-700 transition-colors disabled:opacity-50">
+                        <svg v-if="previewing" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                        <svg v-else class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                        Vista previa del email
+                      </button>
+                      <button
+                        type="button"
+                        @click="submitCreate"
+                        :disabled="creating || !previewSeen"
+                        :title="!previewSeen ? 'Debes ver la vista previa antes de crear el coach' : ''"
+                        class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-5 py-2 text-sm font-semibold text-white hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        <svg v-if="creating" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                        Crear coach
+                      </button>
+                    </div>
+                  </div>
+                </form>
               </div>
 
-              <div class="flex gap-3 pt-1">
-                <button type="button" @click="showCreateModal = false"
-                        class="flex-1 rounded-lg border border-wc-border bg-wc-bg-tertiary py-2.5 text-sm font-medium text-wc-text-secondary transition-colors hover:text-wc-text">
-                  Cancelar
-                </button>
-                <button type="submit" :disabled="creating"
-                        class="flex-1 rounded-lg bg-wc-accent py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:opacity-60">
-                  {{ creating ? 'Creando...' : 'Crear coach' }}
-                </button>
-              </div>
-            </form>
+            </Transition>
           </div>
         </Transition>
       </div>
