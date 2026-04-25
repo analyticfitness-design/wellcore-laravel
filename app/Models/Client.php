@@ -6,6 +6,7 @@ use App\Enums\ClientStatus;
 use App\Enums\PlanType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -33,6 +34,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 #[Hidden(['password_hash'])]
 class Client extends Authenticatable
 {
+    use HasFactory;
     use SoftDeletes;
 
     protected $table = 'clients';

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -24,6 +25,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 #[Hidden(['password_hash'])]
 class Admin extends Authenticatable
 {
+    use HasFactory;
+
     protected $table = 'admins';
 
     public $timestamps = false;

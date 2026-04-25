@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\PaymentStatus;
 use App\Enums\PlanType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -26,6 +27,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class Payment extends Model
 {
+    use HasFactory;
+
     protected $table = 'payments';
 
     public $timestamps = true;

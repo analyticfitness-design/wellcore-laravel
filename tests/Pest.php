@@ -20,6 +20,9 @@ pest()->extend(TestCase::class)
 pest()->extend(TestCase::class)
     ->in('Architecture');
 
+pest()->extend(TestCase::class)
+    ->in('Unit');
+
 /*
 |--------------------------------------------------------------------------
 | Expectations
