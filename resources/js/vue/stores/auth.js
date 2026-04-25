@@ -51,7 +51,9 @@ export const useAuthStore = defineStore('auth', () => {
 
     const isImpersonating = computed(() => localStorage.getItem('wc_impersonating') === 'true');
     const isAuthenticated = computed(() => !!token.value);
-    const forcePasswordChange = computed(() => localStorage.getItem('wc_force_password_change') === 'true');
+    // ref (not computed) so assigning forcePasswordChange.value = false is reactive immediately.
+    // computed with no reactive deps caches forever → redirect loop after password change.
+    const forcePasswordChange = ref(localStorage.getItem('wc_force_password_change') === 'true');
 
     function setAuth(data) {
         token.value = data.token;
@@ -71,8 +73,10 @@ export const useAuthStore = defineStore('auth', () => {
         if (typeof data.force_password_change !== 'undefined') {
             if (data.force_password_change) {
                 localStorage.setItem('wc_force_password_change', 'true');
+                forcePasswordChange.value = true;
             } else {
                 localStorage.removeItem('wc_force_password_change');
+                forcePasswordChange.value = false;
             }
         }
     }
@@ -85,8 +89,10 @@ export const useAuthStore = defineStore('auth', () => {
             if (resp.data && resp.data.authenticated) {
                 if (resp.data.force_password_change) {
                     localStorage.setItem('wc_force_password_change', 'true');
+                    forcePasswordChange.value = true;
                 } else {
                     localStorage.removeItem('wc_force_password_change');
+                    forcePasswordChange.value = false;
                 }
             }
             return resp.data;
@@ -108,6 +114,7 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.removeItem('wc_admin_token');
         localStorage.removeItem('wc_user_portal');
         localStorage.removeItem('wc_force_password_change');
+        forcePasswordChange.value = false;
     }
 
     async function login(identity, password, rememberMe = false) {

@@ -31,7 +31,7 @@ const allPass = computed(() =>
 
 async function submit() {
   if (!allPass.value) {
-    error.value = 'La nueva contrasena no cumple la politica.';
+    error.value = 'La nueva contraseña no cumple la política de seguridad.';
     return;
   }
   submitting.value = true;
@@ -49,7 +49,7 @@ async function submit() {
         headers: { Authorization: `Bearer ${token.value}` },
       }
     );
-    success.value = 'Contrasena actualizada. Redirigiendo...';
+    success.value = 'Contraseña actualizada. Redirigiendo...';
     localStorage.removeItem('wc_force_password_change');
     // Clear flag in store so router guard deja pasar (sino crea loop).
     if (authStore && 'forcePasswordChange' in authStore) {
@@ -67,7 +67,7 @@ async function submit() {
     error.value =
       e?.response?.data?.message ||
       Object.values(e?.response?.data?.errors || {})[0]?.[0] ||
-      'No se pudo actualizar la contrasena.';
+      'No se pudo actualizar la contraseña.';
   } finally {
     submitting.value = false;
   }
@@ -77,14 +77,14 @@ async function submit() {
 <template>
   <div class="min-h-screen flex items-center justify-center bg-wc-bg px-4">
     <div class="w-full max-w-md bg-wc-bg-secondary border border-wc-border rounded-2xl p-6 shadow-xl">
-      <h1 class="text-2xl font-display text-wc-text mb-2">Cambiar Contrasena</h1>
+      <h1 class="text-2xl font-display text-wc-text mb-2">Cambiar Contraseña</h1>
       <p class="text-sm text-wc-text-secondary mb-6">
-        Por seguridad, define una nueva contrasena antes de continuar.
+        Por seguridad, define una nueva contraseña antes de continuar.
       </p>
 
       <form class="space-y-4" @submit.prevent="submit">
         <div>
-          <label class="block text-xs text-wc-text-secondary mb-1">Contrasena actual</label>
+          <label class="block text-xs text-wc-text-secondary mb-1">Contraseña actual</label>
           <input
             v-model="currentPassword"
             type="password"
@@ -95,7 +95,7 @@ async function submit() {
         </div>
 
         <div>
-          <label class="block text-xs text-wc-text-secondary mb-1">Nueva contrasena</label>
+          <label class="block text-xs text-wc-text-secondary mb-1">Nueva contraseña</label>
           <input
             v-model="newPassword"
             type="password"
@@ -106,7 +106,7 @@ async function submit() {
         </div>
 
         <div>
-          <label class="block text-xs text-wc-text-secondary mb-1">Confirmar nueva contrasena</label>
+          <label class="block text-xs text-wc-text-secondary mb-1">Confirmar nueva contraseña</label>
           <input
             v-model="newPasswordConfirmation"
             type="password"
@@ -118,22 +118,22 @@ async function submit() {
 
         <ul class="text-xs space-y-1">
           <li :class="rules.length ? 'text-green-400' : 'text-wc-text-secondary'">
-            {{ rules.length ? '✓' : '•' }} Minimo 10 caracteres
+            {{ rules.length ? '✓' : '•' }} Mínimo 10 caracteres
           </li>
           <li :class="rules.upper ? 'text-green-400' : 'text-wc-text-secondary'">
-            {{ rules.upper ? '✓' : '•' }} Una mayuscula
+            {{ rules.upper ? '✓' : '•' }} Una mayúscula
           </li>
           <li :class="rules.lower ? 'text-green-400' : 'text-wc-text-secondary'">
-            {{ rules.lower ? '✓' : '•' }} Una minuscula
+            {{ rules.lower ? '✓' : '•' }} Una minúscula
           </li>
           <li :class="rules.digit ? 'text-green-400' : 'text-wc-text-secondary'">
-            {{ rules.digit ? '✓' : '•' }} Un numero
+            {{ rules.digit ? '✓' : '•' }} Un número
           </li>
           <li :class="rules.symbol ? 'text-green-400' : 'text-wc-text-secondary'">
-            {{ rules.symbol ? '✓' : '•' }} Un simbolo (!@#$% etc.)
+            {{ rules.symbol ? '✓' : '•' }} Un símbolo (!@#$% etc.)
           </li>
           <li :class="rules.match ? 'text-green-400' : 'text-wc-text-secondary'">
-            {{ rules.match ? '✓' : '•' }} Las contrasenas coinciden
+            {{ rules.match ? '✓' : '•' }} Las contraseñas coinciden
           </li>
         </ul>
 
@@ -145,7 +145,7 @@ async function submit() {
           class="w-full py-3 rounded-lg bg-wc-accent text-white font-semibold disabled:opacity-50"
           :disabled="submitting || !allPass"
         >
-          {{ submitting ? 'Guardando...' : 'Guardar contrasena' }}
+          {{ submitting ? 'Guardando...' : 'Guardar contraseña' }}
         </button>
       </form>
     </div>
