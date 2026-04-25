@@ -10,8 +10,32 @@ import { useAuthStore } from '../stores/auth';
  *   const api = useApi();
  *   const { data } = await api.get('/api/v/client/dashboard');
  */
+/**
+ * Preview mode: when admin renders a form in /admin/forms-preview/* iframe,
+ * we return a mock client that resolves all requests with empty data.
+ * This prevents 401 redirects and lets forms render their empty/loading states.
+ */
+function isPreviewMode() {
+    return typeof window !== 'undefined'
+        && window.location.pathname.startsWith('/admin/forms-preview');
+}
+
+function createPreviewMockClient() {
+    const empty = () => Promise.resolve({ data: {}, status: 200, headers: {}, config: {} });
+    return {
+        get: empty, post: empty, put: empty, patch: empty, delete: empty,
+        request: empty,
+        interceptors: { request: { use: () => 0 }, response: { use: () => 0 } },
+        defaults: { headers: { common: {} } },
+    };
+}
+
 export function useApi() {
     const authStore = useAuthStore();
+
+    if (isPreviewMode()) {
+        return createPreviewMockClient();
+    }
 
     const instance = axios.create({
         baseURL: '',
