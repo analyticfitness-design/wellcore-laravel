@@ -2,13 +2,21 @@
 
 namespace App\Providers;
 
+use App\Models\Client;
+use App\Models\CoachInvitation;
+use App\Models\PlanTicket;
 use App\Models\WorkoutSession;
 use App\Observers\WorkoutSessionObserver;
+use App\Policies\ClientPolicy;
+use App\Policies\CoachInvitationPolicy;
+use App\Policies\PlanTicketPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -40,13 +48,17 @@ class AppServiceProvider extends ServiceProvider
 
     protected function registerPolicies(): void
     {
-        \Illuminate\Support\Facades\Gate::policy(
-            \App\Models\Client::class,
-            \App\Policies\ClientPolicy::class
+        Gate::policy(
+            Client::class,
+            ClientPolicy::class
         );
-        \Illuminate\Support\Facades\Gate::policy(
-            \App\Models\PlanTicket::class,
-            \App\Policies\PlanTicketPolicy::class
+        Gate::policy(
+            PlanTicket::class,
+            PlanTicketPolicy::class
+        );
+        Gate::policy(
+            CoachInvitation::class,
+            CoachInvitationPolicy::class
         );
     }
 
@@ -69,7 +81,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Livewire 3: propagate nonce to all injected script tags
-        \Livewire\Livewire::useScriptTagAttributes([
+        Livewire::useScriptTagAttributes([
             'nonce' => fn () => request()->attributes->get('csp_nonce', ''),
         ]);
     }
@@ -81,11 +93,13 @@ class AppServiceProvider extends ServiceProvider
     {
         RateLimiter::for('api', function ($request) {
             $key = optional($request->user())->id ?? $request->ip();
+
             return Limit::perMinute(60)->by($key);
         });
 
         RateLimiter::for('login', function ($request) {
             $key = optional($request->user())->id ?? $request->ip();
+
             return Limit::perMinute(5)->by($key);
         });
 
