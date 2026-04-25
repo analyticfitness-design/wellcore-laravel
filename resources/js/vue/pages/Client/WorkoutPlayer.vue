@@ -89,6 +89,16 @@ const dayWarmup = computed(() => {
   return d.calentamiento || d.warmup || null;
 });
 
+// Prioridad/objetivo del día (hipertrofia, fuerza, resistencia, etc.)
+// Soporta varios nombres de campo según el JSON del plan.
+const dayPriority = computed(() => {
+  const d = currentDay.value;
+  if (!d) return null;
+  const raw = d.prioridad || d.priority || d.objetivo || d.tipo || d.focus || d.estimulo || null;
+  if (!raw || typeof raw !== 'string') return null;
+  return raw.trim() || null;
+});
+
 const completedSetsCount = computed(() => {
   let count = 0;
   for (const key in setData.value) {
@@ -901,15 +911,37 @@ onBeforeUnmount(() => {
           <!-- ════════════════════════════════════════ -->
           <div v-if="!workoutStarted">
 
-            <!-- Progress summary -->
-            <div class="flex items-center justify-between rounded-xl border border-wc-border bg-wc-bg-tertiary px-4 py-3">
-              <div class="flex items-center gap-2">
-                <svg class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" /></svg>
-                <span class="text-sm text-wc-text-secondary">
-                  <span class="font-data font-semibold text-wc-text">{{ exercises.length }}</span> ejercicios
-                  <span class="text-wc-text-tertiary mx-1">&middot;</span>
-                  <span class="text-wc-text-tertiary">~{{ Math.max(exercises.length * 8, 20) }} min estimado</span>
+            <!-- Day info bar: ejercicios · tiempo · prioridad -->
+            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary px-4 py-3">
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
+                <!-- Ejercicios -->
+                <span class="inline-flex items-center gap-2">
+                  <svg class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" /></svg>
+                  <span class="text-wc-text-secondary">
+                    <span class="font-data font-semibold text-wc-text">{{ exercises.length }}</span> ejercicios
+                  </span>
                 </span>
+
+                <span class="h-3 w-px bg-wc-border" aria-hidden="true"></span>
+
+                <!-- Tiempo estimado -->
+                <span class="inline-flex items-center gap-2">
+                  <svg class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                  <span class="text-wc-text-secondary">
+                    <span class="font-data font-semibold text-wc-text">{{ Math.max(exercises.length * 8, 20) }}</span> min estimado
+                  </span>
+                </span>
+
+                <!-- Prioridad (solo si el día la define) -->
+                <template v-if="dayPriority">
+                  <span class="h-3 w-px bg-wc-border" aria-hidden="true"></span>
+                  <span class="inline-flex items-center gap-2">
+                    <svg class="h-4 w-4 text-wc-accent" fill="currentColor" viewBox="0 0 24 24"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+                    <span class="text-wc-text-secondary">
+                      Prioridad: <span class="font-semibold text-wc-text">{{ dayPriority }}</span>
+                    </span>
+                  </span>
+                </template>
               </div>
             </div>
 
@@ -1072,8 +1104,22 @@ onBeforeUnmount(() => {
               <button
                 @click="startWorkout"
                 :disabled="starting || workoutStarted"
-                class="wc-btn-energy btn-ripple w-full rounded-2xl py-4 text-center shadow-lg shadow-wc-accent/20 hover:bg-red-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                class="wc-btn-energy btn-ripple flex w-full items-center justify-center gap-3 rounded-2xl py-4 text-center shadow-lg shadow-wc-accent/20 hover:bg-red-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
+                <svg
+                  v-if="!starting"
+                  class="h-5 w-5 text-amber-300 drop-shadow"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                ><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+                <svg
+                  v-else
+                  class="h-5 w-5 animate-spin text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                ><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
                 <span class="font-display text-xl tracking-widest text-white">
                   {{ starting ? 'INICIANDO...' : 'INICIAR ENTRENAMIENTO' }}
                 </span>
