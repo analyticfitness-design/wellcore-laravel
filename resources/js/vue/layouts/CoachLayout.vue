@@ -15,12 +15,19 @@ onMounted(() => {
     try {
         if (route.name !== 'coach-dashboard') return;
         if (localStorage.getItem('coach_tour_completed') === '1') return;
+
+        // One show per login session: compare current token vs token when last shown.
+        const currentToken = localStorage.getItem('wc_token') || '';
+        const lastToken    = localStorage.getItem('coach_tour_last_token') || '';
+        if (currentToken && currentToken === lastToken) return;
+
         const shown = parseInt(localStorage.getItem('coach_tour_shown_count') || '0', 10);
         if (shown >= 3) {
             localStorage.setItem('coach_tour_completed', '1');
             return;
         }
         localStorage.setItem('coach_tour_shown_count', String(shown + 1));
+        localStorage.setItem('coach_tour_last_token', currentToken);
         setTimeout(() => { showTour.value = true; }, 400);
     } catch {}
 });
