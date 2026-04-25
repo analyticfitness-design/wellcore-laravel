@@ -168,13 +168,13 @@ const bottomNav = [
           alt="WellCore"
           class="block h-9 w-9 object-contain shrink-0 dark:hidden"
         />
-        <span v-if="!sidebarCollapsed" class="font-display text-xl tracking-wider text-wc-text">WELLCORE</span>
+        <span :class="sidebarCollapsed ? 'lg:hidden' : ''" class="font-display text-xl tracking-wider text-wc-text">WELLCORE</span>
       </div>
 
       <!-- Navigation -->
       <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-6">
         <div v-for="section in navSections" :key="section.label">
-          <p v-if="!sidebarCollapsed" class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">{{ section.label }}</p>
+          <p :class="sidebarCollapsed ? 'lg:hidden' : ''" class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">{{ section.label }}</p>
           <ul class="space-y-0.5">
             <li v-for="item in section.items" :key="item.routeName">
               <RouterLink
@@ -240,7 +240,7 @@ const bottomNav = [
                 <svg v-else-if="item.icon === 'resources'" class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
                 </svg>
-                <span v-if="!sidebarCollapsed" class="truncate">{{ item.name }}</span>
+                <span :class="sidebarCollapsed ? 'lg:hidden' : ''" class="truncate">{{ item.name }}</span>
               </RouterLink>
             </li>
           </ul>
@@ -258,7 +258,7 @@ const bottomNav = [
           <svg class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
           </svg>
-          <span v-if="!sidebarCollapsed">{{ loggingOut ? 'Cerrando...' : 'Cerrar sesion' }}</span>
+          <span :class="sidebarCollapsed ? 'lg:hidden' : ''">{{ loggingOut ? 'Cerrando...' : 'Cerrar sesion' }}</span>
         </button>
       </div>
 
@@ -333,7 +333,7 @@ const bottomNav = [
       </header>
 
       <!-- Page content -->
-      <main class="py-2 lg:py-6">
+      <main class="px-4 sm:px-6 py-2 lg:py-6">
         <slot />
       </main>
     </div>

@@ -171,7 +171,7 @@ onBeforeUnmount(() => {
     <div>
 
       <!-- MOBILE: Hero + Quick Actions (lg:hidden) -->
-      <div class="lg:hidden px-4 pt-3">
+      <div class="lg:hidden pt-3">
         <!-- Hero card: rojo si hay urgentes, oscuro si todo OK -->
         <div
           :class="urgentClientsCount > 0 ? 'wc-hero-accent' : 'bg-wc-bg-tertiary'"
@@ -218,7 +218,7 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- DESKTOP: Alert bar + Hero heading (hidden lg:block) -->
-      <div class="hidden lg:block px-6 pt-6">
+      <div class="hidden lg:block pt-6">
         <!-- Alert bar: solo si hay urgentes -->
         <div v-if="urgentClientsCount > 0" class="flex items-center justify-between px-5 py-3 rounded-card border-l-4 bg-wc-accent/10 border-wc-accent mb-5">
           <div class="flex items-center gap-2 text-sm text-wc-text">
@@ -254,13 +254,13 @@ onBeforeUnmount(() => {
 
       <!-- Loading skeleton -->
       <template v-if="loading">
-        <div class="px-4 lg:px-6 grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
           <div v-for="n in 4" :key="n" class="animate-pulse rounded-card border border-wc-border bg-wc-bg-tertiary h-[130px]"></div>
         </div>
       </template>
 
       <!-- Error -->
-      <div v-else-if="error" class="px-4 lg:px-6 rounded-card border border-red-500/30 bg-red-500/5 p-8 text-center">
+      <div v-else-if="error" class="rounded-card border border-red-500/30 bg-red-500/5 p-8 text-center">
         <p class="text-sm text-red-400">{{ error }}</p>
         <button @click="loadDashboard" class="mt-4 inline-flex items-center gap-2 rounded-button bg-wc-accent px-4 py-2 text-sm font-medium text-white">Reintentar</button>
       </div>
@@ -269,7 +269,7 @@ onBeforeUnmount(() => {
       <template v-else>
 
         <!-- KPI Stats Grid: 2x2 mobile, 4x1 desktop — WellCore dark + red -->
-        <div id="stats-grid" class="px-4 lg:px-6 grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+        <div id="stats-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
           <!-- Clientes activos — rojo primario -->
           <div class="wc-stat-primary wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
             <svg v-if="sparklines.clients.length" class="absolute top-3 right-3 opacity-65" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
@@ -308,12 +308,12 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- Onboarding checklist -->
-        <div class="px-4 lg:px-6">
+        <div>
           <CoachOnboardingChecklist :days-old="coachDaysOld" />
         </div>
 
         <!-- Main content grid: 8-4 desktop -->
-        <div class="px-4 lg:px-6 lg:grid lg:grid-cols-12 lg:gap-5">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-5">
 
           <!-- Left column (8/12) -->
           <div class="lg:col-span-8">
