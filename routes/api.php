@@ -293,6 +293,7 @@ Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:adm
     // Coach management (full CRUD + reset password)
     Route::get('/coaches/manage', [AdminCoachManagementController::class, 'index']);
     Route::post('/coaches/manage', [AdminCoachManagementController::class, 'store'])->middleware('throttle:coach-create');
+    Route::post('/coaches/manage/preview', [AdminCoachManagementController::class, 'preview']);
     Route::get('/coaches/manage/{id}', [AdminCoachManagementController::class, 'show'])->whereNumber('id');
     Route::put('/coaches/manage/{id}', [AdminCoachManagementController::class, 'update'])->whereNumber('id');
     Route::post('/coaches/manage/{id}/reset-password', [AdminCoachManagementController::class, 'resetPassword'])->whereNumber('id');

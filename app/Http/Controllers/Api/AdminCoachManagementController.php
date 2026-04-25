@@ -94,6 +94,27 @@ class AdminCoachManagementController extends Controller
         return response()->json(['coaches' => $data]);
     }
 
+    public function preview(Request $request): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $validated = $request->validate([
+            'name'     => ['required', 'string', 'max:120'],
+            'username' => ['required', 'string', 'max:60'],
+            'email'    => ['required', 'email', 'max:191'],
+        ]);
+
+        $html = view('emails.coach-credentials', [
+            'coachName'         => $validated['name'],
+            'username'          => $validated['username'],
+            'temporaryPassword' => '●●●●●●●●●●',
+            'isReset'           => false,
+            'loginUrl'          => config('wellcore.base_url', config('app.url')) . '/login',
+        ])->render();
+
+        return response()->json(['html' => $html]);
+    }
+
     public function store(Request $request): JsonResponse
     {
         $this->resolveAdminOrFail($request);
