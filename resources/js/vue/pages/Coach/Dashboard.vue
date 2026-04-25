@@ -172,24 +172,23 @@ onBeforeUnmount(() => {
 
       <!-- MOBILE: Hero + Quick Actions (lg:hidden) -->
       <div class="lg:hidden px-4 pt-3">
-        <!-- Hero card: gradient rojo si hay urgentes, verde si todo OK -->
+        <!-- Hero card: rojo si hay urgentes, oscuro si todo OK -->
         <div
-          :class="urgentClientsCount > 0 ? 'wc-hero-accent' : 'wc-hero-emerald'"
-          class="wc-noise rounded-card border-l-[3px] p-4 mb-3"
-          :style="{ borderLeftColor: urgentClientsCount > 0 ? 'var(--color-wc-accent)' : '#10B981' }"
+          :class="urgentClientsCount > 0 ? 'wc-hero-accent' : 'bg-wc-bg-tertiary'"
+          class="wc-noise rounded-card border-l-[3px] p-4 mb-3 border border-wc-border"
+          :style="{ borderLeftColor: urgentClientsCount > 0 ? 'var(--color-wc-accent)' : 'rgba(220,38,38,0.35)' }"
         >
           <div class="font-mono text-[10px] text-wc-text-tertiary uppercase tracking-wider">{{ todayDateLabel }}</div>
           <div v-if="urgentClientsCount > 0" class="mt-2">
             <div class="font-display text-xl uppercase text-wc-text">{{ urgentClientsCount }} CLIENTES NECESITAN ATENCIÓN</div>
             <div class="text-sm text-wc-text-secondary mt-0.5">{{ stats.pendingCheckins }} check-ins · {{ stats.unreadMessages }} sin leer</div>
           </div>
-          <div v-else class="mt-2 font-display text-xl uppercase text-emerald-400">AL DÍA · SIN PENDIENTES</div>
+          <div v-else class="mt-2 font-display text-xl uppercase text-wc-text-secondary">AL DÍA · SIN PENDIENTES</div>
           <div class="mt-3">
             <div class="h-1.5 rounded-full bg-wc-border overflow-hidden">
               <div
-                class="h-full rounded-full transition-all duration-700"
-                :class="urgentClientsCount > 0 ? 'bg-wc-accent' : 'bg-emerald-500'"
-                :style="{ width: urgentClientsCount > 0 ? '25%' : '100%' }"
+                class="h-full rounded-full bg-wc-accent transition-all duration-700"
+                :style="{ width: urgentClientsCount > 0 ? '25%' : '100%', opacity: urgentClientsCount > 0 ? '1' : '0.4' }"
               ></div>
             </div>
           </div>
@@ -269,39 +268,39 @@ onBeforeUnmount(() => {
       <!-- Main content -->
       <template v-else>
 
-        <!-- KPI Stats Grid: 2x2 mobile, 4x1 desktop — hero gradients -->
+        <!-- KPI Stats Grid: 2x2 mobile, 4x1 desktop — WellCore dark + red -->
         <div id="stats-grid" class="px-4 lg:px-6 grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
-          <!-- Clientes activos (blue) -->
-          <div class="wc-hero-blue wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
-            <svg v-if="sparklines.clients.length" class="absolute top-3 right-3 opacity-50" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
-              <polyline :points="sparklinePoints(sparklines.clients)" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Clientes activos — rojo primario -->
+          <div class="wc-stat-primary wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
+            <svg v-if="sparklines.clients.length" class="absolute top-3 right-3 opacity-40" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
+              <polyline :points="sparklinePoints(sparklines.clients)" fill="none" stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <div class="mt-6 font-display text-4xl leading-none text-wc-text font-data">{{ animatedCounters.activeClients }}</div>
             <div class="mt-1 text-[10px] font-bold uppercase tracking-wider text-wc-text-secondary">CLIENTES ACTIVOS</div>
           </div>
 
-          <!-- Check-ins (amber) -->
-          <div class="wc-hero-amber wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
-            <svg v-if="sparklines.checkins.length" class="absolute top-3 right-3 opacity-50" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
-              <polyline :points="sparklinePoints(sparklines.checkins)" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Check-ins — cálido (atención/pendiente) -->
+          <div class="wc-stat-warm wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
+            <svg v-if="sparklines.checkins.length" class="absolute top-3 right-3 opacity-40" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
+              <polyline :points="sparklinePoints(sparklines.checkins)" fill="none" stroke="#B45309" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <div class="mt-6 font-display text-4xl leading-none text-wc-text font-data">{{ animatedCounters.pendingCheckins }}</div>
             <div class="mt-1 text-[10px] font-bold uppercase tracking-wider text-wc-text-secondary">CHECK-INS</div>
           </div>
 
-          <!-- Mensajes (accent rojo) -->
-          <div class="wc-hero-accent wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
-            <svg v-if="sparklines.messages.length" class="absolute top-3 right-3 opacity-50" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
+          <!-- Mensajes — rojo primario -->
+          <div class="wc-stat-primary wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
+            <svg v-if="sparklines.messages.length" class="absolute top-3 right-3 opacity-40" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
               <polyline :points="sparklinePoints(sparklines.messages)" fill="none" stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <div class="mt-6 font-display text-4xl leading-none text-wc-text font-data">{{ animatedCounters.unreadMessages }}</div>
             <div class="mt-1 text-[10px] font-bold uppercase tracking-wider text-wc-text-secondary">MENSAJES</div>
           </div>
 
-          <!-- Tickets (emerald) -->
-          <div class="wc-hero-emerald wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
-            <svg v-if="sparklines.tickets.length" class="absolute top-3 right-3 opacity-50" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
-              <polyline :points="sparklinePoints(sparklines.tickets)" fill="none" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Tickets — muted oscuro con toque rojo -->
+          <div class="wc-stat-muted wc-noise stat-card relative rounded-card overflow-hidden p-4 border border-wc-border">
+            <svg v-if="sparklines.tickets.length" class="absolute top-3 right-3 opacity-40" width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
+              <polyline :points="sparklinePoints(sparklines.tickets)" fill="none" stroke="rgba(220,38,38,0.6)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <div class="mt-6 font-display text-4xl leading-none text-wc-text font-data">{{ animatedCounters.openTickets }}</div>
             <div class="mt-1 text-[10px] font-bold uppercase tracking-wider text-wc-text-secondary">TICKETS ABIERTOS</div>

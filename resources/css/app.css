@@ -114,6 +114,32 @@ body {
 .wc-hero-blue    { background: radial-gradient(circle at 20% 20%, rgba(59,130,246,.32), transparent 55%), linear-gradient(180deg, rgba(59,130,246,.16), rgba(59,130,246,.04)); }
 .wc-hero-violet  { background: radial-gradient(circle at 20% 20%, rgba(139,92,246,.35), transparent 55%), linear-gradient(180deg, rgba(139,92,246,.16), rgba(139,92,246,.04)); }
 
+/* ─── KPI stat cards — WellCore brand (dark + red, sin colores ajenos) ─── */
+.wc-stat-primary {
+  background: var(--color-wc-bg-tertiary, #18181B);
+  box-shadow: 0 0 0 1px rgba(220,38,38,.18), 0 4px 20px rgba(220,38,38,.10);
+}
+.wc-stat-primary::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, #DC2626 35%, #DC2626 65%, transparent);
+}
+.wc-stat-warm {
+  background: var(--color-wc-bg-tertiary, #18181B);
+  box-shadow: 0 0 0 1px rgba(180,83,9,.18), 0 4px 16px rgba(180,83,9,.08);
+}
+.wc-stat-warm::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, #B45309 35%, #B45309 65%, transparent);
+}
+.wc-stat-muted {
+  background: var(--color-wc-bg-tertiary, #18181B);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.06);
+}
+.wc-stat-muted::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(220,38,38,.45) 35%, rgba(220,38,38,.45) 65%, transparent);
+}
+
 /* ─── Noise texture overlay (usar con position:relative) ─── */
 .wc-noise::after {
     content: '';
