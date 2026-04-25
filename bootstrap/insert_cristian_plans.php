@@ -1,7 +1,13 @@
 <?php
 // ============================================================
 // INSERT PLANES CRISTIAN OQUENDO (client_id=78) — 2026-04-28
+// Ejecutar con: php /code/bootstrap/insert_cristian_plans.php
 // ============================================================
+require '/code/vendor/autoload.php';
+$app = require_once '/code/bootstrap/app.php';
+$kernel = $app->make(\Illuminate\Contracts\Console\Kernel::class);
+$kernel->bootstrap();
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 
