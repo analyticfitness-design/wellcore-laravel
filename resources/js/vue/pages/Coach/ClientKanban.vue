@@ -30,10 +30,10 @@ const totalClients = computed(() => {
 
 // Full hardcoded class strings — Tailwind JIT requires no dynamic concatenation
 const columnStyles = {
-  nuevo:   { stat: 'wc-stat-primary', cardExtra: 'border-l-2 border-l-wc-accent',   badge: 'bg-wc-accent text-white',            dot: 'bg-wc-accent' },
-  activo:  { stat: 'wc-stat-muted',   cardExtra: '',                                 badge: 'bg-wc-bg-secondary text-wc-text-secondary', dot: 'bg-wc-border' },
-  riesgo:  { stat: 'wc-stat-primary', cardExtra: 'border-l-4 border-l-wc-accent',   badge: 'bg-wc-accent text-white',            dot: 'bg-wc-accent' },
-  inactivo:{ stat: 'wc-stat-muted',   cardExtra: 'opacity-80',                       badge: 'bg-wc-bg-secondary text-wc-text-secondary', dot: 'bg-wc-border' },
+  nuevo:   { statTop: 'border-t-2 border-t-sky-400',     cardExtra: 'border-l-2 border-l-sky-400/60',    badge: 'bg-sky-500/10 text-sky-400',              dot: 'bg-sky-400'     },
+  activo:  { statTop: 'border-t-2 border-t-emerald-400', cardExtra: '',                                   badge: 'bg-emerald-500/10 text-emerald-400',       dot: 'bg-emerald-400' },
+  riesgo:  { statTop: 'border-t-2 border-t-amber-400',   cardExtra: 'border-l-4 border-l-amber-400/70',  badge: 'bg-amber-500/10 text-amber-400',           dot: 'bg-amber-400'   },
+  inactivo:{ statTop: '',                                 cardExtra: 'opacity-75',                         badge: 'bg-wc-bg-secondary text-wc-text-tertiary', dot: 'bg-zinc-500'    },
 };
 
 // ── Debounced search (300ms) ──────────────────────────────────────────
@@ -217,9 +217,10 @@ onBeforeUnmount(() => {
         <div
           v-for="(col, key) in columns"
           :key="key"
-          class="relative overflow-hidden flex items-center gap-3 rounded-card p-3"
-          :class="columnStyles[key]?.stat"
+          class="flex items-center gap-3 rounded-card border border-wc-border bg-wc-bg-tertiary p-3"
+          :class="columnStyles[key]?.statTop"
         >
+          <span class="h-2 w-2 rounded-full shrink-0" :class="columnStyles[key]?.dot"></span>
           <span class="text-2xl font-bold font-data text-wc-text">{{ col.clients.length }}</span>
           <span class="text-xs font-medium text-wc-text-secondary">{{ col.title }}</span>
         </div>
