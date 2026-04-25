@@ -67,7 +67,7 @@ export const useInvitationsStore = defineStore('invitations', () => {
         const response = await axios.post('/api/v/coach/invitations', data, {
             headers: getAuthHeaders(),
         });
-        const created = response.data.invitation ?? response.data;
+        const created = response.data.data ?? response.data.invitation ?? response.data;
         invitations.value = [created, ...invitations.value];
         return created;
     }
@@ -83,7 +83,7 @@ export const useInvitationsStore = defineStore('invitations', () => {
         const response = await axios.post(`/api/v/coach/invitations/${id}/resend`, {}, {
             headers: getAuthHeaders(),
         });
-        const updated = response.data.invitation ?? response.data;
+        const updated = response.data.data ?? response.data.invitation ?? response.data;
         const idx = invitations.value.findIndex((inv) => inv.id === id);
         if (idx !== -1) {
             invitations.value[idx] = { ...invitations.value[idx], ...updated };
@@ -95,7 +95,7 @@ export const useInvitationsStore = defineStore('invitations', () => {
         const response = await axios.delete(`/api/v/coach/invitations/${id}`, {
             headers: getAuthHeaders(),
         });
-        const updated = response.data.invitation ?? null;
+        const updated = response.data.data ?? response.data.invitation ?? null;
         const idx = invitations.value.findIndex((inv) => inv.id === id);
         if (idx !== -1) {
             if (updated) {
