@@ -21,16 +21,16 @@ const clients = ref([]);
 
 const noteStats = computed(() => {
     const all = notes.value.length;
-    const general = notes.value.filter(n => n.type === 'general').length;
-    const seguimiento = notes.value.filter(n => n.type === 'seguimiento').length;
-    const alerta = notes.value.filter(n => n.type === 'alerta').length;
-    const logro = notes.value.filter(n => n.type === 'logro').length;
+    const general = notes.value.filter(n => n.note_type === 'general').length;
+    const seguimiento = notes.value.filter(n => n.note_type === 'seguimiento').length;
+    const alerta = notes.value.filter(n => n.note_type === 'alerta').length;
+    const logro = notes.value.filter(n => n.note_type === 'logro').length;
     return { total: all, general, seguimiento, alerta, logro };
 });
 
 const filteredNotes = computed(() => {
     if (noteTypeFilter.value === 'all') return notes.value;
-    return notes.value.filter(n => n.type === noteTypeFilter.value);
+    return notes.value.filter(n => n.note_type === noteTypeFilter.value);
 });
 
 const typeColors = {
@@ -51,7 +51,7 @@ function openCreate() {
 function editNote(note) {
     editingId.value = note.id;
     noteClient.value = note.client_id || '';
-    noteType.value = note.type;
+    noteType.value = note.note_type || 'general';
     noteText.value = note.note;
     showForm.value = true;
 }
@@ -60,7 +60,11 @@ async function saveNote() {
     if (!noteText.value.trim()) return;
     saving.value = true;
     try {
-        const payload = { client_id: noteClient.value || null, type: noteType.value, note: noteText.value };
+        const payload = {
+            client_id: noteClient.value ? parseInt(noteClient.value) : null,
+            note_type: noteType.value,
+            note: noteText.value,
+        };
         if (editingId.value) {
             await api.put(`/api/v/coach/notes/${editingId.value}`, payload);
             const idx = notes.value.findIndex(n => n.id === editingId.value);
@@ -204,9 +208,9 @@ onMounted(loadData);
           <div class="flex items-start justify-between gap-3">
             <div class="min-w-0 flex-1">
               <div class="flex items-center gap-2 flex-wrap">
-                <span class="inline-flex rounded-full border px-2 py-0.5 text-[10px] font-semibold capitalize" :class="typeColors[note.type] || typeColors.general">{{ note.type }}</span>
+                <span class="inline-flex rounded-full border px-2 py-0.5 text-[10px] font-semibold capitalize" :class="typeColors[note.note_type] || typeColors.general">{{ note.note_type }}</span>
                 <span v-if="note.client_name" class="text-xs text-wc-text-secondary">{{ note.client_name }}</span>
-                <span class="text-[10px] text-wc-text-tertiary">{{ note.date }}</span>
+                <span class="text-[10px] text-wc-text-tertiary">{{ note.created_at_ago }}</span>
               </div>
               <p class="mt-2 text-sm text-wc-text leading-relaxed">{{ note.note }}</p>
             </div>

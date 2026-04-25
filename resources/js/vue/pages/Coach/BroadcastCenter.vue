@@ -8,6 +8,7 @@ const api = useApi();
 const loading = ref(false);
 const sending = ref(false);
 const success = ref(false);
+const error = ref('');
 
 const recipientMode = ref('all');
 const selectedClients = ref([]);
@@ -45,9 +46,10 @@ async function sendBroadcast() {
     sending.value = true;
     success.value = false;
     try {
+        error.value = '';
         await api.post('/api/v/coach/broadcast', {
-            mode: recipientMode.value,
-            selected_clients: selectedClients.value,
+            recipient_mode: recipientMode.value,
+            selected_client_ids: selectedClients.value,
             message: messageText.value,
         });
         success.value = true;
@@ -55,7 +57,7 @@ async function sendBroadcast() {
         selectedClients.value = [];
         setTimeout(() => { success.value = false; }, 4000);
     } catch (e) {
-        // silent
+        error.value = e?.response?.data?.message || 'Error al enviar el broadcast. Intenta de nuevo.';
     } finally {
         sending.value = false;
     }
@@ -105,6 +107,22 @@ onMounted(loadClients);
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
           Broadcast enviado exitosamente
+        </div>
+      </Transition>
+
+      <Transition
+        enter-active-class="transition ease-out duration-200"
+        enter-from-class="opacity-0 -translate-y-2"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="transition ease-in duration-150"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <div v-if="error" class="flex items-center gap-3 rounded-card border border-wc-accent/20 bg-wc-accent/10 px-4 py-3 text-sm text-wc-accent">
+          <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+          </svg>
+          {{ error }}
         </div>
       </Transition>
 

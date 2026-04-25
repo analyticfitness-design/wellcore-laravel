@@ -654,6 +654,11 @@ class CoachController extends Controller
             return response()->json(['error' => 'Cliente no encontrado.'], 404);
         }
 
+        $coachClientIds = $this->getCoachClientIds($coach->id);
+        if (! $coachClientIds->contains($validated['client_id'])) {
+            return response()->json(['error' => 'No tienes acceso a este cliente.'], 403);
+        }
+
         $targetColumn = $validated['target_column'];
 
         if ($targetColumn === 'inactivo' && $dbClient->status?->value !== 'inactivo') {
@@ -694,11 +699,8 @@ class CoachController extends Controller
             return response()->json(['error' => 'Cliente no encontrado.'], 404);
         }
 
-        // Verify coach has this client
-        $hasClient = AssignedPlan::where('assigned_by', $coachId)
-            ->where('client_id', $id)
-            ->exists();
-        if (! $hasClient) {
+        $coachClientIds = $this->getCoachClientIds($coachId);
+        if (! $coachClientIds->contains($id)) {
             return response()->json(['error' => 'No autorizado.'], 403);
         }
 
@@ -1305,14 +1307,18 @@ class CoachController extends Controller
             $notesQuery->where('client_id', (int) $clientFilter);
         }
 
-        $notes = $notesQuery->get()->map(function ($note) {
-            $client = Client::find($note->client_id);
+        $notesList = $notesQuery->get();
+        $noteClientIds = $notesList->pluck('client_id')->filter()->unique();
+        $clientsById = Client::whereIn('id', $noteClientIds)->get()->keyBy('id');
+
+        $notes = $notesList->map(function ($note) use ($clientsById) {
+            $client = $clientsById->get($note->client_id);
 
             return [
                 'id' => $note->id,
                 'client_id' => $note->client_id,
-                'client_name' => $client->name ?? 'Cliente',
-                'client_initial' => substr($client->name ?? 'C', 0, 1),
+                'client_name' => $client?->name ?? 'Cliente',
+                'client_initial' => substr($client?->name ?? 'C', 0, 1),
                 'note_type' => $note->note_type ?? 'general',
                 'note' => $note->note,
                 'created_at' => Carbon::parse($note->created_at)->format('d M Y, H:i'),
@@ -1351,14 +1357,16 @@ class CoachController extends Controller
         $coachId = $coach->id;
 
         $validated = $request->validate([
-            'client_id' => 'required|integer|exists:clients,id',
+            'client_id' => 'nullable|integer|exists:clients,id',
             'note_type' => 'required|in:general,seguimiento,alerta,logro',
             'note' => 'required|string|min:3|max:5000',
         ]);
 
-        $clientIds = $this->getCoachClientIds($coachId);
-        if (! $clientIds->contains($validated['client_id'])) {
-            return response()->json(['error' => 'Cliente no asignado a ti.'], 403);
+        if ($validated['client_id'] !== null) {
+            $clientIds = $this->getCoachClientIds($coachId);
+            if (! $clientIds->contains($validated['client_id'])) {
+                return response()->json(['error' => 'Cliente no asignado a ti.'], 403);
+            }
         }
 
         $note = CoachNote::create([

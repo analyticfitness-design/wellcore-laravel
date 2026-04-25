@@ -26,18 +26,33 @@ async function loadAnalytics() {
     loading.value = true;
     try {
         const { data } = await api.get(`/api/v/coach/analytics?range=${dateRange.value}`);
-        coachScore.value = data.coachScore || 0;
-        coachScoreLabel.value = data.coachScoreLabel || '';
-        avgResponseHours.value = data.avgResponseHours || 0;
         checkinReplyRate.value = data.checkinReplyRate || 0;
         retentionRate.value = data.retentionRate || 0;
         avgBienestar.value = data.avgBienestar || 0;
         totalCheckins.value = data.totalCheckins || 0;
-        totalMessages.value = data.totalMessages || 0;
+        totalMessages.value = (data.messagesSent || 0) + (data.messagesReceived || 0);
         clientOverview.value = data.clientOverview || [];
         slaBreakdown.value = data.slaBreakdown || slaBreakdown.value;
         bienestarTrend.value = data.bienestarTrend || [];
-        revenueStats.value = data.revenueStats || revenueStats.value;
+
+        revenueStats.value = data.revenueStats || {
+            total: data.totalRevenue || 0,
+            monthly: 0,
+            clients_paying: data.activeClients || 0,
+        };
+
+        if (!data.coachScore && (checkinReplyRate.value > 0 || retentionRate.value > 0)) {
+            const scoreCalc = Math.round(
+                checkinReplyRate.value * 0.5 + retentionRate.value * 0.5
+            );
+            coachScore.value = scoreCalc;
+            coachScoreLabel.value = scoreCalc >= 75 ? 'Excelente' : scoreCalc >= 50 ? 'Regular' : 'Necesita mejora';
+            avgResponseHours.value = data.avgResponseHours || 0;
+        } else {
+            coachScore.value = data.coachScore || 0;
+            coachScoreLabel.value = data.coachScoreLabel || '';
+            avgResponseHours.value = data.avgResponseHours || 0;
+        }
     } catch (e) {
         // silent
     } finally {
@@ -81,6 +96,15 @@ onMounted(loadAnalytics);
       </div>
 
       <template v-else>
+
+        <!-- Empty state para coach sin datos -->
+        <div v-if="!checkinReplyRate && !retentionRate && !totalCheckins" class="rounded-card border border-wc-border bg-wc-bg-tertiary p-8 text-center">
+          <svg class="mx-auto h-12 w-12 text-wc-text-tertiary/40" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+          </svg>
+          <p class="mt-3 font-display text-sm uppercase tracking-wide text-wc-text">Sin métricas todavía</p>
+          <p class="mt-1 text-xs text-wc-text-tertiary">Las métricas aparecerán cuando tus clientes comiencen a registrar check-ins y actividad.</p>
+        </div>
 
         <!-- Coach Score Hero -->
         <div v-if="coachScore > 0" class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
