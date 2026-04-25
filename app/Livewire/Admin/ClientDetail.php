@@ -105,7 +105,11 @@ class ClientDetail extends Component
             ->orderByDesc('valid_from')
             ->first();
 
-        if ($existingPlan && strlen((string) $existingPlan->content) > 500) {
+        // getRawOriginal evita el cast 'array' del modelo que convertía el JSON a
+        // "Array" (5 bytes) haciendo que la protección nunca funcionara.
+        $rawContent = $existingPlan ? $existingPlan->getRawOriginal('content') : '';
+
+        if ($existingPlan && strlen((string) $rawContent) > 500) {
             // Plan real con contenido → solo actualizar assigned_by (cambio de coach).
             $existingPlan->update(['assigned_by' => $coach->id]);
         } else {
