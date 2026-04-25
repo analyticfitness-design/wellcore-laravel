@@ -10,7 +10,7 @@ final class ClientPlanPhaseService
 {
     public function topbarLabel(int $clientId): ?string
     {
-        return Cache::remember("topbar_label_{$clientId}", 300, function () use ($clientId) {
+        return Cache::remember("topbar_label_v2_{$clientId}", 300, function () use ($clientId) {
             $plan = AssignedPlan::where('client_id', $clientId)
                 ->where('plan_type', 'entrenamiento')
                 ->where('active', true)
@@ -37,12 +37,14 @@ final class ClientPlanPhaseService
 
             if (isset($semanas[$weekIndex]['fase']) && filled($semanas[$weekIndex]['fase'])) {
                 $faseRaw = trim((string) $semanas[$weekIndex]['fase']);
-                $phaseName = trim(explode('·', $faseRaw)[0]) ?: null;
+                $fullPhase = trim(explode('·', $faseRaw)[0]) ?: null;
+                // Use only the first word of the phase name to keep the badge compact
+                $phaseName = $fullPhase ? explode(' ', $fullPhase)[0] : null;
             }
 
             return $phaseName
-                ? "Semana {$currentWeek} \u{00B7} Fase: {$phaseName}"
-                : "Semana {$currentWeek}";
+                ? "S{$currentWeek} · {$phaseName}"
+                : "S{$currentWeek}";
         });
     }
 

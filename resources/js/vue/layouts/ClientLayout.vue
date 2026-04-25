@@ -38,7 +38,14 @@ const coachBrand = ref(null); // { name, logo_url, logo_url_webp, primary_color,
 // Plan phase badge (topbar)
 const planPhaseText = ref('');
 
+// Responsive badge visibility — bypasses CSS specificity issues with compiled .tb-phase
+const windowWidth = ref(window.innerWidth);
+const onWindowResize = () => { windowWidth.value = window.innerWidth; };
+
 onMounted(async () => {
+    window.addEventListener('resize', onWindowResize, { passive: true });
+    onUnmounted(() => window.removeEventListener('resize', onWindowResize));
+
     const ac = new AbortController();
     onUnmounted(() => ac.abort());
 
@@ -63,12 +70,13 @@ onMounted(async () => {
         coachBrand.value = coachRes.value.data;
     }
 
-    // dashboard — plan phase badge
+    // dashboard — plan phase badge (compact format to fit topbar on any screen)
     if (dashRes.status === 'fulfilled' && dashRes.value?.status === 200) {
         const d = dashRes.value.data;
         if (d?.currentWeek) {
-            const phase = d.phaseName ? ` · Fase: ${d.phaseName}` : '';
-            planPhaseText.value = `Semana ${d.currentWeek}${phase}`;
+            const firstWord = d.phaseName ? d.phaseName.trim().split(/\s+/)[0] : null;
+            const phase = firstWord ? ` · ${firstWord}` : '';
+            planPhaseText.value = `S${d.currentWeek}${phase}`;
         } else if (d?.planLabel) {
             planPhaseText.value = d.planLabel;
         }
@@ -318,9 +326,9 @@ const bottomNav = [
           >
             <WcIcon name="wc-menu" :size="20" />
           </button>
-          <!-- Plan phase badge -->
-          <div v-if="planPhaseText" class="tb-phase hidden min-w-0 sm:flex">
-            <span class="truncate">{{ planPhaseText }}</span>
+          <!-- Plan phase badge — v-if controls visibility via JS to bypass CSS specificity issues -->
+          <div v-if="planPhaseText && windowWidth >= 640" class="tb-phase">
+            <span>{{ planPhaseText }}</span>
           </div>
         </div>
 

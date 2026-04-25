@@ -331,10 +331,14 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
                 </button>
-                {{-- Plan phase badge --}}
+                {{-- Plan phase badge — Alpine.js controls responsive visibility to bypass CSS specificity --}}
                 @if(isset($planPhaseText) && $planPhaseText)
-                    <div class="tb-phase hidden min-w-0 sm:flex">
-                        <span class="truncate">{{ $planPhaseText }}</span>
+                    <div class="tb-phase"
+                         style="display:none"
+                         x-data="{ show: window.innerWidth >= 640 }"
+                         x-init="window.addEventListener('resize', () => show = window.innerWidth >= 640, { passive: true })"
+                         x-show="show">
+                        {{ $planPhaseText }}
                     </div>
                 @endif
             </div>
