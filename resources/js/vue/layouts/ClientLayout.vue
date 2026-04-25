@@ -69,9 +69,14 @@ onMounted(async () => {
         const planRes = await api.get('/api/v/client/dashboard');
         if (planRes.status === 200) {
             const d = planRes.data;
-            if (d?.currentWeek && d?.phaseName) {
-                const weeks = d.totalWeeks || 12;
-                planPhaseText.value = `Semana ${d.currentWeek} de ${weeks} · Fase: ${d.phaseName}`;
+            if (d?.currentWeek) {
+                // Solo agrega "de N" si el plan es estructurado multi-semana (Método/Elite).
+                // Planes renovables semanal (Esencial/RISE/Presencial) no tienen totalWeeks > 1
+                // y muestran solo "Semana X · Fase: YYY".
+                const total = Number(d.totalWeeks) || 0;
+                const suffix = total > 1 ? ` de ${total}` : '';
+                const phase = d.phaseName ? ` · Fase: ${d.phaseName}` : '';
+                planPhaseText.value = `Semana ${d.currentWeek}${suffix}${phase}`;
             } else if (d?.planLabel) {
                 planPhaseText.value = d.planLabel;
             }
