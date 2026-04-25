@@ -1,6 +1,16 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
-<script nonce="@cspNonce">if(localStorage.getItem('darkMode')!=='false')document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark')</script>
+<html lang="es" class="dark" style="background-color: #09090B;">
+<script nonce="@cspNonce">
+    // Ajusta dark mode + bg-color del <html> para que el área safe-area-inset
+    // (ej. gesture bar de Android) no muestre el blanco default del navegador.
+    if (localStorage.getItem('darkMode') !== 'false') {
+        document.documentElement.classList.add('dark');
+        document.documentElement.style.backgroundColor = '#09090B';
+    } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.style.backgroundColor = '#F5F5F7';
+    }
+</script>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">

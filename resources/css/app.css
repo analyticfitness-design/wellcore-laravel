@@ -8,6 +8,7 @@
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
+@source '../**/*.vue';
 
 @theme {
     /* WellCore Design System Tokens */
@@ -71,6 +72,11 @@
 }
 
 /* Base styles */
+html {
+    /* Hereda el token wc-bg para que el área safe-area-inset (gesture bar Android,
+       notch iOS, overscroll) NO muestre el blanco default del navegador. */
+    background-color: var(--color-wc-bg);
+}
 body {
     font-family: var(--font-sans);
     background-color: var(--color-wc-bg);
@@ -375,6 +381,15 @@ body {
 
 /* Safe area padding for iOS notch / home indicator */
 .pb-safe            { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+
+/* Mobile <main> offset: clears bottom nav (~5rem) + Android gesture bar */
+.pb-nav-safe        { padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); }
+@media (min-width: 1024px) {
+    .pb-nav-safe    { padding-bottom: 1.5rem; }
+}
+
+/* Bottom nav itself: respect Android home indicator / iOS safe area */
+.bottom-nav-safe    { padding-bottom: env(safe-area-inset-bottom, 0px); }
 
 /* Hide scrollbars (quick action strip) */
 .no-scrollbar::-webkit-scrollbar { display: none; }

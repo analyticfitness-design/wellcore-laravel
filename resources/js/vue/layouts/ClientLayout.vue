@@ -205,7 +205,7 @@ const bottomNav = [
 
 <template>
   <div
-    class="min-h-screen bg-wc-bg text-wc-text"
+    class="min-h-screen min-h-dvh bg-wc-bg text-wc-text"
     :style="coachBrand?.primary_color ? { '--coach-accent': coachBrand.primary_color } : {}"
   >
 
@@ -357,7 +357,7 @@ const bottomNav = [
       </header>
 
       <!-- Page content -->
-      <main class="px-4 py-6 pb-20 sm:px-6 lg:px-8 lg:pb-6">
+      <main class="px-4 py-6 pb-nav-safe sm:px-6 lg:px-8">
 
         <!-- Account inactive overlay -->
         <div v-if="accountInactive" class="flex min-h-[calc(100vh-8rem)] flex-col items-center justify-center py-12">
@@ -419,7 +419,7 @@ const bottomNav = [
     </div>
 
     <!-- Mobile Bottom Navigation -->
-    <nav class="fixed inset-x-0 bottom-0 z-40 border-t border-wc-border bg-wc-bg/95 backdrop-blur-xl lg:hidden">
+    <nav class="bottom-nav-safe fixed inset-x-0 bottom-0 z-40 border-t border-wc-border bg-wc-bg/95 backdrop-blur-xl lg:hidden">
       <div class="flex items-center justify-around px-2 pb-2 pt-2">
         <RouterLink
           v-for="item in bottomNav"
