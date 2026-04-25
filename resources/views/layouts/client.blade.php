@@ -320,37 +320,27 @@
         @endif
 
         {{-- Top bar --}}
-        <header class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-wc-border bg-wc-bg/80 backdrop-blur-xl px-4 sm:px-6">
+        <header class="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-wc-border bg-wc-bg/80 backdrop-blur-xl px-4 sm:px-6">
             {{-- Left: hamburger (mobile) + plan phase --}}
-            <div class="flex items-center gap-3">
+            <div class="flex min-w-0 flex-1 items-center gap-3">
                 <button
                     x-on:click="sidebarOpen = !sidebarOpen"
-                    class="btn-press flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text lg:hidden"
+                    class="btn-press shrink-0 flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text lg:hidden"
                 >
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
                 </button>
                 {{-- Plan phase badge --}}
-                @if($client && $client->plan)
-                    @php
-                        $assignedStart = $client->plan->created_at ?? now();
-                        $weekNum = max(1, (int) ceil(now()->diffInDays($assignedStart) / 7));
-                        $weekNum = min($weekNum, 12);
-                        $phaseMap = [
-                            1 => 'Adaptación', 2 => 'Adaptación', 3 => 'Adaptación',
-                            4 => 'Hipertrofia', 5 => 'Hipertrofia', 6 => 'Hipertrofia',
-                            7 => 'Fuerza Máx.', 8 => 'Fuerza Máx.', 9 => 'Fuerza Máx.',
-                            10 => 'Peak', 11 => 'Peak', 12 => 'Peak',
-                        ];
-                        $phaseName = $phaseMap[$weekNum] ?? 'Activo';
-                    @endphp
-                    <div class="tb-phase hidden sm:flex">Semana {{ $weekNum }} &mdash; {{ $phaseName }}</div>
+                @if(isset($planPhaseText) && $planPhaseText)
+                    <div class="tb-phase hidden min-w-0 sm:flex">
+                        <span class="truncate">{{ $planPhaseText }}</span>
+                    </div>
                 @endif
             </div>
 
             {{-- Right: user info, dark mode, etc. --}}
-            <div class="flex items-center gap-3">
+            <div class="flex shrink-0 items-center gap-3">
                 <x-language-switcher />
                 {{-- Dark Mode Toggle --}}
                 <button

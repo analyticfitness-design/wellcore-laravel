@@ -601,20 +601,32 @@ body {
 }
 
 .tb-phase {
-  font-size: 14px; font-weight: 600;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--color-wc-text);
   background: rgba(220,38,38,.14);
   border: 1px solid rgba(220,38,38,.22);
   padding: 6px 16px;
   border-radius: 9999px;
-  display: flex; align-items: center; gap: 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  /* contencion responsive */
+  min-width: 0;
+  max-width: clamp(140px, 38vw, 360px);
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .tb-phase::before {
   content: "";
-  width: 7px; height: 7px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--color-wc-accent);
+  flex-shrink: 0;
 }
 
 /* ========================================================================

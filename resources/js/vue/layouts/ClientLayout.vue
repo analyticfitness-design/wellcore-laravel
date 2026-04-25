@@ -39,48 +39,43 @@ const coachBrand = ref(null); // { name, logo_url, logo_url_webp, primary_color,
 const planPhaseText = ref('');
 
 onMounted(async () => {
-    try {
-        await api.get('/api/v/client/account-status');
-    } catch (err) {
-        if (err.response?.status === 403 && err.response?.data?.inactive) {
+    const ac = new AbortController();
+    onUnmounted(() => ac.abort());
+
+    const [statusRes, coachRes, dashRes] = await Promise.allSettled([
+        api.get('/api/v/client/account-status', { signal: ac.signal }),
+        api.get('/api/v/client/my-coach',       { signal: ac.signal }),
+        api.get('/api/v/client/dashboard',      { signal: ac.signal }),
+    ]);
+
+    // account-status
+    if (statusRes.status === 'rejected') {
+        const err = statusRes.reason;
+        if (err?.response?.status === 403 && err.response?.data?.inactive) {
             accountInactive.value = true;
             accountStatusValue.value = err.response.data.status || 'inactivo';
         }
-    } finally {
-        accountCheckDone.value = true;
+    }
+    accountCheckDone.value = true;
+
+    // my-coach
+    if (coachRes.status === 'fulfilled' && coachRes.value?.status === 200 && coachRes.value.data) {
+        coachBrand.value = coachRes.value.data;
     }
 
-    // Inicializa estado de medallas/nivel para detectar diffs en fetches posteriores.
-    // Este fetch NUNCA dispara celebracion (es el primero, isFirstLoad=true).
+    // dashboard — plan phase badge
+    if (dashRes.status === 'fulfilled' && dashRes.value?.status === 200) {
+        const d = dashRes.value.data;
+        if (d?.currentWeek) {
+            const phase = d.phaseName ? ` · Fase: ${d.phaseName}` : '';
+            planPhaseText.value = `Semana ${d.currentWeek}${phase}`;
+        } else if (d?.planLabel) {
+            planPhaseText.value = d.planLabel;
+        }
+    }
+
+    // celebraciones — isFirstLoad=true, no dispara celebracion
     initMedals().catch(() => {});
-
-    // Fetch coach branding (non-blocking, silent if no coach assigned)
-    try {
-        const res = await api.get('/api/v/client/my-coach');
-        if (res.status === 200 && res.data) {
-            coachBrand.value = res.data;
-        }
-    } catch (e) {
-        // silent — no coach or endpoint unavailable
-    }
-
-    // Fetch plan phase for topbar badge
-    try {
-        const planRes = await api.get('/api/v/client/dashboard');
-        if (planRes.status === 200) {
-            const d = planRes.data;
-            if (d?.currentWeek) {
-                // Todos los planes son mensuales renovables — no se muestra "de N".
-                // Solo "Semana X · Fase: YYY" (o solo "Semana X" si no hay fase).
-                const phase = d.phaseName ? ` · Fase: ${d.phaseName}` : '';
-                planPhaseText.value = `Semana ${d.currentWeek}${phase}`;
-            } else if (d?.planLabel) {
-                planPhaseText.value = d.planLabel;
-            }
-        }
-    } catch (_) {
-        // silent — badge won't show if endpoint unavailable
-    }
 });
 
 const isImpersonating = computed(() => authStore.isImpersonating);
@@ -313,24 +308,24 @@ const bottomNav = [
       <RenewalBanner />
 
       <!-- Top bar -->
-      <header class="sticky z-30 flex h-16 items-center justify-between border-b border-wc-border bg-wc-bg/80 px-4 backdrop-blur-xl sm:px-6" :class="isImpersonating ? 'top-10' : 'top-0'">
+      <header class="sticky z-30 flex h-16 items-center justify-between gap-3 border-b border-wc-border bg-wc-bg/80 px-4 backdrop-blur-xl sm:px-6" :class="isImpersonating ? 'top-10' : 'top-0'">
         <!-- Left: hamburger + plan phase -->
-        <div class="flex items-center gap-3">
+        <div class="flex min-w-0 flex-1 items-center gap-3">
           <button
             @click="sidebarOpen = !sidebarOpen"
-            class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text lg:hidden"
+            class="shrink-0 flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text lg:hidden"
             aria-label="Abrir menu"
           >
             <WcIcon name="wc-menu" :size="20" />
           </button>
           <!-- Plan phase badge -->
-          <div v-if="planPhaseText" class="tb-phase hidden sm:flex">
-            {{ planPhaseText }}
+          <div v-if="planPhaseText" class="tb-phase hidden min-w-0 sm:flex">
+            <span class="truncate">{{ planPhaseText }}</span>
           </div>
         </div>
 
         <!-- Right: dark mode, user info -->
-        <div class="flex items-center gap-3">
+        <div class="flex shrink-0 items-center gap-3">
           <!-- Notification Bell -->
           <NotificationBell />
 

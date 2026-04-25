@@ -11,10 +11,12 @@ use App\Policies\ClientPolicy;
 use App\Policies\CoachInvitationPolicy;
 use App\Policies\PlanTicketPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
+use App\Http\View\Composers\ClientLayoutComposer;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
@@ -44,6 +46,8 @@ class AppServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         WorkoutSession::observe(WorkoutSessionObserver::class);
+
+        View::composer('layouts.client', ClientLayoutComposer::class);
     }
 
     protected function registerPolicies(): void
