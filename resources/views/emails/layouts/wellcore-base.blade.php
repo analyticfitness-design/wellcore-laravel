@@ -59,9 +59,9 @@
         <tr>
           <td class="header-cell">
             <!-- Logo WellCore — usar imagen hosted o inline SVG/PNG -->
-            <img src="{{ config('wellcore.base_url', config('app.url')) }}/images/wellcore-logo-email.png"
-                 alt="WellCore Fitness" width="120" height="auto"
-                 style="display:block;margin:0 auto;">
+            <img src="{{ config('wellcore.base_url', config('app.url')) }}/images/logo-light.png"
+                 alt="WellCore Fitness" width="160" height="auto"
+                 style="display:block;margin:0 auto;max-width:160px;">
           </td>
         </tr>
       </table>
