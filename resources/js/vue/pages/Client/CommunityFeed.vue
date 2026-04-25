@@ -3,11 +3,13 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
 import { useAuthStore } from '../../stores/auth';
+import { useCancellableFetch } from '../../composables/useCancellableFetch';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
 const authStore = useAuthStore();
 const toast = useToast();
+const { getSignal: getFeedSignal } = useCancellableFetch();
 
 // ── State ────────────────────────────────────────────────────────────
 const loading = ref(true);
@@ -74,9 +76,12 @@ async function fetchFeed(reset = false) {
   if (reset) loading.value = true;
   error.value = null;
 
+  const signal = getFeedSignal();
+
   try {
     const response = await api.get('/api/v/client/community', {
       params: { page: page.value, per_page: 10 },
+      signal,
     });
     const d = response.data;
 
@@ -97,7 +102,9 @@ async function fetchFeed(reset = false) {
       hasMore.value = newPosts.length >= 10;
     }
   } catch (err) {
-    error.value = err.response?.data?.message || 'Error al cargar la comunidad';
+    if (err.name !== 'CanceledError' && err.name !== 'AbortError') {
+      error.value = err.response?.data?.message || 'Error al cargar la comunidad';
+    }
   } finally {
     loading.value = false;
     loadingMore.value = false;

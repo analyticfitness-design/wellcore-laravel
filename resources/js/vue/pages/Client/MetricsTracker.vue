@@ -1,12 +1,14 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useCancellableFetch } from '../../composables/useCancellableFetch';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
 
 const api = useApi();
+const { getSignal: getMetricsSignal } = useCancellableFetch();
 
 // ── State ──
 const loading = ref(true);
@@ -79,8 +81,9 @@ function setChartDefaults() {
 async function fetchMetrics() {
   loading.value = true;
   error.value = null;
+  const signal = getMetricsSignal();
   try {
-    const response = await api.get('/api/v/client/metrics');
+    const response = await api.get('/api/v/client/metrics', { signal });
     const d = response.data;
     currentWeight.value = d.currentWeight;
     weightChange.value = d.weightChange;
@@ -92,7 +95,9 @@ async function fetchMetrics() {
     trainingVolume.value = d.trainingVolume || [];
     showTutorial.value = d.showTutorial || false;
   } catch (err) {
-    error.value = err.response?.data?.message || 'Error al cargar metricas';
+    if (err.name !== 'CanceledError' && err.name !== 'AbortError') {
+      error.value = err.response?.data?.message || 'Error al cargar metricas';
+    }
   } finally {
     loading.value = false;
   }

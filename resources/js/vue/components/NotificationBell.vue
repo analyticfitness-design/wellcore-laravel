@@ -20,6 +20,7 @@ const router = useRouter();
 const notifications = ref([]);
 const unreadCount = ref(0);
 const showDropdown = ref(false);
+const notifError = ref(false);
 let pollTimer = null;
 // Unique id so multiple bells don't collide on click-outside handling
 const wrapperId = `notif-dropdown-wrapper-${Math.random().toString(36).slice(2, 9)}`;
@@ -32,32 +33,57 @@ function authHeaders() {
 }
 
 async function fetchNotifications() {
+    if (document.visibilityState === 'hidden') return;
     try {
         const res = await fetch(props.endpoint, { headers: authHeaders() });
-        if (!res.ok) return;
+        if (!res.ok) {
+            console.warn('[NotificationBell] fetch failed:', res.status);
+            notifError.value = true;
+            return;
+        }
         const data = await res.json();
         notifications.value = data.notifications ?? [];
         // Support both snake_case (coach/admin) and camelCase (client) responses
         unreadCount.value = data.unread_count ?? data.unreadCount ?? 0;
-    } catch {
-        // silently ignore network errors
+        notifError.value = false;
+    } catch (err) {
+        if (err?.name !== 'AbortError') {
+            console.warn('[NotificationBell] network error:', err);
+            notifError.value = true;
+        }
     }
 }
 
 async function markAsRead(id) {
-    await fetch(`${props.endpoint}/${id}/read`, {
-        method: 'POST',
-        headers: authHeaders(),
-    });
-    await fetchNotifications();
+    const prevNotifications = notifications.value.slice();
+    const prevUnread = unreadCount.value;
+    try {
+        await fetch(`${props.endpoint}/${id}/read`, {
+            method: 'POST',
+            headers: authHeaders(),
+        });
+        await fetchNotifications();
+    } catch (err) {
+        console.warn('[NotificationBell] markAsRead failed:', err);
+        notifications.value = prevNotifications;
+        unreadCount.value = prevUnread;
+    }
 }
 
 async function markAllAsRead() {
-    await fetch(`${props.endpoint}/read-all`, {
-        method: 'POST',
-        headers: authHeaders(),
-    });
-    await fetchNotifications();
+    const prevNotifications = notifications.value.slice();
+    const prevUnread = unreadCount.value;
+    try {
+        await fetch(`${props.endpoint}/read-all`, {
+            method: 'POST',
+            headers: authHeaders(),
+        });
+        await fetchNotifications();
+    } catch (err) {
+        console.warn('[NotificationBell] markAllAsRead failed:', err);
+        notifications.value = prevNotifications;
+        unreadCount.value = prevUnread;
+    }
 }
 
 function handleNotificationClick(notification) {

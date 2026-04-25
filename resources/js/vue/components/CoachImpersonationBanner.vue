@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import axios from 'axios';
 
 const impersonating = ref(false);
@@ -59,8 +59,11 @@ async function endImpersonation() {
 
 onMounted(() => {
   refreshState();
-  // react to changes from other tabs (or late writes)
   window.addEventListener('storage', refreshState);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('storage', refreshState);
 });
 </script>
 

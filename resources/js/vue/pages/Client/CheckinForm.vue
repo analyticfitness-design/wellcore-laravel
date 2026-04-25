@@ -155,12 +155,12 @@ function validateCurrentStep() {
 
 // ─── Confetti control ─────────────────────────────────────────────
 watch(showSuccess, (v) => {
+  clearTimeout(confettiTimer);
   if (v) {
     showConfetti.value = true;
     confettiTimer = setTimeout(() => { showConfetti.value = false; }, 4000);
   } else {
     showConfetti.value = false;
-    clearTimeout(confettiTimer);
   }
 });
 

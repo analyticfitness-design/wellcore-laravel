@@ -2,6 +2,7 @@
 import { ref, reactive, onMounted, watch } from 'vue';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
+import { safeStorage } from '../../utils/safeStorage';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
@@ -49,21 +50,14 @@ const soundEnabled = ref(true);
 
 // Initialize notifications from localStorage
 function loadNotificationPrefs() {
-    try {
-        const stored = localStorage.getItem('wc_notifications');
-        if (stored) {
-            const parsed = JSON.parse(stored);
-            Object.assign(notifications, parsed);
-        }
-    } catch {
-        // Use defaults
-    }
-    soundEnabled.value = localStorage.getItem('wc_sound_enabled') !== 'false';
+    const stored = safeStorage.getJSON('wc_notifications');
+    if (stored) Object.assign(notifications, stored);
+    soundEnabled.value = safeStorage.get('wc_sound_enabled') !== 'false';
 }
 
 // Save notifications to localStorage
 function saveNotificationPrefs() {
-    localStorage.setItem('wc_notifications', JSON.stringify({ ...notifications }));
+    safeStorage.setJSON('wc_notifications', { ...notifications });
 }
 
 // Watch notification changes
@@ -72,7 +66,7 @@ watch(notifications, () => {
 }, { deep: true });
 
 watch(soundEnabled, (val) => {
-    localStorage.setItem('wc_sound_enabled', val ? 'true' : 'false');
+    safeStorage.set('wc_sound_enabled', val ? 'true' : 'false');
 });
 
 // Fetch profile settings
@@ -106,7 +100,7 @@ async function updateProfile() {
         });
         // Update cached name
         if (profileForm.value.name) {
-            localStorage.setItem('wc_user_name', profileForm.value.name);
+            safeStorage.set('wc_user_name', profileForm.value.name);
         }
         showProfileSuccess.value = true;
         setTimeout(() => { showProfileSuccess.value = false; }, 3000);
@@ -164,10 +158,10 @@ function toggleDarkMode(toDark) {
     const html = document.documentElement;
     if (toDark) {
         html.classList.add('dark');
-        localStorage.setItem('darkMode', 'true');
+        safeStorage.set('darkMode', 'true');
     } else {
         html.classList.remove('dark');
-        localStorage.setItem('darkMode', 'false');
+        safeStorage.set('darkMode', 'false');
     }
 }
 
