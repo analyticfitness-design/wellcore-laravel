@@ -44,16 +44,16 @@ try {
     $deactivated = $stmt->rowCount();
     echo "Planes desactivados: $deactivated\n";
 
-    $stmt = $pdo->prepare("INSERT INTO assigned_plans (client_id,plan_type,content,version,assigned_by,valid_from,expires_at,active,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?)");
-    $stmt->execute([$clientId, 'entrenamiento', $trainJson, 2, $assignedBy, $validFrom, $expiresAt, 1, $now, $now]);
+    $stmt = $pdo->prepare("INSERT INTO assigned_plans (client_id,plan_type,content,assigned_by,valid_from,expires_at,active,created_at) VALUES (?,?,?,?,?,?,?,?)");
+    $stmt->execute([$clientId, 'entrenamiento', $trainJson, $assignedBy, $validFrom, $expiresAt, 1, $now]);
     $trainId = $pdo->lastInsertId();
     echo "Plan ENTRENAMIENTO insertado: id=$trainId, size=" . strlen($trainJson) . " bytes\n";
 
-    $stmt->execute([$clientId, 'nutricion', $nutriJson, 2, $assignedBy, $validFrom, $expiresAt, 1, $now, $now]);
+    $stmt->execute([$clientId, 'nutricion', $nutriJson, $assignedBy, $validFrom, $expiresAt, 1, $now]);
     $nutriId = $pdo->lastInsertId();
     echo "Plan NUTRICION insertado: id=$nutriId, size=" . strlen($nutriJson) . " bytes\n";
 
-    $stmt->execute([$clientId, 'suplementacion', $supJson, 2, $assignedBy, $validFrom, $expiresAt, 1, $now, $now]);
+    $stmt->execute([$clientId, 'suplementacion', $supJson, $assignedBy, $validFrom, $expiresAt, 1, $now]);
     $supId = $pdo->lastInsertId();
     echo "Plan SUPLEMENTACION insertado: id=$supId, size=" . strlen($supJson) . " bytes\n";
 
