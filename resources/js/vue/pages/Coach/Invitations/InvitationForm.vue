@@ -21,9 +21,9 @@ const store = useInvitationsStore();
 const email          = ref('');
 const name           = ref('');
 const plan           = ref('esencial');
-const subject        = ref('');
+const subject        = ref('Te invito a unirte a WellCore');
 const intro_message  = ref('');
-const cta_label      = ref('');
+const cta_label      = ref('Unirme ahora');
 const expires_in_days = ref(7);
 
 // UI state
