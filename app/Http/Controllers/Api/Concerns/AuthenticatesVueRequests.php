@@ -86,4 +86,22 @@ trait AuthenticatesVueRequests
 
         return $client;
     }
+
+    /**
+     * Resolve the authenticated Admin (coach/superadmin) or abort with 401/403.
+     */
+    protected function resolveCoachOrFail(Request $request): Admin
+    {
+        $auth = $this->resolveAuthUser($request);
+
+        if (! $auth) {
+            abort(401, 'Token invalido o expirado.');
+        }
+
+        if ($auth['userType'] !== UserType::Admin) {
+            abort(403, 'Acceso solo para coaches.');
+        }
+
+        return $auth['user'];
+    }
 }
