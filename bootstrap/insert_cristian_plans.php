@@ -23,12 +23,25 @@ try {
 $clientId = 78;
 $now      = date('Y-m-d H:i:s');
 
-// 1) Datos del cliente (descubrir cual columna tiene el numero)
+// 1) Datos del cliente — buscar telefono en multiples tablas
+echo "=== Schema introspect ===\n";
 $cols = [];
 $stmt = $pdo->query("SHOW COLUMNS FROM clients");
 while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) { $cols[] = $r['Field']; }
+echo "clients cols: " . implode(', ', $cols) . "\n";
+
+// Buscar tablas que pueden contener phone/whatsapp
+$tables = ['client_profiles', 'client_intakes', 'intake_responses', 'profiles', 'user_profiles'];
+foreach ($tables as $t) {
+    try {
+        $r = $pdo->query("SHOW COLUMNS FROM `$t`");
+        $tcols = []; while ($x = $r->fetch(PDO::FETCH_ASSOC)) { $tcols[] = $x['Field']; }
+        echo "$t cols: " . implode(', ', $tcols) . "\n";
+    } catch (Exception $e) { /* tabla no existe */ }
+}
+
 $candidates = array_intersect(['whatsapp', 'phone', 'telefono', 'celular', 'wa_phone', 'mobile'], $cols);
-echo "Candidatos de columna telefono encontrados: " . implode(', ', $candidates) . "\n";
+echo "Candidatos en clients: " . implode(', ', $candidates) . "\n";
 
 $selectCols = array_merge(['id', 'name', 'email'], $candidates);
 $sql = "SELECT " . implode(',', $selectCols) . " FROM clients WHERE id = ? LIMIT 1";
