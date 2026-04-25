@@ -7,7 +7,7 @@ const STEPS = [
   {
     selector: '[data-tour="dashboard"]',
     title: 'Tu Dashboard',
-    body: 'Aqui ves el resumen de tu equipo cada dia: metricas, tickets pendientes y actividad reciente.',
+    body: 'Aquí ves el resumen de tu equipo cada día: métricas, tickets pendientes y actividad reciente.',
   },
   {
     selector: '[data-tour="clients"]',
@@ -17,7 +17,7 @@ const STEPS = [
   {
     selector: '[data-tour="plan-tickets"]',
     title: 'Tickets de Plan',
-    body: 'El corazon de tu trabajo. Aqui creas briefs que el equipo convierte en planes personalizados para tus clientes.',
+    body: 'El corazón de tu trabajo. Aquí creas briefs que el equipo convierte en planes personalizados para tus clientes.',
   },
   {
     selector: '[data-tour="checkins"]',
@@ -27,7 +27,7 @@ const STEPS = [
   {
     selector: '[data-tour="messages"]',
     title: 'Mensajes',
-    body: 'Linea directa con tus clientes. Responde pronto para generar confianza y retencion.',
+    body: 'Línea directa con tus clientes. Responde pronto para generar confianza y retención.',
   },
 ];
 

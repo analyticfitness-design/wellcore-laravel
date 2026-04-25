@@ -13,6 +13,7 @@ const showTour = ref(false);
 
 onMounted(() => {
     try {
+        if (route.name !== 'coach-dashboard') return;
         if (localStorage.getItem('coach_tour_completed') === '1') return;
         const shown = parseInt(localStorage.getItem('coach_tour_shown_count') || '0', 10);
         if (shown >= 3) {
