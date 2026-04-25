@@ -128,7 +128,7 @@ onMounted(loadCheckins);
                 <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Bienestar</p>
                 <p class="mt-1 font-data text-xl font-bold text-wc-text">{{ checkin.bienestar ?? '-' }}</p>
                 <div class="mt-1 h-1 w-full rounded-full bg-wc-bg-secondary">
-                  <div class="h-1 rounded-full" :class="(checkin.bienestar || 0) >= 7 ? 'bg-wc-text/40' : (checkin.bienestar || 0) >= 4 ? 'bg-wc-accent/60' : 'bg-wc-accent'" :style="{ width: Math.min((checkin.bienestar || 0) * 10, 100) + '%' }"></div>
+                  <div class="h-1 rounded-full" :class="(checkin.bienestar || 0) >= 7 ? 'bg-emerald-400' : (checkin.bienestar || 0) >= 4 ? 'bg-amber-400' : 'bg-wc-accent'" :style="{ width: Math.min((checkin.bienestar || 0) * 10, 100) + '%' }"></div>
                 </div>
               </div>
               <div class="rounded-lg border border-wc-border bg-wc-bg-tertiary p-3">
@@ -140,7 +140,7 @@ onMounted(loadCheckins);
                 <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Nutricion</p>
                 <p class="mt-1 font-data text-xl font-bold text-wc-text">{{ checkin.nutricion ?? '-' }}</p>
                 <div class="mt-1 h-1 w-full rounded-full bg-wc-bg-secondary">
-                  <div class="h-1 rounded-full" :class="(checkin.nutricion || 0) >= 7 ? 'bg-wc-text/40' : (checkin.nutricion || 0) >= 4 ? 'bg-wc-accent/60' : 'bg-wc-accent'" :style="{ width: Math.min((checkin.nutricion || 0) * 10, 100) + '%' }"></div>
+                  <div class="h-1 rounded-full" :class="(checkin.nutricion || 0) >= 7 ? 'bg-emerald-400' : (checkin.nutricion || 0) >= 4 ? 'bg-amber-400' : 'bg-wc-accent'" :style="{ width: Math.min((checkin.nutricion || 0) * 10, 100) + '%' }"></div>
                 </div>
               </div>
               <div class="rounded-lg border border-wc-border bg-wc-bg-tertiary p-3">

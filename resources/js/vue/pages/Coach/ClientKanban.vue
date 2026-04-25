@@ -147,12 +147,11 @@ function onEscapeKey(e) {
   }
 }
 
-// Activity color helper — wc-accent scale (bad → critical)
 function activityColorClass(days) {
   if (days === null || days === undefined) return 'text-wc-accent';
   if (days > 14) return 'text-wc-accent font-semibold';
-  if (days > 7) return 'text-wc-accent/60 font-semibold';
-  return 'text-wc-text';
+  if (days > 7)  return 'text-amber-400 font-semibold';
+  return 'text-emerald-400';
 }
 
 function activityLabel(days) {

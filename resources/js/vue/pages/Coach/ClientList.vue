@@ -121,7 +121,7 @@ async function cancelRequest(clientId, requestId) {
 
 function requestStatusClass(status) {
   return ({
-    pending:   'bg-wc-accent/15 text-wc-accent',
+    pending:   'bg-amber-500/10 text-amber-400',
     approved:  'bg-emerald-500/10 text-emerald-500',
     rejected:  'bg-red-500/10 text-red-400',
     cancelled: 'bg-wc-bg-secondary text-wc-text-tertiary',
@@ -131,7 +131,7 @@ function requestStatusClass(status) {
 function requestActionClass(action) {
   return ({
     delete:     'bg-red-500/10 text-red-400',
-    deactivate: 'bg-wc-accent/10 text-wc-accent',
+    deactivate: 'bg-amber-500/10 text-amber-400',
     edit:       'bg-wc-bg-secondary text-wc-text-secondary',
   })[action] || 'bg-wc-bg-secondary text-wc-text-tertiary';
 }

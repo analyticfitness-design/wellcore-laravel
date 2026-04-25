@@ -34,10 +34,10 @@ const filteredNotes = computed(() => {
 });
 
 const typeColors = {
-    general: 'bg-wc-accent/10 text-wc-accent border-wc-accent/20',
-    seguimiento: 'bg-wc-accent/10 text-wc-accent border-wc-accent/20',
-    alerta: 'bg-wc-accent/15 text-wc-accent border-wc-accent/30',
-    logro: 'border border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
+    general:     'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
+    seguimiento: 'bg-sky-500/10 text-sky-400 border-sky-500/20',
+    alerta:      'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    logro:       'border border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
 };
 
 function openCreate() {
