@@ -1077,34 +1077,30 @@ onBeforeUnmount(() => {
               </div>
             </template>
 
-            <!-- Weight unit selector -->
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm font-semibold text-wc-text">Unidad de peso</p>
-                  <p class="mt-0.5 text-xs text-wc-text-tertiary">Selecciona la unidad que usa tu gimnasio</p>
-                </div>
-                <div class="flex rounded-lg border border-wc-border bg-wc-bg-secondary p-0.5">
+            <!-- Weight unit + Start CTA — fila única en desktop, apilado en mobile -->
+            <div class="pt-2 pb-4 flex flex-col gap-3 sm:flex-row sm:items-stretch">
+              <!-- Selector KG/LBS compacto -->
+              <div class="flex shrink-0 items-center gap-3 rounded-2xl border border-wc-border bg-wc-bg-tertiary px-4 py-3 sm:py-0">
+                <span class="text-sm font-medium text-wc-text-secondary">Unidad de peso</span>
+                <div class="flex rounded-lg bg-wc-bg-secondary p-0.5">
                   <button
                     @click="setWeightUnit('kg')"
                     :class="weightUnit === 'kg' ? 'bg-wc-accent text-white shadow-sm' : 'text-wc-text-tertiary hover:text-wc-text'"
-                    class="rounded-md px-4 py-1.5 text-sm font-bold transition-all"
+                    class="rounded-md px-3 py-1.5 text-sm font-bold transition-all"
                   >KG</button>
                   <button
                     @click="setWeightUnit('lbs')"
                     :class="weightUnit === 'lbs' ? 'bg-wc-accent text-white shadow-sm' : 'text-wc-text-tertiary hover:text-wc-text'"
-                    class="rounded-md px-4 py-1.5 text-sm font-bold transition-all"
+                    class="rounded-md px-3 py-1.5 text-sm font-bold transition-all"
                   >LBS</button>
                 </div>
               </div>
-            </div>
 
-            <!-- START WORKOUT CTA -->
-            <div class="pt-2 pb-4">
+              <!-- Botón Iniciar — flex-1 ocupa el espacio restante -->
               <button
                 @click="startWorkout"
                 :disabled="starting || workoutStarted"
-                class="wc-btn-energy btn-ripple flex w-full items-center justify-center gap-3 rounded-2xl py-4 text-center shadow-lg shadow-wc-accent/20 hover:bg-red-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                class="wc-btn-energy btn-ripple flex flex-1 items-center justify-center gap-3 rounded-2xl py-4 text-center shadow-lg shadow-wc-accent/20 hover:bg-red-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 <svg
                   v-if="!starting"
