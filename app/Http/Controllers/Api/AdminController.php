@@ -1571,8 +1571,8 @@ class AdminController extends Controller
             'user_id' => $id,
             'type' => 'plan_assigned',
             'title' => 'Nuevo plan disponible',
-            'message' => 'Tu coach te ha asignado un nuevo plan de '.$validated['plan_type'].'. ¡Entra a revisarlo!',
-            'action_url' => '/client/plan',
+            'body' => 'Tu coach te ha asignado un nuevo plan de '.$validated['plan_type'].'. Entra a revisarlo!',
+            'link' => '/client/plan',
         ]);
 
         return response()->json([

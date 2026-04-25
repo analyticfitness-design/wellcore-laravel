@@ -299,7 +299,7 @@ class PushNotificationService
                     'authToken' => $sub->auth_key,
                 ]);
 
-                $webPush->queueNotification($subscription, json_encode($payload));
+                $webPush->queueNotification($subscription, json_encode($payload, JSON_UNESCAPED_UNICODE));
 
                 /** @var MessageSentReport $report */
                 foreach ($webPush->flush() as $report) {
