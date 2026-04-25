@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
+import WcPageHeader from '../../components/WcPageHeader.vue';
 
 const api = useApi();
 const loading = ref(false);
@@ -88,11 +89,7 @@ onMounted(loadClients);
   <CoachLayout>
     <div class="space-y-6">
 
-      <!-- Header -->
-      <div>
-        <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">Broadcast</h1>
-        <p class="mt-1 text-sm text-wc-text-tertiary">Envia mensajes a multiples clientes</p>
-      </div>
+      <WcPageHeader contextLabel="ÁREA DE TRABAJO" title="BROADCAST" subtitle="Envía mensajes masivos a tus clientes" />
 
       <!-- Success toast -->
       <Transition
@@ -103,7 +100,7 @@ onMounted(loadClients);
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
       >
-        <div v-if="success" class="flex items-center gap-3 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-400">
+        <div v-if="success" class="flex items-center gap-3 rounded-card border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-400">
           <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
@@ -117,15 +114,15 @@ onMounted(loadClients);
         <div class="space-y-5 lg:col-span-2">
 
           <!-- Recipient mode -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-            <h3 class="text-sm font-semibold text-wc-text mb-3">Destinatarios</h3>
-            <div class="flex flex-wrap gap-2">
+          <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+            <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary mb-3">Destinatarios</p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
               <button
                 v-for="mode in [{ key: 'all', label: 'Todos' }, { key: 'plan', label: 'Por plan' }, { key: 'status', label: 'Por estado' }, { key: 'individual', label: 'Individual' }]"
                 :key="mode.key"
                 @click="recipientMode = mode.key"
-                class="rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-                :class="recipientMode === mode.key ? 'border-wc-accent bg-wc-accent/10 text-wc-accent' : 'border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text'"
+                class="relative overflow-hidden rounded-card p-4 text-sm font-medium transition-colors text-center"
+                :class="recipientMode === mode.key ? 'wc-stat-primary text-wc-text' : 'wc-stat-muted text-wc-text-secondary hover:text-wc-text'"
               >
                 {{ mode.label }}
               </button>
@@ -136,7 +133,7 @@ onMounted(loadClients);
               <label
                 v-for="client in clients"
                 :key="client.id"
-                class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-wc-bg-secondary/50 cursor-pointer transition-colors"
+                class="flex items-center gap-3 rounded-button px-3 py-2 hover:bg-wc-bg-secondary/50 cursor-pointer transition-colors"
               >
                 <input
                   type="checkbox"
@@ -153,12 +150,12 @@ onMounted(loadClients);
           </div>
 
           <!-- Message compose -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+          <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
             <div class="flex items-center justify-between mb-3">
-              <h3 class="text-sm font-semibold text-wc-text">Mensaje</h3>
+              <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">Mensaje</p>
               <button
                 @click="showTemplates = !showTemplates"
-                class="inline-flex items-center gap-1.5 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1.5 text-xs font-medium text-wc-text-secondary hover:text-wc-text transition-colors"
+                class="inline-flex items-center gap-1.5 rounded-button border border-wc-border bg-wc-bg-secondary px-3 py-1.5 text-xs font-medium text-wc-text-secondary hover:text-wc-text transition-colors"
               >
                 <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
@@ -170,14 +167,14 @@ onMounted(loadClients);
               v-model="messageText"
               rows="5"
               placeholder="Escribe tu mensaje broadcast..."
-              class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent resize-none"
+              class="w-full rounded-button border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent resize-none"
             ></textarea>
             <div class="mt-3 flex items-center justify-between">
               <p class="text-xs text-wc-text-tertiary">{{ recipientLabel }}</p>
               <button
                 @click="sendBroadcast"
                 :disabled="sending || !messageText.trim()"
-                class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-5 py-2.5 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors disabled:opacity-50"
+                class="inline-flex items-center gap-2 rounded-button bg-wc-accent px-5 py-2.5 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors disabled:opacity-50"
               >
                 <svg v-if="sending" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
@@ -193,14 +190,14 @@ onMounted(loadClients);
         </div>
 
         <!-- Templates panel -->
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-          <h3 class="text-sm font-semibold text-wc-text mb-4">Templates rapidos</h3>
+        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+          <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary mb-4">Templates rápidos</p>
           <div class="space-y-2">
             <button
               v-for="tpl in builtInTemplates"
               :key="tpl.id"
               @click="useTemplate(tpl)"
-              class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-left hover:border-wc-accent/30 transition-colors"
+              class="w-full rounded-card border border-wc-border bg-wc-bg-tertiary p-3 text-left hover:border-wc-accent/40 transition-colors"
             >
               <div class="flex items-center justify-between">
                 <p class="text-xs font-semibold text-wc-text">{{ tpl.name }}</p>

@@ -14,6 +14,7 @@ const MESSAGE_TEMPLATES = [
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
+import WcPageHeader from '../../components/WcPageHeader.vue';
 
 const api = useApi();
 const loading = ref(true);
@@ -143,11 +144,7 @@ onBeforeUnmount(() => {
   <CoachLayout>
     <div class="space-y-6">
 
-      <!-- Header -->
-      <div>
-        <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">Mensajes</h1>
-        <p class="mt-1 text-sm text-wc-text-tertiary">Comunicacion con tus clientes</p>
-      </div>
+      <WcPageHeader contextLabel="PRINCIPAL" title="MENSAJES" subtitle="Conversaciones con tus clientes" />
 
       <!-- Loading skeleton -->
       <template v-if="loading">
@@ -163,7 +160,7 @@ onBeforeUnmount(() => {
               </div>
             </div>
           </div>
-          <div class="lg:col-span-8 animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary flex items-center justify-center">
+          <div class="lg:col-span-8 animate-pulse rounded-card border border-wc-border bg-wc-bg-tertiary flex items-center justify-center">
             <div class="h-16 w-16 rounded-full bg-wc-border/30"></div>
           </div>
         </div>
@@ -173,9 +170,9 @@ onBeforeUnmount(() => {
       <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-12" style="min-height: 70vh;">
 
         <!-- Client list panel -->
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary lg:col-span-4 overflow-hidden flex flex-col">
+        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary lg:col-span-4 overflow-hidden flex flex-col">
           <div class="border-b border-wc-border px-4 py-3">
-            <p class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Clientes</p>
+            <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">Clientes</p>
           </div>
           <div class="flex-1 overflow-y-auto">
             <ul v-if="clients.length > 0" class="divide-y divide-wc-border">
@@ -213,7 +210,7 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- Conversation panel -->
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary lg:col-span-8 overflow-hidden flex flex-col">
+        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary lg:col-span-8 overflow-hidden flex flex-col">
           <template v-if="selectedClient">
             <!-- Conversation header -->
             <div class="flex items-center gap-3 border-b border-wc-border px-4 py-3">
@@ -231,8 +228,8 @@ onBeforeUnmount(() => {
               <template v-if="messages.length > 0">
                 <div v-for="msg in messages" :key="msg.id" class="flex" :class="msg.is_coach ? 'justify-end' : 'justify-start'">
                   <div
-                    class="max-w-[75%] rounded-xl px-4 py-2.5"
-                    :class="msg.is_coach ? 'bg-wc-accent text-white rounded-br-sm' : 'bg-wc-bg-secondary text-wc-text rounded-bl-sm'"
+                    class="max-w-[75%] rounded-card px-3 py-2"
+                    :class="msg.is_coach ? 'bg-wc-accent text-white' : 'bg-wc-bg-secondary text-wc-text'"
                   >
                     <p class="text-sm leading-relaxed">{{ msg.message }}</p>
                     <p class="mt-1 text-[10px]" :class="msg.is_coach ? 'text-white/60' : 'text-wc-text-tertiary'">{{ msg.time }}</p>
@@ -255,7 +252,7 @@ onBeforeUnmount(() => {
                   <button
                     @click="toggleTemplates"
                     type="button"
-                    class="inline-flex items-center gap-1.5 rounded-lg bg-wc-bg-secondary px-3 py-2.5 text-xs font-medium text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text border border-wc-border transition-colors"
+                    class="inline-flex items-center gap-1.5 rounded-button bg-wc-bg-secondary px-3 py-2.5 text-xs font-medium text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text border border-wc-border transition-colors"
                     title="Plantillas de respuesta rapida"
                   >
                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -268,7 +265,7 @@ onBeforeUnmount(() => {
                   <Transition name="fade">
                     <div
                       v-if="templateOpen"
-                      class="absolute bottom-full mb-2 left-0 z-50 w-80 rounded-xl border border-wc-border bg-wc-bg shadow-2xl"
+                      class="absolute bottom-full mb-2 left-0 z-50 w-80 rounded-card border border-wc-border bg-wc-bg shadow-2xl"
                     >
                       <!-- Search header -->
                       <div class="border-b border-wc-border p-3">
@@ -281,7 +278,7 @@ onBeforeUnmount(() => {
                             v-model="templateSearch"
                             type="text"
                             placeholder="Buscar plantilla..."
-                            class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary py-1.5 pl-8 pr-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
+                            class="w-full rounded-button border border-wc-border bg-wc-bg-secondary py-1.5 pl-8 pr-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
                             @keydown.escape="templateOpen = false"
                           />
                         </div>
@@ -294,7 +291,7 @@ onBeforeUnmount(() => {
                           :key="idx"
                           @click="selectTemplate(tpl)"
                           type="button"
-                          class="w-full rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-wc-bg-secondary group"
+                          class="w-full rounded-button px-2.5 py-2 text-left transition-colors hover:bg-wc-bg-secondary group"
                         >
                           <span class="text-sm font-medium text-wc-text group-hover:text-wc-accent transition-colors">
                             {{ tpl.title }}
@@ -333,13 +330,13 @@ onBeforeUnmount(() => {
                   v-model="newMessage"
                   type="text"
                   placeholder="Escribe un mensaje..."
-                  class="flex-1 rounded-lg border border-wc-border bg-wc-bg-secondary py-2.5 px-4 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
+                  class="flex-1 rounded-button border border-wc-border bg-wc-bg-secondary py-2.5 px-4 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
                   :disabled="sending"
                 />
                 <button
                   type="submit"
                   :disabled="sending || !newMessage.trim()"
-                  class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-wc-accent text-white hover:bg-wc-accent-hover transition-colors disabled:opacity-50"
+                  class="flex h-10 w-10 shrink-0 items-center justify-center rounded-button bg-wc-accent text-white hover:bg-wc-accent-hover transition-colors disabled:opacity-50"
                 >
                   <svg v-if="!sending" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
