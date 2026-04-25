@@ -17,7 +17,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Translation files live in /lang at the project root (Laravel 9+ layout).
+        // Without this, langPath() defaults to /resources/lang and __() returns raw keys.
+        $this->app->useLangPath($this->app->basePath('lang'));
     }
 
     /**
