@@ -127,7 +127,7 @@ const router = createRouter({
 });
 
 // Navigation guards
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     // Set page title
     document.title = to.meta.title || 'WellCore Fitness';
 
@@ -170,9 +170,12 @@ router.beforeEach((to, from, next) => {
         }
     }
 
-    // Contract gate: block coach navigation while acceptance is pending
+    // Contract gate: block coach navigation while acceptance is pending.
+    // await refresh() so the guard always reads authoritative server state,
+    // not the initial false that exists before the first API call completes.
     if (to.path.startsWith('/coach')) {
         const gate = useContractGate();
+        await gate.refresh();
         if (gate.requires.value) {
             // Gate is open — allow only same-page reload + login redirect
             if (to.path === from.path || to.path.startsWith('/login')) {
