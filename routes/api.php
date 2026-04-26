@@ -255,6 +255,7 @@ Route::prefix('v/coach')->middleware(['auth:wellcore', 'throttle:api', 'role:coa
             Route::post('/payment-proofs', [PaymentProofController::class, 'store']);
         });
         Route::get('/payment-proofs', [PaymentProofController::class, 'index']);
+        Route::get('/payment-proofs/{id}/file', [PaymentProofController::class, 'file'])->whereNumber('id');
         Route::get('/payment-proofs/{id}', [PaymentProofController::class, 'show'])->whereNumber('id');
 
         // Coach Invitations

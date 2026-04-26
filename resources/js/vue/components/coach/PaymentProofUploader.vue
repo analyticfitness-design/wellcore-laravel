@@ -144,7 +144,10 @@ async function handleSubmit() {
         emit('submitted');
     } catch (err: any) {
         if (err?.response?.status === 409) {
-            globalError.value = 'Ya existe un comprobante pendiente para este cliente con este plan. Espera a que sea revisado.';
+            const code = err.response.data?.errorCode;
+            globalError.value = code === 'DUPLICATE_FILE'
+                ? 'Este archivo ya fue subido y esta pendiente de revision.'
+                : 'Ya existe un comprobante pendiente para este cliente. Espera a que sea revisado antes de subir otro.';
         } else if (err?.response?.status === 422) {
             fieldErrors.value = err.response.data.errors ?? {};
             globalError.value = 'Revisa los campos marcados.';

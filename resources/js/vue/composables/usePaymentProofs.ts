@@ -3,16 +3,18 @@ import { useApi } from './useApi';
 
 export interface PaymentProof {
     id: number;
-    client_name: string;
-    client_email: string;
+    clientName: string;
+    clientEmail: string;
     plan: string;
     amount: number | null;
-    payment_method: string | null;
+    currency: string;
+    paymentMethod: string | null;
     status: 'pendiente' | 'aprobado' | 'rechazado' | 'expirado';
-    coach_note: string | null;
-    rejection_reason: string | null;
-    file_url: string | null;
-    created_at: string;
+    coachNote: string | null;
+    reviewNote: string | null;
+    submittedAt: string;
+    expiresAt: string | null;
+    reviewedAt: string | null;
 }
 
 export interface ProofFilters {
@@ -62,6 +64,15 @@ export function usePaymentProofs() {
         }
     }
 
+    async function fetchProofFileUrl(id: number): Promise<string | null> {
+        try {
+            const response = await api.get(`/api/v/coach/payment-proofs/${id}/file`);
+            return response.data.url ?? null;
+        } catch {
+            return null;
+        }
+    }
+
     return {
         proofs,
         loading,
@@ -70,5 +81,6 @@ export function usePaymentProofs() {
         pendingCount,
         fetchProofs,
         submitProof,
+        fetchProofFileUrl,
     };
 }

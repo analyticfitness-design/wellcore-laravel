@@ -13,6 +13,7 @@ use App\Models\WellcoreNotification;
 use App\Services\AuditService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -117,18 +118,28 @@ class PaymentProofController extends Controller
             'expires_at' => now()->addDays(7),
         ]);
 
-        WellcoreNotification::create([
-            'user_type' => UserType::Admin,
-            'user_id' => null,
-            'type' => 'payment_proof_submitted',
-            'title' => 'Nuevo comprobante pendiente',
-            'body' => "Coach {$coach->name} subió comprobante para {$email}",
-        ]);
+        // Notify superadmin — silent on failure (must not block the upload)
+        try {
+            WellcoreNotification::create([
+                'user_type' => UserType::Admin,
+                'user_id' => 1,
+                'type' => 'payment_proof_submitted',
+                'title' => 'Nuevo comprobante pendiente',
+                'body' => "Coach {$coach->name} subió comprobante para {$email}",
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('PaymentProof notification failed: ' . $e->getMessage());
+        }
 
-        AuditService::logAction(
-            'payment_proof_submitted',
-            "Coach {$coach->id} subió comprobante para {$email} (proof_id: {$proof->id})"
-        );
+        // Audit — silent on failure
+        try {
+            AuditService::logAction(
+                'payment_proof_submitted',
+                "Coach {$coach->id} subió comprobante para {$email} (proof_id: {$proof->id})"
+            );
+        } catch (\Throwable $e) {
+            Log::warning('PaymentProof audit log failed: ' . $e->getMessage());
+        }
 
         // Mail al superadmin (opcional — silencioso si falla)
         try {
@@ -183,6 +194,7 @@ class PaymentProofController extends Controller
             'amount' => $proof->amount,
             'currency' => $proof->currency,
             'paymentMethod' => $proof->payment_method?->value,
+            'coachNote' => $proof->coach_note,
             'status' => $proof->status->value,
             'submittedAt' => $proof->submitted_at?->toIso8601String(),
             'expiresAt' => $proof->expires_at?->toIso8601String(),
@@ -198,6 +210,36 @@ class PaymentProofController extends Controller
                 'total' => $paginated->total(),
                 'lastPage' => $paginated->lastPage(),
             ],
+        ]);
+    }
+
+    /**
+     * GET /api/v/coach/payment-proofs/{id}/file
+     *
+     * Generate a short-lived (5 min) token so the coach can view their own file.
+     * Uses the same cache-token mechanism as the admin endpoint.
+     */
+    public function file(Request $request, int $id): JsonResponse
+    {
+        $this->resolveCoachOrFail($request);
+
+        $proof = PaymentProof::findOrFail($id);
+        Gate::authorize('view', $proof);
+
+        if (! Storage::disk('payment_proofs')->exists($proof->file_path)) {
+            return response()->json([
+                'success' => false,
+                'error' => ['code' => 'FILE_NOT_FOUND', 'message' => 'El archivo no existe.'],
+            ], 404);
+        }
+
+        $token = hash_hmac('sha256', $proof->id . '|' . time(), config('app.key'));
+        $expiresAt = now()->addMinutes(5);
+        Cache::put("proof_view_{$token}", $proof->id, $expiresAt);
+
+        return response()->json([
+            'url' => url("/coach/payment-proofs/{$id}/view?token={$token}"),
+            'expiresAt' => $expiresAt->toIso8601String(),
         ]);
     }
 

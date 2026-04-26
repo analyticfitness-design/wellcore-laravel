@@ -272,6 +272,12 @@ Route::get('/admin/payment-proofs/{id}/view', [AdminPaymentProofViewController::
     ->whereNumber('id')
     ->name('admin.payment-proofs.view');
 
+// Coach — payment proof file viewer (token-gated, same single-use cache mechanism)
+Route::get('/coach/payment-proofs/{id}/view', [AdminPaymentProofViewController::class, 'view'])
+    ->middleware(['auth:wellcore', 'role:coach,admin,superadmin,jefe'])
+    ->whereNumber('id')
+    ->name('coach.payment-proofs.view');
+
 // Session logout + impersonation (POST routes — still need auth)
 Route::middleware('auth:wellcore')->group(function () {
     Route::post('/logout', function () {

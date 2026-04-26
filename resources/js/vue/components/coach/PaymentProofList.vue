@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { usePaymentProofs, type PaymentProof } from '../../composables/usePaymentProofs';
 
-const { proofs, loading, error, fetchProofs } = usePaymentProofs();
+const { proofs, loading, error, fetchProofs, fetchProofFileUrl } = usePaymentProofs();
+
+const openingFileId = ref<number | null>(null);
 
 const PLAN_LABELS: Record<string, string> = {
     rise: 'RISE',
@@ -39,7 +41,7 @@ function statusLabel(status: PaymentProof['status']): string {
     return map[status] ?? status;
 }
 
-function formatDate(iso: string): string {
+function formatDate(iso: string | null | undefined): string {
     if (!iso) return '—';
     const d = new Date(iso);
     return d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -50,7 +52,18 @@ function formatAmount(amount: number | null): string {
     return `$${amount.toLocaleString('es-CO')}`;
 }
 
-// Expose reload so parent (CoachProfile) can call it after a new upload
+async function openFile(proof: PaymentProof) {
+    openingFileId.value = proof.id;
+    try {
+        const url = await fetchProofFileUrl(proof.id);
+        if (url) {
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
+    } finally {
+        openingFileId.value = null;
+    }
+}
+
 function reload() {
     fetchProofs();
 }
@@ -104,7 +117,6 @@ onMounted(fetchProofs);
 
     <!-- List -->
     <div v-else class="space-y-2">
-      <!-- Mobile-first card layout; desktop shows as table rows -->
       <div
         v-for="proof in proofs"
         :key="proof.id"
@@ -113,8 +125,8 @@ onMounted(fetchProofs);
         <!-- Top row: client + status badge -->
         <div class="flex items-start justify-between gap-2">
           <div class="min-w-0">
-            <p class="text-sm font-medium text-wc-text truncate">{{ proof.client_name }}</p>
-            <p class="text-xs text-wc-text-tertiary truncate">{{ proof.client_email }}</p>
+            <p class="text-sm font-medium text-wc-text truncate">{{ proof.clientName }}</p>
+            <p class="text-xs text-wc-text-tertiary truncate">{{ proof.clientEmail }}</p>
           </div>
           <span
             class="shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
@@ -133,38 +145,42 @@ onMounted(fetchProofs);
             <span class="text-wc-text-tertiary">Monto:</span>
             <span class="font-data">{{ formatAmount(proof.amount) }}</span>
           </span>
-          <span v-if="proof.payment_method">
-            <span class="text-wc-text-tertiary">Metodo:</span> {{ METHOD_LABELS[proof.payment_method] ?? proof.payment_method }}
+          <span v-if="proof.paymentMethod">
+            <span class="text-wc-text-tertiary">Metodo:</span> {{ METHOD_LABELS[proof.paymentMethod] ?? proof.paymentMethod }}
           </span>
-          <span class="text-wc-text-tertiary ml-auto">{{ formatDate(proof.created_at) }}</span>
+          <span class="text-wc-text-tertiary ml-auto">{{ formatDate(proof.submittedAt) }}</span>
         </div>
 
-        <!-- Rejection reason (only when rechazado) -->
+        <!-- Rejection / review note (rechazado) -->
         <div
-          v-if="proof.status === 'rechazado' && proof.rejection_reason"
+          v-if="proof.status === 'rechazado' && proof.reviewNote"
           class="rounded-md border border-red-500/20 bg-red-500/5 px-3 py-2 text-xs text-red-400"
         >
-          <span class="font-medium">Motivo de rechazo:</span> {{ proof.rejection_reason }}
+          <span class="font-medium">Motivo de rechazo:</span> {{ proof.reviewNote }}
         </div>
 
         <!-- Coach note -->
-        <div v-if="proof.coach_note" class="text-xs text-wc-text-tertiary italic">
-          Nota: {{ proof.coach_note }}
+        <div v-if="proof.coachNote" class="text-xs text-wc-text-tertiary italic">
+          Nota: {{ proof.coachNote }}
         </div>
 
-        <!-- File link -->
-        <div v-if="proof.file_url">
-          <a
-            :href="proof.file_url"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-1 text-xs text-wc-accent hover:underline"
+        <!-- File button -->
+        <div>
+          <button
+            type="button"
+            @click="openFile(proof)"
+            :disabled="openingFileId === proof.id"
+            class="inline-flex items-center gap-1 text-xs text-wc-accent hover:underline disabled:opacity-50 disabled:cursor-wait"
           >
-            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <svg v-if="openingFileId === proof.id" class="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            <svg v-else class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
             </svg>
-            Ver comprobante
-          </a>
+            {{ openingFileId === proof.id ? 'Abriendo...' : 'Ver comprobante' }}
+          </button>
         </div>
       </div>
     </div>
