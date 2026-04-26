@@ -1,8 +1,11 @@
 <div
+    id="summary-top"
     x-data="{
         feedbackSaved: false,
         showConfetti: true,
         init() {
+            window.scrollTo({ top: 0, behavior: 'instant' });
+
             // Trigger confetti for 4 seconds
             setTimeout(() => this.showConfetti = false, 4000);
 
@@ -238,6 +241,23 @@
             </p>
             <p class="mt-0.5 text-xs text-wc-text-tertiary">completados</p>
         </div>
+
+        {{-- Tiempo en hold isométrico (solo aparece si hubo ejercicios isométricos) --}}
+        @if(($stats['isometric_seconds'] ?? 0) > 0)
+        <div class="relative overflow-hidden rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-4 text-center">
+            <div class="pointer-events-none absolute -right-3 -top-3 h-12 w-12 rounded-full bg-wc-accent/8"></div>
+            <div class="mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-wc-accent/15">
+                <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+            </div>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-wc-accent">Tiempo en Hold</p>
+            <p class="mt-1 font-data text-3xl font-bold text-wc-text sm:text-4xl tabular-nums">
+                {{ gmdate('i:s', $stats['isometric_seconds']) }}
+            </p>
+            <p class="mt-0.5 text-xs text-wc-text-tertiary">isométrico total</p>
+        </div>
+        @endif
     </div>
 
     {{-- ─── PR Achievements ─── --}}

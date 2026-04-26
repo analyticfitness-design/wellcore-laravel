@@ -93,7 +93,7 @@ class WorkoutPlayer extends Component
         $clientId = auth('wellcore')->id();
 
         // Show tutorial if client has never completed a workout
-        $this->showTutorial = !WorkoutSession::where('client_id', $clientId)
+        $this->showTutorial = ! WorkoutSession::where('client_id', $clientId)
             ->where('completed', true)
             ->exists();
 
@@ -111,6 +111,7 @@ class WorkoutPlayer extends Component
 
         if (! $planData) {
             $this->hasPlan = false;
+
             return;
         }
 
@@ -135,7 +136,7 @@ class WorkoutPlayer extends Component
         // Normalize exercises inside each flat day
         if (isset($content['dias']) && is_array($content['dias'])) {
             $content['dias'] = array_values(array_map(
-                fn($d) => is_array($d) ? $this->normalizeDay($d) : $d,
+                fn ($d) => is_array($d) ? $this->normalizeDay($d) : $d,
                 $content['dias']
             ));
         }
@@ -145,9 +146,9 @@ class WorkoutPlayer extends Component
         if (! isset($content['semanas']) && isset($content['plan']) && is_array($content['plan'])) {
             $first = reset($content['plan']);
             if (is_array($first) && (isset($first['days']) || isset($first['week']))) {
-                $content['semanas'] = array_values(array_map(fn($w) => [
+                $content['semanas'] = array_values(array_map(fn ($w) => [
                     'semana' => $w['week'] ?? 1,
-                    'dias'   => $w['days'] ?? [],
+                    'dias' => $w['days'] ?? [],
                 ], $content['plan']));
                 unset($content['plan']);
             }
@@ -163,7 +164,7 @@ class WorkoutPlayer extends Component
                 $weekNumber = $weekIndex + 1;
                 $dias = $weekData['dias'] ?? $weekData['days'] ?? [];
                 $this->allWeeksDays[$weekNumber] = array_values(array_map(
-                    fn($d) => is_array($d) ? $this->normalizeDay($d) : $d,
+                    fn ($d) => is_array($d) ? $this->normalizeDay($d) : $d,
                     $dias
                 ));
             }
@@ -182,6 +183,7 @@ class WorkoutPlayer extends Component
 
         if (empty($this->days)) {
             $this->hasPlan = false;
+
             return;
         }
 
@@ -244,7 +246,7 @@ class WorkoutPlayer extends Component
             return;
         }
 
-        $this->dayName = $day['nombre'] ?? $day['name'] ?? $day['dia'] ?? 'Día ' . ($this->currentDayIndex + 1);
+        $this->dayName = $day['nombre'] ?? $day['name'] ?? $day['dia'] ?? 'Día '.($this->currentDayIndex + 1);
         $this->muscleGroup = $day['grupo_muscular'] ?? $day['muscle_group'] ?? $day['musculo'] ?? '';
         $this->exercises = $day['ejercicios'] ?? $day['exercises'] ?? $day['ejercicios_dia'] ?? [];
 
@@ -260,7 +262,7 @@ class WorkoutPlayer extends Component
      */
     public function switchWeek(int $week): void
     {
-        if ($this->isActive || !$this->hasProgressions) {
+        if ($this->isActive || ! $this->hasProgressions) {
             return;
         }
 
@@ -291,7 +293,7 @@ class WorkoutPlayer extends Component
             $blockType = strtolower($exercise['bloque'] ?? $exercise['block_type'] ?? 'normal');
 
             if ($blockType === 'superset' || $blockType === 'circuito') {
-                $groupId = $exercise['grupo_id'] ?? $exercise['group_id'] ?? $blockType . '_' . $groupIndex;
+                $groupId = $exercise['grupo_id'] ?? $exercise['group_id'] ?? $blockType.'_'.$groupIndex;
 
                 if ($currentGroup && $currentGroup['id'] === $groupId) {
                     $currentGroup['exercises'][] = $exIndex;
@@ -314,7 +316,7 @@ class WorkoutPlayer extends Component
                     $currentGroup = null;
                 }
                 $this->blockGroups[] = [
-                    'id' => 'single_' . $exIndex,
+                    'id' => 'single_'.$exIndex,
                     'type' => 'normal',
                     'label' => null,
                     'exercises' => [$exIndex],
@@ -366,19 +368,19 @@ class WorkoutPlayer extends Component
 
         $session = WorkoutSession::firstOrCreate(
             [
-                'client_id'    => $clientId,
-                'day_name'     => $this->dayName,
+                'client_id' => $clientId,
+                'day_name' => $this->dayName,
                 'session_date' => now()->toDateString(),
             ],
             [
-                'plan_id'   => $this->planId,
+                'plan_id' => $this->planId,
                 'completed' => false,
             ]
         );
 
         // Fix 4: Bust the session resume cache so a subsequent mount() finds
         // the newly created session instead of returning null from cache.
-        Cache::forget("wp:session:{$clientId}:" . now()->toDateString());
+        Cache::forget("wp:session:{$clientId}:".now()->toDateString());
 
         $this->sessionId = $session->id;
         $this->isActive = true;
@@ -427,7 +429,7 @@ class WorkoutPlayer extends Component
                         ) latest'),
                         function ($join) {
                             $join->on('workout_logs.exercise_name', '=', 'latest.exercise_name')
-                                 ->on('workout_logs.id', '=', 'latest.max_id');
+                                ->on('workout_logs.id', '=', 'latest.max_id');
                         }
                     )
                     ->whereIn('workout_logs.exercise_name', $exerciseNames)
@@ -448,18 +450,28 @@ class WorkoutPlayer extends Component
             // Resolved from the pre-loaded map — no query executed here.
             $lastWeight = $lastWeights[$exerciseName] ?? null;
             $targetReps = $exercise['repeticiones'] ?? '8-10';
+            $isIsometric = (bool) ($exercise['is_isometric'] ?? false);
+            $targetSeconds = $isIsometric ? (int) ($exercise['target_seconds'] ?? 0) : null;
 
             $sets = [];
             for ($s = 1; $s <= $seriesCount; $s++) {
-                $sets[$s] = [
-                    'set_number'    => $s,
-                    'target_reps'   => $targetReps,
+                $set = [
+                    'set_number' => $s,
+                    'target_reps' => $targetReps,
                     'target_weight' => $lastWeight,
-                    'weight'        => $lastWeight,
-                    'reps'          => '',
-                    'completed'     => false,
-                    'is_pr'         => false,
+                    'weight' => $lastWeight,
+                    'reps' => '',
+                    'completed' => false,
+                    'is_pr' => false,
                 ];
+
+                if ($isIsometric) {
+                    $set['is_isometric'] = true;
+                    $set['duration_seconds'] = null;
+                    $set['target_seconds'] = $targetSeconds;
+                }
+
+                $sets[$s] = $set;
             }
 
             $this->setData[$exIndex] = $sets;
@@ -480,17 +492,28 @@ class WorkoutPlayer extends Component
         foreach ($logs as $log) {
             $exIndex = $log->block_order;
 
-            if (isset($this->setData[$exIndex][$log->set_number])) {
-                $this->setData[$exIndex][$log->set_number] = [
-                    'set_number'    => $log->set_number,
-                    'target_reps'   => $log->target_reps ?? $this->setData[$exIndex][$log->set_number]['target_reps'],
-                    'target_weight' => $log->target_weight,
-                    'weight'        => $log->weight_kg,
-                    'reps'          => $log->reps,
-                    'completed'     => (bool) $log->completed,
-                    'is_pr'         => (bool) $log->is_pr,
-                ];
+            if (! isset($this->setData[$exIndex][$log->set_number])) {
+                continue;
             }
+
+            $restored = [
+                'set_number' => $log->set_number,
+                'target_reps' => $log->target_reps ?? $this->setData[$exIndex][$log->set_number]['target_reps'],
+                'target_weight' => $log->target_weight,
+                'weight' => $log->weight_kg,
+                'reps' => $log->reps,
+                'completed' => (bool) $log->completed,
+                'is_pr' => (bool) $log->is_pr,
+            ];
+
+            if ($log->is_isometric) {
+                $exercise = $this->exercises[$exIndex] ?? null;
+                $restored['is_isometric'] = true;
+                $restored['duration_seconds'] = $log->duration_seconds;
+                $restored['target_seconds'] = (int) ($exercise['target_seconds'] ?? 0);
+            }
+
+            $this->setData[$exIndex][$log->set_number] = $restored;
         }
     }
 
@@ -564,8 +587,66 @@ class WorkoutPlayer extends Component
             'speed_kmh' => $speed,
             'incline_percent' => $incline,
         ];
+    }
 
-        $this->updateProgress();
+    public function completeIsometricSet(int $exerciseIndex, int $setNumber, int $durationSeconds): void
+    {
+        if (! $this->isActive || ! $this->sessionId) {
+            return;
+        }
+
+        $duration = max(0, (int) $durationSeconds);
+        if ($duration <= 0) {
+            return;
+        }
+
+        $clientId = auth('wellcore')->id();
+        $exercise = $this->exercises[$exerciseIndex] ?? null;
+        if (! $exercise) {
+            return;
+        }
+
+        $exerciseName = $exercise['nombre'] ?? 'Ejercicio';
+        $targetSeconds = (int) ($exercise['target_seconds'] ?? 0);
+
+        $existing = WorkoutLog::where('session_id', $this->sessionId)
+            ->where('exercise_name', $exerciseName)
+            ->where('set_number', $setNumber)
+            ->where('block_order', $exerciseIndex)
+            ->first();
+
+        $data = [
+            'weight_kg' => 0,
+            'reps' => 0,
+            'is_isometric' => true,
+            'duration_seconds' => $duration,
+            'target_reps' => null,
+            'target_weight' => null,
+            'completed' => true,
+        ];
+
+        if ($existing) {
+            $existing->update($data);
+        } else {
+            WorkoutLog::create(array_merge($data, [
+                'session_id' => $this->sessionId,
+                'client_id' => $clientId,
+                'exercise_name' => $exerciseName,
+                'block_type' => 'normal',
+                'block_order' => $exerciseIndex,
+                'set_number' => $setNumber,
+                'is_pr' => $duration > $targetSeconds,
+            ]));
+        }
+
+        $this->setData[$exerciseIndex][$setNumber] = [
+            'set_number' => $setNumber,
+            'completed' => true,
+            'is_isometric' => true,
+            'duration_seconds' => $duration,
+            'target_seconds' => $targetSeconds,
+            'is_pr' => $duration > $targetSeconds,
+        ];
     }
 
     public function completeSet(int $exerciseIndex, int $setNumber, mixed $weight, mixed $reps): void
@@ -642,8 +723,8 @@ class WorkoutPlayer extends Component
                 // PR check failure should never block set completion
                 \Log::warning('WorkoutPr::checkAndAward failed', [
                     'client_id' => $clientId,
-                    'exercise'  => $exerciseName,
-                    'error'     => $e->getMessage(),
+                    'exercise' => $exerciseName,
+                    'error' => $e->getMessage(),
                 ]);
             }
         }
@@ -708,10 +789,10 @@ class WorkoutPlayer extends Component
         $durationSec = (int) $startTime->diffInSeconds(now());
 
         $session->update([
-            'completed'        => true,
+            'completed' => true,
             'duration_minutes' => (int) ($durationSec / 60),
-            'feeling'          => $feeling,
-            'notes'            => $notes,
+            'feeling' => $feeling,
+            'notes' => $notes,
         ]);
 
         // Calculate totals from logs
@@ -739,7 +820,7 @@ class WorkoutPlayer extends Component
 
         // Redirect to workout summary — full page load (navigate:true causa blank screen)
         $this->redirect(
-            route('client.workout.summary', ['sessionId' => $session->id])
+            route('client.workout.summary', ['sessionId' => $session->id]).'#summary-top'
         );
     }
 
@@ -882,6 +963,7 @@ class WorkoutPlayer extends Component
 
         if (! $session) {
             $this->redirect(route('client.dashboard'));
+
             return;
         }
 

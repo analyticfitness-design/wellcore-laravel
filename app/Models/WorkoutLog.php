@@ -30,6 +30,8 @@ class WorkoutLog extends Model
         'speed_kmh',
         'incline_percent',
         'heart_rate_avg',
+        'duration_seconds',
+        'is_isometric',
     ];
 
     protected $casts = [
@@ -39,6 +41,7 @@ class WorkoutLog extends Model
         'completed' => 'boolean',
         'is_pr' => 'boolean',
         'is_cardio' => 'boolean',
+        'is_isometric' => 'boolean',
     ];
 
     public function session(): BelongsTo

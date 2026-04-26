@@ -597,7 +597,12 @@
                                     </button>
                                     <button
                                         x-show="completed"
-                                        @click="$wire.uncompleteSet({{ $exIndex }}, {{ $setNum }}); completed = false"
+                                        @click="
+                                            if ('{{ addslashes($exercise['nombre'] ?? '') }}'.length > 0) {
+                                                $wire.uncompleteSet({{ $exIndex }}, {{ $setNum }});
+                                                completed = false;
+                                            }
+                                        "
                                         class="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-500 text-white hover:bg-orange-500/80 hover:scale-90 transition-all"
                                         :class="justCompleted && 'animate-bounce'"
                                         x-transition:enter="transition ease-out duration-300"
@@ -610,6 +615,114 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                                         </svg>
                                     </button>
+                                </div>
+                            </div>
+                        @endfor
+
+                        @elseif(!empty($exercise['is_isometric']))
+                        {{-- ═══ ISOMETRIC TABLE HEADER ═══ --}}
+                        <div class="grid gap-1 px-3 py-2 bg-wc-bg-secondary/50"
+                             style="grid-template-columns: 32px 50px 1fr 1fr 36px">
+                            <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Set</span>
+                            <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Anterior</span>
+                            <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Peso</span>
+                            <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Tiempo</span>
+                            <span class="sr-only">Iniciar/Completar</span>
+                        </div>
+
+                        {{-- ISOMETRIC Set rows --}}
+                        @for($setNum = 1; $setNum <= $totalSets; $setNum++)
+                            @php
+                                $currentSet      = $exSetData[$setNum] ?? [];
+                                $isCompleted     = !empty($currentSet['completed']);
+                                $isPr            = !empty($currentSet['is_pr']);
+                                $setWeight       = $currentSet['weight'] ?? 0;
+                                $targetSeconds   = (int)($exercise['target_seconds'] ?? 30);
+                            @endphp
+                            <div
+                                class="grid gap-1 items-center px-3 py-2 transition-colors
+                                    {{ $isCompleted ? 'bg-emerald-500/5' : '' }}
+                                    {{ $setNum < $totalSets ? 'border-b border-wc-border/50' : '' }}"
+                                style="grid-template-columns: 32px 50px 1fr 1fr 36px"
+                                x-data="isometricSet({
+                                    exIndex: {{ $exIndex }},
+                                    setNum: {{ $setNum }},
+                                    target: {{ $targetSeconds }},
+                                    weight: {{ (float)($setWeight ?: 0) }},
+                                    completed: {{ $isCompleted ? 'true' : 'false' }}
+                                })"
+                                x-init="init()"
+                            >
+                                {{-- Set number --}}
+                                <div class="flex flex-col items-center justify-center gap-0.5">
+                                    <span class="font-data text-sm font-bold {{ $isCompleted ? 'text-emerald-400' : 'text-wc-text-tertiary' }}">
+                                        {{ $setNum }}
+                                    </span>
+                                    @if($isPr)
+                                        <span class="rounded-md px-1 py-0.5 text-[8px] font-black text-black"
+                                              style="background: linear-gradient(135deg, #facc15, #f59e0b);">★ PR</span>
+                                    @endif
+                                </div>
+
+                                {{-- Anterior (previous hold duration) --}}
+                                <div class="flex items-center justify-center">
+                                    @if(!empty($currentSet['target_seconds']))
+                                        <span class="font-data text-[11px] text-wc-text/30">{{ $currentSet['target_seconds'] }}s</span>
+                                    @else
+                                        <span class="font-data text-[11px] text-wc-text/20">—</span>
+                                    @endif
+                                </div>
+
+                                {{-- Weight (kg — optional for weighted holds) --}}
+                                <div class="flex items-center justify-center">
+                                    <input
+                                        type="number"
+                                        step="0.5"
+                                        min="0"
+                                        x-model.number="weight"
+                                        class="h-7 w-12 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-xs tabular-nums focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/50"
+                                        :disabled="completed || running"
+                                        placeholder="0"
+                                    />
+                                </div>
+
+                                {{-- Timer display --}}
+                                <div class="flex items-center justify-center">
+                                    <span class="font-data text-base font-bold tabular-nums"
+                                          :class="running ? 'text-wc-accent animate-pulse' : (completed ? 'text-emerald-400' : 'text-wc-text')">
+                                        <span x-text="formatTime(displaySeconds)">{{ $targetSeconds }}s</span>
+                                    </span>
+                                </div>
+
+                                {{-- Action button: Start / Stop / Done --}}
+                                <div class="flex items-center justify-center">
+                                    <button x-show="!running && !completed"
+                                            @click="start()"
+                                            class="btn-press flex h-8 w-8 items-center justify-center rounded-xl border-2 border-wc-accent/40 text-wc-accent hover:border-wc-accent hover:bg-wc-accent/10 transition-all focus:outline-none focus:ring-2 focus:ring-wc-accent/50"
+                                            aria-label="Iniciar timer isométrico"
+                                            type="button">
+                                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M8 5v14l11-7z"/>
+                                        </svg>
+                                    </button>
+                                    <button x-show="running"
+                                            @click="stop()"
+                                            class="btn-press flex h-8 w-8 items-center justify-center rounded-xl bg-wc-accent text-white hover:bg-wc-accent-hover transition-colors focus:outline-none focus:ring-2 focus:ring-wc-accent/50"
+                                            aria-label="Detener y completar serie"
+                                            type="button">
+                                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M6 6h12v12H6z"/>
+                                        </svg>
+                                    </button>
+                                    <div x-show="completed"
+                                         class="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500 text-white"
+                                         x-transition:enter="transition ease-out duration-300"
+                                         x-transition:enter-start="scale-50 opacity-0"
+                                         x-transition:enter-end="scale-100 opacity-100">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                        </svg>
+                                    </div>
                                 </div>
                             </div>
                         @endfor
@@ -769,7 +882,12 @@
                                     </button>
                                     <button
                                         x-show="completed"
-                                        @click="$wire.uncompleteSet({{ $exIndex }}, {{ $setNum }}); completed = false"
+                                        @click="
+                                            if ('{{ addslashes($exercise['nombre'] ?? '') }}'.length > 0) {
+                                                $wire.uncompleteSet({{ $exIndex }}, {{ $setNum }});
+                                                completed = false;
+                                            }
+                                        "
                                         class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500 text-white hover:bg-orange-500/80 hover:scale-90 transition-all"
                                         :class="justCompleted && 'animate-bounce'"
                                         x-transition:enter="transition ease-out duration-300"
@@ -1034,6 +1152,81 @@
                 }
             };
         }
+
+        // ─── Isometric set timer component ───────────────────────────────────
+        window.isometricSet = function ({ exIndex, setNum, target, weight, completed }) {
+            return {
+                exIndex,
+                setNum,
+                target,
+                weight,
+                completed,
+                running: false,
+                elapsed: 0,
+                displaySeconds: target,
+                intervalId: null,
+                startBeep: null,
+                endBeep: null,
+
+                init() {
+                    try {
+                        this.startBeep = new Audio('/audio/beep-start.mp3');
+                        this.endBeep   = new Audio('/audio/beep-end.mp3');
+                        this.startBeep.preload = 'auto';
+                        this.endBeep.preload   = 'auto';
+                    } catch (e) {
+                        this.startBeep = null;
+                        this.endBeep   = null;
+                    }
+                },
+
+                start() {
+                    if (this.completed || this.running) return;
+
+                    this.running = true;
+                    this.elapsed = 0;
+                    this.displaySeconds = this.target;
+
+                    if (this.startBeep) this.startBeep.play().catch(() => {});
+                    if ('vibrate' in navigator) navigator.vibrate(80);
+
+                    const startTs = Date.now();
+                    this.intervalId = setInterval(() => {
+                        this.elapsed = Math.floor((Date.now() - startTs) / 1000);
+                        this.displaySeconds = Math.max(0, this.target - this.elapsed);
+
+                        if (this.displaySeconds === 0) {
+                            this.complete();
+                        }
+                    }, 250);
+                },
+
+                stop() {
+                    if (!this.running) return;
+                    this.complete();
+                },
+
+                complete() {
+                    clearInterval(this.intervalId);
+                    this.intervalId = null;
+                    this.running = false;
+                    this.completed = true;
+
+                    if (this.endBeep) this.endBeep.play().catch(() => {});
+                    if ('vibrate' in navigator) navigator.vibrate([100, 50, 200]);
+
+                    const seconds = this.elapsed > 0 ? this.elapsed : this.target;
+                    this.$wire.completeIsometricSet(this.exIndex, this.setNum, seconds);
+                },
+
+                formatTime(s) {
+                    if (s >= 60) {
+                        return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+                    }
+                    return s + 's';
+                },
+            };
+        };
     </script>
 
     <style>

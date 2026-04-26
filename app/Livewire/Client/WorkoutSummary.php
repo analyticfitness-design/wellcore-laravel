@@ -46,6 +46,10 @@ class WorkoutSummary extends Component
         // PR count from this session
         $prCount = $completedLogs->where('is_pr', true)->count();
 
+        $isometricSeconds = (int) $completedLogs
+            ->where('is_isometric', true)
+            ->sum('duration_seconds');
+
         $this->stats = [
             'duration' => $this->session->formattedDuration(),
             'duration_sec' => ($this->session->duration_minutes ?? 0) * 60,
@@ -56,6 +60,7 @@ class WorkoutSummary extends Component
             'sets_completed' => $completedLogs->count(),
             'sets_total' => $targetSets,
             'exercises_count' => $exerciseCount,
+            'isometric_seconds' => $isometricSeconds,
         ];
 
         // XP earned this session — cached so the number never changes across page reloads
