@@ -1,8 +1,15 @@
 /**
  * WellCore Scroll Animations
  * Uses IntersectionObserver to animate elements with data-animate attribute
+ *
+ * NOTA: Este modulo se carga lazy via requestIdleCallback en app.js, lo que significa
+ * que `DOMContentLoaded` YA OCURRIO cuando este script ejecuta. Por eso ejecutamos
+ * la inicializacion directamente sin esperar el evento. Si lo envolvemos en
+ * addEventListener('DOMContentLoaded', ...), el callback nunca se dispara y todos
+ * los elementos [data-animate] quedan con opacity:0 permanentemente (bug critico
+ * que rompe TODAS las paginas publicas con animaciones).
  */
-document.addEventListener('DOMContentLoaded', () => {
+function initScrollAnimations() {
     // Respect reduced motion preference
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         document.querySelectorAll('[data-animate]').forEach(el => {
@@ -29,7 +36,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-animate]').forEach((el) => {
         observer.observe(el);
     });
-});
+}
+
+// Ejecutar inmediatamente (DOMContentLoaded ya ocurrio dado el lazy load)
+// Si por algun motivo este modulo se cargara antes del DOMContentLoaded, lo manejamos:
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initScrollAnimations, { once: true });
+} else {
+    initScrollAnimations();
+}
 
 // === Animated Number Counter ===
 function animateCounter(el, target, duration = 1500) {
@@ -59,7 +74,14 @@ const counterObserver = new IntersectionObserver((entries) => {
     });
 }, { threshold: 0.3 });
 
-document.querySelectorAll('[data-counter]').forEach(el => counterObserver.observe(el));
+function initCounters() {
+    document.querySelectorAll('[data-counter]').forEach(el => counterObserver.observe(el));
+}
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCounters, { once: true });
+} else {
+    initCounters();
+}
 
 // Re-init after Livewire navigation (wire:navigate)
 document.addEventListener('livewire:navigated', () => {
@@ -118,5 +140,9 @@ function initParallaxHero() {
     }, { passive: true });
 }
 
-// Init parallax on first load
-document.addEventListener('DOMContentLoaded', initParallaxHero);
+// Init parallax on first load (DOMContentLoaded ya ocurrio dado el lazy load)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initParallaxHero, { once: true });
+} else {
+    initParallaxHero();
+}
