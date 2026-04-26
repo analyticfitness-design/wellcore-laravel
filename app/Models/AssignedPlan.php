@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Cache;
@@ -21,6 +22,8 @@ use Illuminate\Support\Facades\Cache;
 ])]
 class AssignedPlan extends Model
 {
+    use HasFactory;
+
     protected $table = 'assigned_plans';
 
     public $timestamps = false;
