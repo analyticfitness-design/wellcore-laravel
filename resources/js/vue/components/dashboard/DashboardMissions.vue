@@ -13,10 +13,10 @@ const celebration = useCelebration();
 
 // Mission route mapping (API returns route keys, we map to Vue routes)
 const missionRouteMap = {
-    training: '/client/training',
-    checkin: '/client/checkin',
-    weight: '/client/metrics',
-    nutrition: '/client/nutrition',
+    training:  '/client/plan?tab=training',
+    checkin:   '/client/checkin',
+    weight:    '/client/metrics',
+    nutrition: '/client/plan?tab=nutrition',
 };
 
 function getMissionRoute(mission) {

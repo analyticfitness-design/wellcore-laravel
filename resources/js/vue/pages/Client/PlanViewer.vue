@@ -1,6 +1,6 @@
 <script setup>
-import { ref, computed, reactive, onMounted, onBeforeUnmount } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, reactive, watch, onMounted, onBeforeUnmount } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
 import { usePlanLock } from '../../composables/usePlanLock';
@@ -57,6 +57,7 @@ function getBloodworkStatusLabel(status) {
 
 const api = useApi();
 const router = useRouter();
+const route = useRoute();
 const toast = useToast();
 const { isLocked } = usePlanLock();
 
@@ -69,6 +70,17 @@ const loading = ref(true);
 const error = ref(null);
 const activeTab = ref('entrenamiento');
 const currentWeek = ref(1);
+
+// Responde al query ?tab=training|nutrition desde misiones/deeplinks
+const TAB_QUERY_MAP = { training: 'entrenamiento', nutrition: 'nutricion' };
+function setTabFromQuery() {
+    const requested = route.query.tab;
+    if (typeof requested === 'string' && TAB_QUERY_MAP[requested]) {
+        activeTab.value = TAB_QUERY_MAP[requested];
+    }
+}
+onMounted(setTabFromQuery);
+watch(() => route.query.tab, setTabFromQuery);
 
 // Plan data
 const trainingPlan = ref(null);
