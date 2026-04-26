@@ -108,6 +108,7 @@ const navSections = [
             { name: 'Kanban', to: '/coach/kanban', icon: 'kanban', routeName: 'coach-kanban' },
             { name: 'Broadcast', to: '/coach/broadcast', icon: 'broadcast', routeName: 'coach-broadcast' },
             { name: 'Invitaciones', to: '/coach/invitations', icon: 'envelope', routeName: 'coach-invitations' },
+            { name: 'Comprobantes', to: '/coach/comprobantes', icon: 'receipt', routeName: 'coach-comprobantes' },
         ],
     },
     {
@@ -254,6 +255,10 @@ const bottomNav = [
                 <!-- Envelope (Invitations) -->
                 <svg v-else-if="item.icon === 'envelope'" class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                </svg>
+                <!-- Receipt (Comprobantes) -->
+                <svg v-else-if="item.icon === 'receipt'" class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0c1.1.128 1.907 1.077 1.907 2.185ZM9.75 9h.008v.008H9.75V9Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm4.125 4.5h.008v.008h-.008V13.5Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                 </svg>
                 <span :class="sidebarCollapsed ? 'lg:hidden' : ''" class="truncate">{{ item.name }}</span>
               </RouterLink>
