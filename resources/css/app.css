@@ -991,7 +991,7 @@ body {
   color: #B91C1C;
 }
 .dark .hp-eyebrow {
-  color: var(--color-wc-accent);
+  color: #EF4444;
 }
 .hp-eyebrow::before {
   content: ''; display: block; width: 20px; height: 2px;
@@ -1183,7 +1183,7 @@ body {
 .hp-phase-week {
   display:inline-block; font-size:9px; font-weight:700;
   text-transform:uppercase; letter-spacing:.12em;
-  color:rgba(250,250,250,.38); background:#111113;
+  color:rgba(250,250,250,.72); background:#111113;
   border:1px solid rgba(255,255,255,.07);
   border-radius:9999px; padding:3px 10px; margin-bottom:10px;
 }
