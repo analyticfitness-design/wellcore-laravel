@@ -37,9 +37,6 @@ class AdminPaymentProofViewController extends Controller
             abort(403, 'Token no corresponde al comprobante solicitado.');
         }
 
-        // Consume token — single use
-        Cache::forget($cacheKey);
-
         $proof = PaymentProof::findOrFail($id);
 
         if (! Storage::disk('payment_proofs')->exists($proof->file_path)) {

@@ -125,6 +125,12 @@ async function loadFileUrl(id) {
   }
 }
 
+// ─── Open file in new tab (bypasses Vue Router) ───────────────────────────────
+function openFileInTab() {
+  if (!fileUrl.value) return;
+  window.open(fileUrl.value, '_blank', 'noopener,noreferrer');
+}
+
 // ─── Approve ──────────────────────────────────────────────────────────────────
 function requestApprove() {
   showApproveConfirm.value = true;
@@ -464,36 +470,29 @@ onBeforeUnmount(() => clearTimeout(debounceTimer));
                 </div>
 
                 <!-- PDF indicator -->
-                <a
+                <div
                   v-else-if="isPdf(selectedProof.fileMime)"
-                  :href="fileUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="flex h-40 flex-col items-center justify-center gap-3 text-sky-400 transition-opacity hover:opacity-80"
+                  class="flex h-40 cursor-pointer flex-col items-center justify-center gap-3 text-sky-400 transition-opacity hover:opacity-80"
+                  @click.stop="openFileInTab"
                 >
                   <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                   </svg>
                   <span class="text-xs font-medium">Ver PDF &rarr;</span>
-                </a>
+                </div>
 
                 <!-- Image preview -->
-                <a
-                  v-else
-                  :href="fileUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="group relative block"
-                >
+                <div v-else class="group relative cursor-pointer" @click.stop="openFileInTab">
                   <img
                     :src="fileUrl"
                     alt="Comprobante de pago"
                     class="max-h-72 w-full object-contain transition-opacity group-hover:opacity-90"
+                    @error="fileUrl = null"
                   />
                   <div class="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
                     <span class="rounded-lg bg-black/60 px-3 py-1.5 text-xs font-medium text-white">Ver completo &rarr;</span>
                   </div>
-                </a>
+                </div>
               </div>
 
               <!-- Meta info grid -->
