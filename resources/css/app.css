@@ -1345,7 +1345,7 @@ body {
 }
 .hp-btn-cta-ghost:hover { border-color:rgba(255,255,255,.4); }
 .hp-cta-note-v3 {
-  font-size:11px; color:rgba(250,250,250,.38); margin-top:18px;
+  font-size:11px; color:rgba(255,255,255,.85); margin-top:18px;
   display:flex; flex-wrap:wrap; justify-content:center; gap:8px;
   position:relative; z-index:1;
 }
@@ -1567,7 +1567,7 @@ body {
 }
 .hp-sticky-cta-btn:active { transform:scale(.97); }
 .hp-sticky-cta-label { font-weight:800; }
-.hp-sticky-cta-price { font-weight:500; opacity:.85; font-size:13px; }
+.hp-sticky-cta-price { font-weight:500; color:#fff; font-size:13px; }
 @media (max-width:767px) {
   body:has(.hp-sticky-cta) { padding-bottom:76px; }
   /* Chat widget sube encima del sticky CTA en mobile para evitar solape */

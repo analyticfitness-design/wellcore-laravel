@@ -508,7 +508,7 @@
                             [false, __('home.feat_nutricion_personalizada')],
                             [false, __('home.feat_checkin_semanal')],
                         ] as [$included, $feature])
-                        <li class="hp-plan-feature {{ $included ? '' : 'opacity-70' }}">
+                        <li class="hp-plan-feature {{ $included ? '' : 'opacity-80' }}">
                             @if($included)
                                 <svg class="hp-plan-feature-icon h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
                                 {{ $feature }}
@@ -548,7 +548,7 @@
                             [false, __('home.feat_checkin_semanal')],
                             [false, __('home.feat_videollamada_mensual')],
                         ] as [$included, $feature])
-                        <li class="hp-plan-feature {{ $included ? '' : 'opacity-70' }}">
+                        <li class="hp-plan-feature {{ $included ? '' : 'opacity-80' }}">
                             @if($included)
                                 <svg class="hp-plan-feature-icon h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
                                 {{ $feature }}
@@ -610,7 +610,7 @@
     {{-- ================================================================== --}}
     <section class="bg-wc-bg-tertiary cv-auto">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
-            <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.testimonials_eyebrow') }}</p>
+            <p class="text-xs font-semibold uppercase tracking-widest text-red-700 dark:text-red-400">{{ __('home.testimonials_eyebrow') }}</p>
             <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('home.testimonials_title') }}</h2>
             <p class="mt-4 max-w-2xl text-sm text-wc-text-tertiary">{{ __('home.testimonials_subtitle') }}</p>
 
@@ -663,7 +663,7 @@
             <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
                 {{-- Left --}}
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.coaches_eyebrow') }}</p>
+                    <p class="text-xs font-semibold uppercase tracking-widest text-red-700 dark:text-red-400">{{ __('home.coaches_eyebrow') }}</p>
                     <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('home.coaches_title') }}</h2>
                     <p class="mt-4 max-w-xl text-sm text-wc-text-tertiary">{{ __('home.coaches_subtitle') }}</p>
 
@@ -755,7 +755,7 @@
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="slideInLeft">
             <div class="flex items-end justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.blog_eyebrow') }}</p>
+                    <p class="text-xs font-semibold uppercase tracking-widest text-red-700 dark:text-red-400">{{ __('home.blog_eyebrow') }}</p>
                     <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('home.blog_title') }}</h2>
                 </div>
                 <a href="{{ route('blog.index') }}" aria-label="Ver todos los articulos del blog WellCore" class="hidden items-center gap-2 text-sm font-medium text-wc-accent hover:text-wc-accent-hover sm:inline-flex">
@@ -827,7 +827,7 @@
     <section class="hp-sec hp-faq hp-cv-section" x-data="{ active: null }">
         <div class="hp-wrap">
             <div class="text-center">
-                <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.faq_eyebrow') }}</p>
+                <p class="text-xs font-semibold uppercase tracking-widest text-red-700 dark:text-red-400">{{ __('home.faq_eyebrow') }}</p>
                 <h2 class="hp-h2 mt-3">{{ __('home.faq_title') }}</h2>
             </div>
 
