@@ -2,13 +2,15 @@
 
 namespace App\Livewire\Admin;
 
+use App\Enums\PaymentProofStatus;
+use App\Enums\PlanType;
 use App\Models\Checkin;
 use App\Models\Client;
 use App\Models\Inscription;
 use App\Models\Payment;
+use App\Models\PaymentProof;
 use App\Models\Referral;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -20,29 +22,43 @@ class Dashboard extends Component
 {
     // Summary stats
     public int $activeClients = 0;
+
     public string $monthlyRevenue = '0';
+
     public int $pendingCheckins = 0;
+
     public int $newInscriptions = 0;
 
     // Client breakdown
     public int $clientsActivo = 0;
+
     public int $clientsInactivo = 0;
+
     public int $clientsPendiente = 0;
+
     public int $clientsSuspendido = 0;
+
     public int $totalClients = 0;
 
     // Recent activity
     public array $recentInscriptions = [];
+
     public array $recentPayments = [];
 
     // Activity timeline
     public array $activityTimeline = [];
+
     public string $timelineFilter = 'todos';
 
     // Chart data
     public array $revenueChartData = [];
+
     public array $clientGrowthData = [];
+
     public array $planDistributionData = [];
+
+    // Payment proofs
+    public int $pendingProofsCount = 0;
 
     // Polling / refresh tracking
     public string $lastRefresh = '';
@@ -77,6 +93,7 @@ class Dashboard extends Component
         $this->loadRecentActivity();
         $this->loadActivityTimeline();
         $this->loadChartData();
+        $this->pendingProofsCount = PaymentProof::where('status', PaymentProofStatus::Pendiente)->count();
         $this->lastRefresh = now()->format('h:i:s A');
     }
 
@@ -109,11 +126,11 @@ class Dashboard extends Component
             ->groupBy('status')
             ->pluck('cnt', 'status');
 
-        $this->clientsActivo     = $breakdown->get('activo', 0);
-        $this->clientsInactivo   = $breakdown->get('inactivo', 0);
-        $this->clientsPendiente  = $breakdown->get('pendiente', 0);
+        $this->clientsActivo = $breakdown->get('activo', 0);
+        $this->clientsInactivo = $breakdown->get('inactivo', 0);
+        $this->clientsPendiente = $breakdown->get('pendiente', 0);
         $this->clientsSuspendido = $breakdown->get('suspendido', 0);
-        $this->totalClients      = $breakdown->sum();
+        $this->totalClients = $breakdown->sum();
     }
 
     protected function loadRecentActivity(): void
@@ -122,7 +139,7 @@ class Dashboard extends Component
             ->take(5)
             ->get()
             ->map(fn ($i) => [
-                'nombre' => trim(($i->nombre ?? '') . ' ' . ($i->apellido ?? '')),
+                'nombre' => trim(($i->nombre ?? '').' '.($i->apellido ?? '')),
                 'email' => $i->email ?? '',
                 'plan' => $i->plan?->label() ?? '-',
                 'status' => $i->status ?? '-',
@@ -144,7 +161,7 @@ class Dashboard extends Component
 
                 // plan is cast to PlanType enum; if the stored value is unknown the
                 // cast silently returns null — handle both cases defensively
-                $planLabel = $p->plan instanceof \App\Enums\PlanType
+                $planLabel = $p->plan instanceof PlanType
                     ? $p->plan->label()
                     : (filled($p->getRawOriginal('plan'))
                         ? ucfirst($p->getRawOriginal('plan'))
@@ -152,10 +169,10 @@ class Dashboard extends Component
 
                 return [
                     'buyerName' => $buyerName,
-                    'plan'      => $planLabel,
-                    'amount'    => number_format((float) $p->amount, 0, ',', '.'),
-                    'method'    => $p->payment_method ?? '-',
-                    'timeAgo'   => $p->created_at?->diffForHumans() ?? '-',
+                    'plan' => $planLabel,
+                    'amount' => number_format((float) $p->amount, 0, ',', '.'),
+                    'method' => $p->payment_method ?? '-',
+                    'timeAgo' => $p->created_at?->diffForHumans() ?? '-',
                 ];
             })
             ->toArray();
@@ -193,7 +210,7 @@ class Dashboard extends Component
                     ->where('training_logs.log_date', '>=', now()->subDays(7)->toDateString())
                     ->where('training_logs.completed', 1)
                     ->select([
-                        DB::raw("CAST(training_logs.log_date AS DATETIME) as created_at"),
+                        DB::raw('CAST(training_logs.log_date AS DATETIME) as created_at'),
                         'clients.name as client_name',
                         'clients.avatar_url',
                         DB::raw("'training' as type"),
@@ -214,7 +231,7 @@ class Dashboard extends Component
                     ->where('payments.created_at', '>=', now()->subDays(30))
                     ->select([
                         'payments.created_at',
-                        DB::raw("COALESCE(clients.name, payments.buyer_name, payments.email) as client_name"),
+                        DB::raw('COALESCE(clients.name, payments.buyer_name, payments.email) as client_name'),
                         'clients.avatar_url',
                         DB::raw("'payment' as type"),
                         'payments.amount',
@@ -255,7 +272,7 @@ class Dashboard extends Component
                         'clients.avatar_url',
                         DB::raw("'xp' as type"),
                         DB::raw('xp_events.xp_gained as amount'),
-                        DB::raw("COALESCE(xp_events.description, xp_events.event_type) as detail"),
+                        DB::raw('COALESCE(xp_events.description, xp_events.event_type) as detail'),
                     ])
                     ->orderByDesc('xp_events.created_at')
                     ->limit(15)
@@ -263,7 +280,7 @@ class Dashboard extends Component
                 $activities = $activities->merge($xpEvents);
             }
         } catch (\Throwable $e) {
-            Log::warning('Activity timeline query failed: ' . $e->getMessage());
+            Log::warning('Activity timeline query failed: '.$e->getMessage());
         }
 
         $this->activityTimeline = $activities
@@ -313,7 +330,7 @@ class Dashboard extends Component
         $this->planDistributionData = Cache::remember('admin_chart_plan_dist', 600, function () {
             return DB::table('assigned_plans')
                 ->where('active', 1)
-                ->selectRaw("plan_type as name, COUNT(*) as count")
+                ->selectRaw('plan_type as name, COUNT(*) as count')
                 ->groupBy('plan_type')
                 ->get()
                 ->map(fn ($row) => ['name' => ucfirst($row->name ?? 'Sin tipo'), 'count' => (int) $row->count])

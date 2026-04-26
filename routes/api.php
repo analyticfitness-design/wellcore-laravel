@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\PaymentProofReviewController;
 use App\Http\Controllers\Api\AdminAuditLogController;
 use App\Http\Controllers\Api\AdminClientRequestController;
 use App\Http\Controllers\Api\AdminCoachManagementController;
@@ -344,4 +345,10 @@ Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:adm
     Route::get('/notifications', [AdminPlanTicketController::class, 'notifications']);
     Route::post('/notifications/read-all', [AdminPlanTicketController::class, 'markAllNotificationsRead']);
     Route::post('/notifications/{id}/read', [AdminPlanTicketController::class, 'markNotificationRead'])->whereNumber('id');
+
+    // Payment Proof Review (admin inbox — Phase 2)
+    Route::get('/payment-proofs', [PaymentProofReviewController::class, 'index']);
+    Route::get('/payment-proofs/{id}/file', [PaymentProofReviewController::class, 'file'])->whereNumber('id');
+    Route::post('/payment-proofs/{id}/approve', [PaymentProofReviewController::class, 'approve'])->whereNumber('id');
+    Route::post('/payment-proofs/{id}/reject', [PaymentProofReviewController::class, 'reject'])->whereNumber('id');
 });

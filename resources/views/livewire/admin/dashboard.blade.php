@@ -92,6 +92,26 @@
         </div>
     </div>
 
+    {{-- Widget: Comprobantes pendientes --}}
+    @if($pendingProofsCount > 0)
+    <div class="rounded-card border border-yellow-500/20 bg-yellow-500/5 p-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-yellow-500/15">
+                    <svg class="h-5 w-5 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-yellow-300">{{ $pendingProofsCount }} comprobante{{ $pendingProofsCount > 1 ? 's' : '' }} pendiente{{ $pendingProofsCount > 1 ? 's' : '' }}</p>
+                    <p class="text-xs text-wc-text-tertiary">Requieren revision</p>
+                </div>
+            </div>
+            <a href="/admin/payment-proofs" class="text-xs font-medium text-yellow-400 hover:text-yellow-300 transition-colors">Revisar &rarr;</a>
+        </div>
+    </div>
+    @endif
+
     {{-- Pending Rewards Alert --}}
     @if($pendingRewards->count() > 0)
     <div class="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4">

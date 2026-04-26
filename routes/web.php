@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminPaymentProofViewController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CoachImpersonateController;
@@ -260,7 +261,16 @@ Route::view('/admin/chat', 'vue')->name('admin.chat');
 Route::view('/admin/tools', 'vue')->name('admin.tools');
 Route::view('/admin/tickets', 'vue')->name('admin.tickets');
 Route::view('/admin/settings', 'vue')->name('admin.settings');
+Route::get('/admin/payment-proofs', App\Livewire\Admin\PaymentProofReview::class)
+    ->middleware(['auth:wellcore', 'role:admin,superadmin,jefe'])
+    ->name('admin.payment-proofs');
 Route::get('/admin/{any}', fn () => view('vue'))->where('any', '.*');
+
+// Admin — payment proof file viewer (token-gated, single-use cache token)
+Route::get('/admin/payment-proofs/{id}/view', [AdminPaymentProofViewController::class, 'view'])
+    ->middleware(['auth:wellcore', 'role:admin,superadmin,jefe'])
+    ->whereNumber('id')
+    ->name('admin.payment-proofs.view');
 
 // Session logout + impersonation (POST routes — still need auth)
 Route::middleware('auth:wellcore')->group(function () {
