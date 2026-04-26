@@ -1,13 +1,18 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { useHaptics } from '../../composables/useHaptics';
 
 const router = useRouter();
+const route = useRoute();
 const haptics = useHaptics();
 
 const open = ref(false);
 const fabEl = ref(null);
+
+// Cuando el workout está activo aparece una barra en bottom-0; subir el FAB para no taparla
+const isInActiveWorkout = computed(() => /^\/client\/workout(\/|$)/.test(route.path));
+const bottomOffset = computed(() => isInActiveWorkout.value ? '11rem' : '5rem');
 
 const actions = [
     {
@@ -97,7 +102,7 @@ onBeforeUnmount(() => {
     class="fixed z-50 flex flex-col items-end gap-3 lg:hidden"
     :style="{
       right: 'calc(1rem + env(safe-area-inset-right))',
-      bottom: 'calc(5rem + env(safe-area-inset-bottom))'
+      bottom: `calc(${bottomOffset} + env(safe-area-inset-bottom))`
     }"
   >
     <!-- Action pills -->
