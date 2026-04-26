@@ -44,7 +44,7 @@
         </div>
         <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36" data-animate="fadeInUp">
             <div class="mx-auto max-w-3xl text-center">
-                <p class="text-sm font-semibold uppercase tracking-widest text-wc-accent">{{ __('metodo.hero.label') }}</p>
+                <p class="text-sm font-semibold uppercase tracking-widest text-red-700 dark:text-red-400">{{ __('metodo.hero.label') }}</p>
                 <h1 class="mt-4 font-display text-5xl leading-none tracking-wide text-wc-text sm:text-6xl lg:text-8xl">
                     <span class="text-gradient-accent">{{ __('metodo.hero.title') }}</span>
                 </h1>
@@ -61,7 +61,7 @@
     <div class="section-divider"></div>
 
     {{-- Stats Bar --}}
-    <section class="border-y border-wc-border bg-wc-bg">
+    <section class="border-y border-wc-border bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
                 <div class="text-center">
@@ -87,10 +87,10 @@
     <div class="section-divider"></div>
 
     {{-- Section 01: El Problema --}}
-    <section class="scroll-reveal bg-wc-bg-tertiary">
+    <section class="scroll-reveal bg-wc-bg-tertiary hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-4 flex items-center gap-3">
-                <span class="font-data text-sm font-semibold text-wc-accent">01</span>
+                <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">01</span>
                 <div class="h-px flex-1 bg-wc-border"></div>
             </div>
             <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('metodo.problem.title') }}</h2>
@@ -115,7 +115,7 @@
                         {{ __('metodo.problem.fp1.description') }}
                     </p>
                     <div class="mt-5 border-t border-wc-border pt-4">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-wc-accent">{{ __('metodo.problem.solution_label') }}</p>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('metodo.problem.solution_label') }}</p>
                         <p class="mt-1 text-sm font-medium text-wc-text">{{ __('metodo.problem.fp1.solution') }}</p>
                     </div>
                 </div>
@@ -132,7 +132,7 @@
                         {{ __('metodo.problem.fp2.description') }}
                     </p>
                     <div class="mt-5 border-t border-wc-border pt-4">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-wc-accent">{{ __('metodo.problem.solution_label') }}</p>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('metodo.problem.solution_label') }}</p>
                         <p class="mt-1 text-sm font-medium text-wc-text">{{ __('metodo.problem.fp2.solution') }}</p>
                     </div>
                 </div>
@@ -149,7 +149,7 @@
                         {{ __('metodo.problem.fp3.description') }}
                     </p>
                     <div class="mt-5 border-t border-wc-border pt-4">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-wc-accent">{{ __('metodo.problem.solution_label') }}</p>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('metodo.problem.solution_label') }}</p>
                         <p class="mt-1 text-sm font-medium text-wc-text">{{ __('metodo.problem.fp3.solution') }}</p>
                     </div>
                 </div>
@@ -193,10 +193,10 @@
     <div class="section-divider"></div>
 
     {{-- Section 02: Los 5 Pilares --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-4 flex items-center gap-3">
-                <span class="font-data text-sm font-semibold text-wc-accent">02</span>
+                <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">02</span>
                 <div class="h-px flex-1 bg-wc-border"></div>
             </div>
             <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('metodo.pillars.title') }}</h2>
@@ -209,7 +209,7 @@
                 {{-- P01: Sobrecarga Progresiva --}}
                 <div class="scroll-reveal-scale card-hover-lift card-glow group rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-animate="scaleIn" style="animation-delay: 100ms">
                     <div class="flex items-center gap-3">
-                        <span class="font-data text-xs font-bold text-wc-accent">P01</span>
+                        <span class="font-data text-xs font-bold text-red-700 dark:text-red-400">P01</span>
                         <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-wc-accent/10">
                             <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
@@ -225,7 +225,7 @@
                 {{-- P02: Periodizacion Inteligente --}}
                 <div class="scroll-reveal-scale card-hover-lift card-glow group rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-animate="scaleIn" style="animation-delay: 200ms">
                     <div class="flex items-center gap-3">
-                        <span class="font-data text-xs font-bold text-wc-accent">P02</span>
+                        <span class="font-data text-xs font-bold text-red-700 dark:text-red-400">P02</span>
                         <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-wc-accent/10">
                             <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
@@ -241,7 +241,7 @@
                 {{-- P03: Nutricion de Precision --}}
                 <div class="scroll-reveal-scale card-hover-lift card-glow group rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-animate="scaleIn" style="animation-delay: 300ms">
                     <div class="flex items-center gap-3">
-                        <span class="font-data text-xs font-bold text-wc-accent">P03</span>
+                        <span class="font-data text-xs font-bold text-red-700 dark:text-red-400">P03</span>
                         <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-wc-accent/10">
                             <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
@@ -257,7 +257,7 @@
                 {{-- P04: Recuperacion Optimizada --}}
                 <div class="scroll-reveal-scale card-hover-lift card-glow group rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-animate="scaleIn" style="animation-delay: 400ms">
                     <div class="flex items-center gap-3">
-                        <span class="font-data text-xs font-bold text-wc-accent">P04</span>
+                        <span class="font-data text-xs font-bold text-red-700 dark:text-red-400">P04</span>
                         <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-wc-accent/10">
                             <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
@@ -273,7 +273,7 @@
                 {{-- P05: Adherencia Conductual --}}
                 <div class="scroll-reveal-scale card-hover-lift card-glow group rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-animate="scaleIn" style="animation-delay: 500ms">
                     <div class="flex items-center gap-3">
-                        <span class="font-data text-xs font-bold text-wc-accent">P05</span>
+                        <span class="font-data text-xs font-bold text-red-700 dark:text-red-400">P05</span>
                         <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-wc-accent/10">
                             <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.745 3.745 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
@@ -292,10 +292,10 @@
     <div class="section-divider"></div>
 
     {{-- Section 03: Comparativa --}}
-    <section class="scroll-reveal bg-wc-bg-tertiary">
+    <section class="scroll-reveal bg-wc-bg-tertiary hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-4 flex items-center gap-3">
-                <span class="font-data text-sm font-semibold text-wc-accent">03</span>
+                <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">03</span>
                 <div class="h-px flex-1 bg-wc-border"></div>
             </div>
             <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('metodo.comparison.title') }}</h2>
@@ -308,7 +308,7 @@
                         <thead>
                             <tr class="border-b border-wc-border bg-wc-bg/50">
                                 <th class="px-6 py-4 text-left text-sm font-medium text-wc-text-tertiary">{{ __('metodo.comparison.col_feature') }}</th>
-                                <th class="bg-wc-accent/5 px-6 py-4 text-center text-sm font-semibold text-wc-accent border-x border-wc-accent/20">{{ __('metodo.comparison.col_wellcore') }}</th>
+                                <th class="bg-wc-accent/5 px-6 py-4 text-center text-sm font-semibold text-red-700 dark:text-red-400 border-x border-wc-accent/20">{{ __('metodo.comparison.col_wellcore') }}</th>
                                 <th class="px-6 py-4 text-center text-sm font-medium text-wc-text-tertiary">{{ __('metodo.comparison.col_app') }}</th>
                                 <th class="px-6 py-4 text-center text-sm font-medium text-wc-text-tertiary">{{ __('metodo.comparison.col_gym') }}</th>
                             </tr>
@@ -319,7 +319,7 @@
                             <tr data-animate="fadeInUp" style="animation-delay: {{ $delays[$i] }}ms">
                                 <td class="px-6 py-4 text-sm text-wc-text">{{ __('metodo.comparison.rows.'.$rk.'.feature') }}</td>
                                 <td class="bg-wc-accent/5 px-6 py-4 text-center border-x border-wc-accent/20">
-                                    <span class="inline-flex items-center gap-1.5 text-sm font-medium text-wc-accent">
+                                    <span class="inline-flex items-center gap-1.5 text-sm font-medium text-red-700 dark:text-red-400">
                                         <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
                                         {{ __('metodo.comparison.rows.'.$rk.'.wellcore') }}
                                     </span>
@@ -361,7 +361,7 @@
                         <div class="mt-3 space-y-2">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs text-wc-text-tertiary">{{ __('metodo.comparison.col_wellcore') }}</span>
-                                <span class="inline-flex items-center gap-1 text-sm font-medium text-wc-accent">
+                                <span class="inline-flex items-center gap-1 text-sm font-medium text-red-700 dark:text-red-400">
                                     <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
                                     {{ __('metodo.comparison.rows.'.$rk.'.wellcore') }}
                                 </span>
@@ -396,7 +396,7 @@
     <section class="bg-wc-bg" x-data="{ active: null }">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-4 flex items-center gap-3">
-                <span class="font-data text-sm font-semibold text-wc-accent">04</span>
+                <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">04</span>
                 <div class="h-px flex-1 bg-wc-border"></div>
             </div>
             <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('metodo.faq.title') }}</h2>
@@ -475,7 +475,7 @@
             </div>
 
             <div class="mt-8">
-                <a href="{{ route('faq') }}" class="inline-flex items-center gap-2 text-sm font-medium text-wc-accent hover:text-wc-accent-hover">
+                <a href="{{ route('faq') }}" class="inline-flex items-center gap-2 text-sm font-medium text-red-700 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
                     {{ __('metodo.faq.see_all') }}
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
@@ -488,7 +488,7 @@
     <div class="section-divider"></div>
 
     {{-- Final CTA --}}
-    <section class="relative overflow-hidden bg-wc-bg-tertiary">
+    <section class="relative overflow-hidden bg-wc-bg-tertiary hp-cv-section">
         <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/8 via-wc-bg-tertiary to-wc-bg-secondary pointer-events-none"></div>
         <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="relative overflow-hidden rounded-2xl border border-wc-accent/20 bg-wc-bg p-10 shadow-2xl sm:p-16">
@@ -496,7 +496,7 @@
                 <div class="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-wc-accent/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
                 <div class="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-wc-accent/3 blur-2xl pointer-events-none" aria-hidden="true"></div>
                 <div class="relative text-center">
-                    <p class="text-sm font-semibold uppercase tracking-widest text-wc-accent">{{ __('metodo.cta.label') }}</p>
+                    <p class="text-sm font-semibold uppercase tracking-widest text-red-700 dark:text-red-400">{{ __('metodo.cta.label') }}</p>
                     <h2 class="mt-4 font-display text-3xl tracking-wide text-wc-text sm:text-5xl">{{ __('metodo.cta.title') }}</h2>
                     <p class="mx-auto mt-6 max-w-lg text-wc-text-secondary">
                         {{ __('metodo.cta.description') }}
