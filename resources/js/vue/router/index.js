@@ -96,6 +96,7 @@ const routes = [
     { path: '/admin/payments', name: 'admin-payments', component: () => import('../pages/Admin/PaymentsDashboard.vue'), meta: { auth: true, title: 'Pagos — WellCore Admin' } },
     { path: '/admin/inscriptions', name: 'admin-inscriptions', component: () => import('../pages/Admin/InscriptionsList.vue'), meta: { auth: true, title: 'Inscripciones — WellCore Admin' } },
     { path: '/admin/invitations', name: 'admin-invitations', component: () => import('../pages/Admin/InvitationManager.vue'), meta: { auth: true, title: 'Invitaciones — WellCore Admin' } },
+    { path: '/admin/payment-proofs', name: 'admin-payment-proofs', component: () => import('../pages/Admin/PaymentProofReview.vue'), meta: { auth: true, title: 'Comprobantes — WellCore Admin' } },
     { path: '/admin/coaches', name: 'admin-coaches', component: () => import('../pages/Admin/CoachManagement.vue'), meta: { auth: true, title: 'Coaches — WellCore Admin' } },
     { path: '/admin/plans', name: 'admin-plans', component: () => import('../pages/Admin/PlanManagement.vue'), meta: { auth: true, title: 'Planes — WellCore Admin' } },
     { path: '/admin/ai-generator', name: 'admin-ai-generator', component: () => import('../pages/Admin/AIPlanGenerator.vue'), meta: { auth: true, title: 'Generador IA — WellCore Admin' } },

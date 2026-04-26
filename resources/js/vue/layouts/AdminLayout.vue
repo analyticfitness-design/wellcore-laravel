@@ -65,6 +65,7 @@ const navSections = [
             { name: 'Pagos', to: '/admin/payments', icon: 'payments', routeName: 'admin-payments' },
             { name: 'Inscripciones', to: '/admin/inscriptions', icon: 'inscriptions', routeName: 'admin-inscriptions' },
             { name: 'Invitaciones', to: '/admin/invitations', icon: 'invitations', routeName: 'admin-invitations' },
+            { name: 'Comprobantes', to: '/admin/payment-proofs', icon: 'proofs', routeName: 'admin-payment-proofs' },
         ],
     },
     {
@@ -213,6 +214,10 @@ const bottomNav = [
                 <!-- Tickets -->
                 <svg v-else-if="item.icon === 'tickets'" class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
+                </svg>
+                <!-- Proofs -->
+                <svg v-else-if="item.icon === 'proofs'" class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                 </svg>
                 <!-- Campaigns -->
                 <svg v-else-if="item.icon === 'campaigns'" class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
