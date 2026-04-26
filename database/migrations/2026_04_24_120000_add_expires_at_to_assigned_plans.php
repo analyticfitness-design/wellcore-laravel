@@ -14,6 +14,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (! Schema::hasTable('assigned_plans')) {
+            return;
+        }
+
         if (! Schema::hasColumn('assigned_plans', 'expires_at')) {
             Schema::table('assigned_plans', function (Blueprint $table) {
                 $table->date('expires_at')->nullable()->after('valid_from')->index();

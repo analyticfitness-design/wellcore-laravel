@@ -14,8 +14,13 @@ use Tests\TestCase;
 |
 */
 
+// NOTE: RefreshDatabase is NOT applied globally here because the test DB
+// (wellcore_fitness_test) requires the full vanilla-PHP schema (60+ tables)
+// which is not created by Laravel migrations alone.
+// Each test file declares DatabaseTransactions locally to wrap tests in
+// a transaction that rolls back after each test without touching the schema.
 pest()->extend(TestCase::class)
-    ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->use(Illuminate\Foundation\Testing\DatabaseTransactions::class)
     ->in('Feature');
 
 pest()->extend(TestCase::class)

@@ -18,6 +18,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (! Schema::hasTable('coach_profiles')) {
+            return;
+        }
+
         Schema::table('coach_profiles', function (Blueprint $table) {
             if (! Schema::hasColumn('coach_profiles', 'nombre_comercial')) {
                 $table->string('nombre_comercial', 150)->nullable()->after('bio');

@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('meal_swaps')) {
+            return;
+        }
+
         Schema::create('meal_swaps', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('client_id');

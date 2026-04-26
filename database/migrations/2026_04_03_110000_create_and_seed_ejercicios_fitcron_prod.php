@@ -32,7 +32,11 @@ return new class extends Migration
             });
         }
 
-        // Seed unique exercise names from active assigned_plans
+        // Seed unique exercise names from active assigned_plans.
+        // Skip seeding in test environments where the vanilla-PHP table doesn't exist.
+        if (! Schema::hasTable('assigned_plans')) {
+            return;
+        }
         $plans = DB::table('assigned_plans')->whereNotNull('content')->get(['content']);
         $names = [];
 

@@ -17,6 +17,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -85,6 +86,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
             // Excepciones HTTP conocidas (403/404/422/419 etc.) — dejamos que Laravel las maneje.
             if ($e instanceof HttpExceptionInterface) {
+                return null;
+            }
+
+            // ThrottleRequests lanza HttpResponseException (no HttpExceptionInterface) — pasar directo.
+            if ($e instanceof HttpResponseException) {
                 return null;
             }
 

@@ -104,3 +104,22 @@ Agent(la-02-backend) + Agent(la-03-vue3) simultaneously
 - All work in this project directory only
 - Use WellCore design tokens for all UI
 - Test credentials: daniel.esparza / RISE2026Admin!SuperPower (superadmin)
+
+## Sistema de Creación de Planes (OBLIGATORIO)
+
+Cuando el usuario pida crear un plan (entrenamiento, nutrición, combinado, cardio, RISE, recomposición), **leer SIEMPRE primero** el sistema de MDs ubicado en:
+
+`E:\WELLCORE FITNESS PLATAFORMA\SISTEMA-CREACION-PLANES\`
+
+Orden de lectura: `00-INDEX.md` primero, luego los demás según aplica. Contiene 10 archivos que definen:
+- Workflow paso a paso
+- Credenciales y accesos
+- CSS y componentes WellCore
+- Reglas por tipo de plan
+- Voz del coach (tuteo, sin IA, sin organización)
+- Catálogo de GIFs + embebido base64
+- Reglas de cardio
+- Metodologías (sin RIR como método)
+- Notificaciones semanales
+
+**No crear planes sin haber consultado este sistema.** Evita errores repetidos de formato, voz, GIFs y metodología.

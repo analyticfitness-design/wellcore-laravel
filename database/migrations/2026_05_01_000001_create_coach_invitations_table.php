@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('plan');
             $table->decimal('amount', 10, 2);
             $table->char('currency', 3)->default('COP');
-            $table->string('subject');
+            $table->string('subject')->default('Comprobante de pago');
             $table->text('intro_message')->nullable();
             $table->string('cta_label', 100)->default('Comenzar mi plan ahora');
             $table->string('wompi_payment_link_id', 100)->nullable();

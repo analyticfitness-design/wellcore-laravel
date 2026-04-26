@@ -14,13 +14,20 @@ return new class extends Migration
         );
 
         Schema::table('auth_tokens', function (Blueprint $table) use ($tokenIndexExists) {
-            $table->timestamp('last_used_at')->nullable()->after('expires_at');
+            if (! Schema::hasColumn('auth_tokens', 'last_used_at')) {
+                $table->timestamp('last_used_at')->nullable()->after('expires_at');
+            }
 
             if (empty($tokenIndexExists)) {
                 $table->index('token', 'idx_auth_tokens_token');
             }
 
-            $table->index(['user_id', 'expires_at'], 'idx_auth_tokens_user_expiry');
+            $existingUserExpiry = DB::select(
+                "SHOW INDEXES FROM auth_tokens WHERE Key_name = 'idx_auth_tokens_user_expiry'"
+            );
+            if (empty($existingUserExpiry)) {
+                $table->index(['user_id', 'expires_at'], 'idx_auth_tokens_user_expiry');
+            }
         });
     }
 
