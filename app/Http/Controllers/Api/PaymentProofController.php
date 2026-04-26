@@ -48,7 +48,55 @@ class PaymentProofController extends Controller
         }
 
         $uploadedFile = $request->file('file');
-        $storedPath = Storage::disk('payment_proofs')->putFile('', $uploadedFile);
+        $fileHash = hash_file('sha256', $uploadedFile->getRealPath());
+
+        $duplicateFile = PaymentProof::where('file_hash', $fileHash)
+            ->where('status', PaymentProofStatus::Pendiente)
+            ->exists();
+
+        if ($duplicateFile) {
+            return response()->json([
+                'message' => 'Este comprobante ya fue subido y está pendiente de revisión.',
+                'errorCode' => 'DUPLICATE_FILE',
+            ], 409);
+        }
+
+        // Detect real MIME to decide storage strategy
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $realMime = $finfo ? (string) finfo_file($finfo, $uploadedFile->getRealPath()) : $uploadedFile->getMimeType();
+        if ($finfo) {
+            finfo_close($finfo);
+        }
+
+        $imageTypes = ['image/jpeg', 'image/png', 'image/webp'];
+
+        if (in_array($realMime, $imageTypes, true)) {
+            try {
+                $pipelineResult = app(\App\Services\ImagePipelineService::class)->processUpload(
+                    $uploadedFile,
+                    'payment_proofs',
+                    '',
+                    maxWidth: 1600,
+                    quality: 80,
+                );
+                // Delete fallback — private disk, only WebP needed
+                Storage::disk('payment_proofs')->delete($pipelineResult['path_fallback']);
+                $storedPath = $pipelineResult['path_webp'];
+                $storedMime = 'image/webp';
+                $storedSize = $pipelineResult['size_bytes_webp'];
+            } catch (\Throwable $e) {
+                // ImagePipeline failed — fall back to raw storage
+                Log::warning('ImagePipelineService failed for payment proof: ' . $e->getMessage());
+                $storedPath = Storage::disk('payment_proofs')->putFile('', $uploadedFile);
+                $storedMime = $realMime;
+                $storedSize = $uploadedFile->getSize();
+            }
+        } else {
+            // PDF or other allowed type — store as-is
+            $storedPath = Storage::disk('payment_proofs')->putFile('', $uploadedFile);
+            $storedMime = $realMime;
+            $storedSize = $uploadedFile->getSize();
+        }
 
         $proof = PaymentProof::create([
             'coach_id' => $coach->id,
@@ -61,8 +109,9 @@ class PaymentProofController extends Controller
             'coach_note' => $request->validated('coach_note'),
             'file_path' => $storedPath,
             'file_disk' => 'payment_proofs',
-            'file_mime' => $uploadedFile->getMimeType(),
-            'file_size' => $uploadedFile->getSize(),
+            'file_mime' => $storedMime,
+            'file_size' => $storedSize,
+            'file_hash' => $fileHash,
             'status' => PaymentProofStatus::Pendiente,
             'submitted_at' => now(),
             'expires_at' => now()->addDays(7),

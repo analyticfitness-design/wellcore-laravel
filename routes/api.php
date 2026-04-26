@@ -251,7 +251,7 @@ Route::prefix('v/coach')->middleware(['auth:wellcore', 'throttle:api', 'role:coa
         Route::post('/notifications/{id}/read', [CoachPlanTicketController::class, 'markNotificationRead'])->whereNumber('id');
 
         // Payment Proofs (comprobantes de pago manual)
-        Route::middleware('throttle:10,1440')->group(function () {
+        Route::middleware('throttle:proof-upload')->group(function () {
             Route::post('/payment-proofs', [PaymentProofController::class, 'store']);
         });
         Route::get('/payment-proofs', [PaymentProofController::class, 'index']);

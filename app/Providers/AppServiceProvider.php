@@ -197,5 +197,18 @@ class AppServiceProvider extends ServiceProvider
                 'message' => 'Alcanzaste el límite de invitaciones por hoy (50 por día).',
             ], 429));
         });
+
+        RateLimiter::for('proof-upload', function ($request) {
+            $user = $request->user();
+            // Superadmin y jefe no tienen límite (testing y casos de emergencia)
+            if ($user && method_exists($user, 'hasRole') && $user->hasRole(['superadmin', 'jefe'])) {
+                return Limit::none();
+            }
+            $key = $user ? ('coach:'.$user->id) : ('ip:'.$request->ip());
+            return Limit::perDay(10)->by($key)->response(fn () => response()->json([
+                'message' => 'Alcanzaste el límite de comprobantes por hoy (10 por día).',
+                'errorCode' => 'RATE_LIMIT_PROOF_UPLOAD',
+            ], 429));
+        });
     }
 }

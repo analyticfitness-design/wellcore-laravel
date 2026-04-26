@@ -44,4 +44,30 @@ class StorePaymentProofRequest extends FormRequest
             'coach_note.max' => 'La nota no puede superar los 1000 caracteres.',
         ];
     }
+
+    public function withValidator(\Illuminate\Validation\Validator $validator): void
+    {
+        $validator->after(function ($validator) {
+            $file = $this->file('file');
+            if (! $file || ! $file->isValid()) {
+                return;
+            }
+
+            $realPath = $file->getRealPath();
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $realMime = $finfo ? finfo_file($finfo, $realPath) : null;
+            if ($finfo) {
+                finfo_close($finfo);
+            }
+
+            $allowed = ['image/jpeg', 'image/png', 'application/pdf'];
+
+            if (! $realMime || ! in_array($realMime, $allowed, true)) {
+                $validator->errors()->add(
+                    'file',
+                    'El archivo no es una imagen o PDF válido. Asegúrate de subir un JPG, PNG o PDF real.'
+                );
+            }
+        });
+    }
 }

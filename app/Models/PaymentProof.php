@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'file_disk',
     'file_mime',
     'file_size',
+    'file_hash',
     'coach_note',
     'status',
     'reviewed_by',
