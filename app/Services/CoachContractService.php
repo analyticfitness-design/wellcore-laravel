@@ -6,6 +6,7 @@ use App\Models\Admin;
 use App\Models\CoachContractAcceptance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
 
 class CoachContractService
 {
@@ -16,18 +17,24 @@ class CoachContractService
 
     public function isGateEnabled(): bool
     {
-        return (bool) config('wellcore.coach_contract.enabled', false);
+        $value = config('wellcore.coach_contract.enabled');
+
+        if ($value === null) {
+            throw new \RuntimeException('Coach contract gate config missing — cannot determine gate state');
+        }
+
+        return (bool) $value;
     }
 
     public function getContractHtml(string $version): string
     {
-        $path = resource_path('views/legal/coach-contract-v' . $version . '.blade.php');
+        $path = resource_path('views/legal/coach-contract-v'.$version.'.blade.php');
 
         if (! file_exists($path)) {
             throw new \RuntimeException("Contract HTML for version {$version} not found at {$path}.");
         }
 
-        return \Illuminate\Support\Facades\View::file($path)->render();
+        return View::file($path)->render();
     }
 
     public function getCurrentContentHash(): string
@@ -46,53 +53,75 @@ class CoachContractService
 
     public function recordAcceptance(int $coachId, Request $request, bool $scrollCompleted): CoachContractAcceptance
     {
-        return CoachContractAcceptance::query()->updateOrCreate(
-            [
-                'coach_id'         => $coachId,
-                'contract_version' => $this->getCurrentVersion(),
-            ],
-            [
-                'status'           => 'accepted',
-                'accepted_at'      => now(),
-                'declined_at'      => null,
-                'ip_address'       => $request->ip(),
-                'user_agent'       => substr((string) $request->userAgent(), 0, 4000),
-                'content_hash'     => $this->getCurrentContentHash(),
+        return DB::transaction(function () use ($coachId, $request, $scrollCompleted): CoachContractAcceptance {
+            $existing = CoachContractAcceptance::query()
+                ->where('coach_id', $coachId)
+                ->where('contract_version', $this->getCurrentVersion())
+                ->lockForUpdate()
+                ->first();
+
+            $data = [
+                'status' => 'accepted',
+                'accepted_at' => now(),
+                'declined_at' => null,
+                'ip_address' => $request->ip(),
+                'user_agent' => substr((string) $request->userAgent(), 0, 4000),
+                'content_hash' => $this->getCurrentContentHash(),
                 'scroll_completed' => $scrollCompleted,
-            ]
-        );
+            ];
+
+            if ($existing) {
+                $existing->fill($data)->save();
+
+                return $existing->fresh();
+            }
+
+            return CoachContractAcceptance::create(array_merge([
+                'coach_id' => $coachId,
+                'contract_version' => $this->getCurrentVersion(),
+            ], $data));
+        });
     }
 
     public function recordDecline(int $coachId, Request $request): CoachContractAcceptance
     {
-        $row = CoachContractAcceptance::query()->updateOrCreate(
-            [
-                'coach_id'         => $coachId,
-                'contract_version' => $this->getCurrentVersion(),
-            ],
-            [
-                'status'           => 'declined',
-                'accepted_at'      => null,
-                'declined_at'      => now(),
-                'ip_address'       => $request->ip(),
-                'user_agent'       => substr((string) $request->userAgent(), 0, 4000),
-                'content_hash'     => $this->getCurrentContentHash(),
+        return DB::transaction(function () use ($coachId, $request) {
+            $row = CoachContractAcceptance::query()
+                ->where('coach_id', $coachId)
+                ->where('contract_version', $this->getCurrentVersion())
+                ->lockForUpdate()
+                ->first();
+
+            $attributes = [
+                'status' => 'declined',
+                'accepted_at' => null,
+                'declined_at' => now(),
+                'ip_address' => $request->ip(),
+                'user_agent' => substr((string) $request->userAgent(), 0, 4000),
+                'content_hash' => $this->getCurrentContentHash(),
                 'scroll_completed' => false,
-            ]
-        );
+            ];
 
-        // Deactivate coach (coaches are stored in admins table with role='coach')
-        // 'active' is the boolean column in admins table
-        Admin::query()->where('id', $coachId)->update([
-            'active' => false,
-        ]);
+            if ($row) {
+                $row->fill($attributes)->save();
+            } else {
+                $row = CoachContractAcceptance::create(array_merge([
+                    'coach_id' => $coachId,
+                    'contract_version' => $this->getCurrentVersion(),
+                ], $attributes));
+            }
 
-        // Revoke all auth tokens for this coach (user_type='admin' in auth_tokens enum)
-        DB::table('auth_tokens')
-            ->where('user_id', $coachId)
-            ->where('user_type', 'admin')
-            ->delete();
+            Admin::query()->where('id', $coachId)->update([
+                'active' => false,
+                'inactive_reason' => 'contract_declined',
+            ]);
 
-        return $row;
+            DB::table('auth_tokens')
+                ->where('user_id', $coachId)
+                ->where('user_type', 'admin')
+                ->delete();
+
+            return $row;
+        });
     }
 }

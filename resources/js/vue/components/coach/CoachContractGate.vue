@@ -8,16 +8,25 @@ const router    = useRouter();
 const authStore = useAuthStore();
 const gate      = useContractGate();
 
-const accepted               = ref(false);
-const showDeclineConfirm     = ref(false);
+const accepted                = ref(false);
+const showDeclineConfirm      = ref(false);
 const messageListenerAttached = ref(false);
+const iframeEl                = ref(null);
 
 const acceptDisabled = computed(() =>
     !gate.scrollCompleted.value || !accepted.value || gate.submitting.value
 );
 
 function handleMessage(e) {
-    if (e?.data && e.data.type === 'wc-contract-end') {
+    // srcdoc iframes have an opaque origin (e.origin === 'null' string), so
+    // checking e.origin === window.location.origin would always fail for them.
+    // Validating e.source against the known contentWindow reference is
+    // sufficient — no external window or extension can forge this reference.
+    if (
+        e?.data?.type === 'wc-contract-end' &&
+        iframeEl.value &&
+        e.source === iframeEl.value.contentWindow
+    ) {
         gate.markScrollComplete();
     }
 }
@@ -86,7 +95,8 @@ watch(() => gate.requires.value, (val) => {
             <!-- Iframe with contract HTML -->
             <div class="flex-1 overflow-hidden bg-black p-2 sm:p-4">
                 <iframe
-                    sandbox="allow-same-origin allow-scripts"
+                    ref="iframeEl"
+                    sandbox="allow-scripts"
                     :srcdoc="gate.html.value"
                     class="h-full w-full rounded-md border border-wc-border bg-wc-bg"
                     title="Contrato del coach"

@@ -8,25 +8,37 @@ const scrollCompleted = ref(false);
 const submitting      = ref(false);
 const error           = ref(null);
 
+// Deduplication: all concurrent refresh() calls share the same in-flight Promise.
+let refreshPromise = null;
+
 export function useContractGate() {
     const api = useApi();
 
     async function refresh() {
-        error.value = null;
-        try {
-            const { data } = await api.get('/api/v/coach/contract/status');
-            requires.value = !!data.requires_acceptance;
-            version.value  = data.version || '';
-            html.value     = data.html || '';
-            if (!requires.value) {
-                scrollCompleted.value = false;
+        if (refreshPromise) return refreshPromise;
+
+        refreshPromise = (async () => {
+            error.value = null;
+            try {
+                const { data } = await api.get('/api/v/coach/contract/status');
+                requires.value = !!data.requires_acceptance;
+                version.value  = data.version || '';
+                html.value     = data.html || '';
+                if (!requires.value) {
+                    scrollCompleted.value = false;
+                }
+            } catch (e) {
+                // 401 is normal pre-login; ignore. Anything else surfaces.
+                if (e?.response?.status !== 401) {
+                    error.value = e?.response?.data?.error || 'No fue posible verificar el contrato.';
+                    requires.value = false; // fail-open: backend middleware es el gate real
+                }
+            } finally {
+                refreshPromise = null;
             }
-        } catch (e) {
-            // 401 is normal pre-login; ignore. Anything else surfaces.
-            if (e?.response?.status !== 401) {
-                error.value = e?.response?.data?.error || 'No fue posible verificar el contrato.';
-            }
-        }
+        })();
+
+        return refreshPromise;
     }
 
     async function accept() {
@@ -80,4 +92,14 @@ export function useContractGate() {
         decline,
         markScrollComplete,
     };
+}
+
+export function resetContractGate() {
+    requires.value        = false;
+    version.value         = '';
+    html.value            = '';
+    scrollCompleted.value = false;
+    submitting.value      = false;
+    error.value           = null;
+    refreshPromise        = null;  // discard any in-flight fetch on logout
 }

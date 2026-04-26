@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Middleware\ApiBearerAuth;
 use App\Http\Middleware\CheckPlanLock;
 use App\Http\Middleware\ContentSecurityPolicy;
 use App\Http\Middleware\EnsureAuthenticated;
+use App\Http\Middleware\EnsureCoachContractAccepted;
 use App\Http\Middleware\EnsurePlan;
 use App\Http\Middleware\EnsureRole;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -29,7 +31,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->trustProxies(at: ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', '127.0.0.1']);
+        $middleware->trustProxies(
+            at: ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', '127.0.0.1'],
+            headers: Request::HEADER_X_FORWARDED_FOR,
+        );
 
         $middleware->validateCsrfTokens(except: ['webhooks/*', 'api/chat', 'api/newsletter']);
         $middleware->encryptCookies(except: ['wc_locale', 'wc_country', 'cookieConsent', 'wc_pwa_dismissed', 'wc_visitor_id']);
@@ -55,8 +60,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'ensure.plan' => EnsurePlan::class,
             'plan.lock' => CheckPlanLock::class,
             'update.last.seen' => UpdateLastSeen::class,
-            'api.bearer' => \App\Http\Middleware\ApiBearerAuth::class,
-            'coach.contract' => \App\Http\Middleware\EnsureCoachContractAccepted::class,
+            'api.bearer' => ApiBearerAuth::class,
+            'coach.contract' => EnsureCoachContractAccepted::class,
         ]);
 
         // Track real client activity — runs after response, skips impersonation sessions.

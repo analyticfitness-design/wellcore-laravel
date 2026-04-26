@@ -19,6 +19,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
     'whatsapp',
     'must_change_password',
     'active',
+    'inactive_reason',
     'onboarding_state',
     'last_login_at',
 ])]

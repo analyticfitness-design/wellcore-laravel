@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import axios from 'axios';
+import { resetContractGate } from '../composables/useContractGate';
 
 export const useAuthStore = defineStore('auth', () => {
     // Si Laravel inyecto auth data en sesion (login vía Livewire), sincronizar
@@ -102,6 +103,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     function clearAuth() {
+        resetContractGate();
         token.value = null;
         userType.value = null;
         userId.value = null;
