@@ -27,7 +27,7 @@
             'description' => 'Protocolo de 5 pilares: entrenamiento, nutricion, habitos, recuperacion y mentalidad.',
             'url' => url('/planes'),
             'priceCurrency' => 'COP',
-            'price' => (string) config('plans.esencial.price_cop'),
+            'price' => (string) app(\App\Services\PricingService::class)->priceCop('esencial'),
         ],
     ]" />
 

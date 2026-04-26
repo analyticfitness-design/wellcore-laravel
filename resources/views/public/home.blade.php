@@ -48,10 +48,11 @@
     ]" />
 
     {{-- 4. Product (3 planes) — precios desde config/plans.php (SSOT) --}}
+    @php $pricing = app(\App\Services\PricingService::class); @endphp
     @foreach([
-        ['esencial', 'Esencial', (int) config('plans.esencial.price_cop'), 'home.plan_esencial_name'],
-        ['metodo', 'Método', (int) config('plans.metodo.price_cop'), 'home.plan_metodo_name'],
-        ['elite', 'Elite', (int) config('plans.elite.price_cop'), 'home.plan_elite_name'],
+        ['esencial', 'Esencial', $pricing->priceCop('esencial'), 'home.plan_esencial_name'],
+        ['metodo', 'Método', $pricing->priceCop('metodo'), 'home.plan_metodo_name'],
+        ['elite', 'Elite', $pricing->priceCop('elite'), 'home.plan_elite_name'],
     ] as [$slug, $name, $price, $key])
     <x-json-ld :data="[
         '@context' => 'https://schema.org',

@@ -7,15 +7,15 @@
         '@type' => 'Service',
         'name' => 'WellCore Fitness Coaching',
         'provider' => ['@type' => 'Organization', 'name' => 'WellCore Fitness'],
-        'description' => 'Planes de coaching fitness personalizado desde $'.number_format(config('plans.esencial.price_cop'), 0, '.', '.').' COP/mes.',
+        'description' => 'Planes de coaching fitness personalizado desde $'.number_format(app(\App\Services\PricingService::class)->priceCop('esencial'), 0, '.', '.').' COP/mes.',
         'areaServed' => ['@type' => 'Place', 'name' => 'Latinoamerica'],
         'hasOfferCatalog' => [
             '@type' => 'OfferCatalog',
             'name' => 'Planes WellCore',
             'itemListElement' => [
-                ['@type' => 'Offer', 'name' => 'Esencial', 'price' => (string) config('plans.esencial.price_cop'), 'priceCurrency' => 'COP'],
-                ['@type' => 'Offer', 'name' => 'Metodo', 'price' => (string) config('plans.metodo.price_cop'), 'priceCurrency' => 'COP'],
-                ['@type' => 'Offer', 'name' => 'Elite', 'price' => (string) config('plans.elite.price_cop'), 'priceCurrency' => 'COP'],
+                ['@type' => 'Offer', 'name' => 'Esencial', 'price' => (string) app(\App\Services\PricingService::class)->priceCop('esencial'), 'priceCurrency' => 'COP'],
+                ['@type' => 'Offer', 'name' => 'Metodo', 'price' => (string) app(\App\Services\PricingService::class)->priceCop('metodo'), 'priceCurrency' => 'COP'],
+                ['@type' => 'Offer', 'name' => 'Elite', 'price' => (string) app(\App\Services\PricingService::class)->priceCop('elite'), 'priceCurrency' => 'COP'],
             ],
         ],
     ]" />
