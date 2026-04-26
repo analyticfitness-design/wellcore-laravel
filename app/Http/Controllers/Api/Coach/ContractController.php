@@ -45,6 +45,10 @@ class ContractController extends Controller
             return response()->json(['error' => 'not_a_coach'], 403);
         }
 
+        if (! $this->service->isGateEnabled()) {
+            return response()->json(['error' => 'gate_disabled'], 404);
+        }
+
         $data = $request->validate([
             'version' => ['required', 'string'],
             'scroll_completed' => ['required', 'boolean'],
@@ -72,6 +76,10 @@ class ContractController extends Controller
 
         if ($user->role !== UserRole::Coach) {
             return response()->json(['error' => 'not_a_coach'], 403);
+        }
+
+        if (! $this->service->isGateEnabled()) {
+            return response()->json(['error' => 'gate_disabled'], 404);
         }
 
         if ($this->service->hasAcceptedCurrentVersion($user->id)) {

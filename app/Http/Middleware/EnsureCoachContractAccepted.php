@@ -6,6 +6,7 @@ use App\Enums\UserRole;
 use App\Services\CoachContractService;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureCoachContractAccepted
@@ -14,8 +15,15 @@ class EnsureCoachContractAccepted
 
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $this->service->isGateEnabled()) {
-            return $next($request);
+        try {
+            if (! $this->service->isGateEnabled()) {
+                return $next($request);
+            }
+        } catch (\RuntimeException $e) {
+            // Config missing — fail closed: block access and return 503
+            Log::critical('Coach contract gate config unavailable', ['error' => $e->getMessage()]);
+
+            return response()->json(['error' => 'gate_unavailable'], 503);
         }
 
         $user = $request->user('wellcore');

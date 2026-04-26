@@ -53,12 +53,14 @@ class CoachContractService
 
     public function recordAcceptance(int $coachId, Request $request, bool $scrollCompleted): CoachContractAcceptance
     {
-        return CoachContractAcceptance::query()->updateOrCreate(
-            [
-                'coach_id' => $coachId,
-                'contract_version' => $this->getCurrentVersion(),
-            ],
-            [
+        return DB::transaction(function () use ($coachId, $request, $scrollCompleted): CoachContractAcceptance {
+            $existing = CoachContractAcceptance::query()
+                ->where('coach_id', $coachId)
+                ->where('contract_version', $this->getCurrentVersion())
+                ->lockForUpdate()
+                ->first();
+
+            $data = [
                 'status' => 'accepted',
                 'accepted_at' => now(),
                 'declined_at' => null,
@@ -66,8 +68,19 @@ class CoachContractService
                 'user_agent' => substr((string) $request->userAgent(), 0, 4000),
                 'content_hash' => $this->getCurrentContentHash(),
                 'scroll_completed' => $scrollCompleted,
-            ]
-        );
+            ];
+
+            if ($existing) {
+                $existing->fill($data)->save();
+
+                return $existing->fresh();
+            }
+
+            return CoachContractAcceptance::create(array_merge([
+                'coach_id' => $coachId,
+                'contract_version' => $this->getCurrentVersion(),
+            ], $data));
+        });
     }
 
     public function recordDecline(int $coachId, Request $request): CoachContractAcceptance
