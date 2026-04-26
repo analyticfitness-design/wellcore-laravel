@@ -72,6 +72,10 @@
     <p style="color:rgba(250,250,250,0.64);font-size:14px;line-height:1.6;margin:0 0 8px 0;">
       Al entrar por primera vez veras un tour guiado que te presentara las herramientas del portal de coach: gestion de clientes, check-ins, plan tickets, mensajeria y analitica.
     </p>
+    <p style="color:#FAFAFA;font-size:15px;font-weight:bold;margin:20px 0 8px 0;">Acuerdo de Alianza Comercial</p>
+    <p style="color:rgba(250,250,250,0.64);font-size:14px;line-height:1.6;margin:0 0 8px 0;">
+      Al ingresar por primera vez veras el Acuerdo de Alianza Comercial. Lealo con calma — es la base legal de tu vinculacion al equipo. Si tienes dudas, escribenos antes de aceptar.
+    </p>
     @endunless
 
     <p style="color:rgba(250,250,250,0.40);font-size:12px;margin:24px 0 0 0;">
