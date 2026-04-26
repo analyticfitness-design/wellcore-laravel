@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\HabitType;
+use App\Events\ChatReactionToggled;
+use App\Events\NewMessageSent;
 use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
 use App\Mail\ReferralInvitation;
@@ -12,6 +14,7 @@ use App\Models\AssignedPlan;
 use App\Models\BiometricLog;
 use App\Models\Challenge;
 use App\Models\ChallengeParticipant;
+use App\Models\ChatMessageReaction;
 use App\Models\Client;
 use App\Models\ClientProfile;
 use App\Models\CoachMessage;
@@ -32,6 +35,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -471,10 +475,76 @@ class SocialController extends Controller
             'direction' => 'client_to_coach',
         ]);
 
+        event(new NewMessageSent(
+            coachId:        $coach->id,
+            clientId:       $clientId,
+            senderId:       $clientId,
+            senderName:     auth('wellcore')->user()->name ?? 'Cliente',
+            messagePreview: mb_substr($msg->message, 0, 100),
+            sentAt:         $msg->created_at?->toIso8601String() ?? now()->toIso8601String(),
+        ));
+
         return response()->json([
             'id' => $msg->id,
             'created_at' => $msg->created_at?->toIso8601String(),
         ], 201);
+    }
+
+    /**
+     * POST /api/v/client/chat/messages/{messageId}/react
+     *
+     * Toggle emoji reaction on a coach message.
+     */
+    public function toggleChatReaction(\Illuminate\Http\Request $request, int $messageId): \Illuminate\Http\JsonResponse
+    {
+        $request->validate(['emoji' => 'required|string|max:8']);
+        $clientId = auth('wellcore')->id();
+
+        $message = CoachMessage::find($messageId);
+        if (! $message) {
+            return response()->json(['error' => 'Mensaje no encontrado.'], 404);
+        }
+
+        // Verify the client belongs to this conversation
+        if ((int) $message->client_id !== (int) $clientId) {
+            return response()->json(['error' => 'No autorizado.'], 403);
+        }
+
+        // ChatMessageReaction table uses chat_message_id as the FK column.
+        // In this context it stores the coach_message ID as the reference key.
+        $existing = ChatMessageReaction::where('chat_message_id', $messageId)
+            ->where('client_id', $clientId)
+            ->where('emoji', $request->emoji)
+            ->first();
+
+        if ($existing) {
+            $existing->delete();
+            $action = 'removed';
+        } else {
+            ChatMessageReaction::create([
+                'chat_message_id' => $messageId,
+                'user_type'       => 'client',
+                'client_id'       => $clientId,
+                'emoji'           => $request->emoji,
+            ]);
+            $action = 'added';
+        }
+
+        $counts = ChatMessageReaction::where('chat_message_id', $messageId)
+            ->selectRaw('emoji, COUNT(*) as count')
+            ->groupBy('emoji')
+            ->pluck('count', 'emoji');
+
+        event(new ChatReactionToggled(
+            coachId:   (int) $message->coach_id,
+            clientId:  (int) $message->client_id,
+            messageId: $messageId,
+            emoji:     $request->emoji,
+            counts:    $counts->toArray(),
+            action:    $action,
+        ));
+
+        return response()->json(['ok' => true, 'counts' => $counts]);
     }
 
     // ─── Nutrition ─────────────────────────────────────────────────────
@@ -1529,6 +1599,15 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
      */
     public function videoCheckinSubmit(Request $request): JsonResponse
     {
+        if (blank($request->input('exercise_name'))) {
+            \Log::warning('SocialController.videoCheckinSubmit called without exercise_name', [
+                'client_id' => auth('wellcore')->id(),
+                'payload'   => $request->except(['_token', 'media_file']),
+                'referer'   => $request->headers->get('referer'),
+            ]);
+            return response()->json(['ok' => false, 'reason' => 'missing_exercise'], 204);
+        }
+
         $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 

@@ -493,6 +493,15 @@ class TrainingController extends Controller
      */
     public function completeSet(Request $request): JsonResponse
     {
+        if (blank($request->input('exercise_name'))) {
+            \Log::warning('TrainingController.completeSet called without exercise_name', [
+                'client_id' => auth('wellcore')->id(),
+                'payload'   => $request->except(['_token', 'media_file']),
+                'referer'   => $request->headers->get('referer'),
+            ]);
+            return response()->json(['ok' => false, 'reason' => 'missing_exercise'], 204);
+        }
+
         $client = $this->resolveClientOrFail($request);
         $clientId = $client->id;
 
@@ -622,6 +631,15 @@ class TrainingController extends Controller
      */
     public function uncompleteSet(Request $request): JsonResponse
     {
+        if (blank($request->input('exercise_name'))) {
+            \Log::warning('TrainingController.uncompleteSet called without exercise_name', [
+                'client_id' => auth('wellcore')->id(),
+                'payload'   => $request->except(['_token', 'media_file']),
+                'referer'   => $request->headers->get('referer'),
+            ]);
+            return response()->json(['ok' => false, 'reason' => 'missing_exercise'], 204);
+        }
+
         $client = $this->resolveClientOrFail($request);
 
         $validated = $request->validate([

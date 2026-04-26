@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\RisePodMessageSent;
 use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
 use App\Models\AccountabilityPod;
@@ -839,13 +840,26 @@ class RiseController extends Controller
             'message' => trim($validated['message']),
         ]);
 
+        $senderName    = $client->name ?? 'Usuario';
+        $senderInitial = substr($senderName, 0, 1);
+
+        event(new RisePodMessageSent(
+            podId:         $pod->id,
+            senderId:      $clientId,
+            senderName:    $senderName,
+            senderInitial: $senderInitial,
+            messageId:     $msg->id,
+            messageText:   $msg->message,
+            sentAt:        $msg->created_at?->toIso8601String() ?? now()->toIso8601String(),
+        ));
+
         return response()->json([
             'sent' => true,
             'message' => [
                 'id' => $msg->id,
                 'message' => $msg->message,
-                'name' => $client->name ?? 'Usuario',
-                'initial' => substr($client->name ?? 'U', 0, 1),
+                'name' => $senderName,
+                'initial' => $senderInitial,
                 'isOwn' => true,
                 'time' => $msg->created_at?->format('H:i') ?? '',
                 'date' => $msg->created_at?->translatedFormat('d M') ?? '',
@@ -1010,6 +1024,15 @@ class RiseController extends Controller
      */
     public function completeSet(Request $request): JsonResponse
     {
+        if (blank($request->input('exercise_name'))) {
+            \Log::warning('RiseController.completeSet called without exercise_name', [
+                'client_id' => auth('wellcore')->id(),
+                'payload'   => $request->except(['_token', 'media_file']),
+                'referer'   => $request->headers->get('referer'),
+            ]);
+            return response()->json(['ok' => false, 'reason' => 'missing_exercise'], 204);
+        }
+
         $client = $this->resolveClientOrFail($request);
 
         $validated = $request->validate([
@@ -1330,6 +1353,15 @@ class RiseController extends Controller
      */
     public function uncompleteSet(Request $request): JsonResponse
     {
+        if (blank($request->input('exercise_name'))) {
+            \Log::warning('RiseController.uncompleteSet called without exercise_name', [
+                'client_id' => auth('wellcore')->id(),
+                'payload'   => $request->except(['_token', 'media_file']),
+                'referer'   => $request->headers->get('referer'),
+            ]);
+            return response()->json(['ok' => false, 'reason' => 'missing_exercise'], 204);
+        }
+
         $client = $this->resolveClientOrFail($request);
 
         $validated = $request->validate([
