@@ -143,7 +143,7 @@
                 </button>
 
                 {{-- Empezar CTA --}}
-                <a href="{{ route('inscripcion') }}" class="hidden rounded-full bg-wc-accent px-5 py-2 text-sm font-semibold text-white hover:bg-wc-accent-hover sm:inline-flex">
+                <a href="{{ route('inscripcion') }}" class="hidden rounded-full bg-wc-accent px-5 py-2 text-sm font-semibold text-white hover:bg-wc-accent-hover sm:inline-flex" aria-label="{{ __('nav.empezar') }} — inscripción WellCore Fitness">
                     {{ __('nav.empezar') }}
                 </a>
 
@@ -189,7 +189,7 @@
                 <a href="{{ route('presencial') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium {{ request()->routeIs('presencial*') ? 'bg-wc-bg-secondary text-wc-text' : 'text-wc-text-secondary hover:bg-wc-bg-secondary hover:text-wc-text' }}">{{ __('nav.presencial') }}</a>
                 <div class="flex gap-2 pt-3">
                     <a href="{{ route('login') }}" class="flex-1 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-center text-sm font-medium text-wc-text hover:bg-wc-bg-tertiary">{{ __('nav.mi_cuenta') }}</a>
-                    <a href="{{ route('inscripcion') }}" class="flex-1 rounded-lg bg-wc-accent px-3 py-2.5 text-center text-sm font-medium text-white hover:bg-wc-accent-hover">{{ __('nav.empezar') }}</a>
+                    <a href="{{ route('inscripcion') }}" class="flex-1 rounded-lg bg-wc-accent px-3 py-2.5 text-center text-sm font-medium text-white hover:bg-wc-accent-hover" aria-label="{{ __('nav.empezar') }} — inscripción WellCore Fitness">{{ __('nav.empezar') }}</a>
                 </div>
             </div>
         </div>
@@ -264,7 +264,7 @@
             {{-- Middle: Links grid --}}
             <div class="grid grid-cols-2 gap-8 py-10 sm:grid-cols-4">
                 <div>
-                    <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">{{ __('footer.programa') }}</h4>
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-wc-text">{{ __('footer.programa') }}</h3>
                     <ul class="mt-4 space-y-2.5">
                         <li><a href="{{ route('metodo') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('footer.el_metodo') }}</a></li>
                         <li><a href="{{ route('proceso') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.proceso') }}</a></li>
@@ -274,7 +274,7 @@
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">{{ __('footer.recursos') }}</h4>
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-wc-text">{{ __('footer.recursos') }}</h3>
                     <ul class="mt-4 space-y-2.5">
                         <li><a href="{{ route('blog.index') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.blog') }}</a></li>
                         <li><a href="{{ route('faq') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.faq') }}</a></li>
@@ -283,16 +283,16 @@
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">{{ __('footer.cuenta') }}</h4>
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-wc-text">{{ __('footer.cuenta') }}</h3>
                     <ul class="mt-4 space-y-2.5">
                         <li><a href="{{ route('login') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.mi_cuenta') }}</a></li>
-                        <li><a href="{{ route('inscripcion') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('nav.empezar') }}</a></li>
+                        <li><a href="{{ route('inscripcion') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text" aria-label="{{ __('nav.empezar') }} — inscripción WellCore Fitness">{{ __('nav.empezar') }}</a></li>
                         <li><a href="{{ route('privacidad') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('footer.privacidad') }}</a></li>
                         <li><a href="{{ route('terminos') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('footer.terminos') }}</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-xs font-semibold uppercase tracking-wider text-wc-text">{{ __('footer.contacto') }}</h4>
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-wc-text">{{ __('footer.contacto') }}</h3>
                     <ul class="mt-4 space-y-2.5">
                         <li><a href="mailto:info@wellcorefitness.com" class="text-sm text-wc-text-tertiary hover:text-wc-text">info@wellcorefitness.com</a></li>
                         <li><a href="{{ route('cookies') }}" class="text-sm text-wc-text-tertiary hover:text-wc-text">{{ __('footer.cookies') }}</a></li>

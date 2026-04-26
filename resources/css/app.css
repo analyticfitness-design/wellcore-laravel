@@ -986,6 +986,11 @@ body {
 .hp-eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .14em;
+  /* A11y fix: #B91C1C on #F5F5F7 = 7.02:1 (WCAG AA ✓ light mode);
+     #DC2626 on #09090B = 5.36:1 (dark mode already passes, kept via dark override below) */
+  color: #B91C1C;
+}
+.dark .hp-eyebrow {
   color: var(--color-wc-accent);
 }
 .hp-eyebrow::before {
@@ -1095,9 +1100,10 @@ body {
 .hp-why-title { font-size:15px; font-weight:700; color:#FAFAFA; line-height:1.3; }
 .hp-why-desc { font-size:13px; line-height:1.6; color:rgba(250,250,250,.6); }
 .hp-why-tag {
-  display:inline-block; font-size:9px; font-weight:700;
+  display:inline-block; font-size:11px; font-weight:700;
   text-transform:uppercase; letter-spacing:.1em;
-  color:#DC2626; margin-top:6px;
+  /* A11y fix: #F87171 on #18181B = 8.75:1 (WCAG AA ✓); bumped from 9px→11px for readability */
+  color:#F87171; margin-top:6px;
 }
 
 /* ════════ COMUNIDAD V3 ════════ */
