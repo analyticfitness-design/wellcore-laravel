@@ -44,7 +44,6 @@ const animatedCounters = ref({
 });
 
 // Module-level handles — not reactive
-let counterObserver = null;
 let counterAnimationFrames = [];
 
 function animateCounter(key, target, duration = 1200) {
@@ -66,27 +65,20 @@ function animateCounter(key, target, duration = 1200) {
     counterAnimationFrames.push(frameId);
 }
 
-function setupCounterObserver() {
-    const statsGrid = document.getElementById('stats-grid');
-    if (!statsGrid) return;
-
-    counterObserver = new IntersectionObserver(
-        (entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    animateCounter('activeClients', stats.value.activeClients);
-                    animateCounter('pendingCheckins', stats.value.pendingCheckins, 1000);
-                    animateCounter('unreadMessages', stats.value.unreadMessages, 1000);
-                    animateCounter('ticketsThisMonth', stats.value.ticketsThisMonth);
-                    animateCounter('openTickets', openTickets.value, 1000);
-                    counterObserver?.disconnect();
-                }
-            });
-        },
-        { threshold: 0.2 }
-    );
-
-    counterObserver.observe(statsGrid);
+function syncCounters() {
+    // Anima directamente desde los datos recién llegados de la API.
+    // El IntersectionObserver era unreliable en móvil cuando la API resolvía
+    // después de que el observer ya había disparado (mostraba 0 aunque stats tenía el valor real).
+    const targets = {
+        activeClients: stats.value.activeClients,
+        pendingCheckins: stats.value.pendingCheckins,
+        unreadMessages: stats.value.unreadMessages,
+        ticketsThisMonth: stats.value.ticketsThisMonth,
+        openTickets: openTickets.value,
+    };
+    Object.entries(targets).forEach(([key, value]) => {
+        animateCounter(key, value, 800);
+    });
 }
 
 function sparklinePoints(data, width = 60, height = 24) {
@@ -149,7 +141,7 @@ async function loadDashboard() {
         }
 
         await nextTick();
-        setupCounterObserver();
+        syncCounters();
     } catch (e) {
         error.value = 'Error al cargar el dashboard. Intenta de nuevo.';
     } finally {
@@ -159,10 +151,44 @@ async function loadDashboard() {
 
 onMounted(loadDashboard);
 
+const POLL_INTERVAL_MS = 30_000;
+let pollTimer = null;
+
+function startPolling() {
+    stopPolling();
+    pollTimer = setInterval(() => {
+        if (document.visibilityState === 'visible') {
+            loadDashboard();
+        }
+    }, POLL_INTERVAL_MS);
+}
+
+function stopPolling() {
+    if (pollTimer) {
+        clearInterval(pollTimer);
+        pollTimer = null;
+    }
+}
+
+function handleVisibility() {
+    if (document.visibilityState === 'visible') {
+        loadDashboard();
+        startPolling();
+    } else {
+        stopPolling();
+    }
+}
+
+onMounted(() => {
+    startPolling();
+    document.addEventListener('visibilitychange', handleVisibility);
+});
+
 onBeforeUnmount(() => {
-    counterObserver?.disconnect();
     counterAnimationFrames.forEach(id => cancelAnimationFrame(id));
     counterAnimationFrames = [];
+    stopPolling();
+    document.removeEventListener('visibilitychange', handleVisibility);
 });
 </script>
 
