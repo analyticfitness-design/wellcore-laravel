@@ -120,17 +120,28 @@ Mantenidos con `text-wc-accent`: iniciales `font-display text-4xl/2xl` (≥24px 
 
 ---
 
-## Próximos pasos (Fase A continuación)
+## Fase A — Batch 2 (commits `625068c5` + `db16b911`, 2026-04-26)
 
-Las siguientes URLs siguen pendientes del mismo tratamiento:
+| URL | Cambios aplicados | Notas |
+|-----|-------------------|-------|
+| `/presencial` | 1× contrast fix; hp-cv-section ×5 | — |
+| `/lanzamiento` | hp-cv-section ×6 | A11y ya era 100, sin contrast fixes |
+| `/fit` | Eliminar x-intersect en progress bars (→ static width); hp-cv-section ×6 | Root cause Performance 56: plugin no cargado |
+| `/faq` | hp-cv-section en CTA | Sin text-wc-accent, A11y 96 = touch targets (fuera scope) |
+| `/blog/index` | hp-cv-section en CTA | A11y 100, sin contrast fixes |
+| `/blog/show` | 2× badge contrast fix (text-xs, text-[10px]); hp-cv-section ×3 | — |
+| Legales ×4 | replace_all links `text-wc-accent` → red-700/400; hp-cv-section ×1 c/u | cookies, privacidad, reembolso, terminos |
+| `/pago-exitoso` | 4 patrones contrast fix (monto, steps ×4, stats ×4, email link) | Sin sections → no hp-cv-section |
 
-| URL | Perf | A11y | Prioridad |
-|-----|-----:|-----:|-----------|
-| `/presencial` | 74 | 96 | 🟠 |
-| `/lanzamiento` | 74 | 100 | 🟠 (solo perf) |
-| `/fit` | 56 | 96 | 🟠 (fix x-intersect adicional) |
-| `/faq` | 60 | 96 | 🟠 |
-| `/blog` | 70 | 100 | 🟢 |
-| `/blog/show` | 73 | 90 | 🟢 |
-| Legales (batch) | 73-76 | 92 | 🟢 |
-| `/pago-exitoso` | 78 | 94 | 🟢 |
+**Estado Fase A: COMPLETA ✅** — Todas las URLs públicas procesadas.
+
+---
+
+## Issues residuales post-Fase A (no scope)
+
+| URL | Issue | Causa |
+|-----|-------|-------|
+| `/planes`, `/proceso` | Touch targets | Botones < 44px mínimo táctil |
+| `/coaches` | Heading hierarchy | H2/H3 fuera de orden descendente |
+| `/faq` | Performance 60 | Sección Alpine tabs gigante sin cv posible |
+| `/fit` | Performance (pendiente PSI) | x-intersect eliminado, a medir |
