@@ -37,7 +37,7 @@
     <div class="h-px bg-gradient-to-r from-transparent via-wc-border to-transparent" aria-hidden="true"></div>
 
     {{-- Benefits --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
             <div class="text-center" data-animate="fadeInUp">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('coaches.benefits_heading') }}</h2>
@@ -104,13 +104,13 @@
     <div class="h-px bg-gradient-to-r from-transparent via-wc-border to-transparent" aria-hidden="true"></div>
 
     {{-- Tu Portal de Coach — Dashboard Mockups --}}
-    <section class="bg-wc-bg-tertiary">
+    <section class="bg-wc-bg-tertiary hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
 
                 {{-- Left — Description --}}
                 <div data-animate="slideInLeft">
-                    <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('coaches.portal_label') }}</p>
+                    <p class="text-xs font-semibold uppercase tracking-widest text-red-700 dark:text-red-400">{{ __('coaches.portal_label') }}</p>
                     <h2 class="mt-3 font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('coaches.portal_heading') }}</h2>
                     <p class="mt-4 max-w-lg text-sm text-wc-text-tertiary">
                         {{ __('coaches.portal_body') }}
@@ -168,7 +168,7 @@
                             {{-- Stats row --}}
                             <div class="grid grid-cols-3 gap-2">
                                 <div class="rounded-lg border border-wc-border bg-wc-bg-tertiary p-2.5 text-center">
-                                    <p class="font-data text-lg font-bold text-wc-accent">18</p>
+                                    <p class="font-data text-lg font-bold text-red-700 dark:text-red-400">18</p>
                                     <p class="text-[10px] text-wc-text-tertiary">{{ __('coaches.mockup_clients_label') }}</p>
                                 </div>
                                 <div class="rounded-lg border border-wc-border bg-wc-bg-tertiary p-2.5 text-center">
@@ -300,7 +300,7 @@
     <div class="h-px bg-gradient-to-r from-transparent via-wc-border to-transparent" aria-hidden="true"></div>
 
     {{-- Requirements --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
             <div class="mx-auto max-w-3xl">
                 <div data-animate="fadeInUp">
@@ -377,7 +377,7 @@
     <div class="h-px bg-gradient-to-r from-transparent via-wc-border to-transparent" aria-hidden="true"></div>
 
     {{-- Process --}}
-    <section class="bg-wc-bg-tertiary">
+    <section class="bg-wc-bg-tertiary hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
             <div class="text-center" data-animate="fadeInUp">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('coaches.process_heading') }}</h2>
@@ -422,7 +422,7 @@
     <div class="h-px bg-gradient-to-r from-transparent via-wc-border to-transparent" aria-hidden="true"></div>
 
     {{-- CTA --}}
-    <section class="relative overflow-hidden bg-wc-bg">
+    <section class="relative overflow-hidden bg-wc-bg hp-cv-section">
         {{-- Gradient background orbs --}}
         <div class="pointer-events-none absolute inset-0" aria-hidden="true">
             <div class="absolute -left-32 -top-32 h-80 w-80 rounded-full bg-wc-accent/5 blur-3xl"></div>
