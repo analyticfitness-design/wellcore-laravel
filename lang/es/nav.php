@@ -10,6 +10,6 @@ return [
     'coaches' => 'Coaches',
     'presencial' => 'Presencial',
     'mi_cuenta' => 'Mi Cuenta',
-    'empezar' => 'Empezar',
+    'empezar' => 'Inscribirme',
     'cambiar_modo' => 'Cambiar modo',
 ];

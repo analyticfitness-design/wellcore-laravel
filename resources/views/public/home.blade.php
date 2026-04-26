@@ -492,7 +492,7 @@
                         <p class="hp-plan-name">{{ __('home.plan_esencial_name') }}</p>
                         <p class="hp-plan-price-old">$299,000</p>
                         <p class="hp-plan-price mt-1">$254,150 <span class="hp-plan-price-period">{{ __('home.plan_cop_mes') }}</span></p>
-                        <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $62</span> / mes <span class="opacity-60 line-through">USD $73</span></p>
+                        <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $62</span> / mes <span class="line-through opacity-90">USD $73</span></p>
                     </div>
                     <ul class="hp-plan-features">
                         @foreach([
@@ -508,7 +508,7 @@
                             [false, __('home.feat_nutricion_personalizada')],
                             [false, __('home.feat_checkin_semanal')],
                         ] as [$included, $feature])
-                        <li class="hp-plan-feature {{ $included ? '' : 'opacity-40' }}">
+                        <li class="hp-plan-feature {{ $included ? '' : 'opacity-70' }}">
                             @if($included)
                                 <svg class="hp-plan-feature-icon h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
                                 {{ $feature }}
@@ -532,7 +532,7 @@
                         <p class="hp-plan-name">{{ __('home.plan_metodo_name') }}</p>
                         <p class="hp-plan-price-old">$399,000</p>
                         <p class="hp-plan-price mt-1">$339,150 <span class="hp-plan-price-period">{{ __('home.plan_cop_mes') }}</span></p>
-                        <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $82</span> / mes <span class="opacity-60 line-through">USD $97</span></p>
+                        <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $82</span> / mes <span class="line-through opacity-90">USD $97</span></p>
                     </div>
                     <ul class="hp-plan-features">
                         @foreach([
@@ -548,7 +548,7 @@
                             [false, __('home.feat_checkin_semanal')],
                             [false, __('home.feat_videollamada_mensual')],
                         ] as [$included, $feature])
-                        <li class="hp-plan-feature {{ $included ? '' : 'opacity-40' }}">
+                        <li class="hp-plan-feature {{ $included ? '' : 'opacity-70' }}">
                             @if($included)
                                 <svg class="hp-plan-feature-icon h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
                                 {{ $feature }}
@@ -571,7 +571,7 @@
                         <p class="hp-plan-name">{{ __('home.plan_elite_name') }}</p>
                         <p class="hp-plan-price-old">$549,000</p>
                         <p class="hp-plan-price mt-1">$466,650 <span class="hp-plan-price-period">{{ __('home.plan_cop_mes') }}</span></p>
-                        <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $114</span> / mes <span class="opacity-60 line-through">USD $134</span></p>
+                        <p class="mt-1 font-data text-xs text-wc-text-tertiary">≈ <span class="font-semibold">USD $114</span> / mes <span class="line-through opacity-90">USD $134</span></p>
                     </div>
                     <ul class="hp-plan-features">
                         @foreach([

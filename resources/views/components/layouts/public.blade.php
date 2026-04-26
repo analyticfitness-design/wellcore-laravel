@@ -317,8 +317,8 @@
     {{-- Sticky CTA mobile (solo en home y páginas públicas clave) --}}
     @if(request()->routeIs('home') || request()->routeIs('planes') || request()->routeIs('proceso'))
     <div class="hp-sticky-cta md:hidden" role="region" aria-label="Acción principal">
-        <a href="{{ route('inscripcion') }}" class="hp-sticky-cta-btn" aria-label="Inscribirse en WellCore Fitness">
-            <span class="hp-sticky-cta-label" aria-hidden="true">Empezar</span>
+        <a href="{{ route('inscripcion') }}" class="hp-sticky-cta-btn">
+            <span class="hp-sticky-cta-label">Inscribirme</span>
             <span class="hp-sticky-cta-price">desde $254k</span>
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
