@@ -206,7 +206,7 @@ onBeforeUnmount(() => {
             <span class="text-[10px] font-medium text-wc-text-secondary">Mensajes</span>
             <span v-if="stats.unreadMessages > 0" class="absolute top-1.5 right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-wc-accent text-[8px] font-bold text-white flex items-center justify-center">{{ stats.unreadMessages }}</span>
           </RouterLink>
-          <RouterLink to="/coach/plan-tickets" class="nav-tap shrink-0 flex flex-col items-center justify-center gap-1 rounded-card bg-wc-bg-tertiary border border-wc-border px-3 py-3 min-w-[72px] h-[72px]">
+          <RouterLink to="/coach/plan-tickets/nuevo" class="nav-tap shrink-0 flex flex-col items-center justify-center gap-1 rounded-card bg-wc-bg-tertiary border border-wc-border px-3 py-3 min-w-[72px] h-[72px]">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
             <span class="text-[10px] font-medium text-wc-text-secondary">Tickets</span>
           </RouterLink>
