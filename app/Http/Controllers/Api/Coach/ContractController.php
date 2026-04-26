@@ -21,6 +21,7 @@ class ContractController extends Controller
             return response()->json([
                 'requires_acceptance' => false,
                 'version'             => $this->service->getCurrentVersion(),
+                'html'                => null,
             ]);
         }
 
