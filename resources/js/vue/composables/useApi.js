@@ -20,11 +20,43 @@ function isPreviewMode() {
         && window.location.pathname.startsWith('/admin/forms-preview');
 }
 
+// Per-endpoint defaults so forms render their "happy path" UI instead of degenerate states.
+// weightChange: null (not undefined) keeps MetricsTracker's v-if guard working correctly.
+// is_checkin_available: true prevents the "no disponible" banner from showing in preview.
+const PREVIEW_DEFAULTS = {
+    '/api/v/client/checkin': {
+        is_checkin_available: true,
+        already_submitted: false,
+        recent_checkins: [],
+        show_tutorial: false,
+    },
+    '/api/v/client/metrics': {
+        currentWeight: null,
+        weightChange: null,
+        history: [],
+        chartData: [],
+        weightTrend: [],
+        weeklyCheckins: [],
+        latestComposition: null,
+        trainingVolume: [],
+        showTutorial: false,
+    },
+};
+
 function createPreviewMockClient() {
-    const empty = () => Promise.resolve({ data: {}, status: 200, headers: {}, config: {} });
+    const resolve = (url) => Promise.resolve({
+        data: PREVIEW_DEFAULTS[url] ?? {},
+        status: 200,
+        headers: {},
+        config: {},
+    });
     return {
-        get: empty, post: empty, put: empty, patch: empty, delete: empty,
-        request: empty,
+        get: (url) => resolve(url),
+        post: (url) => resolve(url),
+        put: (url) => resolve(url),
+        patch: (url) => resolve(url),
+        delete: (url) => resolve(url),
+        request: () => resolve(''),
         interceptors: { request: { use: () => 0 }, response: { use: () => 0 } },
         defaults: { headers: { common: {} } },
     };
