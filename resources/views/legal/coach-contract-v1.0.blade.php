@@ -1053,12 +1053,14 @@ em { color: var(--wc-accent-light); font-style: normal; font-weight: 500; }
             }, { threshold: 0.1 });
             io.observe(sentinel);
         } else {
-            // Older browsers fallback: post on document scroll-bottom
-            window.addEventListener('scroll', function () {
+            // Older browsers fallback: post on document scroll-bottom (fires once)
+            function onScroll() {
                 if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 4) {
                     try { window.parent.postMessage({ type: 'wc-contract-end' }, '*'); } catch (e) {}
+                    window.removeEventListener('scroll', onScroll);
                 }
-            }, { passive: true });
+            }
+            window.addEventListener('scroll', onScroll, { passive: true });
         }
     })();
 </script>
