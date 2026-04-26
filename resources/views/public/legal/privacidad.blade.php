@@ -8,7 +8,7 @@
         </div>
     </section>
 
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
             <div class="space-y-8 text-sm leading-relaxed text-wc-text-secondary">
 
@@ -85,12 +85,12 @@
 
                 <div>
                     <h2 class="font-display text-xl tracking-wide text-wc-text">9. COOKIES</h2>
-                    <p class="mt-3">Utilizamos cookies y tecnologias similares. Para mas informacion, consulte nuestra <a href="{{ route('cookies') }}" class="text-wc-accent hover:underline">Politica de Cookies</a>.</p>
+                    <p class="mt-3">Utilizamos cookies y tecnologias similares. Para mas informacion, consulte nuestra <a href="{{ route('cookies') }}" class="text-red-700 dark:text-red-400 hover:underline">Politica de Cookies</a>.</p>
                 </div>
 
                 <div>
                     <h2 class="font-display text-xl tracking-wide text-wc-text">10. CONTACTO</h2>
-                    <p class="mt-3">Para ejercer sus derechos o realizar consultas sobre esta politica, escriba a <a href="mailto:privacidad@wellcorefitness.com" class="text-wc-accent hover:underline">privacidad@wellcorefitness.com</a> o a <a href="mailto:info@wellcorefitness.com" class="text-wc-accent hover:underline">info@wellcorefitness.com</a>.</p>
+                    <p class="mt-3">Para ejercer sus derechos o realizar consultas sobre esta politica, escriba a <a href="mailto:privacidad@wellcorefitness.com" class="text-red-700 dark:text-red-400 hover:underline">privacidad@wellcorefitness.com</a> o a <a href="mailto:info@wellcorefitness.com" class="text-red-700 dark:text-red-400 hover:underline">info@wellcorefitness.com</a>.</p>
                 </div>
 
             </div>

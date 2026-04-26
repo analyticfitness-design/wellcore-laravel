@@ -8,7 +8,7 @@
         </div>
     </section>
 
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
             <div class="space-y-8 text-sm leading-relaxed text-wc-text-secondary">
 
@@ -59,7 +59,7 @@
                     <h2 class="font-display text-xl tracking-wide text-wc-text">3. COOKIES DE TERCEROS</h2>
                     <p class="mt-3">Utilizamos servicios de terceros que pueden establecer sus propias cookies:</p>
                     <ul class="mt-3 list-disc space-y-1 pl-5">
-                        <li><strong>Google Analytics:</strong> analisis de trafico web (<a href="https://policies.google.com/privacy" class="text-wc-accent hover:underline" target="_blank" rel="noopener">Politica de privacidad de Google</a>)</li>
+                        <li><strong>Google Analytics:</strong> analisis de trafico web (<a href="https://policies.google.com/privacy" class="text-red-700 dark:text-red-400 hover:underline" target="_blank" rel="noopener">Politica de privacidad de Google</a>)</li>
                         <li><strong>Wompi/PayU:</strong> procesamiento de pagos (solo durante la transaccion)</li>
                     </ul>
                 </div>
@@ -82,7 +82,7 @@
 
                 <div>
                     <h2 class="font-display text-xl tracking-wide text-wc-text">6. CONTACTO</h2>
-                    <p class="mt-3">Para consultas sobre cookies, escriba a <a href="mailto:info@wellcorefitness.com" class="text-wc-accent hover:underline">info@wellcorefitness.com</a>.</p>
+                    <p class="mt-3">Para consultas sobre cookies, escriba a <a href="mailto:info@wellcorefitness.com" class="text-red-700 dark:text-red-400 hover:underline">info@wellcorefitness.com</a>.</p>
                 </div>
 
             </div>

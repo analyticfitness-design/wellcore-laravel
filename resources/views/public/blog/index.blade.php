@@ -154,7 +154,7 @@
     <div class="section-divider" aria-hidden="true"></div>
 
     {{-- CTA Section --}}
-    <section class="relative overflow-hidden border-t border-wc-border bg-wc-bg-tertiary">
+    <section class="relative overflow-hidden border-t border-wc-border bg-wc-bg-tertiary hp-cv-section">
         {{-- Gradient orbs --}}
         <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent pointer-events-none"></div>
         <div class="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-wc-accent/5 blur-3xl pointer-events-none" aria-hidden="true"></div>

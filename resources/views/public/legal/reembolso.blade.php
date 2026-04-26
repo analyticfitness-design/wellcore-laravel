@@ -8,7 +8,7 @@
         </div>
     </section>
 
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
             <div class="space-y-8 text-sm leading-relaxed text-wc-text-secondary">
 
@@ -69,7 +69,7 @@
                     <h2 class="font-display text-xl tracking-wide text-wc-text">7. PROCESO DE SOLICITUD</h2>
                     <p class="mt-3">Para solicitar un reembolso:</p>
                     <ol class="mt-3 list-decimal space-y-1 pl-5">
-                        <li>Envia un correo a <a href="mailto:info@wellcorefitness.com" class="text-wc-accent hover:underline">info@wellcorefitness.com</a> con el asunto "Solicitud de reembolso"</li>
+                        <li>Envia un correo a <a href="mailto:info@wellcorefitness.com" class="text-red-700 dark:text-red-400 hover:underline">info@wellcorefitness.com</a> con el asunto "Solicitud de reembolso"</li>
                         <li>Incluye tu nombre completo, email registrado y motivo de la solicitud</li>
                         <li>Recibirás confirmacion en un plazo de 48 horas habiles</li>
                         <li>Los reembolsos aprobados se procesan en 5-10 dias habiles al metodo de pago original</li>
@@ -78,7 +78,7 @@
 
                 <div>
                     <h2 class="font-display text-xl tracking-wide text-wc-text">8. CONTACTO</h2>
-                    <p class="mt-3">Para consultas sobre reembolsos, escriba a <a href="mailto:info@wellcorefitness.com" class="text-wc-accent hover:underline">info@wellcorefitness.com</a> o contactenos por WhatsApp.</p>
+                    <p class="mt-3">Para consultas sobre reembolsos, escriba a <a href="mailto:info@wellcorefitness.com" class="text-red-700 dark:text-red-400 hover:underline">info@wellcorefitness.com</a> o contactenos por WhatsApp.</p>
                 </div>
 
             </div>

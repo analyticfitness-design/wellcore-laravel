@@ -40,7 +40,7 @@
 
             <div class="mx-auto max-w-3xl pt-4">
                 {{-- Category --}}
-                <span class="inline-flex rounded-full bg-wc-bg/80 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-wc-accent ring-1 ring-wc-border/50 backdrop-blur-sm">
+                <span class="inline-flex rounded-full bg-wc-bg/80 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-red-700 dark:text-red-400 ring-1 ring-wc-border/50 backdrop-blur-sm">
                     {{ $article['category'] }}
                 </span>
 
@@ -78,7 +78,7 @@
     <div class="section-divider" aria-hidden="true"></div>
 
     {{-- Article Content --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
             <div class="scroll-reveal article-content space-y-6 text-base leading-relaxed text-wc-text-secondary
                 [&>h3]:font-display [&>h3]:text-xl [&>h3]:tracking-wide [&>h3]:text-wc-text [&>h3]:mt-10 [&>h3]:mb-4
@@ -96,7 +96,7 @@
     <div class="section-divider" aria-hidden="true"></div>
 
     {{-- Related Articles --}}
-    <section class="border-t border-wc-border bg-wc-bg-tertiary">
+    <section class="border-t border-wc-border bg-wc-bg-tertiary hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
             <h2 class="font-display text-2xl tracking-wide text-wc-text">{{ __('blog.related_heading') }}</h2>
             <p class="mt-2 text-sm text-wc-text-tertiary">{{ __('blog.related_subtitle') }}</p>
@@ -121,7 +121,7 @@
                             <div class="absolute inset-0" style="background-image: radial-gradient(circle, currentColor 0.5px, transparent 0.5px); background-size: 12px 12px; opacity: 0.04;"></div>
                             <div class="absolute -right-4 -top-4 h-20 w-20 rounded-full border border-current opacity-[0.06]"></div>
                             <div class="absolute bottom-3 left-4">
-                                <span class="badge-shine inline-flex rounded-full bg-wc-bg/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-accent backdrop-blur-sm ring-1 ring-wc-border/50">
+                                <span class="badge-shine inline-flex rounded-full bg-wc-bg/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-red-700 dark:text-red-400 backdrop-blur-sm ring-1 ring-wc-border/50">
                                     {{ $relatedArticle['category'] }}
                                 </span>
                             </div>
@@ -150,7 +150,7 @@
     <div class="section-divider" aria-hidden="true"></div>
 
     {{-- CTA --}}
-    <section class="relative overflow-hidden border-t border-wc-border bg-wc-bg">
+    <section class="relative overflow-hidden border-t border-wc-border bg-wc-bg hp-cv-section">
         {{-- Gradient orbs --}}
         <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent pointer-events-none"></div>
         <div class="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-wc-accent/5 blur-3xl pointer-events-none" aria-hidden="true"></div>

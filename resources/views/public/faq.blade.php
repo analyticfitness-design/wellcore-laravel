@@ -974,7 +974,7 @@
     <div class="section-divider"></div>
 
     {{-- Contact CTA --}}
-    <section class="relative overflow-hidden bg-wc-bg-tertiary">
+    <section class="relative overflow-hidden bg-wc-bg-tertiary hp-cv-section">
         {{-- Decorative orbs --}}
         <div aria-hidden="true" class="pointer-events-none absolute inset-0">
             <div class="absolute -left-20 top-1/2 h-64 w-64 -translate-y-1/2 rounded-full bg-wc-accent/5 blur-3xl"></div>

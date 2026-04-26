@@ -48,7 +48,7 @@
                     </div>
                     <div>
                         <p class="text-xs font-medium text-wc-text-tertiary">Monto</p>
-                        <p class="mt-1 text-sm font-semibold text-wc-accent">{{ $monto }}</p>
+                        <p class="mt-1 text-sm font-semibold text-red-700 dark:text-red-400">{{ $monto }}</p>
                     </div>
                     <div>
                         <p class="text-xs font-medium text-wc-text-tertiary">Referencia</p>
@@ -67,7 +67,7 @@
                 <div class="mt-6 space-y-4">
                     <div class="flex items-start gap-4">
                         <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
-                            <span class="font-data text-sm font-bold text-wc-accent">1</span>
+                            <span class="font-data text-sm font-bold text-red-700 dark:text-red-400">1</span>
                         </div>
                         <div>
                             <p class="text-sm font-medium text-wc-text">Revisa tu email</p>
@@ -76,7 +76,7 @@
                     </div>
                     <div class="flex items-start gap-4">
                         <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
-                            <span class="font-data text-sm font-bold text-wc-accent">2</span>
+                            <span class="font-data text-sm font-bold text-red-700 dark:text-red-400">2</span>
                         </div>
                         <div>
                             <p class="text-sm font-medium text-wc-text">Ingresa al portal</p>
@@ -85,7 +85,7 @@
                     </div>
                     <div class="flex items-start gap-4">
                         <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
-                            <span class="font-data text-sm font-bold text-wc-accent">3</span>
+                            <span class="font-data text-sm font-bold text-red-700 dark:text-red-400">3</span>
                         </div>
                         <div>
                             <p class="text-sm font-medium text-wc-text">Tu programa personalizado</p>
@@ -94,11 +94,11 @@
                     </div>
                     <div class="flex items-start gap-4">
                         <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
-                            <span class="font-data text-sm font-bold text-wc-accent">4</span>
+                            <span class="font-data text-sm font-bold text-red-700 dark:text-red-400">4</span>
                         </div>
                         <div>
                             <p class="text-sm font-medium text-wc-text">Dudas?</p>
-                            <p class="mt-0.5 text-sm text-wc-text-secondary">Escribenos a <a href="mailto:info@wellcorefitness.com" class="text-wc-accent hover:underline">info@wellcorefitness.com</a> o por WhatsApp.</p>
+                            <p class="mt-0.5 text-sm text-wc-text-secondary">Escribenos a <a href="mailto:info@wellcorefitness.com" class="text-red-700 dark:text-red-400 hover:underline">info@wellcorefitness.com</a> o por WhatsApp.</p>
                         </div>
                     </div>
                 </div>
@@ -107,19 +107,19 @@
             {{-- Info Cards --}}
             <div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
                 <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-                    <p class="font-data text-lg font-bold text-wc-accent">&lt;6h</p>
+                    <p class="font-data text-lg font-bold text-red-700 dark:text-red-400">&lt;6h</p>
                     <p class="mt-1 text-xs text-wc-text-secondary">Credenciales por email</p>
                 </div>
                 <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-                    <p class="font-data text-lg font-bold text-wc-accent">5-48h</p>
+                    <p class="font-data text-lg font-bold text-red-700 dark:text-red-400">5-48h</p>
                     <p class="mt-1 text-xs text-wc-text-secondary">Tu programa listo</p>
                 </div>
                 <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-                    <p class="font-data text-lg font-bold text-wc-accent">1:1</p>
+                    <p class="font-data text-lg font-bold text-red-700 dark:text-red-400">1:1</p>
                     <p class="mt-1 text-xs text-wc-text-secondary">Personalizado</p>
                 </div>
                 <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-                    <p class="font-data text-lg font-bold text-wc-accent">SSL</p>
+                    <p class="font-data text-lg font-bold text-red-700 dark:text-red-400">SSL</p>
                     <p class="mt-1 text-xs text-wc-text-secondary">Pago 100% seguro</p>
                 </div>
             </div>

@@ -8,7 +8,7 @@
         </div>
     </section>
 
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
             <div class="prose-wc space-y-8 text-sm leading-relaxed text-wc-text-secondary">
 
@@ -41,7 +41,7 @@
 
                 <div>
                     <h2 class="font-display text-xl tracking-wide text-wc-text">5. PAGOS Y FACTURACION</h2>
-                    <p class="mt-3">Los pagos se procesan de forma mensual y automatica a traves de la pasarela de pagos autorizada. Al suscribirse, el usuario autoriza el cobro recurrente segun el plan seleccionado. Los pagos no son reembolsables excepto en los casos descritos en nuestra <a href="{{ route('reembolsos') }}" class="text-wc-accent hover:underline">Politica de Reembolso</a>.</p>
+                    <p class="mt-3">Los pagos se procesan de forma mensual y automatica a traves de la pasarela de pagos autorizada. Al suscribirse, el usuario autoriza el cobro recurrente segun el plan seleccionado. Los pagos no son reembolsables excepto en los casos descritos en nuestra <a href="{{ route('reembolsos') }}" class="text-red-700 dark:text-red-400 hover:underline">Politica de Reembolso</a>.</p>
                 </div>
 
                 <div>
@@ -73,7 +73,7 @@
 
                 <div>
                     <h2 class="font-display text-xl tracking-wide text-wc-text">10. PROTECCION DE DATOS</h2>
-                    <p class="mt-3">El tratamiento de datos personales se rige por nuestra <a href="{{ route('privacidad') }}" class="text-wc-accent hover:underline">Politica de Privacidad</a>, en cumplimiento de la Ley 1581 de 2012 de Proteccion de Datos Personales de Colombia y su decreto reglamentario 1377 de 2013.</p>
+                    <p class="mt-3">El tratamiento de datos personales se rige por nuestra <a href="{{ route('privacidad') }}" class="text-red-700 dark:text-red-400 hover:underline">Politica de Privacidad</a>, en cumplimiento de la Ley 1581 de 2012 de Proteccion de Datos Personales de Colombia y su decreto reglamentario 1377 de 2013.</p>
                 </div>
 
                 <div>
@@ -88,7 +88,7 @@
 
                 <div>
                     <h2 class="font-display text-xl tracking-wide text-wc-text">13. CONTACTO</h2>
-                    <p class="mt-3">Para consultas sobre estos terminos, contactenos en <a href="mailto:info@wellcorefitness.com" class="text-wc-accent hover:underline">info@wellcorefitness.com</a>.</p>
+                    <p class="mt-3">Para consultas sobre estos terminos, contactenos en <a href="mailto:info@wellcorefitness.com" class="text-red-700 dark:text-red-400 hover:underline">info@wellcorefitness.com</a>.</p>
                 </div>
 
             </div>
