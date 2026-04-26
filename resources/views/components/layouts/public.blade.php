@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" x-data="{ darkMode: localStorage.getItem('darkMode') !== 'false' }" x-init="$watch('darkMode', val => { localStorage.setItem('darkMode', val); val ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark') })" x-on:toggle-dark.window="darkMode = !darkMode" :class="{ 'dark': darkMode }">
-<script>if(localStorage.getItem('darkMode')!=='false')document.documentElement.classList.add('dark')</script>
+<script nonce="@cspNonce">if(localStorage.getItem('darkMode')!=='false')document.documentElement.classList.add('dark')</script>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -36,9 +36,10 @@
     <link rel="preload" as="font" type="font/woff2" href="/fonts/raleway-600-latin.woff2" crossorigin>
     <link rel="preload" as="font" type="font/woff2" href="/fonts/raleway-700-latin.woff2" crossorigin>
 
-    {{-- CSS catálogo completo: NO bloquea render (truco media=print + onload) --}}
+    {{-- CSS catálogo completo: NO bloquea render (truco media=print + JS swap, CSP-friendly) --}}
     <link rel="preload" href="/fonts/wellcore-fonts.css" as="style">
-    <link rel="stylesheet" href="/fonts/wellcore-fonts.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="/fonts/wellcore-fonts.css" media="print" id="wc-fonts-css">
+    <script nonce="@cspNonce">document.getElementById('wc-fonts-css').addEventListener('load',function(){this.media='all'},{once:true});</script>
     <noscript><link rel="stylesheet" href="/fonts/wellcore-fonts.css"></noscript>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -52,7 +53,7 @@
 
     @if(config('app.meta_pixel_id'))
     {{-- Meta Pixel (lazy: load tras primer interaccion o scroll — ahorra 384 KB en initial load, mantiene tracking) --}}
-    <script>
+    <script nonce="@cspNonce">
     (function(){
         var pxId='{{ config('app.meta_pixel_id') }}',loaded=false;
         function loadPixel(){

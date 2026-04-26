@@ -109,7 +109,7 @@
     </template>
 </div>
 
-<script>
+<script nonce="@cspNonce">
     function toastSystem() {
         return {
             toasts: [],

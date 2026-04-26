@@ -1,7 +1,7 @@
 {{-- Google Analytics GA4 --}}
 @if(config('services.google.analytics_id'))
 <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('services.google.analytics_id') }}"></script>
-<script>
+<script nonce="@cspNonce">
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
