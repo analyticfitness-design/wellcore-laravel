@@ -55,18 +55,18 @@ watch(() => gate.requires.value, (val) => {
             aria-modal="true"
             aria-labelledby="contract-gate-title"
         >
-            <!-- Header -->
-            <header class="border-b border-wc-border bg-wc-bg-secondary px-4 py-3 sm:px-6">
-                <h2 id="contract-gate-title" class="font-display text-lg uppercase tracking-wider text-wc-text">
-                    Acuerdo de Alianza Comercial · WellCore Fitness
+            <!-- Header — compacto en mobile -->
+            <header class="border-b border-wc-border bg-wc-bg-secondary px-4 py-2 sm:px-6 sm:py-3">
+                <h2 id="contract-gate-title" class="font-display text-base uppercase tracking-wider text-wc-text sm:text-lg">
+                    Acuerdo de Alianza · WellCore
                 </h2>
-                <p class="mt-1 text-xs text-wc-text/60">
-                    Versión {{ gate.version.value || '1.0' }} · Lee el acuerdo completo y confirma al terminar
+                <p class="mt-0.5 text-[10px] text-wc-text/60 sm:mt-1 sm:text-xs">
+                    v{{ gate.version.value || '1.0' }} · Lee el acuerdo y confirma al terminar
                 </p>
             </header>
 
             <!-- Iframe — solo visualización, sin sandbox -->
-            <div class="flex-1 overflow-hidden bg-black p-2 sm:p-4">
+            <div class="flex-1 overflow-hidden bg-black p-1.5 sm:p-4">
                 <iframe
                     :srcdoc="gate.html.value"
                     class="h-full w-full rounded-md border border-wc-border bg-wc-bg"
@@ -74,27 +74,27 @@ watch(() => gate.requires.value, (val) => {
                 ></iframe>
             </div>
 
-            <!-- Footer with controls -->
-            <footer class="border-t border-wc-border bg-wc-bg-secondary px-4 py-4 sm:px-6">
-                <div class="mx-auto max-w-3xl space-y-3">
+            <!-- Footer — compacto en mobile -->
+            <footer class="border-t border-wc-border bg-wc-bg-secondary px-4 py-2 sm:px-6 sm:py-4">
+                <div class="mx-auto max-w-3xl space-y-2 sm:space-y-3">
 
-                    <!-- Botón de confirmación de lectura en el padre — sin depender del iframe -->
+                    <!-- Botón de confirmación en el padre — sin depender del iframe -->
                     <div v-if="!gate.scrollCompleted.value" class="flex justify-center">
                         <button
                             type="button"
                             @click="gate.markScrollComplete()"
-                            class="rounded-lg border border-wc-border bg-wc-bg-tertiary px-5 py-2.5 text-sm font-medium text-wc-text transition-colors hover:border-wc-accent hover:text-wc-accent active:scale-95"
+                            class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2 text-xs font-medium text-wc-text transition-colors hover:border-wc-accent hover:text-wc-accent active:scale-95 sm:w-auto sm:px-5 sm:py-2.5 sm:text-sm"
                         >
                             He leído el acuerdo completo →
                         </button>
                     </div>
 
-                    <label class="flex items-start gap-3 text-sm text-wc-text">
+                    <label class="flex items-center gap-2.5 text-xs text-wc-text sm:text-sm">
                         <input
                             type="checkbox"
                             v-model="accepted"
                             :disabled="!gate.scrollCompleted.value || gate.submitting.value"
-                            class="mt-0.5 h-4 w-4 rounded border-wc-border bg-wc-bg-tertiary accent-wc-accent disabled:opacity-40"
+                            class="h-4 w-4 shrink-0 rounded border-wc-border bg-wc-bg-tertiary accent-wc-accent disabled:opacity-40"
                         />
                         <span :class="gate.scrollCompleted.value ? 'text-wc-text' : 'text-wc-text/50'">
                             He leído y acepto el Acuerdo de Alianza Comercial v{{ gate.version.value || '1.0' }}.
@@ -103,12 +103,12 @@ watch(() => gate.requires.value, (val) => {
 
                     <p v-if="gate.error.value" class="text-xs text-red-500">{{ gate.error.value }}</p>
 
-                    <div class="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
                         <button
                             type="button"
                             @click="openDeclineConfirm"
                             :disabled="gate.submitting.value"
-                            class="text-xs text-wc-text/50 underline hover:text-wc-text disabled:opacity-50"
+                            class="text-center text-xs text-wc-text/40 underline hover:text-wc-text disabled:opacity-50"
                         >
                             Rechazar y dar de baja mi cuenta
                         </button>

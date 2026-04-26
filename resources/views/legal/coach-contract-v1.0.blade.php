@@ -663,16 +663,43 @@ em { color: var(--wc-accent-light); font-style: normal; font-weight: 500; }
     .footer-meta { font-size: 11px; line-height: 1.7; }
 }
 
+/* RESPONSIVE — IFRAME MODAL MOBILE (<=480px) */
+@media (max-width: 480px) {
+    body { font-size: 15px; line-height: 1.6; }
+    .hero { padding: 28px 16px 22px; }
+    .hero h1 { font-size: clamp(28px, 10vw, 40px); line-height: 0.95; }
+    .hero-subtitle { font-size: 14px; line-height: 1.5; margin-bottom: 18px; }
+    .hero-welcome { font-size: 14px; padding: 14px 16px; line-height: 1.55; }
+    .eyebrow { font-size: 10px; padding: 5px 12px; margin-bottom: 14px; }
+    .container { padding: 28px 16px; }
+    .section { margin-bottom: 36px; scroll-margin-top: 20px; }
+    h2 { font-size: 26px; line-height: 1.05; margin-bottom: 12px; }
+    h3 { font-size: 18px; margin-top: 20px; margin-bottom: 10px; }
+    h4 { font-size: 14px; }
+    .section-lead { font-size: 14px; line-height: 1.5; margin-bottom: 18px; }
+    .role-card, .yn-card { padding: 18px 16px; }
+    .role-title, .yn-title { font-size: 20px; }
+    .split-block { padding: 22px 16px; }
+    .split-percent { font-size: 52px; }
+    .clause { padding: 20px 18px; }
+    .cta-final { padding: 28px 16px; border-radius: 10px; }
+    .cta-final h3 { font-size: 24px; }
+    .cta-final p { font-size: 14px; }
+    .footer { padding: 24px 16px; }
+    .footer-logo { font-size: 24px; }
+    .footer-meta { font-size: 10px; }
+}
+
 /* RESPONSIVE — SMALL MOBILE */
 @media (max-width: 380px) {
-    .hero h1 { font-size: 48px; }
-    .hero-subtitle { font-size: 16px; }
-    .hero-welcome { font-size: 15.5px; }
-    h2 { font-size: 32px; }
-    h3 { font-size: 22px; }
-    .split-percent { font-size: 56px; }
-    .role-title, .yn-title { font-size: 22px; }
-    .cta-final h3 { font-size: 26px; }
+    .hero h1 { font-size: 28px; }
+    .hero-subtitle { font-size: 14px; }
+    .hero-welcome { font-size: 13.5px; }
+    h2 { font-size: 23px; }
+    h3 { font-size: 17px; }
+    .split-percent { font-size: 46px; }
+    .role-title, .yn-title { font-size: 18px; }
+    .cta-final h3 { font-size: 22px; }
 }
 
 /* PRINT */
