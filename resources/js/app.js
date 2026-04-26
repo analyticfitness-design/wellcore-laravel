@@ -1,15 +1,8 @@
 import './bootstrap';
 
-// Alpine.js is automatically loaded by Livewire 3.
-// Do NOT import it here — duplicate Alpine instances break wire: directives.
-
-// Chart.js — lazy-loaded only on pages that actually render charts.
-// This keeps chart.js (~170KB) out of the bundle for public/marketing pages.
-// Pages that need it should add a <canvas data-chart> element, or set
-// window.__wcNeedsCharts = true before DOMContentLoaded.
+// ─── Chart.js — lazy, solo en páginas que lo necesitan ───────────────────────
 const loadChartsIfNeeded = () => {
-    const needed = window.__wcNeedsCharts === true || document.querySelector('canvas[data-chart], [data-needs-chart]');
-    if (needed) {
+    if (window.__wcNeedsCharts === true || document.querySelector('canvas[data-chart], [data-needs-chart]')) {
         import(/* webpackChunkName: "chart-init" */ './chart-init.js');
     }
 };
@@ -19,17 +12,27 @@ if (document.readyState === 'loading') {
     loadChartsIfNeeded();
 }
 
-// Scroll animations (IntersectionObserver)
-import './animations.js';
+// ─── Animations — lazy on idle (no es crítico para LCP) ──────────────────────
+if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => import('./animations.js'), { timeout: 2000 });
+} else {
+    setTimeout(() => import('./animations.js'), 1500);
+}
 
-// Push notification subscription
-import { initPushSubscription } from './push-subscription.js';
-initPushSubscription();
+// ─── Push subscription — solo en páginas autenticadas ─────────────────────────
+// Las páginas públicas (/, /planes, /nosotros, etc.) no necesitan push SW.
+// Las páginas privadas están bajo /client, /coach, /admin, /rise.
+const isPrivatePage = /^\/(client|coach|admin|rise)/.test(location.pathname);
+if (isPrivatePage) {
+    import('./push-subscription.js').then(m => m.initPushSubscription());
+}
 
-// Coach Dashboard: Alpine coachSidebar store + counter animations + swipe gestures
-import './coach-dashboard';
+// ─── Coach Dashboard — solo en /coach/* ──────────────────────────────────────
+if (location.pathname.startsWith('/coach')) {
+    import('./coach-dashboard');
+}
 
-// PWA Service Worker registration
+// ─── PWA Service Worker ───────────────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').catch(() => {});

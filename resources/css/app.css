@@ -1216,7 +1216,7 @@ body {
 .hp-plan-features { display:flex; flex-direction:column; gap:12px; list-style:none; padding:0; margin:0; flex:1; }
 .hp-plan-feature { display:flex; align-items:flex-start; gap:10px; font-size:13.5px; color:var(--color-wc-text-secondary); line-height:1.4; }
 .hp-plan-feature-icon { color:var(--color-wc-success,#10B981); font-size:15px; flex-shrink:0; margin-top:1px; }
-.hp-plan-cta { display:block; background:var(--color-wc-bg-secondary); border:1px solid var(--color-wc-border); color:var(--color-wc-text); font-size:14px; font-weight:700; text-align:center; padding:14px; border-radius:9999px; text-decoration:none; transition:all .2s; }
+.hp-plan-cta { display:block; background:var(--color-wc-bg-secondary); border:1px solid var(--color-wc-border); color:var(--color-wc-text); font-size:14px; font-weight:700; text-align:center; padding:14px; border-radius:9999px; text-decoration:none; transition:background .2s, color .2s, transform .2s, opacity .2s; }
 .hp-plan-cta:hover { border-color:var(--color-wc-accent); color:var(--color-wc-accent); }
 .hp-plan-card.hp-plan-feat .hp-plan-cta { background:var(--color-wc-accent); border-color:var(--color-wc-accent); color:#fff; }
 .hp-plan-card.hp-plan-feat .hp-plan-cta:hover { background:var(--color-wc-accent-hover,#B91C1C); }
