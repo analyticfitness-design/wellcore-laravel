@@ -93,6 +93,11 @@ export function useApi() {
     instance.interceptors.response.use(
         (response) => response,
         (error) => {
+            if (error?.response?.status === 403 && error.response?.data?.contract_required) {
+                import('./useContractGate').then(({ useContractGate }) => {
+                    useContractGate().refresh();
+                });
+            }
             if (error.response && error.response.status === 401) {
                 authStore.clearAuth();
                 window.location.href = '/login';
