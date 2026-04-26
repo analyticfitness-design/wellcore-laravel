@@ -2,6 +2,8 @@
 import { ref, onMounted, computed } from 'vue';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
+import PaymentProofUploader from '../../components/coach/PaymentProofUploader.vue';
+import PaymentProofList from '../../components/coach/PaymentProofList.vue';
 
 const api = useApi();
 const loading = ref(true);
@@ -20,6 +22,13 @@ const youtube = ref('');
 
 // Revenue data
 const revenue = ref({ total: 0, monthly: 0, referrals: 0, clients_paying: 0 });
+
+// Payment proofs tab
+const proofListRef = ref(null);
+
+function refreshProofList() {
+    proofListRef.value?.reload();
+}
 
 const coachName = computed(() => localStorage.getItem('wc_user_name') || 'Coach');
 const coachInitial = computed(() => (coachName.value || 'C').charAt(0).toUpperCase());
@@ -96,7 +105,7 @@ onMounted(loadProfile);
       <!-- Tab bar -->
       <div class="flex items-center gap-1 border-b border-wc-border">
         <button
-          v-for="tab in [{ key: 'profile', label: 'Perfil' }, { key: 'revenue', label: 'Revenue' }]"
+          v-for="tab in [{ key: 'profile', label: 'Perfil' }, { key: 'revenue', label: 'Revenue' }, { key: 'comprobantes', label: 'Comprobantes' }]"
           :key="tab.key"
           @click="activeTab = tab.key"
           class="relative px-4 py-2.5 text-sm font-medium transition-colors"
@@ -216,6 +225,12 @@ onMounted(loadProfile);
               <p class="mt-1 text-xs text-wc-text-tertiary">Referidos</p>
             </div>
           </div>
+        </div>
+
+        <!-- COMPROBANTES TAB -->
+        <div v-if="activeTab === 'comprobantes'" class="space-y-6">
+          <PaymentProofUploader @submitted="refreshProofList" />
+          <PaymentProofList ref="proofListRef" />
         </div>
 
       </template>

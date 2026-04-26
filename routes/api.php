@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\CoachPlanTicketController;
 use App\Http\Controllers\Api\EjerciciosController;
 use App\Http\Controllers\Api\MedalController;
 use App\Http\Controllers\Api\NutritionController;
+use App\Http\Controllers\Api\PaymentProofController;
 use App\Http\Controllers\Api\PublicFormController;
 use App\Http\Controllers\Api\RiseController;
 use App\Http\Controllers\Api\ShopController;
@@ -247,6 +248,13 @@ Route::prefix('v/coach')->middleware(['auth:wellcore', 'throttle:api', 'role:coa
         Route::get('/notifications', [CoachPlanTicketController::class, 'notifications']);
         Route::post('/notifications/read-all', [CoachPlanTicketController::class, 'markAllNotificationsRead']);
         Route::post('/notifications/{id}/read', [CoachPlanTicketController::class, 'markNotificationRead'])->whereNumber('id');
+
+        // Payment Proofs (comprobantes de pago manual)
+        Route::middleware('throttle:10,1440')->group(function () {
+            Route::post('/payment-proofs', [PaymentProofController::class, 'store']);
+        });
+        Route::get('/payment-proofs', [PaymentProofController::class, 'index']);
+        Route::get('/payment-proofs/{id}', [PaymentProofController::class, 'show'])->whereNumber('id');
 
         // Coach Invitations
         Route::get('/invitations', [InvitationController::class, 'index']);

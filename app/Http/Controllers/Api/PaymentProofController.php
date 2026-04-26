@@ -1,0 +1,174 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Enums\PaymentProofStatus;
+use App\Enums\UserType;
+use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Coach\StorePaymentProofRequest;
+use App\Models\PaymentProof;
+use App\Models\WellcoreNotification;
+use App\Services\AuditService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
+
+class PaymentProofController extends Controller
+{
+    use AuthenticatesVueRequests;
+
+    /**
+     * POST /api/v/coach/payment-proofs
+     *
+     * Upload a manual payment proof for a prospective client.
+     * One pending proof per (coach, client_email) is enforced.
+     */
+    public function store(StorePaymentProofRequest $request): JsonResponse
+    {
+        $coach = $this->resolveCoachOrFail($request);
+        Gate::authorize('create', PaymentProof::class);
+
+        $email = $request->validated('client_email');
+
+        $duplicate = PaymentProof::where('coach_id', $coach->id)
+            ->where('client_email', $email)
+            ->where('status', PaymentProofStatus::Pendiente)
+            ->exists();
+
+        if ($duplicate) {
+            return response()->json([
+                'message' => 'Ya existe un comprobante pendiente para este email.',
+                'errorCode' => 'DUPLICATE_PENDING',
+            ], 409);
+        }
+
+        $uploadedFile = $request->file('file');
+        $storedPath = Storage::disk('payment_proofs')->putFile('', $uploadedFile);
+
+        $proof = PaymentProof::create([
+            'coach_id' => $coach->id,
+            'client_email' => $email,
+            'client_name' => $request->validated('client_name'),
+            'plan' => $request->validated('plan'),
+            'amount' => $request->validated('amount'),
+            'currency' => 'COP',
+            'payment_method' => $request->validated('payment_method'),
+            'coach_note' => $request->validated('coach_note'),
+            'file_path' => $storedPath,
+            'file_disk' => 'payment_proofs',
+            'file_mime' => $uploadedFile->getMimeType(),
+            'file_size' => $uploadedFile->getSize(),
+            'status' => PaymentProofStatus::Pendiente,
+            'submitted_at' => now(),
+            'expires_at' => now()->addDays(7),
+        ]);
+
+        WellcoreNotification::create([
+            'user_type' => UserType::Admin,
+            'user_id' => null,
+            'type' => 'payment_proof_submitted',
+            'title' => 'Nuevo comprobante pendiente',
+            'body' => "Coach {$coach->name} subió comprobante para {$email}",
+        ]);
+
+        AuditService::logAction(
+            'payment_proof_submitted',
+            "Coach {$coach->id} subió comprobante para {$email} (proof_id: {$proof->id})"
+        );
+
+        return response()->json([
+            'id' => $proof->id,
+            'status' => $proof->status->value,
+            'submittedAt' => $proof->submitted_at->toIso8601String(),
+            'expiresAt' => $proof->expires_at->toIso8601String(),
+            'clientEmail' => $proof->client_email,
+            'plan' => $proof->plan->value,
+        ], 201);
+    }
+
+    /**
+     * GET /api/v/coach/payment-proofs
+     *
+     * List proofs belonging to the authenticated coach.
+     * Optional filters: status, from_date, to_date.
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $coach = $this->resolveCoachOrFail($request);
+        Gate::authorize('viewAny', PaymentProof::class);
+
+        $query = PaymentProof::where('coach_id', $coach->id);
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        if ($request->filled('from_date')) {
+            $query->whereDate('submitted_at', '>=', $request->input('from_date'));
+        }
+
+        if ($request->filled('to_date')) {
+            $query->whereDate('submitted_at', '<=', $request->input('to_date'));
+        }
+
+        $paginated = $query->latest('submitted_at')->paginate(15);
+
+        $items = $paginated->getCollection()->map(fn (PaymentProof $proof) => [
+            'id' => $proof->id,
+            'clientEmail' => $proof->client_email,
+            'clientName' => $proof->client_name,
+            'plan' => $proof->plan->value,
+            'amount' => $proof->amount,
+            'currency' => $proof->currency,
+            'paymentMethod' => $proof->payment_method?->value,
+            'status' => $proof->status->value,
+            'submittedAt' => $proof->submitted_at?->toIso8601String(),
+            'expiresAt' => $proof->expires_at?->toIso8601String(),
+            'reviewedAt' => $proof->reviewed_at?->toIso8601String(),
+            'reviewNote' => $proof->review_note,
+        ]);
+
+        return response()->json([
+            'data' => $items,
+            'meta' => [
+                'currentPage' => $paginated->currentPage(),
+                'perPage' => $paginated->perPage(),
+                'total' => $paginated->total(),
+                'lastPage' => $paginated->lastPage(),
+            ],
+        ]);
+    }
+
+    /**
+     * GET /api/v/coach/payment-proofs/{id}
+     *
+     * Return a single proof. Policy enforces coach ownership.
+     */
+    public function show(Request $request, int $id): JsonResponse
+    {
+        $this->resolveCoachOrFail($request);
+
+        $proof = PaymentProof::findOrFail($id);
+        Gate::authorize('view', $proof);
+
+        return response()->json([
+            'id' => $proof->id,
+            'clientEmail' => $proof->client_email,
+            'clientName' => $proof->client_name,
+            'plan' => $proof->plan->value,
+            'amount' => $proof->amount,
+            'currency' => $proof->currency,
+            'paymentMethod' => $proof->payment_method?->value,
+            'coachNote' => $proof->coach_note,
+            'status' => $proof->status->value,
+            'fileMime' => $proof->file_mime,
+            'fileSize' => $proof->file_size,
+            'submittedAt' => $proof->submitted_at?->toIso8601String(),
+            'expiresAt' => $proof->expires_at?->toIso8601String(),
+            'reviewedAt' => $proof->reviewed_at?->toIso8601String(),
+            'reviewNote' => $proof->review_note,
+        ]);
+    }
+}

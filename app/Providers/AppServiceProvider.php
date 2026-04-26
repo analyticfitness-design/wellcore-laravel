@@ -2,16 +2,18 @@
 
 namespace App\Providers;
 
+use App\Http\View\Composers\ClientLayoutComposer;
 use App\Models\Client;
 use App\Models\CoachInvitation;
+use App\Models\PaymentProof;
 use App\Models\PlanTicket;
 use App\Models\WorkoutSession;
 use App\Observers\WorkoutSessionObserver;
 use App\Policies\ClientPolicy;
 use App\Policies\CoachInvitationPolicy;
+use App\Policies\PaymentProofPolicy;
 use App\Policies\PlanTicketPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
-use App\Http\View\Composers\ClientLayoutComposer;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
@@ -63,6 +65,10 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(
             CoachInvitation::class,
             CoachInvitationPolicy::class
+        );
+        Gate::policy(
+            PaymentProof::class,
+            PaymentProofPolicy::class
         );
     }
 

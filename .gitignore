@@ -28,3 +28,7 @@ Thumbs.db
 
 # Git worktrees
 .worktrees/
+
+# Payment proof files (private — never commit)
+storage/app/private/payment_proofs/*
+!storage/app/private/payment_proofs/.gitkeep
