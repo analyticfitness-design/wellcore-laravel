@@ -15,7 +15,7 @@
         </div>
         <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36" data-animate="fadeInUp">
             <div class="mx-auto max-w-3xl text-center">
-                <p class="text-sm font-semibold uppercase tracking-widest text-wc-accent">{{ __('proceso.hero.label') }}</p>
+                <p class="text-sm font-semibold uppercase tracking-widest text-red-700 dark:text-red-400">{{ __('proceso.hero.label') }}</p>
                 <h1 class="mt-4 font-display text-5xl leading-none tracking-wide text-wc-text sm:text-6xl lg:text-8xl">
                     {{ __('proceso.hero.title_line1') }}<br>
                     <span class="text-gradient-accent text-wc-accent">{{ __('proceso.hero.title_line2') }}</span>
@@ -30,7 +30,7 @@
     <div class="section-divider"></div>
 
     {{-- Stats Bar --}}
-    <section class="scroll-reveal border-y border-wc-border bg-wc-bg">
+    <section class="scroll-reveal border-y border-wc-border bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="grid grid-cols-2 gap-6 sm:grid-cols-4">
                 <div class="text-center">
@@ -63,7 +63,7 @@
                    @click="activePhase = 'f01'"
                    :class="activePhase === 'f01' ? 'bg-wc-accent text-white border-wc-accent' : 'bg-wc-bg border-wc-border hover:border-wc-accent/40'"
                    class="flex shrink-0 items-center gap-3 rounded-full border px-5 py-3 transition-all duration-300 scroll-smooth">
-                    <span class="font-data text-xs font-bold" :class="activePhase === 'f01' ? 'text-white' : 'text-wc-accent'">F01</span>
+                    <span class="font-data text-xs font-bold" :class="activePhase === 'f01' ? 'text-white' : 'text-red-700 dark:text-red-400'">F01</span>
                     <div>
                         <p class="text-sm font-semibold" :class="activePhase === 'f01' ? 'text-white' : 'text-wc-text'">{{ __('proceso.nav.f01_name') }}</p>
                         <p class="text-xs" :class="activePhase === 'f01' ? 'text-white/70' : 'text-wc-text-tertiary'">{{ __('proceso.nav.f01_range') }}</p>
@@ -73,7 +73,7 @@
                    @click="activePhase = 'f02'"
                    :class="activePhase === 'f02' ? 'bg-wc-accent text-white border-wc-accent' : 'bg-wc-bg border-wc-border hover:border-wc-accent/40'"
                    class="flex shrink-0 items-center gap-3 rounded-full border px-5 py-3 transition-all duration-300 scroll-smooth">
-                    <span class="font-data text-xs font-bold" :class="activePhase === 'f02' ? 'text-white' : 'text-wc-accent'">F02</span>
+                    <span class="font-data text-xs font-bold" :class="activePhase === 'f02' ? 'text-white' : 'text-red-700 dark:text-red-400'">F02</span>
                     <div>
                         <p class="text-sm font-semibold" :class="activePhase === 'f02' ? 'text-white' : 'text-wc-text'">{{ __('proceso.nav.f02_name') }}</p>
                         <p class="text-xs" :class="activePhase === 'f02' ? 'text-white/70' : 'text-wc-text-tertiary'">{{ __('proceso.nav.f02_range') }}</p>
@@ -83,7 +83,7 @@
                    @click="activePhase = 'f03'"
                    :class="activePhase === 'f03' ? 'bg-wc-accent text-white border-wc-accent' : 'bg-wc-bg border-wc-border hover:border-wc-accent/40'"
                    class="flex shrink-0 items-center gap-3 rounded-full border px-5 py-3 transition-all duration-300 scroll-smooth">
-                    <span class="font-data text-xs font-bold" :class="activePhase === 'f03' ? 'text-white' : 'text-wc-accent'">F03</span>
+                    <span class="font-data text-xs font-bold" :class="activePhase === 'f03' ? 'text-white' : 'text-red-700 dark:text-red-400'">F03</span>
                     <div>
                         <p class="text-sm font-semibold" :class="activePhase === 'f03' ? 'text-white' : 'text-wc-text'">{{ __('proceso.nav.f03_name') }}</p>
                         <p class="text-xs" :class="activePhase === 'f03' ? 'text-white/70' : 'text-wc-text-tertiary'">{{ __('proceso.nav.f03_range') }}</p>
@@ -93,7 +93,7 @@
                    @click="activePhase = 'f04'"
                    :class="activePhase === 'f04' ? 'bg-wc-accent text-white border-wc-accent' : 'bg-wc-bg border-wc-border hover:border-wc-accent/40'"
                    class="flex shrink-0 items-center gap-3 rounded-full border px-5 py-3 transition-all duration-300 scroll-smooth">
-                    <span class="font-data text-xs font-bold" :class="activePhase === 'f04' ? 'text-white' : 'text-wc-accent'">F04</span>
+                    <span class="font-data text-xs font-bold" :class="activePhase === 'f04' ? 'text-white' : 'text-red-700 dark:text-red-400'">F04</span>
                     <div>
                         <p class="text-sm font-semibold" :class="activePhase === 'f04' ? 'text-white' : 'text-wc-text'">{{ __('proceso.nav.f04_name') }}</p>
                         <p class="text-xs" :class="activePhase === 'f04' ? 'text-white/70' : 'text-wc-text-tertiary'">{{ __('proceso.nav.f04_range') }}</p>
@@ -113,18 +113,18 @@
         </div>
 
         {{-- FASE 01: Diagnostico --}}
-        <section id="fase-01" class="scroll-reveal relative bg-wc-bg scroll-mt-20" data-animate="slideInRight">
+        <section id="fase-01" class="scroll-reveal relative bg-wc-bg scroll-mt-20 hp-cv-section" data-animate="slideInRight">
             {{-- Timeline node --}}
             <div class="absolute left-4 top-20 hidden lg:flex" aria-hidden="true">
                 <div class="flex h-12 w-12 items-center justify-center rounded-full border-2 border-wc-accent bg-wc-bg-tertiary shadow-lg shadow-wc-accent/20">
-                    <span class="font-data text-sm font-bold text-wc-accent">01</span>
+                    <span class="font-data text-sm font-bold text-red-700 dark:text-red-400">01</span>
                 </div>
             </div>
 
             <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:pl-24">
                 <div class="mb-4 flex items-center justify-center gap-3" data-animate="fadeInUp">
                     <div class="flex h-12 w-12 items-center justify-center rounded-full bg-wc-accent text-white font-data font-bold text-sm lg:hidden">01</div>
-                    <span class="font-data text-sm font-semibold text-wc-accent">{{ __('proceso.fase01.label') }}</span>
+                    <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">{{ __('proceso.fase01.label') }}</span>
                     <span class="text-xs font-medium text-wc-text-tertiary">{{ __('proceso.fase01.range') }}</span>
                 </div>
                 <h2 class="text-center font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('proceso.fase01.title') }}</h2>
@@ -139,16 +139,16 @@
 
                         <div class="mt-8 flex flex-wrap gap-3">
                             <div class="card-hover-lift rounded-lg border border-wc-accent/20 bg-wc-accent/5 px-4 py-2 transition-transform hover:scale-105">
-                                <span class="font-data text-sm font-bold text-wc-accent">48h</span>
+                                <span class="font-data text-sm font-bold text-red-700 dark:text-red-400">48h</span>
                                 <span class="ml-1 text-xs text-wc-text-secondary">{{ __('proceso.fase01.badge_delivery') }}</span>
                             </div>
                             <div class="card-hover-lift rounded-lg border border-wc-accent/20 bg-wc-accent/5 px-4 py-2 transition-transform hover:scale-105">
-                                <span class="font-data text-sm font-bold text-wc-accent">1:1</span>
+                                <span class="font-data text-sm font-bold text-red-700 dark:text-red-400">1:1</span>
                                 <span class="ml-1 text-xs text-wc-text-secondary">{{ __('proceso.fase01.badge_interview') }}</span>
                             </div>
                         </div>
 
-                        <h3 class="mt-10 text-center text-sm font-semibold uppercase tracking-wider text-wc-accent">{{ __('proceso.fase01.checklist_title') }}</h3>
+                        <h3 class="mt-10 text-center text-sm font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('proceso.fase01.checklist_title') }}</h3>
                         <ul class="mt-4 space-y-3">
                             @foreach (__('proceso.fase01.checklist') as $i => $item)
                             <li class="flex items-start gap-3 text-sm text-wc-text-secondary transition-transform hover:scale-[1.01]" style="animation-delay: {{ ($i + 1) * 0.05 }}s">
@@ -167,7 +167,7 @@
                             <ul class="mt-5 space-y-3">
                                 @foreach (__('proceso.fase01.sidebar_items') as $i => $item)
                                 <li class="flex items-start gap-3 text-sm text-wc-text-secondary" style="animation-delay: {{ ($i + 1) * 0.05 }}s">
-                                    <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-wc-accent/10 text-xs font-bold text-wc-accent transition-transform hover:scale-110">{{ $i + 1 }}</span>
+                                    <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-wc-accent/10 text-xs font-bold text-red-700 dark:text-red-400 transition-transform hover:scale-110">{{ $i + 1 }}</span>
                                     {{ $item }}
                                 </li>
                                 @endforeach
@@ -184,18 +184,18 @@
         <div class="section-divider"></div>
 
         {{-- FASE 02: Diseno --}}
-        <section id="fase-02" class="scroll-reveal relative bg-wc-bg-tertiary scroll-mt-20" data-animate="slideInRight">
+        <section id="fase-02" class="scroll-reveal relative bg-wc-bg-tertiary scroll-mt-20 hp-cv-section" data-animate="slideInRight">
             {{-- Timeline node --}}
             <div class="absolute left-4 top-20 hidden lg:flex" aria-hidden="true">
                 <div class="flex h-12 w-12 items-center justify-center rounded-full border-2 border-wc-accent bg-wc-bg shadow-lg shadow-wc-accent/20">
-                    <span class="font-data text-sm font-bold text-wc-accent">02</span>
+                    <span class="font-data text-sm font-bold text-red-700 dark:text-red-400">02</span>
                 </div>
             </div>
 
             <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:pl-24">
                 <div class="mb-4 flex items-center justify-center gap-3" data-animate="fadeInUp">
                     <div class="flex h-12 w-12 items-center justify-center rounded-full bg-wc-accent text-white font-data font-bold text-sm lg:hidden">02</div>
-                    <span class="font-data text-sm font-semibold text-wc-accent">{{ __('proceso.fase02.label') }}</span>
+                    <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">{{ __('proceso.fase02.label') }}</span>
                     <span class="text-xs font-medium text-wc-text-tertiary">{{ __('proceso.fase02.range') }}</span>
                 </div>
                 <h2 class="text-center font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('proceso.fase02.title') }}</h2>
@@ -209,16 +209,16 @@
 
                         <div class="mt-8 flex flex-wrap gap-3">
                             <div class="card-hover-lift rounded-lg border border-wc-accent/20 bg-wc-accent/5 px-4 py-2 transition-transform hover:scale-105">
-                                <span class="font-data text-sm font-bold text-wc-accent">PDF</span>
+                                <span class="font-data text-sm font-bold text-red-700 dark:text-red-400">PDF</span>
                                 <span class="ml-1 text-xs text-wc-text-secondary">{{ __('proceso.fase02.badge_pdf') }}</span>
                             </div>
                             <div class="card-hover-lift rounded-lg border border-wc-accent/20 bg-wc-accent/5 px-4 py-2 transition-transform hover:scale-105">
-                                <span class="font-data text-sm font-bold text-wc-accent">100%</span>
+                                <span class="font-data text-sm font-bold text-red-700 dark:text-red-400">100%</span>
                                 <span class="ml-1 text-xs text-wc-text-secondary">{{ __('proceso.fase02.badge_custom') }}</span>
                             </div>
                         </div>
 
-                        <h3 class="mt-10 text-center text-sm font-semibold uppercase tracking-wider text-wc-accent">{{ __('proceso.fase02.checklist_title') }}</h3>
+                        <h3 class="mt-10 text-center text-sm font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('proceso.fase02.checklist_title') }}</h3>
                         <ul class="mt-4 space-y-3">
                             @foreach (__('proceso.fase02.checklist') as $i => $item)
                             <li class="flex items-start gap-3 text-sm text-wc-text-secondary transition-transform hover:scale-[1.01]" style="animation-delay: {{ ($i + 1) * 0.05 }}s">
@@ -243,7 +243,7 @@
                                     <p class="mt-1 text-sm text-wc-text-secondary">{{ __('proceso.fase02.plan_base_desc') }}</p>
                                 </div>
                                 <div class="card-hover-lift rounded-xl border border-wc-accent/30 bg-wc-accent/5 p-4 transition-all duration-300 hover:border-wc-accent/60 hover:bg-wc-accent/10">
-                                    <p class="text-xs font-semibold uppercase tracking-wider text-wc-accent">{{ __('proceso.fase02.plan_elite_name') }}</p>
+                                    <p class="text-xs font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('proceso.fase02.plan_elite_name') }}</p>
                                     <p class="mt-1 text-sm text-wc-text-secondary">{{ __('proceso.fase02.plan_elite_desc') }}</p>
                                 </div>
                             </div>
@@ -259,18 +259,18 @@
         <div class="section-divider"></div>
 
         {{-- FASE 03: Ejecucion --}}
-        <section id="fase-03" class="scroll-reveal relative bg-wc-bg scroll-mt-20" data-animate="slideInRight">
+        <section id="fase-03" class="scroll-reveal relative bg-wc-bg scroll-mt-20 hp-cv-section" data-animate="slideInRight">
             {{-- Timeline node --}}
             <div class="absolute left-4 top-20 hidden lg:flex" aria-hidden="true">
                 <div class="flex h-12 w-12 items-center justify-center rounded-full border-2 border-wc-accent bg-wc-bg-tertiary shadow-lg shadow-wc-accent/20">
-                    <span class="font-data text-sm font-bold text-wc-accent">03</span>
+                    <span class="font-data text-sm font-bold text-red-700 dark:text-red-400">03</span>
                 </div>
             </div>
 
             <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:pl-24">
                 <div class="mb-4 flex items-center justify-center gap-3" data-animate="fadeInUp">
                     <div class="flex h-12 w-12 items-center justify-center rounded-full bg-wc-accent text-white font-data font-bold text-sm lg:hidden">03</div>
-                    <span class="font-data text-sm font-semibold text-wc-accent">{{ __('proceso.fase03.label') }}</span>
+                    <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">{{ __('proceso.fase03.label') }}</span>
                     <span class="text-xs font-medium text-wc-text-tertiary">{{ __('proceso.fase03.range') }}</span>
                 </div>
                 <h2 class="text-center font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('proceso.fase03.title') }}</h2>
@@ -283,11 +283,11 @@
 
                     <div class="mt-8 flex flex-wrap justify-center gap-3">
                         <div class="card-hover-lift rounded-lg border border-wc-accent/20 bg-wc-accent/5 px-4 py-2 transition-transform hover:scale-105">
-                            <span class="font-data text-sm font-bold text-wc-accent">7 dias/sem</span>
+                            <span class="font-data text-sm font-bold text-red-700 dark:text-red-400">7 dias/sem</span>
                             <span class="ml-1 text-xs text-wc-text-secondary">{{ __('proceso.fase03.badge_tracking') }}</span>
                         </div>
                         <div class="card-hover-lift rounded-lg border border-wc-accent/20 bg-wc-accent/5 px-4 py-2 transition-transform hover:scale-105">
-                            <span class="font-data text-sm font-bold text-wc-accent">WA directo</span>
+                            <span class="font-data text-sm font-bold text-red-700 dark:text-red-400">WA directo</span>
                             <span class="ml-1 text-xs text-wc-text-secondary">{{ __('proceso.fase03.badge_wa') }}</span>
                         </div>
                     </div>
@@ -295,12 +295,12 @@
 
                 {{-- Weekly Cycle --}}
                 <div class="mt-14">
-                    <h3 class="text-center text-sm font-semibold uppercase tracking-wider text-wc-accent">{{ __('proceso.fase03.weekly_cycle_title') }}</h3>
+                    <h3 class="text-center text-sm font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('proceso.fase03.weekly_cycle_title') }}</h3>
                     <div class="stagger-grid mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         @foreach (['cycle_step1','cycle_step2','cycle_step3','cycle_step4'] as $n => $step)
                         <div class="card-hover-lift rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 text-center transition-all duration-300 hover:border-wc-accent/30">
                             <div class="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-wc-accent/10 transition-transform hover:scale-110">
-                                <span class="font-data text-sm font-bold text-wc-accent">{{ $n + 1 }}</span>
+                                <span class="font-data text-sm font-bold text-red-700 dark:text-red-400">{{ $n + 1 }}</span>
                             </div>
                             <p class="mt-3 text-sm font-medium text-wc-text">{{ __('proceso.fase03.'.$step) }}</p>
                         </div>
@@ -311,7 +311,7 @@
                 {{-- What's included + How it works --}}
                 <div class="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-2">
                     <div>
-                        <h3 class="text-center text-sm font-semibold uppercase tracking-wider text-wc-accent">{{ __('proceso.fase03.includes_title') }}</h3>
+                        <h3 class="text-center text-sm font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('proceso.fase03.includes_title') }}</h3>
                         <ul class="mt-4 space-y-3">
                             @foreach (__('proceso.fase03.includes') as $item)
                             <li class="flex items-start gap-3 text-sm text-wc-text-secondary transition-transform hover:scale-[1.01]">
@@ -327,7 +327,7 @@
                         <ol class="mt-4 space-y-3">
                             @foreach (__('proceso.fase03.how_it_works') as $i => $step)
                             <li class="flex items-start gap-3 text-sm text-wc-text-secondary">
-                                <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-wc-accent/10 text-xs font-bold text-wc-accent transition-transform hover:scale-110">{{ $i + 1 }}</span>
+                                <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-wc-accent/10 text-xs font-bold text-red-700 dark:text-red-400 transition-transform hover:scale-110">{{ $i + 1 }}</span>
                                 {{ $step }}
                             </li>
                             @endforeach
@@ -346,18 +346,18 @@
         <div class="section-divider"></div>
 
         {{-- FASE 04: Resultados --}}
-        <section id="fase-04" class="scroll-reveal relative bg-wc-bg-tertiary scroll-mt-20" data-animate="slideInRight">
+        <section id="fase-04" class="scroll-reveal relative bg-wc-bg-tertiary scroll-mt-20 hp-cv-section" data-animate="slideInRight">
             {{-- Timeline node --}}
             <div class="absolute left-4 top-20 hidden lg:flex" aria-hidden="true">
                 <div class="flex h-12 w-12 items-center justify-center rounded-full border-2 border-wc-accent bg-wc-bg shadow-lg shadow-wc-accent/20">
-                    <span class="font-data text-sm font-bold text-wc-accent">04</span>
+                    <span class="font-data text-sm font-bold text-red-700 dark:text-red-400">04</span>
                 </div>
             </div>
 
             <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:pl-24">
                 <div class="mb-4 flex items-center justify-center gap-3" data-animate="fadeInUp">
                     <div class="flex h-12 w-12 items-center justify-center rounded-full bg-wc-accent text-white font-data font-bold text-sm lg:hidden">04</div>
-                    <span class="font-data text-sm font-semibold text-wc-accent">{{ __('proceso.fase04.label') }}</span>
+                    <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">{{ __('proceso.fase04.label') }}</span>
                     <span class="text-xs font-medium text-wc-text-tertiary">{{ __('proceso.fase04.range') }}</span>
                 </div>
                 <h2 class="text-center font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('proceso.fase04.title') }}</h2>
@@ -389,7 +389,7 @@
 
                 <div class="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-2">
                     <div>
-                        <h3 class="text-center text-sm font-semibold uppercase tracking-wider text-wc-accent">{{ __('proceso.fase04.eval_title') }}</h3>
+                        <h3 class="text-center text-sm font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('proceso.fase04.eval_title') }}</h3>
                         <ul class="mt-4 space-y-3">
                             @foreach (__('proceso.fase04.eval') as $item)
                             <li class="flex items-start gap-3 text-sm text-wc-text-secondary transition-transform hover:scale-[1.01]">
@@ -480,14 +480,14 @@
     <div class="section-divider"></div>
 
     {{-- Final CTA --}}
-    <section class="bg-wc-bg-tertiary">
+    <section class="bg-wc-bg-tertiary hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg p-10 sm:p-16">
                 <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/10 via-wc-accent/5 to-transparent"></div>
                 <div class="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-wc-accent/5 blur-3xl" aria-hidden="true"></div>
                 <div class="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-wc-accent/5 blur-2xl" aria-hidden="true"></div>
                 <div class="relative text-center">
-                    <p class="text-sm font-semibold uppercase tracking-widest text-wc-accent">{{ __('proceso.cta.label') }}</p>
+                    <p class="text-sm font-semibold uppercase tracking-widest text-red-700 dark:text-red-400">{{ __('proceso.cta.label') }}</p>
                     <h2 class="mt-4 font-display text-3xl tracking-wide text-wc-text sm:text-5xl">{{ __('proceso.cta.title') }}</h2>
                     <p class="mx-auto mt-6 max-w-lg text-wc-text-secondary">
                         {{ __('proceso.cta.description') }}
