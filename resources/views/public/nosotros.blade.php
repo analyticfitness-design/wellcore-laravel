@@ -64,7 +64,7 @@
     <div class="section-divider"></div>
 
     {{-- 2. MISSION / VISION --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
             <div class="text-center" data-animate="fadeInUp">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('nosotros.essence_h2') }}</h2>
@@ -118,7 +118,7 @@
     <div class="section-divider"></div>
 
     {{-- 3. TEAM --}}
-    <section class="bg-wc-bg-tertiary">
+    <section class="bg-wc-bg-tertiary hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
             <div class="text-center" data-animate="fadeInUp">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('nosotros.team_h2') }}</h2>
@@ -136,7 +136,7 @@
                     </div>
                     <div class="flex-1 text-center md:text-left">
                         <h3 class="font-display text-2xl tracking-wide text-wc-text">{{ __('nosotros.founder_name') }}</h3>
-                        <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">{{ __('nosotros.founder_role') }}</p>
+                        <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('nosotros.founder_role') }}</p>
                         <p class="mt-4 leading-relaxed text-wc-text-secondary">
                             {{ __('nosotros.founder_bio') }}
                         </p>
@@ -163,14 +163,14 @@
                         <span class="font-display text-2xl text-wc-accent">NC</span>
                     </div>
                     <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('nosotros.coach2_name') }}</h3>
-                    <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">{{ __('nosotros.coach2_role') }}</p>
+                    <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('nosotros.coach2_role') }}</p>
                     <p class="mt-4 text-sm leading-relaxed text-wc-text-secondary">
                         {{ __('nosotros.coach2_bio') }}
                     </p>
                     {{-- Hover overlay --}}
                     <div class="absolute inset-0 flex items-end justify-center rounded-xl bg-gradient-to-t from-wc-accent/10 to-transparent pb-6 opacity-0 transition-opacity duration-300"
                          :class="{ 'opacity-100': hovered }">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-wc-accent">{{ __('nosotros.coach2_hover') }}</span>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('nosotros.coach2_hover') }}</span>
                     </div>
                 </div>
 
@@ -185,14 +185,14 @@
                         <span class="font-display text-2xl text-wc-accent">SC</span>
                     </div>
                     <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('nosotros.coach3_name') }}</h3>
-                    <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">{{ __('nosotros.coach3_role') }}</p>
+                    <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('nosotros.coach3_role') }}</p>
                     <p class="mt-4 text-sm leading-relaxed text-wc-text-secondary">
                         {{ __('nosotros.coach3_bio') }}
                     </p>
                     {{-- Hover overlay --}}
                     <div class="absolute inset-0 flex items-end justify-center rounded-xl bg-gradient-to-t from-wc-accent/10 to-transparent pb-6 opacity-0 transition-opacity duration-300"
                          :class="{ 'opacity-100': hovered }">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-wc-accent">{{ __('nosotros.coach3_hover') }}</span>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('nosotros.coach3_hover') }}</span>
                     </div>
                 </div>
 
@@ -207,14 +207,14 @@
                         <span class="font-display text-2xl text-wc-accent">MC</span>
                     </div>
                     <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('nosotros.coach4_name') }}</h3>
-                    <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-wc-accent">{{ __('nosotros.coach4_role') }}</p>
+                    <p class="mt-1 text-sm font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('nosotros.coach4_role') }}</p>
                     <p class="mt-4 text-sm leading-relaxed text-wc-text-secondary">
                         {{ __('nosotros.coach4_bio') }}
                     </p>
                     {{-- Hover overlay --}}
                     <div class="absolute inset-0 flex items-end justify-center rounded-xl bg-gradient-to-t from-wc-accent/10 to-transparent pb-6 opacity-0 transition-opacity duration-300"
                          :class="{ 'opacity-100': hovered }">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-wc-accent">{{ __('nosotros.coach4_hover') }}</span>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('nosotros.coach4_hover') }}</span>
                     </div>
                 </div>
             </div>
@@ -224,7 +224,7 @@
     <div class="section-divider"></div>
 
     {{-- 4. TIMELINE 2024-2026 --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
             <div class="text-center" data-animate="fadeInUp">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('nosotros.history_h2') }}</h2>
@@ -240,7 +240,7 @@
                 {{-- 2024 Q1 — odd: slideInLeft --}}
                 <div class="scroll-reveal relative mb-12 flex items-start gap-6 sm:gap-0" data-animate="slideInLeft">
                     <div class="hidden sm:block sm:w-1/2 sm:pr-12 sm:text-right">
-                        <span class="font-data text-sm font-semibold text-wc-accent">{{ __('nosotros.tl1_date') }}</span>
+                        <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">{{ __('nosotros.tl1_date') }}</span>
                         <h3 class="mt-1 text-lg font-semibold text-wc-text">{{ __('nosotros.tl1_title') }}</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
                             {{ __('nosotros.tl1_desc') }}
@@ -250,7 +250,7 @@
                         <div class="h-3 w-3 rounded-full bg-wc-accent"></div>
                     </div>
                     <div class="flex-1 sm:hidden">
-                        <span class="font-data text-sm font-semibold text-wc-accent">{{ __('nosotros.tl1_date') }}</span>
+                        <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">{{ __('nosotros.tl1_date') }}</span>
                         <h3 class="mt-1 text-lg font-semibold text-wc-text">{{ __('nosotros.tl1_title') }}</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
                             {{ __('nosotros.tl1_desc') }}
@@ -266,7 +266,7 @@
                         <div class="h-3 w-3 rounded-full bg-wc-accent"></div>
                     </div>
                     <div class="flex-1 sm:w-1/2 sm:pl-12">
-                        <span class="font-data text-sm font-semibold text-wc-accent">{{ __('nosotros.tl2_date') }}</span>
+                        <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">{{ __('nosotros.tl2_date') }}</span>
                         <h3 class="mt-1 text-lg font-semibold text-wc-text">{{ __('nosotros.tl2_title') }}</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
                             {{ __('nosotros.tl2_desc') }}
@@ -277,7 +277,7 @@
                 {{-- 2025 Q1 — odd: slideInLeft --}}
                 <div class="scroll-reveal relative mb-12 flex items-start gap-6 sm:gap-0" data-animate="slideInLeft">
                     <div class="hidden sm:block sm:w-1/2 sm:pr-12 sm:text-right">
-                        <span class="font-data text-sm font-semibold text-wc-accent">{{ __('nosotros.tl3_date') }}</span>
+                        <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">{{ __('nosotros.tl3_date') }}</span>
                         <h3 class="mt-1 text-lg font-semibold text-wc-text">{{ __('nosotros.tl3_title') }}</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
                             {{ __('nosotros.tl3_desc') }}
@@ -287,7 +287,7 @@
                         <div class="h-3 w-3 rounded-full bg-wc-accent"></div>
                     </div>
                     <div class="flex-1 sm:hidden">
-                        <span class="font-data text-sm font-semibold text-wc-accent">{{ __('nosotros.tl3_date') }}</span>
+                        <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">{{ __('nosotros.tl3_date') }}</span>
                         <h3 class="mt-1 text-lg font-semibold text-wc-text">{{ __('nosotros.tl3_title') }}</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
                             {{ __('nosotros.tl3_desc') }}
@@ -303,7 +303,7 @@
                         <div class="h-3 w-3 rounded-full bg-wc-accent"></div>
                     </div>
                     <div class="flex-1 sm:w-1/2 sm:pl-12">
-                        <span class="font-data text-sm font-semibold text-wc-accent">{{ __('nosotros.tl4_date') }}</span>
+                        <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">{{ __('nosotros.tl4_date') }}</span>
                         <h3 class="mt-1 text-lg font-semibold text-wc-text">{{ __('nosotros.tl4_title') }}</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
                             {{ __('nosotros.tl4_desc') }}
@@ -314,7 +314,7 @@
                 {{-- 2026 Q1 — odd: slideInLeft — current/final milestone --}}
                 <div class="scroll-reveal relative flex items-start gap-6 sm:gap-0" data-animate="slideInLeft">
                     <div class="hidden sm:block sm:w-1/2 sm:pr-12 sm:text-right">
-                        <span class="font-data text-sm font-semibold text-wc-accent">{{ __('nosotros.tl5_date') }}</span>
+                        <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">{{ __('nosotros.tl5_date') }}</span>
                         <h3 class="mt-1 text-lg font-semibold text-wc-text">{{ __('nosotros.tl5_title') }}</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
                             {{ __('nosotros.tl5_desc') }}
@@ -325,7 +325,7 @@
                         <div class="h-3 w-3 rounded-full bg-white"></div>
                     </div>
                     <div class="flex-1 sm:hidden">
-                        <span class="font-data text-sm font-semibold text-wc-accent">{{ __('nosotros.tl5_date') }}</span>
+                        <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">{{ __('nosotros.tl5_date') }}</span>
                         <h3 class="mt-1 text-lg font-semibold text-wc-text">{{ __('nosotros.tl5_title') }}</h3>
                         <p class="mt-2 text-sm text-wc-text-secondary">
                             {{ __('nosotros.tl5_desc') }}
@@ -340,7 +340,7 @@
     <div class="section-divider"></div>
 
     {{-- 5. STATS GRID --}}
-    <section class="bg-wc-bg-tertiary">
+    <section class="bg-wc-bg-tertiary hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
             <div class="text-center" data-animate="fadeInUp">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('nosotros.stats_h2') }}</h2>
@@ -382,7 +382,7 @@
     <div class="section-divider"></div>
 
     {{-- 6. VALUES GRID --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
             <div class="text-center" data-animate="fadeInUp">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('nosotros.values_h2') }}</h2>
@@ -472,7 +472,7 @@
     <div class="section-divider"></div>
 
     {{-- 7. CTA --}}
-    <section class="relative overflow-hidden bg-wc-bg-tertiary">
+    <section class="relative overflow-hidden bg-wc-bg-tertiary hp-cv-section">
         {{-- Decorative gradient orbs --}}
         <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
             <div class="absolute -left-32 -top-32 h-64 w-64 rounded-full bg-wc-accent/5 blur-3xl"></div>
