@@ -141,4 +141,18 @@ return [
     'name' => 'WellCore Fitness',
     'version' => '2.0.0',
     'environment' => env('APP_ENV', 'production'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Coach Contract Acceptance Gate
+    |--------------------------------------------------------------------------
+    | Controls the digital acceptance flow of the Coach Alliance Agreement.
+    | When 'enabled' is false, the gate API short-circuits and the middleware
+    | becomes a no-op.
+    */
+    'coach_contract' => [
+        'enabled'  => env('COACH_CONTRACT_GATE_ENABLED', true),
+        'version'  => env('COACH_CONTRACT_VERSION', '1.0'),
+        'is_draft' => env('COACH_CONTRACT_IS_DRAFT', false),
+    ],
 ];
