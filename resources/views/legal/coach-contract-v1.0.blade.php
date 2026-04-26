@@ -1033,61 +1033,6 @@ em { color: var(--wc-accent-light); font-style: normal; font-weight: 500; }
 
 </div>
 
-<!-- Botón de confirmación de lectura + detección automática de scroll -->
-<div id="contract-read-confirm" style="
-    text-align:center;
-    padding:40px 24px 32px;
-    border-top:1px solid #262626;
-    margin-top:16px;
-">
-    <p style="color:#A3A3A3;font-size:14px;margin-bottom:16px;">
-        ¿Llegaste al final? Confirma que leíste el acuerdo completo.
-    </p>
-    <button
-        id="btn-confirm-read"
-        onclick="notifyContractEnd()"
-        style="
-            background:#DC2626;
-            color:#fff;
-            border:none;
-            border-radius:8px;
-            padding:12px 32px;
-            font-size:15px;
-            font-weight:600;
-            font-family:inherit;
-            cursor:pointer;
-            transition:opacity .15s;
-        "
-        onmouseover="this.style.opacity='.85'"
-        onmouseout="this.style.opacity='1'"
-    >
-        He llegado al final del acuerdo →
-    </button>
-</div>
-
-<script>
-    var _contractNotified = false;
-    function notifyContractEnd() {
-        if (_contractNotified) return;
-        _contractNotified = true;
-        window.parent.postMessage({ type: 'wc-contract-end' }, '*');
-        var btn = document.getElementById('btn-confirm-read');
-        if (btn) {
-            btn.textContent = '✓ Confirmado';
-            btn.style.background = '#10B981';
-            btn.disabled = true;
-        }
-    }
-    // También detectar scroll automático al llegar al fondo
-    window.addEventListener('scroll', function () {
-        var scrollBottom = window.scrollY + window.innerHeight;
-        var docHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
-        if (scrollBottom >= docHeight - 20) {
-            notifyContractEnd();
-        }
-    }, { passive: true });
-</script>
-
 <!-- FOOTER -->
 <footer class="footer">
     <div class="footer-logo">WELL<span class="accent">CORE</span> FITNESS</div>

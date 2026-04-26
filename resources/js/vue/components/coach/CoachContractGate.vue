@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onBeforeUnmount, ref, computed, watch } from 'vue';
+import { onMounted, ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useContractGate } from '../../composables/useContractGate';
 import { useAuthStore } from '../../stores/auth';
@@ -8,23 +8,12 @@ const router    = useRouter();
 const authStore = useAuthStore();
 const gate      = useContractGate();
 
-const accepted                = ref(false);
-const showDeclineConfirm      = ref(false);
-const messageListenerAttached = ref(false);
-const iframeEl                = ref(null);
+const accepted           = ref(false);
+const showDeclineConfirm = ref(false);
 
 const acceptDisabled = computed(() =>
     !gate.scrollCompleted.value || !accepted.value || gate.submitting.value
 );
-
-function handleMessage(e) {
-    // sandbox="allow-scripts" sin allow-same-origin hace que e.source no sea
-    // comparable con iframeEl.value.contentWindow en Chrome. La gate real es
-    // server-side; aquí solo habilitamos el checkbox de UI.
-    if (e?.data?.type === 'wc-contract-end') {
-        gate.markScrollComplete();
-    }
-}
 
 async function handleAccept() {
     const ok = await gate.accept();
@@ -46,18 +35,7 @@ async function handleDecline() {
 }
 
 onMounted(async () => {
-    if (!messageListenerAttached.value) {
-        window.addEventListener('message', handleMessage);
-        messageListenerAttached.value = true;
-    }
     await gate.refresh();
-});
-
-onBeforeUnmount(() => {
-    if (messageListenerAttached.value) {
-        window.removeEventListener('message', handleMessage);
-        messageListenerAttached.value = false;
-    }
 });
 
 watch(() => gate.requires.value, (val) => {
@@ -83,15 +61,13 @@ watch(() => gate.requires.value, (val) => {
                     Acuerdo de Alianza Comercial · WellCore Fitness
                 </h2>
                 <p class="mt-1 text-xs text-wc-text/60">
-                    Versión {{ gate.version.value || '1.0' }} · Lee hasta el final para activar la aceptación
+                    Versión {{ gate.version.value || '1.0' }} · Lee el acuerdo completo y confirma al terminar
                 </p>
             </header>
 
-            <!-- Iframe with contract HTML -->
+            <!-- Iframe — solo visualización, sin sandbox -->
             <div class="flex-1 overflow-hidden bg-black p-2 sm:p-4">
                 <iframe
-                    ref="iframeEl"
-                    sandbox="allow-scripts"
                     :srcdoc="gate.html.value"
                     class="h-full w-full rounded-md border border-wc-border bg-wc-bg"
                     title="Contrato del coach"
@@ -101,12 +77,17 @@ watch(() => gate.requires.value, (val) => {
             <!-- Footer with controls -->
             <footer class="border-t border-wc-border bg-wc-bg-secondary px-4 py-4 sm:px-6">
                 <div class="mx-auto max-w-3xl space-y-3">
-                    <p
-                        v-if="!gate.scrollCompleted.value"
-                        class="text-xs text-wc-text/60"
-                    >
-                        Lee el documento hasta el final para activar la aceptación.
-                    </p>
+
+                    <!-- Botón de confirmación de lectura en el padre — sin depender del iframe -->
+                    <div v-if="!gate.scrollCompleted.value" class="flex justify-center">
+                        <button
+                            type="button"
+                            @click="gate.markScrollComplete()"
+                            class="rounded-lg border border-wc-border bg-wc-bg-tertiary px-5 py-2.5 text-sm font-medium text-wc-text transition-colors hover:border-wc-accent hover:text-wc-accent active:scale-95"
+                        >
+                            He leído el acuerdo completo →
+                        </button>
+                    </div>
 
                     <label class="flex items-start gap-3 text-sm text-wc-text">
                         <input
