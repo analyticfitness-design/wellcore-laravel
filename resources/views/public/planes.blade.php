@@ -85,15 +85,15 @@
                             :class="billing === 'trimestral' ? 'bg-wc-accent text-white shadow-md' : 'text-wc-text-secondary hover:text-wc-text'"
                             class="rounded-full px-5 py-2 text-sm font-medium transition-all duration-200">
                         {{ __('planes.billing_trimestral') }}
-                        <span class="ml-1 rounded-full bg-wc-accent/20 px-1.5 py-0.5 text-xs font-bold text-red-700 dark:text-red-400"
-                              :class="billing === 'trimestral' ? 'bg-white/20 text-white dark:text-white' : ''">-10%</span>
+                        <span class="ml-1 rounded-full px-1.5 py-0.5 text-xs font-bold"
+                              :class="billing === 'trimestral' ? 'bg-white/20 text-white' : 'bg-wc-accent text-white'">-10%</span>
                     </button>
                     <button @click="billing = 'anual'"
                             :class="billing === 'anual' ? 'bg-wc-accent text-white shadow-md' : 'text-wc-text-secondary hover:text-wc-text'"
                             class="rounded-full px-5 py-2 text-sm font-medium transition-all duration-200">
                         {{ __('planes.billing_anual') }}
-                        <span class="ml-1 rounded-full bg-wc-accent/20 px-1.5 py-0.5 text-xs font-bold text-red-700 dark:text-red-400"
-                              :class="billing === 'anual' ? 'bg-white/20 text-white dark:text-white' : ''">-20%</span>
+                        <span class="ml-1 rounded-full px-1.5 py-0.5 text-xs font-bold"
+                              :class="billing === 'anual' ? 'bg-white/20 text-white' : 'bg-wc-accent text-white'">-20%</span>
                     </button>
                 </div>
             </div>

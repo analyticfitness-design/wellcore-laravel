@@ -22,7 +22,7 @@
         {{-- Text --}}
         <p class="text-xs text-wc-text-secondary">
             {{ __('cookie.body') }}
-            <a href="{{ route('cookies') }}" class="text-wc-accent hover:underline">{{ __('cookie.read_more') }}</a>
+            <a href="{{ route('cookies') }}" class="text-red-700 dark:text-red-400 underline">{{ __('cookie.read_more') }}</a>
         </p>
 
         {{-- Actions --}}
