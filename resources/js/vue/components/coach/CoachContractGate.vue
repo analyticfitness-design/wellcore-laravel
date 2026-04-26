@@ -18,15 +18,10 @@ const acceptDisabled = computed(() =>
 );
 
 function handleMessage(e) {
-    // srcdoc iframes have an opaque origin (e.origin === 'null' string), so
-    // checking e.origin === window.location.origin would always fail for them.
-    // Validating e.source against the known contentWindow reference is
-    // sufficient — no external window or extension can forge this reference.
-    if (
-        e?.data?.type === 'wc-contract-end' &&
-        iframeEl.value &&
-        e.source === iframeEl.value.contentWindow
-    ) {
+    // sandbox="allow-scripts" sin allow-same-origin hace que e.source no sea
+    // comparable con iframeEl.value.contentWindow en Chrome. La gate real es
+    // server-side; aquí solo habilitamos el checkbox de UI.
+    if (e?.data?.type === 'wc-contract-end') {
         gate.markScrollComplete();
     }
 }
