@@ -145,7 +145,7 @@ Inside `resources/views/legal/coach-contract-v1.0.blade.php`, find the existing 
 </script>
 ```
 
-- [ ] **Step 4: Update the footer with version + draft notice**
+- [ ] **Step 4: Update the footer with version (definitive)**
 
 Replace the contents of the existing `<footer class="footer">…</footer>` with:
 
@@ -154,10 +154,12 @@ Replace the contents of the existing `<footer class="footer">…</footer>` with:
     <div class="footer-logo">WELL<span class="accent">CORE</span> FITNESS</div>
     <div class="footer-meta">
         Acuerdo de alianza comercial · Coaches · Versión 1.0 · 25 de abril de 2026<br>
-        Documento sujeto a revisión legal final · Uso exclusivo del equipo WellCore
+        Documento vinculante · Uso exclusivo del equipo WellCore
     </div>
 </footer>
 ```
+
+Note: the contract ships as a definitive v1.0 — no "borrador" or "sujeto a revisión" disclaimers. The owner has assumed responsibility for the legal content as drafted.
 
 - [ ] **Step 5: Render-test the contract HTML**
 
@@ -362,9 +364,9 @@ Open `config/wellcore.php`. At the end of the returned array, add:
     | becomes a no-op.
     */
     'coach_contract' => [
-        'enabled'  => env('COACH_CONTRACT_GATE_ENABLED', false),
+        'enabled'  => env('COACH_CONTRACT_GATE_ENABLED', true),
         'version'  => env('COACH_CONTRACT_VERSION', '1.0'),
-        'is_draft' => env('COACH_CONTRACT_IS_DRAFT', true),
+        'is_draft' => env('COACH_CONTRACT_IS_DRAFT', false),
     ],
 ```
 
@@ -374,9 +376,9 @@ If `.env.example` exists at the repo root, append:
 
 ```
 # Coach Contract Acceptance gate
-COACH_CONTRACT_GATE_ENABLED=false
+COACH_CONTRACT_GATE_ENABLED=true
 COACH_CONTRACT_VERSION=1.0
-COACH_CONTRACT_IS_DRAFT=true
+COACH_CONTRACT_IS_DRAFT=false
 ```
 
 If `.env.example` does not exist, skip — the docs in Step 1 are sufficient.
@@ -388,13 +390,13 @@ php artisan config:clear
 php artisan tinker --execute="echo config('wellcore.coach_contract.version').' enabled='.var_export(config('wellcore.coach_contract.enabled'),true);"
 ```
 
-Expected: `1.0 enabled=false`.
+Expected: `1.0 enabled=true`.
 
 - [ ] **Step 4: Commit**
 
 ```bash
 git add config/wellcore.php .env.example
-git commit -m "feat(config): add coach_contract feature-flag block (default disabled)"
+git commit -m "feat(config): add coach_contract feature-flag block (gate enabled by default)"
 ```
 
 ---
@@ -1714,9 +1716,9 @@ npm run build
 
 Expected: build succeeds with the gate component bundled.
 
-- [ ] **Step 3: Staging dry-run**
+- [ ] **Step 3: Local / staging dry-run with flag ENABLED**
 
-1. Deploy current branch to staging (or local with the flag enabled).
+1. Set `COACH_CONTRACT_GATE_ENABLED=true` in `.env` locally (matches the new default in config). Run `php artisan config:clear`.
 2. Use 3 different test coach accounts:
    - Coach A: never accepted → gate appears on login.
    - Coach B: accepts → gate disappears, dashboard works.
@@ -1730,29 +1732,33 @@ Expected: build succeeds with the gate component bundled.
 git push origin main
 ```
 
-- [ ] **Step 5: Deploy to production with flag OFF**
+- [ ] **Step 5: Deploy to production with the gate ON**
 
 In EasyPanel:
 1. Run `gitpull-load` script via MCP (do NOT use Rebuild Docker).
 2. Run `php artisan migrate` inside the container — both new migrations are additive.
-3. Run `php artisan config:clear`.
-4. Confirm `COACH_CONTRACT_GATE_ENABLED=false` in production env. The middleware short-circuits while the env is unset/false.
+3. Confirm production env has either no `COACH_CONTRACT_GATE_ENABLED` (config default is `true`) OR has it explicitly set to `true`.
+4. Run `php artisan config:clear`.
 
-- [ ] **Step 6: Flip the flag**
+The gate is now live. All currently active coaches will see the modal on their next request to a coach API endpoint.
 
-Once Steps 1–5 are confirmed clean:
-1. Set `COACH_CONTRACT_GATE_ENABLED=true` in production env.
-2. Run `php artisan config:clear`.
-3. All currently active coaches will see the gate on next request.
-
-- [ ] **Step 7: Monitor for 72 h**
+- [ ] **Step 6: Monitor for the first 72 h**
 
 Track:
+- Acceptance rate (rows with `status='accepted'`).
 - Decline rate (rows with `status='declined'`).
-- Acceptance rate.
 - Coach support tickets mentioning "contrato" or "acuerdo".
 
-If decline rate > 5% in 72 h, flip the env flag back to `false`, run `config:clear`, and investigate UX/content before re-enabling.
+The deploy is intentionally not staged — go-live is immediate. Keep an eye on the first hour for unexpected errors (5xx in the contract endpoints, modal rendering issues on specific browsers).
+
+- [ ] **Step 7: Emergency rollback (only if production is broken)**
+
+If the gate is causing real harm (e.g. a critical bug blocks all coaches from working, modal fails to render, repeated errors), turn the flag off as a last resort:
+
+1. Set `COACH_CONTRACT_GATE_ENABLED=false` in production env.
+2. Run `php artisan config:clear` inside the container.
+
+The middleware short-circuits immediately. Existing acceptance rows stay valid. Investigate, fix, and re-enable.
 
 - [ ] **Step 8: Final commit if any monitoring docs need to be added**
 
@@ -1762,7 +1768,7 @@ If you create a runbook entry or rollout note, commit it under `docs/runbooks/`.
 
 ## Open follow-ups (out of scope, listed for tracking)
 
-- **Final legal review by Colombian counsel.** Mark v1.0 as definitive (`COACH_CONTRACT_IS_DRAFT=false`) only after counsel sign-off.
-- **24 h pre-rollout email notice to existing coaches.** Optional, recommended; track as a separate plan.
+- **Optional post-launch legal review.** The owner has approved v1.0 as definitive for go-live. A post-launch review by Colombian counsel can still produce a v1.1 with refinements; the versioning system already supports forced re-acceptance.
+- **Pre-launch email notice to existing coaches.** Optional. If desired, send 24 h before deploy; track as a separate task.
 - **Admin UI to inspect acceptance rows.** Out of scope; phpMyAdmin query suffices for now.
 - **WebSocket-based realtime for the dashboard counters.** Tracked under the companion mobile-bugs spec; not part of this plan.

@@ -54,7 +54,7 @@ The base HTML covers the business but lacks legal blindaje. Before building, the
 
 The HTML includes a sentinel `<div id="contract-end-sentinel"></div>` immediately before the footer, used by the frontend scroll detector.
 
-**Disclaimer:** I am useful for legal research but not a substitute for a Colombian-licensed attorney. The contract ships with a "Sujeto a revisión legal" footer until reviewed by counsel. Until that review, the version stays as a draft v1.0 in production but the engineering plumbing is ready.
+**Disclaimer:** This is research-grade legal scaffolding, not certified counsel work. The owner has chosen to ship v1.0 as definitive (no "borrador" footer) on launch and to assume responsibility for the content as drafted. Optional post-launch legal review can still feed into a v1.1 — the versioning system already supports forced re-acceptance.
 
 ## Phase 1 — Database (additive only)
 
@@ -195,16 +195,16 @@ Existing acceptances of v1.0 stay valid as historical evidence. The unique const
 1. Add config keys to `config/wellcore.php`:
    ```
    'coach_contract' => [
-       'enabled' => env('COACH_CONTRACT_GATE_ENABLED', false),
+       'enabled' => env('COACH_CONTRACT_GATE_ENABLED', true),
        'version' => env('COACH_CONTRACT_VERSION', '1.0'),
-       'is_draft' => env('COACH_CONTRACT_IS_DRAFT', true),
+       'is_draft' => env('COACH_CONTRACT_IS_DRAFT', false),
    ],
    ```
-2. Ship migrations + backend + middleware with the flag defaulting to `false`. Middleware short-circuits when disabled.
-3. Ship the frontend gate gated by the same config (exposed via `/api/v/coach/contract/status` returning `requires_acceptance: false` when disabled).
-4. Test in staging with internal coach accounts.
-5. Flip `COACH_CONTRACT_GATE_ENABLED=true` in production. All coaches see the gate on next request.
-6. Monitor decline rate for the first 72 h. If unexpectedly high (> 5%), flip the flag back off and investigate UX or content.
+2. Ship migrations + backend + middleware + frontend together. The flag defaults to `true` so the gate is live on deploy.
+3. Local / staging dry-run with internal coach accounts (accept, decline, version-bump scenarios).
+4. Push to main, run `gitpull-load` in EasyPanel, run `php artisan migrate`, `php artisan config:clear`. The gate is live immediately.
+5. Monitor for the first 72 h: acceptance rate, decline rate, support tickets mentioning "contrato".
+6. Emergency rollback only if production breaks: set `COACH_CONTRACT_GATE_ENABLED=false` in env + `config:clear` — middleware short-circuits instantly. Existing acceptance rows stay valid.
 
 ## Build & deploy
 
@@ -212,10 +212,11 @@ Same workflow as Spec 1: build local, commit `public/build/`, `git push`, `gitpu
 
 ## Risks and decisions
 
-1. **Legal validation:** v1.0 ships as **draft** until reviewed by a Colombian-licensed attorney. The eight Phase-0 clauses are research-grade, not certified.
-2. **Existing coaches:** when the flag flips to true, all currently active coaches will see the modal on next login. We are NOT sending an email warning 24 h in advance in this version — see *Open questions* §3.
+1. **Legal validation:** the owner ships v1.0 as **definitive** on launch and accepts responsibility for the content as drafted. Phase-0 clauses are research-grade, aligned with Colombian law (Ley 1581, Ley 527, CST, Ley 1563). A post-launch attorney review can still produce a v1.1 — versioning is built in.
+2. **Existing coaches:** all currently active coaches will see the modal on their next request after deploy. We are NOT sending an email warning 24 h in advance in this version — see *Open questions* §3.
 3. **Iframe vs v-html:** chose **iframe + postMessage** to isolate contract CSS from the modal. v-html would be simpler but couples the contract's typography to the modal's stylesheet.
 4. **Decline irreversibility:** declining sets the account to inactive. Recovery requires admin intervention. This is intentional per stakeholder confirmation on 2026-04-25.
+5. **No staged rollout:** deploy and live happen together — there is no "flag-off canary period". The owner's call. Emergency rollback is a single env flip + `config:clear`.
 
 ## Agent delegation
 
@@ -232,6 +233,6 @@ Phase 0 must complete before Phase 1. Phases 1–3 can overlap once Phase 0 ends
 
 ## Open questions
 
-1. **Final legal review provider** — internal counsel, external firm, or postpone until launch? *Decision pending; ships as draft.*
+1. **Optional post-launch legal review** — would still be valuable as input for v1.1. Decision deferred until after go-live.
 2. **Contract content updates** — who owns versioning? Suggest: a `CONTRACT_OWNERS.md` listing approvers (CEO + legal).
-3. **Pre-rollout coach notification** — optional 24 h email warning before flipping the flag. Recommend: yes, but track as a follow-up issue rather than a blocker for this spec.
+3. **Pre-launch coach notification** — optional 24 h email warning before deploy. Recommend: yes, but track as a follow-up issue rather than a blocker for this spec.
