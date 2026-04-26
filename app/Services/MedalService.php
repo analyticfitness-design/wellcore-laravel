@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Events\NewMessageSent;
+use App\Models\Admin;
 use App\Models\Client;
+use App\Models\CoachMessage;
 use App\Models\Medal;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -125,10 +128,74 @@ class MedalService
                 DB::table('clients')->where('id', $client->id)->increment('total_xp', $medal->xp);
             }
 
+            $this->sendMedalAutoMessage($client, $medal);
+
             return 'unlocked';
         }
 
         return 'progress';
+    }
+
+    /**
+     * Send an automatic chat message to the client's coach announcing the medal unlock.
+     * Uses direction=client_to_coach so it appears in the conversation feed.
+     */
+    private function sendMedalAutoMessage(Client $client, Medal $medal): void
+    {
+        $coach = $this->resolveCoach($client);
+
+        if (! $coach) {
+            return;
+        }
+
+        $medalName = $medal->name ?? $medal->slug;
+        $text = "🎖️ {$medalName} desbloqueada";
+
+        if ($medal->xp ?? 0) {
+            $text .= " (+{$medal->xp} XP)";
+        }
+
+        $msg = CoachMessage::create([
+            'coach_id' => $coach->id,
+            'client_id' => $client->id,
+            'message' => $text,
+            'direction' => 'client_to_coach',
+            'auto' => true,
+        ]);
+
+        event(new NewMessageSent(
+            coachId: $coach->id,
+            clientId: $client->id,
+            senderId: $client->id,
+            senderName: $client->name ?? 'Cliente',
+            messagePreview: mb_substr($text, 0, 100),
+            sentAt: $msg->created_at?->toIso8601String() ?? now()->toIso8601String(),
+        ));
+    }
+
+    /**
+     * Resolve the coach assigned to a client.
+     *
+     * Priority:
+     *   1. Most recent active assigned plan (assigned_by is the explicit coach FK).
+     *   2. Most recent coach_messages thread.
+     */
+    private function resolveCoach(Client $client): ?Admin
+    {
+        $coachId = DB::table('assigned_plans')
+            ->where('client_id', $client->id)
+            ->where('active', true)
+            ->orderByDesc('created_at')
+            ->value('assigned_by');
+
+        if (! $coachId) {
+            $coachId = DB::table('coach_messages')
+                ->where('client_id', $client->id)
+                ->orderByDesc('id')
+                ->value('coach_id');
+        }
+
+        return $coachId ? Admin::find($coachId) : null;
     }
 
     // ── Resolvers map (slug → counter) ───────────────────────────────────────

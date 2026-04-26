@@ -2,23 +2,22 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NewMessageSent implements ShouldBroadcastNow
+class ChatReactionToggled implements ShouldBroadcastNow
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, SerializesModels;
 
     public function __construct(
         public readonly int $coachId,
         public readonly int $clientId,
-        public readonly int $senderId,
-        public readonly string $senderName,
-        public readonly string $messagePreview,
-        public readonly string $sentAt,
+        public readonly int $messageId,
+        public readonly string $emoji,
+        public readonly array $counts,
+        public readonly string $action,
     ) {}
 
     public function broadcastOn(): array
@@ -30,16 +29,16 @@ class NewMessageSent implements ShouldBroadcastNow
 
     public function broadcastAs(): string
     {
-        return 'message.sent';
+        return 'reaction.toggled';
     }
 
     public function broadcastWith(): array
     {
         return [
-            'sender_id'       => $this->senderId,
-            'sender_name'     => $this->senderName,
-            'message_preview' => $this->messagePreview,
-            'sent_at'         => $this->sentAt,
+            'message_id' => $this->messageId,
+            'emoji'      => $this->emoji,
+            'counts'     => $this->counts,
+            'action'     => $this->action,
         ];
     }
 }

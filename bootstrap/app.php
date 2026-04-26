@@ -69,6 +69,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // Self-gates: only acts on /api/v/client/* routes.
         $middleware->append(UpdateLastSeen::class);
     })
+    ->withBroadcasting(
+        channels: __DIR__.'/../routes/channels.php',
+        attributes: ['middleware' => ['auth:wellcore']],
+    )
     ->withExceptions(function (Exceptions $exceptions): void {
         // Report to Sentry when available (install sentry/sentry-laravel to activate)
         if (class_exists(Integration::class)) {

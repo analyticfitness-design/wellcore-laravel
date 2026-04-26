@@ -26,9 +26,16 @@ use App\Http\Controllers\Api\TrainingController;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
 // debug-gif endpoint removed — was public DoS vector (opcache_reset + hardcoded client_id)
+
+// Broadcasting channel authentication — required for private/presence channels via Reverb.
+// Authenticated with the WellCore guard so both Admin and Client users can authorize.
+Route::post('/v/broadcasting/auth', function (\Illuminate\Http\Request $request) {
+    return Broadcast::auth($request);
+})->middleware(['auth:wellcore']);
 
 // Ejercicios Fitcron (public — no auth required)
 Route::prefix('ejercicios')->group(function () {
@@ -125,6 +132,7 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'plan.lock:strict', 'thr
     Route::post('/challenges/{id}/join', [SocialController::class, 'joinChallenge'])->where('id', '[0-9]+');
     Route::get('/chat', [SocialController::class, 'chatIndex']);
     Route::post('/chat', [SocialController::class, 'chatSend']);
+    Route::post('/chat/messages/{messageId}/react', [SocialController::class, 'toggleChatReaction'])->where('messageId', '[0-9]+');
     Route::get('/nutrition', [SocialController::class, 'nutrition']);
     Route::post('/nutrition/water', [SocialController::class, 'toggleWater']);
     Route::post('/nutrition/dismiss-tutorial', [SocialController::class, 'dismissNutritionTutorial']);

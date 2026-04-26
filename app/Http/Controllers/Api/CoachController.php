@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\UserType;
+use App\Events\NewMessageSent;
 use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
 use App\Models\AcademyContent;
@@ -978,6 +979,15 @@ class CoachController extends Controller
             'message' => trim($validated['message']),
             'direction' => 'coach_to_client',
         ]);
+
+        event(new NewMessageSent(
+            coachId:        $coachId,
+            clientId:       (int) $validated['client_id'],
+            senderId:       $coachId,
+            senderName:     $coach->name ?? 'Coach',
+            messagePreview: mb_substr($msg->message, 0, 100),
+            sentAt:         $msg->created_at?->toIso8601String() ?? now()->toIso8601String(),
+        ));
 
         return response()->json(['sent' => true, 'message_id' => $msg->id], 201);
     }

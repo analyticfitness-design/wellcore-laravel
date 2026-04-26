@@ -1,4 +1,5 @@
 import './bootstrap';
+import './echo.js';
 
 // ─── Chart.js — lazy, solo en páginas que lo necesitan ───────────────────────
 const loadChartsIfNeeded = () => {

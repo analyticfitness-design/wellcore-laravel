@@ -1,8 +1,10 @@
 <?php
 
+use App\Models\AccountabilityPod;
 use App\Models\Admin;
 use App\Models\Client;
 use App\Models\CoachMessage;
+use App\Models\PodMember;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -50,4 +52,16 @@ Broadcast::channel('online-users', function ($user) {
         'name' => $user->name ?? 'User',
         'type' => $user instanceof Admin ? 'coach' : 'client',
     ];
+});
+
+// Private RISE pod channel — only pod members can listen.
+// Channel name format: rise-pod.{podId}
+Broadcast::channel('rise-pod.{podId}', function ($user, int $podId) {
+    if (! ($user instanceof Client)) {
+        return false;
+    }
+
+    return PodMember::where('pod_id', $podId)
+        ->where('client_id', $user->id)
+        ->exists();
 });

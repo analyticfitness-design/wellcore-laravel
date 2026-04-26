@@ -13,10 +13,14 @@ const MESSAGE_TEMPLATES = [
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useAuthStore } from '../../stores/auth';
+import { useSmartPolling } from '../../composables/useSmartPolling';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import WcPageHeader from '../../components/WcPageHeader.vue';
 
 const api = useApi();
+const authStore = useAuthStore();
+
 const loading = ref(true);
 const clients = ref([]);
 const selectedClientId = ref(null);
@@ -25,12 +29,17 @@ const messages = ref([]);
 const newMessage = ref('');
 const sending = ref(false);
 
+// Coach id — needed to build the channel name
+const coachId = ref(Number(authStore.userId) || null);
+
 // Template selector state
 const templateOpen = ref(false);
 const templateSearch = ref('');
 const templateSearchInput = ref(null);
 
-let pollInterval = null;
+// Module-level mutable handles — NOT reactive refs
+let echoChannel = null;
+let smartPolling = null;
 
 // Filtered templates based on search
 const filteredTemplates = computed(() => {
@@ -55,7 +64,49 @@ function selectTemplate(template) {
   templateSearch.value = '';
 }
 
+// Unsubscribe from the current Echo channel (if any) before switching clients
+function leaveCurrentEchoChannel() {
+  if (echoChannel && coachId.value && selectedClientId.value) {
+    const channelName = `conversation.${coachId.value}-${selectedClientId.value}`;
+    window.Echo?.leave(channelName);
+    echoChannel = null;
+  }
+}
+
+// Subscribe Echo to the active conversation channel
+function subscribeEcho(clientId) {
+  if (!window.Echo || !coachId.value || !clientId) return;
+  const channelName = `conversation.${coachId.value}-${clientId}`;
+  echoChannel = window.Echo.private(channelName);
+
+  echoChannel.listen('.message.sent', async (event) => {
+    // Only append if this message belongs to the currently open conversation
+    if (selectedClientId.value !== clientId) return;
+    if (messages.value.some((m) => m.id === event.message?.id)) return;
+    if (event.message) {
+      messages.value.push(event.message);
+      await nextTick();
+      scrollToBottom();
+    }
+    // Refresh unread count in sidebar too
+    loadClients();
+  });
+
+  echoChannel.listen('.reaction.toggled', (event) => {
+    if (!event.message_id || !event.counts) return;
+    const msg = messages.value.find((m) => m.id === event.message_id);
+    if (msg) msg.reactions = event.counts;
+  });
+}
+
 function selectClient(client) {
+  // Stop smart polling and leave previous Echo channel
+  if (smartPolling) {
+    smartPolling.stop();
+    smartPolling = null;
+  }
+  leaveCurrentEchoChannel();
+
   selectedClientId.value = client.id;
   selectedClient.value = client;
   loadMessages(client.id);
@@ -65,7 +116,11 @@ async function loadClients() {
   try {
     const { data } = await api.get('/api/v/coach/messages');
     clients.value = data.clients || [];
-  } catch (e) {
+    // Sync coachId from API response if not already set from auth store
+    if (!coachId.value && data.coach_id) {
+      coachId.value = Number(data.coach_id);
+    }
+  } catch {
     // silent
   }
 }
@@ -79,8 +134,37 @@ async function loadMessages(clientId) {
     if (idx !== -1) clients.value[idx].unread_count = 0;
     await nextTick();
     scrollToBottom();
-  } catch (e) {
+
+    // Set up realtime or polling for the selected conversation
+    if (window.Echo) {
+      subscribeEcho(clientId);
+    } else {
+      smartPolling = useSmartPolling(
+        () => pollMessagesCallback(clientId),
+        { min: 10_000, max: 60_000, start: 15_000 }
+      );
+    }
+  } catch {
     // silent
+  }
+}
+
+// Smart polling callback for a specific client conversation
+async function pollMessagesCallback(clientId) {
+  // Only poll for the currently selected client
+  if (selectedClientId.value !== clientId) return { messageCount: 0 };
+  try {
+    const { data } = await api.get(`/api/v/coach/messages?client_id=${clientId}`);
+    const incoming = data.conversation || [];
+    const count = incoming.length;
+    if (count !== messages.value.length) {
+      messages.value = incoming;
+      await nextTick();
+      scrollToBottom();
+    }
+    return { messageCount: count };
+  } catch {
+    return { messageCount: messages.value.length };
   }
 }
 
@@ -94,22 +178,27 @@ function scrollToBottom() {
 async function sendMessage() {
   if (!newMessage.value.trim() || !selectedClientId.value) return;
   sending.value = true;
+  const text = newMessage.value;
   try {
     await api.post('/api/v/coach/messages', {
       client_id: selectedClientId.value,
-      message: newMessage.value,
-    });
-    messages.value.push({
-      id: Date.now(),
-      message: newMessage.value,
-      is_coach: true,
-      time: 'Ahora',
+      message: text,
     });
     newMessage.value = '';
-    await nextTick();
-    scrollToBottom();
-  } catch (e) {
-    // silent
+    // Only push locally when NOT using Echo (Echo will deliver the event back)
+    if (!echoChannel) {
+      messages.value.push({
+        id: Date.now(),
+        message: text,
+        is_coach: true,
+        time: 'Ahora',
+      });
+      await nextTick();
+      scrollToBottom();
+    }
+  } catch {
+    // silent — restore typed text on failure
+    newMessage.value = text;
   } finally {
     sending.value = false;
   }
@@ -124,18 +213,24 @@ function handleKeydown(e) {
 onMounted(async () => {
   await loadClients();
   loading.value = false;
-  // Poll for new messages (mirrors wire:poll.10s)
-  pollInterval = setInterval(() => {
-    if (selectedClientId.value) {
-      loadMessages(selectedClientId.value);
-    }
-    loadClients();
-  }, 10000);
+
+  // Sidebar refresh polling — light, every 30s (Echo handles message body updates)
+  // Using a simple interval here so it runs independently of the conversation polling
+  const sidebarInterval = setInterval(loadClients, 30_000);
+
+  // Store the interval id so we can clear it on unmount
+  // We reuse the existing module-level pattern via closure
+  onBeforeUnmount(() => clearInterval(sidebarInterval));
+
   document.addEventListener('keydown', handleKeydown);
 });
 
 onBeforeUnmount(() => {
-  clearInterval(pollInterval);
+  leaveCurrentEchoChannel();
+  if (smartPolling) {
+    smartPolling.stop();
+    smartPolling = null;
+  }
   document.removeEventListener('keydown', handleKeydown);
 });
 </script>
@@ -202,7 +297,7 @@ onBeforeUnmount(() => {
             </ul>
             <div v-else class="flex flex-col items-center justify-center py-12 text-center px-4">
               <svg class="h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 4.5 0Z" />
               </svg>
               <p class="mt-2 text-sm text-wc-text-tertiary">Sin clientes asignados</p>
             </div>
@@ -217,9 +312,14 @@ onBeforeUnmount(() => {
               <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-wc-accent/15">
                 <span class="text-sm font-semibold text-wc-accent">{{ (selectedClient.name || 'C').charAt(0) }}</span>
               </div>
-              <div>
+              <div class="flex-1">
                 <p class="text-sm font-medium text-wc-text">{{ selectedClient.name }}</p>
                 <p class="text-xs text-wc-text-tertiary">{{ selectedClient.plan || 'Sin plan' }}</p>
+              </div>
+              <!-- Realtime indicator -->
+              <div v-if="echoChannel" class="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-[10px] font-medium text-emerald-500">En vivo</span>
               </div>
             </div>
 

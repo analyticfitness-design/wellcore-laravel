@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use App\Models\Concerns\AutoCreatedAt;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'message',
     'direction',
     'read_at',
+    'auto',
 ])]
 class CoachMessage extends Model
 {
@@ -27,6 +28,7 @@ class CoachMessage extends Model
         return [
             'read_at' => 'datetime',
             'created_at' => 'datetime',
+            'auto' => 'boolean',
         ];
     }
 

@@ -7,7 +7,9 @@ use App\Models\Client;
 use App\Models\CoachInvitation;
 use App\Models\PaymentProof;
 use App\Models\PlanTicket;
+use App\Models\WorkoutPr;
 use App\Models\WorkoutSession;
+use App\Observers\WorkoutPrObserver;
 use App\Observers\WorkoutSessionObserver;
 use App\Policies\ClientPolicy;
 use App\Policies\CoachInvitationPolicy;
@@ -48,6 +50,7 @@ class AppServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         WorkoutSession::observe(WorkoutSessionObserver::class);
+        WorkoutPr::observe(WorkoutPrObserver::class);
 
         View::composer('layouts.client', ClientLayoutComposer::class);
     }
@@ -205,6 +208,7 @@ class AppServiceProvider extends ServiceProvider
                 return Limit::none();
             }
             $key = $user ? ('coach:'.$user->id) : ('ip:'.$request->ip());
+
             return Limit::perDay(10)->by($key)->response(fn () => response()->json([
                 'message' => 'Alcanzaste el límite de comprobantes por hoy (10 por día).',
                 'errorCode' => 'RATE_LIMIT_PROOF_UPLOAD',

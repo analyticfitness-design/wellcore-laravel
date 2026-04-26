@@ -32,3 +32,6 @@ Thumbs.db
 # Payment proof files (private — never commit)
 storage/app/private/payment_proofs/*
 !storage/app/private/payment_proofs/.gitkeep
+
+# Reverb credentials — contains production secrets
+_reverb_env_values.txt

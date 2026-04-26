@@ -1,6 +1,7 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useSmartPolling } from '../../composables/useSmartPolling';
 import RiseLayout from '../../layouts/RiseLayout.vue';
 
 const api = useApi();
@@ -16,7 +17,9 @@ const memberCount = ref(0);
 const messages = ref([]);
 const newMessage = ref('');
 
-let pollInterval = null;
+// Module-level mutable handles — NOT reactive refs
+let echoChannel = null;
+let smartPolling = null;
 
 async function fetchChat() {
     loading.value = true;
@@ -36,16 +39,38 @@ async function fetchChat() {
     }
 }
 
-async function pollMessages() {
-    if (!podId.value) return;
+// Smart polling callback — returns message count so the interval adapts
+async function pollCallback() {
+    if (!podId.value) return { messageCount: 0 };
     try {
         const response = await api.get('/api/v/rise/chat');
-        messages.value = response.data.messages || [];
-        await nextTick();
-        scrollToBottom();
+        const incoming = response.data.messages || [];
+        const count = incoming.length;
+        if (count !== messages.value.length) {
+            messages.value = incoming;
+            await nextTick();
+            scrollToBottom();
+        }
+        return { messageCount: count };
     } catch {
-        // Silently fail on poll
+        return { messageCount: messages.value.length };
     }
+}
+
+// Subscribe to the RISE pod Echo channel
+function subscribeEcho() {
+    if (!podId.value) return;
+    const channelName = `rise-pod.${podId.value}`;
+    echoChannel = window.Echo.private(channelName);
+
+    echoChannel.listen('.message.sent', async (event) => {
+        if (messages.value.some((m) => m.id === event.message?.id)) return;
+        if (event.message) {
+            messages.value.push(event.message);
+            await nextTick();
+            scrollToBottom();
+        }
+    });
 }
 
 async function sendMessage() {
@@ -53,11 +78,22 @@ async function sendMessage() {
 
     sending.value = true;
     try {
-        await api.post('/api/v/rise/chat', {
+        const response = await api.post('/api/v/rise/chat', {
             message: newMessage.value.trim(),
         });
         newMessage.value = '';
-        await pollMessages();
+        // Only push locally if Echo won't deliver it (no Echo) or message came back directly
+        if (response.data?.message) {
+            const incoming = response.data.message;
+            if (!messages.value.some((m) => m.id === incoming.id)) {
+                messages.value.push(incoming);
+                await nextTick();
+                scrollToBottom();
+            }
+        } else if (!echoChannel) {
+            // No Echo — refresh via poll callback to pick up the sent message
+            await pollCallback();
+        }
     } catch (err) {
         error.value = err.response?.data?.message || 'Error al enviar mensaje';
     } finally {
@@ -72,12 +108,27 @@ function scrollToBottom() {
 
 onMounted(async () => {
     await fetchChat();
-    // Poll every 5 seconds
-    pollInterval = setInterval(pollMessages, 5000);
+
+    if (podId.value) {
+        if (window.Echo) {
+            // Realtime path: Echo WebSocket
+            subscribeEcho();
+        } else {
+            // Fallback: smart adaptive polling starting at 30s (previously hardcoded 5s)
+            smartPolling = useSmartPolling(pollCallback, { min: 10_000, max: 120_000, start: 30_000 });
+        }
+    }
 });
 
-onUnmounted(() => {
-    if (pollInterval) clearInterval(pollInterval);
+onBeforeUnmount(() => {
+    if (echoChannel && podId.value) {
+        window.Echo?.leave(`rise-pod.${podId.value}`);
+        echoChannel = null;
+    }
+    if (smartPolling) {
+        smartPolling.stop();
+        smartPolling = null;
+    }
 });
 </script>
 
@@ -98,6 +149,11 @@ onUnmounted(() => {
             <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
             {{ memberCount }} {{ memberCount === 1 ? 'miembro' : 'miembros' }}
           </span>
+          <!-- Realtime indicator -->
+          <span v-if="echoChannel" class="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-medium text-blue-400">
+            <span class="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+            En vivo
+          </span>
         </div>
         <p v-else class="mt-1 text-sm text-wc-text-tertiary">Conecta con tu grupo RISE</p>
       </div>
@@ -109,7 +165,7 @@ onUnmounted(() => {
         <div id="chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-3">
           <template v-if="podId">
             <template v-if="messages.length > 0">
-              <div v-for="(msg, idx) in messages" :key="idx">
+              <div v-for="(msg, idx) in messages" :key="msg.id ?? idx">
                 <!-- Own message -->
                 <div v-if="msg.isOwn" class="flex justify-end gap-2">
                   <div class="max-w-[75%] sm:max-w-[60%]">

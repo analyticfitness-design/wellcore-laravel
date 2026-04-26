@@ -2,10 +2,13 @@
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
+import { useAuthStore } from '../../stores/auth';
+import { useSmartPolling } from '../../composables/useSmartPolling';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const api = useApi();
 const toast = useToast();
+const authStore = useAuthStore();
 
 // State
 const loading = ref(true);
@@ -14,6 +17,10 @@ const messages = ref([]);
 const coachName = ref('Coach');
 const hasCoach = ref(false);
 
+// IDs required to build the Echo channel — populated after fetchChat()
+const coachId = ref(null);
+const clientId = ref(Number(authStore.userId) || null);
+
 // Message input
 const newMessage = ref('');
 const sending = ref(false);
@@ -21,9 +28,9 @@ const validationErrors = ref({});
 const messagesContainer = ref(null);
 const textareaRef = ref(null);
 
-// Polling — module-level mutable (not reactive) to avoid proxy overhead
-let pollInterval = null;
-let isPageVisible = true;
+// Module-level mutable handles — NOT reactive refs (avoids proxy overhead)
+let echoChannel = null;
+let smartPolling = null;
 
 // Fetch chat data
 async function fetchChat() {
@@ -35,6 +42,8 @@ async function fetchChat() {
         messages.value = d.messages || [];
         coachName.value = d.coach_name || 'Coach';
         hasCoach.value = d.has_coach ?? true;
+        // Store coach_id returned by the API for channel subscription
+        if (d.coach_id) coachId.value = Number(d.coach_id);
         await scrollToBottom();
     } catch (err) {
         error.value = err.response?.data?.message || 'Error al cargar el chat';
@@ -43,25 +52,43 @@ async function fetchChat() {
     }
 }
 
-// Poll for new messages — visibility-aware (matches Livewire wire:poll.30s.visible)
-async function pollMessages() {
-    if (!hasCoach.value || !isPageVisible) return;
+// Smart polling callback — used as Echo fallback
+async function pollCallback() {
+    if (!hasCoach.value) return { messageCount: 0 };
     try {
         const response = await api.get('/api/v/client/chat');
-        const d = response.data;
-        const newMsgs = d.messages || [];
-        if (newMsgs.length !== messages.value.length) {
+        const newMsgs = response.data.messages || [];
+        const count = newMsgs.length;
+        if (count !== messages.value.length) {
             messages.value = newMsgs;
             await scrollToBottom();
         }
+        return { messageCount: count };
     } catch {
-        // Fail silently on poll
+        return { messageCount: messages.value.length };
     }
 }
 
-// Visibility change handler — pauses polling when tab/page is hidden
-function handleVisibilityChange() {
-    isPageVisible = !document.hidden;
+// Subscribe to the private Echo channel for this conversation
+function subscribeEcho() {
+    if (!coachId.value || !clientId.value) return;
+    const channelName = `conversation.${coachId.value}-${clientId.value}`;
+    echoChannel = window.Echo.private(channelName);
+
+    echoChannel.listen('.message.sent', async (event) => {
+        // Deduplicate: skip if the message id is already present
+        if (messages.value.some((m) => m.id === event.message?.id)) return;
+        if (event.message) {
+            messages.value.push(event.message);
+            await scrollToBottom();
+        }
+    });
+
+    echoChannel.listen('.reaction.toggled', (event) => {
+        if (!event.message_id || !event.counts) return;
+        const msg = messages.value.find((m) => m.id === event.message_id);
+        if (msg) msg.reactions = event.counts;
+    });
 }
 
 // Send message
@@ -81,17 +108,19 @@ async function sendMessage() {
             textareaRef.value.style.height = 'auto';
         }
         if (response.data.message) {
-            messages.value.push(response.data.message);
+            // Only push locally if NOT already received via Echo
+            const incoming = response.data.message;
+            if (!messages.value.some((m) => m.id === incoming.id)) {
+                messages.value.push(incoming);
+            }
         } else {
-            // Re-fetch to get the latest
-            await pollMessages();
+            await pollCallback();
         }
         await scrollToBottom();
     } catch (err) {
         if (err.response?.status === 422) {
             validationErrors.value = err.response.data.errors || {};
         } else {
-            // Preserve typed text and show error — do NOT clear newMessage
             toast.apiError(err, 'No se pudo enviar el mensaje. Reintenta.');
         }
     } finally {
@@ -137,15 +166,28 @@ function getCoachInitial() {
 
 onMounted(async () => {
     await fetchChat();
-    // Poll every 30s to match Livewire wire:poll.30s.visible
-    pollInterval = setInterval(pollMessages, 30000);
-    // Listen for visibility changes to pause polling when tab is hidden
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    if (hasCoach.value) {
+        if (window.Echo && coachId.value && clientId.value) {
+            // Realtime path: Echo + WebSocket
+            subscribeEcho();
+        } else {
+            // Fallback path: smart adaptive polling (starts at 30s, adapts)
+            smartPolling = useSmartPolling(pollCallback, { min: 10_000, max: 120_000, start: 30_000 });
+        }
+    }
 });
 
 onBeforeUnmount(() => {
-    if (pollInterval) clearInterval(pollInterval);
-    document.removeEventListener('visibilitychange', handleVisibilityChange);
+    if (echoChannel && coachId.value && clientId.value) {
+        const channelName = `conversation.${coachId.value}-${clientId.value}`;
+        window.Echo?.leave(channelName);
+        echoChannel = null;
+    }
+    if (smartPolling) {
+        smartPolling.stop();
+        smartPolling = null;
+    }
 });
 </script>
 
@@ -198,6 +240,11 @@ onBeforeUnmount(() => {
               <span class="text-sm text-wc-text-tertiary">Coach</span>
             </div>
             <span v-else class="text-sm text-wc-text-tertiary/70">Sin coach asignado</span>
+          </div>
+          <!-- Realtime indicator -->
+          <div v-if="echoChannel" class="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-[10px] font-medium text-emerald-500">En vivo</span>
           </div>
         </div>
 
