@@ -189,6 +189,69 @@ class ContractAcceptanceTest extends TestCase
     }
 
     // -------------------------------------------------------------------------
+    // Middleware tests (Task 7)
+    // -------------------------------------------------------------------------
+
+    public function test_middleware_blocks_dashboard_when_contract_not_accepted(): void
+    {
+        config([
+            'wellcore.coach_contract.enabled' => true,
+            'wellcore.coach_contract.version'  => '1.0',
+        ]);
+
+        $coach = Admin::factory()->coach()->create();
+        $token = $this->issueCoachToken($coach->id);
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
+            ->getJson('/api/v/coach/dashboard');
+
+        $response->assertStatus(403)
+            ->assertJsonPath('contract_required', true)
+            ->assertJsonPath('version', '1.0');
+    }
+
+    public function test_middleware_allows_dashboard_after_acceptance(): void
+    {
+        config([
+            'wellcore.coach_contract.enabled' => true,
+            'wellcore.coach_contract.version'  => '1.0',
+        ]);
+
+        $coach = Admin::factory()->coach()->create();
+        $token = $this->issueCoachToken($coach->id);
+
+        // Pre-accept
+        app(\App\Services\CoachContractService::class)
+            ->recordAcceptance($coach->id, \Illuminate\Http\Request::create('/'), true);
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
+            ->getJson('/api/v/coach/dashboard');
+
+        // The middleware must NOT return 403 contract_required.
+        // The underlying controller may return 500 in the test environment
+        // (assigned_plans table not available) — that is expected and is a
+        // pre-existing condition unrelated to this middleware.
+        $this->assertNotEquals(403, $response->status(), 'Middleware should not block an accepted coach');
+        $response->assertJsonMissingPath('contract_required');
+    }
+
+    public function test_middleware_does_not_block_contract_endpoints(): void
+    {
+        config([
+            'wellcore.coach_contract.enabled' => true,
+            'wellcore.coach_contract.version'  => '1.0',
+        ]);
+
+        $coach = Admin::factory()->coach()->create();
+        $token = $this->issueCoachToken($coach->id);
+
+        $status = $this->withHeader('Authorization', 'Bearer '.$token)
+            ->getJson('/api/v/coach/contract/status');
+
+        $status->assertOk();
+    }
+
+    // -------------------------------------------------------------------------
     // Helpers
     // -------------------------------------------------------------------------
 

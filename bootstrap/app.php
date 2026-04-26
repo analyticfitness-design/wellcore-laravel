@@ -56,6 +56,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'plan.lock' => CheckPlanLock::class,
             'update.last.seen' => UpdateLastSeen::class,
             'api.bearer' => \App\Http\Middleware\ApiBearerAuth::class,
+            'coach.contract' => \App\Http\Middleware\EnsureCoachContractAccepted::class,
         ]);
 
         // Track real client activity — runs after response, skips impersonation sessions.

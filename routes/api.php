@@ -182,77 +182,80 @@ Route::prefix('v/rise')->middleware(['auth:wellcore', 'throttle:api', 'ensure.pl
 
 // Coach (Phase 8 — authenticated admin with coach/admin/superadmin/jefe role)
 Route::prefix('v/coach')->middleware(['auth:wellcore', 'throttle:api', 'role:coach,admin,superadmin,jefe'])->group(function () {
-    // Contract acceptance gate — not behind the coach.contract middleware
+    // Contract endpoints — NOT behind the contract gate (coach must reach these to accept)
     Route::get('/contract/status',   [ContractController::class, 'status']);
     Route::post('/contract/accept',  [ContractController::class, 'accept']);
     Route::post('/contract/decline', [ContractController::class, 'decline']);
 
-    Route::get('/dashboard', [CoachController::class, 'dashboard']);
-    Route::get('/clients', [CoachController::class, 'clients']);
-    Route::get('/kanban', [CoachController::class, 'kanban']);
-    Route::post('/kanban/move', [CoachController::class, 'kanbanMove']);
-    Route::get('/kanban/detail/{id}', [CoachController::class, 'kanbanClientDetail'])->where('id', '[0-9]+');
-    Route::get('/checkins', [CoachController::class, 'checkins']);
-    Route::post('/checkins/{id}/reply', [CoachController::class, 'checkinReply'])->where('id', '[0-9]+');
-    Route::get('/messages', [CoachController::class, 'messages']);
-    Route::post('/messages', [CoachController::class, 'sendMessage']);
-    Route::post('/broadcast', [CoachController::class, 'broadcast']);
-    Route::get('/plans', [CoachController::class, 'plans']);
-    Route::get('/analytics', [CoachController::class, 'analytics']);
-    Route::get('/profile', [CoachController::class, 'profile']);
-    Route::put('/profile', [CoachController::class, 'updateProfile']);
-    Route::get('/notes', [CoachController::class, 'notes']);
-    Route::post('/notes', [CoachController::class, 'createNote']);
-    Route::put('/notes/{id}', [CoachController::class, 'updateNote'])->where('id', '[0-9]+');
-    Route::delete('/notes/{id}', [CoachController::class, 'deleteNote'])->where('id', '[0-9]+');
-    // Coach branding (P4 Mi Marca) — owned by CoachBrandController
-    Route::get('/brand', [CoachBrandController::class, 'show']);
-    Route::put('/brand', [CoachBrandController::class, 'update']);
-    Route::post('/brand/logo', [CoachBrandController::class, 'uploadLogo']);
-    Route::delete('/brand/logo', [CoachBrandController::class, 'deleteLogo']);
-    Route::get('/features', [CoachController::class, 'features']);
-    Route::get('/resources', [CoachController::class, 'resources']);
+    // Everything else gated by contract acceptance
+    Route::middleware('coach.contract')->group(function () {
+        Route::get('/dashboard', [CoachController::class, 'dashboard']);
+        Route::get('/clients', [CoachController::class, 'clients']);
+        Route::get('/kanban', [CoachController::class, 'kanban']);
+        Route::post('/kanban/move', [CoachController::class, 'kanbanMove']);
+        Route::get('/kanban/detail/{id}', [CoachController::class, 'kanbanClientDetail'])->where('id', '[0-9]+');
+        Route::get('/checkins', [CoachController::class, 'checkins']);
+        Route::post('/checkins/{id}/reply', [CoachController::class, 'checkinReply'])->where('id', '[0-9]+');
+        Route::get('/messages', [CoachController::class, 'messages']);
+        Route::post('/messages', [CoachController::class, 'sendMessage']);
+        Route::post('/broadcast', [CoachController::class, 'broadcast']);
+        Route::get('/plans', [CoachController::class, 'plans']);
+        Route::get('/analytics', [CoachController::class, 'analytics']);
+        Route::get('/profile', [CoachController::class, 'profile']);
+        Route::put('/profile', [CoachController::class, 'updateProfile']);
+        Route::get('/notes', [CoachController::class, 'notes']);
+        Route::post('/notes', [CoachController::class, 'createNote']);
+        Route::put('/notes/{id}', [CoachController::class, 'updateNote'])->where('id', '[0-9]+');
+        Route::delete('/notes/{id}', [CoachController::class, 'deleteNote'])->where('id', '[0-9]+');
+        // Coach branding (P4 Mi Marca) — owned by CoachBrandController
+        Route::get('/brand', [CoachBrandController::class, 'show']);
+        Route::put('/brand', [CoachBrandController::class, 'update']);
+        Route::post('/brand/logo', [CoachBrandController::class, 'uploadLogo']);
+        Route::delete('/brand/logo', [CoachBrandController::class, 'deleteLogo']);
+        Route::get('/features', [CoachController::class, 'features']);
+        Route::get('/resources', [CoachController::class, 'resources']);
 
-    // Onboarding checklist persistente (P5.3)
-    Route::get('/onboarding', [CoachController::class, 'onboardingGet']);
-    Route::post('/onboarding', [CoachController::class, 'onboardingSet']);
+        // Onboarding checklist persistente (P5.3)
+        Route::get('/onboarding', [CoachController::class, 'onboardingGet']);
+        Route::post('/onboarding', [CoachController::class, 'onboardingSet']);
 
-    // Impersonation (coach → client)
-    Route::post('/clients/{id}/impersonate', [CoachController::class, 'impersonate'])->middleware('throttle:impersonate')->whereNumber('id');
-    Route::post('/impersonate/end', [CoachController::class, 'endImpersonation']);
+        // Impersonation (coach → client)
+        Route::post('/clients/{id}/impersonate', [CoachController::class, 'impersonate'])->middleware('throttle:impersonate')->whereNumber('id');
+        Route::post('/impersonate/end', [CoachController::class, 'endImpersonation']);
 
-    // Client action requests (delete/deactivate/edit)
-    Route::post('/clients/{id}/requests', [CoachClientRequestController::class, 'store'])->whereNumber('id');
-    Route::get('/clients/{id}/requests', [CoachClientRequestController::class, 'index'])->whereNumber('id');
-    Route::delete('/client-requests/{id}', [CoachClientRequestController::class, 'cancel'])->whereNumber('id');
+        // Client action requests (delete/deactivate/edit)
+        Route::post('/clients/{id}/requests', [CoachClientRequestController::class, 'store'])->whereNumber('id');
+        Route::get('/clients/{id}/requests', [CoachClientRequestController::class, 'index'])->whereNumber('id');
+        Route::delete('/client-requests/{id}', [CoachClientRequestController::class, 'cancel'])->whereNumber('id');
 
-    // Plan Tickets (coach brief inbox)
-    Route::get('/plan-tickets/autofill', [CoachPlanTicketController::class, 'autofill']);
-    Route::get('/plan-tickets', [CoachPlanTicketController::class, 'index']);
-    Route::post('/plan-tickets', [CoachPlanTicketController::class, 'store']);
-    Route::get('/plan-tickets/{id}', [CoachPlanTicketController::class, 'show'])->whereNumber('id');
-    Route::put('/plan-tickets/{id}', [CoachPlanTicketController::class, 'update'])->whereNumber('id');
-    Route::post('/plan-tickets/{id}/submit', [CoachPlanTicketController::class, 'submit'])->whereNumber('id');
-    Route::post('/plan-tickets/{id}/duplicate', [CoachPlanTicketController::class, 'duplicate'])->whereNumber('id');
-    Route::delete('/plan-tickets/{id}', [CoachPlanTicketController::class, 'destroy'])->whereNumber('id');
-    Route::get('/plan-tickets/{id}/comments', [CoachPlanTicketController::class, 'listComments'])->whereNumber('id');
-    Route::post('/plan-tickets/{id}/comments', [CoachPlanTicketController::class, 'addComment'])->whereNumber('id');
-    Route::post('/plan-tickets/{id}/attachments', [CoachPlanTicketController::class, 'uploadAttachment'])->whereNumber('id');
-    Route::get('/plan-tickets/{id}/attachments', [CoachPlanTicketController::class, 'listAttachments'])->whereNumber('id');
-    Route::delete('/plan-tickets/{id}/attachments/{attId}', [CoachPlanTicketController::class, 'deleteAttachment'])->whereNumber('id')->whereNumber('attId');
+        // Plan Tickets (coach brief inbox)
+        Route::get('/plan-tickets/autofill', [CoachPlanTicketController::class, 'autofill']);
+        Route::get('/plan-tickets', [CoachPlanTicketController::class, 'index']);
+        Route::post('/plan-tickets', [CoachPlanTicketController::class, 'store']);
+        Route::get('/plan-tickets/{id}', [CoachPlanTicketController::class, 'show'])->whereNumber('id');
+        Route::put('/plan-tickets/{id}', [CoachPlanTicketController::class, 'update'])->whereNumber('id');
+        Route::post('/plan-tickets/{id}/submit', [CoachPlanTicketController::class, 'submit'])->whereNumber('id');
+        Route::post('/plan-tickets/{id}/duplicate', [CoachPlanTicketController::class, 'duplicate'])->whereNumber('id');
+        Route::delete('/plan-tickets/{id}', [CoachPlanTicketController::class, 'destroy'])->whereNumber('id');
+        Route::get('/plan-tickets/{id}/comments', [CoachPlanTicketController::class, 'listComments'])->whereNumber('id');
+        Route::post('/plan-tickets/{id}/comments', [CoachPlanTicketController::class, 'addComment'])->whereNumber('id');
+        Route::post('/plan-tickets/{id}/attachments', [CoachPlanTicketController::class, 'uploadAttachment'])->whereNumber('id');
+        Route::get('/plan-tickets/{id}/attachments', [CoachPlanTicketController::class, 'listAttachments'])->whereNumber('id');
+        Route::delete('/plan-tickets/{id}/attachments/{attId}', [CoachPlanTicketController::class, 'deleteAttachment'])->whereNumber('id')->whereNumber('attId');
 
-    // Coach notifications
-    Route::get('/notifications', [CoachPlanTicketController::class, 'notifications']);
-    Route::post('/notifications/read-all', [CoachPlanTicketController::class, 'markAllNotificationsRead']);
-    Route::post('/notifications/{id}/read', [CoachPlanTicketController::class, 'markNotificationRead'])->whereNumber('id');
+        // Coach notifications
+        Route::get('/notifications', [CoachPlanTicketController::class, 'notifications']);
+        Route::post('/notifications/read-all', [CoachPlanTicketController::class, 'markAllNotificationsRead']);
+        Route::post('/notifications/{id}/read', [CoachPlanTicketController::class, 'markNotificationRead'])->whereNumber('id');
 
-    // Coach Invitations
-    Route::get('/invitations', [InvitationController::class, 'index']);
-    Route::post('/invitations', [InvitationController::class, 'store'])->middleware('throttle:coach-inv-create');
-    Route::post('/invitations/preview', [InvitationController::class, 'preview']);
-    Route::get('/invitations/{id}', [InvitationController::class, 'show'])->whereNumber('id');
-    Route::post('/invitations/{id}/resend', [InvitationController::class, 'resend'])->whereNumber('id');
-    Route::delete('/invitations/{id}', [InvitationController::class, 'destroy'])->whereNumber('id');
+        // Coach Invitations
+        Route::get('/invitations', [InvitationController::class, 'index']);
+        Route::post('/invitations', [InvitationController::class, 'store'])->middleware('throttle:coach-inv-create');
+        Route::post('/invitations/preview', [InvitationController::class, 'preview']);
+        Route::get('/invitations/{id}', [InvitationController::class, 'show'])->whereNumber('id');
+        Route::post('/invitations/{id}/resend', [InvitationController::class, 'resend'])->whereNumber('id');
+        Route::delete('/invitations/{id}', [InvitationController::class, 'destroy'])->whereNumber('id');
+    });
 });
 
 // Admin (Phase 9 — authenticated admin with admin/superadmin/jefe role)
