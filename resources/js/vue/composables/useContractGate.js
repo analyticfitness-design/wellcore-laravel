@@ -31,6 +31,7 @@ export function useContractGate() {
                 // 401 is normal pre-login; ignore. Anything else surfaces.
                 if (e?.response?.status !== 401) {
                     error.value = e?.response?.data?.error || 'No fue posible verificar el contrato.';
+                    requires.value = false; // fail-open: backend middleware es el gate real
                 }
             } finally {
                 refreshPromise = null;
