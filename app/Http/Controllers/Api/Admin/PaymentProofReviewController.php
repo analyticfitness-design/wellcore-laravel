@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Actions\ApprovePaymentProofAction;
+use App\Actions\RejectPaymentProofAction;
 use App\Enums\PaymentProofStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\PaymentProof;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -111,25 +114,29 @@ class PaymentProofReviewController extends Controller
 
     /**
      * POST /api/v/admin/payment-proofs/{id}/approve
-     *
-     * Phase 2 stub — approve action will be implemented in Phase 3.
      */
     public function approve(int $id): JsonResponse
     {
         $proof = PaymentProof::where('status', PaymentProofStatus::Pendiente)->findOrFail($id);
+        $reviewer = Admin::findOrFail(auth()->id());
 
-        return response()->json(['message' => 'pending_implementation'], 501);
+        (new ApprovePaymentProofAction)->handle($proof, $reviewer);
+
+        return response()->json(['message' => 'Comprobante aprobado.']);
     }
 
     /**
      * POST /api/v/admin/payment-proofs/{id}/reject
-     *
-     * Phase 2 stub — reject action will be implemented in Phase 3.
      */
     public function reject(Request $request, int $id): JsonResponse
     {
-        $proof = PaymentProof::where('status', PaymentProofStatus::Pendiente)->findOrFail($id);
+        $request->validate(['review_note' => 'required|string|max:500']);
 
-        return response()->json(['message' => 'pending_implementation'], 501);
+        $proof = PaymentProof::where('status', PaymentProofStatus::Pendiente)->findOrFail($id);
+        $reviewer = Admin::findOrFail(auth()->id());
+
+        (new RejectPaymentProofAction)->handle($proof, $reviewer, $request->input('review_note'));
+
+        return response()->json(['message' => 'Comprobante rechazado.']);
     }
 }
