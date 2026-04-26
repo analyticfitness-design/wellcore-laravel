@@ -70,7 +70,7 @@ class Login extends Component
             'user_id' => $user->id,
             'token' => $token,
             'ip_address' => request()->ip(),
-            'expires_at' => now()->addDays(30),
+            'expires_at' => now()->addDays(7),
             'created_at' => now(),
         ]);
 

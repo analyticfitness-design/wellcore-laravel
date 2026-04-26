@@ -32,6 +32,12 @@ Schedule::command('wellcore:match-gifs-from-json --reset')->weeklyOn(1, '03:00')
 // Expire overdue coach invitations (status: Sent/Pending with passed expiry_date)
 Schedule::job(new ExpireCoachInvitationsJob)->dailyAt('00:05');
 
+// P2.2: Void orphan pending payments older than 24 h (Wompi never confirmed them)
+Schedule::command('wellcore:cleanup-pending-payments')->dailyAt('02:00');
+
+// Expire manual payment proofs that were not reviewed within 7 days
+Schedule::command('wellcore:expire-payment-proofs')->daily()->runInBackground();
+
 // Prune expired auth tokens and inactive sessions older than 14 days
 Schedule::call(function () {
     AuthToken::where('expires_at', '<', now())

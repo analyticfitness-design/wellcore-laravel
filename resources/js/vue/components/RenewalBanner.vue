@@ -4,17 +4,19 @@ import { useRouter } from 'vue-router';
 import { usePlanLock } from '../composables/usePlanLock';
 
 const router = useRouter();
-const { isInGrace, daysUntilExpiry, expiresAt } = usePlanLock();
+const { isInGrace, daysUntilExpiry, expiresAt, clientId } = usePlanLock();
 
-// Dismiss state — persisted to localStorage for 24h per expires_at value so the
+// Dismiss state — persisted to localStorage for 24h per client+expires_at so the
 // banner re-appears automatically the next day even if the user dismissed it
-// earlier. Keying by expires_at also guarantees a fresh banner after a renewal.
+// earlier. Including clientId prevents one user's dismiss from leaking to another
+// on a shared device. Keying by expires_at guarantees a fresh banner after renewal.
 const DISMISS_KEY_PREFIX = 'wc_renewal_banner_dismissed_until:';
 const now = ref(Date.now());
 const dismissedAt = ref(null);
 
 function storageKey() {
-  return DISMISS_KEY_PREFIX + (expiresAt.value || 'no-expiry');
+  const uid = clientId.value ?? 'guest';
+  return DISMISS_KEY_PREFIX + uid + ':' + (expiresAt.value || 'no-expiry');
 }
 
 function readDismissedUntil() {

@@ -154,21 +154,27 @@ class Checkout extends Component
 
     public function aplicarDescuento(): void
     {
-        $codigos = [
-            'WELLCORE10' => 10,
-            'RISE20' => 20,
-            'FITSTART' => 15,
-        ];
-
+        $codigos = ['WELLCORE10' => 10, 'RISE20' => 20, 'FITSTART' => 15];
         $code = strtoupper(trim($this->codigoDescuento));
-        if (isset($codigos[$code])) {
-            $pct = $codigos[$code];
-            $this->descuento = (int) round($this->price * $pct / 100);
-            $this->descuentoMensaje = "Descuento {$pct}% aplicado";
-        } else {
+        $codePct = $codigos[$code] ?? 0;
+
+        if ($codePct === 0) {
             $this->descuento = 0;
             $this->descuentoMensaje = 'Codigo no valido';
+            return;
         }
+
+        // P2.1: "best discount wins" — comparar promo% vs código%, aplicar el mayor sobre price_original.
+        // Evita apilar descuentos (código 10% + promo 15% ≠ 25%).
+        $pricing = app(PricingService::class);
+        $original = $pricing->originalPriceFor($this->plan);
+        $promoPct = $pricing->discountPercent($this->plan);
+        $bestPct = max($codePct, $promoPct);
+
+        $newPrice = (int) round($original * (100 - $bestPct) / 100);
+        $this->price = $newPrice;
+        $this->descuento = 0; // ya absorbido en $price
+        $this->descuentoMensaje = "Descuento {$bestPct}% aplicado";
     }
 
     public function proceedToPayment(): void
@@ -234,10 +240,12 @@ class Checkout extends Component
         // Renovación: prefijo RENEWAL-{clientId}-{timestamp} para distinguir en analytics
         // y que el webhook sepa activar el plan via ActivateRenewalAction.
         if ($this->isRenewal && $this->renewalClientId) {
+            // P2.8: 128-bit entropy (16 bytes hex) en lugar de 32-bit (4 bytes).
             $this->paymentReference = sprintf(
-                'RENEWAL-%d-%s',
+                'RENEWAL-%d-%s-%d',
                 $this->renewalClientId,
-                strtoupper(bin2hex(random_bytes(4))).'-'.time()
+                strtoupper(bin2hex(random_bytes(16))),
+                time()
             );
         } else {
             $this->paymentReference = $wompi->generateReference();

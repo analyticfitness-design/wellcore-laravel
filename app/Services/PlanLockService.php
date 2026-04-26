@@ -116,6 +116,7 @@ class PlanLockService
     {
         if (! $this->isMonthlyPlan($client)) {
             return [
+                'client_id' => $client->id,
                 'has_plan' => false,
                 'is_locked' => false,
                 'is_in_grace' => false,
@@ -130,6 +131,7 @@ class PlanLockService
         if (! $plan) {
             // Pagó un plan mensual pero el coach aún no le asignó un AssignedPlan.
             return [
+                'client_id' => $client->id,
                 'has_plan' => false,
                 'is_locked' => true,
                 'is_in_grace' => false,
@@ -144,6 +146,7 @@ class PlanLockService
         $isLocked = $plan->isExpired();
 
         return [
+            'client_id' => $client->id,
             'has_plan' => true,
             'is_locked' => $isLocked,
             'is_in_grace' => ! $isLocked && $daysUntilExpiry !== null && $daysUntilExpiry > 0 && $daysUntilExpiry <= self::GRACE_DAYS_BEFORE_EXPIRY,

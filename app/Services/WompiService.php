@@ -394,6 +394,23 @@ class WompiService
                 return false;
             }
 
+            // P2.6: Currency validation — reject if Wompi currency doesn't match stored currency.
+            $txCurrency = data_get($payload, 'data.transaction.currency', 'COP');
+            if ($txCurrency !== ($payment->currency ?? 'COP')) {
+                $this->logEvent('webhook.currency_mismatch', [
+                    'payment_id' => $payment->id,
+                    'expected' => $payment->currency ?? 'COP',
+                    'received' => $txCurrency,
+                ]);
+                Log::critical('Wompi webhook currency mismatch', [
+                    'payment_id' => $payment->id,
+                    'expected' => $payment->currency,
+                    'received' => $txCurrency,
+                ]);
+
+                return false;
+            }
+
             $payment->update([
                 'status' => $newStatus,
                 'wompi_transaction_id' => $transactionId,

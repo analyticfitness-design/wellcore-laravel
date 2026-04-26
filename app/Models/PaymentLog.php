@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\EncryptedJsonFallback;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,7 +24,7 @@ class PaymentLog extends Model
     protected function casts(): array
     {
         return [
-            'payload' => 'array',
+            'payload' => EncryptedJsonFallback::class,
         ];
     }
 

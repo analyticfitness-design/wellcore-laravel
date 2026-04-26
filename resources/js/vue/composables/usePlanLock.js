@@ -102,6 +102,7 @@ export function usePlanLock() {
   });
   const expiresAt = computed(() => status.value?.expires_at ?? null);
   const planType = computed(() => status.value?.plan_type ?? null);
+  const clientId = computed(() => status.value?.client_id ?? null);
 
   return {
     // raw + meta
@@ -114,6 +115,7 @@ export function usePlanLock() {
     daysUntilExpiry,
     expiresAt,
     planType,
+    clientId,
     // actions
     fetchStatus: fetchPlanStatus,
     refresh: fetchPlanStatus,

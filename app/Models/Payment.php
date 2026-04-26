@@ -55,7 +55,8 @@ class Payment extends Model
      */
     public function isRenewal(): bool
     {
+        // P2.7: regex estricta — RENEWAL-{id}-{32hexchars}-{epoch}
         return is_string($this->wompi_reference)
-            && str_starts_with($this->wompi_reference, 'RENEWAL-');
+            && (bool) preg_match('/^RENEWAL-\d+-[A-F0-9]{32}-\d{10}$/', $this->wompi_reference);
     }
 }
