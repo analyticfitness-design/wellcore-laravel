@@ -4,6 +4,7 @@ import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import NotificationBell from '../components/NotificationBell.vue';
 import CoachOnboardingTour from '../components/CoachOnboardingTour.vue';
+import CoachContractGate from '../components/coach/CoachContractGate.vue';
 
 const props = defineProps({
     urgentCount: { type: Number, default: 0 }
@@ -143,6 +144,7 @@ const bottomNav = [
 
 <template>
   <div class="min-h-screen bg-wc-bg text-wc-text">
+    <CoachContractGate />
 
     <!-- Mobile sidebar overlay -->
     <Transition
