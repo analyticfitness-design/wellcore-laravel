@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
-import { useContractGate } from '../composables/useContractGate';
 
 // Auth pages (eagerly loaded — most common entry point)
 import Login from '../pages/Auth/Login.vue';
@@ -167,21 +166,6 @@ router.beforeEach(async (to, from, next) => {
         if (portal === '/client' && to.path.startsWith('/rise')) {
             const clientPath = to.path.replace('/rise', '/client');
             return next(clientPath);
-        }
-    }
-
-    // Contract gate: block coach navigation while acceptance is pending.
-    // await refresh() so the guard always reads authoritative server state,
-    // not the initial false that exists before the first API call completes.
-    if (to.path.startsWith('/coach')) {
-        const gate = useContractGate();
-        await gate.refresh();
-        if (gate.requires.value) {
-            // Gate is open — allow only same-page reload + login redirect
-            if (to.path === from.path || to.path.startsWith('/login')) {
-                return next();
-            }
-            return next(false); // block navigation
         }
     }
 
