@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('payment_proofs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('coach_id')->constrained('admins')->cascadeOnDelete();
+            $table->unsignedInteger('coach_id');           // admins.id is INT UNSIGNED
             $table->string('client_email', 255);
             $table->string('client_name', 255);
             $table->enum('plan', ['rise', 'esencial', 'metodo', 'elite', 'presencial']);
@@ -23,14 +23,19 @@ return new class extends Migration
             $table->unsignedInteger('file_size');
             $table->text('coach_note')->nullable();
             $table->enum('status', ['pendiente', 'aprobado', 'rechazado', 'expirado'])->default('pendiente');
-            $table->foreignId('reviewed_by')->nullable()->constrained('admins')->nullOnDelete();
+            $table->unsignedInteger('reviewed_by')->nullable(); // admins.id is INT UNSIGNED
             $table->text('review_note')->nullable();
-            $table->foreignId('coach_invitation_id')->nullable()->constrained('coach_invitations')->nullOnDelete();
-            $table->foreignId('payment_id')->nullable()->constrained('payments')->nullOnDelete();
+            $table->unsignedBigInteger('coach_invitation_id')->nullable(); // coach_invitations.id is BIGINT (id())
+            $table->unsignedInteger('payment_id')->nullable();             // payments.id is INT UNSIGNED
             $table->timestamp('submitted_at');
             $table->timestamp('reviewed_at')->nullable();
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();
+
+            $table->foreign('coach_id')->references('id')->on('admins')->cascadeOnDelete();
+            $table->foreign('reviewed_by')->references('id')->on('admins')->nullOnDelete();
+            $table->foreign('coach_invitation_id')->references('id')->on('coach_invitations')->nullOnDelete();
+            $table->foreign('payment_id')->references('id')->on('payments')->nullOnDelete();
 
             $table->index('status');
             $table->index(['coach_id', 'status']);
