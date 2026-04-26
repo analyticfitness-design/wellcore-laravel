@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\ClientStatus;
 use App\Enums\PlanType;
 use App\Enums\UserType;
 use App\Mail\PlanExpiring;
@@ -38,7 +39,7 @@ class AutoRenewalCommand extends Command
 
         $reminded = 0;
         $flagged = 0;
-        $today = Carbon::now()->startOfDay();
+        $today = Carbon::now('America/Bogota')->startOfDay();
 
         // Clientes con plan asignado activo que expira en los próximos 5 días o ya expiró.
         // NO filtramos por plan_type aquí porque assigned_plans.plan_type describe el contenido
@@ -71,7 +72,7 @@ class AutoRenewalCommand extends Command
         foreach ($plansByClient as $plan) {
             $client = $plan->client;
 
-            if (! $client || $client->status !== \App\Enums\ClientStatus::Activo) {
+            if (! $client || $client->status !== ClientStatus::Activo) {
                 continue;
             }
 

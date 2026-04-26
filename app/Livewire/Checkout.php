@@ -2,10 +2,13 @@
 
 namespace App\Livewire;
 
+use App\Auth\WellCoreGuard;
 use App\Enums\PaymentStatus;
 use App\Enums\PlanType;
+use App\Models\Client;
 use App\Models\Payment;
 use App\Services\WompiService;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class Checkout extends Component
@@ -14,28 +17,44 @@ class Checkout extends Component
 
     // Step 1: Plan
     public string $plan = '';
+
+    #[Locked]
     public int $price = 0;
 
     // Step 2: User data
     public string $nombre = '';
+
     public string $email = '';
+
     public string $whatsapp = '';
+
     public string $pais = 'colombia';
+
     public string $objetivo = '';
+
     public bool $terminos = false;
 
     // Discount
     public string $codigoDescuento = '';
+
+    #[Locked]
     public int $descuento = 0;
+
     public string $descuentoMensaje = '';
 
     // Payment (Step 3) - generated server-side
     public string $paymentReference = '';
+
     public string $wompiPublicKey = '';
+
     public string $wompiSignature = '';
+
     public string $wompiRedirectUrl = '';
+
     public bool $wompiSandbox = true;
+
     public int $amountInCents = 0;
+
     public string $currency = 'COP';
 
     // Status
@@ -43,6 +62,8 @@ class Checkout extends Component
 
     // Renovación: cuando el cliente viene de /renovar en lugar de /pagar
     public bool $isRenewal = false;
+
+    #[Locked]
     public ?int $renewalClientId = null;
 
     /**
@@ -86,10 +107,10 @@ class Checkout extends Component
     protected function prefillFromAuthenticatedClient(): void
     {
         try {
-            $guard = app(\App\Auth\WellCoreGuard::class);
+            $guard = app(WellCoreGuard::class);
             $user = $guard->user();
 
-            if (! $user instanceof \App\Models\Client) {
+            if (! $user instanceof Client) {
                 return;
             }
 
@@ -99,7 +120,7 @@ class Checkout extends Component
             $this->whatsapp = $user->phone ?? '';
 
             // Pre-selecciona el plan actual del cliente
-            $planValue = $user->plan instanceof \App\Enums\PlanType
+            $planValue = $user->plan instanceof PlanType
                 ? $user->plan->value
                 : (string) ($user->plan ?? '');
 
@@ -179,8 +200,35 @@ class Checkout extends Component
     {
         $wompi = app(WompiService::class);
 
-        $total = $this->getTotal();
-        $this->amountInCents = $total * 100; // COP is already in whole pesos; Wompi needs cents
+        // SECURITY: re-resolver cliente desde guard. NO confiar en property serializada.
+        if ($this->isRenewal) {
+            $guard = app(WellCoreGuard::class);
+            $authedClient = $guard->user();
+
+            if (! $authedClient instanceof Client) {
+                $this->paymentError = 'Sesion expirada. Inicia sesion para renovar.';
+
+                return;
+            }
+
+            // SOBRESCRIBIR siempre — el guard es la única fuente de verdad
+            $this->renewalClientId = $authedClient->id;
+        }
+
+        // SECURITY: recomputar precio canónico desde config, no de las props public (manipulables)
+        $canonicalPrice = (int) config("plans.{$this->plan}.price_cop", 0);
+        if ($canonicalPrice <= 0) {
+            $this->paymentError = 'Plan invalido.';
+
+            return;
+        }
+
+        $finalDiscount = $this->resolveServerSideDiscount($canonicalPrice);
+        $total = max(1500, $canonicalPrice - $finalDiscount); // mínimo 1500 COP
+
+        $this->price = $canonicalPrice;
+        $this->descuento = $finalDiscount;
+        $this->amountInCents = $total * 100;
 
         // Renovación: prefijo RENEWAL-{clientId}-{timestamp} para distinguir en analytics
         // y que el webhook sepa activar el plan via ActivateRenewalAction.
@@ -228,6 +276,20 @@ class Checkout extends Component
     public function getTotal(): int
     {
         return max(0, $this->price - $this->descuento);
+    }
+
+    protected function resolveServerSideDiscount(int $canonicalPrice): int
+    {
+        if (! $this->codigoDescuento) {
+            return 0;
+        }
+        $codigos = ['WELLCORE10' => 10, 'RISE20' => 20, 'FITSTART' => 15];
+        $code = strtoupper(trim($this->codigoDescuento));
+        if (! isset($codigos[$code])) {
+            return 0;
+        }
+
+        return (int) round($canonicalPrice * $codigos[$code] / 100);
     }
 
     public function getPlanInfo(): array

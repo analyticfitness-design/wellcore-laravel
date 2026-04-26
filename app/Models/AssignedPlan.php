@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Cache;
 
 #[Fillable([
     'client_id',
@@ -54,7 +55,8 @@ class AssignedPlan extends Model
             return false;
         }
 
-        return Carbon::parse($this->expires_at)->startOfDay()->lessThanOrEqualTo(Carbon::now()->startOfDay());
+        return Carbon::parse($this->expires_at)->startOfDay()
+            ->lessThanOrEqualTo(Carbon::now('America/Bogota')->startOfDay());
     }
 
     /**
@@ -66,7 +68,7 @@ class AssignedPlan extends Model
             return null;
         }
 
-        return (int) Carbon::now()->startOfDay()->diffInDays(
+        return (int) Carbon::now('America/Bogota')->startOfDay()->diffInDays(
             Carbon::parse($this->expires_at)->startOfDay(),
             false
         );
@@ -82,24 +84,39 @@ class AssignedPlan extends Model
         return $query->where('client_id', $clientId);
     }
 
-    /**
-     * Auto-calcula expires_at = valid_from + 30 días si no viene explícito.
-     *
-     * Aplica a TODOS los planes asignados (nutricion, entrenamiento, habitos,
-     * suplementacion, etc.) porque el "plan_type" aquí describe el contenido,
-     * no el nivel de suscripción. El PlanLockService decide si el cliente
-     * está bloqueado cruzando clients.plan (esencial/metodo/elite) con el
-     * expires_at del assigned_plan más reciente.
-     */
     protected static function booted(): void
     {
         static::creating(function (AssignedPlan $plan) {
+            // SECURITY: hard cap — valid_from no más de 7 días en el futuro
+            if ($plan->valid_from) {
+                $from = Carbon::parse($plan->valid_from);
+                if ($from->greaterThan(Carbon::now()->addDays(7))) {
+                    throw new \InvalidArgumentException(
+                        'valid_from no puede ser más de 7 días en el futuro'
+                    );
+                }
+            }
+
             if ($plan->expires_at) {
-                return;
+                return; // respetar valor explícito
             }
 
             $from = $plan->valid_from ? Carbon::parse($plan->valid_from) : Carbon::now();
-            $plan->expires_at = $from->copy()->addDays(30)->toDateString();
+
+            // Trial dura 3 días; todos los demás tipos 30 días
+            $duration = str_contains((string) $plan->plan_type, 'trial') ? 3 : 30;
+
+            $plan->expires_at = $from->copy()->addDays($duration)->toDateString();
         });
+
+        // Flush cache de lock cuando el plan cambia o se elimina
+        $flushCache = function (AssignedPlan $plan) {
+            if ($plan->client_id) {
+                Cache::forget("plan_lock_status:{$plan->client_id}");
+            }
+        };
+
+        static::saved($flushCache);
+        static::deleted($flushCache);
     }
 }

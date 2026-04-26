@@ -327,15 +327,20 @@ class WompiService
             'timestamp' => $timestamp,
         ]);
 
-        if ($event !== 'transaction.updated' || ! $reference) {
-            return false;
+        // FIX P1.8: Whitelist only transaction.updated events — return 200 so Wompi does not retry.
+        if ($event !== 'transaction.updated') {
+            $this->logEvent('webhook.event_ignored', [
+                'event' => $event,
+                'transaction_id' => $transactionId,
+            ]);
+            Log::info('Wompi webhook: evento ignorado', ['event' => $event]);
+
+            return true;
         }
 
-        $payment = Payment::where('wompi_reference', $reference)->first();
-
-        if (! $payment) {
-            $this->logEvent('webhook.payment_not_found', [
-                'reference' => $reference,
+        if (! $reference) {
+            $this->logEvent('webhook.missing_reference', [
+                'event' => $event,
                 'transaction_id' => $transactionId,
             ]);
 
@@ -343,33 +348,82 @@ class WompiService
         }
 
         $newStatus = $this->mapWompiStatus($wompiStatus);
-        $oldStatus = $payment->status;
 
-        // Atomically update payment status + activate client so both succeed or both roll back.
-        DB::transaction(function () use ($payment, $newStatus, $transactionId, $paymentMethodType, $oldStatus) {
+        // FIX P0.4 + P0.2: SELECT FOR UPDATE inside transaction to serialize concurrent webhook retries.
+        // Idempotency guard and amount validation also happen inside the lock.
+        $result = DB::transaction(function () use ($reference, $newStatus, $transactionId, $paymentMethodType, $amountInCents) {
+            // SELECT ... FOR UPDATE — only one concurrent request proceeds; the other waits and then
+            // sees the already-approved status and exits via the idempotency guard below.
+            $payment = Payment::where('wompi_reference', $reference)
+                ->lockForUpdate()
+                ->first();
+
+            if (! $payment) {
+                $this->logEvent('webhook.payment_not_found', ['reference' => $reference]);
+
+                return false;
+            }
+
+            $oldStatus = $payment->status;
+
+            // FIX P0.4: Idempotency — if already approved, silently acknowledge so Wompi stops retrying.
+            if ($oldStatus === PaymentStatus::Approved) {
+                $this->logEvent('webhook.duplicate_ignored', [
+                    'reference' => $reference,
+                    'payment_id' => $payment->id,
+                ]);
+
+                return true;
+            }
+
+            // FIX P0.2: Amount validation — tolerate up to 100 cents of rounding difference.
+            $expectedAmountCents = (int) round((float) $payment->amount * 100);
+            $receivedAmountCents = (int) $amountInCents;
+            if (abs($receivedAmountCents - $expectedAmountCents) > 100) {
+                $this->logEvent('webhook.amount_mismatch', [
+                    'payment_id' => $payment->id,
+                    'expected_cents' => $expectedAmountCents,
+                    'received_cents' => $receivedAmountCents,
+                ]);
+                Log::critical('Wompi webhook amount mismatch', [
+                    'payment_id' => $payment->id,
+                    'expected' => $expectedAmountCents,
+                    'received' => $receivedAmountCents,
+                ]);
+
+                return false;
+            }
+
             $payment->update([
                 'status' => $newStatus,
                 'wompi_transaction_id' => $transactionId,
                 'payment_method' => $paymentMethodType ?? $payment->payment_method,
             ]);
 
-            if ($newStatus === PaymentStatus::Approved && $oldStatus !== PaymentStatus::Approved && $payment->client_id) {
+            if ($newStatus === PaymentStatus::Approved && $payment->client_id) {
                 Client::where('id', $payment->client_id)->update(['status' => 'activo']);
             }
+
+            $this->logEvent('webhook.payment_updated', [
+                'payment_id' => $payment->id,
+                'reference' => $reference,
+                'old_status' => $oldStatus instanceof PaymentStatus ? $oldStatus->value : $oldStatus,
+                'new_status' => $newStatus->value,
+                'wompi_status' => $wompiStatus,
+                'transaction_id' => $transactionId,
+            ]);
+
+            // FIX P0.4: Schedule post-approval automation after the transaction commits,
+            // ensuring it runs exactly once even when two concurrent requests enter simultaneously.
+            if ($newStatus === PaymentStatus::Approved) {
+                DB::afterCommit(fn () => $this->runPostApprovalAutomation($payment->fresh()));
+            }
+
+            return $payment;
         });
 
-        $this->logEvent('webhook.payment_updated', [
-            'payment_id' => $payment->id,
-            'reference' => $reference,
-            'old_status' => $oldStatus instanceof PaymentStatus ? $oldStatus->value : $oldStatus,
-            'new_status' => $newStatus->value,
-            'wompi_status' => $wompiStatus,
-            'transaction_id' => $transactionId,
-        ]);
-
-        // Post-approval automation — only run once when transitioning to APPROVED
-        if ($newStatus === PaymentStatus::Approved && $oldStatus !== PaymentStatus::Approved) {
-            $this->runPostApprovalAutomation($payment);
+        if ($result === false) {
+            return false;
         }
 
         return true;

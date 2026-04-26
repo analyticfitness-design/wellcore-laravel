@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\PlanType;
 use App\Models\AssignedPlan;
 use App\Models\Client;
 use Carbon\Carbon;
@@ -41,8 +42,7 @@ class PlanLockService
             ->forClient($client->id)
             ->active()
             ->whereNotNull('expires_at')
-            ->orderByDesc('expires_at')
-            ->orderByDesc('valid_from')
+            ->orderBy('expires_at', 'asc')  // plan que expira ANTES dispara el lock primero
             ->first();
     }
 
@@ -52,11 +52,7 @@ class PlanLockService
      */
     private function isMonthlyPlan(Client $client): bool
     {
-        $plan = $client->plan instanceof \App\Enums\PlanType
-            ? $client->plan->value
-            : (string) ($client->plan ?? '');
-
-        return in_array($plan, ['esencial', 'metodo', 'elite'], true);
+        return in_array($this->clientPlanValue($client), ['esencial', 'metodo', 'elite'], true);
     }
 
     public function isLocked(Client $client): bool
@@ -118,9 +114,7 @@ class PlanLockService
 
     private function computeStatus(Client $client): array
     {
-        $plan = $this->getActivePlan($client);
-
-        if (! $plan) {
+        if (! $this->isMonthlyPlan($client)) {
             return [
                 'has_plan' => false,
                 'is_locked' => false,
@@ -128,6 +122,21 @@ class PlanLockService
                 'days_until_expiry' => null,
                 'expires_at' => null,
                 'plan_type' => null,
+            ];
+        }
+
+        $plan = $this->getActivePlan($client);
+
+        if (! $plan) {
+            // Pagó un plan mensual pero el coach aún no le asignó un AssignedPlan.
+            return [
+                'has_plan' => false,
+                'is_locked' => true,
+                'is_in_grace' => false,
+                'days_until_expiry' => null,
+                'expires_at' => null,
+                'plan_type' => $this->clientPlanValue($client),
+                'reason' => 'awaiting_coach_assignment',
             ];
         }
 
@@ -142,5 +151,18 @@ class PlanLockService
             'expires_at' => $plan->expires_at?->toDateString(),
             'plan_type' => $plan->plan_type,
         ];
+    }
+
+    private function clientPlanValue(Client $client): ?string
+    {
+        $plan = $client->plan;
+
+        if ($plan instanceof PlanType) {
+            return $plan->value;
+        }
+
+        $value = (string) ($plan ?? '');
+
+        return $value !== '' ? $value : null;
     }
 }

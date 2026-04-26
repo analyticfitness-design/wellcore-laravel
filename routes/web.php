@@ -148,7 +148,10 @@ Route::get('/unirse/{code}', ClientIntakeForm::class)
 
 Route::get('/inscripcion', fn () => view('vue'))->name('inscripcion')->middleware('throttle:inscription');
 Route::get('/pagar', Checkout::class)->name('pagar');
-Route::get('/renovar', Checkout::class)->name('renovar')->defaults('renewal', 1);
+Route::get('/renovar', Checkout::class)
+    ->name('renovar')
+    ->middleware('auth:wellcore')
+    ->defaults('renewal', 1);
 Route::get('/pago-exitoso', [PaymentController::class, 'result'])->name('pago-exitoso');
 Route::get('/pago-confirmado', [PaymentController::class, 'result'])->name('pago-confirmado');
 

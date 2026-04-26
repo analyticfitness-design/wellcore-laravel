@@ -89,7 +89,7 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'throttle:api'])->group(
 });
 
 // Training (Phase 5)
-Route::prefix('v/client')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
+Route::prefix('v/client')->middleware(['auth:wellcore', 'plan.lock:strict', 'throttle:api'])->group(function () {
     Route::get('/plan', [TrainingController::class, 'plan']);
     Route::get('/training', [TrainingController::class, 'training']);
     Route::post('/training/toggle', [TrainingController::class, 'toggleTrainingDay']);
@@ -113,7 +113,7 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'throttle:api'])->group(
 });
 
 // Social & Resources (Phase 6)
-Route::prefix('v/client')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
+Route::prefix('v/client')->middleware(['auth:wellcore', 'plan.lock:strict', 'throttle:api'])->group(function () {
     Route::get('/community', [SocialController::class, 'communityIndex']);
     Route::post('/community', [SocialController::class, 'communityCreate'])->middleware('throttle:community-write');
     Route::post('/community/{id}/react', [SocialController::class, 'communityReact'])->where('id', '[0-9]+')->middleware('throttle:community-write');
@@ -148,7 +148,7 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'throttle:api'])->group(
 });
 
 // Medals & Achievements (Phase 1 — Backend)
-Route::prefix('v/client')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
+Route::prefix('v/client')->middleware(['auth:wellcore', 'plan.lock:strict', 'throttle:api'])->group(function () {
     Route::get('/medals', [MedalController::class, 'index']);
     Route::get('/medals/unlocked', [MedalController::class, 'unlocked']);
 });
@@ -183,8 +183,8 @@ Route::prefix('v/rise')->middleware(['auth:wellcore', 'throttle:api', 'ensure.pl
 // Coach (Phase 8 — authenticated admin with coach/admin/superadmin/jefe role)
 Route::prefix('v/coach')->middleware(['auth:wellcore', 'throttle:api', 'role:coach,admin,superadmin,jefe'])->group(function () {
     // Contract endpoints — NOT behind the contract gate (coach must reach these to accept)
-    Route::get('/contract/status',   [ContractController::class, 'status']);
-    Route::post('/contract/accept',  [ContractController::class, 'accept']);
+    Route::get('/contract/status', [ContractController::class, 'status']);
+    Route::post('/contract/accept', [ContractController::class, 'accept']);
     Route::post('/contract/decline', [ContractController::class, 'decline']);
 
     // Everything else gated by contract acceptance
