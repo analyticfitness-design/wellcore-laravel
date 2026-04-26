@@ -7,8 +7,9 @@
 <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
   <!-- Logo header -->
   <tr><td style="padding:20px 0;text-align:center;">
-    <div style="display:inline-block;background:#DC2626;width:40px;height:40px;border-radius:8px;line-height:40px;text-align:center;color:white;font-weight:bold;font-size:20px;">W</div>
-    <span style="color:#FAFAFA;font-size:20px;font-weight:bold;letter-spacing:3px;margin-left:10px;vertical-align:middle;">WELLCORE</span>
+    <img src="https://wellcorefitness.com/images/logo-light.png"
+         alt="WellCore Fitness" width="180"
+         style="display:inline-block;height:auto;max-width:180px;border:0;outline:none;text-decoration:none;" />
   </td></tr>
 
   <!-- Content card -->
