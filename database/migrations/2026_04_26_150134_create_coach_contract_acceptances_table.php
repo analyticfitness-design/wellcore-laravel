@@ -13,7 +13,7 @@ return new class extends Migration {
 
         Schema::create('coach_contract_acceptances', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('coach_id')->index();
+            $table->unsignedBigInteger('coach_id')->index(); // No FK — shared DB with vanilla PHP app
             $table->string('contract_version', 20);
             $table->enum('status', ['accepted', 'declined']);
             $table->timestamp('accepted_at')->nullable();
