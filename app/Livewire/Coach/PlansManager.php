@@ -358,6 +358,12 @@ class PlansManager extends Component
 
         $coachId = auth('wellcore')->id();
 
+        $prevExpiry = AssignedPlan::where('client_id', $this->assignClientId)
+            ->where('plan_type', $template->plan_type)
+            ->where('active', true)
+            ->whereNotNull('expires_at')
+            ->max('expires_at');
+
         // Deactivate previous plans of same type
         AssignedPlan::where('client_id', $this->assignClientId)
             ->where('plan_type', $template->plan_type)
@@ -376,6 +382,7 @@ class PlansManager extends Component
             'assigned_by' => $coachId,
             'valid_from' => now()->toDateString(),
             'active' => true,
+            'expires_at' => $prevExpiry ?? null,
         ]);
 
         $this->showAssignModal = false;
@@ -685,6 +692,12 @@ class PlansManager extends Component
         $this->savedTemplateId = $template->id;
 
         if ($this->saveMode === 'template_and_assign' && $this->targetClientId) {
+            $prevExpiry = AssignedPlan::where('client_id', $this->targetClientId)
+                ->where('plan_type', $this->planType)
+                ->where('active', true)
+                ->whereNotNull('expires_at')
+                ->max('expires_at');
+
             AssignedPlan::where('client_id', $this->targetClientId)
                 ->where('plan_type', $this->planType)
                 ->where('active', true)
@@ -702,6 +715,7 @@ class PlansManager extends Component
                 'assigned_by' => $coachId,
                 'valid_from' => now()->toDateString(),
                 'active' => true,
+                'expires_at' => $prevExpiry ?? null,
             ]);
 
             $this->savedAssignedId = $assigned->id;

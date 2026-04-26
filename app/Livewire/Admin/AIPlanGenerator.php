@@ -398,6 +398,12 @@ class AIPlanGenerator extends Component
         $this->savedTemplateId = $template->id;
 
         if ($this->saveMode === 'template_and_assign' && $this->selectedClientId) {
+            $prevExpiry = AssignedPlan::where('client_id', $this->selectedClientId)
+                ->where('plan_type', $this->planType)
+                ->where('active', true)
+                ->whereNotNull('expires_at')
+                ->max('expires_at');
+
             // Deactivate previous plans of same type
             AssignedPlan::where('client_id', $this->selectedClientId)
                 ->where('plan_type', $this->planType)
@@ -417,6 +423,7 @@ class AIPlanGenerator extends Component
                 'assigned_by' => $adminId,
                 'valid_from' => now()->toDateString(),
                 'active' => true,
+                'expires_at' => $prevExpiry ?? null,
             ]);
 
             $this->savedAssignedId = $assigned->id;

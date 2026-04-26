@@ -127,6 +127,7 @@ class ClientDetail extends Component
                 'assigned_by' => $coach->id,
                 'valid_from' => now()->toDateString(),
                 'active' => true,
+                'expires_at' => $existingPlan?->expires_at,
             ]);
         }
 

@@ -874,6 +874,7 @@ class AdminController extends Controller
                     'active' => true,
                     'assigned_by' => $coach->id,
                     'valid_from' => now()->toDateString(),
+                    'expires_at' => $existingPlan?->expires_at,
                 ]);
             }
 
@@ -1552,6 +1553,13 @@ class AdminController extends Controller
             $templateId = $template->id;
         }
 
+        // Capture expiry before deactivating so the new plan inherits the billing cycle.
+        $prevExpiry = AssignedPlan::where('client_id', $id)
+            ->where('plan_type', $validated['plan_type'])
+            ->where('active', true)
+            ->whereNotNull('expires_at')
+            ->max('expires_at');
+
         // Deactivate previous active plan of same type
         AssignedPlan::where('client_id', $id)
             ->where('plan_type', $validated['plan_type'])
@@ -1566,6 +1574,7 @@ class AdminController extends Controller
             'active' => true,
             'assigned_by' => $adminId,
             'valid_from' => now()->toDateString(),
+            'expires_at' => $prevExpiry ?? null,
         ]);
 
         // Notify client
@@ -2327,6 +2336,17 @@ class AdminController extends Controller
                 $savedTemplateId = $template->id;
 
                 if (($validated['save_mode'] ?? '') === 'template_and_assign' && ! empty($validated['target_client_id'])) {
+                    $aiPrevExpiry = AssignedPlan::where('client_id', $validated['target_client_id'])
+                        ->where('plan_type', $validated['plan_type'])
+                        ->where('active', true)
+                        ->whereNotNull('expires_at')
+                        ->max('expires_at');
+
+                    AssignedPlan::where('client_id', $validated['target_client_id'])
+                        ->where('plan_type', $validated['plan_type'])
+                        ->where('active', true)
+                        ->update(['active' => false]);
+
                     $assigned = AssignedPlan::create([
                         'client_id' => $validated['target_client_id'],
                         'plan_type' => $validated['plan_type'],
@@ -2334,6 +2354,7 @@ class AdminController extends Controller
                         'version' => 1,
                         'active' => true,
                         'assigned_by' => auth('wellcore')->id() ?? null,
+                        'expires_at' => $aiPrevExpiry ?? null,
                     ]);
                     $savedAssignedId = $assigned->id;
 
