@@ -81,3 +81,12 @@ export function useContractGate() {
         markScrollComplete,
     };
 }
+
+export function resetContractGate() {
+    requires.value        = false;
+    version.value         = '';
+    html.value            = '';
+    scrollCompleted.value = false;
+    submitting.value      = false;
+    error.value           = null;
+}
