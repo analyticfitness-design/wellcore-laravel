@@ -25,3 +25,6 @@ CREDENTIALS-DEPLOY.md
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Git worktrees
+.worktrees/
