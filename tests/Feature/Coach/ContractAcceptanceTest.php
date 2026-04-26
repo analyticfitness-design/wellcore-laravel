@@ -103,4 +103,105 @@ class ContractAcceptanceTest extends TestCase
         // hasAcceptedCurrentVersion checks for v1.1 row (doesn't exist)
         $this->assertFalse($service->hasAcceptedCurrentVersion($coach->id));
     }
+
+    // -------------------------------------------------------------------------
+    // Endpoint tests (Task 6 — controller + routes)
+    // -------------------------------------------------------------------------
+
+    public function test_status_endpoint_reports_no_requirement_when_gate_disabled(): void
+    {
+        config(['wellcore.coach_contract.enabled' => false]);
+
+        $coach = Admin::factory()->coach()->create();
+        $token = $this->issueCoachToken($coach->id);
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
+            ->getJson('/api/v/coach/contract/status');
+
+        $response->assertOk()
+            ->assertJson([
+                'requires_acceptance' => false,
+            ]);
+    }
+
+    public function test_status_endpoint_reports_requires_acceptance_when_gate_enabled(): void
+    {
+        config([
+            'wellcore.coach_contract.enabled' => true,
+            'wellcore.coach_contract.version'  => '1.0',
+        ]);
+
+        $coach = Admin::factory()->coach()->create();
+        $token = $this->issueCoachToken($coach->id);
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
+            ->getJson('/api/v/coach/contract/status');
+
+        $response->assertOk()
+            ->assertJsonPath('requires_acceptance', true)
+            ->assertJsonPath('version', '1.0')
+            ->assertJsonStructure(['html']);
+
+        $this->assertNotEmpty($response->json('html'));
+    }
+
+    public function test_accept_endpoint_records_and_clears_requirement(): void
+    {
+        config([
+            'wellcore.coach_contract.enabled' => true,
+            'wellcore.coach_contract.version'  => '1.0',
+        ]);
+
+        $coach = Admin::factory()->coach()->create();
+        $token = $this->issueCoachToken($coach->id);
+
+        $accept = $this->withHeader('Authorization', 'Bearer '.$token)
+            ->postJson('/api/v/coach/contract/accept', [
+                'version'          => '1.0',
+                'scroll_completed' => true,
+            ]);
+
+        $accept->assertOk()->assertJson(['ok' => true]);
+
+        $status = $this->withHeader('Authorization', 'Bearer '.$token)
+            ->getJson('/api/v/coach/contract/status');
+
+        $status->assertOk()->assertJsonPath('requires_acceptance', false);
+    }
+
+    public function test_accept_endpoint_rejects_when_scroll_not_completed(): void
+    {
+        config([
+            'wellcore.coach_contract.enabled' => true,
+            'wellcore.coach_contract.version'  => '1.0',
+        ]);
+
+        $coach = Admin::factory()->coach()->create();
+        $token = $this->issueCoachToken($coach->id);
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
+            ->postJson('/api/v/coach/contract/accept', [
+                'version'          => '1.0',
+                'scroll_completed' => false,
+            ]);
+
+        $response->assertStatus(422)->assertJsonPath('error', 'scroll_not_completed');
+    }
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    protected function issueCoachToken(int $userId): string
+    {
+        $token = bin2hex(random_bytes(32));
+        \DB::table('auth_tokens')->insert([
+            'user_id'    => $userId,
+            'user_type'  => 'admin', // coaches use 'admin' type in this system
+            'token'      => $token,
+            'expires_at' => now()->addDays(30),
+            'created_at' => now(),
+        ]);
+        return $token;
+    }
 }

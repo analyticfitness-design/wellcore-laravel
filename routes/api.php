@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\AdminPlanTicketController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClientController;
+use App\Http\Controllers\Api\Coach\ContractController;
 use App\Http\Controllers\Api\Coach\InvitationController;
 use App\Http\Controllers\Api\CoachBrandController;
 use App\Http\Controllers\Api\CoachClientRequestController;
@@ -181,6 +182,11 @@ Route::prefix('v/rise')->middleware(['auth:wellcore', 'throttle:api', 'ensure.pl
 
 // Coach (Phase 8 — authenticated admin with coach/admin/superadmin/jefe role)
 Route::prefix('v/coach')->middleware(['auth:wellcore', 'throttle:api', 'role:coach,admin,superadmin,jefe'])->group(function () {
+    // Contract acceptance gate — not behind the coach.contract middleware
+    Route::get('/contract/status',   [ContractController::class, 'status']);
+    Route::post('/contract/accept',  [ContractController::class, 'accept']);
+    Route::post('/contract/decline', [ContractController::class, 'decline']);
+
     Route::get('/dashboard', [CoachController::class, 'dashboard']);
     Route::get('/clients', [CoachController::class, 'clients']);
     Route::get('/kanban', [CoachController::class, 'kanban']);
