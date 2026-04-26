@@ -6,6 +6,7 @@ import MedalUnlockCelebration from '../components/MedalUnlockCelebration.vue';
 import LevelUpCelebration from '../components/LevelUpCelebration.vue';
 import BentoCelebration from '../components/celebrations/BentoCelebration.vue';
 import { useMedals } from '../composables/useMedals';
+import { useImpersonation } from '../composables/useImpersonation';
 
 const { newMedal, levelUp, clearNewMedal, clearLevelUp, fetchMedals: initMedals } = useMedals();
 
@@ -23,6 +24,7 @@ const loggingOut = ref(false);
 const stoppingImpersonation = ref(false);
 
 const isImpersonating = computed(() => authStore.isImpersonating);
+const { anyImpersonation } = useImpersonation();
 
 function stopImpersonation() {
     stoppingImpersonation.value = true;
@@ -271,10 +273,10 @@ const bottomNav = [
     </aside>
 
     <!-- Main wrapper (offset by sidebar on lg+, + impersonation banner) -->
-    <div class="lg:pl-60" :class="{ 'pt-10': isImpersonating }">
+    <div class="lg:pl-60" :class="{ 'pt-10': anyImpersonation }">
 
       <!-- Top bar -->
-      <header class="sticky z-30 flex h-16 items-center justify-between border-b border-wc-border bg-wc-bg/80 px-4 backdrop-blur-xl sm:px-6" :class="isImpersonating ? 'top-10' : 'top-0'">
+      <header class="sticky z-30 flex h-16 items-center justify-between border-b border-wc-border bg-wc-bg/80 px-4 backdrop-blur-xl sm:px-6" :class="anyImpersonation ? 'top-10' : 'top-0'">
         <!-- Left: hamburger (mobile) -->
         <div class="flex items-center gap-3">
           <button
