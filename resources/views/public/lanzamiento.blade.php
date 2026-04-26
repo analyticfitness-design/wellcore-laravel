@@ -174,7 +174,7 @@
     {{-- ================================================================== --}}
     {{-- 2. TRIAL SECTION — 3 DIAS GRATIS                                   --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg" id="trial">
+    <section class="bg-wc-bg hp-cv-section" id="trial">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
 
             <div class="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
@@ -284,7 +284,7 @@
     {{-- ================================================================== --}}
     {{-- 3. NOVEDADES — LO QUE HAY DE NUEVO                                --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg-tertiary" id="novedades">
+    <section class="bg-wc-bg-tertiary hp-cv-section" id="novedades">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
 
             <div class="mb-16 text-center" data-animate="fadeInUp">
@@ -383,7 +383,7 @@
     {{-- ================================================================== --}}
     {{-- 4. CELEBRACION — CELEBRAMOS CONTIGO                               --}}
     {{-- ================================================================== --}}
-    <section class="relative overflow-hidden bg-wc-bg" id="celebracion">
+    <section class="relative overflow-hidden bg-wc-bg hp-cv-section" id="celebracion">
 
         {{-- Background --}}
         <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/6 via-transparent to-wc-accent/3 pointer-events-none" aria-hidden="true"></div>
@@ -464,7 +464,7 @@
     {{-- ================================================================== --}}
     {{-- 5. PRECIOS CON BADGE DE TRIAL                                      --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg-tertiary" id="precios">
+    <section class="bg-wc-bg-tertiary hp-cv-section" id="precios">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
 
             <div class="mb-12 text-center" data-animate="fadeInUp">
@@ -596,7 +596,7 @@
     {{-- ================================================================== --}}
     {{-- 6. TESTIMONIOS                                                     --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg" id="testimonios">
+    <section class="bg-wc-bg hp-cv-section" id="testimonios">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
 
             <div class="mb-12 text-center" data-animate="fadeInUp">
@@ -644,7 +644,7 @@
     {{-- ================================================================== --}}
     {{-- 7. FINAL CTA — UNETE AL LANZAMIENTO                               --}}
     {{-- ================================================================== --}}
-    <section class="bg-wc-bg-tertiary" id="unete">
+    <section class="bg-wc-bg-tertiary hp-cv-section" id="unete">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
 
             <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-wc-bg via-wc-bg to-wc-bg-secondary border border-wc-accent/20 p-12 sm:p-20"

@@ -13,7 +13,7 @@
             <div class="parallax-orb parallax-orb-5" data-parallax-speed="0.4"></div>
         </div>
         <div class="relative mx-auto max-w-7xl px-4 py-24 text-center sm:px-6 sm:py-32 lg:px-8" data-animate="fadeInUp">
-            <span class="inline-flex rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-semibold text-wc-accent">{{ __('presencial.hero_badge') }}</span>
+            <span class="inline-flex rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-semibold text-red-700 dark:text-red-400">{{ __('presencial.hero_badge') }}</span>
             <h1 class="mt-4 font-display text-5xl tracking-wide text-wc-text sm:text-6xl lg:text-7xl">
                 {{ __('presencial.hero_line1') }}<br><span class="text-gradient-accent">{{ __('presencial.hero_line2') }}</span>
             </h1>
@@ -32,7 +32,7 @@
     <div class="section-divider" aria-hidden="true"></div>
 
     {{-- Map Placeholder --}}
-    <section class="bg-wc-bg-secondary">
+    <section class="bg-wc-bg-secondary hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8" data-animate="fadeIn">
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8">
@@ -67,7 +67,7 @@
     <div class="section-divider" aria-hidden="true"></div>
 
     {{-- Info --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 <div data-animate="slideInLeft">
@@ -103,7 +103,7 @@
     <div class="section-divider" aria-hidden="true"></div>
 
     {{-- Schedule --}}
-    <section class="bg-wc-bg-tertiary">
+    <section class="bg-wc-bg-tertiary hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
             <h2 class="text-center font-display text-3xl tracking-wide text-wc-text" data-animate="fadeInUp">{{ __('presencial.schedule_heading') }}</h2>
             <div class="scroll-reveal mx-auto mt-10 max-w-2xl overflow-hidden rounded-xl border border-wc-border">
@@ -145,7 +145,7 @@
     <div class="section-divider" aria-hidden="true"></div>
 
     {{-- Pricing --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
             <h2 class="text-center font-display text-3xl tracking-wide text-wc-text" data-animate="fadeInUp">{{ __('presencial.pricing_heading') }}</h2>
             <div class="stagger-grid mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
@@ -191,7 +191,7 @@
     <div class="section-divider" aria-hidden="true"></div>
 
     {{-- Final CTA --}}
-    <section class="bg-wc-bg-tertiary">
+    <section class="bg-wc-bg-tertiary hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8" data-animate="scaleIn">
             <div class="relative mx-auto max-w-2xl overflow-hidden rounded-2xl border border-wc-border bg-wc-bg p-10 sm:p-16">
                 <div class="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-wc-accent/5 blur-3xl" aria-hidden="true"></div>

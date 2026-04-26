@@ -140,7 +140,7 @@
     <div class="section-divider" aria-hidden="true"></div>
 
     {{-- 2. BIO --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mx-auto max-w-3xl">
                 <h2 class="text-center font-display text-3xl tracking-wide text-wc-text">{{ __('fit.bio_heading') }}</h2>
@@ -158,7 +158,7 @@
     <div class="section-divider" aria-hidden="true"></div>
 
     {{-- 2.5 TRANSFORMACIONES --}}
-    <section class="bg-wc-bg-tertiary">
+    <section class="bg-wc-bg-tertiary hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mx-auto max-w-3xl text-center">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('fit.transformations_heading') }}</h2>
@@ -194,7 +194,7 @@
     <div class="section-divider" aria-hidden="true"></div>
 
     {{-- 3. SPECIALTIES --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <h2 class="text-center font-display text-3xl tracking-wide text-wc-text">{{ __('fit.specialties_heading') }}</h2>
             <div class="mx-auto mt-2 h-1 w-12 rounded-full bg-[#DC3C64]"></div>
@@ -228,7 +228,7 @@
     <div class="section-divider" aria-hidden="true"></div>
 
     {{-- 4. DASHBOARD PREVIEW --}}
-    <section class="bg-wc-bg-tertiary">
+    <section class="bg-wc-bg-tertiary hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="text-center">
                 <span class="inline-flex rounded-full bg-[#DC3C64]/10 px-4 py-1.5 text-xs font-semibold text-[#DC3C64]">{{ __('fit.dashboard_label') }}</span>
@@ -344,17 +344,14 @@
                                 </div>
 
                                 {{-- Progress bars with CSS animation --}}
-                                <div class="mt-3 space-y-2"
-                                     x-data="{ visible: false }"
-                                     x-intersect="visible = true">
+                                <div class="mt-3 space-y-2">
                                     <div>
                                         <div class="flex items-center justify-between text-[10px]">
                                             <span class="text-wc-text-secondary">{{ __('fit.mockup_protein') }}</span>
                                             <span class="font-data font-semibold text-wc-text">98/130g</span>
                                         </div>
                                         <div class="mt-1 h-1.5 w-full rounded-full bg-wc-bg-tertiary">
-                                            <div class="h-1.5 rounded-full bg-[#DC3C64] transition-all duration-1000 ease-out"
-                                                 :style="visible ? 'width: 75%' : 'width: 0%'"></div>
+                                            <div class="h-1.5 rounded-full bg-[#DC3C64]" style="width: 75%"></div>
                                         </div>
                                     </div>
                                     <div>
@@ -363,8 +360,7 @@
                                             <span class="font-data font-semibold text-wc-text">120/180g</span>
                                         </div>
                                         <div class="mt-1 h-1.5 w-full rounded-full bg-wc-bg-tertiary">
-                                            <div class="h-1.5 rounded-full bg-[#DC3C64]/60 transition-all duration-1000 ease-out delay-150"
-                                                 :style="visible ? 'width: 67%' : 'width: 0%'"></div>
+                                            <div class="h-1.5 rounded-full bg-[#DC3C64]/60" style="width: 67%"></div>
                                         </div>
                                     </div>
                                     <div>
@@ -373,8 +369,7 @@
                                             <span class="font-data font-semibold text-wc-text">45/65g</span>
                                         </div>
                                         <div class="mt-1 h-1.5 w-full rounded-full bg-wc-bg-tertiary">
-                                            <div class="h-1.5 rounded-full bg-[#DC3C64]/40 transition-all duration-1000 ease-out delay-300"
-                                                 :style="visible ? 'width: 69%' : 'width: 0%'"></div>
+                                            <div class="h-1.5 rounded-full bg-[#DC3C64]/40" style="width: 69%"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -403,7 +398,7 @@
     <div class="section-divider" aria-hidden="true"></div>
 
     {{-- 5. TESTIMONIALS with Alpine slider --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <h2 class="text-center font-display text-3xl tracking-wide text-wc-text">{{ __('fit.testimonials_heading') }}</h2>
             <div class="mx-auto mt-2 h-1 w-12 rounded-full bg-[#DC3C64]"></div>
@@ -497,7 +492,7 @@
     <div class="section-divider" aria-hidden="true"></div>
 
     {{-- 6. CTA --}}
-    <section class="relative overflow-hidden bg-wc-bg-secondary">
+    <section class="relative overflow-hidden bg-wc-bg-secondary hp-cv-section">
         {{-- Decorative orbs --}}
         <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
             <div class="absolute -left-32 -top-32 h-80 w-80 rounded-full bg-[#DC3C64]/8 blur-3xl"></div>
