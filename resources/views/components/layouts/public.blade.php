@@ -17,14 +17,29 @@
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
-    <!-- Fonts self-hosted (same-origin, sin round-trip a fonts.gstatic.com) -->
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/oswald-700-latin.woff2" crossorigin>
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/raleway-400-latin.woff2" crossorigin>
-    <link rel="stylesheet" href="/fonts/wellcore-fonts.css">
+    {{-- ────────────────────────────────────────────────────────
+         FUENTES — estrategia anti-render-blocking
+         1. Inline @font-face críticos (4 fuentes above-fold latin)
+         2. Preload solo de las 4 woff2 críticas (paralelo, no serie)
+         3. CSS catálogo completo: media="print" onload (no bloquea render)
+         ──────────────────────────────────────────────────────── --}}
+    <style>
+      @font-face{font-family:'Oswald';font-style:normal;font-weight:600;font-display:swap;src:url('/fonts/oswald-600-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+      @font-face{font-family:'Raleway';font-style:normal;font-weight:500;font-display:swap;src:url('/fonts/raleway-500-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+      @font-face{font-family:'Raleway';font-style:normal;font-weight:600;font-display:swap;src:url('/fonts/raleway-600-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+      @font-face{font-family:'Raleway';font-style:normal;font-weight:700;font-display:swap;src:url('/fonts/raleway-700-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+    </style>
 
-    {{-- Preload logos optimizados (320px AVIF, -91% vs full-size) --}}
-    <link rel="preload" href="/images/logo-dark-320.avif" as="image" type="image/avif" fetchpriority="high">
-    <link rel="preload" href="/images/logo-light-320.avif" as="image" type="image/avif" fetchpriority="high">
+    {{-- Preload paralelo de las 4 fuentes críticas (mismas que el inline arriba) --}}
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/oswald-600-latin.woff2" crossorigin>
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/raleway-500-latin.woff2" crossorigin>
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/raleway-600-latin.woff2" crossorigin>
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/raleway-700-latin.woff2" crossorigin>
+
+    {{-- CSS catálogo completo: NO bloquea render (truco media=print + onload) --}}
+    <link rel="preload" href="/fonts/wellcore-fonts.css" as="style">
+    <link rel="stylesheet" href="/fonts/wellcore-fonts.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="/fonts/wellcore-fonts.css"></noscript>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     {{-- Alpine: se carga en el footer condicionalmente, despues de saber si Livewire rendero (ver final de body).
@@ -74,12 +89,12 @@
                 <picture class="dark:hidden">
                     <source srcset="/images/logo-dark-320.avif 320w, /images/logo-dark-640.avif 640w" sizes="158px" type="image/avif">
                     <source srcset="/images/logo-dark-320.webp 320w, /images/logo-dark-640.webp 640w" sizes="158px" type="image/webp">
-                    <img src="/images/logo-dark-320.webp" alt="WellCore Fitness" width="158" height="40" class="h-10 w-auto" fetchpriority="high" decoding="async">
+                    <img src="/images/logo-dark-320.webp" alt="WellCore Fitness" width="158" height="40" class="h-10 w-auto" decoding="async">
                 </picture>
                 <picture class="hidden dark:block">
                     <source srcset="/images/logo-light-320.avif 320w, /images/logo-light-640.avif 640w" sizes="158px" type="image/avif">
                     <source srcset="/images/logo-light-320.webp 320w, /images/logo-light-640.webp 640w" sizes="158px" type="image/webp">
-                    <img src="/images/logo-light-320.webp" alt="WellCore Fitness" width="158" height="40" class="h-10 w-auto" fetchpriority="high" decoding="async">
+                    <img src="/images/logo-light-320.webp" alt="WellCore Fitness" width="158" height="40" class="h-10 w-auto" decoding="async">
                 </picture>
             </a>
 
