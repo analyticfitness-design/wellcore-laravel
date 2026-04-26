@@ -7,6 +7,7 @@ use App\Enums\PaymentStatus;
 use App\Enums\PlanType;
 use App\Models\Client;
 use App\Models\Payment;
+use App\Services\PricingService;
 use App\Services\WompiService;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -74,7 +75,7 @@ class Checkout extends Component
     {
         $plans = [];
         foreach (['rise', 'esencial', 'metodo', 'elite'] as $key) {
-            $cfg = config("plans.{$key}");
+            $cfg = app(PricingService::class)->configFor($key);
             $plans[$key] = [
                 'name' => $cfg['name'],
                 'price' => (int) $cfg['price_cop'],
@@ -216,7 +217,7 @@ class Checkout extends Component
         }
 
         // SECURITY: recomputar precio canónico desde config, no de las props public (manipulables)
-        $canonicalPrice = (int) config("plans.{$this->plan}.price_cop", 0);
+        $canonicalPrice = app(PricingService::class)->priceFor($this->plan);
         if ($canonicalPrice <= 0) {
             $this->paymentError = 'Plan invalido.';
 

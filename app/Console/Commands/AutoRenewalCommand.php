@@ -10,6 +10,7 @@ use App\Models\AssignedPlan;
 use App\Models\Client;
 use App\Models\WellcoreNotification;
 use App\Services\PlanLockService;
+use App\Services\PricingService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
@@ -143,7 +144,7 @@ class AutoRenewalCommand extends Command
     private function sendReminderEmail(Client $client, string $planName, Carbon $expiresAt): void
     {
         // planName viene ya normalizado desde el caller (esencial|metodo|elite)
-        $renewalAmount = (int) config("plans.{$planName}.price_cop", 0);
+        $renewalAmount = app(PricingService::class)->priceFor($planName);
 
         try {
             Mail::to($client->email)->queue(new PlanExpiring(

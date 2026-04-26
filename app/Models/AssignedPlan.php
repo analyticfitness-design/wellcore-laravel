@@ -101,11 +101,27 @@ class AssignedPlan extends Model
                 return; // respetar valor explícito
             }
 
+            $isTrial = str_contains((string) $plan->plan_type, 'trial');
+
+            // P1.4: heredar expires_at del ciclo de facturación activo del cliente.
+            // Solo para planes no-trial y cuando el cliente ya tiene planes activos con fecha futura.
+            if (! $isTrial && $plan->client_id) {
+                $inheritedExpiry = self::query()
+                    ->forClient($plan->client_id)
+                    ->active()
+                    ->whereNotNull('expires_at')
+                    ->where('expires_at', '>', Carbon::now()->toDateString())
+                    ->max('expires_at');
+
+                if ($inheritedExpiry) {
+                    $plan->expires_at = $inheritedExpiry;
+
+                    return;
+                }
+            }
+
             $from = $plan->valid_from ? Carbon::parse($plan->valid_from) : Carbon::now();
-
-            // Trial dura 3 días; todos los demás tipos 30 días
-            $duration = str_contains((string) $plan->plan_type, 'trial') ? 3 : 30;
-
+            $duration = $isTrial ? 3 : 30;
             $plan->expires_at = $from->copy()->addDays($duration)->toDateString();
         });
 

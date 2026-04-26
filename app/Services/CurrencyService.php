@@ -86,10 +86,7 @@ class CurrencyService
     public static function getPlanPrices(string $currency = 'COP'): array
     {
         // Lee de config/plans.php (SSOT). NO hardcodear precios aquí.
-        $basePrices = [];
-        foreach (['esencial', 'metodo', 'elite', 'rise'] as $plan) {
-            $basePrices[$plan] = (int) config("plans.{$plan}.price_cop", 0);
-        }
+        $basePrices = app(PricingService::class)->allPrices();
 
         $converted = [];
         foreach ($basePrices as $plan => $priceCOP) {
