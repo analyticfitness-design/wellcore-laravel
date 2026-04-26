@@ -85,15 +85,15 @@
                             :class="billing === 'trimestral' ? 'bg-wc-accent text-white shadow-md' : 'text-wc-text-secondary hover:text-wc-text'"
                             class="rounded-full px-5 py-2 text-sm font-medium transition-all duration-200">
                         {{ __('planes.billing_trimestral') }}
-                        <span class="ml-1 rounded-full bg-wc-accent/20 px-1.5 py-0.5 text-xs font-bold text-wc-accent"
-                              :class="billing === 'trimestral' ? 'bg-white/20 text-white' : ''">-10%</span>
+                        <span class="ml-1 rounded-full bg-wc-accent/20 px-1.5 py-0.5 text-xs font-bold text-red-700 dark:text-red-400"
+                              :class="billing === 'trimestral' ? 'bg-white/20 text-white dark:text-white' : ''">-10%</span>
                     </button>
                     <button @click="billing = 'anual'"
                             :class="billing === 'anual' ? 'bg-wc-accent text-white shadow-md' : 'text-wc-text-secondary hover:text-wc-text'"
                             class="rounded-full px-5 py-2 text-sm font-medium transition-all duration-200">
                         {{ __('planes.billing_anual') }}
-                        <span class="ml-1 rounded-full bg-wc-accent/20 px-1.5 py-0.5 text-xs font-bold text-wc-accent"
-                              :class="billing === 'anual' ? 'bg-white/20 text-white' : ''">-20%</span>
+                        <span class="ml-1 rounded-full bg-wc-accent/20 px-1.5 py-0.5 text-xs font-bold text-red-700 dark:text-red-400"
+                              :class="billing === 'anual' ? 'bg-white/20 text-white dark:text-white' : ''">-20%</span>
                     </button>
                 </div>
             </div>
@@ -168,7 +168,7 @@
                     </div>
 
                     <a href="{{ route('pagar') }}?plan=esencial"
-                       class="btn-press mt-6 flex w-full items-center justify-center rounded-full border border-wc-border bg-wc-bg px-6 py-3 text-sm font-semibold text-wc-text transition hover:border-wc-accent hover:text-wc-accent">
+                       class="btn-press mt-6 flex w-full items-center justify-center rounded-full border border-wc-border bg-wc-bg px-6 py-3 text-sm font-semibold text-wc-text transition hover:border-wc-accent hover:text-red-700 dark:hover:text-red-400">
                         {{ __('planes.esencial_cta') }}
                     </a>
 
@@ -180,8 +180,8 @@
                                     {{ $feature }}
                                 </li>
                             @else
-                                <li class="flex items-start gap-3 text-sm text-wc-text-tertiary/40 line-through">
-                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-text-tertiary/30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                                <li class="flex items-start gap-3 text-sm text-wc-text-tertiary/70 line-through">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-text-tertiary/50" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
                                     {{ $feature }}
                                 </li>
                             @endif
@@ -200,7 +200,7 @@
                     <div class="mb-6">
                         <h3 class="text-center font-display text-2xl tracking-wide text-wc-text">{{ __('planes.metodo_name') }}</h3>
                         <p class="mt-2 text-center text-sm text-wc-text-secondary">{{ __('planes.metodo_desc') }}</p>
-                        <p class="mt-1 text-center text-xs font-medium text-wc-accent">{{ __('planes.metodo_popular') }}</p>
+                        <p class="mt-1 text-center text-xs font-medium text-red-700 dark:text-red-400">{{ __('planes.metodo_popular') }}</p>
                     </div>
 
                     <div class="relative text-center">
@@ -234,8 +234,8 @@
                                     {{ $feature }}
                                 </li>
                             @else
-                                <li class="flex items-start gap-3 text-sm text-wc-text-tertiary/40 line-through">
-                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-text-tertiary/30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                                <li class="flex items-start gap-3 text-sm text-wc-text-tertiary/70 line-through">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-text-tertiary/50" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
                                     {{ $feature }}
                                 </li>
                             @endif
@@ -248,7 +248,7 @@
                      data-animate="fadeInUp" data-delay="300">
                     {{-- Badge --}}
                     <div class="mb-4 text-center">
-                        <span class="inline-block rounded-full border border-wc-accent/30 bg-wc-accent/10 px-4 py-1 text-xs font-bold tracking-wide text-wc-accent">{{ __('planes.elite_badge') }}</span>
+                        <span class="inline-block rounded-full border border-wc-accent/30 bg-wc-accent/10 px-4 py-1 text-xs font-bold tracking-wide text-red-700 dark:text-red-400">{{ __('planes.elite_badge') }}</span>
                     </div>
 
                     <div class="mb-6">
@@ -275,7 +275,7 @@
                     </div>
 
                     <a href="{{ route('pagar') }}?plan=elite"
-                       class="btn-press mt-6 flex w-full items-center justify-center rounded-full border border-wc-border bg-wc-bg px-6 py-3 text-sm font-semibold text-wc-text transition hover:border-wc-accent hover:text-wc-accent">
+                       class="btn-press mt-6 flex w-full items-center justify-center rounded-full border border-wc-border bg-wc-bg px-6 py-3 text-sm font-semibold text-wc-text transition hover:border-wc-accent hover:text-red-700 dark:hover:text-red-400">
                         {{ __('planes.elite_cta') }}
                     </a>
 
@@ -287,8 +287,8 @@
                                     {{ $feature }}
                                 </li>
                             @else
-                                <li class="flex items-start gap-3 text-sm text-wc-text-tertiary/40 line-through">
-                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-text-tertiary/30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                                <li class="flex items-start gap-3 text-sm text-wc-text-tertiary/70 line-through">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-text-tertiary/50" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
                                     {{ $feature }}
                                 </li>
                             @endif
@@ -300,11 +300,11 @@
             {{-- Discounts --}}
             <div class="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-wc-text-secondary">
                 <div class="flex items-center gap-2">
-                    <span class="rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-bold text-wc-accent">-10%</span>
+                    <span class="rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-bold text-red-700 dark:text-red-400">-10%</span>
                     {{ __('planes.discount_trimestral') }}
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-bold text-wc-accent">-20%</span>
+                    <span class="rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-bold text-red-700 dark:text-red-400">-20%</span>
                     {{ __('planes.discount_anual') }}
                 </div>
                 <div class="flex items-center gap-2">
@@ -318,7 +318,7 @@
     <div class="section-divider"></div>
 
     {{-- Trust --}}
-    <section class="bg-wc-bg-tertiary">
+    <section class="bg-wc-bg-tertiary hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-10 text-center">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('planes.trust_title') }}</h2>
@@ -349,7 +349,7 @@
     <div class="section-divider"></div>
 
     {{-- FAQ --}}
-    <section class="bg-wc-bg">
+    <section class="bg-wc-bg hp-cv-section">
         <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="mb-10 text-center">
                 <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('planes.faq_title') }}</h2>
@@ -394,7 +394,7 @@
     <div class="section-divider"></div>
 
     {{-- CTA --}}
-    <section class="bg-wc-bg-tertiary">
+    <section class="bg-wc-bg-tertiary hp-cv-section">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
             <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-gradient-to-br from-wc-bg via-wc-bg to-wc-bg-secondary p-10 sm:p-16">
                 <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/10 via-wc-accent/5 to-transparent"></div>
@@ -405,7 +405,7 @@
                     <p class="mx-auto mt-4 max-w-md text-wc-text-secondary">{{ __('planes.cta_subtitle') }}</p>
                     <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                         <a href="{{ route('inscripcion') }}" class="btn-press pulse-glow inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3 text-base font-semibold text-white shadow-md transition hover:bg-wc-accent-hover hover:shadow-lg">{{ __('planes.cta_btn_comenzar') }}</a>
-                        <a href="{{ route('faq') }}" class="btn-press inline-flex items-center justify-center rounded-full border border-wc-border px-8 py-3 text-base font-medium text-wc-text-secondary transition hover:border-wc-accent hover:text-wc-accent">{{ __('planes.cta_btn_faq') }}</a>
+                        <a href="{{ route('faq') }}" class="btn-press inline-flex items-center justify-center rounded-full border border-wc-border px-8 py-3 text-base font-medium text-wc-text-secondary transition hover:border-wc-accent hover:text-red-700 dark:hover:text-red-400">{{ __('planes.cta_btn_faq') }}</a>
                     </div>
                 </div>
             </div>
