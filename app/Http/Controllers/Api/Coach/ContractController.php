@@ -74,6 +74,10 @@ class ContractController extends Controller
             return response()->json(['error' => 'not_a_coach'], 403);
         }
 
+        if ($this->service->hasAcceptedCurrentVersion($user->id)) {
+            return response()->json(['error' => 'already_accepted'], 409);
+        }
+
         $this->service->recordDecline($user->id, $request);
 
         return response()->json(['ok' => true, 'logged_out' => true]);

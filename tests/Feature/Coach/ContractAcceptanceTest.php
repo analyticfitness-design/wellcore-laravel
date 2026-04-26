@@ -252,6 +252,100 @@ class ContractAcceptanceTest extends TestCase
     }
 
     // -------------------------------------------------------------------------
+    // Additional tests (F1.12 — A.1, A.2, A.5, A.8)
+    // -------------------------------------------------------------------------
+
+    public function test_accept_endpoint_rejects_version_mismatch(): void
+    {
+        config([
+            'wellcore.coach_contract.enabled' => true,
+            'wellcore.coach_contract.version'  => '1.0',
+        ]);
+
+        $coach = Admin::factory()->coach()->create();
+        $token = $this->issueCoachToken($coach->id);
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
+            ->postJson('/api/v/coach/contract/accept', [
+                'version'          => '0.9',
+                'scroll_completed' => true,
+            ]);
+
+        $response->assertStatus(422)
+            ->assertJsonPath('error', 'version_mismatch');
+    }
+
+    public function test_accept_and_decline_require_authentication(): void
+    {
+        // All three contract endpoints are behind auth:wellcore middleware.
+        // Unauthenticated requests must be rejected before reaching the controller.
+        $accept = $this->postJson('/api/v/coach/contract/accept', [
+            'version'          => '1.0',
+            'scroll_completed' => true,
+        ]);
+        $accept->assertStatus(401);
+
+        $decline = $this->postJson('/api/v/coach/contract/decline');
+        $decline->assertStatus(401);
+
+        $status = $this->getJson('/api/v/coach/contract/status');
+        $status->assertStatus(401);
+    }
+
+    public function test_decline_after_accept_is_blocked(): void
+    {
+        config([
+            'wellcore.coach_contract.enabled' => true,
+            'wellcore.coach_contract.version'  => '1.0',
+        ]);
+
+        $coach = Admin::factory()->coach()->create();
+        $token = $this->issueCoachToken($coach->id);
+
+        // First accept
+        $this->withHeader('Authorization', 'Bearer '.$token)
+            ->postJson('/api/v/coach/contract/accept', [
+                'version'          => '1.0',
+                'scroll_completed' => true,
+            ])->assertOk();
+
+        // Attempting to decline after acceptance must be blocked
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
+            ->postJson('/api/v/coach/contract/decline');
+
+        $response->assertStatus(409)
+            ->assertJsonPath('error', 'already_accepted');
+    }
+
+    public function test_acceptance_stores_correct_sha256_hash(): void
+    {
+        config([
+            'wellcore.coach_contract.enabled' => true,
+            'wellcore.coach_contract.version'  => '1.0',
+        ]);
+
+        $coach = Admin::factory()->coach()->create();
+        $token = $this->issueCoachToken($coach->id);
+
+        $this->withHeader('Authorization', 'Bearer '.$token)
+            ->postJson('/api/v/coach/contract/accept', [
+                'version'          => '1.0',
+                'scroll_completed' => true,
+            ])->assertOk();
+
+        $service      = app(CoachContractService::class);
+        $expectedHash = $service->getCurrentContentHash();
+
+        $row = \DB::table('coach_contract_acceptances')
+            ->where('coach_id', $coach->id)
+            ->first();
+
+        $this->assertNotNull($row);
+        $this->assertSame($expectedHash, $row->content_hash);
+        $this->assertSame(64, strlen($row->content_hash)); // SHA-256 = 64 hex chars
+    }
+
+    // -------------------------------------------------------------------------
     // Helpers
     // -------------------------------------------------------------------------
 
