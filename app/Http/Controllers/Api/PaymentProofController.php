@@ -7,12 +7,15 @@ use App\Enums\UserType;
 use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Coach\StorePaymentProofRequest;
+use App\Mail\PaymentProofPending;
 use App\Models\PaymentProof;
 use App\Models\WellcoreNotification;
 use App\Services\AuditService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class PaymentProofController extends Controller
@@ -77,6 +80,14 @@ class PaymentProofController extends Controller
             'payment_proof_submitted',
             "Coach {$coach->id} subió comprobante para {$email} (proof_id: {$proof->id})"
         );
+
+        // Mail al superadmin (opcional — silencioso si falla)
+        try {
+            $superadminEmail = config('wellcore.superadmin_email', env('SUPERADMIN_EMAIL', 'daniel@wellcorefitness.com'));
+            Mail::to($superadminEmail)->queue(new PaymentProofPending($proof));
+        } catch (\Throwable $e) {
+            Log::warning('PaymentProofPending mail failed: ' . $e->getMessage());
+        }
 
         return response()->json([
             'id' => $proof->id,
