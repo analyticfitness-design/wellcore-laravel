@@ -949,6 +949,17 @@ body {
   --shadow-premium: 0 4px 24px rgba(0,0,0,.5);
 }
 
+/* ─── Fase 3 — content-visibility para secciones below-fold ─── */
+/* Permite al navegador saltar layout/paint de secciones fuera del viewport inicial.
+   contain-intrinsic-size: reserva espacio estimado para evitar CLS al hacer scroll. */
+.hp-cv-section {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 800px;
+}
+@media (prefers-reduced-motion: reduce) {
+    /* Reduced motion no afecta content-visibility; dejamos la regla intacta */
+}
+
 /* ─── Shell ─── */
 .hp-wrap { max-width: 1120px; margin-inline: auto; padding-inline: 24px; }
 @media (min-width: 768px) { .hp-wrap { padding-inline: 40px; } }
@@ -1088,29 +1099,6 @@ body {
   text-transform:uppercase; letter-spacing:.1em;
   color:#DC2626; margin-top:6px;
 }
-
-/* ════════ RESULTADOS ════════ */
-.hp-res { background:var(--color-wc-bg-secondary); }
-.hp-res-grid { display:grid; gap:24px; margin-top:56px; }
-@media (min-width:640px) { .hp-res-grid { grid-template-columns:repeat(2,1fr); } }
-@media (min-width:1024px) { .hp-res-grid { grid-template-columns:repeat(3,1fr); } }
-.hp-res-card { background:var(--color-wc-bg-tertiary); border:1px solid var(--color-wc-border); border-radius:var(--radius-card); overflow:hidden; transition:transform .25s cubic-bezier(.22,1,.36,1); }
-.hp-res-card:hover { transform:translateY(-3px); }
-.hp-res-img-wrap { aspect-ratio:4/5; overflow:hidden; background:var(--color-wc-bg-secondary); position:relative; }
-.hp-res-img-wrap img { width:100%; height:100%; object-fit:cover; transition:transform .5s ease; }
-.hp-res-card:hover .hp-res-img-wrap img { transform:scale(1.04); }
-.hp-res-labels { position:absolute; bottom:10px; left:10px; display:flex; gap:6px; }
-.hp-res-lbl { font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:#fff; padding:3px 8px; border-radius:4px; backdrop-filter:blur(4px); }
-.hp-res-lbl-b { background:rgba(0,0,0,.55); } .hp-res-lbl-a { background:rgba(220,38,38,.85); }
-.hp-res-body { padding:20px; display:flex; flex-direction:column; gap:6px; }
-.hp-res-name { font-size:14px; font-weight:700; color:var(--color-wc-text); }
-.hp-res-meta { font-size:12px; color:var(--color-wc-text-tertiary); }
-.hp-res-stat { font-family:var(--font-display); font-size:22px; font-weight:700; color:var(--color-wc-accent); }
-.hp-res-quote { background:var(--color-wc-bg-tertiary); border:1px solid var(--color-wc-border); border-radius:var(--radius-card); padding:28px; display:flex; flex-direction:column; gap:16px; position:relative; }
-.hp-res-quote::before { content:'\201C'; position:absolute; top:12px; left:20px; font-family:Georgia,serif; font-size:64px; line-height:1; color:rgba(220,38,38,.15); pointer-events:none; }
-.hp-res-quote-text { font-size:14px; line-height:1.7; color:var(--color-wc-text-secondary); font-style:italic; padding-top:12px; }
-.hp-res-quote-author { font-size:12px; font-weight:700; color:var(--color-wc-text); }
-.hp-res-quote-plan { font-size:11px; color:var(--color-wc-accent); }
 
 /* ════════ COMUNIDAD V3 ════════ */
 .hp-com-v3 { padding:60px 0; }
@@ -1586,5 +1574,5 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .hp-anim-up, .hp-anim-scale, .hp-anim-left, .hp-anim-right { animation: none !important; }
   .hp-hero-badge-dot { animation: none !important; }
-  .hp-btn-primary, .hp-btn-ghost, .hp-btn-white, .hp-why-card, .hp-res-card, .hp-plan-card { transition: none !important; }
+  .hp-btn-primary, .hp-btn-ghost, .hp-btn-white, .hp-why-card, .hp-plan-card { transition: none !important; }
 }

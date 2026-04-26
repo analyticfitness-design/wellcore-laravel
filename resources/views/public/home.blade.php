@@ -308,7 +308,7 @@
     {{-- ================================================================== --}}
     {{-- 4. WHY WELLCORE                                                    --}}
     {{-- ================================================================== --}}
-    <section class="hp-sec hp-why">
+    <section class="hp-sec hp-why hp-cv-section">
         <div class="hp-wrap">
             <p class="hp-eyebrow">{{ __('home.why_eyebrow') }}</p>
             <h2 class="hp-h2 mt-4">{{ __('home.why_title') }}</h2>
@@ -373,7 +373,7 @@
     {{-- ================================================================== --}}
     {{-- 5. COMMUNITY v3                                                   --}}
     {{-- ================================================================== --}}
-    <section class="hp-sec hp-com-v3">
+    <section class="hp-sec hp-com-v3 hp-cv-section">
         <div class="hp-wrap">
             <div class="hp-com-strip">
                 <div class="hp-com-orb" aria-hidden="true"></div>
@@ -422,7 +422,7 @@
     {{-- ================================================================== --}}
     {{-- 6. COMO FUNCIONA                                                   --}}
     {{-- ================================================================== --}}
-    <section class="hp-sec hp-phases">
+    <section class="hp-sec hp-phases hp-cv-section">
         <div class="hp-wrap">
             <p class="hp-eyebrow">{{ __('home.process_eyebrow') }}</p>
             <h2 class="hp-h2 mt-4">{{ __('home.process_title') }}</h2>
@@ -469,7 +469,7 @@
     {{-- ================================================================== --}}
     {{-- 7. PLANS                                                           --}}
     {{-- ================================================================== --}}
-    <section class="hp-sec hp-plan">
+    <section class="hp-sec hp-plan hp-cv-section">
         <div class="hp-wrap">
             <p class="hp-eyebrow">{{ __('home.plans_eyebrow') }}</p>
             <h2 class="hp-h2 mt-4">{{ __('home.plans_title') }}</h2>
@@ -488,7 +488,7 @@
                 {{-- ESENCIAL --}}
                 <div class="hp-plan-card">
                     <span class="hp-plan-discount-badge">-15%</span>
-                    <div>
+                    <div class="flex flex-col">
                         <p class="hp-plan-name">{{ __('home.plan_esencial_name') }}</p>
                         <p class="hp-plan-price-old">$299,000</p>
                         <p class="hp-plan-price mt-1">$254,150 <span class="hp-plan-price-period">{{ __('home.plan_cop_mes') }}</span></p>
@@ -528,7 +528,7 @@
                 <div class="hp-plan-card hp-plan-feat">
                     <span class="hp-plan-badge">{{ __('home.plan_mejor_valor') }}</span>
                     <span class="hp-plan-discount-badge hp-plan-discount-badge-feat">-15%</span>
-                    <div>
+                    <div class="flex flex-col">
                         <p class="hp-plan-name">{{ __('home.plan_metodo_name') }}</p>
                         <p class="hp-plan-price-old">$399,000</p>
                         <p class="hp-plan-price mt-1">$339,150 <span class="hp-plan-price-period">{{ __('home.plan_cop_mes') }}</span></p>
@@ -567,7 +567,7 @@
                 {{-- ELITE --}}
                 <div class="hp-plan-card">
                     <span class="hp-plan-discount-badge">-15%</span>
-                    <div>
+                    <div class="flex flex-col">
                         <p class="hp-plan-name">{{ __('home.plan_elite_name') }}</p>
                         <p class="hp-plan-price-old">$549,000</p>
                         <p class="hp-plan-price mt-1">$466,650 <span class="hp-plan-price-period">{{ __('home.plan_cop_mes') }}</span></p>
@@ -728,11 +728,9 @@
                                         ['Juan R.', '94%', 'text-emerald-400'],
                                         ['Andrea M.', '100%', 'text-emerald-400'],
                                     ] as [$clientName, $clientAdherence, $color])
-                                    <div class="flex items-center justify-between rounded bg-wc-bg px-2 py-1.5">
-                                        <div class="flex items-center gap-2">
-                                            <div class="h-5 w-5 rounded-full bg-wc-accent/10"></div>
-                                            <span class="text-[11px] text-wc-text-secondary">{{ $clientName }}</span>
-                                        </div>
+                                    <div class="flex items-center gap-2 rounded bg-wc-bg px-2 py-1.5">
+                                        <div class="h-5 w-5 shrink-0 rounded-full bg-wc-accent/10"></div>
+                                        <span class="flex-1 text-[11px] text-wc-text-secondary">{{ $clientName }}</span>
                                         <span class="font-data text-[11px] font-semibold {{ $color }}">{{ $clientAdherence }}</span>
                                     </div>
                                     @endforeach
@@ -771,30 +769,22 @@
                 <a href="{{ route('blog.show', $article['slug']) }}" class="scroll-reveal card-hover-lift group rounded-xl border border-wc-border bg-wc-bg transition-colors hover:border-wc-accent/30" data-animate="fadeInUp" data-animate-delay="{{ ($index + 1) * 100 }}">
                     {{-- Image placeholder --}}
                     <div class="relative h-48 overflow-hidden rounded-t-xl bg-gradient-to-br from-wc-accent/10 via-wc-bg-tertiary to-wc-bg-secondary">
-                        <div class="absolute left-4 top-4">
-                            <span class="rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-semibold text-wc-accent">{{ $article['category'] }}</span>
-                        </div>
+                        <span class="absolute left-4 top-4 rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-semibold text-wc-accent">{{ $article['category'] }}</span>
                     </div>
                     {{-- Content --}}
                     <div class="p-6">
                         <h3 class="text-base font-semibold text-wc-text group-hover:text-wc-accent">{{ $article['title'] }}</h3>
                         <p class="mt-2 line-clamp-2 text-sm text-wc-text-secondary">{{ $article['excerpt'] }}</p>
-                        <div class="mt-4 flex items-center gap-3 text-xs text-wc-text-tertiary">
-                            <span>{{ \Carbon\Carbon::parse($article['date'])->format('d M Y') }}</span>
-                            <span>&middot;</span>
-                            <span>{{ $article['reading_time'] }}</span>
-                        </div>
+                        <p class="mt-4 text-xs text-wc-text-tertiary">{{ \Carbon\Carbon::parse($article['date'])->format('d M Y') }} &middot; {{ $article['reading_time'] }}</p>
                     </div>
                 </a>
                 @endforeach
             </div>
 
-            <div class="mt-8 text-center sm:hidden">
-                <a href="{{ route('blog.index') }}" aria-label="Ver todos los articulos del blog WellCore" class="inline-flex items-center gap-2 text-sm font-medium text-wc-accent hover:text-wc-accent-hover">
-                    {{ __('home.blog_ver_todos') }}
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
-                </a>
-            </div>
+            <a href="{{ route('blog.index') }}" aria-label="Ver todos los articulos del blog WellCore" class="mt-8 sm:hidden mx-auto flex w-fit items-center gap-2 text-sm font-medium text-wc-accent hover:text-wc-accent-hover">
+                {{ __('home.blog_ver_todos') }}
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+            </a>
         </div>
     </section>
 
@@ -803,7 +793,7 @@
     {{-- ================================================================== --}}
     {{-- TRUST CARDS — entre pricing y FAQ                                   --}}
     {{-- ================================================================== --}}
-    <section class="hp-sec hp-trust">
+    <section class="hp-sec hp-trust hp-cv-section">
         <div class="hp-wrap">
             <div class="hp-trust-grid">
                 <div class="hp-trust-card">
@@ -834,7 +824,7 @@
     {{-- ================================================================== --}}
     {{-- 11. FAQ                                                            --}}
     {{-- ================================================================== --}}
-    <section class="hp-sec hp-faq" x-data="{ active: null }">
+    <section class="hp-sec hp-faq hp-cv-section" x-data="{ active: null }">
         <div class="hp-wrap">
             <div class="text-center">
                 <p class="text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ __('home.faq_eyebrow') }}</p>
@@ -875,7 +865,7 @@
     {{-- ================================================================== --}}
     {{-- 12. FINAL CTA                                                      --}}
     {{-- ================================================================== --}}
-    <section class="hp-cta">
+    <section class="hp-cta hp-cv-section">
         <div class="hp-wrap">
             <div class="hp-cta-inner hp-cta-v3">
                 <div class="hp-cta-orb1" aria-hidden="true"></div>
