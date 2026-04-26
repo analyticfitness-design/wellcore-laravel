@@ -334,7 +334,7 @@ onBeforeUnmount(() => {
         <!-- ===== WIZARD WRAPPER ===== -->
         <section
           ref="stepRoot"
-          class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 shadow-sm sm:p-6"
+          class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 shadow-sm sm:p-6 pb-32 sm:pb-6"
           aria-labelledby="checkin-wizard-title"
         >
           <h2 id="checkin-wizard-title" class="sr-only">Formulario de check-in</h2>
@@ -580,7 +580,7 @@ onBeforeUnmount(() => {
         <!-- ===== /WIZARD ===== -->
 
         <!-- ===== Mobile sticky CTA ===== -->
-        <div class="fixed inset-x-0 bottom-0 z-30 border-t border-wc-border bg-wc-bg/95 backdrop-blur sm:hidden" v-if="!loading && !error">
+        <div class="fixed inset-x-0 z-40 border-t border-wc-border bg-wc-bg/95 backdrop-blur sm:hidden" style="bottom: calc(4rem + env(safe-area-inset-bottom));" v-if="!loading && !error">
           <div class="mx-auto flex max-w-screen-sm gap-2 p-3">
             <button
               v-if="!isFirstStep"
