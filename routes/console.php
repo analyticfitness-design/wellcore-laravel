@@ -38,6 +38,9 @@ Schedule::command('wellcore:cleanup-pending-payments')->dailyAt('02:00');
 // Expire manual payment proofs that were not reviewed within 7 days
 Schedule::command('wellcore:expire-payment-proofs')->daily()->runInBackground();
 
+// Strategy Hub — archive completed drops older than 30 days
+Schedule::command('wellcore:archive-old-drops')->dailyAt('03:00');
+
 // Prune expired auth tokens and inactive sessions older than 14 days
 Schedule::call(function () {
     AuthToken::where('expires_at', '<', now())
