@@ -88,6 +88,16 @@ const routes = [
     { path: '/coach/resources', name: 'coach-resources', component: () => import('../pages/Coach/Resources.vue'), meta: { auth: true, title: 'Recursos — WellCore' } },
     { path: '/coach/invitations', name: 'coach-invitations', component: () => import('../pages/Coach/Invitations/InvitationManager.vue'), meta: { auth: true, title: 'Mis Invitaciones — WellCore' } },
     { path: '/coach/comprobantes', name: 'coach-comprobantes', component: () => import('../pages/Coach/PaymentProofs.vue'), meta: { auth: true, title: 'Comprobantes — WellCore' } },
+    // Coach Strategy Hub (Marketing Drops)
+    { path: '/coach/onboarding/brand-profile', name: 'coach-onboarding-brand-profile',
+      component: () => import('../pages/Coach/Onboarding/BrandProfile.vue'),
+      meta: { auth: true, title: 'Tu perfil de marca — WellCore' } },
+    { path: '/coach/strategy', name: 'coach-strategy',
+      component: () => import('../pages/Coach/Strategy.vue'),
+      meta: { auth: true, requiresBrandProfile: true, title: 'Estrategia — WellCore' } },
+    { path: '/coach/strategy/history', name: 'coach-strategy-history',
+      component: () => import('../pages/Coach/StrategyHistory.vue'),
+      meta: { auth: true, requiresBrandProfile: true, title: 'Historial — WellCore' } },
 
     // Admin (lazy loaded, auth required)
     { path: '/admin', name: 'admin-dashboard', component: () => import('../pages/Admin/Dashboard.vue'), meta: { auth: true, title: 'Admin Dashboard — WellCore' } },
@@ -118,6 +128,16 @@ const routes = [
     { path: '/admin/plan-tickets', name: 'admin-plan-tickets', component: () => import('../pages/PlanTickets/AdminPlanTicketsList.vue'), meta: { auth: true, title: 'Tickets de Planes — WellCore Admin' } },
     { path: '/admin/plan-tickets/stats', name: 'admin-plan-tickets-stats', component: () => import('../pages/PlanTickets/AdminPlanTicketStats.vue'), meta: { auth: true, title: 'Stats de Tickets — WellCore Admin' } },
     { path: '/admin/plan-tickets/:id', name: 'admin-plan-ticket-detail', component: () => import('../pages/PlanTickets/AdminPlanTicketDetail.vue'), meta: { auth: true, title: 'Ticket — WellCore Admin' } },
+    // Admin Marketing Queue
+    { path: '/admin/marketing/queue', name: 'admin-marketing-queue',
+      component: () => import('../pages/Admin/Marketing/Queue.vue'),
+      meta: { auth: true, title: 'Marketing Queue — WellCore Admin' } },
+    { path: '/admin/marketing/drops/:id', name: 'admin-marketing-drop-review',
+      component: () => import('../pages/Admin/Marketing/DropReview.vue'),
+      meta: { auth: true, title: 'Drop Review — WellCore Admin' }, props: true },
+    { path: '/admin/marketing/coaches/:coachId/profile', name: 'admin-marketing-coach-profile',
+      component: () => import('../pages/Admin/Marketing/CoachProfileEdit.vue'),
+      meta: { auth: true, title: 'Editar Perfil Coach — WellCore Admin' }, props: true },
 
     // Catch-all: redirect unknown routes to login
     { path: '/:pathMatch(.*)*', redirect: '/login' },
@@ -169,6 +189,23 @@ router.beforeEach(async (to, from, next) => {
         if (portal === '/client' && to.path.startsWith('/rise')) {
             const clientPath = to.path.replace('/rise', '/client');
             return next(clientPath);
+        }
+    }
+
+    // Brand profile gate for /coach/strategy/*
+    if (to.meta.requiresBrandProfile && authStore.isAuthenticated && authStore.userType === 'coach') {
+        try {
+            const { useCoachStrategyStore } = await import('../stores/coachStrategy');
+            const store = useCoachStrategyStore();
+            if (!store.profile) {
+                await store.fetchProfile();
+            }
+            if (!store.isProfileComplete) {
+                return next({ name: 'coach-onboarding-brand-profile' });
+            }
+        } catch (e) {
+            // If fetch fails, send to onboarding to let user retry
+            return next({ name: 'coach-onboarding-brand-profile' });
         }
     }
 
