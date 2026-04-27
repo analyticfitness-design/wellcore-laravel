@@ -234,10 +234,15 @@ class ClientController extends Controller
 
     private function buildGettingStarted(Client $client, int $clientId): ?array
     {
-        $registeredAt = $client->fecha_inicio ?? $client->created_at ?? now();
-        $daysRegistered = (int) now()->startOfDay()->diffInDays(
-            Carbon::parse($registeredAt)->startOfDay()
-        );
+        $registeredAt = Carbon::parse($client->fecha_inicio ?? $client->created_at ?? now())->startOfDay();
+
+        // Plan hasn't started yet
+        if ($registeredAt->isFuture()) {
+            return null;
+        }
+
+        // diffInDays FROM past TO now always yields a positive integer (Carbon 3 sign-aware)
+        $daysRegistered = (int) $registeredAt->diffInDays(now()->startOfDay());
 
         if ($daysRegistered > 3) {
             return null;
