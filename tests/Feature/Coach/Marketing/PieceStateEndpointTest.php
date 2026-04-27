@@ -9,6 +9,7 @@ use App\Models\CoachContentDrop;
 use App\Models\CoachContractAcceptance;
 use App\Models\CoachMarketingProfile;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 uses(DatabaseTransactions::class);
@@ -85,4 +86,19 @@ it('coach can mark a reel as in-progress', function () {
         ->postJson("/api/v/coach/strategy/drops/{$drop->id}/pieces/reel_2/in-progress")
         ->assertOk()
         ->assertJsonPath('data.state', 'in_progress');
+});
+
+it('marking piece as in_progress invalidates the cached drop', function () {
+    $coach = Admin::factory()->create(['role' => UserRole::Coach->value]);
+    CoachMarketingProfile::factory()->completed()->create(['coach_id' => $coach->id]);
+    $drop = CoachContentDrop::factory()->ready()->create(['coach_id' => $coach->id]);
+
+    $key = "coach_drop_v3:{$drop->coach_id}:{$drop->iso_year}:{$drop->iso_week}";
+    Cache::put($key, ['stale' => true], 300);
+
+    actingAsCoachPiece($coach)
+        ->postJson("/api/v/coach/strategy/drops/{$drop->id}/pieces/reel_1/in-progress")
+        ->assertOk();
+
+    expect(Cache::has($key))->toBeFalse();
 });

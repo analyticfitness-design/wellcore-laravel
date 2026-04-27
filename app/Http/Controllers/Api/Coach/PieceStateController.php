@@ -36,7 +36,7 @@ final class PieceStateController extends Controller
             ],
         );
 
-        Cache::forget("coach_drop_v3:{$drop->coach_id}:{$drop->iso_year}:{$drop->iso_week}");
+        $this->forgetDropCache($drop);
 
         return (new PieceStateResource($state))->response()->setStatusCode(200);
     }
@@ -58,7 +58,7 @@ final class PieceStateController extends Controller
             ],
         );
 
-        Cache::forget("coach_drop_v3:{$drop->coach_id}:{$drop->iso_year}:{$drop->iso_week}");
+        $this->forgetDropCache($drop);
 
         return (new PieceStateResource($state))->response()->setStatusCode(200);
     }
@@ -80,7 +80,14 @@ final class PieceStateController extends Controller
             ],
         );
 
+        $this->forgetDropCache($drop);
+
         return (new PieceStateResource($state))->response()->setStatusCode(200);
+    }
+
+    private function forgetDropCache(CoachContentDrop $drop): void
+    {
+        Cache::forget("coach_drop_v3:{$drop->coach_id}:{$drop->iso_year}:{$drop->iso_week}");
     }
 
     private function detectType(string $key): PieceType
