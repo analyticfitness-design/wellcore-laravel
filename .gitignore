@@ -35,3 +35,27 @@ storage/app/private/payment_proofs/*
 
 # Reverb credentials — contains production secrets
 _reverb_env_values.txt
+
+# Scratchpad scripts (one-off PowerShell + temp PHP/TXT files in repo root)
+# These contain hardcoded credentials and must NEVER be committed.
+/_*.ps1
+/_*.txt
+/_*.bat
+/_*.tmp
+/check_users.php
+
+# Scratchpad archives (kept locally for one-off review, never tracked)
+/scripts/_scratchpad_archive_*/
+
+# Junk files from shell redirection misescapes (e.g. `coach_id,`, `[`, `name,`)
+/[
+/coach_id,
+/coach?-
+/admin_edits_diff,
+/iso_year,
+/name,
+/value,
+/original_content,
+/status-
+/test_out.txt
+/arch_result.txt
