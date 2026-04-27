@@ -308,7 +308,7 @@ function getSetRows(exIndex) {
 
 function allSetsComplete(exIndex) {
   const ex = exercises.value[exIndex];
-  const total = parseInt(exSeries(ex) || 3);
+  const total = parseInt(exSeries(ex) || 3) || 3;
   const sets = setData.value[exIndex];
   if (!sets) return false;
   const arr = Array.isArray(sets) ? sets : Object.values(sets);
@@ -1223,8 +1223,8 @@ function exerciseSummaryText(exIndex) {
                 <div class="h-px flex-1 bg-wc-accent/15"></div>
               </div>
 
-              <!-- COMP 1: Collapsed row cuando ejercicio completado -->
-              <div v-if="allSetsComplete(exIndex)" class="ex-completed" :class="isInBlock(exercise) ? 'ml-2' : ''" @click="expandedExercises[exIndex] = !expandedExercises[exIndex]">
+              <!-- COMP 1: Collapsed row cuando ejercicio completado (tap para re-expandir y editar) -->
+              <div v-if="allSetsComplete(exIndex) && !expandedExercises[exIndex]" class="ex-completed" :class="isInBlock(exercise) ? 'ml-2' : ''" @click="expandedExercises[exIndex] = true">
                 <div class="ex-completed-check">✓</div>
                 <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
                   <span class="ex-completed-name">{{ displayName(exercise, exIndex) }}</span>
@@ -1233,7 +1233,7 @@ function exerciseSummaryText(exIndex) {
                 <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
                   <span class="ex-completed-stats">{{ exerciseSummaryText(exIndex) }}</span>
                   <svg style="width:12px;height:12px;color:var(--wc-text-tertiary,#71717a);" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                   </svg>
                 </div>
               </div>
@@ -1247,6 +1247,19 @@ function exerciseSummaryText(exIndex) {
                   'border-wc-border'
                 ]"
               >
+                <!-- Colapsar de nuevo (cuando se re-expandió un ejercicio completado) -->
+                <button
+                  v-if="allSetsComplete(exIndex) && expandedExercises[exIndex]"
+                  @click="expandedExercises[exIndex] = false"
+                  class="flex w-full items-center justify-between gap-2 border-b border-emerald-500/20 bg-emerald-500/05 px-4 py-2 text-xs font-medium text-emerald-400 hover:bg-emerald-500/10 transition-colors"
+                >
+                  <span class="flex items-center gap-1.5">
+                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                    Completado — editar series
+                  </span>
+                  <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+                </button>
+
                 <!-- Exercise header -->
                 <div class="p-4 pb-3">
                   <div class="flex items-start justify-between gap-3">
@@ -1310,8 +1323,8 @@ function exerciseSummaryText(exIndex) {
                         </span>
                       </div>
 
-                      <!-- COMP 2: PR target banner -->
-                      <div v-if="exercise.last_weight" class="pr-target" style="margin-top:8px;">
+                      <!-- COMP 2: PR target banner (solo fuerza, no cardio) -->
+                      <div v-if="exercise.last_weight && !exIsCardio(exercise)" class="pr-target" style="margin-top:8px;">
                         <span>🏆</span>
                         <span>Meta PR: <strong>{{ (parseFloat(exercise.last_weight) + 2.5).toFixed(1) }} kg</strong></span>
                         <span class="sub">× {{ exercise.last_reps || '?' }} reps</span>
@@ -1642,7 +1655,7 @@ function exerciseSummaryText(exIndex) {
                     @click="voiceListening && voiceExIndex === exIndex ? voiceStopListening() : voiceStartListening(exIndex)"
                     class="voice-btn-new"
                     :class="{ 'border-solid bg-wc-accent/10 border-wc-accent text-wc-accent': voiceListening && voiceExIndex === exIndex }"
-                    :disabled="voiceListening && voiceExIndex !== exIndex"
+                    :disabled="(voiceListening && voiceExIndex !== exIndex) || (voiceConfirmation && voiceExIndex !== exIndex)"
                   >
                     <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />

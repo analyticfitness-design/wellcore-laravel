@@ -168,7 +168,7 @@
   background:linear-gradient(90deg, var(--wc-accent, #DC2626), #f87171);
   transition:width 0.6s ease;
 }
-.bottom-bar-inner { padding:12px 16px 16px; }
+.bottom-bar-inner { padding:12px 16px max(env(safe-area-inset-bottom, 0px), 16px); }
 .bottom-stats {
   display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:0;
   margin-bottom:12px;
