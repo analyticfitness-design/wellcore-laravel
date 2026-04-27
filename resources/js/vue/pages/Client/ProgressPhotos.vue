@@ -100,7 +100,7 @@ const uploadedCount = computed(() => {
 });
 
 // --- Gender-based character images ---
-const clientGenero = ref<string>('hombre');
+const clientGenero = ref('hombre');
 const isFemale = computed(() => clientGenero.value === 'mujer');
 
 const characterImages = computed(() => {
