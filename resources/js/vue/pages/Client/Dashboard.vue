@@ -359,6 +359,94 @@ const weekMarkers = computed(() => {
       <DashboardPlanAlert :data="data" />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- 3b. PRIMEROS PASOS — solo primeros 3 días                      -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div v-if="data.gettingStarted?.show" class="rounded-xl border border-violet-500/20 bg-gradient-to-br from-violet-500/05 to-wc-bg-tertiary p-5">
+        <!-- Header -->
+        <div class="mb-4 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-500/15">
+              <svg class="h-5 w-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="font-display text-base tracking-wider text-wc-text">PRIMEROS PASOS</h2>
+              <p class="text-xs text-wc-text-tertiary">Completa tu perfil de inicio</p>
+            </div>
+          </div>
+          <span v-if="data.gettingStarted.daysLeft > 0"
+            class="shrink-0 rounded-full bg-violet-500/15 px-2.5 py-0.5 text-xs font-semibold text-violet-400">
+            {{ data.gettingStarted.daysLeft }} día{{ data.gettingStarted.daysLeft !== 1 ? 's' : '' }} restante{{ data.gettingStarted.daysLeft !== 1 ? 's' : '' }}
+          </span>
+        </div>
+
+        <!-- Checklist -->
+        <div class="space-y-2.5">
+          <!-- Fotos de progreso -->
+          <button
+            @click="$router.push('/client/photos')"
+            class="flex w-full items-center gap-3 rounded-xl border p-3.5 text-left transition-all"
+            :class="data.gettingStarted.hasPhotos
+              ? 'border-emerald-500/20 bg-emerald-500/05 cursor-default'
+              : 'border-wc-border bg-wc-bg hover:border-violet-500/40 hover:bg-violet-500/05'"
+          >
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
+              :class="data.gettingStarted.hasPhotos ? 'bg-emerald-500' : 'bg-wc-bg-secondary border border-wc-border'">
+              <svg v-if="data.gettingStarted.hasPhotos" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+              </svg>
+              <span v-else class="text-xs font-bold text-wc-text-tertiary">1</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold" :class="data.gettingStarted.hasPhotos ? 'text-emerald-400 line-through opacity-70' : 'text-wc-text'">
+                Sube tus fotos de progreso
+              </p>
+              <p class="text-xs text-wc-text-tertiary">Frente, perfil y espalda para comparar tu avance</p>
+            </div>
+            <svg v-if="!data.gettingStarted.hasPhotos" class="h-4 w-4 shrink-0 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
+
+          <!-- Métricas -->
+          <button
+            @click="$router.push('/client/metrics')"
+            class="flex w-full items-center gap-3 rounded-xl border p-3.5 text-left transition-all"
+            :class="data.gettingStarted.hasMetrics
+              ? 'border-emerald-500/20 bg-emerald-500/05 cursor-default'
+              : 'border-wc-border bg-wc-bg hover:border-violet-500/40 hover:bg-violet-500/05'"
+          >
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
+              :class="data.gettingStarted.hasMetrics ? 'bg-emerald-500' : 'bg-wc-bg-secondary border border-wc-border'">
+              <svg v-if="data.gettingStarted.hasMetrics" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+              </svg>
+              <span v-else class="text-xs font-bold text-wc-text-tertiary">2</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold" :class="data.gettingStarted.hasMetrics ? 'text-emerald-400 line-through opacity-70' : 'text-wc-text'">
+                Registra tu peso y métricas
+              </p>
+              <p class="text-xs text-wc-text-tertiary">Tu punto de partida es el dato más importante</p>
+            </div>
+            <svg v-if="!data.gettingStarted.hasMetrics" class="h-4 w-4 shrink-0 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Completado -->
+        <div v-if="data.gettingStarted.hasPhotos && data.gettingStarted.hasMetrics"
+          class="mt-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 flex items-center gap-3">
+          <svg class="h-5 w-5 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          <p class="text-sm font-semibold text-emerald-400">Perfil inicial completo. Tu punto de partida queda registrado.</p>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- 4. CHECK-IN COUNTDOWN (urgente arriba)                         -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <DashboardCheckin

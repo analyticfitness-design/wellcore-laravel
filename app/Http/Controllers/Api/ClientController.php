@@ -21,6 +21,7 @@ use App\Models\CoachRating;
 use App\Models\HabitLog;
 use App\Models\Metric;
 use App\Models\Payment;
+use App\Models\ProgressPhoto;
 use App\Models\Ticket;
 use App\Models\TrainingLog;
 use App\Models\WellcoreNotification;
@@ -193,7 +194,29 @@ class ClientController extends Controller
             // Onboarding
             'onboardingCompleted' => (bool) ($client->onboarding_completed ?? false),
             'planType' => strtolower($client->plan?->value ?? 'esencial'),
+
+            // Getting started (primeros 3 días)
+            'gettingStarted' => $this->buildGettingStarted($client, $clientId),
         ]);
+    }
+
+    private function buildGettingStarted(Client $client, int $clientId): ?array
+    {
+        $registeredAt = $client->fecha_inicio ?? $client->created_at ?? now();
+        $daysRegistered = (int) now()->startOfDay()->diffInDays(
+            Carbon::parse($registeredAt)->startOfDay()
+        );
+
+        if ($daysRegistered > 3) {
+            return null;
+        }
+
+        return [
+            'show'       => true,
+            'hasPhotos'  => ProgressPhoto::withoutGlobalScopes()->where('client_id', $clientId)->exists(),
+            'hasMetrics' => Metric::withoutGlobalScopes()->where('client_id', $clientId)->exists(),
+            'daysLeft'   => max(0, 3 - $daysRegistered),
+        ];
     }
 
     /**

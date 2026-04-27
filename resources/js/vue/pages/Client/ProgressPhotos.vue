@@ -77,6 +77,13 @@ const CONFETTI_PIECES = [
   { left: '45%', bg: '#8B5CF6', dur: '3.1s', delay: '0.6s', round: false },
 ];
 
+// --- Guía de fotos ---
+const guideOpen = ref(localStorage.getItem('wc_photo_guide') !== 'closed');
+function toggleGuide() {
+  guideOpen.value = !guideOpen.value;
+  localStorage.setItem('wc_photo_guide', guideOpen.value ? 'open' : 'closed');
+}
+
 // --- Computed ---
 const sortedDates = computed(() => {
   return Object.keys(photos.value).sort((a, b) => b.localeCompare(a));
@@ -452,6 +459,132 @@ onMounted(fetchPhotos);
           {{ compareMode ? 'Cerrar comparacion' : 'Comparar' }}
         </button>
       </div>
+
+      <!-- ===== Guía de fotos ===== -->
+      <div class="rounded-xl border border-sky-500/20 bg-gradient-to-br from-sky-500/05 to-wc-bg-tertiary overflow-hidden">
+        <!-- Header colapsable -->
+        <button
+          @click="toggleGuide"
+          class="flex w-full items-center justify-between gap-3 px-5 py-4 text-left"
+          :aria-expanded="guideOpen"
+        >
+          <div class="flex items-center gap-3">
+            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-500/15">
+              <svg class="h-5 w-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
+              </svg>
+            </div>
+            <div>
+              <p class="font-display text-base tracking-wider text-wc-text">GUÍA PARA TUS FOTOS</p>
+              <p class="text-xs text-wc-text-tertiary">Cómo tomarte las fotos para un progreso preciso</p>
+            </div>
+          </div>
+          <svg class="h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-200"
+            :class="guideOpen ? 'rotate-180' : ''"
+            fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+          </svg>
+        </button>
+
+        <!-- Contenido de la guía -->
+        <Transition
+          enter-active-class="transition-all duration-300 ease-out overflow-hidden"
+          leave-active-class="transition-all duration-200 ease-in overflow-hidden"
+          enter-from-class="max-h-0 opacity-0"
+          enter-to-class="max-h-[800px] opacity-100"
+          leave-from-class="max-h-[800px] opacity-100"
+          leave-to-class="max-h-0 opacity-0"
+        >
+          <div v-if="guideOpen" class="border-t border-sky-500/15 px-5 pb-5 pt-4">
+
+            <!-- Los 3 ángulos -->
+            <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-sky-400">Ángulos requeridos</p>
+            <div class="grid grid-cols-3 gap-3 mb-5">
+              <!-- Frente -->
+              <div class="rounded-xl border border-wc-border bg-wc-bg p-3 text-center">
+                <div class="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-wc-bg-secondary border border-wc-border">
+                  <!-- Silueta frente (SVG simple) -->
+                  <svg class="h-9 w-9 text-sky-400" viewBox="0 0 40 56" fill="currentColor" aria-hidden="true">
+                    <ellipse cx="20" cy="8" rx="6" ry="7"/>
+                    <rect x="12" y="17" width="16" height="18" rx="4"/>
+                    <rect x="4" y="18" width="7" height="14" rx="3.5"/>
+                    <rect x="29" y="18" width="7" height="14" rx="3.5"/>
+                    <rect x="12" y="36" width="7" height="18" rx="3.5"/>
+                    <rect x="21" y="36" width="7" height="18" rx="3.5"/>
+                  </svg>
+                </div>
+                <p class="font-display text-sm tracking-wider text-wc-text">FRENTE</p>
+                <p class="mt-1 text-xs text-wc-text-tertiary leading-tight">Mirando directo a la cámara, brazos al lado</p>
+              </div>
+              <!-- Perfil -->
+              <div class="rounded-xl border border-wc-border bg-wc-bg p-3 text-center">
+                <div class="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-wc-bg-secondary border border-wc-border">
+                  <svg class="h-9 w-9 text-sky-400" viewBox="0 0 40 56" fill="currentColor" aria-hidden="true">
+                    <ellipse cx="22" cy="8" rx="6" ry="7"/>
+                    <path d="M16 17 Q28 17 28 35 L16 35 Z" rx="4"/>
+                    <rect x="9" y="18" width="7" height="14" rx="3.5"/>
+                    <rect x="16" y="36" width="7" height="18" rx="3.5"/>
+                    <rect x="24" y="36" width="7" height="18" rx="3.5"/>
+                  </svg>
+                </div>
+                <p class="font-display text-sm tracking-wider text-wc-text">PERFIL</p>
+                <p class="mt-1 text-xs text-wc-text-tertiary leading-tight">De lado izquierdo, 90° a la cámara</p>
+              </div>
+              <!-- Espalda -->
+              <div class="rounded-xl border border-wc-border bg-wc-bg p-3 text-center">
+                <div class="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-wc-bg-secondary border border-wc-border">
+                  <svg class="h-9 w-9 text-sky-400" viewBox="0 0 40 56" fill="currentColor" aria-hidden="true">
+                    <ellipse cx="20" cy="8" rx="6" ry="7"/>
+                    <rect x="12" y="17" width="16" height="18" rx="4"/>
+                    <rect x="4" y="18" width="7" height="14" rx="3.5"/>
+                    <rect x="29" y="18" width="7" height="14" rx="3.5"/>
+                    <rect x="12" y="36" width="7" height="18" rx="3.5"/>
+                    <rect x="21" y="36" width="7" height="18" rx="3.5"/>
+                    <!-- línea de espalda -->
+                    <line x1="20" y1="17" x2="20" y2="35" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+                  </svg>
+                </div>
+                <p class="font-display text-sm tracking-wider text-wc-text">ESPALDA</p>
+                <p class="mt-1 text-xs text-wc-text-tertiary leading-tight">De espaldas, brazos al lado del cuerpo</p>
+              </div>
+            </div>
+
+            <!-- Tips -->
+            <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-sky-400">Tips para una foto precisa</p>
+            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <div class="flex items-start gap-2.5 rounded-lg bg-wc-bg-secondary/60 px-3 py-2.5">
+                <span class="mt-0.5 text-base leading-none" aria-hidden="true">💡</span>
+                <div>
+                  <p class="text-xs font-semibold text-wc-text">Iluminación</p>
+                  <p class="text-xs text-wc-text-tertiary">Luz natural de frente o lateral. Evita contraluz o lámparas por encima.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-2.5 rounded-lg bg-wc-bg-secondary/60 px-3 py-2.5">
+                <span class="mt-0.5 text-base leading-none" aria-hidden="true">👕</span>
+                <div>
+                  <p class="text-xs font-semibold text-wc-text">Vestimenta</p>
+                  <p class="text-xs text-wc-text-tertiary">Ropa ajustada (short/top o ropa interior) para ver cambios corporales.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-2.5 rounded-lg bg-wc-bg-secondary/60 px-3 py-2.5">
+                <span class="mt-0.5 text-base leading-none" aria-hidden="true">📏</span>
+                <div>
+                  <p class="text-xs font-semibold text-wc-text">Distancia</p>
+                  <p class="text-xs text-wc-text-tertiary">1.5–2 metros de la cámara. Que salga tu cuerpo completo en el encuadre.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-2.5 rounded-lg bg-wc-bg-secondary/60 px-3 py-2.5">
+                <span class="mt-0.5 text-base leading-none" aria-hidden="true">📅</span>
+                <div>
+                  <p class="text-xs font-semibold text-wc-text">Consistencia</p>
+                  <p class="text-xs text-wc-text-tertiary">Misma hora, mismo lugar, mismo fondo. Así la comparación es real.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Transition>
+      </div>
+      <!-- ===== /Guía de fotos ===== -->
 
       <!-- ===== Upload Section ===== -->
       <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6">
