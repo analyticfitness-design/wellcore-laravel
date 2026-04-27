@@ -6,6 +6,9 @@ import { useToast } from '../../composables/useToast';
 import { useAuthStore } from '../../stores/auth';
 import { useCancellableFetch } from '../../composables/useCancellableFetch';
 import ClientLayout from '../../layouts/ClientLayout.vue';
+import PulsoRing from '../../components/community/PulsoRing.vue';
+import PulsoViewer from '../../components/community/PulsoViewer.vue';
+import PulsoUploader from '../../components/community/PulsoUploader.vue';
 
 const api = useApi();
 const authStore = useAuthStore();
@@ -43,6 +46,39 @@ const deletingPost = ref(null);
 // ── Right panel data ─────────────────────────────────────────────────
 const storiesMembers = ref([]);
 const activeMembersList = ref([]);
+
+// ── Pulsos ────────────────────────────────────────────────────────────
+const activePulsoId = ref<number | null>(null);
+const showPulsoUploader = ref(false);
+const pulsoUploaderPrefill = ref<{
+  type: string;
+  stats?: Record<string, any>;
+  sessionId?: number;
+} | null>(null);
+
+function openPulso(pulsoId: number) {
+  activePulsoId.value = pulsoId;
+}
+
+function closePulsoViewer() {
+  activePulsoId.value = null;
+}
+
+function openPulsoUploader(prefill?: { type: string; stats?: Record<string, any>; sessionId?: number }) {
+  pulsoUploaderPrefill.value = prefill ?? null;
+  showPulsoUploader.value = true;
+}
+
+function onPulsoCreated() {
+  showPulsoUploader.value = false;
+  pulsoUploaderPrefill.value = null;
+  fetchFeed(true);
+}
+
+function onPulsoDeleted() {
+  activePulsoId.value = null;
+  fetchFeed(true);
+}
 
 // ── Community tour ───────────────────────────────────────────────────
 const tourSeen = ref(!!localStorage.getItem('wc_community_tour_seen'));
@@ -471,36 +507,48 @@ function getReactionCount(post, type) {
       <div class="min-w-0 space-y-6">
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- STORIES ROW — solo cuando hay contenido nuevo (has_new: true)  -->
+      <!-- PULSOS ROW                                                     -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div v-if="hasActiveStories" class="overflow-x-auto rounded-2xl border border-wc-border bg-wc-bg-secondary p-4">
-        <div class="flex gap-4 pb-1">
-          <div
-            v-for="member in storiesMembers"
-            :key="member.id"
-            class="flex shrink-0 flex-col items-center gap-1.5"
+      <!-- ── PULSOS ROW ──────────────────────────────────────────── -->
+      <div v-if="hasActiveStories" class="overflow-x-auto pb-1">
+        <div class="flex gap-4 px-1">
+          <!-- Botón "Crear Pulso" -->
+          <button
+            @click="openPulsoUploader()"
+            class="flex flex-col items-center gap-1.5 focus:outline-none"
           >
-            <div class="relative">
-              <div
-                class="flex h-14 w-14 items-center justify-center rounded-full text-sm font-bold text-white transition-transform hover:scale-105"
-                :class="{
-                  'bg-wc-accent': member.color === 'red',
-                  'bg-green-500': member.color === 'green',
-                  'bg-blue-500': member.color === 'blue',
-                  'bg-purple-500': member.color === 'purple',
-                  'bg-amber-500': member.color === 'amber',
-                }"
-              >{{ member.initials }}</div>
-              <div
-                v-if="member.has_new"
-                class="pointer-events-none absolute inset-0 rounded-full ring-2 ring-wc-accent ring-offset-2 ring-offset-wc-bg"
-              ></div>
+            <div class="relative flex h-16 w-16 items-center justify-center rounded-full border-2 border-dashed border-zinc-700 bg-zinc-800/60 hover:border-wc-accent/60 transition-colors">
+              <svg class="h-6 w-6 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
             </div>
-            <span class="max-w-[56px] truncate text-[10px] text-wc-text-secondary">
-              {{ member.name.split(' ')[0] }}
-            </span>
-          </div>
+            <span class="text-[10px] text-zinc-600">Tu Pulso</span>
+          </button>
+
+          <!-- Pulsos de miembros -->
+          <PulsoRing
+            v-for="member in storiesMembers"
+            :key="member.pulso_id ?? member.id"
+            :name="member.name ?? member.client_name ?? ''"
+            :initials="member.initials ?? '?'"
+            :ring-color="member.ring_color ?? 'red'"
+            :has-new="member.has_new ?? false"
+            :pulso-id="member.pulso_id ?? null"
+            size="md"
+            @click="member.pulso_id ? openPulso(member.pulso_id) : undefined"
+          />
         </div>
+      </div>
+
+      <!-- Botón "Publicar Pulso" cuando no hay pulsos activos -->
+      <div v-if="!hasActiveStories" class="flex justify-center py-2">
+        <button @click="openPulsoUploader()"
+          class="flex items-center gap-2 rounded-xl border border-dashed border-zinc-700 px-4 py-2 text-sm text-zinc-500 hover:border-wc-accent/60 hover:text-zinc-300 transition-colors">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Sé el primero en publicar un Pulso
+        </button>
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -991,6 +1039,23 @@ function getReactionCount(post, type) {
     </div>
     <!-- END CONTENT GRID -->
 
+    <!-- PulsoViewer modal -->
+    <PulsoViewer
+      v-if="activePulsoId"
+      :pulso-id="activePulsoId"
+      @close="closePulsoViewer"
+      @deleted="onPulsoDeleted"
+    />
+
+    <!-- PulsoUploader modal -->
+    <PulsoUploader
+      v-if="showPulsoUploader"
+      :prefill-type="pulsoUploaderPrefill?.type ?? 'libre'"
+      :prefill-stats="pulsoUploaderPrefill?.stats"
+      :prefill-session-id="pulsoUploaderPrefill?.sessionId"
+      @close="showPulsoUploader = false"
+      @created="onPulsoCreated"
+    />
   </ClientLayout>
 </template>
 

@@ -72,25 +72,25 @@ class SocialController extends Controller
             ];
         });
 
-        $storiesMembers = Cache::remember('community:stories', 180, function () {
-            $cutoff = now()->subHours(24);
-
-            return Client::where('status', 'activo')
-                ->select('id', 'name')
-                ->withCount(['communityPosts as new_posts_count' => function ($q) use ($cutoff) {
-                    $q->where('visible', true)->where('created_at', '>=', $cutoff);
-                }])
-                ->orderByDesc('new_posts_count')
-                ->limit(8)
-                ->get()
-                ->map(fn ($c) => [
-                    'id' => $c->id,
-                    'name' => $c->name,
-                    'initials' => mb_strtoupper(mb_substr(trim($c->name) ?: 'M', 0, 2)),
-                    'has_new' => $c->new_posts_count > 0,
-                    'color' => $this->colorForName($c->name),
-                ])->all();
-        });
+        $storiesMembers = \App\Models\ClientPulso::where('expires_at', '>', now())
+            ->with('client:id,name')
+            ->orderByDesc('created_at')
+            ->limit(50)
+            ->get()
+            ->groupBy('client_id')
+            ->map(fn ($group) => $group->first())
+            ->values()
+            ->map(fn (\App\Models\ClientPulso $p) => [
+                'id'         => $p->id,
+                'client_id'  => $p->client_id,
+                'name'       => $p->client?->name ?? 'Miembro',
+                'initials'   => mb_strtoupper(mb_substr(trim($p->client?->name ?? 'M'), 0, 2)),
+                'has_new'    => true,
+                'ring_color' => \App\Models\ClientPulso::ringColorForType($p->pulso_type),
+                'pulso_id'   => $p->id,
+                'color'      => $this->colorForName($p->client?->name ?? ''),
+            ])
+            ->all();
 
         $activeMembersList = Cache::remember('community:active-list', 180, function () {
             return Client::where('status', 'activo')
