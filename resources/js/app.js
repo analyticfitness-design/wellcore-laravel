@@ -33,6 +33,11 @@ if (location.pathname.startsWith('/coach')) {
     import('./coach-dashboard');
 }
 
+// ─── Voice Logger (SP-3) — solo en workout player ────────────────────────────
+if (/\/client\/workout/.test(location.pathname)) {
+    import('./voice/voice-logger.js');
+}
+
 // ─── PWA Service Worker ───────────────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

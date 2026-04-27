@@ -906,6 +906,88 @@
                         @endif
                     </div>
 
+                    {{-- ══ Voice Logger (SP-3) — solo fuerza ══ --}}
+                    @if(!$isCardioExercise && empty($exercise['is_isometric']) && !$allComplete)
+                        @php
+                            $nextVoiceSetNum = 1;
+                            for ($__s = 1; $__s <= $totalSets; $__s++) {
+                                if (empty($exSetData[$__s]['completed'])) { $nextVoiceSetNum = $__s; break; }
+                            }
+                        @endphp
+                        <div
+                            x-data="voiceLogger({ exIndex: {{ $exIndex }}, setNum: {{ $nextVoiceSetNum }} })"
+                            class="border-t border-wc-border/30 px-3 py-2"
+                        >
+                            <button
+                                @click="listen()"
+                                :disabled="listening || isProcessing"
+                                :class="(listening || isProcessing) && 'opacity-60 cursor-not-allowed'"
+                                class="btn-press flex w-full items-center justify-center gap-2 rounded-xl border border-wc-accent/20 bg-wc-accent/5 px-3 py-2 text-xs font-semibold text-wc-accent hover:bg-wc-accent/10 transition-colors"
+                                type="button"
+                            >
+                                <svg class="h-4 w-4 shrink-0" :class="listening && 'animate-pulse'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"/>
+                                </svg>
+                                <span x-show="!listening && !isProcessing">Registrar por voz</span>
+                                <span x-show="listening" class="animate-pulse">Escuchando...</span>
+                                <span x-show="isProcessing && !listening">Guardando...</span>
+                            </button>
+
+                            {{-- Botón cancelar mientras escucha --}}
+                            <button
+                                x-show="listening"
+                                @click="stopListening()"
+                                class="mt-1.5 w-full rounded-xl border border-wc-border px-3 py-1.5 text-xs text-wc-text-tertiary hover:text-wc-text transition-colors"
+                                type="button"
+                            >
+                                Cancelar
+                            </button>
+
+                            {{-- Confirmación visual --}}
+                            <div
+                                x-show="confirmation"
+                                x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="opacity-0 scale-95"
+                                x-transition:enter-end="opacity-100 scale-100"
+                                class="mt-2 rounded-xl border border-wc-accent/30 bg-wc-bg-secondary p-3"
+                            >
+                                <p class="text-[10px] font-medium uppercase tracking-widest text-wc-text-tertiary">Entendí · Set {{ $nextVoiceSetNum }}</p>
+                                <p class="mt-1 font-data text-xl font-bold text-wc-text">
+                                    <span x-text="confirmation?.weight"></span>
+                                    <span class="text-sm font-normal text-wc-text-tertiary" x-text="confirmation?.unit ?? 'kg'"></span>
+                                    <span class="text-wc-text-tertiary"> × </span>
+                                    <span x-text="confirmation?.reps"></span>
+                                    <span class="text-sm font-normal text-wc-text-tertiary"> reps</span>
+                                </p>
+                                <div class="mt-2.5 flex gap-2">
+                                    <button
+                                        @click="confirm()"
+                                        :disabled="isProcessing"
+                                        class="btn-press flex-1 rounded-xl bg-wc-accent px-3 py-2 text-xs font-bold text-white transition-opacity"
+                                        :class="isProcessing && 'opacity-60'"
+                                        type="button"
+                                    >
+                                        Confirmar
+                                    </button>
+                                    <button
+                                        @click="cancel()"
+                                        class="rounded-xl border border-wc-border px-3 py-2 text-xs text-wc-text-secondary hover:text-wc-text transition-colors"
+                                        type="button"
+                                    >
+                                        Editar
+                                    </button>
+                                </div>
+                            </div>
+
+                            {{-- Error --}}
+                            <p
+                                x-show="error"
+                                x-text="error"
+                                class="mt-2 text-xs text-wc-accent"
+                            ></p>
+                        </div>
+                    @endif
+
                     {{-- Manual rest timer button --}}
                     @if(!empty($exRestDisplay))
                         @php
