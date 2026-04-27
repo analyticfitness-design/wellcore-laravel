@@ -12,7 +12,7 @@
 
 WellCore necesita una nueva pestaña en el dashboard del coach (`/coach/strategy`) que entregue, semana a semana, un paquete de marketing **100% personalizado por coach**: brief estratégico, guiones de reels, plan de stories Lun-Dom, checklist de producción, banco semanal de hooks/CTAs/captions, y sets de hashtags.
 
-El contenido se produce **offline** mediante sesiones de Claude Code que leen un sistema de MDs en `E:\WELLCORE FITNESS PLATAFORMA\SISTEMA-CREACION-MARKETING-COACHES\` (espejo del sistema existente `SISTEMA-CREACION-PLANES`). Daniel revisa y aprueba cada drop antes de que el coach lo vea. El coach percibe el servicio como "Equipo Estrategia WellCore" — la mecánica de Claude Code permanece confidencial.
+El contenido se produce **offline** mediante sesiones de Claude Code que leen un sistema de MDs en `C:\Users\GODSF\Downloads\SISTEMA-CREACION-MARKETING-COACHES\` (espejo del sistema existente `SISTEMA-CREACION-PLANES`). Daniel revisa y aprueba cada drop antes de que el coach lo vea. El coach percibe el servicio como "Equipo Estrategia WellCore" — la mecánica de Claude Code permanece confidencial.
 
 El objetivo es que cada coach reciba un kit de marketing premium, sienta que tiene una estrategia hecha a la medida, y aprenda a producir contenido siguiendo guiones cinematográficos de calidad — replicando el lenguaje visual de los HTMLs ya consolidados en `E:\WELLCORE FITNESS PLATAFORMA\Produccion comercial\`.
 
@@ -36,7 +36,7 @@ El objetivo es que cada coach reciba un kit de marketing premium, sienta que tie
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│   E:\WELLCORE FITNESS PLATAFORMA\SISTEMA-CREACION-MARKETING-COACHES\ │
+│   C:\Users\GODSF\Downloads\SISTEMA-CREACION-MARKETING-COACHES\ │
 │   (Sistema offline — humanos + Claude Code)                          │
 │                                                                      │
 │   PROMPT-CLAUDE-CODE-NUEVA-SESION.txt                                │
@@ -317,7 +317,7 @@ El JSON formal vive en `schemas/coach_drop_v1.schema.json` (artefacto del repo) 
 
 ## 6. Sistema offline `SISTEMA-CREACION-MARKETING-COACHES`
 
-**Ubicación:** `E:\WELLCORE FITNESS PLATAFORMA\SISTEMA-CREACION-MARKETING-COACHES\`
+**Ubicación:** `C:\Users\GODSF\Downloads\SISTEMA-CREACION-MARKETING-COACHES\`
 
 **Total: 20 MDs + 1 prompt maestro `.txt`** (mismo patrón que `SISTEMA-CREACION-PLANES`).
 
@@ -944,7 +944,7 @@ El agente Plan despachará en paralelo donde haya independencia.
 | **Voice samples** | Captions reales del coach que considera "su voz al 100%". Calibran el output de Claude. |
 | **`coach_drop_v1`** | Versión actual del JSON canónico. Validado server-side contra `schemas/coach_drop_v1.schema.json`. |
 | **State machine** | Transiciones permitidas entre estados de un drop. Implementada en `App\Services\Marketing\DropStateMachine`. |
-| **Sistema offline** | Carpeta `E:\WELLCORE FITNESS PLATAFORMA\SISTEMA-CREACION-MARKETING-COACHES\` con MDs + prompt maestro. Usada por sesiones Claude Code. |
+| **Sistema offline** | Carpeta `C:\Users\GODSF\Downloads\SISTEMA-CREACION-MARKETING-COACHES\` con MDs + prompt maestro. Usada por sesiones Claude Code. |
 | **Equipo Estrategia WellCore** | Atribución pública de los drops. Daniel firma. Claude Code permanece confidencial. Configurable en `config/marketing.php`. |
 | **Coach (modelo)** | Registro en tabla `admins` con `role = UserRole::Coach`. NO hay tabla `coaches`. FK `coach_id` siempre apunta a `admins(id)`. |
 | **Auth model** | `App\Models\Admin` (extiende `Authenticatable`). Custom guard `WellCoreGuard` lee `auth_tokens`. |
@@ -963,5 +963,5 @@ La Fase 1 (+ Fase 1.5 admin mínimo) está lista cuando:
 8. El historial de drops anteriores está accesible desde `/coach/strategy?tab=historial`.
 9. Todos los Feature tests de §10.3 pasan en verde.
 10. La Anti-Generic Checklist de §9.8 verificada por revisión visual.
-11. El sistema de MDs en `E:\WELLCORE FITNESS PLATAFORMA\SISTEMA-CREACION-MARKETING-COACHES\` está creado, con los 20 MDs + prompt maestro `.txt` poblados con contenido funcional.
+11. El sistema de MDs en `C:\Users\GODSF\Downloads\SISTEMA-CREACION-MARKETING-COACHES\` está creado, con los 20 MDs + prompt maestro `.txt` poblados con contenido funcional.
 12. La pestaña respeta el feature flag `FEATURE_COACH_STRATEGY_ENABLED`.
