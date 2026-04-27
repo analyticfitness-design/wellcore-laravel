@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@1,300;1,400;1,500&display=swap");
 @import './animations.css';
 
 /* Dark mode via .dark class on <html>, not prefers-color-scheme */
@@ -55,6 +56,9 @@
     /* Radius */
     --radius-card: 0.75rem;
     --radius-button: 0.5rem;
+
+    --font-editorial: "Fraunces", ui-serif, Georgia, serif;
+    --color-wc-gold: #C8A769;
 }
 
 /* Dark mode overrides */
