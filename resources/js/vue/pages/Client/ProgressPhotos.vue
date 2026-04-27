@@ -99,6 +99,19 @@ const uploadedCount = computed(() => {
   return Object.values(uploadFiles.value).filter(f => f !== null).length;
 });
 
+// --- Gender-based character images ---
+const clientGenero = ref<string>('hombre');
+const isFemale = computed(() => clientGenero.value === 'mujer');
+
+const characterImages = computed(() => {
+  const base = isFemale.value ? '/images/characters/silvia' : '/images/characters/dann';
+  return {
+    frente:  `${base}/frontal.png`,
+    perfil:  `${base}/perfil.png`,
+    espalda: `${base}/espalda.png`,
+  };
+});
+
 // --- Fetch ---
 async function fetchPhotos() {
   loading.value = true;
@@ -106,6 +119,7 @@ async function fetchPhotos() {
   try {
     const response = await api.get('/api/v/client/photos');
     photos.value = response.data.photos || {};
+    clientGenero.value = response.data.genero ?? 'hombre';
   } catch (err) {
     error.value = err.response?.data?.message || 'Error al cargar fotos';
   } finally {
@@ -502,47 +516,24 @@ onMounted(fetchPhotos);
             <div class="grid grid-cols-3 gap-3 mb-5">
               <!-- Frente -->
               <div class="rounded-xl border border-wc-border bg-wc-bg p-3 text-center">
-                <div class="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-wc-bg-secondary border border-wc-border">
-                  <!-- Silueta frente (SVG simple) -->
-                  <svg class="h-9 w-9 text-sky-400" viewBox="0 0 40 56" fill="currentColor" aria-hidden="true">
-                    <ellipse cx="20" cy="8" rx="6" ry="7"/>
-                    <rect x="12" y="17" width="16" height="18" rx="4"/>
-                    <rect x="4" y="18" width="7" height="14" rx="3.5"/>
-                    <rect x="29" y="18" width="7" height="14" rx="3.5"/>
-                    <rect x="12" y="36" width="7" height="18" rx="3.5"/>
-                    <rect x="21" y="36" width="7" height="18" rx="3.5"/>
-                  </svg>
+                <div class="mx-auto mb-2 h-24 w-24 overflow-hidden rounded-xl">
+                  <img :src="characterImages.frente" alt="Frente" class="h-full w-full object-contain" />
                 </div>
                 <p class="font-display text-sm tracking-wider text-wc-text">FRENTE</p>
                 <p class="mt-1 text-xs text-wc-text-tertiary leading-tight">Mirando directo a la cámara, brazos al lado</p>
               </div>
               <!-- Perfil -->
               <div class="rounded-xl border border-wc-border bg-wc-bg p-3 text-center">
-                <div class="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-wc-bg-secondary border border-wc-border">
-                  <svg class="h-9 w-9 text-sky-400" viewBox="0 0 40 56" fill="currentColor" aria-hidden="true">
-                    <ellipse cx="22" cy="8" rx="6" ry="7"/>
-                    <path d="M16 17 Q28 17 28 35 L16 35 Z" rx="4"/>
-                    <rect x="9" y="18" width="7" height="14" rx="3.5"/>
-                    <rect x="16" y="36" width="7" height="18" rx="3.5"/>
-                    <rect x="24" y="36" width="7" height="18" rx="3.5"/>
-                  </svg>
+                <div class="mx-auto mb-2 h-24 w-24 overflow-hidden rounded-xl">
+                  <img :src="characterImages.perfil" alt="Perfil" class="h-full w-full object-contain" />
                 </div>
                 <p class="font-display text-sm tracking-wider text-wc-text">PERFIL</p>
                 <p class="mt-1 text-xs text-wc-text-tertiary leading-tight">De lado izquierdo, 90° a la cámara</p>
               </div>
               <!-- Espalda -->
               <div class="rounded-xl border border-wc-border bg-wc-bg p-3 text-center">
-                <div class="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-wc-bg-secondary border border-wc-border">
-                  <svg class="h-9 w-9 text-sky-400" viewBox="0 0 40 56" fill="currentColor" aria-hidden="true">
-                    <ellipse cx="20" cy="8" rx="6" ry="7"/>
-                    <rect x="12" y="17" width="16" height="18" rx="4"/>
-                    <rect x="4" y="18" width="7" height="14" rx="3.5"/>
-                    <rect x="29" y="18" width="7" height="14" rx="3.5"/>
-                    <rect x="12" y="36" width="7" height="18" rx="3.5"/>
-                    <rect x="21" y="36" width="7" height="18" rx="3.5"/>
-                    <!-- línea de espalda -->
-                    <line x1="20" y1="17" x2="20" y2="35" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
-                  </svg>
+                <div class="mx-auto mb-2 h-24 w-24 overflow-hidden rounded-xl">
+                  <img :src="characterImages.espalda" alt="Espalda" class="h-full w-full object-contain" />
                 </div>
                 <p class="font-display text-sm tracking-wider text-wc-text">ESPALDA</p>
                 <p class="mt-1 text-xs text-wc-text-tertiary leading-tight">De espaldas, brazos al lado del cuerpo</p>

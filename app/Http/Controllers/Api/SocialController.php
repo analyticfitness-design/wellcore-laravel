@@ -1305,7 +1305,10 @@ class SocialController extends Controller
             ])->toArray())
             ->toArray();
 
-        return response()->json(['photos' => $photos]);
+        return response()->json([
+            'photos' => $photos,
+            'genero' => $client->profile?->genero ?? 'hombre',
+        ]);
     }
 
     /**
