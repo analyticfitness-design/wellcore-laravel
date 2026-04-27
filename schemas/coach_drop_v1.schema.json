@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://wellcorefitness.com/schemas/coach_drop_v1.json",
+  "title": "Coach Drop V1",
+  "type": "object",
+  "required": ["schema_version", "brief", "reels", "stories", "checklist", "bank", "hashtags"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "coach_drop_v1" },
+    "brief": {
+      "type": "object",
+      "required": ["title", "objective", "priority_offer", "key_message", "target_metric", "weekly_theme", "framing_copy"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "objective": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "priority_offer": { "enum": ["esencial", "metodo", "elite", "presencial", "otro"] },
+        "key_message": { "type": "string", "minLength": 1, "maxLength": 280 },
+        "target_metric": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "weekly_theme": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "framing_copy": { "type": "string", "minLength": 1, "maxLength": 400 }
+      }
+    },
+    "reels": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "$ref": "#/$defs/reelScript" }
+    },
+    "stories": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": { "$ref": "#/$defs/storyDay" }
+    },
+    "checklist": {
+      "type": "object",
+      "required": ["phases"],
+      "additionalProperties": false,
+      "properties": {
+        "phases": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": { "$ref": "#/$defs/checklistPhase" }
+        }
+      }
+    },
+    "bank": {
+      "type": "object",
+      "required": ["alt_hooks", "alt_ctas", "alt_captions"],
+      "additionalProperties": false,
+      "properties": {
+        "alt_hooks":    { "type": "array", "minItems": 5, "maxItems": 5, "items": { "type": "string", "minLength": 1, "maxLength": 240 } },
+        "alt_ctas":     { "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": "string", "minLength": 1, "maxLength": 240 } },
+        "alt_captions": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": "string", "minLength": 1, "maxLength": 1000 } }
+      }
+    },
+    "hashtags": {
+      "type": "object",
+      "required": ["sets"],
+      "additionalProperties": false,
+      "properties": {
+        "sets": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "required": ["name", "tags"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "tags": { "type": "array", "minItems": 1, "maxItems": 30, "items": { "type": "string", "pattern": "^#[A-Za-z0-9_]+$", "maxLength": 60 } }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "reelScript": {
+      "type": "object",
+      "required": ["key", "type", "title", "format_meta", "hook", "timecode_table", "caption", "music_note", "production_notes"],
+      "additionalProperties": false,
+      "properties": {
+        "key": { "enum": ["reel_1", "reel_2"] },
+        "type": { "enum": ["educativo", "conversion"] },
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "format_meta": {
+          "type": "object",
+          "required": ["duration_sec_min", "duration_sec_max", "platforms", "bpm_hint"],
+          "additionalProperties": false,
+          "properties": {
+            "duration_sec_min": { "type": "integer", "minimum": 8, "maximum": 90 },
+            "duration_sec_max": { "type": "integer", "minimum": 8, "maximum": 90 },
+            "platforms": { "type": "array", "minItems": 1, "items": { "enum": ["instagram", "tiktok", "youtube"] } },
+            "bpm_hint": { "type": "string", "maxLength": 30 }
+          }
+        },
+        "hook": {
+          "type": "object",
+          "required": ["text", "rationale"],
+          "additionalProperties": false,
+          "properties": {
+            "text": { "type": "string", "minLength": 1, "maxLength": 240 },
+            "rationale": { "type": "string", "minLength": 1, "maxLength": 400 }
+          }
+        },
+        "timecode_table": {
+          "type": "array", "minItems": 3, "maxItems": 12,
+          "items": {
+            "type": "object",
+            "required": ["time", "dialogue", "visual", "edit_notes"],
+            "additionalProperties": false,
+            "properties": {
+              "time": { "type": "string", "pattern": "^\\d{2}:\\d{2}-\\d{2}:\\d{2}$" },
+              "dialogue": { "type": "string", "minLength": 1, "maxLength": 600 },
+              "visual": { "type": "string", "minLength": 1, "maxLength": 400 },
+              "edit_notes": { "type": "string", "minLength": 1, "maxLength": 600 }
+            }
+          }
+        },
+        "caption": { "type": "string", "minLength": 1, "maxLength": 2200 },
+        "music_note": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "production_notes": { "type": "string", "minLength": 1, "maxLength": 600 }
+      }
+    },
+    "storyDay": {
+      "type": "object",
+      "required": ["day", "pillar", "slides", "dm_followup_hint"],
+      "additionalProperties": false,
+      "properties": {
+        "day": { "enum": ["LUN", "MAR", "MIE", "JUE", "VIE", "SAB", "DOM"] },
+        "pillar": { "enum": ["activacion", "nutricion", "spotlight", "bts", "qa", "motivacion", "reset"] },
+        "slides": {
+          "type": "array", "minItems": 1, "maxItems": 3,
+          "items": {
+            "type": "object",
+            "required": ["kind", "text", "visual_hint", "sticker"],
+            "additionalProperties": false,
+            "properties": {
+              "kind": { "enum": ["text", "template", "visual"] },
+              "text": { "type": "string", "minLength": 1, "maxLength": 800 },
+              "visual_hint": { "type": "string", "minLength": 1, "maxLength": 400 },
+              "sticker": { "enum": ["poll", "slider", "question", "none"] }
+            }
+          }
+        },
+        "dm_followup_hint": { "type": "string", "maxLength": 400 }
+      }
+    },
+    "checklistPhase": {
+      "type": "object",
+      "required": ["key", "title", "items"],
+      "additionalProperties": false,
+      "properties": {
+        "key": { "enum": ["pre", "cam", "edit", "pub"] },
+        "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "items": {
+          "type": "array", "minItems": 1, "maxItems": 20,
+          "items": {
+            "type": "object",
+            "required": ["title", "detail"],
+            "additionalProperties": false,
+            "properties": {
+              "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+              "detail": { "type": "string", "minLength": 1, "maxLength": 400 },
+              "subitems": { "type": "array", "items": { "type": "string", "maxLength": 200 }, "maxItems": 6 }
+            }
+          }
+        }
+      }
+    }
+  }
+}
