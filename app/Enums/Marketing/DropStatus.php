@@ -16,4 +16,26 @@ enum DropStatus: string
     case InProgress  = 'in_progress';
     case Completed   = 'completed';
     case Archived    = 'archived';
+
+    public function isVisibleToCoach(): bool
+    {
+        return match ($this) {
+            self::Ready, self::InProgress, self::Completed, self::Archived => true,
+            default => false,
+        };
+    }
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::Pending    => 'Pendiente',
+            self::Generating => 'Generando',
+            self::InReview   => 'En revisión',
+            self::Approved   => 'Aprobado',
+            self::Ready      => 'Listo',
+            self::InProgress => 'En progreso',
+            self::Completed  => 'Completado',
+            self::Archived   => 'Archivado',
+        };
+    }
 }
