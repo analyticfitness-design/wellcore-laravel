@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import router from './router';
 import App from './App.vue';
+import { useAuthStore } from './stores/auth';
 
 import '../../css/app.css';
 
@@ -16,6 +17,17 @@ const app = createApp(App);
 const pinia = createPinia();
 
 app.use(pinia);
+
+// Hidratar coachStrategy store si el usuario es coach
+const authStore = useAuthStore();
+if (authStore.isAuthenticated && authStore.userType === 'coach') {
+    import('./stores/coachStrategy').then(({ useCoachStrategyStore }) => {
+        useCoachStrategyStore().fetchProfile().catch(() => {
+            // Silent fail — el guard del router se encargará si es necesario
+        });
+    });
+}
+
 app.use(router);
 app.mount('#vue-app');
 
