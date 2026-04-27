@@ -40,6 +40,10 @@ const submittingComment = ref({});
 const confirmDeleteId = ref(null);
 const deletingPost = ref(null);
 
+// ── Right panel data ─────────────────────────────────────────────────
+const storiesMembers = ref([]);
+const activeMembersList = ref([]);
+
 // ── Constants (module-level, non-reactive) ───────────────────────────
 const REACTION_TYPES = [
   { type: 'like',   emoji: '\uD83D\uDC4D', label: 'Genial' },
@@ -93,6 +97,8 @@ async function fetchFeed(reset = false) {
 
     if (d.community_stats) communityStats.value = d.community_stats;
     if (d.stats) communityStats.value = d.stats;
+    if (reset && d.stories_members) storiesMembers.value = d.stories_members;
+    if (reset && d.active_members_list) activeMembersList.value = d.active_members_list;
 
     const newPosts = d.posts || [];
     if (reset) {
@@ -450,8 +456,44 @@ function getReactionCount(post, type) {
       </button>
     </div>
 
-    <!-- Content -->
-    <div v-else class="space-y-6">
+    <!-- Content: two-column grid (feed + right panel) -->
+    <div v-else class="flex flex-col gap-6 lg:grid lg:grid-cols-[1fr_300px] lg:items-start">
+
+      <!-- ──────────────────── LEFT COLUMN ──────────────────── -->
+      <div class="min-w-0 space-y-6">
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- STORIES ROW                                                     -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div v-if="storiesMembers.length > 0" class="overflow-x-auto rounded-2xl border border-wc-border bg-wc-bg-secondary p-4">
+        <div class="flex gap-4 pb-1">
+          <div
+            v-for="member in storiesMembers"
+            :key="member.id"
+            class="flex shrink-0 flex-col items-center gap-1.5"
+          >
+            <div class="relative">
+              <div
+                class="flex h-14 w-14 items-center justify-center rounded-full text-sm font-bold text-white transition-transform hover:scale-105"
+                :class="{
+                  'bg-wc-accent': member.color === 'red',
+                  'bg-green-500': member.color === 'green',
+                  'bg-blue-500': member.color === 'blue',
+                  'bg-purple-500': member.color === 'purple',
+                  'bg-amber-500': member.color === 'amber',
+                }"
+              >{{ member.initials }}</div>
+              <div
+                v-if="member.has_new"
+                class="pointer-events-none absolute inset-0 rounded-full ring-2 ring-wc-accent ring-offset-2 ring-offset-wc-bg"
+              ></div>
+            </div>
+            <span class="max-w-[56px] truncate text-[10px] text-wc-text-secondary">
+              {{ member.name.split(' ')[0] }}
+            </span>
+          </div>
+        </div>
+      </div>
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- HEADER                                                         -->
@@ -818,7 +860,77 @@ function getReactionCount(post, type) {
           <p v-else-if="!hasMore && posts.length > 0" class="text-sm text-wc-text-tertiary">Has visto todas las publicaciones</p>
         </div>
       </div>
+
+      <!-- END LEFT COLUMN -->
+      </div>
+
+      <!-- ──────────────────── RIGHT COLUMN ──────────────────── -->
+      <div class="hidden lg:sticky lg:top-6 lg:block lg:space-y-4">
+
+        <!-- My Phase -->
+        <div class="wc-glass rounded-2xl border border-wc-border p-4">
+          <p class="text-[10px] font-semibold uppercase tracking-[0.25em] text-wc-text-tertiary">Mi Fase</p>
+          <div class="mt-3 flex items-center gap-3">
+            <div class="relative flex h-3 w-3 shrink-0">
+              <span class="absolute inset-0 animate-ping rounded-full bg-wc-accent opacity-30"></span>
+              <span class="relative h-3 w-3 rounded-full bg-wc-accent"></span>
+            </div>
+            <p class="font-display text-lg tracking-wide text-wc-text">S1 · Adaptación</p>
+          </div>
+          <div class="mt-3">
+            <div class="mb-1 flex justify-between text-[10px] text-wc-text-tertiary">
+              <span>Semana 1</span>
+              <span>de 4</span>
+            </div>
+            <div class="h-1 overflow-hidden rounded-full bg-wc-border">
+              <div class="h-full rounded-full bg-wc-accent" style="width:25%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Community stats 2×2 -->
+        <div class="wc-glass rounded-2xl border border-wc-border p-4">
+          <p class="mb-3 text-[10px] font-semibold uppercase tracking-[0.25em] text-wc-text-tertiary">Estadísticas</p>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="rounded-xl bg-wc-bg-tertiary p-3 text-center">
+              <p class="font-display text-2xl tabular-nums text-wc-accent">{{ communityStats.total_posts ?? 0 }}</p>
+              <p class="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Posts</p>
+            </div>
+            <div class="rounded-xl bg-wc-bg-tertiary p-3 text-center">
+              <p class="font-display text-2xl tabular-nums text-wc-accent">{{ communityStats.active_members ?? 0 }}</p>
+              <p class="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Miembros</p>
+            </div>
+            <div class="rounded-xl bg-wc-bg-tertiary p-3 text-center">
+              <p class="font-display text-2xl tabular-nums text-yellow-500">{{ communityStats.total_achievements ?? 0 }}</p>
+              <p class="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Logros</p>
+            </div>
+            <div class="rounded-xl bg-wc-bg-tertiary p-3 text-center">
+              <p class="font-display text-2xl tabular-nums text-green-500">{{ communityStats.total_prs ?? 0 }}</p>
+              <p class="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-wc-text-tertiary">PRs</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active members -->
+        <div v-if="activeMembersList.length > 0" class="wc-glass rounded-2xl border border-wc-border p-4">
+          <p class="mb-3 text-[10px] font-semibold uppercase tracking-[0.25em] text-wc-text-tertiary">Miembros Activos</p>
+          <div class="space-y-2.5">
+            <div v-for="member in activeMembersList" :key="member.id" class="flex items-center gap-2.5">
+              <div class="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-wc-accent/30 to-wc-accent/10 text-xs font-bold text-wc-accent">
+                {{ member.initials }}
+                <span class="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-wc-bg bg-green-500"></span>
+              </div>
+              <p class="truncate text-sm text-wc-text">{{ member.name }}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- END RIGHT COLUMN -->
+
     </div>
+    <!-- END CONTENT GRID -->
+
   </ClientLayout>
 </template>
 

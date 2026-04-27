@@ -67,7 +67,43 @@ class SocialController extends Controller
             return [
                 'total_posts' => CommunityPost::where('visible', true)->count(),
                 'active_members' => Client::where('status', 'activo')->count(),
+                'total_achievements' => CommunityPost::where('visible', true)->where('post_type', 'achievement')->count(),
+                'total_prs' => CommunityPost::where('visible', true)->where('post_type', 'pr')->count(),
             ];
+        });
+
+        $storiesMembers = Cache::remember('community:stories', 180, function () {
+            $cutoff = now()->subHours(24);
+
+            return Client::where('status', 'activo')
+                ->select('id', 'name')
+                ->withCount(['communityPosts as new_posts_count' => function ($q) use ($cutoff) {
+                    $q->where('visible', true)->where('created_at', '>=', $cutoff);
+                }])
+                ->orderByDesc('new_posts_count')
+                ->limit(8)
+                ->get()
+                ->map(fn ($c) => [
+                    'id' => $c->id,
+                    'name' => $c->name,
+                    'initials' => mb_strtoupper(mb_substr(trim($c->name) ?: 'M', 0, 2)),
+                    'has_new' => $c->new_posts_count > 0,
+                    'color' => $this->colorForName($c->name),
+                ]);
+        });
+
+        $activeMembersList = Cache::remember('community:active-list', 180, function () {
+            return Client::where('status', 'activo')
+                ->select('id', 'name', 'updated_at')
+                ->orderByDesc('updated_at')
+                ->limit(4)
+                ->get()
+                ->map(fn ($c) => [
+                    'id' => $c->id,
+                    'name' => $c->name,
+                    'initials' => mb_strtoupper(mb_substr(trim($c->name) ?: 'M', 0, 2)),
+                    'updated_at' => $c->updated_at?->toIso8601String(),
+                ]);
         });
 
         $baseQuery = $request->query('tab') === 'following'
@@ -122,6 +158,8 @@ class SocialController extends Controller
         return response()->json([
             'posts' => $postsData,
             'community_stats' => $communityStats,
+            'stories_members' => $storiesMembers,
+            'active_members_list' => $activeMembersList,
             'pagination' => [
                 'current_page' => $posts->currentPage(),
                 'last_page' => $posts->lastPage(),
@@ -129,6 +167,13 @@ class SocialController extends Controller
                 'total' => $posts->total(),
             ],
         ]);
+    }
+
+    private function colorForName(string $name): string
+    {
+        $colors = ['red', 'green', 'blue', 'purple', 'amber'];
+
+        return $colors[abs(crc32($name)) % count($colors)];
     }
 
     /**
