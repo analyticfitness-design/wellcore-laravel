@@ -89,7 +89,7 @@ class SocialController extends Controller
                     'initials' => mb_strtoupper(mb_substr(trim($c->name) ?: 'M', 0, 2)),
                     'has_new' => $c->new_posts_count > 0,
                     'color' => $this->colorForName($c->name),
-                ]);
+                ])->all();
         });
 
         $activeMembersList = Cache::remember('community:active-list', 180, function () {
@@ -103,7 +103,7 @@ class SocialController extends Controller
                     'name' => $c->name,
                     'initials' => mb_strtoupper(mb_substr(trim($c->name) ?: 'M', 0, 2)),
                     'updated_at' => $c->updated_at?->toIso8601String(),
-                ]);
+                ])->all();
         });
 
         $baseQuery = $request->query('tab') === 'following'
