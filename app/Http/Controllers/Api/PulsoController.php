@@ -57,7 +57,7 @@ class PulsoController extends Controller
             ->toArray();
 
         $pulsos = array_map(function ($p) use ($viewedIds, $clientId) {
-            $p['has_new'] = ! in_array($p['id'], $viewedIds, true) && $p['client_id'] !== $clientId;
+            $p['has_new'] = ! in_array($p['id'], $viewedIds, true) && (int) $p['client_id'] !== (int) $clientId;
             return $p;
         }, $pulsos);
 
@@ -82,7 +82,7 @@ class PulsoController extends Controller
             return response()->json(['message' => 'Este pulso ya expiró o no existe.'], 404);
         }
 
-        if ($pulso->client_id !== $clientId) {
+        if ((int) $pulso->client_id !== (int) $clientId) {
             $isNew = ! ClientPulsoView::where('pulso_id', $id)
                 ->where('viewer_id', $clientId)
                 ->exists();
@@ -130,11 +130,11 @@ class PulsoController extends Controller
             'views_count'       => $pulso->views_count,
             'reaction_counts'   => $reactionCounts,
             'my_reactions'      => $myReactions,
-            'is_mine'           => $pulso->client_id === $clientId,
+            'is_mine'           => (int) $pulso->client_id === (int) $clientId,
             'is_auto_generated' => $pulso->is_auto_generated,
         ];
 
-        if ($pulso->client_id === $clientId) {
+        if ((int) $pulso->client_id === (int) $clientId) {
             $data['viewers'] = ClientPulsoView::where('pulso_id', $id)
                 ->with('viewer:id,name')
                 ->orderByDesc('viewed_at')
