@@ -44,6 +44,13 @@ const deletingPost = ref(null);
 const storiesMembers = ref([]);
 const activeMembersList = ref([]);
 
+// ── Community tour ───────────────────────────────────────────────────
+const tourSeen = ref(!!localStorage.getItem('wc_community_tour_seen'));
+function dismissTour() {
+  localStorage.setItem('wc_community_tour_seen', '1');
+  tourSeen.value = true;
+}
+
 // ── Constants (module-level, non-reactive) ───────────────────────────
 const REACTION_TYPES = [
   { type: 'like',   emoji: '\uD83D\uDC4D', label: 'Genial' },
@@ -72,6 +79,7 @@ const sentinelRef = ref(null);
 // ── Computed ─────────────────────────────────────────────────────────
 const charCount = computed(() => postContent.value.length);
 const currentClientId = computed(() => Number(authStore.userId));
+const hasActiveStories = computed(() => storiesMembers.value.some(m => m.has_new));
 
 // ── Fetch community feed ─────────────────────────────────────────────
 async function fetchFeed(reset = false) {
@@ -463,9 +471,9 @@ function getReactionCount(post, type) {
       <div class="min-w-0 space-y-6">
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- STORIES ROW                                                     -->
+      <!-- STORIES ROW — solo cuando hay contenido nuevo (has_new: true)  -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div v-if="storiesMembers.length > 0" class="overflow-x-auto rounded-2xl border border-wc-border bg-wc-bg-secondary p-4">
+      <div v-if="hasActiveStories" class="overflow-x-auto rounded-2xl border border-wc-border bg-wc-bg-secondary p-4">
         <div class="flex gap-4 pb-1">
           <div
             v-for="member in storiesMembers"
@@ -493,6 +501,58 @@ function getReactionCount(post, type) {
             </span>
           </div>
         </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- TOUR DE BIENVENIDA — solo si no hay stories activas y no visto -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div
+        v-if="!hasActiveStories && !tourSeen"
+        class="relative rounded-2xl border border-wc-accent/30 bg-wc-bg-secondary p-5"
+      >
+        <button
+          @click="dismissTour"
+          class="absolute right-4 top-4 text-wc-text-secondary hover:text-wc-text transition-colors"
+          aria-label="Cerrar"
+        >✕</button>
+
+        <p class="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-wc-accent">Bienvenido a la Comunidad</p>
+
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div class="flex items-start gap-3">
+            <span class="mt-0.5 shrink-0 text-xl">🏆</span>
+            <div>
+              <p class="text-sm font-semibold text-wc-text">Comparte un logro</p>
+              <p class="text-xs text-wc-text-secondary">Usa la pestaña "Logro" para celebrar tus victorias con el resto del equipo.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="mt-0.5 shrink-0 text-xl">💪</span>
+            <div>
+              <p class="text-sm font-semibold text-wc-text">Publica un PR</p>
+              <p class="text-xs text-wc-text-secondary">Rompiste tu récord personal? Compártelo en "Nuevo PR" y recibe el apoyo del grupo.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="mt-0.5 shrink-0 text-xl">🔥</span>
+            <div>
+              <p class="text-sm font-semibold text-wc-text">Reacciona a los posts</p>
+              <p class="text-xs text-wc-text-secondary">Dale fuego, fuerza o un aplauso a los posts de tus compañeros para motivarlos.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="mt-0.5 shrink-0 text-xl">👥</span>
+            <div>
+              <p class="text-sm font-semibold text-wc-text">Pestaña "Siguiendo"</p>
+              <p class="text-xs text-wc-text-secondary">Cuando sigas miembros, su contenido aparecerá en tu feed personalizado.</p>
+            </div>
+          </div>
+        </div>
+
+        <button
+          @click="dismissTour"
+          class="mt-5 w-full rounded-xl border border-wc-accent/40 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-wc-accent transition-colors hover:bg-wc-accent/10"
+        >Entendido, ¡vamos!</button>
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
