@@ -48,15 +48,11 @@ const storiesMembers = ref([]);
 const activeMembersList = ref([]);
 
 // ── Pulsos ────────────────────────────────────────────────────────────
-const activePulsoId = ref<number | null>(null);
+const activePulsoId = ref(null);
 const showPulsoUploader = ref(false);
-const pulsoUploaderPrefill = ref<{
-  type: string;
-  stats?: Record<string, any>;
-  sessionId?: number;
-} | null>(null);
+const pulsoUploaderPrefill = ref(null);
 
-function openPulso(pulsoId: number) {
+function openPulso(pulsoId) {
   activePulsoId.value = pulsoId;
 }
 
@@ -64,7 +60,7 @@ function closePulsoViewer() {
   activePulsoId.value = null;
 }
 
-function openPulsoUploader(prefill?: { type: string; stats?: Record<string, any>; sessionId?: number }) {
+function openPulsoUploader(prefill) {
   pulsoUploaderPrefill.value = prefill ?? null;
   showPulsoUploader.value = true;
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-import { useApi } from '../../../composables/useApi';
-import { useToast } from '../../../composables/useToast';
+import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
 import PulsoStatCard from './PulsoStatCard.vue';
 
 interface PulsoDetail {
