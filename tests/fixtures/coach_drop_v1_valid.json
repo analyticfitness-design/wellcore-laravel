@@ -1,0 +1,135 @@
+{
+  "schema_version": "coach_drop_v1",
+  "brief": {
+    "title": "Tu Transformación Empieza Esta Semana",
+    "objective": "Generar leads para el plan Método con contenido educativo de alto valor",
+    "priority_offer": "metodo",
+    "key_message": "El 80% del resultado viene de la técnica, no del esfuerzo",
+    "target_metric": "3 DMs calificados esta semana",
+    "weekly_theme": "Técnica de ejecución como diferenciador",
+    "framing_copy": "Esta semana te posicionamos como el referente técnico de tu nicho"
+  },
+  "reels": [
+    {
+      "key": "reel_1",
+      "type": "educativo",
+      "title": "Los 3 errores que frenan tu progreso en el gym",
+      "format_meta": {
+        "duration_sec_min": 30,
+        "duration_sec_max": 45,
+        "platforms": ["instagram", "tiktok"],
+        "bpm_hint": "100"
+      },
+      "hook": {
+        "text": "Si llevas 6 meses entrenando y no ves resultados, es esto",
+        "rationale": "Problema específico + timeframe + promesa implícita de solución"
+      },
+      "timecode_table": [
+        {"time": "00:00-00:03", "dialogue": "Si llevas 6 meses entrenando y no ves resultados, es esto", "visual": "Cámara directa, fondo gym", "edit_notes": "Jump cut al tercer frame"},
+        {"time": "00:03-00:12", "dialogue": "Error 1: No registras tus cargas. Sin progresión no hay estímulo", "visual": "Mostrar libreta/app de registro", "edit_notes": "B-roll de app de tracking"},
+        {"time": "00:12-00:25", "dialogue": "Error 2: Cambias de rutina cada semana. El cuerpo necesita 6-8 semanas mínimo", "visual": "Gráfica de progresión lineal", "edit_notes": "Animación simple overlay"},
+        {"time": "00:25-00:35", "dialogue": "Error 3: Priorizas peso sobre técnica. La técnica ES el entrenamiento", "visual": "Comparativa técnica correcta vs incorrecta", "edit_notes": "Split screen"},
+        {"time": "00:35-00:45", "dialogue": "Si quieres un plan que corrija esto, DM con la palabra MÉTODO", "visual": "CTA pantalla con texto", "edit_notes": "Texto animado overlay"}
+      ],
+      "caption": "¿Llevas meses entrenando sin ver resultados? El problema casi nunca es el esfuerzo — es la estrategia. Estos 3 errores los veo todos los días. ¿Cuál es el tuyo? 👇 Comenta y te ayudo.",
+      "music_note": "Track instrumental 100bpm, energético pero no agresivo. Sugerencia: tipo Epic Motivational de Epidemic Sound",
+      "production_notes": "Luz natural si es posible. Camisa sin logos para que el foco sea el mensaje. Habla directo a cámara, sin teleprompter visible."
+    },
+    {
+      "key": "reel_2",
+      "type": "conversion",
+      "title": "Por qué el Método transforma en 90 días",
+      "format_meta": {
+        "duration_sec_min": 30,
+        "duration_sec_max": 40,
+        "platforms": ["instagram"],
+        "bpm_hint": "95"
+      },
+      "hook": {
+        "text": "En 90 días puedes cambiar tu cuerpo. Aquí está cómo lo hacemos",
+        "rationale": "Timeframe concreto + promesa de método sistemático"
+      },
+      "timecode_table": [
+        {"time": "00:00-00:03", "dialogue": "En 90 días puedes cambiar tu cuerpo. Aquí está cómo lo hacemos", "visual": "Foto antes/después rápida", "edit_notes": "Flash cut dramático"},
+        {"time": "00:03-00:15", "dialogue": "Mes 1: Construimos tu base técnica y metabólica. Sin base no hay transformación duradera", "visual": "Gráfica de fases", "edit_notes": "Animación de fases mensual"},
+        {"time": "00:15-00:27", "dialogue": "Mes 2-3: Aplicamos progresión inteligente. Tu cuerpo ya está listo para cambiar", "visual": "Coach demostrando ejercicio", "edit_notes": "Cámara rápida"},
+        {"time": "00:27-00:40", "dialogue": "¿Quieres empezar? DM con MÉTODO y hablamos esta semana", "visual": "CTA con número de whatsapp o link", "edit_notes": "Texto pulsante en pantalla"}
+      ],
+      "caption": "El Método no es una dieta. No es una rutina genérica. Es un sistema diseñado para tu cuerpo, tu vida y tus objetivos. 90 días de trabajo real. Cupos limitados esta semana — DM con MÉTODO si estás listo.",
+      "music_note": "Track cinematográfico, 90-95bpm. Tipo Inspiring Corporate. Que suba en el CTA final.",
+      "production_notes": "Este reel va directo a conversión. Comunica urgencia sin desesperación. Tono seguro, no agresivo."
+    }
+  ],
+  "stories": [
+    {"day": "LUN", "pillar": "activacion", "slides": [{"kind": "text", "text": "Esta semana empezamos fuerte. ¿Ya tienes tu rutina lista? 💪", "visual_hint": "Fondo dark con texto Oswald en rojo", "sticker": "poll"}], "dm_followup_hint": "Si responden 'No' → ofrece enviar el plan semanal"},
+    {"day": "MAR", "pillar": "nutricion", "slides": [{"kind": "text", "text": "Proteína en cada comida. Sin esto, el gym no sirve de nada.", "visual_hint": "Foto de plato con proteína bien presentado", "sticker": "slider"}], "dm_followup_hint": "Slider de 'qué tanto cumples esto' → los del 0-40% son candidatos"},
+    {"day": "MIE", "pillar": "spotlight", "slides": [{"kind": "text", "text": "Testimonio de la semana: Carlos bajó 8kg en 10 semanas siguiendo el Método.", "visual_hint": "Screenshot de mensaje o foto de cliente (con permiso)", "sticker": "none"}], "dm_followup_hint": "Quien responda con curiosidad → explica el proceso"},
+    {"day": "JUE", "pillar": "bts", "slides": [{"kind": "text", "text": "Así planifico el entrenamiento de mis clientes esta semana 📋", "visual_hint": "Video corto de pantalla con planificación", "sticker": "question"}], "dm_followup_hint": "Pregunta: ¿Qué parte de tu entrenamiento quieres mejorar?"},
+    {"day": "VIE", "pillar": "qa", "slides": [{"kind": "text", "text": "Respondo: ¿Cuántas veces a la semana debo entrenar para ver resultados?", "visual_hint": "Texto con respuesta directa, sin rodeos", "sticker": "none"}], "dm_followup_hint": "Los que preguntan más → son leads calificados"},
+    {"day": "SAB", "pillar": "motivacion", "slides": [{"kind": "text", "text": "El progreso es lento para los que no tienen método. Rápido para los que sí.", "visual_hint": "Cita en tipografía display grande", "sticker": "none"}], "dm_followup_hint": ""},
+    {"day": "DOM", "pillar": "reset", "slides": [{"kind": "text", "text": "Domingo: recarga, descansa y prepárate. La semana que viene seguimos 🔁", "visual_hint": "Ambiente tranquilo, outdoor o casa", "sticker": "none"}], "dm_followup_hint": ""}
+  ],
+  "checklist": {
+    "phases": [
+      {
+        "key": "pre",
+        "title": "Pre-producción",
+        "items": [
+          {"title": "Revisar guión del reel", "detail": "Lee el guión 3 veces en voz alta. Cronometra. Debe quedar natural.", "subitems": ["¿Suena como tú hablas?", "¿El hook engancha en los primeros 2 segundos?"]},
+          {"title": "Preparar locación", "detail": "Gym o espacio limpio y bien iluminado. Sin desorden de fondo.", "subitems": []}
+        ]
+      },
+      {
+        "key": "cam",
+        "title": "Grabación",
+        "items": [
+          {"title": "Grabar 3 versiones del hook", "detail": "Varía tono y velocidad. La mejor versión va primero.", "subitems": []},
+          {"title": "Verificar audio", "detail": "Sin ruido de fondo. Voz clara y directa.", "subitems": []}
+        ]
+      },
+      {
+        "key": "edit",
+        "title": "Edición",
+        "items": [
+          {"title": "Ritmo en los cortes", "detail": "Corte cada 3-5 segundos máximo. Sin silencios muertos.", "subitems": []},
+          {"title": "Agregar subtítulos", "detail": "CapCut auto-subtítulos + corrección manual. Fuente grande, fondo semitransparente.", "subitems": []}
+        ]
+      },
+      {
+        "key": "pub",
+        "title": "Publicación",
+        "items": [
+          {"title": "Copiar caption exacto", "detail": "Usa el caption del guión. No lo improvises en el momento.", "subitems": []},
+          {"title": "Programar en horario óptimo", "detail": "Martes y jueves 18:00-20:00 para tu audiencia CO/MX.", "subitems": []}
+        ]
+      }
+    ]
+  },
+  "bank": {
+    "alt_hooks": [
+      "Lo que nadie te dice sobre entrenar 6 meses sin resultados",
+      "Esto cambia cuando entrenas con método y no con esfuerzo",
+      "3 cosas que tus clientes necesitan escuchar esta semana",
+      "El error que comete el 90% de las personas en el gym",
+      "¿Cuánto tiempo llevas entrenando sin ver cambios reales?"
+    ],
+    "alt_ctas": [
+      "DM con la palabra MÉTODO y hablamos esta semana",
+      "Comenta 'INFO' y te envío los detalles del programa",
+      "Link en bio para ver los resultados reales de mis clientes"
+    ],
+    "alt_captions": [
+      "El gym no transforma cuerpos. El método sí. 3 años coacheando me enseñaron que el problema nunca es la motivación — es la estrategia. ¿Listo para cambiar el enfoque?",
+      "Mis clientes no entrenan más que antes. Entrenan mejor. Esa es la diferencia entre sudar y transformarse. Si quieres saber cómo, DM abierto.",
+      "Resultado honesto: esto no es magia ni genética. Es proceso. Es método. Es consistencia con dirección. ¿Quieres el mismo proceso? Hablemos."
+    ]
+  },
+  "hashtags": {
+    "sets": [
+      {"name": "Fitness Colombia", "tags": ["#entrenamiento", "#gym", "#fitness", "#transformacion", "#coachfitness", "#gymcolombia", "#perderpeso", "#musculo", "#rutina", "#nutricion"]},
+      {"name": "Coach Personal", "tags": ["#coachpersonal", "#entrenadorpersonal", "#fitnessmotivation", "#workout", "#training", "#fitlife", "#gymmotivation", "#bodybuilding", "#healthylifestyle", "#fitnesscommunity"]},
+      {"name": "Conversión directa", "tags": ["#metodo", "#coaching", "#resultados", "#transformacionreal", "#progreso", "#disciplina", "#objetivos", "#cambio", "#entrenamientointeligente", "#cienciadelentrenamiento"]},
+      {"name": "Nicho mujeres", "tags": ["#mujeresfit", "#mujeresentrenando", "#fitnessfemenino", "#mujeresactivas", "#entrenamiento femenino", "#saludfemenina", "#cuerposaludable", "#bienestar"]}
+    ]
+  }
+}
