@@ -1,14 +1,25 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import axios from 'axios';
 import PublicLayout from '../../layouts/PublicLayout.vue';
 
+const route = useRoute();
+const invitationCode = computed(() => route.params.code || null);
+const isInvitation = computed(() => !!invitationCode.value);
+
 const step = ref(0);
-const totalSteps = 8;
 const isLoading = ref(false);
 const success = ref(false);
 const errorMessage = ref('');
 const errors = ref({});
+
+// Invitation state — initialize loading=true synchronously when in invitation mode
+// to avoid a flash of the form before the resolve call kicks off in onMounted.
+const invitationLoading = ref(!!route.params.code);
+const invitationError = ref(null); // null | 'expired' | 'used' | 'invalid' | 'network'
+const invitationErrorMessage = ref('');
+const invitationData = ref(null); // { plan, plan_label, email_hint }
 
 // Step 0 — Plan selection
 const form = ref({
@@ -58,6 +69,13 @@ const form = ref({
   password: '',
   password_confirmation: '',
   terminos: false,
+  // Invitation-only conditional fields
+  horario_preferido: '',
+  compromiso_30dias: false,
+  objetivo_composicion: '',
+  historial_medico: '',
+  ciclo_hormonal: 'no',
+  bloodwork_disponible: 'no',
 });
 
 const plans = [
@@ -84,18 +102,44 @@ const plans = [
   },
 ];
 
-const progressPercent = computed(() => Math.round((step.value / (totalSteps - 1)) * 100));
+// Dynamic step structure.
+// Public mode: 0=Plan, 1=Datos basicos, 2=Experiencia, 3=Preferencias, 4=Lesiones, 5=Nutricion, 6=Estilo de vida, 7=Final
+// Invitation mode: skip Step 0; insert step "Avanzado" before Final if plan === 'elite'.
+// We keep step numbers (0-7) intact for the existing v-show blocks, and use "stepOrder" to define
+// which numbers are actually visible in this mode and in which order.
+const stepOrder = computed(() => {
+  if (!isInvitation.value) {
+    return [0, 1, 2, 3, 4, 5, 6, 7];
+  }
+  const plan = invitationData.value?.plan;
+  // Step 8 is the new "Avanzado" (Elite-only) step, inserted between Estilo de vida (6) and Final (7).
+  if (plan === 'elite') {
+    return [1, 2, 3, 4, 5, 6, 8, 7];
+  }
+  return [1, 2, 3, 4, 5, 6, 7];
+});
 
-const stepLabels = [
-  'Plan',
-  'Datos basicos',
-  'Experiencia',
-  'Preferencias',
-  'Lesiones',
-  'Nutricion',
-  'Estilo de vida',
-  'Finalizar',
-];
+const totalSteps = computed(() => stepOrder.value.length);
+const currentIndex = computed(() => stepOrder.value.indexOf(step.value));
+const progressPercent = computed(() => {
+  const idx = Math.max(0, currentIndex.value);
+  const total = totalSteps.value;
+  if (total <= 1) return 100;
+  return Math.round((idx / (total - 1)) * 100);
+});
+
+const ALL_STEP_LABELS = {
+  0: 'Plan',
+  1: 'Datos basicos',
+  2: 'Experiencia',
+  3: 'Preferencias',
+  4: 'Lesiones',
+  5: 'Nutricion',
+  6: 'Estilo de vida',
+  7: 'Finalizar',
+  8: 'Avanzado',
+};
+const currentStepLabel = computed(() => ALL_STEP_LABELS[step.value] ?? '');
 
 function fieldError(field) {
   if (errors.value[field]) {
@@ -106,6 +150,8 @@ function fieldError(field) {
 
 function validateStep(s) {
   const e = {};
+  const plan = isInvitation.value ? invitationData.value?.plan : form.value.plan;
+
   if (s === 0) {
     if (!form.value.plan) e.plan = 'Selecciona un plan.';
   } else if (s === 1) {
@@ -125,15 +171,25 @@ function validateStep(s) {
   } else if (s === 3) {
     if (!form.value.tipo_entrenamiento) e.tipo_entrenamiento = 'Selecciona el tipo de entrenamiento.';
     if (!form.value.duracion_sesion) e.duracion_sesion = 'Selecciona la duracion.';
+    if (isInvitation.value && plan === 'presencial' && !form.value.horario_preferido) {
+      e.horario_preferido = 'Selecciona un horario preferido.';
+    }
   } else if (s === 4) {
     if (form.value.lesion === 'si' && !form.value.detalle_lesion) {
       e.detalle_lesion = 'Describe tu lesion.';
     }
+  } else if (s === 8) {
+    // Elite "Avanzado" step
+    if (!form.value.objetivo_composicion) e.objetivo_composicion = 'Describe tu objetivo de composicion.';
+    if (!form.value.historial_medico) e.historial_medico = 'Comparte tu historial medico.';
   } else if (s === 7) {
     if (!form.value.password) e.password = 'Crea una contrasena.';
     if (form.value.password && form.value.password.length < 8) e.password = 'Minimo 8 caracteres.';
     if (form.value.password !== form.value.password_confirmation) e.password_confirmation = 'Las contrasenas no coinciden.';
     if (!form.value.terminos) e.terminos = 'Debes aceptar los terminos.';
+    if (isInvitation.value && plan === 'rise' && !form.value.compromiso_30dias) {
+      e.compromiso_30dias = 'Debes aceptar el compromiso de 30 dias.';
+    }
   }
   return e;
 }
@@ -145,15 +201,26 @@ function nextStep() {
     return;
   }
   errors.value = {};
-  step.value = Math.min(step.value + 1, totalSteps - 1);
+  const order = stepOrder.value;
+  const idx = order.indexOf(step.value);
+  if (idx >= 0 && idx < order.length - 1) {
+    step.value = order[idx + 1];
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function prevStep() {
   errors.value = {};
-  step.value = Math.max(step.value - 1, 0);
+  const order = stepOrder.value;
+  const idx = order.indexOf(step.value);
+  if (idx > 0) {
+    step.value = order[idx - 1];
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+const isFirstStep = computed(() => currentIndex.value <= 0);
+const isLastStep = computed(() => currentIndex.value === totalSteps.value - 1);
 
 function selectPlan(planId) {
   form.value.plan = planId;
@@ -180,7 +247,14 @@ async function submit() {
   errors.value = {};
 
   try {
-    await axios.post('/api/v/public/inscription', form.value);
+    if (isInvitation.value) {
+      await axios.post('/api/v/public/invitation-intake', {
+        ...form.value,
+        invitation_code: invitationCode.value,
+      });
+    } else {
+      await axios.post('/api/v/public/inscription', form.value);
+    }
     success.value = true;
   } catch (err) {
     if (err.response?.data?.errors) {
@@ -195,6 +269,49 @@ async function submit() {
     isLoading.value = false;
   }
 }
+
+async function resolveInvitation() {
+  if (!isInvitation.value) return;
+  invitationLoading.value = true;
+  invitationError.value = null;
+  try {
+    const { data } = await axios.get(`/api/v/public/invitations/${invitationCode.value}`);
+    if (data && data.valid) {
+      invitationData.value = {
+        plan: data.plan,
+        plan_label: data.plan_label,
+        email_hint: data.email_hint || '',
+      };
+      // Pre-fill plan from invitation; pre-fill email if provided.
+      form.value.plan = data.plan || '';
+      if (data.email_hint) form.value.email = data.email_hint;
+      // Skip Step 0 (plan selection); start at Datos basicos.
+      step.value = 1;
+    } else {
+      const status = data?.status || 'invalid';
+      invitationError.value = ['expired', 'used', 'invalid'].includes(status) ? status : 'invalid';
+      invitationErrorMessage.value = data?.message || '';
+    }
+  } catch (err) {
+    if (err.response?.status === 404) {
+      invitationError.value = 'invalid';
+    } else if (err.response?.data?.status) {
+      invitationError.value = err.response.data.status;
+      invitationErrorMessage.value = err.response.data.message || '';
+    } else {
+      invitationError.value = 'network';
+      invitationErrorMessage.value = 'No pudimos validar tu invitacion. Intenta de nuevo.';
+    }
+  } finally {
+    invitationLoading.value = false;
+  }
+}
+
+onMounted(() => {
+  if (isInvitation.value) {
+    resolveInvitation();
+  }
+});
 </script>
 
 <template>
@@ -202,15 +319,63 @@ async function submit() {
     <div class="min-h-screen bg-wc-bg px-4 py-12 sm:py-16">
       <div class="mx-auto max-w-3xl">
 
+        <!-- Invitation: validating -->
+        <div v-if="isInvitation && invitationLoading" class="rounded-2xl border border-wc-border bg-wc-bg-tertiary p-12 shadow-xl text-center">
+          <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-wc-accent/10">
+            <svg class="h-8 w-8 animate-spin text-wc-accent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+          <h2 class="text-xl font-bold text-wc-text font-display">Validando invitacion...</h2>
+          <p class="mt-2 text-sm text-wc-text-secondary">Un momento mientras verificamos tu codigo.</p>
+        </div>
+
+        <!-- Invitation: error -->
+        <div v-else-if="isInvitation && invitationError" class="rounded-2xl border border-wc-border bg-wc-bg-tertiary p-8 shadow-xl text-center">
+          <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red-500/10">
+            <svg class="h-10 w-10 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold text-wc-text font-display">
+            <template v-if="invitationError === 'expired'">Invitacion Expirada</template>
+            <template v-else-if="invitationError === 'used'">Invitacion Ya Usada</template>
+            <template v-else-if="invitationError === 'network'">Error de Conexion</template>
+            <template v-else>Invitacion Invalida</template>
+          </h2>
+          <p class="mt-3 text-wc-text-secondary">
+            <template v-if="invitationErrorMessage">{{ invitationErrorMessage }}</template>
+            <template v-else-if="invitationError === 'expired'">Tu invitacion ha caducado. Contacta a tu coach para recibir una nueva.</template>
+            <template v-else-if="invitationError === 'used'">Esta invitacion ya fue activada. Inicia sesion para acceder a tu cuenta.</template>
+            <template v-else-if="invitationError === 'network'">No pudimos validar tu invitacion. Verifica tu conexion e intenta de nuevo.</template>
+            <template v-else>El codigo de invitacion no es valido. Verifica el enlace que recibiste.</template>
+          </p>
+          <div class="mt-6 flex flex-wrap justify-center gap-3">
+            <a href="/" class="inline-flex rounded-full border border-wc-border bg-wc-bg-secondary px-6 py-3 font-semibold text-wc-text hover:bg-wc-bg-tertiary active:scale-[0.98]">
+              Volver al inicio
+            </a>
+            <a v-if="invitationError === 'used'" href="/login" class="inline-flex rounded-full bg-wc-accent px-6 py-3 font-semibold text-white hover:bg-wc-accent-hover active:scale-[0.98]">
+              Iniciar Sesion
+            </a>
+          </div>
+        </div>
+
         <!-- Success state -->
-        <div v-if="success" class="rounded-2xl border border-wc-border bg-wc-bg-tertiary p-8 shadow-xl text-center">
+        <div v-else-if="success" class="rounded-2xl border border-wc-border bg-wc-bg-tertiary p-8 shadow-xl text-center">
           <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-500/10">
             <svg class="h-10 w-10 text-green-500 animate-[scale-in_0.4s_ease-out]" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
             </svg>
           </div>
-          <h2 class="text-2xl font-bold text-wc-text font-display">Inscripcion Exitosa</h2>
-          <p class="mt-3 text-wc-text-secondary">Tu cuenta ha sido creada. Revisa tu email para los siguientes pasos.</p>
+          <h2 class="text-2xl font-bold text-wc-text font-display">
+            {{ isInvitation ? 'Cuenta Activada' : 'Inscripcion Exitosa' }}
+          </h2>
+          <p class="mt-3 text-wc-text-secondary">
+            {{ isInvitation
+              ? 'Tu cuenta WellCore esta lista. Inicia sesion para empezar.'
+              : 'Tu cuenta ha sido creada. Revisa tu email para los siguientes pasos.' }}
+          </p>
           <a href="/login" class="mt-6 inline-flex rounded-full bg-wc-accent px-8 py-3 font-semibold text-white hover:bg-wc-accent-hover active:scale-[0.98]">
             Iniciar Sesion
           </a>
@@ -220,15 +385,37 @@ async function submit() {
         <div v-else>
           <!-- Header -->
           <div class="mb-8 text-center">
-            <h1 class="text-3xl font-bold text-wc-text font-display sm:text-4xl">Comienza tu Transformacion</h1>
-            <p class="mt-2 text-wc-text-secondary">Completa el formulario para crear tu plan personalizado</p>
+            <h1 class="text-3xl font-bold text-wc-text font-display sm:text-4xl">
+              {{ isInvitation ? 'Completa tu Registro' : 'Comienza tu Transformacion' }}
+            </h1>
+            <p class="mt-2 text-wc-text-secondary">
+              {{ isInvitation
+                ? 'Solo unos pasos mas para activar tu cuenta WellCore.'
+                : 'Completa el formulario para crear tu plan personalizado' }}
+            </p>
+          </div>
+
+          <!-- Invitation banner -->
+          <div
+            v-if="isInvitation && invitationData"
+            class="mb-6 flex items-center gap-3 rounded-xl border border-wc-accent/30 bg-wc-accent/10 p-4"
+          >
+            <svg class="h-6 w-6 shrink-0 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+            </svg>
+            <div>
+              <p class="text-sm font-semibold text-wc-text">
+                Has sido invitado al plan {{ invitationData.plan_label }}
+              </p>
+              <p class="text-xs text-wc-text-secondary">Completa tus datos para activar tu cuenta.</p>
+            </div>
           </div>
 
           <!-- Progress bar -->
           <div class="mb-8">
             <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-medium text-wc-text-secondary">Paso {{ step + 1 }} de {{ totalSteps }}</span>
-              <span class="text-xs font-medium text-wc-accent">{{ stepLabels[step] }}</span>
+              <span class="text-xs font-medium text-wc-text-secondary">Paso {{ currentIndex + 1 }} de {{ totalSteps }}</span>
+              <span class="text-xs font-medium text-wc-accent">{{ currentStepLabel }}</span>
             </div>
             <div class="h-2 w-full rounded-full bg-wc-bg-secondary">
               <div
@@ -248,8 +435,8 @@ async function submit() {
 
           <div class="rounded-2xl border border-wc-border bg-wc-bg-tertiary p-8 shadow-xl">
 
-            <!-- STEP 0: Plan selection -->
-            <div v-show="step === 0">
+            <!-- STEP 0: Plan selection (public mode only) -->
+            <div v-if="!isInvitation" v-show="step === 0">
               <h2 class="mb-6 text-xl font-bold text-wc-text">Selecciona tu Plan</h2>
               <div class="grid gap-4 sm:grid-cols-3">
                 <button
@@ -448,6 +635,16 @@ async function submit() {
                   <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Restricciones de ejercicio</label>
                   <textarea v-model="form.restricciones_ejercicio" rows="3" placeholder="Ejercicios que no puedas o no quieras hacer..." class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
                 </div>
+                <div v-if="isInvitation && invitationData?.plan === 'presencial'">
+                  <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Horario preferido para sesiones presenciales *</label>
+                  <select v-model="form.horario_preferido" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
+                    <option value="" disabled>Seleccionar</option>
+                    <option value="manana">Manana</option>
+                    <option value="tarde">Tarde</option>
+                    <option value="noche">Noche</option>
+                  </select>
+                  <p v-if="fieldError('horario_preferido')" class="mt-1 text-xs text-red-500">{{ fieldError('horario_preferido') }}</p>
+                </div>
               </div>
             </div>
 
@@ -582,9 +779,54 @@ async function submit() {
               </div>
             </div>
 
+            <!-- STEP 8: Advanced (Elite plan in invitation mode only) -->
+            <div v-if="isInvitation && invitationData?.plan === 'elite'" v-show="step === 8">
+              <h2 class="mb-6 text-xl font-bold text-wc-text">Informacion Avanzada</h2>
+              <div class="space-y-5">
+                <div>
+                  <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Tu objetivo especifico de composicion corporal *</label>
+                  <textarea v-model="form.objetivo_composicion" rows="3" placeholder="Ej: bajar a 12% de grasa manteniendo masa muscular, recomposicion de 6 meses..." class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
+                  <p v-if="fieldError('objetivo_composicion')" class="mt-1 text-xs text-red-500">{{ fieldError('objetivo_composicion') }}</p>
+                </div>
+                <div>
+                  <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Historial medico relevante *</label>
+                  <textarea v-model="form.historial_medico" rows="3" placeholder="Cirugias, condiciones cronicas, eventos cardiovasculares, etc." class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
+                  <p v-if="fieldError('historial_medico')" class="mt-1 text-xs text-red-500">{{ fieldError('historial_medico') }}</p>
+                </div>
+                <div>
+                  <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Has hecho ciclos hormonales en el ultimo ano?</label>
+                  <div class="flex gap-4 mt-2">
+                    <label class="flex cursor-pointer items-center gap-2">
+                      <input v-model="form.ciclo_hormonal" type="radio" value="si" class="h-4 w-4 border-wc-border text-wc-accent focus:ring-wc-accent/30">
+                      <span class="text-sm text-wc-text">Si</span>
+                    </label>
+                    <label class="flex cursor-pointer items-center gap-2">
+                      <input v-model="form.ciclo_hormonal" type="radio" value="no" class="h-4 w-4 border-wc-border text-wc-accent focus:ring-wc-accent/30">
+                      <span class="text-sm text-wc-text">No</span>
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Tienes bloodwork reciente disponible?</label>
+                  <div class="flex gap-4 mt-2">
+                    <label class="flex cursor-pointer items-center gap-2">
+                      <input v-model="form.bloodwork_disponible" type="radio" value="si" class="h-4 w-4 border-wc-border text-wc-accent focus:ring-wc-accent/30">
+                      <span class="text-sm text-wc-text">Si</span>
+                    </label>
+                    <label class="flex cursor-pointer items-center gap-2">
+                      <input v-model="form.bloodwork_disponible" type="radio" value="no" class="h-4 w-4 border-wc-border text-wc-accent focus:ring-wc-accent/30">
+                      <span class="text-sm text-wc-text">No</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- STEP 7: Final -->
             <div v-show="step === 7">
-              <h2 class="mb-6 text-xl font-bold text-wc-text">Finalizar Inscripcion</h2>
+              <h2 class="mb-6 text-xl font-bold text-wc-text">
+                {{ isInvitation ? 'Finalizar Registro' : 'Finalizar Inscripcion' }}
+              </h2>
               <div class="space-y-5">
                 <div>
                   <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Como nos conociste?</label>
@@ -600,6 +842,20 @@ async function submit() {
                 <div>
                   <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Notas adicionales</label>
                   <textarea v-model="form.notas" rows="3" placeholder="Algo mas que quieras que sepamos..." class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
+                </div>
+                <div
+                  v-if="isInvitation && invitationData?.plan === 'rise'"
+                  :data-error="!!fieldError('compromiso_30dias') || null"
+                  class="rounded-lg border p-4"
+                  :class="fieldError('compromiso_30dias') ? 'border-red-500 bg-red-500/5' : 'border-wc-border bg-wc-bg-secondary'"
+                >
+                  <label class="flex cursor-pointer items-start gap-3">
+                    <input v-model="form.compromiso_30dias" type="checkbox" class="mt-0.5 h-4 w-4 rounded border-wc-border bg-wc-bg-secondary text-wc-accent focus:ring-wc-accent/30">
+                    <span class="text-sm text-wc-text-secondary">
+                      Me comprometo a seguir el programa Rise por 30 dias sin excepciones.
+                    </span>
+                  </label>
+                  <p v-if="fieldError('compromiso_30dias')" class="mt-2 text-xs font-medium text-red-500">{{ fieldError('compromiso_30dias') }}</p>
                 </div>
                 <div :data-error="!!fieldError('terminos') || null" class="rounded-lg border p-4" :class="fieldError('terminos') ? 'border-red-500 bg-red-500/5' : 'border-wc-border bg-wc-bg-secondary'">
                   <label class="flex cursor-pointer items-start gap-3">
@@ -627,7 +883,7 @@ async function submit() {
             <!-- Navigation buttons -->
             <div class="mt-8 flex items-center justify-between">
               <button
-                v-if="step > 0"
+                v-if="!isFirstStep"
                 type="button"
                 @click="prevStep"
                 class="flex items-center gap-2 rounded-full border border-wc-border bg-wc-bg-secondary px-6 py-3 text-sm font-semibold text-wc-text hover:bg-wc-bg-tertiary active:scale-[0.98]"
@@ -638,7 +894,7 @@ async function submit() {
               <div v-else></div>
 
               <button
-                v-if="step < totalSteps - 1"
+                v-if="!isLastStep"
                 type="button"
                 @click="nextStep"
                 class="flex items-center gap-2 rounded-full bg-wc-accent px-8 py-3 font-semibold text-white hover:bg-wc-accent-hover active:scale-[0.98]"
@@ -658,7 +914,7 @@ async function submit() {
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                {{ isLoading ? 'Enviando...' : 'Completar Inscripcion' }}
+                {{ isLoading ? 'Enviando...' : (isInvitation ? 'Activar Cuenta' : 'Completar Inscripcion') }}
               </button>
             </div>
           </div>

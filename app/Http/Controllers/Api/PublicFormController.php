@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\PlanType;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
+use App\Models\ClientProfile;
 use App\Models\CoachApplication as CoachApplicationModel;
 use App\Models\Inscription;
+use App\Models\Invitation;
 use App\Models\Referral;
 use App\Models\RiseProgram;
 use App\Models\WellcoreNotification;
 use App\Services\TrialService;
+use App\Services\WellCoinsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +22,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class PublicFormController extends Controller
 {
@@ -491,6 +497,169 @@ class PublicFormController extends Controller
     }
 
     // -------------------------------------------------------------------------
+    // 6. Resolve Invitation (Vue SPA — /unirse/{code} prefill)
+    // -------------------------------------------------------------------------
+    public function resolveInvitation(string $code): JsonResponse
+    {
+        $invitation = Invitation::where('code', strtoupper($code))->first();
+
+        if (! $invitation) {
+            return response()->json([
+                'valid' => false,
+                'status' => 'invalid',
+                'message' => 'Codigo de invitacion no encontrado.',
+            ]);
+        }
+
+        $rawStatus = $invitation->getRawOriginal('status') ?? 'pending';
+
+        if ($rawStatus !== 'pending') {
+            $status = $rawStatus === 'expired' ? 'expired' : ($rawStatus === 'used' ? 'used' : 'invalid');
+
+            return response()->json([
+                'valid' => false,
+                'status' => $status,
+                'message' => $this->invitationStatusMessage($status),
+            ]);
+        }
+
+        if ($invitation->expires_at && $invitation->expires_at->isPast()) {
+            return response()->json([
+                'valid' => false,
+                'status' => 'expired',
+                'message' => $this->invitationStatusMessage('expired'),
+            ]);
+        }
+
+        $plan = $invitation->plan instanceof PlanType
+            ? $invitation->plan->value
+            : (string) $invitation->plan;
+
+        return response()->json([
+            'valid' => true,
+            'status' => 'pending',
+            'plan' => $plan,
+            'plan_label' => $this->planLabel($plan),
+            'email_hint' => $invitation->email_hint,
+        ]);
+    }
+
+    // -------------------------------------------------------------------------
+    // 7. Invitation Intake (Vue SPA — create real client account)
+    // -------------------------------------------------------------------------
+    public function invitationIntake(Request $request): JsonResponse
+    {
+        // Normalize input aliases before validation (estatura→altura, lesion→tiene_lesiones, etc.)
+        $payload = $this->normalizeIntakePayload($request->all());
+
+        // 1. Validate invitation FIRST (anti-tampering: plan always comes from DB, never payload)
+        $code = strtoupper((string) ($payload['invitation_code'] ?? ''));
+        $invitation = $code !== ''
+            ? Invitation::where('code', $code)->first()
+            : null;
+
+        $invalidCode = ! $invitation
+            || ($invitation->getRawOriginal('status') ?? 'pending') !== 'pending'
+            || ($invitation->expires_at && $invitation->expires_at->isPast());
+
+        if ($invalidCode) {
+            return response()->json([
+                'errors' => ['invitation_code' => ['Codigo invalido o expirado.']],
+            ], 422);
+        }
+
+        $planType = $invitation->plan instanceof PlanType
+            ? $invitation->plan->value
+            : (string) $invitation->plan;
+
+        // 2. Validate payload according to plan-specific rules
+        try {
+            $validated = validator($payload, $this->buildIntakeRules($planType), $this->intakeMessages())
+                ->validate();
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        }
+
+        // 3. Race-condition guard for email uniqueness
+        if (Client::where('email', $validated['email'])->exists()) {
+            return response()->json([
+                'errors' => ['email' => ['Este email ya tiene una cuenta registrada.']],
+            ], 409);
+        }
+
+        try {
+            $client = DB::transaction(function () use ($validated, $invitation, $planType) {
+                do {
+                    $clientCode = 'WC-'.strtoupper(Str::random(6));
+                } while (Client::where('client_code', $clientCode)->exists());
+
+                $client = Client::create([
+                    'client_code' => $clientCode,
+                    'name' => trim($validated['nombre'].' '.$validated['apellido']),
+                    'email' => $validated['email'],
+                    'password_hash' => Hash::make($validated['password']),
+                    'plan' => $planType, // ALWAYS from invitation, never from payload
+                    'status' => 'activo',
+                    'fecha_inicio' => now()->toDateString(),
+                    'city' => $validated['ciudad'],
+                    'onboarding_completed' => 0,
+                ]);
+
+                ClientProfile::create([
+                    'client_id' => $client->id,
+                    'edad' => $validated['edad'],
+                    'peso' => $validated['peso'],
+                    'altura' => $validated['altura'],
+                    'genero' => $this->normalizeGender($validated['genero']),
+                    'objetivo' => $validated['objetivo_principal'],
+                    'ciudad' => $validated['ciudad'],
+                    'whatsapp' => $validated['whatsapp'],
+                    'nivel' => $validated['nivel_experiencia'],
+                    'lugar_entreno' => $validated['lugar_entreno'],
+                    'dias_disponibles' => $validated['dias_disponibles'],
+                    'restricciones' => $validated['detalle_lesiones'] ?? null,
+                    'macros' => $this->buildMacrosPayload($validated, $planType),
+                ]);
+
+                Invitation::where('code', $invitation->code)->update([
+                    'status' => 'used',
+                    'used_by' => $client->id,
+                    'used_at' => now(),
+                ]);
+
+                $this->convertReferralIfPending($client, $validated['email']);
+
+                return $client;
+            });
+
+            return response()->json([
+                'success' => true,
+                'client_id' => $client->id,
+                'message' => 'Cuenta creada exitosamente.',
+                'redirect_url' => '/login',
+            ], 201);
+        } catch (\Throwable $e) {
+            Log::error('PublicFormController::invitationIntake failed', [
+                'error' => $e->getMessage(),
+                'class' => get_class($e),
+                'email' => $validated['email'] ?? null,
+                'plan' => $planType,
+                'code' => $invitation->code,
+            ]);
+
+            if (str_contains($e->getMessage(), 'Duplicate') || str_contains($e->getMessage(), 'unique')) {
+                return response()->json([
+                    'errors' => ['email' => ['Este email ya esta registrado.']],
+                ], 409);
+            }
+
+            return response()->json([
+                'message' => 'Error al crear tu cuenta. Intenta de nuevo.',
+            ], 500);
+        }
+    }
+
+    // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
 
@@ -540,5 +709,229 @@ class PublicFormController extends Controller
         Http::timeout(5)
             ->connectTimeout(3)
             ->post("https://graph.facebook.com/v18.0/{$pixelId}/events?access_token={$accessToken}", $eventData);
+    }
+
+    private function invitationStatusMessage(string $status): string
+    {
+        return match ($status) {
+            'expired' => 'Esta invitacion ha expirado.',
+            'used' => 'Esta invitacion ya fue utilizada.',
+            default => 'Codigo de invitacion invalido.',
+        };
+    }
+
+    private function planLabel(string $plan): string
+    {
+        return match ($plan) {
+            'esencial' => 'Esencial',
+            'metodo' => 'El Metodo',
+            'elite' => 'Elite',
+            'presencial' => 'Presencial',
+            'rise' => 'Rise',
+            'trial' => 'Trial',
+            default => ucfirst($plan),
+        };
+    }
+
+    /**
+     * Map Vue payload aliases to canonical keys used by the validator and DB.
+     * Accepts variants like: estatura→altura, lesion→tiene_lesiones, terminos→acepta_terminos.
+     */
+    private function normalizeIntakePayload(array $input): array
+    {
+        $aliases = [
+            'estatura' => 'altura',
+            'objetivo' => 'objetivo_principal',
+            'experiencia' => 'nivel_experiencia',
+            'lesion' => 'tiene_lesiones',
+            'detalle_lesion' => 'detalle_lesiones',
+            'terminos' => 'acepta_terminos',
+            'horario' => 'horario_preferido',
+        ];
+
+        foreach ($aliases as $from => $to) {
+            if (array_key_exists($from, $input) && ! array_key_exists($to, $input)) {
+                $input[$to] = $input[$from];
+            }
+        }
+
+        if (isset($input['equipamiento']) && empty($input['lugar_entreno'])) {
+            $input['lugar_entreno'] = match ($input['equipamiento']) {
+                'gimnasio_completo', 'gimnasio_basico' => 'gym',
+                'casa_equipamiento' => 'casa_con_equipo',
+                'casa_sin_equipamiento' => 'casa_sin_equipo',
+                default => $input['equipamiento'],
+            };
+        }
+
+        if (isset($input['dias_disponibles']) && is_string($input['dias_disponibles']) && ctype_digit($input['dias_disponibles'])) {
+            $count = (int) $input['dias_disponibles'];
+            $catalog = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+            $input['dias_disponibles'] = array_slice($catalog, 0, max(0, min($count, 7)));
+        }
+
+        if (isset($input['duracion_sesion'])) {
+            $input['duracion_sesion'] = match ((string) $input['duracion_sesion']) {
+                '30-45' => '45',
+                '45-60' => '60',
+                '60-90' => '75',
+                '90+' => '90',
+                default => (string) $input['duracion_sesion'],
+            };
+        }
+
+        return $input;
+    }
+
+    private function buildIntakeRules(string $planType): array
+    {
+        $rules = [
+            'invitation_code' => 'required|string|size:12',
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'email' => 'required|email|unique:clients,email',
+            'whatsapp' => 'required|string|max:50',
+            'edad' => 'required|integer|min:16|max:80',
+            'peso' => 'required|numeric|min:30|max:300',
+            'altura' => 'required|numeric|min:100|max:250',
+            'genero' => 'required|in:hombre,mujer,otro,masculino,femenino',
+            'ciudad' => 'required|string|max:100',
+            'pais' => 'nullable|string|max:100',
+            'objetivo_principal' => 'required|string|max:255',
+            'nivel_experiencia' => 'required|in:principiante,intermedio,avanzado',
+            'lugar_entreno' => 'required|in:gym,casa_con_equipo,casa_sin_equipo,aire_libre,mixto',
+            'dias_disponibles' => 'required|array|min:2',
+            'duracion_sesion' => ['required', Rule::in(['30', '45', '60', '75', '90', 30, 45, 60, 75, 90])],
+            'tiene_lesiones' => 'required|in:si,no',
+            'detalle_lesiones' => 'required_if:tiene_lesiones,si|nullable|string|max:500',
+            'password' => 'required|string|min:8|confirmed',
+            'acepta_terminos' => 'accepted',
+        ];
+
+        if (in_array($planType, ['metodo', 'elite'], true)) {
+            $rules += [
+                'trabajo_tipo' => 'required|in:sedentario,moderado,activo',
+                'horas_sueno' => 'required|in:5_menos,6_7,8_mas',
+                'nivel_estres' => 'required|in:bajo,moderado,alto,muy_alto',
+                'comidas_por_dia' => 'required|in:2,3,4,5_mas',
+                'intolerancias' => 'nullable|array',
+                'otras_intolerancias' => 'nullable|string|max:500',
+                'alimentos_evitar' => 'nullable|string|max:500',
+                'suplementos_actuales' => 'nullable|string|max:500',
+            ];
+        }
+
+        if ($planType === 'elite') {
+            $rules += [
+                'objetivo_composicion' => 'required|string|max:500',
+                'historial_medico' => 'required|string|max:1000',
+                'ciclo_hormonal' => 'required|in:si,no',
+                'bloodwork_disponible' => 'required|in:si,no',
+            ];
+        }
+
+        if ($planType === 'rise') {
+            $rules['compromiso_30dias'] = 'accepted';
+        }
+
+        if ($planType === 'presencial') {
+            $rules['horario_preferido'] = 'required|in:manana,tarde,noche';
+        }
+
+        return $rules;
+    }
+
+    private function intakeMessages(): array
+    {
+        return [
+            'invitation_code.required' => 'El codigo de invitacion es obligatorio.',
+            'invitation_code.size' => 'El codigo de invitacion debe tener 12 caracteres.',
+            'email.unique' => 'Este email ya tiene una cuenta. Intenta iniciar sesion.',
+            'edad.min' => 'Debes tener al menos 16 anos.',
+            'edad.max' => 'La edad maxima es 80 anos.',
+            'peso.min' => 'El peso minimo es 30 kg.',
+            'peso.max' => 'El peso maximo es 300 kg.',
+            'altura.min' => 'La altura minima es 100 cm.',
+            'altura.max' => 'La altura maxima es 250 cm.',
+            'dias_disponibles.min' => 'Selecciona al menos 2 dias disponibles.',
+            'detalle_lesiones.required_if' => 'Describe tus lesiones o restricciones.',
+            'password.min' => 'La contrasena debe tener al menos 8 caracteres.',
+            'password.confirmed' => 'Las contrasenas no coinciden.',
+            'acepta_terminos.accepted' => 'Debes aceptar los terminos para continuar.',
+            'compromiso_30dias.accepted' => 'Debes aceptar el compromiso de 30 dias.',
+            'horario_preferido.required' => 'Selecciona tu horario preferido.',
+        ];
+    }
+
+    private function normalizeGender(string $genero): string
+    {
+        return match ($genero) {
+            'masculino' => 'hombre',
+            'femenino' => 'mujer',
+            default => $genero,
+        };
+    }
+
+    private function buildMacrosPayload(array $validated, string $planType): array
+    {
+        $macros = [
+            'pais' => $validated['pais'] ?? 'Colombia',
+            'duracion_sesion' => (string) $validated['duracion_sesion'],
+            'tiene_lesiones' => $validated['tiene_lesiones'],
+        ];
+
+        if (in_array($planType, ['metodo', 'elite'], true)) {
+            $macros += [
+                'trabajo_tipo' => $validated['trabajo_tipo'] ?? null,
+                'horas_sueno' => $validated['horas_sueno'] ?? null,
+                'nivel_estres' => $validated['nivel_estres'] ?? null,
+                'intolerancias' => $validated['intolerancias'] ?? [],
+                'otras_intolerancias' => $validated['otras_intolerancias'] ?? '',
+                'alimentos_evitar' => $validated['alimentos_evitar'] ?? '',
+                'comidas_por_dia' => $validated['comidas_por_dia'] ?? null,
+                'suplementos_actuales' => $validated['suplementos_actuales'] ?? '',
+            ];
+        }
+
+        if ($planType === 'elite') {
+            $macros += [
+                'objetivo_composicion' => $validated['objetivo_composicion'] ?? '',
+                'historial_medico' => $validated['historial_medico'] ?? '',
+                'ciclo_hormonal' => $validated['ciclo_hormonal'] ?? 'no',
+                'bloodwork_disponible' => $validated['bloodwork_disponible'] ?? 'no',
+            ];
+        }
+
+        if ($planType === 'rise') {
+            $macros['compromiso_30dias'] = ! empty($validated['compromiso_30dias']);
+        }
+
+        if ($planType === 'presencial') {
+            $macros['horario_preferido'] = $validated['horario_preferido'] ?? null;
+        }
+
+        return $macros;
+    }
+
+    private function convertReferralIfPending(Client $client, string $email): void
+    {
+        $referral = Referral::where('referred_email', $email)
+            ->where('status', 'pending')
+            ->first();
+
+        if (! $referral) {
+            return;
+        }
+
+        $referral->update([
+            'referred_id' => $client->id,
+            'status' => 'converted',
+            'reward_granted' => true,
+            'converted_at' => now(),
+        ]);
+
+        $client->update(['referred_by' => $referral->referrer_id]);
+
+        WellCoinsService::earn($referral->referrer_id, 'referral_signup');
     }
 }

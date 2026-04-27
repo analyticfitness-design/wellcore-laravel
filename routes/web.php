@@ -13,7 +13,6 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\WebhookController;
 use App\Livewire\Checkout;
-use App\Livewire\Public\ClientIntakeForm;
 use App\Livewire\TestDashboard;
 use App\Models\AuthToken;
 use App\Models\Client;
@@ -143,9 +142,10 @@ Route::get('/presencial/inscripcion', fn () => view('vue'))->name('presencial.fo
 // RISE Enrollment cerrado — inscripciones no abiertas al publico
 Route::get('/rise-enroll', fn () => redirect('/planes', 301))->name('rise.enroll');
 
-// Invitation intake form — public, guest-only
-Route::get('/unirse/{code}', ClientIntakeForm::class)
-    ->name('invite.intake');
+// Invitation intake form — Vue SPA (replaces legacy Livewire ClientIntakeForm)
+Route::get('/unirse/{code}', fn () => view('vue'))
+    ->name('invite.intake')
+    ->where('code', '[A-Za-z0-9]{12}');
 
 Route::get('/inscripcion', fn () => view('vue'))->name('inscripcion')->middleware('throttle:inscription');
 Route::get('/pagar', Checkout::class)->name('pagar');

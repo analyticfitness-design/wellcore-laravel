@@ -14,6 +14,7 @@ const routes = [
 
     // Public (lazy loaded)
     { path: '/inscripcion', name: 'inscripcion', component: () => import('../pages/Public/InscriptionForm.vue'), meta: { title: 'Inscripcion — WellCore' } },
+    { path: '/unirse/:code', name: 'invite-intake', component: () => import('../pages/Public/InscriptionForm.vue'), props: true, meta: { title: 'Completa tu registro — WellCore' } },
     { path: '/coaches/apply', name: 'coach-apply', component: () => import('../pages/Public/CoachApplication.vue'), meta: { title: 'Aplicar como Coach — WellCore' } },
     { path: '/rise-enroll', name: 'rise-enroll', component: () => import('../pages/Public/RiseEnrollment.vue'), meta: { title: 'RISE Enrollment — WellCore' } },
     { path: '/presencial/inscripcion', name: 'presencial-form', component: () => import('../pages/Public/PresencialForm.vue'), meta: { title: 'Presencial — WellCore' } },

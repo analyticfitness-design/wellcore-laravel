@@ -28,9 +28,9 @@ use App\Http\Controllers\Api\NutritionController;
 use App\Http\Controllers\Api\PaymentProofController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PublicFormController;
+use App\Http\Controllers\Api\PulsoController;
 use App\Http\Controllers\Api\RiseController;
 use App\Http\Controllers\Api\ShopController;
-use App\Http\Controllers\Api\PulsoController;
 use App\Http\Controllers\Api\SocialController;
 use App\Http\Controllers\Api\TrainingController;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -77,6 +77,8 @@ Route::prefix('v/public')->group(function () {
     Route::post('/rise-enroll', [PublicFormController::class, 'riseEnroll']);
     Route::post('/presencial', [PublicFormController::class, 'presencialSubmit']);
     Route::post('/trial', [PublicFormController::class, 'trialSignup']);
+    Route::get('/invitations/{code}', [PublicFormController::class, 'resolveInvitation']);
+    Route::post('/invitation-intake', [PublicFormController::class, 'invitationIntake']);
 });
 
 // Shop (public — no auth required)
