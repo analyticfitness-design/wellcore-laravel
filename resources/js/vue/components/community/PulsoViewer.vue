@@ -16,11 +16,12 @@ interface PulsoDetail {
   caption: string | null;
   stats_overlay: Record<string, any> | null;
   expires_at: string;
+  created_at?: string;
   views_count: number;
   reaction_counts: Record<string, number>;
   my_reactions: string[];
   is_mine: boolean;
-  viewers?: Array<{ name: string; initials: string; viewed_at: string }>;
+  viewers?: Array<{ id?: number; name: string; initials: string; viewed_at: string }>;
 }
 
 const props = defineProps<{ pulsoId: number }>();
@@ -31,6 +32,7 @@ const toast = useToast();
 
 const pulso = ref<PulsoDetail | null>(null);
 const loading = ref(true);
+const loadError = ref(false);
 const showViewers = ref(false);
 const deleting = ref(false);
 
@@ -44,12 +46,16 @@ const reactionEmojis: Record<string, string> = {
 const expiryProgress = ref(100);
 let expiryTimer: ReturnType<typeof setInterval>;
 
-function calcExpiryProgress(expiresAt: string) {
-  const expiresMs = new Date(expiresAt).getTime();
-  const now = Date.now();
-  const totalMs = 24 * 60 * 60 * 1000;
+function calcExpiryProgress(createdAt: string | undefined, expiresAt: string) {
+  const expiresMs  = new Date(expiresAt).getTime();
+  const now        = Date.now();
   const remainingMs = expiresMs - now;
-  expiryProgress.value = Math.max(0, Math.min(100, (remainingMs / totalMs) * 100));
+  // Total window = created_at → expires_at; fallback to 24h if no created_at
+  const createdMs  = createdAt ? new Date(createdAt).getTime() : expiresMs - 24 * 3_600_000;
+  const totalMs    = expiresMs - createdMs;
+  expiryProgress.value = totalMs > 0
+    ? Math.max(0, Math.min(100, (remainingMs / totalMs) * 100))
+    : 0;
 }
 
 onMounted(async () => {
@@ -57,13 +63,15 @@ onMounted(async () => {
     const response = await api.get(`/api/v/client/pulsos/${props.pulsoId}`);
     if (response?.data?.pulso) {
       pulso.value = response.data.pulso;
-      calcExpiryProgress(response.data.pulso.expires_at);
+      calcExpiryProgress(response.data.pulso.created_at, response.data.pulso.expires_at);
       expiryTimer = setInterval(() => {
-        if (pulso.value) calcExpiryProgress(pulso.value.expires_at);
+        if (pulso.value) calcExpiryProgress(pulso.value.created_at, pulso.value.expires_at);
       }, 30_000);
+    } else {
+      loadError.value = true;
     }
   } catch {
-    // silently handle — loading state will show nothing
+    loadError.value = true;
   } finally {
     loading.value = false;
   }
@@ -118,10 +126,19 @@ function formatTimeLeft(expiresAt: string): string {
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
     @click.self="emit('close')"
   >
+    <!-- Loading -->
     <div v-if="loading" class="flex items-center justify-center">
       <div class="h-10 w-10 animate-spin rounded-full border-2 border-wc-accent border-t-transparent"></div>
     </div>
 
+    <!-- Error -->
+    <div v-else-if="loadError" class="flex flex-col items-center gap-3 text-zinc-400">
+      <i class="ph ph-warning-circle text-4xl text-zinc-600"></i>
+      <p class="text-sm">No se pudo cargar este Pulso.</p>
+      <button @click="emit('close')" class="text-xs text-wc-accent hover:underline">Cerrar</button>
+    </div>
+
+    <!-- Content -->
     <div v-else-if="pulso" class="relative flex w-full max-w-sm flex-col overflow-hidden rounded-3xl bg-zinc-900">
 
       <!-- Barra de expiración -->
@@ -143,29 +160,40 @@ function formatTimeLeft(expiresAt: string): string {
             <p class="text-[10px] text-wc-text-secondary">Expira en {{ formatTimeLeft(pulso.expires_at) }}</p>
           </div>
         </div>
-        <div class="flex items-center gap-2">
-          <button v-if="pulso.is_mine" @click="deletePulso" :disabled="deleting"
-            class="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-800 hover:text-red-400 transition-colors">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-            </svg>
+        <div class="flex items-center gap-1">
+          <button
+            v-if="pulso.is_mine"
+            @click="deletePulso"
+            :disabled="deleting"
+            class="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-800 hover:text-red-400 transition-colors"
+            title="Eliminar Pulso"
+          >
+            <i class="ph ph-trash-simple text-base"></i>
           </button>
-          <button @click="emit('close')" class="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-800 transition-colors">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
+          <button
+            @click="emit('close')"
+            class="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-800 transition-colors"
+            aria-label="Cerrar"
+          >
+            <i class="ph ph-x text-base"></i>
           </button>
         </div>
       </div>
 
       <!-- Contenido -->
       <div class="relative aspect-square w-full overflow-hidden bg-zinc-950">
-        <video v-if="pulso.media_type === 'video' && pulso.media_url"
-          :src="pulso.media_url" autoplay loop muted playsinline
-          class="h-full w-full object-cover"/>
-        <img v-else-if="pulso.media_type === 'photo' && pulso.media_url"
-          :src="pulso.media_url" class="h-full w-full object-cover" :alt="pulso.caption ?? 'Pulso'"/>
+        <video
+          v-if="pulso.media_type === 'video' && pulso.media_url"
+          :src="pulso.media_url"
+          autoplay loop muted playsinline
+          class="h-full w-full object-cover"
+        />
+        <img
+          v-else-if="pulso.media_type === 'photo' && pulso.media_url"
+          :src="pulso.media_url"
+          class="h-full w-full object-cover"
+          :alt="pulso.caption ?? 'Pulso'"
+        />
         <PulsoStatCard
           v-else
           :pulso-type="pulso.pulso_type"
@@ -176,15 +204,18 @@ function formatTimeLeft(expiresAt: string): string {
       </div>
 
       <!-- Caption extra (si tiene media Y caption) -->
-      <p v-if="pulso.caption && pulso.media_type !== 'stat_card'"
-        class="px-4 py-2 text-sm text-wc-text-secondary">
+      <p
+        v-if="pulso.caption && pulso.media_type !== 'stat_card'"
+        class="px-4 py-2 text-sm text-wc-text-secondary"
+      >
         {{ pulso.caption }}
       </p>
 
       <!-- Reacciones -->
       <div class="flex items-center justify-around border-t border-zinc-800 px-4 py-3">
         <button
-          v-for="(emoji, type) in reactionEmojis" :key="type"
+          v-for="(emoji, type) in reactionEmojis"
+          :key="type"
           @click="toggleReaction(type as string)"
           :class="[
             'flex flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 transition-colors',
@@ -200,17 +231,22 @@ function formatTimeLeft(expiresAt: string): string {
 
       <!-- Viewers (solo owner) -->
       <div v-if="pulso.is_mine" class="border-t border-zinc-800 px-4 py-3">
-        <button @click="showViewers = !showViewers"
-          class="flex w-full items-center justify-between text-sm text-zinc-400 hover:text-zinc-200 transition-colors">
-          <span>👁 {{ pulso.views_count }} vieron tu Pulso</span>
-          <svg :class="['h-4 w-4 transition-transform', showViewers ? 'rotate-180' : '']"
-            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-          </svg>
+        <button
+          @click="showViewers = !showViewers"
+          class="flex w-full items-center justify-between text-sm text-zinc-400 hover:text-zinc-200 transition-colors"
+        >
+          <span class="flex items-center gap-1.5">
+            <i class="ph ph-eye text-base"></i>
+            {{ pulso.views_count }} vieron tu Pulso
+          </span>
+          <i :class="['ph ph-caret-down text-base transition-transform', showViewers ? 'rotate-180' : '']"></i>
         </button>
-        <div v-if="showViewers && pulso.viewers?.length" class="mt-2 flex flex-wrap gap-2">
-          <div v-for="v in pulso.viewers" :key="v.name + v.viewed_at"
-            class="flex items-center gap-1.5 rounded-full bg-zinc-800 px-2 py-1">
+        <div v-if="showViewers && (pulso.viewers ?? []).length" class="mt-2 flex flex-wrap gap-2">
+          <div
+            v-for="(v, idx) in (pulso.viewers ?? [])"
+            :key="v.id ?? idx"
+            class="flex items-center gap-1.5 rounded-full bg-zinc-800 px-2 py-1"
+          >
             <span class="flex h-5 w-5 items-center justify-center rounded-full bg-zinc-700 text-[9px] font-bold text-white">
               {{ v.initials }}
             </span>

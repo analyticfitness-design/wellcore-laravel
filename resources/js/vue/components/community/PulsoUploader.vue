@@ -179,9 +179,7 @@ async function submit() {
               class="rounded-lg p-1.5 text-wc-text-tertiary transition-colors hover:bg-wc-bg-tertiary hover:text-wc-text"
               @click="emit('close')"
             >
-              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <i class="ph ph-x text-lg"></i>
             </button>
           </div>
 
@@ -225,9 +223,7 @@ async function submit() {
                   class="absolute right-2 top-2 rounded-full bg-black/60 p-1.5 text-white transition-opacity hover:bg-black/80"
                   @click="removeMedia"
                 >
-                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <i class="ph ph-x text-sm"></i>
                 </button>
               </div>
 
@@ -243,9 +239,7 @@ async function submit() {
                   class="absolute right-2 top-2 rounded-full bg-black/60 p-1.5 text-white transition-opacity hover:bg-black/80"
                   @click="removeMedia"
                 >
-                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <i class="ph ph-x text-sm"></i>
                 </button>
               </div>
 
@@ -284,13 +278,12 @@ async function submit() {
               >
                 <input
                   type="file"
+                  name="pulso-media-input"
                   accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime"
                   class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                   @change="handleFileSelect"
                 />
-                <svg class="mx-auto mb-2 h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                </svg>
+                <i class="ph ph-cloud-arrow-up mx-auto mb-2 block text-3xl text-wc-text-tertiary"></i>
                 <p class="text-sm font-medium text-wc-text-secondary">Arrastra una foto o video</p>
                 <p class="mt-1 text-xs text-wc-text-tertiary">JPG, PNG, WebP, MP4, MOV — max 30 MB</p>
               </div>
