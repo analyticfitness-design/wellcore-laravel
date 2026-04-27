@@ -345,6 +345,7 @@ onMounted(fetchCoaches);
                     <div class="min-w-0">
                       <div class="truncate text-sm font-medium text-wc-text">{{ coach.name || '—' }}</div>
                       <div class="truncate text-xs text-wc-text-tertiary sm:hidden">@{{ coach.username }}</div>
+                      <div class="font-mono text-[10px] text-wc-text-tertiary/50">#{{ coach.id }}</div>
                     </div>
                   </div>
                 </td>
