@@ -71,12 +71,25 @@ class AdminCoachManagementController extends Controller
 
         $coaches = $query->orderBy('name')->get();
 
-        $clientCountsByCoach = DB::table('clients')
-            ->selectRaw('coach_id, COUNT(*) as total')
-            ->whereIn('coach_id', $coaches->pluck('id'))
-            ->whereNull('deleted_at')
-            ->groupBy('coach_id')
-            ->pluck('total', 'coach_id');
+        $coachIds = $coaches->pluck('id')->toArray();
+        $clientCountsByCoach = collect();
+        if (! empty($coachIds)) {
+            $placeholders = implode(',', array_fill(0, count($coachIds), '?'));
+            $rows = DB::select("
+                SELECT admin_id, COUNT(*) AS total
+                FROM (
+                    SELECT coach_id AS admin_id, id AS client_id
+                      FROM clients
+                     WHERE coach_id IN ({$placeholders}) AND deleted_at IS NULL
+                    UNION
+                    SELECT admin_id, client_id
+                      FROM client_coach
+                     WHERE admin_id IN ({$placeholders}) AND active = 1
+                ) combined
+                GROUP BY admin_id
+            ", array_merge($coachIds, $coachIds));
+            $clientCountsByCoach = collect($rows)->pluck('total', 'admin_id');
+        }
 
         $data = $coaches->map(fn (Admin $c) => [
             'id' => $c->id,
@@ -182,7 +195,7 @@ class AdminCoachManagementController extends Controller
 
         $coach = Admin::where('role', 'coach')->findOrFail($id);
 
-        $clientCount = Client::where('coach_id', $id)->count();
+        $clientCount = $this->countClients($id);
 
         return response()->json([
             'id' => $coach->id,
@@ -260,9 +273,7 @@ class AdminCoachManagementController extends Controller
 
         $coach = Admin::where('role', 'coach')->findOrFail($id);
 
-        $activeClientCount = Client::where('coach_id', $id)
-            ->where('status', 'activo')
-            ->count();
+        $activeClientCount = $this->countClients($id);
 
         if ($activeClientCount > 0) {
             return response()->json([
@@ -324,5 +335,22 @@ class AdminCoachManagementController extends Controller
 
             return false;
         }
+    }
+
+    /** Count distinct clients assigned to a coach across both legacy and new table. */
+    private function countClients(int $coachId): int
+    {
+        $rows = DB::select("
+            SELECT COUNT(*) AS total
+            FROM (
+                SELECT id AS client_id FROM clients
+                 WHERE coach_id = ? AND deleted_at IS NULL
+                UNION
+                SELECT client_id FROM client_coach
+                 WHERE admin_id = ? AND active = 1
+            ) combined
+        ", [$coachId, $coachId]);
+
+        return (int) ($rows[0]->total ?? 0);
     }
 }
