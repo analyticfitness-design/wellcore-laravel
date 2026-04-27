@@ -61,6 +61,7 @@ class ActivateRenewalAction
                     'type' => 'renewal_no_active_plan',
                     'title' => 'ALERTA: Renovación sin plan activo',
                     'body' => "Cliente #{$payment->client_id} pagó \${$payment->amount} pero no tiene planes activos. Asignar plan urgente.",
+                    'link' => "/admin/clients/{$payment->client_id}",
                 ]);
                 \Log::error('Renewal without active plans', [
                     'payment_id' => $payment->id,

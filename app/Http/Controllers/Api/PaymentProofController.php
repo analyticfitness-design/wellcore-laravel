@@ -126,6 +126,7 @@ class PaymentProofController extends Controller
                 'type' => 'payment_proof_submitted',
                 'title' => 'Nuevo comprobante pendiente',
                 'body' => "Coach {$coach->name} subió comprobante para {$email}",
+                'link' => '/admin/payment-proofs',
             ]);
         } catch (\Throwable $e) {
             Log::warning('PaymentProof notification failed: ' . $e->getMessage());

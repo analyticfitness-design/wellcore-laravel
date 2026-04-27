@@ -127,6 +127,7 @@ class AutoRenewalCommand extends Command
                         'type' => 'renewal_needed',
                         'title' => 'Renovacion pendiente',
                         'body' => "{$client->name} (#{$client->id}) — plan {$clientPlan} expiró hace {$daysPast} días",
+                        'link' => "/admin/clients/{$client->id}",
                     ]);
                     $flagged++;
                 }

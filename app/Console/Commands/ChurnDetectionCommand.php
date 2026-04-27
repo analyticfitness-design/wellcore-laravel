@@ -95,6 +95,7 @@ class ChurnDetectionCommand extends Command
             'type' => 'churn_risk',
             'title' => 'Riesgo de abandono',
             'body' => $message,
+            'link' => "/admin/clients/{$client->id}",
         ]);
 
         return 1;
