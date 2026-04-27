@@ -73,3 +73,22 @@ it('updateContent rejects invalid JSON payload (422)', function () {
         ])
         ->assertUnprocessable();
 });
+
+it('approving an already-approved drop returns 409 (idempotency)', function () {
+    $admin = Admin::factory()->create(['role' => UserRole::Admin->value]);
+    $drop = CoachContentDrop::factory()->ready()->create();
+
+    actingAsAdminReview($admin)
+        ->postJson("/api/v/admin/marketing/drops/{$drop->id}/approve")
+        ->assertStatus(409);
+});
+
+it('approve transitions in_review -> ready atomically (within DB::transaction)', function () {
+    $admin = Admin::factory()->create(['role' => UserRole::Admin->value]);
+    $drop = CoachContentDrop::factory()->inReview()->create();
+
+    actingAsAdminReview($admin)
+        ->postJson("/api/v/admin/marketing/drops/{$drop->id}/approve")
+        ->assertOk()
+        ->assertJsonPath('data.status', 'ready');
+});

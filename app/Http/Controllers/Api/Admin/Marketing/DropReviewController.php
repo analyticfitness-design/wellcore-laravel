@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\Admin\Marketing;
 
 use App\Enums\Marketing\DropStatus;
 use App\Exceptions\Marketing\InvalidDropSchema;
+use App\Exceptions\Marketing\InvalidDropTransition;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Marketing\ApproveDropRequest;
 use App\Http\Requests\Admin\Marketing\RequestRegenerateRequest;
@@ -17,6 +18,7 @@ use App\Services\Marketing\DropSchemaValidator;
 use App\Services\Marketing\DropStateMachine;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 final class DropReviewController extends Controller
@@ -60,18 +62,32 @@ final class DropReviewController extends Controller
 
         $admin = Auth::user();
 
-        $drop->admin_edits_diff = $this->diff->diff(
-            $drop->original_content ?? $drop->content,
-            $drop->content,
-        );
-        $drop->save();
+        $fresh = DB::transaction(function () use ($drop, $admin) {
+            $locked = CoachContentDrop::lockForUpdate()->findOrFail($drop->id);
 
-        $this->stateMachine->transition($drop, DropStatus::Approved, $admin);
-        $this->stateMachine->transition($drop->fresh(), DropStatus::Ready, $admin);
+            if ($locked->status !== DropStatus::InReview) {
+                abort(409, 'Drop ya fue aprobado por otro admin.');
+            }
 
-        $this->forgetCache($drop);
+            $locked->admin_edits_diff = $this->diff->diff(
+                $locked->original_content ?? $locked->content,
+                $locked->content,
+            );
+            $locked->save();
 
-        return new AdminDropResource($drop->fresh()->load('coach', 'pieceStates'));
+            try {
+                $this->stateMachine->transition($locked, DropStatus::Approved, $admin);
+                $this->stateMachine->transition($locked->fresh(), DropStatus::Ready, $admin);
+            } catch (InvalidDropTransition $e) {
+                abort(409, 'Drop ya fue aprobado por otro admin.');
+            }
+
+            return $locked->fresh()->load('coach', 'pieceStates');
+        });
+
+        $this->forgetCache($fresh);
+
+        return new AdminDropResource($fresh);
     }
 
     public function requestRegenerate(RequestRegenerateRequest $request, CoachContentDrop $drop): AdminDropResource
@@ -80,10 +96,21 @@ final class DropReviewController extends Controller
 
         $admin = Auth::user();
 
-        $this->stateMachine->transition($drop, DropStatus::Pending, $admin);
-        $this->forgetCache($drop);
+        $fresh = DB::transaction(function () use ($drop, $admin) {
+            $locked = CoachContentDrop::lockForUpdate()->findOrFail($drop->id);
 
-        return new AdminDropResource($drop->fresh());
+            try {
+                $this->stateMachine->transition($locked, DropStatus::Pending, $admin);
+            } catch (InvalidDropTransition $e) {
+                abort(409, 'Drop ya cambio de estado por otro admin.');
+            }
+
+            return $locked->fresh();
+        });
+
+        $this->forgetCache($fresh);
+
+        return new AdminDropResource($fresh);
     }
 
     private function forgetCache(CoachContentDrop $drop): void
