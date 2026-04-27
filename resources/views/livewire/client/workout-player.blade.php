@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="{{ asset('css/workout-player.css') }}?v={{ filemtime(public_path('css/workout-player.css')) }}">
 <div
     class="min-h-screen"
     :class="{ 'pb-[280px]': workoutStarted }"
@@ -370,6 +371,12 @@
                     $isFirstInBlock = $blockType && ($exIndex === 0 || ($exercises[$exIndex - 1]['block_type'] ?? null) !== $blockType || ($exercises[$exIndex - 1]['block_id'] ?? null) !== ($exercise['block_id'] ?? null));
                     $isInBlock = $blockType && in_array($blockType, ['superset', 'circuito']);
                 @endphp
+                @php
+                    $isFullyCompleted = $this->isFullyCompleted($exIndex);
+                    $isExpanded = $this->expandedExercises[$exIndex] ?? false;
+                    $summary = $this->exerciseSummary($exIndex);
+                    $exNameDisplay = $exercise['nombre'] ?? $exercise['name'] ?? 'Ejercicio';
+                @endphp
 
                 {{-- Block label --}}
                 @if($isFirstInBlock && $isInBlock)
@@ -381,8 +388,25 @@
                     </div>
                 @endif
 
+                @if($isFullyCompleted && !$isExpanded)
+                    {{-- Comp. 1: fila colapsada cuando el ejercicio está 100% completado --}}
+                    <div class="ex-completed" wire:click="toggleExpanded({{ $exIndex }})" wire:key="ex-{{ $exIndex }}-collapsed">
+                        <div class="ex-completed-check">✓</div>
+                        <div class="ex-completed-left">
+                            <span class="ex-completed-name">{{ $exNameDisplay }}</span>
+                            @if($summary['has_pr'])<span class="pr-pill">★ PR</span>@endif
+                        </div>
+                        <div class="ex-completed-right">
+                            <span class="ex-completed-stats">{{ $summary['total_sets'] }}×{{ $summary['total_reps'] }} reps · {{ $summary['max_kg'] }}kg</span>
+                            <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="color:var(--wc-text-tertiary)">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                            </svg>
+                        </div>
+                    </div>
+                @else
                 <div
                     id="exercise-{{ $exIndex }}"
+                    wire:key="ex-{{ $exIndex }}-full"
                     class="rounded-2xl border bg-wc-bg-tertiary overflow-hidden transition-all
                         {{ $isInBlock ? 'ml-2' : '' }}
                         {{ $allComplete
@@ -455,6 +479,12 @@
                                             <span class="text-wc-text-tertiary">&times;</span>
                                             <span class="font-data font-semibold text-wc-text-secondary">{{ $exercise['last_reps'] }}</span>
                                         </span>
+                                    </div>
+                                @endif
+                                @if(!empty($prTargets[$exIndex]))
+                                    <div class="pr-target">
+                                        🏆 <strong>PR objetivo: {{ $prTargets[$exIndex]['weight'] }} kg × {{ $prTargets[$exIndex]['reps'] }}</strong>
+                                        <span class="sub">— supera tu récord hoy</span>
                                     </div>
                                 @endif
                             </div>
@@ -620,112 +650,74 @@
                         @endfor
 
                         @elseif(!empty($exercise['is_isometric']))
-                        {{-- ═══ ISOMETRIC TABLE HEADER ═══ --}}
-                        <div class="grid gap-1 px-3 py-2 bg-wc-bg-secondary/50"
-                             style="grid-template-columns: 32px 50px 1fr 1fr 36px">
-                            <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Set</span>
-                            <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Anterior</span>
-                            <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Peso</span>
-                            <span class="text-center text-[9px] font-bold uppercase tracking-widest text-wc-text-tertiary">Tiempo</span>
-                            <span class="sr-only">Iniciar/Completar</span>
-                        </div>
+                        {{-- ═══ COMP 4: ISOMETRIC TABLE HEADER ═══ --}}
+                        <div class="set-table-iso">
+                            <div class="set-header-iso">
+                                <div class="set-header-iso-cell">Set</div>
+                                <div class="set-header-iso-cell">Duración</div>
+                                <div></div>
+                            </div>
 
-                        {{-- ISOMETRIC Set rows --}}
-                        @for($setNum = 1; $setNum <= $totalSets; $setNum++)
-                            @php
-                                $currentSet      = $exSetData[$setNum] ?? [];
-                                $isCompleted     = !empty($currentSet['completed']);
-                                $isPr            = !empty($currentSet['is_pr']);
-                                $setWeight       = $currentSet['weight'] ?? 0;
-                                $targetSeconds   = (int)($exercise['target_seconds'] ?? 30);
-                            @endphp
-                            <div
-                                class="grid gap-1 items-center px-3 py-2 transition-colors
-                                    {{ $isCompleted ? 'bg-emerald-500/5' : '' }}
-                                    {{ $setNum < $totalSets ? 'border-b border-wc-border/50' : '' }}"
-                                style="grid-template-columns: 32px 50px 1fr 1fr 36px"
-                                x-data="isometricSet({
-                                    exIndex: {{ $exIndex }},
-                                    setNum: {{ $setNum }},
-                                    target: {{ $targetSeconds }},
-                                    weight: {{ (float)($setWeight ?: 0) }},
-                                    completed: {{ $isCompleted ? 'true' : 'false' }}
-                                })"
-                                x-init="init()"
-                            >
-                                {{-- Set number --}}
-                                <div class="flex flex-col items-center justify-center gap-0.5">
-                                    <span class="font-data text-sm font-bold {{ $isCompleted ? 'text-emerald-400' : 'text-wc-text-tertiary' }}">
+                            {{-- ISOMETRIC Set rows --}}
+                            @for($setNum = 1; $setNum <= $totalSets; $setNum++)
+                                @php
+                                    $currentSet    = $exSetData[$setNum] ?? [];
+                                    $isCompleted   = !empty($currentSet['completed']);
+                                    $isPr          = !empty($currentSet['is_pr']);
+                                    $setWeight     = $currentSet['weight'] ?? 0;
+                                    $targetSeconds = (int)($exercise['target_seconds'] ?? 30);
+                                @endphp
+                                <div
+                                    class="iso-row {{ $isCompleted ? 'done' : '' }}"
+                                    x-data="isometricSet({
+                                        exIndex: {{ $exIndex }},
+                                        setNum: {{ $setNum }},
+                                        target: {{ $targetSeconds }},
+                                        weight: {{ (float)($setWeight ?: 0) }},
+                                        completed: {{ $isCompleted ? 'true' : 'false' }}
+                                    })"
+                                    x-init="init()"
+                                >
+                                    {{-- Set number --}}
+                                    <div class="iso-num-box">
                                         {{ $setNum }}
-                                    </span>
-                                    @if($isPr)
-                                        <span class="rounded-md px-1 py-0.5 text-[8px] font-black text-black"
-                                              style="background: linear-gradient(135deg, #facc15, #f59e0b);">★ PR</span>
-                                    @endif
-                                </div>
+                                        @if($isPr)<span class="pr-pill" style="font-size:8px;padding:1px 5px;">★PR</span>@endif
+                                    </div>
 
-                                {{-- Anterior (previous hold duration) --}}
-                                <div class="flex items-center justify-center">
-                                    @if(!empty($currentSet['target_seconds']))
-                                        <span class="font-data text-[11px] text-wc-text/30">{{ $currentSet['target_seconds'] }}s</span>
-                                    @else
-                                        <span class="font-data text-[11px] text-wc-text/20">—</span>
-                                    @endif
-                                </div>
-
-                                {{-- Weight (kg — optional for weighted holds) --}}
-                                <div class="flex items-center justify-center">
-                                    <input
-                                        type="number"
-                                        step="0.5"
-                                        min="0"
-                                        x-model.number="weight"
-                                        class="h-7 w-12 rounded-lg border border-wc-border bg-wc-bg px-1 text-center font-data text-xs tabular-nums focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/50"
-                                        :disabled="completed || running"
-                                        placeholder="0"
-                                    />
-                                </div>
-
-                                {{-- Timer display --}}
-                                <div class="flex items-center justify-center">
-                                    <span class="font-data text-base font-bold tabular-nums"
-                                          :class="running ? 'text-wc-accent animate-pulse' : (completed ? 'text-emerald-400' : 'text-wc-text')">
-                                        <span x-text="formatTime(displaySeconds)">{{ $targetSeconds }}s</span>
-                                    </span>
-                                </div>
-
-                                {{-- Action button: Start / Stop / Done --}}
-                                <div class="flex items-center justify-center">
-                                    <button x-show="!running && !completed"
-                                            @click="start()"
-                                            class="btn-press flex h-8 w-8 items-center justify-center rounded-xl border-2 border-wc-accent/40 text-wc-accent hover:border-wc-accent hover:bg-wc-accent/10 transition-all focus:outline-none focus:ring-2 focus:ring-wc-accent/50"
-                                            aria-label="Iniciar timer isométrico"
-                                            type="button">
-                                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M8 5v14l11-7z"/>
+                                    {{-- Full-width action button: Iniciar · Xs / Stop / timer running --}}
+                                    <button
+                                        @click="running ? stop() : start()"
+                                        :disabled="completed"
+                                        :class="running ? 'running' : ''"
+                                        class="iso-action-btn"
+                                        type="button"
+                                    >
+                                        <svg x-show="!running && !completed" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                         </svg>
-                                    </button>
-                                    <button x-show="running"
-                                            @click="stop()"
-                                            class="btn-press flex h-8 w-8 items-center justify-center rounded-xl bg-wc-accent text-white hover:bg-wc-accent-hover transition-colors focus:outline-none focus:ring-2 focus:ring-wc-accent/50"
-                                            aria-label="Detener y completar serie"
-                                            type="button">
-                                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
+                                        <svg x-show="running" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M6 6h12v12H6z"/>
                                         </svg>
+                                        <span x-show="completed">✓ Completado</span>
+                                        <span x-show="!completed" x-text="running ? formatTime(displaySeconds) : 'Iniciar · {{ $targetSeconds }}s'">Iniciar · {{ $targetSeconds }}s</span>
                                     </button>
-                                    <div x-show="completed"
-                                         class="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500 text-white"
-                                         x-transition:enter="transition ease-out duration-300"
-                                         x-transition:enter-start="scale-50 opacity-0"
-                                         x-transition:enter-end="scale-100 opacity-100">
-                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+
+                                    {{-- Check button — se pone verde al completar --}}
+                                    <button
+                                        class="iso-check-btn"
+                                        :class="completed ? 'done' : ''"
+                                        :disabled="completed"
+                                        type="button"
+                                        x-show="!running"
+                                        @click="!completed && stop()"
+                                    >
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
                                         </svg>
-                                    </div>
+                                    </button>
                                 </div>
-                            </div>
-                        @endfor
+                            @endfor
+                        </div>
 
                         @else
                         {{-- ═══ STRENGTH TABLE HEADER (original) ═══ --}}
@@ -921,8 +913,7 @@
                             <button
                                 @click="listen()"
                                 :disabled="listening || isProcessing"
-                                :class="(listening || isProcessing) && 'opacity-60 cursor-not-allowed'"
-                                class="btn-press flex w-full items-center justify-center gap-2 rounded-xl border border-wc-accent/20 bg-wc-accent/5 px-3 py-2 text-xs font-semibold text-wc-accent hover:bg-wc-accent/10 transition-colors"
+                                class="voice-btn-new"
                                 type="button"
                             >
                                 <svg class="h-4 w-4 shrink-0" :class="listening && 'animate-pulse'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -1008,6 +999,7 @@
                         </div>
                     @endif
                 </div>
+                @endif
             @endforeach
 
         </div>{{-- end active workout --}}
@@ -1041,64 +1033,72 @@
             }
         @endphp
 
-        <div class="fixed bottom-0 inset-x-0 z-[55] border-t border-wc-border bg-wc-bg/95 backdrop-blur-md safe-area-pb">
-            <div class="px-4 py-3">
-                {{-- Session stats --}}
-                <div class="mb-2.5 flex items-center justify-center gap-4 text-center">
-                    <div>
-                        <span class="font-data text-sm font-bold text-wc-text">{{ $completedSetsAll }}</span>
-                        <span class="text-[10px] text-wc-text-tertiary ml-0.5">sets</span>
+        {{-- ★★★ COMP 5: BOTTOM BAR (4 cols + mini progress) ★★★ --}}
+        <div class="bottom-bar-fixed">
+            {{-- Mini progress bar — 3px en el top del bottom bar --}}
+            <div class="bottom-mini-progress">
+                <div class="bottom-mini-progress-fill"
+                     style="width:{{ $totalSetsAll > 0 ? round(($completedSetsAll / $totalSetsAll) * 100) : 0 }}%">
+                </div>
+            </div>
+
+            <div class="bottom-bar-inner">
+                {{-- 4 stats: Sets | Reps | KgMax (amber) | Tiempo (red) --}}
+                <div class="bottom-stats">
+                    <div class="bstat">
+                        <div class="bstat-num">{{ $completedSetsAll }}</div>
+                        <div class="bstat-lbl">Sets</div>
                     </div>
-                    <div class="h-3 w-px bg-wc-border"></div>
-                    <div>
-                        <span class="font-data text-sm font-bold text-wc-text">{{ $totalRepsAll }}</span>
-                        <span class="text-[10px] text-wc-text-tertiary ml-0.5">reps</span>
+                    <div class="bstat">
+                        <div class="bstat-num">{{ $totalRepsAll }}</div>
+                        <div class="bstat-lbl">Reps</div>
                     </div>
-                    <div class="h-3 w-px bg-wc-border"></div>
-                    <div>
-                        <span class="font-data text-sm font-bold text-amber-400">{{ $maxWeightAll > 0 ? number_format($maxWeightAll, 1) : '—' }}</span>
-                        <span class="text-[10px] text-wc-text-tertiary ml-0.5">kg max</span>
+                    <div class="bstat">
+                        <div class="bstat-num amber">{{ $maxWeightAll > 0 ? number_format($maxWeightAll, 1) : '—' }}</div>
+                        <div class="bstat-lbl">Kg Máx</div>
+                    </div>
+                    <div class="bstat">
+                        <div class="bstat-num red"
+                             x-text="(elapsed >= 3600 ? String(Math.floor(elapsed / 3600)) + ':' : '') + String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0') + ':' + String(elapsed % 60).padStart(2, '0')">
+                            00:00
+                        </div>
+                        <div class="bstat-lbl">Tiempo</div>
                     </div>
                 </div>
 
-                {{-- Action row: Abandon (secondary) + Complete (primary) --}}
+                {{-- Action row: Abandonar + FINALIZAR --}}
                 <div
                     x-data="{ confirmAbandon: false }"
-                    class="flex items-center gap-2"
+                    class="action-row-wc"
                 >
-                    {{-- Abandon button — opens inline confirm dialog --}}
                     <button
                         @click="confirmAbandon = true"
-                        class="btn-press shrink-0 flex items-center gap-1.5 rounded-xl border border-red-600/40 px-4 py-3 text-sm font-medium text-wc-text-secondary hover:border-red-600/70 hover:text-red-400 transition-all focus:outline-none focus:ring-2 focus:ring-wc-accent"
+                        class="btn-abandon"
                         aria-label="Abandonar sesion"
                         type="button"
                     >
-                        <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                         </svg>
                         Abandonar
                     </button>
 
-                    {{-- Complete session button --}}
                     <button
                         wire:click="completeWorkout()"
                         @if($completedSetsAll <= 0) disabled @endif
-                        class="btn-press flex-1 rounded-2xl py-3.5 text-center font-display text-lg tracking-widest transition-all
-                            {{ $completedSetsAll > 0
-                                ? 'bg-wc-accent text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover'
-                                : 'bg-wc-bg-secondary text-wc-text-tertiary cursor-not-allowed' }}"
+                        class="btn-finish"
                         wire:loading.attr="disabled"
                         wire:loading.class="opacity-75"
                         wire:target="completeWorkout"
                     >
-                        <span wire:loading.remove wire:target="completeWorkout">COMPLETAR SESION</span>
+                        <span wire:loading.remove wire:target="completeWorkout">FINALIZAR</span>
                         <span wire:loading wire:target="completeWorkout" class="inline-flex items-center gap-2">
                             <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                             GUARDANDO...
                         </span>
                     </button>
 
-                    {{-- Inline confirm dialog for abandon --}}
+                    {{-- Dialog confirmación abandono (intacto) --}}
                     <div
                         x-show="confirmAbandon"
                         x-transition:enter="transition ease-out duration-200"

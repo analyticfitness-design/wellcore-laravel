@@ -71,6 +71,12 @@ class WorkoutPlayer extends Component
     /** Block groups for superset/circuit display */
     public array $blockGroups = [];
 
+    /** Tracks qué ejercicios completados están expandidos manualmente */
+    public array $expandedExercises = [];
+
+    /** PR targets por exercise index — calculado en buildSetData() */
+    public array $prTargets = [];
+
     /**
      * Re-hydrate the protected $allWeeksDays from cache on every subsequent request.
      * This keeps Elite plan week-switching working while removing the array from the
@@ -475,6 +481,16 @@ class WorkoutPlayer extends Component
             }
 
             $this->setData[$exIndex] = $sets;
+        }
+
+        $this->prTargets = [];
+        foreach ($this->exercises as $exIndex => $exercise) {
+            $exerciseName = $exercise['nombre'] ?? '';
+            $lastWeight = $lastWeights[$exerciseName] ?? null;
+            $repsRaw = $exercise['repeticiones'] ?? $exercise['reps'] ?? 10;
+            preg_match('/(\d+)(?:-(\d+))?/', (string) $repsRaw, $rm);
+            $targetReps = isset($rm[2]) ? (int) $rm[2] : (int) ($rm[1] ?? 10);
+            $this->prTargets[$exIndex] = $this->calculatePrTarget($exerciseName, $lastWeight, $targetReps);
         }
     }
 
@@ -902,6 +918,53 @@ class WorkoutPlayer extends Component
         return 90;
     }
 
+    public function toggleExpanded(int $exIndex): void
+    {
+        $this->expandedExercises[$exIndex] = ! ($this->expandedExercises[$exIndex] ?? false);
+    }
+
+    public function isFullyCompleted(int $exIndex): bool
+    {
+        $exSets = $this->setData[$exIndex] ?? [];
+        if (empty($exSets)) {
+            return false;
+        }
+        $exercise = $this->exercises[$exIndex] ?? [];
+        $totalSets = (int) ($exercise['series'] ?? $exercise['sets'] ?? count($exSets));
+
+        return collect($exSets)->where('completed', true)->count() >= $totalSets;
+    }
+
+    public function exerciseSummary(int $exIndex): array
+    {
+        $exSets = collect($this->setData[$exIndex] ?? [])->where('completed', true);
+
+        return [
+            'total_sets' => $exSets->count(),
+            'total_reps' => (int) $exSets->sum('reps'),
+            'max_kg' => (float) ($exSets->max('weight') ?? 0),
+            'has_pr' => $exSets->where('is_pr', true)->isNotEmpty(),
+        ];
+    }
+
+    protected function calculatePrTarget(string $exerciseName, ?float $lastWeight, ?int $lastReps): ?array
+    {
+        if (! $exerciseName || ! $lastWeight || ! $lastReps) {
+            return null;
+        }
+        $clientId = auth('wellcore')->id();
+        $currentPr = WorkoutPr::where('client_id', $clientId)
+            ->where('exercise_name', $exerciseName)
+            ->orderByDesc('weight_kg')
+            ->first();
+
+        if (! $currentPr) {
+            return ['weight' => round($lastWeight + 2.5, 1), 'reps' => $lastReps];
+        }
+
+        return ['weight' => (float) $currentPr->weight_kg, 'reps' => (int) $currentPr->reps + 1];
+    }
+
     /**
      * Computed helper: count how many sets are completed across all exercises.
      */
@@ -990,6 +1053,7 @@ class WorkoutPlayer extends Component
             'completedSets' => $this->getCompletedSetsCount(),
             'totalSets' => $this->getTotalSetsCount(),
             'currentVolume' => $this->getCurrentVolume(),
+            'prTargets' => $this->prTargets,
         ]);
     }
 
