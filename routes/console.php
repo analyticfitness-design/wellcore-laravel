@@ -39,7 +39,7 @@ Schedule::command('wellcore:cleanup-pending-payments')->dailyAt('02:00');
 Schedule::command('wellcore:expire-payment-proofs')->daily()->runInBackground();
 
 // Strategy Hub — archive completed drops older than 30 days
-Schedule::command('wellcore:archive-old-drops')->dailyAt('03:00');
+Schedule::command('wellcore:archive-old-drops')->dailyAt('03:00')->withoutOverlapping(60);
 
 // Prune expired auth tokens and inactive sessions older than 14 days
 Schedule::call(function () {

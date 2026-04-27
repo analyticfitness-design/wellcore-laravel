@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use App\Enums\Marketing\DropStatus;
 use App\Models\CoachContentDrop;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 
 final class ArchiveOldDropsCommand extends Command
 {
@@ -19,11 +20,20 @@ final class ArchiveOldDropsCommand extends Command
         $days = (int) $this->option('days');
         $cutoff = now()->subDays($days);
 
+        $affected = CoachContentDrop::where('status', DropStatus::Completed)
+            ->where('completed_at', '<=', $cutoff)
+            ->get(['id', 'coach_id', 'iso_year', 'iso_week']);
+
         $count = CoachContentDrop::where('status', DropStatus::Completed)
             ->where('completed_at', '<=', $cutoff)
             ->update(['status' => DropStatus::Archived->value]);
 
+        foreach ($affected as $row) {
+            Cache::forget("coach_drop_v3:{$row->coach_id}:{$row->iso_year}:{$row->iso_week}");
+        }
+
         $this->info("Archivados {$count} drops completados antes de {$cutoff->toDateTimeString()}.");
+        $this->info('Caches invalidadas: '.$affected->count());
 
         return self::SUCCESS;
     }
