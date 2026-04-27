@@ -1773,7 +1773,7 @@ class AdminController extends Controller
         // Create client — generate a random password if none was provided in extras
         $plainPassword = null;
         if (! isset($extras['password_hash'])) {
-            $plainPassword = \Illuminate\Support\Str::random(16);
+            $plainPassword = Str::random(16);
         }
 
         $client = Client::create([
@@ -2673,11 +2673,15 @@ class AdminController extends Controller
             $this->buildFitnessSection($profile),
         ];
 
-        if (in_array($plan, ['metodo', 'elite'], strict: true)) {
-            $nutritionSection = $this->buildNutritionSection($profile);
-            if ($nutritionSection !== null) {
-                $sections[] = $nutritionSection;
-            }
+        // Nutrition shown on any plan that has macros data — section returns null if empty.
+        $nutritionSection = $this->buildNutritionSection($profile);
+        if ($nutritionSection !== null) {
+            $sections[] = $nutritionSection;
+        }
+
+        $healthSection = $this->buildHealthSection($profile);
+        if ($healthSection !== null) {
+            $sections[] = $healthSection;
         }
 
         if ($plan === 'elite') {
@@ -2685,6 +2689,11 @@ class AdminController extends Controller
             if ($advancedSection !== null) {
                 $sections[] = $advancedSection;
             }
+        }
+
+        $originSection = $this->buildOriginSection($client, $profile);
+        if ($originSection !== null) {
+            $sections[] = $originSection;
         }
 
         $rawJson = array_merge(
@@ -2728,24 +2737,24 @@ class AdminController extends Controller
     private function buildFitnessSection(ClientProfile $profile): array
     {
         $objetivoMap = [
-            'perder_grasa'    => 'Perder grasa',
-            'ganar_musculo'   => 'Ganar músculo',
-            'recomposicion'   => 'Recomposición corporal',
-            'rendimiento'     => 'Mejorar rendimiento',
-            'salud_general'   => 'Salud general',
-            'tonificar'       => 'Tonificar',
+            'perder_grasa' => 'Perder grasa',
+            'ganar_musculo' => 'Ganar músculo',
+            'recomposicion' => 'Recomposición corporal',
+            'rendimiento' => 'Mejorar rendimiento',
+            'salud_general' => 'Salud general',
+            'tonificar' => 'Tonificar',
         ];
         $nivelMap = [
             'principiante' => 'Principiante',
-            'intermedio'   => 'Intermedio',
-            'avanzado'     => 'Avanzado',
+            'intermedio' => 'Intermedio',
+            'avanzado' => 'Avanzado',
         ];
         $lugarMap = [
-            'gym'              => 'Gimnasio',
-            'casa_con_equipo'  => 'Casa con equipo',
-            'casa_sin_equipo'  => 'Casa sin equipo',
-            'aire_libre'       => 'Aire libre',
-            'mixto'            => 'Mixto',
+            'gym' => 'Gimnasio',
+            'casa_con_equipo' => 'Casa con equipo',
+            'casa_sin_equipo' => 'Casa sin equipo',
+            'aire_libre' => 'Aire libre',
+            'mixto' => 'Mixto',
         ];
 
         $dias = $profile->dias_disponibles;
@@ -2757,19 +2766,43 @@ class AdminController extends Controller
         $tieneLesiones = isset($macros['tiene_lesiones']) ? ($tieneMap[$macros['tiene_lesiones']] ?? $macros['tiene_lesiones']) : null;
         $lesiones = $profile->restricciones;
 
+        $tipoEntrenoMap = [
+            'pesas' => 'Pesas / Fuerza',
+            'funcional' => 'Funcional',
+            'hibrido' => 'Híbrido (pesas + funcional)',
+            'calistenia' => 'Calistenia',
+            'sin_preferencia' => 'Sin preferencia',
+        ];
+        $horarioEntrenoMap = [
+            'manana' => 'Mañana (6am–10am)',
+            'mediodia' => 'Mediodía (10am–2pm)',
+            'tarde' => 'Tarde (2pm–6pm)',
+            'noche' => 'Noche (6pm–10pm)',
+        ];
+        $siNoMap = ['si' => 'Sí', 'no' => 'No'];
+
+        $tipoEntreno = $macros['tipo_entrenamiento'] ?? null;
+        $horarioEntreno = $macros['horario_entreno_preferido'] ?? null;
+        $coachingPrevio = $macros['coaching_previo'] ?? null;
+
         return [
             'key' => 'fitness',
             'title' => 'Fitness & Entrenamiento',
             'icon' => 'dumbbell',
-            'fields' => array_filter([
-                ['label' => 'Objetivo principal',       'value' => $objetivoMap[$profile->objetivo] ?? $profile->objetivo],
-                ['label' => 'Nivel de experiencia',     'value' => $nivelMap[$profile->nivel] ?? $profile->nivel],
-                ['label' => 'Lugar de entreno',         'value' => $lugarMap[$profile->lugar_entreno] ?? $profile->lugar_entreno],
-                ['label' => 'Días disponibles',         'value' => $diasValue],
-                ['label' => 'Duración de sesión',       'value' => $duracion ? $duracion . ' min' : null],
-                ['label' => 'Tiene lesiones',           'value' => $tieneLesiones],
-                ['label' => 'Lesiones / Restricciones', 'value' => $lesiones ?: ($tieneLesiones === 'No' ? 'Ninguna' : null)],
-            ], fn ($f) => ! is_null($f['value']) && $f['value'] !== ''),
+            'fields' => array_values(array_filter([
+                ['label' => 'Objetivo principal',           'value' => $objetivoMap[$profile->objetivo] ?? $profile->objetivo],
+                ['label' => 'Nivel de experiencia',         'value' => $nivelMap[$profile->nivel] ?? $profile->nivel],
+                ['label' => 'Lugar de entreno',             'value' => $lugarMap[$profile->lugar_entreno] ?? $profile->lugar_entreno],
+                ['label' => 'Días disponibles',             'value' => $diasValue],
+                ['label' => 'Duración de sesión',           'value' => $duracion ? $duracion.' min' : null],
+                ['label' => 'Tiene lesiones',               'value' => $tieneLesiones],
+                ['label' => 'Lesiones / Restricciones',     'value' => $lesiones ?: ($tieneLesiones === 'No' ? 'Ninguna' : null)],
+                ['label' => 'Tipo de entrenamiento preferido', 'value' => $tipoEntreno ? ($tipoEntrenoMap[$tipoEntreno] ?? $tipoEntreno) : null],
+                ['label' => 'Horario preferido para entrenar', 'value' => $horarioEntreno ? ($horarioEntrenoMap[$horarioEntreno] ?? $horarioEntreno) : null],
+                ['label' => 'Coaching previo',              'value' => $coachingPrevio ? ($siNoMap[$coachingPrevio] ?? $coachingPrevio) : null],
+                ['label' => 'Rutina actual',                'value' => $macros['rutina_actual'] ?? null],
+                ['label' => 'Restricciones de ejercicio',   'value' => $macros['restricciones_ejercicio'] ?? null],
+            ], fn ($f) => ! is_null($f['value']) && $f['value'] !== '')),
         ];
     }
 
@@ -2783,25 +2816,58 @@ class AdminController extends Controller
         // Fitness base + advanced Elite keys — exclude from nutrition section
         $advancedKeys = ['objetivo_composicion', 'historial_medico', 'ciclo_hormonal', 'bloodwork_disponible', 'pais', 'duracion_sesion', 'tiene_lesiones'];
 
-        $trabajoMap   = ['sedentario' => 'Sedentario / Escritorio', 'moderado' => 'Moderado', 'activo' => 'Trabajo activo / físico'];
-        $suenoMap     = ['5_menos' => '5h o menos', '6_7' => '6-7 horas', '8_mas' => '8 horas o más'];
-        $estresMap    = ['bajo' => 'Bajo', 'moderado' => 'Moderado', 'alto' => 'Alto', 'muy_alto' => 'Muy alto'];
-        $comidasMap   = ['2' => '2 comidas', '3' => '3 comidas', '4' => '4 comidas', '5_mas' => '5 o más comidas'];
+        $trabajoMap = ['sedentario' => 'Sedentario / Escritorio', 'moderado' => 'Moderado', 'activo' => 'Trabajo activo / físico'];
+        $suenoMap = ['5_menos' => '5h o menos', '6_7' => '6-7 horas', '8_mas' => '8 horas o más'];
+        $estresMap = ['bajo' => 'Bajo', 'moderado' => 'Moderado', 'alto' => 'Alto', 'muy_alto' => 'Muy alto'];
+        $comidasMap = ['2' => '2 comidas', '3' => '3 comidas', '4' => '4 comidas', '5_mas' => '5 o más comidas'];
+        $dietaMap = [
+            'sin_dieta' => 'Sin dieta específica',
+            'equilibrada' => 'Equilibrada',
+            'alta_proteina' => 'Alta en proteína',
+            'vegetariana' => 'Vegetariana',
+            'vegana' => 'Vegana',
+            'keto' => 'Keto / Low carb',
+            'otra' => 'Otra',
+        ];
+        $expMacrosMap = ['ninguna' => 'Ninguna', 'basica' => 'Básica', 'intermedia' => 'Intermedia', 'avanzada' => 'Avanzada'];
+        $horTrabajoMap = [
+            'oficina' => 'Oficina (horario fijo)',
+            'remoto' => 'Remoto / Freelance',
+            'turnos' => 'Turnos rotativos',
+            'estudiante' => 'Estudiante',
+            'independiente' => 'Independiente',
+        ];
+        $comerFueraMap = [
+            'nunca' => 'Casi nunca',
+            '1-2' => '1–2 veces / semana',
+            '3-4' => '3–4 veces / semana',
+            'diario' => 'Casi todos los días',
+        ];
 
         $intolerancias = $macros['intolerancias'] ?? [];
         if (is_array($intolerancias)) {
             $intolerancias = implode(', ', $intolerancias) ?: 'Ninguna';
         }
 
+        $dieta = $macros['dieta_actual'] ?? null;
+        $expMacros = $macros['experiencia_macros'] ?? null;
+        $horTrabajo = $macros['horario_trabajo'] ?? null;
+        $comerFuera = $macros['comer_fuera'] ?? null;
+
         $fields = array_filter([
             ['label' => 'Actividad laboral',         'value' => $trabajoMap[$macros['trabajo_tipo'] ?? ''] ?? ($macros['trabajo_tipo'] ?? null)],
             ['label' => 'Horas de sueño',            'value' => $suenoMap[$macros['horas_sueno'] ?? ''] ?? ($macros['horas_sueno'] ?? null)],
             ['label' => 'Nivel de estrés',           'value' => $estresMap[$macros['nivel_estres'] ?? ''] ?? ($macros['nivel_estres'] ?? null)],
             ['label' => 'Comidas por día',           'value' => $comidasMap[$macros['comidas_por_dia'] ?? ''] ?? ($macros['comidas_por_dia'] ?? null)],
-            ['label' => 'Intolerancias alimentarias','value' => $intolerancias ?: null],
+            ['label' => 'Intolerancias alimentarias', 'value' => $intolerancias ?: null],
             ['label' => 'Otras intolerancias',       'value' => ($macros['otras_intolerancias'] ?? '') ?: null],
             ['label' => 'Alimentos a evitar',        'value' => ($macros['alimentos_evitar'] ?? '') ?: null],
             ['label' => 'Suplementos actuales',      'value' => ($macros['suplementos_actuales'] ?? '') ?: null],
+            ['label' => 'Dieta actual',              'value' => $dieta ? ($dietaMap[$dieta] ?? $dieta) : null],
+            ['label' => 'Alergias (texto libre)',    'value' => ($macros['alergias_texto'] ?? '') ?: null],
+            ['label' => 'Experiencia con macros',    'value' => $expMacros ? ($expMacrosMap[$expMacros] ?? $expMacros) : null],
+            ['label' => 'Horario de trabajo',        'value' => $horTrabajo ? ($horTrabajoMap[$horTrabajo] ?? $horTrabajo) : null],
+            ['label' => 'Frecuencia comer fuera',    'value' => $comerFuera ? ($comerFueraMap[$comerFuera] ?? $comerFuera) : null],
         ], fn ($f) => ! is_null($f['value']) && $f['value'] !== '');
 
         $fields = array_values($fields);
@@ -2811,9 +2877,9 @@ class AdminController extends Controller
         }
 
         return [
-            'key'    => 'nutrition',
-            'title'  => 'Nutrición & Estilo de Vida',
-            'icon'   => 'nutrition',
+            'key' => 'nutrition',
+            'title' => 'Nutrición & Estilo de Vida',
+            'icon' => 'nutrition',
             'fields' => $fields,
         ];
     }
@@ -2827,10 +2893,10 @@ class AdminController extends Controller
         }
 
         $composicionMap = [
-            'perder_grasa_rapido'  => 'Pérdida de grasa rápida',
-            'recomposicion_lenta'  => 'Recomposición lenta',
-            'volumen_limpio'       => 'Volumen limpio',
-            'mantenimiento'        => 'Mantenimiento',
+            'perder_grasa_rapido' => 'Pérdida de grasa rápida',
+            'recomposicion_lenta' => 'Recomposición lenta',
+            'volumen_limpio' => 'Volumen limpio',
+            'mantenimiento' => 'Mantenimiento',
         ];
 
         $fields = array_filter([
@@ -2847,9 +2913,60 @@ class AdminController extends Controller
         }
 
         return [
-            'key'    => 'advanced',
-            'title'  => 'Información Avanzada (Elite)',
-            'icon'   => 'star',
+            'key' => 'advanced',
+            'title' => 'Información Avanzada (Elite)',
+            'icon' => 'star',
+            'fields' => $fields,
+        ];
+    }
+
+    private function buildHealthSection(ClientProfile $profile): ?array
+    {
+        $macros = $profile->macros ?? [];
+
+        $fields = array_values(array_filter([
+            ['label' => 'Condiciones médicas',   'value' => $macros['condiciones_medicas'] ?? null],
+            ['label' => 'Medicamentos actuales', 'value' => $macros['medicamentos'] ?? null],
+        ], fn ($f) => ! is_null($f['value']) && $f['value'] !== ''));
+
+        if (empty($fields)) {
+            return null;
+        }
+
+        return [
+            'key' => 'health',
+            'title' => 'Salud',
+            'icon' => 'heart',
+            'fields' => $fields,
+        ];
+    }
+
+    private function buildOriginSection(Client $client, ClientProfile $profile): ?array
+    {
+        $macros = $profile->macros ?? [];
+        $comoConocioMap = [
+            'instagram' => 'Instagram',
+            'youtube' => 'YouTube',
+            'google' => 'Google',
+            'referido' => 'Referido por alguien',
+            'otro' => 'Otro',
+        ];
+
+        $como = $macros['como_conocio'] ?? null;
+
+        $fields = array_values(array_filter([
+            ['label' => '¿Cómo nos conoció?', 'value' => $como ? ($comoConocioMap[$como] ?? $como) : null],
+            ['label' => 'Notas adicionales',  'value' => $macros['notas'] ?? null],
+        ], fn ($f) => ! is_null($f['value']) && $f['value'] !== ''));
+
+        if (empty($fields)) {
+            return null;
+        }
+
+        return [
+            'key' => 'origin',
+            'title' => 'Origen y Notas',
+            'icon' => 'message',
             'fields' => $fields,
         ];
     }
@@ -2880,23 +2997,24 @@ class AdminController extends Controller
                 ->get(['id', 'day_name', 'session_date', 'completed', 'duration_sec', 'total_volume_kg', 'xp_earned', 'created_at']);
 
             foreach ($sessions as $s) {
-                $duration = $s->duration_sec ? round($s->duration_sec / 60) . ' min' : null;
-                $volume = $s->total_volume_kg ? number_format($s->total_volume_kg, 0) . ' kg' : null;
+                $duration = $s->duration_sec ? round($s->duration_sec / 60).' min' : null;
+                $volume = $s->total_volume_kg ? number_format($s->total_volume_kg, 0).' kg' : null;
                 $desc = implode(' · ', array_filter([
                     $s->completed ? 'Completado' : 'Abandonado',
                     $duration,
-                    $volume ? $volume . ' volumen' : null,
-                    $s->xp_earned ? '+' . $s->xp_earned . ' XP' : null,
+                    $volume ? $volume.' volumen' : null,
+                    $s->xp_earned ? '+'.$s->xp_earned.' XP' : null,
                 ]));
                 $events->push([
-                    'type'  => $s->completed ? 'workout' : 'workout_abandoned',
+                    'type' => $s->completed ? 'workout' : 'workout_abandoned',
                     'title' => $s->day_name ?: 'Entrenamiento',
-                    'desc'  => $desc,
-                    'date'  => $s->session_date ?? $s->created_at,
-                    'meta'  => ['session_id' => $s->id],
+                    'desc' => $desc,
+                    'date' => $s->session_date ?? $s->created_at,
+                    'meta' => ['session_id' => $s->id],
                 ]);
             }
-        } catch (\Throwable) {}
+        } catch (\Throwable) {
+        }
 
         // ── Check-ins ──────────────────────────────────────────────────────
         try {
@@ -2907,16 +3025,17 @@ class AdminController extends Controller
                 ->get(['id', 'weight', 'created_at', 'notes']);
 
             foreach ($checkins as $c) {
-                $desc = $c->weight ? 'Peso: ' . $c->weight . ' kg' : 'Sin peso registrado';
+                $desc = $c->weight ? 'Peso: '.$c->weight.' kg' : 'Sin peso registrado';
                 $events->push([
-                    'type'  => 'checkin',
+                    'type' => 'checkin',
                     'title' => 'Check-in semanal',
-                    'desc'  => $desc,
-                    'date'  => $c->created_at,
-                    'meta'  => [],
+                    'desc' => $desc,
+                    'date' => $c->created_at,
+                    'meta' => [],
                 ]);
             }
-        } catch (\Throwable) {}
+        } catch (\Throwable) {
+        }
 
         // ── Payments ───────────────────────────────────────────────────────
         try {
@@ -2927,16 +3046,17 @@ class AdminController extends Controller
                 ->get(['id', 'amount', 'currency', 'status', 'created_at', 'plan']);
 
             foreach ($payments as $p) {
-                $amount = $p->amount ? number_format((float) $p->amount, 0, '.', ',') . ' ' . ($p->currency ?? 'COP') : '';
+                $amount = $p->amount ? number_format((float) $p->amount, 0, '.', ',').' '.($p->currency ?? 'COP') : '';
                 $events->push([
-                    'type'  => 'payment',
-                    'title' => 'Pago ' . ($p->plan ?? ''),
-                    'desc'  => implode(' · ', array_filter([$amount, ucfirst($p->status ?? '')])),
-                    'date'  => $p->created_at,
-                    'meta'  => ['status' => $p->status],
+                    'type' => 'payment',
+                    'title' => 'Pago '.($p->plan ?? ''),
+                    'desc' => implode(' · ', array_filter([$amount, ucfirst($p->status ?? '')])),
+                    'date' => $p->created_at,
+                    'meta' => ['status' => $p->status],
                 ]);
             }
-        } catch (\Throwable) {}
+        } catch (\Throwable) {
+        }
 
         // ── Auth tokens (login/access events) ─────────────────────────────
         try {
@@ -2949,23 +3069,24 @@ class AdminController extends Controller
 
             foreach ($tokens as $t) {
                 $events->push([
-                    'type'  => 'login',
+                    'type' => 'login',
                     'title' => 'Inicio de sesion',
-                    'desc'  => 'Nuevo token de acceso generado',
-                    'date'  => $t->created_at,
-                    'meta'  => [],
+                    'desc' => 'Nuevo token de acceso generado',
+                    'date' => $t->created_at,
+                    'meta' => [],
                 ]);
                 if ($t->last_used_at && $t->last_used_at !== $t->created_at) {
                     $events->push([
-                        'type'  => 'access',
+                        'type' => 'access',
                         'title' => 'Ultimo acceso',
-                        'desc'  => 'Actividad en la plataforma',
-                        'date'  => $t->last_used_at,
-                        'meta'  => [],
+                        'desc' => 'Actividad en la plataforma',
+                        'date' => $t->last_used_at,
+                        'meta' => [],
                     ]);
                 }
             }
-        } catch (\Throwable) {}
+        } catch (\Throwable) {
+        }
 
         // ── Coach messages ─────────────────────────────────────────────────
         try {
@@ -2978,16 +3099,17 @@ class AdminController extends Controller
             foreach ($messages as $m) {
                 $from = $m->sender_type === 'coach' ? 'Coach' : 'Cliente';
                 $events->push([
-                    'type'  => 'message',
+                    'type' => 'message',
                     'title' => "Mensaje de {$from}",
-                    'desc'  => mb_strlen($m->message) > 80
-                        ? mb_substr($m->message, 0, 80) . '…'
+                    'desc' => mb_strlen($m->message) > 80
+                        ? mb_substr($m->message, 0, 80).'…'
                         : $m->message,
-                    'date'  => $m->created_at,
-                    'meta'  => [],
+                    'date' => $m->created_at,
+                    'meta' => [],
                 ]);
             }
-        } catch (\Throwable) {}
+        } catch (\Throwable) {
+        }
 
         // ── Sort + limit ───────────────────────────────────────────────────
         $sorted = $events
@@ -2997,12 +3119,13 @@ class AdminController extends Controller
             ->take(60)
             ->map(function ($e) {
                 $e['date_iso'] = $e['date'];
+
                 return $e;
             });
 
         return response()->json([
             'events' => $sorted,
-            'total'  => $sorted->count(),
+            'total' => $sorted->count(),
         ]);
     }
 }

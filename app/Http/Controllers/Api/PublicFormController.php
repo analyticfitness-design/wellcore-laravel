@@ -57,6 +57,20 @@ class PublicFormController extends Controller
             'utm_source' => 'nullable|string|max:255',
             'utm_medium' => 'nullable|string|max:255',
             'utm_campaign' => 'nullable|string|max:255',
+            // Vue InscriptionForm extras (preserved in extras JSON)
+            'coaching_previo' => 'nullable|in:si,no',
+            'rutina_actual' => 'nullable|string|max:1000',
+            'tipo_entrenamiento' => 'nullable|in:pesas,funcional,hibrido,calistenia,sin_preferencia',
+            'horario' => 'nullable|in:manana,mediodia,tarde,noche',
+            'restricciones_ejercicio' => 'nullable|string|max:1000',
+            'condiciones_medicas' => 'nullable|string|max:2000',
+            'medicamentos' => 'nullable|string|max:1000',
+            'dieta_actual' => 'nullable|in:sin_dieta,equilibrada,alta_proteina,vegetariana,vegana,keto,otra',
+            'alergias' => 'nullable|string|max:500',
+            'experiencia_macros' => 'nullable|in:ninguna,basica,intermedia,avanzada',
+            'horario_trabajo' => 'nullable|in:oficina,remoto,turnos,estudiante,independiente',
+            'comer_fuera' => 'nullable|in:nunca,1-2,3-4,diario',
+            'notas' => 'nullable|string|max:2000',
         ], [
             'nombre.required' => 'El nombre es obligatorio.',
             'email.required' => 'El correo es obligatorio.',
@@ -102,6 +116,18 @@ class PublicFormController extends Controller
             }
             if ($request->filled('utm_campaign')) {
                 $extras['utm_campaign'] = $validated['utm_campaign'];
+            }
+
+            // Persist Vue InscriptionForm extras (como_conocio is stored on dedicated column, not duplicated)
+            foreach ([
+                'coaching_previo', 'rutina_actual', 'tipo_entrenamiento',
+                'horario', 'restricciones_ejercicio', 'condiciones_medicas', 'medicamentos',
+                'dieta_actual', 'alergias', 'experiencia_macros',
+                'horario_trabajo', 'comer_fuera', 'notas',
+            ] as $extraKey) {
+                if (! empty($validated[$extraKey])) {
+                    $extras[$extraKey] = $validated[$extraKey];
+                }
             }
 
             // Store objetivo with extras JSON separated by |||
@@ -806,6 +832,21 @@ class PublicFormController extends Controller
             'detalle_lesiones' => 'required_if:tiene_lesiones,si|nullable|string|max:500',
             'password' => 'required|string|min:8|confirmed',
             'acepta_terminos' => 'accepted',
+            // Vue InscriptionForm extras (always optional, preserved in macros JSON)
+            'coaching_previo' => 'nullable|in:si,no',
+            'rutina_actual' => 'nullable|string|max:1000',
+            'tipo_entrenamiento' => 'nullable|in:pesas,funcional,hibrido,calistenia,sin_preferencia',
+            'horario' => 'nullable|in:manana,mediodia,tarde,noche',
+            'restricciones_ejercicio' => 'nullable|string|max:1000',
+            'condiciones_medicas' => 'nullable|string|max:2000',
+            'medicamentos' => 'nullable|string|max:1000',
+            'dieta_actual' => 'nullable|in:sin_dieta,equilibrada,alta_proteina,vegetariana,vegana,keto,otra',
+            'alergias' => 'nullable|string|max:500',
+            'experiencia_macros' => 'nullable|in:ninguna,basica,intermedia,avanzada',
+            'horario_trabajo' => 'nullable|in:oficina,remoto,turnos,estudiante,independiente',
+            'comer_fuera' => 'nullable|in:nunca,1-2,3-4,diario',
+            'como_conocio' => 'nullable|string|max:255',
+            'notas' => 'nullable|string|max:2000',
         ];
 
         if (in_array($planType, ['metodo', 'elite'], true)) {
@@ -910,7 +951,27 @@ class PublicFormController extends Controller
             $macros['horario_preferido'] = $validated['horario_preferido'] ?? null;
         }
 
-        return $macros;
+        // Vue InscriptionForm extras: always preserved across all plans, filtered to drop blanks.
+        // Renames: horario → horario_entreno_preferido (avoid clash with presencial horario_preferido),
+        //          alergias → alergias_texto (avoid clash with intolerancias array on metodo/elite).
+        $extras = array_filter([
+            'coaching_previo' => $validated['coaching_previo'] ?? null,
+            'rutina_actual' => $validated['rutina_actual'] ?? null,
+            'tipo_entrenamiento' => $validated['tipo_entrenamiento'] ?? null,
+            'horario_entreno_preferido' => $validated['horario'] ?? null,
+            'restricciones_ejercicio' => $validated['restricciones_ejercicio'] ?? null,
+            'condiciones_medicas' => $validated['condiciones_medicas'] ?? null,
+            'medicamentos' => $validated['medicamentos'] ?? null,
+            'dieta_actual' => $validated['dieta_actual'] ?? null,
+            'alergias_texto' => $validated['alergias'] ?? null,
+            'experiencia_macros' => $validated['experiencia_macros'] ?? null,
+            'horario_trabajo' => $validated['horario_trabajo'] ?? null,
+            'comer_fuera' => $validated['comer_fuera'] ?? null,
+            'como_conocio' => $validated['como_conocio'] ?? null,
+            'notas' => $validated['notas'] ?? null,
+        ], fn ($v) => $v !== null && $v !== '');
+
+        return array_merge($macros, $extras);
     }
 
     private function convertReferralIfPending(Client $client, string $email): void
