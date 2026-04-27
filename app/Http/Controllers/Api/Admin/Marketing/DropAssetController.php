@@ -29,13 +29,16 @@ final class DropAssetController extends Controller
     {
         Gate::authorize('admin.marketing.manageAssets', $drop);
 
+        $rawOrder = $request->input('order');
+        $order    = ($rawOrder === null || $rawOrder === '') ? null : (int) $rawOrder;
+
         $asset = $this->storage->store(
             drop:         $drop,
             file:         $request->file('file'),
             role:         $request->input('role'),
             linkedTo:     $request->linkedTo(),
             caption:      $request->input('caption'),
-            order:        $request->input('order'),
+            order:        $order,
             notes:        $request->input('notes'),
             uploadedById: Auth::id(),
         );
