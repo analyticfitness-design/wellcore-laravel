@@ -799,6 +799,22 @@ onBeforeUnmount(() => {
     audioCtx = null;
   }
 });
+
+// ── COMP 1: Collapsed exercise row helpers ──
+const expandedExercises = ref({});
+
+function exercisePrAchieved(exIndex) {
+  const sets = getSetRows(exIndex);
+  return sets.some(s => s.is_pr);
+}
+
+function exerciseSummaryText(exIndex) {
+  const sets = getSetRows(exIndex).filter(s => s.completed);
+  if (!sets.length) return '';
+  const maxKg = Math.max(...sets.map(s => parseFloat(s.weight) || 0));
+  const totalReps = sets.reduce((a, s) => a + (parseInt(s.reps) || 0), 0);
+  return `${sets.length} sets · ${totalReps} reps${maxKg > 0 ? ' · ' + maxKg.toFixed(1) + 'kg' : ''}`;
+}
 </script>
 
 <template>
@@ -1207,14 +1223,28 @@ onBeforeUnmount(() => {
                 <div class="h-px flex-1 bg-wc-accent/15"></div>
               </div>
 
+              <!-- COMP 1: Collapsed row cuando ejercicio completado -->
+              <div v-if="allSetsComplete(exIndex)" class="ex-completed" :class="isInBlock(exercise) ? 'ml-2' : ''" @click="expandedExercises[exIndex] = !expandedExercises[exIndex]">
+                <div class="ex-completed-check">✓</div>
+                <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+                  <span class="ex-completed-name">{{ displayName(exercise, exIndex) }}</span>
+                  <span v-if="exercisePrAchieved(exIndex)" class="pr-pill">🏆 PR</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                  <span class="ex-completed-stats">{{ exerciseSummaryText(exIndex) }}</span>
+                  <svg style="width:12px;height:12px;color:var(--wc-text-tertiary,#71717a);" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                  </svg>
+                </div>
+              </div>
+
               <div
+                v-else
                 :id="'exercise-' + exIndex"
                 :class="[
                   'rounded-2xl border bg-wc-bg-tertiary overflow-hidden transition-all',
                   isInBlock(exercise) ? 'ml-2' : '',
-                  allSetsComplete(exIndex)
-                    ? 'border-l-[3px] border-l-emerald-500 border-emerald-500/20'
-                    : 'border-wc-border'
+                  'border-wc-border'
                 ]"
               >
                 <!-- Exercise header -->
@@ -1278,6 +1308,13 @@ onBeforeUnmount(() => {
                           <span class="text-wc-text-tertiary">&times;</span>
                           <span class="font-data font-semibold text-wc-text-secondary">{{ exercise.last_reps }}</span>
                         </span>
+                      </div>
+
+                      <!-- COMP 2: PR target banner -->
+                      <div v-if="exercise.last_weight" class="pr-target" style="margin-top:8px;">
+                        <span>🏆</span>
+                        <span>Meta PR: <strong>{{ (parseFloat(exercise.last_weight) + 2.5).toFixed(1) }} kg</strong></span>
+                        <span class="sub">× {{ exercise.last_reps || '?' }} reps</span>
                       </div>
                     </div>
 
@@ -1599,19 +1636,18 @@ onBeforeUnmount(() => {
                     {{ voiceError }}
                   </p>
 
-                  <!-- Mic button -->
+                  <!-- Mic button — COMP 3 -->
                   <button
                     v-if="!voiceConfirmation || voiceExIndex !== exIndex"
                     @click="voiceListening && voiceExIndex === exIndex ? voiceStopListening() : voiceStartListening(exIndex)"
-                    class="flex w-full items-center justify-center gap-2 rounded-xl border py-2 text-xs font-medium transition-all"
-                    :class="voiceListening && voiceExIndex === exIndex
-                      ? 'border-wc-accent/60 bg-wc-accent/10 text-wc-accent animate-pulse'
-                      : 'border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:border-wc-accent/40 hover:text-wc-accent'"
+                    class="voice-btn-new"
+                    :class="{ 'border-solid bg-wc-accent/10 border-wc-accent text-wc-accent': voiceListening && voiceExIndex === exIndex }"
+                    :disabled="voiceListening && voiceExIndex !== exIndex"
                   >
-                    <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
                     </svg>
-                    <span>{{ voiceListening && voiceExIndex === exIndex ? 'Escuchando…' : 'Dictar serie' }}</span>
+                    <span>{{ voiceListening && voiceExIndex === exIndex ? '🔴 Escuchando…' : 'Dictar serie con voz' }}</span>
                   </button>
                 </div>
 
@@ -1641,54 +1677,45 @@ onBeforeUnmount(() => {
           leave-from-class="translate-y-0"
           leave-to-class="translate-y-full"
         >
-          <div v-if="workoutStarted" class="fixed bottom-0 inset-x-0 z-[55] border-t border-wc-border bg-wc-bg/95 backdrop-blur-md" style="padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);">
-            <div class="px-4 pt-3 pb-2">
-              <!-- Session stats -->
-              <div class="mb-2.5 flex items-center justify-center gap-4 text-center">
-                <div>
-                  <span class="font-data text-sm font-bold text-wc-text">{{ completedSetsCount }}</span>
-                  <span class="text-[10px] text-wc-text-tertiary ml-0.5">sets</span>
+          <div v-if="workoutStarted" class="bottom-bar-fixed">
+            <!-- Mini progress bar -->
+            <div class="bottom-mini-progress">
+              <div class="bottom-mini-progress-fill" :style="{ width: progressPct + '%' }"></div>
+            </div>
+            <div class="bottom-bar-inner">
+              <!-- 4 stats columns -->
+              <div class="bottom-stats">
+                <div class="bstat">
+                  <div class="bstat-num">{{ completedSetsCount }}</div>
+                  <div class="bstat-lbl">Sets</div>
                 </div>
-                <div class="h-3 w-px bg-wc-border"></div>
-                <div>
-                  <span class="font-data text-sm font-bold text-wc-text">{{ totalRepsAll }}</span>
-                  <span class="text-[10px] text-wc-text-tertiary ml-0.5">reps</span>
+                <div class="bstat">
+                  <div class="bstat-num amber">{{ totalRepsAll }}</div>
+                  <div class="bstat-lbl">Reps</div>
                 </div>
-                <div class="h-3 w-px bg-wc-border"></div>
-                <div>
-                  <span class="font-data text-sm font-bold text-amber-400">{{ maxWeightAll > 0 ? maxWeightAll.toFixed(1) : '—' }}</span>
-                  <span class="text-[10px] text-wc-text-tertiary ml-0.5">kg max</span>
+                <div class="bstat">
+                  <div class="bstat-num">{{ maxWeightAll > 0 ? maxWeightAll.toFixed(0) : '—' }}</div>
+                  <div class="bstat-lbl">KG Max</div>
+                </div>
+                <div class="bstat">
+                  <div class="bstat-num red">{{ elapsedDisplay }}</div>
+                  <div class="bstat-lbl">Tiempo</div>
                 </div>
               </div>
-
-              <!-- Action row: Abandon + Complete -->
-              <div class="flex items-center gap-2">
-                <!-- Abandon button -->
-                <button
-                  @click="confirmAbandon = true"
-                  class="shrink-0 flex items-center gap-1.5 rounded-xl border border-red-600/40 px-4 py-3 text-sm font-medium text-wc-text-secondary hover:border-red-600/70 hover:text-red-400 transition-all focus:outline-none focus:ring-2 focus:ring-wc-accent"
-                  aria-label="Abandonar sesion"
-                >
-                  <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+              <!-- Action row -->
+              <div class="action-row-wc">
+                <button @click="confirmAbandon = true" class="btn-abandon" aria-label="Abandonar sesion">
+                  <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
                   Abandonar
                 </button>
-
-                <!-- Complete session button -->
                 <button
                   @click="finishWorkout"
                   :disabled="completedSetsCount <= 0 || saving"
-                  :class="[
-                    'btn-ripple btn-press flex-1 rounded-2xl py-3.5 text-center font-display text-lg tracking-widest transition-all',
-                    completedSetsCount > 0
-                      ? 'bg-wc-accent text-white shadow-lg shadow-wc-accent/20 hover:bg-red-700'
-                      : 'bg-wc-bg-secondary text-wc-text-tertiary cursor-not-allowed'
-                  ]"
+                  class="btn-finish"
+                  :class="{ 'opacity-60 cursor-not-allowed': completedSetsCount <= 0 || saving }"
                 >
-                  <span v-if="!saving">COMPLETAR SESION</span>
-                  <span v-else class="inline-flex items-center gap-2">
-                    <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-                    GUARDANDO...
-                  </span>
+                  <span v-if="!saving">COMPLETAR SESIÓN</span>
+                  <span v-else>GUARDANDO...</span>
                 </button>
               </div>
             </div>

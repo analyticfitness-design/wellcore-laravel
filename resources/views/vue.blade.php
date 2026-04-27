@@ -54,6 +54,7 @@
 
     {{-- Light Theme FINAL · Hero Watermark + Dark Inverted Cards (solo light mode) --}}
     <link rel="stylesheet" href="{{ asset('css/light-theme-final.css') }}?v=10">
+    <link rel="stylesheet" href="{{ asset('css/workout-player.css') }}?v=1">
 </head>
 <body class="min-h-screen bg-wc-bg text-wc-text">
     <!-- SVG sprite para WcIcon — debe estar al inicio del body -->
