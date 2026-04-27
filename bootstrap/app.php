@@ -5,6 +5,7 @@ use App\Http\Middleware\CheckPlanLock;
 use App\Http\Middleware\ContentSecurityPolicy;
 use App\Http\Middleware\EnsureAuthenticated;
 use App\Http\Middleware\EnsureCoachContractAccepted;
+use App\Http\Middleware\EnsureCompleteBrandProfile;
 use App\Http\Middleware\EnsurePlan;
 use App\Http\Middleware\EnsureRole;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -63,6 +64,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'update.last.seen' => UpdateLastSeen::class,
             'api.bearer' => ApiBearerAuth::class,
             'coach.contract' => EnsureCoachContractAccepted::class,
+            'complete-brand-profile' => EnsureCompleteBrandProfile::class,
         ]);
 
         // Track real client activity — runs after response, skips impersonation sessions.

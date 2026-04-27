@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\Marketing\CoachProfileController;
+use App\Http\Controllers\Api\Admin\Marketing\DropReviewController;
+use App\Http\Controllers\Api\Admin\Marketing\QueueController;
 use App\Http\Controllers\Api\Admin\PaymentProofReviewController;
 use App\Http\Controllers\Api\AdminAuditLogController;
 use App\Http\Controllers\Api\AdminClientRequestController;
@@ -10,6 +13,9 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\Coach\ContractController;
 use App\Http\Controllers\Api\Coach\InvitationController;
+use App\Http\Controllers\Api\Coach\MarketingProfileController;
+use App\Http\Controllers\Api\Coach\PieceStateController;
+use App\Http\Controllers\Api\Coach\StrategyController;
 use App\Http\Controllers\Api\CoachBrandController;
 use App\Http\Controllers\Api\CoachClientRequestController;
 use App\Http\Controllers\Api\CoachController;
@@ -298,6 +304,21 @@ Route::prefix('v/coach')->middleware(['auth:wellcore', 'throttle:api', 'role:coa
         Route::get('/invitations/{id}', [InvitationController::class, 'show'])->whereNumber('id');
         Route::post('/invitations/{id}/resend', [InvitationController::class, 'resend'])->whereNumber('id');
         Route::delete('/invitations/{id}', [InvitationController::class, 'destroy'])->whereNumber('id');
+
+        // Strategy Hub — Marketing Profile (M5)
+        Route::get('/marketing-profile', [MarketingProfileController::class, 'show']);
+        Route::put('/marketing-profile', [MarketingProfileController::class, 'store']);
+        Route::patch('/marketing-profile/draft', [MarketingProfileController::class, 'updateDraft']);
+
+        // Strategy drops — gated by complete brand profile
+        Route::middleware('complete-brand-profile')->group(function () {
+            Route::get('/strategy/current', [StrategyController::class, 'current']);
+            Route::get('/strategy/history', [StrategyController::class, 'history']);
+            Route::get('/strategy/drops/{drop}', [StrategyController::class, 'show']);
+            Route::post('/strategy/drops/{drop}/pieces/{pieceKey}/publish', [PieceStateController::class, 'publish']);
+            Route::post('/strategy/drops/{drop}/pieces/{pieceKey}/skip', [PieceStateController::class, 'skip']);
+            Route::post('/strategy/drops/{drop}/pieces/{pieceKey}/in-progress', [PieceStateController::class, 'inProgress']);
+        });
     });
 });
 
@@ -385,4 +406,13 @@ Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:adm
     Route::get('/payment-proofs/{id}/file', [PaymentProofReviewController::class, 'file'])->whereNumber('id');
     Route::post('/payment-proofs/{id}/approve', [PaymentProofReviewController::class, 'approve'])->whereNumber('id');
     Route::post('/payment-proofs/{id}/reject', [PaymentProofReviewController::class, 'reject'])->whereNumber('id');
+
+    // Marketing drops — queue y review (admin/superadmin only)
+    Route::get('/marketing/drops', [QueueController::class, 'index']);
+    Route::get('/marketing/drops/{drop}', [DropReviewController::class, 'show']);
+    Route::put('/marketing/drops/{drop}/content', [DropReviewController::class, 'updateContent']);
+    Route::post('/marketing/drops/{drop}/approve', [DropReviewController::class, 'approve']);
+    Route::post('/marketing/drops/{drop}/request-regenerate', [DropReviewController::class, 'requestRegenerate']);
+    Route::get('/coaches/{coach}/marketing-profile', [CoachProfileController::class, 'show'])->whereNumber('coach');
+    Route::put('/coaches/{coach}/marketing-profile', [CoachProfileController::class, 'update'])->whereNumber('coach');
 });
