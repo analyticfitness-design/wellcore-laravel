@@ -4,14 +4,19 @@ namespace App\Providers;
 
 use App\Http\View\Composers\ClientLayoutComposer;
 use App\Models\Client;
+use App\Models\CoachContentDrop;
 use App\Models\CoachInvitation;
+use App\Models\CoachMarketingProfile;
 use App\Models\PaymentProof;
 use App\Models\PlanTicket;
 use App\Models\WorkoutPr;
 use App\Models\WorkoutSession;
 use App\Observers\WorkoutPrObserver;
 use App\Observers\WorkoutSessionObserver;
+use App\Policies\Admin\Marketing\AdminDropPolicy;
 use App\Policies\ClientPolicy;
+use App\Policies\Coach\CoachContentDropPolicy;
+use App\Policies\Coach\CoachMarketingProfilePolicy;
 use App\Policies\CoachInvitationPolicy;
 use App\Policies\PaymentProofPolicy;
 use App\Policies\PlanTicketPolicy;
@@ -73,6 +78,13 @@ class AppServiceProvider extends ServiceProvider
             PaymentProof::class,
             PaymentProofPolicy::class
         );
+        Gate::policy(CoachContentDrop::class, CoachContentDropPolicy::class);
+        Gate::policy(CoachMarketingProfile::class, CoachMarketingProfilePolicy::class);
+        // AdminDropPolicy se registra via Gate::define para evitar conflicto de mismo modelo con CoachContentDropPolicy
+        Gate::define('admin.marketing.viewDrop', [AdminDropPolicy::class, 'view']);
+        Gate::define('admin.marketing.updateDrop', [AdminDropPolicy::class, 'update']);
+        Gate::define('admin.marketing.approveDrop', [AdminDropPolicy::class, 'approve']);
+        Gate::define('admin.marketing.requestRegenerate', [AdminDropPolicy::class, 'requestRegenerate']);
     }
 
     /**
