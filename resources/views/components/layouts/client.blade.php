@@ -16,6 +16,8 @@
     <link rel="preload" as="font" type="font/woff2" href="/fonts/raleway-400-latin.woff2" crossorigin>
     {{-- Self-hosted fonts --}}
     <link rel="stylesheet" href="/fonts/wellcore-fonts.css">
+    {{-- Phosphor Icons web font --}}
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
