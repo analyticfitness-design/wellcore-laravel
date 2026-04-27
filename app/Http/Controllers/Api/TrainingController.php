@@ -778,11 +778,24 @@ class TrainingController extends Controller
             ->where('is_pr', true)
             ->count();
 
-        return response()->json([
+        $pulsoOffer = [
             'session_id' => $session->id,
-            'xp_earned' => $xpEarned,
-            'pr_count' => $prCount,
-            'duration' => $session->formattedDuration(),
+            'pulso_type' => 'entrenamiento',
+            'stats'      => [
+                'volume_kg'    => round((float) ($session->total_volume_kg ?? 0), 1),
+                'series'       => (int) ($session->total_sets ?? 0),
+                'ejercicios'   => $session->logs()->where('completed', true)->distinct()->count('exercise_name'),
+                'duracion_min' => (int) round($durationSec / 60),
+                'day_name'     => $session->day_name ?? '',
+            ],
+        ];
+
+        return response()->json([
+            'session_id'  => $session->id,
+            'xp_earned'   => $xpEarned,
+            'pr_count'    => $prCount,
+            'duration'    => $session->formattedDuration(),
+            'pulso_offer' => $pulsoOffer,
         ]);
     }
 

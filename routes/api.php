@@ -30,6 +30,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PublicFormController;
 use App\Http\Controllers\Api\RiseController;
 use App\Http\Controllers\Api\ShopController;
+use App\Http\Controllers\Api\PulsoController;
 use App\Http\Controllers\Api\SocialController;
 use App\Http\Controllers\Api\TrainingController;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -138,6 +139,14 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'plan.lock:strict', 'thr
     Route::post('/community/{id}/react', [SocialController::class, 'communityReact'])->where('id', '[0-9]+')->middleware('throttle:community-write');
     Route::post('/community/{id}/comment', [SocialController::class, 'communityComment'])->where('id', '[0-9]+')->middleware('throttle:community-write');
     Route::delete('/community/{id}', [SocialController::class, 'communityDelete'])->where('id', '[0-9]+');
+
+    // Pulsos WellCore
+    Route::get('/pulsos', [PulsoController::class, 'index']);
+    Route::post('/pulsos', [PulsoController::class, 'store']);
+    Route::get('/pulsos/{id}', [PulsoController::class, 'show']);
+    Route::get('/pulsos/{id}/media', [PulsoController::class, 'media']);
+    Route::post('/pulsos/{id}/react', [PulsoController::class, 'react']);
+    Route::delete('/pulsos/{id}', [PulsoController::class, 'destroy']);
     Route::get('/challenges', [SocialController::class, 'challenges']);
     Route::post('/challenges/{id}/join', [SocialController::class, 'joinChallenge'])->where('id', '[0-9]+');
     Route::get('/chat', [SocialController::class, 'chatIndex']);
