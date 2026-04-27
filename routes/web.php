@@ -142,7 +142,7 @@ Route::get('/presencial/inscripcion', fn () => view('vue'))->name('presencial.fo
 // RISE Enrollment cerrado — inscripciones no abiertas al publico
 Route::get('/rise-enroll', fn () => redirect('/planes', 301))->name('rise.enroll');
 
-// Invitation intake form — Vue SPA (replaces legacy Livewire ClientIntakeForm)
+// Invitation intake form — Vue SPA
 Route::get('/unirse/{code}', fn () => view('vue'))
     ->name('invite.intake')
     ->where('code', '[A-Za-z0-9]{12}');

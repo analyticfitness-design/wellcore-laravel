@@ -2820,7 +2820,7 @@ class AdminController extends Controller
 
     private function buildAdvancedSection(ClientProfile $profile): ?array
     {
-        // Elite advanced fields are merged into macros (not intake_data) in ClientIntakeForm::submit()
+        // Elite advanced fields are merged into macros (not intake_data) in PublicFormController::invitationIntake()
         $macros = $profile->macros;
         if (empty($macros) || ! is_array($macros)) {
             return null;
