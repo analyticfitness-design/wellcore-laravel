@@ -58,7 +58,7 @@ const isVideo = computed(() => {
 
 const hasStats = computed(() => {
   if (!props.prefillStats) return false;
-  return Object.values(props.prefillStats).some(Boolean);
+  return Object.values(props.prefillStats).some(v => v !== undefined && v !== null);
 });
 
 // File handling
