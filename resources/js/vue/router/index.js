@@ -53,6 +53,7 @@ const routes = [
     { path: '/client/tickets', name: 'client-tickets', component: () => import('../pages/Client/TicketSupport.vue'), meta: { auth: true, title: 'Soporte — WellCore' } },
     { path: '/client/video-checkin', name: 'client-video-checkin', component: () => import('../pages/Client/VideoCheckinUpload.vue'), meta: { auth: true, title: 'Video Check-in — WellCore' } },
     { path: '/client/evidence-hacks', name: 'client-evidence-hacks', component: () => import('../pages/Client/EvidenceHacks.vue'), meta: { auth: true, title: 'Evidence Hacks — WellCore' } },
+    { path: '/client/profile/:id', name: 'client-public-profile', component: () => import('../pages/Client/Profile.vue'), meta: { auth: true, title: 'Perfil — WellCore' } },
 
     // Rise (lazy loaded, auth required)
     { path: '/rise', name: 'rise-dashboard', component: () => import('../pages/Rise/Dashboard.vue'), meta: { auth: true, title: 'Dashboard RISE — WellCore' } },

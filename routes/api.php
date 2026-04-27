@@ -15,9 +15,12 @@ use App\Http\Controllers\Api\CoachClientRequestController;
 use App\Http\Controllers\Api\CoachController;
 use App\Http\Controllers\Api\CoachPlanTicketController;
 use App\Http\Controllers\Api\EjerciciosController;
+use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\MedalController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\NutritionController;
 use App\Http\Controllers\Api\PaymentProofController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PublicFormController;
 use App\Http\Controllers\Api\RiseController;
 use App\Http\Controllers\Api\ShopController;
@@ -25,6 +28,7 @@ use App\Http\Controllers\Api\SocialController;
 use App\Http\Controllers\Api\TrainingController;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
@@ -33,7 +37,7 @@ use Illuminate\Support\Facades\Route;
 
 // Broadcasting channel authentication — required for private/presence channels via Reverb.
 // Authenticated with the WellCore guard so both Admin and Client users can authorize.
-Route::post('/v/broadcasting/auth', function (\Illuminate\Http\Request $request) {
+Route::post('/v/broadcasting/auth', function (Request $request) {
     return Broadcast::auth($request);
 })->middleware(['auth:wellcore']);
 
@@ -161,6 +165,27 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'plan.lock:strict', 'thr
 Route::prefix('v/client')->middleware(['auth:wellcore', 'plan.lock:strict', 'throttle:api'])->group(function () {
     Route::get('/medals', [MedalController::class, 'index']);
     Route::get('/medals/unlocked', [MedalController::class, 'unlocked']);
+});
+
+// SP-4 — Community: Profiles, Follows, Community Notifications, Comments, Preferences
+Route::prefix('v')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
+    // Client profiles & follow/unfollow
+    Route::get('/profile/{clientId}', [ProfileController::class, 'show'])->whereNumber('clientId');
+    Route::post('/profile/{clientId}/follow', [ProfileController::class, 'follow'])->whereNumber('clientId');
+    Route::delete('/profile/{clientId}/follow', [ProfileController::class, 'unfollow'])->whereNumber('clientId');
+
+    // Community notifications (separate from system notifications)
+    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markRead'])->whereNumber('id');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
+
+    // Per-post comments
+    Route::get('/community/posts/{postId}/comments', [SocialController::class, 'commentsList'])->whereNumber('postId');
+    Route::post('/community/posts/{postId}/comments', [SocialController::class, 'commentCreate'])->whereNumber('postId')->middleware('throttle:community-write');
+
+    // Client autoshare preferences
+    Route::patch('/me/preferences', [MeController::class, 'updatePreferences']);
 });
 
 // Rise (Phase 7 — authenticated client, Bearer token)

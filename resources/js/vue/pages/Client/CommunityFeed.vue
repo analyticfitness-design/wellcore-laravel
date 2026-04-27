@@ -1,5 +1,6 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, onUnmounted } from 'vue';
+import { RouterLink } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
 import { useAuthStore } from '../../stores/auth';
@@ -20,6 +21,9 @@ const page = ref(1);
 const lastPage = ref(1);
 const hasMore = ref(true);
 const loadingMore = ref(false);
+
+// ── Feed tab (all | following) ───────────────────────────────────────
+const feedTab = ref('all'); // 'all' | 'following'
 
 // ── New post ─────────────────────────────────────────────────────────
 const postType = ref('text');
@@ -79,8 +83,10 @@ async function fetchFeed(reset = false) {
   const signal = getFeedSignal();
 
   try {
+    const params = { page: page.value, per_page: 10 };
+    if (feedTab.value === 'following') params.tab = 'following';
     const response = await api.get('/api/v/client/community', {
-      params: { page: page.value, per_page: 10 },
+      params,
       signal,
     });
     const d = response.data;
@@ -90,10 +96,15 @@ async function fetchFeed(reset = false) {
 
     const newPosts = d.posts || [];
     if (reset) {
+      // On full reload, clean up old subscriptions before replacing the list.
+      unsubscribeAllPostChannels();
       posts.value = newPosts;
     } else {
       posts.value.push(...newPosts);
     }
+
+    // Subscribe to real-time channels for freshly loaded posts.
+    subscribeToPostChannels(newPosts);
 
     if (d.pagination) {
       lastPage.value = d.pagination.last_page;
@@ -276,6 +287,63 @@ function cancelDelete() {
   confirmDeleteId.value = null;
 }
 
+// ── Realtime: community-post channels ────────────────────────────
+// Keeps a Set of post IDs we are currently subscribed to so we
+// never double-subscribe when loadMore appends new pages.
+const subscribedPostIds = new Set();
+
+function subscribeToPostChannels(postList) {
+  if (!window.Echo) return;
+
+  postList.forEach(post => {
+    if (subscribedPostIds.has(post.id)) return;
+    subscribedPostIds.add(post.id);
+
+    window.Echo.private(`community-post.${post.id}`)
+      .listen('.reaction.toggled', (e) => {
+        const p = posts.value.find(p => p.id === e.post_id);
+        if (!p) return;
+        // reaction_counts is a key-value object { like: 2, fire: 1, ... }
+        p.reaction_counts = { ...(p.reaction_counts || {}), [e.reaction_type]: e.count };
+      })
+      .listen('.comment.added', (e) => {
+        const p = posts.value.find(p => p.id === e.post_id);
+        if (!p) return;
+        // Only increment the counter; do not push into comments[] to avoid
+        // duplicates for the author whose optimistic update already added it.
+        const isOwnComment = Number(e.client_id) === currentClientId.value;
+        if (!isOwnComment) {
+          p.comments_count = (p.comments_count ?? 0) + 1;
+          // If comments section is open, push the comment live.
+          if (expandedComments.value[e.post_id]) {
+            if (!p.comments) p.comments = [];
+            p.comments.push({
+              id: Date.now(),
+              client_id: e.client_id,
+              client_name: e.client_name,
+              content: e.content,
+              created_at: e.created_at,
+            });
+          }
+        }
+      });
+  });
+}
+
+function unsubscribeAllPostChannels() {
+  subscribedPostIds.forEach(id => {
+    window.Echo?.leave(`community-post.${id}`);
+  });
+  subscribedPostIds.clear();
+}
+
+// ── Switch feed tab ──────────────────────────────────────────────────
+function switchFeedTab(tab) {
+  if (feedTab.value === tab) return;
+  feedTab.value = tab;
+  fetchFeed(true);
+}
+
 // ── Infinite scroll ──────────────────────────────────────────────────
 function setupInfiniteScroll() {
   if (!sentinelRef.value) return;
@@ -298,6 +366,10 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   if (scrollObserver) scrollObserver.disconnect();
+});
+
+onUnmounted(() => {
+  unsubscribeAllPostChannels();
 });
 
 // ── Helpers ──────────────────────────────────────────────────────────
@@ -415,6 +487,32 @@ function getReactionCount(post, type) {
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- FEED TABS (All | Following)                                    -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div class="flex gap-1 rounded-xl border border-wc-border bg-wc-bg-secondary p-1">
+        <button
+          type="button"
+          @click="switchFeedTab('all')"
+          class="flex-1 rounded-lg py-2 text-sm font-semibold uppercase tracking-wider transition-all"
+          :class="feedTab === 'all'
+            ? 'bg-wc-bg-tertiary text-wc-text shadow-sm'
+            : 'text-wc-text-tertiary hover:text-wc-text-secondary'"
+        >
+          Comunidad
+        </button>
+        <button
+          type="button"
+          @click="switchFeedTab('following')"
+          class="flex-1 rounded-lg py-2 text-sm font-semibold uppercase tracking-wider transition-all"
+          :class="feedTab === 'following'
+            ? 'bg-wc-bg-tertiary text-wc-text shadow-sm'
+            : 'text-wc-text-tertiary hover:text-wc-text-secondary'"
+        >
+          Siguiendo
+        </button>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- CREATE POST                                                     -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <div class="wc-glass wc-lift overflow-hidden rounded-2xl border border-wc-border">
@@ -503,35 +601,50 @@ function getReactionCount(post, type) {
               <!-- Header row -->
               <div class="flex items-start justify-between gap-3">
                 <div class="flex items-center gap-3">
-                  <!-- Avatar with type badge -->
-                  <div class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-wc-accent/40 to-wc-accent/10 text-sm font-bold text-wc-accent ring-2 ring-wc-accent/60 ring-offset-2 ring-offset-wc-bg">
-                    {{ getInitials(post.client_name) }}
-                    <span
-                      v-if="post.post_type && post.post_type !== 'text'"
-                      class="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-wc-bg-tertiary text-[10px] ring-1 ring-wc-border"
-                    >{{ getPostTypeInfo(post.post_type).emoji }}</span>
-                  </div>
-                  <div>
-                    <div class="flex items-center gap-2">
-                      <p class="text-sm font-semibold leading-tight text-wc-text">{{ post.client_name || 'Miembro' }}</p>
-                      <!-- Post type badge -->
+                  <!-- Avatar + name: clickeable → perfil publico -->
+                  <RouterLink
+                    :to="`/client/profile/${post.client_id}`"
+                    class="group flex items-center gap-3"
+                  >
+                    <!-- Avatar with type badge -->
+                    <div class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-wc-accent/40 to-wc-accent/10 text-sm font-bold text-wc-accent ring-2 ring-wc-accent/60 ring-offset-2 ring-offset-wc-bg transition-all group-hover:ring-wc-accent">
+                      {{ getInitials(post.client_name) }}
                       <span
-                        v-if="post.post_type === 'achievement' || post.post_type === 'pr'"
-                        class="wc-pr-badge rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.15em]"
-                      >{{ getPostTypeInfo(post.post_type).emoji }} {{ getPostTypeInfo(post.post_type).label }}</span>
-                      <span
-                        v-else-if="post.post_type && post.post_type !== 'text'"
-                        class="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider"
-                        :class="`${getPostTypeInfo(post.post_type).bg} ${getPostTypeInfo(post.post_type).text}`"
-                      >{{ getPostTypeInfo(post.post_type).emoji }} {{ getPostTypeInfo(post.post_type).label }}</span>
+                        v-if="post.post_type && post.post_type !== 'text'"
+                        class="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-wc-bg-tertiary text-[10px] ring-1 ring-wc-border"
+                      >{{ getPostTypeInfo(post.post_type).emoji }}</span>
                     </div>
-                    <p class="flex items-center gap-1 text-xs text-wc-text-tertiary">
-                      <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                      </svg>
-                      {{ timeAgo(post.created_at) }}
-                    </p>
-                  </div>
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <p class="text-sm font-semibold leading-tight text-wc-text group-hover:text-wc-accent transition-colors">{{ post.client_name || 'Miembro' }}</p>
+                        <!-- Post type badge -->
+                        <span
+                          v-if="post.post_type === 'achievement' || post.post_type === 'pr'"
+                          class="wc-pr-badge rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.15em]"
+                        >{{ getPostTypeInfo(post.post_type).emoji }} {{ getPostTypeInfo(post.post_type).label }}</span>
+                        <span
+                          v-else-if="post.post_type && post.post_type !== 'text'"
+                          class="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider"
+                          :class="`${getPostTypeInfo(post.post_type).bg} ${getPostTypeInfo(post.post_type).text}`"
+                        >{{ getPostTypeInfo(post.post_type).emoji }} {{ getPostTypeInfo(post.post_type).label }}</span>
+                      </div>
+                      <!-- Medals row (si el backend las retorna en client.medals) -->
+                      <div v-if="post.client && (post.client.medals || []).length > 0" class="flex gap-0.5 mt-0.5">
+                        <span
+                          v-for="m in (post.client.medals || []).slice(0, 3)"
+                          :key="m.name"
+                          class="text-xs"
+                          :title="m.name"
+                        >{{ m.icon }}</span>
+                      </div>
+                      <p class="flex items-center gap-1 text-xs text-wc-text-tertiary mt-0.5">
+                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                        {{ timeAgo(post.created_at) }}
+                      </p>
+                    </div>
+                  </RouterLink>
                 </div>
 
                 <!-- Delete (own posts only, visible on group hover) -->
@@ -657,8 +770,22 @@ function getReactionCount(post, type) {
           </div>
         </TransitionGroup>
 
-        <!-- Empty state -->
-        <div v-if="!loading && posts.length === 0" class="wc-glass wc-grain relative overflow-hidden rounded-2xl border border-dashed border-wc-border p-16 text-center">
+        <!-- Empty state: following tab with zero posts -->
+        <div v-if="!loading && posts.length === 0 && feedTab === 'following'"
+             class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-wc-border py-12 text-center gap-3">
+          <span class="text-4xl leading-none">&#128101;</span>
+          <p class="font-semibold text-wc-text">Aún no sigues a nadie</p>
+          <p class="text-sm text-wc-text/50">Visita perfiles de tu comunidad y sigue a quien te inspire.</p>
+          <button
+            @click="switchFeedTab('all')"
+            class="mt-2 rounded-xl bg-wc-accent px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-wc-accent/90 active:scale-95"
+          >
+            Ver comunidad
+          </button>
+        </div>
+
+        <!-- Empty state: general -->
+        <div v-else-if="!loading && posts.length === 0" class="wc-glass wc-grain relative overflow-hidden rounded-2xl border border-dashed border-wc-border p-16 text-center">
           <div class="wc-orb-tr"></div>
           <div class="relative z-10 mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-wc-accent/30 to-wc-accent/5 ring-1 ring-wc-accent/40">
             <svg class="h-10 w-10 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

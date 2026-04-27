@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\HabitType;
 use App\Events\ChatReactionToggled;
+use App\Events\CommentAdded;
 use App\Events\NewMessageSent;
+use App\Events\PostReactionToggled;
 use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
 use App\Mail\ReferralInvitation;
@@ -32,6 +34,7 @@ use App\Services\AIService;
 use App\Services\ClientCacheService;
 use App\Services\ImagePipelineService;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -50,8 +53,7 @@ class SocialController extends Controller
     /**
      * GET /api/v/client/community
      *
-     * Community feed posts with reactions/comments.
-     * Ports CommunityFeed.php render() logic.
+     * Community feed posts scoped to the client's coach. Supports ?tab=following.
      */
     public function communityIndex(Request $request): JsonResponse
     {
@@ -68,10 +70,14 @@ class SocialController extends Controller
             ];
         });
 
-        $posts = CommunityPost::where('visible', true)
+        $baseQuery = $request->query('tab') === 'following'
+            ? $this->followingQuery($client)
+            : $this->coachScopeQuery();
+
+        $posts = $baseQuery
             ->withCount(['reactions', 'comments'])
             ->with([
-                'client:id,name',
+                'client:id,name,avatar_url',
                 'comments.client:id,name',
                 'reactions' => fn ($q) => $q->where('client_id', $clientId),
             ])
@@ -80,7 +86,6 @@ class SocialController extends Controller
 
         $postIds = $posts->pluck('id');
 
-        // Per-type reaction counts
         $reactionCountsAll = PostReaction::whereIn('post_id', $postIds)
             ->selectRaw('post_id, reaction_type, COUNT(*) as total')
             ->groupBy('post_id', 'reaction_type')
@@ -88,7 +93,6 @@ class SocialController extends Controller
             ->groupBy('post_id')
             ->map(fn ($rows) => $rows->pluck('total', 'reaction_type'));
 
-        // My reactions per post
         $myReactions = $posts->getCollection()
             ->mapWithKeys(fn ($post) => [
                 $post->id => $post->reactions->pluck('reaction_type')->toArray(),
@@ -98,6 +102,7 @@ class SocialController extends Controller
             'id' => $post->id,
             'client_id' => $post->client_id,
             'client_name' => $post->client?->name ?? 'Anonimo',
+            'client_avatar' => $post->client?->avatar_url ?? null,
             'content' => $post->content,
             'post_type' => $post->post_type,
             'created_at' => $post->created_at?->toIso8601String(),
@@ -124,6 +129,53 @@ class SocialController extends Controller
                 'total' => $posts->total(),
             ],
         ]);
+    }
+
+    /**
+     * GET /api/v/community/posts/{postId}/comments
+     *
+     * List all comments for a post.
+     */
+    public function commentsList(Request $request, int $postId): JsonResponse
+    {
+        $comments = PostComment::where('post_id', $postId)
+            ->with('client:id,name,avatar_url')
+            ->latest('created_at')
+            ->get();
+
+        return response()->json(['comments' => $comments]);
+    }
+
+    /**
+     * POST /api/v/community/posts/{postId}/comments
+     *
+     * Create a comment and notify the post author.
+     */
+    public function commentCreate(Request $request, int $postId): JsonResponse
+    {
+        $request->validate(['content' => 'required|string|max:500']);
+
+        $client = auth('wellcore')->user();
+        $post = CommunityPost::findOrFail($postId);
+
+        $comment = PostComment::create([
+            'post_id' => $postId,
+            'client_id' => $client->id,
+            'content' => $request->input('content'),
+        ]);
+
+        if ($post->client_id !== $client->id) {
+            DB::table('community_notifications')->insert([
+                'recipient_id' => $post->client_id,
+                'actor_id' => $client->id,
+                'type' => 'comment',
+                'post_id' => $postId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        return response()->json(['comment' => $comment->load('client:id,name,avatar_url')]);
     }
 
     /**
@@ -211,6 +263,14 @@ class SocialController extends Controller
             $toggled = true;
         }
 
+        // Broadcast the updated count for this reaction type to all listeners on
+        // the post channel so other clients receive the live count without polling.
+        $count = PostReaction::where('post_id', $id)
+            ->where('reaction_type', $reactionType)
+            ->count();
+
+        event(new PostReactionToggled($id, $reactionType, $count));
+
         return response()->json([
             'toggled' => $toggled,
             'reaction_type' => $reactionType,
@@ -246,6 +306,15 @@ class SocialController extends Controller
             'client_id' => $clientId,
             'content' => $request->input('content'),
         ]);
+
+        // Broadcast the new comment to all other clients viewing this post in real-time.
+        event(new CommentAdded(
+            postId:     $id,
+            clientId:   $clientId,
+            clientName: $client->name ?? 'Anónimo',
+            content:    $request->input('content'),
+            createdAt:  $comment->created_at?->toIso8601String() ?? now()->toIso8601String(),
+        ));
 
         return response()->json([
             'id' => $comment->id,
@@ -476,12 +545,12 @@ class SocialController extends Controller
         ]);
 
         event(new NewMessageSent(
-            coachId:        $coach->id,
-            clientId:       $clientId,
-            senderId:       $clientId,
-            senderName:     auth('wellcore')->user()->name ?? 'Cliente',
+            coachId: $coach->id,
+            clientId: $clientId,
+            senderId: $clientId,
+            senderName: auth('wellcore')->user()->name ?? 'Cliente',
             messagePreview: mb_substr($msg->message, 0, 100),
-            sentAt:         $msg->created_at?->toIso8601String() ?? now()->toIso8601String(),
+            sentAt: $msg->created_at?->toIso8601String() ?? now()->toIso8601String(),
         ));
 
         return response()->json([
@@ -495,7 +564,7 @@ class SocialController extends Controller
      *
      * Toggle emoji reaction on a coach message.
      */
-    public function toggleChatReaction(\Illuminate\Http\Request $request, int $messageId): \Illuminate\Http\JsonResponse
+    public function toggleChatReaction(Request $request, int $messageId): JsonResponse
     {
         $request->validate(['emoji' => 'required|string|max:8']);
         $clientId = auth('wellcore')->id();
@@ -523,9 +592,9 @@ class SocialController extends Controller
         } else {
             ChatMessageReaction::create([
                 'chat_message_id' => $messageId,
-                'user_type'       => 'client',
-                'client_id'       => $clientId,
-                'emoji'           => $request->emoji,
+                'user_type' => 'client',
+                'client_id' => $clientId,
+                'emoji' => $request->emoji,
             ]);
             $action = 'added';
         }
@@ -536,12 +605,12 @@ class SocialController extends Controller
             ->pluck('count', 'emoji');
 
         event(new ChatReactionToggled(
-            coachId:   (int) $message->coach_id,
-            clientId:  (int) $message->client_id,
+            coachId: (int) $message->coach_id,
+            clientId: (int) $message->client_id,
             messageId: $messageId,
-            emoji:     $request->emoji,
-            counts:    $counts->toArray(),
-            action:    $action,
+            emoji: $request->emoji,
+            counts: $counts->toArray(),
+            action: $action,
         ));
 
         return response()->json(['ok' => true, 'counts' => $counts]);
@@ -1602,9 +1671,10 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
         if (blank($request->input('exercise_name'))) {
             \Log::warning('SocialController.videoCheckinSubmit called without exercise_name', [
                 'client_id' => auth('wellcore')->id(),
-                'payload'   => $request->except(['_token', 'media_file']),
-                'referer'   => $request->headers->get('referer'),
+                'payload' => $request->except(['_token', 'media_file']),
+                'referer' => $request->headers->get('referer'),
             ]);
+
             return response()->json(['ok' => false, 'reason' => 'missing_exercise'], 204);
         }
 
@@ -1677,6 +1747,39 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
     }
 
     // ─── Private helpers ───────────────────────────────────────────────
+
+    /**
+     * Feed query scoped to the authenticated client's assigned coach.
+     * Falls back to the client's own posts when no coach is assigned.
+     */
+    private function coachScopeQuery(): Builder
+    {
+        $clientId = auth('wellcore')->id();
+
+        $coachId = DB::table('client_coach')
+            ->where('client_id', $clientId)
+            ->where('active', true)
+            ->value('admin_id');
+
+        if (! $coachId) {
+            return CommunityPost::where('client_id', $clientId)
+                ->where('visible', true);
+        }
+
+        return CommunityPost::where('coach_admin_id', $coachId)
+            ->where('visible', true);
+    }
+
+    /**
+     * Feed query scoped to clients the authenticated user follows.
+     */
+    private function followingQuery(Client $client): Builder
+    {
+        $followingIds = $client->following()->pluck('clients.id');
+
+        return CommunityPost::whereIn('client_id', $followingIds)
+            ->where('visible', true);
+    }
 
     /**
      * Parse macros from nutrition plan. Ported from NutritionPlan.php.

@@ -30,6 +30,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
     'referral_code',
     'referred_by',
     'onboarding_completed',
+    'autoshare_workout',
+    'autoshare_pr',
+    'autoshare_medal',
+    'autoshare_weight',
+    'autoshare_streak',
 ])]
 #[Hidden(['password_hash'])]
 class Client extends Authenticatable
@@ -146,5 +151,28 @@ class Client extends Authenticatable
         return $this->belongsToMany(Medal::class, 'client_medals')
             ->withPivot(['current_progress', 'achieved_at'])
             ->withTimestamps();
+    }
+
+    public function following(): BelongsToMany
+    {
+        return $this->belongsToMany(Client::class, 'follows', 'follower_id', 'followed_id')
+            ->withTimestamps();
+    }
+
+    public function followers(): BelongsToMany
+    {
+        return $this->belongsToMany(Client::class, 'follows', 'followed_id', 'follower_id')
+            ->withTimestamps();
+    }
+
+    public function coaches(): BelongsToMany
+    {
+        return $this->belongsToMany(Admin::class, 'client_coach', 'client_id', 'admin_id')
+            ->wherePivot('active', true);
+    }
+
+    public function activeCoach(): ?Admin
+    {
+        return $this->coaches()->first();
     }
 }

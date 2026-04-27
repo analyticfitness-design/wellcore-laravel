@@ -6,6 +6,7 @@ use App\Events\NewMessageSent;
 use App\Models\Admin;
 use App\Models\Client;
 use App\Models\CoachMessage;
+use App\Models\CommunityPost;
 use App\Models\WorkoutPr;
 use Illuminate\Support\Facades\DB;
 
@@ -19,6 +20,12 @@ class WorkoutPrObserver
             return;
         }
 
+        $this->notifyCoach($pr, $client);
+        $this->maybeAutoShare($pr, $client);
+    }
+
+    private function notifyCoach(WorkoutPr $pr, Client $client): void
+    {
         $coach = $this->resolveCoach($client);
 
         if (! $coach) {
@@ -43,6 +50,28 @@ class WorkoutPrObserver
             messagePreview: mb_substr($text, 0, 100),
             sentAt: $msg->created_at?->toIso8601String() ?? now()->toIso8601String(),
         ));
+    }
+
+    private function maybeAutoShare(WorkoutPr $pr, Client $client): void
+    {
+        if (! $client->autoshare_pr) {
+            return;
+        }
+
+        $coachId = optional($client->activeCoach())->id;
+
+        CommunityPost::create([
+            'client_id' => $client->id,
+            'coach_admin_id' => $coachId,
+            'content' => sprintf(
+                '🏆 Nuevo PR en %s: %s kg × %d reps.',
+                $pr->exercise_name,
+                number_format((float) $pr->weight_kg, 1),
+                $pr->reps
+            ),
+            'post_type' => 'pr',
+            'visible' => true,
+        ]);
     }
 
     /**

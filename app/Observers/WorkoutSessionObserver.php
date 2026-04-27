@@ -2,11 +2,13 @@
 
 namespace App\Observers;
 
+use App\Models\CommunityPost;
 use App\Models\WorkoutSession;
 use App\Services\MedalService;
 
 /**
- * Fires medal evaluation when a workout session is marked completed.
+ * Fires medal evaluation and optional community auto-share when a workout
+ * session is marked completed.
  *
  * Only reacts when `completed` transitions to true — avoids re-evaluating
  * on every minor update (duration, notes, feeling).
@@ -37,6 +39,7 @@ class WorkoutSessionObserver
         }
 
         $this->evaluate($session);
+        $this->maybeAutoShare($session);
     }
 
     private function evaluate(WorkoutSession $session): void
@@ -44,5 +47,29 @@ class WorkoutSessionObserver
         $this->medals->checkCategory($session->client, 'constancia');
         $this->medals->checkCategory($session->client, 'volumen');
         $this->medals->checkCategory($session->client, 'especial');
+    }
+
+    private function maybeAutoShare(WorkoutSession $session): void
+    {
+        $client = $session->client;
+
+        if (! $client?->autoshare_workout) {
+            return;
+        }
+
+        $coachId = optional($client->activeCoach())->id;
+
+        CommunityPost::create([
+            'client_id' => $client->id,
+            'coach_admin_id' => $coachId,
+            'content' => sprintf(
+                '¡Completé mi entrenamiento: %s! 💪 %d series | %s kg de volumen.',
+                $session->day_name ?? 'Sesión',
+                $session->total_sets ?? 0,
+                number_format((float) ($session->total_volume_kg ?? 0), 1),
+            ),
+            'post_type' => 'achievement',
+            'visible' => true,
+        ]);
     }
 }

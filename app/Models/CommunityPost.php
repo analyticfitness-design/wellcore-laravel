@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
     'client_id',
+    'coach_admin_id',
     'content',
     'post_type',
     'image_path',

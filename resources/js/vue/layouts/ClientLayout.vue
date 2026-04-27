@@ -337,8 +337,8 @@ const bottomNav = [
 
         <!-- Right: dark mode, user info -->
         <div class="flex shrink-0 items-center gap-3">
-          <!-- Notification Bell -->
-          <NotificationBell />
+          <!-- Notification Bell — SP-4 community notifications endpoint -->
+          <NotificationBell endpoint="/api/v/notifications" :poll-interval="30000" />
 
           <!-- Dark Mode Toggle -->
           <button

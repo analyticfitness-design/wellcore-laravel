@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\CoachMessage;
 use App\Models\PodMember;
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,5 +64,39 @@ Broadcast::channel('rise-pod.{podId}', function ($user, int $podId) {
 
     return PodMember::where('pod_id', $podId)
         ->where('client_id', $user->id)
+        ->exists();
+});
+
+// Private community post channel — only clients who can see this post may listen.
+// A client can see the post if: the post belongs to their coach's community scope,
+// which means community_posts.coach_admin_id matches the client's active coach in
+// client_coach (admin_id). The channel uses a hyphen separator to avoid Reverb
+// treating the dot as a nested channel segment.
+// Channel name format: community-post.{postId}
+Broadcast::channel('community-post.{postId}', function ($user, int $postId) {
+    if (! ($user instanceof Client)) {
+        return false;
+    }
+
+    // Find the client's active coach.
+    $coachId = DB::table('client_coach')
+        ->where('client_id', $user->id)
+        ->where('active', true)
+        ->value('admin_id');
+
+    if (! $coachId) {
+        // No active coach: only allow if the post was authored by this client.
+        return DB::table('community_posts')
+            ->where('id', $postId)
+            ->where('client_id', $user->id)
+            ->where('visible', true)
+            ->exists();
+    }
+
+    // With a coach: allow if the post is scoped to that same coach community.
+    return DB::table('community_posts')
+        ->where('id', $postId)
+        ->where('coach_admin_id', $coachId)
+        ->where('visible', true)
         ->exists();
 });
