@@ -6,12 +6,14 @@
         "build": "vite build",
         "dev": "vite",
         "test": "vitest run",
-        "test:watch": "vitest"
+        "test:watch": "vitest",
+        "gen:schema-types": "json2ts -i schemas/coach_drop_v1.schema.json -o resources/js/vue/types/coach-drop-v1.generated.ts --bannerComment '// AUTO-GENERATED. Do not edit. Run npm run gen:schema-types.'"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
         "axios": "^1.11.0",
         "concurrently": "^9.0.1",
+        "json-schema-to-typescript": "^15.0.4",
         "laravel-vite-plugin": "^3.0.0",
         "sharp": "^0.34.5",
         "tailwindcss": "^4.0.0",
