@@ -190,6 +190,7 @@ async function uploadPhotos() {
   try {
     // The API expects one photo at a time with: photo_date, tipo, photo
     const entries = Object.entries(uploadFiles.value).filter(([, file]) => file !== null);
+    const failed = [];
 
     for (const [angle, file] of entries) {
       const formData = new FormData();
@@ -197,7 +198,22 @@ async function uploadPhotos() {
       formData.append('tipo', angle);
       formData.append('photo', file);
 
-      await api.post('/api/v/client/photos', formData);
+      try {
+        await api.post('/api/v/client/photos', formData);
+      } catch (err) {
+        if (err.response?.status === 422) {
+          const msgs = Object.values(err.response.data.errors || {}).flat().map(translateMessage);
+          failed.push(`${angle}: ${msgs.join(', ')}`);
+        } else {
+          failed.push(`${angle}: ${err.response?.data?.message || 'Error al subir'}`);
+        }
+      }
+    }
+
+    if (failed.length) {
+      uploadError.value = failed.join(' | ');
+      uploading.value = false;
+      return;
     }
 
     // Reset form

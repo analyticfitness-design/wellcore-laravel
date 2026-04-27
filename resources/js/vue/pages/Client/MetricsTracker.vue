@@ -112,6 +112,7 @@ function formatDate(dateStr) {
 
 // ── Save metric ──
 async function saveMetric() {
+  if (saving.value) return;
   saveError.value = null;
   formErrors.value = {};
 

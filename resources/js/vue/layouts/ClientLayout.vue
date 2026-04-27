@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, onBeforeUnmount } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import { useApi } from '../composables/useApi';
@@ -45,12 +45,13 @@ const planPhaseText = ref('');
 const windowWidth = ref(window.innerWidth);
 const onWindowResize = () => { windowWidth.value = window.innerWidth; };
 
+let layoutAc = null;
+
 onMounted(async () => {
     window.addEventListener('resize', onWindowResize, { passive: true });
-    onUnmounted(() => window.removeEventListener('resize', onWindowResize));
 
-    const ac = new AbortController();
-    onUnmounted(() => ac.abort());
+    layoutAc = new AbortController();
+    const ac = layoutAc;
 
     const [statusRes, coachRes, dashRes] = await Promise.allSettled([
         api.get('/api/v/client/account-status', { signal: ac.signal }),
@@ -152,6 +153,11 @@ function closeSidebar() {
 // Close sidebar on route change
 const unwatch = router.afterEach(() => {
     sidebarOpen.value = false;
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('resize', onWindowResize);
+    layoutAc?.abort();
 });
 
 onUnmounted(() => {

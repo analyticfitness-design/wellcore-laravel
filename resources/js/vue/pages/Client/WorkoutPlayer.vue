@@ -625,7 +625,7 @@ async function switchWeek(week) {
     currentDayIndex.value = 0;
     loadDayExercises();
   } catch (err) {
-    // Keep current data on error
+    toast.apiError(err, 'No se pudo cargar esa semana. Verifica tu conexión.');
   } finally {
     loading.value = false;
   }
@@ -791,6 +791,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   stopTimer();
   clearRestTimer();
+  voiceStopListening();
   if (typeof document !== 'undefined') {
     document.removeEventListener('visibilitychange', handleVisibilityChange);
   }

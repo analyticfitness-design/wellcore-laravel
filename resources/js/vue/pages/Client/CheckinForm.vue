@@ -150,6 +150,12 @@ function validateCurrentStep() {
       return false;
     }
   }
+  if (currentStep.value === 4) {
+    if (comentario.value.length > 1000) {
+      formErrors.value.comentario = `El comentario no puede superar 1000 caracteres (${comentario.value.length}/1000)`;
+      return false;
+    }
+  }
   return true;
 }
 
