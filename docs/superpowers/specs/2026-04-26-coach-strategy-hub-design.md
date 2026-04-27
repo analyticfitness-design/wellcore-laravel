@@ -116,10 +116,12 @@ CREATE TABLE coach_marketing_profiles (
 
   -- Voz
   voice_adjectives JSON NOT NULL,        -- exactamente 3 chips
-  voice_samples JSON,                    -- [{caption,source_url}] hasta 3, opcional
+  voice_samples JSON,                    -- [{caption:string, source_url:string|null,
+                                         --   note:string|null}], 0-3, opcional
 
   -- Ofertas activas
-  active_offers JSON NOT NULL,           -- [{name,price,currency,promo}] hasta 3
+  active_offers JSON NOT NULL,           -- [{name:string, price:number, currency:ISO4217 ej "COP","USD",
+                                         --   promo:string|null}], 1-3 elementos
 
   -- Top posts que funcionaron (opcional)
   top_working_posts JSON,                -- [{url,why_worked}] hasta 3
@@ -134,7 +136,7 @@ CREATE TABLE coach_marketing_profiles (
 
   INDEX idx_completed (completed_at),
   CONSTRAINT fk_cmp_coach FOREIGN KEY (coach_id)
-    REFERENCES coaches(id) ON DELETE CASCADE
+    REFERENCES admins(id) ON DELETE CASCADE
 );
 ```
 
@@ -162,7 +164,8 @@ CREATE TABLE coach_content_drops (
 
   -- Audit / mejora continua
   generated_by_session_id VARCHAR(80),
-  admin_edits_diff JSON,                 -- diff entre generado y aprobado
+  original_content JSON NULL,            -- snapshot del content al INSERT inicial
+  admin_edits_diff JSON NULL,            -- diff calculado al approve (final vs original)
   generated_at TIMESTAMP NULL,
   reviewed_at TIMESTAMP NULL,
   reviewed_by_id BIGINT UNSIGNED NULL,
@@ -177,7 +180,7 @@ CREATE TABLE coach_content_drops (
   UNIQUE KEY uniq_coach_week (coach_id, iso_year, iso_week),
   INDEX idx_status_week (status, iso_year, iso_week),
   CONSTRAINT fk_ccd_coach FOREIGN KEY (coach_id)
-    REFERENCES coaches(id) ON DELETE CASCADE
+    REFERENCES admins(id) ON DELETE CASCADE
 );
 ```
 
@@ -209,9 +212,11 @@ CREATE TABLE coach_content_piece_states (
 
 ### 4.4 Notas de diseño
 
-- **`intake_snapshot`** es deliberado: si el coach actualiza su intake, drops anteriores conservan el contexto que los generó.
+- **Coach = `admins.id` con `role = UserRole::Coach`** — no existe tabla `coaches` separada. El FK `coach_id` referencia `admins(id)` en las 3 tablas (mismo patrón que el resto del codebase: `coach_notes.coach_id`, `coach_messages.coach_id`, `coach_invitations.coach_id`, etc., todos apuntan a `admins`).
+- **`intake_snapshot`** es deliberado: si el coach actualiza su intake, drops anteriores conservan el contexto que los generó. Lo captura el script PHP heredoc al momento del INSERT inicial (lee `coach_marketing_profiles` por `coach_id` y embebe el `toArray()` actual en la columna).
 - **`schema_version`** desde el día 1 — futura `coach_drop_v2` se agrega sin romper renderers anteriores.
-- **`status='archived'`** se aplica a drops completados >= 30 días (oculto del historial principal pero accesible).
+- **`status='archived'`** se aplica a drops `completed >= 30 días` automáticamente vía comando de consola programado (`php artisan wellcore:archive-old-drops`), corre 1 vez al día.
+- **`admin_edits_diff`** se calcula y persiste **únicamente al transicionar `in_review → approved`**, comparando el `content` original (snapshot tomado al INSERT inicial, conservado en columna interna) contra el `content` final que se aprueba. Ediciones intermedias del admin no generan diffs incrementales — solo importa el diff final-vs-original para señales de mejora del MD system.
 - **Migraciones aditivas únicamente** — sin DROP, sin RENAME (memory `feedback_db_safety`).
 
 ## 5. Contrato JSON `coach_drop_v1`
@@ -571,9 +576,11 @@ La card del reel hereda directo el aesthetic del HTML `01-guion-reel-entrenamien
 
 ### 9.5 Stories Lun-Dom — fila de 7 (rompe grid 3-4)
 
-7 cards 9:16 con day-coding por color (LUN→DOM). En desktop: fila horizontal full-width. En mobile: scroll horizontal con scroll-snap. Hover: lift -2px + corner gold indicator.
+7 cards 9:16 con day-coding por color (LUN→DOM). Breakpoint: ≥`lg` (1024px) muestra fila completa de 7 columnas; `md` (768-1023px) colapsa a 2 filas (4+3); `<md` scroll horizontal full-width con `scroll-snap-type: x mandatory`. Hover: lift -2px + corner gold indicator (solo desktop, no mobile).
 
-Click en card → drawer lateral con: template completo de la story, "Copiar texto", "Descargar PNG" (export simple sin canvas editable — Story Editor real es Fase 3), checklist DM follow-up.
+Click en card → drawer lateral con: template completo de la story, "Copiar texto", "Descargar PNG", checklist DM follow-up.
+
+**"Descargar PNG" — implementación**: client-side vía librería `html-to-image` (npm). Se renderiza un nodo HTML oculto de 1080×1920 con la tipografía/fondo/texto WellCore, se exporta a PNG via `htmlToImage.toPng(node)` y se dispara el download del blob. Sin canvas editable (eso es Fase 3), sin servidor involucrado, sin queue. Latencia: < 500ms en hardware moderno.
 
 ### 9.6 Atmosphere — capa de profundidad obligatoria
 
@@ -678,15 +685,16 @@ composer require opis/json-schema
 - `App\Http\Requests\Admin\Marketing\UpdateDropContentRequest`
 
 **Resources tipadas para output:**
-- `App\Http\Resources\Coach\CoachDropResource` — NUNCA expone `admin_edits_diff`, `generated_by_session_id`, `intake_snapshot`.
+- `App\Http\Resources\Coach\CoachDropResource` — NUNCA expone `admin_edits_diff`, `generated_by_session_id`, `original_content`, `intake_snapshot`. La attribution line viene de `config('marketing.attribution.line')` (default: "Por Daniel · Equipo Estrategia WellCore"), no hardcoded en el resource.
 - `App\Http\Resources\Coach\CoachDropSummaryResource` (para historial).
 - `App\Http\Resources\Coach\MarketingProfileResource`.
 - `App\Http\Resources\Admin\Marketing\AdminDropResource` (incluye campos sensibles).
 - `App\Http\Resources\Admin\Marketing\QueueRowResource`.
 
 **Authorization Policies — IDOR-proof:**
-- `App\Policies\Coach\CoachContentDropPolicy` con `view`, `markPiecePublished`.
+- `App\Policies\Coach\CoachContentDropPolicy` con `view`, `markPiecePublished`. El `$user` recibido es `Admin` (auth model). Verifica `$user instanceof Admin && $user->role === UserRole::Coach && $drop->coach_id === $user->id`.
 - `App\Policies\Coach\CoachMarketingProfilePolicy` con `view`, `update`.
+- `App\Policies\Admin\Marketing\AdminDropPolicy` con `view`, `update`, `approve`, `requestRegenerate` — verifica `$user->role` está en `[UserRole::Admin, UserRole::Superadmin]`.
 - Todas las rutas pasan por `authorize()` — `la-05-security` audita.
 
 **State machine explícita:**
@@ -750,6 +758,11 @@ resources/js/vue/pages/Coach/
   Strategy.vue                            ← container con tabs Esta semana / Historial
   Onboarding/BrandProfile.vue             ← formulario con auto-save
 
+resources/js/vue/layouts/CoachLayout.vue  ← MODIFICAR: agregar item "Estrategia" en
+                                            sección "Principal" del sidebar (después
+                                            de "Inicio", antes de "Clientes"), con
+                                            badge sutil "Nuevo" durante primer mes
+
 resources/js/vue/components/coach/strategy/
   StrategyHero.vue
   StrategyEmptyState.vue
@@ -782,7 +795,12 @@ resources/js/vue/pages/Admin/Marketing/
 
 **Auto-save de drafts** con debounce 500ms en `BrandProfileForm.vue` → `PATCH /api/v/coach/marketing-profile/draft`.
 
-**Vue Router middleware:** `requireCompleteBrandProfile` bloquea entrada a `/coach/strategy` si `marketing_profile_completed_at IS NULL`. Redirige a `/coach/onboarding/brand-profile`.
+**Vue Router middleware:** `requireCompleteBrandProfile` bloquea entrada a `/coach/strategy` si `coach_marketing_profiles.completed_at IS NULL`.
+
+**Mecánica:**
+- Pinia store `coachStrategy` se hidrata en `app.js` mount (`fetchProfile()` antes del primer render del router-view) si el usuario actual es coach.
+- El route guard `beforeEach` para rutas `meta: { requiresBrandProfile: true }` lee `useCoachStrategyStore().isProfileComplete`. Si es `false`, redirige a `/coach/onboarding/brand-profile`.
+- Después del submit del onboarding, el store se actualiza optimísticamente y la próxima navegación a `/coach/strategy` pasa.
 
 ### 10.3 Tests obligatorios (Pest)
 
@@ -797,13 +815,16 @@ tests/Feature/Coach/Marketing/
 tests/Feature/Admin/Marketing/
   QueueListingTest.php
   DropReviewAndApprovalTest.php
-  AdminEditsDiffCaptureTest.php
+  AdminEditsDiffCaptureTest.php          ← verifica diff calculado al approve
+  RequestRegenerateTest.php              ← verifica vuelta a status=pending
+  ArchiveOldDropsCommandTest.php         ← scheduled command
   CoachProfileAdminEditTest.php
 
 tests/Unit/Marketing/
   CoachDropV1DtoTest.php
-  DropSchemaValidatorTest.php
+  DropSchemaValidatorTest.php            ← cubre INSERT path desde script PHP heredoc
   DropStateMachineTransitionsTest.php
+  AttributionLineConfigTest.php          ← lee config y nunca hardcoded
 ```
 
 Factories: `MarketingProfileFactory`, `CoachContentDropFactory` (con states `pending()`, `inReview()`, `ready()`, etc.), `CoachContentPieceStateFactory`.
@@ -812,7 +833,17 @@ Factories: `MarketingProfileFactory`, `CoachContentDropFactory` (con states `pen
 
 - Migraciones aditivas únicamente (sin DROP, sin RENAME).
 - `schema_version` en `content` desde el día 1.
+- Comando programado: `app/Console/Commands/ArchiveOldDropsCommand.php` con signature `wellcore:archive-old-drops`. Registrado en `app/Console/Kernel.php` con `->daily()->at('03:00')`. Archiva drops `status='completed' AND completed_at <= NOW() - INTERVAL 30 DAY` actualizando a `status='archived'`.
 - Feature flag `FEATURE_COACH_STRATEGY_ENABLED` en `config/features.php` — permite desactivar la pestaña entera sin rollback de DB.
+- Configuración de attribution en `config/marketing.php`:
+  ```php
+  return [
+      'attribution' => [
+          'line' => env('MARKETING_ATTRIBUTION_LINE', 'Por Daniel · Equipo Estrategia WellCore'),
+      ],
+  ];
+  ```
+  Cambiable por `.env` sin redeploy si Daniel decide ajustar la firma (ej. en su ausencia).
 
 ## 11. API endpoints
 
@@ -824,7 +855,8 @@ PUT    /api/v/coach/marketing-profile
 PATCH  /api/v/coach/marketing-profile/draft
 
 GET    /api/v/coach/strategy/current        → CoachDropResource o 404
-GET    /api/v/coach/strategy/history        → array CoachDropSummaryResource
+GET    /api/v/coach/strategy/history        → paginated CoachDropSummaryResource
+       query: ?page=1&per_page=20  (default per_page=20, max 50)
 GET    /api/v/coach/strategy/drops/{id}     → CoachDropResource (read-only, archived OK)
 
 POST   /api/v/coach/strategy/drops/{drop}/pieces/{pieceKey}/publish
@@ -841,8 +873,12 @@ GET    /api/v/admin/marketing/queue
 
 GET    /api/v/admin/marketing/drops/{id}                  → AdminDropResource
 PUT    /api/v/admin/marketing/drops/{id}/content          → actualiza content + diff
-POST   /api/v/admin/marketing/drops/{id}/approve          → status='ready'
-POST   /api/v/admin/marketing/drops/{id}/request-regenerate → status='pending'
+POST   /api/v/admin/marketing/drops/{id}/approve          → status='ready', calcula
+                                                            admin_edits_diff y persiste
+POST   /api/v/admin/marketing/drops/{id}/request-regenerate → status='pending'; preserva
+                                                            content actual como referencia
+                                                            (admin reescribirá al regenerar);
+                                                            opcional body { reason:string }
 
 GET    /api/v/admin/coaches/{id}/marketing-profile
 PUT    /api/v/admin/coaches/{id}/marketing-profile
@@ -850,7 +886,17 @@ PUT    /api/v/admin/coaches/{id}/marketing-profile
 
 Todos requieren middleware `auth:wellcore` + role check (`isCoach()` o `isAdmin()`). Respuestas tipadas, sin Express-style `res.json(any)`.
 
-**Inserción del drop generado offline** se hace mediante script PHP heredoc ejecutado vía tinker en EasyPanel (mismo patrón que `SISTEMA-CREACION-PLANES`). El script invoca el `DropSchemaValidator` antes del INSERT y aborta si falla. NO existe endpoint HTTP público para inserción — es trabajo de admin con acceso a tinker, no superficie expuesta.
+**Inserción del drop generado offline** se hace mediante script PHP heredoc ejecutado vía tinker en EasyPanel (mismo patrón que `SISTEMA-CREACION-PLANES`). El script:
+
+1. Recibe el JSON `coach_drop_v1` completo + `coach_id` + `iso_year` + `iso_week` como argumentos.
+2. Verifica que `admins.id = coach_id` exista, esté activo, y tenga `role = UserRole::Coach`. Si falla, aborta.
+3. Lee el intake actual del coach desde `coach_marketing_profiles`. Si `completed_at IS NULL`, aborta con mensaje "Coach no ha completado su Brand Profile — drop no puede generarse". Embebe el intake completo en `intake_snapshot`.
+4. Invoca `DropSchemaValidator` sobre el JSON `content` y aborta si falla con detalle del path inválido.
+5. Hace UPSERT en `coach_content_drops` (clave `coach_id, iso_year, iso_week`): si ya existe drop para esa semana, actualiza; si no, inserta. `status='in_review'`, `original_content = content` (snapshot baseline para `admin_edits_diff` futuro), timestamps de `generated_at`.
+6. Invalida el cache `coach_drop_v3:{coach_id}:{year}:{week}`.
+7. Notifica via Database Notification a admins activos (Daniel) — visible en `/admin/marketing/queue`.
+
+NO existe endpoint HTTP público para inserción — es trabajo de admin con acceso a tinker, no superficie expuesta. Esto previene cualquier vector externo para crear drops fraudulentos.
 
 ## 12. Matriz de delegación a agentes Laravel
 
@@ -899,7 +945,9 @@ El agente Plan despachará en paralelo donde haya independencia.
 | **`coach_drop_v1`** | Versión actual del JSON canónico. Validado server-side contra `schemas/coach_drop_v1.schema.json`. |
 | **State machine** | Transiciones permitidas entre estados de un drop. Implementada en `App\Services\Marketing\DropStateMachine`. |
 | **Sistema offline** | Carpeta `E:\WELLCORE FITNESS PLATAFORMA\SISTEMA-CREACION-MARKETING-COACHES\` con MDs + prompt maestro. Usada por sesiones Claude Code. |
-| **Equipo Estrategia WellCore** | Atribución pública de los drops. Daniel firma. Claude Code permanece confidencial. |
+| **Equipo Estrategia WellCore** | Atribución pública de los drops. Daniel firma. Claude Code permanece confidencial. Configurable en `config/marketing.php`. |
+| **Coach (modelo)** | Registro en tabla `admins` con `role = UserRole::Coach`. NO hay tabla `coaches`. FK `coach_id` siempre apunta a `admins(id)`. |
+| **Auth model** | `App\Models\Admin` (extiende `Authenticatable`). Custom guard `WellCoreGuard` lee `auth_tokens`. |
 
 ## 16. Criterios de "feature completa"
 
