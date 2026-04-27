@@ -13,6 +13,7 @@ use App\Models\WorkoutPr;
 use App\Models\WorkoutSession;
 use App\Observers\WorkoutPrObserver;
 use App\Observers\WorkoutSessionObserver;
+use App\Policies\Admin\Marketing\AdminDropPolicy;
 use App\Policies\ClientPolicy;
 use App\Policies\Coach\CoachContentDropPolicy;
 use App\Policies\Coach\CoachMarketingProfilePolicy;
@@ -85,6 +86,11 @@ class AppServiceProvider extends ServiceProvider
             CoachMarketingProfile::class,
             CoachMarketingProfilePolicy::class
         );
+        // AdminDropPolicy uses Gate::define to avoid conflict — same model (CoachContentDrop) has two policies
+        Gate::define('admin.marketing.viewDrop', [AdminDropPolicy::class, 'view']);
+        Gate::define('admin.marketing.updateDrop', [AdminDropPolicy::class, 'update']);
+        Gate::define('admin.marketing.approveDrop', [AdminDropPolicy::class, 'approve']);
+        Gate::define('admin.marketing.requestRegenerate', [AdminDropPolicy::class, 'requestRegenerate']);
     }
 
     /**
