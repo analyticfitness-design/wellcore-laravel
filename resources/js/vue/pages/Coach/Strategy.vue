@@ -63,6 +63,7 @@ onMounted(async () => {
                             :reel="reel"
                             :drop-id="store.currentDrop.id"
                             :piece-state="store.currentDrop.pieces.find(p => p.piece_key === reel.key) ?? null"
+                            :drop-assets="store.currentDrop.content?.assets ?? []"
                         />
 
                         <SectionDivider number="03" title="STORIES" sub="siete piezas Lun → Dom" />
@@ -70,6 +71,7 @@ onMounted(async () => {
                             :stories="store.currentDrop.content.stories"
                             :drop-id="store.currentDrop.id"
                             :pieces="store.currentDrop.pieces"
+                            :drop-assets="store.currentDrop.content?.assets ?? []"
                         />
 
                         <SectionDivider number="04" title="CHECKLIST" sub="producción de reel" />

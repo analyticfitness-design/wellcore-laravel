@@ -76,6 +76,12 @@
           }
         }
       }
+    },
+    "assets": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 60,
+      "items": { "$ref": "#/$defs/dropAsset" }
     }
   },
   "$defs": {
@@ -148,6 +154,37 @@
           }
         },
         "dm_followup_hint": { "type": "string", "maxLength": 400 }
+      }
+    },
+    "dropAsset": {
+      "type": "object",
+      "required": ["id", "kind", "url", "filename", "mime"],
+      "additionalProperties": false,
+      "properties": {
+        "id":          { "type": "string", "pattern": "^[a-z0-9-]{8,40}$" },
+        "kind":        { "enum": ["image", "video"] },
+        "url":         { "type": "string", "pattern": "^/storage/marketing/drops/\\d+/[A-Za-z0-9._/-]+$", "minLength": 30, "maxLength": 300 },
+        "filename":    { "type": "string", "minLength": 1, "maxLength": 200 },
+        "mime":        { "type": "string", "pattern": "^(image/(jpeg|png|webp)|video/mp4)$" },
+        "size_bytes":  { "type": "integer", "minimum": 1, "maximum": 52428800 },
+        "width":       { "type": "integer", "minimum": 1, "maximum": 8000 },
+        "height":      { "type": "integer", "minimum": 1, "maximum": 8000 },
+        "role":        { "enum": ["story_main", "story_slide", "reel_thumbnail", "reel_scene", "launch_sequence", "brand_cover", "other"] },
+        "linked_to": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type":        { "enum": ["story", "reel", "slide", "drop"] },
+            "day":         { "enum": ["LUN", "MAR", "MIE", "JUE", "VIE", "SAB", "DOM"] },
+            "reel_key":    { "enum": ["reel_1", "reel_2"] },
+            "slide_index": { "type": "integer", "minimum": 0, "maximum": 2 }
+          }
+        },
+        "caption":        { "type": "string", "maxLength": 200 },
+        "order":          { "type": "integer", "minimum": 0, "maximum": 100 },
+        "notes":          { "type": "string", "maxLength": 400 },
+        "uploaded_at":    { "type": "string", "format": "date-time" },
+        "uploaded_by_id": { "type": "integer", "minimum": 1 }
       }
     },
     "checklistPhase": {

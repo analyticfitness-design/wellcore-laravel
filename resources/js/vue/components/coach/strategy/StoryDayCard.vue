@@ -6,7 +6,15 @@ const props = defineProps({
     story: { type: Object, required: true },
     dropId: { type: Number, required: true },
     pieceState: { type: Object, default: null },
+    dropAssets: { type: Array, default: () => [] },
 });
+
+const linkedCount = (() => {
+    return (props.dropAssets ?? []).filter((a) => {
+        const lt = a.linked_to;
+        return lt && (lt.type === 'story' || lt.type === 'slide') && lt.day === props.story.day;
+    }).length;
+})();
 
 const dayColors = {
     LUN: '#DC2626',
@@ -59,9 +67,12 @@ const previewText = (props.story.slides?.[0]?.text ?? '').slice(0, 80);
                     {{ previewText }}{{ (story.slides?.[0]?.text ?? '').length > 80 ? '...' : '' }}
                 </p>
 
-                <!-- Slides count -->
-                <div class="font-mono text-[9px] uppercase tracking-[0.2em] text-wc-text-tertiary">
-                    {{ story.slides?.length ?? 0 }} slides
+                <!-- Slides count + asset badge -->
+                <div class="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.2em] text-wc-text-tertiary">
+                    <span>{{ story.slides?.length ?? 0 }} slides</span>
+                    <span v-if="linkedCount > 0" class="rounded border border-wc-accent/40 bg-wc-accent/10 px-1.5 py-0.5 text-wc-accent">
+                        {{ linkedCount }} img
+                    </span>
                 </div>
             </div>
         </button>
@@ -73,6 +84,7 @@ const previewText = (props.story.slides?.[0]?.text ?? '').slice(0, 80);
                 :story="story"
                 :drop-id="dropId"
                 :piece-state="pieceState"
+                :drop-assets="dropAssets"
                 @close="drawerOpen = false"
             />
         </Transition>

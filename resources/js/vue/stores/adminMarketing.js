@@ -53,6 +53,18 @@ export const useAdminMarketingStore = defineStore('adminMarketing', () => {
         return updated;
     }
 
+    async function uploadAsset(id, file, meta, onProgress) {
+        const updated = await adminMarketingApi.uploadAsset(id, file, meta, onProgress);
+        if (selectedDrop.value?.id === id) selectedDrop.value = updated;
+        return updated;
+    }
+
+    async function deleteAsset(id, assetId) {
+        const updated = await adminMarketingApi.deleteAsset(id, assetId);
+        if (selectedDrop.value?.id === id) selectedDrop.value = updated;
+        return updated;
+    }
+
     function reset() {
         queue.value = [];
         selectedDrop.value = null;
@@ -62,6 +74,7 @@ export const useAdminMarketingStore = defineStore('adminMarketing', () => {
         queue, meta, isLoadingQueue,
         selectedDrop, isLoadingDrop,
         filters,
-        fetchQueue, fetchDrop, updateDropContent, approveDrop, requestRegenerate, reset,
+        fetchQueue, fetchDrop, updateDropContent, approveDrop, requestRegenerate,
+        uploadAsset, deleteAsset, reset,
     };
 });

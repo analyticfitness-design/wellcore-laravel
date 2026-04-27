@@ -32,4 +32,9 @@ final class AdminDropPolicy
     {
         return $this->isAdminOrSuperadmin($user);
     }
+
+    public function manageAssets(Admin $user, CoachContentDrop $drop): bool
+    {
+        return $this->isAdminOrSuperadmin($user);
+    }
 }

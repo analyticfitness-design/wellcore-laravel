@@ -1,11 +1,14 @@
 <script setup>
 import { ref, computed } from 'vue';
 import PieceMarkPublishedButton from './PieceMarkPublishedButton.vue';
+import { coachStrategyApi } from '../../../api/coachStrategy';
 
 const props = defineProps({
     story: { type: Object, required: true },
     dropId: { type: Number, required: true },
     pieceState: { type: Object, default: null },
+    /** Top-level drop assets — we filter the ones linked to this story's day. */
+    dropAssets: { type: Array, default: () => [] },
 });
 
 const emit = defineEmits(['close']);
@@ -24,7 +27,23 @@ const allSlidesText = computed(() =>
         .join('\n\n'),
 );
 
-const currentSlideText = computed(() => props.story.slides?.[activeIdx.value]?.text ?? '');
+/**
+ * Assets attached to this story's day (story or slide-level). Sorted by
+ * `order` so launch sequences keep their authored order.
+ */
+const linkedAssets = computed(() => {
+    const day = props.story.day;
+    const list = (props.dropAssets ?? []).filter((a) => {
+        const lt = a.linked_to;
+        if (!lt) return false;
+        if ((lt.type === 'story' || lt.type === 'slide') && lt.day === day) return true;
+        return false;
+    });
+    list.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+    return list;
+});
+
+const hasAssets = computed(() => linkedAssets.value.length > 0);
 
 async function copyText() {
     try {
@@ -36,21 +55,12 @@ async function copyText() {
     }
 }
 
-async function downloadPng() {
+async function downloadAsset(asset) {
     downloading.value = true;
     try {
-        const { toPng } = await import('html-to-image');
-        const node = document.getElementById(`story-export-${props.story.day}`);
-        if (!node) return;
-        const dataUrl = await toPng(node, { width: 1080, height: 1920, pixelRatio: 1 });
-        const link = document.createElement('a');
-        link.download = `wellcore-story-${(props.story.day ?? '').toLowerCase()}.png`;
-        link.href = dataUrl;
-        link.click();
-    } catch (e) {
-        console.error('Error generating PNG', e);
+        await coachStrategyApi.downloadSingle(asset);
     } finally {
-        downloading.value = false;
+        setTimeout(() => (downloading.value = false), 600);
     }
 }
 </script>
@@ -90,6 +100,28 @@ async function downloadPng() {
                     >
                         Slide {{ idx + 1 }}
                     </button>
+                </div>
+
+                <!-- Linked assets gallery (visible imágenes que el coach descarga) -->
+                <div v-if="hasAssets" class="space-y-3">
+                    <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-wc-accent">
+                        Imágenes para publicar ({{ linkedAssets.length }})
+                    </span>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div v-for="asset in linkedAssets" :key="asset.id" class="group relative overflow-hidden rounded-lg border border-wc-border bg-wc-bg">
+                            <div class="relative aspect-[9/16] bg-black">
+                                <img v-if="asset.kind === 'image'" :src="asset.url" :alt="asset.filename" loading="lazy" class="absolute inset-0 h-full w-full object-cover" />
+                                <div v-else class="absolute inset-0 flex items-center justify-center font-mono text-[10px] text-wc-text-tertiary">VIDEO</div>
+                            </div>
+                            <button type="button" @click="downloadAsset(asset)"
+                                class="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1.5 bg-black/80 py-2 font-mono text-[10px] uppercase tracking-[0.15em] text-white opacity-0 transition-opacity backdrop-blur group-hover:opacity-100">
+                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
+                                </svg>
+                                Descargar
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <article
@@ -139,25 +171,18 @@ async function downloadPng() {
                     {{ copied ? 'Copiado' : 'Copiar texto' }}
                 </button>
                 <button
+                    v-if="hasAssets && linkedAssets.length === 1"
                     type="button"
-                    @click="downloadPng"
+                    @click="downloadAsset(linkedAssets[0])"
                     :disabled="downloading"
-                    class="flex items-center gap-2 rounded-lg border border-wc-border px-4 py-2 font-mono text-xs uppercase tracking-[0.15em] text-wc-text-secondary transition-colors hover:text-wc-text disabled:opacity-50"
+                    class="flex items-center gap-2 rounded-lg border border-wc-accent bg-wc-accent/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.15em] text-wc-accent transition-colors hover:bg-wc-accent hover:text-white disabled:opacity-50"
                 >
-                    {{ downloading ? 'Generando...' : 'Descargar PNG' }}
+                    {{ downloading ? 'Descargando...' : 'Descargar imagen' }}
                 </button>
                 <div class="ml-auto">
                     <PieceMarkPublishedButton :drop-id="dropId" :piece-key="pieceKey" :state="stateValue" />
                 </div>
             </footer>
         </aside>
-
-        <div
-            :id="`story-export-${story.day}`"
-            style="position:fixed;left:-9999px;top:0;width:1080px;height:1920px;background:#09090B;color:#FAFAFA;font-family:'Oswald';padding:120px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;"
-        >
-            <p style="font-size:32px;font-family:'JetBrains Mono';text-transform:uppercase;letter-spacing:0.2em;margin-bottom:60px;color:#DC2626;">{{ story.day }}</p>
-            <h1 style="font-size:84px;line-height:1.05;font-weight:700;text-transform:uppercase;letter-spacing:0.02em;">{{ currentSlideText }}</h1>
-        </div>
     </div>
 </template>

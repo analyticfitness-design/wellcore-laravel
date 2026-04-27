@@ -91,6 +91,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('admin.marketing.updateDrop', [AdminDropPolicy::class, 'update']);
         Gate::define('admin.marketing.approveDrop', [AdminDropPolicy::class, 'approve']);
         Gate::define('admin.marketing.requestRegenerate', [AdminDropPolicy::class, 'requestRegenerate']);
+        Gate::define('admin.marketing.manageAssets', [AdminDropPolicy::class, 'manageAssets']);
     }
 
     /**

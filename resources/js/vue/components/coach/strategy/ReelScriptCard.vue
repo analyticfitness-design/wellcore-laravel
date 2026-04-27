@@ -2,12 +2,24 @@
 import { ref, computed } from 'vue';
 import ReelTimecodeTable from './ReelTimecodeTable.vue';
 import PieceMarkPublishedButton from './PieceMarkPublishedButton.vue';
+import { coachStrategyApi } from '../../../api/coachStrategy';
 
 const props = defineProps({
     reel: { type: Object, required: true },
     dropId: { type: Number, required: true },
     pieceState: { type: Object, default: null },
+    dropAssets: { type: Array, default: () => [] },
 });
+
+const reelAssets = computed(() => {
+    const list = (props.dropAssets ?? []).filter((a) => a.linked_to?.type === 'reel' && a.linked_to.reel_key === props.reel.key);
+    list.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+    return list;
+});
+
+async function downloadAsset(asset) {
+    await coachStrategyApi.downloadSingle(asset);
+}
 
 const notesOpen = ref(false);
 const captionCopied = ref(false);
@@ -109,6 +121,27 @@ async function copyCaption() {
             >
                 · {{ reel.format_meta.bpm_hint }}
             </span>
+        </section>
+
+        <section v-if="reelAssets.length">
+            <span class="mb-3 block font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary">
+                Material visual ({{ reelAssets.length }})
+            </span>
+            <div class="grid grid-cols-2 gap-3 md:grid-cols-3">
+                <div v-for="asset in reelAssets" :key="asset.id" class="group relative overflow-hidden rounded-lg border border-wc-border bg-wc-bg">
+                    <div class="relative aspect-[9/16] bg-black">
+                        <img v-if="asset.kind === 'image'" :src="asset.url" :alt="asset.filename" loading="lazy" class="absolute inset-0 h-full w-full object-cover" />
+                        <div v-else class="absolute inset-0 flex items-center justify-center font-mono text-[10px] text-wc-text-tertiary">VIDEO · {{ asset.filename }}</div>
+                    </div>
+                    <button type="button" @click="downloadAsset(asset)"
+                        class="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1.5 bg-black/80 py-2 font-mono text-[10px] uppercase tracking-[0.15em] text-white opacity-0 transition-opacity backdrop-blur group-hover:opacity-100">
+                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
+                        </svg>
+                        Descargar
+                    </button>
+                </div>
+            </div>
         </section>
 
         <section v-if="reel.production_notes">

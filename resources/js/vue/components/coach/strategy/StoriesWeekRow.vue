@@ -5,6 +5,7 @@ const props = defineProps({
     stories: { type: Array, required: true },
     dropId: { type: Number, required: true },
     pieces: { type: Array, default: () => [] },
+    dropAssets: { type: Array, default: () => [] },
 });
 
 function pieceKeyFor(story) {
@@ -25,6 +26,7 @@ function getPieceState(story) {
             :story="story"
             :drop-id="dropId"
             :piece-state="getPieceState(story)"
+            :drop-assets="dropAssets"
         />
     </div>
 </template>

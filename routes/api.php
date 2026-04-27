@@ -330,6 +330,8 @@ Route::prefix('v/coach')->middleware(['auth:wellcore', 'throttle:api', 'role:coa
             Route::post('/strategy/drops/{drop}/pieces/{pieceKey}/publish', [PieceStateController::class, 'publish']);
             Route::post('/strategy/drops/{drop}/pieces/{pieceKey}/skip', [PieceStateController::class, 'skip']);
             Route::post('/strategy/drops/{drop}/pieces/{pieceKey}/in-progress', [PieceStateController::class, 'inProgress']);
+            Route::get('/strategy/drops/{drop}/assets/{assetId}', [\App\Http\Controllers\Api\Coach\StrategyAssetController::class, 'show']);
+            Route::get('/strategy/drops/{drop}/assets.zip', [\App\Http\Controllers\Api\Coach\StrategyAssetController::class, 'zip']);
         });
     });
 });
@@ -425,6 +427,8 @@ Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:adm
     Route::put('/marketing/drops/{drop}/content', [DropReviewController::class, 'updateContent']);
     Route::post('/marketing/drops/{drop}/approve', [DropReviewController::class, 'approve']);
     Route::post('/marketing/drops/{drop}/request-regenerate', [DropReviewController::class, 'requestRegenerate']);
+    Route::post('/marketing/drops/{drop}/assets', [\App\Http\Controllers\Api\Admin\Marketing\DropAssetController::class, 'store']);
+    Route::delete('/marketing/drops/{drop}/assets/{assetId}', [\App\Http\Controllers\Api\Admin\Marketing\DropAssetController::class, 'destroy']);
     Route::get('/coaches/{coach}/marketing-profile', [CoachProfileController::class, 'show'])->whereNumber('coach');
     Route::put('/coaches/{coach}/marketing-profile', [CoachProfileController::class, 'update'])->whereNumber('coach');
 });

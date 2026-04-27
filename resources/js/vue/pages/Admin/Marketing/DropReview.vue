@@ -5,6 +5,7 @@ import { useAdminMarketingStore } from '../../../stores/adminMarketing';
 import AdminLayout from '../../../layouts/AdminLayout.vue';
 import StatusPill from '../../../components/admin/marketing/StatusPill.vue';
 import DropContentEditor from '../../../components/admin/marketing/DropContentEditor.vue';
+import DropAssetUploader from '../../../components/admin/marketing/DropAssetUploader.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -157,6 +158,14 @@ async function requestRegenerate() {
             />
           </div>
         </div>
+
+        <!-- Assets uploader (full width, below split) -->
+        <DropAssetUploader
+          :drop-id="store.selectedDrop.id"
+          :assets="store.selectedDrop.content?.assets ?? []"
+          :stories="store.selectedDrop.content?.stories ?? []"
+          :reels="store.selectedDrop.content?.reels ?? []"
+        />
       </template>
 
       <!-- Not found -->

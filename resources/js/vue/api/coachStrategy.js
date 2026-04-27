@@ -50,6 +50,30 @@ export const coachStrategyApi = {
         const { data } = await api.post(`/strategy/drops/${dropId}/pieces/${pieceKey}/in-progress`);
         return data.data;
     },
+    async downloadSingle(asset) {
+        const link = document.createElement('a');
+        link.href = asset.url;
+        link.download = asset.filename;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    },
+    async downloadZip(dropId, fallbackName = 'wellcore-drop.zip') {
+        const response = await api.get(`/strategy/drops/${dropId}/assets.zip`, { responseType: 'blob' });
+        const cd = response.headers?.['content-disposition'] ?? '';
+        const match = /filename="?([^"]+)"?/.exec(cd);
+        const name = match?.[1] ?? fallbackName;
+        const blobUrl = window.URL.createObjectURL(response.data);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => window.URL.revokeObjectURL(blobUrl), 1000);
+    },
 };
 
 export default coachStrategyApi;
