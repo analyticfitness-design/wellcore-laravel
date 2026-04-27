@@ -8,6 +8,7 @@ import ClientLayout from '../../layouts/ClientLayout.vue';
 import ExerciseMediaModal from '../../components/workout/ExerciseMediaModal.vue';
 import LockOverlay from '../../components/LockOverlay.vue';
 import { getEmbedUrl } from '../../composables/useExerciseMedia';
+import { useVoiceLogger } from '../../composables/useVoiceLogger.js';
 
 const api = useApi();
 const toast = useToast();
@@ -28,6 +29,19 @@ const weightUnit = ref(localStorage.getItem('wc_weight_unit') || 'kg');
 const saving = ref(false);
 const abandoning = ref(false);
 const starting = ref(false);
+
+// ── Voice logger ──
+const {
+  engine: voiceEngine,
+  listening: voiceListening,
+  isProcessing: voiceIsProcessing,
+  confirmation: voiceConfirmation,
+  error: voiceError,
+  startListening: voiceStartListeningFn,
+  stopListening: voiceStopListening,
+  cancel: voiceCancel,
+} = useVoiceLogger();
+const voiceExIndex = ref(null);
 
 // Elite plan week support
 const hasProgressions = ref(false);
@@ -399,6 +413,39 @@ async function toggleSet(exIndex, setIndex) {
       set.completed = prevCompleted;
       toast.apiError(err, 'No pudimos deshacer el set. Intenta de nuevo.');
     }
+  }
+}
+
+// ── Voice helpers ──
+function voiceStartListening(exIndex) {
+  voiceExIndex.value = exIndex;
+  voiceStartListeningFn();
+}
+
+async function voiceConfirm() {
+  if (!voiceConfirmation.value || voiceIsProcessing.value) return;
+  const { intent, weight, reps, unit } = voiceConfirmation.value;
+
+  if (intent === 'complete_only') {
+    voiceConfirmation.value = null;
+    return;
+  }
+
+  const sets = getSetRows(voiceExIndex.value);
+  const setIdx = sets.findIndex(s => !s.completed);
+  if (setIdx === -1) { voiceCancel(); return; }
+
+  const saveWeight = unit === 'lbs' ? +(weight / 2.205).toFixed(2) : weight;
+  sets[setIdx].weight = String(saveWeight);
+  sets[setIdx].reps   = String(reps);
+
+  voiceIsProcessing.value = true;
+  try {
+    await toggleSet(voiceExIndex.value, setIdx);
+    voiceConfirmation.value = null;
+    voiceExIndex.value = null;
+  } finally {
+    voiceIsProcessing.value = false;
   }
 }
 
@@ -1515,6 +1562,57 @@ onBeforeUnmount(() => {
                       </Transition>
                     </div>
                   </div>
+                </div>
+
+                <!-- Voice logger — only strength exercises, workout active, sets pending -->
+                <div
+                  v-if="voiceEngine && !exIsCardio(exercise) && workoutStarted && !allSetsComplete(exIndex)"
+                  class="border-t border-wc-border/30 px-3 py-2"
+                >
+                  <!-- Confirmation dialog -->
+                  <div
+                    v-if="voiceConfirmation && voiceExIndex === exIndex"
+                    class="rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-3 text-sm"
+                  >
+                    <p class="mb-2 font-medium text-emerald-400">
+                      <span v-if="voiceConfirmation.intent === 'complete_only'">¿Marcar serie como completada?</span>
+                      <span v-else>
+                        ¿Confirmar <strong>{{ voiceConfirmation.reps }} reps</strong>
+                        con <strong>{{ voiceConfirmation.weight }} {{ voiceConfirmation.unit }}</strong>?
+                      </span>
+                    </p>
+                    <div class="flex gap-2">
+                      <button
+                        @click="voiceConfirm()"
+                        :disabled="voiceIsProcessing"
+                        class="flex-1 rounded-lg bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-400 disabled:opacity-50 transition-all"
+                      >{{ voiceIsProcessing ? 'Guardando…' : 'Confirmar' }}</button>
+                      <button
+                        @click="voiceCancel()"
+                        class="rounded-lg border border-wc-border px-3 py-1.5 text-xs text-wc-text-secondary hover:text-wc-text transition-all"
+                      >Editar</button>
+                    </div>
+                  </div>
+
+                  <!-- Error message -->
+                  <p v-else-if="voiceError && voiceExIndex === exIndex" class="mb-2 rounded-lg border border-orange-500/30 bg-orange-500/10 px-3 py-2 text-xs text-orange-400">
+                    {{ voiceError }}
+                  </p>
+
+                  <!-- Mic button -->
+                  <button
+                    v-if="!voiceConfirmation || voiceExIndex !== exIndex"
+                    @click="voiceListening && voiceExIndex === exIndex ? voiceStopListening() : voiceStartListening(exIndex)"
+                    class="flex w-full items-center justify-center gap-2 rounded-xl border py-2 text-xs font-medium transition-all"
+                    :class="voiceListening && voiceExIndex === exIndex
+                      ? 'border-wc-accent/60 bg-wc-accent/10 text-wc-accent animate-pulse'
+                      : 'border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:border-wc-accent/40 hover:text-wc-accent'"
+                  >
+                    <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
+                    </svg>
+                    <span>{{ voiceListening && voiceExIndex === exIndex ? 'Escuchando…' : 'Dictar serie' }}</span>
+                  </button>
                 </div>
 
                 <!-- Manual rest timer button -->
