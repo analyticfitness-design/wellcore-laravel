@@ -173,6 +173,8 @@ class Client extends Authenticatable
 
     public function activeCoach(): ?Admin
     {
-        return $this->coaches()->first();
+        // Try new client_coach table first, then legacy coach_id column
+        return $this->coaches()->first()
+            ?? ($this->coach_id ? Admin::find($this->coach_id) : null);
     }
 }

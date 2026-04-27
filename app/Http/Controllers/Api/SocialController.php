@@ -1756,10 +1756,12 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
     {
         $clientId = auth('wellcore')->id();
 
+        // Try new client_coach table first (invitation-based), then legacy clients.coach_id
         $coachId = DB::table('client_coach')
             ->where('client_id', $clientId)
             ->where('active', true)
-            ->value('admin_id');
+            ->value('admin_id')
+            ?? DB::table('clients')->where('id', $clientId)->value('coach_id');
 
         if (! $coachId) {
             return CommunityPost::where('client_id', $clientId)

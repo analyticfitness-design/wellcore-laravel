@@ -81,15 +81,12 @@ class ProfileController extends Controller
             return true;
         }
 
-        $viewerCoachIds = DB::table('client_coach')
-            ->where('client_id', $viewer->id)
-            ->where('active', true)
-            ->pluck('admin_id');
+        // Merge new client_coach table with legacy clients.coach_id
+        $viewerCoachIds = DB::table('client_coach')->where('client_id', $viewer->id)->where('active', true)->pluck('admin_id')
+            ->push(DB::table('clients')->where('id', $viewer->id)->value('coach_id'))->filter()->unique();
 
-        $clientCoachIds = DB::table('client_coach')
-            ->where('client_id', $clientId)
-            ->where('active', true)
-            ->pluck('admin_id');
+        $clientCoachIds = DB::table('client_coach')->where('client_id', $clientId)->where('active', true)->pluck('admin_id')
+            ->push(DB::table('clients')->where('id', $clientId)->value('coach_id'))->filter()->unique();
 
         return $viewerCoachIds->intersect($clientCoachIds)->isNotEmpty();
     }
