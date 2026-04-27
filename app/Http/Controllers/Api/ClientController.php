@@ -27,6 +27,7 @@ use App\Models\TrainingLog;
 use App\Models\WellcoreNotification;
 use App\Models\WorkoutSession;
 use App\Services\ClientCacheService;
+use App\Services\ImagePipelineService;
 use App\Services\PlanLockService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -197,7 +198,38 @@ class ClientController extends Controller
 
             // Getting started (primeros 3 días)
             'gettingStarted' => $this->buildGettingStarted($client, $clientId),
+
+            // Profile completion (para todos los clientes)
+            'profileCompletion' => $this->profileCompletion($client, $client->profile),
         ]);
+    }
+
+    private function profileCompletion(Client $client, ?object $profile): array
+    {
+        $fields = [
+            'avatar'   => ['points' => 20, 'label' => 'Foto de perfil',   'done' => filled($client->avatar_url)],
+            'bio'      => ['points' => 20, 'label' => 'Bio',              'done' => filled($client->bio)],
+            'city'     => ['points' => 10, 'label' => 'Ciudad',           'done' => filled($client->city)],
+            'peso'     => ['points' => 15, 'label' => 'Peso',             'done' => filled($profile?->peso)],
+            'objetivo' => ['points' => 15, 'label' => 'Objetivo',         'done' => filled($profile?->objetivo)],
+            'nivel'    => ['points' => 10, 'label' => 'Nivel',            'done' => filled($profile?->nivel)],
+            'whatsapp' => ['points' => 10, 'label' => 'WhatsApp',         'done' => filled($profile?->whatsapp)],
+        ];
+
+        $score = 0;
+        $missing = [];
+        foreach ($fields as $key => $f) {
+            if ($f['done']) {
+                $score += $f['points'];
+            } else {
+                $missing[] = ['key' => $key, 'label' => $f['label'], 'points' => $f['points']];
+            }
+        }
+
+        return [
+            'score'   => $score,
+            'missing' => $missing,
+        ];
     }
 
     private function buildGettingStarted(Client $client, int $clientId): ?array
@@ -871,7 +903,41 @@ class ClientController extends Controller
             'lugarEntreno' => $profile?->lugar_entreno ?? '',
             'diasDisponibles' => $profile?->dias_disponibles ?? [],
             'restricciones' => $profile?->restricciones ?? '',
+            'completion' => $this->profileCompletion($client, $profile),
         ]);
+    }
+
+    public function uploadAvatar(Request $request): JsonResponse
+    {
+        $client = $this->resolveClientOrFail($request);
+
+        $request->validate([
+            'avatar' => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
+        ]);
+
+        try {
+            $result = app(ImagePipelineService::class)->processUpload(
+                file: $request->file('avatar'),
+                disk: 'public',
+                directory: 'avatars',
+                maxWidth: 400,
+                quality: 85,
+            );
+        } catch (\InvalidArgumentException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        } catch (\Throwable) {
+            return response()->json(['message' => 'No pudimos procesar tu foto. Intenta con otro archivo.'], 500);
+        }
+
+        // Delete old avatar files if previously set and stored on public disk
+        if ($client->avatar_url) {
+            $old = ltrim(parse_url($client->avatar_url, PHP_URL_PATH) ?? '', '/storage/');
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($old);
+        }
+
+        $client->update(['avatar_url' => $result['url_webp']]);
+
+        return response()->json(['avatar_url' => $result['url_webp']]);
     }
 
     /**

@@ -117,11 +117,23 @@ onMounted(fetchProfile);
             <span v-else class="font-display text-2xl text-wc-accent">{{ initials(profile.name) }}</span>
           </div>
 
-          <!-- Name + date -->
+          <!-- Name + date + city + bio -->
           <div class="min-w-0 flex-1 basis-1/2">
             <h1 class="font-display text-3xl tracking-wide truncate text-wc-text">{{ profile.name }}</h1>
-            <p v-if="profile.started_at" class="text-sm text-wc-text-secondary mt-0.5">
-              Desde {{ formatDate(profile.started_at) }}
+            <div class="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5">
+              <p v-if="profile.started_at" class="text-sm text-wc-text-secondary">
+                Desde {{ formatDate(profile.started_at) }}
+              </p>
+              <p v-if="profile.city" class="flex items-center gap-1 text-sm text-wc-text-tertiary">
+                <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                </svg>
+                {{ profile.city }}
+              </p>
+            </div>
+            <p v-if="profile.bio" class="mt-2 text-sm leading-relaxed text-wc-text-secondary">
+              {{ profile.bio }}
             </p>
           </div>
 

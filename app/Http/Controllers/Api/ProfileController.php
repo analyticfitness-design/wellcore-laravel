@@ -27,6 +27,8 @@ class ProfileController extends Controller
             'id' => $client->id,
             'name' => $client->name,
             'avatar' => $client->avatar_url ?? null,
+            'bio' => $client->bio ?? null,
+            'city' => $client->city ?? null,
             'started_at' => $client->created_at?->format('M Y'),
             'streak_days' => $xp?->streak_days ?? 0,
             'level' => $xp?->level ?? 1,

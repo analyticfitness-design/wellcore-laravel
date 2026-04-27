@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onBeforeUnmount, onMounted } from 'vue';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
 import ClientLayout from '../../layouts/ClientLayout.vue';
@@ -12,6 +12,14 @@ const loading = ref(true);
 const saving = ref(false);
 const error = ref(null);
 const showSuccess = ref(false);
+const completion = ref({ score: 0, missing: [] });
+
+// Avatar state
+const avatarUrl = ref(null);
+const avatarPreview = ref(null);
+const avatarFile = ref(null);
+const uploadingAvatar = ref(false);
+let avatarObjectUrl = null;
 
 // Form data
 const form = ref({
@@ -32,6 +40,58 @@ const form = ref({
 const formErrors = ref({});
 
 const diasSemana = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+
+// Completitud
+const completionColor = computed(() => {
+    if (completion.value.score >= 80) return '#10B981';
+    if (completion.value.score >= 50) return '#F59E0B';
+    return '#DC2626';
+});
+
+function getInitials(name) {
+    if (!name) return '?';
+    return name.split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase() || '?';
+}
+
+// Avatar
+function onAvatarChange(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+        toast.warn('La foto debe ser menor a 5 MB.');
+        return;
+    }
+    avatarFile.value = file;
+    if (avatarObjectUrl) URL.revokeObjectURL(avatarObjectUrl);
+    avatarObjectUrl = URL.createObjectURL(file);
+    avatarPreview.value = avatarObjectUrl;
+}
+
+async function uploadAvatar() {
+    if (!avatarFile.value || uploadingAvatar.value) return;
+    uploadingAvatar.value = true;
+    try {
+        const formData = new FormData();
+        formData.append('avatar', avatarFile.value);
+        const res = await api.post('/api/v/client/avatar', formData);
+        avatarUrl.value = res.data.avatar_url;
+        avatarFile.value = null;
+        toast.success('Foto de perfil actualizada.');
+        // Refresh completion
+        await fetchCompletion();
+    } catch (err) {
+        toast.apiError(err, 'No pudimos subir tu foto. Intenta de nuevo.');
+    } finally {
+        uploadingAvatar.value = false;
+    }
+}
+
+async function fetchCompletion() {
+    try {
+        const res = await api.get('/api/v/client/profile');
+        completion.value = res.data.completion ?? { score: 0, missing: [] };
+    } catch { /* silent */ }
+}
 
 // Fetch profile
 async function fetchProfile() {
@@ -55,10 +115,9 @@ async function fetchProfile() {
             diasDisponibles: d.diasDisponibles || [],
             restricciones: d.restricciones || '',
         };
-        // Cache name for layout
-        if (d.name) {
-            localStorage.setItem('wc_user_name', d.name);
-        }
+        avatarUrl.value = d.avatarUrl || null;
+        completion.value = d.completion ?? { score: 0, missing: [] };
+        if (d.name) localStorage.setItem('wc_user_name', d.name);
     } catch (err) {
         error.value = err.response?.data?.message || 'Error al cargar el perfil';
     } finally {
@@ -68,6 +127,7 @@ async function fetchProfile() {
 
 // Save profile
 async function saveProfile() {
+    if (saving.value) return;
     saving.value = true;
     formErrors.value = {};
     try {
@@ -86,12 +146,10 @@ async function saveProfile() {
             dias_disponibles: form.value.diasDisponibles,
             restricciones: form.value.restricciones,
         });
-        // Update cached name
-        if (form.value.name) {
-            localStorage.setItem('wc_user_name', form.value.name);
-        }
+        if (form.value.name) localStorage.setItem('wc_user_name', form.value.name);
         showSuccess.value = true;
         setTimeout(() => { showSuccess.value = false; }, 3000);
+        await fetchCompletion();
     } catch (err) {
         if (err.response?.status === 422) {
             formErrors.value = err.response.data.errors || {};
@@ -117,8 +175,10 @@ function isDiaSelected(dia) {
     return form.value.diasDisponibles.includes(dia.toLowerCase());
 }
 
-onMounted(() => {
-    fetchProfile();
+onMounted(fetchProfile);
+
+onBeforeUnmount(() => {
+    if (avatarObjectUrl) URL.revokeObjectURL(avatarObjectUrl);
 });
 </script>
 
@@ -145,9 +205,104 @@ onMounted(() => {
     </Transition>
 
     <!-- Header -->
-    <div class="mb-8">
+    <div class="mb-6">
       <h1 class="font-display text-3xl tracking-wide text-wc-text">MI PERFIL</h1>
       <p class="mt-1 text-sm text-wc-text-secondary">Actualiza tu informacion personal y datos de entrenamiento</p>
+    </div>
+
+    <!-- Avatar + Completitud (no skeleton: se muestran siempre) -->
+    <div v-if="!loading" class="mb-8 rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+      <div class="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
+
+        <!-- Avatar upload -->
+        <div class="flex flex-col items-center gap-3 shrink-0">
+          <div class="relative">
+            <div class="h-24 w-24 overflow-hidden rounded-full border-2 border-wc-border bg-wc-bg-secondary flex items-center justify-center">
+              <img
+                v-if="avatarPreview || avatarUrl"
+                :src="avatarPreview || avatarUrl"
+                alt="Tu foto de perfil"
+                class="h-full w-full object-cover"
+              />
+              <span v-else class="font-display text-3xl text-wc-accent">{{ getInitials(form.name) }}</span>
+            </div>
+            <!-- Badge si tiene foto -->
+            <span v-if="avatarUrl && !avatarPreview"
+              class="absolute -bottom-0.5 -right-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white text-xs ring-2 ring-wc-bg-tertiary">
+              ✓
+            </span>
+          </div>
+
+          <!-- File input oculto -->
+          <input
+            type="file"
+            id="avatar-input"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            class="sr-only"
+            @change="onAvatarChange"
+          >
+
+          <div class="flex flex-col items-center gap-2">
+            <label
+              for="avatar-input"
+              class="cursor-pointer rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1.5 text-xs font-medium text-wc-text-secondary transition-colors hover:border-wc-accent/40 hover:text-wc-text"
+            >
+              {{ avatarUrl ? 'Cambiar foto' : 'Subir foto' }}
+            </label>
+            <button
+              v-if="avatarFile"
+              type="button"
+              @click="uploadAvatar"
+              :disabled="uploadingAvatar"
+              class="flex items-center gap-1.5 rounded-lg bg-wc-accent px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-wc-accent-hover disabled:opacity-60"
+            >
+              <svg v-if="uploadingAvatar" class="h-3 w-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+              </svg>
+              {{ uploadingAvatar ? 'Subiendo...' : 'Guardar foto' }}
+            </button>
+          </div>
+          <p class="text-center text-[10px] text-wc-text-tertiary">JPG, PNG o WebP · máx 5 MB<br>Se muestra en la comunidad</p>
+        </div>
+
+        <!-- Barra de completitud -->
+        <div class="flex-1 min-w-0 w-full">
+          <div class="mb-2 flex items-center justify-between gap-2">
+            <p class="text-sm font-semibold text-wc-text">Completitud del perfil</p>
+            <span class="font-data text-lg font-bold" :style="{ color: completionColor }">{{ completion.score }}%</span>
+          </div>
+
+          <!-- Barra -->
+          <div class="mb-3 h-2.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
+            <div
+              class="h-full rounded-full transition-all duration-700"
+              :style="{ width: completion.score + '%', background: completionColor }"
+            ></div>
+          </div>
+
+          <!-- Mensaje según score -->
+          <p v-if="completion.score >= 80" class="mb-3 text-xs text-emerald-400 font-medium">
+            Perfil completo — apareces con toda tu info en la comunidad.
+          </p>
+          <p v-else class="mb-3 text-xs text-wc-text-tertiary">
+            Un perfil completo te hace destacar en la comunidad. Faltan:
+          </p>
+
+          <!-- Tags de campos faltantes -->
+          <div v-if="completion.missing.length" class="flex flex-wrap gap-2">
+            <span
+              v-for="m in completion.missing"
+              :key="m.key"
+              class="inline-flex items-center gap-1 rounded-full border border-wc-border bg-wc-bg-secondary px-2.5 py-1 text-xs text-wc-text-secondary"
+            >
+              <span class="h-1.5 w-1.5 rounded-full bg-wc-accent/60"></span>
+              {{ m.label }}
+              <span class="text-wc-text-tertiary">+{{ m.points }}pts</span>
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Loading -->
@@ -255,13 +410,22 @@ onMounted(() => {
 
             <!-- Bio -->
             <div>
-              <label for="bio" class="mb-1.5 block text-sm font-medium text-wc-text">Bio</label>
+              <div class="mb-1.5 flex items-center justify-between gap-2">
+                <label for="bio" class="text-sm font-medium text-wc-text">
+                  Bio
+                  <span class="ml-1 text-xs font-normal text-wc-text-tertiary">visible en la comunidad</span>
+                </label>
+                <span class="font-data text-xs tabular-nums" :class="(form.bio || '').length > 140 ? 'text-amber-400' : 'text-wc-text-tertiary'">
+                  {{ (form.bio || '').length }}/160
+                </span>
+              </div>
               <textarea
                 v-model="form.bio"
                 id="bio"
                 rows="3"
+                maxlength="160"
                 class="block w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
-                placeholder="Cuentanos sobre ti..."
+                placeholder="Ej: 28 años · Medellín · Entreno para competir en 2026. Método desde hace 3 meses."
               ></textarea>
               <p v-if="formErrors.bio" class="mt-1 text-xs text-red-500">{{ formErrors.bio[0] }}</p>
             </div>

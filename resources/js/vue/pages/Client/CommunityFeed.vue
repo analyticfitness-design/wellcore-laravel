@@ -753,11 +753,17 @@ function getReactionCount(post, type) {
                     class="group flex items-center gap-3"
                   >
                     <!-- Avatar with type badge -->
-                    <div class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-wc-accent/40 to-wc-accent/10 text-sm font-bold text-wc-accent ring-2 ring-wc-accent/60 ring-offset-2 ring-offset-wc-bg transition-all group-hover:ring-wc-accent">
-                      {{ getInitials(post.client_name) }}
+                    <div class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full overflow-hidden bg-gradient-to-br from-wc-accent/40 to-wc-accent/10 text-sm font-bold text-wc-accent ring-2 ring-wc-accent/60 ring-offset-2 ring-offset-wc-bg transition-all group-hover:ring-wc-accent">
+                      <img
+                        v-if="post.client_avatar"
+                        :src="post.client_avatar"
+                        :alt="post.client_name"
+                        class="h-full w-full object-cover"
+                      />
+                      <span v-else>{{ getInitials(post.client_name) }}</span>
                       <span
                         v-if="post.post_type && post.post_type !== 'text'"
-                        class="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-wc-bg-tertiary text-[10px] ring-1 ring-wc-border"
+                        class="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-wc-bg-tertiary text-[10px] ring-1 ring-wc-border z-10"
                       >{{ getPostTypeInfo(post.post_type).emoji }}</span>
                     </div>
                     <div>

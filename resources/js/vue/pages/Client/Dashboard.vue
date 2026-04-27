@@ -42,6 +42,19 @@ const error = ref(null);
 const data = ref(null);
 const showOnboarding = ref(false);
 
+// Profile completion banner — dismissed for 7 days via localStorage
+const PROFILE_BANNER_KEY = 'wc_profile_banner_dismissed';
+const profileBannerDismissed = ref((() => {
+    const ts = localStorage.getItem(PROFILE_BANNER_KEY);
+    if (!ts) return false;
+    return Date.now() - parseInt(ts) < 7 * 24 * 60 * 60 * 1000;
+})());
+
+function dismissProfileBanner() {
+    profileBannerDismissed.value = true;
+    localStorage.setItem(PROFILE_BANNER_KEY, String(Date.now()));
+}
+
 // Greeting (time-based, computed client-side)
 const greeting = computed(() => {
     const h = new Date().getHours();
@@ -359,7 +372,58 @@ const weekMarkers = computed(() => {
       <DashboardPlanAlert :data="data" />
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- 3b. PRIMEROS PASOS — solo primeros 3 días                      -->
+      <!-- 3b. COMPLETAR PERFIL — para clientes con score < 80%           -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div
+        v-if="data.profileCompletion && data.profileCompletion.score < 80 && !profileBannerDismissed"
+        class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4"
+      >
+        <div class="flex items-center gap-3">
+          <!-- Avatar placeholder con score -->
+          <div class="relative shrink-0">
+            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-wc-bg-secondary border-2"
+              :style="{ borderColor: data.profileCompletion.score >= 50 ? '#F59E0B' : '#DC2626' }">
+              <svg class="h-6 w-6 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+              </svg>
+            </div>
+            <span class="absolute -bottom-1 -right-1 rounded-full bg-wc-bg-secondary px-1.5 py-0.5 font-data text-[10px] font-bold leading-none ring-1 ring-wc-border"
+              :style="{ color: data.profileCompletion.score >= 50 ? '#F59E0B' : '#DC2626' }">
+              {{ data.profileCompletion.score }}%
+            </span>
+          </div>
+
+          <!-- Texto -->
+          <div class="min-w-0 flex-1">
+            <p class="text-sm font-semibold text-wc-text">Tu perfil en la comunidad está incompleto</p>
+            <p v-if="data.profileCompletion.missing.length" class="mt-0.5 text-xs text-wc-text-tertiary truncate">
+              Falta: {{ data.profileCompletion.missing.slice(0, 3).map(m => m.label).join(', ') }}{{ data.profileCompletion.missing.length > 3 ? '…' : '' }}
+            </p>
+          </div>
+
+          <!-- Acciones -->
+          <div class="flex shrink-0 items-center gap-2">
+            <button
+              @click="$router.push('/client/profile')"
+              class="rounded-lg bg-wc-accent px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-wc-accent-hover"
+            >
+              Completar
+            </button>
+            <button
+              @click="dismissProfileBanner"
+              class="flex h-7 w-7 items-center justify-center rounded-lg text-wc-text-tertiary transition-colors hover:text-wc-text"
+              aria-label="Cerrar"
+            >
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- 3d. PRIMEROS PASOS — solo primeros 3 días                      -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <div v-if="data.gettingStarted?.show" class="rounded-xl border border-violet-500/20 bg-gradient-to-br from-violet-500/05 to-wc-bg-tertiary p-5">
         <!-- Header -->

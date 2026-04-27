@@ -94,6 +94,7 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'throttle:api'])->group(
     Route::post('/metrics', [ClientController::class, 'storeMetric']);
     Route::get('/profile', [ClientController::class, 'profile']);
     Route::put('/profile', [ClientController::class, 'updateProfile']);
+    Route::post('/avatar', [ClientController::class, 'uploadAvatar']);
     Route::get('/settings', [ClientController::class, 'settings']);
     Route::put('/settings', [ClientController::class, 'updateSettings']);
     Route::put('/settings/password', [ClientController::class, 'changePassword'])->middleware('throttle:change-password');
