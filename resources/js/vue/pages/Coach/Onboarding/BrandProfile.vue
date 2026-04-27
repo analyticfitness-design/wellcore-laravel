@@ -1,12 +1,11 @@
-<script setup lang="ts">
+<script setup>
 import CoachLayout from '../../../layouts/CoachLayout.vue';
 </script>
 <template>
   <CoachLayout>
-    <div class="p-8 text-wc-text">
-      <p class="font-mono text-xs uppercase tracking-widest text-wc-text-tertiary">WC · ONBOARDING</p>
-      <h1 class="mt-2 font-display text-4xl uppercase">Tu Perfil de Marca</h1>
-      <p class="mt-4 text-wc-text-secondary">Formulario de perfil proximamente...</p>
+    <div class="mx-auto max-w-3xl px-6 py-12">
+      <h1 class="font-display text-4xl uppercase">Tu perfil de marca</h1>
+      <p class="mt-3 text-wc-text-secondary">Implementacion pendiente (M8).</p>
     </div>
   </CoachLayout>
 </template>

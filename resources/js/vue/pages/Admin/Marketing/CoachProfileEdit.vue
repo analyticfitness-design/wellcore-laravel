@@ -1,9 +1,12 @@
-<script setup lang="ts">
-defineProps<{ coachId: string }>();
+<script setup>
+defineProps({ coachId: { type: [String, Number], required: true } });
+import AdminLayout from '../../../layouts/AdminLayout.vue';
 </script>
 <template>
-  <div class="p-8">
-    <h1 class="text-2xl font-bold">Editar Perfil Coach #{{ coachId }}</h1>
-    <p class="text-gray-500 mt-2">Edicion de perfil de marca del coach.</p>
-  </div>
+  <AdminLayout>
+    <div class="mx-auto max-w-7xl px-6 py-12">
+      <h1 class="font-display text-4xl uppercase">Editar Perfil Coach</h1>
+      <p class="mt-3 text-wc-text-secondary">Implementacion pendiente (M10).</p>
+    </div>
+  </AdminLayout>
 </template>
