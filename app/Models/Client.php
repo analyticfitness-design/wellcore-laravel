@@ -177,4 +177,9 @@ class Client extends Authenticatable
         return $this->coaches()->first()
             ?? ($this->coach_id ? Admin::find($this->coach_id) : null);
     }
+
+    public function communityPosts(): HasMany
+    {
+        return $this->hasMany(CommunityPost::class);
+    }
 }
