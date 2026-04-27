@@ -59,6 +59,14 @@
 
     --font-editorial: "Fraunces", ui-serif, Georgia, serif;
     --color-wc-gold: #C8A769;
+
+    --color-wc-day-lun: #DC2626;
+    --color-wc-day-mar: #10B981;
+    --color-wc-day-mie: #F59E0B;
+    --color-wc-day-jue: #3B82F6;
+    --color-wc-day-vie: #A78BFA;
+    --color-wc-day-sab: #EC4899;
+    --color-wc-day-dom: #14B8A6;
 }
 
 /* Dark mode overrides */
