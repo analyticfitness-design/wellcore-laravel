@@ -468,13 +468,13 @@ class TrainingController extends Controller
 
         $session = WorkoutSession::firstOrCreate(
             [
-                'client_id' => $clientId,
-                'day_name' => $dayName,
+                'client_id'    => $clientId,
+                'day_name'     => $dayName,
                 'session_date' => now()->toDateString(),
+                'completed'    => false,
             ],
             [
                 'plan_id' => $planId,
-                'completed' => false,
             ]
         );
 
