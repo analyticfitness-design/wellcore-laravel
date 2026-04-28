@@ -68,6 +68,9 @@ return [
         'api_key' => env('CLAUDE_API_KEY', ''),
         'model' => env('CLAUDE_MODEL', 'claude-haiku-4-5-20251001'),
         'base_url' => env('CLAUDE_BASE_URL', 'https://api.anthropic.com'),
+        // Kill-switch para el Generador IA del admin v2. Por defecto bloqueado
+        // para no gastar tokens hasta que Daniel decida activarlo.
+        'generator_enabled' => env('WC_AI_GENERATOR_ENABLED', false),
     ],
 
     /*

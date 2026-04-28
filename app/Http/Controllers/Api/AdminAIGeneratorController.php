@@ -59,6 +59,26 @@ class AdminAIGeneratorController extends Controller
     {
         $admin = $this->resolveAdmin($request);
 
+        // Kill-switch global. Cuando està desactivado retornamos un SSE con
+        // un único evento de error y cerramos — sin tocar Anthropic, sin
+        // gastar tokens, sin crear fila en history.
+        if (! config('wellcore.ai.generator_enabled', false)) {
+            $resp = new StreamedResponse(function () {
+                while (ob_get_level() > 0) { @ob_end_flush(); }
+                @ini_set('zlib.output_compression', '0');
+                echo ": stream-locked\n\n";
+                echo 'data: ' . json_encode([
+                    'error' => 'El Generador IA esta bloqueado temporalmente. Contacta a Daniel para activar el servicio.',
+                ], JSON_UNESCAPED_UNICODE) . "\n\n";
+                @ob_flush(); @flush();
+            });
+            $resp->headers->set('Content-Type', 'text/event-stream');
+            $resp->headers->set('Cache-Control', 'no-cache, no-transform');
+            $resp->headers->set('Connection', 'keep-alive');
+            $resp->headers->set('X-Accel-Buffering', 'no');
+            return $resp;
+        }
+
         $validated = $request->validate([
             'plan_type'            => 'required|in:entrenamiento,nutricion,habitos,combinado',
             'methodology'          => 'nullable|string|max:100',
