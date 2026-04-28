@@ -161,26 +161,25 @@ defineExpose({ visible });
    ============================================================================ */
 
 .hero-metrics {
-    display: grid;
-    grid-template-columns: 1fr;
+    /* Mobile: flexbox horizontal scroll-snap (predecible que grid-auto-columns) */
+    display: flex;
     gap: 10px;
-
-    /* Mobile: scroll-snap horizontal */
-    grid-auto-flow: column;
-    grid-auto-columns: 158px;
     overflow-x: auto;
     overflow-y: visible;
     scroll-snap-type: x mandatory;
+    scroll-padding-left: 0;
     scrollbar-width: none;
     padding-bottom: 4px;
+    /* permitir que la primera card respire desde el edge sin clipping */
+    margin-left: 0;
+    margin-right: 0;
 }
 .hero-metrics::-webkit-scrollbar { display: none; }
 
 @media (min-width: 1024px) {
     /* Desktop: grid 4-col, sin scroll horizontal */
     .hero-metrics {
-        grid-auto-flow: row;
-        grid-auto-columns: auto;
+        display: grid;
         grid-template-columns: repeat(4, 1fr);
         overflow: visible;
         gap: 12px;
@@ -189,6 +188,8 @@ defineExpose({ visible });
 }
 
 .metric-card {
+    /* Mobile: card de ancho fijo dentro del flexbox carousel */
+    flex: 0 0 220px;
     border-radius: 14px;
     padding: 16px 14px 14px;
     display: flex;
@@ -201,8 +202,13 @@ defineExpose({ visible });
     text-decoration: none;
     color: inherit;
     scroll-snap-align: start;
-    min-height: 110px;
+    min-height: 124px;
+    min-width: 0;
 }
+@media (min-width: 1024px) {
+    .metric-card { flex: none; }
+}
+.metric-card > * { min-width: 0; max-width: 100%; }
 .metric-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); }
 .metric-card:active { transform: scale(0.98); }
 
@@ -238,7 +244,15 @@ defineExpose({ visible });
     text-transform: uppercase;
     color: var(--color-wc-text-tertiary);
     margin-bottom: 8px;
-    padding-right: 64px; /* dejar lugar al ring */
+    padding-right: 60px; /* dejar lugar al mini ring 56x56 + 4px gap */
+    line-height: 1.4;
+    min-height: 12px;
+}
+.metric-delta,
+.metric-sub {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .metric-value {
     font-family: var(--font-display);
