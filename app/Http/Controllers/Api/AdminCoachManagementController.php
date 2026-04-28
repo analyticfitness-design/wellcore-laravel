@@ -238,7 +238,7 @@ class AdminCoachManagementController extends Controller
 
     public function resetPassword(Request $request, int $id): JsonResponse
     {
-        $this->resolveAdminOrFail($request);
+        $this->resolveSuperAdminOrFail($request);
 
         $coach = Admin::where('role', 'coach')->findOrFail($id);
 
@@ -269,7 +269,7 @@ class AdminCoachManagementController extends Controller
 
     public function destroy(Request $request, int $id): JsonResponse
     {
-        $this->resolveAdminOrFail($request);
+        $this->resolveSuperAdminOrFail($request);
 
         $coach = Admin::where('role', 'coach')->findOrFail($id);
 

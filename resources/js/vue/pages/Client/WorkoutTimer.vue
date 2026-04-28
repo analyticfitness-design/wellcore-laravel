@@ -22,6 +22,7 @@ const isWork = ref(true);
 const phase = ref('');
 const isFullscreen = ref(false);
 let interval = null;
+let audioCtx = null;
 
 // SVG circle
 const circumference = 2 * Math.PI * 90;
@@ -156,6 +157,7 @@ function pause() {
 }
 
 function resume() {
+  clearInterval(interval);
   running.value = true;
   paused.value = false;
   tick();
@@ -173,15 +175,16 @@ function stop() {
 
 function beep() {
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(audioCtx.destination);
     osc.frequency.value = 880;
     gain.gain.value = 0.3;
     osc.start();
-    osc.stop(ctx.currentTime + 0.15);
+    osc.stop(audioCtx.currentTime + 0.15);
   } catch (e) { /* silent */ }
 }
 
@@ -197,6 +200,8 @@ function toggleFullscreen() {
 
 onUnmounted(() => {
   clearInterval(interval);
+  audioCtx?.close().catch(() => {});
+  audioCtx = null;
 });
 </script>
 

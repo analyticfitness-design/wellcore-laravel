@@ -304,14 +304,14 @@ Route::middleware('auth:wellcore')->group(function () {
         ->whereNumber('adminId');
 });
 
-// Impersonation stop — outside auth group (session is client session when stopping).
-// Requires session token set during impersonation start; POST body fallback removed.
+// Impersonation stop — auth:wellcore passes because during impersonation the active session
+// token belongs to the client (not the admin), and the controller validates wc_admin_token in session.
 Route::post('/admin/impersonate/stop', [ImpersonateController::class, 'stop'])
     ->name('admin.impersonate.stop')
-    ->middleware('throttle:10,1');
+    ->middleware(['auth:wellcore', 'throttle:10,1']);
 Route::post('/admin/coach-impersonate/stop', [CoachImpersonateController::class, 'stop'])
     ->name('coach.impersonate.stop')
-    ->middleware('throttle:10,1');
+    ->middleware(['auth:wellcore', 'throttle:10,1']);
 
 // Backwards-compat: /v/* redirects to /* without the /v prefix (301 permanent)
 Route::get('/v/{any}', fn ($any) => redirect('/'.$any, 301))->where('any', '.*');

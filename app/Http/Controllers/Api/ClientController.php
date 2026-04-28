@@ -112,7 +112,7 @@ class ClientController extends Controller
         }
 
         // ── L2 cache: all DB-heavy data, 5-minute TTL ──
-        $cached = Cache::remember("dashboard:{$clientId}", 90, function () use ($clientId) {
+        $cached = Cache::remember("dashboard:{$clientId}", 300, function () use ($clientId) {
             return $this->buildDashboardCache($clientId);
         });
 

@@ -6,10 +6,12 @@ import WcPageHeader from '../../components/WcPageHeader.vue';
 
 const api = useApi();
 const loading = ref(true);
+const error = ref('');
 const checkins = ref([]);
 const showReplied = ref(false);
 const replyingTo = ref(null);
 const replyText = ref('');
+const replyError = ref('');
 const submitting = ref(false);
 
 const pendingCount = computed(() => checkins.value.filter(c => !c.coach_reply).length);
@@ -38,6 +40,7 @@ function cancelReply() {
 async function submitReply(checkinId) {
     if (!replyText.value.trim()) return;
     submitting.value = true;
+    replyError.value = '';
     try {
         await api.post(`/api/v/coach/checkins/${checkinId}/reply`, { reply: replyText.value });
         const checkin = checkins.value.find(c => c.id === checkinId);
@@ -48,7 +51,7 @@ async function submitReply(checkinId) {
         replyingTo.value = null;
         replyText.value = '';
     } catch (e) {
-        // silent
+        replyError.value = 'No se pudo enviar la respuesta. Intenta de nuevo.';
     } finally {
         submitting.value = false;
     }
@@ -56,11 +59,12 @@ async function submitReply(checkinId) {
 
 async function loadCheckins() {
     loading.value = true;
+    error.value = '';
     try {
         const { data } = await api.get('/api/v/coach/checkins');
         checkins.value = data.checkins || [];
     } catch (e) {
-        // silent
+        error.value = 'No se pudieron cargar los check-ins.';
     } finally {
         loading.value = false;
     }
@@ -88,6 +92,11 @@ onMounted(loadCheckins);
           </button>
         </template>
       </WcPageHeader>
+
+      <!-- Load error -->
+      <div v-if="error" class="rounded-lg bg-red-900/20 border border-red-500/30 px-4 py-3 text-sm text-red-400">
+        {{ error }}
+      </div>
 
       <!-- Loading -->
       <div v-if="loading" class="flex items-center justify-center py-12">
@@ -193,6 +202,7 @@ onMounted(loadCheckins);
                     Cancelar
                   </button>
                 </div>
+                <p v-if="replyError" class="mt-2 text-xs text-red-400">{{ replyError }}</p>
               </div>
               <div v-else class="mt-4">
                 <button

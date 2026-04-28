@@ -61,7 +61,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => EnsureRole::class,
             'ensure.plan' => EnsurePlan::class,
             'plan.lock' => CheckPlanLock::class,
-            'update.last.seen' => UpdateLastSeen::class,
             'api.bearer' => ApiBearerAuth::class,
             'coach.contract' => EnsureCoachContractAccepted::class,
             'complete-brand-profile' => EnsureCompleteBrandProfile::class,

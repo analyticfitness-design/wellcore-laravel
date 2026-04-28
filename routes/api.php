@@ -121,6 +121,7 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'plan.lock:strict', 'thr
     Route::post('/workout/complete-set', [TrainingController::class, 'completeSet']);
     Route::post('/workout/uncomplete-set', [TrainingController::class, 'uncompleteSet']);
     Route::post('/workout/abandon', [TrainingController::class, 'abandonWorkout']);
+    Route::post('/workout/dismiss-tutorial', [TrainingController::class, 'dismissWorkoutTutorial']);
     Route::post('/workout/finish', [TrainingController::class, 'finishWorkout']);
     Route::get('/workout-summary/{sessionId}', [TrainingController::class, 'workoutSummary'])->where('sessionId', '[0-9]+|latest');
     Route::post('/workout-summary/{sessionId}/feeling', [TrainingController::class, 'saveWorkoutFeeling'])->where('sessionId', '[0-9]+|latest');

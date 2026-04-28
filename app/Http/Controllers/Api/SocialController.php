@@ -201,7 +201,7 @@ class SocialController extends Controller
     {
         $request->validate(['content' => 'required|string|max:500']);
 
-        $client = auth('wellcore')->user();
+        $client = $this->resolveClientOrFail($request);
         $post = CommunityPost::findOrFail($postId);
 
         $comment = PostComment::create([

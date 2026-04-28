@@ -667,6 +667,14 @@ class TrainingController extends Controller
     }
 
     /**
+     * POST /api/v/client/workout/dismiss-tutorial
+     */
+    public function dismissWorkoutTutorial(Request $request): JsonResponse
+    {
+        return response()->json(['ok' => true]);
+    }
+
+    /**
      * POST /api/v/client/workout/abandon
      */
     public function abandonWorkout(Request $request): JsonResponse

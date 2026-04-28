@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useApi } from '../../composables/useApi';
 import { useAuthStore } from '../../stores/auth';
 import AdminLayout from '../../layouts/AdminLayout.vue';
@@ -16,13 +16,20 @@ const statusFilter = ref('all'); // all|active|inactive
 const meta        = ref({ total: 0 });
 
 let debounceTimer = null;
+let toastTimer = null;
 
 // ─── Toast ────────────────────────────────────────────────────────────────────
 const toast = ref({ show: false, type: 'success', message: '' });
 function showToast(message, type = 'success') {
+  clearTimeout(toastTimer);
   toast.value = { show: true, type, message };
-  setTimeout(() => { toast.value.show = false; }, 4000);
+  toastTimer = setTimeout(() => { toast.value.show = false; }, 4000);
 }
+
+onBeforeUnmount(() => {
+  clearTimeout(debounceTimer);
+  clearTimeout(toastTimer);
+});
 
 // ─── Create modal ─────────────────────────────────────────────────────────────
 const showCreateModal = ref(false);
