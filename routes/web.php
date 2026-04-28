@@ -261,9 +261,7 @@ Route::view('/admin/chat', 'vue')->name('admin.chat');
 Route::view('/admin/tools', 'vue')->name('admin.tools');
 Route::view('/admin/tickets', 'vue')->name('admin.tickets');
 Route::view('/admin/settings', 'vue')->name('admin.settings');
-Route::get('/admin/payment-proofs', App\Livewire\Admin\PaymentProofReview::class)
-    ->middleware(['auth:wellcore', 'role:admin,superadmin,jefe'])
-    ->name('admin.payment-proofs');
+Route::view('/admin/payment-proofs', 'vue')->name('admin.payment-proofs');
 Route::get('/admin/{any}', fn () => view('vue'))->where('any', '.*');
 
 // Admin — payment proof file viewer (token-gated, single-use cache token)
