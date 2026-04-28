@@ -106,9 +106,9 @@ const isFemale = computed(() => clientGenero.value === 'mujer');
 const characterImages = computed(() => {
   const base = isFemale.value ? '/images/characters/silvia' : '/images/characters/dann';
   return {
-    frente:  `${base}/frontal.png`,
-    perfil:  `${base}/perfil.png`,
-    espalda: `${base}/espalda.png`,
+    frente:  `${base}/frontal.webp`,
+    perfil:  `${base}/perfil.webp`,
+    espalda: `${base}/espalda.webp`,
   };
 });
 
