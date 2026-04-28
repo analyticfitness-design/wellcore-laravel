@@ -257,6 +257,7 @@ Route::view('/admin/invitations', 'vue')->name('admin.invitations');
 Route::view('/admin/send-invitation', 'vue')->name('admin.send-invitation');
 Route::view('/admin/referral-rewards', 'vue')->name('admin.referral-rewards');
 Route::view('/admin/campaign-tracker', 'vue')->name('admin.campaign-tracker');
+Route::view('/admin/campaigns', 'vue')->name('admin.campaigns');
 Route::view('/admin/chat', 'vue')->name('admin.chat');
 Route::view('/admin/tools', 'vue')->name('admin.tools');
 Route::view('/admin/tickets', 'vue')->name('admin.tickets');
