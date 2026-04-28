@@ -464,7 +464,9 @@ const filteredProofs = computed(() => store.proofs);
 .proof-card--pending:hover { border-color: rgba(245, 158, 11, 0.4); }
 
 .proof-thumb {
+    width: 100%;
     aspect-ratio: 16 / 9;
+    align-self: start;
     border-radius: 8px;
     background: var(--color-wc-bg-tertiary, #181818);
     border: 1px solid var(--color-wc-border);
