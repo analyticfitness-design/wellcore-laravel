@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, useId } from 'vue';
 
 const props = defineProps({
   label: { type: String, required: true },
@@ -13,6 +13,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
+const fieldId = useId();
 const visible = ref(false);
 const copied = ref(false);
 
@@ -35,7 +36,7 @@ async function copyToClipboard() {
 
 <template>
   <div class="ssf-wrap">
-    <label class="ssf-label">
+    <label :for="fieldId" class="ssf-label">
       {{ label }}<span v-if="required" class="ssf-req" aria-hidden="true"> *</span>
       <span v-if="disabled" class="ssf-lock" title="Solo Superadmin puede modificar esta seccion">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -47,6 +48,7 @@ async function copyToClipboard() {
 
     <div class="ssf-input-row">
       <input
+        :id="fieldId"
         class="ssf-input"
         :class="{ 'ssf-input--error': error }"
         :type="visible ? 'text' : 'password'"

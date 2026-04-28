@@ -1,4 +1,6 @@
 <script setup>
+import { useId } from 'vue';
+
 const props = defineProps({
   label: { type: String, required: true },
   modelValue: { default: null },
@@ -12,6 +14,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:modelValue']);
+const fieldId = useId();
 
 function onInput(e) {
   const val = props.type === 'number' ? Number(e.target.value) : e.target.value;
@@ -29,13 +32,14 @@ function onSelect(e) {
   <div class="sf-wrap">
     <!-- Toggle -->
     <template v-if="type === 'toggle'">
-      <label class="sf-toggle-row">
+      <label :for="fieldId" class="sf-toggle-row">
         <span class="sf-toggle-info">
           <span class="sf-label">{{ label }}<span v-if="required" class="sf-req" aria-hidden="true"> *</span></span>
           <span v-if="hint" class="sf-hint">{{ hint }}</span>
         </span>
         <span class="sf-toggle-control" :class="{ 'sf-toggle-control--disabled': disabled }">
           <input
+            :id="fieldId"
             type="checkbox"
             class="sr-only"
             :checked="!!modelValue"
@@ -52,13 +56,14 @@ function onSelect(e) {
 
     <!-- Select -->
     <template v-else-if="type === 'select'">
-      <label class="sf-label-block">
+      <label :for="fieldId" class="sf-label-block">
         {{ label }}<span v-if="required" class="sf-req" aria-hidden="true"> *</span>
         <span v-if="disabled" class="sf-lock-icon" title="Solo Superadmin puede modificar esta seccion">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </span>
       </label>
       <select
+        :id="fieldId"
         class="sf-input"
         :value="modelValue"
         :disabled="disabled"
@@ -71,13 +76,14 @@ function onSelect(e) {
 
     <!-- Textarea -->
     <template v-else-if="type === 'textarea'">
-      <label class="sf-label-block">
+      <label :for="fieldId" class="sf-label-block">
         {{ label }}<span v-if="required" class="sf-req" aria-hidden="true"> *</span>
         <span v-if="disabled" class="sf-lock-icon" title="Solo Superadmin puede modificar esta seccion">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </span>
       </label>
       <textarea
+        :id="fieldId"
         class="sf-input sf-textarea"
         :value="modelValue"
         :placeholder="placeholder"
@@ -90,13 +96,14 @@ function onSelect(e) {
 
     <!-- Text / number / email / url -->
     <template v-else>
-      <label class="sf-label-block">
+      <label :for="fieldId" class="sf-label-block">
         {{ label }}<span v-if="required" class="sf-req" aria-hidden="true"> *</span>
         <span v-if="disabled" class="sf-lock-icon" title="Solo Superadmin puede modificar esta seccion">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </span>
       </label>
       <input
+        :id="fieldId"
         class="sf-input"
         :class="{ 'sf-input--error': error }"
         :type="type"

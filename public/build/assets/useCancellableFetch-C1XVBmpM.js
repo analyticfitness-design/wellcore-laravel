@@ -1,1 +1,0 @@
-import{H as e}from"./vue-core-fJpDJ1nH.js";function t(){let t=null;function n(){t?.abort(),t=null}function r(){return n(),t=new AbortController,t.signal}return e(n),{cancel:n,getSignal:r}}export{t};
