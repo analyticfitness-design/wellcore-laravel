@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useCoachStrategyStore } from '../../stores/coachStrategy';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import StrategyHero from '../../components/coach/strategy/StrategyHero.vue';
+import AssetGallery from '../../components/coach/strategy/AssetGallery.vue';
 import StrategyEmptyState from '../../components/coach/strategy/StrategyEmptyState.vue';
 import SectionDivider from '../../components/coach/strategy/SectionDivider.vue';
 import BriefSection from '../../components/coach/strategy/BriefSection.vue';
@@ -52,6 +53,11 @@ onMounted(async () => {
                     </template>
                     <template v-else>
                         <StrategyHero :drop="store.currentDrop" />
+
+                        <AssetGallery
+                            :drop-id="store.currentDrop.id"
+                            :assets="store.currentDrop.content?.assets ?? []"
+                        />
 
                         <SectionDivider number="01" title="BRIEF" sub="de la semana" />
                         <BriefSection :brief="store.currentDrop.content.brief" />
