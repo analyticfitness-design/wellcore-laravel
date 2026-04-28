@@ -118,46 +118,86 @@ class AdminImpersonateController extends Controller
 
     /**
      * POST /api/v/admin/impersonate/end
+     *
+     * DB-driven (no session middleware required): the bearer token's
+     * impersonation_log_id points to its log, whose actor_id is the root
+     * actor. We close ALL open logs for that root actor (the whole chain)
+     * and delete all auth_tokens carrying those log_ids.
      */
     public function end(Request $request): JsonResponse
     {
-        $chain = session('wc_impersonation_chain', []);
-        if (empty($chain)) {
+        $bearer = $request->bearerToken() ?? session('wc_token');
+        if (! $bearer) {
             return response()->json(['ok' => true, 'noop' => true]);
         }
 
-        $rootToken = session('wc_root_token');
-        if (! $rootToken) {
-            return response()->json(['error' => 'No se encontro sesion raiz.'], 422);
+        $bearerRow = AuthToken::where('token', $bearer)->first();
+        if (! $bearerRow || ! $bearerRow->impersonation_log_id) {
+            // Not an impersonation token — fall back to session chain (legacy path).
+            $chain = session('wc_impersonation_chain', []);
+            if (empty($chain)) {
+                return response()->json(['ok' => true, 'noop' => true]);
+            }
+            $rootToken = session('wc_root_token');
+            foreach ($chain as $entry) {
+                ImpersonationLog::where('id', $entry['log_id'])
+                    ->whereNull('ended_at')
+                    ->update(['ended_at' => now()]);
+                AuthToken::where('token', $entry['token'])->delete();
+            }
+            session()->forget([
+                'wc_root_token', 'wc_root_user_id', 'wc_root_user_name',
+                'wc_impersonation_chain', 'wc_admin_token',
+            ]);
+            return response()->json([
+                'ok'           => true,
+                'redirect_url' => '/admin/coaches',
+                'root_token'   => $rootToken,
+            ]);
         }
 
-        foreach ($chain as $entry) {
-            ImpersonationLog::where('id', $entry['log_id'])
-                ->whereNull('ended_at')
-                ->update(['ended_at' => now()]);
-            AuthToken::where('token', $entry['token'])->delete();
+        // Resolve root actor from the bearer's log.
+        $bearerLog = ImpersonationLog::find($bearerRow->impersonation_log_id);
+        if (! $bearerLog) {
+            return response()->json(['ok' => true, 'noop' => true]);
+        }
+        $rootActorType = $bearerLog->actor_type;
+        $rootActorId   = (int) $bearerLog->actor_id;
+
+        // Find all open logs in this chain (same root actor) and close them.
+        $openLogs = ImpersonationLog::where('actor_type', $rootActorType)
+            ->where('actor_id', $rootActorId)
+            ->whereNull('ended_at')
+            ->get();
+
+        $closedLogIds = [];
+        foreach ($openLogs as $log) {
+            $log->update(['ended_at' => now()]);
+            $closedLogIds[] = $log->id;
+            // Delete the impersonation token attached to this log.
+            AuthToken::where('token', $log->token)->delete();
         }
 
-        $rootAuth = AuthToken::where('token', $rootToken)
+        // Find a still-valid root token (one for the root actor with no impersonation_log_id).
+        $rootAuth = AuthToken::query()
+            ->where('user_type', $rootActorType)
+            ->where('user_id', $rootActorId)
+            ->whereNull('impersonation_log_id')
             ->where('expires_at', '>', now())
+            ->latest('id')
             ->first();
-        $rootUser = $rootAuth ? Admin::find($rootAuth->user_id) : null;
+        $rootToken = $rootAuth?->token ?? session('wc_root_token');
 
-        session([
-            'wc_token'       => $rootToken,
-            'wc_user_type'   => 'admin',
-            'wc_user_id'     => $rootUser?->id,
-            'wc_user_name'   => $rootUser?->name ?? $rootUser?->username ?? 'Superadmin',
-            'wc_user_portal' => '/admin',
-        ]);
+        // Best-effort session cleanup (no-op when session middleware is absent).
         session()->forget([
             'wc_root_token', 'wc_root_user_id', 'wc_root_user_name',
             'wc_impersonation_chain', 'wc_admin_token',
         ]);
 
         Log::channel('security')->info('IMPERSONATE_END', [
-            'superadmin_id' => $rootUser?->id,
-            'closed_logs'   => array_column($chain, 'log_id'),
+            'root_actor_type' => $rootActorType,
+            'root_actor_id'   => $rootActorId,
+            'closed_logs'     => $closedLogIds,
         ]);
 
         return response()->json([

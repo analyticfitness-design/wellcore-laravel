@@ -336,13 +336,18 @@ Route::prefix('v/coach')->middleware(['auth:wellcore', 'throttle:api', 'role:coa
     });
 });
 
+// Coach impersonation END — accessible by ANY authenticated user (admin or client)
+// because while impersonating, the active token's role may be coach/client.
+// The controller itself checks for an active chain in session before doing anything.
+Route::post('/v/admin/impersonate/end', [\App\Http\Controllers\Api\AdminImpersonateController::class, 'end'])
+    ->middleware(['auth:wellcore', 'throttle:api']);
+
 // Admin (Phase 9 — authenticated admin with admin/superadmin/jefe role)
 Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:admin,superadmin,jefe'])->group(function () {
     // Coach impersonation (superadmin only)
     Route::post('/coaches/{id}/impersonate', [\App\Http\Controllers\Api\AdminImpersonateController::class, 'start'])
         ->middleware(['role:superadmin', 'throttle:impersonate'])
         ->whereNumber('id');
-    Route::post('/impersonate/end', [\App\Http\Controllers\Api\AdminImpersonateController::class, 'end']);
 
     Route::get('/dashboard', [AdminController::class, 'dashboard']);
     Route::get('/feed', [AdminController::class, 'feed']);
