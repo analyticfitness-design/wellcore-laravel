@@ -448,6 +448,7 @@ class AdminController extends Controller
 
         $typeFilter = $request->query('type', 'all');
         $dateFilter = $request->query('date', 'week');
+        $since = $request->query('since');
 
         $typeFilter = match ($typeFilter) {
             'checkin' => 'checkins',
@@ -457,12 +458,14 @@ class AdminController extends Controller
         };
 
         $tz = 'America/Bogota';
-        $dateFrom = match ($dateFilter) {
-            'today' => Carbon::today($tz)->utc(),
-            'week' => Carbon::now($tz)->subWeek()->startOfDay()->utc(),
-            'month' => Carbon::now($tz)->subMonth()->startOfDay()->utc(),
-            default => null,
-        };
+        $dateFrom = $since
+            ? Carbon::parse($since)->utc()
+            : match ($dateFilter) {
+                'today' => Carbon::today($tz)->utc(),
+                'week'  => Carbon::now($tz)->subWeek()->startOfDay()->utc(),
+                'month' => Carbon::now($tz)->subMonth()->startOfDay()->utc(),
+                default => null,
+            };
 
         $items = collect();
 
@@ -471,6 +474,7 @@ class AdminController extends Controller
             $inscriptions = Inscription::when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
                 ->latest('created_at')->limit(50)->get()
                 ->map(fn ($i) => [
+                    'id' => 'signup_' . $i->id,
                     'type' => 'signup',
                     'icon' => 'clipboard-document-check',
                     'color' => 'sky',
@@ -490,6 +494,7 @@ class AdminController extends Controller
                 ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
                 ->latest('created_at')->limit(50)->get()
                 ->map(fn ($p) => [
+                    'id' => 'payment_' . $p->id,
                     'type' => 'payment',
                     'icon' => 'banknotes',
                     'color' => 'emerald',
@@ -509,6 +514,7 @@ class AdminController extends Controller
                 ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
                 ->latest('created_at')->limit(50)->get()
                 ->map(fn ($c) => [
+                    'id' => 'checkin_' . $c->id,
                     'type' => 'checkin',
                     'icon' => 'clipboard-document-list',
                     'color' => 'orange',
@@ -528,6 +534,7 @@ class AdminController extends Controller
                 ->when($dateFrom, fn ($q) => $q->where('created_at', '>=', $dateFrom))
                 ->latest('created_at')->limit(50)->get()
                 ->map(fn ($m) => [
+                    'id' => 'message_' . $m->id,
                     'type' => 'message',
                     'icon' => 'chat-bubble-left-right',
                     'color' => 'violet',
@@ -551,6 +558,7 @@ class AdminController extends Controller
                 ->when($dateFrom, fn ($q) => $q->where('log_date', '>=', $dateFrom->toDateString()))
                 ->latest('log_date')->limit(50)->get()
                 ->map(fn ($t) => [
+                    'id' => 'training_' . $t->id,
                     'type' => 'training',
                     'icon' => 'fire',
                     'color' => 'yellow',
@@ -581,6 +589,7 @@ class AdminController extends Controller
         return response()->json([
             'feed' => $feed,
             'stats' => $feedStats,
+            'next_cursor' => count($feed) > 0 ? $feed[0]['timestamp'] : null,
         ]);
     }
 
