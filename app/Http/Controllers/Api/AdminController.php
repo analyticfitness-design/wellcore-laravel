@@ -2407,93 +2407,251 @@ class AdminController extends Controller
     // ─── Chat Analytics ─────────────────────────────────────────────────
 
     /**
-     * GET /api/v/admin/chat-analytics
+     * GET /api/v/admin/chat-analytics?period=month
      *
-     * Chat analytics.
-     * Ports Admin\ChatAnalytics.php render() logic.
+     * Analytics del chat coach-cliente (coach_messages table).
+     * Sustituye la versión anterior que leía chat_messages (AI chatbot).
      */
     public function chatAnalytics(Request $request): JsonResponse
     {
         $this->resolveAdminOrFail($request);
 
-        $search = $request->query('search', '');
-        $sessionId = $request->query('session_id');
+        $period = $request->query('period', 'month');
+
+        [$dateFrom, $dateTo] = $this->chatAnalyticsPeriodRange($period);
 
         try {
-            $totalConversations = ChatMessage::distinct('session_id')->count('session_id');
-            $totalMessages = ChatMessage::count();
-            $messagesToday = ChatMessage::whereDate('created_at', today())->count();
+            // ── KPIs ────────────────────────────────────────────────────────
+            $baseQuery = fn () => CoachMessage::whereBetween('created_at', [$dateFrom, $dateTo]);
 
-            $topQuestions = ChatMessage::where('role', 'user')
-                ->select('content', DB::raw('COUNT(*) as count'))
-                ->groupBy('content')
-                ->orderByDesc('count')
+            $msgVolume = $baseQuery()->count();
+            $coachToClient = $baseQuery()->where('direction', 'coach_to_client')->count();
+            $clientToCoach = $baseQuery()->where('direction', 'client_to_coach')->count();
+
+            // Avg response time: por cada mensaje client_to_coach, buscar la
+            // respuesta coach_to_client más cercana posterior del mismo coach-cliente
+            $avgResponseMinutes = DB::select("
+                SELECT AVG(diff_minutes) as avg_minutes
+                FROM (
+                    SELECT
+                        TIMESTAMPDIFF(MINUTE, c.created_at, (
+                            SELECT MIN(r.created_at)
+                            FROM coach_messages r
+                            WHERE r.coach_id = c.coach_id
+                              AND r.client_id = c.client_id
+                              AND r.direction = 'coach_to_client'
+                              AND r.created_at > c.created_at
+                        )) as diff_minutes
+                    FROM coach_messages c
+                    WHERE c.direction = 'client_to_coach'
+                      AND c.created_at BETWEEN ? AND ?
+                    HAVING diff_minutes IS NOT NULL AND diff_minutes <= 1440
+                ) sub
+            ", [$dateFrom, $dateTo]);
+            $avgResponse = round($avgResponseMinutes[0]->avg_minutes ?? 0);
+
+            // Peak hour
+            $peakHour = CoachMessage::whereBetween('created_at', [$dateFrom, $dateTo])
+                ->select(DB::raw('HOUR(created_at) as hour'), DB::raw('COUNT(*) as cnt'))
+                ->groupBy(DB::raw('HOUR(created_at)'))
+                ->orderByDesc('cnt')
+                ->first();
+
+            // ── Volume chart ─────────────────────────────────────────────────
+            $volumeChart = $this->chatAnalyticsVolumeChart($period, $dateFrom, $dateTo);
+
+            // ── Response time buckets ─────────────────────────────────────────
+            $buckets = DB::select("
+                SELECT
+                    CASE
+                        WHEN diff_minutes < 5    THEN '<5min'
+                        WHEN diff_minutes < 15   THEN '5-15min'
+                        WHEN diff_minutes < 60   THEN '15-60min'
+                        WHEN diff_minutes < 180  THEN '1-3h'
+                        WHEN diff_minutes < 720  THEN '3-12h'
+                        ELSE '+12h'
+                    END as bucket,
+                    COUNT(*) as cnt
+                FROM (
+                    SELECT
+                        TIMESTAMPDIFF(MINUTE, c.created_at, (
+                            SELECT MIN(r.created_at)
+                            FROM coach_messages r
+                            WHERE r.coach_id = c.coach_id
+                              AND r.client_id = c.client_id
+                              AND r.direction = 'coach_to_client'
+                              AND r.created_at > c.created_at
+                        )) as diff_minutes
+                    FROM coach_messages c
+                    WHERE c.direction = 'client_to_coach'
+                      AND c.created_at BETWEEN ? AND ?
+                    HAVING diff_minutes IS NOT NULL
+                ) sub
+                GROUP BY bucket
+            ", [$dateFrom, $dateTo]);
+
+            $bucketOrder = ['<5min', '5-15min', '15-60min', '1-3h', '3-12h', '+12h'];
+            $bucketMap = collect($buckets)->keyBy('bucket');
+            $responseTimeBuckets = collect($bucketOrder)->map(fn ($b) => [
+                'bucket' => $b,
+                'count'  => (int) ($bucketMap[$b]->cnt ?? 0),
+            ])->values()->toArray();
+
+            // Stats adicionales de response time
+            $rtStats = DB::select("
+                SELECT
+                    AVG(diff_minutes) as mean,
+                    MAX(IF(@row_num = ROUND(cnt/2), diff_minutes, NULL)) as median,
+                    MAX(IF(@row_num = ROUND(cnt*0.9), diff_minutes, NULL)) as p90
+                FROM (
+                    SELECT diff_minutes,
+                           @row_num := @row_num + 1 as row_num,
+                           (SELECT COUNT(*) FROM (
+                               SELECT TIMESTAMPDIFF(MINUTE, c2.created_at, (
+                                       SELECT MIN(r2.created_at) FROM coach_messages r2
+                                       WHERE r2.coach_id=c2.coach_id AND r2.client_id=c2.client_id
+                                         AND r2.direction='coach_to_client' AND r2.created_at > c2.created_at
+                               )) as diff_minutes
+                               FROM coach_messages c2
+                               WHERE c2.direction='client_to_coach'
+                                 AND c2.created_at BETWEEN ? AND ?
+                               HAVING diff_minutes IS NOT NULL
+                           ) sub2) as cnt
+                    FROM (SELECT @row_num := 0) init,
+                    (
+                        SELECT TIMESTAMPDIFF(MINUTE, c.created_at, (
+                            SELECT MIN(r.created_at) FROM coach_messages r
+                            WHERE r.coach_id=c.coach_id AND r.client_id=c.client_id
+                              AND r.direction='coach_to_client' AND r.created_at > c.created_at
+                        )) as diff_minutes
+                        FROM coach_messages c
+                        WHERE c.direction='client_to_coach'
+                          AND c.created_at BETWEEN ? AND ?
+                        HAVING diff_minutes IS NOT NULL
+                        ORDER BY diff_minutes
+                    ) ordered
+                ) ranked
+            ", [$dateFrom, $dateTo, $dateFrom, $dateTo]);
+
+            // ── Heatmap día×hora ──────────────────────────────────────────────
+            $heatmapRows = CoachMessage::whereBetween('created_at', [$dateFrom, $dateTo])
+                ->select(
+                    DB::raw('DAYOFWEEK(created_at) as dow_mysql'),
+                    DB::raw('HOUR(created_at) as hour'),
+                    DB::raw('COUNT(*) as cnt')
+                )
+                ->groupBy(DB::raw('DAYOFWEEK(created_at)'), DB::raw('HOUR(created_at)'))
+                ->get()
+                ->map(fn ($r) => [
+                    'day'   => $r->dow_mysql === 1 ? 7 : $r->dow_mysql - 1, // 1=lunes, 7=domingo
+                    'hour'  => (int) $r->hour,
+                    'count' => (int) $r->cnt,
+                ])
+                ->toArray();
+
+            // ── Top coaches por volumen (satisfaction_score no existe) ─────────
+            $topCoaches = CoachMessage::whereBetween('created_at', [$dateFrom, $dateTo])
+                ->where('direction', 'coach_to_client')
+                ->join('admins', 'admins.id', '=', 'coach_messages.coach_id')
+                ->select(
+                    'coach_messages.coach_id',
+                    DB::raw("CONCAT(admins.nombre, ' ', admins.apellido) as name"),
+                    DB::raw('COUNT(*) as msg_count')
+                )
+                ->groupBy('coach_messages.coach_id', 'admins.nombre', 'admins.apellido')
+                ->orderByDesc('msg_count')
                 ->limit(5)
-                ->get();
-
-            $hasPageUrl = Schema::hasColumn('chat_messages', 'page_url');
-
-            $conversationsQuery = ChatMessage::select(
-                'session_id',
-                DB::raw('MIN(CASE WHEN role = \'user\' THEN content END) as first_message'),
-                DB::raw('COUNT(*) as message_count'),
-                $hasPageUrl ? DB::raw('MAX(page_url) as page_url') : DB::raw('NULL as page_url'),
-                DB::raw('MIN(created_at) as started_at'),
-                DB::raw('MAX(created_at) as last_message_at')
-            )
-                ->groupBy('session_id')
-                ->orderByDesc(DB::raw('MAX(created_at)'));
-
-            if ($search !== '') {
-                $conversationsQuery->whereIn('session_id', function ($query) use ($search) {
-                    $query->select('session_id')
-                        ->from('chat_messages')
-                        ->where('content', 'like', '%'.$search.'%');
-                });
-            }
-
-            $conversations = $conversationsQuery->paginate(20);
-
-            // Expanded session messages
-            $expandedMessages = [];
-            if ($sessionId) {
-                $expandedMessages = ChatMessage::where('session_id', $sessionId)
-                    ->orderBy('created_at')
-                    ->get()
-                    ->map(fn ($m) => [
-                        'id' => $m->id,
-                        'role' => $m->role,
-                        'content' => $m->content,
-                        'created_at' => $m->created_at?->format('d M Y H:i'),
-                    ])
-                    ->toArray();
-            }
+                ->get()
+                ->map(fn ($r) => [
+                    'coach_id'  => $r->coach_id,
+                    'name'      => $r->name,
+                    'avg_score' => null,
+                    'msg_count' => (int) $r->msg_count,
+                ])
+                ->toArray();
 
             return response()->json([
-                'stats' => [
-                    'totalConversations' => $totalConversations,
-                    'totalMessages' => $totalMessages,
-                    'messagesToday' => $messagesToday,
+                'kpis' => [
+                    'msg_volume'            => $msgVolume,
+                    'coach_to_client'       => $coachToClient,
+                    'client_to_coach'       => $clientToCoach,
+                    'avg_response_minutes'  => $avgResponse,
+                    'satisfaction_score'    => null,
+                    'peak_hour'             => $peakHour ? ['hour' => (int) $peakHour->hour, 'count' => (int) $peakHour->cnt] : null,
                 ],
-                'topQuestions' => $topQuestions,
-                'conversations' => $conversations->items(),
-                'pagination' => [
-                    'current_page' => $conversations->currentPage(),
-                    'last_page' => $conversations->lastPage(),
-                    'total' => $conversations->total(),
+                'volume_chart'            => $volumeChart,
+                'response_time_buckets'   => $responseTimeBuckets,
+                'response_time_stats'     => [
+                    'mean'   => round($rtStats[0]->mean ?? 0),
+                    'median' => round($rtStats[0]->median ?? 0),
+                    'p90'    => round($rtStats[0]->p90 ?? 0),
                 ],
-                'expandedMessages' => $expandedMessages,
+                'heatmap'    => $heatmapRows,
+                'top_coaches'=> $topCoaches,
+                'has_data'   => $msgVolume >= 100,
+                'period'     => $period,
             ]);
         } catch (\Throwable $e) {
             return response()->json([
-                'stats' => ['totalConversations' => 0, 'totalMessages' => 0, 'messagesToday' => 0],
-                'topQuestions' => [],
-                'conversations' => [],
-                'pagination' => ['current_page' => 1, 'last_page' => 1, 'total' => 0],
-                'expandedMessages' => [],
-                'error' => 'Error cargando chat analytics.',
+                'kpis'                  => ['msg_volume' => 0, 'avg_response_minutes' => 0, 'satisfaction_score' => null, 'peak_hour' => null],
+                'volume_chart'          => [],
+                'response_time_buckets' => [],
+                'response_time_stats'   => ['mean' => 0, 'median' => 0, 'p90' => 0],
+                'heatmap'               => [],
+                'top_coaches'           => [],
+                'has_data'              => false,
+                'period'                => $period,
+                'error'                 => 'Error cargando chat analytics.',
             ]);
         }
+    }
+
+    private function chatAnalyticsPeriodRange(string $period): array
+    {
+        $now = now();
+        switch ($period) {
+            case 'today':
+                return [$now->copy()->startOfDay(), $now->copy()->endOfDay()];
+            case 'week':
+                return [$now->copy()->subDays(6)->startOfDay(), $now->copy()->endOfDay()];
+            case 'quarter':
+                return [$now->copy()->subMonths(3)->startOfDay(), $now->copy()->endOfDay()];
+            case 'year':
+                return [$now->copy()->startOfYear(), $now->copy()->endOfYear()];
+            default: // month
+                return [$now->copy()->startOfMonth(), $now->copy()->endOfMonth()];
+        }
+    }
+
+    private function chatAnalyticsVolumeChart(string $period, $dateFrom, $dateTo): array
+    {
+        $groupFormat = match ($period) {
+            'today'   => '%H:00',
+            'year'    => '%Y-%m',
+            default   => '%Y-%m-%d',
+        };
+        $labelFormat = match ($period) {
+            'today'   => '%H:00',
+            'year'    => '%Y-%m',
+            default   => '%Y-%m-%d',
+        };
+
+        $rows = DB::select("
+            SELECT
+                DATE_FORMAT(created_at, ?) as label,
+                SUM(CASE WHEN direction = 'coach_to_client' THEN 1 ELSE 0 END) as coach_to_client,
+                SUM(CASE WHEN direction = 'client_to_coach' THEN 1 ELSE 0 END) as client_to_coach
+            FROM coach_messages
+            WHERE created_at BETWEEN ? AND ?
+            GROUP BY DATE_FORMAT(created_at, ?)
+            ORDER BY label
+        ", [$groupFormat, $dateFrom, $dateTo, $groupFormat]);
+
+        return collect($rows)->map(fn ($r) => [
+            'date'            => $r->label,
+            'coach_to_client' => (int) $r->coach_to_client,
+            'client_to_coach' => (int) $r->client_to_coach,
+        ])->values()->toArray();
     }
 
     // ─── AI Generator ───────────────────────────────────────────────────
