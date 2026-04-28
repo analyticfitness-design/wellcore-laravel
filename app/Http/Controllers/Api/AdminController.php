@@ -15,6 +15,8 @@ use App\Mail\PlanInvitation;
 use App\Mail\WelcomeMail;
 use App\Models\Admin;
 use App\Models\AssignedPlan;
+use App\Models\AuditLog;
+use App\Models\PlatformSetting;
 use App\Models\AuthToken;
 use App\Models\ChatMessage;
 use App\Models\Checkin;
@@ -2122,58 +2124,284 @@ class AdminController extends Controller
     /**
      * GET /api/v/admin/settings
      *
-     * Admin settings (read-only config display).
-     * Ports Admin\AdminSettings.php mount() logic.
+     * Devuelve las 10 secciones de configuracion de la plataforma.
+     * Campos secret se enmascaran (••••last4). El rol del admin se incluye
+     * para que el frontend determine qué secciones son editables.
      */
     public function settings(Request $request): JsonResponse
     {
-        $this->resolveAdminOrFail($request);
+        $admin = $this->resolveAdminOrFail($request);
+        $role  = $admin->role?->value ?? $admin->role ?? 'admin';
 
-        $config = [
-            'app_name' => config('app.name', 'WellCore'),
-            'app_url' => config('app.url', ''),
-            'app_env' => config('app.env', 'production'),
-            'mail_mailer' => config('mail.default', 'smtp'),
-            'mail_from_address' => config('mail.from.address', ''),
-            'mail_from_name' => config('mail.from.name', ''),
-            'db_connection' => config('database.default', 'mysql'),
-            'db_database' => config('database.connections.mysql.database', ''),
-            'cache_store' => config('cache.default', 'file'),
-            'session_driver' => config('session.driver', 'file'),
-            'queue_connection' => config('queue.default', 'sync'),
+        $db = fn (string $section) => PlatformSetting::getSectionMap($section);
+
+        // Defaults por sección — se fusionan con lo que haya en DB.
+        $defaults = [
+            'general' => [
+                'platform_name'  => config('app.name', 'WellCore Fitness'),
+                'support_email'  => config('mail.from.address', ''),
+                'timezone'       => 'America/Bogota',
+                'default_locale' => 'es',
+            ],
+            'branding' => [
+                'logo_url'        => null,
+                'primary_color'   => '#DC2626',
+                'secondary_color' => '#0a0a0a',
+                'font_display'    => 'Bebas Neue',
+            ],
+            'pagos' => [
+                'currency'               => 'COP',
+                'wompi_public_key'       => null,
+                'wompi_private_key'      => null,
+                'mercadopago_public_key' => null,
+                'mercadopago_secret_key' => null,
+                'webhook_url'            => config('app.url').'/webhooks/wompi',
+            ],
+            'email' => [
+                'smtp_host'     => config('mail.mailers.smtp.host', ''),
+                'smtp_port'     => config('mail.mailers.smtp.port', 587),
+                'smtp_user'     => config('mail.mailers.smtp.username', ''),
+                'smtp_password' => null,
+                'sender_name'   => config('mail.from.name', 'WellCore Fitness'),
+                'sender_email'  => config('mail.from.address', ''),
+            ],
+            'notificaciones' => [
+                'whatsapp_api_key'    => null,
+                'whatsapp_phone_id'   => null,
+                'push_enabled'        => true,
+                'email_notifications' => true,
+            ],
+            'coaches' => [
+                'max_clients_per_coach'       => 15,
+                'sla_response_hours'          => 24,
+                'commission_percent'          => 40,
+                'auto_assign'                 => false,
+            ],
+            'rise' => [
+                'program_duration_weeks'        => 8,
+                'challenge_count'               => 4,
+                'reward_points_per_challenge'   => 100,
+                'trial_days'                    => 7,
+            ],
+            'seguridad' => [
+                'require_2fa_admin'        => false,
+                'ip_whitelist'             => '[]',
+                'password_min_length'      => 8,
+                'password_require_upper'   => true,
+                'session_timeout_minutes'  => 120,
+            ],
+            'integraciones' => [
+                'meta_pixel_id'    => null,
+                'ga_tracking_id'   => null,
+                'mixpanel_token'   => null,
+                'hotjar_id'        => null,
+                'anthropic_api_key'=> null,
+            ],
+            'mantenimiento' => [
+                'maintenance_mode'    => false,
+                'maintenance_message' => 'La plataforma esta en mantenimiento. Volvemos pronto.',
+                'deploy_window_start' => '02:00',
+                'deploy_window_end'   => '05:00',
+            ],
         ];
 
-        $features = [
-            ['name' => 'AI Nutrition',      'key' => 'ai-nutrition',    'enabled' => true],
-            ['name' => 'AI Plan Generator', 'key' => 'ai-generator',   'enabled' => true],
-            ['name' => 'Community Feed',    'key' => 'community',      'enabled' => true],
-            ['name' => 'Video Check-ins',   'key' => 'video-checkin',  'enabled' => true],
-            ['name' => 'Chat Widget',       'key' => 'chat',           'enabled' => true],
-            ['name' => 'RISE Program',      'key' => 'rise',           'enabled' => true],
-            ['name' => 'Shop / Tienda',     'key' => 'shop',           'enabled' => true],
-            ['name' => 'Referral Program',  'key' => 'referrals',      'enabled' => true],
-            ['name' => 'Coach Portal',      'key' => 'coach',          'enabled' => true],
-            ['name' => 'Presencial',        'key' => 'presencial',     'enabled' => true],
+        $secretKeys = [
+            'wompi_private_key', 'mercadopago_secret_key', 'smtp_password',
+            'whatsapp_api_key', 'anthropic_api_key', 'mixpanel_token',
         ];
+
+        $sections = [];
+        foreach ($defaults as $section => $sectionDefaults) {
+            $stored = $db($section);
+            $merged = array_merge($sectionDefaults, $stored);
+
+            // Enmascarar campos secret
+            foreach ($merged as $key => $value) {
+                if (in_array($key, $secretKeys) && ! empty($value)) {
+                    $merged[$key] = PlatformSetting::maskSecret((string) $value);
+                }
+                // JSON strings → arrays
+                if (is_string($value) && str_starts_with($value, '[')) {
+                    $decoded = json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $merged[$key] = $decoded;
+                    }
+                }
+                // Cast booleanos
+                if (in_array($key, ['push_enabled', 'email_notifications', 'auto_assign',
+                    'require_2fa_admin', 'password_require_upper', 'maintenance_mode'])) {
+                    $merged[$key] = filter_var($value ?? $sectionDefaults[$key], FILTER_VALIDATE_BOOLEAN);
+                }
+            }
+            $sections[$section] = $merged;
+        }
+
+        // Advertencias transversales (cross-field validations para el frontend)
+        $warnings = [];
+        $coachesMaxRaw = (int) ($sections['coaches']['max_clients_per_coach'] ?? 15);
+        if ($coachesMaxRaw < 15) {
+            $affectedCount = DB::table('coach_profiles')
+                ->whereRaw('(SELECT COUNT(*) FROM client_profiles WHERE coach_id = coach_profiles.coach_id AND status = "active") > ?', [$coachesMaxRaw])
+                ->count();
+            if ($affectedCount > 0) {
+                $warnings['coaches_max_clients'] = "Hay {$affectedCount} coach(es) con mas clientes activos que el nuevo limite.";
+            }
+        }
 
         return response()->json([
-            'config' => $config,
-            'features' => $features,
+            'role'     => $role,
+            'sections' => $sections,
+            'warnings' => $warnings,
+            'secret_keys' => $secretKeys,
+            'superadmin_only_sections' => ['pagos', 'email', 'seguridad', 'integraciones', 'mantenimiento'],
         ]);
     }
 
     /**
      * PUT /api/v/admin/settings
      *
-     * Update settings (feature toggles — currently a placeholder).
+     * Guarda campos cambiados (parcial — solo lo que el frontend mando).
+     * Genera audit log por section. Campos secret sin cambio se omiten.
      */
     public function updateSettings(Request $request): JsonResponse
     {
-        $this->resolveAdminOrFail($request);
+        $admin = $this->resolveAdminOrFail($request);
+        $role  = $admin->role?->value ?? $admin->role ?? 'admin';
 
-        // Feature toggles would be stored in a settings table in a future iteration.
-        // For now, acknowledge the request.
-        return response()->json(['updated' => true, 'message' => 'Los ajustes de configuracion se actualizaran en una version futura.']);
+        $superadminSections = ['pagos', 'email', 'seguridad', 'integraciones', 'mantenimiento'];
+        $isSuperAdmin = in_array($role, ['superadmin', 'jefe']);
+
+        $payload = $request->validate([
+            'section' => 'required|string|in:general,branding,pagos,email,notificaciones,coaches,rise,seguridad,integraciones,mantenimiento',
+            'fields'  => 'required|array',
+        ]);
+
+        $section = $payload['section'];
+        $fields  = $payload['fields'];
+
+        if (! $isSuperAdmin && in_array($section, $superadminSections)) {
+            return response()->json(['error' => 'Solo Superadmin puede modificar esta seccion.'], 403);
+        }
+
+        $secretKeys = ['wompi_private_key', 'mercadopago_secret_key', 'smtp_password',
+            'whatsapp_api_key', 'anthropic_api_key', 'mixpanel_token'];
+
+        $savedKeys = [];
+        $diffLog   = [];
+
+        foreach ($fields as $key => $value) {
+            // Omitir secrets enmascarados que no fueron modificados
+            if (in_array($key, $secretKeys) && is_string($value) && str_starts_with($value, '••')) {
+                continue;
+            }
+
+            $previous = PlatformSetting::where('section', $section)->where('key', $key)->value('value');
+            $isSecret = in_array($key, $secretKeys);
+
+            PlatformSetting::updateOrCreate(
+                ['section' => $section, 'key' => $key],
+                ['value' => is_array($value) ? json_encode($value) : $value, 'is_secret' => $isSecret]
+            );
+
+            $savedKeys[] = $key;
+            $diffLog[$key] = [
+                'from' => $isSecret ? '[SECRETO]' : $previous,
+                'to'   => $isSecret ? '[ACTUALIZADO]' : (is_array($value) ? json_encode($value) : $value),
+            ];
+        }
+
+        if (! empty($savedKeys)) {
+            AuditLog::create([
+                'actor_type'   => 'admin',
+                'actor_id'     => $admin->id,
+                'actor_name'   => $admin->name ?? 'Admin',
+                'action'       => 'settings.update',
+                'target_type'  => 'platform_settings',
+                'target_id'    => 0,
+                'target_label' => $section,
+                'diff'         => $diffLog,
+                'ip'           => $request->ip(),
+                'user_agent'   => substr($request->userAgent() ?? '', 0, 500),
+                'created_at'   => now(),
+            ]);
+        }
+
+        return response()->json([
+            'updated'     => true,
+            'section'     => $section,
+            'saved_keys'  => $savedKeys,
+            'message'     => 'Configuracion actualizada.',
+        ]);
+    }
+
+    /**
+     * POST /api/v/admin/settings/test-smtp
+     *
+     * Prueba la conexion SMTP con los datos del formulario (no guarda).
+     */
+    public function testSmtp(Request $request): JsonResponse
+    {
+        $this->resolveSuperAdminOrFail($request);
+
+        $validated = $request->validate([
+            'host'     => 'required|string',
+            'port'     => 'required|integer',
+            'user'     => 'required|string',
+            'password' => 'nullable|string',
+            'to'       => 'required|email',
+        ]);
+
+        try {
+            config([
+                'mail.mailers.smtp.host'       => $validated['host'],
+                'mail.mailers.smtp.port'       => $validated['port'],
+                'mail.mailers.smtp.username'   => $validated['user'],
+                'mail.mailers.smtp.password'   => $validated['password'] ?? '',
+                'mail.mailers.smtp.encryption' => 'tls',
+            ]);
+
+            Mail::raw('Prueba de conexion SMTP desde WellCore Admin.', function ($message) use ($validated) {
+                $message->to($validated['to'])->subject('Test SMTP — WellCore');
+            });
+
+            return response()->json(['ok' => true, 'message' => 'Correo enviado exitosamente a '.$validated['to']]);
+        } catch (\Throwable $e) {
+            Log::warning('Admin settings SMTP test failed', ['error' => $e->getMessage()]);
+            return response()->json(['ok' => false, 'message' => 'Fallo la conexion: '.$e->getMessage()], 422);
+        }
+    }
+
+    /**
+     * POST /api/v/admin/settings/verify-payment-gateway
+     *
+     * Verifica que las API keys de Wompi sean validas.
+     */
+    public function verifyPaymentGateway(Request $request): JsonResponse
+    {
+        $this->resolveSuperAdminOrFail($request);
+
+        $validated = $request->validate([
+            'gateway'    => 'required|string|in:wompi,mercadopago',
+            'public_key' => 'required|string',
+        ]);
+
+        try {
+            if ($validated['gateway'] === 'wompi') {
+                $url = 'https://sandbox.wompi.co/v1/merchants/' . $validated['public_key'];
+                $response = \Illuminate\Support\Facades\Http::timeout(8)->get($url);
+                $ok = $response->successful() && isset($response->json()['data']);
+                return response()->json([
+                    'ok'      => $ok,
+                    'gateway' => 'wompi',
+                    'message' => $ok ? 'Clave Wompi verificada correctamente.' : 'Clave Wompi invalida o inaccesible.',
+                ]);
+            }
+
+            return response()->json(['ok' => false, 'message' => 'Gateway no soportado aun.'], 422);
+        } catch (\Throwable $e) {
+            Log::warning('Admin settings gateway verify failed', ['error' => $e->getMessage()]);
+            return response()->json(['ok' => false, 'message' => 'Error al verificar: '.$e->getMessage()], 422);
+        }
     }
 
     // ─── Chat Analytics ─────────────────────────────────────────────────
