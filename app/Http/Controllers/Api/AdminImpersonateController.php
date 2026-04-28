@@ -113,6 +113,8 @@ class AdminImpersonateController extends Controller
             'redirect_url' => '/coach',
             'log_id'       => $log->id,
             'expires_at'   => $expiresAt->toIso8601String(),
+            'target_name'  => $log->target_name,
+            'target_id'    => $target->id,
         ]);
     }
 
