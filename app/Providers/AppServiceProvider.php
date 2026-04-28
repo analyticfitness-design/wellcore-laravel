@@ -156,7 +156,10 @@ class AppServiceProvider extends ServiceProvider
             $userId = optional($request->user())->id;
             $key = $userId ? ('user:'.$userId) : ('ip:'.$request->ip());
 
-            return Limit::perMinute(10)->by($key);
+            return [
+                Limit::perMinute(10)->by($key),
+                Limit::perDay(50)->by($key),
+            ];
         });
 
         RateLimiter::for('coach-create', function ($request) {

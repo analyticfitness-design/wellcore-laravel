@@ -16,6 +16,20 @@ use Illuminate\Support\Facades\Log;
  */
 trait Auditable
 {
+    /**
+     * Returns the log_id of the topmost (most recent) impersonation in the
+     * current session chain, or null when there is no active impersonation.
+     */
+    protected function currentImpersonationLogId(): ?int
+    {
+        $chain = session('wc_impersonation_chain', []);
+        if (!is_array($chain) || empty($chain)) {
+            return null;
+        }
+        $top = end($chain);
+        return isset($top['log_id']) ? (int) $top['log_id'] : null;
+    }
+
     protected function audit(string $action, ?Model $target = null, array $diff = [], ?string $targetLabel = null): void
     {
         try {
@@ -47,6 +61,11 @@ trait Auditable
                 }
                 $actorId = $fallback?->id;
                 $actorName = $fallback?->name ?? $fallback?->username ?? null;
+            }
+
+            $impersonationLogId = $this->currentImpersonationLogId();
+            if ($impersonationLogId !== null) {
+                $diff = array_merge($diff, ['impersonation_log_id' => $impersonationLogId]);
             }
 
             AuditLog::create([

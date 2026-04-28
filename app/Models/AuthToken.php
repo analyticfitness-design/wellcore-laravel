@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'ip_address',
     'expires_at',
     'last_used_at',
+    'impersonation_log_id',
 ])]
 class AuthToken extends Model
 {
