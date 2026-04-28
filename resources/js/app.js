@@ -1,5 +1,13 @@
 import './bootstrap';
-import './echo.js';
+
+// Echo/WebSocket: solo en paginas privadas (cliente/coach/admin/rise).
+// Las publicas no usan broadcasting y cargar Pusher ahi:
+//   1) ensucia consola si la key no esta inyectada en el build,
+//   2) suma KB innecesarios al critical path del primer paint.
+const _isPrivatePathForEcho = /^\/(client|coach|admin|rise)/.test(location.pathname);
+if (_isPrivatePathForEcho) {
+    import('./echo.js');
+}
 
 // ─── Safety net: si animations.js no carga (chunk 404, error de red, CSP),
 // aseguramos que ningun [data-animate] quede invisible mas de 600ms.
