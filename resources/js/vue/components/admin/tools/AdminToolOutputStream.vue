@@ -1,0 +1,114 @@
+<script setup>
+import { ref, watch, nextTick } from 'vue';
+
+const props = defineProps({
+  lines:       { type: Array,   default: () => [] },
+  isStreaming: { type: Boolean, default: false },
+  status:      { type: String,  default: null },   // null | 'success' | 'failed'
+  durationMs:  { type: Number,  default: null },
+});
+
+const terminalEl = ref(null);
+
+watch(() => props.lines.length, async () => {
+  await nextTick();
+  if (terminalEl.value) {
+    terminalEl.value.scrollTop = terminalEl.value.scrollHeight;
+  }
+});
+
+</script>
+
+<template>
+  <div class="tool-terminal" ref="terminalEl" aria-label="Terminal de salida">
+    <div class="tool-terminal-inner">
+      <span
+        v-for="(line, i) in lines"
+        :key="i"
+        class="tool-terminal-line"
+        :class="{
+          'line-error': line.startsWith('ERROR:'),
+          'line-warn':  line.startsWith('AVISO:') || line.startsWith('Nota:') || line.startsWith('GUARDA'),
+        }"
+      >{{ line }}</span>
+
+      <!-- cursor while streaming -->
+      <span v-if="isStreaming" class="tool-terminal-cursor" aria-hidden="true">_</span>
+
+      <!-- done status badge -->
+      <div v-if="status && !isStreaming" class="tool-terminal-footer">
+        <span class="tool-terminal-status" :class="status === 'success' ? 'status-ok' : 'status-fail'">
+          {{ status === 'success' ? 'COMPLETADO' : 'FALLIDO' }}
+        </span>
+        <span v-if="durationMs !== null" class="tool-terminal-duration">{{ durationMs }}ms</span>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.tool-terminal {
+  background: #0a0a0a;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 14px 16px;
+  min-height: 140px;
+  max-height: 340px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.7;
+  color: rgba(250,250,250,0.72);
+  scroll-behavior: smooth;
+}
+.tool-terminal::-webkit-scrollbar { width: 4px; }
+.tool-terminal::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+.tool-terminal-inner { display: flex; flex-direction: column; }
+
+.tool-terminal-line {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.line-error { color: var(--color-wc-red-text); }
+.line-warn  { color: var(--color-wc-amber-text); }
+
+.tool-terminal-cursor {
+  display: inline-block;
+  color: var(--color-wc-accent);
+  animation: term-blink 0.9s step-end infinite;
+  margin-left: 2px;
+}
+@keyframes term-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+.tool-terminal-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.tool-terminal-status {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.status-ok   { background: var(--color-wc-green-soft);  color: var(--color-wc-green-text); }
+.status-fail { background: var(--color-wc-red-soft);    color: var(--color-wc-red-text); }
+.tool-terminal-duration {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--color-wc-text-tertiary);
+  letter-spacing: 0.1em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tool-terminal-cursor { animation: none !important; }
+}
+</style>

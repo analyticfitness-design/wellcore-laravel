@@ -1,137 +1,117 @@
 <script setup>
-import { ref } from 'vue';
-import { useApi } from '../../composables/useApi';
+import { ref, onMounted } from 'vue';
 import AdminLayout from '../../layouts/AdminLayout.vue';
+import AdminGreeting from '../../components/admin/dashboard/AdminGreeting.vue';
+import AdminToolsCatalog from '../../components/admin/tools/AdminToolsCatalog.vue';
+import AdminToolRunModal from '../../components/admin/tools/AdminToolRunModal.vue';
+import AdminToolHistoryDrawer from '../../components/admin/tools/AdminToolHistoryDrawer.vue';
+import { useAdminToolsStore } from '../../stores/adminTools';
 
-const api = useApi();
+const store         = useAdminToolsStore();
+const activeTool    = ref(null);   // tool object being run (or null = modal closed)
+const historyOpen   = ref(false);
 
-const actionResults = ref({});
-const actionLoading = ref({});
+onMounted(async () => {
+  await store.fetchCatalog();
+});
 
-const tools = [
-    {
-        id: 'cache-clear',
-        title: 'Limpiar Cache',
-        description: 'Limpia todos los caches de la aplicacion (vistas, config, rutas)',
-        icon: 'cache',
-        color: 'bg-sky-500/10 text-sky-500',
-        action: '/api/v/admin/tools/cache-clear',
-    },
-    {
-        id: 'queue-status',
-        title: 'Estado de Cola',
-        description: 'Verifica el estado de las colas de trabajo en segundo plano',
-        icon: 'queue',
-        color: 'bg-emerald-500/10 text-emerald-500',
-        action: '/api/v/admin/tools/queue-status',
-    },
-    {
-        id: 'optimize',
-        title: 'Optimizar App',
-        description: 'Ejecuta optimizaciones de config, rutas y vistas',
-        icon: 'optimize',
-        color: 'bg-violet-500/10 text-violet-500',
-        action: '/api/v/admin/tools/optimize',
-    },
-    {
-        id: 'health-check',
-        title: 'Health Check',
-        description: 'Verifica la salud de la base de datos, cache y servicios',
-        icon: 'health',
-        color: 'bg-amber-500/10 text-amber-500',
-        action: '/api/v/admin/tools/health-check',
-    },
-    {
-        id: 'logs',
-        title: 'Ver Logs Recientes',
-        description: 'Muestra los ultimos errores del log de la aplicacion',
-        icon: 'logs',
-        color: 'bg-red-500/10 text-red-500',
-        action: '/api/v/admin/tools/logs',
-    },
-    {
-        id: 'sessions',
-        title: 'Sesiones Activas',
-        description: 'Muestra la cantidad de sesiones activas actualmente',
-        icon: 'sessions',
-        color: 'bg-orange-500/10 text-orange-500',
-        action: '/api/v/admin/tools/sessions',
-    },
-];
+function openRun(tool) {
+  activeTool.value = tool;
+}
+function closeRun() {
+  activeTool.value = null;
+}
 
-async function runAction(tool) {
-    actionLoading.value[tool.id] = true;
-    actionResults.value[tool.id] = null;
-    try {
-        const response = await api.post(tool.action);
-        actionResults.value[tool.id] = { success: true, message: response.data.message || 'Accion completada' };
-    } catch (err) {
-        actionResults.value[tool.id] = { success: false, message: err.response?.data?.message || 'Error al ejecutar' };
-    } finally {
-        actionLoading.value[tool.id] = false;
-    }
+async function openHistory() {
+  historyOpen.value = true;
+  await store.fetchHistory();
+}
+function closeHistory() {
+  historyOpen.value = false;
 }
 </script>
 
 <template>
   <AdminLayout>
-    <div class="space-y-6">
+    <!-- Greeting -->
+    <AdminGreeting
+      greeting="Herramientas de sistema"
+      :critical-alerts="0"
+      :pending-tickets="0"
+      :review-tickets="0"
+    />
 
-      <!-- Header -->
+    <!-- Page header row -->
+    <div class="tools-page-header">
       <div>
-        <h1 class="font-display text-3xl tracking-wide text-wc-text">Herramientas</h1>
-        <p class="mt-1 text-sm text-wc-text-tertiary">Utilidades de administracion del sistema</p>
+        <p class="tools-page-eyebrow">PANEL BREAK-GLASS</p>
+        <p class="tools-page-hint">Utilidades de uso ocasional. Cada ejecucion queda registrada en el audit log.</p>
       </div>
-
-      <!-- Tools Grid -->
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div
-          v-for="tool in tools"
-          :key="tool.id"
-          class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5"
-        >
-          <div class="flex items-center gap-3 mb-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-lg" :class="tool.color">
-              <svg v-if="tool.icon === 'cache'" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-              </svg>
-              <svg v-else-if="tool.icon === 'queue'" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
-              </svg>
-              <svg v-else-if="tool.icon === 'optimize'" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-              </svg>
-              <svg v-else-if="tool.icon === 'health'" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-              </svg>
-              <svg v-else-if="tool.icon === 'logs'" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-              </svg>
-              <svg v-else class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-              </svg>
-            </div>
-            <div>
-              <h3 class="text-sm font-medium text-wc-text">{{ tool.title }}</h3>
-              <p class="text-xs text-wc-text-tertiary">{{ tool.description }}</p>
-            </div>
-          </div>
-
-          <!-- Result -->
-          <div v-if="actionResults[tool.id]" class="mb-3 rounded-lg p-2 text-xs" :class="actionResults[tool.id].success ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'">
-            {{ actionResults[tool.id].message }}
-          </div>
-
-          <button
-            @click="runAction(tool)"
-            :disabled="actionLoading[tool.id]"
-            class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-xs font-medium text-wc-text hover:bg-wc-bg-tertiary transition-colors disabled:opacity-50"
-          >
-            {{ actionLoading[tool.id] ? 'Ejecutando...' : 'Ejecutar' }}
-          </button>
-        </div>
-      </div>
-
+      <button class="tools-history-btn" @click="openHistory" aria-label="Ver historial de ejecuciones">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        HISTORIAL
+      </button>
     </div>
+
+    <!-- Catalog -->
+    <AdminToolsCatalog @run="openRun" />
+
+    <!-- Run modal -->
+    <AdminToolRunModal :tool="activeTool" @close="closeRun" />
+
+    <!-- History drawer -->
+    <AdminToolHistoryDrawer :open="historyOpen" @close="closeHistory" />
   </AdminLayout>
 </template>
+
+<style scoped>
+.tools-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.tools-page-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-wc-text-tertiary);
+  margin-bottom: 4px;
+}
+.tools-page-hint {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-wc-text-secondary);
+  line-height: 1.5;
+  max-width: 480px;
+}
+.tools-history-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-wc-text-secondary);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--color-wc-border);
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  flex-shrink: 0;
+}
+.tools-history-btn svg { width: 14px; height: 14px; }
+.tools-history-btn:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: var(--color-wc-border-2);
+  color: var(--color-wc-text);
+}
+</style>

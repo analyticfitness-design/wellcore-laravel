@@ -475,4 +475,9 @@ Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:adm
     Route::get('/referrals', [AdminController::class, 'referrals']);
     Route::post('/referrals/{id}/mark-paid', [AdminController::class, 'markReferralPaid'])->whereNumber('id');
     Route::post('/referrals/{id}/expire', [AdminController::class, 'expireReferral'])->whereNumber('id');
+
+    // Admin Tools — break-glass utilities
+    Route::get('/tools',              [\App\Http\Controllers\Api\AdminToolsController::class, 'catalog']);
+    Route::get('/tools/history',      [\App\Http\Controllers\Api\AdminToolsController::class, 'history']);
+    Route::post('/tools/{id}/run',    [\App\Http\Controllers\Api\AdminToolsController::class, 'run'])->where('id', '[\w\-]+');
 });
