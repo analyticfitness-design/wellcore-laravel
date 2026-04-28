@@ -53,6 +53,8 @@ const bannerText = computed(() => {
 const backLabel = computed(() =>
     rootUserName.value ? `Volver al panel admin (${rootUserName.value})` : 'Volver al panel admin'
 );
+// Compact label for mobile: just "Volver" + optional name
+const backLabelMobile = computed(() => 'Volver al admin');
 
 async function handleEnd() {
     if (ending.value) return;
@@ -84,29 +86,30 @@ onUnmounted(() => {
 <template>
     <div
         v-if="chain.length > 0 && rootUserName"
-        class="fixed top-0 left-0 right-0 z-[100] flex items-center justify-center gap-3 px-4 py-2 text-xs sm:text-sm font-medium text-white shadow-lg transition-colors"
+        class="sticky top-0 left-0 right-0 z-[100] flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-white shadow-lg transition-colors sm:justify-center sm:gap-3 sm:px-4 sm:py-2 sm:text-sm"
         :class="isExpiringSoon ? 'bg-amber-500 animate-pulse' : 'bg-wc-accent'"
     >
-        <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+        <svg class="hidden h-4 w-4 shrink-0 sm:block" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round"
                   d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
         </svg>
 
-        <span>
+        <span class="min-w-0 flex-1 truncate sm:flex-initial">
             {{ bannerText }}
-            <span v-if="remainingFormatted" class="ml-2 font-mono opacity-80">· {{ remainingFormatted }}</span>
+            <span v-if="remainingFormatted" class="ml-1 font-mono opacity-80">· {{ remainingFormatted }}</span>
         </span>
 
         <button
             @click="handleEnd"
             :disabled="ending"
-            class="ml-2 inline-flex items-center gap-1 rounded-md bg-black/25 px-3 py-1 text-xs font-semibold hover:bg-black/40 transition-colors disabled:opacity-60"
+            class="ml-2 inline-flex shrink-0 items-center gap-1 rounded-md bg-black/25 px-2 py-1 text-[11px] font-semibold hover:bg-black/40 transition-colors disabled:opacity-60 sm:px-3 sm:text-xs"
         >
             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
             </svg>
-            {{ ending ? 'Volviendo…' : backLabel }}
+            <span class="hidden sm:inline">{{ ending ? 'Volviendo…' : backLabel }}</span>
+            <span class="sm:hidden">{{ ending ? 'Volviendo…' : backLabelMobile }}</span>
         </button>
     </div>
 </template>
