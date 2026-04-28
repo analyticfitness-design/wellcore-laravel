@@ -127,14 +127,18 @@ watch(() => route.fullPath, () => { drawerOpen.value = false; });
    ============================================================================ */
 
 .bottom-nav {
-    position: fixed; inset-x: 0; bottom: 0; z-index: 30;
-    left: 0; right: 0;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
     display: flex; align-items: stretch; justify-content: space-around;
     background: rgba(10, 10, 10, 0.95);
     backdrop-filter: blur(20px) saturate(150%);
     -webkit-backdrop-filter: blur(20px) saturate(150%);
     border-top: 1px solid var(--color-wc-border);
     padding: 6px 4px calc(6px + env(safe-area-inset-bottom)) 4px;
+}
+/* Ocultar en desktop (>= 1024px breakpoint Tailwind lg) — el media query gana
+   sobre la utility .lg\:hidden por especificidad scoped. */
+@media (min-width: 1024px) {
+    .bottom-nav { display: none; }
 }
 .bottom-nav-tab {
     flex: 1; max-width: 80px;

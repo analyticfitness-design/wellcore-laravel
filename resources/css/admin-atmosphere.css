@@ -56,11 +56,11 @@
     background-size: 200px;
 }
 
-/* Aseguramos que el contenido del admin viva por encima del orb/grain */
-.admin-shell > * {
-    position: relative;
-    z-index: 1;
-}
+/* NOTA: NO forzamos position:relative a los hijos directos del .admin-shell.
+   Hacerlo rompe el position:fixed del <aside> sidebar y del <nav> bottom nav.
+   El orb (::before) y grain (::after) ya tienen z-index:0 con position:fixed,
+   asi que cualquier hijo con position:static (default) o fixed/absolute queda
+   visualmente encima sin necesidad de este override. */
 
 /* ── Glass morphism utility para cards de admin ─────────────────────────── */
 .admin-glass {
