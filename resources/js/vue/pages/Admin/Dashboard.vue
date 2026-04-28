@@ -3,6 +3,8 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import AdminLayout from '../../layouts/AdminLayout.vue';
+import AdminGreeting from '../../components/admin/dashboard/AdminGreeting.vue';
+import AdminAlertsRow from '../../components/admin/dashboard/AdminAlertsRow.vue';
 
 const api = useApi();
 const loading = ref(true);
@@ -47,15 +49,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (refreshInterval) clearInterval(refreshInterval);
 });
-
-function alertClasses(type) {
-  const map = {
-    error: 'border-red-500/40 bg-red-500/10 text-red-400',
-    warning: 'border-yellow-500/40 bg-yellow-500/10 text-yellow-400',
-    info: 'border-blue-500/40 bg-blue-500/10 text-blue-400',
-  };
-  return map[type] || map.info;
-}
 </script>
 
 <template>
@@ -77,74 +70,17 @@ function alertClasses(type) {
       </button>
     </div>
 
-    <div v-else-if="data" class="space-y-8">
+    <div v-else-if="data" class="space-y-6">
 
-      <!-- Header -->
-      <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h1 class="font-display text-4xl tracking-wide text-wc-text sm:text-5xl">{{ data.greeting || 'Panel de Administracion' }}</h1>
-          <div class="mt-2 flex items-center gap-3">
-            <div class="flex items-center gap-1.5 text-xs text-wc-text-tertiary">
-              <span class="relative flex h-2 w-2">
-                <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-                <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-              </span>
-              <span>En vivo</span>
-              <template v-if="lastRefresh"><span class="text-wc-text-tertiary/60">&middot; {{ lastRefresh }}</span></template>
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-wrap items-center gap-2">
-          <RouterLink
-            to="/admin/plan-tickets?status=pendiente"
-            class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700 transition-colors"
-          >
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6M5 8h14M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" />
-            </svg>
-            Tickets pendientes
-            <span
-              v-if="data.production?.plan_tickets_pendientes"
-              class="rounded-full bg-white/20 px-1.5 text-[11px] font-bold"
-            >{{ data.production.plan_tickets_pendientes }}</span>
-          </RouterLink>
-          <RouterLink
-            to="/admin/plan-tickets?status=en_revision"
-            class="inline-flex items-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2.5 text-sm font-semibold text-wc-text hover:bg-wc-bg-secondary transition-colors"
-          >
-            En revision
-            <span
-              v-if="data.production?.plan_tickets_en_revision"
-              class="rounded-full bg-blue-500/20 px-1.5 text-[11px] font-bold text-blue-500"
-            >{{ data.production.plan_tickets_en_revision }}</span>
-          </RouterLink>
-        </div>
-      </div>
+      <!-- Greeting + alerts — Fase A admin v2 -->
+      <AdminGreeting
+        :greeting="data.greeting || 'Panel de Administracion'"
+        :critical-alerts="data.alerts?.length || 0"
+        :pending-tickets="data.production?.plan_tickets_pendientes || 0"
+        :review-tickets="data.production?.plan_tickets_en_revision || 0"
+      />
 
-      <!-- Alerts -->
-      <div v-if="data.alerts && data.alerts.length" class="space-y-2">
-        <div
-          v-for="(alert, idx) in data.alerts"
-          :key="idx"
-          class="rounded-xl border p-4"
-          :class="alertClasses(alert.type)"
-        >
-          <div class="flex items-start gap-3">
-            <svg class="h-5 w-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-            </svg>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-semibold">{{ alert.title }}</p>
-              <p v-if="alert.body" class="mt-0.5 text-xs opacity-80">{{ alert.body }}</p>
-            </div>
-            <RouterLink
-              v-if="alert.link"
-              :to="alert.link"
-              class="shrink-0 text-xs font-semibold underline hover:opacity-80"
-            >Ver &rarr;</RouterLink>
-          </div>
-        </div>
-      </div>
+      <AdminAlertsRow :alerts="data.alerts || []" />
 
       <!-- 3-col KPI grid -->
       <div class="grid gap-6 lg:grid-cols-3">
