@@ -41,14 +41,14 @@
 }
 
 /* Safety fallback: si animations.js no carga (chunk 404, JS off, error de red),
-   revelar todo a los 2.5s para que la pagina nunca se quede invisible.
-   La transicion de .animate-in (cuando el observer dispare) gana porque cancelamos
-   esta animation con la regla de abajo. */
+   revelar todo a los 600ms para que la pagina nunca se quede invisible mas tiempo
+   del que el ojo tolera. La transicion de .animate-in (cuando el observer dispare)
+   gana porque cancelamos esta animation con la regla de abajo. */
 @keyframes wc-data-animate-fallback {
     to { opacity: 1; transform: translate(0, 0) scale(1); }
 }
 [data-animate] {
-    animation: wc-data-animate-fallback 0.6s 2.5s forwards;
+    animation: wc-data-animate-fallback 0.5s 600ms forwards;
 }
 [data-animate].animate-in {
     animation: none;

@@ -329,9 +329,11 @@
     @endif
 
     {{-- Alpine standalone SOLO si Livewire no rendero un componente (Livewire bundlea su propio Alpine).
-         Cargar ambos duplica instancias → rompe wire:click y el morph del DOM (bug de forms de inscripcion). --}}
+         Cargar ambos duplica instancias → rompe wire:click y el morph del DOM (bug de forms de inscripcion).
+         Bundle via Vite (resources/js/alpine-public.js) para garantizar que el plugin Collapse se
+         registra antes de Alpine.start() — el viejo /js/alpine.min.js (3.13.5) no incluia plugins. --}}
     @unless(\Livewire\Livewire::componentHasBeenRendered())
-        <script defer src="/js/alpine.min.js"></script>
+        @vite(['resources/js/alpine-public.js'])
     @endunless
 </body>
 </html>
