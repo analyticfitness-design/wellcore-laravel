@@ -6,13 +6,18 @@ defineProps({
 const emit = defineEmits(['close']);
 
 const STATUS_LABELS = {
-    pendiente:  'Pendiente de contacto',
-    nuevo:      'Lead nuevo',
-    contactado: 'Contactado',
-    convertido: 'Plan enviado',
-    pagado:     'Pagado',
-    activo:     'Activo',
-    rechazado:  'Rechazado',
+    pendiente:       'Pendiente de contacto',
+    nuevo:           'Lead nuevo',
+    pending_contact: 'Pendiente de contacto',
+    contactado:      'Contactado',
+    contacted:       'Contactado',
+    convertido:      'Plan enviado',
+    payment_sent:    'Plan enviado',
+    pagado:          'Pagado',
+    paid:            'Pagado',
+    activo:          'Activo',
+    rechazado:       'Rechazado',
+    rejected:        'Rechazado',
 };
 </script>
 
