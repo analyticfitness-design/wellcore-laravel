@@ -79,21 +79,11 @@ class CoachController extends Controller
      */
     protected function getCoachClientIds(int $coachId): Collection
     {
-        $fromClientsFk = Schema::hasColumn('clients', 'coach_id')
-            ? \DB::table('clients')->where('coach_id', $coachId)->pluck('id')
-            : collect();
-        $fromPlans = Schema::hasTable('assigned_plans')
-            ? \DB::table('assigned_plans')->where('assigned_by', $coachId)->pluck('client_id')
-            : collect();
-        $fromMessages = Schema::hasTable('coach_messages')
-            ? \DB::table('coach_messages')->where('coach_id', $coachId)->pluck('client_id')
-            : collect();
-        $fromNotes = Schema::hasTable('coach_notes')
-            ? \DB::table('coach_notes')->where('coach_id', $coachId)->pluck('client_id')
-            : collect();
-        $fromTickets = Schema::hasTable('plan_tickets')
-            ? \DB::table('plan_tickets')->where('coach_id', $coachId)->pluck('client_id')
-            : collect();
+        $fromClientsFk = \DB::table('clients')->where('coach_id', $coachId)->pluck('id');
+        $fromPlans = \DB::table('assigned_plans')->where('assigned_by', $coachId)->pluck('client_id');
+        $fromMessages = \DB::table('coach_messages')->where('coach_id', $coachId)->pluck('client_id');
+        $fromNotes = \DB::table('coach_notes')->where('coach_id', $coachId)->pluck('client_id');
+        $fromTickets = \DB::table('plan_tickets')->where('coach_id', $coachId)->pluck('client_id');
 
         return $fromClientsFk
             ->concat($fromPlans)
@@ -243,9 +233,13 @@ class CoachController extends Controller
         $pendingClientIds = $pendingByClient->pluck('client_id');
         $clientsById = Client::whereIn('id', $pendingClientIds)->get()->keyBy('id');
         $lastMessagesByClient = CoachMessage::whereIn('client_id', $pendingClientIds)
-            ->orderByDesc('created_at')
+            ->whereIn('id', function ($sub) use ($pendingClientIds) {
+                $sub->selectRaw('MAX(id)')
+                    ->from('coach_messages')
+                    ->whereIn('client_id', $pendingClientIds)
+                    ->groupBy('client_id');
+            })
             ->get()
-            ->unique('client_id')
             ->keyBy('client_id');
 
         $result = [];
@@ -1050,18 +1044,25 @@ class CoachController extends Controller
             return response()->json(['error' => 'No hay destinatarios.'], 422);
         }
 
+        if (count($recipientIds) > 500) {
+            return response()->json(['error' => 'Máximo 500 destinatarios por broadcast.'], 422);
+        }
+
         $messageText = trim($validated['message']);
+        $now = now();
         $count = 0;
 
-        foreach ($recipientIds as $clientId) {
-            CoachMessage::create([
-                'coach_id' => $coachId,
-                'client_id' => $clientId,
-                'message' => $messageText,
-                'direction' => 'coach_to_client',
-            ]);
-            $count++;
-        }
+        \DB::transaction(function () use ($recipientIds, $coachId, $messageText, $now, &$count) {
+            foreach ($recipientIds as $clientId) {
+                CoachMessage::create([
+                    'coach_id' => $coachId,
+                    'client_id' => $clientId,
+                    'message' => $messageText,
+                    'direction' => 'coach_to_client',
+                ]);
+                $count++;
+            }
+        });
 
         return response()->json(['sent' => true, 'sentCount' => $count]);
     }
@@ -1340,12 +1341,17 @@ class CoachController extends Controller
             ];
         });
 
+        $noteCountsByType = CoachNote::where('coach_id', $coachId)
+            ->selectRaw('note_type, COUNT(*) as cnt')
+            ->groupBy('note_type')
+            ->pluck('cnt', 'note_type');
+
         $noteStats = [
-            'total' => CoachNote::where('coach_id', $coachId)->count(),
-            'general' => CoachNote::where('coach_id', $coachId)->where('note_type', 'general')->count(),
-            'seguimiento' => CoachNote::where('coach_id', $coachId)->where('note_type', 'seguimiento')->count(),
-            'alerta' => CoachNote::where('coach_id', $coachId)->where('note_type', 'alerta')->count(),
-            'logro' => CoachNote::where('coach_id', $coachId)->where('note_type', 'logro')->count(),
+            'total'       => $noteCountsByType->sum(),
+            'general'     => $noteCountsByType->get('general', 0),
+            'seguimiento' => $noteCountsByType->get('seguimiento', 0),
+            'alerta'      => $noteCountsByType->get('alerta', 0),
+            'logro'       => $noteCountsByType->get('logro', 0),
         ];
 
         // Clients for dropdown

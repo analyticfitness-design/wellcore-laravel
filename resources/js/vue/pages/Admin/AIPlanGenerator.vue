@@ -327,29 +327,22 @@ async function savePlan() {
         saveError.value = 'El nombre de la plantilla es obligatorio.';
         return;
     }
+    if (!generatedPlan.value) {
+        saveError.value = 'No hay plan generado para guardar.';
+        return;
+    }
     saving.value = true;
     saveError.value = '';
 
     try {
-        const response = await api.post('/api/v/admin/ai-generator', {
+        const response = await api.post('/api/v/admin/ai-generator/save', {
+            plan_json: JSON.stringify(generatedPlan.value),
             plan_type: planType.value,
             methodology: methodology.value || null,
-            duration_weeks: durationWeeks.value,
-            frequency: frequency.value,
-            experience_level: planType.value === 'entrenamiento' ? experienceLevel.value : null,
-            training_goal: planType.value === 'entrenamiento' ? trainingGoal.value : null,
-            injuries: planType.value === 'entrenamiento' ? injuries.value : null,
-            calorie_target: planType.value === 'nutricion' ? calorieTarget.value : null,
-            protein_pct: planType.value === 'nutricion' ? proteinPct.value : null,
-            carbs_pct: planType.value === 'nutricion' ? carbsPct.value : null,
-            fat_pct: planType.value === 'nutricion' ? fatPct.value : null,
-            meals_per_day: planType.value === 'nutricion' ? mealsPerDay.value : null,
-            dietary_restrictions: planType.value === 'nutricion' ? dietaryRestrictions.value : null,
-            habit_focus_areas: planType.value === 'habitos' ? habitFocusAreas.value : null,
-            target_client_id: selectedClientId.value ?? null,
             template_name: templateName.value,
             is_public: isPublic.value,
             save_mode: saveMode.value,
+            target_client_id: selectedClientId.value ?? null,
         });
         savedTemplateId.value = response.data.savedTemplateId ?? null;
         savedAssignedId.value = response.data.savedAssignedId ?? null;
@@ -359,7 +352,7 @@ async function savePlan() {
             const errs = err.response.data.errors ?? {};
             saveError.value = Object.values(errs).flat().join(' ');
         } else {
-            saveError.value = err.response?.data?.message ?? 'Error al guardar el plan.';
+            saveError.value = err.response?.data?.message ?? err.response?.data?.error ?? 'Error al guardar el plan.';
         }
     } finally {
         saving.value = false;

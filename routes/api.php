@@ -49,9 +49,9 @@ Route::post('/v/broadcasting/auth', function (Request $request) {
 })->middleware(['auth:wellcore']);
 
 // Ejercicios Fitcron (public — no auth required)
-Route::prefix('ejercicios')->group(function () {
+Route::prefix('ejercicios')->middleware('throttle:api')->group(function () {
     Route::get('/', [EjerciciosController::class, 'index']);
-    Route::get('/{slug}', [EjerciciosController::class, 'show']);
+    Route::get('/{slug}', [EjerciciosController::class, 'show'])->where('slug', '[\w\-]+');
 });
 
 // Vue SPA Auth API — needs web session so login persists for impersonation/blade
@@ -65,8 +65,8 @@ Route::prefix('v/auth')
         Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
         Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
         Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:login');
-        Route::post('/logout', [AuthController::class, 'logout']);
-        Route::get('/me', [AuthController::class, 'me']);
+        Route::post('/logout', [AuthController::class, 'logout'])->middleware('throttle:api');
+        Route::get('/me', [AuthController::class, 'me'])->middleware('throttle:api');
         Route::post('/change-password', [AuthController::class, 'changePassword'])->middleware('throttle:change-password');
     });
 
@@ -382,6 +382,7 @@ Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:adm
     Route::put('/settings', [AdminController::class, 'updateSettings']);
     Route::get('/chat-analytics', [AdminController::class, 'chatAnalytics']);
     Route::post('/ai-generator', [AdminController::class, 'aiGenerator']);
+    Route::post('/ai-generator/save', [AdminController::class, 'aiGeneratorSave']);
     Route::get('/tickets', [AdminController::class, 'tickets']);
     Route::post('/tickets/{id}/reply', [AdminController::class, 'replyTicket']);
     Route::patch('/tickets/{id}/status', [AdminController::class, 'updateTicketStatus']);

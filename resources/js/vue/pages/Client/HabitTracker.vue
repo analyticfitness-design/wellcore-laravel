@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useApi } from '../../composables/useApi';
 import { useMedals } from '../../composables/useMedals';
 import { useToast } from '../../composables/useToast';
@@ -20,6 +20,7 @@ const heatmapData    = ref([]);   // array of 30 objects: {date, day, count, tot
 const weeklyData     = ref([]);   // array of 7 objects
 const togglingHabit  = ref(null);
 const showConfetti   = ref(false);
+let confettiTimer = null;
 const hoveredDay     = ref(null); // {date, count, total, x, y}
 
 // ─── Fetch ───────────────────────────────────────────────────────────────────
@@ -69,7 +70,8 @@ async function toggleHabit(type) {
         }
         if (completedToday.value === totalHabits.value && totalHabits.value > 0) {
             showConfetti.value = true;
-            setTimeout(() => { showConfetti.value = false; }, 3000);
+            clearTimeout(confettiTimer);
+            confettiTimer = setTimeout(() => { showConfetti.value = false; }, 3000);
             // Dia perfecto: puede gatillar medalla "habito-forjado"
             fetchMedals().catch(() => {});
         }
@@ -85,6 +87,7 @@ async function toggleHabit(type) {
 }
 
 onMounted(fetchHabits);
+onBeforeUnmount(() => clearTimeout(confettiTimer));
 
 // ─── Derived ─────────────────────────────────────────────────────────────────
 const circumference = 2 * Math.PI * 34;

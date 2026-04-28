@@ -40,6 +40,7 @@ const templateSearchInput = ref(null);
 // Module-level mutable handles — NOT reactive refs
 let echoChannel = null;
 let smartPolling = null;
+let sidebarInterval = null;
 
 // Filtered templates based on search
 const filteredTemplates = computed(() => {
@@ -214,19 +215,14 @@ onMounted(async () => {
   await loadClients();
   loading.value = false;
 
-  // Sidebar refresh polling — light, every 30s (Echo handles message body updates)
-  // Using a simple interval here so it runs independently of the conversation polling
-  const sidebarInterval = setInterval(loadClients, 30_000);
-
-  // Store the interval id so we can clear it on unmount
-  // We reuse the existing module-level pattern via closure
-  onBeforeUnmount(() => clearInterval(sidebarInterval));
-
+  sidebarInterval = setInterval(loadClients, 30_000);
   document.addEventListener('keydown', handleKeydown);
 });
 
 onBeforeUnmount(() => {
   leaveCurrentEchoChannel();
+  clearInterval(sidebarInterval);
+  sidebarInterval = null;
   if (smartPolling) {
     smartPolling.stop();
     smartPolling = null;

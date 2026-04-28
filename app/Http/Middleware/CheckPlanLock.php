@@ -2,8 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Auth\WellCoreGuard;
-use App\Enums\UserType;
 use App\Models\Client;
 use App\Services\PlanLockService;
 use Closure;
@@ -52,12 +50,7 @@ class CheckPlanLock
     private function resolveClient(Request $request): ?Client
     {
         try {
-            $guard = app(WellCoreGuard::class);
-            $user = $guard->user();
-
-            if (! $user || $guard->userType() !== UserType::Client) {
-                return null;
-            }
+            $user = auth('wellcore')->user();
 
             return $user instanceof Client ? $user : null;
         } catch (\Throwable) {

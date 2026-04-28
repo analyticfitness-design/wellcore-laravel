@@ -601,7 +601,7 @@ class AdminController extends Controller
         $statusFilter = $request->query('status', '');
         $sortBy = $request->query('sort_by', 'created_at');
         $sortDir = $request->query('sort_dir', 'desc');
-        $perPage = $request->integer('per_page', 25);
+        $perPage = min(100, max(1, $request->integer('per_page', 25)));
 
         $query = Client::query()
             ->addSelect([
@@ -816,8 +816,8 @@ class AdminController extends Controller
         $client = Client::findOrFail($id);
 
         $validated = $request->validate([
-            'status' => 'nullable|string',
-            'plan' => 'nullable|string',
+            'status' => ['nullable', 'string', Rule::in(array_column(ClientStatus::cases(), 'value'))],
+            'plan' => ['nullable', 'string', Rule::in(array_column(PlanType::cases(), 'value'))],
             'coach_id' => 'nullable|integer',
             'assign_plan_type' => 'nullable|string',
         ]);
@@ -908,16 +908,18 @@ class AdminController extends Controller
      */
     public function deleteClient(Request $request, int $id): JsonResponse
     {
-        $this->resolveAdminOrFail($request);
+        $this->resolveSuperAdminOrFail($request);
 
         $client = Client::find($id);
         if (! $client) {
             return response()->json(['error' => 'Cliente no encontrado.'], 404);
         }
 
-        AuthToken::where('user_id', $id)->where('user_type', 'client')->delete();
-        AssignedPlan::where('client_id', $id)->delete();
-        $client->delete();
+        DB::transaction(function () use ($id, $client) {
+            AuthToken::where('user_id', $id)->where('user_type', 'client')->delete();
+            AssignedPlan::where('client_id', $id)->delete();
+            $client->delete();
+        });
 
         return response()->json(['deleted' => true]);
     }
@@ -937,7 +939,7 @@ class AdminController extends Controller
         $statusFilter = $request->query('status', '');
         $dateFrom = $request->query('date_from', '');
         $dateTo = $request->query('date_to', '');
-        $perPage = $request->integer('per_page', 25);
+        $perPage = min(100, max(1, $request->integer('per_page', 25)));
         $now = now();
 
         // Payments stats — cached 60s to avoid recalculating on every dashboard open
@@ -1139,8 +1141,11 @@ class AdminController extends Controller
 
         $admin = Admin::findOrFail($id);
 
-        // Solo superadmin puede cambiar roles o modificar otros admins de igual/mayor rango
-        if ($request->has('role') || $request->has('password')) {
+        // Only superadmin can edit another superadmin, change roles/passwords, or touch financial fields
+        $targetIsSuperAdmin = ($admin->role ?? '') === 'superadmin';
+        $touchesSensitive   = $request->hasAny(['role', 'password', 'referral_commission']);
+
+        if ($targetIsSuperAdmin || $touchesSensitive) {
             $this->resolveSuperAdminOrFail($request);
         }
 
@@ -1672,7 +1677,7 @@ class AdminController extends Controller
         $search = $request->query('search', '');
         $statusFilter = $request->query('status', '');
         $planFilter = $request->query('plan', '');
-        $perPage = $request->integer('per_page', 25);
+        $perPage = min(100, max(1, $request->integer('per_page', 25)));
 
         $query = Inscription::query();
 
@@ -2391,6 +2396,91 @@ class AdminController extends Controller
         }
     }
 
+    /**
+     * POST /api/v/admin/ai-generator/save
+     *
+     * Save a pre-generated (and possibly manually edited) AI plan JSON.
+     * Does NOT call the AI service — stores exactly what the admin submitted.
+     */
+    public function aiGeneratorSave(Request $request): JsonResponse
+    {
+        $this->resolveAdminOrFail($request);
+
+        $validated = $request->validate([
+            'plan_json'       => 'required|string',
+            'plan_type'       => 'required|in:entrenamiento,nutricion,habitos',
+            'methodology'     => 'nullable|string|max:100',
+            'template_name'   => 'required|string|max:160',
+            'is_public'       => 'nullable|boolean',
+            'save_mode'       => 'nullable|in:template_only,template_and_assign',
+            'target_client_id'=> 'nullable|integer',
+        ]);
+
+        $planData = json_decode($validated['plan_json'], true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return response()->json(['error' => 'JSON del plan inválido: ' . json_last_error_msg()], 422);
+        }
+
+        $savedTemplateId = null;
+        $savedAssignedId = null;
+
+        $template = PlanTemplate::create([
+            'coach_id'     => auth('wellcore')->id() ?? null,
+            'name'         => $validated['template_name'],
+            'plan_type'    => $validated['plan_type'],
+            'methodology'  => $validated['methodology'] ?? null,
+            'content_json' => $planData,
+            'ai_generated' => true,
+            'is_public'    => $validated['is_public'] ?? false,
+        ]);
+        $savedTemplateId = $template->id;
+
+        if (($validated['save_mode'] ?? '') === 'template_and_assign' && ! empty($validated['target_client_id'])) {
+            $clientId = $validated['target_client_id'];
+
+            $prevExpiry = AssignedPlan::where('client_id', $clientId)
+                ->where('plan_type', $validated['plan_type'])
+                ->where('active', true)
+                ->whereNotNull('expires_at')
+                ->max('expires_at');
+
+            AssignedPlan::where('client_id', $clientId)
+                ->where('plan_type', $validated['plan_type'])
+                ->where('active', true)
+                ->update(['active' => false]);
+
+            $assigned = AssignedPlan::create([
+                'client_id'   => $clientId,
+                'plan_type'   => $validated['plan_type'],
+                'content'     => $planData,
+                'version'     => 1,
+                'active'      => true,
+                'assigned_by' => auth('wellcore')->id() ?? null,
+                'expires_at'  => $prevExpiry ?? null,
+            ]);
+            $savedAssignedId = $assigned->id;
+
+            WellcoreNotification::create([
+                'user_type' => 'client',
+                'user_id'   => $clientId,
+                'type'      => 'new_plan',
+                'title'     => 'Nuevo Plan Asignado',
+                'body'      => "Tu coach te asignó un nuevo plan de {$validated['plan_type']}",
+                'link'      => '/client/plan',
+            ]);
+            try {
+                PushNotificationService::notifyNewPlan($clientId, $validated['plan_type']);
+            } catch (\Throwable) {
+            }
+        }
+
+        return response()->json([
+            'saved'           => true,
+            'savedTemplateId' => $savedTemplateId,
+            'savedAssignedId' => $savedAssignedId,
+        ]);
+    }
+
     // ─── Support Tickets ────────────────────────────────────────────────
 
     /**
@@ -2404,7 +2494,7 @@ class AdminController extends Controller
         $this->resolveAdminOrFail($request);
 
         $status = $request->query('status', 'all');
-        $perPage = $request->integer('per_page', 25);
+        $perPage = min(100, max(1, $request->integer('per_page', 25)));
 
         $query = Ticket::query()->orderByDesc('created_at');
 

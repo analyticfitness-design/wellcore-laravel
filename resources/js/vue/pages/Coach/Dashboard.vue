@@ -66,9 +66,10 @@ function animateCounter(key, target, duration = 1200) {
 }
 
 function syncCounters() {
-    // Anima directamente desde los datos recién llegados de la API.
-    // El IntersectionObserver era unreliable en móvil cuando la API resolvía
-    // después de que el observer ya había disparado (mostraba 0 aunque stats tenía el valor real).
+    // Cancel previous animations before starting new ones — prevents unbounded array growth
+    counterAnimationFrames.forEach(id => cancelAnimationFrame(id));
+    counterAnimationFrames = [];
+
     const targets = {
         activeClients: stats.value.activeClients,
         pendingCheckins: stats.value.pendingCheckins,
