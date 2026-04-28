@@ -61,7 +61,7 @@ async function downloadOne(asset) {
     if (downloadingId.value) return;
     downloadingId.value = asset.id;
     try {
-        await coachStrategyApi.downloadSingle(asset);
+        await coachStrategyApi.downloadSingle(props.dropId, asset);
     } finally {
         setTimeout(() => { downloadingId.value = null; }, 600);
     }
