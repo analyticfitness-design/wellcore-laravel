@@ -125,7 +125,8 @@ const bottomNav = [
 </script>
 
 <template>
-  <div class="min-h-screen bg-wc-bg text-wc-text">
+  <!-- .admin-shell activa atmosfera v2 (radial orb + grain noise + dark tokens) — ver admin-atmosphere.css -->
+  <div class="admin-shell min-h-screen bg-wc-bg text-wc-text">
 
     <!-- Mobile sidebar overlay -->
     <Transition

@@ -1,5 +1,25 @@
 import './bootstrap';
 import './echo.js';
+import alpineCollapse from '@alpinejs/collapse';
+
+// ─── Alpine plugins — registrarlos antes de que cualquier instancia de Alpine arranque
+// Funciona tanto para Alpine standalone (paginas publicas, /js/alpine.min.js) como para
+// el Alpine bundleado dentro de Livewire (paginas autenticadas).
+document.addEventListener('alpine:init', () => {
+    if (window.Alpine && typeof window.Alpine.plugin === 'function') {
+        window.Alpine.plugin(alpineCollapse);
+    }
+});
+
+// ─── Safety net: si animations.js no carga (chunk 404, error de red, CSP),
+// aseguramos que ningun [data-animate] quede invisible mas de 2.5s.
+// Es defensa en profundidad: el CSS ya tiene un keyframe fallback con el mismo
+// timing, esto es la red JS que ademas funciona en navegadores sin animation.
+setTimeout(() => {
+    document.querySelectorAll('[data-animate]:not(.animate-in)').forEach(el => {
+        el.classList.add('animate-in');
+    });
+}, 2500);
 
 // ─── Chart.js — lazy, solo en páginas que lo necesitan ───────────────────────
 const loadChartsIfNeeded = () => {

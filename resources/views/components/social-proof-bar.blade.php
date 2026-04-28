@@ -10,7 +10,7 @@
                     <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-400"></span>
                 </span>
                 <span class="text-sm text-wc-text-secondary">
-                    <span class="font-data font-bold text-wc-text counter-highlight" data-counter="47" data-counter-suffix="+">0+</span> personas activas esta semana
+                    <span class="font-data font-bold text-wc-text counter-highlight" data-counter="47" data-counter-suffix="+">47+</span> personas activas esta semana
                 </span>
             </div>
 
@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <span class="text-sm text-wc-text-secondary">
-                    <span class="font-data font-bold text-wc-text counter-highlight" data-counter="94" data-counter-suffix="%">0%</span> satisfaccion
+                    <span class="font-data font-bold text-wc-text counter-highlight" data-counter="94" data-counter-suffix="%">94%</span> satisfaccion
                 </span>
             </div>
 

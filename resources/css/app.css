@@ -1,7 +1,10 @@
 @import 'tailwindcss';
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@1,300;1,400;1,500&display=swap");
+/* WellCore v2 editorial stack (admin/cliente/coach) — Bebas Neue + Inter + Barlow + Fraunces italic + JetBrains Mono.
+   Oswald y Raleway permanecen como fallback defensivo para la cadena CSS — ver feedback_fonts.md. */
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Barlow:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400;1,9..144,500;1,9..144,600&family=JetBrains+Mono:wght@400;500;600&display=swap");
 @import './animations.css';
 @import './coach-strategy.css';
+@import './admin-atmosphere.css';
 
 /* Dark mode via .dark class on <html>, not prefers-color-scheme */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -13,11 +16,12 @@
 @source '../**/*.vue';
 
 @theme {
-    /* WellCore Design System Tokens */
-    --font-sans: 'Raleway', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-display: 'Oswald', Impact, sans-serif;
+    /* WellCore Design System Tokens — v2 editorial stack
+       Cadena defensiva: si Bebas/Inter/Barlow no cargan via CDN, cae a Oswald/Raleway que ya estaban. */
+    --font-sans: 'Inter', 'Raleway', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: 'Bebas Neue', 'Oswald', Impact, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-    --font-data: 'Raleway', ui-sans-serif, system-ui, sans-serif;
+    --font-data: 'Barlow', 'Raleway', ui-sans-serif, system-ui, sans-serif;
 
     /* WellCore Colors — Primary */
     --color-wc-accent: #DC2626;
@@ -60,6 +64,17 @@
 
     --font-editorial: "Fraunces", ui-serif, Georgia, serif;
     --color-wc-gold: #C8A769;
+
+    /* Admin v2 — color tokens (rediseño aprobado por CEO) */
+    --color-wc-red-soft: rgba(220, 38, 38, 0.1);
+    --color-wc-red-text: #F87171;
+    --color-wc-amber-soft: rgba(245, 158, 11, 0.1);
+    --color-wc-amber-text: #FCD34D;
+    --color-wc-green-soft: rgba(16, 185, 129, 0.1);
+    --color-wc-green-text: #34D399;
+    --color-wc-blue-soft: rgba(59, 130, 246, 0.1);
+    --color-wc-blue-text: #60A5FA;
+    --color-wc-border-2: rgba(255, 255, 255, 0.12);
 
     --color-wc-day-lun: #DC2626;
     --color-wc-day-mar: #10B981;
