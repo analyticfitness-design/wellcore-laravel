@@ -1,94 +1,107 @@
 <script setup>
+import { ref, computed, onBeforeUnmount } from 'vue';
+
 const props = defineProps({
     bank: { type: Object, required: true },
 });
 
-async function copyText(text) {
+// Items por columna — code prefix mapping
+const COLS = [
+    { type: 'h', key: 'alt_hooks', title: 'Hooks', icon: 'orange' },
+    { type: 'c', key: 'alt_ctas', title: 'CTAs', icon: 'emerald' },
+    { type: 'k', key: 'alt_captions', title: 'Captions', icon: 'sky' },
+];
+
+const taken = ref({}); // key: `${type}-${idx}` -> true
+
+// Pad a 2 dígitos
+function pad2(n) {
+    return String(n).padStart(2, '0');
+}
+
+function codeFor(type, idx) {
+    const prefix = type === 'h' ? 'H' : type === 'c' ? 'C' : 'K';
+    return `${prefix}-${pad2(idx + 1)}`;
+}
+
+// Track active timeouts so onBeforeUnmount puede limpiarlos
+const timers = new Map(); // key -> timeoutId
+
+async function copyText(text, type, idx) {
     try {
         await navigator.clipboard.writeText(text);
     } catch {}
+
+    const key = `${type}-${idx}`;
+    taken.value = { ...taken.value, [key]: true };
+
+    // Limpia timeout previo si existía
+    if (timers.has(key)) clearTimeout(timers.get(key));
+    const tid = setTimeout(() => {
+        const next = { ...taken.value };
+        delete next[key];
+        taken.value = next;
+        timers.delete(key);
+    }, 2500);
+    timers.set(key, tid);
 }
+
+const itemsByCol = computed(() => COLS.map(col => ({
+    ...col,
+    items: props.bank?.[col.key] ?? [],
+})));
+
+const hasAnyItems = computed(() => itemsByCol.value.some(c => c.items.length > 0));
+
+onBeforeUnmount(() => {
+    for (const tid of timers.values()) clearTimeout(tid);
+    timers.clear();
+});
 </script>
 
 <template>
-    <div class="rounded-xl border border-wc-border bg-wc-bg-secondary py-8 pl-12 pr-6 transition-transform duration-200 hover:-translate-y-0.5">
-        <div class="grid gap-8 md:grid-cols-3">
-            <!-- Alt hooks -->
-            <div>
-                <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary block mb-4">
-                    Hooks alternativos
-                </span>
-                <ul class="space-y-3">
-                    <li
-                        v-for="(hook, idx) in (bank.alt_hooks ?? [])"
-                        :key="idx"
-                        class="flex items-start justify-between gap-2 rounded-lg border border-wc-border/50 bg-wc-bg-tertiary p-3"
-                    >
-                        <p class="text-sm leading-relaxed text-wc-text flex-1">{{ hook }}</p>
-                        <button
-                            type="button"
-                            @click="copyText(hook)"
-                            class="shrink-0 rounded p-1 text-wc-text-tertiary hover:text-wc-text transition-colors"
-                            title="Copiar"
-                        >
-                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                            </svg>
-                        </button>
-                    </li>
-                </ul>
-            </div>
+    <div v-if="!hasAnyItems" class="card">
+        <p class="banco-empty" style="text-align:center;color:var(--ink-3,#888);font-family:var(--font-mono,monospace);font-size:.85rem;padding:2rem 0;">
+            Sin alternativos disponibles
+        </p>
+    </div>
 
-            <!-- Alt CTAs -->
-            <div>
-                <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary block mb-4">
-                    CTAs alternativos
-                </span>
-                <ul class="space-y-3">
-                    <li
-                        v-for="(cta, idx) in (bank.alt_ctas ?? [])"
-                        :key="idx"
-                        class="flex items-start justify-between gap-2 rounded-lg border border-wc-border/50 bg-wc-bg-tertiary p-3"
-                    >
-                        <p class="text-sm leading-relaxed text-wc-text flex-1">{{ cta }}</p>
-                        <button
-                            type="button"
-                            @click="copyText(cta)"
-                            class="shrink-0 rounded p-1 text-wc-text-tertiary hover:text-wc-text transition-colors"
-                            title="Copiar"
-                        >
-                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                            </svg>
-                        </button>
-                    </li>
-                </ul>
+    <div v-else class="banco-grid">
+        <div v-for="col in itemsByCol" :key="col.type" class="banco-col">
+            <div class="banco-head">
+                <span :class="['ic', `ic-${col.icon}`, 'ic-sm']"></span>
+                <span class="banco-head-title">{{ col.title }}</span>
             </div>
-
-            <!-- Alt captions -->
-            <div>
-                <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary block mb-4">
-                    Captions alternativos
-                </span>
-                <ul class="space-y-3">
-                    <li
-                        v-for="(caption, idx) in (bank.alt_captions ?? [])"
+            <div class="banco-items-wrap">
+                <template v-if="col.items.length">
+                    <div
+                        v-for="(text, idx) in col.items"
                         :key="idx"
-                        class="flex items-start justify-between gap-2 rounded-lg border border-wc-border/50 bg-wc-bg-tertiary p-3"
+                        class="banco-item"
+                        :class="{ taken: taken[`${col.type}-${idx}`] }"
                     >
-                        <p class="text-sm leading-relaxed text-wc-text flex-1">{{ caption }}</p>
+                        <span class="banco-code">{{ codeFor(col.type, idx) }}</span>
+                        <p class="banco-text">{{ text }}</p>
                         <button
                             type="button"
-                            @click="copyText(caption)"
-                            class="shrink-0 rounded p-1 text-wc-text-tertiary hover:text-wc-text transition-colors"
-                            title="Copiar"
+                            class="banco-copy-btn"
+                            :title="`Copiar ${codeFor(col.type, idx)}`"
+                            @click="copyText(text, col.type, idx)"
                         >
-                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185"
+                                />
                             </svg>
                         </button>
-                    </li>
-                </ul>
+                        <div class="banco-taken-overlay">✓ TAKEN</div>
+                    </div>
+                </template>
+                <p v-else class="banco-empty" style="font-size:.78rem;color:var(--ink-3,#888);font-family:var(--font-mono,monospace);padding:.5rem 0;">
+                    Sin alternativos
+                </p>
             </div>
         </div>
     </div>

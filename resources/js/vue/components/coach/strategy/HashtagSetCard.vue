@@ -1,74 +1,110 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onBeforeUnmount } from 'vue';
 
 const props = defineProps({
     hashtags: { type: Object, required: true },
+    weekNum: { type: [String, Number], default: null },
 });
 
 const activeTab = ref(0);
-const copied = ref(false);
+const copiedIdx = ref(null);
+let copyTimer = null;
 
 const sets = computed(() => props.hashtags?.sets ?? []);
-const activeSet = computed(() => sets.value[activeTab.value] ?? null);
 
-async function copySet() {
-    if (!activeSet.value) return;
-    const text = activeSet.value.tags.map(t => t.startsWith('#') ? t : `#${t}`).join(' ');
+const promptWeek = computed(() => {
+    if (props.weekNum !== null && props.weekNum !== undefined && props.weekNum !== '') {
+        return props.weekNum;
+    }
+    return props.hashtags?.week_number ?? props.hashtags?.week ?? 'current';
+});
+
+function setLabel(idx) {
+    return String.fromCharCode(65 + idx); // A, B, C...
+}
+
+async function copySet(idx) {
+    const set = sets.value[idx];
+    if (!set) return;
+    const text = (set.tags ?? []).map(t => (t.startsWith('#') ? t : `#${t}`)).join(' ');
     try {
         await navigator.clipboard.writeText(text);
-        copied.value = true;
-        setTimeout(() => { copied.value = false; }, 2000);
     } catch {}
+
+    copiedIdx.value = idx;
+    if (copyTimer) clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => {
+        copiedIdx.value = null;
+        copyTimer = null;
+    }, 2000);
 }
+
+onBeforeUnmount(() => {
+    if (copyTimer) {
+        clearTimeout(copyTimer);
+        copyTimer = null;
+    }
+});
 </script>
 
 <template>
-    <div class="rounded-xl border border-wc-border bg-wc-bg-secondary py-8 pl-12 pr-6 transition-transform duration-200 hover:-translate-y-0.5 space-y-6">
-        <!-- Set tabs -->
-        <div v-if="sets.length > 1" class="flex gap-2 flex-wrap">
+    <div v-if="!sets.length" class="card">
+        <p style="text-align:center;color:var(--ink-3,#888);font-family:var(--font-mono,monospace);font-size:.85rem;padding:2rem 0;">
+            Sin sets de hashtags disponibles
+        </p>
+    </div>
+
+    <div v-else class="hashtags-card">
+        <div class="terminal-bar">
+            <span class="t-dot t-r"></span>
+            <span class="t-dot t-y"></span>
+            <span class="t-dot t-g"></span>
+            <span class="t-prompt">wellcore@coach:~/semana-{{ promptWeek }}/hashtags $</span>
+        </div>
+
+        <div class="htabs">
             <button
                 v-for="(set, idx) in sets"
                 :key="idx"
                 type="button"
+                class="htab"
+                :class="{ active: activeTab === idx }"
                 @click="activeTab = idx"
-                class="rounded-full px-3 py-1 font-mono text-xs uppercase tracking-[0.15em] transition-colors"
-                :class="activeTab === idx
-                    ? 'bg-wc-accent text-white'
-                    : 'border border-wc-border text-wc-text-tertiary hover:text-wc-text'"
             >
-                {{ set.name }}
+                Set {{ setLabel(idx) }}<template v-if="set.name"> · {{ set.name }}</template>
             </button>
         </div>
 
-        <!-- Tags -->
-        <div v-if="activeSet" class="space-y-4">
-            <div v-if="sets.length === 1" class="font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary">
-                {{ activeSet.name }}
-            </div>
-            <div class="flex flex-wrap gap-2">
+        <div
+            v-for="(set, idx) in sets"
+            :key="idx"
+            class="htag-set"
+            :class="{ active: activeTab === idx }"
+        >
+            <div class="htag-pills">
                 <span
-                    v-for="(tag, idx) in activeSet.tags"
-                    :key="idx"
-                    class="font-mono text-xs bg-wc-bg-tertiary border border-wc-border rounded-full px-2 py-0.5 text-wc-text-secondary"
-                >
-                    {{ tag.startsWith('#') ? tag : `#${tag}` }}
-                </span>
+                    v-for="(tag, i) in set.tags"
+                    :key="i"
+                    class="htag-pill"
+                >{{ tag.startsWith('#') ? tag : `#${tag}` }}</span>
             </div>
-
-            <div class="flex justify-end">
+            <div class="copy-set-row">
                 <button
                     type="button"
-                    @click="copySet"
-                    class="flex items-center gap-2 rounded-lg border border-wc-border px-4 py-2 font-mono text-xs uppercase tracking-[0.15em] text-wc-text-secondary hover:text-wc-text transition-colors"
+                    class="copy-set-btn"
+                    :class="{ ok: copiedIdx === idx }"
+                    @click="copySet(idx)"
                 >
-                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185"
+                        />
                     </svg>
-                    {{ copied ? 'Copiado' : 'Copiar set completo' }}
+                    <span class="copy-set-label">{{ copiedIdx === idx ? 'Copiado ✓' : 'Copiar set completo' }}</span>
                 </button>
             </div>
         </div>
-
-        <p v-else class="text-sm text-wc-text-tertiary">Sin sets de hashtags disponibles.</p>
     </div>
 </template>

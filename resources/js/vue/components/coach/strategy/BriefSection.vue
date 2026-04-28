@@ -14,61 +14,82 @@ const offerLabels = {
 };
 
 const offerLabel = computed(() => offerLabels[props.brief.priority_offer] ?? props.brief.priority_offer);
+
+const weekNumber = computed(() => props.brief.week_number ?? props.brief.week ?? null);
+
+// Stopwords de español que nunca queremos resaltar
+const STOPWORDS = new Set([
+    'ENTRENAR','SIN','ES','SOLO','ACUMULADO','CON','DE','LA','EL','UN','UNA','POR','PARA','QUE','TU','TUS','MIS','NO','SI',
+    'DEL','LOS','LAS','UNOS','UNAS','SE','SU','SUS','ME','TE','LE','NOS','OS','LES',
+    'HAY','SON','SOY','ERES','SEMOS','ESTA','ESTE','ESTOS','ESTAS','ESO','ESA','PERO','MAS','MUY','YA','MÁS',
+]);
+
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+const keyMessageWithKw = computed(() => {
+    const raw = (props.brief.key_message ?? '').toString().trim();
+    if (!raw) return '';
+
+    // Si contiene **markdown bold**, ese gana
+    if (/\*\*[^*]+\*\*/.test(raw)) {
+        const safe = escapeHtml(raw).toUpperCase();
+        // Después de escape, los * siguen siendo *
+        const html = safe.replace(/\*\*([^*]+)\*\*/g, (_, w) => `<span class="kw">${w}</span>`);
+        return html.replace(/\.\s+/g, '.<br>').replace(/,\s+/g, ',<br>');
+    }
+
+    // Fallback: detectar la palabra más larga ≥6 letras que no sea stopword
+    const safe = escapeHtml(raw).toUpperCase();
+    const words = safe.match(/[A-ZÁÉÍÓÚÜÑ]+/g) || [];
+    let target = null;
+    for (const w of words) {
+        if (w.length < 6) continue;
+        if (STOPWORDS.has(w)) continue;
+        if (!target || w.length > target.length) target = w;
+    }
+
+    let html = safe;
+    if (target) {
+        // Reemplazar la primera ocurrencia exacta
+        const re = new RegExp(`\\b${target}\\b`);
+        html = html.replace(re, `<span class="kw">${target}</span>`);
+    }
+
+    // Wrap por línea
+    return html.replace(/\.\s+/g, '.<br>').replace(/,\s+/g, ',<br>');
+});
+
+const citation = computed(() => {
+    return weekNumber.value ? `— Mensaje clave · Semana ${weekNumber.value}` : '— Mensaje clave';
+});
 </script>
 
 <template>
-    <article
-        class="rounded-xl border border-wc-border bg-wc-bg-secondary py-10 pl-12 pr-6 transition-all duration-[240ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:translate-y-[-2px] hover:shadow-[0_20px_40px_-15px_rgba(220,38,38,0.25)]"
-    >
-        <div class="grid gap-10 lg:grid-cols-2">
-            <div class="space-y-6">
-                <div>
-                    <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary">
-                        Brief
-                    </span>
-                    <h3 class="mt-2 font-display text-3xl uppercase leading-tight tracking-tight text-wc-text">
-                        {{ brief.title }}
-                    </h3>
-                </div>
-
-                <p class="text-base leading-relaxed text-wc-text-secondary">
-                    {{ brief.objective }}
-                </p>
-
-                <div class="flex flex-wrap items-center gap-3">
-                    <span
-                        class="inline-flex items-center rounded-full border border-wc-accent/40 bg-wc-accent/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-wc-accent"
-                    >
-                        Oferta · {{ offerLabel }}
-                    </span>
-                    <span
-                        class="inline-flex items-center rounded-full border border-wc-border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-wc-text-secondary"
-                    >
-                        Métrica · {{ brief.target_metric }}
-                    </span>
+    <article class="card">
+        <div class="pull-quote-row">
+            <p class="pull-quote" v-html="keyMessageWithKw"></p>
+            <p class="pull-quote-cite">{{ citation }}</p>
+        </div>
+        <div class="brief-grid">
+            <div class="brief-left">
+                <span class="mono-label">Brief</span>
+                <h3 class="brief-h">{{ brief.title }}</h3>
+                <p class="brief-obj">{{ brief.objective }}</p>
+                <div class="chips">
+                    <span class="chip chip-red">Oferta · {{ offerLabel }}</span>
+                    <span v-if="brief.target_metric" class="chip chip-dim">Métrica · {{ brief.target_metric }}</span>
                 </div>
             </div>
-
-            <div class="space-y-8 border-l border-wc-border pl-10">
-                <div>
-                    <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary">
-                        Mensaje clave
-                    </span>
-                    <blockquote
-                        class="mt-3 border-l-4 border-wc-accent pl-5 font-editorial text-2xl italic leading-snug text-wc-text"
-                    >
-                        {{ brief.key_message }}
-                    </blockquote>
-                </div>
-
-                <div>
-                    <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary">
-                        Encuadre / framing
-                    </span>
-                    <p class="mt-3 font-editorial text-lg italic leading-relaxed text-wc-text-secondary">
-                        {{ brief.framing_copy }}
-                    </p>
-                </div>
+            <div class="brief-right">
+                <span class="mono-label">Encuadre / framing</span>
+                <p class="framing">{{ brief.framing_copy }}</p>
             </div>
         </div>
     </article>

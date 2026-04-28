@@ -19,7 +19,7 @@ function getPieceState(story) {
 </script>
 
 <template>
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7">
+    <div class="stories-grid">
         <StoryDayCard
             v-for="story in stories"
             :key="story.day"

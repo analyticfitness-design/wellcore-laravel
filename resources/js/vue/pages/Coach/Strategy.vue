@@ -24,21 +24,21 @@ onMounted(async () => {
 
 <template>
     <CoachLayout>
-        <div class="strategy-page relative min-h-screen">
-            <div class="mx-auto max-w-5xl px-6 py-12">
+        <div class="strategy-page-v2 page-wrap">
+            <div class="container">
 
-                <nav class="mb-8 flex gap-6 border-b border-wc-border">
+                <nav class="tabs">
                     <button
+                        class="tab"
+                        :class="{ active: tab === 'this-week' }"
                         @click="tab = 'this-week'"
-                        :class="['py-3 font-mono text-xs uppercase tracking-[0.15em]',
-                            tab === 'this-week' ? 'text-wc-text border-b-2 border-wc-accent' : 'text-wc-text-tertiary']"
                     >
                         Esta semana
                     </button>
                     <button
+                        class="tab"
+                        :class="{ active: tab === 'history' }"
                         @click="async () => { tab = 'history'; if (!store.history.length) await store.fetchHistory(); }"
-                        :class="['py-3 font-mono text-xs uppercase tracking-[0.15em]',
-                            tab === 'history' ? 'text-wc-text border-b-2 border-wc-accent' : 'text-wc-text-tertiary']"
                     >
                         Historial
                     </button>
@@ -59,10 +59,10 @@ onMounted(async () => {
                             :assets="store.currentDrop.content?.assets ?? []"
                         />
 
-                        <SectionDivider number="01" title="BRIEF" sub="de la semana" />
+                        <SectionDivider number="01" title="BRIEF" sub="de la semana" icon="amber" />
                         <BriefSection :brief="store.currentDrop.content.brief" />
 
-                        <SectionDivider number="02" title="REELS" sub="dos guiones de producción" />
+                        <SectionDivider number="02" title="REELS" sub="dos guiones de producción" icon="red" />
                         <ReelScriptCard
                             v-for="reel in store.currentDrop.content.reels"
                             :key="reel.key"
@@ -72,7 +72,7 @@ onMounted(async () => {
                             :drop-assets="store.currentDrop.content?.assets ?? []"
                         />
 
-                        <SectionDivider number="03" title="STORIES" sub="siete piezas Lun → Dom" />
+                        <SectionDivider number="03" title="STORIES" sub="siete piezas Lun → Dom" icon="sky" />
                         <StoriesWeekRow
                             :stories="store.currentDrop.content.stories"
                             :drop-id="store.currentDrop.id"
@@ -80,17 +80,17 @@ onMounted(async () => {
                             :drop-assets="store.currentDrop.content?.assets ?? []"
                         />
 
-                        <SectionDivider number="04" title="CHECKLIST" sub="producción de reel" />
+                        <SectionDivider number="04" title="CHECKLIST" sub="producción de reel" icon="emerald" />
                         <ProductionChecklistCard
                             :checklist="store.currentDrop.content.checklist"
                             :drop-id="store.currentDrop.id"
                             :pieces="store.currentDrop.pieces"
                         />
 
-                        <SectionDivider number="05" title="BANCO SEMANAL" sub="alternativos si la idea principal no encaja" />
+                        <SectionDivider number="05" title="BANCO SEMANAL" sub="alternativos si la idea principal no encaja" icon="orange" />
                         <WeeklyBankCard :bank="store.currentDrop.content.bank" />
 
-                        <SectionDivider number="06" title="HASHTAGS" sub="sets curados por tema" />
+                        <SectionDivider number="06" title="HASHTAGS" sub="sets curados por tema" icon="emerald" />
                         <HashtagSetCard :hashtags="store.currentDrop.content.hashtags" />
                     </template>
                 </template>
@@ -100,28 +100,3 @@ onMounted(async () => {
         </div>
     </CoachLayout>
 </template>
-
-<style scoped>
-.strategy-page { background: #09090B; }
-.strategy-page::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence baseFrequency='0.85' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/></svg>");
-    mix-blend-mode: overlay;
-    z-index: 1;
-}
-.strategy-page::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    height: 400px;
-    pointer-events: none;
-    background: radial-gradient(ellipse at center, rgba(220,38,38,0.08), transparent 60%);
-    z-index: 0;
-}
-</style>

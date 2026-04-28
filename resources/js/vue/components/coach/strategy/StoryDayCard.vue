@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import StoryDrawer from './StoryDrawer.vue';
 
 const props = defineProps({
@@ -9,75 +9,72 @@ const props = defineProps({
     dropAssets: { type: Array, default: () => [] },
 });
 
-const linkedCount = (() => {
+const VALID_DAYS = ['lun', 'mar', 'mie', 'jue', 'vie', 'sab', 'dom'];
+
+const dayKey = computed(() => {
+    const k = (props.story.day ?? '').toLowerCase();
+    return VALID_DAYS.includes(k) ? k : 'lun';
+});
+
+const dayInitialMap = {
+    LUN: 'L', MAR: 'M', MIE: 'X', JUE: 'J', VIE: 'V', SAB: 'S', DOM: 'D',
+};
+
+const dayInitial = computed(() => {
+    const upper = (props.story.day ?? '').toUpperCase();
+    return dayInitialMap[upper] ?? upper.charAt(0) ?? '';
+});
+
+const linkedCount = computed(() => {
     return (props.dropAssets ?? []).filter((a) => {
         const lt = a.linked_to;
         return lt && (lt.type === 'story' || lt.type === 'slide') && lt.day === props.story.day;
     }).length;
-})();
+});
 
-const dayColors = {
-    LUN: '#DC2626',
-    MAR: '#10B981',
-    MIE: '#F59E0B',
-    JUE: '#3B82F6',
-    VIE: '#A78BFA',
-    SAB: '#EC4899',
-    DOM: '#14B8A6',
-};
+const previewText = computed(() => {
+    const raw = (props.story.slides?.[0]?.text ?? '').trim();
+    if (!raw) return '';
+    const words = raw.split(/\s+/);
+    if (words.length <= 14) return raw;
+    return words.slice(0, 14).join(' ') + '…';
+});
 
-const dayColor = dayColors[props.story.day] ?? '#DC2626';
+const dmHint = computed(() => {
+    return props.story.dm_followup_hint ?? props.story.dm_followup ?? '';
+});
 
 const drawerOpen = ref(false);
-
-const previewText = (props.story.slides?.[0]?.text ?? '').slice(0, 80);
 </script>
 
 <template>
     <div>
         <button
             type="button"
+            class="story-card"
+            :style="`border-top-color: var(--color-wc-day-${dayKey})`"
             @click="drawerOpen = true"
-            class="relative w-full text-left rounded-xl border border-wc-border bg-wc-bg-secondary hover:border-wc-accent/40 transition-all duration-200 hover:-translate-y-0.5 overflow-hidden"
-            :style="{ borderTopColor: dayColor, borderTopWidth: '3px' }"
         >
-            <div class="p-4 space-y-3">
-                <!-- Day header -->
-                <div class="flex items-center justify-between">
-                    <div>
-                        <span class="font-display text-lg uppercase" :style="{ color: dayColor }">{{ story.day }}</span>
-                        <span v-if="story.pillar" class="ml-2 font-mono text-[9px] uppercase tracking-[0.15em] text-wc-text-tertiary">{{ story.pillar }}</span>
-                    </div>
-
-                    <!-- State badge -->
-                    <span v-if="pieceState?.state === 'published'" class="text-emerald-400">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                        </svg>
-                    </span>
-                    <span v-else-if="pieceState?.state === 'skipped'" class="text-wc-text-tertiary opacity-50">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </span>
+            <div class="story-inner">
+                <span class="story-initial" :style="`color: var(--color-wc-day-${dayKey})`">{{ dayInitial }}</span>
+                <span
+                    v-if="story.pillar"
+                    class="story-pillar"
+                    :style="`color: var(--color-wc-day-${dayKey}); border-color: var(--color-wc-day-${dayKey})`"
+                >{{ story.pillar }}</span>
+                <p class="story-preview">{{ previewText }}</p>
+                <div class="story-footer">
+                    <span class="story-slides">{{ story.slides?.length ?? 0 }} slide{{ story.slides?.length === 1 ? '' : 's' }}</span>
+                    <span v-if="linkedCount > 0" class="story-img-badge">{{ linkedCount }} img</span>
+                    <span v-if="pieceState?.state === 'published'" class="story-state">✓</span>
+                    <span v-else-if="pieceState?.state === 'skipped'" class="story-state-skip">✕</span>
                 </div>
-
-                <!-- Preview text -->
-                <p v-if="previewText" class="text-xs text-wc-text-secondary leading-relaxed line-clamp-3">
-                    {{ previewText }}{{ (story.slides?.[0]?.text ?? '').length > 80 ? '...' : '' }}
-                </p>
-
-                <!-- Slides count + asset badge -->
-                <div class="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.2em] text-wc-text-tertiary">
-                    <span>{{ story.slides?.length ?? 0 }} slides</span>
-                    <span v-if="linkedCount > 0" class="rounded border border-wc-accent/40 bg-wc-accent/10 px-1.5 py-0.5 text-wc-accent">
-                        {{ linkedCount }} img
-                    </span>
-                </div>
+            </div>
+            <div v-if="dmHint" class="story-dm-hint">
+                <p class="story-dm-text">{{ dmHint }}</p>
             </div>
         </button>
 
-        <!-- Drawer -->
         <Transition name="drawer">
             <StoryDrawer
                 v-if="drawerOpen"
@@ -90,14 +87,3 @@ const previewText = (props.story.slides?.[0]?.text ?? '').slice(0, 80);
         </Transition>
     </div>
 </template>
-
-<style scoped>
-.drawer-enter-active,
-.drawer-leave-active {
-    transition: opacity 0.2s ease;
-}
-.drawer-enter-from,
-.drawer-leave-to {
-    opacity: 0;
-}
-</style>

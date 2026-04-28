@@ -1,6 +1,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
 import { useCoachStrategyStore } from '../../../stores/coachStrategy';
+import { useViewportAnimate } from '../../../composables/dashboard/useViewportAnimate';
 
 const props = defineProps({
     checklist: { type: Object, required: true },
@@ -17,7 +18,22 @@ const phaseLabels = {
     pub: 'Publicación',
 };
 
+const phaseColorMap = {
+    pre: 'amber',
+    cam: 'red',
+    edit: 'violet',
+    pub: 'sky',
+};
+const phaseColorCycle = ['amber', 'red', 'violet', 'sky', 'emerald', 'orange'];
+
+function phaseColor(phaseIdx) {
+    const key = phases.value[phaseIdx]?.key;
+    return phaseColorMap[key] ?? phaseColorCycle[phaseIdx % phaseColorCycle.length];
+}
+
 const phases = computed(() => props.checklist?.phases ?? []);
+
+const circumference = 2 * Math.PI * 17; // ≈ 106.81
 
 function itemKey(phase, itemIdx) {
     return `phase_${phase.key}_item_${itemIdx}`;
@@ -66,85 +82,95 @@ function togglePhase(idx) {
 function isPhaseOpen(idx) {
     return openPhases.value.includes(idx);
 }
+function onToggle(idx, ev) {
+    const isOpen = ev?.target?.open ?? false;
+    const pos = openPhases.value.indexOf(idx);
+    if (isOpen && pos < 0) openPhases.value.push(idx);
+    else if (!isOpen && pos >= 0) openPhases.value.splice(pos, 1);
+}
+
+// Viewport animation flag for ring fill
+const { targetRef: cardRef, visible: ringsVisible } = useViewportAnimate({ threshold: 0.2 });
+
+function ringOffset(phase /*, phaseIdx */) {
+    if (!ringsVisible.value) return circumference;
+    const items = phase.items ?? [];
+    if (items.length === 0) return circumference;
+    return circumference - (circumference * countChecked(phase) / items.length);
+}
 </script>
 
 <template>
-    <article
-        class="space-y-4 rounded-xl border border-wc-border bg-wc-bg-secondary py-10 pl-12 pr-6 transition-all duration-[240ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:translate-y-[-2px] hover:shadow-[0_20px_40px_-15px_rgba(220,38,38,0.25)]"
-    >
-        <div
+    <div ref="cardRef" class="checklist">
+        <details
             v-for="(phase, phaseIdx) in phases"
             :key="phase.key ?? phaseIdx"
-            class="overflow-hidden rounded-lg border border-wc-border"
+            class="phase-block"
+            :open="isPhaseOpen(phaseIdx)"
+            @toggle="onToggle(phaseIdx, $event)"
         >
-            <button
-                type="button"
-                @click="togglePhase(phaseIdx)"
-                class="flex w-full items-center justify-between px-5 py-4 transition-colors hover:bg-wc-bg-tertiary"
-            >
-                <div class="flex items-center gap-3">
-                    <svg
-                        class="h-3.5 w-3.5 text-wc-text-tertiary transition-transform"
-                        :class="isPhaseOpen(phaseIdx) ? 'rotate-90' : ''"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        stroke-width="2"
-                    >
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            <summary class="phase-summary">
+                <span class="phase-chev">▶</span>
+                <span class="ic ic-sm" :class="`ic-${phaseColor(phaseIdx)}`">
+                    <!-- amber: lightbulb -->
+                    <svg v-if="phaseColor(phaseIdx) === 'amber'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/>
                     </svg>
-                    <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-wc-text-tertiary">
-                        {{ phase.key }}
-                    </span>
-                    <span class="font-display text-lg uppercase tracking-tight text-wc-text">
-                        {{ phase.title ?? phaseLabels[phase.key] ?? `Fase ${phaseIdx + 1}` }}
-                    </span>
-                </div>
-                <span class="font-mono text-xs tabular-nums text-wc-text-secondary">
-                    {{ countChecked(phase) }} / {{ (phase.items ?? []).length }}
+                    <!-- red: camera -->
+                    <svg v-else-if="phaseColor(phaseIdx) === 'red'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/>
+                    </svg>
+                    <!-- violet: scissors-edit -->
+                    <svg v-else-if="phaseColor(phaseIdx) === 'violet'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/>
+                    </svg>
+                    <!-- sky / fallback: publish-upload -->
+                    <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25"/>
+                    </svg>
                 </span>
-            </button>
-
-            <div
-                v-show="isPhaseOpen(phaseIdx)"
-                class="divide-y divide-wc-border/50 border-t border-wc-border"
-            >
+                <span class="phase-label">{{ String(phaseIdx + 1).padStart(2, '0') }} /</span>
+                <span class="phase-name">{{ phase.title ?? phaseLabels[phase.key] ?? `Fase ${phaseIdx + 1}` }}</span>
+                <div class="mini-ring-wrap">
+                    <svg class="mini-ring-svg" width="40" height="40" viewBox="0 0 40 40">
+                        <circle class="mini-ring-bg" cx="20" cy="20" r="17"/>
+                        <circle
+                            class="mini-ring-fill"
+                            cx="20" cy="20" r="17"
+                            :stroke-dasharray="circumference"
+                            :stroke-dashoffset="ringOffset(phase, phaseIdx)"
+                        />
+                    </svg>
+                    <span class="mini-ring-num">{{ countChecked(phase) }}/{{ (phase.items ?? []).length }}</span>
+                </div>
+            </summary>
+            <div class="phase-items-wrap">
+                <div
+                    class="phase-complete"
+                    :class="{ visible: countChecked(phase) === (phase.items ?? []).length && (phase.items ?? []).length > 0 }"
+                >✓ PHASE COMPLETE</div>
                 <div
                     v-for="(item, itemIdx) in (phase.items ?? [])"
                     :key="itemIdx"
-                    class="px-5 py-3 transition-colors hover:bg-wc-bg-tertiary/40"
+                    class="phase-item"
                 >
-                    <label class="flex cursor-pointer items-start gap-3">
-                        <input
-                            type="checkbox"
-                            :checked="isChecked(phase, itemIdx)"
-                            :disabled="pendingKeys.has(itemKey(phase, itemIdx))"
-                            @change="toggleItem(phase, itemIdx)"
-                            class="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-wc-border accent-wc-accent"
-                        />
-                        <span class="flex-1">
-                            <span
-                                class="block text-sm leading-relaxed"
-                                :class="isChecked(phase, itemIdx) ? 'text-wc-text-tertiary line-through' : 'text-wc-text'"
-                            >
-                                {{ item.title ?? item }}
-                            </span>
-                            <span
-                                v-if="item.detail"
-                                class="mt-1 block font-editorial text-sm italic leading-relaxed text-wc-text-secondary"
-                            >
-                                {{ item.detail }}
-                            </span>
-                            <ul
-                                v-if="item.subitems?.length"
-                                class="mt-2 list-disc space-y-0.5 pl-5 text-xs text-wc-text-tertiary"
-                            >
-                                <li v-for="(sub, sIdx) in item.subitems" :key="sIdx">{{ sub }}</li>
-                            </ul>
-                        </span>
-                    </label>
+                    <input
+                        type="checkbox"
+                        class="phase-cb"
+                        :checked="isChecked(phase, itemIdx)"
+                        :disabled="pendingKeys.has(itemKey(phase, itemIdx))"
+                        @change="toggleItem(phase, itemIdx)"
+                    />
+                    <div class="phase-item-content">
+                        <span class="phase-item-title" :class="{ done: isChecked(phase, itemIdx) }">{{ item.title ?? item }}</span>
+                        <span v-if="item.detail" class="phase-item-detail">{{ item.detail }}</span>
+                        <ul v-if="item.subitems?.length" class="subitems">
+                            <li v-for="(sub, sIdx) in item.subitems" :key="sIdx">{{ sub }}</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-    </article>
+        </details>
+    </div>
 </template>
