@@ -40,7 +40,12 @@ const donut = computed(() => {
     const end = cursor + pct;
     stops.push(`${color} ${start}% ${end}%`);
     cursor = end;
-    return { name: d.name, count: Number(d.count || 0), pct, color };
+    return {
+      name: d.name?.trim() || 'Sin clasificar',
+      count: Number(d.count || 0),
+      pct,
+      color,
+    };
   });
   return {
     conic: `conic-gradient(${stops.join(', ')})`,
