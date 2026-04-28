@@ -1,7 +1,6 @@
 @import 'tailwindcss';
-/* WellCore v2 editorial stack (admin/cliente/coach) — Bebas Neue + Inter + Barlow + Fraunces italic + JetBrains Mono.
-   Oswald y Raleway permanecen como fallback defensivo para la cadena CSS — ver feedback_fonts.md. */
-@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Barlow:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400;1,9..144,500;1,9..144,600&family=JetBrains+Mono:wght@400;500;600&display=swap");
+/* Fuentes oficiales WellCore: Oswald (titulares) + Raleway (cuerpos) + JetBrains Mono (labels técnicos). */
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500;600&display=swap");
 @import './animations.css';
 @import './coach-strategy.css';
 @import './admin-atmosphere.css';
@@ -17,16 +16,11 @@
 @source '../**/*.vue';
 
 @theme {
-    /* WellCore Design System Tokens — stack canónico productivo
-       Decisión Daniel (2026-04-28): Oswald (titulares) + Raleway (cuerpo) son las fuentes
-       PRIMARIAS de la plataforma. Bebas/Inter/Barlow del MASTER doc quedan como fallback
-       defensivo (cargadas via @import Google Fonts) por si Oswald/Raleway no resuelven.
-       NO invertir el orden sin OK explícito — los preloads woff2 del layout público
-       (public.blade.php) sirven Oswald/Raleway críticos above-the-fold. */
-    --font-sans: 'Raleway', 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-display: 'Oswald', 'Bebas Neue', Impact, sans-serif;
+    /* Fuentes oficiales WellCore. Bebas/Inter/Barlow/Fraunces eliminados — no son oficiales. */
+    --font-sans: 'Raleway', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: 'Oswald', Impact, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-    --font-data: 'Raleway', 'Barlow', ui-sans-serif, system-ui, sans-serif;
+    --font-data: 'Raleway', ui-sans-serif, system-ui, sans-serif;
 
     /* WellCore Colors — Primary */
     --color-wc-accent: #DC2626;
@@ -67,7 +61,7 @@
     --radius-card: 0.75rem;
     --radius-button: 0.5rem;
 
-    --font-editorial: "Fraunces", ui-serif, Georgia, serif;
+    --font-editorial: 'Raleway', ui-sans-serif, system-ui, sans-serif;
     --color-wc-gold: #C8A769;
 
     /* Admin v2 — color tokens (rediseño aprobado por CEO) */

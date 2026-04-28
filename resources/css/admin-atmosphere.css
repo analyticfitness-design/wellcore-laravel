@@ -99,3 +99,67 @@
         animation: none !important;
     }
 }
+
+/* ── Escala tipográfica oficial — Oswald + Raleway + JetBrains (Fase 0c) ─── */
+/* Variables de escala scoped al admin. NO hardcodear en componentes Vue.
+   Usar var(--text-*) cuando necesites referencia explícita. */
+.admin-shell {
+    /* Headlines (Oswald) — desktop */
+    --text-h1-hero:         40px;
+    --text-h2-section:      24px;
+    --text-h3-sub:          14px;
+    --text-eyebrow:         10px;
+    --ls-display-upper:     0.06em;
+    --ls-eyebrow:           0.18em;
+
+    /* Body (Raleway) — desktop */
+    --text-body:            16px;
+    --text-body-strong:     16px;
+    --text-sub-label:       14px;
+    --text-caption:         12px;
+
+    /* KPIs numéricos (Raleway tnum) — desktop */
+    --text-kpi-mega:        42px;
+    --text-kpi-table:       16px;
+    --text-delta:           13px;
+
+    /* Labels mono (JetBrains Mono) */
+    --text-mono-eye:        10px;
+    --text-pill:            10px;
+    --text-timestamp:       11px;
+}
+
+/* Cascade base — define floor sin bloquear utility classes Tailwind */
+.admin-shell p {
+    font-size: var(--text-body);
+}
+.admin-shell h1 {
+    font-size: var(--text-h1-hero);
+    letter-spacing: var(--ls-display-upper);
+}
+.admin-shell h2 {
+    font-size: var(--text-h2-section);
+    letter-spacing: var(--ls-display-upper);
+}
+.admin-shell h3 {
+    font-size: var(--text-h3-sub);
+}
+
+/* Mobile ≤1023px — escala reducida */
+@media (max-width: 1023px) {
+    .admin-shell {
+        --text-h1-hero:     34px;
+        --text-h2-section:  22px;
+        --text-body:        15px;
+        --text-body-strong: 15px;
+        --text-kpi-mega:    38px;
+        --text-kpi-table:   15px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-shell * {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
