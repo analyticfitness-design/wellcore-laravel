@@ -1,10 +1,18 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
+import { useAdminModules, BOTTOM_NAV_ROUTES } from '../../../composables/useAdminModules';
 
 const props = defineProps({
-  // Drawer "Mas" items: array de { name, to, routeName, icon? }
-  drawerItems: { type: Array, default: () => [] },
+  // Si se pasa, override del default (para tests). Default: todos los modulos
+  // que NO esten en BOTTOM_NAV_ROUTES (las 5 tabs fixed).
+  drawerItems: { type: Array, default: null },
+});
+
+const { modules } = useAdminModules();
+const computedDrawer = computed(() => {
+  if (props.drawerItems) return props.drawerItems;
+  return modules.filter(m => !BOTTOM_NAV_ROUTES.includes(m.routeName));
 });
 
 const route = useRoute();
@@ -105,7 +113,7 @@ watch(() => route.fullPath, () => { drawerOpen.value = false; });
         </header>
         <nav class="drawer-list">
           <RouterLink
-            v-for="item in drawerItems"
+            v-for="item in computedDrawer"
             :key="item.routeName || item.to"
             :to="item.to"
             class="drawer-item"
