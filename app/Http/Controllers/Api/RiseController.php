@@ -1111,11 +1111,14 @@ class RiseController extends Controller
             return response()->json(['error' => 'Sesion no encontrada o ya completada.'], 404);
         }
 
-        $durationSec = (int) $session->created_at->diffInSeconds(now());
+        // Cap at 4 hours to prevent absurd values from stale sessions.
+        $durationSec = min((int) $session->created_at->diffInSeconds(now()), 14400);
 
+        // duration_sec is the canonical column. duration_minutes was being
+        // silently ignored (not in fillable), causing summary to show 0:00.
         $session->update([
             'completed' => true,
-            'duration_minutes' => (int) ($durationSec / 60),
+            'duration_sec' => $durationSec,
             'feeling' => $validated['feeling'] ?? null,
             'notes' => $validated['notes'] ?? null,
         ]);
@@ -1173,39 +1176,70 @@ class RiseController extends Controller
             $sessionId = (string) $session->id;
         }
 
-        $session = WorkoutSession::with('logs')
-            ->where('client_id', $clientId)
+        $session = WorkoutSession::where('client_id', $clientId)
             ->findOrFail($sessionId);
 
-        $completedLogs = $session->logs->where('completed', true);
-        $exerciseCount = $completedLogs->pluck('exercise_name')->unique()->count();
-        $targetSets = $session->logs->count();
+        // SQL-level aggregates (see TrainingController::workoutSummary for rationale).
+        $logStats = WorkoutLog::where('session_id', $session->id)
+            ->selectRaw('
+                COUNT(*) as total_sets,
+                SUM(CASE WHEN completed = 1 THEN 1 ELSE 0 END) as completed_sets,
+                COALESCE(SUM(CASE WHEN completed = 1 THEN reps ELSE 0 END), 0) as completed_reps,
+                COUNT(DISTINCT CASE WHEN completed = 1 THEN exercise_name END) as completed_exercises,
+                COALESCE(MAX(CASE WHEN completed = 1 THEN weight_kg END), 0) as max_weight,
+                SUM(CASE WHEN completed = 1 AND is_pr = 1 THEN 1 ELSE 0 END) as pr_count
+            ')
+            ->first();
 
-        $heaviestLog = $completedLogs->sortByDesc('weight_kg')->first();
-        $maxWeight = $heaviestLog ? (float) $heaviestLog->weight_kg : 0;
-        $maxWeightExercise = $heaviestLog ? $heaviestLog->exercise_name : null;
-        $prCount = $completedLogs->where('is_pr', true)->count();
+        $maxWeight = (float) ($logStats->max_weight ?? 0);
+        $maxWeightExercise = null;
+        if ($maxWeight > 0) {
+            $heaviestLog = WorkoutLog::where('session_id', $session->id)
+                ->where('completed', true)
+                ->where('weight_kg', $maxWeight)
+                ->orderByDesc('id')
+                ->first(['exercise_name']);
+            $maxWeightExercise = $heaviestLog?->exercise_name;
+        }
 
         $stats = [
             'duration' => $session->formattedDuration(),
-            'duration_sec' => ($session->duration_minutes ?? 0) * 60,
+            'duration_sec' => (int) ($session->duration_sec ?? 0),
             'max_weight' => $maxWeight,
             'max_weight_exercise' => $maxWeightExercise,
-            'pr_count' => $prCount,
-            'reps' => (int) $completedLogs->sum('reps'),
-            'sets_completed' => $completedLogs->count(),
-            'sets_total' => $targetSets,
-            'exercises_count' => $exerciseCount,
+            'pr_count' => (int) $logStats->pr_count,
+            'reps' => (int) $logStats->completed_reps,
+            'sets_completed' => (int) $logStats->completed_sets,
+            'sets_total' => (int) $logStats->total_sets,
+            'exercises_count' => (int) $logStats->completed_exercises,
         ];
+
+        if ($session->completed && (
+            (int) ($session->total_sets ?? 0) !== $stats['sets_completed'] ||
+            (int) ($session->total_reps ?? 0) !== $stats['reps']
+        )) {
+            try {
+                $session->calculateTotals();
+            } catch (\Throwable $e) {
+                \Log::warning('Rise.workoutSummary: self-heal calculateTotals failed', [
+                    'session_id' => $session->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
 
         $xpCacheKey = "workout_summary_xp:{$session->id}";
         $xpEarned = Cache::remember($xpCacheKey, 86400 * 30, fn () => $session->awardXp());
 
-        $prs = $completedLogs->where('is_pr', true)->map(fn ($log) => [
-            'exercise' => $log->exercise_name,
-            'weight' => (float) $log->weight_kg,
-            'reps' => $log->reps,
-        ])->values()->toArray();
+        $prs = WorkoutLog::where('session_id', $session->id)
+            ->where('completed', true)
+            ->where('is_pr', true)
+            ->get(['exercise_name', 'weight_kg', 'reps'])
+            ->map(fn ($log) => [
+                'exercise' => $log->exercise_name,
+                'weight' => (float) $log->weight_kg,
+                'reps' => $log->reps,
+            ])->values()->toArray();
 
         $sessionHistory = WorkoutSession::where('client_id', $clientId)
             ->where('completed', true)

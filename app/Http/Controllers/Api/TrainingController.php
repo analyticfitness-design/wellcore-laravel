@@ -812,39 +812,75 @@ class TrainingController extends Controller
         $clientId = $client->id;
 
         if ($sessionId === 'latest') {
-            $session = WorkoutSession::with('logs')
-                ->where('client_id', $clientId)
+            $session = WorkoutSession::where('client_id', $clientId)
                 ->where('completed', true)
                 ->latest()
                 ->firstOrFail();
         } else {
-            $session = WorkoutSession::with('logs')
-                ->where('client_id', $clientId)
+            $session = WorkoutSession::where('client_id', $clientId)
                 ->findOrFail((int) $sessionId);
         }
 
-        $completedLogs = $session->logs->where('completed', true);
-        $exerciseCount = $completedLogs->pluck('exercise_name')->unique()->count();
-        $targetSets = $session->logs->count();
+        // SQL-level aggregates: source-of-truth, immune to collection filter
+        // / boolean cast quirks. Resolves bug where sets_completed and reps
+        // showed 0 even after sets were logged successfully.
+        $logStats = WorkoutLog::where('session_id', $session->id)
+            ->selectRaw('
+                COUNT(*) as total_sets,
+                SUM(CASE WHEN completed = 1 THEN 1 ELSE 0 END) as completed_sets,
+                COALESCE(SUM(CASE WHEN completed = 1 THEN reps ELSE 0 END), 0) as completed_reps,
+                COUNT(DISTINCT CASE WHEN completed = 1 THEN exercise_name END) as completed_exercises,
+                COALESCE(MAX(CASE WHEN completed = 1 THEN weight_kg END), 0) as max_weight,
+                SUM(CASE WHEN completed = 1 AND is_pr = 1 THEN 1 ELSE 0 END) as pr_count,
+                COALESCE(SUM(CASE WHEN completed = 1 THEN COALESCE(weight_kg, 0) * COALESCE(reps, 0) ELSE 0 END), 0) as volume_calc
+            ')
+            ->first();
 
-        $heaviestLog = $completedLogs->sortByDesc('weight_kg')->first();
-        $maxWeight = $heaviestLog ? (float) $heaviestLog->weight_kg : 0;
-        $maxWeightExercise = $heaviestLog ? $heaviestLog->exercise_name : null;
+        $maxWeight = (float) ($logStats->max_weight ?? 0);
+        $maxWeightExercise = null;
+        if ($maxWeight > 0) {
+            $heaviestLog = WorkoutLog::where('session_id', $session->id)
+                ->where('completed', true)
+                ->where('weight_kg', $maxWeight)
+                ->orderByDesc('id')
+                ->first(['exercise_name']);
+            $maxWeightExercise = $heaviestLog?->exercise_name;
+        }
 
-        $prCount = $completedLogs->where('is_pr', true)->count();
+        // Fallback chain: prefer cached column (calculateTotals), fall back to SQL aggregate
+        $totalVolume = (float) ($session->total_volume_kg ?? 0);
+        if ($totalVolume <= 0) {
+            $totalVolume = (float) $logStats->volume_calc;
+        }
 
         $stats = [
             'duration' => $session->formattedDuration(),
-            'duration_sec' => ($session->duration_minutes ?? 0) * 60,
+            'duration_sec' => (int) ($session->duration_sec ?? 0),
             'max_weight' => $maxWeight,
             'max_weight_exercise' => $maxWeightExercise,
-            'pr_count' => $prCount,
-            'reps' => (int) $completedLogs->sum('reps'),
-            'sets_completed' => $completedLogs->count(),
-            'sets_total' => $targetSets,
-            'exercises_count' => $exerciseCount,
-            'total_volume' => (float) ($session->total_volume ?? 0),
+            'pr_count' => (int) $logStats->pr_count,
+            'reps' => (int) $logStats->completed_reps,
+            'sets_completed' => (int) $logStats->completed_sets,
+            'sets_total' => (int) $logStats->total_sets,
+            'exercises_count' => (int) $logStats->completed_exercises,
+            'total_volume' => $totalVolume,
         ];
+
+        // Self-healing: if session is completed but cached totals are stale,
+        // recompute and persist so coach dashboards / analytics see truth.
+        if ($session->completed && (
+            (int) ($session->total_sets ?? 0) !== $stats['sets_completed'] ||
+            (int) ($session->total_reps ?? 0) !== $stats['reps']
+        )) {
+            try {
+                $session->calculateTotals();
+            } catch (\Throwable $e) {
+                Log::warning('workoutSummary: self-heal calculateTotals failed', [
+                    'session_id' => $session->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
 
         $cacheKey = "workout_summary_xp:{$session->id}";
         $xpEarned = Cache::remember($cacheKey, 86400 * 30, function () use ($session) {
