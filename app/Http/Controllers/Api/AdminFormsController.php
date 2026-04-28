@@ -13,7 +13,7 @@ class AdminFormsController extends Controller
 {
     // Each entry maps form area/slug to its DB source.
     // Forms without 'table' key are edit-only (no trackable submissions).
-    private static function catalog(): array
+    private static function formDefinitions(): array
     {
         return [
             'client/checkin' => [
@@ -130,7 +130,7 @@ class AdminFormsController extends Controller
 
     public function catalog(): JsonResponse
     {
-        $catalog = self::catalog();
+        $defs = self::formDefinitions();
         $now = Carbon::now();
         $weekStart = $now->copy()->startOfWeek(Carbon::MONDAY);
         $lastWeekStart = $now->copy()->subWeek()->startOfWeek(Carbon::MONDAY);
@@ -165,7 +165,7 @@ class AdminFormsController extends Controller
                     'last_week' => $lastWeek,
                 ],
             ]);
-        }, array_keys($catalog), $catalog);
+        }, array_keys($defs), $defs);
 
         return response()->json(['forms' => array_values($forms)]);
     }
@@ -173,7 +173,7 @@ class AdminFormsController extends Controller
     public function responses(Request $request, string $area, string $slug): JsonResponse
     {
         $key = "{$area}/{$slug}";
-        $catalog = self::catalog();
+        $catalog = self::formDefinitions();
 
         if (! isset($catalog[$key]) || ! isset($catalog[$key]['table'])) {
             return response()->json(['error' => 'Este formulario no genera registros rastreables.'], 422);
@@ -207,7 +207,7 @@ class AdminFormsController extends Controller
     public function exportCsv(Request $request, string $area, string $slug): Response
     {
         $key = "{$area}/{$slug}";
-        $catalog = self::catalog();
+        $catalog = self::formDefinitions();
 
         if (! isset($catalog[$key]) || ! isset($catalog[$key]['table'])) {
             abort(422, 'Este formulario no genera registros rastreables.');
