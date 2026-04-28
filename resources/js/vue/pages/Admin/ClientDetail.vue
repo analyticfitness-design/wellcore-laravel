@@ -1,1038 +1,457 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useApi } from '../../composables/useApi';
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import { useRoute } from 'vue-router';
+import { storeToRefs } from 'pinia';
+
 import AdminLayout from '../../layouts/AdminLayout.vue';
+import AdminClientHeader from '../../components/admin/clients/AdminClientHeader.vue';
+import AdminClientTabs from '../../components/admin/clients/AdminClientTabs.vue';
+import AdminClientResumenPanel from '../../components/admin/clients/AdminClientResumenPanel.vue';
+import AdminClientPlanPanel from '../../components/admin/clients/AdminClientPlanPanel.vue';
+import AdminClientCheckinsList from '../../components/admin/clients/AdminClientCheckinsList.vue';
+import AdminClientPaymentsList from '../../components/admin/clients/AdminClientPaymentsList.vue';
+import AdminClientCommunicationPanel from '../../components/admin/clients/AdminClientCommunicationPanel.vue';
+import AdminClientNotesPanel from '../../components/admin/clients/AdminClientNotesPanel.vue';
+import AdminClientQuickActions from '../../components/admin/clients/AdminClientQuickActions.vue';
 
-const api = useApi();
+import { useAdminClientDetailStore } from '../../stores/adminClientDetail';
+
 const route = useRoute();
-const router = useRouter();
+const store = useAdminClientDetailStore();
+const { client, loading, error, activeTab, coaches } = storeToRefs(store);
 
-const loading = ref(true);
-const saving = ref(false);
-const error = ref(null);
-const client = ref(null);
-const coaches = ref([]);
-const plans = ref([]);
-const statusOptions = ref([]);
-const planOptions = ref([]);
-const activeTab = ref('info');
-const editMode = ref(false);
+// ─── Modales ────────────────────────────────────────────────────────
+const showEditModal = ref(false);
 const editForm = ref({});
-const successMessage = ref('');
+function openEdit() {
+    editForm.value = {
+        // El backend acepta status, plan, coach_id por PUT — bio/email
+        // requieren un endpoint separado que aún no existe. Limitamos
+        // por ahora a lo que SÍ se puede guardar.
+        status: typeof client.value?.status === 'string' ? client.value.status : (client.value?.status?.value || ''),
+        plan: typeof client.value?.plan === 'string' ? client.value.plan : (client.value?.plan?.value || ''),
+    };
+    showEditModal.value = true;
+}
+function cancelEdit() { showEditModal.value = false; }
+async function saveEdit() {
+    const payload = {};
+    if (editForm.value.status) payload.status = editForm.value.status;
+    if (editForm.value.plan) payload.plan = editForm.value.plan;
+    const ok = await store.updateField(payload);
+    if (ok) showEditModal.value = false;
+}
+
 const showCoachModal = ref(false);
-const selectedCoachId = ref(0);
+const selectedCoachId = ref(null);
 const assignPlanType = ref('entrenamiento');
-const assigningCoach = ref(false);
-
-// Quick-action forms
-const editStatus = ref('');
-const editPlan = ref('');
-const savingStatus = ref(false);
-const savingPlan = ref(false);
-
-const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
-
-const intakeData = ref(null);
-const intakeLoading = ref(false);
-const jsonCopied = ref(false);
-let jsonCopyTimer = null;
-
-const activityData = ref(null);
-const activityLoading = ref(false);
-
-async function fetchIntake() {
-  intakeLoading.value = true;
-  try {
-    const res = await api.get(`/api/v/admin/clients/${route.params.id}/intake`);
-    intakeData.value = res.data;
-  } catch (e) {
-    intakeData.value = null;
-  } finally {
-    intakeLoading.value = false;
-  }
-}
-
-function copyJson() {
-  if (!intakeData.value?.rawJson) return;
-  const text = typeof intakeData.value.rawJson === 'string'
-    ? intakeData.value.rawJson
-    : JSON.stringify(intakeData.value.rawJson, null, 2);
-  navigator.clipboard.writeText(text).then(() => {
-    jsonCopied.value = true;
-    clearTimeout(jsonCopyTimer);
-    jsonCopyTimer = setTimeout(() => { jsonCopied.value = false; }, 2000);
-  });
-}
-
-function highlightJson(raw) {
-  if (!raw) return '';
-  const text = typeof raw === 'string' ? raw : JSON.stringify(raw, null, 2);
-  return text
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
-      if (/^"/.test(match)) {
-        if (/:$/.test(match)) return `<span class="text-sky-400">${match}</span>`;
-        return `<span class="text-emerald-400">${match}</span>`;
-      }
-      if (/true|false/.test(match)) return `<span class="text-violet-400">${match}</span>`;
-      if (/null/.test(match)) return `<span class="text-zinc-500">${match}</span>`;
-      return `<span class="text-amber-400">${match}</span>`;
-    });
-}
-
-function formatIntakeDate(dateStr) {
-  if (!dateStr) return '-';
-  const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return dateStr;
-  return d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
-}
-
-async function fetchActivity() {
-  activityLoading.value = true;
-  try {
-    const res = await api.get(`/api/v/admin/clients/${route.params.id}/activity`);
-    activityData.value = res.data;
-  } catch (e) {
-    activityData.value = null;
-  } finally {
-    activityLoading.value = false;
-  }
-}
-
-function formatActivityDate(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return dateStr;
-  const now = new Date();
-  const diffMs = now - d;
-  const diffDays = Math.floor(diffMs / 86400000);
-  if (diffDays === 0) return 'Hoy ' + d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
-  if (diffDays === 1) return 'Ayer ' + d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
-  if (diffDays < 7) return diffDays + ' días atrás';
-  return d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
-}
-
-const ACTIVITY_ICON = {
-  workout: { bg: 'bg-emerald-500/15', text: 'text-emerald-400', label: 'W' },
-  workout_abandoned: { bg: 'bg-zinc-500/15', text: 'text-zinc-400', label: 'W' },
-  checkin: { bg: 'bg-sky-500/15', text: 'text-sky-400', label: 'C' },
-  payment: { bg: 'bg-amber-500/15', text: 'text-amber-400', label: '$' },
-  login: { bg: 'bg-violet-500/15', text: 'text-violet-400', label: 'L' },
-  access: { bg: 'bg-violet-500/10', text: 'text-violet-300', label: '·' },
-  message: { bg: 'bg-wc-bg-secondary', text: 'text-wc-text-tertiary', label: 'M' },
-};
-
-function getActivityIcon(type) {
-  return ACTIVITY_ICON[type] || ACTIVITY_ICON.message;
-}
-
-function startImpersonation() {
-    const token = localStorage.getItem('wc_token') ?? '';
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = `/admin/impersonate/${client.value?.id}`;
-    const csrfInput = document.createElement('input');
-    csrfInput.type = 'hidden'; csrfInput.name = '_token'; csrfInput.value = csrfToken;
-    form.appendChild(csrfInput);
-    const tokenInput = document.createElement('input');
-    tokenInput.type = 'hidden'; tokenInput.name = 'admin_token'; tokenInput.value = token;
-    form.appendChild(tokenInput);
-    document.body.appendChild(form);
-    form.submit();
-}
-
-const tabs = [
-  { key: 'info', label: 'Informacion' },
-  { key: 'intake', label: 'Intake' },
-  { key: 'plans', label: 'Planes' },
-  { key: 'checkins', label: 'Check-ins' },
-  { key: 'payments', label: 'Pagos' },
-  { key: 'metrics', label: 'Metricas' },
-  { key: 'activity', label: 'Actividad' },
-];
-
-// Plan color map
-const PLAN_COLORS = {
-  esencial: 'bg-sky-500/10 text-sky-500',
-  metodo: 'bg-violet-500/10 text-violet-500',
-  elite: 'bg-amber-500/10 text-amber-500',
-  rise: 'bg-emerald-500/10 text-emerald-500',
-  presencial: 'bg-orange-500/10 text-orange-500',
-};
-
-function getPlanColor(plan) {
-  return PLAN_COLORS[plan] || 'bg-wc-bg-secondary text-wc-text-tertiary';
-}
-
-function getStatusColor(status) {
-  const colors = {
-    activo: 'bg-emerald-500/10 text-emerald-500',
-    active: 'bg-emerald-500/10 text-emerald-500',
-    inactivo: 'bg-zinc-500/10 text-zinc-400',
-    inactive: 'bg-zinc-500/10 text-zinc-400',
-    suspendido: 'bg-red-500/10 text-red-500',
-    suspended: 'bg-red-500/10 text-red-500',
-    pendiente: 'bg-amber-500/10 text-amber-500',
-    pending: 'bg-amber-500/10 text-amber-500',
-    congelado: 'bg-sky-500/10 text-sky-500',
-  };
-  return colors[status] || 'bg-zinc-500/10 text-zinc-400';
-}
-
-function getPaymentStatusColor(status) {
-  const colors = {
-    approved: 'bg-emerald-500/10 text-emerald-500',
-    pending: 'bg-amber-500/10 text-amber-500',
-    declined: 'bg-red-500/10 text-red-500',
-    rejected: 'bg-red-500/10 text-red-500',
-    cancelled: 'bg-red-500/10 text-red-500',
-    voided: 'bg-zinc-500/10 text-zinc-400',
-    error: 'bg-red-500/10 text-red-500',
-  };
-  return colors[status] || 'bg-wc-bg-secondary text-wc-text-tertiary';
-}
-
-async function fetchClient() {
-  loading.value = true;
-  error.value = null;
-  try {
-    const response = await api.get(`/api/v/admin/clients/${route.params.id}`);
-    const data = response.data;
-    client.value = data.client || data;
-    coaches.value = data.coaches || [];
-    plans.value = data.plans || [];
-    statusOptions.value = data.statusOptions || [];
-    planOptions.value = data.planOptions || [];
-    editForm.value = { ...(data.client || data) };
-    editStatus.value = client.value.status || '';
-    editPlan.value = client.value.plan || '';
-  } catch (err) {
-    error.value = err.response?.data?.message || 'Error al cargar el cliente';
-  } finally {
-    loading.value = false;
-  }
-}
-
-function startEdit() {
-  editForm.value = { ...client.value };
-  editMode.value = true;
-}
-
-function cancelEdit() {
-  editMode.value = false;
-  editForm.value = { ...client.value };
-}
-
-async function saveClient() {
-  saving.value = true;
-  try {
-    const response = await api.put(`/api/v/admin/clients/${route.params.id}`, editForm.value);
-    client.value = response.data.client || response.data;
-    editMode.value = false;
-    showSuccess('Cliente actualizado correctamente');
-  } catch (err) {
-    error.value = err.response?.data?.message || 'Error al guardar';
-  } finally {
-    saving.value = false;
-  }
-}
-
-async function updateStatus() {
-  savingStatus.value = true;
-  try {
-    const response = await api.put(`/api/v/admin/clients/${route.params.id}`, { status: editStatus.value });
-    client.value = response.data.client || { ...client.value, status: editStatus.value };
-    const label = statusOptions.value.find(s => s.value === editStatus.value)?.label || editStatus.value;
-    showSuccess(`Estado actualizado a ${label}`);
-  } catch (err) {
-    error.value = err.response?.data?.message || 'Error al actualizar estado';
-  } finally {
-    savingStatus.value = false;
-  }
-}
-
-async function updatePlan() {
-  savingPlan.value = true;
-  try {
-    const response = await api.put(`/api/v/admin/clients/${route.params.id}`, { plan: editPlan.value });
-    client.value = response.data.client || { ...client.value, plan: editPlan.value };
-    const label = planOptions.value.find(p => p.value === editPlan.value)?.label || editPlan.value;
-    showSuccess(`Plan actualizado a ${label}`);
-  } catch (err) {
-    error.value = err.response?.data?.message || 'Error al actualizar plan';
-  } finally {
-    savingPlan.value = false;
-  }
-}
-
 function openCoachModal() {
-  selectedCoachId.value = 0;
-  assignPlanType.value = 'entrenamiento';
-  showCoachModal.value = true;
+    selectedCoachId.value = null;
+    assignPlanType.value = 'entrenamiento';
+    showCoachModal.value = true;
 }
-
-async function assignCoach() {
-  if (!selectedCoachId.value || selectedCoachId.value === 0) return;
-  assigningCoach.value = true;
-  try {
-    await api.put(`/api/v/admin/clients/${route.params.id}`, {
-      coach_id: selectedCoachId.value,
-      assign_plan_type: assignPlanType.value,
+function cancelCoach() { showCoachModal.value = false; }
+async function confirmCoach() {
+    if (!selectedCoachId.value) return;
+    const ok = await store.assignCoach({
+        coachId: selectedCoachId.value,
+        planType: assignPlanType.value,
     });
-    const coachName = coaches.value.find(c => c.id === Number(selectedCoachId.value))?.name || 'Coach';
-    showSuccess(`Coach ${coachName} asignado correctamente al plan de ${assignPlanType.value}`);
-    showCoachModal.value = false;
-    await fetchClient();
-  } catch (err) {
-    error.value = err.response?.data?.message || err.response?.data?.error || 'Error al asignar coach';
-  } finally {
-    assigningCoach.value = false;
-  }
+    if (ok) showCoachModal.value = false;
 }
 
-let successTimer = null;
-function showSuccess(msg) {
-  successMessage.value = msg;
-  clearTimeout(successTimer);
-  successTimer = setTimeout(() => { successMessage.value = ''; }, 5000);
+// Lista coaches load-balanceada (menos clientes primero) — pista editorial
+const coachesByLoad = computed(() => store.coachesByLoad);
+
+// ─── Lifecycle ───────────────────────────────────────────────────────
+function loadFromRoute() {
+    const id = Number(route.params.id);
+    if (id) {
+        store.hydrateFromUrl();
+        store.openClient(id);
+    }
 }
 
-function dismissSuccess() {
-  successMessage.value = '';
-  clearTimeout(successTimer);
-}
+watch(() => route.params.id, () => {
+    loadFromRoute();
+}, { immediate: false });
 
-onMounted(() => {
-  fetchClient();
-  fetchIntake();
-  fetchActivity();
-});
+onMounted(loadFromRoute);
 
 onBeforeUnmount(() => {
-  clearTimeout(successTimer);
-  clearTimeout(jsonCopyTimer);
+    store.close();
 });
 </script>
 
 <template>
   <AdminLayout>
-    <!-- Loading -->
-    <div v-if="loading" class="space-y-6">
-      <div class="flex items-center gap-4">
-        <div class="h-9 w-9 animate-pulse rounded-lg bg-wc-bg-tertiary"></div>
-        <div class="flex items-center gap-4">
-          <div class="h-14 w-14 animate-pulse rounded-full bg-wc-bg-tertiary"></div>
-          <div class="space-y-2">
-            <div class="h-8 w-56 animate-pulse rounded-lg bg-wc-bg-tertiary"></div>
-            <div class="h-4 w-40 animate-pulse rounded-lg bg-wc-bg-tertiary"></div>
-          </div>
-        </div>
-      </div>
-      <div class="h-12 animate-pulse rounded-xl bg-wc-bg-tertiary"></div>
-      <div class="h-64 animate-pulse rounded-xl bg-wc-bg-tertiary"></div>
-    </div>
-
-    <!-- Error (no client loaded) -->
-    <div v-else-if="error && !client" class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-6 text-center">
-      <p class="text-sm text-wc-text">{{ error }}</p>
-      <div class="mt-4 flex justify-center gap-3">
-        <button @click="fetchClient" class="rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white">Reintentar</button>
-        <button @click="router.push('/admin/clients')" class="rounded-lg border border-wc-border px-4 py-2 text-sm font-medium text-wc-text">Volver</button>
-      </div>
-    </div>
-
-    <!-- Client Detail -->
-    <div v-else-if="client" class="space-y-6">
-
-      <!-- Success message -->
-      <Transition name="fade">
-        <div v-if="successMessage" class="flex items-center justify-between rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3">
-          <div class="flex items-center gap-2">
-            <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-            <span class="text-sm font-medium text-emerald-500">{{ successMessage }}</span>
-          </div>
-          <button @click="dismissSuccess" class="text-emerald-500 hover:text-emerald-400">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      </Transition>
-
-      <!-- Inline error -->
-      <Transition name="fade">
-        <div v-if="error && client" class="flex items-center justify-between rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3">
-          <span class="text-sm font-medium text-red-400">{{ error }}</span>
-          <button @click="error = null" class="text-red-400 hover:text-red-300">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      </Transition>
-
+    <div class="client-detail-page">
       <!-- Header -->
-      <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div class="flex items-start gap-4">
-          <button @click="router.push('/admin/clients')" class="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-tertiary text-wc-text-secondary hover:text-wc-text transition-colors" aria-label="Volver">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-            </svg>
-          </button>
-          <div class="flex items-center gap-4">
-            <!-- Avatar -->
-            <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-red-500/10">
-              <img v-if="client.avatar_url" :src="client.avatar_url" :alt="client.name" class="h-14 w-14 rounded-full object-cover" />
-              <span v-else class="font-display text-2xl text-red-500">{{ (client.name || 'C').charAt(0).toUpperCase() }}</span>
-            </div>
-            <div>
-              <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ client.name }}</h1>
-              <div class="mt-1 flex flex-wrap items-center gap-2">
-                <span class="font-data text-sm text-wc-text-tertiary">{{ client.client_code || 'Sin codigo' }}</span>
-                <span class="text-wc-text-tertiary">|</span>
-                <span class="text-sm text-wc-text-tertiary">{{ client.email }}</span>
-                <span v-if="client.plan" class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold" :class="getPlanColor(client.plan)">
-                  {{ client.plan_label || client.plan }}
-                </span>
-                <span v-if="client.status" class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold" :class="getStatusColor(client.status)">
-                  {{ client.status_label || client.status }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+      <AdminClientHeader :client="client" />
 
-        <!-- Action buttons -->
-        <div class="flex items-center gap-2">
-          <!-- Ver Portal (impersonate) -->
-          <button @click="startImpersonation" class="inline-flex items-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2 text-sm font-medium text-wc-text-secondary hover:border-wc-accent/50 hover:text-wc-text transition-colors focus:outline-none focus:ring-2 focus:ring-wc-accent" aria-label="Ver portal del cliente">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-            </svg>
-            Ver Portal
-          </button>
-
-          <!-- Asignar Coach -->
-          <button @click="openCoachModal" class="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
-            </svg>
-            Asignar Coach
-          </button>
-
-          <!-- Editar -->
-          <button v-if="!editMode" @click="startEdit" class="rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors">
-            Editar
-          </button>
-        </div>
+      <!-- Loading / Error / Content -->
+      <div v-if="loading && !client" class="page-loading">
+        <div class="skeleton skeleton--large" />
+        <div class="skeleton skeleton--med" />
+        <div class="skeleton skeleton--med" />
       </div>
 
-      <!-- Current Coach card -->
-      <div v-if="client.coachName" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-        <div class="flex items-center gap-3">
-          <div class="flex h-9 w-9 items-center justify-center rounded-full bg-violet-500/10">
-            <svg class="h-4 w-4 text-violet-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
-            </svg>
-          </div>
-          <div>
-            <p class="text-xs text-wc-text-tertiary">Coach asignado</p>
-            <p class="text-sm font-medium text-wc-text">{{ client.coachName }}</p>
-          </div>
-        </div>
+      <div v-else-if="error" class="error-card">
+        <span class="error-glyph">!</span>
+        <p class="error-msg">{{ error }}</p>
+        <button type="button" class="error-retry" @click="loadFromRoute">REINTENTAR</button>
       </div>
 
-      <!-- Tab Navigation -->
-      <div class="flex gap-1 overflow-x-auto rounded-xl border border-wc-border bg-wc-bg-tertiary p-1">
-        <button
-          v-for="tab in tabs"
-          :key="tab.key"
-          @click="activeTab = tab.key"
-          :class="[
-            'flex-1 whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-colors',
-            activeTab === tab.key
-              ? 'bg-red-500/10 text-wc-text border-l-2 border-red-500'
-              : 'text-wc-text-secondary hover:text-wc-text hover:bg-wc-bg-secondary'
-          ]"
-        >
-          {{ tab.label }}
-        </button>
+      <div v-else-if="client" class="content-grid">
+        <main class="main-col">
+          <AdminClientTabs />
+
+          <div class="panel-wrap">
+            <KeepAlive>
+              <component
+                :is="{
+                  resumen: AdminClientResumenPanel,
+                  plan: AdminClientPlanPanel,
+                  checkins: AdminClientCheckinsList,
+                  pagos: AdminClientPaymentsList,
+                  comunicacion: AdminClientCommunicationPanel,
+                  notas: AdminClientNotesPanel,
+                }[activeTab]"
+                :key="activeTab"
+                :client="client"
+                role="tabpanel"
+                :id="`panel-${activeTab}`"
+                :aria-labelledby="`tab-${activeTab}`"
+              />
+            </KeepAlive>
+          </div>
+        </main>
+
+        <aside class="side-col">
+          <AdminClientQuickActions
+            :client="client"
+            @edit="openEdit"
+            @assign-coach="openCoachModal"
+          />
+        </aside>
       </div>
 
-      <!-- ============== TAB: INFO ============== -->
-      <div v-if="activeTab === 'info'" class="grid gap-6 lg:grid-cols-2">
+      <!-- Modal Edit (status/plan via PUT) -->
+      <Teleport to="body">
+        <Transition name="modal">
+          <div
+            v-if="showEditModal"
+            class="modal-shell"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="edit-title"
+            @keydown.escape="cancelEdit"
+          >
+            <div class="modal-backdrop" @click="cancelEdit" />
+            <div class="modal-card">
+              <span class="modal-eyebrow">EDICION RAPIDA</span>
+              <h2 id="edit-title" class="modal-title">Editar cliente</h2>
+              <p class="modal-body">
+                Cambios visibles inmediatamente.
+                <br /><span class="modal-em">Email y teléfono</span> requieren rol Superadmin
+                con un endpoint pendiente de backend.
+              </p>
 
-        <!-- Client Info Card -->
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 space-y-4">
-          <h2 class="font-display text-xl tracking-wide text-wc-text">Datos del Cliente</h2>
+              <div class="modal-form">
+                <label class="modal-label" for="edit-status">ESTADO</label>
+                <select id="edit-status" v-model="editForm.status" class="modal-select">
+                  <option v-for="opt in store.statusOptions" :key="opt.value" :value="opt.value">
+                    {{ opt.label.toUpperCase() }}
+                  </option>
+                </select>
 
-          <div v-if="editMode" class="space-y-4">
-            <div class="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Nombre</label>
-                <input v-model="editForm.name" type="text" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20" />
-              </div>
-              <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Email</label>
-                <input v-model="editForm.email" type="email" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20" />
-              </div>
-              <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Telefono</label>
-                <input v-model="editForm.phone" type="tel" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20" />
-              </div>
-              <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Estado</label>
-                <select v-model="editForm.status" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20">
-                  <option v-for="opt in statusOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+                <label class="modal-label" for="edit-plan">PLAN</label>
+                <select id="edit-plan" v-model="editForm.plan" class="modal-select">
+                  <option v-for="opt in store.planOptions" :key="opt.value" :value="opt.value">
+                    {{ opt.label.toUpperCase() }}
+                  </option>
                 </select>
               </div>
-            </div>
-            <div class="flex gap-3">
-              <button @click="saveClient" :disabled="saving" class="rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors disabled:opacity-50">
-                {{ saving ? 'Guardando...' : 'Guardar cambios' }}
-              </button>
-              <button @click="cancelEdit" class="rounded-lg border border-wc-border px-4 py-2 text-sm font-medium text-wc-text hover:bg-wc-bg-secondary transition-colors">
-                Cancelar
-              </button>
+
+              <div class="modal-actions">
+                <button type="button" class="modal-btn modal-btn--ghost" @click="cancelEdit">CANCELAR</button>
+                <button type="button" class="modal-btn modal-btn--accent" @click="saveEdit">GUARDAR</button>
+              </div>
             </div>
           </div>
+        </Transition>
+      </Teleport>
 
-          <div v-else class="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Nombre</label>
-              <p class="mt-1 text-sm text-wc-text">{{ client.name || '-' }}</p>
-            </div>
-            <div>
-              <label class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Email</label>
-              <p class="mt-1 text-sm text-wc-text">{{ client.email || '-' }}</p>
-            </div>
-            <div>
-              <label class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Codigo</label>
-              <p class="mt-1 font-data text-sm text-wc-text">{{ client.client_code || '-' }}</p>
-            </div>
-            <div>
-              <label class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Telefono</label>
-              <p class="mt-1 text-sm text-wc-text">{{ client.phone || '-' }}</p>
-            </div>
-            <div>
-              <label class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Ciudad</label>
-              <p class="mt-1 text-sm text-wc-text">{{ client.city || client.country || '-' }}</p>
-            </div>
-            <div>
-              <label class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Fecha Nacimiento</label>
-              <p class="mt-1 font-data text-sm text-wc-text">{{ client.birth_date || '-' }}</p>
-            </div>
-            <div>
-              <label class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Fecha Inicio</label>
-              <p class="mt-1 font-data text-sm text-wc-text">{{ client.fecha_inicio || client.registeredAt || '-' }}</p>
-            </div>
-            <div>
-              <label class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Coach asignado</label>
-              <p class="mt-1 text-sm text-wc-text">{{ client.coachName || 'Sin asignar' }}</p>
-            </div>
-            <div>
-              <label class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Referral Code</label>
-              <p class="mt-1 font-data text-sm text-wc-text">{{ client.referral_code || '-' }}</p>
-            </div>
-            <div>
-              <label class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Referido por</label>
-              <p class="mt-1 font-data text-sm text-wc-text">{{ client.referred_by || '-' }}</p>
-            </div>
-          </div>
+      <!-- Modal Asignar Coach -->
+      <Teleport to="body">
+        <Transition name="modal">
+          <div
+            v-if="showCoachModal"
+            class="modal-shell"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="coach-title"
+            @keydown.escape="cancelCoach"
+          >
+            <div class="modal-backdrop" @click="cancelCoach" />
+            <div class="modal-card">
+              <span class="modal-eyebrow">REASIGNACION</span>
+              <h2 id="coach-title" class="modal-title">Asignar coach</h2>
+              <p class="modal-body">
+                Lista ordenada por carga ascendente — menos clientes primero.
+                <br />La acción crea o reemplaza el plan activo del tipo seleccionado.
+              </p>
 
-          <div v-if="!editMode && client.bio">
-            <label class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Bio</label>
-            <p class="mt-1 text-sm text-wc-text-secondary">{{ client.bio }}</p>
-          </div>
-        </div>
+              <div class="modal-form">
+                <label class="modal-label" for="coach-select">COACH</label>
+                <select id="coach-select" v-model="selectedCoachId" class="modal-select">
+                  <option :value="null">— SELECCIONAR —</option>
+                  <option v-for="c in coachesByLoad" :key="c.id" :value="c.id">
+                    {{ c.name }}
+                  </option>
+                </select>
 
-        <!-- Quick Actions column -->
-        <div class="space-y-6">
-
-          <!-- Change Status -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 space-y-4">
-            <h2 class="font-display text-xl tracking-wide text-wc-text">Cambiar Estado</h2>
-            <div class="flex items-end gap-3">
-              <div class="flex-1">
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Estado</label>
-                <select v-model="editStatus" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary py-2 pl-3 pr-8 text-sm text-wc-text focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500">
-                  <option v-for="opt in statusOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+                <label class="modal-label" for="coach-plan-type">TIPO DE PLAN</label>
+                <select id="coach-plan-type" v-model="assignPlanType" class="modal-select">
+                  <option value="entrenamiento">ENTRENAMIENTO</option>
+                  <option value="nutricion">NUTRICION</option>
+                  <option value="suplementacion">SUPLEMENTACION</option>
+                  <option value="habitos">HABITOS</option>
                 </select>
               </div>
-              <button @click="updateStatus" :disabled="savingStatus" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors disabled:opacity-50">
-                {{ savingStatus ? 'Guardando...' : 'Guardar' }}
-              </button>
-            </div>
-          </div>
 
-          <!-- Change Plan -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 space-y-4">
-            <h2 class="font-display text-xl tracking-wide text-wc-text">Cambiar Plan</h2>
-            <div class="flex items-end gap-3">
-              <div class="flex-1">
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Plan</label>
-                <select v-model="editPlan" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary py-2 pl-3 pr-8 text-sm text-wc-text focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500">
-                  <option v-for="opt in planOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-                </select>
-              </div>
-              <button @click="updatePlan" :disabled="savingPlan" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors disabled:opacity-50">
-                {{ savingPlan ? 'Guardando...' : 'Guardar' }}
-              </button>
-            </div>
-          </div>
-
-          <!-- Summary Stats (2x2 grid) -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-            <h2 class="font-display text-xl tracking-wide text-wc-text mb-4">Resumen</h2>
-            <div class="grid grid-cols-2 gap-4">
-              <div class="rounded-lg bg-wc-bg-secondary p-3 text-center">
-                <p class="font-data text-2xl font-bold text-wc-text">{{ client.stats?.checkins_count ?? 0 }}</p>
-                <p class="text-xs text-wc-text-tertiary">Check-ins</p>
-              </div>
-              <div class="rounded-lg bg-wc-bg-secondary p-3 text-center">
-                <p class="font-data text-2xl font-bold text-wc-text">{{ client.stats?.approved_payments ?? 0 }}</p>
-                <p class="text-xs text-wc-text-tertiary">Pagos aprobados</p>
-              </div>
-              <div class="rounded-lg bg-wc-bg-secondary p-3 text-center">
-                <p class="font-data text-2xl font-bold text-wc-text">{{ client.stats?.active_plans ?? 0 }}</p>
-                <p class="text-xs text-wc-text-tertiary">Planes activos</p>
-              </div>
-              <div class="rounded-lg bg-wc-bg-secondary p-3 text-center">
-                <p class="font-data text-2xl font-bold text-wc-text">{{ client.stats?.progress_photos ?? 0 }}</p>
-                <p class="text-xs text-wc-text-tertiary">Fotos progreso</p>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ============== TAB: INTAKE ============== -->
-      <div v-else-if="activeTab === 'intake'" class="space-y-5">
-
-        <!-- Loading skeleton -->
-        <template v-if="intakeLoading">
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 space-y-4">
-            <div class="flex items-center justify-between">
-              <div class="h-5 w-32 animate-pulse rounded-lg bg-wc-bg-secondary"></div>
-              <div class="h-4 w-40 animate-pulse rounded-lg bg-wc-bg-secondary"></div>
-            </div>
-            <div class="grid gap-4 sm:grid-cols-2">
-              <div v-for="n in 6" :key="n" class="h-16 animate-pulse rounded-lg bg-wc-bg-secondary"></div>
-            </div>
-          </div>
-        </template>
-
-        <!-- No intake -->
-        <div
-          v-else-if="!intakeData || !intakeData.hasIntake"
-          class="rounded-xl border border-wc-border bg-wc-bg-tertiary"
-        >
-          <div class="flex flex-col items-center justify-center gap-4 py-20 text-center">
-            <div class="flex h-16 w-16 items-center justify-center rounded-2xl border border-wc-border bg-wc-bg-secondary">
-              <svg class="h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z" />
-              </svg>
-            </div>
-            <div>
-              <p class="font-display text-2xl tracking-wide text-wc-text">Sin datos de intake</p>
-              <p class="mt-1 text-sm text-wc-text-secondary">El cliente aun no completo el formulario de inscripcion</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Intake content -->
-        <template v-else>
-
-          <!-- Header strip -->
-          <div class="flex flex-col gap-3 rounded-xl border border-wc-border bg-wc-bg-secondary px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-wc-accent/10">
-                <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
-              </div>
-              <div>
-                <p class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Intake completado</p>
-                <p class="font-data text-sm font-semibold text-wc-text">{{ formatIntakeDate(intakeData.submittedAt) }}</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-2">
-              <span v-if="intakeData.plan" class="inline-flex rounded-full px-3 py-1 text-xs font-semibold capitalize" :class="getPlanColor(intakeData.plan)">
-                Plan {{ intakeData.plan }}
-              </span>
-              <span class="inline-flex rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-500">
-                Formulario completado
-              </span>
-            </div>
-          </div>
-
-          <!-- Sections grid -->
-          <div class="grid gap-4 lg:grid-cols-2">
-            <div
-              v-for="section in intakeData.sections"
-              :key="section.key"
-              class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden"
-            >
-              <!-- Section header -->
-              <div class="flex items-center gap-2.5 border-b border-wc-border bg-wc-bg-secondary px-5 py-3">
-                <span class="text-base leading-none">{{ section.icon }}</span>
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-wc-text">{{ section.title }}</h3>
-              </div>
-
-              <!-- Fields -->
-              <div class="divide-y divide-wc-border/50">
-                <div
-                  v-for="field in section.fields"
-                  :key="field.label"
-                  class="flex items-start justify-between gap-3 px-5 py-3"
+              <div class="modal-actions">
+                <button type="button" class="modal-btn modal-btn--ghost" @click="cancelCoach">CANCELAR</button>
+                <button
+                  type="button"
+                  class="modal-btn modal-btn--accent"
+                  :disabled="!selectedCoachId || store.savingCoach"
+                  @click="confirmCoach"
                 >
-                  <span class="shrink-0 text-xs text-wc-text-tertiary leading-5">{{ field.label }}</span>
-                  <span class="text-right text-sm font-medium text-wc-text leading-5 max-w-[55%]">
-                    {{ field.value || '-' }}<span v-if="field.unit && field.value" class="ml-0.5 text-xs text-wc-text-tertiary">{{ field.unit }}</span>
-                  </span>
-                </div>
-                <div v-if="!section.fields || section.fields.length === 0" class="px-5 py-4">
-                  <p class="text-xs text-wc-text-tertiary">Sin campos registrados</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- JSON viewer -->
-          <div v-if="intakeData.rawJson" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
-            <div class="flex items-center justify-between border-b border-wc-border bg-wc-bg-secondary px-5 py-3">
-              <div class="flex items-center gap-2">
-                <svg class="h-4 w-4 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
-                </svg>
-                <span class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">JSON para Claude</span>
-              </div>
-              <button
-                @click="copyJson"
-                class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
-                :class="jsonCopied
-                  ? 'bg-emerald-500/10 text-emerald-400'
-                  : 'border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:border-wc-accent/40 hover:text-wc-text'"
-              >
-                <svg v-if="jsonCopied" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
-                <svg v-else class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184" />
-                </svg>
-                {{ jsonCopied ? 'Copiado' : 'Copiar JSON' }}
-              </button>
-            </div>
-            <div class="overflow-x-auto bg-black/40 p-5">
-              <pre class="font-mono text-xs leading-relaxed text-wc-text-secondary whitespace-pre-wrap break-words" v-html="highlightJson(intakeData.rawJson)"></pre>
-            </div>
-          </div>
-
-        </template>
-      </div>
-
-      <!-- ============== TAB: PLANS ============== -->
-      <div v-else-if="activeTab === 'plans'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
-        <div class="border-b border-wc-border bg-wc-bg-secondary px-5 py-3 flex items-center justify-between">
-          <h2 class="font-display text-xl tracking-wide text-wc-text">Planes Asignados</h2>
-          <span class="font-data text-sm text-wc-text-tertiary">{{ plans.length }} total</span>
-        </div>
-
-        <div v-if="!plans.length" class="px-5 py-12 text-center">
-          <svg class="mx-auto h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z" />
-          </svg>
-          <p class="mt-2 text-sm text-wc-text-tertiary">No hay planes asignados</p>
-          <button @click="openCoachModal" class="mt-3 text-sm font-medium text-red-500 hover:text-red-400 transition-colors">Asignar coach</button>
-        </div>
-
-        <div v-else class="divide-y divide-wc-border">
-          <div v-for="plan in plans" :key="plan.id" class="px-5 py-4 flex items-start justify-between gap-4">
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-medium text-wc-text capitalize">{{ plan.plan_type }}</span>
-                <span v-if="plan.active" class="inline-flex rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-500">Activo</span>
-                <span v-else class="inline-flex rounded-full bg-zinc-500/10 px-2 py-0.5 text-[10px] font-semibold text-zinc-400">Inactivo</span>
-                <span class="font-data text-xs text-wc-text-tertiary">v{{ plan.version }}</span>
-              </div>
-              <div class="mt-1 flex items-center gap-3 text-xs text-wc-text-tertiary">
-                <span>Creado: {{ plan.created_at || '-' }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ============== TAB: PLAN (legacy — kept for backward compat) ============== -->
-      <div v-else-if="activeTab === 'plan'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-        <div v-if="client.planDetails" class="space-y-4">
-          <div class="grid gap-4 sm:grid-cols-2">
-            <div>
-              <p class="text-xs font-medium text-wc-text-tertiary">Plan actual</p>
-              <p class="mt-1 text-sm font-medium text-wc-text capitalize">{{ client.planDetails.name || client.plan }}</p>
-            </div>
-            <div>
-              <p class="text-xs font-medium text-wc-text-tertiary">Fecha de inicio</p>
-              <p class="mt-1 text-sm text-wc-text">{{ client.planDetails.startDate || '-' }}</p>
-            </div>
-            <div>
-              <p class="text-xs font-medium text-wc-text-tertiary">Semana actual</p>
-              <p class="mt-1 text-sm text-wc-text">{{ client.planDetails.currentWeek || '-' }}</p>
-            </div>
-            <div>
-              <p class="text-xs font-medium text-wc-text-tertiary">Total semanas</p>
-              <p class="mt-1 text-sm text-wc-text">{{ client.planDetails.totalWeeks || '-' }}</p>
-            </div>
-          </div>
-        </div>
-        <div v-else class="py-8 text-center">
-          <p class="text-sm text-wc-text-tertiary">Sin plan asignado</p>
-        </div>
-      </div>
-
-      <!-- ============== TAB: CHECKINS ============== -->
-      <div v-else-if="activeTab === 'checkins'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
-        <div class="border-b border-wc-border bg-wc-bg-secondary px-5 py-3 flex items-center justify-between">
-          <h2 class="font-display text-xl tracking-wide text-wc-text">Check-ins</h2>
-          <span class="font-data text-sm text-wc-text-tertiary">{{ client.checkins?.length ?? 0 }} recientes</span>
-        </div>
-
-        <div v-if="!client.checkins || client.checkins.length === 0" class="px-5 py-12 text-center">
-          <svg class="mx-auto h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-          <p class="mt-2 text-sm text-wc-text-tertiary">No hay check-ins registrados</p>
-        </div>
-
-        <div v-else class="divide-y divide-wc-border">
-          <div v-for="(checkin, idx) in client.checkins" :key="idx" class="px-5 py-3">
-            <div class="flex items-center justify-between">
-              <p class="font-data text-sm font-medium text-wc-text">{{ checkin.date }}</p>
-              <span class="rounded-full px-2 py-0.5 text-[10px] font-semibold" :class="checkin.reviewed ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'">
-                {{ checkin.reviewed ? 'Respondido' : 'Pendiente' }}
-              </span>
-            </div>
-            <p v-if="checkin.note" class="mt-1 text-xs text-wc-text-tertiary">{{ checkin.note }}</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- ============== TAB: PAYMENTS ============== -->
-      <div v-else-if="activeTab === 'payments'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
-        <div class="border-b border-wc-border bg-wc-bg-secondary px-5 py-3 flex items-center justify-between">
-          <h2 class="font-display text-xl tracking-wide text-wc-text">Pagos</h2>
-          <span class="font-data text-sm text-wc-text-tertiary">{{ client.payments?.length ?? 0 }} recientes</span>
-        </div>
-
-        <div v-if="!client.payments || client.payments.length === 0" class="px-5 py-12 text-center">
-          <svg class="mx-auto h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
-          </svg>
-          <p class="mt-2 text-sm text-wc-text-tertiary">No hay pagos registrados</p>
-        </div>
-
-        <div v-else class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-wc-border bg-wc-bg-secondary">
-                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Fecha</th>
-                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Plan</th>
-                <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Monto</th>
-                <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Estado</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-wc-border">
-              <tr v-for="(payment, idx) in client.payments" :key="idx" class="hover:bg-wc-bg-secondary/50 transition-colors">
-                <td class="px-4 py-3 font-data text-wc-text-secondary">{{ payment.date || '-' }}</td>
-                <td class="px-4 py-3 text-sm text-wc-text capitalize">{{ payment.description || '-' }}</td>
-                <td class="px-4 py-3 text-right font-data font-semibold text-wc-text">
-                  ${{ payment.amount ? Number(payment.amount).toLocaleString('es-CO') : '0' }}
-                  <span class="text-xs text-wc-text-tertiary">{{ payment.currency || 'COP' }}</span>
-                </td>
-                <td class="px-4 py-3 text-center">
-                  <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold" :class="getPaymentStatusColor(payment.status)">
-                    {{ payment.status || '-' }}
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ============== TAB: METRICS ============== -->
-      <div v-else-if="activeTab === 'metrics'" class="space-y-6">
-        <!-- Workout metrics -->
-        <div v-if="client.metrics" class="grid gap-4 sm:grid-cols-3">
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-xs font-medium text-wc-text-tertiary">Entrenamientos</p>
-            <p class="mt-1 font-data text-2xl font-bold text-wc-text">{{ client.metrics.totalWorkouts || 0 }}</p>
-          </div>
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-xs font-medium text-wc-text-tertiary">Adherencia</p>
-            <p class="mt-1 font-data text-2xl font-bold text-wc-text">{{ client.metrics.adherence || 0 }}%</p>
-          </div>
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-xs font-medium text-wc-text-tertiary">Racha actual</p>
-            <p class="mt-1 font-data text-2xl font-bold text-wc-text">{{ client.metrics.streak || 0 }} dias</p>
-          </div>
-        </div>
-        <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center">
-          <p class="text-sm text-wc-text-tertiary">Sin metricas disponibles</p>
-        </div>
-      </div>
-
-      <!-- ============== TAB: ACTIVITY ============== -->
-      <div v-else-if="activeTab === 'activity'" class="space-y-4">
-
-        <!-- Header stats -->
-        <div class="grid grid-cols-3 gap-3">
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-            <p class="font-data text-2xl font-bold text-emerald-400">{{ client?.stats?.completed_workouts ?? client?.total_workouts ?? 0 }}</p>
-            <p class="text-xs text-wc-text-tertiary mt-1">Entrenamientos</p>
-          </div>
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-            <p class="font-data text-2xl font-bold text-sky-400">{{ client?.current_streak ?? 0 }}</p>
-            <p class="text-xs text-wc-text-tertiary mt-1">Racha días</p>
-          </div>
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
-            <p class="font-data text-2xl font-bold text-violet-400">{{ client?.stats?.total_checkins ?? 0 }}</p>
-            <p class="text-xs text-wc-text-tertiary mt-1">Check-ins</p>
-          </div>
-        </div>
-
-        <!-- Timeline -->
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
-          <div class="border-b border-wc-border px-5 py-3 flex items-center justify-between">
-            <h3 class="text-sm font-semibold text-wc-text">Timeline de actividad</h3>
-            <span v-if="activityData" class="text-xs text-wc-text-tertiary">{{ activityData.total }} eventos</span>
-          </div>
-
-          <!-- Loading skeleton -->
-          <div v-if="activityLoading" class="p-5 space-y-4">
-            <div v-for="i in 6" :key="i" class="flex items-start gap-3">
-              <div class="h-8 w-8 shrink-0 rounded-full bg-wc-bg-secondary animate-pulse"></div>
-              <div class="flex-1 space-y-2">
-                <div class="h-3 w-1/3 rounded bg-wc-bg-secondary animate-pulse"></div>
-                <div class="h-2.5 w-2/3 rounded bg-wc-bg-secondary animate-pulse"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Events -->
-          <div v-else-if="activityData?.events?.length" class="relative px-5 py-4">
-            <!-- Vertical line -->
-            <div class="absolute left-[calc(1.25rem+1rem)] top-4 bottom-4 w-px bg-wc-border"></div>
-
-            <div class="space-y-5">
-              <div v-for="(evt, idx) in activityData.events" :key="idx" class="flex items-start gap-4 relative">
-                <!-- Icon dot -->
-                <div class="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold"
-                     :class="getActivityIcon(evt.type).bg + ' ' + getActivityIcon(evt.type).text">
-                  {{ getActivityIcon(evt.type).label }}
-                </div>
-
-                <!-- Content -->
-                <div class="min-w-0 flex-1 pb-1">
-                  <div class="flex items-start justify-between gap-2">
-                    <p class="text-sm font-medium text-wc-text leading-tight">{{ evt.title }}</p>
-                    <span class="shrink-0 text-[10px] text-wc-text-tertiary whitespace-nowrap">{{ formatActivityDate(evt.date_iso) }}</span>
-                  </div>
-                  <p v-if="evt.desc" class="mt-0.5 text-xs text-wc-text-tertiary leading-relaxed">{{ evt.desc }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Empty state -->
-          <div v-else class="flex flex-col items-center py-12 text-center">
-            <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-wc-bg-secondary">
-              <svg class="h-6 w-6 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>
-            </div>
-            <p class="text-sm font-medium text-wc-text">Sin actividad registrada</p>
-            <p class="mt-1 text-xs text-wc-text-tertiary">Este cliente aún no tiene eventos en el sistema</p>
-          </div>
-        </div>
-
-        <!-- Legend -->
-        <div class="flex flex-wrap gap-3 px-1">
-          <div v-for="(style, type) in { workout: 'Entrenamiento', checkin: 'Check-in', payment: 'Pago', login: 'Inicio sesion', message: 'Mensaje' }"
-               :key="type"
-               class="flex items-center gap-1.5">
-            <div class="h-3 w-3 rounded-full flex-shrink-0"
-                 :class="getActivityIcon(type).bg.replace('/15', '/40').replace('/10', '/30')"></div>
-            <span class="text-[10px] text-wc-text-tertiary">{{ style }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ============== ASSIGN COACH MODAL ============== -->
-      <Transition name="fade">
-        <div v-if="showCoachModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <!-- Backdrop -->
-          <div class="absolute inset-0 bg-black/60" @click="showCoachModal = false"></div>
-
-          <!-- Modal -->
-          <Transition name="scale">
-            <div v-if="showCoachModal" class="relative w-full max-w-md rounded-xl border border-wc-border bg-wc-bg-secondary p-6 shadow-xl">
-              <div class="flex items-center justify-between mb-5">
-                <h3 class="font-display text-2xl tracking-wide text-wc-text">Asignar Coach</h3>
-                <button @click="showCoachModal = false" class="text-wc-text-tertiary hover:text-wc-text transition-colors">
-                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                  </svg>
+                  {{ store.savingCoach ? 'GUARDANDO...' : 'ASIGNAR' }}
                 </button>
               </div>
-
-              <div class="space-y-4">
-                <!-- Coach select -->
-                <div>
-                  <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Coach</label>
-                  <select v-model="selectedCoachId" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2 pl-3 pr-8 text-sm text-wc-text focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500">
-                    <option :value="0">Seleccionar coach...</option>
-                    <option v-for="coach in coaches" :key="coach.id" :value="coach.id">{{ coach.name }}</option>
-                  </select>
-                </div>
-
-                <!-- Plan type select -->
-                <div>
-                  <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Tipo de Plan</label>
-                  <select v-model="assignPlanType" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2 pl-3 pr-8 text-sm text-wc-text focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500">
-                    <option value="entrenamiento">Entrenamiento</option>
-                    <option value="nutricion">Nutricion</option>
-                    <option value="habitos">Habitos</option>
-                  </select>
-                </div>
-
-                <!-- Buttons -->
-                <div class="flex justify-end gap-3 pt-2">
-                  <button @click="showCoachModal = false" class="rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2 text-sm font-medium text-wc-text hover:bg-wc-bg-secondary transition-colors">
-                    Cancelar
-                  </button>
-                  <button @click="assignCoach" :disabled="assigningCoach || !selectedCoachId" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors disabled:opacity-50">
-                    {{ assigningCoach ? 'Asignando...' : 'Asignar Coach' }}
-                  </button>
-                </div>
-              </div>
             </div>
-          </Transition>
-        </div>
-      </Transition>
-
+          </div>
+        </Transition>
+      </Teleport>
     </div>
   </AdminLayout>
 </template>
 
 <style scoped>
-.fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
-.scale-enter-active, .scale-leave-active { transition: opacity 0.2s ease, transform 0.2s ease; }
-.scale-enter-from, .scale-leave-to { opacity: 0; transform: scale(0.95); }
+.client-detail-page {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-bottom: 24px;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+@media (min-width: 1024px) {
+    .content-grid {
+        grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+        gap: 18px;
+        align-items: start;
+    }
+}
+
+.main-col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+}
+.side-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+@media (min-width: 1024px) {
+    .side-col {
+        position: sticky;
+        top: calc(var(--admin-topbar-h, 64px) + 12px);
+    }
+}
+
+.panel-wrap { min-height: 200px; }
+
+/* ── Loading / Error ──────────────────────────────────────────────── */
+.page-loading {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.skeleton {
+    border-radius: 14px;
+    border: 1px solid var(--color-wc-border);
+    background: var(--color-wc-bg-tertiary, #181818);
+    animation: page-pulse 1.5s ease-in-out infinite;
+}
+.skeleton--large { height: 132px; }
+.skeleton--med   { height: 96px; }
+@keyframes page-pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 0.9; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .skeleton { animation: none; opacity: 0.6; }
+}
+
+.error-card {
+    border-radius: 14px;
+    border: 1px solid rgba(220, 38, 38, 0.4);
+    background: rgba(220, 38, 38, 0.06);
+    padding: 24px;
+    text-align: center;
+    color: var(--color-wc-red-text, #F87171);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+}
+.error-glyph {
+    font-family: var(--font-display);
+    font-size: 40px;
+    line-height: 1;
+}
+.error-msg {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 13px;
+}
+.error-retry {
+    background: transparent;
+    border: 1px solid var(--color-wc-border);
+    color: var(--color-wc-red-text, #F87171);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: var(--font-mono, monospace);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    transition: background 0.15s var(--ease-out, ease);
+}
+.error-retry:hover { background: rgba(255, 255, 255, 0.04); }
+
+/* ── Modales ──────────────────────────────────────────────────────── */
+.modal-shell {
+    position: fixed;
+    inset: 0;
+    z-index: 180;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+}
+.modal-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 460px;
+    border-radius: 14px;
+    border: 1px solid var(--color-wc-border);
+    background: var(--color-wc-bg-tertiary, #181818);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.modal-eyebrow {
+    font-family: var(--font-mono, monospace);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-tertiary);
+}
+.modal-title {
+    font-family: var(--font-display, sans-serif);
+    font-size: 28px;
+    letter-spacing: 0.04em;
+    color: var(--color-wc-text);
+    margin: 0;
+    line-height: 1.05;
+}
+.modal-body {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-wc-text-secondary);
+    line-height: 1.55;
+    margin: 0;
+}
+.modal-em { color: var(--color-wc-text); font-weight: 600; }
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 4px 0;
+}
+.modal-label {
+    font-family: var(--font-mono, monospace);
+    font-size: 8px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-tertiary);
+    margin-top: 4px;
+}
+.modal-select {
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--color-wc-border);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--color-wc-text);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    padding: 0 10px;
+}
+.modal-select:focus {
+    outline: none;
+    border-color: var(--color-wc-accent, #DC2626);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding-top: 8px;
+}
+.modal-btn {
+    padding: 0 16px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--color-wc-border);
+    background: transparent;
+    color: var(--color-wc-text-secondary);
+    font-family: var(--font-mono, monospace);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s var(--ease-out, ease), color 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease);
+}
+.modal-btn--ghost:hover { background: rgba(255, 255, 255, 0.04); color: var(--color-wc-text); }
+.modal-btn--accent {
+    background: var(--color-wc-accent, #DC2626);
+    border-color: var(--color-wc-accent, #DC2626);
+    color: #fff;
+}
+.modal-btn--accent:hover:not(:disabled) { background: #B91C1C; border-color: #B91C1C; }
+.modal-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.modal-enter-active, .modal-leave-active { transition: opacity 0.18s var(--ease-out, ease); }
+.modal-enter-from, .modal-leave-to { opacity: 0; }
+.modal-enter-active .modal-card, .modal-leave-active .modal-card { transition: transform 0.18s var(--ease-out, ease); }
+.modal-enter-from .modal-card, .modal-leave-to .modal-card { transform: scale(0.97); }
 </style>
