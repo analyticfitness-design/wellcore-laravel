@@ -1,0 +1,79 @@
+name: Smoke test producción
+
+# Smoke test diario de wellcorefitness.com — detecta regresiones del Sprint 0+ (v2 públicas).
+# Reemplaza al cron in-session de Claude Code (que vive solo dentro de la sesión + 7 días).
+#
+# Triggers:
+#   - schedule: diario 13:07 UTC = 8:07 AM Colombia (UTC-5, sin DST)
+#   - workflow_dispatch: trigger manual desde la UI de GitHub Actions
+#   - push a main que toque el workflow o el script: smoke test inmediato post-deploy
+#
+# Si el script reporta regresión, exit 1 → workflow falla → GitHub envía notification email
+# al actor del último commit en main. Las screenshots quedan en artifacts (14 días).
+
+on:
+  schedule:
+    - cron: '7 13 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/smoke-prod.yml'
+      - '.github/scripts/smoke-prod.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Smoke wellcorefitness.com
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}-v1
+
+      - name: Install Playwright
+        run: |
+          npm i -D playwright@^1.48.0
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != "true" ]; then
+            npx playwright install --with-deps chromium
+          else
+            npx playwright install-deps chromium
+          fi
+
+      - name: Run smoke test
+        id: smoke
+        run: node .github/scripts/smoke-prod.mjs
+        env:
+          SMOKE_TARGET_URL: https://wellcorefitness.com/
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-screenshots-${{ github.run_id }}
+          path: smoke-screenshots/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-report-${{ github.run_id }}
+          path: smoke-report.json
+          retention-days: 30
+          if-no-files-found: ignore
