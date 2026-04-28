@@ -96,6 +96,16 @@ class AuthController extends Controller
         $token = $request->bearerToken() ?? session('wc_token');
 
         if ($token) {
+            $authToken = AuthToken::where('token', $token)->first();
+            // If this is an impersonation token, hand off to the stop endpoint
+            // so we don't lose wc_root_token by flushing the session.
+            if ($authToken && $authToken->impersonation_log_id) {
+                \Illuminate\Support\Facades\Log::channel('security')->info('IMPERSONATE_LOGOUT_REDIRECTED', [
+                    'token_id' => $authToken->id,
+                    'log_id'   => $authToken->impersonation_log_id,
+                ]);
+                return app(\App\Http\Controllers\Api\AdminImpersonateController::class)->end($request);
+            }
             AuthToken::where('token', $token)->delete();
         }
 

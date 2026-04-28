@@ -82,8 +82,12 @@ class CoachController extends Controller
         $fromClientsFk = Schema::hasColumn('clients', 'coach_id')
             ? \DB::table('clients')->where('coach_id', $coachId)->pluck('id')
             : collect();
-        $fromPlans = \DB::table('assigned_plans')->where('assigned_by', $coachId)->pluck('client_id');
-        $fromMessages = \DB::table('coach_messages')->where('coach_id', $coachId)->pluck('client_id');
+        $fromPlans = Schema::hasTable('assigned_plans')
+            ? \DB::table('assigned_plans')->where('assigned_by', $coachId)->pluck('client_id')
+            : collect();
+        $fromMessages = Schema::hasTable('coach_messages')
+            ? \DB::table('coach_messages')->where('coach_id', $coachId)->pluck('client_id')
+            : collect();
         $fromNotes = Schema::hasTable('coach_notes')
             ? \DB::table('coach_notes')->where('coach_id', $coachId)->pluck('client_id')
             : collect();
@@ -1723,24 +1727,45 @@ class CoachController extends Controller
         $token = bin2hex(random_bytes(32));
         $expiresAt = now()->addMinutes(30);
 
-        AuthToken::create([
-            'user_type' => 'client',
-            'user_id' => $client->id,
-            'token' => $token,
-            'expires_at' => $expiresAt,
-            'ip_address' => $request->ip(),
+        // Chain detection: is the current coach being impersonated by a superadmin?
+        $rootChain = session('wc_impersonation_chain', []);
+        $rootUserId = session('wc_root_user_id');
+        $rootUserName = session('wc_root_user_name');
+        $isChain = ! empty($rootChain) && $rootUserId !== null;
+
+        $actorType = $isChain ? 'admin' : 'coach';
+        $actorId   = $isChain ? $rootUserId : $coach->id;
+        $actorName = $isChain ? $rootUserName : ($coach->name ?? $coach->username ?? 'Coach');
+
+        $viaActorType = $isChain ? 'admin' : null;
+        $viaActorId   = $isChain ? $coach->id : null;
+        $viaActorName = $isChain ? ($coach->name ?? $coach->username ?? 'Coach') : null;
+
+        $log = ImpersonationLog::create([
+            'actor_type'         => $actorType,
+            'actor_id'           => $actorId,
+            'actor_name'         => $actorName,
+            'via_actor_type'     => $viaActorType,
+            'via_actor_id'       => $viaActorId,
+            'via_actor_name'     => $viaActorName,
+            'target_type'        => 'client',
+            'target_id'          => $client->id,
+            'target_name'        => $client->name ?? '',
+            'target_client_id'   => $client->id,
+            'target_client_name' => $client->name ?? '',
+            'token'              => $token,
+            'started_at'         => now(),
+            'ip'                 => $request->ip(),
+            'user_agent'         => substr((string) $request->userAgent(), 0, 500),
         ]);
 
-        ImpersonationLog::create([
-            'actor_type' => 'coach',
-            'actor_id' => $coach->id,
-            'actor_name' => $coach->name ?? $coach->username ?? 'Coach',
-            'target_client_id' => $client->id,
-            'target_client_name' => $client->name ?? '',
-            'token' => $token,
-            'started_at' => now(),
-            'ip' => $request->ip(),
-            'user_agent' => substr((string) $request->userAgent(), 0, 500),
+        AuthToken::create([
+            'user_type'            => 'client',
+            'user_id'              => $client->id,
+            'token'                => $token,
+            'expires_at'           => $expiresAt,
+            'ip_address'           => $request->ip(),
+            'impersonation_log_id' => $log->id,
         ]);
 
         $this->audit('impersonation.start', $client, [
@@ -1748,29 +1773,47 @@ class CoachController extends Controller
             'expires_at' => $expiresAt->toIso8601String(),
         ], $client->name ?? ('client#'.$client->id));
 
-        // Guardar token del coach ANTES de sobreescribir la sesion, para que
-        // stop-impersonation pueda restaurarla, y setear nueva sesion = cliente
-        // impersonado. Sin esto, vue.blade.php reinyecta __WC_SESSION con el
-        // token del coach al hard-redirect y sobreescribe el de impersonacion,
-        // causando 403 "Acceso solo para clientes" en /api/v/client/*.
-        $coachBearerToken = $request->bearerToken()
-            ?? session('wc_token')
-            ?? '';
+        // Stash root token only on first level (when not already chained)
+        $rootToken = session('wc_root_token');
+        if (! $rootToken) {
+            $coachBearer = $request->bearerToken() ?? session('wc_token') ?? '';
+            session([
+                'wc_root_token'     => $coachBearer,
+                'wc_root_user_id'   => $coach->id,
+                'wc_root_user_name' => $coach->name ?? $coach->username ?? 'Coach',
+            ]);
+        }
+
+        $chain = session('wc_impersonation_chain', []);
+        $chain[] = [
+            'level'          => count($chain) + 1,
+            'log_id'         => $log->id,
+            'token'          => $token,
+            'target_type'    => 'client',
+            'target_id'      => $client->id,
+            'target_name'    => $client->name ?? 'Cliente',
+            'via_actor_type' => $viaActorType,
+            'via_actor_id'   => $viaActorId,
+            'via_actor_name' => $viaActorName,
+        ];
+
         session([
-            'wc_admin_token' => $coachBearerToken, // para stop-impersonation
-            'wc_token' => $token,
-            'wc_user_type' => 'client',
-            'wc_user_id' => $client->id,
-            'wc_user_name' => $client->name ?? 'Cliente',
-            'wc_user_portal' => '/client',
+            'wc_impersonation_chain' => $chain,
+            'wc_admin_token'         => session('wc_admin_token') ?: ($request->bearerToken() ?? session('wc_token') ?? ''),
+            'wc_token'               => $token,
+            'wc_user_type'           => 'client',
+            'wc_user_id'             => $client->id,
+            'wc_user_name'           => $client->name ?? 'Cliente',
+            'wc_user_portal'         => '/client',
         ]);
 
         return response()->json([
-            'token' => $token,
-            'client_id' => $client->id,
-            'client_name' => $client->name,
-            'expires_at' => $expiresAt->toIso8601String(),
+            'token'        => $token,
+            'client_id'    => $client->id,
+            'client_name'  => $client->name,
+            'expires_at'   => $expiresAt->toIso8601String(),
             'redirect_url' => '/client',
+            'log_id'       => $log->id,
         ]);
     }
 
@@ -1779,6 +1822,13 @@ class CoachController extends Controller
      */
     public function endImpersonation(Request $request): JsonResponse
     {
+        // If a chain is present this endpoint is a thin wrapper around
+        // AdminImpersonateController::end — single source of truth.
+        if (! empty(session('wc_impersonation_chain', []))) {
+            return app(\App\Http\Controllers\Api\AdminImpersonateController::class)->end($request);
+        }
+
+        // Legacy single-level fallback (preserved for backwards compat).
         $this->resolveCoachOrFail($request);
 
         $validated = $request->validate([
@@ -1801,9 +1851,6 @@ class CoachController extends Controller
             'target_client_id' => $log?->target_client_id,
         ], $log?->target_client_name);
 
-        // Restaurar la sesion Laravel al coach para que vue.blade.php no
-        // reinyecte __WC_SESSION con el token del cliente impersonado al
-        // redirigir a /coach. El backup del coach lo guardamos en wc_admin_token.
         $coachToken = session('wc_admin_token') ?: $request->bearerToken();
         if ($coachToken) {
             $coachAuthToken = AuthToken::where('token', $coachToken)
