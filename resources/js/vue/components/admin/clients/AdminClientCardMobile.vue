@@ -1,12 +1,20 @@
 <script setup>
 import { useRouter } from 'vue-router';
 
+import { useAdminClientListStore } from '../../../stores/adminClientList';
+
 const props = defineProps({
     client: { type: Object, required: true },
 });
 
 const router = useRouter();
-const emit = defineEmits(['deactivate', 'delete']);
+const store = useAdminClientListStore();
+const emit = defineEmits(['deactivate', 'delete', 'impersonate']);
+
+function impersonateClick(ev) {
+    ev?.stopPropagation();
+    emit('impersonate', props.client);
+}
 
 const STATUS_VARIANT = {
     activo: 'success',
@@ -119,9 +127,24 @@ function openDetail() {
 
     <div class="card-cta">
       <span class="cta-text">VER DETALLE</span>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-        <path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
+      <div class="cta-tail">
+        <button
+          v-if="store.isSuperadmin"
+          type="button"
+          class="cta-impersonate"
+          :title="'Ver portal como ' + (client.name || 'cliente')"
+          :aria-label="'Impersonificar a ' + (client.name || 'cliente')"
+          @click="impersonateClick"
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span>IMPERSONAR</span>
+        </button>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
     </div>
   </article>
 </template>
@@ -278,5 +301,31 @@ function openDetail() {
     font-size: 9px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
+}
+.cta-tail {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.cta-impersonate {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--color-wc-border);
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-mono, monospace);
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s var(--ease-out, ease), color 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease);
+}
+.cta-impersonate:hover {
+    color: var(--color-wc-accent, #DC2626);
+    border-color: rgba(220, 38, 38, 0.4);
+    background: rgba(220, 38, 38, 0.06);
 }
 </style>

@@ -17,6 +17,34 @@ const showDetail = ref(false);
 const detailClient = ref(null);
 const detailLoading = ref(false);
 
+// ─── Impersonation ────────────────────────────────────────────────────────────
+const impersonating = ref(false);
+async function impersonateClient(client) {
+  if (impersonating.value || !client?.id) return;
+  impersonating.value = true;
+  try {
+    const { data } = await api.post(`/api/v/coach/clients/${client.id}/impersonate`);
+    // Backup actual sesión coach.
+    localStorage.setItem('wc_token_backup',     localStorage.getItem('wc_token') || '');
+    localStorage.setItem('wc_user_type_backup', localStorage.getItem('wc_user_type') || '');
+    localStorage.setItem('wc_user_id_backup',   localStorage.getItem('wc_user_id') || '');
+    localStorage.setItem('wc_user_name_backup', localStorage.getItem('wc_user_name') || '');
+    localStorage.setItem('wc_user_portal_backup', localStorage.getItem('wc_user_portal') || '/coach');
+    // Swap a sesión cliente.
+    localStorage.setItem('wc_token',      data.token);
+    localStorage.setItem('wc_user_type',  'client');
+    localStorage.setItem('wc_user_id',    String(data.client_id));
+    localStorage.setItem('wc_user_name',  data.client_name || 'Cliente');
+    localStorage.setItem('wc_user_portal', '/client');
+    localStorage.setItem('wc_impersonating_by_coach', '1');
+    localStorage.setItem('wc_impersonating_token_key', data.token);
+    localStorage.setItem('wc_impersonation_client_id', String(data.client_id));
+    window.location.href = data.redirect_url || '/client';
+  } catch (err) {
+    impersonating.value = false;
+  }
+}
+
 const columns = ref({
   nuevo:    { title: 'Nuevos',    clients: [] },
   activo:   { title: 'Activos',   clients: [] },
@@ -494,6 +522,20 @@ onBeforeUnmount(() => {
                     Notas
                   </RouterLink>
                 </div>
+
+                <!-- Impersonate (ver portal del cliente) -->
+                <button
+                  type="button"
+                  @click="impersonateClient(detailClient)"
+                  :disabled="impersonating"
+                  class="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-button border border-wc-border bg-wc-bg-secondary px-3 py-2 text-xs font-medium text-wc-text hover:border-wc-accent hover:text-wc-accent transition-colors disabled:opacity-50"
+                >
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                  </svg>
+                  {{ impersonating ? 'Entrando…' : 'Ver portal como cliente' }}
+                </button>
               </div>
             </div>
           </Transition>

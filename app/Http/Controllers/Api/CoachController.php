@@ -1723,9 +1723,17 @@ class CoachController extends Controller
     {
         $coach = $this->resolveCoachOrFail($request);
 
-        $clientIds = $this->getCoachClientIds($coach->id);
-        if (! $clientIds->contains($clientId)) {
-            abort(403, 'Este cliente no esta asignado a ti.');
+        // Superadmin puede ver el portal de cualquier cliente desde Admin/Clients.
+        // Coaches y resto de roles siguen limitados a sus clientes asignados.
+        $coachRole = $coach->role instanceof \App\Enums\UserRole
+            ? $coach->role->value
+            : (string) $coach->role;
+
+        if ($coachRole !== 'superadmin') {
+            $clientIds = $this->getCoachClientIds($coach->id);
+            if (! $clientIds->contains($clientId)) {
+                abort(403, 'Este cliente no esta asignado a ti.');
+            }
         }
 
         $client = Client::findOrFail($clientId);

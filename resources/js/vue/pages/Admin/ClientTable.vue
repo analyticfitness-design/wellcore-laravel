@@ -69,6 +69,36 @@ function onDelete(client) {
     deleteTarget.value = client;
     showDeleteModal.value = true;
 }
+
+// ─── Impersonificación (superadmin → cliente directo) ──────────────────
+const impersonating = ref(false);
+async function onImpersonate(client) {
+    if (!client?.id || impersonating.value) return;
+    impersonating.value = true;
+    try {
+        const { data } = await api.post(`/api/v/coach/clients/${client.id}/impersonate`);
+        // Backup actual sesión admin para restaurarla cuando cierre la impersonación.
+        localStorage.setItem('wc_token_backup',     localStorage.getItem('wc_token') || '');
+        localStorage.setItem('wc_user_type_backup', localStorage.getItem('wc_user_type') || '');
+        localStorage.setItem('wc_user_id_backup',   localStorage.getItem('wc_user_id') || '');
+        localStorage.setItem('wc_user_name_backup', localStorage.getItem('wc_user_name') || '');
+        localStorage.setItem('wc_user_portal_backup', localStorage.getItem('wc_user_portal') || '/admin');
+        // Swap a sesión cliente.
+        localStorage.setItem('wc_token',      data.token);
+        localStorage.setItem('wc_user_type',  'client');
+        localStorage.setItem('wc_user_id',    String(data.client_id));
+        localStorage.setItem('wc_user_name',  data.client_name || 'Cliente');
+        localStorage.setItem('wc_user_portal', '/client');
+        localStorage.setItem('wc_impersonating_by_coach', '1');
+        localStorage.setItem('wc_impersonating_token_key', data.token);
+        localStorage.setItem('wc_impersonation_client_id', String(data.client_id));
+        // Hard redirect para que Pinia recargue con el nuevo token.
+        window.location.href = data.redirect_url || '/client';
+    } catch (err) {
+        showToast('error', err.response?.data?.error || 'No se pudo impersonificar a este cliente.');
+        impersonating.value = false;
+    }
+}
 function cancelDelete() {
     showDeleteModal.value = false;
     deleteTarget.value = null;
@@ -215,7 +245,11 @@ onBeforeUnmount(() => clearTimeout(toastTimer));
       <!-- Lista (desktop tabla / mobile cards) -->
       <template v-else>
         <div class="table-wrap">
-          <AdminClientsTable @deactivate="onDeactivate" @delete="onDelete" />
+          <AdminClientsTable
+            @deactivate="onDeactivate"
+            @delete="onDelete"
+            @impersonate="onImpersonate"
+          />
         </div>
 
         <div class="cards-wrap">
@@ -225,6 +259,7 @@ onBeforeUnmount(() => clearTimeout(toastTimer));
             :client="client"
             @deactivate="onDeactivate"
             @delete="onDelete"
+            @impersonate="onImpersonate"
           />
         </div>
 
