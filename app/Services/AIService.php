@@ -138,6 +138,111 @@ class AIService
         }
     }
 
+    /**
+     * Stream text generation from Anthropic Messages API using SSE.
+     * Uses native cURL because Laravel's Http facade does not stream SSE cleanly.
+     * $onDelta receives each text delta; return false to cancel cooperatively.
+     *
+     * @param  callable(string $delta): bool   $onDelta
+     * @return array{ok:bool, chars:int, error:?string}
+     */
+    public function streamText(
+        string $systemPrompt,
+        string $userMessage,
+        int $maxTokens,
+        callable $onDelta,
+    ): array {
+        if (empty($this->apiKey)) {
+            Log::warning('AI Service: API key not configured (stream)');
+            return ['ok' => false, 'chars' => 0, 'error' => 'AI service not configured'];
+        }
+
+        $payload = json_encode([
+            'model'      => $this->model,
+            'max_tokens' => $maxTokens,
+            'stream'     => true,
+            'system'     => $systemPrompt,
+            'messages'   => [['role' => 'user', 'content' => $userMessage]],
+        ], JSON_UNESCAPED_UNICODE);
+
+        $buffer = '';
+        $totalChars = 0;
+        $aborted = false;
+        $errorMsg = null;
+
+        $ch = curl_init("{$this->baseUrl}/v1/messages");
+        curl_setopt_array($ch, [
+            CURLOPT_POST           => true,
+            CURLOPT_HTTPHEADER     => [
+                'x-api-key: ' . $this->apiKey,
+                'anthropic-version: 2023-06-01',
+                'content-type: application/json',
+                'accept: text/event-stream',
+            ],
+            CURLOPT_POSTFIELDS     => $payload,
+            CURLOPT_TIMEOUT        => 180,
+            CURLOPT_CONNECTTIMEOUT => 15,
+            CURLOPT_RETURNTRANSFER => false,
+            CURLOPT_WRITEFUNCTION  => function ($curl, $chunk) use (
+                &$buffer, &$totalChars, &$aborted, &$errorMsg, $onDelta
+            ) {
+                $buffer .= $chunk;
+                while (($eolPos = strpos($buffer, "\n")) !== false) {
+                    $line = rtrim(substr($buffer, 0, $eolPos), "\r");
+                    $buffer = substr($buffer, $eolPos + 1);
+                    if ($line === '' || str_starts_with($line, ':') || str_starts_with($line, 'event:')) {
+                        continue;
+                    }
+                    if (! str_starts_with($line, 'data:')) {
+                        continue;
+                    }
+                    $json = trim(substr($line, 5));
+                    if ($json === '' || $json === '[DONE]') {
+                        continue;
+                    }
+                    $event = json_decode($json, true);
+                    if (! is_array($event)) {
+                        continue;
+                    }
+                    $type = $event['type'] ?? null;
+                    if ($type === 'content_block_delta') {
+                        $delta = $event['delta']['text'] ?? '';
+                        if ($delta !== '') {
+                            $totalChars += strlen($delta);
+                            $continue = $onDelta($delta);
+                            if ($continue === false) {
+                                $aborted = true;
+                                return -1;
+                            }
+                        }
+                    } elseif ($type === 'error') {
+                        $errorMsg = $event['error']['message'] ?? 'Unknown stream error';
+                    }
+                }
+                return strlen($chunk);
+            },
+        ]);
+
+        $ok = curl_exec($ch);
+        $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlErr = curl_error($ch);
+        curl_close($ch);
+
+        if ($aborted) {
+            return ['ok' => false, 'chars' => $totalChars, 'error' => 'aborted'];
+        }
+        if ($httpCode >= 400 || $errorMsg) {
+            $err = $errorMsg ?? "HTTP {$httpCode}";
+            Log::error('AI Service stream error', ['status' => $httpCode, 'err' => $err, 'curl' => $curlErr]);
+            return ['ok' => false, 'chars' => $totalChars, 'error' => $err];
+        }
+        if ($ok === false && ! $aborted) {
+            return ['ok' => false, 'chars' => $totalChars, 'error' => $curlErr ?: 'Stream failed'];
+        }
+
+        return ['ok' => true, 'chars' => $totalChars, 'error' => null];
+    }
+
     protected function getPlanSystemPrompt(string $planType): string
     {
         return match($planType) {

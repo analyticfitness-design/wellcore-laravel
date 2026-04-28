@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Admin\Marketing\CoachProfileController;
 use App\Http\Controllers\Api\Admin\Marketing\DropReviewController;
 use App\Http\Controllers\Api\Admin\Marketing\QueueController;
 use App\Http\Controllers\Api\Admin\PaymentProofReviewController;
+use App\Http\Controllers\Api\AdminAIGeneratorController;
 use App\Http\Controllers\Api\AdminAuditLogController;
 use App\Http\Controllers\Api\AdminClientRequestController;
 use App\Http\Controllers\Api\AdminCoachManagementController;
@@ -381,9 +382,19 @@ Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:adm
     Route::get('/rise', [AdminController::class, 'rise']);
     Route::get('/settings', [AdminController::class, 'settings']);
     Route::put('/settings', [AdminController::class, 'updateSettings']);
+    Route::post('/settings/test-smtp', [AdminController::class, 'testSmtp']);
+    Route::post('/settings/verify-payment-gateway', [AdminController::class, 'verifyPaymentGateway']);
     Route::get('/chat-analytics', [AdminController::class, 'chatAnalytics']);
     Route::post('/ai-generator', [AdminController::class, 'aiGenerator']);
     Route::post('/ai-generator/save', [AdminController::class, 'aiGeneratorSave']);
+    // Admin AI Generator v2 (streaming SSE + history + approve)
+    Route::post('/ai-generator/stream', [AdminAIGeneratorController::class, 'stream']);
+    Route::get('/ai-generator/history', [AdminAIGeneratorController::class, 'history']);
+    Route::get('/ai-generator/history/{id}', [AdminAIGeneratorController::class, 'historyDetail'])->whereNumber('id');
+    Route::post('/ai-generator/history/{id}/approve', [AdminAIGeneratorController::class, 'approve'])->whereNumber('id');
+    Route::post('/ai-generator/history/{id}/discard', [AdminAIGeneratorController::class, 'discard'])->whereNumber('id');
+    Route::get('/ai-generator/templates', [AdminAIGeneratorController::class, 'templates']);
+    Route::get('/ai-generator/clients/search', [AdminAIGeneratorController::class, 'clientSearch']);
     Route::get('/tickets', [AdminController::class, 'tickets']);
     Route::post('/tickets/{id}/reply', [AdminController::class, 'replyTicket']);
     Route::patch('/tickets/{id}/status', [AdminController::class, 'updateTicketStatus']);
@@ -451,4 +462,12 @@ Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:adm
         ->where(['area' => 'client|public|rise', 'slug' => '[a-z0-9-]+']);
     Route::get('/forms/{area}/{slug}/export', [\App\Http\Controllers\Api\AdminFormsController::class, 'exportCsv'])
         ->where(['area' => 'client|public|rise', 'slug' => '[a-z0-9-]+']);
+
+    // Campaigns tracker
+    Route::get('/campaigns', [\App\Http\Controllers\Api\AdminCampaignController::class, 'index']);
+    Route::get('/campaigns/{id}', [\App\Http\Controllers\Api\AdminCampaignController::class, 'show'])->whereNumber('id');
+    Route::post('/campaigns/{id}/pause', [\App\Http\Controllers\Api\AdminCampaignController::class, 'pause'])->whereNumber('id');
+    Route::post('/campaigns/{id}/resume', [\App\Http\Controllers\Api\AdminCampaignController::class, 'resume'])->whereNumber('id');
+    Route::post('/campaigns/{id}/duplicate', [\App\Http\Controllers\Api\AdminCampaignController::class, 'duplicate'])->whereNumber('id');
+    Route::post('/campaigns/import', [\App\Http\Controllers\Api\AdminCampaignController::class, 'import']);
 });
