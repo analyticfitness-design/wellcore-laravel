@@ -1,0 +1,451 @@
+/* ═══════════════════════════════════════════════════════════════
+   V2 PUBLIC PAGES — Componentes y utilities
+   Spec: MASTER-DESIGN-SYSTEM-V2.md (paquete porting v2)
+
+   Activa solo en body.public-page. Atmósfera + tokens v2 viven en app.css.
+   Se borra completo cuando termine el porting v2.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ───────── Stagger delays editorial (master §8) ─────────
+   El sistema legacy tiene data-animate-delay con pasos de 100ms.
+   El v2 usa pasos editoriales de 80ms, atributo distinto para no chocar. */
+[data-stagger="1"] { transition-delay: 80ms; }
+[data-stagger="2"] { transition-delay: 160ms; }
+[data-stagger="3"] { transition-delay: 240ms; }
+[data-stagger="4"] { transition-delay: 320ms; }
+
+/* ───────── Glass card (master §4.2) ───────── */
+.wc-glass {
+    background: rgba(26, 26, 26, 0.6);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.wc-glass-strong {
+    background: rgba(10, 10, 10, 0.78);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.wc-glass-soft {
+    background: rgba(26, 26, 26, 0.4);
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+}
+
+/* ───────── Section divider con label (master §5.5) ───────── */
+.s-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 32px 22px;
+}
+@media (min-width: 1024px) {
+    .s-divider { padding: 36px 80px; max-width: 1440px; margin: 0 auto; }
+}
+.s-divider::before,
+.s-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--color-wc-border), transparent);
+}
+.s-divider-lbl {
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 0.34em;
+    color: var(--color-wc-text);
+    opacity: 0.35;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* ───────── Pull-quote brutal (master §5.1) ───────── */
+.pullquote {
+    border-top: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--color-wc-border);
+    padding: 56px 24px;
+    text-align: center;
+}
+@media (min-width: 1024px) { .pullquote { padding: 80px 60px; } }
+.pullquote-text {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 7vw, 72px);
+    line-height: 0.96;
+    letter-spacing: 0.02em;
+    text-wrap: balance;
+    max-width: 900px;
+    margin: 0 auto;
+    color: var(--color-wc-text);
+}
+.pullquote-text em {
+    color: var(--color-wc-accent);
+    font-style: normal;
+}
+.pullquote-cite {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-4);
+    margin-top: 20px;
+}
+
+/* ───────── Dropcap (master §5.6) ───────── */
+.dropcap-paragraph {
+    font-family: var(--font-sans);
+    /* Mobile mínimo 16px (legibilidad LATAM Retina, Apple HIG body baseline).
+       Desktop tope 17px — el MASTER pedía 15-17px pero a 15px se siente chico
+       en pantalla mobile real (decisión Daniel 2026-04-28). */
+    font-size: clamp(16px, 4vw, 17px);
+    line-height: 1.7;
+    color: var(--color-wc-text-2);
+    text-wrap: pretty;
+}
+.dropcap-paragraph::first-letter {
+    font-family: var(--font-display);
+    font-size: 5.5rem;
+    line-height: 0.8;
+    float: left;
+    margin: 0.12em 0.12em 0 0;
+    color: var(--color-wc-accent);
+}
+.dropcap-paragraph strong { color: var(--color-wc-text); font-weight: 600; }
+.dropcap-paragraph em { font-style: normal; color: var(--color-wc-accent); }
+
+/* ───────── Bloomberg ticker (master §5.3) ───────── */
+.ticker-wrap {
+    overflow: hidden;
+    border-top: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--color-wc-border);
+    background: var(--color-wc-bg-secondary);
+    padding: 14px 0;
+}
+.ticker-track {
+    display: flex;
+    width: max-content;
+    animation: tickerScroll 30s linear infinite;
+}
+.ticker-track:hover { animation-play-state: paused; }
+@keyframes tickerScroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+.ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 28px;
+    border-right: 1px solid var(--color-wc-border);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.ticker-name {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--color-wc-text-2);
+}
+.ticker-metric {
+    font-family: var(--font-data);
+    font-variant-numeric: tabular-nums;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-wc-green-text);
+}
+.ticker-metric.neg { color: var(--color-wc-red-text); }
+.ticker-detail {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--color-wc-text-4);
+    letter-spacing: 0.1em;
+}
+
+/* ───────── Sticky CTA mobile v2 (master §6.2 + RULES-RESPONSIVE §6) ─────────
+   Distinto del .hp-sticky-cta legacy: full-bleed con gradient mask editorial.
+   El legacy es flotante pill (Apple-like). Coexisten: .sticky-mobile-cta-v2 viva
+   sólo en páginas v2 que la incluyan via x-public.sticky-mobile-cta. */
+.sticky-mobile-cta-v2 {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 300;
+    padding: 12px 22px calc(12px + env(safe-area-inset-bottom));
+    background: linear-gradient(
+        to top,
+        rgba(10, 10, 10, 1) 0%,
+        rgba(10, 10, 10, 0.6) 60%,
+        transparent 100%
+    );
+    transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+}
+.sticky-mobile-cta-v2.is-hidden {
+    opacity: 0;
+    transform: translateY(100%);
+    pointer-events: none;
+}
+.sticky-mobile-cta-v2 .sticky-cta-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 9999px;
+    background: var(--color-wc-accent);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    transition: background 0.2s var(--ease-out), transform 0.15s var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+    min-height: 48px; /* touch target ≥44px */
+}
+.sticky-mobile-cta-v2 .sticky-cta-pill:active { transform: scale(0.97); }
+.sticky-mobile-cta-v2 .sticky-cta-label { font-weight: 800; letter-spacing: 0.01em; }
+.sticky-mobile-cta-v2 .sticky-cta-price {
+    font-family: var(--font-data);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    font-size: 13px;
+    opacity: 0.92;
+}
+@media (min-width: 1024px) {
+    .sticky-mobile-cta-v2 { display: none; }
+}
+
+/* ───────── FAQ accordion (master §5 + RULES-RESPONSIVE §10) ───────── */
+.faq-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.faq-accordion-item {
+    border: 1px solid var(--color-wc-border);
+    border-radius: 12px;
+    background: var(--color-wc-bg-secondary);
+    overflow: hidden;
+    transition: border-color 0.2s var(--ease-out), background 0.2s var(--ease-out);
+}
+.faq-accordion-item[open] {
+    border-color: var(--color-wc-border-2);
+    background: var(--color-wc-bg-tertiary);
+}
+.faq-accordion-summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-wc-text);
+    -webkit-tap-highlight-color: transparent;
+    min-height: 56px; /* touch target ≥44px con margen */
+}
+.faq-accordion-summary::-webkit-details-marker { display: none; }
+.faq-accordion-icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: var(--color-wc-text-3);
+    transition: transform 0.3s var(--ease-out), color 0.2s var(--ease-out);
+}
+.faq-accordion-item[open] .faq-accordion-icon {
+    transform: rotate(45deg);
+    color: var(--color-wc-accent);
+}
+.faq-accordion-body {
+    padding: 0 22px 22px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--color-wc-text-2);
+}
+.faq-accordion-search {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 999px;
+    background: var(--color-wc-bg-secondary);
+    border: 1px solid var(--color-wc-border);
+    color: var(--color-wc-text);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s var(--ease-out);
+}
+.faq-accordion-search:focus {
+    outline: none;
+    border-color: var(--color-wc-accent);
+}
+.faq-accordion-search::placeholder { color: var(--color-wc-text-3); }
+
+/* ───────── Margin note (master §5.4) — Fraunces italic gold ───────── */
+.margin-note {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--color-wc-gold-editorial);
+    margin: 24px 0;
+    padding-left: 16px;
+    border-left: 2px solid var(--color-wc-gold-soft);
+    max-width: 340px;
+}
+
+/* ───────── Tag-pill day-coding (master §5.7) ───────── */
+.tag-pill {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.tag-pill.red    { background: var(--color-wc-red-soft);    color: var(--color-wc-accent); }
+.tag-pill.amber  { background: var(--color-wc-amber-soft);  color: var(--color-wc-amber-text); }
+.tag-pill.green  { background: var(--color-wc-green-soft);  color: var(--color-wc-green-text); }
+.tag-pill.blue   { background: var(--color-wc-blue-soft);   color: var(--color-wc-blue-text); }
+.tag-pill.gold   { background: var(--color-wc-gold-soft);   color: var(--color-wc-gold-editorial); }
+
+/* ───────── Mini-ring KPI (master §5.2) ───────── */
+.mini-ring {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+}
+.mini-ring svg {
+    position: absolute;
+    inset: 0;
+}
+.mini-ring-val {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-data);
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-wc-text);
+}
+
+/* ───────── Editorial body text (master §5.6) ───────── */
+.body-text {
+    font-family: var(--font-sans);
+    /* Mobile mínimo 16px (legibilidad LATAM Retina, Apple HIG body baseline).
+       Desktop tope 17px — el MASTER pedía 15-17px pero a 15px se siente chico
+       en pantalla mobile real (decisión Daniel 2026-04-28). */
+    font-size: clamp(16px, 4vw, 17px);
+    line-height: 1.7;
+    color: var(--color-wc-text-2);
+    text-wrap: pretty;
+}
+.body-text + .body-text { margin-top: 20px; }
+.body-text strong { color: var(--color-wc-text); font-weight: 600; }
+.body-text em { font-style: normal; color: var(--color-wc-accent); }
+
+/* ───────── Editorial italic gold inline (Fraunces) ───────── */
+.editorial-italic {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-size: clamp(15px, 2vw, 22px);
+    line-height: 1.45;
+    color: var(--color-wc-gold-editorial);
+    text-wrap: balance;
+}
+
+/* ───────── Eyebrow (JetBrains Mono uppercase) ───────── */
+.eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-3);
+    font-weight: 500;
+}
+
+/* ───────── Layout editorial (public-editorial) — sidebar+main ─────────
+   Spec: RULES-RESPONSIVE §4 + MASTER §"editorial mode" */
+.public-editorial-wrap {
+    display: block;
+}
+.public-editorial-sidebar {
+    display: none;
+}
+.public-editorial-main {
+    max-width: var(--col-wide);
+    margin: 0 auto;
+    padding: 32px 22px 80px;
+}
+.public-editorial-chapter-pill {
+    position: sticky;
+    top: var(--topbar-h);
+    z-index: 40;
+    margin: 0;
+    padding: 10px 22px;
+    background: rgba(10, 10, 10, 0.78);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-bottom: 1px solid var(--color-wc-border);
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-2);
+}
+@media (min-width: 1024px) {
+    .public-editorial-wrap {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 0;
+        align-items: start;
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+    .public-editorial-sidebar {
+        display: flex;
+        flex-direction: column;
+        position: sticky;
+        top: var(--topbar-h);
+        height: calc(100vh - var(--topbar-h));
+        overflow-y: auto;
+        padding: 32px 24px 32px 32px;
+        border-right: 1px solid var(--color-wc-border);
+        scrollbar-width: thin;
+    }
+    .public-editorial-sidebar::-webkit-scrollbar { width: 4px; }
+    .public-editorial-sidebar::-webkit-scrollbar-thumb {
+        background: var(--color-wc-border-2);
+        border-radius: 2px;
+    }
+    .public-editorial-main {
+        padding: 40px 60px 100px;
+        max-width: var(--col-max);
+    }
+    .public-editorial-chapter-pill { display: none; }
+}
+@media (min-width: 1440px) {
+    .public-editorial-wrap { grid-template-columns: 240px 1fr; }
+}
+
+/* ───────── Reduced motion overrides v2 ───────── */
+@media (prefers-reduced-motion: reduce) {
+    .ticker-track { animation: none !important; }
+    .sticky-mobile-cta-v2 { transition: none !important; }
+    .faq-accordion-icon,
+    .faq-accordion-item { transition: none !important; }
+    [data-stagger="1"],
+    [data-stagger="2"],
+    [data-stagger="3"],
+    [data-stagger="4"] { transition-delay: 0ms !important; }
+}

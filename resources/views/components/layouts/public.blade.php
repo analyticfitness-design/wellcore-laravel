@@ -17,6 +17,11 @@
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
+    {{-- Preconnect Google Fonts — DNS+TLS handshake temprano para Bebas/Inter/Barlow/Fraunces/JetBrains-Mono
+         (cargadas via @import en app.css). Reduce TTFB de la 1ª fuente ~80-200ms en 4G LATAM. --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     {{-- ────────────────────────────────────────────────────────
          FUENTES — estrategia anti-render-blocking
          1. Inline @font-face críticos (4 fuentes above-fold latin)
@@ -80,7 +85,7 @@
     src="https://www.facebook.com/tr?id={{ config('app.meta_pixel_id') }}&ev=PageView&noscript=1"/></noscript>
     @endif
 </head>
-<body class="min-h-screen bg-wc-bg text-wc-text">
+<body class="public-page min-h-screen bg-wc-bg text-wc-text">
 
     {{-- Navigation --}}
     <nav x-data="{ mobileMenu: false }" x-on:click.outside="mobileMenu = false" class="sticky top-0 z-50 border-b border-wc-border bg-wc-bg/80 backdrop-blur-xl">

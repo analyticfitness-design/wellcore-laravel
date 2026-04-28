@@ -4,7 +4,9 @@
 // version standalone vieja (3.13.5) que no garantizaba el orden de plugins.
 import Alpine from 'alpinejs';
 import collapse from '@alpinejs/collapse';
+import intersect from '@alpinejs/intersect';
 
 Alpine.plugin(collapse);
+Alpine.plugin(intersect);
 window.Alpine = Alpine;
 Alpine.start();

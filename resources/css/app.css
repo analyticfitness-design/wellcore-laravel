@@ -5,6 +5,7 @@
 @import './animations.css';
 @import './coach-strategy.css';
 @import './admin-atmosphere.css';
+@import './v2-public.css';
 
 /* Dark mode via .dark class on <html>, not prefers-color-scheme */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -16,12 +17,16 @@
 @source '../**/*.vue';
 
 @theme {
-    /* WellCore Design System Tokens — v2 editorial stack
-       Cadena defensiva: si Bebas/Inter/Barlow no cargan via CDN, cae a Oswald/Raleway que ya estaban. */
-    --font-sans: 'Inter', 'Raleway', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-display: 'Bebas Neue', 'Oswald', Impact, sans-serif;
+    /* WellCore Design System Tokens — stack canónico productivo
+       Decisión Daniel (2026-04-28): Oswald (titulares) + Raleway (cuerpo) son las fuentes
+       PRIMARIAS de la plataforma. Bebas/Inter/Barlow del MASTER doc quedan como fallback
+       defensivo (cargadas via @import Google Fonts) por si Oswald/Raleway no resuelven.
+       NO invertir el orden sin OK explícito — los preloads woff2 del layout público
+       (public.blade.php) sirven Oswald/Raleway críticos above-the-fold. */
+    --font-sans: 'Raleway', 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: 'Oswald', 'Bebas Neue', Impact, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-    --font-data: 'Barlow', 'Raleway', ui-sans-serif, system-ui, sans-serif;
+    --font-data: 'Raleway', 'Barlow', ui-sans-serif, system-ui, sans-serif;
 
     /* WellCore Colors — Primary */
     --color-wc-accent: #DC2626;
@@ -83,6 +88,38 @@
     --color-wc-day-vie: #A78BFA;
     --color-wc-day-sab: #EC4899;
     --color-wc-day-dom: #14B8A6;
+
+    /* ───── V2 Public Pages tokens (MASTER-DESIGN-SYSTEM-V2 §2) ─────
+       Agregados Sprint 0 (porting v2). NO eliminan tokens legacy — coexisten
+       para no romper páginas admin/cliente/coach existentes. Las páginas v2
+       públicas usan estos nombres. */
+
+    /* Backgrounds adicionales (active states / billing pill bg) */
+    --color-wc-bg-4: #222222;
+
+    /* Text scale (alias defensivos del sistema legacy + nivel 4 nuevo) */
+    --color-wc-text-2: var(--color-wc-text-secondary);
+    --color-wc-text-3: var(--color-wc-text-tertiary);
+    --color-wc-text-4: #404040;
+
+    /* Borders */
+    --color-wc-border-2: rgba(255, 255, 255, 0.12);
+
+    /* Accent variantes nuevas */
+    --color-wc-red-glow: rgba(220, 38, 38, 0.06);
+
+    /* Editorial gold v2 (master spec #D4A04C). El --color-wc-gold legacy
+       #C8A769 permanece para compatibilidad. Páginas v2 usan -editorial. */
+    --color-wc-gold-editorial: #D4A04C;
+    --color-wc-gold-soft: rgba(212, 160, 76, 0.10);
+
+    /* Easing canónico v2 (RULES-DESIGN §8) */
+    --ease-out: cubic-bezier(.22, 1, .36, 1);
+
+    /* Layout v2 (RULES-RESPONSIVE) */
+    --topbar-h: 64px;     /* matches nav h-16 actual del public.blade.php */
+    --col-max: 720px;     /* editorial col estrecho (long-form blog/metodo) */
+    --col-wide: 960px;    /* editorial col ancho */
 }
 
 /* Dark mode overrides */
@@ -112,6 +149,60 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.003em;
+}
+
+/* ─── V2 Public Atmosphere — radial orb + grain noise ─────────
+   Aplicado SOLO a body.public-page para NO contaminar admin/cliente/coach.
+   La clase la agrega resources/views/components/layouts/public.blade.php.
+   Spec: MASTER-DESIGN-SYSTEM-V2 §4.1 */
+body.public-page {
+    position: relative;
+}
+body.public-page::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+        radial-gradient(ellipse 80% 50% at -8% -4%,  rgba(220, 38, 38, 0.11), transparent 55%),
+        radial-gradient(ellipse 50% 35% at 108% 85%, rgba(220, 38, 38, 0.05), transparent 50%),
+        radial-gradient(ellipse 30% 20% at 50% 110%, rgba(212, 160, 76, 0.04), transparent 50%);
+}
+body.public-page::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 180px;
+}
+/* Asegurar que el contenido viva por encima del atmosphere layer */
+body.public-page > nav,
+body.public-page > main,
+body.public-page > footer,
+body.public-page > section {
+    position: relative;
+    z-index: 1;
+}
+
+/* ─── Sub-brand /fit override (Silvia rosa) ─────────
+   Activar agregando body.fit-page en páginas /fit/*. Coexiste con .public-page.
+   Spec: MASTER-DESIGN-SYSTEM-V2 §11.1 */
+body.fit-page {
+    --color-wc-accent:       #DC3C64;
+    --color-wc-accent-hover: #BE285A;
+    --color-wc-red-soft:     rgba(220, 60, 100, 0.10);
+    --color-wc-red-glow:     rgba(220, 60, 100, 0.06);
+    --color-wc-red-text:     #F586A4;
+}
+body.fit-page.public-page::before {
+    background:
+        radial-gradient(ellipse 80% 50% at -8% -4%,  rgba(220, 60, 100, 0.13), transparent 55%),
+        radial-gradient(ellipse 50% 35% at 108% 85%, rgba(220, 60, 100, 0.06), transparent 50%),
+        radial-gradient(ellipse 30% 20% at 50% 110%, rgba(212, 160, 76, 0.04), transparent 50%);
 }
 
 /* ─── .font-data: tabular nums para estadísticas ─── */
