@@ -5,6 +5,9 @@ import AdminLayout from '../../layouts/AdminLayout.vue';
 import AdminGreeting from '../../components/admin/dashboard/AdminGreeting.vue';
 import AdminAlertsRow from '../../components/admin/dashboard/AdminAlertsRow.vue';
 import AdminHeroMetrics from '../../components/admin/dashboard/AdminHeroMetrics.vue';
+import AdminPulseCharts from '../../components/admin/dashboard/AdminPulseCharts.vue';
+import AdminActivityFeed from '../../components/admin/dashboard/AdminActivityFeed.vue';
+import AdminTopCoaches from '../../components/admin/dashboard/AdminTopCoaches.vue';
 import AdminToolsGrid from '../../components/admin/dashboard/AdminToolsGrid.vue';
 
 const api = useApi();
@@ -74,6 +77,22 @@ onBeforeUnmount(() => {
         :operational="data.operational || {}"
       />
 
+      <!-- Charts row — MRR bars + donut planes + client breakdown (Fase C) -->
+      <AdminPulseCharts
+        :revenue-data="data.revenueChartData || []"
+        :plan-distribution="data.planDistributionData || []"
+        :client-breakdown="data.clientBreakdown || {}"
+      />
+
+      <!-- Activity feed + top coaches en grid 2-col en desktop, stack mobile -->
+      <div class="dashboard-secondary">
+        <AdminActivityFeed
+          :payments="data.recentPayments || []"
+          :inscriptions="data.recentInscriptions || []"
+        />
+        <AdminTopCoaches :coaches="data.top_coaches_month || []" />
+      </div>
+
       <!-- Tools grid — accesos rapidos a 12 modulos editoriales (Fase B) -->
       <AdminToolsGrid />
 
@@ -90,6 +109,19 @@ onBeforeUnmount(() => {
 
 @media (min-width: 1024px) {
     .dashboard-stack { gap: 22px; }
+}
+
+/* Activity feed + top coaches: mobile stack, desktop 2/3 + 1/3 */
+.dashboard-secondary {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+@media (min-width: 1024px) {
+    .dashboard-secondary {
+        grid-template-columns: 2fr 1fr;
+        gap: 16px;
+    }
 }
 
 /* ── Loading skeleton ──────────────────────────────────────────────────── */
