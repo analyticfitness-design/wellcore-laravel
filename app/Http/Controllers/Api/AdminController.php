@@ -937,6 +937,8 @@ class AdminController extends Controller
         $this->resolveAdminOrFail($request);
 
         $statusFilter = $request->query('status', '');
+        $methodFilter = $request->query('method', '');
+        $search = trim((string) $request->query('search', ''));
         $dateFrom = $request->query('date_from', '');
         $dateTo = $request->query('date_to', '');
         $perPage = min(100, max(1, $request->integer('per_page', 25)));
@@ -966,6 +968,20 @@ class AdminController extends Controller
         if ($statusFilter !== '') {
             $query->where('status', $statusFilter);
         }
+        if ($methodFilter !== '') {
+            $query->where('payment_method', $methodFilter);
+        }
+        if ($search !== '') {
+            $like = '%'.$search.'%';
+            $query->where(function ($q) use ($like) {
+                $q->where('buyer_name', 'like', $like)
+                    ->orWhere('email', 'like', $like)
+                    ->orWhere('wompi_reference', 'like', $like)
+                    ->orWhere('wompi_transaction_id', 'like', $like)
+                    ->orWhere('payu_reference', 'like', $like)
+                    ->orWhereHas('client', fn ($c) => $c->where('name', 'like', $like));
+            });
+        }
         if ($dateFrom !== '') {
             $query->where('created_at', '>=', Carbon::parse($dateFrom)->startOfDay());
         }
@@ -979,12 +995,18 @@ class AdminController extends Controller
             'id' => $p->id,
             'buyer_name' => $p->buyer_name ?? $p->email ?? $p->client?->name ?? 'Sin nombre',
             'client_name' => $p->client?->name ?? null,
+            'email' => $p->email,
             'amount' => (float) $p->amount,
             'amount_fmt' => number_format((float) $p->amount, 0, ',', '.'),
             'status' => $p->status?->value ?? $p->status ?? '-',
             'payment_method' => $p->payment_method ?? '-',
             'plan' => $p->plan?->label() ?? $p->getRawOriginal('plan') ?? '-',
+            'wompi_reference' => $p->wompi_reference,
+            'wompi_transaction_id' => $p->wompi_transaction_id,
+            'payu_reference' => $p->payu_reference,
+            'payu_transaction_id' => $p->payu_transaction_id,
             'created_at' => $p->created_at?->format('d M Y H:i'),
+            'created_at_iso' => $p->created_at?->toIso8601String(),
             'time_ago' => $p->created_at?->diffForHumans(),
         ]);
 
