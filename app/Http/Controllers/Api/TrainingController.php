@@ -466,19 +466,45 @@ class TrainingController extends Controller
             }
         }
 
-        $session = WorkoutSession::firstOrCreate(
-            [
-                'client_id'    => $clientId,
-                'day_name'     => $dayName,
-                'session_date' => now()->toDateString(),
-                'completed'    => false,
-            ],
-            [
-                'plan_id' => $planId,
-            ]
-        );
+        // El unique key (client_id, day_name, session_date) no incluye `completed`,
+        // así que `firstOrCreate` no puede crear una nueva sesión si ya existe una
+        // completada hoy. Manejamos los tres casos explícitamente:
+        //   - Sesión incompleta hoy → resumir
+        //   - Sesión completada hoy → reset a incompleta (permite reintentar)
+        //   - Sin sesión hoy        → crear nueva
+        $today = now()->toDateString();
 
-        Cache::forget("wp:session:{$clientId}:".now()->toDateString());
+        $session = WorkoutSession::where('client_id', $clientId)
+            ->where('day_name', $dayName)
+            ->where('session_date', $today)
+            ->orderByDesc('id')
+            ->first();
+
+        if (! $session) {
+            try {
+                $session = WorkoutSession::create([
+                    'client_id'    => $clientId,
+                    'plan_id'      => $planId,
+                    'day_name'     => $dayName,
+                    'session_date' => $today,
+                    'completed'    => false,
+                ]);
+            } catch (\Illuminate\Database\UniqueConstraintViolationException) {
+                // Race: otra petición simultánea creó la sesión entre el SELECT y el INSERT.
+                $session = WorkoutSession::where('client_id', $clientId)
+                    ->where('day_name', $dayName)
+                    ->where('session_date', $today)
+                    ->orderByDesc('id')
+                    ->firstOrFail();
+                if ($session->completed) {
+                    $session->update(['completed' => false]);
+                }
+            }
+        } elseif ($session->completed) {
+            $session->update(['completed' => false]);
+        }
+
+        Cache::forget("wp:session:{$clientId}:".$today);
 
         return response()->json([
             'session_id' => $session->id,
@@ -765,16 +791,20 @@ class TrainingController extends Controller
             ]);
         }
 
-        $xpEarned = 0;
-        try {
-            $xpEarned = $session->awardXp();
-            $this->updateClientXp($clientId, $xpEarned);
-            $session->update(['xp_earned' => $xpEarned]);
-        } catch (\Throwable $e) {
-            \Log::warning('TrainingController: awardXp failed', [
-                'session_id' => $session->id,
-                'error' => $e->getMessage(),
-            ]);
+        // Idempotente: si la sesión ya tenía XP otorgado (caso de reinicio tras
+        // completarla previamente), no volvemos a sumar al total del cliente.
+        $xpEarned = (int) ($session->xp_earned ?? 0);
+        if ($xpEarned <= 0) {
+            try {
+                $xpEarned = $session->awardXp();
+                $this->updateClientXp($clientId, $xpEarned);
+                $session->update(['xp_earned' => $xpEarned]);
+            } catch (\Throwable $e) {
+                \Log::warning('TrainingController: awardXp failed', [
+                    'session_id' => $session->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
 
         ClientCacheService::invalidateDashboard($clientId);
@@ -895,7 +925,14 @@ class TrainingController extends Controller
             return $session->awardXp();
         });
 
-        $prs = $completedLogs->where('is_pr', true)->map(function ($log) use ($clientId, $session) {
+        // Note: $completedLogs fue removido cuando workoutSummary migró a SQL aggregates,
+        // así que consultamos los PR logs directamente para no romper el endpoint.
+        $prLogs = WorkoutLog::where('session_id', $session->id)
+            ->where('completed', true)
+            ->where('is_pr', true)
+            ->get();
+
+        $prs = $prLogs->map(function ($log) use ($clientId, $session) {
             // Look up the best weight for this exercise in any prior completed session
             $prevBest = WorkoutLog::where('client_id', $clientId)
                 ->where('exercise_name', $log->exercise_name)

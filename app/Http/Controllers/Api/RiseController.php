@@ -997,19 +997,40 @@ class RiseController extends Controller
             }
         }
 
-        // Reuse existing incomplete session for today if exists
-        $session = WorkoutSession::firstOrCreate(
-            [
-                'client_id' => $client->id,
-                'day_name' => $dayName,
-                'session_date' => now()->toDateString(),
-            ],
-            [
-                'week_number' => $weekNum,
-                'completed' => false,
-                'source' => 'rise',
-            ]
-        );
+        // Mismo patrón que TrainingController::startWorkout: el unique key
+        // (client_id, day_name, session_date) no incluye `completed`, así que
+        // manejamos los tres casos manualmente para evitar 1062 / 404 stale.
+        $today = now()->toDateString();
+
+        $session = WorkoutSession::where('client_id', $client->id)
+            ->where('day_name', $dayName)
+            ->where('session_date', $today)
+            ->orderByDesc('id')
+            ->first();
+
+        if (! $session) {
+            try {
+                $session = WorkoutSession::create([
+                    'client_id'    => $client->id,
+                    'day_name'     => $dayName,
+                    'session_date' => $today,
+                    'week_number'  => $weekNum,
+                    'completed'    => false,
+                    'source'       => 'rise',
+                ]);
+            } catch (\Illuminate\Database\UniqueConstraintViolationException) {
+                $session = WorkoutSession::where('client_id', $client->id)
+                    ->where('day_name', $dayName)
+                    ->where('session_date', $today)
+                    ->orderByDesc('id')
+                    ->firstOrFail();
+                if ($session->completed) {
+                    $session->update(['completed' => false]);
+                }
+            }
+        } elseif ($session->completed) {
+            $session->update(['completed' => false]);
+        }
 
         return response()->json([
             'session_id' => $session->id,
