@@ -470,4 +470,9 @@ Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:adm
     Route::post('/campaigns/{id}/resume', [\App\Http\Controllers\Api\AdminCampaignController::class, 'resume'])->whereNumber('id');
     Route::post('/campaigns/{id}/duplicate', [\App\Http\Controllers\Api\AdminCampaignController::class, 'duplicate'])->whereNumber('id');
     Route::post('/campaigns/import', [\App\Http\Controllers\Api\AdminCampaignController::class, 'import']);
+
+    // Referrals
+    Route::get('/referrals', [AdminController::class, 'referrals']);
+    Route::post('/referrals/{id}/mark-paid', [AdminController::class, 'markReferralPaid'])->whereNumber('id');
+    Route::post('/referrals/{id}/expire', [AdminController::class, 'expireReferral'])->whereNumber('id');
 });

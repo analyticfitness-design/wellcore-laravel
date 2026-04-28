@@ -3635,4 +3635,149 @@ class AdminController extends Controller
             'total' => $sorted->count(),
         ]);
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Referrals
+    // ─────────────────────────────────────────────────────────────────────────
+
+    public function referrals(Request $request): JsonResponse
+    {
+        $status  = $request->query('status', 'all');
+        $periodo = $request->query('periodo', 'month');
+        $search  = trim((string) $request->query('search', ''));
+        $page    = max(1, (int) $request->query('page', 1));
+        $perPage = 20;
+
+        $from = match ($periodo) {
+            'today'   => now()->startOfDay(),
+            'week'    => now()->startOfWeek(),
+            'quarter' => now()->startOfQuarter(),
+            'year'    => now()->startOfYear(),
+            default   => now()->startOfMonth(),
+        };
+
+        $q = Referral::query()
+            ->with(['referrer:id,name,email', 'referred:id,name,email'])
+            ->where('created_at', '>=', $from);
+
+        match ($status) {
+            'qualified' => $q->where('status', 'converted')->where('reward_granted', false),
+            'paid'      => $q->where('status', 'converted')->where('reward_granted', true),
+            'expired'   => $q->where('status', 'denied'),
+            'pending'   => $q->whereIn('status', ['pending', 'registered']),
+            default     => null,
+        };
+
+        if ($search !== '') {
+            $s = $search;
+            $q->where(function ($w) use ($s) {
+                $w->whereHas('referrer', fn ($q2) => $q2->where('name', 'like', "%{$s}%")->orWhere('email', 'like', "%{$s}%"))
+                  ->orWhereHas('referred', fn ($q2) => $q2->where('name', 'like', "%{$s}%")->orWhere('email', 'like', "%{$s}%"))
+                  ->orWhere('referred_email', 'like', "%{$s}%");
+            });
+        }
+
+        $paginated = $q->latest('created_at')->paginate($perPage, ['*'], 'page', $page);
+
+        $mapStatus = fn (Referral $r): string => match (true) {
+            $r->status === 'denied'                              => 'expired',
+            $r->status === 'converted' && $r->reward_granted    => 'paid',
+            $r->status === 'converted'                          => 'qualified',
+            default                                              => 'pending',
+        };
+
+        $items = $paginated->map(fn (Referral $r) => [
+            'id'                    => $r->id,
+            'referrer_name'         => $r->referrer?->name ?? '-',
+            'referrer_email'        => $r->referrer?->email ?? '-',
+            'referred_name'         => $r->referred?->name ?? null,
+            'referred_email'        => $r->referred_email,
+            'status'                => $mapStatus($r),
+            'reward_cop'            => 50000,
+            'created_at_relative'   => $r->created_at?->diffForHumans() ?? '-',
+            'qualified_at_relative' => $r->converted_at?->diffForHumans() ?? null,
+        ]);
+
+        $kpiBase = fn () => Referral::where('created_at', '>=', $from);
+        $total     = $kpiBase()->count();
+        $qualified = $kpiBase()->where('status', 'converted')->where('reward_granted', false)->count();
+        $paid      = $kpiBase()->where('status', 'converted')->where('reward_granted', true)->count();
+        $roi       = $paid > 0 ? round(($paid * 120000) / ($paid * 50000), 1) : 0;
+
+        $topRefs = Referral::where('created_at', '>=', $from)
+            ->where('status', 'converted')
+            ->with('referrer:id,name')
+            ->select('referrer_id', DB::raw('COUNT(*) as qualified_count'))
+            ->groupBy('referrer_id')
+            ->orderByDesc('qualified_count')
+            ->take(5)
+            ->get()
+            ->map(fn ($r) => [
+                'referrer_id'     => $r->referrer_id,
+                'name'            => $r->referrer?->name ?? '-',
+                'qualified_count' => (int) $r->qualified_count,
+            ])
+            ->values();
+
+        return response()->json([
+            'data' => $items->values(),
+            'meta' => [
+                'total'        => $paginated->total(),
+                'per_page'     => $perPage,
+                'current_page' => $paginated->currentPage(),
+                'last_page'    => $paginated->lastPage(),
+            ],
+            'kpis' => [
+                'total_referidos' => $total,
+                'qualified'       => $qualified,
+                'paid'            => $paid,
+                'roi'             => $roi . 'x',
+            ],
+            'top_referidores' => $topRefs,
+        ]);
+    }
+
+    public function markReferralPaid(Request $request, int $id): JsonResponse
+    {
+        $admin    = $this->resolveAdmin($request);
+        $referral = Referral::findOrFail($id);
+
+        if ($referral->status !== 'converted' || $referral->reward_granted) {
+            return response()->json(['error' => 'Este referral no está en estado qualified.'], 422);
+        }
+
+        $method    = $request->input('method', 'descuento_proximo_pago');
+        $reference = $request->input('reference');
+
+        $referral->update(['reward_granted' => true]);
+
+        AuditLog::create([
+            'actor_type'   => 'admin',
+            'actor_id'     => $admin->id,
+            'actor_name'   => $admin->name ?? 'Admin',
+            'action'       => 'referral.payout.marked_paid',
+            'target_type'  => 'referral',
+            'target_id'    => $id,
+            'target_label' => "referral:{$id}",
+            'diff'         => ['method' => $method, 'reference' => $reference],
+            'ip'           => $request->ip(),
+            'user_agent'   => substr($request->userAgent() ?? '', 0, 500),
+            'created_at'   => now(),
+        ]);
+
+        return response()->json(['ok' => true]);
+    }
+
+    public function expireReferral(Request $request, int $id): JsonResponse
+    {
+        $referral = Referral::findOrFail($id);
+
+        if (! in_array($referral->status, ['pending', 'registered'])) {
+            return response()->json(['error' => 'Solo se pueden expirar referrals pendientes.'], 422);
+        }
+
+        $referral->update(['status' => 'denied']);
+
+        return response()->json(['ok' => true]);
+    }
 }
