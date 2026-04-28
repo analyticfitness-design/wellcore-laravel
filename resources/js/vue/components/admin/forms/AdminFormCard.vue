@@ -40,7 +40,7 @@ const deltaLabel = computed(() => {
     role="button"
     tabindex="0"
     :aria-pressed="isActive"
-    :aria-label="`Seleccionar formulario: ${form.name}`"
+    :aria-labelledby="`form-card-name-${form.area}-${form.slug}`"
     @click="$emit('select')"
     @keydown.enter="$emit('select')"
     @keydown.space.prevent="$emit('select')"
@@ -63,7 +63,7 @@ const deltaLabel = computed(() => {
     </div>
 
     <!-- Name -->
-    <h3 class="form-card__name">{{ form.name.toUpperCase() }}</h3>
+    <p :id="`form-card-name-${form.area}-${form.slug}`" class="form-card__name">{{ form.name.toUpperCase() }}</p>
 
     <!-- Description -->
     <p class="form-card__desc">{{ form.description }}</p>
@@ -144,7 +144,8 @@ const deltaLabel = computed(() => {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 4px 8px;
+    padding: 6px 10px;
+    min-height: 24px;
     border-radius: 6px;
     border: 1px solid var(--color-wc-border);
     background: transparent;

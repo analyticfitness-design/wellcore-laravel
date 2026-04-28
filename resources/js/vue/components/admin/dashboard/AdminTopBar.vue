@@ -121,7 +121,7 @@ const clockHHMM = computed(() => {
 }
 .topbar-brand {
     font-family: var(--font-display);
-    font-size: 22px; letter-spacing: 0.1em;
+    font-size: 24px; letter-spacing: 0.1em;
     color: var(--color-wc-text);
 }
 .topbar-brand-accent { color: var(--color-wc-accent, #DC2626); }
