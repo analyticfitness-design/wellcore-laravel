@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\UserType;
 use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
@@ -35,10 +36,18 @@ class AdminAIGeneratorController extends Controller
     protected function resolveAdmin(Request $request): Admin
     {
         $auth = $this->resolveAuthUser($request);
-        if (! $auth instanceof Admin) {
-            abort(403, 'Solo administradores pueden acceder al Generador IA');
+        if (! $auth) {
+            abort(401, 'Token invalido o expirado.');
         }
-        return $auth;
+        if ($auth['userType'] !== UserType::Admin) {
+            abort(403, 'Acceso solo para administradores.');
+        }
+        $admin = $auth['user'];
+        $role = $admin->role?->value ?? $admin->role ?? '';
+        if (! in_array($role, ['admin', 'superadmin', 'jefe'])) {
+            abort(403, 'No tienes permisos de administrador.');
+        }
+        return $admin;
     }
 
     /**
