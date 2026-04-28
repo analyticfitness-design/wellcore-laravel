@@ -2,83 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\UserType;
-use App\Models\Admin;
-use App\Models\AuthToken;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
+/**
+ * @deprecated Use App\Http\Controllers\Api\AdminImpersonateController via /api/v/admin/coaches/{id}/impersonate.
+ *             This shim is kept temporarily so legacy bookmarks / form posts don't break.
+ *             Remove after 2026-07-01.
+ */
 class CoachImpersonateController extends Controller
 {
-    /**
-     * POST /admin/coach-impersonate/{adminId}
-     *
-     * Permite a un superadmin ver el portal de cualquier coach/admin.
-     * El token del superadmin se guarda como 'wc_super_token' para restaurarlo.
-     */
-    public function start(int $adminId): RedirectResponse
+    public function start(Request $request, int $adminId): RedirectResponse
     {
-        $superadmin = auth('wellcore')->user();
-        if (! $superadmin instanceof Admin) {
-            abort(403, 'Solo admins pueden usar la impersonación de coach.');
-        }
-
-        $coach = Admin::find($adminId);
-        if (! $coach) {
-            abort(404, 'Coach no encontrado.');
-        }
-
-        $superToken = session('wc_token');
-        if (! $superToken) {
-            abort(403, 'No se encontró una sesión activa de admin.');
-        }
-
-        // Guardar el token del superadmin y el nombre del coach para el banner
-        session([
-            'wc_super_token' => $superToken,
-            'wc_coach_name'  => $coach->name ?? $coach->username,
+        Log::channel('security')->warning('IMPERSONATE_LEGACY_CONTROLLER_HIT', [
+            'route'    => 'start',
+            'admin_id' => $adminId,
+            'ip'       => $request->ip(),
         ]);
-
-        // Buscar o crear un token de admin para el coach
-        $coachToken = AuthToken::where('user_id', $adminId)
-            ->where('user_type', UserType::Admin->value)
-            ->where('expires_at', '>', now())
-            ->first();
-
-        if (! $coachToken) {
-            $coachToken = AuthToken::create([
-                'user_type'  => UserType::Admin,
-                'user_id'    => $adminId,
-                'token'      => bin2hex(random_bytes(32)),
-                'expires_at' => now()->addHours(2),
-            ]);
-        }
-
-        // Cambiar la sesión al token del coach
-        session([
-            'wc_token'     => $coachToken->token,
-            'wc_user_type' => 'admin',
-            'wc_user_id'   => $adminId,
-        ]);
-
-        return redirect('/coach');
+        return redirect('/admin/coaches')
+            ->with('warning', 'El flujo antiguo de impersonificación de coach fue retirado. Usa el botón "Ver Portal" en la tabla de coaches.');
     }
 
-    /**
-     * POST /admin/coach-impersonate/stop
-     *
-     * Restaura la sesión original del superadmin.
-     */
-    public function stop(): RedirectResponse
+    public function stop(Request $request): RedirectResponse
     {
-        $superToken = session('wc_super_token');
-
-        if (! $superToken) {
-            return redirect('/admin');
-        }
-
-        session(['wc_token' => $superToken]);
-        session()->forget(['wc_super_token', 'wc_coach_name', 'wc_user_type', 'wc_user_id']);
-
-        return redirect('/admin/coaches');
+        Log::channel('security')->warning('IMPERSONATE_LEGACY_CONTROLLER_HIT', [
+            'route' => 'stop',
+            'ip'    => $request->ip(),
+        ]);
+        return redirect('/admin');
     }
 }

@@ -105,3 +105,35 @@ it('logout during impersonation redirects to stop and preserves root', function 
     expect(AuthToken::where('token', $superToken)->first())->not->toBeNull();
     expect(AuthToken::where('token', $impToken)->first())->toBeNull();
 });
+
+it('audit helper auto attaches impersonation_log_id during chain', function () {
+    $super = Admin::create([
+        'username' => 's_'.uniqid(), 'name' => 'S',
+        'password_hash' => password_hash('x', PASSWORD_BCRYPT),
+        'role' => UserRole::Superadmin, 'active' => true,
+    ]);
+    $coach = Admin::create([
+        'username' => 'c_'.uniqid(), 'name' => 'C',
+        'password_hash' => password_hash('x', PASSWORD_BCRYPT),
+        'role' => UserRole::Coach, 'active' => true,
+    ]);
+    $superToken = bin2hex(random_bytes(32));
+    AuthToken::create([
+        'user_type' => UserType::Admin->value, 'user_id' => $super->id,
+        'token' => $superToken, 'expires_at' => now()->addDays(7),
+    ]);
+
+    $r = $this->withHeaders(['Authorization' => "Bearer $superToken", 'Accept' => 'application/json'])
+              ->postJson("/api/v/admin/coaches/{$coach->id}/impersonate");
+    $logId = $r->json('log_id');
+
+    session(['wc_impersonation_chain' => [
+        ['log_id' => $logId, 'token' => $r->json('token'), 'target_type' => 'admin', 'target_id' => $coach->id, 'target_name' => 'C'],
+    ]]);
+
+    $caller = new class { use \App\Traits\Auditable; public function go() { $this->audit('test.during.imp'); } };
+    $caller->go();
+
+    $auditRow = \App\Models\AuditLog::query()->latest('id')->first();
+    expect($auditRow->diff['impersonation_log_id'] ?? null)->toBe($logId);
+});

@@ -50,3 +50,8 @@ Schedule::call(function () {
         })
         ->delete();
 })->daily()->name('auth-tokens:prune');
+
+// Coach impersonation cleanup — closes orphaned logs with expired tokens
+Schedule::command('wellcore:close-orphaned-impersonations')
+    ->dailyAt('03:30')
+    ->name('impersonations:close-orphaned');
