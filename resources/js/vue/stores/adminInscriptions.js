@@ -2,10 +2,10 @@ import { defineStore } from 'pinia';
 import { useApi } from '../composables/useApi';
 
 const COLUMN_STATUSES = {
-    sin_contactar: ['pendiente', 'nuevo'],
-    contactado:    ['contactado'],
-    plan_enviado:  ['convertido'],
-    activo:        ['pagado', 'activo'],
+    sin_contactar: ['pendiente', 'nuevo', 'pending_contact'],
+    contactado:    ['contactado', 'contacted'],
+    plan_enviado:  ['convertido', 'payment_sent'],
+    activo:        ['pagado', 'activo', 'paid'],
 };
 
 const CANONICAL_STATUS = {
@@ -31,7 +31,7 @@ export const useAdminInscriptionsStore = defineStore('adminInscriptions', {
 
     getters: {
         kanban: (s) => {
-            let items = s.all.filter(i => i.status !== 'rechazado');
+            let items = s.all.filter(i => !['rechazado', 'rejected'].includes(i.status));
             if (s.filters.plan) {
                 items = items.filter(i => i.plan_raw === s.filters.plan);
             }
@@ -59,7 +59,7 @@ export const useAdminInscriptionsStore = defineStore('adminInscriptions', {
             return cols;
         },
 
-        totalLeads: (s) => s.all.filter(i => i.status !== 'rechazado').length,
+        totalLeads: (s) => s.all.filter(i => !['rechazado', 'rejected'].includes(i.status)).length,
 
         secondsSinceRefresh: (s) =>
             s.lastRefresh ? Math.round((Date.now() - s.lastRefresh.getTime()) / 1000) : null,
@@ -75,16 +75,17 @@ export const useAdminInscriptionsStore = defineStore('adminInscriptions', {
                     params: { per_page: 100 },
                 });
                 const incoming = data.inscriptions ?? [];
+                const PENDING_STATUSES = ['pendiente', 'nuevo', 'pending_contact'];
 
                 if (silent) {
                     const newPending = incoming.filter(i =>
-                        ['pendiente', 'nuevo'].includes(i.status)
+                        PENDING_STATUSES.includes(i.status)
                     ).length;
                     this.newLeadsCount = Math.max(0, newPending - this.prevPendingCount);
                     this.prevPendingCount = newPending;
                 } else {
                     this.prevPendingCount = incoming.filter(i =>
-                        ['pendiente', 'nuevo'].includes(i.status)
+                        PENDING_STATUSES.includes(i.status)
                     ).length;
                     this.newLeadsCount = 0;
                 }
