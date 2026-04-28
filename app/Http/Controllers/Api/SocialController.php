@@ -141,6 +141,7 @@ class SocialController extends Controller
             'client_avatar' => $post->client?->avatar_url ?? null,
             'content' => $post->content,
             'post_type' => $post->post_type,
+            'image_url' => $post->image_path ? asset('storage/'.$post->image_path) : null,
             'created_at' => $post->created_at?->toIso8601String(),
             'reactions_count' => $post->reactions_count,
             'comments_count' => $post->comments_count,
@@ -234,30 +235,67 @@ class SocialController extends Controller
         $clientId = $client->id;
 
         $request->validate([
-            'content' => 'required|string|max:1000',
+            // Content can be empty when there's an image — but at least one of the two must be present.
+            'content' => 'nullable|string|max:1000',
             'post_type' => 'required|in:text,achievement,pr,photo',
+            'media' => 'nullable|file|mimes:jpeg,jpg,png,webp|max:10240',
         ]);
 
-        $content = $request->input('content');
+        $content = trim((string) $request->input('content', ''));
         $postType = $request->input('post_type');
+        $hasMedia = $request->hasFile('media');
 
-        if ($postType === 'achievement' && ! str_starts_with($content, 'Logro: ')) {
-            $content = 'Logro: '.$content;
-        } elseif ($postType === 'pr' && ! str_starts_with($content, 'Nuevo PR: ')) {
-            $content = 'Nuevo PR: '.$content;
+        if ($content === '' && ! $hasMedia) {
+            return response()->json([
+                'errors' => ['content' => ['Escribe algo o adjunta una foto.']],
+            ], 422);
+        }
+
+        if ($content !== '') {
+            if ($postType === 'achievement' && ! str_starts_with($content, 'Logro: ')) {
+                $content = 'Logro: '.$content;
+            } elseif ($postType === 'pr' && ! str_starts_with($content, 'Nuevo PR: ')) {
+                $content = 'Nuevo PR: '.$content;
+            }
+        }
+
+        $imagePath = null;
+        if ($hasMedia) {
+            try {
+                $result = app(ImagePipelineService::class)->processUpload(
+                    file: $request->file('media'),
+                    disk: 'public',
+                    directory: "community/{$clientId}",
+                    maxWidth: 1600,
+                    quality: 85,
+                );
+                $imagePath = $result['path_webp'];
+            } catch (\Throwable $e) {
+                Log::error('community post image upload failed', [
+                    'client_id' => $clientId,
+                    'error' => $e->getMessage(),
+                ]);
+
+                return response()->json([
+                    'message' => 'No pudimos procesar la imagen. Intenta de nuevo.',
+                ], 422);
+            }
         }
 
         $post = CommunityPost::create([
             'client_id' => $clientId,
             'content' => $content,
             'post_type' => $postType,
+            'image_path' => $imagePath,
         ]);
 
         ClientCacheService::invalidateDashboard($clientId);
+        Cache::forget('community:stats');
 
         return response()->json([
             'id' => $post->id,
             'created_at' => $post->created_at?->toIso8601String(),
+            'image_url' => $imagePath ? asset('storage/'.$imagePath) : null,
         ], 201);
     }
 

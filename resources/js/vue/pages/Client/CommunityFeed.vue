@@ -33,6 +33,39 @@ const postType = ref('text');
 const postContent = ref('');
 const postErrors = ref({});
 const submittingPost = ref(false);
+const postMediaFile = ref(null);
+const postMediaPreview = ref(null);
+const postMediaInputRef = ref(null);
+
+const POST_MEDIA_MIMES = ['image/jpeg', 'image/png', 'image/webp'];
+const POST_MEDIA_MAX_BYTES = 10 * 1024 * 1024;
+
+function handlePostMediaSelect(e) {
+  const file = e.target.files?.[0] ?? null;
+  e.target.value = '';
+  if (!file) return;
+  if (!POST_MEDIA_MIMES.includes(file.type)) {
+    toast.error('Formato no válido. Usa JPG, PNG o WebP.');
+    return;
+  }
+  if (file.size > POST_MEDIA_MAX_BYTES) {
+    toast.error('La imagen excede 10 MB.');
+    return;
+  }
+  if (postMediaPreview.value) {
+    URL.revokeObjectURL(postMediaPreview.value);
+  }
+  postMediaFile.value = file;
+  postMediaPreview.value = URL.createObjectURL(file);
+}
+
+function removePostMedia() {
+  if (postMediaPreview.value) {
+    URL.revokeObjectURL(postMediaPreview.value);
+  }
+  postMediaFile.value = null;
+  postMediaPreview.value = null;
+}
 
 // ── Comments ─────────────────────────────────────────────────────────
 const expandedComments = ref({});
@@ -178,23 +211,35 @@ async function loadMore() {
 
 // ── Create post ──────────────────────────────────────────────────────
 async function createPost() {
-  if (!postContent.value.trim()) return;
+  const trimmed = postContent.value.trim();
+  if (!trimmed && !postMediaFile.value) return;
   submittingPost.value = true;
   postErrors.value = {};
 
   try {
-    const response = await api.post('/api/v/client/community', {
-      post_type: postType.value,
-      content: postContent.value.trim(),
-    });
+    const fd = new FormData();
+    fd.append('post_type', postType.value);
+    fd.append('content', trimmed);
+    if (postMediaFile.value) {
+      fd.append('media', postMediaFile.value);
+    }
 
-    // Prepend new post locally
+    const response = await api.post('/api/v/client/community', fd);
+
+    let displayContent = trimmed;
+    if (postType.value === 'achievement' && trimmed && !trimmed.startsWith('Logro: ')) {
+      displayContent = 'Logro: ' + trimmed;
+    } else if (postType.value === 'pr' && trimmed && !trimmed.startsWith('Nuevo PR: ')) {
+      displayContent = 'Nuevo PR: ' + trimmed;
+    }
+
     const newPost = {
       id: response.data.id,
       client_id: currentClientId.value,
       client_name: localStorage.getItem('wc_user_name') || 'Yo',
-      content: postContent.value.trim(),
+      content: displayContent,
       post_type: postType.value,
+      image_url: response.data.image_url ?? null,
       created_at: response.data.created_at || new Date().toISOString(),
       reactions_count: 0,
       comments_count: 0,
@@ -203,18 +248,12 @@ async function createPost() {
       comments: [],
     };
 
-    // Apply prefix matching backend logic
-    if (postType.value === 'achievement' && !newPost.content.startsWith('Logro: ')) {
-      newPost.content = 'Logro: ' + newPost.content;
-    } else if (postType.value === 'pr' && !newPost.content.startsWith('Nuevo PR: ')) {
-      newPost.content = 'Nuevo PR: ' + newPost.content;
-    }
-
     posts.value.unshift(newPost);
     communityStats.value.total_posts++;
 
     postContent.value = '';
     postType.value = 'text';
+    removePostMedia();
   } catch (err) {
     if (err.response?.status === 422) {
       postErrors.value = err.response.data.errors || {};
@@ -702,11 +741,50 @@ function getReactionCount(post, type) {
           <!-- Validation errors -->
           <p v-if="postErrors.content" class="mt-1 text-sm text-red-400">{{ postErrors.content[0] || postErrors.content }}</p>
           <p v-if="postErrors.post_type" class="mt-1 text-sm text-red-400">{{ postErrors.post_type[0] }}</p>
+          <p v-if="postErrors.media" class="mt-1 text-sm text-red-400">{{ postErrors.media[0] || postErrors.media }}</p>
 
-          <div class="mt-3 flex justify-end">
+          <!-- Media preview -->
+          <div v-if="postMediaPreview" class="mt-3 relative inline-block max-w-xs">
+            <img
+              :src="postMediaPreview"
+              alt="Vista previa"
+              class="max-h-56 w-auto rounded-xl border border-wc-border object-cover"
+            />
+            <button
+              type="button"
+              @click="removePostMedia"
+              class="absolute right-2 top-2 rounded-full bg-black/70 p-1.5 text-white transition-opacity hover:bg-black/90"
+              aria-label="Quitar foto"
+            >
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="mt-3 flex items-center justify-between gap-2">
+            <!-- Attach photo button -->
+            <label
+              class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-wc-border bg-wc-bg-tertiary px-3 py-2 text-xs font-semibold uppercase tracking-wider text-wc-text-secondary transition-colors hover:border-wc-accent/40 hover:text-wc-text"
+              :class="{ 'pointer-events-none opacity-50': submittingPost }"
+            >
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+              </svg>
+              <span class="hidden sm:inline">{{ postMediaFile ? 'Cambiar foto' : 'Adjuntar foto' }}</span>
+              <span class="sm:hidden">Foto</span>
+              <input
+                ref="postMediaInputRef"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                class="hidden"
+                @change="handlePostMediaSelect"
+              />
+            </label>
+
             <button
               type="submit"
-              :disabled="submittingPost || !postContent.trim()"
+              :disabled="submittingPost || (!postContent.trim() && !postMediaFile)"
               class="btn-ripple btn-press flex items-center gap-2 rounded-xl bg-wc-accent px-6 py-2.5 text-sm font-semibold uppercase tracking-wider text-white shadow-lg shadow-wc-accent/30 transition-all hover:bg-wc-accent/90 disabled:opacity-50"
             >
               <!-- Send icon -->
@@ -832,7 +910,17 @@ function getReactionCount(post, type) {
               </Transition>
 
               <!-- Content -->
-              <div class="mt-3 whitespace-pre-line text-sm leading-relaxed text-wc-text">{{ post.content }}</div>
+              <div v-if="post.content" class="mt-3 whitespace-pre-line text-sm leading-relaxed text-wc-text">{{ post.content }}</div>
+
+              <!-- Image -->
+              <div v-if="post.image_url" class="mt-3 overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary">
+                <img
+                  :src="post.image_url"
+                  :alt="post.client_name + ' — foto del post'"
+                  loading="lazy"
+                  class="w-full max-h-[480px] object-cover"
+                />
+              </div>
 
               <!-- Reaction bar -->
               <div class="mt-4 flex flex-wrap items-center gap-1.5">
