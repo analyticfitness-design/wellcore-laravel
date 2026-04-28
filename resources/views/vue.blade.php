@@ -72,8 +72,14 @@
             userId: @json(session('wc_user_id')),
             userName: @json(session('wc_user_name')),
             portal: @json(session('wc_user_portal')),
+            // Legacy flags (mantenido por compat con flujos viejos)
             impersonating: @json(session()->has('wc_admin_token')),
             adminToken: @json(session('wc_admin_token')),
+            // Chain-aware impersonation slots
+            rootToken: @json(session('wc_root_token')),
+            rootUserId: @json(session('wc_root_user_id')),
+            rootUserName: @json(session('wc_root_user_name')),
+            impersonationChain: @json(session('wc_impersonation_chain', [])),
         };
     </script>
     @endif

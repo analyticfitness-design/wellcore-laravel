@@ -1,10 +1,12 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useAuthStore } from '../../stores/auth';
 import AdminLayout from '../../layouts/AdminLayout.vue';
 import EmailPreview from '../Coach/Invitations/EmailPreview.vue';
 
 const api = useApi();
+const authStore = useAuthStore();
 
 // ─── List state ───────────────────────────────────────────────────────────────
 const loading     = ref(false);
@@ -38,6 +40,34 @@ const editForm      = ref({ name: '', email: '', whatsapp: '', active: true });
 // ─── Confirm modals ───────────────────────────────────────────────────────────
 const confirmReset     = ref({ show: false, coach: null, loading: false, error: '' });
 const confirmDelete    = ref({ show: false, coach: null, loading: false, error: '' });
+const confirmImpersonate = ref({ show: false, coach: null, loading: false, error: '' });
+
+function openImpersonateConfirm(coach) {
+  confirmImpersonate.value = { show: true, coach, loading: false, error: '' };
+}
+
+async function doImpersonate() {
+  if (!confirmImpersonate.value.coach) return;
+  confirmImpersonate.value.loading = true;
+  confirmImpersonate.value.error = '';
+  try {
+    await authStore.startImpersonation({
+      type: 'admin',
+      targetId: confirmImpersonate.value.coach.id,
+    });
+    window.location.href = '/coach';
+  } catch (e) {
+    confirmImpersonate.value.error = e.message || 'No se pudo iniciar la impersonificacion.';
+    confirmImpersonate.value.loading = false;
+  }
+}
+
+function canImpersonate(coach) {
+  if (!coach) return false;
+  if (coach.role === 'superadmin') return false;
+  if (String(coach.id) === String(authStore.userId)) return false;
+  return true;
+}
 
 // ─── Preview del email de credenciales ────────────────────────────────────────
 const previewing     = ref(false);
@@ -404,6 +434,18 @@ onMounted(fetchCoaches);
                         <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
                       </svg>
                     </button>
+                    <button
+                      v-if="canImpersonate(coach)"
+                      @click="openImpersonateConfirm(coach)"
+                      :title="`Ver el portal de ${coach.name} (queda registrado en auditoria)`"
+                      class="rounded-lg border border-wc-border bg-wc-bg-secondary px-2.5 py-1.5 text-xs text-wc-text-secondary transition-colors hover:border-wc-accent hover:text-wc-accent"
+                    >
+                      <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                      </svg>
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -668,6 +710,47 @@ onMounted(fetchCoaches);
               <button @click="doDelete" :disabled="confirmDelete.loading"
                       class="flex-1 rounded-lg bg-red-500 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60">
                 {{ confirmDelete.loading ? 'Desactivando...' : 'Desactivar' }}
+              </button>
+            </div>
+          </div>
+        </Transition>
+      </div>
+    </Transition>
+
+    <!-- ==================== IMPERSONATE CONFIRM ==================== -->
+    <Transition name="fade">
+      <div v-if="confirmImpersonate.show" class="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="confirmImpersonate.show = false"></div>
+        <Transition name="slide-up">
+          <div v-if="confirmImpersonate.show" class="relative z-10 w-full max-w-md rounded-2xl border border-wc-border bg-wc-bg-secondary p-6 shadow-2xl">
+            <h3 class="font-display text-xl tracking-wide text-wc-text">VER PORTAL DE COACH</h3>
+            <p class="mt-3 text-sm text-wc-text-secondary">
+              Estás por entrar al portal de
+              <span class="font-semibold text-wc-text">{{ confirmImpersonate.coach?.name }}</span>
+              (@{{ confirmImpersonate.coach?.username }}).
+            </p>
+            <ul class="mt-4 space-y-1.5 text-xs text-wc-text-tertiary">
+              <li>• Verás todo lo que ve el coach.</li>
+              <li>• Las acciones quedan en su nombre, marcadas en auditoría.</li>
+              <li>• Vuelves cuando quieras desde el banner rojo.</li>
+              <li>• Sesión: 60 minutos.</li>
+            </ul>
+            <div v-if="confirmImpersonate.coach && !confirmImpersonate.coach.active"
+                 class="mt-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-400">
+              Este coach está inactivo en la plataforma. Estás entrando solo en modo soporte.
+            </div>
+            <p v-if="confirmImpersonate.error"
+               class="mt-3 rounded-lg border border-red-500/40 bg-red-500/10 p-3 text-xs text-red-400">
+              {{ confirmImpersonate.error }}
+            </p>
+            <div class="mt-5 flex gap-3">
+              <button @click="confirmImpersonate.show = false"
+                      class="flex-1 rounded-lg border border-wc-border bg-wc-bg-tertiary py-2.5 text-sm font-medium text-wc-text-secondary hover:text-wc-text">
+                Cancelar
+              </button>
+              <button @click="doImpersonate" :disabled="confirmImpersonate.loading"
+                      class="flex-1 rounded-lg bg-wc-accent py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60">
+                {{ confirmImpersonate.loading ? 'Entrando…' : 'Entrar al portal' }}
               </button>
             </div>
           </div>

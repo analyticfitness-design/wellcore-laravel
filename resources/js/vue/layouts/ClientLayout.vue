@@ -5,6 +5,7 @@ import { useAuthStore } from '../stores/auth';
 import { useApi } from '../composables/useApi';
 import NotificationBell from '../components/NotificationBell.vue';
 import CoachImpersonationBanner from '../components/CoachImpersonationBanner.vue';
+import SuperadminImpersonationBanner from '../components/SuperadminImpersonationBanner.vue';
 import RenewalBanner from '../components/RenewalBanner.vue';
 import MedalUnlockCelebration from '../components/MedalUnlockCelebration.vue';
 import LevelUpCelebration from '../components/LevelUpCelebration.vue';
@@ -221,6 +222,7 @@ const bottomNav = [
     :style="coachBrand?.primary_color ? { '--coach-accent': coachBrand.primary_color } : {}"
   >
 
+    <SuperadminImpersonationBanner />
     <!-- Coach-initiated impersonation banner (only visible in coach's browser session) -->
     <CoachImpersonationBanner />
 

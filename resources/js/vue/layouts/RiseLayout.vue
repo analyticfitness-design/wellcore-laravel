@@ -7,6 +7,7 @@ import LevelUpCelebration from '../components/LevelUpCelebration.vue';
 import BentoCelebration from '../components/celebrations/BentoCelebration.vue';
 import { useMedals } from '../composables/useMedals';
 import { useImpersonation } from '../composables/useImpersonation';
+import SuperadminImpersonationBanner from '../components/SuperadminImpersonationBanner.vue';
 
 const { newMedal, levelUp, clearNewMedal, clearLevelUp, fetchMedals: initMedals } = useMedals();
 
@@ -141,6 +142,7 @@ const bottomNav = [
 
 <template>
   <div class="min-h-screen bg-wc-bg text-wc-text">
+    <SuperadminImpersonationBanner />
 
     <!-- Impersonation banner -->
     <div v-if="isImpersonating" class="fixed top-0 left-0 right-0 z-[90] flex items-center justify-center gap-3 bg-amber-500 px-4 py-2 text-sm font-medium text-black">
