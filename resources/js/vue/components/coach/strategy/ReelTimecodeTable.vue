@@ -5,45 +5,22 @@ defineProps({
 </script>
 
 <template>
-    <div class="overflow-x-auto rounded-lg border border-wc-border">
-        <table class="w-full min-w-[720px] border-collapse text-left">
+    <div class="timecode-scroll">
+        <table class="timecode-table">
             <thead>
-                <tr class="border-b border-wc-border bg-wc-bg/40">
-                    <th class="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.2em] text-wc-text-tertiary">
-                        Tiempo
-                    </th>
-                    <th class="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.2em] text-wc-text-tertiary">
-                        Diálogo
-                    </th>
-                    <th class="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.2em] text-wc-text-tertiary">
-                        Visual
-                    </th>
-                    <th class="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.2em] text-wc-text-tertiary">
-                        Notas de edit
-                    </th>
+                <tr>
+                    <th>Tiempo</th>
+                    <th>Diálogo</th>
+                    <th>Visual</th>
+                    <th>Notas de edit</th>
                 </tr>
             </thead>
             <tbody>
-                <tr
-                    v-for="(row, idx) in rows"
-                    :key="idx"
-                    class="border-b border-wc-border/60 last:border-b-0 align-top"
-                >
-                    <td class="px-4 py-4 font-mono text-sm tabular-nums text-wc-text">
-                        {{ row.time }}
-                    </td>
-                    <td class="px-4 py-4 text-sm leading-relaxed text-wc-text">
-                        {{ row.dialogue }}
-                    </td>
-                    <td class="px-4 py-4 text-sm leading-relaxed text-wc-text-secondary">
-                        {{ row.visual }}
-                    </td>
-                    <td
-                        class="px-4 py-4 font-editorial text-sm italic leading-relaxed"
-                        style="color: #c8a769"
-                    >
-                        {{ row.edit_notes }}
-                    </td>
+                <tr v-for="(row, idx) in rows" :key="idx">
+                    <td class="col-t">{{ row.time }}</td>
+                    <td class="col-d">{{ row.dialogue }}</td>
+                    <td class="col-v">{{ row.visual }}</td>
+                    <td class="col-e">{{ row.edit_notes }}</td>
                 </tr>
             </tbody>
         </table>

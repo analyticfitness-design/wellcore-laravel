@@ -2,40 +2,83 @@
 import { ref, computed } from 'vue';
 import ReelTimecodeTable from './ReelTimecodeTable.vue';
 import PieceMarkPublishedButton from './PieceMarkPublishedButton.vue';
-import { coachStrategyApi } from '../../../api/coachStrategy';
+// import { coachStrategyApi } from '../../../api/coachStrategy';
 
 const props = defineProps({
     reel: { type: Object, required: true },
     dropId: { type: Number, required: true },
     pieceState: { type: Object, default: null },
     dropAssets: { type: Array, default: () => [] },
+    drop: { type: Object, default: null },
 });
 
-const reelAssets = computed(() => {
-    const list = (props.dropAssets ?? []).filter((a) => a.linked_to?.type === 'reel' && a.linked_to.reel_key === props.reel.key);
-    list.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
-    return list;
-});
+// Reel-asset linking kept for backwards compat — not rendered (assets live in AssetGallery).
+// const reelAssets = computed(() => {
+//     const list = (props.dropAssets ?? []).filter(
+//         (a) => a.linked_to?.type === 'reel' && a.linked_to.reel_key === props.reel.key,
+//     );
+//     list.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+//     return list;
+// });
+// async function downloadAsset(asset) {
+//     await coachStrategyApi.downloadSingle(asset);
+// }
 
-async function downloadAsset(asset) {
-    await coachStrategyApi.downloadSingle(asset);
-}
-
-const notesOpen = ref(false);
 const captionCopied = ref(false);
 
 const reelNumber = computed(() => (props.reel.key === 'reel_1' ? '1' : '2'));
 
-const headerStrip = computed(() => {
+const reelTypeLabel = computed(() => String(props.reel.type ?? '').toUpperCase());
+
+const reelTypeBadgeLabel = computed(() => {
+    const t = String(props.reel.type ?? '').toLowerCase();
+    if (!t) return '';
+    return t.charAt(0).toUpperCase() + t.slice(1);
+});
+
+const reelBadgeClass = computed(() => {
+    const t = String(props.reel.type ?? '').toLowerCase();
+    return t === 'educativo' ? 'badge-edu' : 'badge-conv';
+});
+
+const platformText = computed(() => {
     const meta = props.reel.format_meta ?? {};
     const platforms = (meta.platforms ?? []).join(' · ').toUpperCase();
     const dur = meta.duration_sec_min && meta.duration_sec_max
         ? `${meta.duration_sec_min}-${meta.duration_sec_max}s`
         : '';
-    return `REEL_${reelNumber.value} · ${(props.reel.type ?? '').toUpperCase()} · ${dur} · ${platforms}`;
+    return [dur, platforms].filter(Boolean).join(' · ');
 });
 
 const stateValue = computed(() => props.pieceState?.state ?? 'pending');
+const isPosted = computed(() => stateValue.value === 'published');
+
+// Hook HTML — escape then wrap **word** / __word__ as <u>word</u>
+function escapeHtml(str) {
+    return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+const hookHtml = computed(() => {
+    const safe = escapeHtml(props.reel.hook?.text ?? '');
+    return safe.replace(/\*\*(.+?)\*\*|__(.+?)__/g, (_, a, b) => {
+        const word = a ?? b ?? '';
+        return `<u>${word}</u>`;
+    });
+});
+
+const igHandle = computed(() => props.drop?.coach?.handle ?? 'tu.coach');
+const avatarInitial = computed(() => igHandle.value.charAt(0).toUpperCase());
+
+const captionPreview = computed(() => {
+    const cap = String(props.reel.caption ?? '').replace(/\s+/g, ' ').trim();
+    if (cap.length <= 80) return cap;
+    return cap.slice(0, 80) + '...';
+});
 
 async function copyCaption() {
     try {
@@ -49,124 +92,112 @@ async function copyCaption() {
 </script>
 
 <template>
-    <article
-        class="mb-6 space-y-6 rounded-xl border border-wc-border bg-wc-bg-secondary py-10 pl-12 pr-6 transition-all duration-[240ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:translate-y-[-2px] hover:shadow-[0_20px_40px_-15px_rgba(220,38,38,0.25)]"
-    >
-        <header class="flex flex-wrap items-start justify-between gap-4">
-            <div class="min-w-0 flex-1">
-                <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary">
-                    {{ headerStrip }}
-                </span>
-                <h3 class="mt-3 font-display text-3xl uppercase leading-tight tracking-tight text-wc-text">
-                    {{ reel.title }}
-                </h3>
+    <article class="reel-card" :class="{ posted: isPosted }">
+        <header class="reel-head">
+            <div class="reel-num-col">
+                <div class="reel-big">R{{ reelNumber }}</div>
+                <div class="reel-type-label">{{ reelTypeLabel }}</div>
             </div>
-            <PieceMarkPublishedButton
-                :drop-id="dropId"
-                :piece-key="reel.key"
-                :state="stateValue"
-            />
+            <div class="reel-head-center">
+                <div class="reel-meta-row">
+                    <span class="badge" :class="reelBadgeClass">{{ reelTypeBadgeLabel }}</span>
+                    <span class="reel-platform">{{ platformText }}</span>
+                </div>
+                <div class="reel-title">{{ reel.title }}</div>
+            </div>
+            <div class="reel-head-right">
+                <PieceMarkPublishedButton
+                    :drop-id="dropId"
+                    :piece-key="reel.key"
+                    :state="stateValue"
+                />
+            </div>
         </header>
 
-        <section class="border-l-2 border-wc-accent pl-5">
-            <span class="mb-2 block font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary">
-                Hook
-            </span>
-            <p class="font-display text-2xl uppercase leading-tight tracking-tight text-wc-text">
-                {{ reel.hook?.text }}
-            </p>
-            <p
-                v-if="reel.hook?.rationale"
-                class="mt-3 font-editorial text-base italic leading-relaxed text-wc-text-secondary"
-            >
-                {{ reel.hook.rationale }}
-            </p>
-        </section>
-
-        <section v-if="reel.timecode_table?.length">
-            <span class="mb-3 block font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary">
-                Guion por escenas
-            </span>
-            <ReelTimecodeTable :rows="reel.timecode_table" />
-        </section>
-
-        <section v-if="reel.caption">
-            <div class="flex items-center justify-between">
-                <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary">
-                    Caption
-                </span>
-                <button
-                    type="button"
-                    @click="copyCaption"
-                    class="font-mono text-[10px] uppercase tracking-[0.2em] text-wc-text-secondary transition-colors hover:text-wc-accent"
-                >
-                    {{ captionCopied ? 'Copiado ✓' : 'Copiar' }}
-                </button>
-            </div>
-            <div class="mt-2 rounded-lg bg-wc-bg-tertiary p-4">
-                <p class="select-text whitespace-pre-wrap text-sm leading-relaxed text-wc-text">
-                    {{ reel.caption }}
-                </p>
-            </div>
-        </section>
-
-        <section v-if="reel.music_note" class="flex items-center gap-2">
-            <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary">
-                Música
-            </span>
-            <span class="font-editorial text-sm italic text-wc-text">{{ reel.music_note }}</span>
-            <span
-                v-if="reel.format_meta?.bpm_hint"
-                class="ml-2 font-mono text-[10px] uppercase tracking-[0.2em] text-wc-text-tertiary"
-            >
-                · {{ reel.format_meta.bpm_hint }}
-            </span>
-        </section>
-
-        <section v-if="reelAssets.length">
-            <span class="mb-3 block font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary">
-                Material visual ({{ reelAssets.length }})
-            </span>
-            <div class="grid grid-cols-2 gap-3 md:grid-cols-3">
-                <div v-for="asset in reelAssets" :key="asset.id" class="group relative overflow-hidden rounded-lg border border-wc-border bg-wc-bg">
-                    <div class="relative aspect-[9/16] bg-black">
-                        <img v-if="asset.kind === 'image'" :src="asset.url" :alt="asset.filename" loading="lazy" class="absolute inset-0 h-full w-full object-cover" />
-                        <div v-else class="absolute inset-0 flex items-center justify-center font-mono text-[10px] text-wc-text-tertiary">VIDEO · {{ asset.filename }}</div>
-                    </div>
-                    <button type="button" @click="downloadAsset(asset)"
-                        class="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1.5 bg-black/80 py-2 font-mono text-[10px] uppercase tracking-[0.15em] text-white opacity-0 transition-opacity backdrop-blur group-hover:opacity-100">
-                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
+        <div class="reel-body">
+            <div class="hook-block">
+                <div class="hook-eyebrow">
+                    <span class="ic ic-red ic-sm">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z" />
                         </svg>
-                        Descargar
-                    </button>
+                    </span>
+                    <span class="eyebrow">Hook de apertura</span>
+                </div>
+                <p class="hook-text" v-html="hookHtml"></p>
+                <p v-if="reel.hook?.rationale" class="hook-rationale">{{ reel.hook.rationale }}</p>
+            </div>
+
+            <div v-if="reel.timecode_table?.length">
+                <div class="section-eyebrow">
+                    <span class="ic ic-sky ic-sm"></span>
+                    <span class="eyebrow">Guion por escenas</span>
+                </div>
+                <ReelTimecodeTable :rows="reel.timecode_table" />
+            </div>
+
+            <div v-if="reel.caption" class="caption-section">
+                <div class="ig-mockup">
+                    <div class="ig-head">
+                        <div class="ig-avatar">{{ avatarInitial }}</div>
+                        <span class="ig-handle">{{ igHandle }}</span>
+                        <span class="ig-more">···</span>
+                    </div>
+                    <div class="ig-img-ph">reel · 9:16</div>
+                    <div class="ig-actions">
+                        <svg class="ig-act-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                        </svg>
+                        <svg class="ig-act-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12" />
+                        </svg>
+                        <svg class="ig-save-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
+                        </svg>
+                    </div>
+                    <div class="ig-body">
+                        <p class="ig-cap-text">
+                            <strong>{{ igHandle }}</strong> {{ captionPreview }}<span style="color:#888"> más</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="caption-raw-wrap">
+                    <div class="caption-raw-head">
+                        <div style="display:flex;align-items:center;gap:.5rem;">
+                            <span class="ic ic-sky ic-sm"></span>
+                            <span class="eyebrow">Caption</span>
+                        </div>
+                        <button
+                            type="button"
+                            class="copy-btn"
+                            :class="{ copied: captionCopied }"
+                            @click="copyCaption"
+                        >
+                            {{ captionCopied ? 'Copiado ✓' : 'Copiar' }}
+                        </button>
+                    </div>
+                    <pre class="caption-raw">{{ reel.caption }}</pre>
                 </div>
             </div>
-        </section>
 
-        <section v-if="reel.production_notes">
-            <button
-                type="button"
-                @click="notesOpen = !notesOpen"
-                class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary transition-colors hover:text-wc-text"
-            >
-                <svg
-                    class="h-3 w-3 transition-transform"
-                    :class="notesOpen ? 'rotate-90' : ''"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-                Notas de producción
-            </button>
-            <div v-show="notesOpen" class="mt-3 pl-5">
-                <p class="font-editorial text-sm italic leading-relaxed text-wc-text-secondary">
-                    {{ reel.production_notes }}
-                </p>
+            <div v-if="reel.music_note" class="music-row">
+                <span class="ic ic-violet ic-sm">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 9l10.5-3m0 6.553v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 11-.99-3.467l2.31-.66a2.25 2.25 0 001.632-2.163zm0 0V2.25L9 5.25v10.303" />
+                    </svg>
+                </span>
+                <span class="music-text">{{ reel.music_note }}</span>
+                <span v-if="reel.format_meta?.bpm_hint" class="bpm-badge">● {{ reel.format_meta.bpm_hint }} BPM</span>
             </div>
-        </section>
+
+            <details v-if="reel.production_notes" class="prod-notes">
+                <summary>
+                    <span class="prod-chev">▶</span>
+                    <span class="ic ic-sky ic-sm" style="margin-left:.25rem"></span>
+                    Notas de producción
+                </summary>
+                <div class="prod-body">{{ reel.production_notes }}</div>
+            </details>
+        </div>
     </article>
 </template>
