@@ -444,4 +444,11 @@ Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:adm
     Route::delete('/marketing/drops/{drop}/assets/{assetId}', [\App\Http\Controllers\Api\Admin\Marketing\DropAssetController::class, 'destroy']);
     Route::get('/coaches/{coach}/marketing-profile', [CoachProfileController::class, 'show'])->whereNumber('coach');
     Route::put('/coaches/{coach}/marketing-profile', [CoachProfileController::class, 'update'])->whereNumber('coach');
+
+    // Forms catalog + responses (CMS read-only)
+    Route::get('/forms', [\App\Http\Controllers\Api\AdminFormsController::class, 'catalog']);
+    Route::get('/forms/{area}/{slug}/responses', [\App\Http\Controllers\Api\AdminFormsController::class, 'responses'])
+        ->where(['area' => 'client|public|rise', 'slug' => '[a-z0-9-]+']);
+    Route::get('/forms/{area}/{slug}/export', [\App\Http\Controllers\Api\AdminFormsController::class, 'exportCsv'])
+        ->where(['area' => 'client|public|rise', 'slug' => '[a-z0-9-]+']);
 });

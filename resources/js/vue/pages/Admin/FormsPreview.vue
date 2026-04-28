@@ -1,231 +1,269 @@
 <script setup>
-import { ref, computed } from 'vue';
-import AdminLayout from '../../layouts/AdminLayout.vue';
+import { ref, computed, onMounted, watch } from 'vue';
+import AdminLayout from '@/layouts/AdminLayout.vue';
+import AdminGreeting from '@/components/admin/dashboard/AdminGreeting.vue';
+import AdminFormsList from '@/components/admin/forms/AdminFormsList.vue';
+import AdminFormStats from '@/components/admin/forms/AdminFormStats.vue';
+import AdminFormResponsesTable from '@/components/admin/forms/AdminFormResponsesTable.vue';
+import AdminFormPreviewModal from '@/components/admin/forms/AdminFormPreviewModal.vue';
+import { useAdminFormsStore } from '@/stores/adminForms';
 
-// Catálogo declarativo de formularios — debe espejar FormPreviewLoader.FORM_REGISTRY
-const FORMS = [
-    // Inscripción / pre-signup (asesorado antes de inscribirse)
-    { area: 'public', slug: 'inscripcion',     name: 'Inscripcion',          description: 'Form principal de signup del cliente nuevo. Lo llena el asesorado.', tag: 'Inscripcion' },
-    { area: 'public', slug: 'coach-apply',     name: 'Aplicar como Coach',   description: 'Form publico para que coaches potenciales apliquen al equipo.', tag: 'Inscripcion' },
-    { area: 'public', slug: 'rise-enroll',     name: 'Inscripcion RISE',     description: 'Form de enrollment al programa RISE. Pre-signup.', tag: 'Inscripcion' },
-    { area: 'public', slug: 'presencial',      name: 'Inscripcion Presencial', description: 'Form para reservar sesion presencial.', tag: 'Inscripcion' },
+const store = useAdminFormsStore();
 
-    // Cliente (post-signup, panel cliente)
-    { area: 'client', slug: 'checkin',         name: 'Check-in semanal',     description: 'Wizard semanal de bienestar, entreno, nutricion y notas.', tag: 'Cliente' },
-    { area: 'client', slug: 'metrics',         name: 'Metricas corporales',  description: 'Peso, % grasa, % musculo, medidas (chest, waist, hip).', tag: 'Cliente' },
-    { area: 'client', slug: 'profile',         name: 'Editar perfil',        description: 'Datos personales: nombre, ciudad, fecha nacimiento, objetivo.', tag: 'Cliente' },
-    { area: 'client', slug: 'settings',        name: 'Configuracion cuenta', description: 'Email, password, preferencias de notificacion.', tag: 'Cliente' },
-    { area: 'client', slug: 'habits',          name: 'Habitos diarios',      description: 'Toggle diario de habitos asignados al plan.', tag: 'Cliente' },
-    { area: 'client', slug: 'supplements',     name: 'Suplementos',          description: 'Registro diario de toma de suplementos asignados.', tag: 'Cliente' },
-    { area: 'client', slug: 'photos',          name: 'Fotos de progreso',    description: 'Subida de fotos frente/perfil/espalda.', tag: 'Cliente' },
-    { area: 'client', slug: 'video-checkin',   name: 'Video check-in',       description: 'Subida de video corto de tecnica para revision del coach.', tag: 'Cliente' },
-    { area: 'client', slug: 'tickets',         name: 'Soporte / tickets',    description: 'Form para abrir un ticket de soporte tecnico o de plan.', tag: 'Cliente' },
-
-    // RISE (post-enrollment, panel RISE)
-    { area: 'rise',   slug: 'habits',          name: 'Habitos RISE',         description: 'Tracking diario de habitos del programa RISE.', tag: 'RISE' },
-    { area: 'rise',   slug: 'measurements',    name: 'Mediciones RISE',      description: 'Mediciones corporales del programa RISE.', tag: 'RISE' },
-    { area: 'rise',   slug: 'photos',          name: 'Fotos RISE',           description: 'Fotos de progreso del programa RISE.', tag: 'RISE' },
-    { area: 'rise',   slug: 'tracking',        name: 'Tracking diario RISE', description: 'Form diario de agua, sueno, pasos, notas.', tag: 'RISE' },
-    { area: 'rise',   slug: 'profile',         name: 'Perfil RISE',          description: 'Editar perfil del usuario RISE.', tag: 'RISE' },
-];
-
-const filterTag = ref('all'); // all | Inscripcion | Cliente | RISE
+const filterTag = ref('all');
 const searchQuery = ref('');
+const TAGS = ['all', 'Inscripcion', 'Cliente', 'RISE'];
 
-const tags = ['all', 'Inscripcion', 'Cliente', 'RISE'];
+const filteredForms = computed(() => store.filteredForms(filterTag.value, searchQuery.value));
 
-const filteredForms = computed(() => {
-    const q = searchQuery.value.trim().toLowerCase();
-    return FORMS.filter(f => {
-        if (filterTag.value !== 'all' && f.tag !== filterTag.value) return false;
-        if (! q) return true;
-        return f.name.toLowerCase().includes(q)
-            || f.description.toLowerCase().includes(q)
-            || f.slug.toLowerCase().includes(q);
-    });
-});
+const selectedKey = computed(() =>
+    store.selectedForm ? `${store.selectedForm.area}/${store.selectedForm.slug}` : null
+);
 
-const tagBadgeColor = (tag) => ({
-    'Inscripcion': 'bg-amber-500/15 text-amber-400 border border-amber-500/30',
-    'Cliente':     'bg-sky-500/15 text-sky-400 border border-sky-500/30',
-    'RISE':        'bg-violet-500/15 text-violet-400 border border-violet-500/30',
-}[tag] || 'bg-wc-bg-tertiary text-wc-text-secondary');
+const hasSelectedWithSubmissions = computed(() =>
+    !!store.selectedForm?.has_submissions
+);
 
-// Selected form for preview
-const selected = ref(null);
-
-const previewUrl = computed(() => {
-    if (! selected.value) return '';
-    return `/admin/forms-preview/${selected.value.area}/${selected.value.slug}`;
-});
-
-const iframeKey = ref(0);
-function reloadIframe() { iframeKey.value++; }
+function selectForm(form) {
+    store.selectForm(form);
+}
 
 function openPreview(form) {
-    selected.value = form;
-    iframeKey.value++;
+    store.openPreview(form);
 }
 
-function closePreview() {
-    selected.value = null;
-}
-
-function openInNewTab() {
-    if (previewUrl.value) window.open(previewUrl.value, '_blank');
-}
+onMounted(() => {
+    store.fetchCatalog();
+});
 </script>
 
 <template>
   <AdminLayout>
-    <div class="space-y-6">
+    <div class="forms-page">
 
       <!-- Header -->
-      <div>
-        <h1 class="font-display text-3xl tracking-wide text-wc-text">FORMULARIOS</h1>
-        <p class="mt-1 text-sm text-wc-text-secondary">
-          Vista previa visual de todos los formularios que llenan asesorados, clientes y usuarios RISE.
-          Los datos no se envian — solo se renderiza el componente con su CSS para auditar la experiencia.
-        </p>
-      </div>
+      <AdminGreeting
+        greeting="Formularios"
+        :critical-alerts="0"
+        :pending-tickets="0"
+        :review-tickets="0"
+      />
 
-      <!-- Filters -->
-      <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <!-- Tag filter pills -->
-        <div class="flex flex-wrap gap-2">
+      <!-- Filter bar -->
+      <div class="forms-filter-bar">
+        <div class="forms-filter-pills" role="group" aria-label="Filtrar por categoría">
           <button
-            v-for="t in tags"
-            :key="t"
-            @click="filterTag = t"
-            :class="[
-              'rounded-full px-3 py-1 text-xs font-semibold transition-colors',
-              filterTag === t
-                ? 'bg-wc-accent text-white'
-                : 'border border-wc-border bg-wc-bg-tertiary text-wc-text-secondary hover:text-wc-text'
-            ]"
-          >{{ t === 'all' ? 'Todos' : t }}</button>
+            v-for="tag in TAGS"
+            :key="tag"
+            class="filter-pill"
+            :class="{ 'filter-pill--active': filterTag === tag }"
+            :aria-pressed="filterTag === tag"
+            @click="filterTag = tag"
+          >
+            {{ tag === 'all' ? 'TODOS' : tag.toUpperCase() }}
+          </button>
         </div>
 
-        <!-- Search -->
-        <div class="relative flex-1 sm:ml-auto sm:max-w-sm">
-          <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <div class="forms-search-wrap">
+          <svg aria-hidden="true" class="forms-search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
             <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
           </svg>
           <input
             v-model="searchQuery"
-            type="text"
+            type="search"
             placeholder="Buscar formulario..."
-            class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary py-2 pl-10 pr-4 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none"
+            class="forms-search"
+            aria-label="Buscar formulario"
           />
         </div>
       </div>
 
-      <!-- Empty state -->
-      <div v-if="! filteredForms.length" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-12 text-center">
-        <p class="text-sm text-wc-text-secondary">Ningun formulario coincide con los filtros.</p>
+      <!-- Error state -->
+      <div v-if="store.error" class="forms-error" role="alert">
+        <span>{{ store.error }}</span>
+        <button class="forms-error__retry" @click="store.fetchCatalog">Reintentar</button>
       </div>
 
-      <!-- Forms grid -->
-      <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <button
-          v-for="form in filteredForms"
-          :key="`${form.area}/${form.slug}`"
-          @click="openPreview(form)"
-          class="group flex flex-col rounded-xl border border-wc-border bg-wc-bg-secondary p-5 text-left transition-all hover:-translate-y-0.5 hover:border-wc-accent/50 hover:shadow-lg"
-        >
-          <div class="mb-3 flex items-center justify-between">
-            <span :class="['rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider', tagBadgeColor(form.tag)]">
-              {{ form.tag }}
-            </span>
-            <svg class="h-4 w-4 text-wc-text-tertiary transition-transform group-hover:translate-x-0.5 group-hover:text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-            </svg>
-          </div>
+      <!-- Main content grid -->
+      <div class="forms-secondary" :class="{ 'has-panel': store.selectedForm }">
 
-          <h3 class="font-display text-lg leading-tight tracking-wide text-wc-text">{{ form.name.toUpperCase() }}</h3>
-          <p class="mt-2 text-xs leading-relaxed text-wc-text-secondary">{{ form.description }}</p>
+        <!-- Left: cards list -->
+        <div class="forms-main">
+          <AdminFormsList
+            :forms="filteredForms"
+            :selected-slug="selectedKey"
+            :loading="store.loading"
+            @select="selectForm"
+            @preview="openPreview"
+          />
+        </div>
 
-          <div class="mt-4 flex items-center gap-2 text-[10px] text-wc-text-tertiary">
-            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
-            </svg>
-            <code class="font-mono">/{{ form.area }}/{{ form.slug }}</code>
+        <!-- Right: stats + responses (visible when a form is selected) -->
+        <Transition name="panel">
+          <div v-if="store.selectedForm" class="forms-panel">
+            <AdminFormStats :form="store.selectedForm" />
+            <AdminFormResponsesTable v-if="hasSelectedWithSubmissions" />
           </div>
-        </button>
+        </Transition>
       </div>
+
     </div>
 
-    <!-- Preview Modal — fullscreen iframe -->
-    <Transition
-      enter-active-class="transition-opacity duration-200"
-      enter-from-class="opacity-0"
-      enter-to-class="opacity-100"
-      leave-active-class="transition-opacity duration-200"
-      leave-from-class="opacity-100"
-      leave-to-class="opacity-0"
-    >
-      <div v-if="selected" class="fixed inset-0 z-50 flex flex-col bg-black/90 backdrop-blur-sm">
-
-        <!-- Toolbar -->
-        <div class="flex items-center justify-between gap-3 border-b border-wc-border bg-wc-bg-secondary px-4 py-3">
-          <div class="flex items-center gap-3 min-w-0">
-            <span :class="['shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider', tagBadgeColor(selected.tag)]">
-              {{ selected.tag }}
-            </span>
-            <div class="min-w-0">
-              <h2 class="truncate font-display text-base tracking-wide text-wc-text">{{ selected.name.toUpperCase() }}</h2>
-              <p class="truncate text-[11px] text-wc-text-tertiary">{{ selected.description }}</p>
-            </div>
-          </div>
-
-          <div class="flex shrink-0 items-center gap-2">
-            <button
-              @click="reloadIframe"
-              class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-tertiary text-wc-text-secondary transition-colors hover:text-wc-text"
-              title="Recargar preview"
-              aria-label="Recargar"
-            >
-              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-              </svg>
-            </button>
-
-            <button
-              @click="openInNewTab"
-              class="flex h-9 items-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 text-xs font-semibold text-wc-text-secondary transition-colors hover:text-wc-text"
-              title="Abrir en pestana nueva"
-            >
-              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-              </svg>
-              Pestana nueva
-            </button>
-
-            <button
-              @click="closePreview"
-              class="flex h-9 w-9 items-center justify-center rounded-lg bg-wc-accent text-white transition-colors hover:bg-red-700"
-              title="Cerrar"
-              aria-label="Cerrar"
-            >
-              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Iframe — sandbox prevents form submissions and top-frame nav -->
-        <div class="relative flex-1 overflow-hidden bg-wc-bg">
-          <iframe
-            :key="iframeKey"
-            :src="previewUrl"
-            class="absolute inset-0 h-full w-full border-0"
-            sandbox="allow-same-origin allow-scripts allow-forms"
-            title="Vista previa del formulario"
-          ></iframe>
-        </div>
-      </div>
-    </Transition>
+    <!-- Preview modal (Teleport to body inside component) -->
+    <AdminFormPreviewModal
+      :form="store.previewModal"
+      @close="store.closePreview()"
+    />
   </AdminLayout>
 </template>
+
+<style scoped>
+.forms-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-bottom: 40px;
+}
+
+/* Filter bar */
+.forms-filter-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+@media (min-width: 640px) {
+    .forms-filter-bar { flex-direction: row; align-items: center; }
+}
+
+.forms-filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.filter-pill {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 99px;
+    border: 1px solid var(--color-wc-border);
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-secondary);
+    cursor: pointer;
+    transition: color 0.15s var(--ease-out), border-color 0.15s var(--ease-out), background 0.15s var(--ease-out);
+}
+.filter-pill:hover {
+    color: var(--color-wc-text);
+    border-color: var(--color-wc-border-2);
+}
+.filter-pill--active {
+    background: var(--color-wc-red-soft);
+    border-color: var(--color-wc-accent);
+    color: var(--color-wc-text);
+}
+
+.forms-search-wrap {
+    position: relative;
+    flex: 1;
+    max-width: 300px;
+}
+@media (max-width: 639px) { .forms-search-wrap { max-width: 100%; } }
+
+.forms-search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-wc-text-tertiary);
+    pointer-events: none;
+}
+.forms-search {
+    width: 100%;
+    height: 36px;
+    padding: 0 12px 0 32px;
+    border-radius: 8px;
+    border: 1px solid var(--color-wc-border);
+    background: rgba(255, 255, 255, 0.03);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-wc-text);
+    outline: none;
+    transition: border-color 0.15s var(--ease-out);
+}
+.forms-search::placeholder { color: var(--color-wc-text-tertiary); }
+.forms-search:focus { border-color: var(--color-wc-border-2); }
+
+/* Error */
+.forms-error {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--color-wc-accent);
+    background: var(--color-wc-red-soft);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-wc-red-text);
+}
+.forms-error__retry {
+    margin-left: auto;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--color-wc-accent);
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-wc-red-text);
+    cursor: pointer;
+}
+
+/* Secondary layout */
+.forms-secondary {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+@media (min-width: 1024px) {
+    .forms-secondary.has-panel {
+        grid-template-columns: 3fr 2fr;
+    }
+}
+
+.forms-main { min-width: 0; }
+
+.forms-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+
+/* Panel slide transition */
+.panel-enter-active {
+    transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+.panel-leave-active {
+    transition: opacity 0.15s var(--ease-out);
+}
+.panel-enter-from {
+    opacity: 0;
+    transform: translateY(8px);
+}
+@media (min-width: 1024px) {
+    .panel-enter-from { transform: translateX(8px); }
+}
+.panel-leave-to { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+    .panel-enter-active, .panel-leave-active { transition: none; }
+    .filter-pill, .forms-search { transition: none; }
+}
+</style>
