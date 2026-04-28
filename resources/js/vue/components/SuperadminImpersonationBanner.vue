@@ -64,10 +64,33 @@ async function handleEnd() {
         refresh();
         window.location.href = redirect || '/admin/coaches';
     } catch (e) {
-        ending.value = false;
-        alert('No se pudo cerrar la impersonificación. Recargando…');
-        window.location.href = '/admin/coaches';
+        // Last-resort: even if everything fails, clear local state and go to login.
+        ['wc_token', 'wc_user_type', 'wc_user_id', 'wc_user_name', 'wc_user_portal',
+         'wc_root_token', 'wc_root_user_id', 'wc_root_user_name',
+         'wc_impersonation_chain', 'wc_admin_token', 'wc_impersonating',
+         'wc_impersonating_by_coach']
+            .forEach(k => localStorage.removeItem(k));
+        window.location.href = '/login';
     }
+}
+
+// Emergency escape: long-press the banner (1.5s) clears all impersonation state
+// and sends the user to /login. Useful if for any reason the normal "Volver"
+// flow leaves them stuck in a half-impersonated state.
+let pressTimer = null;
+function startPress() {
+    pressTimer = setTimeout(() => {
+        if (!confirm('¿Salida de emergencia? Se cerrará la sesión y tendrás que loguearte de nuevo.')) return;
+        ['wc_token', 'wc_user_type', 'wc_user_id', 'wc_user_name', 'wc_user_portal',
+         'wc_root_token', 'wc_root_user_id', 'wc_root_user_name',
+         'wc_impersonation_chain', 'wc_admin_token', 'wc_impersonating',
+         'wc_impersonating_by_coach']
+            .forEach(k => localStorage.removeItem(k));
+        window.location.href = '/login';
+    }, 1500);
+}
+function cancelPress() {
+    if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
 }
 
 onMounted(() => {
@@ -88,6 +111,13 @@ onUnmounted(() => {
         v-if="chain.length > 0 && rootUserName"
         class="sticky top-0 left-0 right-0 z-[100] flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-white shadow-lg transition-colors sm:justify-center sm:gap-3 sm:px-4 sm:py-2 sm:text-sm"
         :class="isExpiringSoon ? 'bg-amber-500 animate-pulse' : 'bg-wc-accent'"
+        :title="'Mantén presionado 1.5s para salida de emergencia'"
+        @mousedown="startPress"
+        @mouseup="cancelPress"
+        @mouseleave="cancelPress"
+        @touchstart="startPress"
+        @touchend="cancelPress"
+        @touchcancel="cancelPress"
     >
         <svg class="hidden h-4 w-4 shrink-0 sm:block" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round"

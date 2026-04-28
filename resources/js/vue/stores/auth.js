@@ -221,14 +221,22 @@ export const useAuthStore = defineStore('auth', () => {
             Accept: 'application/json',
             'X-CSRF-TOKEN': csrfToken,
         };
-        const res = await fetch('/api/v/admin/impersonate/end', { method: 'POST', headers, credentials: 'same-origin' });
-        const data = await res.json().catch(() => ({}));
+
+        let data = {};
+        try {
+            const res = await fetch('/api/v/admin/impersonate/end', { method: 'POST', headers, credentials: 'same-origin' });
+            data = await res.json().catch(() => ({}));
+        } catch {
+            // Even if the API fails, we still need to recover local state below.
+            data = {};
+        }
 
         const rootToken = localStorage.getItem('wc_root_token') || data.root_token || '';
         const rootId    = localStorage.getItem('wc_root_user_id') || '';
         const rootName  = localStorage.getItem('wc_root_user_name') || '';
 
-        if (rootToken) {
+        if (rootToken && rootId) {
+            // Happy path: restore root admin session.
             localStorage.setItem('wc_token', rootToken);
             localStorage.setItem('wc_user_type', 'admin');
             localStorage.setItem('wc_user_id', rootId);
@@ -236,14 +244,31 @@ export const useAuthStore = defineStore('auth', () => {
             localStorage.setItem('wc_user_portal', '/admin');
             token.value = rootToken;
             userType.value = 'admin';
-            userId.value = rootId || null;
+            userId.value = rootId;
             userPortal.value = '/admin';
+
+            ['wc_root_token', 'wc_root_user_id', 'wc_root_user_name',
+             'wc_impersonation_chain', 'wc_admin_token', 'wc_impersonating',
+             'wc_impersonating_by_coach']
+                .forEach(k => localStorage.removeItem(k));
+
+            return data.redirect_url || '/admin/coaches';
         }
 
-        ['wc_root_token', 'wc_root_user_id', 'wc_root_user_name', 'wc_impersonation_chain']
+        // Recovery path: no usable root snapshot. Clear EVERYTHING and send the
+        // user back to /login instead of leaving them stuck with the impersonation
+        // bearer + admin layout (which would 403 on every admin endpoint).
+        ['wc_token', 'wc_user_type', 'wc_user_id', 'wc_user_name', 'wc_user_portal',
+         'wc_root_token', 'wc_root_user_id', 'wc_root_user_name',
+         'wc_impersonation_chain', 'wc_admin_token', 'wc_impersonating',
+         'wc_impersonating_by_coach', 'wc_force_password_change']
             .forEach(k => localStorage.removeItem(k));
+        token.value = null;
+        userType.value = null;
+        userId.value = null;
+        userPortal.value = null;
 
-        return data.redirect_url || '/admin/coaches';
+        return '/login';
     }
 
     return {
