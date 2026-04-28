@@ -404,127 +404,213 @@ class AdminPlanTicketController extends Controller
         return view('admin.plan-tickets.print', ['ticket' => $ticket]);
     }
 
-    // ─── Stats ──────────────────────────────────────────────────────────
+    // ─── Stats v2 (period-aware) ──────────────────────────────────────────
 
     public function stats(Request $request): JsonResponse
     {
         $this->resolveAdminOrFail($request);
 
-        $totalsRaw = PlanTicket::query()
-            ->select('status', DB::raw('COUNT(*) as total'))
-            ->groupBy('status')
-            ->pluck('total', 'status')
-            ->toArray();
+        $periodParam = $request->query('period', 'month');
+        $period = in_array($periodParam, ['week', 'month', 'quarter', 'year'], true)
+            ? $periodParam
+            : 'month';
 
-        $totals = [
-            'draft' => (int) ($totalsRaw[PlanTicketStatus::Borrador->value] ?? 0),
-            'pendiente' => (int) ($totalsRaw[PlanTicketStatus::Pendiente->value] ?? 0),
-            'en_revision' => (int) ($totalsRaw[PlanTicketStatus::EnRevision->value] ?? 0),
-            'completado' => (int) ($totalsRaw[PlanTicketStatus::Completado->value] ?? 0),
-            'rechazado' => (int) ($totalsRaw[PlanTicketStatus::Rechazado->value] ?? 0),
-            'total' => (int) array_sum($totalsRaw),
-        ];
+        $since = match ($period) {
+            'week'    => now()->subDays(6)->startOfDay(),
+            'quarter' => now()->subDays(89)->startOfDay(),
+            'year'    => now()->subDays(364)->startOfDay(),
+            default   => now()->subDays(29)->startOfDay(),
+        };
 
-        $avgCompleteHours = (float) PlanTicket::query()
-            ->whereNotNull('submitted_at')
-            ->whereNotNull('completed_at')
+        $created = PlanTicket::whereNotNull('submitted_at')
+            ->where('submitted_at', '>=', $since)->count();
+
+        $approved = PlanTicket::where('status', PlanTicketStatus::Completado->value)
+            ->whereNotNull('completed_at')->where('completed_at', '>=', $since)->count();
+
+        $rejected = PlanTicket::where('status', PlanTicketStatus::Rechazado->value)
+            ->whereNotNull('rejected_at')->where('rejected_at', '>=', $since)->count();
+
+        $avgTimeHours = (float) PlanTicket::where('status', PlanTicketStatus::Completado->value)
+            ->whereNotNull('submitted_at')->whereNotNull('completed_at')
+            ->where('completed_at', '>=', $since)
             ->selectRaw('AVG(TIMESTAMPDIFF(MINUTE, submitted_at, completed_at)) / 60 as h')
             ->value('h');
 
-        $avgReviewHours = (float) PlanTicket::query()
-            ->whereNotNull('submitted_at')
-            ->whereNotNull('reviewed_at')
-            ->selectRaw('AVG(TIMESTAMPDIFF(MINUTE, submitted_at, reviewed_at)) / 60 as h')
-            ->value('h');
+        $rejCodes = PlanTicket::where('status', PlanTicketStatus::Rechazado->value)
+            ->whereNotNull('rejected_at')->where('rejected_at', '>=', $since)
+            ->whereNotNull('rejection_code')
+            ->select('rejection_code', DB::raw('COUNT(*) as cnt'))
+            ->groupBy('rejection_code')->orderByDesc('cnt')->limit(5)->get();
 
-        $overdueCount = PlanTicket::query()->overdue()->count();
+        $totalRejCodes = $rejCodes->sum('cnt');
+        $rejectionReasons = $rejCodes->map(fn ($r) => [
+            'code'  => $r->rejection_code,
+            'label' => self::rejectionCodeLabel($r->rejection_code),
+            'count' => (int) $r->cnt,
+            'pct'   => $totalRejCodes > 0 ? round($r->cnt / $totalRejCodes * 100, 1) : 0.0,
+        ])->values()->toArray();
 
-        $perCoach = PlanTicket::query()
-            ->select(
-                'coach_id',
-                DB::raw('MAX(coach_name) as coach_name'),
-                DB::raw('SUM(CASE WHEN submitted_at IS NOT NULL THEN 1 ELSE 0 END) as submitted'),
-                DB::raw("SUM(CASE WHEN status = '".PlanTicketStatus::Completado->value."' THEN 1 ELSE 0 END) as completed"),
-                DB::raw("SUM(CASE WHEN status = '".PlanTicketStatus::Rechazado->value."' THEN 1 ELSE 0 END) as rejected"),
-                DB::raw('AVG(CASE WHEN submitted_at IS NOT NULL AND completed_at IS NOT NULL THEN TIMESTAMPDIFF(MINUTE, submitted_at, completed_at) END) / 60 as avg_hours'),
-            )
+        return response()->json([
+            'period'             => $period,
+            'kpis'               => [
+                'created'        => $created,
+                'approved'       => $approved,
+                'rejected'       => $rejected,
+                'avg_time_hours' => round($avgTimeHours, 1),
+            ],
+            'throughput'         => $this->buildThroughput($since, $period),
+            'coach_ranking'      => $this->buildCoachRanking($since),
+            'rejection_reasons'  => $rejectionReasons,
+            'resolution_buckets' => $this->buildResolutionBuckets($since),
+        ]);
+    }
+
+    private function buildThroughput(\Carbon\Carbon $since, string $period): array
+    {
+        if ($period === 'year') {
+            $tSub = PlanTicket::whereNotNull('submitted_at')->where('submitted_at', '>=', $since)
+                ->selectRaw("DATE_FORMAT(submitted_at, '%Y-%m') as m, COUNT(*) as c")
+                ->groupBy('m')->pluck('c', 'm')->toArray();
+            $tApp = PlanTicket::whereNotNull('completed_at')->where('completed_at', '>=', $since)
+                ->selectRaw("DATE_FORMAT(completed_at, '%Y-%m') as m, COUNT(*) as c")
+                ->groupBy('m')->pluck('c', 'm')->toArray();
+            $tRej = PlanTicket::whereNotNull('rejected_at')->where('rejected_at', '>=', $since)
+                ->selectRaw("DATE_FORMAT(rejected_at, '%Y-%m') as m, COUNT(*) as c")
+                ->groupBy('m')->pluck('c', 'm')->toArray();
+
+            $result = [];
+            for ($i = 11; $i >= 0; $i--) {
+                $key = now()->subMonths($i)->format('Y-m');
+                $result[] = ['date' => $key, 'created' => (int) ($tSub[$key] ?? 0), 'approved' => (int) ($tApp[$key] ?? 0), 'rejected' => (int) ($tRej[$key] ?? 0)];
+            }
+            return $result;
+        }
+
+        $days = match ($period) {
+            'week'    => 7,
+            'quarter' => 90,
+            default   => 30,
+        };
+
+        $tSub = PlanTicket::whereNotNull('submitted_at')->where('submitted_at', '>=', $since)
+            ->selectRaw('DATE(submitted_at) as d, COUNT(*) as c')
+            ->groupBy('d')->pluck('c', 'd')->toArray();
+        $tApp = PlanTicket::whereNotNull('completed_at')->where('completed_at', '>=', $since)
+            ->selectRaw('DATE(completed_at) as d, COUNT(*) as c')
+            ->groupBy('d')->pluck('c', 'd')->toArray();
+        $tRej = PlanTicket::whereNotNull('rejected_at')->where('rejected_at', '>=', $since)
+            ->selectRaw('DATE(rejected_at) as d, COUNT(*) as c')
+            ->groupBy('d')->pluck('c', 'd')->toArray();
+
+        $result = [];
+        for ($i = 0; $i < $days; $i++) {
+            $date = now()->subDays($days - 1 - $i)->toDateString();
+            $result[] = ['date' => $date, 'created' => (int) ($tSub[$date] ?? 0), 'approved' => (int) ($tApp[$date] ?? 0), 'rejected' => (int) ($tRej[$date] ?? 0)];
+        }
+        return $result;
+    }
+
+    private function buildCoachRanking(\Carbon\Carbon $since): array
+    {
+        $sinceStr = $since->toDateTimeString();
+
+        $rows = DB::table('plan_tickets')
+            ->select('coach_id', DB::raw('MAX(coach_name) as name'))
+            ->selectRaw("SUM(CASE WHEN status = 'completado' AND completed_at >= ? THEN 1 ELSE 0 END) as approved_count", [$sinceStr])
+            ->selectRaw("SUM(CASE WHEN status = 'rechazado' AND rejected_at >= ? THEN 1 ELSE 0 END) as rejected_count", [$sinceStr])
+            ->whereNotNull('coach_id')
             ->groupBy('coach_id')
-            ->get()
-            ->map(function ($row) {
-                $submitted = (int) $row->submitted;
-                $rejected = (int) $row->rejected;
+            ->orderByDesc('approved_count')
+            ->get();
 
+        return $rows->filter(fn ($r) => (int) $r->approved_count > 0 || (int) $r->rejected_count > 0)
+            ->map(function ($r) {
+                $approved = (int) $r->approved_count;
+                $rejected = (int) $r->rejected_count;
+                $total    = $approved + $rejected;
                 return [
-                    'coach_id' => (int) $row->coach_id,
-                    'coach_name' => $row->coach_name,
-                    'submitted' => $submitted,
-                    'completed' => (int) $row->completed,
-                    'rejected' => $rejected,
-                    'rejection_rate_pct' => $submitted > 0 ? round(($rejected / $submitted) * 100, 2) : 0.0,
-                    'avg_time_to_complete_hours' => $row->avg_hours !== null ? round((float) $row->avg_hours, 2) : null,
+                    'coach_id'       => (int) $r->coach_id,
+                    'name'           => $r->name,
+                    'approved_count' => $approved,
+                    'rejected_count' => $rejected,
+                    'rejection_pct'  => $total > 0 ? round($rejected / $total * 100, 1) : 0.0,
                 ];
             })
             ->values()
             ->toArray();
+    }
 
-        $perPlanRaw = PlanTicket::query()
-            ->select('plan_type', DB::raw('COUNT(*) as total'))
-            ->groupBy('plan_type')
-            ->pluck('total', 'plan_type')
+    private function buildResolutionBuckets(\Carbon\Carbon $since): array
+    {
+        $minutes = DB::table('plan_tickets')
+            ->whereIn('status', [PlanTicketStatus::Completado->value, PlanTicketStatus::Rechazado->value])
+            ->whereNotNull('submitted_at')
+            ->where(function ($q) use ($since) {
+                $q->where(fn ($q2) => $q2->whereNotNull('completed_at')->where('completed_at', '>=', $since))
+                  ->orWhere(fn ($q2) => $q2->whereNotNull('rejected_at')->where('rejected_at', '>=', $since));
+            })
+            ->selectRaw('TIMESTAMPDIFF(MINUTE, submitted_at, COALESCE(completed_at, rejected_at)) as mins')
+            ->pluck('mins')
+            ->map(fn ($v) => max(0, (int) $v))
+            ->values()
             ->toArray();
 
-        $perPlanType = [
-            'esencial' => (int) ($perPlanRaw[PlanType::Esencial->value] ?? 0),
-            'metodo' => (int) ($perPlanRaw[PlanType::Metodo->value] ?? 0),
-            'elite' => (int) ($perPlanRaw[PlanType::Elite->value] ?? 0),
+        $defs = [
+            ['bucket' => '<2h',    'min' => 0,     'max' => 119],
+            ['bucket' => '2-6h',   'min' => 120,   'max' => 359],
+            ['bucket' => '6-12h',  'min' => 360,   'max' => 719],
+            ['bucket' => '12-24h', 'min' => 720,   'max' => 1439],
+            ['bucket' => '1-3d',   'min' => 1440,  'max' => 4319],
+            ['bucket' => '3-7d',   'min' => 4320,  'max' => 10079],
+            ['bucket' => '+7d',    'min' => 10080, 'max' => PHP_INT_MAX],
         ];
 
-        $since = now()->subDays(29)->startOfDay();
-
-        $trendSubmitted = PlanTicket::query()
-            ->whereNotNull('submitted_at')
-            ->where('submitted_at', '>=', $since)
-            ->selectRaw('DATE(submitted_at) as d, COUNT(*) as c')
-            ->groupBy('d')
-            ->pluck('c', 'd')
-            ->toArray();
-
-        $trendCompleted = PlanTicket::query()
-            ->whereNotNull('completed_at')
-            ->where('completed_at', '>=', $since)
-            ->selectRaw('DATE(completed_at) as d, COUNT(*) as c')
-            ->groupBy('d')
-            ->pluck('c', 'd')
-            ->toArray();
-
-        $trendRejected = PlanTicket::query()
-            ->whereNotNull('rejected_at')
-            ->where('rejected_at', '>=', $since)
-            ->selectRaw('DATE(rejected_at) as d, COUNT(*) as c')
-            ->groupBy('d')
-            ->pluck('c', 'd')
-            ->toArray();
-
-        $trend = [];
-        for ($i = 0; $i < 30; $i++) {
-            $date = now()->subDays(29 - $i)->toDateString();
-            $trend[] = [
-                'date' => $date,
-                'submitted' => (int) ($trendSubmitted[$date] ?? 0),
-                'completed' => (int) ($trendCompleted[$date] ?? 0),
-                'rejected' => (int) ($trendRejected[$date] ?? 0),
-            ];
+        $counts = array_fill(0, count($defs), 0);
+        foreach ($minutes as $m) {
+            foreach ($defs as $idx => $d) {
+                if ($m >= $d['min'] && $m <= $d['max']) { $counts[$idx]++; break; }
+            }
         }
 
-        return response()->json([
-            'totals' => $totals,
-            'avg_time_submit_to_complete_hours' => round($avgCompleteHours, 2),
-            'avg_time_to_review_hours' => round($avgReviewHours, 2),
-            'overdue_count' => $overdueCount,
-            'per_coach' => $perCoach,
-            'per_plan_type' => $perPlanType,
-            'trend_30d' => $trend,
-        ]);
+        $total  = count($minutes);
+        $result = [];
+        foreach ($defs as $idx => $d) {
+            $result[] = ['bucket' => $d['bucket'], 'count' => $counts[$idx], 'pct' => $total > 0 ? round($counts[$idx] / $total * 100, 1) : 0.0];
+        }
+
+        return ['buckets' => $result, 'stats' => $this->computeTimeStats($minutes), 'total' => $total];
+    }
+
+    private function computeTimeStats(array $minutes): array
+    {
+        if (empty($minutes)) {
+            return ['mean_hours' => null, 'median_hours' => null, 'p90_hours' => null];
+        }
+        sort($minutes);
+        $n      = count($minutes);
+        $mean   = array_sum($minutes) / $n;
+        $mid    = intdiv($n, 2);
+        $median = $n % 2 === 0 ? ($minutes[$mid - 1] + $minutes[$mid]) / 2 : $minutes[$mid];
+        $p90    = $minutes[min((int) ceil(0.9 * $n) - 1, $n - 1)];
+        return [
+            'mean_hours'   => round($mean / 60, 1),
+            'median_hours' => round($median / 60, 1),
+            'p90_hours'    => round($p90 / 60, 1),
+        ];
+    }
+
+    private static function rejectionCodeLabel(string $code): string
+    {
+        return match ($code) {
+            'info_incompleta'            => 'Info incompleta',
+            'contexto_insuficiente'      => 'Contexto insuficiente',
+            'conflicto_datos'            => 'Conflicto de datos',
+            'fuera_de_scope'             => 'Fuera de scope',
+            'necesita_validacion_medica' => 'Validacion medica',
+            'otro'                       => 'Otro',
+            default                      => $code,
+        };
     }
 
     protected function notifyCoachOfStatusChange(PlanTicket $ticket, PlanTicketStatus $status, Admin $admin): void

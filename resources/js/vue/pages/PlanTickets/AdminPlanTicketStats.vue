@@ -1,229 +1,314 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useApi } from '../../composables/useApi';
+import { onMounted, onBeforeUnmount } from 'vue';
+import { storeToRefs } from 'pinia';
 import AdminLayout from '../../layouts/AdminLayout.vue';
+import AdminTicketsStatsKPIs from '../../components/admin/plan-tickets-stats/AdminTicketsStatsKPIs.vue';
+import AdminTicketsThroughputChart from '../../components/admin/plan-tickets-stats/AdminTicketsThroughputChart.vue';
+import AdminTicketsCoachRanking from '../../components/admin/plan-tickets-stats/AdminTicketsCoachRanking.vue';
+import AdminTicketsRejectReasons from '../../components/admin/plan-tickets-stats/AdminTicketsRejectReasons.vue';
+import AdminTicketsResolutionTime from '../../components/admin/plan-tickets-stats/AdminTicketsResolutionTime.vue';
+import { useAdminTicketsStatsStore } from '../../stores/adminTicketsStats.js';
 
-const api = useApi();
-const loading = ref(true);
-const stats = ref(null);
+const store = useAdminTicketsStatsStore();
+const { loading, error, period, kpis, throughput, coachRanking, rejectionReasons, resolutionBuckets, isEmpty, hasData } = storeToRefs(store);
 
-async function fetchStats() {
-  loading.value = true;
-  try {
-    const { data } = await api.get('/api/v/admin/plan-tickets/stats');
-    stats.value = data || null;
-  } catch (e) {
-    stats.value = null;
-  } finally {
-    loading.value = false;
-  }
+const PERIODS = [
+  { value: 'week',    label: 'SEMANA' },
+  { value: 'month',   label: 'MES' },
+  { value: 'quarter', label: 'TRIMESTRE' },
+  { value: 'year',    label: 'AÑO' },
+];
+
+function setPeriod(p) {
+  if (p !== period.value) store.setPeriod(p);
 }
 
-const totals = computed(() => stats.value?.totals || {});
-const perCoach = computed(() => {
-  const list = stats.value?.per_coach || [];
-  return [...list].sort((a, b) => (b.submitted || 0) - (a.submitted || 0));
-});
-const perPlanType = computed(() => stats.value?.per_plan_type || {});
-const trend30d = computed(() => stats.value?.trend_30d || []);
-
-const maxPlanType = computed(() => {
-  const vals = Object.values(perPlanType.value).map(v => Number(v) || 0);
-  return Math.max(1, ...vals);
-});
-const maxTrend = computed(() => {
-  const all = trend30d.value.flatMap(d => [d.submitted || 0, d.completed || 0, d.rejected || 0]);
-  return Math.max(1, ...all);
-});
-
-const PLAN_TYPE_LABEL = { esencial: 'Esencial', metodo: 'Metodo', elite: 'Elite' };
-
-function num(v) { return typeof v === 'number' ? v : (Number(v) || 0); }
-
-function rejectionRate(coach) {
-  const sub = num(coach.submitted);
-  if (sub === 0) return 0;
-  return Math.round((num(coach.rejected) / sub) * 100);
-}
-
-function fmtHours(v) {
-  if (v === null || v === undefined) return '-';
-  const n = Number(v);
-  if (!Number.isFinite(n)) return '-';
-  return n.toFixed(1);
-}
-
-function fmtDay(d) {
-  if (!d) return '';
-  try {
-    return new Date(d).toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
-  } catch { return d; }
-}
-
-onMounted(fetchStats);
+onMounted(() => store.fetch());
 </script>
 
 <template>
   <AdminLayout>
-    <div class="space-y-6">
+    <div class="stats-page">
 
-      <!-- Header -->
-      <div>
-        <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">Estadisticas de Tickets de Plan</h1>
-        <p class="mt-1 text-sm text-wc-text-secondary">Salud del proceso de briefs.</p>
-      </div>
+      <!-- Page header -->
+      <header class="page-header">
+        <div class="header-left">
+          <h1 class="page-title">STATS DE TICKETS</h1>
+          <p class="page-tagline">"El dato sin accion es solo decoracion."</p>
+        </div>
+        <div class="period-selector" role="group" aria-label="Seleccionar periodo">
+          <button
+            v-for="p in PERIODS"
+            :key="p.value"
+            class="period-pill"
+            :class="{ 'period-pill--active': period === p.value }"
+            @click="setPeriod(p.value)"
+            :aria-pressed="period === p.value"
+          >
+            {{ p.label }}
+          </button>
+        </div>
+      </header>
 
-      <!-- Loading -->
-      <template v-if="loading">
-        <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
-          <div v-for="n in 4" :key="n" class="animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary h-24"></div>
+      <!-- Loading skeleton -->
+      <template v-if="loading && !hasData">
+        <div class="skeleton-grid-4">
+          <div v-for="n in 4" :key="n" class="skeleton-card"></div>
         </div>
-        <div class="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-3">
-          <div v-for="n in 3" :key="'s'+n" class="animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary h-24"></div>
+        <div class="skeleton-card skeleton-card--tall"></div>
+        <div class="skeleton-grid-2">
+          <div class="skeleton-card skeleton-card--tall"></div>
+          <div class="skeleton-card skeleton-card--tall"></div>
         </div>
+        <div class="skeleton-card skeleton-card--tall"></div>
       </template>
 
-      <!-- Empty -->
-      <div v-else-if="!stats" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-12 text-center">
-        <p class="text-sm text-wc-text-secondary">No se pudieron cargar las estadisticas.</p>
+      <!-- Error -->
+      <div v-else-if="error" class="error-state">
+        <span class="error-num">ERR</span>
+        <p class="error-msg">{{ error }}</p>
+        <button class="error-retry" @click="store.fetch()">REINTENTAR →</button>
       </div>
 
-      <template v-else>
-        <!-- KPI cards (row 1) -->
-        <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Total</p>
-            <p class="mt-1 font-data text-2xl font-bold text-wc-text">{{ num(totals.total) }}</p>
-          </div>
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Pendientes</p>
-            <p class="mt-1 font-data text-2xl font-bold text-yellow-500">{{ num(totals.pendiente) }}</p>
-          </div>
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Completados</p>
-            <p class="mt-1 font-data text-2xl font-bold text-emerald-500">{{ num(totals.completado) }}</p>
-          </div>
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Rechazados</p>
-            <p class="mt-1 font-data text-2xl font-bold text-red-400">{{ num(totals.rechazado) }}</p>
-          </div>
+      <!-- Global empty state (no activity at all in period) -->
+      <div v-else-if="hasData && isEmpty" class="global-empty">
+        <div class="global-empty-num">—</div>
+        <p class="global-empty-msg">
+          "Sin datos del periodo seleccionado. Los stats se generan automaticamente cuando hay actividad en el pipeline."
+        </p>
+        <button
+          class="global-empty-cta"
+          @click="setPeriod('year')"
+          :disabled="period === 'year'"
+        >VER OTRO PERIODO →</button>
+      </div>
+
+      <!-- Content -->
+      <template v-else-if="hasData">
+        <!-- KPIs -->
+        <AdminTicketsStatsKPIs :kpis="kpis" />
+
+        <!-- Throughput chart -->
+        <AdminTicketsThroughputChart :throughput="throughput" :period="period" />
+
+        <!-- Coach ranking + Rejection reasons (2-col desktop) -->
+        <div class="two-col">
+          <AdminTicketsCoachRanking :coaches="coachRanking" />
+          <AdminTicketsRejectReasons :reasons="rejectionReasons" />
         </div>
 
-        <!-- Secondary KPIs (row 2) -->
-        <div class="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-3">
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">SLA promedio a completar</p>
-            <p class="mt-1 font-data text-2xl font-bold text-wc-text">{{ fmtHours(stats.avg_time_submit_to_complete_hours) }} <span class="text-sm text-wc-text-tertiary">hrs</span></p>
-          </div>
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Tiempo prom. a revision</p>
-            <p class="mt-1 font-data text-2xl font-bold text-wc-text">{{ fmtHours(stats.avg_time_to_review_hours) }} <span class="text-sm text-wc-text-tertiary">hrs</span></p>
-          </div>
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Vencidos</p>
-            <p class="mt-1 font-data text-2xl font-bold" :class="num(stats.overdue_count) > 0 ? 'text-red-400' : 'text-wc-text'">{{ num(stats.overdue_count) }}</p>
-          </div>
-        </div>
-
-        <!-- Distribution per plan type (row 3) -->
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="font-display text-lg tracking-wide text-wc-text">Distribucion por tipo de plan</h2>
-          </div>
-          <div v-if="Object.keys(perPlanType).length === 0" class="text-sm text-wc-text-tertiary">Sin datos.</div>
-          <div v-else class="space-y-3">
-            <div v-for="(val, key) in perPlanType" :key="key" class="flex items-center gap-3">
-              <span class="w-24 shrink-0 text-right text-xs font-medium text-wc-text-secondary">{{ PLAN_TYPE_LABEL[key] || key }}</span>
-              <div class="relative h-6 flex-1 overflow-hidden rounded bg-wc-bg-secondary">
-                <div
-                  class="absolute inset-y-0 left-0 rounded bg-wc-accent/70 transition-all duration-1000 ease-out"
-                  :style="{ width: (num(val) / maxPlanType * 100) + '%' }"
-                ></div>
-              </div>
-              <span class="w-10 shrink-0 text-right font-data text-sm font-bold text-wc-text">{{ num(val) }}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Per coach table (row 4) -->
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
-          <div class="p-5 pb-3">
-            <h2 class="font-display text-lg tracking-wide text-wc-text">Por coach</h2>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead class="border-y border-wc-border bg-wc-bg-secondary text-left text-xs uppercase tracking-wider text-wc-text-tertiary">
-                <tr>
-                  <th class="px-4 py-3 font-semibold">Coach</th>
-                  <th class="px-4 py-3 font-semibold text-right">Enviados</th>
-                  <th class="px-4 py-3 font-semibold text-right">Completados</th>
-                  <th class="px-4 py-3 font-semibold text-right">Rechazados</th>
-                  <th class="px-4 py-3 font-semibold text-right">% Rechazo</th>
-                  <th class="px-4 py-3 font-semibold text-right">SLA (hrs)</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-wc-border">
-                <tr v-if="perCoach.length === 0">
-                  <td colspan="6" class="px-4 py-6 text-center text-sm text-wc-text-tertiary">Sin datos por coach.</td>
-                </tr>
-                <tr v-for="c in perCoach" :key="c.coach_id || c.coach_name" class="hover:bg-wc-bg-secondary/40 transition">
-                  <td class="px-4 py-3 text-sm font-medium text-wc-text">{{ c.coach_name || '-' }}</td>
-                  <td class="px-4 py-3 text-right font-data text-sm text-wc-text">{{ num(c.submitted) }}</td>
-                  <td class="px-4 py-3 text-right font-data text-sm text-emerald-500">{{ num(c.completed) }}</td>
-                  <td class="px-4 py-3 text-right font-data text-sm text-red-400">{{ num(c.rejected) }}</td>
-                  <td class="px-4 py-3 text-right font-data text-sm" :class="rejectionRate(c) > 20 ? 'text-red-400' : 'text-wc-text-secondary'">{{ rejectionRate(c) }}%</td>
-                  <td class="px-4 py-3 text-right font-data text-sm text-wc-text-secondary">{{ fmtHours(c.avg_time_to_complete_hours) }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Trend 30d chart (row 5) — simple SVG bars -->
-        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-          <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
-            <h2 class="font-display text-lg tracking-wide text-wc-text">Tendencia ultimos 30 dias</h2>
-            <div class="flex items-center gap-4 text-xs">
-              <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-sm bg-blue-500"></span><span class="text-wc-text-secondary">Enviados</span></span>
-              <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-sm bg-emerald-500"></span><span class="text-wc-text-secondary">Completados</span></span>
-              <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-sm bg-red-400"></span><span class="text-wc-text-secondary">Rechazados</span></span>
-            </div>
-          </div>
-
-          <div v-if="trend30d.length === 0" class="text-sm text-wc-text-tertiary">Sin datos de tendencia.</div>
-          <div v-else class="overflow-x-auto">
-            <div class="flex items-end gap-1 h-48 min-w-full" :style="{ minWidth: Math.max(trend30d.length * 28, 400) + 'px' }">
-              <div
-                v-for="(d, idx) in trend30d"
-                :key="idx"
-                class="group relative flex-1 flex flex-col items-center gap-0.5"
-                :title="`${fmtDay(d.date)} · Env: ${num(d.submitted)} · Comp: ${num(d.completed)} · Rech: ${num(d.rejected)}`"
-              >
-                <div class="flex items-end gap-0.5 h-44 w-full">
-                  <div
-                    class="flex-1 bg-blue-500 rounded-t-sm transition-all group-hover:opacity-80"
-                    :style="{ height: (num(d.submitted) / maxTrend * 100) + '%' }"
-                  ></div>
-                  <div
-                    class="flex-1 bg-emerald-500 rounded-t-sm transition-all group-hover:opacity-80"
-                    :style="{ height: (num(d.completed) / maxTrend * 100) + '%' }"
-                  ></div>
-                  <div
-                    class="flex-1 bg-red-400 rounded-t-sm transition-all group-hover:opacity-80"
-                    :style="{ height: (num(d.rejected) / maxTrend * 100) + '%' }"
-                  ></div>
-                </div>
-                <span
-                  v-if="idx % Math.ceil(trend30d.length / 10) === 0"
-                  class="text-[9px] text-wc-text-tertiary whitespace-nowrap"
-                >{{ fmtDay(d.date) }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        <!-- Resolution time histogram -->
+        <AdminTicketsResolutionTime :resolution-buckets="resolutionBuckets" />
       </template>
 
     </div>
   </AdminLayout>
 </template>
+
+<style scoped>
+.stats-page {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+}
+@media (min-width: 1024px) {
+    .stats-page { gap: 16px; }
+}
+
+/* Header */
+.page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+.header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.page-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 5vw, 44px);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-wc-text);
+    margin: 0;
+    line-height: 1;
+}
+.page-tagline {
+    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--color-wc-gold, #C8A769);
+    margin: 0;
+    line-height: 1.55;
+}
+
+/* Period selector */
+.period-selector {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+.period-pill {
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid var(--color-wc-border);
+    background: transparent;
+    font-family: var(--font-mono, monospace);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-tertiary);
+    cursor: pointer;
+    transition: background 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease), color 0.15s var(--ease-out, ease);
+}
+.period-pill:hover {
+    color: var(--color-wc-text-secondary);
+    border-color: var(--color-wc-border-2);
+}
+.period-pill--active {
+    background: var(--color-wc-red-soft, rgba(220,38,38,0.1));
+    border-color: var(--color-wc-accent, #DC2626);
+    color: var(--color-wc-text);
+}
+
+/* Two-column grid */
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+@media (min-width: 1024px) {
+    .two-col { grid-template-columns: 1fr 1fr; gap: 16px; }
+}
+
+/* Loading skeleton */
+.skeleton-grid-4 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+@media (min-width: 768px) {
+    .skeleton-grid-4 { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+}
+.skeleton-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+@media (min-width: 1024px) {
+    .skeleton-grid-2 { grid-template-columns: 1fr 1fr; }
+}
+.skeleton-card {
+    border-radius: 14px;
+    border: 1px solid var(--color-wc-border);
+    background: var(--color-wc-bg-tertiary);
+    height: 80px;
+    animation: page-pulse 1.5s ease-in-out infinite;
+}
+.skeleton-card--tall { height: 160px; }
+
+@keyframes page-pulse {
+    0%, 100% { opacity: 0.6; }
+    50%       { opacity: 0.9; }
+}
+
+/* Error state */
+.error-state {
+    padding: 32px;
+    text-align: center;
+    border-radius: 14px;
+    border: 1px solid var(--color-wc-border);
+    background: rgba(17,17,17,0.7);
+}
+.error-num {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 40px;
+    color: var(--color-wc-red-text, #F87171);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+}
+.error-msg {
+    font-size: 13px;
+    color: var(--color-wc-text-secondary);
+    margin: 0 0 16px;
+}
+.error-retry {
+    font-family: var(--font-mono, monospace);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-secondary);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-wc-border);
+    padding-bottom: 4px;
+    cursor: pointer;
+    transition: color 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease);
+}
+.error-retry:hover {
+    color: var(--color-wc-text);
+    border-bottom-color: var(--color-wc-accent, #DC2626);
+}
+
+/* Global empty state */
+.global-empty {
+    padding: 48px 24px;
+    text-align: center;
+    border-radius: 14px;
+    border: 1px solid var(--color-wc-border);
+    background: rgba(17,17,17,0.7);
+}
+.global-empty-num {
+    font-family: var(--font-display);
+    font-size: 72px;
+    color: var(--color-wc-bg-tertiary, #181818);
+    letter-spacing: 0.1em;
+    line-height: 1;
+    margin-bottom: 16px;
+    user-select: none;
+}
+.global-empty-msg {
+    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--color-wc-text-tertiary);
+    line-height: 1.6;
+    margin: 0 0 20px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    text-wrap: balance;
+}
+.global-empty-cta {
+    font-family: var(--font-mono, monospace);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-secondary);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-wc-border);
+    padding-bottom: 4px;
+    cursor: pointer;
+    transition: color 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease);
+}
+.global-empty-cta:hover:not(:disabled) {
+    color: var(--color-wc-text);
+    border-bottom-color: var(--color-wc-accent, #DC2626);
+}
+.global-empty-cta:disabled { opacity: 0.4; cursor: not-allowed; }
+
+@media (prefers-reduced-motion: reduce) {
+    .skeleton-card { animation: none !important; }
+}
+</style>
