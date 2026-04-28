@@ -177,7 +177,7 @@ const coachOptions = computed(() => [
 .pill--active {
     background: var(--color-wc-red-soft, rgba(220, 38, 38, 0.1));
     border-color: var(--color-wc-accent, #DC2626);
-    color: var(--color-wc-accent, #DC2626);
+    color: var(--color-wc-red-text, #F87171);
 }
 
 /* Selects row */

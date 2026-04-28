@@ -268,7 +268,7 @@ onMounted(() => store.fetchPlans());
     border-radius: 8px;
     border: 1px solid var(--color-wc-accent, #DC2626);
     background: var(--color-wc-red-soft, rgba(220,38,38,0.1));
-    color: var(--color-wc-accent, #DC2626);
+    color: var(--color-wc-red-text, #F87171);
     font-family: var(--font-mono, monospace);
     font-size: 9px;
     letter-spacing: 0.18em;
