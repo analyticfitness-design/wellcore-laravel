@@ -207,6 +207,13 @@ class AdminPlanTicketController extends Controller
             return response()->json(['error' => 'rejection_code es requerido al rechazar.'], 422);
         }
 
+        // Idempotencia: si el ticket ya está en el estado solicitado, devolver 200 sin
+        // re-disparar notificaciones ni timestamps. Protege contra dobles clicks o
+        // requests retransmitidos por la red.
+        if ($ticket->status === $newStatus) {
+            return response()->json(['ticket' => $ticket->fresh(), 'idempotent' => true]);
+        }
+
         DB::transaction(function () use ($ticket, $newStatus, $validated, $admin) {
             $ticket->status = $newStatus;
 
