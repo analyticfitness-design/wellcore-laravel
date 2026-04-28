@@ -1,157 +1,256 @@
 <script setup>
-import { onMounted, watch, computed } from 'vue';
-import { RouterLink } from 'vue-router';
+import { onMounted, onBeforeUnmount, ref, computed } from 'vue';
 import AdminLayout from '../../../layouts/AdminLayout.vue';
-import StatCard from '../../../components/admin/marketing/StatCard.vue';
-import StatusPill from '../../../components/admin/marketing/StatusPill.vue';
-import { useAdminMarketingStore } from '../../../stores/adminMarketing';
+import AdminGreeting from '../../../components/admin/dashboard/AdminGreeting.vue';
+import AdminQueueKPIs from '../../../components/admin/marketing/queue/AdminQueueKPIs.vue';
+import AdminQueueFilters from '../../../components/admin/marketing/queue/AdminQueueFilters.vue';
+import AdminQueueBoard from '../../../components/admin/marketing/queue/AdminQueueBoard.vue';
+import AdminDropReviewDrawer from '../../../components/admin/marketing/queue/AdminDropReviewDrawer.vue';
+import AdminDropApproveModal from '../../../components/admin/marketing/queue/AdminDropApproveModal.vue';
+import AdminDropRejectModal from '../../../components/admin/marketing/queue/AdminDropRejectModal.vue';
+import { useAdminMarketingQueueStore } from '../../../stores/adminMarketingQueue';
 
-const store = useAdminMarketingStore();
+const store = useAdminMarketingQueueStore();
 
-const STATUS_OPTIONS = [
-    { value: '', label: 'Todos los estados' },
-    { value: 'pending', label: 'Pendiente' },
-    { value: 'generating', label: 'Generando' },
-    { value: 'in_review', label: 'En revisión' },
-    { value: 'approved', label: 'Aprobado' },
-    { value: 'ready', label: 'Listo' },
-    { value: 'in_progress', label: 'En progreso' },
-    { value: 'completed', label: 'Completado' },
-    { value: 'archived', label: 'Archivado' },
-];
+const approveOpen = ref(false);
+const rejectOpen = ref(false);
+const targetDropId = ref(null);
+const actionError = ref('');
+const submitting = ref(false);
 
-const queue = computed(() => store.queue);
-const meta = computed(() => store.meta);
-const isLoading = computed(() => store.isLoadingQueue);
+const targetDrop = computed(() => {
+    if (!targetDropId.value) return null;
+    return store.drawerDrop ?? store.rows.find((r) => r.id === targetDropId.value) ?? null;
+});
 
-let coachTimer = null;
-let yearTimer = null;
-let weekTimer = null;
-
-function refetch() {
-    store.fetchQueue({ page: 1 });
+function openReviewDrawer(id) {
+    store.openDrawer(id);
 }
 
-function onStatusChange(e) {
-    store.filters.status = e.target.value;
-    refetch();
+function closeDrawer() {
+    store.closeDrawer();
 }
 
-function onCoachInput(e) {
-    store.filters.coach_id = e.target.value;
-    clearTimeout(coachTimer);
-    coachTimer = setTimeout(refetch, 300);
+function onApproveCta(id) {
+    targetDropId.value = id;
+    actionError.value = '';
+    approveOpen.value = true;
 }
 
-function onYearInput(e) {
-    store.filters.iso_year = e.target.value;
-    clearTimeout(yearTimer);
-    yearTimer = setTimeout(refetch, 300);
+function onRejectCta(id) {
+    targetDropId.value = id;
+    actionError.value = '';
+    rejectOpen.value = true;
 }
 
-function onWeekInput(e) {
-    store.filters.iso_week = e.target.value;
-    clearTimeout(weekTimer);
-    weekTimer = setTimeout(refetch, 300);
-}
-
-function formatDate(iso) {
-    if (!iso) return '—';
+async function confirmApprove(notes) {
+    if (!targetDropId.value) return;
+    submitting.value = true;
+    actionError.value = '';
     try {
-        const d = new Date(iso);
-        return d.toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' });
-    } catch {
-        return iso;
+        await store.approve(targetDropId.value, notes);
+        approveOpen.value = false;
+        store.closeDrawer();
+    } catch (err) {
+        actionError.value = err.response?.data?.message || 'No se pudo aprobar el drop. Recarga e intenta otra vez.';
+    } finally {
+        submitting.value = false;
     }
+}
+
+async function confirmReject(reason) {
+    if (!targetDropId.value) return;
+    submitting.value = true;
+    actionError.value = '';
+    try {
+        await store.requestRegenerate(targetDropId.value, reason);
+        rejectOpen.value = false;
+        store.closeDrawer();
+    } catch (err) {
+        actionError.value = err.response?.data?.message || 'No se pudo enviar la solicitud al coach.';
+    } finally {
+        submitting.value = false;
+    }
+}
+
+function onFilterUpdate({ key, value }) {
+    store.setFilter(key, value);
+    store.fetchQueue();
+}
+
+function onFilterReset() {
+    store.clearFilters();
+    store.fetchQueue();
+}
+
+function onColumnDrop(/* { id, target } */) {
+    /*
+     * Intencionalmente no-op en v1: el backend no expone PATCH generico de status.
+     * Las transiciones validas (in_review → approved, in_review → pending) se
+     * disparan desde los CTAs explicitos del drawer (Aprobar / Devolver al coach).
+     * Cuando el contrato API exponga PATCH /:id, este handler emitira la accion.
+     */
 }
 
 onMounted(() => {
     store.fetchQueue();
+    store.startPolling(60000);
+});
+
+onBeforeUnmount(() => {
+    store.stopPolling();
 });
 </script>
 
 <template>
-  <AdminLayout>
-    <div class="mx-auto max-w-6xl px-6 py-12 space-y-8">
-      <div>
-        <p class="font-mono text-[10px] uppercase tracking-[0.15em] text-wc-text-tertiary">WC · ADMIN / MARKETING / QUEUE</p>
-        <h1 class="mt-2 font-display text-4xl uppercase tracking-tight text-wc-text">Cola de drops</h1>
-        <p class="mt-2 text-sm text-wc-text-secondary">Revisa, aprueba y gestiona los drops semanales de los coaches.</p>
-      </div>
+    <AdminLayout>
+        <div class="queue-page">
+            <p class="queue-eyebrow">WC · ADMIN / MARKETING / COLA DE DROPS</p>
 
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <StatCard :n="meta.pending_review_count ?? 0" label="Pending review" accent />
-        <StatCard :n="meta.coaches_without_drop_this_week ?? 0" label="Sin drop esta semana" />
-        <StatCard :n="meta.total ?? 0" label="Total drops" />
-      </div>
+            <AdminGreeting
+                greeting="Cola de drops"
+                :critical-alerts="0"
+                :pending-tickets="0"
+                :review-tickets="0"
+            />
 
-      <div class="rounded-xl border border-wc-border bg-wc-bg-secondary p-4">
-        <div class="grid grid-cols-1 gap-3 md:grid-cols-4">
-          <div>
-            <label class="font-mono text-[10px] uppercase tracking-[0.15em] text-wc-text-tertiary">Estado</label>
-            <select :value="store.filters.status" @change="onStatusChange"
-              class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none">
-              <option v-for="opt in STATUS_OPTIONS" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-            </select>
-          </div>
-          <div>
-            <label class="font-mono text-[10px] uppercase tracking-[0.15em] text-wc-text-tertiary">Coach ID</label>
-            <input type="number" :value="store.filters.coach_id" @input="onCoachInput" placeholder="ej. 12"
-              class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
-          </div>
-          <div>
-            <label class="font-mono text-[10px] uppercase tracking-[0.15em] text-wc-text-tertiary">ISO year</label>
-            <input type="number" :value="store.filters.iso_year" @input="onYearInput" placeholder="2026"
-              class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
-          </div>
-          <div>
-            <label class="font-mono text-[10px] uppercase tracking-[0.15em] text-wc-text-tertiary">ISO week</label>
-            <input type="number" :value="store.filters.iso_week" @input="onWeekInput" placeholder="17"
-              class="mt-1 w-full rounded-lg border border-wc-border bg-wc-bg px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
-          </div>
-        </div>
-      </div>
+            <p class="queue-tagline">
+                "Aprobar es un compromiso con la calidad del mensaje. Cada drop que pasa esta cola
+                es una conversacion con el cliente."
+            </p>
 
-      <div class="rounded-xl border border-wc-border bg-wc-bg-secondary overflow-hidden">
-        <div class="grid grid-cols-12 gap-4 border-b border-wc-border bg-wc-bg px-4 py-3">
-          <div class="col-span-3 font-mono text-[10px] uppercase tracking-[0.15em] text-wc-text-tertiary">Coach</div>
-          <div class="col-span-2 font-mono text-[10px] uppercase tracking-[0.15em] text-wc-text-tertiary">Semana</div>
-          <div class="col-span-2 font-mono text-[10px] uppercase tracking-[0.15em] text-wc-text-tertiary">Estado</div>
-          <div class="col-span-3 font-mono text-[10px] uppercase tracking-[0.15em] text-wc-text-tertiary">Última acción</div>
-          <div class="col-span-2 text-right font-mono text-[10px] uppercase tracking-[0.15em] text-wc-text-tertiary">Acción</div>
+            <div v-if="store.loading && store.rows.length === 0" class="queue-loading" aria-live="polite">
+                <div class="queue-loading-bar"></div>
+                <div class="queue-loading-grid">
+                    <div v-for="i in 4" :key="i" class="queue-loading-card"></div>
+                </div>
+                <div class="queue-loading-board"></div>
+            </div>
+
+            <template v-else>
+                <AdminQueueKPIs :kpis="store.kpis" />
+                <AdminQueueFilters
+                    :filters="store.filters"
+                    :rows-count="store.visibleRows.length"
+                    @update="onFilterUpdate"
+                    @reset="onFilterReset"
+                />
+                <AdminQueueBoard
+                    :rows-by-column="store.rowsByColumn"
+                    :flash-row-id="store.flashRowId"
+                    @review="openReviewDrawer"
+                    @drop="onColumnDrop"
+                />
+                <p v-if="store.error" class="queue-error" role="alert">{{ store.error }}</p>
+            </template>
         </div>
 
-        <div v-if="isLoading" class="px-4 py-12 text-center text-sm text-wc-text-tertiary">Cargando…</div>
+        <AdminDropReviewDrawer
+            :open="store.drawerOpen"
+            :drop="store.drawerDrop"
+            :loading="store.drawerLoading"
+            :error="store.drawerError"
+            @close="closeDrawer"
+            @approve="onApproveCta"
+            @reject="onRejectCta"
+        />
 
-        <div v-else-if="queue.length === 0" class="px-4 py-12 text-center text-sm text-wc-text-tertiary">
-          Sin drops que coincidan con los filtros.
-        </div>
+        <AdminDropApproveModal
+            :open="approveOpen"
+            :drop="targetDrop"
+            :submitting="submitting"
+            :error="actionError"
+            @close="approveOpen = false"
+            @confirm="confirmApprove"
+        />
 
-        <div v-else>
-          <div v-for="row in queue" :key="row.id"
-            class="grid grid-cols-12 items-center gap-4 border-b border-wc-border px-4 py-3 last:border-b-0 hover:bg-wc-bg">
-            <div class="col-span-3 text-sm text-wc-text">
-              <p class="font-medium">{{ row.coach?.name ?? '—' }}</p>
-              <p class="font-mono text-[10px] uppercase text-wc-text-tertiary">ID #{{ row.coach?.id }}</p>
-            </div>
-            <div class="col-span-2 font-mono text-sm text-wc-text-secondary">
-              {{ row.iso_year }}-W{{ String(row.iso_week).padStart(2, '0') }}
-            </div>
-            <div class="col-span-2">
-              <StatusPill :status="row.status" />
-            </div>
-            <div class="col-span-3 font-mono text-xs text-wc-text-tertiary">
-              {{ formatDate(row.last_action_at) }}
-            </div>
-            <div class="col-span-2 text-right">
-              <RouterLink :to="`/admin/marketing/drops/${row.id}`"
-                class="inline-flex items-center gap-1 rounded-lg border border-wc-border bg-wc-bg px-3 py-1.5 text-xs font-medium text-wc-text hover:border-wc-accent hover:text-wc-accent">
-                Revisar →
-              </RouterLink>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </AdminLayout>
+        <AdminDropRejectModal
+            :open="rejectOpen"
+            :drop="targetDrop"
+            :submitting="submitting"
+            :error="actionError"
+            @close="rejectOpen = false"
+            @confirm="confirmReject"
+        />
+    </AdminLayout>
 </template>
+
+<style scoped>
+.queue-page {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding-top: 8px;
+    min-width: 0;
+}
+
+.queue-eyebrow {
+    font-family: var(--font-mono, monospace);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-tertiary);
+    margin: 0;
+}
+
+.queue-tagline {
+    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-style: italic;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--color-wc-gold, #C8A769);
+    margin: -4px 0 0;
+    text-wrap: balance;
+    max-width: 64ch;
+}
+
+.queue-error {
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    color: var(--color-wc-red-text, #F87171);
+    background: rgba(220, 38, 38, 0.07);
+    border: 1px solid rgba(220, 38, 38, 0.20);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin: 0;
+}
+
+.queue-loading {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.queue-loading-bar {
+    height: 32px;
+    border-radius: 14px;
+    border: 1px solid var(--color-wc-border);
+    background: var(--color-wc-bg-tertiary, #181818);
+    width: 60%;
+    animation: queue-pulse 1.5s ease-in-out infinite;
+}
+.queue-loading-grid {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 1024px) {
+    .queue-loading-grid { grid-template-columns: repeat(4, 1fr); }
+}
+.queue-loading-card,
+.queue-loading-board {
+    border-radius: 14px;
+    border: 1px solid var(--color-wc-border);
+    background: var(--color-wc-bg-tertiary, #181818);
+    animation: queue-pulse 1.5s ease-in-out infinite;
+}
+.queue-loading-card { height: 124px; }
+.queue-loading-board { height: 360px; }
+@keyframes queue-pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 0.9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .queue-loading-bar, .queue-loading-card, .queue-loading-board { animation: none !important; }
+}
+</style>
