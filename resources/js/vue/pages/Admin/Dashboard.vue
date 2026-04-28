@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import { useApi } from '../../composables/useApi';
+import { onMounted, onBeforeUnmount, computed } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useAdminDashboardStore } from '../../stores/adminDashboard';
 import AdminLayout from '../../layouts/AdminLayout.vue';
 import AdminGreeting from '../../components/admin/dashboard/AdminGreeting.vue';
 import AdminAlertsRow from '../../components/admin/dashboard/AdminAlertsRow.vue';
@@ -10,51 +11,43 @@ import AdminActivityFeed from '../../components/admin/dashboard/AdminActivityFee
 import AdminTopCoaches from '../../components/admin/dashboard/AdminTopCoaches.vue';
 import AdminToolsGrid from '../../components/admin/dashboard/AdminToolsGrid.vue';
 
-const api = useApi();
-const loading = ref(true);
-const error = ref(null);
-const data = ref(null);
+const store = useAdminDashboardStore();
+const {
+    data, loading, error,
+    greeting, criticalAlerts, pendingTickets, reviewTickets,
+    production, financial, operational,
+    alerts, revenueChartData, planDistribution, clientBreakdown,
+    recentPayments, recentInscriptions, topCoaches,
+} = storeToRefs(store);
 
-let refreshInterval = null;
-
-async function fetchDashboard() {
-  loading.value = !data.value;
-  error.value = null;
-  try {
-    const { data: r } = await api.get('/api/v/admin/dashboard');
-    data.value = r;
-  } catch (err) {
-    error.value = err.response?.data?.message || 'Error al cargar el dashboard';
-  } finally {
-    loading.value = false;
-  }
-}
+// Mostrar skeleton solo si no hay data previa (evita parpadeo en polling 30s)
+const showSkeleton = computed(() => loading.value && !data.value);
 
 onMounted(() => {
-  fetchDashboard();
-  refreshInterval = setInterval(fetchDashboard, 30000);
+    store.fetchDashboard();
+    store.startPolling(30000);
 });
 
 onBeforeUnmount(() => {
-  if (refreshInterval) clearInterval(refreshInterval);
+    store.stopPolling();
 });
 </script>
 
 <template>
   <AdminLayout>
 
-    <!-- Loading skeleton — reduced motion friendly -->
-    <div v-if="loading" class="dashboard-loading">
+    <!-- Loading skeleton — solo en first paint sin data -->
+    <div v-if="showSkeleton" class="dashboard-loading">
       <div class="dashboard-loading-bar"></div>
       <div class="dashboard-loading-grid">
         <div v-for="i in 4" :key="i" class="dashboard-loading-card"></div>
       </div>
     </div>
 
-    <!-- Error state -->
-    <div v-else-if="error" class="dashboard-error">
+    <!-- Error state — solo si no hay data previa -->
+    <div v-else-if="error && !data" class="dashboard-error">
       <p class="dashboard-error-msg">{{ error }}</p>
-      <button class="dashboard-error-btn" @click="fetchDashboard">Reintentar</button>
+      <button class="dashboard-error-btn" @click="store.fetchDashboard()">Reintentar</button>
     </div>
 
     <!-- Live data -->
@@ -62,35 +55,35 @@ onBeforeUnmount(() => {
 
       <!-- Greeting + alerts (Fase A) -->
       <AdminGreeting
-        :greeting="data.greeting || 'Panel de Administracion'"
-        :critical-alerts="data.alerts?.length || 0"
-        :pending-tickets="data.production?.plan_tickets_pendientes || 0"
-        :review-tickets="data.production?.plan_tickets_en_revision || 0"
+        :greeting="greeting"
+        :critical-alerts="criticalAlerts"
+        :pending-tickets="pendingTickets"
+        :review-tickets="reviewTickets"
       />
 
-      <AdminAlertsRow :alerts="data.alerts || []" />
+      <AdminAlertsRow :alerts="alerts" />
 
       <!-- Hero metrics row — 4 cards con mini-rings SVG (Fase B) -->
       <AdminHeroMetrics
-        :production="data.production || {}"
-        :financial="data.financial || {}"
-        :operational="data.operational || {}"
+        :production="production"
+        :financial="financial"
+        :operational="operational"
       />
 
       <!-- Charts row — MRR bars + donut planes + client breakdown (Fase C) -->
       <AdminPulseCharts
-        :revenue-data="data.revenueChartData || []"
-        :plan-distribution="data.planDistributionData || []"
-        :client-breakdown="data.clientBreakdown || {}"
+        :revenue-data="revenueChartData"
+        :plan-distribution="planDistribution"
+        :client-breakdown="clientBreakdown"
       />
 
       <!-- Activity feed + top coaches en grid 2-col en desktop, stack mobile -->
       <div class="dashboard-secondary">
         <AdminActivityFeed
-          :payments="data.recentPayments || []"
-          :inscriptions="data.recentInscriptions || []"
+          :payments="recentPayments"
+          :inscriptions="recentInscriptions"
         />
-        <AdminTopCoaches :coaches="data.top_coaches_month || []" />
+        <AdminTopCoaches :coaches="topCoaches" />
       </div>
 
       <!-- Tools grid — accesos rapidos a 12 modulos editoriales (Fase B) -->
