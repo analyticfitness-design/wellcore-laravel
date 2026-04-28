@@ -1,450 +1,637 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
-import { useApi } from '../../composables/useApi';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import AdminLayout from '../../layouts/AdminLayout.vue';
+import AdminGreeting from '../../components/admin/dashboard/AdminGreeting.vue';
+import AdminRequestCard from '../../components/admin/client-requests/AdminRequestCard.vue';
+import AdminRequestDetailDrawer from '../../components/admin/client-requests/AdminRequestDetailDrawer.vue';
+import AdminRequestRejectModal from '../../components/admin/client-requests/AdminRequestRejectModal.vue';
+import { useAdminClientRequestsStore } from '../../stores/adminClientRequests';
 
-const api = useApi();
-
-const loading = ref(false);
-const requests = ref([]);
-const counts   = ref({ pending: 0, approved: 0, rejected: 0, total: 0 });
-const meta     = ref({ total: 0 });
-
-const statusFilter = ref('pending'); // pending|approved|rejected|all
-const actionFilter = ref('all');
-const search       = ref('');
-const coachFilter  = ref('');
+const store = useAdminClientRequestsStore();
 
 let debounceTimer = null;
 
-// ─── Toast ────────────────────────────────────────────────────────────────────
-const toast = ref({ show: false, type: 'success', message: '' });
-function showToast(message, type = 'success') {
-  toast.value = { show: true, type, message };
-  setTimeout(() => { toast.value.show = false; }, 4000);
+// ─── Approve confirm state ─────────────────────────────────────────────────────
+const approveLoading = ref(false);
+const approveError   = ref('');
+
+async function confirmApprove() {
+    if (!store.approveTarget) return;
+    approveLoading.value = true;
+    approveError.value   = '';
+    try {
+        await store.doApprove(store.approveTarget.id);
+    } catch (err) {
+        approveError.value = err.response?.data?.error || 'No se pudo aprobar la solicitud.';
+    } finally {
+        approveLoading.value = false;
+    }
 }
 
-// ─── Detail / approve / reject modals ─────────────────────────────────────────
-const detail        = ref({ show: false, request: null, loading: false });
-const approveModal  = ref({ show: false, request: null, loading: false, error: '' });
-const rejectModal   = ref({ show: false, request: null, notas: '', loading: false, error: '' });
-
-const ACTION_LABELS = {
-  delete:     { label: 'Eliminar',       warning: 'Al aprobar, el cliente sera marcado para eliminacion. Sus datos historicos se conservaran segun la politica.', color: 'red' },
-  deactivate: { label: 'Desactivar',     warning: 'Al aprobar, el cliente sera desactivado y perdera acceso a la plataforma inmediatamente.', color: 'amber' },
-  edit:       { label: 'Editar',         warning: 'Al aprobar, confirmas que el coach puede realizar los cambios descritos en la razon.', color: 'blue' },
-};
-
-function actionClass(action) {
-  return ({
-    delete:     'bg-red-500/10 text-red-400 border-red-500/30',
-    deactivate: 'bg-amber-500/10 text-amber-500 border-amber-500/30',
-    edit:       'bg-blue-500/10 text-blue-400 border-blue-500/30',
-  })[action] || 'bg-wc-bg-secondary text-wc-text-tertiary border-wc-border';
-}
-
-function statusClass(status) {
-  return ({
-    pending:   'bg-yellow-500/10 text-yellow-500',
-    approved:  'bg-emerald-500/10 text-emerald-500',
-    rejected:  'bg-red-500/10 text-red-400',
-  })[status] || 'bg-wc-bg-secondary text-wc-text-tertiary';
-}
-
-function formatDateTime(iso) {
-  if (!iso) return '';
-  try {
-    return new Date(iso).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' });
-  } catch { return ''; }
-}
-
-function truncate(str, n = 140) {
-  if (!str) return '';
-  return str.length > n ? str.slice(0, n) + '…' : str;
-}
-
-// ─── Fetch ────────────────────────────────────────────────────────────────────
-async function fetchRequests() {
-  loading.value = true;
-  try {
-    const params = new URLSearchParams();
-    if (statusFilter.value !== 'all')  params.set('status', statusFilter.value);
-    if (actionFilter.value !== 'all')  params.set('action', actionFilter.value);
-    if (coachFilter.value)             params.set('coach_id', coachFilter.value);
-    if (search.value)                  params.set('search', search.value);
-    const { data } = await api.get(`/api/v/admin/client-requests?${params}`);
-    requests.value = data.requests || [];
-    counts.value   = data.counts   || counts.value;
-    meta.value     = data.meta     || { total: requests.value.length };
-  } catch {
-    requests.value = [];
-  } finally {
-    loading.value = false;
-  }
-}
-
-watch(search, () => {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(fetchRequests, 300);
+// ─── Filter debounce ───────────────────────────────────────────────────────────
+watch(() => store.search, () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => store.fetch(), 300);
 });
-watch([statusFilter, actionFilter, coachFilter], fetchRequests);
-
-// ─── Detail ───────────────────────────────────────────────────────────────────
-async function openDetail(req) {
-  detail.value = { show: true, request: req, loading: true };
-  try {
-    const { data } = await api.get(`/api/v/admin/client-requests/${req.id}`);
-    detail.value.request = data.request || data;
-  } catch {
-    // keep list row data
-  } finally {
-    detail.value.loading = false;
-  }
-}
-
-// ─── Approve ──────────────────────────────────────────────────────────────────
-function openApprove(req) {
-  approveModal.value = { show: true, request: req, loading: false, error: '' };
-}
-
-async function doApprove() {
-  const m = approveModal.value;
-  if (!m.request) return;
-  m.loading = true;
-  m.error = '';
-  try {
-    await api.post(`/api/v/admin/client-requests/${m.request.id}/approve`);
-    m.show = false;
-    showToast('Solicitud aprobada');
-    detail.value.show = false;
-    fetchRequests();
-  } catch (err) {
-    m.error = err.response?.data?.error || 'No se pudo aprobar la solicitud';
-  } finally {
-    m.loading = false;
-  }
-}
-
-// ─── Reject ───────────────────────────────────────────────────────────────────
-function openReject(req) {
-  rejectModal.value = { show: true, request: req, notas: '', loading: false, error: '' };
-}
-
-async function doReject() {
-  const m = rejectModal.value;
-  if (!m.request) return;
-  if ((m.notas || '').trim().length < 5) {
-    m.error = 'La razon del rechazo es requerida.';
-    return;
-  }
-  m.loading = true;
-  m.error = '';
-  try {
-    await api.post(`/api/v/admin/client-requests/${m.request.id}/reject`, { admin_notas: m.notas.trim() });
-    m.show = false;
-    showToast('Solicitud rechazada');
-    detail.value.show = false;
-    fetchRequests();
-  } catch (err) {
-    if (err.response?.status === 422) {
-      m.error = Object.values(err.response.data.errors || {}).flat()[0] || 'Datos invalidos';
-    } else {
-      m.error = err.response?.data?.error || 'No se pudo rechazar';
-    }
-  } finally {
-    m.loading = false;
-  }
-}
-
-const uniqueCoaches = computed(() => {
-  const seen = new Map();
-  for (const r of requests.value) {
-    if (r.coach_id && !seen.has(r.coach_id)) {
-      seen.set(r.coach_id, r.coach_name || 'Coach');
-    }
-  }
-  return Array.from(seen.entries()).map(([id, name]) => ({ id, name }));
+watch(() => [store.statusFilter, store.actionFilter, store.coachFilter], () => {
+    store.fetch();
 });
 
-onMounted(fetchRequests);
+// ─── Lifecycle ─────────────────────────────────────────────────────────────────
+onMounted(() => {
+    store.fetch();
+    store.startPolling();
+});
+onBeforeUnmount(() => {
+    store.stopPolling();
+    clearTimeout(debounceTimer);
+});
+
+const ACTION_OPTIONS = [
+    { value: '',           label: 'Todas las acciones' },
+    { value: 'delete',     label: 'Eliminar cliente'   },
+    { value: 'deactivate', label: 'Desactivar cliente' },
+    { value: 'edit',       label: 'Editar datos'       },
+];
 </script>
 
 <template>
   <AdminLayout>
-    <div class="space-y-6">
+    <div class="requests-page">
 
-      <!-- Header -->
-      <div>
-        <h1 class="font-display text-3xl tracking-wide text-wc-text">SOLICITUDES DE COACHES</h1>
-        <p class="mt-1 text-sm text-wc-text-secondary">
-          Aprueba o rechaza las acciones que los coaches solicitan sobre sus clientes.
-        </p>
+      <!-- Greeting -->
+      <AdminGreeting
+        greeting="Solicitudes de Coaches"
+        :critical-alerts="store.pendingCount"
+      />
+
+      <!-- KPI counters -->
+      <div class="kpi-row" role="group" aria-label="Filtros por estado">
+        <button
+          class="kpi-card"
+          :class="{ 'kpi-card--active kpi-card--amber': store.statusFilter === 'pendiente' }"
+          @click="store.statusFilter = 'pendiente'"
+          :aria-pressed="store.statusFilter === 'pendiente'"
+        >
+          <span class="kpi-num kpi-num--amber">{{ store.counts.pendiente ?? 0 }}</span>
+          <span class="kpi-label">PENDIENTES</span>
+        </button>
+        <button
+          class="kpi-card"
+          :class="{ 'kpi-card--active kpi-card--green': store.statusFilter === 'aprobado' }"
+          @click="store.statusFilter = 'aprobado'"
+          :aria-pressed="store.statusFilter === 'aprobado'"
+        >
+          <span class="kpi-num kpi-num--green">{{ store.counts.aprobado ?? 0 }}</span>
+          <span class="kpi-label">APROBADAS</span>
+        </button>
+        <button
+          class="kpi-card"
+          :class="{ 'kpi-card--active kpi-card--red': store.statusFilter === 'rechazado' }"
+          @click="store.statusFilter = 'rechazado'"
+          :aria-pressed="store.statusFilter === 'rechazado'"
+        >
+          <span class="kpi-num kpi-num--red">{{ store.counts.rechazado ?? 0 }}</span>
+          <span class="kpi-label">RECHAZADAS</span>
+        </button>
+        <button
+          class="kpi-card"
+          :class="{ 'kpi-card--active kpi-card--accent': store.statusFilter === '' }"
+          @click="store.statusFilter = ''"
+          :aria-pressed="store.statusFilter === ''"
+        >
+          <span class="kpi-num">{{ store.totalCount }}</span>
+          <span class="kpi-label">TODAS</span>
+        </button>
       </div>
 
-      <!-- Counters -->
-      <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <button @click="statusFilter = 'pending'"
-                class="rounded-xl border p-4 text-left transition-colors"
-                :class="statusFilter === 'pending' ? 'border-yellow-500/60 bg-yellow-500/10' : 'border-wc-border bg-wc-bg-tertiary hover:border-yellow-500/40'">
-          <p class="font-data text-2xl font-bold text-yellow-500">{{ counts.pending ?? 0 }}</p>
-          <p class="mt-1 text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Pendientes</p>
-        </button>
-        <button @click="statusFilter = 'approved'"
-                class="rounded-xl border p-4 text-left transition-colors"
-                :class="statusFilter === 'approved' ? 'border-emerald-500/60 bg-emerald-500/10' : 'border-wc-border bg-wc-bg-tertiary hover:border-emerald-500/40'">
-          <p class="font-data text-2xl font-bold text-emerald-500">{{ counts.approved ?? 0 }}</p>
-          <p class="mt-1 text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Aprobadas</p>
-        </button>
-        <button @click="statusFilter = 'rejected'"
-                class="rounded-xl border p-4 text-left transition-colors"
-                :class="statusFilter === 'rejected' ? 'border-red-500/60 bg-red-500/10' : 'border-wc-border bg-wc-bg-tertiary hover:border-red-500/40'">
-          <p class="font-data text-2xl font-bold text-red-400">{{ counts.rejected ?? 0 }}</p>
-          <p class="mt-1 text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Rechazadas</p>
-        </button>
-        <button @click="statusFilter = 'all'"
-                class="rounded-xl border p-4 text-left transition-colors"
-                :class="statusFilter === 'all' ? 'border-wc-accent/60 bg-wc-accent/10' : 'border-wc-border bg-wc-bg-tertiary hover:border-wc-accent/40'">
-          <p class="font-data text-2xl font-bold text-wc-text">{{ counts.total ?? requests.length }}</p>
-          <p class="mt-1 text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Todas</p>
-        </button>
-      </div>
-
-      <!-- Filters -->
-      <div class="flex flex-wrap gap-3">
-        <div class="relative min-w-48 flex-1">
-          <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <!-- Filters row -->
+      <div class="filters-row" role="search">
+        <!-- Search -->
+        <div class="search-wrap">
+          <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
           </svg>
           <input
-            v-model="search" type="text" placeholder="Buscar por cliente, coach o razon..."
-            class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary py-2.5 pl-10 pr-4 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none"
+            v-model="store.search"
+            type="search"
+            placeholder="Buscar coach o cliente…"
+            class="search-input"
+            aria-label="Buscar solicitudes"
           />
         </div>
-        <select v-model="actionFilter"
-                class="rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text focus:border-wc-accent focus:outline-none">
-          <option value="all">Todas las acciones</option>
-          <option value="deactivate">Desactivar</option>
-          <option value="delete">Eliminar</option>
-          <option value="edit">Editar</option>
-        </select>
-        <select v-if="uniqueCoaches.length" v-model="coachFilter"
-                class="rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text focus:border-wc-accent focus:outline-none">
+
+        <!-- Action filter chips -->
+        <div class="chips-wrap" role="group" aria-label="Filtrar por tipo de acción">
+          <button
+            v-for="opt in ACTION_OPTIONS"
+            :key="opt.value"
+            type="button"
+            class="filter-chip"
+            :class="{ 'filter-chip--active': store.actionFilter === opt.value }"
+            @click="store.actionFilter = opt.value"
+          >{{ opt.label.toUpperCase() }}</button>
+        </div>
+
+        <!-- Coach filter -->
+        <select
+          v-if="store.uniqueCoaches.length"
+          v-model="store.coachFilter"
+          class="coach-select"
+          aria-label="Filtrar por coach"
+        >
           <option value="">Todos los coaches</option>
-          <option v-for="c in uniqueCoaches" :key="c.id" :value="c.id">{{ c.name }}</option>
+          <option v-for="c in store.uniqueCoaches" :key="c.id" :value="c.id">
+            {{ c.name }}
+          </option>
         </select>
       </div>
 
       <!-- Loading skeleton -->
-      <template v-if="loading">
-        <div v-for="n in 4" :key="n" class="animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary h-24"></div>
-      </template>
-
-      <!-- Empty -->
-      <div v-else-if="!requests.length" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-12 text-center">
-        <p class="text-sm text-wc-text-secondary">No hay solicitudes con los filtros seleccionados.</p>
+      <div v-if="store.loading && !store.requests.length" class="skeleton-list" aria-label="Cargando solicitudes…">
+        <div v-for="i in 4" :key="i" class="skeleton-card"></div>
       </div>
 
-      <!-- List -->
-      <div v-else class="space-y-3">
-        <div
-          v-for="req in requests"
-          :key="req.id"
-          class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 transition-colors hover:border-wc-border/80"
-        >
-          <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-            <div class="min-w-0 flex-1">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="inline-flex rounded-full border px-2 py-0.5 text-[10px] font-semibold" :class="actionClass(req.action)">
-                  {{ ACTION_LABELS[req.action]?.label || req.action }}
-                </span>
-                <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold" :class="statusClass(req.status)">
-                  {{ req.status }}
-                </span>
-                <span class="text-[11px] text-wc-text-tertiary">{{ formatDateTime(req.created_at) }}</span>
-              </div>
-              <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-                <div>
-                  <span class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Coach</span>
-                  <span class="ml-1.5 font-medium text-wc-text">{{ req.coach_name || '—' }}</span>
-                </div>
-                <div>
-                  <span class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Cliente</span>
-                  <span class="ml-1.5 font-medium text-wc-text">{{ req.client_name || '—' }}</span>
-                </div>
-              </div>
-              <p v-if="req.reason" class="mt-2 text-sm text-wc-text-secondary">{{ truncate(req.reason) }}</p>
-            </div>
+      <!-- Empty state editorial -->
+      <div v-else-if="!store.requests.length" class="empty-state">
+        <div class="empty-num" aria-hidden="true">—</div>
+        <p class="empty-msg">
+          "Sin solicitudes pendientes.
+          Los coaches están operando con autonomía. Buen sistema."
+        </p>
+        <button
+          type="button"
+          class="empty-cta"
+          @click="store.statusFilter = ''"
+        >VER HISTÓRICO →</button>
+      </div>
 
-            <div class="flex shrink-0 flex-wrap gap-2">
-              <button @click="openDetail(req)"
-                      class="inline-flex items-center gap-1.5 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1.5 text-xs font-medium text-wc-text-secondary transition-colors hover:text-wc-text">
-                Ver detalle
-              </button>
-              <template v-if="req.status === 'pending'">
-                <button @click="openApprove(req)"
-                        class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90">
-                  Aprobar
-                </button>
-                <button @click="openReject(req)"
-                        class="inline-flex items-center gap-1.5 rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-400 hover:bg-red-500/20">
-                  Rechazar
-                </button>
-              </template>
-            </div>
-          </div>
-        </div>
+      <!-- Request list -->
+      <div v-else class="requests-list" role="list" aria-label="Solicitudes de coaches">
+        <AdminRequestCard
+          v-for="req in store.requests"
+          :key="req.id"
+          :request="req"
+        />
       </div>
     </div>
 
-    <!-- ==================== DETAIL MODAL ==================== -->
-    <Transition name="fade">
-      <div v-if="detail.show" class="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="detail.show = false"></div>
-        <Transition name="slide-up">
-          <div v-if="detail.show" class="relative z-10 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-wc-border bg-wc-bg-secondary p-6 shadow-2xl">
-            <div class="mb-5 flex items-start justify-between">
-              <h2 class="font-display text-2xl tracking-wide text-wc-text">DETALLE SOLICITUD</h2>
-              <button @click="detail.show = false" class="flex h-8 w-8 items-center justify-center rounded-lg border border-wc-border text-wc-text-secondary hover:text-wc-text">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
-              </button>
-            </div>
+    <!-- Detail drawer -->
+    <AdminRequestDetailDrawer />
 
-            <div v-if="detail.loading" class="h-40 animate-pulse rounded-lg bg-wc-bg-tertiary"></div>
+    <!-- Reject modal -->
+    <AdminRequestRejectModal />
 
-            <template v-else-if="detail.request">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold" :class="actionClass(detail.request.action)">
-                  {{ ACTION_LABELS[detail.request.action]?.label || detail.request.action }}
-                </span>
-                <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold" :class="statusClass(detail.request.status)">
-                  {{ detail.request.status }}
-                </span>
-                <span class="text-xs text-wc-text-tertiary">{{ formatDateTime(detail.request.created_at) }}</span>
-              </div>
-
-              <div class="mt-4 grid grid-cols-2 gap-3">
-                <div class="rounded-lg border border-wc-border bg-wc-bg-tertiary p-3">
-                  <p class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Coach</p>
-                  <p class="mt-0.5 text-sm font-medium text-wc-text">{{ detail.request.coach_name || '—' }}</p>
+    <!-- Approve confirm overlay -->
+    <Teleport to="body">
+      <Transition name="modal-fade">
+        <div
+          v-if="store.approveOpen"
+          class="approve-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Confirmar aprobación"
+          @click.self="store.closeApprove()"
+        >
+          <Transition name="modal-scale">
+            <div v-if="store.approveOpen" class="approve-panel">
+              <header class="approve-head">
+                <h3 class="approve-title">APROBAR SOLICITUD</h3>
+              </header>
+              <div class="approve-body">
+                <div v-if="store.approveTarget" class="approve-info">
+                  <div class="a-pair">
+                    <span class="a-label">COACH</span>
+                    <span class="a-val">{{ store.approveTarget.coach_name || '—' }}</span>
+                  </div>
+                  <div class="a-pair">
+                    <span class="a-label">CLIENTE</span>
+                    <span class="a-val">{{ store.approveTarget.client_name || '—' }}</span>
+                  </div>
                 </div>
-                <div class="rounded-lg border border-wc-border bg-wc-bg-tertiary p-3">
-                  <p class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Cliente</p>
-                  <p class="mt-0.5 text-sm font-medium text-wc-text">{{ detail.request.client_name || '—' }}</p>
-                </div>
+                <p class="approve-warning">
+                  Esta acción se ejecutará de inmediato y notificará al coach.
+                  Verifica que la solicitud es válida antes de confirmar.
+                </p>
+                <p v-if="approveError" role="alert" class="approve-error">{{ approveError }}</p>
               </div>
-
-              <div class="mt-3 rounded-lg border border-wc-border bg-wc-bg-tertiary p-4">
-                <p class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Razon del coach</p>
-                <p class="mt-1.5 whitespace-pre-wrap text-sm text-wc-text">{{ detail.request.reason || '—' }}</p>
-              </div>
-
-              <div v-if="detail.request.admin_notas" class="mt-3 rounded-lg border border-wc-border bg-wc-bg-tertiary p-4">
-                <p class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">Notas del admin</p>
-                <p class="mt-1.5 whitespace-pre-wrap text-sm text-wc-text">{{ detail.request.admin_notas }}</p>
-              </div>
-
-              <div v-if="detail.request.status === 'pending'" class="mt-5 flex flex-wrap gap-3">
-                <button @click="openReject(detail.request)"
-                        class="flex-1 rounded-lg border border-red-500/40 bg-red-500/10 py-2.5 text-sm font-medium text-red-400 hover:bg-red-500/20">
-                  Rechazar
-                </button>
-                <button @click="openApprove(detail.request)"
-                        class="flex-1 rounded-lg bg-emerald-500 py-2.5 text-sm font-semibold text-white hover:opacity-90">
-                  Aprobar
-                </button>
-              </div>
-            </template>
-          </div>
-        </Transition>
-      </div>
-    </Transition>
-
-    <!-- ==================== APPROVE MODAL ==================== -->
-    <Transition name="fade">
-      <div v-if="approveModal.show" class="fixed inset-0 z-[60] flex items-end justify-center p-4 sm:items-center">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="approveModal.show = false"></div>
-        <Transition name="slide-up">
-          <div v-if="approveModal.show" class="relative z-10 w-full max-w-md rounded-2xl border border-wc-border bg-wc-bg-secondary p-6 shadow-2xl">
-            <h3 class="font-display text-xl tracking-wide text-wc-text">APROBAR SOLICITUD</h3>
-            <p class="mt-2 text-sm text-wc-text-secondary">
-              Cliente: <span class="font-semibold text-wc-text">{{ approveModal.request?.client_name }}</span>
-            </p>
-            <div class="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-400">
-              {{ ACTION_LABELS[approveModal.request?.action]?.warning || 'Confirma que deseas aprobar esta solicitud.' }}
+              <footer class="approve-footer">
+                <button
+                  type="button"
+                  class="a-cancel"
+                  @click="store.closeApprove()"
+                  :disabled="approveLoading"
+                >Cancelar</button>
+                <button
+                  type="button"
+                  class="a-confirm"
+                  @click="confirmApprove"
+                  :disabled="approveLoading"
+                  :aria-busy="approveLoading"
+                >{{ approveLoading ? 'Aprobando…' : 'Confirmar aprobación' }}</button>
+              </footer>
             </div>
-            <p v-if="approveModal.error" class="mt-3 rounded-lg border border-red-500/40 bg-red-500/10 p-3 text-xs text-red-400">
-              {{ approveModal.error }}
-            </p>
-            <div class="mt-5 flex gap-3">
-              <button @click="approveModal.show = false"
-                      class="flex-1 rounded-lg border border-wc-border bg-wc-bg-tertiary py-2.5 text-sm font-medium text-wc-text-secondary hover:text-wc-text">
-                Cancelar
-              </button>
-              <button @click="doApprove" :disabled="approveModal.loading"
-                      class="flex-1 rounded-lg bg-emerald-500 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60">
-                {{ approveModal.loading ? 'Aprobando...' : 'Confirmar aprobacion' }}
-              </button>
-            </div>
-          </div>
-        </Transition>
-      </div>
-    </Transition>
+          </Transition>
+        </div>
+      </Transition>
+    </Teleport>
 
-    <!-- ==================== REJECT MODAL ==================== -->
-    <Transition name="fade">
-      <div v-if="rejectModal.show" class="fixed inset-0 z-[60] flex items-end justify-center p-4 sm:items-center">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="rejectModal.show = false"></div>
-        <Transition name="slide-up">
-          <div v-if="rejectModal.show" class="relative z-10 w-full max-w-md rounded-2xl border border-wc-border bg-wc-bg-secondary p-6 shadow-2xl">
-            <h3 class="font-display text-xl tracking-wide text-wc-text">RECHAZAR SOLICITUD</h3>
-            <p class="mt-2 text-sm text-wc-text-secondary">
-              Cliente: <span class="font-semibold text-wc-text">{{ rejectModal.request?.client_name }}</span>
-            </p>
-            <div class="mt-4">
-              <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">
-                Razon del rechazo <span class="text-wc-accent">*</span>
-              </label>
-              <textarea
-                v-model="rejectModal.notas" rows="4"
-                placeholder="Explica al coach por que rechazas su solicitud..."
-                class="w-full resize-none rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none"
-              ></textarea>
-            </div>
-            <p v-if="rejectModal.error" class="mt-3 rounded-lg border border-red-500/40 bg-red-500/10 p-3 text-xs text-red-400">
-              {{ rejectModal.error }}
-            </p>
-            <div class="mt-5 flex gap-3">
-              <button @click="rejectModal.show = false"
-                      class="flex-1 rounded-lg border border-wc-border bg-wc-bg-tertiary py-2.5 text-sm font-medium text-wc-text-secondary hover:text-wc-text">
-                Cancelar
-              </button>
-              <button @click="doReject" :disabled="rejectModal.loading"
-                      class="flex-1 rounded-lg bg-red-500 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60">
-                {{ rejectModal.loading ? 'Rechazando...' : 'Confirmar rechazo' }}
-              </button>
-            </div>
-          </div>
-        </Transition>
-      </div>
-    </Transition>
-
-    <!-- ==================== TOAST ==================== -->
-    <Transition name="slide-up">
-      <div v-if="toast.show"
-           class="fixed bottom-6 left-1/2 z-[100] -translate-x-1/2 rounded-xl border px-5 py-3 text-sm font-medium shadow-xl"
-           :class="toast.type === 'error'
-              ? 'border-red-500/40 bg-red-500/10 text-red-400'
-              : 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'">
-        {{ toast.message }}
-      </div>
-    </Transition>
+    <!-- Toast -->
+    <Teleport to="body">
+      <Transition name="toast-up">
+        <div
+          v-if="store.toast.show"
+          class="toast"
+          :class="store.toast.type === 'error' ? 'toast--error' : 'toast--success'"
+          role="status"
+          aria-live="polite"
+        >{{ store.toast.message }}</div>
+      </Transition>
+    </Teleport>
   </AdminLayout>
 </template>
 
 <style scoped>
-.fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
+.requests-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
-.slide-up-enter-active, .slide-up-leave-active { transition: transform 0.3s ease, opacity 0.3s ease; }
-.slide-up-enter-from, .slide-up-leave-to { transform: translateY(1.5rem); opacity: 0; }
+/* KPI counters */
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+@media (min-width: 640px) { .kpi-row { grid-template-columns: repeat(4, 1fr); } }
+
+.kpi-card {
+    border-radius: 14px;
+    border: 1px solid var(--color-wc-border);
+    background: rgba(17, 17, 17, 0.7);
+    padding: 14px 16px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 0.15s var(--ease-out), background 0.15s var(--ease-out);
+}
+.kpi-card:hover { border-color: var(--color-wc-border-2); }
+.kpi-card--active { border-width: 1px; }
+.kpi-card--amber.kpi-card--active { border-color: rgba(245,158,11,0.5); background: rgba(245,158,11,0.06); }
+.kpi-card--green.kpi-card--active  { border-color: rgba(16,185,129,0.5); background: rgba(16,185,129,0.06); }
+.kpi-card--red.kpi-card--active    { border-color: rgba(220,38,38,0.5);  background: rgba(220,38,38,0.06); }
+.kpi-card--accent.kpi-card--active { border-color: rgba(220,38,38,0.4);  background: rgba(220,38,38,0.05); }
+
+.kpi-num {
+    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-feature-settings: 'tnum' 1;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--color-wc-text);
+    line-height: 1;
+}
+.kpi-num--amber { color: var(--color-wc-amber-text); }
+.kpi-num--green { color: var(--color-wc-green-text); }
+.kpi-num--red   { color: var(--color-wc-red-text);   }
+
+.kpi-label {
+    font-family: var(--font-mono, monospace);
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--color-wc-text-tertiary);
+    display: block;
+}
+
+/* Filters */
+.filters-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+.search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+.search-icon {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-wc-text-tertiary);
+    pointer-events: none;
+}
+.search-input {
+    width: 100%;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--color-wc-border);
+    background: rgba(255,255,255,0.03);
+    color: var(--color-wc-text);
+    font-family: var(--font-sans, 'Inter', sans-serif);
+    font-size: 13px;
+    padding: 0 12px 0 34px;
+    transition: border-color 0.15s var(--ease-out);
+    box-sizing: border-box;
+}
+.search-input::placeholder { color: var(--color-wc-text-tertiary); }
+.search-input:focus { outline: none; border-color: var(--color-wc-accent); }
+
+.chips-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.filter-chip {
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 20px;
+    border: 1px solid var(--color-wc-border);
+    background: transparent;
+    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-mono, monospace);
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    cursor: pointer;
+    transition: color 0.15s var(--ease-out), background 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
+    white-space: nowrap;
+}
+.filter-chip:hover { color: var(--color-wc-text-secondary); border-color: var(--color-wc-border-2); }
+.filter-chip--active {
+    background: var(--color-wc-red-soft);
+    border-color: var(--color-wc-accent);
+    color: var(--color-wc-red-text);
+}
+
+.coach-select {
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--color-wc-border);
+    background: rgba(255,255,255,0.03);
+    color: var(--color-wc-text);
+    font-family: var(--font-sans, 'Inter', sans-serif);
+    font-size: 12px;
+    padding: 0 10px;
+    cursor: pointer;
+    transition: border-color 0.15s var(--ease-out);
+}
+.coach-select:focus { outline: none; border-color: var(--color-wc-accent); }
+
+/* Skeleton */
+.skeleton-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.skeleton-card {
+    height: 110px;
+    border-radius: 14px;
+    border: 1px solid var(--color-wc-border);
+    background: var(--color-wc-bg-tertiary);
+    animation: page-pulse 1.5s ease-in-out infinite;
+}
+@keyframes page-pulse {
+    0%, 100% { opacity: 0.6; }
+    50%       { opacity: 0.9; }
+}
+
+/* Empty state */
+.empty-state {
+    padding: 32px 12px 24px;
+    text-align: center;
+    border-radius: 14px;
+    border: 1px dashed var(--color-wc-border);
+    background: rgba(255,255,255,0.01);
+}
+.empty-num {
+    font-family: var(--font-display);
+    font-size: 56px;
+    color: var(--color-wc-bg-tertiary, #181818);
+    letter-spacing: 0.1em;
+    line-height: 1;
+    margin-bottom: 14px;
+    user-select: none;
+}
+.empty-msg {
+    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--color-wc-text-tertiary);
+    line-height: 1.6;
+    margin: 0 0 18px;
+    text-wrap: balance;
+    white-space: pre-line;
+}
+.empty-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono, monospace);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--color-wc-text-secondary);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-wc-border);
+    padding-bottom: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: color 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
+}
+.empty-cta:hover {
+    color: var(--color-wc-text);
+    border-bottom-color: var(--color-wc-accent);
+}
+
+/* List */
+.requests-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Approve overlay */
+.approve-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 110;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(0,0,0,0.72);
+    backdrop-filter: blur(8px);
+}
+.approve-panel {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 16px;
+    border: 1px solid var(--color-wc-border);
+    background: var(--color-wc-bg-secondary, #111111);
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+}
+.approve-head {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--color-wc-border);
+}
+.approve-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    color: var(--color-wc-text);
+    margin: 0;
+}
+.approve-body {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.approve-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.a-pair {
+    border-radius: 8px;
+    border: 1px solid var(--color-wc-border);
+    background: rgba(255,255,255,0.02);
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.a-label {
+    font-family: var(--font-mono, monospace);
+    font-size: 7px;
+    letter-spacing: 0.2em;
+    color: var(--color-wc-text-tertiary);
+}
+.a-val {
+    font-family: var(--font-sans, 'Inter', sans-serif);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-wc-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.approve-warning {
+    font-family: var(--font-sans, 'Inter', sans-serif);
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--color-wc-amber-text);
+    border-radius: 8px;
+    border: 1px solid rgba(245,158,11,0.22);
+    background: var(--color-wc-amber-soft);
+    padding: 10px 12px;
+    margin: 0;
+}
+.approve-error {
+    font-family: var(--font-sans, 'Inter', sans-serif);
+    font-size: 12px;
+    color: var(--color-wc-red-text);
+    border-radius: 8px;
+    border: 1px solid rgba(220,38,38,0.2);
+    background: var(--color-wc-red-soft);
+    padding: 10px 12px;
+    margin: 0;
+}
+.approve-footer {
+    display: flex;
+    gap: 10px;
+    padding: 12px 20px 18px;
+    border-top: 1px solid var(--color-wc-border);
+}
+.a-cancel {
+    flex: 1;
+    border-radius: 10px;
+    border: 1px solid var(--color-wc-border);
+    background: transparent;
+    color: var(--color-wc-text-secondary);
+    font-family: var(--font-mono, monospace);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 12px;
+    cursor: pointer;
+    transition: color 0.15s var(--ease-out);
+}
+.a-cancel:hover:not(:disabled) { color: var(--color-wc-text); }
+.a-cancel:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.a-confirm {
+    flex: 2;
+    border-radius: 10px;
+    background: var(--color-wc-green-soft);
+    border: 1px solid rgba(16,185,129,0.3);
+    color: var(--color-wc-green-text);
+    font-family: var(--font-mono, monospace);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 12px;
+    cursor: pointer;
+    transition: background 0.15s var(--ease-out);
+}
+.a-confirm:hover:not(:disabled) { background: rgba(16,185,129,0.18); }
+.a-confirm:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    border-radius: 10px;
+    border: 1px solid;
+    padding: 11px 20px;
+    font-family: var(--font-mono, monospace);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    white-space: nowrap;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+.toast--success {
+    border-color: rgba(16,185,129,0.3);
+    background: rgba(16,185,129,0.12);
+    color: var(--color-wc-green-text);
+}
+.toast--error {
+    border-color: rgba(220,38,38,0.3);
+    background: var(--color-wc-red-soft);
+    color: var(--color-wc-red-text);
+}
+
+/* Transitions */
+.modal-fade-enter-active,
+.modal-fade-leave-active { transition: opacity 0.18s ease; }
+.modal-fade-enter-from,
+.modal-fade-leave-to { opacity: 0; }
+
+.modal-scale-enter-active,
+.modal-scale-leave-active { transition: transform 0.22s var(--ease-out, ease), opacity 0.18s ease; }
+.modal-scale-enter-from,
+.modal-scale-leave-to { transform: scale(0.96) translateY(8px); opacity: 0; }
+
+.toast-up-enter-active,
+.toast-up-leave-active { transition: transform 0.22s var(--ease-out, ease), opacity 0.18s ease; }
+.toast-up-enter-from,
+.toast-up-leave-to { transform: translateX(-50%) translateY(12px); opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+    .skeleton-card { animation: none !important; }
+    .kpi-card, .filter-chip, .search-input, .coach-select,
+    .empty-cta, .a-cancel, .a-confirm { transition: none !important; }
+    .modal-fade-enter-active, .modal-fade-leave-active,
+    .modal-scale-enter-active, .modal-scale-leave-active,
+    .toast-up-enter-active, .toast-up-leave-active { transition: none !important; }
+}
 </style>
