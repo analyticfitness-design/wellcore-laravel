@@ -5726,17 +5726,79 @@
     color: rgba(255, 255, 255, 0.72) !important;
 }
 
-/* /nosotros valores section también usa background dark — texto claro */
+/* /nosotros valores section: usa body bg (transparente). Tokens responden
+   al theme: en dark → texto blanco, en light → texto oscuro. NO hardcodear. */
 .nosotros-valores .nosotros-val-pq {
-    color: rgba(255, 255, 255, 0.92);
+    color: var(--color-wc-text);
 }
 .nosotros-val-num {
-    color: rgba(255, 255, 255, 0.25) !important;
+    color: var(--color-wc-text-3);
 }
 .nosotros-val-statement {
-    color: rgba(255, 255, 255, 0.95) !important;
+    color: var(--color-wc-text);
 }
 .nosotros-val-context {
-    color: rgba(255, 255, 255, 0.65) !important;
+    color: var(--color-wc-text-2);
+}
+
+/* ======================================================================
+   FIX layout desktop /proceso + /nosotros (audit fullPage 2026-04-29)
+   ----------------------------------------------------------------------
+   .public-editorial-main tiene max-width: 720px (var(--col-max)) — ideal
+   para /metodo (long-form editorial reading) PERO demasiado estrecho para:
+   - /proceso step viz mockups (form, coach rings, microciclo, chart) que
+     necesitan ~1000-1100px para que el grid 2-col sea legible.
+   - /nosotros equipo grid 3-col que en 720px da solo 159px por card.
+
+   Fix con :has() (Chrome/Safari/Firefox modernos): override max-width SOLO
+   cuando la página es /proceso o /nosotros. /metodo queda intacto.
+   ====================================================================== */
+@media (min-width: 1024px) {
+    .public-editorial-main:has(.proceso-root),
+    .public-editorial-main:has(.nosotros-root) {
+        max-width: 1100px;
+    }
+}
+@media (min-width: 1440px) {
+    .public-editorial-main:has(.proceso-root),
+    .public-editorial-main:has(.nosotros-root) {
+        max-width: 1180px;
+    }
+}
+
+/* /nosotros equipo grid: en desktop al ampliar el main a 1100px, el grid
+   3-col da ~340px por card que es lo razonable para foto + bio. */
+.nosotros-eq-card {
+    min-width: 0;
+}
+
+/* /proceso step viz: asegurar que el viz column tenga min-width útil para
+   los mockups (form ~340px mínimo, chart ~360px mínimo).
+
+   Bug raíz adicional: la regla `.proceso-step > * { position: relative; }`
+   estaba sobreescribiendo el `position: absolute` del .proceso-step-bg-number,
+   haciéndolo ocupar ~250px del flex flow y aplastando text-col a 210px.
+   Fix: forzar absolute en el bg-number para sacarlo del flex layout. */
+.proceso-step-bg-number {
+    position: absolute !important;
+}
+@media (min-width: 1024px) {
+    .proceso-step-viz-col {
+        min-width: 360px;
+        flex: 1 1 0;
+    }
+    .proceso-step-text-col {
+        min-width: 0;
+        flex: 1 1 0;
+    }
+}
+
+/* /nosotros hero overflow: el .nosotros-hero-title con clamp font-size
+   muy grande puede overflow del contenedor. Forzar word-break para que
+   "NOSOTROS" no se corte a la derecha. */
+.nosotros-hero-title {
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: none;
 }
 
