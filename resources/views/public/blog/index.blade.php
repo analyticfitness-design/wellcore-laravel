@@ -669,6 +669,69 @@
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ════════════════════════════════════════════════════════
+   LIGHT THEME
+   ════════════════════════════════════════════════════════ */
+html:not(.dark) .blog-page-root {
+    --blog-bg:        #FAFAFA;
+    --blog-bg-2:      #F4F4F5;
+    --blog-bg-3:      #ECECEC;
+    --blog-text:      #0A0A0A;
+    --blog-text-2:    #404040;
+    --blog-text-3:    #737373;
+    --blog-text-4:    #A3A3A3;
+    --blog-border:    rgba(0,0,0,0.08);
+    --blog-border-2:  rgba(0,0,0,0.14);
+    --blog-red-soft:  rgba(220,38,38,0.06);
+    --blog-gold:      #B5852A;
+}
+html:not(.dark) .blog-page-root::before {
+    background:
+        radial-gradient(ellipse 70% 40% at 0% -10%, rgba(220,38,38,0.07), transparent 55%),
+        radial-gradient(ellipse 50% 30% at 110% 5%, rgba(212,160,76,0.05), transparent 50%);
+}
+/* Featured card — keep dramatic dark hero for editorial feel
+   even in light mode (full-bleed image-style banner) */
+html:not(.dark) .blog-featured-card {
+    border-color: rgba(0,0,0,0.10);
+}
+html:not(.dark) .blog-tabs-wrap {
+    background: rgba(250,250,250,0.92);
+    border-bottom-color: rgba(0,0,0,0.08);
+}
+html:not(.dark) .blog-divider-line {
+    background: linear-gradient(to right, transparent, rgba(0,0,0,0.10), transparent);
+}
+html:not(.dark) .blog-card,
+html:not(.dark) .blog-card-wide {
+    background: rgba(255,255,255,0.5);
+    border-color: rgba(0,0,0,0.08);
+}
+html:not(.dark) .blog-card-img,
+html:not(.dark) .blog-featured-bg {
+    background: linear-gradient(160deg, #2A1D1D, #0a0a0a 70%);
+    /* Dark image-style banner persists in light mode for editorial impact;
+       only the body/card chrome flips. */
+}
+html:not(.dark) .blog-tab-search input {
+    background: rgba(255,255,255,0.7);
+    border-color: rgba(0,0,0,0.10);
+}
+html:not(.dark) .blog-newsletter {
+    background:
+        radial-gradient(ellipse 60% 80% at 100% 0%, rgba(220,38,38,0.10), transparent 60%),
+        rgba(255,255,255,0.6);
+    border-color: rgba(0,0,0,0.08);
+}
+html:not(.dark) .blog-newsletter-input {
+    background: rgba(255,255,255,0.8);
+    border-color: rgba(0,0,0,0.10);
+}
+html:not(.dark) .blog-cta-soft {
+    background: rgba(255,255,255,0.6);
+    border-color: rgba(0,0,0,0.08);
+}
 </style>
 
 <div class="blog-shell">

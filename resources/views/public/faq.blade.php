@@ -516,6 +516,53 @@
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ════════════════════════════════════════════════════════
+   LIGHT THEME — toggled via .dark class on <html>
+   Layout uses Alpine + localStorage; light = NO .dark class.
+   ════════════════════════════════════════════════════════ */
+html:not(.dark) .faq-page-root {
+    --faq-bg:        #FAFAFA;
+    --faq-bg-2:      #F4F4F5;
+    --faq-bg-3:      #E8E8E8;
+    --faq-text:      #0A0A0A;
+    --faq-text-2:    #404040;
+    --faq-text-3:    #737373;
+    --faq-text-4:    #A3A3A3;
+    --faq-border:    rgba(0,0,0,0.08);
+    --faq-border-2:  rgba(0,0,0,0.14);
+    --faq-red-soft:  rgba(220,38,38,0.06);
+    --faq-gold:      #B5852A;
+}
+html:not(.dark) .faq-page-root::before {
+    background:
+        radial-gradient(ellipse 70% 40% at 0% -10%, rgba(220,38,38,0.07), transparent 55%),
+        radial-gradient(ellipse 50% 30% at 110% 10%, rgba(212,160,76,0.05), transparent 50%);
+}
+html:not(.dark) .faq-page-root::after {
+    opacity: 0.05;
+    mix-blend-mode: multiply;
+}
+html:not(.dark) .faq-search-input {
+    background: rgba(255,255,255,0.8);
+    border-color: rgba(0,0,0,0.10);
+}
+html:not(.dark) .faq-tabs-sticky {
+    background: rgba(250,250,250,0.92);
+}
+html:not(.dark) .faq-divider-line {
+    background: linear-gradient(to right, transparent, rgba(0,0,0,0.10), transparent);
+}
+html:not(.dark) .faq-cta-card {
+    background: rgba(255,255,255,0.7);
+    border-color: rgba(0,0,0,0.08);
+    box-shadow:
+        0 1px 0 rgba(0,0,0,0.02) inset,
+        0 12px 40px -12px rgba(0,0,0,0.18);
+}
+html:not(.dark) .faq-cta-btn-primary {
+    box-shadow: 0 12px 32px -10px rgba(37,211,102,0.35);
+}
 </style>
 
 <div class="faq-shell">

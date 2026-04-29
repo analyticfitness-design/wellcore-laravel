@@ -700,6 +700,92 @@
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ════════════════════════════════════════════════════════
+   LIGHT THEME
+   ════════════════════════════════════════════════════════ */
+html:not(.dark) .blog-show-root {
+    --bs-bg:        #FAFAFA;
+    --bs-bg-2:      #F4F4F5;
+    --bs-bg-3:      #ECECEC;
+    --bs-bg-4:      #DDDDDD;
+    --bs-text:      #0A0A0A;
+    --bs-text-2:    #2D2D2D;
+    --bs-text-3:    #6B6B6B;
+    --bs-text-4:    #A3A3A3;
+    --bs-border:    rgba(0,0,0,0.08);
+    --bs-gold:      #B5852A;
+}
+/* Hero — keep cinematic dark even in light mode
+   (it's a full-bleed editorial banner, not a content area).
+   Title white text on dark hero stays brutal. */
+html:not(.dark) .bs-hero {
+    background: var(--bs-bg-3);
+    /* Dark hero bg overridden via inline tone; preserve dark feel */
+}
+html:not(.dark) .bs-hero-bg {
+    /* Keep the dark editorial overlay even in light mode */
+    background:
+        repeating-linear-gradient(45deg, transparent, transparent 22px, rgba(255,255,255,0.012) 22px, rgba(255,255,255,0.012) 23px),
+        var(--hero-tone, radial-gradient(ellipse 60% 70% at 70% 30%, rgba(220,38,38,0.16), transparent 60%)),
+        linear-gradient(160deg, #1c1010, #0a0a0a 70%);
+}
+/* Body text adapts to light */
+html:not(.dark) .bs-body p {
+    color: #2D2D2D;
+}
+html:not(.dark) .bs-body ul li {
+    background: rgba(0,0,0,0.025);
+    border-color: rgba(0,0,0,0.08);
+    color: #2D2D2D;
+}
+html:not(.dark) .bs-body ul li strong {
+    color: #0A0A0A;
+}
+/* Drop cap — slightly less dramatic shadow on white */
+html:not(.dark) .bs-body .show-dropcap-p::first-letter {
+    text-shadow: 0 0 32px rgba(220,38,38,0.18);
+}
+html:not(.dark) .bs-share {
+    background: rgba(255,255,255,0.7);
+    border-bottom-color: rgba(0,0,0,0.08);
+}
+html:not(.dark) .bs-author {
+    background: rgba(255,255,255,0.6);
+    border-color: rgba(0,0,0,0.08);
+}
+html:not(.dark) .bs-author-avatar {
+    background:
+        radial-gradient(circle at 35% 35%, rgba(220,38,38,0.16), transparent 55%),
+        rgba(0,0,0,0.05);
+    border-color: rgba(0,0,0,0.10);
+}
+html:not(.dark) .bs-cta {
+    background:
+        radial-gradient(ellipse at 100% 0%, rgba(220,38,38,0.10), transparent 60%),
+        rgba(255,255,255,0.5);
+    border-color: rgba(220,38,38,0.20);
+}
+html:not(.dark) .bs-toc-inner,
+html:not(.dark) .bs-side-share {
+    background: rgba(255,255,255,0.5);
+    border-color: rgba(0,0,0,0.08);
+}
+html:not(.dark) .bs-toc-ring-bg {
+    stroke: rgba(0,0,0,0.08);
+}
+html:not(.dark) .bs-related-card {
+    background: rgba(255,255,255,0.5);
+    border-color: rgba(0,0,0,0.08);
+}
+/* Card image banners stay dark for editorial impact */
+html:not(.dark) .bs-related-img {
+    background: linear-gradient(160deg, #2A1D1D, #0a0a0a);
+}
+html:not(.dark) .bs-divider-line,
+html:not(.dark) .bs-related-divider-line {
+    background: rgba(0,0,0,0.10);
+}
 </style>
 
 {{-- Reading progress bar --}}
