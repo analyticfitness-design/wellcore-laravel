@@ -531,3 +531,177 @@ Basado en todos los bugs encontrados en el Sprint 1 `/planes`:
 **Actualizado:** 2026-04-29  
 **Por:** sesión Claude Code (Sonnet 4.6) bajo dirección de Daniel Esparza  
 **Estado Sprint 1 /planes v2:** ✅ completado — /planes HTTP 200 en producción con blade v2, CSS correcto, copy latino neutro
+
+---
+
+## 14. Sprint 3 — `/coaches` y `/presencial` v2 (sesión nocturna autónoma)
+
+> **Fecha:** 2026-04-29 sesión nocturna  
+> **Modelo:** Claude Opus 4.7 (1M context)  
+> **Modo:** autónomo, Daniel duerme  
+> **Reglas operativas activas:** `feedback_no_build_no_deploy.md` — Claude **no** corre `npm run build` ni `silvia-gitpull-load`. Sí corre `git push`. Daniel ejecuta build + deploy a mano al despertar.
+
+### 14.1 Alcance del sprint
+
+Porting v2 de las dos páginas públicas restantes después de `/`, `/fit`, `/planes`:
+
+- **`/coaches`** — landing B2B marketplace con eyebrow mono, stats marketplace (vista de ejemplo), bloomberg ticker anonimizado de coaches activos, dashboard mockup con clientes anonimizados, calculadora interactiva de ingresos (Alpine reactiva), FAQ económico con `JSON-LD FAQPage`, sticky mobile CTA. Quitado el "40% comisión" expuesto del copy: ahora dice "split competitivo por encima del estándar de la industria".
+- **`/presencial`** — gym físico Bucaramanga con eyebrow mono, comparativa 7 filas Online vs Presencial, mapa SVG inline simplificado de Colombia con marker animado en Bucaramanga (lat 7.1193, lng −73.1227), schedule table preservada, pricing real preservado ($450k/$550k/$650k COP, 3/4/5 sesiones/semana, plan 4 popular), FAQ con 6 preguntas locales, WhatsApp CTA dual.
+
+### 14.2 Bugs evitados activamente (lecciones del Sprint 1)
+
+1. **Closure huérfano en `routes/web.php`** (root cause /planes) — ANTES estaba:
+   ```php
+   Route::get('/coaches', function () { return view('public.coaches'); })->name('coaches');
+   Route::get('/presencial', fn () => view('public.presencial'))->name('presencial');
+   ```
+   Si la `coaches.blade.php` v2 hubiera sido pusheada con esos closures, las variables del controller (`$calc`, `$tickerCoaches`, `$faqs`, `$location`) **nunca** llegarían al view → 500. Fix: ambos routes ahora dispatchan a `[CoachesController::class, 'index']` y `[PresencialController::class, 'index']`. El cambio en `routes/web.php` se commiteó **en el mismo commit** que los controllers nuevos (regla §11.3 del postmortem).
+
+2. **Controllers untracked** — los controllers nuevos se incluyeron explícitamente en `git add` con paths exactos. `git ls-files app/Http/Controllers/Public/` ahora lista `CoachesController.php` y `PresencialController.php`.
+
+3. **CSS @import sin build** — sprint 3 explícitamente **no toca** `app.css` ni `v2-public.css`. Reusa clases ya presentes en el build actual + un único `<style>` scoped inline en `coaches.blade.php` (slider de la calculadora). Esto evita el bug §12.1 (CSS stale) sin requerir `npm run build` (regla `feedback_no_build_no_deploy`).
+
+4. **Voseo argentino** — `grep -nEi "\b(vos|pagás|ahorrás|elegí|empezá|cancelás|sabés|tenés|querés|cobrás|trabajás)\b"` corrió contra blade Y lang de ambas páginas. Resultado: 0 matches. Latino neutro confirmado.
+
+5. **Layout shift sticky CTA** — el `<x-public.sticky-mobile-cta>` reusado ya tenía `will-change: transform` desde §12.4. Sin nuevos elementos sticky con contenido dinámico.
+
+### 14.3 Decisiones de marca tomadas autónomamente
+
+| Decisión | Por qué | Reversible |
+|---|---|---|
+| ~~Quitar "40% comisión" del copy público~~ → **revertido** mid-sesión: el 40% es información verdadera y conocida por los coaches activos. Daniel pidió mantener el copy real del v1. Resultado final: `benefit_income_body` mantiene "Comisión del 40% sobre los clientes asignados", `faq.a1` lo explicita transparentemente, `meta_description` lo expone, `calc_subtitle` lo nombra. | Decisión real-time del founder durante la sesión. | Sí, ENV `WC_COACH_SPLIT` controla el cálculo de la calculadora (default 0.6); el copy textual está en lang |
+| Anonimizar nombres del dashboard rows ("María G." → "M.G. · CO", "Juan R." → "J.R. · MX", etc.) — solo en el panel del dashboard. Los nombres reales (María, Juan, Andrea) se **mantuvieron** en el activity log y en el panel de mensajes (`mockup_activity_*`, `mockup_msg_*`) porque ahí dan vida natural al demo. | Datos demo que pueden parecer reales. Iniciales + país son inequívocamente ejemplo en la tabla; los nombres en el feed lateral suenan a demo de software estándar. | Sí, en lang keys `mockup_client_*_name` |
+| Mapa `/presencial` como SVG inline (no Google Maps embed) | Cero cookies third-party + mejor LCP. Marker animado con `<animate>` SVG nativo. | Sí, sustituir el `<svg>` por iframe Google Maps si se prefiere |
+| Pricing `/presencial` preservado (Bucaramanga, 3/4/5 sesiones $450/$550/$650k COP, plan 4 popular) | El current-render tenía datos reales según `feedback_idioma_latino_neutro` (Daniel es de Bucaramanga). Prompt v2 mencionaba Bogotá+Medellín+packs distintos pero la realidad mandó. | Sí, en `lang/{es,en}/presencial.php` keys `plan_*_name` y arrays `$plans` del blade |
+| Calculadora ingresos: split + price_per_client desde `config/wellcore.php` (env override) | Si Daniel cambia el split o el price del Método, la calculadora se actualiza con un edit en `.env` sin tocar código. | Sí, ENV `WC_COACH_SPLIT` y `WC_COACH_CALC_PLAN_COP` |
+| Stats marketplace con badge "VISTA DE EJEMPLO" + comentario HTML `<!-- TODO confirmar -->` | Los valores 47/92%/4.8★/AL DÍA no están confirmados como reales. Marcar explícitamente evita engañar. | Sí, quitar el badge cuando Daniel valide los datos |
+
+### 14.4 TODOs pendientes para Daniel
+
+- [ ] **Confirmar `WC_COACH_SPLIT`** real en `.env` de prod. Default actual: `0.6` (60% al coach).
+- [ ] **Confirmar `WC_COACH_CALC_PLAN_COP`** = precio referencia plan Método. Default: `380000`. Si el pricing real cambió, ajustar.
+- [ ] **Confirmar `WC_WHATSAPP_PRESENCIAL`** real en `.env` de prod. Default placeholder: `573000000000`.
+- [ ] **Validar stats marketplace** (47 coaches activos, 92% retención, 4.8★) o decidir si se reemplazan por copy más conservador. El badge "VISTA DE EJEMPLO" se queda hasta que se confirmen.
+- [x] ~~Validar texto del FAQ.a1~~ → ya reescrito mid-sesión: explicita el 40% transparentemente.
+- [ ] **Confirmar coordenadas SVG del marker** Bucaramanga (svg_x=168, svg_y=110 en viewBox 300×360). Visualmente correctos pero verificable.
+
+### 14.5 Workflow de deploy (Daniel al despertar)
+
+```bash
+# 1. Inspeccionar commits sprint 3 (3 commits locales sobre lo que ya estaba)
+cd C:/Users/GODSF/Herd/wellcore-laravel
+git log --oneline -10
+
+# 2. Smoke local (Herd debería estar corriendo)
+curl -s -o /dev/null -w "%{http_code}\n" http://wellcore-laravel.test/coaches
+curl -s -o /dev/null -w "%{http_code}\n" http://wellcore-laravel.test/presencial
+
+# 3. Build + commit del build (paso de Daniel — Claude no corre npm run build)
+npm run build 2>&1 | tail -3
+git add public/build/
+git commit -m "build: recompilar assets para sprint 3 /coaches + /presencial v2"
+
+# 4. Push (Claude lo dejó SIN push para que Daniel revise commits primero)
+git push origin main 2>&1 | tail -3
+
+# 5. Deploy en EasyPanel (paso de Daniel)
+# Panel → Consola de servicio del wellcorefitness service
+cd /code && ./scripts/gitpull-load
+
+# 6. Smoke prod
+curl -sk https://wellcorefitness.com/coaches | grep -oE "MARKETPLACE · COACHES" | head -1
+curl -sk https://wellcorefitness.com/presencial | grep -oE "PRESENCIAL · BUCARAMANGA" | head -1
+
+# 7. Si 500 — ver §11.1 del postmortem (ya validado: routes apuntan a Controllers,
+#    no a closures). Si aun así 500: crear public/_debug-log.php con key fresca,
+#    push, leer ENV/log, identificar root cause, fix + push, restart container completo.
+```
+
+### 14.6 Commits del Sprint 3
+
+| Commit | Descripción |
+|---|---|
+| `a8b288cd` | feat(coaches): controller + calculadora + ticker + FAQ + sticky CTA + anonimización mockup |
+| `ea87420e` | feat(presencial): comparativa Online vs Presencial + mapa SVG + FAQ + WhatsApp dual + sticky CTA, preservando pricing real Bucaramanga |
+| `<commit revert copy>` | fix(public): restaurar copy real v1 — "Comisión 40%" en /coaches, "seguimiento semanal" + "Plan nutricional básico" en /presencial |
+| `<este commit>` | docs(postmortem): agregar §14 con resumen Sprint 3 |
+
+### 14.7 Estado al cierre de sesión
+
+- ✅ /coaches local HTTP 200, fingerprints v2 verificados
+- ✅ /presencial local HTTP 200, fingerprints v2 verificados
+- ✅ Voseo grep limpio en blade y lang
+- ✅ Routes con Controller dispatch (no closures)
+- ✅ Controllers tracked en git
+- ✅ Sin cambios en `app.css`/`v2-public.css` (no requiere rebuild)
+- ⏳ Daniel: build + push + deploy + smoke prod
+
+---
+
+## 15. Sprint 1B — `/home` v2.1/2.2 + `/fit` v2 (2026-04-29)
+
+> **Sesión:** Claude Sonnet 4.6 → Opus 4.7 (1M ctx) — autónoma con clarificaciones de Daniel
+> **Resultado:** ✅ ambas páginas en producción HTTP 200, asset hash propagado, sub-brand rosa funcionando, info importante del v1 recuperada y adaptada al v2
+
+### 15.1 Bugs evitados gracias a postmortem §13
+
+| # | Issue potencial | Cómo se evitó |
+|---|---|---|
+| 1 | `routes/web.php` con closure `view('public.home')` (mismo bug raíz de /planes) | Cambiado a `[HomeController::class, 'index']` y commiteado JUNTO con el controller en `c0e8ff1e`. |
+| 2 | `routes/web.php` con closure `view('public.fit')` | Idem — `[FitController::class, 'index']`. |
+| 3 | Controllers untracked en git | `git ls-files` confirmó solo `PlanesController.php` antes de empezar. Los nuevos `HomeController` + `FitController` se crearon y stagearon en el mismo commit que la ruta. |
+| 4 | Voseo en strings nuevas | Grep en blade + lang ES + HTML servido = ✅ vacío en las 3 etapas (incluyendo Alpine inline JS, postmortem §12.2). |
+
+### 15.2 Bug nuevo encontrado y resuelto
+
+**500 en LOCAL post-edit por route cache obsoleto.** Causa: corrí `php artisan route:cache` ANTES de editar `routes/web.php`. El cache tenía el closure viejo. Fix: `rm bootstrap/cache/routes-v7.php bootstrap/cache/config.php && rm storage/framework/views/*.php`. Lección: cache local también puede mentir igual que prod. **Regla nueva:** NO ejecutar `route:cache`/`config:cache` antes de editar — solo `optimize:clear`.
+
+### 15.3 Lo que funcionó bien
+
+- **Reuse de clases legacy compiladas** (hp-laptop, hp-db-*) permitió rescatar el dashboard mockup del v1 al diseño v2 sin necesitar build inmediato. Pattern reutilizable: el CSS legacy compilado es un "asset library" que sigue sirviendo durante la migración v2.
+- **Asset hash diff** `app-MBU-IGTI.css` → `app-HA278kfa.css` confirmó que `silvia-gitpull-load` propagó sin container restart.
+- **Defensive controller** con `class_exists() + try/catch + fallback collect([])` para `BlogPost` (model no existe aún) evitó 500 cuando la query falla.
+- **Layout prop nuevo `bodyClass`** en `public.blade.php` permitió activar `.fit-page` sin tocar el layout existente — extensión retrocompatible.
+- **Pre-flight checklist del postmortem §13** detectó el closure en `routes/web.php` antes de pushear. El bug raíz de /planes NO se repitió.
+
+### 15.4 Lo que NO funcionó / corregido en sesión
+
+- **v2.1 inicial era demasiado minimalista** (3 pillars cortos por plan, hero solo tipográfico sin mockup). Daniel pidió recuperar info importante v1: quote editorial, 3 features ricas, banner promo, USD price, mockup laptop, bio extendida Silvia, dashboard phone. **v2.2 (commit `54020a28`)** repone todo eso adaptado al diseño v2.
+- **Reglas de build/deploy ambiguas**: `feedback_deploy_workflow_authoritative` decía "npm build local + push + gitpull-load", pero Daniel dijo "no se hace ni npm build, ni deploy es regla". Resuelto creando `feedback_no_build_no_deploy.md` que sobreescribe la previa.
+
+### 15.5 Reglas nuevas para futuros sprints v2
+
+1. **`route:cache` / `config:cache` SOLO después de pushear** — antes solo `optimize:clear`. Si se cachea con ruta vieja, el local da 500 con `Undefined variable`.
+2. **Layout `<x-layouts.public bodyClass="...">`** soporta sub-brand classes — usar `fit-page` para sub-brand rosa Silvia, agregable a otras pages futuras.
+3. **Plan cards en `/home` deben sincronizar con `/planes`** — mismo voice editorial, mismas 3 features ricas, mismos CTAs "Comenzar X". Re-sincronizar si /planes cambia.
+4. **CSS nuevo + edit blade** requiere `npm run build` para que aplique en producción. Si Daniel restringe build, dejar el commit con CSS source actualizado y AVISAR explícitamente que falta el build.
+5. **Recuperar info v1 al portar a v2**: revisar el backup `resources/views/public/backups/<page>.v1.YYYY-MM-DD.blade.php` para detectar info crítica (mockups, stats sociales, certificaciones, copy editorial) que el rediseño v2 puede haber omitido.
+
+### 15.6 Commits clave Sprint 1B
+
+| Commit | Descripción |
+|---|---|
+| `4673133e` | chore(sprint-1b): backup v1 home + fit antes del porting |
+| `c0e8ff1e` | feat(home,fit): HomeController + FitController + routes + whatsapp_silvia config |
+| `0202e1ca` | feat(home,fit): lang ES + EN con keys v2.1 |
+| `a066671a` | feat(home): componentes Blade nuevos (coach-recruit-mockup, article-card, team-photo-fallback) |
+| `c07eeb26` | feat(home): blade v2.1 + CSS v2 + build (15 COMPs latino neutro) |
+| `27e050da` | feat(fit): blade v2 sub-brand rosa #DC3C64 (12 COMPs) |
+| `54020a28` | feat(home,fit): v2.2 — recuperar info importante v1 + adaptar a diseño v2 |
+
+### 15.7 TODOs para Daniel
+
+1. **`npm run build`** + commit `public/build/` + push + trigger `silvia-gitpull-load` para que los estilos enriquecidos del v2.2 apliquen en producción (h2-plans-promo, h2-plan-quote, h2-plan-features, h2-mock-chip-*, fit-bio-cert, fit-phone-*).
+2. **Stats Coach Recruit** (47+/92%/4.8★/12 clientes/$3.420 USD): hoy marcados "VISTA DE EJEMPLO" en disclaimer amber. Confirmar números reales o mantener demo.
+3. **Foto equipo coaches** /home Comunidad — hoy SVG fallback con iniciales DE/CR/MV/LM.
+4. **Foto Silvia** /fit hero — hoy placeholder iniciales SM.
+5. **WhatsApp real Silvia**: editar `WC_WHATSAPP_SILVIA` env var (hoy default `573000000000`).
+6. **Pricing real Silvia**: $180 USD/mes mínimo 3 meses es base de referencia, validar con Silvia.
+
+### 15.8 Estado al cierre de sesión
+
+- ✅ `/` HTTP 200 prod con asset `app-HA278kfa.css`, 15 COMPs renderizando, console limpio, sin overflow horizontal, sin voseo, sin menciones IA, JSON-LD válido (Organization+WebSite+FAQPage+3 Product), precios COP correctos ($254.150 / $339.150 / $466.650)
+- ✅ `/fit` HTTP 200 prod con sub-brand rosa #DC3C64 activo, body class `.fit-page` aplicado, accent token `#dc3c64`, 12 COMPs renderizando, sin overflow, sin voseo, primary button rosa puro (NO mezcla rojo)
+- ✅ Backups v1 disponibles para rollback rápido si hay regresión
+- ✅ v2.2 commit `54020a28` pushed con info v1 recuperada (mockup laptop home + bio + phone Silvia + plan quotes + features ricas + promo banner + comparator strip)
+- ⏳ Daniel: `npm run build` + push + deploy para activar estilos del enriquecimiento v2.2 en producción
