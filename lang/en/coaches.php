@@ -3,22 +3,22 @@
 return [
     // Meta
     'meta_title'       => 'Become a WellCore Coach - WellCore Fitness',
-    'meta_description' => 'Join the WellCore coaching team. Remote-first, proprietary tools, pro community, and competitive commissions (40% per assigned client).',
+    'meta_description' => 'Join the WellCore coaching team. Remote-first work, professional dashboard with weekly strategic content drop, personal brand system, and tools no other online coaching offers.',
 
     // Hero v2
-    'hero_eyebrow'     => 'MARKETPLACE · COACHES · 2026',
+    'hero_eyebrow'     => 'TEAM · COACHES · 2026',
     'hero_heading'     => 'BECOME A',
     'hero_brand'       => 'WELLCORE COACH',
-    'hero_body'        => 'Join the marketplace transforming online fitness coaching across Latin America. Proprietary platform, a community of pro coaches, and a business model built so you grow with your clients.',
-    'hero_cta'         => 'Apply to the marketplace',
+    'hero_body'        => 'Join the team transforming online fitness coaching across Latin America. Proprietary platform, a community of pro coaches, and a business model built so you grow with your clients.',
+    'hero_cta'         => 'Apply as a coach',
     'hero_cta_secondary' => 'See requirements',
 
     // Credentials
     'cred_label'       => 'Accepted certifications',
     'cred_note'        => 'Internationally recognized certifications · Confirm requirements when you apply',
 
-    // Stats marketplace — sample view
-    'stats_title'      => 'THE MARKETPLACE BY THE NUMBERS',
+    // Stats — sample view
+    'stats_title'      => 'THE TEAM BY THE NUMBERS',
     'stats_demo_label' => 'SAMPLE VIEW',
     'stats_coaches_value' => '47',
     'stats_coaches_label' => 'ACTIVE COACHES',
@@ -31,7 +31,7 @@ return [
 
     // Benefits
     'benefits_heading'  => 'WHY COACH WITH WELLCORE',
-    'benefits_subtitle' => 'The perks of joining the marketplace.',
+    'benefits_subtitle' => 'The perks of joining the team.',
 
     'benefit_remote_title' => 'Fully Remote & Flexible',
     'benefit_remote_body'  => 'Coach from anywhere, on your schedule. You control your week and your client sessions — no commute, no cap.',
@@ -43,7 +43,7 @@ return [
     'benefit_community_body'  => 'Tap into a network of high-performance professionals. Share knowledge, solve problems, and level up alongside coaches who get it.',
 
     'benefit_income_title' => 'Competitive Earnings',
-    'benefit_income_body'  => '40% commission on every assigned client. Transparent model, on-time payouts, zero surprises.',
+    'benefit_income_body'  => 'Competitive split on every active client. Transparent model, on-time payouts and monthly client-by-client breakdown.',
 
     // Coach Portal section
     'portal_label'    => 'Tools',
@@ -54,6 +54,35 @@ return [
     'portal_feature_2' => 'Messaging hub with broadcast capabilities',
     'portal_feature_3' => 'Plan generator',
     'portal_feature_4' => 'Per-client performance analytics',
+
+    // Dashboard advantages — real features from coach portal
+    'dash_eyebrow'    => 'DASHBOARD ADVANTAGES',
+    'dash_heading'    => 'NOT JUST COACHING. A FULL PLATFORM.',
+    'dash_subtitle'   => 'Every WellCore coach gets access to a professional system that no other online coaching offers. This is what comes in on day one.',
+
+    'dash_strategy_title'    => 'Weekly Strategic Drop',
+    'dash_strategy_body'     => 'Each week your drop arrives with: thematic brief, 2 production-ready reel scripts, 7 story pieces Mon→Sun, production checklist, and a weekly bank of alternative ideas. Producing content stops being a nightmare.',
+
+    'dash_brand_title'       => 'Personal Brand System',
+    'dash_brand_body'        => 'Your own brand inside WellCore. Configure identity, specialty, audience, methodologies, editorial voice, and offers. Your coach profile attracts clients matching your style — never generic.',
+
+    'dash_hashtags_title'    => 'Hashtags + Asset Gallery',
+    'dash_hashtags_body'     => 'Curated hashtag sets by topic each week + downloadable asset gallery as ZIP. What you would normally pay a community manager — already included.',
+
+    'dash_planes_title'      => 'Plan Generator',
+    'dash_planes_body'       => 'PlansManager with periodized training, macro-based nutrition, and supplementation. Create, assign, and adjust plans per client without leaving the dashboard.',
+
+    'dash_messages_title'    => 'Messaging + Broadcast Center',
+    'dash_messages_body'     => '1:1 conversations with each client + broadcasts to your full roster. Customizable templates and response metrics.',
+
+    'dash_pods_title'        => 'Accountability Pods',
+    'dash_pods_body'         => 'Small accountability groups among your clients. Increase retention and engagement with no extra work for you.',
+
+    'dash_video_title'       => 'Video Check-in Review',
+    'dash_video_body'        => 'Your clients send technique videos; you review, annotate timestamps, and send feedback. 1:1 supervision at scale.',
+
+    'dash_analytics_title'   => 'Per-Client Analytics',
+    'dash_analytics_body'    => 'Adherence, progress, retention and satisfaction metrics for every client. Dashboards and exports to make data-driven decisions.',
 
     // Dashboard mockup labels (anonymized initials + country)
     'mockup_dashboard_heading'   => 'COACH DASHBOARD',
@@ -88,10 +117,10 @@ return [
     // Income calculator
     'calc_eyebrow'      => 'INCOME CALCULATOR',
     'calc_heading'      => 'Estimate your monthly potential',
-    'calc_subtitle'     => 'Estimation based on 40% of the Método plan value. Slide to see your projected income.',
+    'calc_subtitle'     => 'Estimation based on a competitive split for the Método plan. Slide to see your projected income.',
     'calc_slider_label' => 'Active clients',
     'calc_output_label' => 'ESTIMATED MONTHLY INCOME',
-    'calc_disclaimer'   => 'Reference estimate. Real income depends on plan mix (Esencial/Método/Elite), retention, and effective number of assigned clients.',
+    'calc_disclaimer'   => 'Reference estimate. Real income depends on plan mix (Esencial/Método/Elite), retention, and effective number of assigned clients. Split details in the coach contract.',
 
     // Bloomberg ticker
     'ticker_label'      => 'COACHES · LIVE ACTIVITY',
@@ -100,22 +129,22 @@ return [
     'faq_heading'       => 'FREQUENTLY ASKED QUESTIONS',
     'faq_subtitle'      => 'What applying coaches ask first.',
     'faq' => [
-        'q1' => 'How does the income split work?',
-        'a1' => 'Each active client pays their monthly plan. The assigned coach receives 40% of that payment. Transparent model, no hidden fees, no per-session discounts. Detailed breakdown by client and plan arrives every month with the payout.',
+        'q1' => 'How does the income model work?',
+        'a1' => 'Each active client pays their monthly plan and the assigned coach receives a competitive split on that payment. The exact figure is signed in the coach contract. On-time payments with monthly breakdown by client, plan, and amount.',
 
         'q2' => 'When are commissions paid?',
         'a2' => 'Monthly payouts on the 5th business day via bank transfer or PSE. Each coach gets a breakdown by client, plan, gross amount, applicable retentions, and net amount before payment.',
 
-        'q3' => 'Can I work with other marketplaces or independently?',
+        'q3' => 'Can I work with other platforms or independently?',
         'a3' => 'Yes, exclusivity is not required. We just ask that WellCore client care meets the agreed SLAs (response time, check-in cadence, follow-up quality).',
 
         'q4' => 'Is there a minimum client count I need to manage?',
         'a4' => 'No mandatory minimum. We recommend starting with 3–5 clients while you learn the platform and scaling gradually. Most coaches stabilize between 10 and 20 active clients depending on availability.',
 
         'q5' => 'What support do I get from the WellCore team?',
-        'a5' => 'Full onboarding, platform access with all tools, private coach community, monthly methodology refreshers, and a lead coach who supports you for the first 90 days.',
+        'a5' => 'Full onboarding, platform access with all tools, weekly strategic content drop, personal brand system, private coach community, monthly methodology refreshers, and a lead coach who supports you for the first 90 days.',
 
-        'q6' => 'How does it work if I want to leave the marketplace?',
+        'q6' => 'How does it work if I want to leave the team?',
         'a6' => '30-day notice. During that period your clients are reassigned with their consent or the in-progress cycle is closed with you. No penalties, no contract lock-ins.',
     ],
 
@@ -153,10 +182,10 @@ return [
 
     // CTA
     'cta_heading'   => 'READY TO LEVEL UP?',
-    'cta_body'      => 'If you meet the requirements and want to join a science-driven coaching team, apply today.',
+    'cta_body'      => 'If you meet the requirements and want to join a science-driven team, apply today.',
     'cta_button'    => 'Apply as a Coach',
     'cta_secondary' => 'Talk to the team',
 
     // Sticky mobile CTA
-    'sticky_label'  => 'Apply to the marketplace',
+    'sticky_label'  => 'Apply as a coach',
 ];

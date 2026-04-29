@@ -92,39 +92,30 @@
                     </a>
                 </div>
 
-                {{-- Mapa SVG simplificado: Colombia + marker Bucaramanga.
-                     Sin Google Maps embed (cero cookies third-party, mejor LCP). --}}
-                <div class="flex items-center justify-center rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 sm:p-8">
-                    {{-- color del contorno + label se vinculan al token text-wc-text-tertiary
-                         vía currentColor → respeta light Y dark sin valores hardcoded. --}}
-                    <svg
-                        viewBox="0 0 300 360"
-                        class="h-auto w-full max-w-[420px] text-wc-text-tertiary"
-                        role="img"
-                        aria-label="{{ __('presencial.map_aria') }}"
+                {{-- Mapa real OpenStreetMap embed — Bucaramanga centrado.
+                     Por qué OSM y NO Google Maps:
+                     · Sin cookies third-party (OSM no trackea)
+                     · Sin API key requerida
+                     · Sin LCP penalty pesado (un iframe único, lazy-loaded)
+                     · Marker rojo built-in vía param `marker=lat,lng`
+                     bbox = west,south,east,north (recorte alrededor de Bucaramanga). --}}
+                <div class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary">
+                    <iframe
+                        src="https://www.openstreetmap.org/export/embed.html?bbox=-73.2200%2C7.0700%2C-73.0300%2C7.1900&amp;layer=mapnik&amp;marker={{ $location['lat'] }}%2C{{ $location['lng'] }}"
+                        title="{{ __('presencial.map_aria') }}"
+                        class="block h-[360px] w-full sm:h-[420px]"
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        style="border:0;"
+                    ></iframe>
+                    <a
+                        href="https://www.openstreetmap.org/?mlat={{ $location['lat'] }}&amp;mlon={{ $location['lng'] }}#map=14/{{ $location['lat'] }}/{{ $location['lng'] }}"
+                        target="_blank"
+                        rel="noopener"
+                        class="block px-4 py-3 text-center font-mono text-[10px] uppercase tracking-[0.18em] text-wc-text-tertiary hover:bg-wc-bg-secondary hover:text-wc-text"
                     >
-                        {{-- Contorno simplificado de Colombia (currentColor + alpha) --}}
-                        <path
-                            d="M150 30 L180 38 L210 55 L225 80 L235 115 L240 150 L235 185 L225 220 L210 250 L195 280 L180 305 L160 325 L140 335 L120 330 L105 315 L95 290 L88 260 L82 225 L78 190 L80 155 L88 120 L100 90 L115 65 L132 45 Z"
-                            fill="currentColor"
-                            fill-opacity="0.08"
-                            stroke="currentColor"
-                            stroke-opacity="0.32"
-                            stroke-width="1.5"
-                        />
-                        {{-- Marcador Bucaramanga (svg_x=168, svg_y=110).
-                             Borde del dot usa wc-bg-tertiary (blanco en light, casi negro en dark). --}}
-                        <g transform="translate({{ $location['svg_x'] }} {{ $location['svg_y'] }})">
-                            <circle r="22" fill="#DC2626" fill-opacity="0.18">
-                                <animate attributeName="r" values="22;30;22" dur="2.4s" repeatCount="indefinite" />
-                                <animate attributeName="opacity" values="0.7;0;0.7" dur="2.4s" repeatCount="indefinite" />
-                            </circle>
-                            <circle r="8" fill="#DC2626" stroke="var(--color-wc-bg-tertiary)" stroke-width="2.5" />
-                            <text y="-18" text-anchor="middle" fill="#DC2626" font-size="13" font-weight="700" font-family="system-ui, sans-serif">{{ $location['city'] }}</text>
-                        </g>
-                        {{-- Etiqueta país (currentColor + alpha) --}}
-                        <text x="150" y="350" text-anchor="middle" fill="currentColor" fill-opacity="0.55" font-size="10" letter-spacing="3" font-family="ui-monospace, monospace">COLOMBIA</text>
-                    </svg>
+                        Ver en mapa más grande →
+                    </a>
                 </div>
             </div>
         </div>
