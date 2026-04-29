@@ -154,20 +154,22 @@
 }
 .blog-featured-bg {
     position: relative;
-    aspect-ratio: 16/9;
-    /* min-height ensures content fits in narrow viewports where 16/9 yields
-       insufficient height (e.g. 390px wide → 219px high) and the title +
-       excerpt + meta + CTA would overflow + collide with the issue tag.
-       In desktop the aspect-ratio dominates (1200px wide → 675px high). */
-    min-height: 460px;
+    /* Mobile-first: fixed-ish height, no aspect-ratio (which would force
+       width to grow with min-height per CSS spec, breaking the card's
+       horizontal bounds at 818px+). aspect-ratio kicks in only at desktop
+       where the container is wide enough that 16/9 yields adequate height. */
+    height: 460px;
     background: linear-gradient(160deg, #1c1010, #0a0a0a 70%);
     overflow: hidden;
 }
-@media (min-width: 768px) {
-    .blog-featured-bg { min-height: 380px; }
+@media (min-width: 720px) {
+    .blog-featured-bg { height: 420px; }
 }
 @media (min-width: 1024px) {
-    .blog-featured-bg { min-height: 0; }
+    .blog-featured-bg {
+        height: auto;
+        aspect-ratio: 16/9;
+    }
 }
 .blog-featured-bg::before {
     content: '';
