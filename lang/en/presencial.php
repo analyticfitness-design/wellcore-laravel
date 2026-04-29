@@ -46,7 +46,7 @@ return [
     // How it works
     'how_heading' => 'HOW IT WORKS',
     'how_p1'      => 'The in-person plan gives you 1:1 training sessions with your coach in Bucaramanga. Every session is personalized and supervised to guarantee perfect technique and optimal progression.',
-    'how_p2'      => 'Beyond your in-person sessions, you get your full program on the WellCore platform for solo training days, plus a nutrition plan and bi-weekly check-ins.',
+    'how_p2'      => 'Beyond your in-person sessions, you get your full program on the WellCore platform for solo training days, plus a nutrition plan and weekly check-ins.',
 
     // Feature stat labels
     'stat_sessions'   => 'Sessions/week',
@@ -95,7 +95,7 @@ return [
     'feat_whatsapp'       => 'Priority WhatsApp support',
 
     'feat_3_sessions'     => '12 in-person sessions/mo',
-    'feat_3_nutrition'    => 'Macro-based nutrition plan',
+    'feat_3_nutrition'    => 'Basic nutrition plan',
 
     'feat_4_sessions'     => '16 in-person sessions/mo',
     'feat_4_nutrition'    => 'Full nutrition plan + macros',

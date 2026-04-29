@@ -2,8 +2,8 @@
 
 return [
     // Meta
-    'meta_title'       => 'Coaches WellCore - Aplicar al marketplace',
-    'meta_description' => 'Únete al marketplace de coaches WellCore. Trabajo remoto, herramientas profesionales, comunidad y split competitivo en cada cliente activo.',
+    'meta_title'       => 'Sé Coach WellCore - WellCore Fitness',
+    'meta_description' => 'Únete al equipo de coaches WellCore. Trabajo remoto, herramientas propias, comunidad y comisiones competitivas (40% por cliente asignado).',
 
     // Hero v2 — eyebrow mono + headline brutal
     'hero_eyebrow'     => 'MARKETPLACE · COACHES · 2026',
@@ -43,7 +43,7 @@ return [
     'benefit_community_body'  => 'Forma parte de una red de profesionales comprometidos. Comparte conocimiento, resuelve dudas y crece junto a otros coaches.',
 
     'benefit_income_title' => 'Ingresos Competitivos',
-    'benefit_income_body'  => 'Split competitivo por encima del estándar de la industria sobre cada cliente activo. Modelo transparente, pagos puntuales y sin sorpresas.',
+    'benefit_income_body'  => 'Comisión del 40% sobre los clientes asignados. Modelo transparente con pagos puntuales y sin sorpresas.',
 
     // Coach Portal section (mockup interactivo)
     'portal_label'    => 'Herramientas',
@@ -79,17 +79,17 @@ return [
     'mockup_client_4_plan'       => 'Esencial',
     'mockup_client_4_adherence'  => '76%',
 
-    'mockup_activity_1'          => 'Cliente envió check-in',
-    'mockup_activity_2'          => 'Cliente completó semana 8',
-    'mockup_activity_3'          => 'Cliente subió foto de progreso',
-    'mockup_msg_1'               => 'Coach, completé el entrenamiento de hoy.',
-    'mockup_msg_2'               => '¿Puedo cambiar el ejercicio de…?',
-    'mockup_msg_3'               => 'Foto de progreso semana 4.',
+    'mockup_activity_1'          => 'María envió check-in',
+    'mockup_activity_2'          => 'Juan completó semana 8',
+    'mockup_activity_3'          => 'Andrea subió fotos',
+    'mockup_msg_1'               => 'Coach, completé el entrenamiento de hoy!',
+    'mockup_msg_2'               => 'Puedo cambiar el ejercicio de...',
+    'mockup_msg_3'               => 'Foto de progreso semana 4',
 
     // Calculadora ingresos
     'calc_eyebrow'      => 'CALCULADORA DE INGRESOS',
     'calc_heading'      => 'Calcula tu potencial mensual',
-    'calc_subtitle'     => 'Estimación basada en split competitivo sobre el plan Método. Mueve el slider para ver tu ingreso proyectado.',
+    'calc_subtitle'     => 'Estimación basada en el 40% del valor del plan Método. Mueve el slider para ver tu ingreso proyectado.',
     'calc_slider_label' => 'Clientes activos',
     'calc_output_label' => 'INGRESO MENSUAL ESTIMADO',
     'calc_disclaimer'   => 'Estimación referencial. El ingreso real depende del mix de planes (Esencial/Método/Elite), retención y volumen efectivo de clientes asignados.',
@@ -102,7 +102,7 @@ return [
     'faq_subtitle'      => 'Lo que preguntan primero los coaches que aplican.',
     'faq' => [
         'q1' => '¿Cómo funciona el split de ingresos?',
-        'a1' => 'Cada cliente activo paga su plan mensual. El coach asignado recibe un split competitivo por encima del estándar del coaching online en LATAM. El detalle exacto se firma al cerrar el contrato de coach, no se publica para evitar comparaciones fuera de contexto con otros marketplaces que cobran por sesión.',
+        'a1' => 'Cada cliente activo paga su plan mensual. El coach asignado recibe el 40% sobre ese pago. Modelo transparente, sin tarifas ocultas, sin descuentos por sesión. El desglose exacto por cliente y plan llega cada mes con el pago.',
 
         'q2' => '¿Cuándo se pagan las comisiones?',
         'a2' => 'Pagos mensuales puntuales el día 5 hábil de cada mes vía transferencia bancaria o PSE. Cada coach recibe su desglose con cliente, plan, monto bruto, retenciones aplicables y monto neto antes del pago.',
@@ -128,7 +128,7 @@ return [
     'req_1_body'  => 'Título o certificación reconocida en el área de fitness, entrenamiento o nutrición.',
 
     'req_2_title' => '2+ años de experiencia en coaching',
-    'req_2_body'  => 'Experiencia demostrable trabajando con clientes en entrenamiento o nutrición.',
+    'req_2_body'  => 'Experiencia demostrable trabajando con clientes en entrenamiento y/o nutrición.',
 
     'req_3_title' => 'Conocimiento de periodización y nutrición basada en evidencia',
     'req_3_body'  => 'Entendimiento sólido de principios de programación de entrenamiento y nutrición científica.',
@@ -137,25 +137,25 @@ return [
     'req_4_body'  => 'Capacidad de comunicarte de forma clara, empática y constante con tus clientes.',
 
     'req_5_title' => 'Disponibilidad para capacitación inicial',
-    'req_5_body'  => 'Completar el programa de onboarding para conocer la plataforma y el método WellCore.',
+    'req_5_body'  => 'Completar nuestro programa de onboarding para conocer la plataforma y el método WellCore.',
 
     // Selection process
     'process_heading'  => 'PROCESO DE SELECCIÓN',
     'process_subtitle' => 'Tres pasos sencillos para unirte al equipo.',
 
     'step_1_title' => 'Aplica',
-    'step_1_body'  => 'Completa el formulario con tu información profesional y experiencia.',
+    'step_1_body'  => 'Completa el formulario de aplicación con tu información profesional y experiencia.',
 
     'step_2_title' => 'Entrevista',
-    'step_2_body'  => 'Revisamos tu aplicación y te contactamos para una entrevista virtual con el equipo. Compatibilidad por afinidad metodológica y de estilo de coaching.',
+    'step_2_body'  => 'Revisamos tu aplicación y te contactamos para una entrevista virtual con nuestro equipo.',
 
     'step_3_title' => 'Comienza',
     'step_3_body'  => 'Completas el onboarding, recibes acceso a la plataforma y comienzas a recibir clientes.',
 
     // CTA
     'cta_heading'   => '¿LISTO PARA COMENZAR?',
-    'cta_body'      => 'Si cumples con los requisitos y quieres formar parte de un marketplace basado en ciencia, aplica hoy.',
-    'cta_button'    => 'Aplica como coach',
+    'cta_body'      => 'Si cumples con los requisitos y quieres formar parte de un equipo basado en ciencia, aplica hoy.',
+    'cta_button'    => 'Aplica como Coach',
     'cta_secondary' => 'Hablar con el equipo',
 
     // Sticky mobile CTA

@@ -1,0 +1,172 @@
+<x-layouts.public>
+    <x-slot:title>{{ $article['title'] }} - WellCore Blog</x-slot:title>
+    <x-slot:description>{{ $article['excerpt'] }}</x-slot:description>
+
+    {{-- Scroll Progress Bar --}}
+    <div
+        x-data="{
+            progress: 0,
+            update() {
+                const scrollTop = window.scrollY;
+                const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                this.progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            }
+        }"
+        x-init="update(); window.addEventListener('scroll', () => update())"
+        class="scroll-progress fixed top-0 left-0 z-50 h-1 bg-wc-accent transition-all duration-100"
+        :style="`width: ${progress}%`"
+        aria-hidden="true">
+    </div>
+
+    {{-- Hero Gradient Header --}}
+    <section class="relative overflow-hidden bg-gradient-to-br {{ $article['gradient'] ?? 'from-wc-accent/20 to-wc-bg-tertiary' }}">
+        {{-- Shimmer overlay --}}
+        <div class="shimmer absolute inset-0 pointer-events-none"></div>
+        {{-- Pattern overlay --}}
+        <div class="absolute inset-0" style="background-image: radial-gradient(circle, currentColor 0.5px, transparent 0.5px); background-size: 16px 16px; opacity: 0.03;"></div>
+        {{-- Decorative circles --}}
+        <div class="absolute -right-16 -top-16 h-64 w-64 rounded-full border border-current opacity-[0.05]"></div>
+        <div class="absolute -right-8 -top-8 h-48 w-48 rounded-full border border-current opacity-[0.07]"></div>
+        <div class="absolute -left-12 bottom-0 h-40 w-40 rounded-full border border-current opacity-[0.04]"></div>
+
+        <div class="relative mx-auto max-w-7xl px-4 pb-12 pt-8 sm:px-6 lg:px-8">
+            {{-- Back Link --}}
+            <a href="{{ route('blog.index') }}" class="mb-8 inline-flex items-center gap-2 text-sm text-wc-text-secondary transition-colors hover:text-wc-accent">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                </svg>
+                {{ __('blog.back_to_blog') }}
+            </a>
+
+            <div class="mx-auto max-w-3xl pt-4">
+                {{-- Category --}}
+                <span class="inline-flex rounded-full bg-wc-bg/80 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-red-700 dark:text-red-400 ring-1 ring-wc-border/50 backdrop-blur-sm">
+                    {{ $article['category'] }}
+                </span>
+
+                {{-- Title --}}
+                <h1 class="mt-4 font-display text-3xl leading-tight tracking-wide text-wc-text sm:text-4xl lg:text-5xl">
+                    {{ $article['title'] }}
+                </h1>
+
+                {{-- Meta --}}
+                <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-wc-text-tertiary">
+                    <span class="flex items-center gap-1.5">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                        </svg>
+                        {{ $article['author'] }}
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 9v9.75" />
+                        </svg>
+                        {{ \Carbon\Carbon::parse($article['date'])->translatedFormat('d \d\e F, Y') }}
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                        {{ $article['reading_time'] }} {{ __('blog.reading_time_suffix') }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- Section Divider --}}
+    <div class="section-divider" aria-hidden="true"></div>
+
+    {{-- Article Content --}}
+    <section class="bg-wc-bg hp-cv-section">
+        <div class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+            <div class="scroll-reveal article-content space-y-6 text-base leading-relaxed text-wc-text-secondary
+                [&>h3]:font-display [&>h3]:text-xl [&>h3]:tracking-wide [&>h3]:text-wc-text [&>h3]:mt-10 [&>h3]:mb-4
+                [&>p]:text-wc-text-secondary
+                [&>ul]:my-4 [&>ul]:space-y-2 [&>ul]:pl-0
+                [&>ul>li]:rounded-lg [&>ul>li]:border [&>ul>li]:border-wc-border [&>ul>li]:bg-wc-bg-tertiary [&>ul>li]:p-4 [&>ul>li]:text-sm [&>ul>li]:text-wc-text-secondary
+                [&>ul>li>strong]:text-wc-text [&>ul>li>strong]:font-semibold
+                [&_em]:text-wc-text-tertiary [&_em]:not-italic [&_em]:text-sm">
+                {!! $article['content'] !!}
+            </div>
+        </div>
+    </section>
+
+    {{-- Section Divider --}}
+    <div class="section-divider" aria-hidden="true"></div>
+
+    {{-- Related Articles --}}
+    <section class="border-t border-wc-border bg-wc-bg-tertiary hp-cv-section">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+            <h2 class="font-display text-2xl tracking-wide text-wc-text">{{ __('blog.related_heading') }}</h2>
+            <p class="mt-2 text-sm text-wc-text-tertiary">{{ __('blog.related_subtitle') }}</p>
+
+            @php
+                $related = collect($articles)
+                    ->filter(fn($a) => $a['slug'] !== $article['slug'])
+                    ->shuffle()
+                    ->take(3);
+            @endphp
+
+            <div class="stagger-grid mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+                @foreach ($related as $relatedIndex => $relatedArticle)
+                    @php $relatedDelay = (($relatedIndex % 3) + 1) * 100; @endphp
+                    <article
+                        class="card-hover-lift group relative flex flex-col overflow-hidden rounded-xl border border-wc-border bg-wc-bg transition-colors hover:border-wc-accent/30"
+                        data-animate="fadeInUp"
+                        data-delay="{{ $relatedDelay }}">
+
+                        {{-- Gradient Header --}}
+                        <div class="shimmer relative h-24 overflow-hidden bg-gradient-to-br {{ $relatedArticle['gradient'] ?? 'from-wc-accent/20 to-wc-bg-tertiary' }}">
+                            <div class="absolute inset-0" style="background-image: radial-gradient(circle, currentColor 0.5px, transparent 0.5px); background-size: 12px 12px; opacity: 0.04;"></div>
+                            <div class="absolute -right-4 -top-4 h-20 w-20 rounded-full border border-current opacity-[0.06]"></div>
+                            <div class="absolute bottom-3 left-4">
+                                <span class="badge-shine inline-flex rounded-full bg-wc-bg/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-red-700 dark:text-red-400 backdrop-blur-sm ring-1 ring-wc-border/50">
+                                    {{ $relatedArticle['category'] }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex flex-1 flex-col p-6">
+                            <h3 class="mb-2 text-base font-semibold text-wc-text transition-colors group-hover:text-wc-accent">
+                                <a href="{{ route('blog.show', $relatedArticle['slug']) }}" class="after:absolute after:inset-0">
+                                    {{ $relatedArticle['title'] }}
+                                </a>
+                            </h3>
+                            <p class="flex-1 text-sm text-wc-text-secondary line-clamp-2">
+                                {{ $relatedArticle['excerpt'] }}
+                            </p>
+                            <div class="mt-4 flex items-center justify-between border-t border-wc-border pt-3">
+                                <span class="text-xs text-wc-text-tertiary">{{ \Carbon\Carbon::parse($relatedArticle['date'])->translatedFormat('d M Y') }}</span>
+                                <span class="text-xs text-wc-text-tertiary">{{ $relatedArticle['reading_time'] }}</span>
+                            </div>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    {{-- Section Divider --}}
+    <div class="section-divider" aria-hidden="true"></div>
+
+    {{-- CTA --}}
+    <section class="relative overflow-hidden border-t border-wc-border bg-wc-bg hp-cv-section">
+        {{-- Gradient orbs --}}
+        <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent pointer-events-none"></div>
+        <div class="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-wc-accent/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
+        <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-wc-accent/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
+        <div class="relative mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
+            <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('blog.show_cta_heading') }}</h2>
+            <p class="mx-auto mt-3 max-w-lg text-sm text-wc-text-secondary">{{ __('blog.show_cta_body') }}</p>
+            <div class="mt-8">
+                <a href="{{ route('inscripcion') }}" class="btn-press pulse-glow inline-flex items-center rounded-lg bg-wc-accent px-6 py-3 text-sm font-medium text-white hover:bg-wc-accent-hover">
+                    {{ __('blog.show_cta_button') }}
+                    <svg class="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+</x-layouts.public>

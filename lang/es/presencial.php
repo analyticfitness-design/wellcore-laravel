@@ -47,7 +47,7 @@ return [
     // How it works
     'how_heading' => 'CÓMO FUNCIONA',
     'how_p1'      => 'El plan presencial te da acceso a sesiones de entrenamiento 1:1 con tu coach en Bucaramanga. Cada sesión es personalizada y supervisada para garantizar técnica perfecta y progresión óptima.',
-    'how_p2'      => 'Además de las sesiones presenciales, recibes tu programa completo en la plataforma WellCore para los días que entrenas solo, más plan nutricional y seguimiento quincenal.',
+    'how_p2'      => 'Además de las sesiones presenciales, recibes tu programa completo en la plataforma WellCore para los días que entrenas solo, más plan nutricional y seguimiento semanal.',
 
     // Feature stat labels
     'stat_sessions'   => 'Sesiones/semana',
@@ -96,7 +96,7 @@ return [
     'feat_whatsapp'       => 'Soporte prioritario WhatsApp',
 
     'feat_3_sessions'     => '12 sesiones presenciales/mes',
-    'feat_3_nutrition'    => 'Plan nutricional con macros',
+    'feat_3_nutrition'    => 'Plan nutricional básico',
 
     'feat_4_sessions'     => '16 sesiones presenciales/mes',
     'feat_4_nutrition'    => 'Plan nutricional completo + macros',

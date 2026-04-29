@@ -2,8 +2,8 @@
 
 return [
     // Meta
-    'meta_title'       => 'WellCore Coaches - Apply to the marketplace',
-    'meta_description' => 'Join the WellCore coach marketplace. Remote-first work, professional tools, community, and a competitive split on every active client.',
+    'meta_title'       => 'Become a WellCore Coach - WellCore Fitness',
+    'meta_description' => 'Join the WellCore coaching team. Remote-first, proprietary tools, pro community, and competitive commissions (40% per assigned client).',
 
     // Hero v2
     'hero_eyebrow'     => 'MARKETPLACE · COACHES · 2026',
@@ -43,7 +43,7 @@ return [
     'benefit_community_body'  => 'Tap into a network of high-performance professionals. Share knowledge, solve problems, and level up alongside coaches who get it.',
 
     'benefit_income_title' => 'Competitive Earnings',
-    'benefit_income_body'  => 'Above-industry-standard split on every active client. Transparent model, on-time payouts, zero surprises.',
+    'benefit_income_body'  => '40% commission on every assigned client. Transparent model, on-time payouts, zero surprises.',
 
     // Coach Portal section
     'portal_label'    => 'Tools',
@@ -78,17 +78,17 @@ return [
     'mockup_client_4_plan'       => 'Esencial',
     'mockup_client_4_adherence'  => '76%',
 
-    'mockup_activity_1'          => 'Client submitted check-in',
-    'mockup_activity_2'          => 'Client completed week 8',
-    'mockup_activity_3'          => 'Client uploaded progress photos',
+    'mockup_activity_1'          => 'María submitted check-in',
+    'mockup_activity_2'          => 'Juan completed week 8',
+    'mockup_activity_3'          => 'Andrea uploaded progress photos',
     'mockup_msg_1'               => 'Coach, I crushed today\'s workout!',
-    'mockup_msg_2'               => 'Can I swap the exercise for...?',
-    'mockup_msg_3'               => 'Week 4 progress photo.',
+    'mockup_msg_2'               => 'Can I swap the exercise for...',
+    'mockup_msg_3'               => 'Week 4 progress photo',
 
     // Income calculator
     'calc_eyebrow'      => 'INCOME CALCULATOR',
     'calc_heading'      => 'Estimate your monthly potential',
-    'calc_subtitle'     => 'Estimation based on a competitive split on the Método plan. Slide to see your projected income.',
+    'calc_subtitle'     => 'Estimation based on 40% of the Método plan value. Slide to see your projected income.',
     'calc_slider_label' => 'Active clients',
     'calc_output_label' => 'ESTIMATED MONTHLY INCOME',
     'calc_disclaimer'   => 'Reference estimate. Real income depends on plan mix (Esencial/Método/Elite), retention, and effective number of assigned clients.',
@@ -101,7 +101,7 @@ return [
     'faq_subtitle'      => 'What applying coaches ask first.',
     'faq' => [
         'q1' => 'How does the income split work?',
-        'a1' => 'Each active client pays their monthly plan. The assigned coach receives an above-industry-standard split for online coaching across LATAM. The exact figure is signed in the coach contract — we don\'t publish it to avoid out-of-context comparisons with per-session marketplaces.',
+        'a1' => 'Each active client pays their monthly plan. The assigned coach receives 40% of that payment. Transparent model, no hidden fees, no per-session discounts. Detailed breakdown by client and plan arrives every month with the payout.',
 
         'q2' => 'When are commissions paid?',
         'a2' => 'Monthly payouts on the 5th business day via bank transfer or PSE. Each coach gets a breakdown by client, plan, gross amount, applicable retentions, and net amount before payment.',
@@ -136,25 +136,25 @@ return [
     'req_4_body'  => 'Ability to communicate clearly, empathetically, and consistently with your clients.',
 
     'req_5_title' => 'Availability for initial onboarding',
-    'req_5_body'  => 'Complete the onboarding program to learn the platform and the WellCore method.',
+    'req_5_body'  => 'Complete our onboarding program to learn the platform and the WellCore method.',
 
     // Selection process
     'process_heading'  => 'SELECTION PROCESS',
     'process_subtitle' => 'Three simple steps to join the team.',
 
     'step_1_title' => 'Apply',
-    'step_1_body'  => 'Submit the form with your professional background and coaching experience.',
+    'step_1_body'  => 'Submit the application form with your professional background and coaching experience.',
 
     'step_2_title' => 'Interview',
-    'step_2_body'  => 'We review your application and reach out for a virtual interview with the team. Match by methodology and coaching style affinity.',
+    'step_2_body'  => 'We review your application and reach out to schedule a virtual interview with our team.',
 
     'step_3_title' => 'Start Coaching',
     'step_3_body'  => 'Complete onboarding, get platform access, and start receiving clients.',
 
     // CTA
     'cta_heading'   => 'READY TO LEVEL UP?',
-    'cta_body'      => 'If you meet the requirements and want to join a science-driven marketplace, apply today.',
-    'cta_button'    => 'Apply as a coach',
+    'cta_body'      => 'If you meet the requirements and want to join a science-driven coaching team, apply today.',
+    'cta_button'    => 'Apply as a Coach',
     'cta_secondary' => 'Talk to the team',
 
     // Sticky mobile CTA
