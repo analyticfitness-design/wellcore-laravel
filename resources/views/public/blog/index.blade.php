@@ -155,8 +155,19 @@
 .blog-featured-bg {
     position: relative;
     aspect-ratio: 16/9;
+    /* min-height ensures content fits in narrow viewports where 16/9 yields
+       insufficient height (e.g. 390px wide → 219px high) and the title +
+       excerpt + meta + CTA would overflow + collide with the issue tag.
+       In desktop the aspect-ratio dominates (1200px wide → 675px high). */
+    min-height: 460px;
     background: linear-gradient(160deg, #1c1010, #0a0a0a 70%);
     overflow: hidden;
+}
+@media (min-width: 768px) {
+    .blog-featured-bg { min-height: 380px; }
+}
+@media (min-width: 1024px) {
+    .blog-featured-bg { min-height: 0; }
 }
 .blog-featured-bg::before {
     content: '';
@@ -210,13 +221,22 @@
 .blog-featured-title {
     font-family: 'Oswald', Impact, sans-serif;
     font-weight: 600;
-    font-size: clamp(32px, 6vw, 56px);
-    line-height: 0.95;
+    font-size: clamp(28px, 6vw, 56px);
+    line-height: 0.98;
     letter-spacing: 0.01em;
     text-transform: uppercase;
     /* Always white — sits on dark banner regardless of theme */
     color: #FAFAFA;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
+    /* Cap title to 4 lines on narrow viewports to prevent overflow that
+       collides with the absolute-positioned issue tag at the top. */
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+@media (min-width: 1024px) {
+    .blog-featured-title { -webkit-line-clamp: unset; overflow: visible; display: block; }
 }
 .blog-featured-excerpt {
     font-family: 'Raleway', system-ui, sans-serif;
@@ -225,6 +245,14 @@
     color: rgba(255,255,255,0.78);
     margin-bottom: 14px;
     max-width: 60ch;
+    /* Clamp on mobile to keep card tidy. */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+@media (min-width: 1024px) {
+    .blog-featured-excerpt { -webkit-line-clamp: 3; }
 }
 .blog-featured-meta {
     font-family: 'JetBrains Mono', 'SF Mono', monospace;
