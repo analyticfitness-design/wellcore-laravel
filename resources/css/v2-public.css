@@ -5709,21 +5709,29 @@
     color: rgba(255, 255, 255, 0.6) !important;
 }
 
-/* /nosotros equipo cards (.nosotros-eq-card) usan #161616 hardcoded —
-   en light se ven negros sobre body claro pero texto interno usa
-   tokens light que dan bajo contraste. Forzar texto claro. */
-.nosotros-eq-card {
-    color: rgba(255, 255, 255, 0.88);
+/* /nosotros equipo cards: estructura es <photo bg-dark> + <body transparente>.
+   El photo (con iniciales rojas) sí necesita texto blanco hardcoded.
+   El body (nombre, rol, quote) hereda body bg claro/dark según theme — usar
+   tokens para que responda. */
+.nosotros-eq-photo {
+    color: rgba(255, 255, 255, 0.95);
 }
+.nosotros-eq-photo-num {
+    color: rgba(255, 255, 255, 0.45) !important;
+}
+.nosotros-eq-photo-initials {
+    color: var(--color-wc-accent) !important;
+}
+/* Body usa tokens para responder al theme (negro en light, blanco en dark) */
 .nosotros-eq-name {
-    color: rgba(255, 255, 255, 0.95) !important;
+    color: var(--color-wc-text);
 }
 .nosotros-eq-role {
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: var(--color-wc-text-2);
 }
 .nosotros-eq-bio,
 .nosotros-eq-quote {
-    color: rgba(255, 255, 255, 0.72) !important;
+    color: var(--color-wc-text-2);
 }
 
 /* /nosotros valores section: usa body bg (transparente). Tokens responden
