@@ -30,6 +30,51 @@ if (file_exists($envFile)) {
     }
 }
 
+echo "\n=== CONTROLLER STATE ===\n";
+$ctrlPath = __DIR__ . '/../app/Http/Controllers/Public/PlanesController.php';
+if (file_exists($ctrlPath)) {
+    $ctrlContent = file_get_contents($ctrlPath);
+    $hasMonthlyCop = (str_contains($ctrlContent, "'monthlyCop' => \$monthlyCop") || str_contains($ctrlContent, '"monthlyCop"')) ? 'YES' : 'NO';
+    echo "  Controller exists: YES\n";
+    echo "  Size: " . filesize($ctrlPath) . " bytes\n";
+    echo "  Modified: " . date('Y-m-d H:i:s', filemtime($ctrlPath)) . "\n";
+    echo "  Has 'monthlyCop' key: $hasMonthlyCop\n";
+    echo "  First 30 lines preview:\n";
+    foreach (array_slice(explode("\n", $ctrlContent), 0, 30) as $i => $l) echo "    " . str_pad($i+1, 3, ' ', STR_PAD_LEFT) . ": $l\n";
+} else {
+    echo "  Controller MISSING at: $ctrlPath\n";
+}
+
+echo "\n=== OPCACHE STATUS ===\n";
+if (function_exists('opcache_get_status')) {
+    $oc = @opcache_get_status(false);
+    if ($oc) {
+        echo "  enabled: " . ($oc['opcache_enabled'] ? 'true' : 'false') . "\n";
+        echo "  hits: " . $oc['opcache_statistics']['hits'] . "\n";
+        echo "  misses: " . $oc['opcache_statistics']['misses'] . "\n";
+        echo "  cached_files: " . $oc['opcache_statistics']['num_cached_scripts'] . "\n";
+    } else {
+        echo "  cannot read opcache status\n";
+    }
+} else {
+    echo "  opcache extension not loaded\n";
+}
+
+echo "\n=== COMPILED VIEW STATE ===\n";
+$compiledDir = __DIR__ . '/../storage/framework/views/';
+$compiledFile = $compiledDir . '2a08d483f0078eae5e88205b7273b277.php';
+if (file_exists($compiledFile)) {
+    echo "  Compiled view EXISTS: $compiledFile\n";
+    echo "  Modified: " . date('Y-m-d H:i:s', filemtime($compiledFile)) . "\n";
+    echo "  Line 24 (the failing one):\n";
+    $compiled = file($compiledFile);
+    foreach ([22, 23, 24, 25, 26] as $n) {
+        echo "    " . str_pad($n, 3, ' ', STR_PAD_LEFT) . ": " . ($compiled[$n - 1] ?? '(out of range)') . "";
+    }
+} else {
+    echo "  Compiled view does NOT exist (will be regenerated on next request)\n";
+}
+
 echo "\n=== LOG FILES (newest first) ===\n";
 foreach ($files as $f) {
     $size = filesize($f);
