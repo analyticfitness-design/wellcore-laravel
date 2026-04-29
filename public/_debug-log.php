@@ -83,7 +83,29 @@ if (file_exists($ctrlPath)) {
     echo "  Modified: " . date('Y-m-d H:i:s', filemtime($ctrlPath)) . "\n";
     echo "  Has 'monthlyCop' key: $hasMonthlyCop\n";
     echo "  First 30 lines preview:\n";
-    foreach (array_slice(explode("\n", $ctrlContent), 0, 30) as $i => $l) echo "    " . str_pad($i+1, 3, ' ', STR_PAD_LEFT) . ": $l\n";
+    foreach (array_slice(explode("\n", $ctrlContent), 0, 80) as $i => $l) echo "    " . str_pad($i+1, 3, ' ', STR_PAD_LEFT) . ": $l\n";
+
+    // Try to actually instantiate and run
+    echo "\n  === RUNTIME TEST ===\n";
+    try {
+        require_once __DIR__ . '/../vendor/autoload.php';
+        $app = require_once __DIR__ . '/../bootstrap/app.php';
+        $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+        $svc = $app->make(\App\Services\PricingService::class);
+        $ctrl = $app->make(\App\Http\Controllers\Public\PlanesController::class);
+        $r = (new \ReflectionMethod($ctrl, 'index'))->getParameters();
+        echo "  index() params: " . count($r) . " (should be 1: PricingService)\n";
+        $resp = $ctrl->index($svc);
+        $data = $resp->getData();
+        echo "  view data keys: " . implode(', ', array_keys($data)) . "\n";
+        echo "  monthlyCop key present: " . (isset($data['monthlyCop']) ? 'YES' : 'NO') . "\n";
+        if (isset($data['monthlyCop'])) {
+            echo "  monthlyCop value: " . json_encode($data['monthlyCop']) . "\n";
+        }
+    } catch (\Throwable $e) {
+        echo "  EXCEPTION: " . $e->getMessage() . "\n";
+        echo "  AT: " . $e->getFile() . ':' . $e->getLine() . "\n";
+    }
 } else {
     echo "  Controller MISSING at: $ctrlPath\n";
 }
