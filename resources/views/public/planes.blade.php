@@ -1,327 +1,415 @@
 <x-layouts.public>
-    <x-slot:title>{{ __('planes.meta_title') }}</x-slot>
-    <x-slot:description>{{ __('planes.meta_description') }}</x-slot>
+    <x-slot:title>{{ __('planes.meta_title') }}</x-slot:title>
+    <x-slot:description>{{ __('planes.meta_description') }}</x-slot:description>
 
-    {{-- ─── JSON-LD: Service + OfferCatalog (mantenemos el del v1, usa PricingService) ─── --}}
     <x-json-ld :data="[
         '@context' => 'https://schema.org',
         '@type' => 'Service',
         'name' => 'WellCore Fitness Coaching',
         'provider' => ['@type' => 'Organization', 'name' => 'WellCore Fitness'],
-        'description' => 'Planes de coaching fitness personalizado desde $'.number_format($monthlyCop['esencial'], 0, ',', '.').' COP/mes.',
+        'description' => 'Planes de coaching fitness personalizado desde $'.number_format(app(\App\Services\PricingService::class)->priceCop('esencial'), 0, '.', '.').' COP/mes.',
         'areaServed' => ['@type' => 'Place', 'name' => 'Latinoamerica'],
         'hasOfferCatalog' => [
             '@type' => 'OfferCatalog',
             'name' => 'Planes WellCore',
             'itemListElement' => [
-                ['@type' => 'Offer', 'name' => 'Esencial', 'price' => (string) $monthlyCop['esencial'], 'priceCurrency' => 'COP'],
-                ['@type' => 'Offer', 'name' => 'Metodo',   'price' => (string) $monthlyCop['metodo'],   'priceCurrency' => 'COP'],
-                ['@type' => 'Offer', 'name' => 'Elite',    'price' => (string) $monthlyCop['elite'],    'priceCurrency' => 'COP'],
+                ['@type' => 'Offer', 'name' => 'Esencial', 'price' => (string) app(\App\Services\PricingService::class)->priceCop('esencial'), 'priceCurrency' => 'COP'],
+                ['@type' => 'Offer', 'name' => 'Metodo', 'price' => (string) app(\App\Services\PricingService::class)->priceCop('metodo'), 'priceCurrency' => 'COP'],
+                ['@type' => 'Offer', 'name' => 'Elite', 'price' => (string) app(\App\Services\PricingService::class)->priceCop('elite'), 'priceCurrency' => 'COP'],
             ],
         ],
     ]" />
 
-    {{-- ─── ROOT Alpine: estado global de la página /planes ───
-         period (mensual|trimestral|anual) y selectedPlan (esencial|metodo|elite) son shared
-         entre BillingToggle, TierCards, ComparadorTable, CTAFinal y StickyCTABottom.
-         pricesCop/Usd/totals/savings vienen del controller (PricingService como SoT). --}}
-    <div
-        class="planes-root"
-        x-data="{
-            period: 'mensual',
-            selectedPlan: 'metodo',
-            ctaInView: false,
-            locale: @js(app()->getLocale()),
-            pricesCop: @js($pricesCop),
-            totalsCop: @js($totalsCop),
-            savingsCop: @js($savingsCop),
-            pricesUsd: @js($pricesUsd),
-            totalsUsd: @js($totalsUsd),
-            savingsUsd: @js($savingsUsd),
-            get prices()  { return this.locale === 'en' ? this.pricesUsd  : this.pricesCop  },
-            get totals()  { return this.locale === 'en' ? this.totalsUsd  : this.totalsCop  },
-            get savings() { return this.locale === 'en' ? this.savingsUsd : this.savingsCop },
-            fmt(n) { return Number(n).toLocaleString(this.locale === 'en' ? 'en-US' : 'es-CO'); },
-            priceOf(plan)   { return this.fmt(this.prices[plan][this.period]); },
-            totalOf(plan)   { return this.fmt(this.totals[plan][this.period]); },
-            savingsOf(plan) { return this.fmt(this.savings[plan][this.period]); },
-            noteOf(plan) {
-                if (this.period === 'mensual') return ' ';
-                const total = this.totalOf(plan);
-                const saved = this.savingsOf(plan);
-                return this.locale === 'en'
-                    ? `You pay \$${total} · save \$${saved}`
-                    : `Pagás \$${total} · ahorrás \$${saved}`;
-            },
-            selectPlan(p) { this.selectedPlan = p; },
-            onTierScroll(ev) {
-                const track = ev.target;
-                if (!track || track.scrollWidth < 1) return;
-                const idx = Math.round(track.scrollLeft / (track.scrollWidth / 3));
-                const plans = ['esencial', 'metodo', 'elite'];
-                if (plans[idx]) this.selectedPlan = plans[idx];
-            },
-            planName(p) {
-                const names = { esencial: @js(__('planes.esencial_name')), metodo: @js(__('planes.metodo_name')), elite: @js(__('planes.elite_name')) };
-                return names[p] || '';
-            },
-        }"
-        x-cloak
-    >
-
-        {{-- ═══ COMP 1: HeroPricing v2 (5-line H1 brutal + Fraunces italic gold sub) ═══ --}}
-        <section class="hero-planes" data-animate>
-            <p class="hero-eyebrow">
-                W<span class="r">·</span>CORE<span class="r">·</span>FIT &nbsp;·&nbsp;
-                {{ __('planes.hero_eyebrow_word') }} &nbsp;·&nbsp;
-                {{ now()->year }}
-            </p>
-            <h1 class="hero-headline" data-animate data-stagger="1">
-                @foreach(__('planes.hero_h1_lines') as $i => $line)
-                    @if($i === 0)<span class="acc">{{ $line }}</span>@else{{ $line }}@endif
-                    @if(!$loop->last)<br>@endif
-                @endforeach
+    {{-- Hero --}}
+    <section class="hero-gradient relative overflow-hidden bg-wc-bg-tertiary">
+        {{-- Parallax decorative orbs --}}
+        <div class="parallax-hero" aria-hidden="true">
+            <div class="parallax-orb parallax-orb-1" data-parallax-speed="0.2"></div>
+            <div class="parallax-orb parallax-orb-2" data-parallax-speed="0.35"></div>
+            <div class="parallax-orb parallax-orb-3" data-parallax-speed="0.15"></div>
+            <div class="parallax-orb parallax-orb-4" data-parallax-speed="0.25"></div>
+            <div class="parallax-orb parallax-orb-5" data-parallax-speed="0.10"></div>
+        </div>
+        <div class="relative mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 sm:py-24 lg:px-8" data-animate="fadeInUp">
+            <h1 class="font-display text-4xl tracking-wide text-wc-text sm:text-5xl lg:text-6xl">
+                {{ __('planes.hero_title_1') }}<span class="text-gradient-accent">{{ __('planes.hero_title_acc') }}</span>
             </h1>
-            <p class="hero-sub" data-animate data-stagger="2">{{ __('planes.hero_sub') }}</p>
-            <div class="hero-actions" data-animate data-stagger="3">
-                <a href="#tier-cards" class="btn-primary">{{ __('planes.hero_cta') }}</a>
-                <div class="hero-aside" aria-hidden="true">
-                    <div class="hero-aside-arrow"></div>
-                    <div class="hero-aside-label">{{ __('planes.hero_aside_label') }}</div>
+            <p class="mx-auto mt-4 max-w-xl text-lg text-wc-text-secondary">{{ __('planes.hero_subtitle') }}</p>
+        </div>
+    </section>
+
+    <x-social-proof-bar />
+
+    <div class="section-divider"></div>
+
+    {{-- Plans Grid --}}
+    <section class="bg-wc-bg"
+        x-data="{
+            billing: 'mensual',
+            locale: '{{ app()->getLocale() }}',
+            pricesCOP: {
+                mensual:     { esencial: '$254,150', metodo: '$339,150', elite: '$466,650', savingsEsencial: null, savingsMetodo: null, savingsElite: null },
+                trimestral:  { esencial: '$228,735', metodo: '$305,235', elite: '$419,985', savingsEsencial: '$76,245', savingsMetodo: '$101,745', savingsElite: '$139,995' },
+                anual:       { esencial: '$203,320', metodo: '$271,320', elite: '$373,320', savingsEsencial: '$609,960', savingsMetodo: '$813,960', savingsElite: '$1,119,960' }
+            },
+            pricesUSD: {
+                mensual:     { esencial: '$62', metodo: '$82', elite: '$114', savingsEsencial: null, savingsMetodo: null, savingsElite: null },
+                trimestral:  { esencial: '$56', metodo: '$74', elite: '$103', savingsEsencial: '$18', savingsMetodo: '$24', savingsElite: '$33' },
+                anual:       { esencial: '$50', metodo: '$66', elite: '$91', savingsEsencial: '$144', savingsMetodo: '$192', savingsElite: '$276' }
+            },
+            get prices() { return this.locale === 'en' ? this.pricesUSD : this.pricesCOP },
+            get esencial() { return this.prices[this.billing].esencial },
+            get metodo()   { return this.prices[this.billing].metodo },
+            get elite()    { return this.prices[this.billing].elite },
+            get savingsEsencial() { return this.prices[this.billing].savingsEsencial },
+            get savingsMetodo()   { return this.prices[this.billing].savingsMetodo },
+            get savingsElite()    { return this.prices[this.billing].savingsElite }
+        }">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
+
+            {{-- Section heading --}}
+            <div class="mb-10 text-center">
+                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('planes.section_title') }}</h2>
+                <p class="mx-auto mt-3 max-w-lg text-wc-text-secondary">{{ __('planes.section_subtitle') }}</p>
+            </div>
+
+            {{-- Billing Toggle --}}
+            <div class="mb-12 flex items-center justify-center">
+                <div class="inline-flex rounded-full border border-wc-border bg-wc-bg-secondary p-1 gap-1">
+                    <button @click="billing = 'mensual'"
+                            :class="billing === 'mensual' ? 'bg-wc-accent text-white shadow-md' : 'text-wc-text-secondary hover:text-wc-text'"
+                            class="rounded-full px-5 py-2 text-sm font-medium transition-all duration-200">
+                        {{ __('planes.billing_mensual') }}
+                    </button>
+                    <button @click="billing = 'trimestral'"
+                            :class="billing === 'trimestral' ? 'bg-wc-accent text-white shadow-md' : 'text-wc-text-secondary hover:text-wc-text'"
+                            class="rounded-full px-5 py-2 text-sm font-medium transition-all duration-200">
+                        {{ __('planes.billing_trimestral') }}
+                        <span class="ml-1 rounded-full px-1.5 py-0.5 text-xs font-bold"
+                              :class="billing === 'trimestral' ? 'bg-white/20 text-white' : 'bg-wc-accent text-white'">-10%</span>
+                    </button>
+                    <button @click="billing = 'anual'"
+                            :class="billing === 'anual' ? 'bg-wc-accent text-white shadow-md' : 'text-wc-text-secondary hover:text-wc-text'"
+                            class="rounded-full px-5 py-2 text-sm font-medium transition-all duration-200">
+                        {{ __('planes.billing_anual') }}
+                        <span class="ml-1 rounded-full px-1.5 py-0.5 text-xs font-bold"
+                              :class="billing === 'anual' ? 'bg-white/20 text-white' : 'bg-wc-accent text-white'">-20%</span>
+                    </button>
                 </div>
             </div>
-        </section>
 
-        {{-- ═══ COMP 2: SocialProofBar (componente existente — mantenemos) ═══ --}}
-        <x-social-proof-bar />
+            @php
+                $allFeatures = [
+                    __('planes.feat_01'),
+                    __('planes.feat_02'),
+                    __('planes.feat_03'),
+                    __('planes.feat_04'),
+                    __('planes.feat_05'),
+                    __('planes.feat_06'),
+                    __('planes.feat_07'),
+                    __('planes.feat_08'),
+                    __('planes.feat_09'),
+                    __('planes.feat_10'),
+                    __('planes.feat_11'),
+                    __('planes.feat_12'),
+                    __('planes.feat_13'),
+                    __('planes.feat_14'),
+                    __('planes.feat_15'),
+                    __('planes.feat_16'),
+                    __('planes.feat_17'),
+                    __('planes.feat_18'),
+                    __('planes.feat_19'),
+                    __('planes.feat_20'),
+                    __('planes.feat_21'),
+                    __('planes.feat_22'),
+                    __('planes.feat_23'),
+                    __('planes.feat_24'),
+                    __('planes.feat_25'),
+                    __('planes.feat_26'),
+                    __('planes.feat_27'),
+                    __('planes.feat_28'),
+                    __('planes.feat_29'),
+                ];
 
-        {{-- ═══ COMP 3: BillingToggle sticky (3 pills) ═══ --}}
-        <div class="billing-wrap" id="billing-wrap">
-            <div class="billing-toggle" role="tablist" aria-label="{{ __('planes.section_subtitle') }}">
-                @foreach(['mensual', 'trimestral', 'anual'] as $p)
-                    <button
-                        type="button"
-                        class="b-pill"
-                        :class="{ active: period === '{{ $p }}' }"
-                        :aria-selected="period === '{{ $p }}'"
-                        role="tab"
-                        @click="period = '{{ $p }}'"
-                    >
-                        <span class="b-pill-name">{{ __("planes.billing_{$p}") }}</span>
-                        <span class="b-pill-save">@if($p === 'trimestral'){{ __('planes.discount_trimestral_pct') }}@elseif($p === 'anual'){{ __('planes.discount_anual_pct') }}@else&nbsp;@endif</span>
-                    </button>
-                @endforeach
+                // Esencial: feat_01–feat_14 (Entrenamiento + Habitos)
+                // Metodo:   feat_01–feat_25 (adds Nutricion + Suplementacion)
+                // Elite:    all 29 features (adds Ciclo Hormonal + Bloodwork + Premium)
+                $esencialFeatures = array_slice($allFeatures, 0, 14);
+                $metodoFeatures   = array_slice($allFeatures, 0, 25);
+                $eliteFeatures    = $allFeatures;
+            @endphp
+
+            <div class="stagger-grid grid grid-cols-1 items-start gap-8 lg:grid-cols-3">
+
+                {{-- Esencial --}}
+                <div class="card-hover-lift flex h-full flex-col rounded-2xl border border-wc-border bg-wc-bg-tertiary p-8"
+                     data-animate="fadeInUp" data-delay="100">
+                    <div class="mb-6">
+                        <h3 class="text-center font-display text-2xl tracking-wide text-wc-text">{{ __('planes.esencial_name') }}</h3>
+                        <p class="mt-2 text-center text-sm text-wc-text-secondary">{{ __('planes.esencial_desc') }}</p>
+                    </div>
+
+                    <div class="relative text-center">
+                        <span class="font-data text-5xl font-bold text-wc-text" x-text="esencial"></span>
+                        <span class="ml-1 text-sm text-wc-text-tertiary">{{ __('planes.cop_mes') }}</span>
+                        <div x-show="savingsEsencial !== null"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 -translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 -translate-y-1"
+                             x-cloak
+                             class="mt-2">
+                            <span class="inline-flex items-center rounded-full bg-green-500/10 px-3 py-1 text-xs font-bold text-green-500">
+                                {{ __('planes.savings_label') }} <span class="ml-1" x-text="savingsEsencial"></span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <a href="{{ route('pagar') }}?plan=esencial"
+                       class="btn-press mt-6 flex w-full items-center justify-center rounded-full border border-wc-border bg-wc-bg px-6 py-3 text-sm font-semibold text-wc-text transition hover:border-wc-accent hover:text-red-700 dark:hover:text-red-400">
+                        {{ __('planes.esencial_cta') }}
+                    </a>
+
+                    <ul class="mt-8 flex-1 space-y-3">
+                        @foreach($allFeatures as $feature)
+                            @if(in_array($feature, $esencialFeatures))
+                                <li class="flex items-start gap-3 text-sm text-wc-text-secondary">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                    {{ $feature }}
+                                </li>
+                            @else
+                                <li class="flex items-start gap-3 text-sm text-wc-text-tertiary/70 line-through">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-text-tertiary/50" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                                    {{ $feature }}
+                                </li>
+                            @endif
+                        @endforeach
+                    </ul>
+                </div>
+
+                {{-- Metodo (elevated / accent) --}}
+                <div class="card-hover-lift card-glow pulse-glow relative flex h-full flex-col rounded-2xl border-2 border-wc-accent bg-wc-bg-tertiary p-8 shadow-lg shadow-wc-accent/10 lg:-mt-4 lg:mb-0 lg:pb-10 lg:pt-10"
+                     data-animate="fadeInUp" data-delay="200">
+                    {{-- Badge --}}
+                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                        <span class="badge-shine rounded-full bg-wc-accent px-5 py-1 text-xs font-bold tracking-wide text-white shadow-md">{{ __('planes.metodo_badge') }}</span>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="text-center font-display text-2xl tracking-wide text-wc-text">{{ __('planes.metodo_name') }}</h3>
+                        <p class="mt-2 text-center text-sm text-wc-text-secondary">{{ __('planes.metodo_desc') }}</p>
+                        <p class="mt-1 text-center text-xs font-medium text-red-700 dark:text-red-400">{{ __('planes.metodo_popular') }}</p>
+                    </div>
+
+                    <div class="relative text-center">
+                        <span class="font-data text-5xl font-bold text-wc-accent" x-text="metodo"></span>
+                        <span class="ml-1 text-sm text-wc-text-tertiary">{{ __('planes.cop_mes') }}</span>
+                        <div x-show="savingsMetodo !== null"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 -translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 -translate-y-1"
+                             x-cloak
+                             class="mt-2">
+                            <span class="inline-flex items-center rounded-full bg-green-500/10 px-3 py-1 text-xs font-bold text-green-500">
+                                {{ __('planes.savings_label') }} <span class="ml-1" x-text="savingsMetodo"></span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <a href="{{ route('pagar') }}?plan=metodo"
+                       class="btn-press pulse-glow mt-6 flex w-full items-center justify-center rounded-full bg-wc-accent px-6 py-3 text-sm font-bold text-white shadow-md transition hover:bg-wc-accent-hover hover:shadow-lg">
+                        {{ __('planes.metodo_cta') }}
+                    </a>
+
+                    <ul class="mt-8 flex-1 space-y-3">
+                        @foreach($allFeatures as $feature)
+                            @if(in_array($feature, $metodoFeatures))
+                                <li class="flex items-start gap-3 text-sm text-wc-text-secondary">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                    {{ $feature }}
+                                </li>
+                            @else
+                                <li class="flex items-start gap-3 text-sm text-wc-text-tertiary/70 line-through">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-text-tertiary/50" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                                    {{ $feature }}
+                                </li>
+                            @endif
+                        @endforeach
+                    </ul>
+                </div>
+
+                {{-- Elite --}}
+                <div class="card-hover-lift flex h-full flex-col rounded-2xl border border-wc-border bg-wc-bg-tertiary p-8"
+                     data-animate="fadeInUp" data-delay="300">
+                    {{-- Badge --}}
+                    <div class="mb-4 text-center">
+                        <span class="inline-block rounded-full border border-wc-accent/30 bg-wc-accent/10 px-4 py-1 text-xs font-bold tracking-wide text-red-700 dark:text-red-400">{{ __('planes.elite_badge') }}</span>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="text-center font-display text-2xl tracking-wide text-wc-text">{{ __('planes.elite_name') }}</h3>
+                        <p class="mt-2 text-center text-sm text-wc-text-secondary">{{ __('planes.elite_desc') }}</p>
+                    </div>
+
+                    <div class="relative text-center">
+                        <span class="font-data text-5xl font-bold text-wc-text" x-text="elite"></span>
+                        <span class="ml-1 text-sm text-wc-text-tertiary">{{ __('planes.cop_mes') }}</span>
+                        <div x-show="savingsElite !== null"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 -translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 -translate-y-1"
+                             x-cloak
+                             class="mt-2">
+                            <span class="inline-flex items-center rounded-full bg-green-500/10 px-3 py-1 text-xs font-bold text-green-500">
+                                {{ __('planes.savings_label') }} <span class="ml-1" x-text="savingsElite"></span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <a href="{{ route('pagar') }}?plan=elite"
+                       class="btn-press mt-6 flex w-full items-center justify-center rounded-full border border-wc-border bg-wc-bg px-6 py-3 text-sm font-semibold text-wc-text transition hover:border-wc-accent hover:text-red-700 dark:hover:text-red-400">
+                        {{ __('planes.elite_cta') }}
+                    </a>
+
+                    <ul class="mt-8 flex-1 space-y-3">
+                        @foreach($allFeatures as $feature)
+                            @if(in_array($feature, $eliteFeatures))
+                                <li class="flex items-start gap-3 text-sm text-wc-text-secondary">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                    {{ $feature }}
+                                </li>
+                            @else
+                                <li class="flex items-start gap-3 text-sm text-wc-text-tertiary/70 line-through">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-wc-text-tertiary/50" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                                    {{ $feature }}
+                                </li>
+                            @endif
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+
+            {{-- Discounts --}}
+            <div class="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-wc-text-secondary">
+                <div class="flex items-center gap-2">
+                    <span class="rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-bold text-red-700 dark:text-red-400">-10%</span>
+                    {{ __('planes.discount_trimestral') }}
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-bold text-red-700 dark:text-red-400">-20%</span>
+                    {{ __('planes.discount_anual') }}
+                </div>
+                <div class="flex items-center gap-2">
+                    <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>
+                    {{ __('planes.discount_garantia') }}
+                </div>
             </div>
         </div>
+    </section>
 
-        {{-- ═══ COMP 4: TierCards (3 — scroll-snap mobile, grid desktop) ═══ --}}
-        <section class="tiers-section" id="tier-cards" data-animate>
-            <div class="tiers-header">
-                <span class="tiers-hint">{{ __('planes.tiers_hint') }}</span>
-                <div class="tiers-dots" role="presentation">
-                    @foreach(['esencial', 'metodo', 'elite'] as $plan)
-                        <div class="t-dot" :class="{ active: selectedPlan === '{{ $plan }}' }"></div>
-                    @endforeach
+    <div class="section-divider"></div>
+
+    {{-- Trust --}}
+    <section class="bg-wc-bg-tertiary hp-cv-section">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
+            <div class="mb-10 text-center">
+                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('planes.trust_title') }}</h2>
+                <p class="mx-auto mt-3 max-w-md text-wc-text-secondary">{{ __('planes.trust_subtitle') }}</p>
+            </div>
+            <div class="grid grid-cols-2 gap-6 sm:grid-cols-4">
+                <div class="scroll-reveal text-center">
+                    <p class="counter-highlight font-data text-3xl font-bold text-wc-accent" data-counter="0">{{ __('planes.trust_stat1_value') }}</p>
+                    <p class="mt-1 text-sm text-wc-text-secondary">{{ __('planes.trust_stat1_label') }}</p>
+                </div>
+                <div class="scroll-reveal text-center">
+                    <p class="counter-highlight font-data text-3xl font-bold text-wc-accent" data-counter="0">{{ __('planes.trust_stat2_value') }}</p>
+                    <p class="mt-1 text-sm text-wc-text-secondary">{{ __('planes.trust_stat2_label') }}</p>
+                </div>
+                <div class="scroll-reveal text-center">
+                    <p class="counter-highlight font-data text-3xl font-bold text-wc-accent">{{ __('planes.trust_stat3_value') }}</p>
+                    <p class="mt-1 text-sm text-wc-text-secondary">{{ __('planes.trust_stat3_label') }}</p>
+                </div>
+                <div class="scroll-reveal text-center">
+                    <p class="counter-highlight font-data text-3xl font-bold text-wc-accent">{{ __('planes.trust_stat4_value') }}</p>
+                    <p class="mt-1 text-sm text-wc-text-secondary">{{ __('planes.trust_stat4_label') }}</p>
                 </div>
             </div>
+            <p class="mt-8 text-center text-xs text-wc-text-tertiary">{{ __('planes.trust_footnote') }}</p>
+        </div>
+    </section>
 
-            <div class="tier-track" id="tier-track" @scroll.passive="onTierScroll($event)">
-                @foreach(['esencial', 'metodo', 'elite'] as $i => $plan)
-                    <article
-                        class="t-card t-card-{{ $plan }}"
-                        data-plan="{{ $plan }}"
-                        data-animate
-                        @if($i > 0) data-stagger="{{ $i }}" @endif
-                        @click="selectPlan('{{ $plan }}')"
-                        :class="{ 'is-selected': selectedPlan === '{{ $plan }}' }"
-                    >
-                        @if($plan === 'metodo')
-                            <div class="t-badge badge-gold">{{ __('planes.metodo_badge') }}</div>
-                        @endif
+    <div class="section-divider"></div>
 
-                        <div class="t-name">{{ __("planes.{$plan}_name") }}</div>
-
-                        @if($plan === 'elite')
-                            <div class="elite-metric" aria-label="{{ __('planes.elite_metric_aria') }}">
-                                <div class="mini-ring" aria-hidden="true">
-                                    <svg width="44" height="44" viewBox="0 0 44 44" focusable="false">
-                                        <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(212,160,76,0.15)" stroke-width="2"/>
-                                        <circle cx="22" cy="22" r="18" fill="none" stroke="#D4A04C" stroke-width="2"
-                                                stroke-dasharray="113" stroke-dashoffset="28"
-                                                stroke-linecap="round" transform="rotate(-90 22 22)"/>
-                                    </svg>
-                                    <div class="mini-ring-val">{{ __('planes.elite_metric_value') }}</div>
-                                </div>
-                                <div class="elite-metric-label">{!! __('planes.elite_metric_label_html') !!}</div>
-                            </div>
-                        @endif
-
-                        <div class="t-price-block">
-                            <span class="t-price-sym">$</span>
-                            <span class="t-price-num" x-text="priceOf('{{ $plan }}')">{{ number_format($pricesCop[$plan]['mensual'], 0, ',', '.') }}</span>
-                            <span class="t-price-cop">{{ __('planes.cop_mes') }}</span>
-                            <span class="t-price-note" x-text="noteOf('{{ $plan }}')">&nbsp;</span>
-                        </div>
-
-                        <p class="t-quote">{{ __("planes.{$plan}_quote") }}</p>
-
-                        <ul class="t-pillars">
-                            @foreach(__("planes.{$plan}_pillars") as $pillar)
-                                <li class="t-pillar">
-                                    <span class="t-pillar-dot" aria-hidden="true"></span>
-                                    <span class="t-pillar-text">{{ $pillar }}</span>
-                                </li>
-                            @endforeach
-                        </ul>
-
-                        <a
-                            :href="`{{ route('pagar') }}?plan={{ $plan }}&period=${period}`"
-                            class="t-cta {{ $plan === 'metodo' ? 'cta-red' : ($plan === 'elite' ? 'cta-outline-gold' : 'cta-ghost') }}"
-                            @click.stop
-                        >
-                            {{ __("planes.{$plan}_cta") }}
-                        </a>
-                    </article>
-                @endforeach
+    {{-- FAQ --}}
+    <section class="bg-wc-bg hp-cv-section">
+        <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
+            <div class="mb-10 text-center">
+                <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('planes.faq_title') }}</h2>
+                <p class="mx-auto mt-3 max-w-md text-wc-text-secondary">{{ __('planes.faq_subtitle') }}</p>
             </div>
-        </section>
 
-        {{-- ═══ Section divider · Comparador ═══ --}}
-        <x-public.s-divider :label="__('planes.divider_comparador')" />
-
-        {{-- ═══ COMP 5: ComparadorTable (sección NUEVA) ═══ --}}
-        <section class="comparador" data-animate>
-            <h2 class="comp-hd">{{ __('planes.comp_h2') }}</h2>
-            <p class="comp-sub">{{ __('planes.comp_sub') }}</p>
-            <div class="comp-scroll">
-                <table class="comp-table">
-                    <thead class="comp-thead">
-                        <tr>
-                            <th class="comp-th comp-th-feat" scope="col"></th>
-                            <th class="comp-th" scope="col">{{ __('planes.esencial_name') }}</th>
-                            <th class="comp-th hl" scope="col">{{ __('planes.metodo_name') }}</th>
-                            <th class="comp-th" scope="col">{{ __('planes.elite_name') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody class="comp-tbody">
-                        @foreach(__('planes.comp_rows') as $row)
-                            <tr>
-                                <td class="comp-feat">{{ $row['feat'] }}</td>
-                                @foreach(['esencial', 'metodo', 'elite'] as $col)
-                                    <td class="comp-td">
-                                        @if(($row[$col]['type'] ?? null) === 'mark')
-                                            <span class="comp-mark m-{{ $row[$col]['mod'] ?? 'no' }}">{{ $row[$col]['value'] }}</span>
-                                        @else
-                                            <span class="comp-val{{ ($row[$col]['mod'] ?? null) ? ' '.$row[$col]['mod'] : '' }}">{{ $row[$col]['value'] }}</span>
-                                        @endif
-                                    </td>
-                                @endforeach
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        {{-- ═══ Section divider · En todos los planes ═══ --}}
-        <x-public.s-divider :label="__('planes.divider_differentiators')" />
-
-        {{-- ═══ COMP 6: Differentiators (lo que TODOS los planes incluyen) ═══ --}}
-        <section class="differentiators" data-animate>
-            <p class="differentiators-eyebrow">{{ __('planes.differentiators_eyebrow') }}</p>
-            <h2 class="differentiators-h2">{{ __('planes.differentiators_h2') }}</h2>
-            <p class="differentiators-sub">{{ __('planes.differentiators_sub') }}</p>
-
-            <div class="differentiators-grid">
-                @foreach(__('planes.differentiators_list') as $i => $d)
-                    <x-public.differentiator-card
-                        :icon="$d['icon']"
-                        :title="$d['title']"
-                        :body="$d['body']"
-                        :badge="$d['badge'] ?? null"
-                        :featured="$d['featured'] ?? false" />
-                @endforeach
-            </div>
-        </section>
-
-        {{-- ═══ Section divider · Testimonios ═══ --}}
-        <x-public.s-divider :label="__('planes.divider_testimonios')" />
-
-        {{-- ═══ COMP 6: TestimoniosTicker (stack vertical con dot+line connector) ═══ --}}
-        <section class="testimonios" data-animate>
-            <h2 class="test-hd">{{ __('planes.testimonios_h2') }}</h2>
-            <p class="test-meta">{{ __('planes.testimonios_meta') }}</p>
-
-            <div class="testimonios-list">
-                @foreach(__('planes.testimonios_list') as $i => $t)
-                    <div class="testi-item" data-animate @if($i > 0) data-stagger="{{ min($i, 3) }}" @endif>
-                        <div class="t-col-left" aria-hidden="true">
-                            <div class="t-dot-outer {{ $t['plan'] === 'elite' ? 'elt' : 'vrf' }}"></div>
-                            @unless($loop->last)<div class="t-line"></div>@endunless
-                        </div>
-                        <div class="testi-body">
-                            <div class="t-row">
-                                <span class="t-who">{{ $t['name'] }}</span>
-                                <span class="t-plan tp-{{ $t['plan'] }}">{{ __("planes.{$t['plan']}_name") }}</span>
-                                <span class="t-country">{{ $t['country'] }}</span>
-                            </div>
-                            <p class="t-quote">{{ $t['quote'] }}</p>
-                            <p class="t-result">{{ $t['result'] }}</p>
+            <div class="divide-y divide-wc-border" x-data="{ open: null }">
+                @foreach([
+                    ['question' => __('planes.faq_q1'), 'answer' => __('planes.faq_a1')],
+                    ['question' => __('planes.faq_q2'), 'answer' => __('planes.faq_a2')],
+                    ['question' => __('planes.faq_q3'), 'answer' => __('planes.faq_a3')],
+                    ['question' => __('planes.faq_q4'), 'answer' => __('planes.faq_a4')],
+                    ['question' => __('planes.faq_q5'), 'answer' => __('planes.faq_a5')],
+                    ['question' => __('planes.faq_q6'), 'answer' => __('planes.faq_a6')],
+                ] as $index => $faq)
+                    <div class="scroll-reveal py-5">
+                        <button @click="open === {{ $index }} ? open = null : open = {{ $index }}"
+                                class="flex w-full items-center justify-between text-left">
+                            <span class="text-sm font-medium text-wc-text">{{ $faq['question'] }}</span>
+                            <svg class="ml-4 h-4 w-4 shrink-0 text-wc-text-tertiary transition-transform duration-300"
+                                 :class="{ 'rotate-180': open === {{ $index }} }"
+                                 fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </button>
+                        <div x-show="open === {{ $index }}"
+                             x-transition:enter="transition ease-out duration-300"
+                             x-transition:enter-start="opacity-0 -translate-y-2"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-200"
+                             x-transition:leave-start="opacity-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 -translate-y-2"
+                             x-collapse x-cloak class="mt-3">
+                            <p class="text-sm leading-relaxed text-wc-text-secondary">{{ $faq['answer'] }}</p>
                         </div>
                     </div>
                 @endforeach
             </div>
-        </section>
+        </div>
+    </section>
 
-        {{-- ═══ Section divider · Preguntas ═══ --}}
-        <x-public.s-divider :label="__('planes.divider_preguntas')" />
+    <div class="section-divider"></div>
 
-        {{-- ═══ COMP 7: FAQ accordion (8 preguntas, JSON-LD FAQPage incluido) ═══ --}}
-        <section class="faq-section" data-animate>
-            <h2 class="faq-hd">{{ __('planes.faq_h2') }}</h2>
-            <p class="faq-sub">{{ __('planes.faq_sub') }}</p>
-            <x-public.faq-accordion :items="__('planes.faq_list')" :search="false" :jsonld="true" />
-        </section>
-
-        {{-- ═══ COMP 8: CTAFinal (precio dinámico + nota sin compromiso) ═══ --}}
-        <section
-            class="cta-final"
-            id="cta-final"
-            data-animate
-            x-intersect:enter.threshold.15="ctaInView = true"
-            x-intersect:leave="ctaInView = false"
-        >
-            <p class="cta-final-eye">{{ __('planes.cta_eye') }}</p>
-            <h2 class="cta-final-hd">
-                {{ __('planes.cta_h2_l1') }}<br>
-                <span class="cta-final-hd-acc">{{ __('planes.cta_h2_l2') }}</span>
-            </h2>
-            <p class="cta-final-body">{{ __('planes.cta_body') }}</p>
-            <a :href="`{{ route('pagar') }}?plan=metodo&period=${period}`" class="btn-cta-final">
-                {{ __('planes.cta_btn') }} — <span class="btn-cta-price">$<span x-text="priceOf('metodo')">{{ number_format($pricesCop['metodo']['mensual'], 0, ',', '.') }}</span>/{{ __('planes.cop_mes_short') }}</span>
-            </a>
-            <p class="cta-final-note">{{ __('planes.cta_note') }}</p>
-        </section>
-
-        {{-- ═══ COMP 9: StickyCTABottom (mobile, plan dinámico) ═══ --}}
-        <div
-            class="sticky-planes"
-            :class="{ 'is-hidden': ctaInView }"
-            role="region"
-            aria-label="{{ __('planes.sticky_continue') }}"
-        >
-            <div class="sticky-pill">
-                <div class="sp-left">
-                    <span class="sp-plan" x-text="`{{ __('planes.plan_label_prefix') }} ${planName(selectedPlan).toUpperCase()}`"></span>
-                    <span class="sp-price">$<span x-text="priceOf(selectedPlan)">{{ number_format($pricesCop['metodo']['mensual'], 0, ',', '.') }}</span></span>
+    {{-- CTA --}}
+    <section class="bg-wc-bg-tertiary hp-cv-section">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" data-animate="fadeInUp">
+            <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-gradient-to-br from-wc-bg via-wc-bg to-wc-bg-secondary p-10 sm:p-16">
+                <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/10 via-wc-accent/5 to-transparent"></div>
+                <div class="absolute -bottom-12 -right-12 h-48 w-48 rounded-full bg-wc-accent/5 blur-3xl" aria-hidden="true"></div>
+                <div class="absolute -left-12 -top-12 h-48 w-48 rounded-full bg-wc-accent/5 blur-3xl" aria-hidden="true"></div>
+                <div class="relative text-center">
+                    <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('planes.cta_title') }}</h2>
+                    <p class="mx-auto mt-4 max-w-md text-wc-text-secondary">{{ __('planes.cta_subtitle') }}</p>
+                    <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                        <a href="{{ route('inscripcion') }}" class="btn-press pulse-glow inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3 text-base font-semibold text-white shadow-md transition hover:bg-wc-accent-hover hover:shadow-lg">{{ __('planes.cta_btn_comenzar') }}</a>
+                        <a href="{{ route('faq') }}" class="btn-press inline-flex items-center justify-center rounded-full border border-wc-border px-8 py-3 text-base font-medium text-wc-text-secondary transition hover:border-wc-accent hover:text-red-700 dark:hover:text-red-400">{{ __('planes.cta_btn_faq') }}</a>
+                    </div>
                 </div>
-                <a :href="`{{ route('pagar') }}?plan=${selectedPlan}&period=${period}`" class="sp-action">
-                    {{ __('planes.sticky_continue') }}
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </a>
             </div>
         </div>
-    </div>
+    </section>
+
 </x-layouts.public>
