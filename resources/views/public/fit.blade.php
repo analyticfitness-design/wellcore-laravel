@@ -41,10 +41,10 @@
 
         <div class="fit-hero-photo fit-hero-photo-real" data-animate="fadeInUp" data-stagger="2">
             <picture>
-                <source srcset="{{ asset('images/coaches/silvia-hero.webp') }}" type="image/webp">
-                <img src="{{ asset('images/coaches/silvia-hero.png') }}"
+                <source srcset="{{ asset('images/coaches/silvia-hero.webp') }}?v=2" type="image/webp">
+                <img src="{{ asset('images/coaches/silvia-hero.png') }}?v=2"
                      alt="Coach Silvia Martínez"
-                     width="655" height="819"
+                     width="879" height="1100"
                      loading="eager" fetchpriority="high" decoding="async">
             </picture>
         </div>
