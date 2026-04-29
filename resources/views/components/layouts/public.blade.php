@@ -320,8 +320,9 @@
     <x-cookie-consent />
     <x-toast-notifications />
 
-    {{-- Sticky CTA mobile (solo en home y páginas públicas clave) --}}
-    @if(request()->routeIs('home') || request()->routeIs('planes') || request()->routeIs('proceso'))
+    {{-- Sticky CTA mobile legacy (home y proceso). /planes v2 trae su propio sticky reactivo
+         con plan seleccionado y precio dinámico — ver resources/views/public/planes.blade.php. --}}
+    @if(request()->routeIs('home') || request()->routeIs('proceso'))
     <div class="hp-sticky-cta md:hidden" role="region" aria-label="Acción principal">
         <a href="{{ route('inscripcion') }}" class="hp-sticky-cta-btn">
             <span class="hp-sticky-cta-label">Inscribirme</span>

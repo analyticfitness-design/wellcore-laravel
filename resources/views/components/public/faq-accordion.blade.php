@@ -63,7 +63,7 @@
                 $q = $item['q'] ?? '';
                 $a = $item['a'] ?? '';
                 $cat = $item['cat'] ?? null;
-                $itemId = $item['id'] ?? Str::slug($q) . '-' . $i;
+                $itemId = $item['id'] ?? \Illuminate\Support\Str::slug($q) . '-' . $i;
             @endphp
             <details
                 class="faq-accordion-item"
