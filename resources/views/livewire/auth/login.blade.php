@@ -341,7 +341,15 @@
     white-space: nowrap;
     display: inline-flex; align-items: center; justify-content: center;
     gap: 10px;
-    transition: transform .12s var(--auth-ease-out), background .15s, box-shadow .2s, opacity .2s;
+    overflow: hidden;
+    /* Transición larga + curva iOS para que rojo→verde se sienta líquido,
+       no un flash. Background va por separado de transform/shadow para que
+       cada propiedad tenga su tempo. */
+    transition:
+        background-color .55s var(--auth-ease-ios),
+        box-shadow .55s var(--auth-ease-ios),
+        transform .12s var(--auth-ease-out),
+        opacity .25s ease;
     box-shadow:
         0 12px 32px -10px rgba(220,38,38,0.55),
         0 2px 0 rgba(0,0,0,0.15) inset,
@@ -349,15 +357,64 @@
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
 }
-.auth-submit:active:not(:disabled) { transform: scale(0.97); background: var(--auth-red-hover); }
-.auth-submit:disabled { opacity: 0.7; cursor: not-allowed; }
-.auth-submit.is-success {
-    background: var(--auth-green);
-    box-shadow: 0 12px 32px -10px rgba(16,185,129,0.55);
+.auth-submit > span { position: relative; z-index: 2; }
+.auth-submit:active:not(:disabled) { transform: scale(0.97); background-color: var(--auth-red-hover); }
+
+/* Disabled mientras verifica: NO bajamos opacity (eso lo hace ver "muerto"),
+   solo bloqueamos cursor. El cambio de color comunica que pasó algo. */
+.auth-submit:disabled { cursor: progress; }
+
+/* Estado VERIFICANDO (wire:loading): verde profundo (esmeralda),
+   sin halo aún. Daniel: "que se ponga verde mientras verifica". */
+.auth-submit.is-verifying {
+    background-color: #059669; /* esmeralda 600 — verde sobrio, no celebra todavía */
+    box-shadow:
+        0 12px 32px -10px rgba(5,150,105,0.50),
+        0 2px 0 rgba(0,0,0,0.15) inset,
+        0 1px 0 rgba(255,255,255,0.18) inset;
 }
+
+/* Sweep de luz iOS: una banda blanca translúcida cruza el botón mientras
+   verifica, dando sensación de progreso continuo (no un spinner muerto). */
+.auth-submit.is-verifying::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+        100deg,
+        transparent 30%,
+        rgba(255,255,255,0.18) 50%,
+        transparent 70%
+    );
+    transform: translateX(-100%);
+    animation: auth-sweep 1.4s var(--auth-ease-ios) infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+@keyframes auth-sweep {
+    to { transform: translateX(100%); }
+}
+
+/* Estado SUCCESS: verde brillante + halo de celebración + un pop sutil. */
+.auth-submit.is-success {
+    background-color: var(--auth-green); /* #10B981 — más vivo que verifying */
+    box-shadow:
+        0 14px 36px -10px rgba(16,185,129,0.65),
+        0 0 0 4px rgba(16,185,129,0.18),
+        0 1px 0 rgba(255,255,255,0.22) inset;
+    animation: auth-success-pop .42s var(--auth-ease-ios);
+}
+.auth-submit.is-success::before { display: none; }
+@keyframes auth-success-pop {
+    0%   { transform: scale(1); }
+    45%  { transform: scale(1.025); }
+    100% { transform: scale(1); }
+}
+
 .auth-submit .spinner {
     width: 18px; height: 18px;
-    border: 2px solid rgba(255,255,255,0.3);
+    border: 2px solid rgba(255,255,255,0.32);
     border-top-color: #fff;
     border-radius: 50%;
     animation: auth-spin .7s linear infinite;
@@ -755,6 +812,7 @@
                 type="submit"
                 class="auth-submit"
                 :class="{ 'is-success': @js($loginSuccess) }"
+                wire:loading.class="is-verifying"
                 wire:loading.attr="disabled"
                 wire:target="login"
             >
