@@ -315,14 +315,18 @@
     color: var(--bs-gold);
     font-weight: 500;
 }
-.bs-body a {
+/* Inline links in prose — :not(.bs-cta-btn) prevents inheritance
+   on the CTA button which lives inside .bs-body and would otherwise
+   win specificity (0,1,1 vs .bs-cta-btn 0,1,0) and turn the button
+   text black in light mode (regression spotted in mobile light prod). */
+.bs-body a:not(.bs-cta-btn) {
     color: var(--bs-text);
     text-decoration: underline;
     text-decoration-color: var(--bs-red);
     text-underline-offset: 3px;
     transition: color 0.2s;
 }
-.bs-body a:hover { color: var(--bs-red-text); }
+.bs-body a:not(.bs-cta-btn):hover { color: var(--bs-red-text); }
 .bs-body ul {
     list-style: none;
     padding: 0;
