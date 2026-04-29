@@ -141,4 +141,179 @@ return [
     'cta_btn_comenzar' => 'Get Started',
     'cta_btn_faq'      => 'View Full FAQ',
 
+    // =========================================================
+    // V2 — Hero brutal (5-line H1 + eyebrow + Fraunces italic sub)
+    // =========================================================
+    'hero_eyebrow_word' => 'PLANS',
+    'hero_h1_lines' => ['CHOOSE', 'THE PLAN.', 'YOUR COACH', 'DOES THE', 'REST.'],
+    'hero_sub' => 'No tricks. No promises. Just method.',
+    'hero_cta' => 'Get started',
+    'hero_aside_label' => '3 plans',
+
+    // =========================================================
+    // V2 — Tier cards (3 pillars per plan)
+    // =========================================================
+    'tiers_hint' => 'Swipe to compare the 3 plans',
+
+    'esencial_quote' => 'For those just starting out and want structure to build on.',
+    'esencial_pillars' => [
+        'Custom training · exercises with instructions and automatic PR detection',
+        'Daily habits with streaks · water, sleep, nutrition · 30-day heatmap',
+        'Monthly check-in with your coach · monthly adjustments to keep momentum',
+    ],
+
+    'metodo_quote' => 'For those who already train and need a plan that moves with you every two weeks.',
+    'metodo_pillars' => [
+        'Training + personalized nutrition · macros, meal plan, daily water tracking',
+        'Bi-weekly check-in + adjustments · your coach reviews progress every 15 days',
+        'Habits + supplementation · 5 daily habits, supplements with timing, weekly adherence',
+    ],
+
+    'elite_quote' => 'For athletes and high performers seeking advanced specialization.',
+    'elite_pillars' => [
+        'Advanced training · weekly progressions, exercise variations, volume analysis and nutrient timing',
+        'Advanced sport optimization · for male athletes: sport supplementation protocol with professional guidance. For female athletes: training periodized by your menstrual cycle.',
+        'Weekly 1:1 check-in · integrated coaching across 6 domains, 8-hour priority support',
+    ],
+    'elite_metric_value' => '12',
+    'elite_metric_aria' => '12 active clients in Elite plan',
+    'elite_metric_label_html' => '<strong>12</strong> active clients<br>in Elite plan',
+
+    'discount_trimestral_pct' => '−10%',
+    'discount_anual_pct'      => '−20%',
+
+    'period_note_mensual'    => '',
+    'period_note_trimestral' => 'You pay $:total · save $:saved over 3 months',
+    'period_note_anual'      => 'You pay $:total · save $:saved over 12 months',
+
+    'divider_comparador'  => 'COMPARE · PLANS',
+    'divider_testimonios' => 'TESTIMONIALS · 2026',
+    'divider_preguntas'   => 'QUESTIONS · OBJECTIONS',
+
+    'comp_h2'  => 'Compare plans',
+    'comp_sub' => 'Only what makes each tier different.',
+    'comp_rows' => [
+        [
+            'feat'     => 'Custom plan',
+            'esencial' => ['type' => 'mark', 'value' => '✓', 'mod' => 'yes'],
+            'metodo'   => ['type' => 'mark', 'value' => '✓', 'mod' => 'hl'],
+            'elite'    => ['type' => 'mark', 'value' => '✓', 'mod' => 'yes'],
+        ],
+        [
+            'feat'     => 'Check-in frequency',
+            'esencial' => ['type' => 'val', 'value' => 'Monthly',   'mod' => null],
+            'metodo'   => ['type' => 'val', 'value' => 'Bi-weekly', 'mod' => 'hl'],
+            'elite'    => ['type' => 'val', 'value' => 'Weekly',    'mod' => 'gd'],
+        ],
+        [
+            'feat'     => 'Adjustment frequency',
+            'esencial' => ['type' => 'val', 'value' => 'Monthly',   'mod' => null],
+            'metodo'   => ['type' => 'val', 'value' => 'Bi-weekly', 'mod' => 'hl'],
+            'elite'    => ['type' => 'val', 'value' => 'Weekly',    'mod' => 'gd'],
+        ],
+        [
+            'feat'     => 'Personalized nutrition (macros)',
+            'esencial' => ['type' => 'mark', 'value' => '—',           'mod' => 'no'],
+            'metodo'   => ['type' => 'mark', 'value' => '✓',           'mod' => 'hl'],
+            'elite'    => ['type' => 'val',  'value' => '✓ with timing', 'mod' => 'gd'],
+        ],
+        [
+            'feat'     => 'Supplementation with timing',
+            'esencial' => ['type' => 'mark', 'value' => '—',          'mod' => 'no'],
+            'metodo'   => ['type' => 'mark', 'value' => '✓',          'mod' => 'hl'],
+            'elite'    => ['type' => 'val',  'value' => '✓ personalized', 'mod' => 'gd'],
+        ],
+        [
+            'feat'     => 'Advanced sport optimization',
+            'esencial' => ['type' => 'mark', 'value' => '—', 'mod' => 'no'],
+            'metodo'   => ['type' => 'mark', 'value' => '—', 'mod' => 'no'],
+            'elite'    => ['type' => 'val',  'value' => 'Sport supplementation · Menstrual cycle', 'mod' => 'gd'],
+        ],
+    ],
+
+    'testimonios_h2'   => 'What clients say',
+    'testimonios_meta' => 'Active clients · verified results',
+    'testimonios_list' => [
+        ['name' => 'SV · COL', 'plan' => 'metodo',   'country' => 'COL', 'quote' => 'In 3 months I lost 8 kg without giving up the foods I love. The bi-weekly check-in makes the difference.', 'result' => '−8 kg · 12 weeks'],
+        ['name' => 'CR · MEX', 'plan' => 'elite',    'country' => 'MEX', 'quote' => 'I had failed twice with other programs. Here my coach adjusts every week. That changes everything.', 'result' => '+6 kg muscle · 5 months'],
+        ['name' => 'FM · COL', 'plan' => 'esencial', 'country' => 'COL', 'quote' => 'I started with Essential because I wasn\'t sure if it was for me. After 2 months I moved to Method. No going back.', 'result' => '−5 kg · 8 weeks'],
+        ['name' => 'AL · ARG', 'plan' => 'metodo',   'country' => 'ARG', 'quote' => 'What I value most is knowing a real person reviewed my week. Without that it\'s just a PDF.', 'result' => 'Active since Mar 2025'],
+    ],
+
+    'faq_h2'  => 'Questions',
+    'faq_sub' => 'Before you decide.',
+    'faq_list' => [
+        ['q' => 'Can I cancel anytime?', 'a' => 'Yes. No minimum contract on the Monthly plan. If you paid quarterly or annually and cancel early, we refund the prorated remaining months.'],
+        ['q' => 'How does the check-in work?', 'a' => 'You complete a form with photos, metrics and notes. Your coach reviews it and sends plan adjustments within 24 business hours.'],
+        ['q' => 'Is the coach a real person?', 'a' => 'Yes. Every Method or Elite client has an assigned human coach — with name, certification and judgment. Not a bot, not automation.'],
+        ['q' => 'Do I need a gym or can I train at home?', 'a' => 'The plan adapts to what you have: full gym, basic home gym, or bodyweight only. You set this in the initial questionnaire.'],
+        ['q' => 'What does the nutrition plan include?', 'a' => 'Macro distribution, meal protocols based on your preferences, and restaurant guides. It\'s not a rigid diet — it\'s applied nutrition education.'],
+        ['q' => 'How long until I see results?', 'a' => 'First measurable changes appear in 3-4 weeks (energy, sleep, strength). Visual changes depend on your starting point — typically 6-12 weeks for significant results.'],
+        ['q' => 'Can I switch plans later?', 'a' => 'Yes, on your next renewal. Many clients start with Essential and move to Method once they see the system\'s quality.'],
+        ['q' => 'What does the Elite plan include that Method doesn\'t?', 'a' => 'Advanced sport optimization: for male athletes, a sport supplementation protocol with professional guidance. For female athletes, training periodized by your menstrual cycle. Plus weekly 1:1 check-ins and 8-hour priority support.'],
+    ],
+
+    // =========================================================
+    // V2 — Differentiators (what ALL plans include)
+    // =========================================================
+    'divider_differentiators' => 'IN ALL PLANS',
+    'differentiators_eyebrow' => 'IN ALL PLANS',
+    'differentiators_h2'      => 'What you came looking for. Already inside.',
+    'differentiators_sub'     => 'We don\'t charge extra for the tools that make you come back tomorrow.',
+    'differentiators_list'    => [
+        [
+            'icon'     => 'mic',
+            'title'    => 'Voice Logger',
+            'body'     => 'Log your training by voice while you train. Sets, reps, notes — no typing.',
+            'badge'    => 'First in LATAM',
+            'featured' => true,
+        ],
+        [
+            'icon'  => 'plate',
+            'title' => '3 options per dish',
+            'body'  => 'Don\'t like breakfast? Swap it with a click. Same macros, different dish. Curated recipes per dish.',
+        ],
+        [
+            'icon'  => 'shuffle',
+            'title' => 'Exercise variations',
+            'body'  => 'Same muscle, different execution. No boredom, no injuries.',
+        ],
+        [
+            'icon'  => 'video',
+            'title' => 'Video tutorials',
+            'body'  => 'Every exercise with technique explained on video. Execute correctly from day one.',
+        ],
+        [
+            'icon'  => 'chat',
+            'title' => '1:1 chat with your coach',
+            'body'  => 'No bots. No tickets. Direct message to your human coach.',
+        ],
+        [
+            'icon'  => 'users',
+            'title' => 'Active community',
+            'body'  => 'Other clients in process, sharing PRs, questions and results.',
+        ],
+        [
+            'icon'  => 'medal',
+            'title' => 'Badges and achievements',
+            'body'  => 'Every milestone you break gets saved. Your progress is visible.',
+        ],
+        [
+            'icon'  => 'wifi-off',
+            'title' => 'Offline app',
+            'body'  => 'Works without connection. Like a native app, no downloads needed.',
+        ],
+    ],
+
+    'cta_eye'    => 'Your first check-in within 48 hours',
+    'cta_h2_l1'  => 'Start',
+    'cta_h2_l2'  => 'with Method',
+    'cta_body'   => 'No contract. No penalty. If after 30 days it\'s not for you, we refund your money.',
+    'cta_btn'    => 'Start now',
+    'cta_note'   => '30 days no commitment · switch or cancel whenever you want',
+    'cop_mes_short' => 'mo',
+
+    'plan_label_prefix' => 'Plan',
+    'sticky_continue'   => 'Continue',
+
 ];
