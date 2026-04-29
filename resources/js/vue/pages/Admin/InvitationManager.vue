@@ -7,6 +7,7 @@ const api = useApi();
 
 // ── State ──────────────────────────────────────────────────────────────
 const loading = ref(true);
+const fetchError = ref(null);
 const invitations = ref([]);
 const stats = ref({ total: 0, pending: 0, used: 0, expired: 0 });
 const pagination = ref({ current_page: 1, last_page: 1, total: 0, per_page: 20 });
@@ -83,6 +84,7 @@ watch(statusFilter, () => {
 // ── API calls ─────────────────────────────────────────────────────────
 async function fetchInvitations() {
   loading.value = true;
+  fetchError.value = null;
   try {
     const params = new URLSearchParams();
     params.set('page', pagination.value.current_page);
@@ -97,6 +99,7 @@ async function fetchInvitations() {
     pagination.value = response.data.pagination ?? pagination.value;
   } catch (e) {
     invitations.value = [];
+    fetchError.value = e?.response?.data?.message || 'Error al cargar invitaciones. Intenta de nuevo.';
   } finally {
     loading.value = false;
   }
@@ -486,8 +489,26 @@ onMounted(fetchInvitations);
                   </td>
                 </tr>
 
+                <!-- Error state -->
+                <tr v-if="!loading && fetchError">
+                  <td colspan="10" class="px-4 py-16 text-center">
+                    <div class="flex flex-col items-center gap-3">
+                      <svg class="h-10 w-10 text-red-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                      </svg>
+                      <p class="text-sm text-red-400">{{ fetchError }}</p>
+                      <button
+                        @click="fetchInvitations"
+                        class="mt-1 inline-flex items-center gap-1.5 rounded-lg border border-wc-border px-3 py-1.5 text-xs font-medium text-wc-text hover:bg-wc-bg-tertiary transition-colors"
+                      >
+                        Reintentar
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
                 <!-- Empty state -->
-                <tr v-if="!loading && invitations.length === 0">
+                <tr v-else-if="!loading && invitations.length === 0">
                   <td colspan="10" class="px-4 py-16 text-center">
                     <div class="flex flex-col items-center gap-3">
                       <svg class="h-10 w-10 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
