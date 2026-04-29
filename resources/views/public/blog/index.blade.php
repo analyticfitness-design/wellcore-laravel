@@ -810,10 +810,21 @@
         </h2>
         <p class="blog-newsletter-sub">{{ __('blog.newsletter_sub') }}</p>
         {{-- Form sin POST handler — sólo visual; backend pendiente. --}}
-        <form class="blog-newsletter-form" onsubmit="event.preventDefault(); alert('{{ $isEs ? 'Próximamente — estamos preparando el sistema de suscripción.' : 'Coming soon — newsletter system in setup.' }}');">
+        <form class="blog-newsletter-form" id="blog-newsletter-form"
+              data-pending-msg="{{ $isEs ? 'Próximamente — estamos preparando el sistema de suscripción.' : 'Coming soon — newsletter system in setup.' }}">
             <input type="email" class="blog-newsletter-input" placeholder="{{ __('blog.newsletter_placeholder') }}" aria-label="Email" required>
             <button type="submit" class="blog-newsletter-btn">{{ __('blog.newsletter_btn') }}</button>
         </form>
+        <script nonce="@cspNonce">
+            (function () {
+                var form = document.getElementById('blog-newsletter-form');
+                if (!form) return;
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    alert(form.getAttribute('data-pending-msg') || '');
+                });
+            })();
+        </script>
         <div class="blog-newsletter-disclaimer">{{ __('blog.newsletter_disclaimer') }}</div>
     </section>
 

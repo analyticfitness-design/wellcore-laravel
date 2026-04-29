@@ -736,9 +736,9 @@
 <div class="bs-share" role="complementary" aria-label="{{ __('blog.share_label') }}">
     <div class="bs-share-inner">
         <span class="bs-share-label">{{ __('blog.share_label') }}</span>
-        <button type="button" class="bs-share-btn bs-share-wa" onclick="window.open('https://wa.me/?text='+encodeURIComponent(document.title+' '+location.href),'_blank','noopener')">{{ __('blog.share_whatsapp') }}</button>
-        <button type="button" class="bs-share-btn bs-share-tw" onclick="window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(document.title)+'&url='+encodeURIComponent(location.href),'_blank','noopener')">{{ __('blog.share_twitter') }}</button>
-        <button type="button" class="bs-share-btn bs-share-cp" onclick="navigator.clipboard.writeText(location.href).then(()=>this.textContent='✓ {{ $isEs ? 'COPIADO' : 'COPIED' }}')">{{ __('blog.share_copy') }}</button>
+        <button type="button" class="bs-share-btn bs-share-wa">{{ __('blog.share_whatsapp') }}</button>
+        <button type="button" class="bs-share-btn bs-share-tw">{{ __('blog.share_twitter') }}</button>
+        <button type="button" class="bs-share-btn bs-share-cp">{{ __('blog.share_copy') }}</button>
     </div>
 </div>
 
@@ -860,8 +860,8 @@
     </div>
 @endif
 
-{{-- ── Reading progress + TOC active link script ── --}}
-<script>
+{{-- ── Reading progress + TOC active link + share buttons (CSP-friendly) ── --}}
+<script nonce="@cspNonce">
 (function () {
     function init() {
         var root = document.querySelector('.blog-show-root');
@@ -902,6 +902,35 @@
         document.addEventListener('scroll', onScroll, { passive: true });
         window.addEventListener('resize', onScroll, { passive: true });
         onScroll();
+
+        // Share buttons (CSP-safe: no inline onclick).
+        var shareWa = root.querySelector('.bs-share-wa');
+        var shareTw = root.querySelector('.bs-share-tw');
+        var shareCp = root.querySelector('.bs-share-cp');
+        var sideShareWa = root.querySelector('.bs-side-share-wa');
+        var sideShareTw = root.querySelector('.bs-side-share-tw');
+        var sideShareCp = root.querySelector('.bs-side-share-cp');
+        function shareWhatsApp() {
+            window.open('https://wa.me/?text=' + encodeURIComponent(document.title + ' ' + location.href), '_blank', 'noopener');
+        }
+        function shareTwitter() {
+            window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(document.title) + '&url=' + encodeURIComponent(location.href), '_blank', 'noopener');
+        }
+        function copyLink(btn) {
+            try {
+                navigator.clipboard.writeText(location.href).then(function () {
+                    var original = btn.textContent;
+                    btn.textContent = '✓ ' + (document.documentElement.lang === 'en' ? 'COPIED' : 'COPIADO');
+                    setTimeout(function () { btn.textContent = original; }, 2000);
+                });
+            } catch (e) {}
+        }
+        if (shareWa) shareWa.addEventListener('click', shareWhatsApp);
+        if (shareTw) shareTw.addEventListener('click', shareTwitter);
+        if (shareCp) shareCp.addEventListener('click', function () { copyLink(shareCp); });
+        if (sideShareWa) sideShareWa.addEventListener('click', shareWhatsApp);
+        if (sideShareTw) sideShareTw.addEventListener('click', shareTwitter);
+        if (sideShareCp) sideShareCp.addEventListener('click', function () { copyLink(sideShareCp); });
     }
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
