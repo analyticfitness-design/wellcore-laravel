@@ -119,10 +119,10 @@ return [
     // -------------------------------------------------------------------------
     'equipo' => [
         'intro'     => '"The people behind the method. Every one of them trains what they teach."',
-        'intro_sub' => '06 people · LATAM',
+        'intro_sub' => 'Daniel + 9 certified coaches · LATAM',
         'members' => [
             [
-                'num'        => '01 / 06',
+                'num'        => '01 / 10',
                 'initials'   => 'DE',
                 'name_html'  => 'DANIEL ESPARZA',
                 'role'       => 'CEO · Founder · Bucaramanga',
@@ -131,36 +131,37 @@ return [
                 'featured'   => true,
             ],
             [
-                'num' => '02 / 06', 'initials' => 'CR', 'name_html' => 'CR',
-                'role' => 'Senior coach',
+                'num' => '02 / 10', 'initials' => 'CS', 'name_html' => 'SENIOR<br>COACH',
+                'role' => 'Specialty: hypertrophy and strength',
                 'quote' => 'Progress isn\'t improvised. It\'s programmed.',
                 'bio' => null, 'featured' => false,
             ],
             [
-                'num' => '03 / 06', 'initials' => 'MV', 'name_html' => 'MV',
-                'role' => 'Clinical nutritionist',
+                'num' => '03 / 10', 'initials' => 'NC', 'name_html' => 'NUTRI-<br>TIONIST',
+                'role' => 'Meal plan · macros · clinical',
                 'quote' => 'Nutrition is half the job. Almost always the worse half.',
                 'bio' => null, 'featured' => false,
             ],
             [
-                'num' => '04 / 06', 'initials' => 'LM', 'name_html' => 'LM',
-                'role' => 'Women\'s coaching specialist',
+                'num' => '04 / 10', 'initials' => 'CM', 'name_html' => 'SENIOR<br>COACH',
+                'role' => 'Specialty: women · hormonal cycle',
                 'quote' => 'Every cycle counts. Programming around that changes everything.',
                 'bio' => null, 'featured' => false,
             ],
             [
-                'num' => '05 / 06', 'initials' => 'JR', 'name_html' => 'JR',
-                'role' => 'Senior performance coach',
+                'num' => '05 / 10', 'initials' => 'CP', 'name_html' => 'SENIOR<br>COACH',
+                'role' => 'Specialty: performance · sport',
                 'quote' => 'Measurable progress or it\'s not progress. It\'s hope.',
                 'bio' => null, 'featured' => false,
             ],
             [
-                'num' => '06 / 06', 'initials' => 'SB', 'name_html' => 'SB',
-                'role' => 'Sports nutritionist',
+                'num' => '06 / 10', 'initials' => 'ND', 'name_html' => 'NUTRI-<br>TIONIST',
+                'role' => 'Sports · supplementation · timing',
                 'quote' => 'Science needs to reach the people who need it.',
                 'bio' => null, 'featured' => false,
             ],
         ],
+        'team_more' => '+ 4 coaches in private profile · full bios available after sign-up and match.',
     ],
 
     // -------------------------------------------------------------------------

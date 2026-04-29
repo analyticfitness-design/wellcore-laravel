@@ -17,15 +17,15 @@ return [
     'cred_label'       => 'Certificaciones aceptadas',
     'cred_note'        => 'Certificaciones reconocidas internacionalmente · Consulta los requisitos al aplicar',
 
-    // Stats — datos del modelo de marketplace WellCore (verificables en código)
-    'stats_title'      => 'EL MODELO EN NÚMEROS',
-    'stats_demo_label' => 'CÓMO TRABAJAMOS',
-    'stats_coaches_value' => '60/40',
-    'stats_coaches_label' => 'SPLIT POR CLIENTE ACTIVO',
-    'stats_retention_value' => 'MENSUAL',
-    'stats_retention_label' => 'PAGO PUNTUAL CON DESGLOSE',
-    'stats_rating_value' => '1:1',
-    'stats_rating_label' => 'COACH HUMANO POR CLIENTE',
+    // Stats — datos reales de la plataforma WellCore 2026
+    'stats_title'      => 'EL EQUIPO EN NÚMEROS',
+    'stats_demo_label' => 'DATOS REALES · WELLCORE 2026',
+    'stats_coaches_value' => '10',
+    'stats_coaches_label' => 'COACHES EN EL EQUIPO',
+    'stats_retention_value' => '30',
+    'stats_retention_label' => 'CLIENTES EN PROGRAMA',
+    'stats_rating_value' => '60/40',
+    'stats_rating_label' => 'SPLIT POR CLIENTE ACTIVO',
     'stats_paid_value' => '0',
     'stats_paid_label' => 'EXCLUSIVIDAD · SIN CANDADOS',
 

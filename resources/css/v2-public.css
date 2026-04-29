@@ -5228,6 +5228,18 @@
     text-transform: uppercase;
     margin-bottom: 32px;
 }
+.nosotros-eq-team-more {
+    margin-top: 24px;
+    padding: 16px 20px;
+    border-left: 2px solid var(--color-wc-accent);
+    background: rgba(220, 38, 38, 0.04);
+    font-family: var(--font-editorial, var(--font-sans));
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--color-wc-text-2);
+    max-width: 720px;
+}
 .nosotros-eq-grid {
     display: grid;
     grid-template-columns: 1fr;

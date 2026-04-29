@@ -246,6 +246,12 @@
                     </article>
                 @endforeach
             </div>
+
+            @if (__('nosotros.equipo.team_more'))
+                <p class="nosotros-eq-team-more" data-animate="fadeInUp">
+                    {{ __('nosotros.equipo.team_more') }}
+                </p>
+            @endif
         </section>
 
         {{-- ════════════════════════════════════════════════════════════

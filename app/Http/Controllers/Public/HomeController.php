@@ -25,15 +25,16 @@ class HomeController extends Controller
             }
         }
 
+        // Conteo real de clientes activos. Fallback alineado con el dato
+        // operativo verificado por Daniel (2026-04-29): 30 clientes en programa.
         $liveCount = Cache::remember('home.live_count', 60, function () {
-            if (class_exists(\App\Models\User::class)) {
-                try {
-                    return \App\Models\User::query()
-                        ->where('status', 'active')
-                        ->count();
-                } catch (\Throwable) {}
-            }
-            return 47;
+            try {
+                if (class_exists(\App\Models\Client::class)) {
+                    $n = \App\Models\Client::query()->where('status', 'active')->count();
+                    return $n > 0 ? $n : 30;
+                }
+            } catch (\Throwable) {}
+            return 30;
         });
 
         return view('public.home', [

@@ -37,13 +37,13 @@ return [
     // =========================================================
     // SOCIAL PROOF BAR
     // =========================================================
-    'proof_eyebrow'    => 'CÓMO TRABAJAMOS',
-    'proof_stat1_val'  => '1:1',
-    'proof_stat1_lbl'  => 'Coach humano',
-    'proof_stat2_val'  => '8–12',
-    'proof_stat2_lbl'  => 'Semanas de protocolo',
-    'proof_stat3_val'  => '0',
-    'proof_stat3_lbl'  => 'Bots ni auto-respuestas',
+    'proof_eyebrow'    => 'DATOS REALES · WELLCORE 2026',
+    'proof_stat1_val'  => '30',
+    'proof_stat1_lbl'  => 'Clientes en programa',
+    'proof_stat2_val'  => '10',
+    'proof_stat2_lbl'  => 'Coaches certificados',
+    'proof_stat3_val'  => '1:1',
+    'proof_stat3_lbl'  => 'Coach humano · sin bots',
     'proof_stat4_val'  => '0',
     'proof_stat4_lbl'  => 'Contrato mínimo',
 

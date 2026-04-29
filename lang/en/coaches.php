@@ -20,12 +20,12 @@ return [
     // Stats — WellCore marketplace model (verifiable in code)
     'stats_title'      => 'THE MODEL BY THE NUMBERS',
     'stats_demo_label' => 'HOW WE WORK',
-    'stats_coaches_value' => '60/40',
-    'stats_coaches_label' => 'SPLIT PER ACTIVE CLIENT',
-    'stats_retention_value' => 'MONTHLY',
-    'stats_retention_label' => 'ON-TIME PAYOUTS WITH BREAKDOWN',
-    'stats_rating_value' => '1:1',
-    'stats_rating_label' => 'HUMAN COACH PER CLIENT',
+    'stats_coaches_value' => '10',
+    'stats_coaches_label' => 'COACHES IN THE TEAM',
+    'stats_retention_value' => '30',
+    'stats_retention_label' => 'CLIENTS IN PROGRAM',
+    'stats_rating_value' => '60/40',
+    'stats_rating_label' => 'SPLIT PER ACTIVE CLIENT',
     'stats_paid_value' => '0',
     'stats_paid_label' => 'EXCLUSIVITY · NO LOCK-IN',
 

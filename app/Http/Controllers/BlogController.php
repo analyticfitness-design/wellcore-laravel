@@ -117,7 +117,7 @@ class BlogController extends Controller
 <h3>Cuando Cambiar de Programa</h3>
 <p>Uno de los errores mas comunes es cambiar de programa demasiado frecuentemente — el sindrome del "program hopping". La evidencia sugiere que un programa necesita minimo 4-6 semanas para producir adaptaciones significativas. Los indicadores legitimos para cambiar incluyen: completar el mesociclo planificado, estancamiento sostenido (3+ semanas sin progresion en ninguna variable), cambio en objetivos primarios, o necesidad de manejar lesiones. La variedad debe venir de la progresion dentro del programa, no de cambiar el programa cada vez que se siente dificil.</p>
 
-<p>En WellCore, cada plan de entrenamiento sigue principios de periodizacion adaptados a tu nivel, objetivos y disponibilidad. No necesitas ser un cientifico del deporte — necesitas un sistema inteligente que evolucione contigo.</p>',
+<p>En WellCore, tu coach disena el plan de entrenamiento siguiendo principios de periodizacion adaptados a tu nivel, objetivos y disponibilidad — y lo ajusta segun los check-ins de tu plan. No necesitas ser un cientifico del deporte: necesitas un coach humano que sostenga el metodo contigo.</p>',
         ],
         [
             'slug' => 'tdee-calcular-calorias',
@@ -223,7 +223,7 @@ class BlogController extends Controller
 <h3>Condiciones Optimas para Recomposicion</h3>
 <p>No todos responden igual a la recomposicion. Los candidatos ideales incluyen: principiantes en el entrenamiento de fuerza (primeros 6-12 meses), personas con porcentaje de grasa corporal superior al 18-20% (hombres) o 25-28% (mujeres), atletas que regresan despues de un periodo de desentrenamiento, y personas que nunca han optimizado su nutricion. Para intermedios y avanzados con porcentajes de grasa bajos, fases dedicadas de volumen y definicion suelen ser mas eficientes. La recomposicion requiere paciencia — los cambios ocurren lentamente y se miden mejor con fotos de progreso, medidas y fuerza que con la bascula.</p>
 
-<p>En WellCore, personalizamos la distribucion de macronutrientes segun tu composicion corporal, nivel de entrenamiento, preferencias alimentarias y estilo de vida. No existe una formula universal — existe la formula correcta para ti.</p>',
+<p>En WellCore, tu coach calcula la distribucion de macronutrientes segun tu composicion corporal, nivel de entrenamiento, preferencias alimentarias y estilo de vida — y la ajusta segun la frecuencia de tu plan (mensual, quincenal o semanal). No existe una formula universal — existe la formula correcta para ti, ajustada por una persona, no por un algoritmo.</p>',
         ],
         [
             'slug' => 'cardio-vs-pesas-mejor',
@@ -251,7 +251,7 @@ class BlogController extends Controller
 <h3>Recomendaciones por Objetivo</h3>
 <p>Si tu objetivo es ganar musculo, prioriza el entrenamiento de fuerza (4-5 sesiones) y limita el cardio a 2-3 sesiones de baja intensidad para no interferir con la recuperacion. Si tu objetivo es perder grasa, mantén 3-4 sesiones de fuerza como base no negociable y usa el cardio como herramienta complementaria. Si tu objetivo es salud general, 3 sesiones de fuerza + 150 minutos de actividad cardiovascular moderada por semana cumple con las guias de la OMS y produce beneficios significativos en longevidad y calidad de vida.</p>
 
-<p>En WellCore, nunca presentamos cardio y pesas como opciones opuestas. Tu plan integra ambas modalidades de forma personalizada, priorizando segun tus objetivos actuales y ajustando en cada fase de tu progresion.</p>',
+<p>En WellCore, tu coach no presenta cardio y pesas como opciones opuestas. La base es entrenamiento de fuerza con cardio complementario segun tu objetivo y plan — priorizando lo que mas mueve la aguja en tu fase actual. Ningun protocolo es generico: tu coach lo programa contigo.</p>',
         ],
         [
             'slug' => 'sueno-ganancia-muscular',
@@ -265,7 +265,7 @@ class BlogController extends Controller
             'content' => '<h3>El Sueno Como Anabolico Natural</h3>
 <p>Mientras duermes, tu cuerpo ejecuta procesos criticos para la ganancia muscular que no ocurren (o ocurren de manera suboptima) durante la vigilia. La hormona de crecimiento (GH), uno de los principales mediadores de la reparacion y crecimiento muscular, alcanza su pico de secrecion durante las fases de sueno profundo (ondas lentas), especialmente en el primer ciclo de sueno. Estudios de Van Cauter et al. publicados en <em>JAMA</em> demostraron que la restriccion de sueno a 4-5 horas reduce la secrecion de GH hasta un 70%.</p>
 
-<p>Ademas de la GH, el sueno regula la testosterona, el cortisol, la sensibilidad a la insulina y la sintesis proteica muscular. Una sola semana de restriccion de sueno (5 horas por noche) puede reducir los niveles de testosterona en hombres jovenes sanos entre un 10-15%, equivalente a envejecer 10-15 anos en terminos hormonales. No existe suplemento, protocolo de entrenamiento o dieta que compense un sueno cronicamente insuficiente.</p>
+<p>Ademas de la GH, el sueno regula la testosterona, el cortisol, la sensibilidad a la insulina y la sintesis proteica muscular. Una sola semana de restriccion de sueno (5 horas por noche) puede reducir los niveles de testosterona en hombres jovenes sanos en un rango reportado de 10-15% (Leproult &amp; Van Cauter, 2011). No existe suplemento, protocolo de entrenamiento o dieta que compense un sueno cronicamente insuficiente.</p>
 
 <h3>Impacto en el Rendimiento</h3>
 <p>La falta de sueno no solo afecta la recuperacion — deteriora directamente el rendimiento en el gimnasio. Investigacion de Reilly y Piercy mostro que la privacion de sueno reduce la fuerza maxima, la potencia, y la resistencia muscular. Tambien afecta la coordinacion, el tiempo de reaccion y la percepcion del esfuerzo (RPE), lo que significa que el mismo peso se siente mas pesado cuando estas mal descansado. En terminos practicos, dormir mal una noche puede reducir tu rendimiento un 5-10%, y la privacion cronica amplifica estos efectos de manera acumulativa.</p>
@@ -367,7 +367,7 @@ class BlogController extends Controller
 <h3>Nutricion Ciclica</h3>
 <p>Las necesidades nutricionales tambien cambian a lo largo del ciclo. Durante la fase lutea, el metabolismo basal puede aumentar 100-300 kcal/dia. En lugar de luchar contra el hambre aumentada, considera un ligero aumento en calorias provenientes principalmente de grasas saludables y carbohidratos complejos. La ingesta de proteina debe mantenerse constante (1.6-2.2 g/kg). Ademas, incrementar alimentos ricos en magnesio (chocolate oscuro, nueces, espinacas) y omega-3 puede ayudar a manejar la retencion de liquidos y los calambres. Es importante monitorear el peso con promedios semanales, no diarios, ya que la retencion hidrica en la fase lutea puede enmascarar el progreso real.</p>
 
-<p>En WellCore, los planes de entrenamiento para mujeres consideran estas variaciones fisiologicas. No se trata de hacer menos — se trata de hacer lo correcto en el momento correcto para maximizar resultados y bienestar.</p>',
+<p>En WellCore, los planes de entrenamiento para mujeres pueden considerar estas variaciones fisiologicas cuando tu coach trabaja contigo en planes Metodo o Elite — donde la frecuencia de ajuste (quincenal o semanal) permite adaptar la programacion al ciclo. No se trata de hacer menos: se trata de hacer lo correcto en el momento correcto.</p>',
         ],
     ];
 
