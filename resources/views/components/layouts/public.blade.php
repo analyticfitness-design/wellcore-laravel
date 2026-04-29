@@ -85,7 +85,7 @@
     src="https://www.facebook.com/tr?id={{ config('app.meta_pixel_id') }}&ev=PageView&noscript=1"/></noscript>
     @endif
 </head>
-<body class="public-page min-h-screen bg-wc-bg text-wc-text">
+<body class="public-page min-h-screen bg-wc-bg text-wc-text {{ $bodyClass ?? '' }}">
 
     {{-- Navigation --}}
     <nav x-data="{ mobileMenu: false }" x-on:click.outside="mobileMenu = false" class="sticky top-0 z-50 border-b border-wc-border bg-wc-bg/80 backdrop-blur-xl">
