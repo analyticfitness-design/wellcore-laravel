@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import AdminTopBar from '../components/admin/dashboard/AdminTopBar.vue';
@@ -15,10 +15,14 @@ const loggingOut = ref(false);
 const userName = computed(() => localStorage.getItem('wc_user_name') || 'Admin');
 const userInitial = computed(() => (userName.value || 'A').charAt(0).toUpperCase());
 
-function toggleDarkMode() {
-    const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.setItem('darkMode', String(isDark));
-}
+// Admin esta diseñado dark-first (cards rojas/gold tuneadas sobre #0a0a0a;
+// custom classes como .admin-shell, .admin-sidebar tienen fondos hardcoded).
+// Forzamos dark al entrar al portal y persistimos para que el toggle del
+// PublicLayout no se quede en light cuando volves a /admin desde /metodo, etc.
+onMounted(() => {
+    document.documentElement.classList.add('dark');
+    try { localStorage.setItem('darkMode', 'true'); } catch (_) {}
+});
 
 async function handleLogout() {
     if (loggingOut.value) return;
@@ -57,13 +61,13 @@ onUnmounted(() => { if (unwatch) unwatch(); });
       ></div>
     </Transition>
 
-    <!-- Top bar — sticky 64px desktop / 52px mobile, brand + actions -->
+    <!-- Top bar — sticky 64px desktop / 52px mobile, brand + actions.
+         Sin toggle de tema: el portal admin es dark-only por diseño. -->
     <AdminTopBar
       :avatar-initial="userInitial"
       :user-name="userName"
       notifications-endpoint="/api/v/admin/notifications"
       @toggle-sidebar="sidebarOpen = !sidebarOpen"
-      @toggle-dark="toggleDarkMode"
     />
 
     <!-- Sidebar — fixed 240px desktop / drawer mobile con 9 grupos colapsables -->
