@@ -106,6 +106,41 @@ if (file_exists($ctrlPath)) {
         echo "  EXCEPTION: " . $e->getMessage() . "\n";
         echo "  AT: " . $e->getFile() . ':' . $e->getLine() . "\n";
     }
+
+    // Inspeccionar la ruta real que responde /planes
+    echo "\n  === ROUTE /planes RESOLUTION ===\n";
+    try {
+        $router = $app->make('router');
+        $routes = $router->getRoutes();
+        $found = null;
+        foreach ($routes as $r) {
+            if ($r->uri() === 'planes') { $found = $r; break; }
+        }
+        if ($found) {
+            echo "  URI: " . $found->uri() . "\n";
+            echo "  Methods: " . implode(',', $found->methods()) . "\n";
+            echo "  Action: " . print_r($found->getAction(), true) . "\n";
+            echo "  Controller: " . ($found->getController()::class ?? 'N/A') . "\n";
+            echo "  Method: " . $found->getActionMethod() . "\n";
+        } else {
+            echo "  No route found for 'planes'\n";
+        }
+
+        // Hacer un INTERNAL request a /planes y ver qué pasa
+        echo "\n  === INTERNAL REQUEST TO /planes ===\n";
+        $req = \Illuminate\Http\Request::create('/planes', 'GET');
+        try {
+            $resp = $app->handle($req);
+            echo "  status: " . $resp->getStatusCode() . "\n";
+            echo "  content length: " . strlen($resp->getContent()) . "\n";
+            echo "  content head: " . substr(strip_tags($resp->getContent()), 0, 300) . "\n";
+        } catch (\Throwable $e) {
+            echo "  EXCEPTION: " . $e->getMessage() . "\n";
+            echo "  AT: " . $e->getFile() . ':' . $e->getLine() . "\n";
+        }
+    } catch (\Throwable $e) {
+        echo "  ROUTE EXCEPTION: " . $e->getMessage() . "\n";
+    }
 } else {
     echo "  Controller MISSING at: $ctrlPath\n";
 }
