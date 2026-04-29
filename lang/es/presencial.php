@@ -10,14 +10,14 @@ return [
     'hero_badge'    => 'Bucaramanga, Colombia',
     'hero_line1'    => 'ENTRENAMIENTO',
     'hero_line2'    => 'PRESENCIAL',
-    'hero_body'     => 'Mismo método. Misma evidencia detrás. Pero con el ojo del coach revisando tu técnica en cada serie. Si vives en Bucaramanga, esto cambia el juego.',
+    'hero_body'     => 'Coaching 1:1 en persona. El mismo método WellCore basado en ciencia, con la ventaja de la supervisión presencial directa de tu coach.',
     'hero_cta'      => 'Inscribirme',
     'hero_cta_secondary' => 'Ver planes',
 
     // Comparativa Online vs Presencial
-    'compare_eyebrow'   => 'MISMO MÉTODO · DOS FORMATOS',
+    'compare_eyebrow'   => 'EL MISMO MÉTODO · DOS FORMATOS',
     'compare_heading'   => '¿Online o presencial?',
-    'compare_subtitle'  => 'No es uno mejor que el otro. Son formatos distintos para vidas distintas. Esto es lo que cambia.',
+    'compare_subtitle'  => 'Misma metodología, misma calidad de seguimiento. Cambia el formato según tu disponibilidad y zona.',
     'compare_col_online'    => 'WELLCORE ONLINE',
     'compare_col_presencial'=> 'PRESENCIAL BUCARAMANGA',
     'compare_rows' => [
@@ -46,8 +46,8 @@ return [
 
     // How it works
     'how_heading' => 'CÓMO FUNCIONA',
-    'how_p1'      => 'Sesiones uno a uno con tu coach en Bucaramanga. La técnica se corrige mientras la haces — no en un video tres días después. Lo que en online toma seis semanas en aprenderse, acá lo entiendes en la primera serie.',
-    'how_p2'      => 'Los días que entrenas solo seguimos teniendo plan: programa completo en la plataforma, plan nutricional, check-ins semanales. Lo presencial complementa lo digital. No lo reemplaza.',
+    'how_p1'      => 'El plan presencial te da acceso a sesiones 1:1 con tu coach en Bucaramanga. Cada sesión es personalizada y supervisada para garantizar técnica perfecta y progresión óptima en cada serie.',
+    'how_p2'      => 'Los días que entrenas por tu cuenta sigues teniendo plan completo en la plataforma WellCore: programa de entrenamiento, plan nutricional y check-ins semanales. Lo presencial complementa lo digital, no lo reemplaza.',
 
     // Feature stat labels
     'stat_sessions'   => 'Sesiones/semana',
@@ -128,8 +128,8 @@ return [
     ],
 
     // Final CTA
-    'final_cta_heading'   => 'EN PERSONA. EN SERIO.',
-    'final_cta_subtitle'  => 'Cupos limitados — Bucaramanga, zona norte. La calidad del seguimiento depende de no saturar la agenda.',
+    'final_cta_heading'   => 'ENTRENA EN PERSONA',
+    'final_cta_subtitle'  => 'Cupos limitados solo en Bucaramanga. La calidad del seguimiento depende de no saturar la agenda.',
     'final_cta_button'    => 'Inscribirme ahora',
     'final_cta_whatsapp'  => 'Hablar por WhatsApp',
     'whatsapp_message'    => 'Hola, quiero información del plan presencial WellCore en Bucaramanga.',
