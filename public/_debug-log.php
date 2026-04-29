@@ -30,6 +30,49 @@ if (file_exists($envFile)) {
     }
 }
 
+echo "\n=== ROUTE CACHE STATE ===\n";
+$bootstrapDir = __DIR__ . '/../bootstrap/cache/';
+foreach (['routes-v7.php', 'config.php', 'services.php', 'packages.php'] as $f) {
+    $p = $bootstrapDir . $f;
+    if (file_exists($p)) {
+        echo "  $f: " . filesize($p) . " bytes, mod=" . date('Y-m-d H:i:s', filemtime($p)) . "\n";
+    }
+}
+
+// Try parsing route cache
+$routeCacheFile = $bootstrapDir . 'routes-v7.php';
+if (file_exists($routeCacheFile)) {
+    // Read first 20KB and search for "PlanesController"
+    $rc = file_get_contents($routeCacheFile, false, null, 0, 200000);
+    $hasPlanes = (substr_count($rc, 'PlanesController') > 0) ? 'YES' : 'NO';
+    $hasMethodIndex = (substr_count($rc, "'PlanesController','index'") > 0 || substr_count($rc, 'PlanesController@index') > 0) ? 'YES' : 'NO';
+    echo "  Route cache mentions PlanesController: $hasPlanes\n";
+}
+
+// Check composer autoload
+echo "\n=== COMPOSER AUTOLOAD ===\n";
+$classmap = __DIR__ . '/../vendor/composer/autoload_classmap.php';
+if (file_exists($classmap)) {
+    $cm = include $classmap;
+    $key = 'App\\Http\\Controllers\\Public\\PlanesController';
+    if (isset($cm[$key])) {
+        echo "  Classmap resolves $key → " . $cm[$key] . "\n";
+        echo "  File exists: " . (file_exists($cm[$key]) ? 'YES' : 'NO') . "\n";
+        if (file_exists($cm[$key])) {
+            echo "  File modified: " . date('Y-m-d H:i:s', filemtime($cm[$key])) . "\n";
+            $content = file_get_contents($cm[$key]);
+            $hasMonthly = (str_contains($content, "'monthlyCop' =>")) ? 'YES' : 'NO';
+            echo "  File has 'monthlyCop' key: $hasMonthly\n";
+        }
+    } else {
+        echo "  $key NOT in classmap\n";
+        // Search for partial
+        $found = array_filter($cm, fn($k) => str_contains($k, 'PlanesController'), ARRAY_FILTER_USE_KEY);
+        echo "  Partial matches: " . count($found) . "\n";
+        foreach ($found as $k => $v) echo "    $k → $v\n";
+    }
+}
+
 echo "\n=== CONTROLLER STATE ===\n";
 $ctrlPath = __DIR__ . '/../app/Http/Controllers/Public/PlanesController.php';
 if (file_exists($ctrlPath)) {
