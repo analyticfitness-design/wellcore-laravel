@@ -92,11 +92,11 @@
             </div>
         </section>
 
-        {{-- ═══ COMP 2: SocialProofBar (componente existente — mantenemos) ═══ --}}
-        <x-social-proof-bar />
-
-        {{-- ═══ COMP 3: BillingToggle sticky (3 pills) ═══ --}}
+        {{-- ═══ COMP 2+3: SocialProofBar + BillingToggle en sticky unificado ═══
+             La proof bar vive DENTRO del billing-wrap para que ambos se peguen juntos
+             al scroll y no se separen. --}}
         <div class="billing-wrap" id="billing-wrap">
+            <x-social-proof-bar />
             <div class="billing-toggle" role="tablist" aria-label="{{ __('planes.section_subtitle') }}">
                 @foreach(['mensual', 'trimestral', 'anual'] as $p)
                     <button

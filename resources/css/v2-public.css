@@ -546,7 +546,7 @@
     transform: rotate(180deg);
 }
 
-/* ───── BillingToggle sticky ───── */
+/* ───── SocialProofBar + BillingToggle sticky unificados ───── */
 .billing-wrap {
     position: sticky;
     top: var(--topbar-h);
@@ -555,12 +555,23 @@
     backdrop-filter: blur(18px) saturate(160%);
     -webkit-backdrop-filter: blur(18px) saturate(160%);
     border-bottom: 1px solid var(--color-wc-border);
-    padding: 10px 20px;
     /* GPU layer: evita repaint por layout-shift de las tier cards */
     will-change: transform;
     transform: translateZ(0);
 }
-@media (min-width: 1024px) { .billing-wrap { padding: 12px 80px; } }
+/* Social proof bar dentro del sticky: quita su bg propio (el wrapper lo provee) y borde superior */
+.billing-wrap > section {
+    background: transparent;
+    border-top: none;
+}
+/* Pills: padding lateral + bottom */
+.billing-wrap .billing-toggle {
+    padding: 0 20px 10px;
+}
+@media (min-width: 1024px) {
+    .billing-wrap > section  { padding-left: 80px; padding-right: 80px; }
+    .billing-wrap .billing-toggle { padding: 0 80px 12px; }
+}
 .billing-toggle {
     display: flex;
     gap: 3px;
