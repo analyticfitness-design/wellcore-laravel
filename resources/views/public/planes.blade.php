@@ -1,4 +1,17 @@
 <x-layouts.public>
+    @php
+        // Defensive fallback: si por alguna razon (OPcache stale del controller, race
+        // condition de deploy) el controller no paso las variables al view, resolver
+        // desde PricingService directamente. Evita el 500 en runtime.
+        if (! isset($monthlyCop)) {
+            $svc = app(\App\Services\PricingService::class);
+            $monthlyCop = ['esencial' => $svc->priceCop('esencial'), 'metodo' => $svc->priceCop('metodo'), 'elite' => $svc->priceCop('elite')];
+        }
+        if (! isset($monthlyUsd)) {
+            $svc = $svc ?? app(\App\Services\PricingService::class);
+            $monthlyUsd = ['esencial' => $svc->priceUsd('esencial'), 'metodo' => $svc->priceUsd('metodo'), 'elite' => $svc->priceUsd('elite')];
+        }
+    @endphp
     <x-slot:title>{{ __('planes.meta_title') }}</x-slot>
     <x-slot:description>{{ __('planes.meta_description') }}</x-slot>
 
