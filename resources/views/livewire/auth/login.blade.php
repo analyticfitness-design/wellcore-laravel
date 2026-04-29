@@ -54,6 +54,7 @@
      ════════════════════════════════════════════════════════════════ --}}
 <style>
 .auth-page-root {
+    /* DARK theme (default) — el sitio nace dark, esta es la paleta canonica. */
     --auth-bg:        #0a0a0a;
     --auth-bg-2:      #111111;
     --auth-bg-3:      #1a1a1a;
@@ -73,6 +74,29 @@
     --auth-ease-out:  cubic-bezier(.22,1,.36,1);
     --auth-ease-ios:  cubic-bezier(.32,.72,0,1);
 
+    /* Tokens compuestos que cambian de superficie segun tema —
+       declarados aqui para poder sobrescribirse 1 sola vez en light. */
+    --auth-card-bg:        rgba(28, 28, 30, 0.62);
+    --auth-card-border:    rgba(255, 255, 255, 0.10);
+    --auth-row-divider:    rgba(255, 255, 255, 0.10);
+    --auth-input-autofill: rgba(28, 28, 30, 0.62);
+    --auth-atmos-1:        rgba(220, 38, 38, 0.10);
+    --auth-atmos-2:        rgba(220, 38, 38, 0.05);
+    --auth-grain-blend:    overlay;
+    --auth-grain-opacity:  0.025;
+    --auth-shell-shadow:   rgba(0, 0, 0, 0.55);
+    --auth-submit-shadow: 0 12px 32px -10px rgba(220,38,38,0.55),
+                          0 2px 0 rgba(0,0,0,0.15) inset,
+                          0 1px 0 rgba(255,255,255,0.2) inset;
+    --auth-sheet-bg:       rgba(28, 28, 30, 0.95);
+    --auth-sheet-border:   rgba(255, 255, 255, 0.12);
+    --auth-sheet-handle:   rgba(255, 255, 255, 0.28);
+    --auth-error-bg:       rgba(220, 38, 38, 0.08);
+    --auth-error-border:   rgba(220, 38, 38, 0.22);
+    --auth-aside-overlay:  rgba(10, 10, 10, 0.5);
+    --auth-aside-glow:     rgba(220, 38, 38, 0.18);
+    --auth-aside-grid:     rgba(255, 255, 255, 0.018);
+
     position: relative;
     min-height: calc(100vh - 64px);
     min-height: calc(100dvh - 64px);
@@ -82,22 +106,64 @@
     isolation: isolate;
 }
 
+/* ── LIGHT theme override ──────────────────────────────────────
+   Activado cuando html NO tiene .dark (sistema de tema del sitio).
+   Paleta inspirada en iOS light: blanco roto, grises tipográficos,
+   rojo y verde mantenidos. Gold se oscurece para contraste AA.
+   ────────────────────────────────────────────────────────────── */
+:where(html:not(.dark)) .auth-page-root {
+    --auth-bg:        #F5F5F7;   /* iOS systemGray6 */
+    --auth-bg-2:      #FFFFFF;
+    --auth-bg-3:      #FAFAFA;
+    --auth-text:      #1A1A1A;
+    --auth-text-2:    #4B4B4F;
+    --auth-text-3:    #737373;
+    --auth-text-4:    #A3A3A3;
+    --auth-border:    rgba(0, 0, 0, 0.06);
+    --auth-border-2:  rgba(0, 0, 0, 0.12);
+    --auth-red-text:  #B91C1C;   /* mas oscuro: contraste AA sobre cream */
+    --auth-green-text:#047857;
+    --auth-gold:      #92651D;   /* gold oscuro = contraste sobre claro */
+    --auth-ios-blue:  #007AFF;
+
+    --auth-card-bg:        rgba(255, 255, 255, 0.72);
+    --auth-card-border:    rgba(0, 0, 0, 0.08);
+    --auth-row-divider:    rgba(0, 0, 0, 0.08);
+    --auth-input-autofill: rgba(255, 255, 255, 0.72);
+    --auth-atmos-1:        rgba(220, 38, 38, 0.06);
+    --auth-atmos-2:        rgba(220, 38, 38, 0.03);
+    --auth-grain-blend:    multiply;
+    --auth-grain-opacity:  0.018;
+    --auth-shell-shadow:   rgba(0, 0, 0, 0.10);
+    --auth-submit-shadow: 0 14px 34px -10px rgba(220,38,38,0.42),
+                          0 1px 0 rgba(255,255,255,0.5) inset,
+                          0 -1px 0 rgba(0,0,0,0.08) inset;
+    --auth-sheet-bg:       rgba(255, 255, 255, 0.96);
+    --auth-sheet-border:   rgba(0, 0, 0, 0.10);
+    --auth-sheet-handle:   rgba(0, 0, 0, 0.22);
+    --auth-error-bg:       rgba(220, 38, 38, 0.06);
+    --auth-error-border:   rgba(220, 38, 38, 0.30);
+    --auth-aside-overlay:  rgba(255, 255, 255, 0.0);
+    --auth-aside-glow:     rgba(220, 38, 38, 0.10);
+    --auth-aside-grid:     rgba(0, 0, 0, 0.025);
+}
+
 /* Atmosphere + grain (scoped, no fixed → no clash con nav sticky del layout) */
 .auth-page-root::before {
     content: '';
     position: absolute; inset: 0;
     pointer-events: none; z-index: 0;
     background:
-        radial-gradient(ellipse 70% 40% at 0% -10%, rgba(220,38,38,0.10), transparent 55%),
-        radial-gradient(ellipse 50% 30% at 110% 10%, rgba(220,38,38,0.05), transparent 50%),
-        radial-gradient(ellipse 80% 50% at 50% 110%, rgba(220,38,38,0.05), transparent 60%);
+        radial-gradient(ellipse 70% 40% at 0% -10%, var(--auth-atmos-1), transparent 55%),
+        radial-gradient(ellipse 50% 30% at 110% 10%, var(--auth-atmos-2), transparent 50%),
+        radial-gradient(ellipse 80% 50% at 50% 110%, var(--auth-atmos-2), transparent 60%);
 }
 .auth-page-root::after {
     content: '';
     position: absolute; inset: 0;
     pointer-events: none; z-index: 0;
-    opacity: 0.025;
-    mix-blend-mode: overlay;
+    opacity: var(--auth-grain-opacity);
+    mix-blend-mode: var(--auth-grain-blend);
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 220px;
 }
@@ -160,15 +226,15 @@
 /* iOS card */
 .auth-card {
     position: relative;
-    background: rgba(28, 28, 30, 0.62);
+    background: var(--auth-card-bg);
     -webkit-backdrop-filter: blur(40px) saturate(180%);
     backdrop-filter: blur(40px) saturate(180%);
-    border: 0.5px solid rgba(255, 255, 255, 0.10);
+    border: 0.5px solid var(--auth-card-border);
     border-radius: 18px;
     overflow: hidden;
     box-shadow:
         0 1px 0 rgba(255,255,255,0.04) inset,
-        0 12px 40px -12px rgba(0,0,0,0.55);
+        0 12px 40px -12px var(--auth-shell-shadow);
 }
 .auth-card.shake { animation: auth-shake .42s var(--auth-ease-out); }
 @keyframes auth-shake {
@@ -206,7 +272,7 @@
     content: '';
     position: absolute; top: 0; left: 16px; right: 0;
     height: 0.5px;
-    background: rgba(255,255,255,0.10);
+    background: var(--auth-row-divider);
 }
 .auth-row-label {
     flex: 0 0 auto;
@@ -234,7 +300,7 @@
 .auth-row-input:-webkit-autofill:hover,
 .auth-row-input:-webkit-autofill:focus {
     -webkit-text-fill-color: var(--auth-text);
-    -webkit-box-shadow: 0 0 0px 1000px rgba(28,28,30,0.62) inset;
+    -webkit-box-shadow: 0 0 0px 1000px var(--auth-input-autofill) inset;
     transition: background-color 9999s ease-in-out 0s;
 }
 .auth-row.is-focused::after {
@@ -350,10 +416,7 @@
         box-shadow .55s var(--auth-ease-ios),
         transform .12s var(--auth-ease-out),
         opacity .25s ease;
-    box-shadow:
-        0 12px 32px -10px rgba(220,38,38,0.55),
-        0 2px 0 rgba(0,0,0,0.15) inset,
-        0 1px 0 rgba(255,255,255,0.2) inset;
+    box-shadow: var(--auth-submit-shadow);
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
 }
@@ -451,7 +514,7 @@
     margin-left: 6px;
     letter-spacing: -0.005em;
     text-decoration: none;
-    border-bottom: 1px solid rgba(255,255,255,0.18);
+    border-bottom: 1px solid var(--auth-border-2);
     padding-bottom: 1px;
     transition: color .2s, border-color .2s;
 }
@@ -469,7 +532,7 @@
     color: var(--auth-text-2);
     text-decoration: underline;
     text-underline-offset: 3px;
-    text-decoration-color: rgba(255,255,255,0.20);
+    text-decoration-color: var(--auth-border-2);
 }
 .auth-no-access a:hover { color: var(--auth-green-text); text-decoration-color: var(--auth-green-text); }
 
@@ -491,22 +554,22 @@
 .auth-sheet {
     position: fixed; left: 0; right: 0; bottom: 0;
     z-index: 100;
-    background: rgba(28,28,30,0.95);
+    background: var(--auth-sheet-bg);
     -webkit-backdrop-filter: blur(60px) saturate(180%);
     backdrop-filter: blur(60px) saturate(180%);
-    border-top: 0.5px solid rgba(255,255,255,0.12);
+    border-top: 0.5px solid var(--auth-sheet-border);
     border-radius: 28px 28px 0 0;
     padding: 12px 24px calc(env(safe-area-inset-bottom) + 28px);
     transform: translateY(110%);
     transition: transform .42s var(--auth-ease-ios);
-    box-shadow: 0 -20px 60px -20px rgba(0,0,0,0.6);
+    box-shadow: 0 -20px 60px -20px var(--auth-shell-shadow);
     max-height: 92vh;
     overflow-y: auto;
 }
 .auth-sheet.is-open { transform: translateY(0); }
 .auth-sheet-handle {
     width: 36px; height: 5px;
-    background: rgba(255,255,255,0.28);
+    background: var(--auth-sheet-handle);
     border-radius: 999px;
     margin: 8px auto 18px;
 }
@@ -541,8 +604,8 @@
 
 /* Inline error banner (Livewire validation) */
 .auth-error-banner {
-    background: rgba(220,38,38,0.08);
-    border: 1px solid rgba(220,38,38,0.22);
+    background: var(--auth-error-bg);
+    border: 1px solid var(--auth-error-border);
     border-radius: 14px;
     padding: 12px 14px;
     display: flex; align-items: flex-start; gap: 10px;
@@ -566,9 +629,9 @@
         padding: 56px 56px 48px;
         border-right: 1px solid var(--auth-border);
         background:
-            linear-gradient(180deg, rgba(10,10,10,0) 0%, rgba(10,10,10,0.5) 100%),
-            radial-gradient(ellipse 70% 50% at 20% 110%, rgba(220,38,38,0.18), transparent 65%),
-            linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 70%);
+            linear-gradient(180deg, transparent 0%, var(--auth-aside-overlay) 100%),
+            radial-gradient(ellipse 70% 50% at 20% 110%, var(--auth-aside-glow), transparent 65%),
+            linear-gradient(135deg, var(--auth-bg-3) 0%, var(--auth-bg) 70%);
         overflow: hidden;
         min-height: calc(100vh - 64px);
     }
@@ -577,8 +640,8 @@
         position: absolute; inset: 0;
         pointer-events: none;
         background-image:
-            repeating-linear-gradient(135deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 28px),
-            repeating-linear-gradient(45deg, rgba(255,255,255,0.014) 0 1px, transparent 1px 24px);
+            repeating-linear-gradient(135deg, var(--auth-aside-grid) 0 1px, transparent 1px 28px),
+            repeating-linear-gradient(45deg, var(--auth-aside-grid) 0 1px, transparent 1px 24px);
     }
     .auth-aside-head {
         display: flex; align-items: center; gap: 12px;
@@ -650,7 +713,7 @@
         width: min(520px, calc(100% - 48px));
         border-radius: 28px;
         bottom: 32px;
-        border: 0.5px solid rgba(255,255,255,0.12);
+        border: 0.5px solid var(--auth-sheet-border);
     }
     .auth-sheet.is-open { transform: translate(-50%, 0); }
 }
