@@ -11,8 +11,9 @@ return [
     // WhatsApp real Silvia: +57 312 4904720
     'whatsapp_silvia' => env('WC_WHATSAPP_SILVIA', '573124904720'),
 
-    // TODO: confirmar número WhatsApp del coach presencial Bucaramanga antes de exposición pública
-    'whatsapp_presencial' => env('WC_WHATSAPP_PRESENCIAL', '573000000000'),
+    // WhatsApp coach presencial Bucaramanga: +57 312 4904720 (mismo que Silvia main).
+    // Si en el futuro un coach distinto atiende presencial, override en .env con WC_WHATSAPP_PRESENCIAL.
+    'whatsapp_presencial' => env('WC_WHATSAPP_PRESENCIAL', '573124904720'),
 
     // Coach marketplace split — fracción que recibe el coach por cada cliente activo.
     // USO INTERNO en CoachesController (calculadora ingresos). El copy público NO
