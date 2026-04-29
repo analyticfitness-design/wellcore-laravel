@@ -157,23 +157,23 @@ return [
 
     'esencial_quote' => 'Para quien recién empieza y quiere estructura para arrancar bien.',
     'esencial_pillars' => [
-        'Entrenamiento personalizado · ejercicios con instrucciones y récords automáticos',
-        'Hábitos diarios con rachas · agua, sueño, nutrición · heatmap de 30 días',
-        'Check-in mensual con tu coach · ajustes mensuales para que no te estanques',
+        'Entrenamiento personalizado · ejercicios con instrucciones, registro de pesos y récords automáticos',
+        'Plan de nutrición básico + hábitos diarios · agua, sueño, comida con seguimiento de rachas',
+        'Coach asignado · ajusta tu plan cada mes según tu check-in semanal',
     ],
 
     'metodo_quote' => 'Para quien ya entrena y necesita un plan que se mueva contigo cada quincena.',
     'metodo_pillars' => [
-        'Entrenamiento + nutrición personalizada · macros, plan de comidas, agua diaria',
-        'Chequeo + ajustes quincenales · tu coach revisa progreso y mueve el plan cada 15 días',
-        'Hábitos + suplementación · 5 hábitos diarios, suplementos con horarios, adherencia visible',
+        'Entrenamiento + nutrición personalizada · macros calculados, plan de comidas, agua diaria',
+        'Tu coach ajusta el plan cada quincena · revisión cada 15 días según tu progreso real',
+        'Hábitos + suplementación con horarios · 5 hábitos diarios, suplementos programados',
     ],
 
     'elite_quote' => 'Para atletas y deportistas que buscan especialización avanzada.',
     'elite_pillars' => [
-        'Entrenamiento avanzado · progresiones semanales, variaciones, análisis de volumen y timing nutricional',
+        'Entrenamiento avanzado · progresiones semanales, variaciones, análisis de volumen, timing nutricional',
         'Optimización deportiva avanzada · hombres: protocolo de suplementación deportiva con guía profesional. Mujeres: entrenamiento periodizado por tu ciclo menstrual.',
-        'Check-in semanal 1:1 · coaching integral en 6 áreas, soporte 8 horas',
+        'Tu coach ajusta el plan cada semana · check-in 1:1 con coaching integral, soporte 8 horas',
     ],
     'elite_metric_value' => '12',
     'elite_metric_aria' => '12 clientes activos en plan Elite',
@@ -203,43 +203,43 @@ return [
     // V2 — Comparador (sección NUEVA)
     // =========================================================
     'comp_h2'  => 'Compara los planes',
-    'comp_sub' => 'Solo lo que diferencia cada nivel.',
+    'comp_sub' => 'Solo lo que diferencia cada nivel. El check-in semanal y el coach humano vienen en los tres.',
     'comp_rows' => [
         [
-            'feat'     => 'Plan personalizado',
-            'esencial' => ['type' => 'mark', 'value' => '✓', 'mod' => 'yes'],
-            'metodo'   => ['type' => 'mark', 'value' => '✓', 'mod' => 'hl'],
-            'elite'    => ['type' => 'mark', 'value' => '✓', 'mod' => 'yes'],
+            'feat'     => 'Tu coach ajusta tu plan',
+            'esencial' => ['type' => 'val', 'value' => 'Cada mes',      'mod' => null],
+            'metodo'   => ['type' => 'val', 'value' => 'Cada quincena', 'mod' => 'hl'],
+            'elite'    => ['type' => 'val', 'value' => 'Cada semana',   'mod' => 'gd'],
         ],
         [
-            'feat'     => 'Frecuencia de chequeos',
-            'esencial' => ['type' => 'val', 'value' => 'Mensual',   'mod' => null],
-            'metodo'   => ['type' => 'val', 'value' => 'Quincenal', 'mod' => 'hl'],
-            'elite'    => ['type' => 'val', 'value' => 'Semanal',   'mod' => 'gd'],
-        ],
-        [
-            'feat'     => 'Frecuencia de ajustes',
-            'esencial' => ['type' => 'val', 'value' => 'Mensual',   'mod' => null],
-            'metodo'   => ['type' => 'val', 'value' => 'Quincenal', 'mod' => 'hl'],
-            'elite'    => ['type' => 'val', 'value' => 'Semanal',   'mod' => 'gd'],
-        ],
-        [
-            'feat'     => 'Nutrición personalizada (macros)',
-            'esencial' => ['type' => 'mark', 'value' => '—',        'mod' => 'no'],
-            'metodo'   => ['type' => 'mark', 'value' => '✓',        'mod' => 'hl'],
-            'elite'    => ['type' => 'val',  'value' => '✓ con timing', 'mod' => 'gd'],
+            'feat'     => 'Plan de nutrición',
+            'esencial' => ['type' => 'val', 'value' => 'Básico',           'mod' => null],
+            'metodo'   => ['type' => 'val', 'value' => 'Macros + comidas', 'mod' => 'hl'],
+            'elite'    => ['type' => 'val', 'value' => 'Macros + timing',  'mod' => 'gd'],
         ],
         [
             'feat'     => 'Suplementación con horarios',
-            'esencial' => ['type' => 'mark', 'value' => '—',           'mod' => 'no'],
-            'metodo'   => ['type' => 'mark', 'value' => '✓',           'mod' => 'hl'],
+            'esencial' => ['type' => 'mark', 'value' => '—',              'mod' => 'no'],
+            'metodo'   => ['type' => 'mark', 'value' => '✓',              'mod' => 'hl'],
             'elite'    => ['type' => 'val',  'value' => '✓ personalizada', 'mod' => 'gd'],
+        ],
+        [
+            'feat'     => 'Variaciones de entrenamiento',
+            'esencial' => ['type' => 'val', 'value' => 'Estándar',         'mod' => null],
+            'metodo'   => ['type' => 'val', 'value' => 'Con periodización', 'mod' => 'hl'],
+            'elite'    => ['type' => 'val', 'value' => 'Avanzadas + timing', 'mod' => 'gd'],
         ],
         [
             'feat'     => 'Optimización deportiva avanzada',
             'esencial' => ['type' => 'mark', 'value' => '—', 'mod' => 'no'],
             'metodo'   => ['type' => 'mark', 'value' => '—', 'mod' => 'no'],
             'elite'    => ['type' => 'val',  'value' => 'Suplementación deportiva · Ciclo menstrual', 'mod' => 'gd'],
+        ],
+        [
+            'feat'     => 'Tiempo de respuesta del coach',
+            'esencial' => ['type' => 'val', 'value' => '48h', 'mod' => null],
+            'metodo'   => ['type' => 'val', 'value' => '24h', 'mod' => 'hl'],
+            'elite'    => ['type' => 'val', 'value' => '8h',  'mod' => 'gd'],
         ],
     ],
 
@@ -303,7 +303,7 @@ return [
         ],
         [
             'q' => '¿Qué incluye el plan nutricional?',
-            'a' => 'En Método y Elite: distribución de macros, plan de comidas con 3 opciones por plato (cambias receta con un click) y guías para comer fuera. No es una dieta rígida — es educación nutricional aplicada a tu vida real.',
+            'a' => 'En Esencial: guía nutricional básica con hábitos diarios. En Método y Elite: distribución de macros calculados, plan de comidas con 3 opciones por plato (cambias receta con un click) y guías para comer fuera. Elite agrega timing nutricional alrededor del entrenamiento. No es una dieta rígida — es educación nutricional aplicada a tu vida real.',
         ],
         [
             'q' => '¿Cuánto tiempo antes de ver resultados?',
@@ -365,9 +365,9 @@ return [
             'body'  => 'Cada hito que rompes queda guardado. Tu progreso se ve.',
         ],
         [
-            'icon'  => 'wifi-off',
-            'title' => 'App offline',
-            'body'  => 'Funciona sin conexión. Como una app nativa, sin descargar nada.',
+            'icon'  => 'target',
+            'title' => 'Misiones diarias + XP',
+            'body'  => 'Cuatro misiones cada día: entrenar, check-in, peso, nutrición. Sumas XP y subes de nivel.',
         ],
     ],
 
