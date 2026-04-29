@@ -174,6 +174,16 @@ Route::post('/webhooks/wompi', [WebhookController::class, 'wompi'])->name('webho
 // Auth routes (guest only — redirect if already logged in)
 Route::middleware('guest:wellcore')->group(function () {
     Route::get('/login', fn () => view('vue'))->name('login')->middleware('throttle:login');
+
+    // Sprint 4 — preview del login Livewire v2 (iOS-feel brutal mobile-first).
+    // /login en producción sigue sirviendo la SPA Vue. Para activar v2:
+    // 1) Validar visualmente /login-preview, 2) cambiar la línea de /login arriba a
+    //    Route::get('/login', App\Livewire\Auth\Login::class)
+    // 3) Borrar esta ruta de preview.
+    Route::get('/login-preview', App\Livewire\Auth\Login::class)
+        ->name('login.preview')
+        ->middleware('throttle:login');
+
     Route::get('/forgot-password', fn () => view('vue'))->name('password.request');
     Route::get('/reset-password/{token}', fn () => view('vue'))->name('password.reset');
     Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
