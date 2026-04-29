@@ -13,12 +13,12 @@ return [
     'hero_label_mono'   => 'WellCore / Fit · Coach Personal',
     'hero_name_html'    => 'SILVIA<br><em>MARTÍNEZ</em>',
     'hero_bio'          => 'Especialista en composición corporal femenina y periodización hormonal. Trabajé con más de 200 mujeres en LATAM que entendieron que el progreso real no se mide en kilos, sino en consistencia.',
-    'hero_stat1_val'    => '8+',
-    'hero_stat1_lbl'    => 'Años de exp.',
-    'hero_stat2_val'    => '214',
-    'hero_stat2_lbl'    => 'Clientes',
-    'hero_stat3_val'    => '91%',
-    'hero_stat3_lbl'    => 'Adherencia 12 sem',
+    'hero_stat1_val'    => '6+',
+    'hero_stat1_lbl'    => 'años de experiencia',
+    'hero_stat2_val'    => '120+',
+    'hero_stat2_lbl'    => 'clientas transformadas',
+    'hero_stat3_val'    => '96%',
+    'hero_stat3_lbl'    => 'tasa de adherencia',
     'hero_cta_primary'  => 'Entrenar con Silvia',
     'hero_cta_whatsapp' => 'WhatsApp',
 
@@ -37,16 +37,13 @@ return [
     'hero_cta_whatsapp_legacy' => 'WhatsApp',
 
     // =========================================================
-    // BIO EXTENDIDA + CERTIFICACIONES (recuperado del v1)
+    // BIO EXTENDIDA + CERTIFICACIONES (restaurada del v1 con datos originales)
     // =========================================================
     'bio_label'     => 'MI HISTORIA',
-    'bio_title'     => 'OCHO AÑOS<br><em>EN ESTO.</em>',
-    'bio_p1'        => 'Empecé en el fitness hace más de ocho años, cuando descubrí que el entrenamiento de fuerza era mucho más que estética — era una herramienta de empoderamiento. Desde entonces, me especializo en ayudar a mujeres a construir una relación saludable con el ejercicio y la nutrición.',
-    'bio_p2'        => 'Soy licenciada en Ciencias del Deporte con especialización en Fisiología del Ejercicio. Mi enfoque combina periodización inteligente, nutrición basada en evidencia y un acompañamiento constante que se adapta a tu vida real.',
+    'bio_title'     => 'MI<br><em>HISTORIA.</em>',
+    'bio_p1'        => 'Comencé mi camino en el fitness hace más de 6 años, cuando descubrí que el entrenamiento de fuerza era mucho más que estética — era una herramienta de empoderamiento. Desde entonces, me he especializado en ayudar a mujeres a construir una relación saludable con el ejercicio y la nutrición.',
+    'bio_p2'        => 'Soy mujer antes que coach. Pasé por meses sin energía, por dietas que no funcionaban, por entrenamientos que copiaba de Internet sin sentido. Hoy diseño desde lo que aprendí en mi propio cuerpo y en el de más de 120 mujeres que confiaron en mí.',
     'bio_p3'        => 'No creo en dietas restrictivas ni en entrenar hasta el agotamiento. Creo en procesos sostenibles que te permitan disfrutar del camino mientras construyes la mejor versión de ti misma.',
-    'bio_cert_1'    => 'NSCA-CPT',
-    'bio_cert_2'    => 'Precision Nutrition L1',
-    'bio_cert_3'    => 'Cs. del Deporte',
 
     // =========================================================
     // DASHBOARD MOCKUP / TU EXPERIENCIA (recuperado del v1)
@@ -79,19 +76,19 @@ return [
     // =========================================================
     // ESPECIALIDADES
     // =========================================================
-    'spec_label'       => 'PILARES DEL MÉTODO',
-    'spec_title'       => 'LO QUE<br><em>HAGO</em><br>ESPECÍFICAMENTE',
-    'spec_sub'         => 'Cinco áreas donde concentro el 100% de mi práctica. No generalista. Especializada.',
-    'spec_1_title'     => 'COMPOSICIÓN CORPORAL',
-    'spec_1_desc'      => 'Análisis de masa muscular, tejido adiposo y distribución. Protocolos de recomposición sin déficit calórico agresivo. Resultados medibles, no estimados.',
-    'spec_2_title'     => 'FUERZA FEMENINA',
-    'spec_2_desc'      => 'Periodización de fuerza adaptada a fisiología femenina. Progresión estructurada desde cualquier nivel de base. Sin miedo al hierro, con método.',
-    'spec_3_title'     => 'NUTRICIÓN NO RESTRICTIVA',
-    'spec_3_desc'      => 'Estrategia alimentaria basada en densidad nutricional y flexibilidad. Sin listas de prohibidos. Sin culpa. Con contexto metabólico real.',
-    'spec_4_title'     => 'PERIODIZACIÓN MENSTRUAL',
-    'spec_4_desc'      => 'Ajuste de carga, intensidad y macros según fase del ciclo. Integración hormonal en el protocolo de entrenamiento. La ciencia que la mayoría ignora.',
-    'spec_5_title'     => 'MINDSET Y ADHERENCIA',
-    'spec_5_desc'      => 'Herramientas cognitivo-conductuales para sostener el proceso sin depender de motivación. Porque la disciplina es un sistema, no un rasgo de personalidad.',
+    'spec_label'       => 'CON QUIÉN TRABAJO',
+    'spec_title'       => 'CON QUIÉN<br><em>SÍ</em><br>FUNCIONA.',
+    'spec_sub'         => 'Cinco etapas de la mujer real. No copio rutinas de Instagram. Diseño protocolos que respetan dónde estás hoy.',
+    'spec_1_title'     => 'POSTPARTO Y RECUPERACIÓN',
+    'spec_1_desc'      => 'Volver más fuerte que antes. Para mamás recientes con alta médica: recuperación de suelo pélvico, diástasis abdominal, recomposición sin restricción extrema. Respeto absoluto al ritmo del cuerpo.',
+    'spec_2_title'     => 'MAMÁS QUE NO TIENEN TIEMPO',
+    'spec_2_desc'      => 'Sesiones cortas que sí funcionan. 30 a 45 minutos máximo, 3 o 4 veces por semana. Diseñado para entrenarte entre la oficina, los hijos, el lonche y la vida real — sin culpa.',
+    'spec_3_title'     => 'FUERZA FEMENINA REAL',
+    'spec_3_desc'      => 'Levantar pesos de verdad sin miedo a "ponerte grande". Periodización progresiva para que veas tu sentadilla, peso muerto y press subir mes a mes. La fuerza cambia más que el cuerpo: cambia cómo te paras.',
+    'spec_4_title'     => 'MUJERES +35 · PERIMENOPAUSIA',
+    'spec_4_desc'      => 'El cuerpo cambia. El método se adapta. Estrategias para mantener masa muscular, densidad ósea y energía cuando las hormonas dejan de jugar a tu favor. Esto es ciencia, no resignación.',
+    'spec_5_title'     => 'HÁBITOS QUE SOBREVIVEN',
+    'spec_5_desc'      => 'Sin dietas extremas. Sin culpa los domingos. Construimos un sistema de alimentación y ejercicio que sigues sosteniendo aunque yo no te esté revisando. Eso es el resultado real.',
     'spec_editorial'   => 'No trabajo con todas. Trabajo con las que están listas para un proceso real.',
 
     // =========================================================

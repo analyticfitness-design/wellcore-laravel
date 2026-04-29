@@ -301,6 +301,41 @@ body.fit-page .h2-plan-feat-icon { color: #DC3C64; }
     white-space: nowrap;
 }
 
+/* FIT — Hero photo REAL (con foto sin fondo) */
+.fit-hero-photo-real {
+    aspect-ratio: 4/5;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    background:
+        radial-gradient(ellipse 70% 60% at 50% 50%, rgba(220, 60, 100, 0.18), transparent 70%),
+        linear-gradient(180deg, rgba(220, 60, 100, 0.04) 0%, transparent 100%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+.fit-hero-photo-real::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    pointer-events: none;
+    background: linear-gradient(180deg, transparent 60%, rgba(10, 10, 10, 0.45) 100%);
+}
+.fit-hero-photo-real picture,
+.fit-hero-photo-real img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center bottom;
+    display: block;
+    position: relative;
+    z-index: 1;
+}
+@media (min-width: 1024px) {
+    .fit-hero-photo-real { aspect-ratio: 4/5; }
+}
+
 /* FIT — Mockup section split 2-col (estaba sin grid) */
 .fit-mockup {
     padding: 40px 22px 60px;

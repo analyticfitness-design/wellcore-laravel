@@ -39,12 +39,14 @@
             </div>
         </div>
 
-        <div class="fit-hero-photo" data-animate="fadeInUp" data-stagger="2" aria-hidden="true">
-            {{-- TODO: reemplazar por foto autorizada de Silvia --}}
-            <div class="fit-hero-photo-placeholder">
-                <div class="fit-hero-photo-initials">SM</div>
-                <div class="fit-hero-photo-caption">foto · silvia martínez</div>
-            </div>
+        <div class="fit-hero-photo fit-hero-photo-real" data-animate="fadeInUp" data-stagger="2">
+            <picture>
+                <source srcset="{{ asset('images/coaches/silvia-hero.webp') }}" type="image/webp">
+                <img src="{{ asset('images/coaches/silvia-hero.png') }}"
+                     alt="Coach Silvia Martínez"
+                     width="655" height="819"
+                     loading="eager" fetchpriority="high" decoding="async">
+            </picture>
         </div>
     </section>
 
@@ -61,13 +63,6 @@
 
         <p class="fit-manifiesto-body">{{ __('fit.bio_p1') }}</p>
         <p class="fit-manifiesto-body">{{ __('fit.bio_p2') }}</p>
-
-        <div class="fit-bio-cert">
-            <span class="fit-bio-cert-pill">{{ __('fit.bio_cert_1') }}</span>
-            <span class="fit-bio-cert-pill">{{ __('fit.bio_cert_2') }}</span>
-            <span class="fit-bio-cert-pill">{{ __('fit.bio_cert_3') }}</span>
-        </div>
-
         <p class="fit-manifiesto-body">{{ __('fit.bio_p3') }}</p>
     </section>
 
