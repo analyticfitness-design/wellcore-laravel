@@ -141,4 +141,251 @@ return [
     'cta_btn_comenzar' => 'Comenzar Ahora',
     'cta_btn_faq'      => 'Ver FAQ completo',
 
+    // =========================================================
+    // V2 — Hero brutal (5-line H1 + eyebrow + Fraunces italic sub)
+    // =========================================================
+    'hero_eyebrow_word' => 'PLANES',
+    'hero_h1_lines' => ['ELEGÍ', 'EL PLAN.', 'EL COACH', 'HACE EL', 'RESTO.'],
+    'hero_sub' => 'Sin trucos. Sin promesas. Solo método.',
+    'hero_cta' => 'Empezar ahora',
+    'hero_aside_label' => '3 planes',
+
+    // =========================================================
+    // V2 — Tier cards (3 pilares por plan, NO 14-29 features)
+    // =========================================================
+    'tiers_hint' => 'Desliza para comparar los 3 planes',
+
+    'esencial_quote' => 'Para quien recién empieza y quiere estructura para arrancar bien.',
+    'esencial_pillars' => [
+        'Entrenamiento personalizado · ejercicios con instrucciones, registro de pesos y récords automáticos',
+        'Plan de nutrición básico + hábitos diarios · agua, sueño, comida con seguimiento de rachas',
+        'Coach asignado · ajusta tu plan cada mes según tu check-in semanal',
+    ],
+
+    'metodo_quote' => 'Para quien ya entrena y necesita un plan que se mueva contigo cada quincena.',
+    'metodo_pillars' => [
+        'Entrenamiento + nutrición personalizada · macros calculados, plan de comidas, agua diaria',
+        'Tu coach ajusta el plan cada quincena · revisión cada 15 días según tu progreso real',
+        'Hábitos + suplementación con horarios · 5 hábitos diarios, suplementos programados',
+    ],
+
+    'elite_quote' => 'Para atletas y deportistas que buscan especialización avanzada.',
+    'elite_pillars' => [
+        'Entrenamiento avanzado · progresiones semanales, variaciones, análisis de volumen, timing nutricional',
+        'Optimización deportiva avanzada · hombres: protocolo de suplementación deportiva con guía profesional. Mujeres: entrenamiento periodizado por tu ciclo menstrual.',
+        'Tu coach ajusta el plan cada semana · check-in 1:1 con coaching integral, soporte 8 horas',
+    ],
+    'elite_metric_value' => '12',
+    'elite_metric_aria' => '12 clientes activos en plan Elite',
+    'elite_metric_label_html' => '<strong>12</strong> clientes activos<br>en plan Elite',
+
+    // =========================================================
+    // V2 — Discount labels para billing pills (sticky toggle)
+    // =========================================================
+    'discount_trimestral_pct' => '−10%',
+    'discount_anual_pct'      => '−20%',
+
+    // =========================================================
+    // V2 — Notas de período en TierCards (placeholders se sustituyen Alpine)
+    // =========================================================
+    'period_note_mensual'    => '',
+    'period_note_trimestral' => 'Pagas $:total · ahorras $:saved en 3 meses',
+    'period_note_anual'      => 'Pagas $:total · ahorras $:saved en 12 meses',
+
+    // =========================================================
+    // V2 — Section dividers
+    // =========================================================
+    'divider_comparador'  => 'COMPARADOR · PLANES',
+    'divider_testimonios' => 'TESTIMONIOS · 2026',
+    'divider_preguntas'   => 'PREGUNTAS · OBJECIONES',
+
+    // =========================================================
+    // V2 — Comparador (sección NUEVA)
+    // =========================================================
+    'comp_h2'  => 'Compara los planes',
+    'comp_sub' => 'Solo lo que diferencia cada nivel. El check-in semanal y el coach humano vienen en los tres.',
+    'comp_rows' => [
+        [
+            'feat'     => 'Tu coach ajusta tu plan',
+            'esencial' => ['type' => 'val', 'value' => 'Cada mes',      'mod' => null],
+            'metodo'   => ['type' => 'val', 'value' => 'Cada quincena', 'mod' => 'hl'],
+            'elite'    => ['type' => 'val', 'value' => 'Cada semana',   'mod' => 'gd'],
+        ],
+        [
+            'feat'     => 'Plan de nutrición',
+            'esencial' => ['type' => 'val', 'value' => 'Básico',           'mod' => null],
+            'metodo'   => ['type' => 'val', 'value' => 'Macros + comidas', 'mod' => 'hl'],
+            'elite'    => ['type' => 'val', 'value' => 'Macros + timing',  'mod' => 'gd'],
+        ],
+        [
+            'feat'     => 'Suplementación con horarios',
+            'esencial' => ['type' => 'mark', 'value' => '—',              'mod' => 'no'],
+            'metodo'   => ['type' => 'mark', 'value' => '✓',              'mod' => 'hl'],
+            'elite'    => ['type' => 'val',  'value' => '✓ personalizada', 'mod' => 'gd'],
+        ],
+        [
+            'feat'     => 'Variaciones de entrenamiento',
+            'esencial' => ['type' => 'val', 'value' => 'Estándar',         'mod' => null],
+            'metodo'   => ['type' => 'val', 'value' => 'Con periodización', 'mod' => 'hl'],
+            'elite'    => ['type' => 'val', 'value' => 'Avanzadas + timing', 'mod' => 'gd'],
+        ],
+        [
+            'feat'     => 'Optimización deportiva avanzada',
+            'esencial' => ['type' => 'mark', 'value' => '—', 'mod' => 'no'],
+            'metodo'   => ['type' => 'mark', 'value' => '—', 'mod' => 'no'],
+            'elite'    => ['type' => 'val',  'value' => 'Suplementación deportiva · Ciclo menstrual', 'mod' => 'gd'],
+        ],
+        [
+            'feat'     => 'Tiempo de respuesta del coach',
+            'esencial' => ['type' => 'val', 'value' => '48h', 'mod' => null],
+            'metodo'   => ['type' => 'val', 'value' => '24h', 'mod' => 'hl'],
+            'elite'    => ['type' => 'val', 'value' => '8h',  'mod' => 'gd'],
+        ],
+    ],
+
+    // =========================================================
+    // V2 — Testimonios ticker (sección NUEVA, anonimizados a iniciales+país)
+    // =========================================================
+    'testimonios_h2'   => 'Lo que dicen',
+    'testimonios_meta' => 'Clientes activos · resultados verificados',
+    'testimonios_list' => [
+        [
+            'name'    => 'SV · COL',
+            'plan'    => 'metodo',
+            'country' => 'COL',
+            'quote'   => 'En 3 meses bajé 8 kg sin dejar de comer lo que me gusta. El check-in quincenal es lo que marca la diferencia.',
+            'result'  => '−8 kg · 12 semanas',
+        ],
+        [
+            'name'    => 'CR · MEX',
+            'plan'    => 'elite',
+            'country' => 'MEX',
+            'quote'   => 'Tenía dos intentos fallidos con otros programas. Acá mi coach ajusta cada semana. Eso cambia todo.',
+            'result'  => '+6 kg músculo · 5 meses',
+        ],
+        [
+            'name'    => 'FM · COL',
+            'plan'    => 'esencial',
+            'country' => 'COL',
+            'quote'   => 'Empecé con Esencial porque no sabía si era para mí. A los 2 meses pasé a Método. No hay vuelta atrás.',
+            'result'  => '−5 kg · 8 semanas',
+        ],
+        [
+            'name'    => 'AL · ARG',
+            'plan'    => 'metodo',
+            'country' => 'ARG',
+            'quote'   => 'Lo que más valoro es saber que alguien real revisó mi semana. Sin eso es solo un PDF.',
+            'result'  => 'Activa desde mar 2025',
+        ],
+    ],
+
+    // =========================================================
+    // V2 — FAQ expandido (8 preguntas)
+    // =========================================================
+    'faq_h2'  => 'Preguntas',
+    'faq_sub' => 'Antes de decidir.',
+    'faq_list' => [
+        [
+            'q' => '¿Puedo cancelar cuando quiera?',
+            'a' => 'Sí. Sin contratos mínimos en el plan Mensual. Si pagaste trimestral o anual y cancelas antes, devolvemos el proporcional de los meses restantes.',
+        ],
+        [
+            'q' => '¿Cómo funciona el check-in?',
+            'a' => 'Completas un formulario con fotos, métricas y sensaciones. Tu coach lo revisa y te envía los ajustes al plan dentro de 24h hábiles.',
+        ],
+        [
+            'q' => '¿El coach es una persona real?',
+            'a' => 'Sí. Cada cliente tiene un coach humano asignado — con nombre, certificación y criterio. No es un sistema automatizado ni un bot.',
+        ],
+        [
+            'q' => '¿Necesito gym o puedo entrenar en casa?',
+            'a' => 'El plan se adapta a lo que tienes: gym completo, home gym básico o cuerpo libre. Lo defines en el cuestionario inicial.',
+        ],
+        [
+            'q' => '¿Qué incluye el plan nutricional?',
+            'a' => 'En Esencial: guía nutricional básica con hábitos diarios. En Método y Elite: distribución de macros calculados, plan de comidas con 3 opciones por plato (cambias receta con un click) y guías para comer fuera. Elite agrega timing nutricional alrededor del entrenamiento. No es una dieta rígida — es educación nutricional aplicada a tu vida real.',
+        ],
+        [
+            'q' => '¿Cuánto tiempo antes de ver resultados?',
+            'a' => 'Los primeros cambios medibles aparecen en 3-4 semanas (energía, sueño, fuerza). Los cambios visuales dependen del punto de partida — promediamos 6-12 semanas para resultados significativos.',
+        ],
+        [
+            'q' => '¿Puedo cambiar de plan después?',
+            'a' => 'Sí, con la siguiente renovación. Muchos clientes empiezan en Esencial y pasan a Método una vez comprueban la calidad del sistema.',
+        ],
+        [
+            'q' => '¿Qué incluye el plan Elite que no esté en Método?',
+            'a' => 'Optimización deportiva avanzada: en hombres atletas, protocolo de suplementación deportiva con guía profesional. En mujeres atletas, programación periodizada por tu ciclo menstrual. Más check-in semanal 1:1 y soporte de 8 horas.',
+        ],
+    ],
+
+    // =========================================================
+    // V2 — Differentiators (lo que TODOS los planes incluyen)
+    // =========================================================
+    'divider_differentiators' => 'EN TODOS LOS PLANES',
+    'differentiators_eyebrow' => 'EN TODOS LOS PLANES',
+    'differentiators_h2'      => 'Lo que vienes a buscar. Lo que ya está adentro.',
+    'differentiators_sub'     => 'No te cobramos extra por las herramientas que hacen que vuelvas mañana.',
+    'differentiators_list'    => [
+        [
+            'icon'     => 'mic',
+            'title'    => 'Voice Logger',
+            'body'     => 'Anota tu entrenamiento por voz mientras entrenas. Series, repeticiones, sensaciones — sin teclado.',
+            'badge'    => 'Primero en LATAM',
+            'featured' => true,
+        ],
+        [
+            'icon'  => 'plate',
+            'title' => '3 opciones por plato',
+            'body'  => '¿No te gusta el desayuno? Lo cambias con un click. Misma macro, otro plato. Recetas recomendadas para cada plato.',
+        ],
+        [
+            'icon'  => 'shuffle',
+            'title' => 'Variaciones de ejercicios',
+            'body'  => 'Mismo músculo, otra ejecución. No te aburres ni te lesionas.',
+        ],
+        [
+            'icon'  => 'video',
+            'title' => 'Videotutoriales',
+            'body'  => 'Cada ejercicio con técnica explicada en video. Ejecutas correcto desde el día uno.',
+        ],
+        [
+            'icon'  => 'chat',
+            'title' => 'Chat 1:1 con tu coach',
+            'body'  => 'Sin bots. Sin tickets. Mensaje directo a tu coach humano.',
+        ],
+        [
+            'icon'  => 'users',
+            'title' => 'Comunidad activa',
+            'body'  => 'Otros clientes en proceso, compartiendo PRs, dudas y resultados.',
+        ],
+        [
+            'icon'  => 'medal',
+            'title' => 'Medallas y logros',
+            'body'  => 'Cada hito que rompes queda guardado. Tu progreso se ve.',
+        ],
+        [
+            'icon'  => 'target',
+            'title' => 'Misiones diarias + XP',
+            'body'  => 'Cuatro misiones cada día: entrenar, check-in, peso, nutrición. Sumas XP y subes de nivel.',
+        ],
+    ],
+
+    // =========================================================
+    // V2 — CTA Final (precio dinámico + nota sin compromiso)
+    // =========================================================
+    'cta_eye'    => 'Tu primer check-in en 48 horas',
+    'cta_h2_l1'  => 'Empezar',
+    'cta_h2_l2'  => 'con Método',
+    'cta_body'   => 'Sin contrato. Sin penalidad. Si en 30 días no es para vos, te devolvemos el dinero.',
+    'cta_btn'    => 'Empezar ahora',
+    'cta_note'   => '30 días sin compromiso · cambias o cancelas cuando quieras',
+    'cop_mes_short' => 'mes',
+
+    // =========================================================
+    // V2 — Sticky CTA bottom mobile
+    // =========================================================
+    'plan_label_prefix' => 'Plan',
+    'sticky_continue'   => 'Continuar',
+
 ];
