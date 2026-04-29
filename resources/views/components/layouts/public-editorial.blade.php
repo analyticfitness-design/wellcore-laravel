@@ -43,19 +43,38 @@
     <x-slot:title>{{ $title ?? 'WellCore Fitness' }}</x-slot>
     <x-slot:description>{{ $description ?? '' }}</x-slot>
 
-    @isset($chapterPill)
-        <div class="public-editorial-chapter-pill" role="status" aria-label="Capítulo actual">
-            {{ $chapterPill }}
-        </div>
-    @endisset
+    {{--
+        Editorial root — el x-data del page factory (metodoPage, procesoPage,
+        nosotrosPage) DEBE vivir aqui para que englobe los 3 hijos
+        (chapterPill, sidebar, main). Antes vivia solo en .public-editorial-main
+        y los slots chapterPill + sidebar quedaban fuera del scope → Alpine
+        ReferenceError: activePill/scrollProgress/activeChapter is not defined
+        (bug detectado en audit Sprint 4).
 
-    <div class="public-editorial-wrap">
-        <aside class="public-editorial-sidebar" aria-label="Navegación editorial">
-            {{ $sidebar ?? '' }}
-        </aside>
+        Si la pagina no necesita un factory, $pageFactory queda vacio y el
+        atributo no se renderea (no afecta paginas no-editoriales).
+    --}}
+    <div class="public-editorial-root"
+        @if(! empty($pageFactory))
+            x-data="{{ $pageFactory }}"
+            x-init="typeof init === 'function' && init()"
+            @beforeunload.window="typeof destroy === 'function' && destroy()"
+        @endif
+    >
+        @isset($chapterPill)
+            <div class="public-editorial-chapter-pill" role="status" aria-label="Capítulo actual">
+                {{ $chapterPill }}
+            </div>
+        @endisset
 
-        <div class="public-editorial-main">
-            {{ $slot }}
+        <div class="public-editorial-wrap">
+            <aside class="public-editorial-sidebar" aria-label="Navegación editorial">
+                {{ $sidebar ?? '' }}
+            </aside>
+
+            <div class="public-editorial-main">
+                {{ $slot }}
+            </div>
         </div>
     </div>
 </x-layouts.public>

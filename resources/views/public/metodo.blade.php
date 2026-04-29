@@ -24,7 +24,7 @@
     "RIR" reemplazado por "intensidad relativa" en period table (Daniel decision).
 --}}
 
-<x-layouts.public-editorial>
+<x-layouts.public-editorial pageFactory="metodoPage()">
     <x-slot:title>{{ __('metodo.meta_title') }}</x-slot:title>
     <x-slot:description>{{ __('metodo.meta_description') }}</x-slot:description>
 
@@ -89,13 +89,12 @@
     ]" />
 
     {{-- ──────────────────────────────────────────────────────────────
-         Alpine root: window.metodoPage() factory (resources/js/metodo.js)
-         Maneja activeChapter, scrollProgress, stickyVisible, activePill.
+         Alpine root: window.metodoPage() factory.
+         x-data ya esta declarado en el wrapper del layout via prop
+         pageFactory="metodoPage()" para englobar tambien chapterPill +
+         sidebar (Sprint 4 audit fix). Aqui solo wrapping CSS.
          ────────────────────────────────────────────────────────────── --}}
-    <div class="metodo-root metodo-main"
-         x-data="metodoPage()"
-         x-init="init()"
-         @beforeunload.window="destroy()">
+    <div class="metodo-root metodo-main">
 
         {{-- ════════════════════════════════════════════════════════════
              CAP 00 — HERO (Portada)

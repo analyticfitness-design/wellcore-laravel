@@ -26,7 +26,7 @@
     Voz: latino neutro estricto (tú/puedes/quieres/sabes).
 --}}
 
-<x-layouts.public-editorial>
+<x-layouts.public-editorial pageFactory="nosotrosPage()">
     <x-slot:title>{{ __('nosotros.meta_title') }}</x-slot:title>
     <x-slot:description>{{ __('nosotros.meta_description') }}</x-slot:description>
 
@@ -99,14 +99,12 @@
     ]" />
 
     {{-- ──────────────────────────────────────────────────────────────
-         Alpine root: window.nosotrosPage() factory (resources/js/nosotros.js)
-         Maneja activeChapter, scrollProgress, activePill, reveal observers.
+         Alpine root: window.nosotrosPage() factory.
+         x-data declarado en el wrapper del layout via pageFactory prop
+         (Sprint 4 audit fix — englobar chapterPill + sidebar slots).
          Reusa .metodo-main (espejo de /proceso) para el flow scroll area.
          ────────────────────────────────────────────────────────────── --}}
-    <div class="nosotros-root metodo-main"
-         x-data="nosotrosPage()"
-         x-init="init()"
-         @beforeunload.window="destroy()">
+    <div class="nosotros-root metodo-main">
 
         {{-- ════════════════════════════════════════════════════════════
              CAP 00 — HERO FOUNDER

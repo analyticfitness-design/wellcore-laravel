@@ -33,7 +33,7 @@
     NO menciones IA/Claude/GPT/algoritmo/machine learning (feedback_ia_confidencial).
 --}}
 
-<x-layouts.public-editorial>
+<x-layouts.public-editorial pageFactory="procesoPage()">
     <x-slot:title>{{ __('proceso.meta_title') }}</x-slot:title>
     <x-slot:description>{{ __('proceso.meta_description') }}</x-slot:description>
 
@@ -93,13 +93,11 @@
     ]" />
 
     {{-- ──────────────────────────────────────────────────────────────
-         Alpine root: window.procesoPage() factory (resources/js/proceso.js)
-         Maneja activeChapter, scrollProgress, stickyVisible, activePill.
+         Alpine root: window.procesoPage() factory.
+         x-data declarado en el wrapper del layout via pageFactory prop
+         (Sprint 4 audit fix — englobar chapterPill + sidebar slots).
          ────────────────────────────────────────────────────────────── --}}
-    <div class="proceso-root metodo-main"
-         x-data="procesoPage()"
-         x-init="init()"
-         @beforeunload.window="destroy()">
+    <div class="proceso-root metodo-main">
 
         {{-- ════════════════════════════════════════════════════════════
              CAP 00 — HERO
