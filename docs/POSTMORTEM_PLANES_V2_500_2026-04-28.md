@@ -2,8 +2,10 @@
 
 > **Fecha incidente:** 2026-04-28 (sesión nocturna)
 > **Severidad:** 🔴 Alta — página pública crítica caída ~3 horas con múltiples ciclos rollback
-> **Resuelto por:** rollback al blade legacy + commit del controller untracked
-> **Estado actual:** /planes en producción con blade v2 SIN aplicar (legacy estable)
+> **Resuelto definitivamente:** 2026-04-28 sesión retake — commit `a8e945a3`
+> **Estado actual:** /planes HTTP 200 con blade v2 completo en producción
+
+> **Causa raíz real (identificada en sesión retake):** `routes/web.php` tenía un closure `return view('public.planes')` sin pasar variables. El `PlanesController` nunca fue invocado. El cambio a `[PlanesController::class, 'index']` existía localmente pero nunca se commiteó.
 
 ---
 

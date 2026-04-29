@@ -135,6 +135,18 @@ async function run() {
         check('Screenshot desktop capturado', true, `${SHOTS_DIR}/smoke_${today}_desktop.png`);
         await desktopCtx.close();
 
+        // ── Pase 3: /planes — Sprint 1 v2 fingerprints ────────────────────
+        const planesCtx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+        const ppage = await planesCtx.newPage();
+        const planesUrl = TARGET.replace(/\/?$/, '') + '/planes';
+        const planesResp = await ppage.goto(planesUrl, { waitUntil: 'networkidle', timeout: 30_000 });
+        check('/planes HTTP 200', planesResp?.status() === 200, `status=${planesResp?.status()}`);
+        const planesText = await ppage.content();
+        check('/planes fingerprint "Cada quincena"', planesText.includes('Cada quincena'));
+        check('/planes fingerprint "Voice Logger"', planesText.includes('Voice Logger'));
+        check('/planes fingerprint "Compara los planes"', planesText.includes('Compara los planes'));
+        await planesCtx.close();
+
         // ── Console / pageerror tally ──────────────────────────────────────
         check('Console errors = 0', errors.length === 0, `${errors.length} errors`);
         check('Console warnings = 0', warnings.length === 0, `${warnings.length} warnings`);
