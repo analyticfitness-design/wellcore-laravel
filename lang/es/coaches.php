@@ -31,19 +31,19 @@ return [
 
     // Benefits
     'benefits_heading'  => 'POR QUÉ SER COACH WELLCORE',
-    'benefits_subtitle' => 'Beneficios de unirte al equipo.',
+    'benefits_subtitle' => 'Lo que cambia cuando tu marca corre sobre la nuestra.',
 
-    'benefit_remote_title' => 'Trabajo Remoto Flexible',
-    'benefit_remote_body'  => 'Trabaja desde cualquier lugar, en tus horarios. Tú decides cómo organizar tu semana y tus sesiones con clientes.',
+    'benefit_remote_title' => 'Tu agenda, tu disciplina',
+    'benefit_remote_body'  => 'Trabajas desde donde quieras, en los horarios en los que rindes mejor. Nadie te pone fichas — el rendimiento se mide en clientes que sostienen.',
 
-    'benefit_tools_title' => 'Plataforma y Herramientas Propias',
-    'benefit_tools_body'  => 'Acceso completo a la plataforma WellCore con seguimiento de clientes, check-ins, mensajería integrada y métricas en tiempo real.',
+    'benefit_tools_title' => 'Plataforma propia, no Google Sheets',
+    'benefit_tools_body'  => 'Dashboard real con check-ins, mensajería, generador de planes, video review y métricas. Lo que normalmente tendrías que armar a mano durante años.',
 
-    'benefit_community_title' => 'Comunidad de Coaches',
-    'benefit_community_body'  => 'Forma parte de una red de profesionales comprometidos. Comparte conocimiento, resuelve dudas y crece junto a otros coaches.',
+    'benefit_community_title' => 'Cuarto de coaches que entrenan',
+    'benefit_community_body'  => 'No un grupo de Facebook ni un Discord lleno de motivacionales. Un círculo cerrado de coaches que se preguntan cosas serias y se responden con datos.',
 
-    'benefit_income_title' => 'Ingresos Competitivos',
-    'benefit_income_body'  => 'Split competitivo sobre cada cliente activo. Modelo transparente con pagos puntuales y desglose mensual por cliente.',
+    'benefit_income_title' => 'Split que entiende tu valor',
+    'benefit_income_body'  => 'Comisiones competitivas por cliente activo, pago mensual puntual con desglose. Sin candados ni cláusulas de exclusividad escritas en letra chica.',
 
     // Coach Portal section (mockup interactivo)
     'portal_label'    => 'Herramientas',
@@ -169,22 +169,22 @@ return [
     'req_5_body'  => 'Completar nuestro programa de onboarding para conocer la plataforma y el método WellCore.',
 
     // Selection process
-    'process_heading'  => 'PROCESO DE SELECCIÓN',
-    'process_subtitle' => 'Tres pasos sencillos para unirte al equipo.',
+    'process_heading'  => 'CÓMO SE ENTRA',
+    'process_subtitle' => 'Tres filtros. No es para todos. Es para quien lo toma en serio.',
 
     'step_1_title' => 'Aplica',
-    'step_1_body'  => 'Completa el formulario de aplicación con tu información profesional y experiencia.',
+    'step_1_body'  => 'Formulario corto. Cuéntanos cómo entrenas tú, qué método sigues con tus clientes, qué te interesa cambiar.',
 
-    'step_2_title' => 'Entrevista',
-    'step_2_body'  => 'Revisamos tu aplicación y te contactamos para una entrevista virtual con nuestro equipo.',
+    'step_2_title' => 'Hablemos',
+    'step_2_body'  => 'Llamada de 30 minutos con el lead de coaches. No es entrevista de RRHH — es conversación entre profesionales del fitness.',
 
-    'step_3_title' => 'Comienza',
-    'step_3_body'  => 'Completas el onboarding, recibes acceso a la plataforma y comienzas a recibir clientes.',
+    'step_3_title' => 'Arrancas',
+    'step_3_body'  => 'Onboarding de 90 días con coach lead asignado, acceso completo a la plataforma y tus primeros clientes.',
 
     // CTA
-    'cta_heading'   => '¿LISTO PARA COMENZAR?',
-    'cta_body'      => 'Si cumples con los requisitos y quieres formar parte de un equipo basado en ciencia, aplica hoy.',
-    'cta_button'    => 'Aplica como Coach',
+    'cta_heading'   => 'SI LLEGASTE HASTA ACÁ',
+    'cta_body'      => 'No necesitamos coaches que repitan lo que ya sabe el algoritmo. Necesitamos los que ya lo viven y quieren un sistema serio detrás.',
+    'cta_button'    => 'Aplicar como coach',
     'cta_secondary' => 'Hablar con el equipo',
 
     // Sticky mobile CTA

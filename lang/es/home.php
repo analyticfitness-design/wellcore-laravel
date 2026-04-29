@@ -21,8 +21,8 @@ return [
     'hero_eyebrow_prefix' => 'WELLCORE FITNESS',
     'hero_eyebrow_suffix' => 'SIN MILAGROS, CIENCIA',
     'hero_title_html'     => 'EL CUERPO<br>CAMBIA CON<br><em>MÉTODO,</em><br>NO CON SUERTE.',
-    'hero_subtitle'       => 'Coaching fitness 1:1 basado en evidencia. Para quienes quieren resultados reales sin promesas vacías.',
-    'hero_italic_line'    => 'El mejor programa es el que se sigue. Nuestro trabajo es que lo sigas.',
+    'hero_subtitle'       => 'Coaching 1:1 basado en evidencia. Sin plantillas, sin gurús, sin transformaciones de 30 días que después se desinflan.',
+    'hero_italic_line'    => 'El mejor programa es el que se sostiene. Nuestro trabajo es que lo sostengas.',
     'hero_cta_primary'    => 'EMPEZAR AHORA',
     'hero_cta_secondary'  => 'VER EL MÉTODO',
     'hero_live_suffix'    => 'PERSONAS REALES · COACHES REALES · CIENCIA REAL',
@@ -52,23 +52,23 @@ return [
     // =========================================================
     'why_eyebrow'   => 'POR QUÉ WELLCORE',
     'why_title'     => 'EVIDENCIA,<br><em>NO</em> INTUICIÓN.',
-    'why_subtitle'  => 'No contamos con trucos rápidos. Contamos con método, seguimiento y ciencia aplicada a tu cuerpo. Cada decisión tiene una razón.',
+    'why_subtitle'  => 'No vendemos atajos. Vendemos método. Cada variable de tu plan existe por una razón demostrable, no porque queda bien en Instagram.',
 
     'why1_title' => 'PROGRAMACIÓN INDIVIDUAL',
-    'why1_desc'  => 'Tu plan de entrenamiento parte de tu historial real, tu disponibilidad y tus objetivos concretos — no de plantillas genéricas.',
+    'why1_desc'  => 'Tu plan parte de tu historial, tu disponibilidad y dónde está tu cuerpo hoy. No de una plantilla con tu nombre arriba.',
     'why2_title' => 'AJUSTE EN TIEMPO REAL',
-    'why2_desc'  => 'Tu coach analiza tu check-in semanal y ajusta el plan si algo no está funcionando. El protocolo evoluciona contigo.',
+    'why2_desc'  => 'Tu coach lee tu check-in semanal y ajusta lo que haga falta. El plan que recibes en la semana 4 ya no es el de la semana 1 — porque tú tampoco eres el mismo.',
     'why3_title' => 'BASE EN EVIDENCIA',
-    'why3_desc'  => 'Cada indicación de entrenamiento y nutrición está respaldada por investigación publicada. Sin mitos, sin dietas milagro.',
+    'why3_desc'  => 'Cada decisión de entrenamiento y nutrición está respaldada por investigación publicada. Sin "yo escuché que", sin dietas que aparecieron en TikTok la semana pasada.',
     'why4_title' => 'ACOMPAÑAMIENTO REAL',
-    'why4_desc'  => 'Tu coach te conoce por nombre, sabe tu historial y responde tus dudas. No eres un número en una base de datos.',
+    'why4_desc'  => 'Tu coach te conoce por nombre, sabe tu historial y responde cuando le escribes. No eres un ticket en una bandeja de entrada.',
 
     // =========================================================
     // CÓMO FUNCIONA (5 steps)
     // =========================================================
     'process_eyebrow'   => 'CÓMO FUNCIONA',
     'process_title'     => 'CINCO PASOS,<br><em>UN SISTEMA.</em>',
-    'process_subtitle'  => 'Un proceso estructurado donde cada semana tiene un propósito. Sin improvisación, sin recetas genéricas.',
+    'process_subtitle'  => 'Cada semana tiene una razón. Cada decisión tiene un porqué. No se improvisa nada — porque la improvisación es lo que te trajo hasta acá.',
 
     'process_s1_num'   => '01',
     'process_s1_label' => 'Semana 1',
@@ -195,8 +195,8 @@ return [
     // COMUNIDAD (split 2-col desktop)
     // =========================================================
     'community_eyebrow'   => 'EQUIPO WELLCORE',
-    'community_title'     => 'COACHES REALES.<br><em>CIENCIA REAL.</em>',
-    'community_subtitle'  => 'No entrenamos con plantillas genéricas. Entrenamos con coaches formados, comprometidos con la evidencia y con tu resultado específico.',
+    'community_title'     => 'COACHES QUE<br><em>ENTRENAN.</em>',
+    'community_subtitle'  => 'No coleccionamos certificaciones para una bio. Trabajamos con coaches que entrenan en serio, leen los papers y entienden que tu resultado depende de cómo viven ellos primero.',
     'community_quote'     => 'El cuerpo cambia con método, no con suerte.',
     'community_cta'       => 'Conocer el equipo →',
 
@@ -210,7 +210,7 @@ return [
     // =========================================================
     'coach_recruit_eyebrow'        => 'PARA COACHES PROFESIONALES',
     'coach_recruit_title'          => '¿ERES COACH?<br><em>ÚNETE AL MÉTODO.</em>',
-    'coach_recruit_sub'            => 'El primer marketplace de coaches con metodología basada en evidencia. Aplica si tu trabajo no necesita inventar resultados.',
+    'coach_recruit_sub'            => 'Si lo que haces no necesita inventar resultados, hablemos. Marketplace de coaches con metodología propia, plataforma que no es una hoja de Excel y comunidad seria.',
     'coach_recruit_stat1_val'      => '47+',
     'coach_recruit_stat1_lbl'      => 'Coaches activos',
     'coach_recruit_stat2_val'      => '92%',
@@ -274,7 +274,7 @@ return [
     // =========================================================
     'cta_eyebrow'    => 'EMPEZAR HOY',
     'cta_title'      => 'EMPEZAR<br><em>CON MÉTODO.</em>',
-    'cta_subtitle'   => 'El método más elegido por quienes necesitan acompañamiento real, no solo un PDF de rutinas.',
+    'cta_subtitle'   => 'El cuerpo no cambia el lunes. Cambia cuando dejas de buscar el plan perfecto y empiezas a sostener uno que sí funciona.',
     'cta_primary'    => 'Inscribirme ahora →',
     'cta_secondary'  => 'Ver el proceso',
     'cta_trust1'     => 'Sin contrato',
