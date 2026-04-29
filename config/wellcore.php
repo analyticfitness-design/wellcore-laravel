@@ -11,6 +11,18 @@ return [
     // TODO: reemplazar con número real de Silvia antes del lanzamiento oficial
     'whatsapp_silvia' => env('WC_WHATSAPP_SILVIA', '573000000000'),
 
+    // TODO: confirmar número WhatsApp del coach presencial Bucaramanga antes de exposición pública
+    'whatsapp_presencial' => env('WC_WHATSAPP_PRESENCIAL', '573000000000'),
+
+    // Coach marketplace split — fracción que recibe el coach por cada cliente activo.
+    // USO INTERNO en CoachesController (calculadora ingresos). El copy público NO
+    // expone el número exacto: usa "split competitivo por encima del estándar".
+    'coach_split' => (float) env('WC_COACH_SPLIT', 0.6),
+
+    // Plan Método mensual COP — usado en la calculadora de ingresos del coach.
+    // Si cambia el pricing real, ajustar acá; el copy público se mantiene en intervalos.
+    'coach_calc_plan_cop' => (int) env('WC_COACH_CALC_PLAN_COP', 380000),
+
     /*
     |--------------------------------------------------------------------------
     | Feature Flags (Strangler Fig Migration)

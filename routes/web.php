@@ -10,9 +10,12 @@ use App\Http\Controllers\ImpersonateController;
 use App\Http\Controllers\Media\GifController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Public\CoachesController;
 use App\Http\Controllers\Public\FitController;
 use App\Http\Controllers\Public\HomeController;
+use App\Http\Controllers\Public\MetodoController;
 use App\Http\Controllers\Public\PlanesController;
+use App\Http\Controllers\Public\PresencialController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\WebhookController;
 use App\Livewire\Checkout;
@@ -109,17 +112,13 @@ Route::get('/nosotros', function () {
 Route::get('/faq', function () {
     return view('public.faq');
 })->name('faq');
-Route::get('/metodo', function () {
-    return view('public.metodo');
-})->name('metodo');
+Route::get('/metodo', [MetodoController::class, 'index'])->name('metodo');
 Route::get('/proceso', function () {
     return view('public.proceso');
 })->name('proceso');
 // RISE publico cerrado: redirige al home (clientes RISE existentes siguen con acceso en /rise)
 Route::get('/reto-rise', fn () => redirect('/', 301))->name('reto-rise');
-Route::get('/coaches', function () {
-    return view('public.coaches');
-})->name('coaches');
+Route::get('/coaches', [CoachesController::class, 'index'])->name('coaches');
 Route::get('/coaches/apply', fn () => view('vue'))->name('coaches.apply');
 
 // Legal pages
@@ -135,7 +134,7 @@ Route::get('/lanzamiento', fn () => view('public.lanzamiento'))->name('lanzamien
 Route::get('/fit', [FitController::class, 'index'])->name('fit');
 
 // Presencial
-Route::get('/presencial', fn () => view('public.presencial'))->name('presencial');
+Route::get('/presencial', [PresencialController::class, 'index'])->name('presencial');
 Route::get('/presencial/inscripcion', fn () => view('vue'))->name('presencial.form');
 
 // RISE Enrollment cerrado — inscripciones no abiertas al publico
