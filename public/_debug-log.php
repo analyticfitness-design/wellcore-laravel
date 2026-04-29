@@ -38,15 +38,26 @@ foreach ($files as $f) {
 }
 
 $latest = $files[0];
-echo "\n=== TAIL 200 LINES OF " . basename($latest) . " ===\n";
+echo "\n=== LAST production.ERROR MESSAGES (no stack) IN " . basename($latest) . " ===\n";
 
-$lines = [];
+// Read last 5MB max for performance
+$size = filesize($latest);
+$readFrom = max(0, $size - 5_000_000);
 $fh = fopen($latest, 'r');
-if ($fh) {
-    while (($line = fgets($fh)) !== false) {
-        $lines[] = $line;
-        if (count($lines) > 200) array_shift($lines);
-    }
-    fclose($fh);
+if (! $fh) { exit("cannot open $latest"); }
+fseek($fh, $readFrom);
+$content = stream_get_contents($fh);
+fclose($fh);
+
+// Get error message lines (no stack frames)
+$lines = explode("\n", $content);
+$errLines = array_filter($lines, function($l) {
+    return preg_match('/production\.(ERROR|CRITICAL|EMERGENCY|ALERT|WARNING)/', $l);
+});
+
+// Take last 10 error messages
+$errLines = array_slice($errLines, -10);
+foreach ($errLines as $line) {
+    // Truncate at 800 chars per line for readability
+    echo substr($line, 0, 800) . "\n\n";
 }
-echo implode('', $lines);
