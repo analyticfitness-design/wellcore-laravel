@@ -9,6 +9,22 @@ if (($_GET['key'] ?? '') !== 'wc-debug-2026') {
 
 header('Content-Type: text/plain; charset=utf-8');
 
+// Action: limpiar compiled views (?action=clear-views)
+if (($_GET['action'] ?? '') === 'clear-views') {
+    $vd = __DIR__ . '/../storage/framework/views/';
+    $files = glob($vd . '*.php');
+    $deleted = 0;
+    foreach ($files as $f) {
+        if (@unlink($f)) $deleted++;
+    }
+    echo "Deleted $deleted compiled view files from $vd\n";
+    if (function_exists('opcache_reset')) {
+        @opcache_reset();
+        echo "Called opcache_reset()\n";
+    }
+    exit;
+}
+
 $logsDir = __DIR__ . '/../storage/logs/';
 $files = glob($logsDir . 'laravel*.log');
 if (! $files) {
