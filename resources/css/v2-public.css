@@ -5606,3 +5606,137 @@
     .nosotros-cta-link { transition: none !important; }
 }
 
+/* ======================================================================
+   SPRINT 2 — FIX TEMA LIGHT (2026-04-29)
+   ----------------------------------------------------------------------
+   Las páginas v2 (/metodo, /proceso, /nosotros) son dark-first. El body
+   responde al toggle Alpine y se ve claro en light, pero ciertos chrome
+   elements (sidebar editorial + hero /nosotros + sticky CTA mobile)
+   tenían bgs semi-transparentes que en light quedaban grises medios con
+   texto bajo contraste. Fix: forzar dark sólido + texto blanco en esos
+   elementos para que sean legibles en AMBOS themes.
+   ====================================================================== */
+
+/* Sidebar editorial — dark sólido siempre, texto blanco siempre.
+   Aplica a /metodo, /proceso, /nosotros (todos comparten .metodo-sidebar
+   por el componente <x-public.editorial-sidebar>). */
+.metodo-sidebar {
+    background: #0a0a0a !important;
+    backdrop-filter: blur(8px);
+    border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+.metodo-sidebar-brand-name {
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+.metodo-sidebar-brand-sub {
+    color: rgba(255, 255, 255, 0.45) !important;
+}
+.metodo-sidebar-progress-label {
+    color: rgba(255, 255, 255, 0.55) !important;
+}
+.metodo-sidebar-progress-track {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+.metodo-sidebar-nav-item {
+    color: rgba(255, 255, 255, 0.55) !important;
+}
+.metodo-sidebar-nav-item:hover {
+    background: rgba(255, 255, 255, 0.04) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+.metodo-sidebar-nav-item.active,
+.metodo-sidebar-nav-item.is-active {
+    color: rgba(255, 255, 255, 0.95) !important;
+    background: rgba(220, 38, 38, 0.08) !important;
+}
+.metodo-sidebar-nav-num {
+    color: rgba(255, 255, 255, 0.35) !important;
+}
+.metodo-sidebar-nav-title {
+    color: inherit !important;
+}
+.metodo-sidebar-nav-dot {
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+.metodo-sidebar-nav-item.active .metodo-sidebar-nav-dot,
+.metodo-sidebar-nav-item.is-active .metodo-sidebar-nav-dot {
+    background: var(--color-wc-accent) !important;
+}
+.metodo-sidebar-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+.metodo-sidebar-nav-links a {
+    color: rgba(255, 255, 255, 0.45) !important;
+}
+.metodo-sidebar-nav-links a:hover {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* /nosotros hero — bloque negro intencional (statement editorial).
+   Forzar texto blanco/claro independiente del theme para legibilidad. */
+.nosotros-hero {
+    color: rgba(255, 255, 255, 0.92);
+}
+.nosotros-hero-eyebrow {
+    color: rgba(255, 255, 255, 0.65) !important;
+}
+.nosotros-hero-eyebrow .dot {
+    background: var(--color-wc-accent) !important;
+}
+.nosotros-hero-title {
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+.nosotros-hero-sub {
+    color: rgba(255, 255, 255, 0.78) !important;
+}
+.nosotros-hero-meta-item .k {
+    color: rgba(255, 255, 255, 0.45) !important;
+}
+.nosotros-hero-meta-item .v {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Sticky mobile CTA (metodo) — dark sólido en ambos themes para legibilidad */
+.metodo-sticky-cta {
+    background: rgba(10, 10, 10, 0.96) !important;
+    color: rgba(255, 255, 255, 0.95);
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+.metodo-sticky-cta-text-strong {
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+.metodo-sticky-cta-text-sub {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* /nosotros equipo cards (.nosotros-eq-card) usan #161616 hardcoded —
+   en light se ven negros sobre body claro pero texto interno usa
+   tokens light que dan bajo contraste. Forzar texto claro. */
+.nosotros-eq-card {
+    color: rgba(255, 255, 255, 0.88);
+}
+.nosotros-eq-name {
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+.nosotros-eq-role {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+.nosotros-eq-bio,
+.nosotros-eq-quote {
+    color: rgba(255, 255, 255, 0.72) !important;
+}
+
+/* /nosotros valores section también usa background dark — texto claro */
+.nosotros-valores .nosotros-val-pq {
+    color: rgba(255, 255, 255, 0.92);
+}
+.nosotros-val-num {
+    color: rgba(255, 255, 255, 0.25) !important;
+}
+.nosotros-val-statement {
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+.nosotros-val-context {
+    color: rgba(255, 255, 255, 0.65) !important;
+}
+
