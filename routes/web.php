@@ -10,6 +10,7 @@ use App\Http\Controllers\ImpersonateController;
 use App\Http\Controllers\Media\GifController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Public\PlanesController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\WebhookController;
 use App\Livewire\Checkout;
@@ -101,9 +102,7 @@ Route::post('/api/chat', [ChatController::class, 'send'])->name('api.chat')->mid
 Route::get('/', function () {
     return view('public.home');
 })->name('home');
-Route::get('/planes', function () {
-    return view('public.planes');
-})->name('planes');
+Route::get('/planes', [PlanesController::class, 'index'])->name('planes');
 Route::get('/nosotros', function () {
     return view('public.nosotros');
 })->name('nosotros');
