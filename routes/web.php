@@ -10,6 +10,8 @@ use App\Http\Controllers\ImpersonateController;
 use App\Http\Controllers\Media\GifController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Public\FitController;
+use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\PlanesController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\WebhookController;
@@ -99,9 +101,7 @@ Route::get('/robots.txt', function () {
 Route::post('/api/chat', [ChatController::class, 'send'])->name('api.chat')->middleware('throttle:chat');
 
 // Public marketing pages
-Route::get('/', function () {
-    return view('public.home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/planes', [PlanesController::class, 'index'])->name('planes');
 Route::get('/nosotros', function () {
     return view('public.nosotros');
@@ -132,7 +132,7 @@ Route::get('/reembolsos', fn () => view('public.legal.reembolso'))->name('reembo
 Route::get('/lanzamiento', fn () => view('public.lanzamiento'))->name('lanzamiento');
 
 // Coach Silvia landing
-Route::get('/fit', fn () => view('public.fit'))->name('fit');
+Route::get('/fit', [FitController::class, 'index'])->name('fit');
 
 // Presencial
 Route::get('/presencial', fn () => view('public.presencial'))->name('presencial');

@@ -8,6 +8,9 @@ return [
     */
     'token_expiry_days' => env('WC_TOKEN_EXPIRY_DAYS', 30),
 
+    // TODO: reemplazar con número real de Silvia antes del lanzamiento oficial
+    'whatsapp_silvia' => env('WC_WHATSAPP_SILVIA', '573000000000'),
+
     /*
     |--------------------------------------------------------------------------
     | Feature Flags (Strangler Fig Migration)
