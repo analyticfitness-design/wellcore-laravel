@@ -33,7 +33,7 @@ class ContentSecurityPolicy
                 "font-src 'self' https://fonts.gstatic.com",
                 "img-src 'self' data: https: blob:",
                 "connect-src 'self' https://api.anthropic.com https://sandbox.wompi.co https://production.wompi.co https://checkout.wompi.co https://www.google-analytics.com https://www.facebook.com https://connect.facebook.net wss:" . $viteDev,
-                "frame-src 'self' https://checkout.wompi.co https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com",
+                "frame-src 'self' https://checkout.wompi.co https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com https://www.openstreetmap.org",
                 "base-uri 'self'",
                 "form-action 'self'",
             ]);
