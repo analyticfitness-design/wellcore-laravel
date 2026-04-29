@@ -357,24 +357,25 @@ body.fit-page .h2-plan-feat-icon { color: #DC3C64; }
     pointer-events: none;
     z-index: 1;
 }
-/* Picture wrapper — limita el ancho de la silueta para dar atmósfera lateral */
+/* Picture wrapper — limita el ancho de la silueta para dar atmósfera lateral.
+   Approach: width 78% en el picture (NO en el img), img llena el picture.
+   Esto evita conflictos con Tailwind 4 Preflight (img { max-width: 100%; height: auto }). */
 .fit-hero-photo-real picture {
-    position: relative !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
     z-index: 2 !important;
-    display: flex !important;
-    align-items: flex-end !important;
-    justify-content: center !important;
-    width: 100% !important;
-    height: 100% !important;
-    padding: 6% 0 0 0 !important;
+    display: block !important;
+    width: 78% !important;
+    max-width: 78% !important;
+    height: auto !important;
+    line-height: 0 !important;
 }
 .fit-hero-photo-real img {
-    max-width: 78% !important;
-    max-height: 100% !important;
-    width: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
     height: auto !important;
-    object-fit: contain !important;
-    object-position: center bottom !important;
     display: block !important;
     position: relative !important;
     z-index: 2 !important;

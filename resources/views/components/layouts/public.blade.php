@@ -51,7 +51,7 @@
 
     {{-- Sprint 1B v2.2 — CSS bypass servido estático (no pasa por Vite).
          Borrar este link cuando se haga npm run build oficial. --}}
-    <link rel="stylesheet" href="{{ asset('css/v22-sprint1b-fix.css') }}?v=1">
+    <link rel="stylesheet" href="{{ asset('css/v22-sprint1b-fix.css') }}?v=4">
 
     {{-- Alpine: se carga en el footer condicionalmente, despues de saber si Livewire rendero (ver final de body).
          NUNCA cargar Alpine standalone + Livewire a la vez: duplica instancias y rompe el morph (wire:click deja de actualizar el DOM). --}}
