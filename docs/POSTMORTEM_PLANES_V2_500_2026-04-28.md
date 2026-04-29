@@ -1032,4 +1032,199 @@ Smoke local Herd:
 - [ ] Probar login real con `daniel.esparza / RISE2026Admin!SuperPower` y validar localStorage en F12 → Application → Local Storage (los 6 keys deben aparecer)
 - [ ] Opcional: agregar exclusión Microsoft Defender para `tests/Feature/Auth/` y mover `SessionStartTest.php` a esa carpeta con nombre `LoginFlowTest.php`
 
+---
+
+## §18 — Sprint 4 continuación: `/faq` + `/blog` v2 iOS-feel + editorial (2026-04-29)
+
+**Contexto:** Daniel se fue a dormir tras cerrar `/login` (§17) y dejó un brief
+(`SPRINT-4-CONTINUACION-FAQ-BLOG.md`) para portar `/faq` y `/blog` (index + show)
+a v2 brutal iOS-feel **sin tocar contenido**. Ejecución autónoma, sin npm build,
+sin trigger deploy — solo `git push origin main`.
+
+### §18.1 Entregables
+
+| Página | Estado | Render local | SEO |
+|--------|--------|--------------|-----|
+| `/faq` | ✅ deployed-pending | HTTP 200 (114 KB) | 25 `.faq-q` SSR + JSON-LD `FAQPage` |
+| `/blog` | ✅ deployed-pending | HTTP 200 (98 KB) | 9 cards SSR + JSON-LD `Blog` |
+| `/blog/{slug}` | ✅ deployed-pending | HTTP 200 (~95 KB) por artículo | TOC + drop-cap + JSON-LD `BlogPosting` |
+| `/blog/inexistente` | ✅ | HTTP 404 | abort(404) preservado |
+
+Probados localmente (Herd `wellcore-laravel.test`): los 4 slugs muestreados
+(`progressive-overload`, `tdee`, `sueno`, `periodizacion-mujeres`) renderean 200.
+
+### §18.2 Decisiones autónomas (8)
+
+1. **5 tabs FAQ en lugar de 8.** El kit original pedía expandir a
+   general/planes/coaches/pagos/cancelaciones/resultados/privacidad/soporte,
+   pero Daniel dijo en su prompt "sostener las 5 actuales". Honoré eso.
+
+2. **Reestructurar `lang/es/faq.php` de claves planas a array `items`.**
+   `$item['general']['g1_q']` → `$items[0]['q']` con `id, cat, q, a` por entrada.
+   Riesgo: si otro blade usa las claves legacy (`__('faq.general.g1_q')`), se
+   rompe. Mitigación: solo `faq.blade.php` consumía esas claves; verificado con
+   `grep -rn "faq\.general\." resources/` antes del cambio.
+
+3. **No tocar `BlogController` ni hacer controller swap.** Brief mencionaba
+   posible bug §11 (closure → controller) si index necesitaba data. Verificado:
+   el closure `Route::get('/blog', fn () => view('public.blog.index'))` funciona
+   porque el blade llama directo a `BlogController::getArticles()` static.
+   No es la mejor arquitectura, pero respeta la regla "NO tocar artículos en DB"
+   ampliada a "NO tocar el controller que sirve los datos hardcoded".
+
+4. **Featured article = primer artículo (`progressive-overload`).** Sin
+   parámetro de "destacado" en el array, hardcodeé el primero. Cambiable después
+   con un campo `'featured' => true` o un sort.
+
+5. **Newsletter form sólo visual con `alert('próximamente')`.** Sin endpoint
+   `/api/newsletter` existente, hacer un fake POST sería deuda. Dejado como TODO
+   para Daniel cuando integre Mailjet (credenciales en memoria).
+
+6. **TOC server-side via `preg_replace_callback` sobre `$article['content']`.**
+   Inyecta IDs slug-ificados a h2/h3 y construye `$tocItems[]` durante render.
+   Sin JS para parsear DOM. El sidebar TOC se muestra solo ≥1024px (desktop),
+   con scroll-spy vanilla JS para `is-active`.
+
+7. **Drop-cap en primer `<p>` con `preg_replace` (limit=1).** Inyecta clase
+   `show-dropcap-p` solo al primer párrafo del artículo. CSS usa `::first-letter`
+   con Oswald 5.6rem rojo.
+
+8. **Tones por categoría con `radial-gradient` en CSS vars** en vez de imágenes
+   reales (BlogController no tiene fotos por artículo). Map `category` →
+   gradient color (rojo/verde/azul/rosa/dorado) preserva la estética editorial
+   sin fotografías. TODO largo plazo: agregar `'cover' => 'path'` a cada artículo
+   y servir AVIF + WebP `<picture>` real.
+
+### §18.3 Bug nuevo: deletion accidental por auto-fetch + Microsoft Defender
+
+**Síntoma:** Mi commit `756a76dd feat(blog)` incluyó la **eliminación
+involuntaria** de `tests/Feature/LivewireSignInTest.php`, archivo que Daniel
+había agregado en `f18b2286` durante mi sesión.
+
+**Root cause concurrente:**
+
+1. Mientras yo trabajaba en el blade del blog, Daniel pusheó 4 commits
+   (`6d78ddd4`, `adce276e`, `71c024a1`, `f18b2286`) — login swap + fit Silvia.
+2. Git auto-fetched esos commits en mi local, pero NO los mergeé (mi HEAD
+   seguía en `0dbee749` FAQ).
+3. Cuando hice `git add lang/es/blog.php ...` y `git commit`, **Git incluyó
+   automáticamente todas las deletions del index actual**, incluyendo
+   `tests/Feature/LivewireSignInTest.php` que Defender había quarantinado del
+   working tree de mi sesión.
+4. Daniel luego pusheó `65fc8600` (agregar `SessionStartTest`) + `6155cdc9`
+   (drop `LivewireSignInTest` como duplicado canónico) → **convergió** con mi
+   deletion accidental, así que el resultado neto es correcto.
+
+**Lección:**
+- `git add <file>` NO blinda contra deletions implícitas si el index ya las
+  tiene staged (caso típico: archivo quarantinado por Defender entre
+  `git fetch` y mi `git add`).
+- **Patrón seguro:** antes de `git commit`, ejecutar
+  `git diff --cached --name-status | grep '^D'` para ver TODA deletion staged
+  y decidir si es intencional. Agregar al checklist Pre-push del §13.
+- **Verificación post-commit:** `git show HEAD --name-status` para auditar el
+  diff antes de push.
+
+### §18.4 Bug nuevo: working tree muestra `D file` para archivos que SÍ existen en HEAD
+
+**Síntoma:** Después de pull, `git status --short` mostró
+`D tests/Feature/SessionStartTest.php`. Sin embargo, `git ls-files` y
+`git rev-parse HEAD:tests/Feature/SessionStartTest.php` confirman que el archivo
+SÍ está en index y HEAD.
+
+**Root cause:** Microsoft Defender quarantinó el archivo durante el
+`git stash pop` (output del log: "error: unable to create file ...
+Permission denied"). Working tree no tiene el archivo, pero index y HEAD sí.
+
+**Lección:** No confiar en `git status --short` para tomar decisiones de
+re-staging cuando hay archivos potencialmente quarantinados. Usar
+`git diff HEAD -- path` para verificar si la diferencia es real o
+solo working-tree-vs-Defender.
+
+### §18.5 Lecciones reutilizables
+
+1. **El patrón iOS-feel del login es reutilizable cambiando namespace de
+   tokens.** `--auth-bg` → `--faq-bg`, `--blog-bg`. Atmosphere (radial
+   gradient + grain SVG), card (rgba(28,28,30,0.62) + backdrop-blur), shell
+   (safe-area-inset). El blade FAQ y los 2 blog blades comparten ~70% del CSS
+   por reutilización del patrón. **TODO mediano:** extraer a un partial
+   `resources/views/partials/v2-tokens.blade.php` con los tokens base.
+
+2. **HTMLs rediseñados de Claude Design = referencia visual, NUNCA copy ni
+   fuentes.** El copy viene en voseo argentino ("Volvé", "Mandamos", "podés")
+   y las fuentes son Bebas Neue + Inter (las del MASTER, no las reales del
+   proyecto). El `redesigned-mobile.html` adjunto al brief sirve para
+   estructura DOM y layout — copy se preserva del v1 canónico, fuentes son
+   Oswald + Raleway + Fraunces + JetBrains Mono.
+
+3. **`Route::get` con closure que llama controller estático = anti-pattern
+   funcional.** `Route::get('/blog', fn () => view(...))` que internamente
+   llama `BlogController::getArticles()` static funciona pero es fragile.
+   Cualquier dependencia agregada al closure (auth, throttle, middleware
+   adicional) puede romperlo. **TODO mediano:** migrar a
+   `Route::get('/blog', [BlogController::class, 'index'])` con método
+   `index()` que retorne la view con `$articles` ya pasado.
+
+4. **TOC server-side > TOC client-side para artículos hardcoded.**
+   `preg_replace_callback` sobre `$content` durante render es mucho más simple
+   que parsear DOM con JS post-load. El scroll-spy ligero (vanilla JS, ~25
+   líneas) reactiva el `is-active`. Replicable a cualquier blog que use HTML
+   string en vez de Markdown.
+
+### §18.6 Pendientes para Daniel post-sesión
+
+- [ ] Smoke prod `/faq`: verificar que las 25 preguntas renderean SSR (vista
+  fuente vs JS desactivado), JSON-LD válido (Google Rich Results Test), tabs
+  scrolleables en mobile, accordion abre/cierra.
+- [ ] Smoke prod `/blog`: featured card abre `/blog/progressive-overload-...`,
+  tabs filtran cards, newsletter alert dispara.
+- [ ] Smoke prod `/blog/{slug}` con 2-3 artículos: TOC se muestra ≥1024px,
+  drop-cap visible, share buttons abren WhatsApp/Twitter, related grid clickable.
+- [ ] **Newsletter backend pendiente** — el form actual tira `alert('próximamente')`.
+  Cuando Daniel integre Mailjet, conectar `<form action="..." method="POST">`
+  con CSRF token y endpoint que reciba email + lo agregue a la lista
+  "Newsletter blog WellCore".
+- [ ] **Cover images por artículo (TODO largo plazo):** agregar
+  `'cover' => 'storage/blog/...avif'` a cada artículo en `$articles[]` de
+  `BlogController` y servir `<picture>` real en index + show. Hoy es gradient
+  por categoría.
+- [ ] **Migrar `BlogController` a controller dispatch real (TODO mediano):**
+  cambiar `Route::get('/blog', closure)` a `[BlogController::class, 'index']`
+  para evitar bug pattern §11 si se agregan middleware/auth en futuro.
+- [ ] Decidir si dropear `redesigned-*.html` del v2 standard dir — su copy
+  voseo es ruido para futuras sesiones (riesgo de contaminación).
+
+### §18.7 Commits
+
+| SHA | Mensaje |
+|-----|---------|
+| `0dbee749` | `feat(faq): blade v2 iOS-feel preservando 25 preguntas v1` |
+| `756a76dd` | `feat(blog): blades v2 iOS-feel + editorial preservando artículos v1` |
+
+Ambos en `origin/main`. Daniel ejecuta `silvia-gitpull-load` cuando despierte.
+
+### §18.8 Voseo grep final (autoaudit)
+
+```bash
+grep -rEn "\b(podés|querés|sabés|tenés|necesitás|empezá|cancelás?|seguí|elegí|escribí|hablás|disfrutás|pagás|ahorrás|para vos|chévere|parcero|bacano|vosotros|cogéis|móvil|ordenador)\b" \
+  resources/views/public/faq.blade.php \
+  resources/views/public/blog/ \
+  lang/es/faq.php lang/en/faq.php lang/es/blog.php lang/en/blog.php
+# → vacío ✓
+```
+
+También sobre el HTML renderizado real (no solo el source):
+
+```php
+// /faq render → Voseo: NONE ✓
+// /blog render → Voseo: NONE ✓
+// /blog/progressive-overload-... → Voseo: NONE ✓
+```
+
+---
+
+**Actualizado:** 2026-04-29 (madrugada)  
+**Por:** sesión Claude Code (Opus 4.7) bajo dirección de Daniel Esparza  
+**Estado Sprint 4 continuación:** ✅ FAQ + Blog v2 deployed-pending — pendiente smoke visual prod por Daniel
+
 
