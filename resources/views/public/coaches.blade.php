@@ -177,7 +177,7 @@
                                     <p class="text-[10px] text-wc-text-tertiary">{{ __('coaches.mockup_clients_label') }}</p>
                                 </div>
                                 <div class="rounded-lg border border-wc-border bg-wc-bg-tertiary p-2.5 text-center">
-                                    <p class="font-data text-lg font-bold text-emerald-400">$5.7M</p>
+                                    <p class="font-data text-lg font-bold text-emerald-500">$5.7M</p>
                                     <p class="text-[10px] text-wc-text-tertiary">{{ __('coaches.mockup_revenue_label') }}</p>
                                 </div>
                                 <div class="rounded-lg border border-wc-border bg-wc-bg-tertiary p-2.5 text-center">
@@ -190,10 +190,10 @@
                                 <p class="text-xs font-semibold text-wc-text">{{ __('coaches.mockup_active_clients') }}</p>
                                 <div class="mt-2 space-y-1.5">
                                     @foreach([
-                                        ['name' => __('coaches.mockup_client_1_name'), 'plan' => __('coaches.mockup_client_1_plan'), 'adherence' => __('coaches.mockup_client_1_adherence'), 'color' => 'text-amber-400', 'badge' => 'bg-amber-400/10 text-amber-400'],
-                                        ['name' => __('coaches.mockup_client_2_name'), 'plan' => __('coaches.mockup_client_2_plan'), 'adherence' => __('coaches.mockup_client_2_adherence'), 'color' => 'text-emerald-400', 'badge' => 'bg-emerald-400/10 text-emerald-400'],
-                                        ['name' => __('coaches.mockup_client_3_name'), 'plan' => __('coaches.mockup_client_3_plan'), 'adherence' => __('coaches.mockup_client_3_adherence'), 'color' => 'text-emerald-400', 'badge' => 'bg-emerald-400/10 text-emerald-400'],
-                                        ['name' => __('coaches.mockup_client_4_name'), 'plan' => __('coaches.mockup_client_4_plan'), 'adherence' => __('coaches.mockup_client_4_adherence'), 'color' => 'text-amber-400', 'badge' => 'bg-amber-400/10 text-amber-400'],
+                                        ['name' => __('coaches.mockup_client_1_name'), 'plan' => __('coaches.mockup_client_1_plan'), 'adherence' => __('coaches.mockup_client_1_adherence'), 'color' => 'text-amber-500', 'badge' => 'bg-amber-500/10 text-amber-500'],
+                                        ['name' => __('coaches.mockup_client_2_name'), 'plan' => __('coaches.mockup_client_2_plan'), 'adherence' => __('coaches.mockup_client_2_adherence'), 'color' => 'text-emerald-500', 'badge' => 'bg-emerald-500/10 text-emerald-500'],
+                                        ['name' => __('coaches.mockup_client_3_name'), 'plan' => __('coaches.mockup_client_3_plan'), 'adherence' => __('coaches.mockup_client_3_adherence'), 'color' => 'text-emerald-500', 'badge' => 'bg-emerald-500/10 text-emerald-500'],
+                                        ['name' => __('coaches.mockup_client_4_name'), 'plan' => __('coaches.mockup_client_4_plan'), 'adherence' => __('coaches.mockup_client_4_adherence'), 'color' => 'text-amber-500', 'badge' => 'bg-amber-500/10 text-amber-500'],
                                     ] as $client)
                                     <div class="flex items-center justify-between rounded bg-wc-bg px-2.5 py-1.5">
                                         <div class="flex items-center gap-2">
@@ -212,8 +212,8 @@
                                 <div class="mt-2 space-y-2">
                                     @foreach([
                                         ['key' => 'mockup_activity_1', 'dot' => 'bg-wc-accent', 'time' => '2m'],
-                                        ['key' => 'mockup_activity_2', 'dot' => 'bg-emerald-400', 'time' => '1h'],
-                                        ['key' => 'mockup_activity_3', 'dot' => 'bg-amber-400', 'time' => '3h'],
+                                        ['key' => 'mockup_activity_2', 'dot' => 'bg-emerald-500', 'time' => '1h'],
+                                        ['key' => 'mockup_activity_3', 'dot' => 'bg-amber-500', 'time' => '3h'],
                                     ] as $act)
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center gap-2">
