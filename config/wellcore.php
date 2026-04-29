@@ -8,8 +8,8 @@ return [
     */
     'token_expiry_days' => env('WC_TOKEN_EXPIRY_DAYS', 30),
 
-    // TODO: reemplazar con número real de Silvia antes del lanzamiento oficial
-    'whatsapp_silvia' => env('WC_WHATSAPP_SILVIA', '573000000000'),
+    // WhatsApp real Silvia: +57 312 4904720
+    'whatsapp_silvia' => env('WC_WHATSAPP_SILVIA', '573124904720'),
 
     // TODO: confirmar número WhatsApp del coach presencial Bucaramanga antes de exposición pública
     'whatsapp_presencial' => env('WC_WHATSAPP_PRESENCIAL', '573000000000'),

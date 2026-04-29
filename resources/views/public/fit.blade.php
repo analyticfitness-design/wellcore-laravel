@@ -41,10 +41,16 @@
 
         <div class="fit-hero-photo fit-hero-photo-real" data-animate="fadeInUp" data-stagger="2">
             <picture>
-                <source srcset="{{ asset('images/coaches/silvia-hero.webp') }}?v=2" type="image/webp">
-                <img src="{{ asset('images/coaches/silvia-hero.png') }}?v=2"
+                {{-- Mobile (≤768px) sirve la versión liviana 21KB --}}
+                <source media="(max-width: 768px)"
+                        srcset="{{ asset('images/coaches/silvia-hero-mobile.webp') }}?v=3"
+                        type="image/webp">
+                {{-- Desktop WebP 36KB --}}
+                <source srcset="{{ asset('images/coaches/silvia-hero.webp') }}?v=3" type="image/webp">
+                {{-- PNG fallback navegadores antiguos --}}
+                <img src="{{ asset('images/coaches/silvia-hero.png') }}?v=3"
                      alt="Coach Silvia Martínez"
-                     width="879" height="1100"
+                     width="719" height="900"
                      loading="eager" fetchpriority="high" decoding="async">
             </picture>
         </div>
