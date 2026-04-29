@@ -155,25 +155,25 @@ return [
     // =========================================================
     'tiers_hint' => 'Swipe to compare the 3 plans',
 
-    'esencial_quote' => 'For those just starting out and want structure to build on.',
+    'esencial_quote' => 'For those just starting out who want structure to build on.',
     'esencial_pillars' => [
-        'Custom training · exercises with instructions and automatic PR detection',
-        'Daily habits with streaks · water, sleep, nutrition · 30-day heatmap',
-        'Monthly check-in with your coach · monthly adjustments to keep momentum',
+        'Custom training · exercises with instructions, weight tracking, automatic PR detection',
+        'Basic nutrition guide + daily habits · water, sleep, food with streak tracking',
+        'Assigned coach · adjusts your plan monthly based on your weekly check-in',
     ],
 
     'metodo_quote' => 'For those who already train and need a plan that moves with you every two weeks.',
     'metodo_pillars' => [
-        'Training + personalized nutrition · macros, meal plan, daily water tracking',
-        'Bi-weekly check-in + adjustments · your coach reviews progress every 15 days',
-        'Habits + supplementation · 5 daily habits, supplements with timing, weekly adherence',
+        'Training + personalized nutrition · calculated macros, meal plan, daily water',
+        'Your coach adjusts the plan every two weeks · review every 15 days based on real progress',
+        'Habits + scheduled supplementation · 5 daily habits, programmed supplements',
     ],
 
     'elite_quote' => 'For athletes and high performers seeking advanced specialization.',
     'elite_pillars' => [
-        'Advanced training · weekly progressions, exercise variations, volume analysis and nutrient timing',
+        'Advanced training · weekly progressions, variations, volume analysis, nutrient timing',
         'Advanced sport optimization · for male athletes: sport supplementation protocol with professional guidance. For female athletes: training periodized by your menstrual cycle.',
-        'Weekly 1:1 check-in · integrated coaching across 6 domains, 8-hour priority support',
+        'Your coach adjusts the plan weekly · 1:1 check-in with integrated coaching, 8-hour support',
     ],
     'elite_metric_value' => '12',
     'elite_metric_aria' => '12 active clients in Elite plan',
@@ -191,43 +191,43 @@ return [
     'divider_preguntas'   => 'QUESTIONS · OBJECTIONS',
 
     'comp_h2'  => 'Compare plans',
-    'comp_sub' => 'Only what makes each tier different.',
+    'comp_sub' => 'Only what makes each tier different. The weekly check-in and human coach come in all three.',
     'comp_rows' => [
         [
-            'feat'     => 'Custom plan',
-            'esencial' => ['type' => 'mark', 'value' => '✓', 'mod' => 'yes'],
-            'metodo'   => ['type' => 'mark', 'value' => '✓', 'mod' => 'hl'],
-            'elite'    => ['type' => 'mark', 'value' => '✓', 'mod' => 'yes'],
+            'feat'     => 'Your coach adjusts your plan',
+            'esencial' => ['type' => 'val', 'value' => 'Monthly',     'mod' => null],
+            'metodo'   => ['type' => 'val', 'value' => 'Bi-weekly',   'mod' => 'hl'],
+            'elite'    => ['type' => 'val', 'value' => 'Weekly',      'mod' => 'gd'],
         ],
         [
-            'feat'     => 'Check-in frequency',
-            'esencial' => ['type' => 'val', 'value' => 'Monthly',   'mod' => null],
-            'metodo'   => ['type' => 'val', 'value' => 'Bi-weekly', 'mod' => 'hl'],
-            'elite'    => ['type' => 'val', 'value' => 'Weekly',    'mod' => 'gd'],
-        ],
-        [
-            'feat'     => 'Adjustment frequency',
-            'esencial' => ['type' => 'val', 'value' => 'Monthly',   'mod' => null],
-            'metodo'   => ['type' => 'val', 'value' => 'Bi-weekly', 'mod' => 'hl'],
-            'elite'    => ['type' => 'val', 'value' => 'Weekly',    'mod' => 'gd'],
-        ],
-        [
-            'feat'     => 'Personalized nutrition (macros)',
-            'esencial' => ['type' => 'mark', 'value' => '—',           'mod' => 'no'],
-            'metodo'   => ['type' => 'mark', 'value' => '✓',           'mod' => 'hl'],
-            'elite'    => ['type' => 'val',  'value' => '✓ with timing', 'mod' => 'gd'],
+            'feat'     => 'Nutrition plan',
+            'esencial' => ['type' => 'val', 'value' => 'Basic',            'mod' => null],
+            'metodo'   => ['type' => 'val', 'value' => 'Macros + meals',   'mod' => 'hl'],
+            'elite'    => ['type' => 'val', 'value' => 'Macros + timing',  'mod' => 'gd'],
         ],
         [
             'feat'     => 'Supplementation with timing',
-            'esencial' => ['type' => 'mark', 'value' => '—',          'mod' => 'no'],
-            'metodo'   => ['type' => 'mark', 'value' => '✓',          'mod' => 'hl'],
+            'esencial' => ['type' => 'mark', 'value' => '—',             'mod' => 'no'],
+            'metodo'   => ['type' => 'mark', 'value' => '✓',             'mod' => 'hl'],
             'elite'    => ['type' => 'val',  'value' => '✓ personalized', 'mod' => 'gd'],
+        ],
+        [
+            'feat'     => 'Training variations',
+            'esencial' => ['type' => 'val', 'value' => 'Standard',         'mod' => null],
+            'metodo'   => ['type' => 'val', 'value' => 'With periodization', 'mod' => 'hl'],
+            'elite'    => ['type' => 'val', 'value' => 'Advanced + timing', 'mod' => 'gd'],
         ],
         [
             'feat'     => 'Advanced sport optimization',
             'esencial' => ['type' => 'mark', 'value' => '—', 'mod' => 'no'],
             'metodo'   => ['type' => 'mark', 'value' => '—', 'mod' => 'no'],
             'elite'    => ['type' => 'val',  'value' => 'Sport supplementation · Menstrual cycle', 'mod' => 'gd'],
+        ],
+        [
+            'feat'     => 'Coach response time',
+            'esencial' => ['type' => 'val', 'value' => '48h', 'mod' => null],
+            'metodo'   => ['type' => 'val', 'value' => '24h', 'mod' => 'hl'],
+            'elite'    => ['type' => 'val', 'value' => '8h',  'mod' => 'gd'],
         ],
     ],
 
@@ -299,9 +299,9 @@ return [
             'body'  => 'Every milestone you break gets saved. Your progress is visible.',
         ],
         [
-            'icon'  => 'wifi-off',
-            'title' => 'Offline app',
-            'body'  => 'Works without connection. Like a native app, no downloads needed.',
+            'icon'  => 'target',
+            'title' => 'Daily missions + XP',
+            'body'  => 'Four missions every day: train, check-in, weight, nutrition. Earn XP and level up.',
         ],
     ],
 
