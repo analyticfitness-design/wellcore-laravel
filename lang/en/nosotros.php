@@ -1,106 +1,202 @@
 <?php
 
+/*
+ |---------------------------------------------------------------------
+ | /nosotros · brand storytelling editorial v2 — EN translations.
+ | Mirrors lang/es/nosotros.php structure (Sprint 2026-04-29 porting).
+ |---------------------------------------------------------------------
+ */
+
 return [
 
-    // SEO
-    'title' => 'Our Story — WellCore Fitness',
+    // -------------------------------------------------------------------------
+    // Meta — head
+    // -------------------------------------------------------------------------
+    'meta_title'       => 'Our Story · WellCore Fitness',
+    'meta_description' => 'WellCore Fitness started because it happened to us. Evidence-based coaching, no miracles. Meet the team, the story, the values.',
 
-    // -- HERO -----------------------------------------------------------------
-    'hero_h1'   => 'OUR STORY',
-    'hero_sub'  => 'Evidence-based fitness coaching. Sustainable results. No shortcuts, no miracles — just science.',
+    // -------------------------------------------------------------------------
+    // Sidebar editorial (≥1024px)
+    // -------------------------------------------------------------------------
+    'sidebar' => [
+        'subtitle'       => 'Our Story · 2026',
+        'progress_label' => 'Progress',
+        'cta'            => 'EXPLORE THE METHOD',
+    ],
 
-    // -- MISSION / VISION -----------------------------------------------------
-    'essence_h2'    => 'WHO WE ARE',
-    'essence_sub'   => 'What drives us and where we\'re headed.',
+    // -------------------------------------------------------------------------
+    // Capítulos / secciones
+    // -------------------------------------------------------------------------
+    'chapters' => [
+        'cap00' => ['pill' => 'Ch. 00 · Cover',     'nav_title' => 'Cover'],
+        's1'    => ['pill' => 'Ch. 01 · Manifesto', 'nav_title' => 'Manifesto'],
+        's2'    => ['pill' => 'Ch. 02 · History',   'nav_title' => 'History'],
+        's3'    => ['pill' => 'Ch. 03 · Team',      'nav_title' => 'Team'],
+        's4'    => ['pill' => 'Ch. 04 · Values',    'nav_title' => 'Values'],
+        'cta'   => ['pill' => 'If you think it\'s for you', 'nav_title' => 'Talk to us'],
+    ],
 
-    'mision_h3'     => 'OUR MISSION',
-    'mision_p1'     => 'To deliver the highest quality fitness coaching by combining exercise science, data-driven nutrition, and real accountability. Every client receives a fully personalized program designed to produce sustainable, measurable results.',
-    'mision_p2'     => 'We don\'t sell magical transformations or quick-fix promises. We offer a proven system, backed by scientific evidence, that works when you commit to the process.',
+    // -------------------------------------------------------------------------
+    // Hero founder
+    // -------------------------------------------------------------------------
+    'hero' => [
+        'eyebrow'    => 'WC · OUR STORY · 2018 — 2026 · LATAM',
+        'title_html' => 'WE STARTED<br>BECAUSE IT HAPPENED<br>TO <span class="ac">US.</span>',
+        'sub'        => '"WellCore is what we needed when nobody was offering it."',
+        'meta' => [
+            ['k' => 'Founded',   'v' => '2018 · Bucaramanga'],
+            ['k' => 'Core team', 'v' => '06 people'],
+            ['k' => 'Coverage',  'v' => 'LATAM'],
+            ['k' => 'Philosophy','v' => 'No miracles'],
+        ],
+    ],
 
-    'vision_h3'     => 'OUR VISION',
-    'vision_p1'     => 'To become the leading fitness coaching platform in Latin America. We believe access to quality coaching shouldn\'t be a privilege — it should be available to anyone committed to their health.',
-    'vision_p2'     => 'To democratize access to personalized, science-backed coaching through technology that connects certified coaches with people who are ready to transform their lives in a real and sustainable way.',
+    // -------------------------------------------------------------------------
+    // Manifiesto editorial
+    // -------------------------------------------------------------------------
+    'manifiesto' => [
+        'tag'      => '§ 01  ·  Manifesto · Daniel Esparza',
+        'p1_html'  => 'I used to train without direction. Paying coaches who promised impossible things and delivered copy-paste plans. I was looking for <strong>science, not charisma</strong>. Method, not Instagram motivation. <em>What I needed didn\'t exist</em> — so we built it.',
+        'p2_html'  => 'WellCore wasn\'t born from a pitch deck or a funding round. It was born from the honest frustration of not finding what should have existed: evidence-based coaching, no shortcuts, no manipulated transformations, no fake urgency. We started the way I needed someone to start with me.',
+        'p3_html'  => 'Years later we\'re still on the same line. We\'re a small team that <strong>trains what it teaches</strong>, a platform built by hand, and a simple promise: if we can\'t explain the scientific reason behind what we ask of you, we don\'t ask it.',
+        'p4_html'  => 'This isn\'t a fitness company. It\'s a method with a product on top. And it keeps growing because <em>it actually works.</em>',
+        'sig_name' => 'DANIEL ESPARZA',
+        'sig_role' => 'CEO · Founder · WellCore Fitness',
+    ],
 
-    // -- TEAM -----------------------------------------------------------------
-    'team_h2'   => 'THE TEAM',
-    'team_sub'  => 'The people behind WellCore.',
+    // -------------------------------------------------------------------------
+    // Timeline historia
+    // -------------------------------------------------------------------------
+    'timeline' => [
+        'intro'     => 'From 1:1 coach in Bucaramanga to LATAM platform. Five milestones of method, not miracles.',
+        'intro_sub' => '2018 → 2026 · Five milestones',
+        'items' => [
+            [
+                'year'       => '2018',
+                'tag'        => 'origin',
+                'state'      => 'done',
+                'title_html' => 'WELLCORE<br>FOUNDED',
+                'desc'       => 'Daniel starts as a 1:1 coach in Bucaramanga, Colombia. Spreadsheets, manual check-ins, and a clear method: science first, everything else later. The method existed before the product.',
+                'meta'       => ['Bucaramanga', '1 athlete', 'no platform'],
+            ],
+            [
+                'year'       => '2020',
+                'tag'        => 'online',
+                'state'      => 'done',
+                'title_html' => 'FIRST FULL<br>ONLINE PLAN',
+                'desc'       => 'The first integrated 100% online plan: training, nutrition, and biweekly check-ins packaged as a product, not a loose PDF. Science finally enters structured.',
+                'meta'       => ['v0 online', 'biweekly check-ins', 'method packaged'],
+            ],
+            [
+                'year'       => '2022',
+                'tag'        => 'scale',
+                'state'      => 'done',
+                'title_html' => 'COACHING 1:1<br>SCALED',
+                'desc'       => 'We grew from one coach to a small team of certified coaches with the WellCore method. More voices, same rigor. Each coach passes an evidence and workload filter before joining.',
+                'meta'       => ['core team', 'shared method', 'uniform rigor'],
+            ],
+            [
+                'year'       => '2024',
+                'tag'        => 'platform',
+                'state'      => 'done',
+                'title_html' => 'OUR OWN<br>PLATFORM',
+                'desc'       => 'We launched our own platform: client panel, coach panel, exercise library, weekly tracking. For the first time the method lives inside software we built ourselves.',
+                'meta'       => ['client panel', 'coach panel', 'in-house product'],
+            ],
+            [
+                'year'       => '2026',
+                'tag'        => 'in progress',
+                'state'      => 'future',
+                'title_html' => 'LATAM<br>EXPANSION',
+                'desc'       => 'Active expansion into more LATAM countries with local pricing, neutral Spanish content, and a complete editorial redesign. Same method, wider reach.',
+                'meta'       => ['v2 redesign', 'local pricing', 'neutral Spanish'],
+            ],
+        ],
+    ],
 
-    'founder_name'  => 'DANIEL ESPARZA',
-    'founder_role'  => 'Founder & Head Coach',
-    'founder_bio'   => 'Exercise physiology and sports nutrition specialist with 8+ years of experience in personalized coaching. NSCA Certified (National Strength and Conditioning Association). Has coached hundreds of clients across Latin America, developing an evidence-based methodology that prioritizes sustainable results over quick fixes.',
-    'founder_tag1'  => '8+ Years Experience',
-    'founder_tag2'  => 'NSCA Certified',
-    'founder_tag3'  => 'Exercise Physiology',
-    'founder_tag4'  => 'Sports Nutrition',
+    // -------------------------------------------------------------------------
+    // Equipo
+    // -------------------------------------------------------------------------
+    'equipo' => [
+        'intro'     => '"The people behind the method. Every one of them trains what they teach."',
+        'intro_sub' => '06 people · LATAM',
+        'members' => [
+            [
+                'num'        => '01 / 06',
+                'initials'   => 'DE',
+                'name_html'  => 'DANIEL ESPARZA',
+                'role'       => 'CEO · Founder · Bucaramanga',
+                'quote'      => 'We built it because we needed it.',
+                'bio'        => 'Founder of WellCore Fitness. Specialist in exercise physiology and sports nutrition. Designed the method the team shares today: science first, no miracles.',
+                'featured'   => true,
+            ],
+            [
+                'num' => '02 / 06', 'initials' => 'CR', 'name_html' => 'CR',
+                'role' => 'Senior coach',
+                'quote' => 'Progress isn\'t improvised. It\'s programmed.',
+                'bio' => null, 'featured' => false,
+            ],
+            [
+                'num' => '03 / 06', 'initials' => 'MV', 'name_html' => 'MV',
+                'role' => 'Clinical nutritionist',
+                'quote' => 'Nutrition is half the job. Almost always the worse half.',
+                'bio' => null, 'featured' => false,
+            ],
+            [
+                'num' => '04 / 06', 'initials' => 'LM', 'name_html' => 'LM',
+                'role' => 'Women\'s coaching specialist',
+                'quote' => 'Every cycle counts. Programming around that changes everything.',
+                'bio' => null, 'featured' => false,
+            ],
+            [
+                'num' => '05 / 06', 'initials' => 'JR', 'name_html' => 'JR',
+                'role' => 'Senior performance coach',
+                'quote' => 'Measurable progress or it\'s not progress. It\'s hope.',
+                'bio' => null, 'featured' => false,
+            ],
+            [
+                'num' => '06 / 06', 'initials' => 'SB', 'name_html' => 'SB',
+                'role' => 'Sports nutritionist',
+                'quote' => 'Science needs to reach the people who need it.',
+                'bio' => null, 'featured' => false,
+            ],
+        ],
+    ],
 
-    'coach2_name'   => 'Nutrition Coach',
-    'coach2_role'   => 'Registered Nutritionist',
-    'coach2_bio'    => 'Clinical and sports nutrition professional. Responsible for WellCore\'s evidence-based nutritional protocols. Designs personalized meal plans calibrated to each client\'s individual physiology and goals.',
-    'coach2_hover'  => 'Clinical Nutrition · Sports',
+    // -------------------------------------------------------------------------
+    // Valores
+    // -------------------------------------------------------------------------
+    'valores' => [
+        'intro'    => 'Three hard lines',
+        'headline' => 'What we don\'t negotiate — even if it costs us clients, virality, or shortcuts.',
+        'items' => [
+            [
+                'num'            => '/01',
+                'statement_html' => 'WE DON\'T PROMISE<br><span class="red">MIRACLES.</span><br>WE PROMISE METHOD.',
+                'context_html'   => 'Every plan we deliver has evidence behind it. If we can\'t explain the <strong>scientific reason</strong> behind what we ask of you, we don\'t ask it. Motivation runs out; method stays.',
+            ],
+            [
+                'num'            => '/02',
+                'statement_html' => 'YOUR PROGRESS<br>IS <span class="red">YOURS.</span><br>NOT OURS.',
+                'context_html'   => 'We don\'t use your transformation as marketing bait. <strong>Your body, your story, your result.</strong> We\'re the method; you\'re the protagonist. No manipulated before/after, no paid testimonials.',
+            ],
+            [
+                'num'            => '/03',
+                'statement_html' => 'SCIENCE<br>ISN\'T <span class="red">OPTIONAL.</span>',
+                'context_html'   => 'We train with up-to-date evidence. <strong>Not with trends, not with intuition.</strong> If there\'s a paper behind it, we cite it. If there isn\'t, we don\'t use it. If the evidence changes, so does the plan.',
+            ],
+        ],
+    ],
 
-    'coach3_name'   => 'Strength Coach',
-    'coach3_role'   => 'Strength & Conditioning',
-    'coach3_bio'    => 'CSCS Certified (Certified Strength and Conditioning Specialist). Expert in training periodization and progressive programming. Architect of WellCore\'s strength training protocols.',
-    'coach3_hover'  => 'CSCS Certified · Periodization',
-
-    'coach4_name'   => 'Mindset Coach',
-    'coach4_role'   => 'Sports Psychology',
-    'coach4_bio'    => 'Specialist in sports psychology, behavioral adherence, and sustainable habit formation. Works with each client to develop the mindset required for long-term consistency and goal achievement.',
-    'coach4_hover'  => 'Sports Psychology · Behavioral Coaching',
-
-    // -- HISTORY / TIMELINE ---------------------------------------------------
-    'history_h2'    => 'OUR JOURNEY',
-    'history_sub'   => 'The WellCore story since 2024.',
-
-    'tl1_date'  => '2024 — Q1',
-    'tl1_title' => 'WellCore Founded',
-    'tl1_desc'  => 'WellCore launches with a mission to deliver science-backed fitness coaching. First 10 clients onboarded with fully personalized protocols.',
-
-    'tl2_date'  => '2024 — Q3',
-    'tl2_title' => 'Digital Platform',
-    'tl2_desc'  => 'Launch of the digital coaching platform for client management, progress tracking, and coach-client communication. Surpassed 50 active clients.',
-
-    'tl3_date'  => '2025 — Q1',
-    'tl3_title' => 'RISE Program',
-    'tl3_desc'  => 'Launch of RISE, our flagship 30-day transformation challenge. Expanded to 5 Latin American countries.',
-
-    'tl4_date'  => '2025 — Q3',
-    'tl4_title' => 'Mobile App',
-    'tl4_desc'  => 'Launch of the mobile app for on-the-go access to workouts, nutrition, and real-time tracking. Surpassed 200 active clients.',
-
-    'tl5_date'  => '2026 — Q1',
-    'tl5_title' => 'In-Person Launch: Bucaramanga',
-    'tl5_desc'  => 'Launch of in-person coaching in Bucaramanga, Colombia. WellCore surpasses 500 active clients across Latin America.',
-
-    // -- STATS ----------------------------------------------------------------
-    'stats_h2'          => 'BY THE NUMBERS',
-    'stats_sub'         => 'WellCore at a glance.',
-    'stat_clients'      => 'Active Clients',
-    'stat_countries'    => 'Countries',
-    'stat_coaches'      => 'Certified Coaches',
-    'stat_adherence'    => 'Adherence Rate',
-
-    // -- VALUES ---------------------------------------------------------------
-    'values_h2'     => 'OUR VALUES',
-    'values_sub'    => 'The principles behind everything we build.',
-
-    'val1_title'    => 'Science',
-    'val1_desc'     => 'Every decision is backed by peer-reviewed evidence. We don\'t follow trends — we follow the research.',
-
-    'val2_title'    => 'Transparency',
-    'val2_desc'     => 'Clear, direct communication. No false promises, no hidden agendas. Honest about what works and what doesn\'t.',
-
-    'val3_title'    => 'Personalization',
-    'val3_desc'     => 'Every program is unique. No generic templates. Your protocol adapts to your physiology, your goals, and your life.',
-
-    'val4_title'    => 'Community',
-    'val4_desc'     => 'Collective growth and mutual accountability. The WellCore community is a core pillar of the method and the process.',
-
-    'val5_title'    => 'Results',
-    'val5_desc'     => 'Real data, measurable progress. We track outcomes with objective metrics — not subjective feelings.',
-
-    // -- CTA ------------------------------------------------------------------
-    'cta_h2'        => 'JOIN THE MOVEMENT',
-    'cta_sub'       => 'Explore our plans and start your journey with a team that puts science and results first.',
-    'cta_button'    => 'See Pricing',
+    // -------------------------------------------------------------------------
+    // CTA suave
+    // -------------------------------------------------------------------------
+    'cta_suave' => [
+        'kicker'        => 'NEXT STEP',
+        'title_html'    => 'IF YOU THINK IT\'S<br>FOR <span class="red">YOU,</span> LET\'S TALK.',
+        'sub'           => '"No pressure, no countdowns. If you want to see how we work, the method and the plans are one click away."',
+        'btn_primary'   => 'EXPLORE THE METHOD',
+        'btn_secondary' => 'See plans',
+        'foot_line'     => 'Take your time · No urgency · You won\'t get 17 emails',
+    ],
 ];

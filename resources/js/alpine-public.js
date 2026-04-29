@@ -11,6 +11,8 @@ import intersect from '@alpinejs/intersect';
 import './metodo.js';
 // proceso.js define window.procesoPage() (scroll progress + step observer + viz reveal).
 import './proceso.js';
+// nosotros.js define window.nosotrosPage() (scroll progress + chapter observer + reveal).
+import './nosotros.js';
 
 Alpine.plugin(collapse);
 Alpine.plugin(intersect);
