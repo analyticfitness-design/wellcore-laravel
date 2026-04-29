@@ -36,7 +36,7 @@ return [
 
     // Esencial
     'esencial_name'  => 'ESENCIAL',
-    'esencial_desc'  => 'Entrena con proposito. Primer paso real hacia resultados medibles.',
+    'esencial_desc'  => 'Entrenamiento, nutrición con macros y suplementación. Tu coach ajusta cada mes.',
     'esencial_cta'   => 'Comenzar Esencial',
 
     // Metodo
@@ -145,7 +145,7 @@ return [
     // V2 — Hero brutal (5-line H1 + eyebrow + Fraunces italic sub)
     // =========================================================
     'hero_eyebrow_word' => 'PLANES',
-    'hero_h1_lines' => ['ELEGÍ', 'EL PLAN.', 'EL COACH', 'HACE EL', 'RESTO.'],
+    'hero_h1_lines' => ['ELIGE', 'EL PLAN.', 'EL COACH', 'HACE EL', 'RESTO.'],
     'hero_sub' => 'Sin trucos. Sin promesas. Solo método.',
     'hero_cta' => 'Empezar ahora',
     'hero_aside_label' => '3 planes',
@@ -155,11 +155,11 @@ return [
     // =========================================================
     'tiers_hint' => 'Desliza para comparar los 3 planes',
 
-    'esencial_quote' => 'Para quien recién empieza y quiere estructura para arrancar bien.',
+    'esencial_quote' => 'Para quien quiere el sistema completo — entrenamiento, macros y suplementación — con ajuste mensual de coach.',
     'esencial_pillars' => [
         'Entrenamiento personalizado · ejercicios con instrucciones, registro de pesos y récords automáticos',
-        'Plan de nutrición básico + hábitos diarios · agua, sueño, comida con seguimiento de rachas',
-        'Coach asignado · ajusta tu plan cada mes según tu check-in semanal',
+        'Nutrición con macros + suplementación · plan de comidas, macros calculados y suplementos con horarios incluidos',
+        'Coach asignado · revisa tu check-in semanal y ajusta tu plan cada mes',
     ],
 
     'metodo_quote' => 'Para quien ya entrena y necesita un plan que se mueva contigo cada quincena.',
@@ -213,13 +213,13 @@ return [
         ],
         [
             'feat'     => 'Plan de nutrición',
-            'esencial' => ['type' => 'val', 'value' => 'Básico',           'mod' => null],
+            'esencial' => ['type' => 'val', 'value' => 'Macros + comidas', 'mod' => null],
             'metodo'   => ['type' => 'val', 'value' => 'Macros + comidas', 'mod' => 'hl'],
             'elite'    => ['type' => 'val', 'value' => 'Macros + timing',  'mod' => 'gd'],
         ],
         [
             'feat'     => 'Suplementación con horarios',
-            'esencial' => ['type' => 'mark', 'value' => '—',              'mod' => 'no'],
+            'esencial' => ['type' => 'mark', 'value' => '✓',              'mod' => null],
             'metodo'   => ['type' => 'mark', 'value' => '✓',              'mod' => 'hl'],
             'elite'    => ['type' => 'val',  'value' => '✓ personalizada', 'mod' => 'gd'],
         ],
@@ -303,7 +303,7 @@ return [
         ],
         [
             'q' => '¿Qué incluye el plan nutricional?',
-            'a' => 'En Esencial: guía nutricional básica con hábitos diarios. En Método y Elite: distribución de macros calculados, plan de comidas con 3 opciones por plato (cambias receta con un click) y guías para comer fuera. Elite agrega timing nutricional alrededor del entrenamiento. No es una dieta rígida — es educación nutricional aplicada a tu vida real.',
+            'a' => 'Los tres planes incluyen macros calculados, plan de comidas con 3 opciones por plato (cambias receta con un click), suplementación con horarios y guías para comer fuera. La diferencia está en la frecuencia de ajuste: Esencial → cada mes, Método → cada quincena, Elite → cada semana con timing nutricional avanzado. No es una dieta rígida — es educación nutricional adaptada a tu vida real.',
         ],
         [
             'q' => '¿Cuánto tiempo antes de ver resultados?',
@@ -377,7 +377,7 @@ return [
     'cta_eye'    => 'Tu primer check-in en 48 horas',
     'cta_h2_l1'  => 'Empezar',
     'cta_h2_l2'  => 'con Método',
-    'cta_body'   => 'Sin contrato. Sin penalidad. Si en 30 días no es para vos, te devolvemos el dinero.',
+    'cta_body'   => 'Sin contrato. Sin penalidad. Si en 30 días no es para ti, te devolvemos el dinero.',
     'cta_btn'    => 'Empezar ahora',
     'cta_note'   => '30 días sin compromiso · cambias o cancelas cuando quieras',
     'cop_mes_short' => 'mes',

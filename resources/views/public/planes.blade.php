@@ -51,7 +51,7 @@
                 const saved = this.savingsOf(plan);
                 return this.locale === 'en'
                     ? `You pay \$${total} · save \$${saved}`
-                    : `Pagás \$${total} · ahorrás \$${saved}`;
+                    : `Pagas \$${total} · ahorras \$${saved}`;
             },
             selectPlan(p) { this.selectedPlan = p; },
             onTierScroll(ev) {
