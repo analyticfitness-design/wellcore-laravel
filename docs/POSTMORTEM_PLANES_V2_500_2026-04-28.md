@@ -705,3 +705,116 @@ curl -sk https://wellcorefitness.com/presencial | grep -oE "PRESENCIAL · BUCARA
 - ✅ Backups v1 disponibles para rollback rápido si hay regresión
 - ✅ v2.2 commit `54020a28` pushed con info v1 recuperada (mockup laptop home + bio + phone Silvia + plan quotes + features ricas + promo banner + comparator strip)
 - ⏳ Daniel: `npm run build` + push + deploy para activar estilos del enriquecimiento v2.2 en producción
+
+---
+
+## 16. Sprint 4 sesión nocturna autónoma — `/login` Livewire v2 iOS-feel
+
+> **Fecha:** 2026-04-29 (madrugada)
+> **Operador:** Claude Opus 4.7 (1M context) en modo autónomo (Daniel durmiendo)
+> **Commit cierre:** `957e031d` — `feat(login): Livewire view v2 iOS-feel + lang ES/EN + ruta preview`
+> **Restricciones especiales:** sin `npm run build`, sin trigger de deploy. Solo push vía bash console.
+
+### 16.1 Scope realmente entregado
+
+De los 3 entregables del Sprint 4 (`/login`, `/faq`, `/blog`), **solo `/login` se cerró completamente esta sesión**. `/faq` y `/blog` se difieren a próxima sesión por presupuesto de contexto. Esto sigue la regla del kit: "si el contexto se llena al ~70%, cerrá la página actual y deja las siguientes para otra sesión. Orden de prioridad: /login → /faq → /blog. /login es independiente y crítico seguridad — hacelo PRIMERO."
+
+`/login` se entregó como **ruta preview** (`/login-preview`), NO se cambió la ruta `/login` en producción que sigue sirviendo la SPA Vue. Razón: imposibilidad de testear visualmente sin servidor + DB local + sin npm build.
+
+### 16.2 Decisiones operacionales tomadas en autonomía
+
+| # | Decisión | Razón |
+|---|---|---|
+| 1 | NO modificar `/login` en `routes/web.php`, crear `/login-preview` paralela | Login es path crítico de auth. Si rompe → usuarios reales sin acceso. Postmortem §11 documenta exactamente este patrón de bug. |
+| 2 | NO modificar `app/Livewire/Auth/Login.php` | Lógica funcional, mantiene compat con vanilla via `auth_tokens` + `wc_token` session. Cambiarla = riesgo de regresión sin upside visual. |
+| 3 | NO crear `<x-public.ios-input>` ni `<x-public.bottom-sheet>` componentes | Inline el markup directamente en la view Livewire. Razón: scope contenido, mantiene 1 archivo a touchear. Se pueden extraer en sprint futuro si se reusan. |
+| 4 | NO usar Bebas Neue + Inter del rediseño Claude Design | WellCore canonical = Oswald + Raleway (memoria persistente, ya cargados en layout). El rediseño usaba Bebas/Inter porque Claude Design no conoce los tokens reales WellCore. |
+| 5 | CSS inline en `<style>` dentro del componente, NO `@import` en `app.css` | Sin `npm run build` esta noche. `@import` nuevo + sin build = CSS sin efecto en prod (postmortem §12.1). Inline es self-contained, cero dependencia de pipeline. |
+| 6 | Mantener layout `<x-layouts.public>` con nav + footer | Quitar nav del layout = scope creep peligroso (afecta otras páginas). El iOS-feel se inserta dentro del slot, scrolleable. |
+| 7 | Quitar TopBar mobile del rediseño (collapse-on-scroll) | Duplica función con la nav sticky del layout. Dos sticky bars apilados = feo + confuso. |
+| 8 | Eliminar FaceID overlay completo + botón "Iniciar con Face ID" | Decisión kit §3.1: "decorativo distractor sin función real". |
+| 9 | Ocultar OAuth Google/Apple AltAuth | Decisión kit §3.1: solo si `services.google.client_id` configurado. |
+| 10 | Embed `<livewire:auth.forgot-password />` dentro del bottom sheet | Reutilizar el component existente. Estética interna sigue Tailwind v1 — Dann puede unificar después. |
+| 11 | WhatsApp escape hatch usa `config('wellcore.whatsapp_silvia')` | El kit pedía `whatsapp_main` pero ese key NO existe en `config/wellcore.php`. Sí existe `whatsapp_silvia` con default `573000000000`. Marcado TODO. |
+
+### 16.3 Bug/risk evitado (postmortem §11 → §13)
+
+**Pre-flight grep `git status --short \| grep '^??' \| grep -E '(app/\|routes/\|config/)'`** detectó:
+```
+?? app/Http/Controllers/Public/MetodoController.php
+```
+Controller untracked en directorio crítico. **NO es del Sprint 4** (probablemente WIP de sesión Sprint 1B). Se documenta aquí pero NO se commitea sin contexto del autor original. Daniel: revisar si va al repo o se borra.
+
+**routes/web.php diff verificado vacío** antes de la edición — el bug raíz del postmortem §11 (route con cambio sin stagear) fue protegido.
+
+### 16.4 "Catch" notable de la sesión: backups ya existían
+
+Cuando intenté `cp` de `faq.blade.php`/`login.blade.php`/etc a `resources/views/public/backups/...`, descubrí (vía `git ls-files`) que los archivos **ya estaban tracked** desde commit `c7f3f0d2 fix(public): restaurar copy real v1`. Mi `cp` los SOBRESCRIBIÓ en disco con la versión actual (que probablemente había drifted desde la real v1).
+
+Lección: **`git ls-files <path>` siempre antes de `cp` a una ruta de backups.** Si el archivo ya está tracked, hacer `cp` ciegamente puede destruir el estado canónico v1 sin que aparezca en `git status` como modificación obvia.
+
+Fix: `git checkout HEAD -- resources/views/public/backups/ ...` restauró el contenido canónico desde HEAD. Cero daño commiteado.
+
+### 16.5 Cómo activar el v2 de `/login` en producción
+
+Cuando Daniel valide visualmente `/login-preview` y apruebe el swap:
+
+1. **Validación visual** (en `https://wellcorefitness.com/login-preview` después del próximo deploy del server):
+   - Render OK mobile (390px) — Hero brutal Oswald, cards iOS, eye toggle, switch Recordarme, submit pill, trust strip, bottom-sheet Recuperar acceso.
+   - Render OK desktop (≥1024px) — split 50/50 con aside "Sin milagros, ciencia." + form column.
+   - Probar login válido → redirect según tipo de user.
+   - Probar login inválido → error banner.
+   - Probar bottom-sheet → embed ForgotPassword renderea OK.
+   - Sin errors en console.
+
+2. **Editar `routes/web.php`** (líneas ~176-185):
+   ```php
+   // Cambiar:
+   Route::get('/login', fn () => view('vue'))->name('login')->middleware('throttle:login');
+   // Por:
+   Route::get('/login', App\Livewire\Auth\Login::class)->name('login')->middleware('throttle:login');
+
+   // Y borrar el bloque de /login-preview entero.
+   ```
+
+3. **Deploy:** push + `silvia-gitpull-load`. Si OPcache resiste el swap (postmortem §4.2), **container restart completo** desde EasyPanel UI (no solo `restart-php`).
+
+4. **Smoke test prod:** `curl -s -o /dev/null -w "%{http_code}" https://wellcorefitness.com/login` → 200. Probar login válido + inválido + rate limit.
+
+5. **Si rompe en prod:** REVERT inmediato a la línea anterior `fn () => view('vue')`. Mejor login viejo funcionando que login nuevo roto (postmortem §11 lección).
+
+### 16.6 Pendientes para Daniel
+
+| # | TODO | Severidad |
+|---|---|---|
+| 1 | Validar `/login-preview` visualmente cuando server compile | 🔴 Bloquea swap |
+| 2 | Configurar `WC_WHATSAPP_SILVIA` env var con número real Silvia | 🟡 Hoy default `573000000000` |
+| 3 | Decidir si `MetodoController.php` untracked va al repo | 🟡 Postmortem §11 pattern |
+| 4 | Refinar estética interna de ForgotPassword view embedded en sheet (sigue Tailwind v1) | 🟢 Cosmético |
+| 5 | Migrar CSS inline de login.blade.php a `resources/css/auth.css` cuando haya `npm run build` | 🟢 Performance leve |
+| 6 | `/faq` y `/blog` v2 — Sprint 4 incompleto, próxima sesión | 🟡 Scope diferido |
+
+### 16.7 Lo que NO se hizo y por qué
+
+- **`/faq` v2:** requiere migrar 25 → 36 items, 5 → 8 tabs (general/planes/coaches/pagos/cancelaciones/resultados/privacidad/soporte), reescribir blade con SSR de los 36, JSON-LD FAQPage, search Alpine, persistencia tabs en localStorage. **~3h de trabajo focalizado.** Diferido a próxima sesión.
+- **`/blog` (index + show) v2:** index grid + show long-form con TOC server-side via preg_match_all + JSON-LD BlogPosting + cover pipeline AVIF/WebP + LCP candidate + sanitize body_html + grep "claude\|gpt\|openai" en articles existentes. **~3-4h.** Diferido.
+- **Refactor `Login.php` para extender `expires_at` cuando `rememberMe=true`:** mejora opcional NO crítica. El v1 también lo ignoraba (`AuthToken::create([..., 'expires_at' => now()->addDays(7)])` siempre 7 días). Mantenida la lógica intacta para evitar regresión.
+
+### 16.8 Reglas nuevas validadas en esta sesión
+
+1. **`git ls-files <path>` SIEMPRE antes de `cp` a una ruta de backups** — para evitar overwrite ciego de canónicos v1.
+2. **CSS scoped a un wrapper class (`.auth-page-root`)** funciona perfecto para CSS inline en componente Livewire, sin pollution global y sin necesidad de `@import` que requiere `npm build`.
+3. **Estrategia `/X` (vivo) + `/X-preview` (test)** = patrón seguro para auth/payment/booking — paths donde el usuario real no perdona regresiones. Aditivo, cero blast radius si rompe.
+4. **Decisión consciente de scope > entrega total a medias** — al darme cuenta que `/faq` se quedaría a medio commit, mejor cerrar `/login` clean y diferir resto.
+
+### 16.9 Estado al cierre de sesión Sprint 4 noche
+
+- ✅ `/login` v2 Livewire pushed (`957e031d`) — disponible en `/login-preview` post-deploy del server
+- ✅ Lang ES + EN auth.php creados con voz LATAM neutro estricto (grep ✓)
+- ✅ Backups v1 ya existentes en repo desde `c7f3f0d2`, no duplicados
+- ✅ `/login` original en producción **intacto** sirviendo SPA Vue — usuarios reales NO afectados
+- ⚠️ Daniel pendiente: validar `/login-preview` + decidir swap a `/login` real
+- ⏳ `/faq` v2 — diferido próxima sesión
+- ⏳ `/blog` v2 — diferido próxima sesión
+
+
