@@ -3820,3 +3820,977 @@
     .metodo-sticky-cta { transition: none !important; }
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   PÁGINA: /proceso (porting v2 — storytelling 5 steps con mockup viz)
+   Spec: 03-proceso/redesigned-mobile.html
+   Reusa: .metodo-sidebar-* (editorial-sidebar), .pullquote, sticky-mobile-cta-v2
+   Prefijo de clases nuevas: .proceso-*
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Root + atmosphere shaper ───────────────────────────────────── */
+.proceso-root {
+    position: relative;
+    color: var(--color-wc-text);
+    font-family: var(--font-sans);
+}
+
+/* ─── HERO ───────────────────────────────────────────────────────── */
+.proceso-hero {
+    min-height: 92svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 32px 60px 48px;
+    position: relative;
+    overflow: hidden;
+}
+@media (min-width: 768px) {
+    .proceso-hero { padding: 100px 60px 80px; }
+}
+.proceso-hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--color-wc-red-text);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.proceso-hero-eyebrow::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--color-wc-accent);
+}
+.proceso-hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(72px, 18vw, 120px);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    color: var(--color-wc-text);
+    margin-bottom: 28px;
+    font-weight: 400;
+}
+.proceso-hero-title .accent { color: var(--color-wc-accent); }
+.proceso-hero-sub {
+    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-style: italic;
+    font-size: clamp(16px, 4vw, 22px);
+    color: var(--color-wc-gold-editorial);
+    line-height: 1.5;
+    max-width: 380px;
+    margin-bottom: 48px;
+}
+.proceso-hero-scroll-hint {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-3);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.proceso-scroll-arrow {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--color-wc-border-2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: proceso-bounceY 2s var(--ease-out) infinite;
+}
+.proceso-scroll-arrow svg { display: block; }
+@keyframes proceso-bounceY {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(5px); }
+}
+.proceso-hero-bg-number {
+    font-family: var(--font-display);
+    font-size: clamp(200px, 50vw, 400px);
+    position: absolute;
+    right: -30px;
+    bottom: -40px;
+    opacity: 0.035;
+    color: var(--color-wc-accent);
+    user-select: none;
+    line-height: 1;
+    pointer-events: none;
+}
+
+/* ─── Manifesto (debajo del hero) ─────────────────────────────────── */
+.proceso-manifesto {
+    padding: 40px 32px 56px 48px;
+    border-top: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--color-wc-border);
+    max-width: var(--col-wide);
+}
+@media (min-width: 768px) {
+    .proceso-manifesto { padding: 48px 60px 64px; }
+}
+.proceso-manifesto-kicker {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-3);
+    margin-bottom: 18px;
+}
+.proceso-manifesto-body {
+    font-family: var(--font-sans);
+    font-size: clamp(16px, 2.4vw, 19px);
+    line-height: 1.7;
+    color: var(--color-wc-text-2);
+    max-width: 640px;
+}
+.proceso-manifesto-body strong { color: var(--color-wc-text); font-weight: 600; }
+
+/* ─── STEP base ──────────────────────────────────────────────────── */
+.proceso-step {
+    min-height: 100svh;
+    padding: 80px 32px 60px 48px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 32px;
+}
+.proceso-step + .proceso-step { border-top: 1px solid var(--color-wc-border); }
+@media (min-width: 768px) {
+    .proceso-step {
+        padding: 100px 60px 80px;
+        flex-direction: row;
+        align-items: center;
+        gap: 60px;
+    }
+    .proceso-step:nth-of-type(even) { flex-direction: row-reverse; }
+    .proceso-step-text-col { flex: 1; }
+    .proceso-step-viz-col {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+.proceso-step-bg-number {
+    font-family: var(--font-display);
+    font-size: clamp(180px, 40vw, 280px);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.04;
+    color: var(--color-wc-text);
+    user-select: none;
+    pointer-events: none;
+    line-height: 1;
+    z-index: 0;
+    font-weight: 400;
+}
+.proceso-step > * { position: relative; z-index: 1; }
+.proceso-step-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.proceso-step-index {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--color-wc-red-text);
+    background: var(--color-wc-red-soft);
+    border: 1px solid rgba(220, 38, 38, 0.2);
+    border-radius: 3px;
+    padding: 3px 8px;
+}
+.proceso-step-timing {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-3);
+}
+.proceso-step-title {
+    font-family: var(--font-display);
+    font-size: clamp(42px, 10vw, 72px);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    margin: 14px 0 18px;
+    color: var(--color-wc-text);
+    font-weight: 400;
+}
+@media (min-width: 1024px) {
+    .proceso-step-title { font-size: 80px; }
+}
+.proceso-step-title .accent { color: var(--color-wc-accent); }
+.proceso-step-desc {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--color-wc-text-2);
+    max-width: 440px;
+    margin-bottom: 12px;
+}
+.proceso-step-detail {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-3);
+}
+.proceso-step-disclaimer {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-3);
+    margin-top: 14px;
+    text-align: center;
+    opacity: 0.75;
+}
+@media (min-width: 768px) {
+    .proceso-step-disclaimer { text-align: left; }
+}
+
+/* ─── Glass utility (compartido por viz) ─────────────────────────── */
+.proceso-glass {
+    background: rgba(26, 26, 26, 0.6);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid var(--color-wc-border-2);
+    border-radius: 12px;
+}
+:root:not(.dark) .proceso-glass {
+    background: rgba(255, 255, 255, 0.65);
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+/* ─── VIZ 1 · Form mockup ────────────────────────────────────────── */
+.proceso-form-mockup {
+    padding: 20px;
+    max-width: 360px;
+    width: 100%;
+}
+.proceso-form-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--color-wc-border);
+}
+.proceso-form-title {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-3);
+}
+.proceso-form-duration {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-wc-green-text);
+    background: var(--color-wc-green-soft);
+    border-radius: 3px;
+    padding: 2px 6px;
+}
+.proceso-form-q,
+.proceso-form-slider-q {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-wc-text-2);
+    margin-bottom: 10px;
+}
+.proceso-form-opts {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+.proceso-form-opt {
+    padding: 8px 12px;
+    border: 1px solid var(--color-wc-border);
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-wc-text-2);
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.proceso-form-opt.is-selected {
+    border-color: rgba(220, 38, 38, 0.4);
+    background: rgba(220, 38, 38, 0.06);
+    color: var(--color-wc-text);
+}
+.proceso-form-slider-track {
+    height: 3px;
+    background: var(--color-wc-border-2);
+    border-radius: 2px;
+    position: relative;
+    margin-bottom: 4px;
+}
+.proceso-form-slider-fill {
+    height: 100%;
+    width: 60%;
+    background: var(--color-wc-accent);
+    border-radius: 2px;
+}
+.proceso-form-slider-thumb {
+    position: absolute;
+    top: 50%;
+    right: 40%;
+    transform: translate(50%, -50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-wc-text);
+    border: 2px solid var(--color-wc-accent);
+}
+.proceso-form-slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--color-wc-text-3);
+}
+.proceso-form-submit {
+    margin-top: 16px;
+    width: 100%;
+    padding: 10px;
+    background: var(--color-wc-accent);
+    border-radius: 6px;
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    color: #fff;
+    text-align: center;
+}
+
+/* ─── VIZ 2 · Coach matchmaking ──────────────────────────────────── */
+.proceso-coaches-row {
+    display: flex;
+    gap: 12px;
+    max-width: 360px;
+    width: 100%;
+}
+.proceso-coach-card {
+    flex: 1;
+    padding: 18px 10px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+}
+.proceso-coach-ring-wrap {
+    position: relative;
+    width: 56px;
+    height: 56px;
+}
+.proceso-coach-ring-svg {
+    width: 56px;
+    height: 56px;
+    position: absolute;
+    inset: 0;
+    display: block;
+}
+.proceso-coach-ring-svg .ring-progress {
+    transition: stroke-dashoffset 1.4s var(--ease-out) 0.2s;
+}
+.proceso-viz-active .proceso-coach-ring-svg .ring-progress {
+    /* offset comes from inline style; keep transition for entrada */
+}
+.proceso-coach-avatar {
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    background: var(--color-wc-bg-4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 16px;
+    color: var(--color-wc-text-2);
+    border: 1px solid transparent;
+}
+.proceso-coach-card.is-best .proceso-coach-avatar {
+    border-color: rgba(220, 38, 38, 0.5);
+    color: var(--color-wc-text);
+}
+.proceso-coach-name {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    color: var(--color-wc-text);
+    text-align: center;
+    font-weight: 400;
+}
+.proceso-coach-spec {
+    font-family: var(--font-mono);
+    font-size: 7px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-3);
+    text-align: center;
+}
+.proceso-coach-match {
+    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-wc-green-text);
+    font-variant-numeric: tabular-nums;
+}
+.proceso-coach-card.is-best {
+    border-color: rgba(220, 38, 38, 0.25);
+    background: rgba(220, 38, 38, 0.04);
+}
+.proceso-coach-card.is-best .proceso-coach-match {
+    color: var(--color-wc-red-text);
+}
+.proceso-coach-best-tag {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 7px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: var(--color-wc-accent);
+    color: #fff;
+    border-radius: 3px;
+    padding: 2px 6px;
+    white-space: nowrap;
+}
+
+/* ─── VIZ 3 · Plan PDF + microciclo table ────────────────────────── */
+.proceso-plan-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 360px;
+    width: 100%;
+}
+.proceso-pdf-card {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.proceso-pdf-icon {
+    width: 36px;
+    height: 44px;
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    border-radius: 4px;
+    background: rgba(220, 38, 38, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: var(--color-wc-red-text);
+}
+.proceso-pdf-info { flex: 1; min-width: 0; }
+.proceso-pdf-filename {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-wc-text);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.proceso-pdf-meta {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: var(--color-wc-text-3);
+}
+.proceso-pdf-download {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-wc-red-text);
+    flex-shrink: 0;
+}
+.proceso-micro-wrap {
+    padding: 14px;
+    overflow-x: auto;
+}
+.proceso-micro-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-size: 10px;
+}
+.proceso-micro-table th {
+    font-family: var(--font-mono);
+    font-size: 7px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-3);
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--color-wc-border);
+    text-align: left;
+    font-weight: 500;
+}
+.proceso-micro-table td {
+    padding: 7px 8px;
+    color: var(--color-wc-text-2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    font-variant-numeric: tabular-nums;
+}
+.proceso-micro-table tr.is-focus td { color: var(--color-wc-text); }
+.proceso-micro-table td.num { color: var(--color-wc-text); font-weight: 600; }
+.proceso-tag-pill {
+    display: inline-block;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 7px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+.proceso-tag-pill.red {
+    background: var(--color-wc-red-soft);
+    color: var(--color-wc-red-text);
+}
+.proceso-tag-pill.green {
+    background: var(--color-wc-green-soft);
+    color: var(--color-wc-green-text);
+}
+
+/* ─── VIZ 4 · Check-in chat + delta dashboard ────────────────────── */
+.proceso-checkin-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 360px;
+    width: 100%;
+}
+.proceso-chat-card { padding: 14px; }
+.proceso-chat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--color-wc-border);
+}
+.proceso-chat-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--color-wc-bg-4);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 10px;
+    color: var(--color-wc-text);
+    flex-shrink: 0;
+}
+.proceso-chat-meta { line-height: 1.2; }
+.proceso-chat-name {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-wc-text);
+}
+.proceso-chat-status {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: var(--color-wc-green-text);
+}
+.proceso-chat-online {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-wc-green-text);
+    margin-left: auto;
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);
+    flex-shrink: 0;
+}
+.proceso-chat-msgs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.proceso-chat-msg {
+    max-width: 80%;
+    padding: 7px 10px;
+    border-radius: 8px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    line-height: 1.4;
+}
+.proceso-chat-msg.is-coach {
+    background: var(--color-wc-bg-4);
+    color: var(--color-wc-text-2);
+    border-bottom-left-radius: 2px;
+    align-self: flex-start;
+}
+.proceso-chat-msg.is-user {
+    background: rgba(220, 38, 38, 0.15);
+    border: 1px solid rgba(220, 38, 38, 0.2);
+    color: var(--color-wc-text);
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+}
+.proceso-chat-ts {
+    font-family: var(--font-mono);
+    font-size: 7px;
+    letter-spacing: 0.1em;
+    color: var(--color-wc-text-3);
+    text-align: right;
+    margin-top: 4px;
+}
+.proceso-delta-card { padding: 14px 16px; }
+.proceso-delta-header {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-3);
+    margin-bottom: 12px;
+}
+.proceso-delta-row {
+    display: flex;
+    gap: 16px;
+}
+.proceso-delta-metric { flex: 1; }
+.proceso-delta-label {
+    font-family: var(--font-mono);
+    font-size: 7px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-3);
+    margin-bottom: 4px;
+}
+.proceso-delta-value {
+    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-wc-text);
+}
+.proceso-delta-value.is-neg { color: var(--color-wc-green-text); }
+.proceso-delta-value.is-pos { color: var(--color-wc-red-text); }
+.proceso-delta-value .unit {
+    font-size: 14px;
+    font-weight: 400;
+}
+.proceso-delta-desc {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--color-wc-text-3);
+    margin-top: 2px;
+}
+.proceso-delta-bar-track {
+    height: 2px;
+    background: var(--color-wc-border-2);
+    border-radius: 1px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+.proceso-delta-bar-fill {
+    height: 100%;
+    border-radius: 1px;
+    background: var(--color-wc-green-text);
+    width: 0%;
+    transition: width 1.6s var(--ease-out) 0.3s;
+}
+.proceso-delta-bar-fill.is-red { background: var(--color-wc-accent); }
+.proceso-viz-active .proceso-delta-bar-fill {
+    width: var(--target-width, 0%);
+}
+
+/* ─── VIZ 5 · Progress chart (journey) ───────────────────────────── */
+.proceso-chart-card {
+    padding: 16px;
+    max-width: 360px;
+    width: 100%;
+}
+.proceso-chart-header {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.proceso-chart-label {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-3);
+    margin-bottom: 6px;
+}
+.proceso-chart-value {
+    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--color-wc-green-text);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+.proceso-chart-pill {
+    margin-left: auto;
+    background: var(--color-wc-green-soft);
+    color: var(--color-wc-green-text);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    border-radius: 4px;
+    padding: 4px 8px;
+}
+.proceso-chart-svg-wrap {
+    position: relative;
+    height: 100px;
+    margin-bottom: 8px;
+}
+.proceso-chart-baseline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--color-wc-border);
+}
+.proceso-chart-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    display: block;
+}
+.proceso-chart-line {
+    fill: none;
+    stroke: var(--color-wc-green-text);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 380;
+    stroke-dashoffset: 380;
+    transition: stroke-dashoffset 1.8s var(--ease-out) 0.2s;
+}
+.proceso-viz-active .proceso-chart-line { stroke-dashoffset: 0; }
+.proceso-chart-area {
+    fill: url(#procesoChartGradient);
+    opacity: 0;
+    transition: opacity 0.8s var(--ease-out) 1s;
+}
+.proceso-viz-active .proceso-chart-area { opacity: 1; }
+.proceso-chart-axis {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--color-wc-text-3);
+    letter-spacing: 0.1em;
+}
+.proceso-chart-weeks {
+    display: flex;
+    gap: 6px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+.proceso-chart-week-pill {
+    background: var(--color-wc-bg-tertiary);
+    border: 1px solid var(--color-wc-border);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: var(--color-wc-text-3);
+}
+.proceso-chart-week-pill.is-pass {
+    border-color: rgba(16, 185, 129, 0.3);
+    color: var(--color-wc-green-text);
+}
+
+/* ─── Pull-quote section break ───────────────────────────────────── */
+.proceso-pullquote-section {
+    min-height: 60svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 32px 80px 48px;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--color-wc-border);
+}
+@media (min-width: 768px) {
+    .proceso-pullquote-section { padding: 100px 80px; }
+}
+.proceso-pullquote-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(220, 38, 38, 0.06), transparent 70%);
+    pointer-events: none;
+}
+.proceso-pullquote-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-3);
+    margin-bottom: 24px;
+    position: relative;
+}
+.proceso-pullquote-bar {
+    margin-top: 28px;
+    width: 48px;
+    height: 2px;
+    background: var(--color-wc-accent);
+    transform-origin: left;
+    position: relative;
+}
+
+/* ─── Divider ────────────────────────────────────────────────────── */
+.proceso-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 32px 48px;
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--color-wc-text-3);
+    opacity: 0.55;
+    text-transform: uppercase;
+}
+.proceso-divider::before,
+.proceso-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--color-wc-border), transparent);
+}
+
+/* ─── CTA Final ──────────────────────────────────────────────────── */
+.proceso-cta-final {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 32px 80px 48px;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid var(--color-wc-border);
+}
+@media (min-width: 768px) {
+    .proceso-cta-final { padding: 100px 80px; }
+}
+.proceso-cta-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-3);
+    margin-bottom: 20px;
+}
+.proceso-cta-title {
+    font-family: var(--font-display);
+    font-size: clamp(52px, 14vw, 100px);
+    line-height: 0.93;
+    letter-spacing: 0.02em;
+    margin-bottom: 24px;
+    color: var(--color-wc-text);
+    font-weight: 400;
+}
+.proceso-cta-title .accent { color: var(--color-wc-accent); }
+.proceso-cta-sub {
+    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--color-wc-gold-editorial);
+    line-height: 1.6;
+    max-width: 360px;
+    margin-bottom: 36px;
+}
+.proceso-cta-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+}
+@media (min-width: 480px) {
+    .proceso-cta-btns { flex-direction: row; align-items: center; }
+}
+.proceso-cta-stats {
+    margin-top: 40px;
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+}
+.proceso-cta-stat-val {
+    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--color-wc-text);
+    font-variant-numeric: tabular-nums;
+}
+.proceso-cta-stat-label {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-3);
+    margin-top: 2px;
+}
+.proceso-cta-trust {
+    margin-top: 28px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-wc-text-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    align-items: center;
+}
+.proceso-cta-trust .sep {
+    color: var(--color-wc-text-3);
+    opacity: 0.4;
+}
+.proceso-cta-bg-text {
+    font-family: var(--font-display);
+    font-size: clamp(100px, 28vw, 200px);
+    position: absolute;
+    right: -20px;
+    bottom: -10px;
+    opacity: 0.03;
+    color: var(--color-wc-text);
+    user-select: none;
+    pointer-events: none;
+    line-height: 1;
+    z-index: 0;
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    .proceso-scroll-arrow { animation: none !important; }
+    .proceso-chart-line { stroke-dashoffset: 0 !important; transition: none !important; }
+    .proceso-chart-area { opacity: 1 !important; transition: none !important; }
+    .proceso-coach-ring-svg .ring-progress { transition: none !important; }
+    .proceso-delta-bar-fill { transition: none !important; }
+}
+
