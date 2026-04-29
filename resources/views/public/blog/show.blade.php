@@ -171,7 +171,8 @@
     font-family: 'Fraunces', Georgia, serif;
     font-style: italic;
     font-size: 14px;
-    color: var(--bs-gold);
+    /* Bright gold — hero banner is always dark regardless of theme */
+    color: #D4A04C;
     margin-bottom: 14px;
     display: flex; align-items: center; gap: 12px;
 }
@@ -185,7 +186,8 @@
     font-size: clamp(48px, 12vw, 96px);
     line-height: 0.92; letter-spacing: 0.005em;
     text-transform: uppercase;
-    color: var(--bs-text);
+    /* Always white — hero is a full-bleed dark banner regardless of theme */
+    color: #FAFAFA;
     max-width: 900px;
     margin-bottom: 18px;
     text-wrap: balance;

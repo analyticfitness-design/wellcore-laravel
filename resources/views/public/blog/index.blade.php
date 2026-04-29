@@ -214,7 +214,8 @@
     line-height: 0.95;
     letter-spacing: 0.01em;
     text-transform: uppercase;
-    color: var(--blog-text);
+    /* Always white — sits on dark banner regardless of theme */
+    color: #FAFAFA;
     margin-bottom: 14px;
 }
 .blog-featured-excerpt {
@@ -245,7 +246,8 @@
     font-weight: 600;
     font-size: 12px; letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--blog-text);
+    /* Always white — sits on dark banner regardless of theme */
+    color: #FAFAFA;
     transition: color 0.2s, letter-spacing 0.2s var(--blog-ease-out);
 }
 .blog-featured-card:hover .blog-featured-cta {
