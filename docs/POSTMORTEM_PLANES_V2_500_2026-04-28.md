@@ -348,12 +348,186 @@ Cuando se quiera retomar el porting v2 de `/planes` (y aplicable a `/`, `/fit`, 
 | `f37a67f4` | Paso 1 rollout incremental: lang ES/EN — OK |
 | `e03fd2b2` | Paso 2: differentiator-card + CSS — OK |
 | `c3fe46f7` | Paso 3: blade v2 completo — 500 (bug aislado aquí) |
-| **`afbeee06`** | **`fix(planes): commitear PlanesController.php que faltaba en repo`** ← root cause fix |
+| `afbeee06` | fix(planes): commitear PlanesController.php que faltaba en repo |
 | `6dd467a1` | Restaurar blade legacy estable |
-| `6960efb7` | Remove debug endpoint — **HEAD producción actual** |
+| `6960efb7` | Remove debug endpoint |
+| **`a8e945a3`** | **fix(planes): usar PlanesController en route /planes — ROOT CAUSE FINAL** |
+| `8ee8d08f` | fix(planes): compilar CSS v2 que estaba sin incluir en build |
+| `a8eb4e90` | fix(planes): lenguaje latino neutro + esencial completo + toggle estable |
 
 ---
 
-**Generado:** 2026-04-28 22:30 Colombia
-**Por:** sesión Claude Code (Opus 4.7) bajo dirección de Daniel Esparza
-**Próximo retake del Sprint 1 v2:** pendiente — requiere container restart completo + cherry-pick `c3fe46f7` del blade
+## 11. Sesión retake: cómo se cerró el 500 definitivamente
+
+> **Fecha:** 2026-04-28 sesión posterior al postmortem inicial  
+> **Commit cierre:** `a8e945a3` — /planes HTTP 200 con blade v2 en producción
+
+### 11.1 El verdadero root cause final: routes/web.php
+
+Después de commitear `PlanesController.php` en `afbeee06`, la página **seguía en 500**. Eso significaba que el controller correcto estaba en el repo pero algo más fallaba.
+
+La investigación fue a través de la **Consola de servicio de EasyPanel** (bash directo al container) y el comando:
+
+```bash
+cat routes/web.php | grep planes
+```
+
+**En producción mostraba:**
+```php
+Route::get('/planes', function () {
+    return view('public.planes');   // ← SIN variables
+})->name('planes');
+```
+
+**En local existía:**
+```php
+Route::get('/planes', [PlanesController::class, 'index'])->name('planes');
+```
+
+El cambio de closure a controller dispatch vivía **solo en disco local**. No estaba en git. Cada deploy restauraba el closure que ignoraba completamente el controller y sus variables `$monthlyCop`, `$pricesCop`, etc.
+
+**Fix:**
+```bash
+git add routes/web.php
+git commit -m "fix(planes): usar PlanesController en route /planes (bug raíz)"
+# push → silvia-gitpull-load → /planes HTTP 200 ✅
+```
+
+### 11.2 Diagnóstico que lo encontró
+
+La secuencia que funcionó cuando los logs no mostraban nada:
+
+1. Abrir **Consola de servicio EasyPanel** (terminal bash dentro del container `/code`)
+2. `cat routes/web.php` — comparar visualmente con el archivo local
+3. Diferencia detectada: closure vs. controller dispatch
+4. Confirmar localmente: `git diff routes/web.php` mostraba el cambio sin stagear
+5. `git add routes/web.php && git commit && git push`
+
+### 11.3 Por qué routes/web.php no estaba en git
+
+En el `git status` de la sesión anterior aparecía como ` M routes/web.php` (modificado en working tree, **no staged**). Se leyó pero no se actuó. El error fue asumir que el controller era la única pieza que faltaba.
+
+**Regla definitiva:** antes de cualquier push de una ruta nueva, verificar:
+```bash
+git diff routes/web.php | grep -E "^\+" | grep -i "Controller"
+# Si no aparece el controller dispatch → el route no va a llamar al controller en prod
+```
+
+---
+
+## 12. Sesión post-resolución: revisión visual y fixes de copy + CSS
+
+> **Fecha:** 2026-04-29  
+> **Commit:** `a8eb4e90`  
+> **Trigger:** revisión visual completa de /planes v2 en producción con Chrome DevTools
+
+### 12.1 CSS de v2 sin efecto (stale build)
+
+**Síntoma detectado:** las secciones `.hero-planes`, `.tiers-section`, `.differentiators`, `.comparador` tenían estilos mínimos — el CSS visual del v2 no se aplicaba.
+
+**Causa:** `resources/css/v2-public.css` fue añadida con `@import './v2-public.css'` en `app.css` en una sesión anterior, pero `public/build/` (commiteado en git) era de antes de ese import. El archivo CSS compilado `app-BTX33ZXc.css` tenía 0 reglas para clases v2.
+
+**Verificación:**
+```bash
+curl -s https://wellcorefitness.com/build/assets/app-BTX33ZXc.css | grep -c "tiers-section"
+# → 0
+```
+
+**Fix:**
+```bash
+npm run build   # genera app-Cn1V0x8_.css con 20 reglas v2
+git add public/build/
+git commit -m "fix(planes): compilar CSS v2 que estaba sin incluir en build"
+git push
+# → silvia-gitpull-load → CSS aplicado en prod ✅
+```
+
+**Regla nueva:** cada vez que se añade un `@import` nuevo a `app.css`, compilar y commitear `public/build/` **en el mismo commit**. No en el siguiente. Si `public/build/` no va en el mismo PR que el `@import`, la página queda con estilos rotos en producción.
+
+### 12.2 Voseo argentino en copy (castellano vs. latino neutro)
+
+WellCore sirve LATAM. El copy debe estar en **latino neutro** (tuteo: tú / te / ti / puedes). Se encontraron tres ocurrencias de voseo argentino:
+
+| Archivo | String incorrecto | Fix |
+|---|---|---|
+| `lang/es/planes.php` | `'ELEGÍ'` (hero H1) | `'ELIGE'` |
+| `lang/es/planes.php` | `'para vos'` (cta_body) | `'para ti'` |
+| `resources/views/public/planes.blade.php` | `'Pagás \$${total} · ahorrás \$${saved}'` (Alpine JS inline) | `'Pagas \$${total} · ahorras \$${saved}'` |
+
+El tercer caso es el más tramposo: el archivo de idioma (`lang/es/planes.php` keys `period_note_trimestral/anual`) tenía `Pagas/ahorras` correcto, pero había una función Alpine JS inline en el blade con los mismos strings **duplicados en voseo**. Los strings de UI deben buscarse en **ambos** sitios: archivo de idioma Y blade/JS inline.
+
+**Comando para detectar voseo en páginas públicas antes de push:**
+```bash
+grep -rn "vos\b\|pagás\|ahorrás\|elegí\|empezá\|cancelás" resources/views/public/ lang/
+```
+Si aparece algo fuera de testimonios o citas de clientes → voseo a corregir.
+
+### 12.3 Plan Esencial sin macros ni suplementación (error de contenido)
+
+El comparador y los pilares mostraban Esencial con nutrición "Básica" y sin suplementación (`—`), cuando el plan sí los incluye.
+
+**Archivos modificados en `lang/es/planes.php`:**
+- `esencial_quote` — actualizado para reflejar sistema completo con ajuste mensual
+- `esencial_pillars[1]` — `'Plan de nutrición básico'` → `'Nutrición con macros + suplementación · plan de comidas, macros calculados y suplementos con horarios incluidos'`
+- `comp_rows[1]` (Plan de nutrición, Esencial) — `'Básico'` → `'Macros + comidas'`
+- `comp_rows[2]` (Suplementación, Esencial) — `mark: '—', mod: 'no'` → `mark: '✓', mod: null`
+- `faq_list[4].a` (¿Qué incluye el plan nutricional?) — reescrito: los tres planes tienen macros + suplementos; la diferencia es la frecuencia de ajuste (mensual / quincenal / semanal)
+
+**Diferenciadores reales entre planes:**
+
+| Feature | Esencial | Método | Elite |
+|---|---|---|---|
+| Nutrición | Macros + comidas | Macros + comidas | Macros + timing |
+| Suplementación | ✓ | ✓ | ✓ personalizada |
+| Ajuste del plan | Cada mes | Cada quincena | Cada semana |
+| Tiempo respuesta coach | 48h | 24h | 8h |
+| Optimización deportiva avanzada | — | — | ✓ |
+
+### 12.4 Billing toggle "se mueve" al hacer clic (layout shift)
+
+**Síntoma:** al cambiar de período (MENSUAL → TRIMESTRAL → ANUAL), el toggle sticky se desplazaba visualmente.
+
+**Causa doble:**
+1. `.t-price-note` pasaba de contenido vacío (`' '`) a texto real (`'Pagas $X · ahorras $Y'`) al cambiar período. Esto cambiaba la altura de cada tier card → layout shift → el `position: sticky` del toggle recalculaba su posición.
+2. `backdrop-filter: blur()` en elementos sticky provoca repaint en Safari/iOS, generando parpadeo.
+
+**Fix en `resources/css/v2-public.css`:**
+```css
+/* .billing-wrap — GPU compositing: evita repaint por layout-shift */
+will-change: transform;
+transform: translateZ(0);
+
+/* .t-price-note — altura fija: el card no crece al cambiar período */
+height: 14px;
+overflow: hidden;
+white-space: nowrap;
+text-overflow: ellipsis;
+```
+
+**Regla general para futuros sprints:** en cualquier elemento `position: sticky` con contenido dinámico (Alpine/Livewire) → añadir `will-change: transform; transform: translateZ(0)`. Para nodos cuyo texto aparece/desaparece → usar `height` fija (no `min-height`) + `white-space: nowrap` para evitar layout shift.
+
+---
+
+## 13. Checklist definitivo para futuros sprints de páginas v2
+
+Basado en todos los bugs encontrados en el Sprint 1 `/planes`:
+
+### Pre-push
+- [ ] `git status --short | grep '^??' | grep -E '(app/|routes/|config/)'` → ningún archivo crítico untracked
+- [ ] `git diff routes/web.php | grep -E "^\+" | grep -i "Controller"` → el route nuevo usa controller, no closure
+- [ ] Si se añadió `@import` en `app.css` → **compilar** (`npm run build`) y agregar `public/build/` al commit
+- [ ] `grep -rn "vos\b\|pagás\|ahorrás\|elegí" resources/views/public/ lang/` → sin voseo
+- [ ] Replicar state prod localmente: `php artisan optimize:clear && view:cache && config:cache && route:cache`
+- [ ] `curl -s -o /dev/null -w "%{http_code}" http://wellcore-laravel.test/RUTA` → 200
+
+### Post-deploy
+- [ ] `curl -s -o /dev/null -w "%{http_code}" https://wellcorefitness.com/RUTA` → 200
+- [ ] Si 500: consola bash EasyPanel → `cat routes/web.php` + crear `_debug-log.php`
+- [ ] Smoke visual con Chrome DevTools: scroll completo, sin console errors, CSS aplicado
+- [ ] Verificar que el contenido del comparador/pilares refleja lo que el plan realmente incluye
+
+---
+
+**Actualizado:** 2026-04-29  
+**Por:** sesión Claude Code (Sonnet 4.6) bajo dirección de Daniel Esparza  
+**Estado Sprint 1 /planes v2:** ✅ completado — /planes HTTP 200 en producción con blade v2, CSS correcto, copy latino neutro
