@@ -7,16 +7,34 @@
             document.body.style.overflow = open ? 'hidden' : '';
         },
         init() {
-            // Listen for Livewire success → write token to localStorage (vanilla compat) → redirect
+            // Listen for Livewire success → write 6 SPA keys to localStorage (vanilla compat) → redirect
             Livewire.on('login-success', (params) => {
                 const data = Array.isArray(params) ? params[0] : params;
                 const token = data?.token;
                 const userType = data?.userType;
+                const userId = data?.userId;
+                const userName = data?.userName;
                 const redirectUrl = data?.redirectUrl;
+                const userPortal = data?.userPortal;
+                const forcePasswordChange = data?.forcePasswordChange;
 
                 if (token) {
                     localStorage.setItem('wc_token', token);
                     localStorage.setItem('wc_user_type', userType || '');
+                    if (userId !== undefined && userId !== null) {
+                        localStorage.setItem('wc_user_id', String(userId));
+                    }
+                    if (userName) {
+                        localStorage.setItem('wc_user_name', userName);
+                    }
+                    if (userPortal) {
+                        localStorage.setItem('wc_user_portal', userPortal);
+                    }
+                    if (forcePasswordChange) {
+                        localStorage.setItem('wc_force_password_change', 'true');
+                    } else {
+                        localStorage.removeItem('wc_force_password_change');
+                    }
                 }
                 setTimeout(() => { window.location.href = redirectUrl || '/client'; }, 600);
             });

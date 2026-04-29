@@ -8,6 +8,7 @@ use App\Enums\UserType;
 use App\Models\Admin;
 use App\Models\AuthToken;
 use App\Models\Client;
+use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -32,11 +33,19 @@ class Login extends Component
     public function login(): void
     {
         $this->errorMessage = '';
-        $this->isLoading = true;
 
+        $rateLimitKey = 'wc-login:' . request()->ip();
+
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 5)) {
+            $seconds = RateLimiter::availableIn($rateLimitKey);
+            $minutes = (int) ceil($seconds / 60);
+            $this->errorMessage = "Demasiados intentos. Intenta de nuevo en {$minutes} minuto" . ($minutes > 1 ? 's' : '') . '.';
+            return;
+        }
+
+        $this->isLoading = true;
         $this->validate();
 
-        // Try to find the user: first check admins by username, then clients by email or client_code
         $identity = trim($this->identity);
 
         $user = Admin::whereRaw('LOWER(username) = ?', [strtolower($identity)])->first();
@@ -50,46 +59,61 @@ class Login extends Component
         }
 
         if (! $user) {
+            RateLimiter::hit($rateLimitKey, 60);
             $this->isLoading = false;
             $this->errorMessage = 'No encontramos una cuenta con esas credenciales.';
             return;
         }
 
-        // Verify password against the stored hash
         if (! password_verify($this->password, $user->password_hash)) {
+            RateLimiter::hit($rateLimitKey, 60);
             $this->isLoading = false;
             $this->errorMessage = 'La contraseña es incorrecta.';
             return;
         }
 
-        // Create auth token (64-char hex, matching the vanilla PHP app)
+        RateLimiter::clear($rateLimitKey);
+
         $token = bin2hex(random_bytes(32));
 
         AuthToken::create([
-            'user_type' => $userType->value,
-            'user_id' => $user->id,
-            'token' => $token,
-            'ip_address' => request()->ip(),
-            'expires_at' => now()->addDays(7),
-            'created_at' => now(),
+            'user_type'    => $userType->value,
+            'user_id'      => $user->id,
+            'token'        => $token,
+            'ip_address'   => request()->ip(),
+            'fingerprint'  => mb_substr((string) request()->userAgent(), 0, 64),
+            'expires_at'   => now()->addDays($this->rememberMe ? 30 : 7),
+            'created_at'   => now(),
+            'last_used_at' => now(),
         ]);
 
-        // Store token in session for Laravel web auth
+        $redirectUrl = $this->resolveRedirectUrl($user, $userType);
+
         session()->put('wc_token', $token);
         session()->put('wc_user_type', $userType->value);
         session()->put('wc_user_id', $user->id);
+        session()->put('wc_user_portal', $redirectUrl);
 
-        // Determine redirect URL based on user type and role/plan
-        $redirectUrl = $this->resolveRedirectUrl($user, $userType);
+        $forcePasswordChange = $userType === UserType::Admin
+            ? (bool) ($user->must_change_password ?? false)
+            : false;
+
+        $userName = $user->name ?? $user->username ?? 'Usuario';
 
         $this->loginSuccess = true;
         $this->isLoading = false;
 
-        // Dispatch browser event so Alpine.js can store token in localStorage
-        // (for compatibility with the vanilla PHP app)
-        $this->dispatch('login-success', token: $token, userType: $userType->value, redirectUrl: $redirectUrl);
+        $this->dispatch(
+            'login-success',
+            token: $token,
+            userType: $userType->value,
+            userId: $user->id,
+            userName: $userName,
+            redirectUrl: $redirectUrl,
+            userPortal: $redirectUrl,
+            forcePasswordChange: $forcePasswordChange,
+        );
 
-        // Server-side redirect as fallback (if JS dispatch doesn't trigger)
         $this->redirect($redirectUrl);
     }
 
@@ -97,17 +121,16 @@ class Login extends Component
     {
         if ($userType === UserType::Admin) {
             return match ($user->role) {
-                UserRole::Coach => route('coach.dashboard'),
-                default => route('admin.dashboard'), // superadmin, admin, jefe
+                UserRole::Coach => '/coach',
+                default => '/admin',
             };
         }
 
-        // Client routing based on plan
         if ($user->plan === PlanType::Rise) {
-            return route('rise.dashboard');
+            return '/rise';
         }
 
-        return route('client.dashboard');
+        return '/client';
     }
 
     public function render()
