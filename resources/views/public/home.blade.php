@@ -132,6 +132,98 @@
         </div>
     </section>
 
+    {{-- ================================================================== --}}
+    {{-- COMP 4.5: MOCKUP DASHBOARD (recuperado del v1, adaptado a v2)      --}}
+    {{-- Editorial — muestra cómo se ve el plan dentro de la plataforma     --}}
+    {{-- ================================================================== --}}
+    <section class="h2-mockup" aria-labelledby="mockup-title">
+        <div class="h2-section-head">
+            <p class="h2-eyebrow">{{ __('home.mockup_section_eyebrow') }}</p>
+            <h2 id="mockup-title" class="h2-section-title">{!! __('home.mockup_section_title') !!}</h2>
+            <p class="h2-section-sub">{{ __('home.mockup_section_sub') }}</p>
+        </div>
+
+        <div class="h2-mockup-stage" data-animate="fadeInUp">
+            {{-- Float chip: PR (top-left) --}}
+            <div class="h2-mock-chip h2-mock-chip-pr" aria-hidden="true">
+                <span class="h2-mock-chip-dot" style="background:#F59E0B"></span>
+                <div>
+                    <div class="h2-mock-chip-title">🏆 {{ __('home.mockup_chip_pr_title') }}</div>
+                    <div class="h2-mock-chip-sub">{{ __('home.mockup_chip_pr_sub') }}</div>
+                </div>
+            </div>
+
+            {{-- Laptop frame con dashboard glass --}}
+            <div class="hp-laptop" aria-hidden="true">
+                <div class="hp-laptop-bar">
+                    <span class="hp-lb-dot" style="background:#FF5F57"></span>
+                    <span class="hp-lb-dot" style="background:#FEBC2E"></span>
+                    <span class="hp-lb-dot" style="background:#28C840"></span>
+                    <div class="hp-lb-url">{{ __('home.mockup_url') }}</div>
+                </div>
+                <div class="hp-laptop-screen">
+                    <div class="hp-db-topbar">
+                        <span class="hp-db-week-pill">{{ __('home.mockup_week_pill') }}</span>
+                        <div class="hp-db-avatar">D</div>
+                    </div>
+                    <div class="hp-db-body">
+                        <div class="hp-db-sidebar">
+                            <div class="hp-db-logo">W/CORE</div>
+                            <div class="hp-db-sect">ENTR.</div>
+                            <div class="hp-db-item hp-db-active">Dashboard</div>
+                            <div class="hp-db-item">Mi Plan</div>
+                            <div class="hp-db-item">Entren.</div>
+                            <div class="hp-db-sect">PROG.</div>
+                            <div class="hp-db-item">Métricas</div>
+                            <div class="hp-db-item">Logros</div>
+                            <div class="hp-db-sect">SOCIAL</div>
+                            <div class="hp-db-item">Chat</div>
+                        </div>
+                        <div class="hp-db-main">
+                            <div class="hp-db-hero">
+                                <div class="hp-db-orb" aria-hidden="true"></div>
+                                <div class="hp-db-greeting">{{ __('home.mockup_greeting') }}</div>
+                                <div class="hp-db-meta">
+                                    <span class="hp-db-plan-tag">{{ __('home.mockup_plan_tag') }}</span>
+                                    <span class="hp-db-streak">🔥 {{ __('home.mockup_streak') }}</span>
+                                </div>
+                                <div class="hp-db-quote">"{{ __('home.mockup_quote') }}"</div>
+                            </div>
+                            <div class="hp-db-card hp-db-card-plan">
+                                <span class="hp-db-ci">✓</span>
+                                <span class="hp-db-ct">{{ __('home.mockup_plan_active') }} <strong>37</strong></span>
+                                <span class="hp-db-dot-g"></span>
+                            </div>
+                            <div class="hp-db-stats">
+                                @foreach([
+                                    ['top' => __('home.mockup_stat1_top'), 'val' => __('home.mockup_stat1_val'), 'sub' => __('home.mockup_stat1_sub'), 'color' => '#F59E0B'],
+                                    ['top' => __('home.mockup_stat2_top'), 'val' => __('home.mockup_stat2_val'), 'sub' => __('home.mockup_stat2_sub'), 'color' => '#10B981'],
+                                    ['top' => __('home.mockup_stat3_top'), 'val' => __('home.mockup_stat3_val'), 'sub' => __('home.mockup_stat3_sub'), 'color' => '#A78BFA'],
+                                    ['top' => __('home.mockup_stat4_top'), 'val' => __('home.mockup_stat4_val'), 'sub' => __('home.mockup_stat4_sub'), 'color' => '#DC2626'],
+                                ] as $stat)
+                                    <div class="hp-db-stat" style="--sc:{{ $stat['color'] }}">
+                                        <div class="hp-dbs-top">{{ $stat['top'] }}</div>
+                                        <div class="hp-dbs-val">{{ $stat['val'] }}</div>
+                                        <div class="hp-dbs-sub">{{ $stat['sub'] }}</div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Float chip: Check-in (bottom-right) --}}
+            <div class="h2-mock-chip h2-mock-chip-checkin" aria-hidden="true">
+                <span class="h2-mock-chip-dot" style="background:#10B981;box-shadow:0 0 6px rgba(16,185,129,.6)"></span>
+                <div>
+                    <div class="h2-mock-chip-title">{{ __('home.mockup_chip_checkin_title') }} ✓</div>
+                    <div class="h2-mock-chip-sub">{{ __('home.mockup_chip_checkin_sub') }}</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <x-public.s-divider label="CIENCIA · MÉTODO · RESULTADOS" />
 
     {{-- ================================================================== --}}
@@ -200,7 +292,8 @@
     <x-public.s-divider label="PLANES · ELIGE TU PLAN" />
 
     {{-- ================================================================== --}}
-    {{-- COMP 7: PLANES MINI (3 cards)                                      --}}
+    {{-- COMP 7: PLANES MINI (3 cards) — Enriquecidas con quote + features  --}}
+    {{-- ricas + promo banner + USD aproximado (recuperado del v1)          --}}
     {{-- ================================================================== --}}
     <section class="h2-plans" aria-labelledby="plans-title">
         <div class="h2-section-head">
@@ -209,12 +302,45 @@
             <p class="h2-section-sub">{{ __('home.plans_subtitle') }}</p>
         </div>
 
+        {{-- Promo banner (recuperado del v1) --}}
+        <div class="h2-plans-promo" data-animate="fadeInUp">
+            <span class="h2-plans-promo-label">{{ __('home.plans_promo_label') }}</span>
+            <span class="h2-plans-promo-text">{{ __('home.plans_promo_text') }}</span>
+        </div>
+
         <div class="h2-plans-grid">
             @php
                 $plans = [
-                    ['key' => 'esencial', 'short' => __('home.plan_esencial_short'), 'price' => $monthlyCop['esencial'], 'badge' => null],
-                    ['key' => 'metodo',   'short' => __('home.plan_metodo_short'),   'price' => $monthlyCop['metodo'],   'badge' => __('home.plans_badge_popular')],
-                    ['key' => 'elite',    'short' => __('home.plan_elite_short'),    'price' => $monthlyCop['elite'],    'badge' => null],
+                    [
+                        'key'   => 'esencial',
+                        'short' => __('home.plan_esencial_short'),
+                        'price' => $monthlyCop['esencial'],
+                        'priceUsd' => $monthlyUsd['esencial'],
+                        'priceOld' => 299000,
+                        'priceUsdOld' => 73,
+                        'badge' => null,
+                        'cta'   => __('home.plan_cta_esencial'),
+                    ],
+                    [
+                        'key'   => 'metodo',
+                        'short' => __('home.plan_metodo_short'),
+                        'price' => $monthlyCop['metodo'],
+                        'priceUsd' => $monthlyUsd['metodo'],
+                        'priceOld' => 399000,
+                        'priceUsdOld' => 97,
+                        'badge' => __('home.plans_badge_popular'),
+                        'cta'   => __('home.plan_cta_metodo'),
+                    ],
+                    [
+                        'key'   => 'elite',
+                        'short' => __('home.plan_elite_short'),
+                        'price' => $monthlyCop['elite'],
+                        'priceUsd' => $monthlyUsd['elite'],
+                        'priceOld' => 549000,
+                        'priceUsdOld' => 134,
+                        'badge' => null,
+                        'cta'   => __('home.plan_cta_elite'),
+                    ],
                 ];
             @endphp
             @foreach($plans as $i => $plan)
@@ -222,21 +348,59 @@
                     @if($plan['badge'])
                         <span class="h2-plan-badge">{{ $plan['badge'] }}</span>
                     @endif
+                    <span class="h2-plan-discount">{{ __('home.plans_promo_discount') }}</span>
+
                     <h3 class="h2-plan-name">{{ $plan['short'] }}</h3>
-                    <div class="h2-plan-price">
-                        <span class="h2-plan-price-amount">${{ number_format($plan['price'], 0, ',', '.') }}</span>
-                        <span class="h2-plan-price-period">{{ __('home.plans_cop_mes') }}</span>
+
+                    <p class="h2-plan-quote">{{ __('home.'.$plan['key'].'_quote') }}</p>
+
+                    <div class="h2-plan-price-block">
+                        <p class="h2-plan-price-old">${{ number_format($plan['priceOld'], 0, ',', '.') }} COP</p>
+                        <div class="h2-plan-price">
+                            <span class="h2-plan-price-amount">${{ number_format($plan['price'], 0, ',', '.') }}</span>
+                            <span class="h2-plan-price-period">{{ __('home.plans_cop_mes') }}</span>
+                        </div>
+                        <p class="h2-plan-price-usd">≈ <strong>USD ${{ $plan['priceUsd'] }}</strong> / mes
+                            <span class="h2-plan-price-usd-old">USD ${{ $plan['priceUsdOld'] }}</span>
+                        </p>
                     </div>
-                    <ul class="h2-plan-pillars">
-                        <li>{{ __('home.'.$plan['key'].'_p1') }}</li>
-                        <li>{{ __('home.'.$plan['key'].'_p2') }}</li>
-                        <li>{{ __('home.'.$plan['key'].'_p3') }}</li>
+
+                    <ul class="h2-plan-features">
+                        @foreach(['f1', 'f2', 'f3'] as $f)
+                            <li>
+                                <svg class="h2-plan-feat-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="m4.5 12.75 6 6 9-13.5"/>
+                                </svg>
+                                <span>{{ __('home.'.$plan['key'].'_'.$f) }}</span>
+                            </li>
+                        @endforeach
                     </ul>
-                    <a href="{{ route('planes') }}#{{ $plan['key'] }}" class="h2-plan-cta">
+
+                    <a href="{{ route('inscripcion') }}?plan={{ $plan['key'] }}" class="h2-btn-primary h2-plan-cta-full btn-press">
+                        {{ $plan['cta'] }}
+                    </a>
+                    <a href="{{ route('planes') }}#{{ $plan['key'] }}" class="h2-plan-detail-link">
                         {{ __('home.plans_ver_detalle') }}
                     </a>
                 </article>
             @endforeach
+        </div>
+
+        {{-- Mini comparator strip (highlights del comparador completo /planes) --}}
+        <div class="h2-plans-compare-strip">
+            <span class="h2-eyebrow" style="margin-bottom:0;">{{ __('home.plans_compare_label') }}</span>
+            <div class="h2-compare-row">
+                <span class="h2-compare-label">{{ __('home.plans_compare_coach_freq') }}</span>
+                <span class="h2-compare-cell">{{ __('home.plans_compare_freq_e') }}</span>
+                <span class="h2-compare-cell h2-compare-cell-em">{{ __('home.plans_compare_freq_m') }}</span>
+                <span class="h2-compare-cell h2-compare-cell-em">{{ __('home.plans_compare_freq_x') }}</span>
+            </div>
+            <div class="h2-compare-row">
+                <span class="h2-compare-label">{{ __('home.plans_compare_response') }}</span>
+                <span class="h2-compare-cell">{{ __('home.plans_compare_resp_e') }}</span>
+                <span class="h2-compare-cell">{{ __('home.plans_compare_resp_m') }}</span>
+                <span class="h2-compare-cell h2-compare-cell-em">{{ __('home.plans_compare_resp_x') }}</span>
+            </div>
         </div>
 
         <p class="h2-plans-note">{{ __('home.plans_cancel_note') }}</p>

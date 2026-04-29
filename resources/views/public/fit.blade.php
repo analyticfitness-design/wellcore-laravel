@@ -51,6 +51,27 @@
     <x-public.s-divider label="MÉTODO · CIENCIA · COACHING FEMENINO" />
 
     {{-- ================================================================== --}}
+    {{-- COMP 2.5: BIO EXTENDIDA + CERTIFICACIONES (recuperado del v1)      --}}
+    {{-- ================================================================== --}}
+    <section class="fit-bio" aria-labelledby="bio-title">
+        <div class="h2-section-head" style="padding: 0 0 28px;">
+            <p class="h2-eyebrow">{{ __('fit.bio_label') }}</p>
+            <h2 id="bio-title" class="h2-section-title">{!! __('fit.bio_title') !!}</h2>
+        </div>
+
+        <p class="fit-manifiesto-body">{{ __('fit.bio_p1') }}</p>
+        <p class="fit-manifiesto-body">{{ __('fit.bio_p2') }}</p>
+
+        <div class="fit-bio-cert">
+            <span class="fit-bio-cert-pill">{{ __('fit.bio_cert_1') }}</span>
+            <span class="fit-bio-cert-pill">{{ __('fit.bio_cert_2') }}</span>
+            <span class="fit-bio-cert-pill">{{ __('fit.bio_cert_3') }}</span>
+        </div>
+
+        <p class="fit-manifiesto-body">{{ __('fit.bio_p3') }}</p>
+    </section>
+
+    {{-- ================================================================== --}}
     {{-- COMP 3: MANIFIESTO                                                 --}}
     {{-- ================================================================== --}}
     <section class="fit-manifiesto" aria-labelledby="manifiesto-title">
@@ -94,6 +115,43 @@
         </div>
 
         <p class="fit-spec-editorial">"{{ __('fit.spec_editorial') }}"</p>
+    </section>
+
+    {{-- ================================================================== --}}
+    {{-- COMP 4.5: DASHBOARD MOCKUP (recuperado del v1, paleta rosa Silvia) --}}
+    {{-- ================================================================== --}}
+    <section class="fit-mockup" aria-labelledby="fit-mockup-title">
+        <div class="fit-mockup-content">
+            <p class="h2-eyebrow h2-eyebrow-red">{{ __('fit.mockup_label') }}</p>
+            <h2 id="fit-mockup-title" class="h2-section-title">{!! __('fit.mockup_title') !!}</h2>
+            <p class="h2-section-body">{{ __('fit.mockup_body') }}</p>
+        </div>
+
+        <div class="fit-phone" aria-hidden="true">
+            <div class="fit-phone-screen">
+                <div class="fit-phone-coach-row">
+                    <div class="fit-phone-coach-avatar">SM</div>
+                    <div>
+                        <div class="fit-phone-coach-name">{{ __('fit.mockup_coach') }}</div>
+                        <div class="fit-phone-coach-status">● {{ __('fit.mockup_status') }}</div>
+                    </div>
+                </div>
+
+                <div class="fit-phone-section-title">{{ __('fit.mockup_section_workout') }}</div>
+                <div class="fit-phone-card">
+                    <div class="fit-phone-card-name">{{ __('fit.mockup_workout_name') }}</div>
+                    <div class="fit-phone-card-meta">{{ __('fit.mockup_workout_meta') }}</div>
+                </div>
+
+                <div class="fit-phone-section-title">{{ __('fit.mockup_section_habits') }}</div>
+                @foreach(['water', 'protein', 'sleep', 'walk'] as $habit)
+                    <div class="fit-phone-habit">
+                        <span class="fit-phone-habit-dot"></span>
+                        <span>{{ __('fit.mockup_habit_'.$habit) }}</span>
+                    </div>
+                @endforeach
+            </div>
+        </div>
     </section>
 
     <x-public.s-divider label="EL PROCESO · CUATRO PASOS" />

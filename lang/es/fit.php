@@ -37,6 +37,35 @@ return [
     'hero_cta_whatsapp_legacy' => 'WhatsApp',
 
     // =========================================================
+    // BIO EXTENDIDA + CERTIFICACIONES (recuperado del v1)
+    // =========================================================
+    'bio_label'     => 'MI HISTORIA',
+    'bio_title'     => 'OCHO AÑOS<br><em>EN ESTO.</em>',
+    'bio_p1'        => 'Empecé en el fitness hace más de ocho años, cuando descubrí que el entrenamiento de fuerza era mucho más que estética — era una herramienta de empoderamiento. Desde entonces, me especializo en ayudar a mujeres a construir una relación saludable con el ejercicio y la nutrición.',
+    'bio_p2'        => 'Soy licenciada en Ciencias del Deporte con especialización en Fisiología del Ejercicio. Mi enfoque combina periodización inteligente, nutrición basada en evidencia y un acompañamiento constante que se adapta a tu vida real.',
+    'bio_p3'        => 'No creo en dietas restrictivas ni en entrenar hasta el agotamiento. Creo en procesos sostenibles que te permitan disfrutar del camino mientras construyes la mejor versión de ti misma.',
+    'bio_cert_1'    => 'NSCA-CPT',
+    'bio_cert_2'    => 'Precision Nutrition L1',
+    'bio_cert_3'    => 'Cs. del Deporte',
+
+    // =========================================================
+    // DASHBOARD MOCKUP / TU EXPERIENCIA (recuperado del v1)
+    // =========================================================
+    'mockup_label'      => 'TU EXPERIENCIA',
+    'mockup_title'      => 'ASÍ SE VE<br><em>TU PROGRAMA.</em>',
+    'mockup_body'       => 'Acceso al portal WellCore desde cualquier dispositivo. Plan, nutrición, hábitos y check-in semanal — todo conectado para que tu único enfoque sea entrenar.',
+    'mockup_coach'      => 'Mi Coach: Silvia M.',
+    'mockup_status'     => 'En línea',
+    'mockup_section_workout' => 'PLAN DE HOY',
+    'mockup_workout_name'    => 'Sentadilla búlgara',
+    'mockup_workout_meta'    => '4×10 @ RPE 8 · 90s descanso',
+    'mockup_section_habits'  => 'HÁBITOS DE HOY',
+    'mockup_habit_water'     => '2.5 L de agua',
+    'mockup_habit_protein'   => '130 g proteína',
+    'mockup_habit_sleep'     => '7+ h sueño',
+    'mockup_habit_walk'      => '10 min caminata',
+
+    // =========================================================
     // MANIFIESTO
     // =========================================================
     'manifiesto_label'   => 'Mi forma de trabajar',
