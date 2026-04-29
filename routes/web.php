@@ -14,6 +14,7 @@ use App\Http\Controllers\Public\CoachesController;
 use App\Http\Controllers\Public\FitController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\MetodoController;
+use App\Http\Controllers\Public\NosotrosController;
 use App\Http\Controllers\Public\PlanesController;
 use App\Http\Controllers\Public\PresencialController;
 use App\Http\Controllers\Public\ProcesoController;
@@ -107,9 +108,7 @@ Route::post('/api/chat', [ChatController::class, 'send'])->name('api.chat')->mid
 // Public marketing pages
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/planes', [PlanesController::class, 'index'])->name('planes');
-Route::get('/nosotros', function () {
-    return view('public.nosotros');
-})->name('nosotros');
+Route::get('/nosotros', [NosotrosController::class, 'index'])->name('nosotros');
 Route::get('/faq', function () {
     return view('public.faq');
 })->name('faq');
