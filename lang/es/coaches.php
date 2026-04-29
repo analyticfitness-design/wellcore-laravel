@@ -17,17 +17,17 @@ return [
     'cred_label'       => 'Certificaciones aceptadas',
     'cred_note'        => 'Certificaciones reconocidas internacionalmente · Consulta los requisitos al aplicar',
 
-    // Stats — vista de ejemplo (TODO confirmar con datos reales)
-    'stats_title'      => 'EL EQUIPO EN NÚMEROS',
-    'stats_demo_label' => 'VISTA DE EJEMPLO',
-    'stats_coaches_value' => '47',
-    'stats_coaches_label' => 'COACHES ACTIVOS',
-    'stats_retention_value' => '92%',
-    'stats_retention_label' => 'RETENCIÓN PROMEDIO',
-    'stats_rating_value' => '4.8',
-    'stats_rating_label' => 'CALIFICACIÓN COACHES',
-    'stats_paid_value' => 'AL DÍA',
-    'stats_paid_label' => 'PAGOS A COACHES',
+    // Stats — datos del modelo de marketplace WellCore (verificables en código)
+    'stats_title'      => 'EL MODELO EN NÚMEROS',
+    'stats_demo_label' => 'CÓMO TRABAJAMOS',
+    'stats_coaches_value' => '60/40',
+    'stats_coaches_label' => 'SPLIT POR CLIENTE ACTIVO',
+    'stats_retention_value' => 'MENSUAL',
+    'stats_retention_label' => 'PAGO PUNTUAL CON DESGLOSE',
+    'stats_rating_value' => '1:1',
+    'stats_rating_label' => 'COACH HUMANO POR CLIENTE',
+    'stats_paid_value' => '0',
+    'stats_paid_label' => 'EXCLUSIVIDAD · SIN CANDADOS',
 
     // Benefits
     'benefits_heading'  => 'POR QUÉ SER COACH WELLCORE',

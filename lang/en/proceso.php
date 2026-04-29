@@ -79,7 +79,7 @@ return [
         'meta_timing'  => '5 MIN',
         'title_html'   => 'INITIAL<br>ASSESS-<br>MENT',
         'desc'         => 'Everything begins with five minutes of your time. A short form —no tricks— that tells us where you are and where you want to go.',
-        'detail'       => 'Anonymous until the match · No commitment',
+        'detail'       => 'No payment until you confirm coach match',
         'viz' => [
             'header_label' => 'Initial assessment',
             'duration'     => '5 min',
@@ -100,47 +100,47 @@ return [
 
     'step2' => [
         'meta_index'   => 'STEP 02',
-        'meta_timing'  => 'MATCHMAKING',
-        'title_html'   => 'COACH<br>MADE<br>FOR YOU',
-        'desc'         => 'You don\'t pick at random. Our matching system cross-references your data with each coach\'s specialty, schedule, and methodology. We assign you the highest match.',
-        'detail'       => 'Compatibility scoring · Confirmed in 24 h',
-        'best_label'   => 'BEST MATCH',
+        'meta_timing'  => '24–48 H',
+        'title_html'   => 'HUMAN<br>COACH<br>1:1',
+        'desc'         => 'Our team reviews your sign-up and assigns a coach who specializes in your goal. The assignment is manual: we prioritize specialty, gender, and time zone. It\'s not an opaque algorithm — it\'s a human decision.',
+        'detail'       => 'Manual assignment · Coach expert in your goal',
+        'best_label'   => 'YOUR ASSIGNED COACH',
         'coaches' => [
             [
                 'initials' => 'LC',
-                'name'     => 'LAURA',
+                'name'     => 'SENIOR COACH',
                 'spec'     => 'HYPERTROPHY',
-                'match'    => 64,
+                'match'    => null,
                 'best'     => false,
             ],
             [
                 'initials' => 'MA',
-                'name'     => 'MARCOS',
+                'name'     => 'YOUR COACH',
                 'spec'     => 'FAT LOSS',
-                'match'    => 92,
+                'match'    => null,
                 'best'     => true,
             ],
             [
                 'initials' => 'SO',
-                'name'     => 'SOFÍA',
+                'name'     => 'SENIOR COACH',
                 'spec'     => 'PERFORMANCE',
-                'match'    => 46,
+                'match'    => null,
                 'best'     => false,
             ],
         ],
-        'disclaimer' => 'Sample view · demo data',
+        'disclaimer' => 'Sample view · representative of our team\'s profiles',
     ],
 
     'step3' => [
         'meta_index'   => 'STEP 03',
-        'meta_timing'  => '72 H DELIVERY',
-        'title_html'   => 'YOUR<br>OWN<br>PLAN.',
-        'desc'         => 'Training + nutrition + habits. Designed for your body, your schedule, and your level. There is no generic plan: every variable is calibrated to your data.',
+        'meta_timing'  => '3–5 DAYS',
+        'title_html'   => 'PLAN<br>IN YOUR<br>DASHBOARD.',
+        'desc'         => 'Your coach designs training, nutrition, and habits based on your sign-up and the initial conversation. We load it directly to your client dashboard — no loose PDFs. Every variable is tuned to your data.',
         'detail'       => 'Training · Nutrition · Habits',
         'viz' => [
-            'pdf_filename'      => 'plan_marcos_wk01.pdf',
-            'pdf_meta'          => 'GENERATED APR 28 2026 · 4.2 MB',
-            'pdf_download'      => '↓ OPEN',
+            'pdf_filename'      => 'YOUR DASHBOARD · WEEK 1',
+            'pdf_meta'          => 'UPDATED BY YOUR COACH',
+            'pdf_download'      => 'OPEN DASHBOARD',
             'th_day'            => 'DAY',
             'th_session'        => 'SESSION',
             'th_vol'            => 'VOL',
@@ -154,7 +154,7 @@ return [
                 ['day' => 'FRI', 'session' => 'Upper B',     'vol' => '16', 'kcal' => '2,340', 'type' => 'STRENGTH', 'type_color' => 'red',   'focus' => true],
             ],
         ],
-        'disclaimer' => 'Sample view · demo data',
+        'disclaimer' => 'Sample view · demo data · your real plan lives in the client dashboard',
     ],
 
     'pullquote' => [
@@ -165,10 +165,10 @@ return [
 
     'step4' => [
         'meta_index'   => 'STEP 04',
-        'meta_timing'  => 'BI-WEEKLY',
+        'meta_timing'  => 'PER YOUR PLAN',
         'title_html'   => 'DATA.<br>ADJUST.<br>ADVANCE.',
-        'desc'         => 'Every two weeks: chat check-in with your coach. We review weight, adherence, and recovery. If something is not working, we change it. No waiting until month-end.',
-        'detail'       => 'Every 14 days · Data-driven adjustments',
+        'desc'         => 'You log your check-in in the dashboard: well-being, days trained, nutrition, comments. Your coach reviews and replies with adjustments — through the dashboard and WhatsApp. Frequency depends on your plan: monthly (Esencial), bi-weekly (Método), weekly (Elite).',
+        'detail'       => 'Human coach · No bots · No auto-replies',
         'viz' => [
             'coach_avatar'   => 'M',
             'coach_name'     => 'Coach Marcos',
@@ -202,10 +202,10 @@ return [
 
     'step5' => [
         'meta_index'   => 'STEP 05',
-        'meta_timing'  => '8–12 WEEKS',
+        'meta_timing'  => 'CONTINUOUS TRACKING',
         'title_html'   => 'REAL<br>RESULTS.<br>VERIFIABLE.',
-        'desc'         => 'Not promises. Metrics. By week 8 you have verifiable data: weight, body composition, adherence, and performance. All documented.',
-        'detail'       => 'Verified metrics · 8/12-week protocol',
+        'desc'         => 'Not promises. Metrics. Every week you see changes in weight, body composition, and adherence from your dashboard. At weeks 8–12 your coach delivers a complete evaluation with real data — not invented curves.',
+        'detail'       => 'Metrics in your dashboard · Continuous tracking',
         'viz' => [
             'chart_label'  => 'BODY WEIGHT · KG',
             'chart_value'  => '−5.4',
@@ -228,18 +228,18 @@ return [
     'cta_final' => [
         'kicker'        => 'THE PROCESS IS CLEAR · SO IS THE NEXT STEP',
         'title_html'    => 'START<br><span class="accent">THE PROCESS</span>',
-        'sub'           => 'No waiting list. No contracts. Begin with the assessment today.',
+        'sub'           => 'No waiting list. No contracts. You start with the assessment today and your coach contacts you within 24–48 h.',
         'btn_primary'   => 'Start the process',
         'btn_secondary' => 'See plans and pricing',
         'stats' => [
-            ['val' => '47+',  'label' => 'Active now'],
-            ['val' => '94%',  'label' => 'Satisfaction'],
-            ['val' => '8 wk', 'label' => 'Verifiable results'],
+            ['val' => '5–8',   'label' => 'Min in the assessment'],
+            ['val' => '24–48', 'label' => 'Hours to your coach'],
+            ['val' => '8–12',  'label' => 'Weeks of protocol'],
         ],
         'trust_items' => [
-            'No credit card',
-            'Cancel anytime',
-            'Real human support',
+            'No credit card at the assessment',
+            'Human coach 1:1 · no bots',
+            'Plan in your dashboard · no loose PDFs',
         ],
     ],
 

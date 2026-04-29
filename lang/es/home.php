@@ -6,7 +6,7 @@ return [
     // META
     // =========================================================
     'meta_title'       => 'WellCore Fitness - Coaching 1:1 Basado en Ciencia',
-    'meta_description' => 'Coaching fitness 1:1 basado en ciencia. Entrenamiento y nutrición personalizados. 94% adherencia. Sin milagros, solo resultados reales.',
+    'meta_description' => 'Coaching fitness 1:1 humano basado en ciencia. Entrenamiento y nutrición personalizados por tu coach. Sin milagros, sólo método y trabajo real.',
 
     // =========================================================
     // PLAN NAMES (JSON-LD Product schemas)
@@ -37,13 +37,13 @@ return [
     // =========================================================
     // SOCIAL PROOF BAR
     // =========================================================
-    'proof_eyebrow'    => 'DATOS REALES · CLIENTES REALES',
-    'proof_stat1_val'  => '47+',
-    'proof_stat1_lbl'  => 'Clientes activos',
-    'proof_stat2_val'  => '94%',
-    'proof_stat2_lbl'  => 'Adherencia promedio',
-    'proof_stat3_val'  => '3',
-    'proof_stat3_lbl'  => 'Países',
+    'proof_eyebrow'    => 'CÓMO TRABAJAMOS',
+    'proof_stat1_val'  => '1:1',
+    'proof_stat1_lbl'  => 'Coach humano',
+    'proof_stat2_val'  => '8–12',
+    'proof_stat2_lbl'  => 'Semanas de protocolo',
+    'proof_stat3_val'  => '0',
+    'proof_stat3_lbl'  => 'Bots ni auto-respuestas',
     'proof_stat4_val'  => '0',
     'proof_stat4_lbl'  => 'Contrato mínimo',
 
@@ -211,12 +211,12 @@ return [
     'coach_recruit_eyebrow'        => 'PARA COACHES PROFESIONALES',
     'coach_recruit_title'          => '¿ERES COACH?<br><em>ÚNETE AL MÉTODO.</em>',
     'coach_recruit_sub'            => 'Si lo que haces no necesita inventar resultados, hablemos. Marketplace de coaches con metodología propia, plataforma que no es una hoja de Excel y comunidad seria.',
-    'coach_recruit_stat1_val'      => '47+',
-    'coach_recruit_stat1_lbl'      => 'Coaches activos',
-    'coach_recruit_stat2_val'      => '92%',
-    'coach_recruit_stat2_lbl'      => 'Retención promedio',
-    'coach_recruit_stat3_val'      => '4.8★',
-    'coach_recruit_stat3_lbl'      => 'Rating cliente',
+    'coach_recruit_stat1_val'      => '60/40',
+    'coach_recruit_stat1_lbl'      => 'Comisión para el coach',
+    'coach_recruit_stat2_val'      => '1:1',
+    'coach_recruit_stat2_lbl'      => 'Cliente · Coach humano',
+    'coach_recruit_stat3_val'      => '$0',
+    'coach_recruit_stat3_lbl'      => 'Setup · sin permanencia',
     'coach_recruit_cta_primary'    => 'APLICAR AL MARKETPLACE',
     'coach_recruit_cta_secondary'  => 'VER REQUISITOS →',
     'coach_recruit_mockup_label'   => 'DASHBOARD COACH · ESTA SEMANA',
@@ -278,9 +278,9 @@ return [
     'cta_primary'    => 'Inscribirme ahora →',
     'cta_secondary'  => 'Ver el proceso',
     'cta_trust1'     => 'Sin contrato',
-    'cta_trust2'     => 'Coach real',
-    'cta_trust3'     => 'Evidencia',
-    'cta_trust4'     => '94% adherencia',
+    'cta_trust2'     => 'Coach humano 1:1',
+    'cta_trust3'     => 'Método con evidencia',
+    'cta_trust4'     => 'Sin tarjeta hasta el match',
 
     // Sticky CTA mobile
     'sticky_cta_label' => 'Empezar mi plan',

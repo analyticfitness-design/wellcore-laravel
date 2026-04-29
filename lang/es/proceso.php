@@ -20,8 +20,8 @@ return [
     // -------------------------------------------------------------------------
     // Meta — head
     // -------------------------------------------------------------------------
-    'meta_title'       => 'El Proceso · 5 pasos para tu transformación | WellCore Fitness',
-    'meta_description' => 'El camino WellCore en 5 pasos: diagnóstico, match con coach, plan personalizado, check-ins y resultados verificables. Sin atajos. Sin promesas vacías.',
+    'meta_title'       => 'El Proceso · Cómo trabajamos contigo | WellCore Fitness',
+    'meta_description' => 'Diagnóstico, asignación de coach, plan en tu panel, check-ins y seguimiento real. Coaching humano 1:1, sin algoritmos opacos ni promesas vacías.',
 
     // -------------------------------------------------------------------------
     // Sidebar editorial (≥1024px)
@@ -91,7 +91,7 @@ return [
     // -------------------------------------------------------------------------
     'manifesto' => [
         'kicker' => 'PUNTO DE PARTIDA',
-        'body'   => 'No vendemos motivación. Vendemos un proceso. Cinco pasos que transforman tus datos reales en un plan que tu cuerpo puede ejecutar y que tu coach va ajustando cada quincena. No hay magia. Hay método.',
+        'body'   => 'No vendemos motivación. Vendemos un proceso. Cinco pasos que transforman tus datos reales en un plan que tu cuerpo puede ejecutar y que tu coach humano ajusta según los check-ins que hacés. No hay magia. No hay algoritmo. Hay método y trabajo 1:1.',
     ],
 
     // -------------------------------------------------------------------------
@@ -99,10 +99,10 @@ return [
     // -------------------------------------------------------------------------
     'step1' => [
         'meta_index'   => 'PASO 01',
-        'meta_timing'  => '5 MIN',
+        'meta_timing'  => '5–8 MIN',
         'title_html'   => 'DIAGNÓS-<br>TICO<br>INICIAL',
-        'desc'         => 'Todo empieza con cinco minutos de tu tiempo. Un formulario corto —sin trampa— que nos dice dónde estás y a dónde quieres llegar.',
-        'detail'       => 'Anónimo hasta el match · Sin compromiso',
+        'desc'         => 'Todo empieza con un cuestionario web de 8 pasos: tu objetivo, biometría (peso, estatura, edad), experiencia entrenando, lesiones, nutrición y hábitos. Sin trampa, sin compromiso, sin tarjeta de crédito.',
+        'detail'       => 'Sin pago hasta confirmar match con coach',
         'viz' => [
             'header_label' => 'Diagnóstico inicial',
             'duration'     => '5 min',
@@ -126,35 +126,35 @@ return [
     // -------------------------------------------------------------------------
     'step2' => [
         'meta_index'   => 'PASO 02',
-        'meta_timing'  => 'MATCHMAKING',
-        'title_html'   => 'COACH<br>A<br>MEDIDA',
-        'desc'         => 'No eliges al azar. Nuestro sistema de match cruza tus datos con la especialidad, disponibilidad horaria y metodología de cada coach. Te asignamos el match más alto.',
-        'detail'       => 'Compatibilidad por afinidad · Confirmado en 24 h',
-        'best_label'   => 'MEJOR MATCH',
+        'meta_timing'  => '24–48 H',
+        'title_html'   => 'COACH<br>HUMANO<br>1:1',
+        'desc'         => 'Nuestro equipo revisa tu inscripción y te asigna un coach especializado en tu objetivo. La asignación es manual: priorizamos especialidad, género y zona horaria. No es un algoritmo opaco — es una decisión humana.',
+        'detail'       => 'Asignación manual · Coach experto en tu objetivo',
+        'best_label'   => 'TU COACH ASIGNADO',
         'coaches' => [
             [
                 'initials' => 'LC',
-                'name'     => 'LAURA',
+                'name'     => 'COACH SENIOR',
                 'spec'     => 'HIPERTROFIA',
-                'match'    => 64,
+                'match'    => null,
                 'best'     => false,
             ],
             [
                 'initials' => 'MA',
-                'name'     => 'MARCOS',
+                'name'     => 'TU COACH',
                 'spec'     => 'PÉRDIDA GRASA',
-                'match'    => 92,
+                'match'    => null,
                 'best'     => true,
             ],
             [
                 'initials' => 'SO',
-                'name'     => 'SOFÍA',
+                'name'     => 'COACH SENIOR',
                 'spec'     => 'RENDIMIENTO',
-                'match'    => 46,
+                'match'    => null,
                 'best'     => false,
             ],
         ],
-        'disclaimer' => 'Vista de ejemplo · datos demostrativos',
+        'disclaimer' => 'Vista de ejemplo · representativa de los perfiles del equipo',
     ],
 
     // -------------------------------------------------------------------------
@@ -162,14 +162,14 @@ return [
     // -------------------------------------------------------------------------
     'step3' => [
         'meta_index'   => 'PASO 03',
-        'meta_timing'  => '72 H ENTREGA',
-        'title_html'   => 'PLAN<br>PROPIO,<br>TUYO.',
-        'desc'         => 'Entrenamiento + nutrición + hábitos. Diseñado para tu cuerpo, tu agenda y tu nivel. No hay plan genérico: cada variable se ajusta a tus datos.',
+        'meta_timing'  => '3–5 DÍAS',
+        'title_html'   => 'PLAN<br>EN TU<br>PANEL.',
+        'desc'         => 'Tu coach diseña entrenamiento, nutrición y hábitos según tu inscripción y la conversación inicial. Lo cargamos directo a tu panel cliente — sin PDFs sueltos. Cada variable se ajusta a tus datos.',
         'detail'       => 'Entrenamiento · Nutrición · Hábitos',
         'viz' => [
-            'pdf_filename'      => 'plan_marcos_sem01.pdf',
-            'pdf_meta'          => 'GENERADO 28 ABR 2026 · 4.2 MB',
-            'pdf_download'      => '↓ ABRIR',
+            'pdf_filename'      => 'TU PANEL · SEMANA 1',
+            'pdf_meta'          => 'ACTUALIZADO POR TU COACH',
+            'pdf_download'      => 'ABRIR PANEL',
             'th_day'            => 'DÍA',
             'th_session'        => 'SESIÓN',
             'th_vol'            => 'VOL',
@@ -183,7 +183,7 @@ return [
                 ['day' => 'VIE', 'session' => 'Upper B',     'vol' => '16', 'kcal' => '2,340', 'type' => 'FUERZA', 'type_color' => 'red',   'focus' => true],
             ],
         ],
-        'disclaimer' => 'Vista de ejemplo · datos demostrativos',
+        'disclaimer' => 'Vista de ejemplo · datos demostrativos · tu plan real vive en el panel cliente',
     ],
 
     // -------------------------------------------------------------------------
@@ -200,10 +200,10 @@ return [
     // -------------------------------------------------------------------------
     'step4' => [
         'meta_index'   => 'PASO 04',
-        'meta_timing'  => 'QUINCENAL',
+        'meta_timing'  => 'SEGÚN TU PLAN',
         'title_html'   => 'DATA.<br>AJUSTE.<br>AVANCE.',
-        'desc'         => 'Cada dos semanas: check-in por chat con tu coach. Revisamos peso, adherencia y recuperación. Si algo no funciona, lo cambiamos. Sin esperar al mes.',
-        'detail'       => 'Cada 14 días · Ajuste basado en data',
+        'desc'         => 'Loggeás tu check-in en el panel: bienestar, días entrenados, nutrición, comentario. Tu coach lo revisa y responde con ajustes — vía panel y WhatsApp. Frecuencia según tu plan: mensual (Esencial), quincenal (Método), semanal (Elite).',
+        'detail'       => 'Coach humano · Sin bots · Sin auto-respuestas',
         'viz' => [
             'coach_avatar'   => 'M',
             'coach_name'     => 'Coach Marcos',
@@ -240,10 +240,10 @@ return [
     // -------------------------------------------------------------------------
     'step5' => [
         'meta_index'   => 'PASO 05',
-        'meta_timing'  => '8–12 SEMANAS',
+        'meta_timing'  => 'SEGUIMIENTO CONTINUO',
         'title_html'   => 'RESUL-<br>TADOS<br>REALES.',
-        'desc'         => 'No promesas. Métricas. A las 8 semanas tienes datos verificables: peso, composición corporal, adherencia y rendimiento. Todo documentado.',
-        'detail'       => 'Métricas verificadas · Protocolo 8/12 semanas',
+        'desc'         => 'No promesas. Métricas. Cada semana ves cambios en peso, composición corporal y adherencia desde tu panel. A las 8–12 semanas tu coach hace una evaluación completa con datos reales — no curvas inventadas.',
+        'detail'       => 'Métricas en tu panel · Seguimiento continuo',
         'viz' => [
             'chart_label'  => 'PESO CORPORAL · KG',
             'chart_value'  => '−5.4',
@@ -272,18 +272,18 @@ return [
     'cta_final' => [
         'kicker'        => 'EL PROCESO ESTÁ CLARO · EL SIGUIENTE PASO, TAMBIÉN',
         'title_html'    => 'EMPEZAR<br><span class="accent">EL PROCESO</span>',
-        'sub'           => 'Sin lista de espera. Sin contratos. Empieza con el diagnóstico hoy.',
+        'sub'           => 'Sin lista de espera. Sin contratos. Empezás con el diagnóstico hoy y tu coach te contacta dentro de 24–48 h.',
         'btn_primary'   => 'Empezar el proceso',
         'btn_secondary' => 'Ver planes y precios',
         'stats' => [
-            ['val' => '47+',   'label' => 'Activos ahora'],
-            ['val' => '94%',   'label' => 'Satisfacción'],
-            ['val' => '8 sem', 'label' => 'Resultados verificables'],
+            ['val' => '5–8',   'label' => 'Min en el diagnóstico'],
+            ['val' => '24–48', 'label' => 'Horas hasta tu coach'],
+            ['val' => '8–12',  'label' => 'Semanas de protocolo'],
         ],
         'trust_items' => [
-            'Sin tarjeta de crédito',
-            'Cancelas cuando quieras',
-            'Soporte humano real',
+            'Sin tarjeta de crédito en el diagnóstico',
+            'Coach humano 1:1 · sin bots',
+            'Plan en tu panel · sin PDFs sueltos',
         ],
     ],
 

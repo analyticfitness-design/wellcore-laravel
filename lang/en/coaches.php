@@ -17,17 +17,17 @@ return [
     'cred_label'       => 'Accepted certifications',
     'cred_note'        => 'Internationally recognized certifications · Confirm requirements when you apply',
 
-    // Stats — sample view
-    'stats_title'      => 'THE TEAM BY THE NUMBERS',
-    'stats_demo_label' => 'SAMPLE VIEW',
-    'stats_coaches_value' => '47',
-    'stats_coaches_label' => 'ACTIVE COACHES',
-    'stats_retention_value' => '92%',
-    'stats_retention_label' => 'AVG RETENTION',
-    'stats_rating_value' => '4.8',
-    'stats_rating_label' => 'COACH RATING',
-    'stats_paid_value' => 'ON TIME',
-    'stats_paid_label' => 'COACH PAYOUTS',
+    // Stats — WellCore marketplace model (verifiable in code)
+    'stats_title'      => 'THE MODEL BY THE NUMBERS',
+    'stats_demo_label' => 'HOW WE WORK',
+    'stats_coaches_value' => '60/40',
+    'stats_coaches_label' => 'SPLIT PER ACTIVE CLIENT',
+    'stats_retention_value' => 'MONTHLY',
+    'stats_retention_label' => 'ON-TIME PAYOUTS WITH BREAKDOWN',
+    'stats_rating_value' => '1:1',
+    'stats_rating_label' => 'HUMAN COACH PER CLIENT',
+    'stats_paid_value' => '0',
+    'stats_paid_label' => 'EXCLUSIVITY · NO LOCK-IN',
 
     // Benefits
     'benefits_heading'  => 'WHY COACH WITH WELLCORE',

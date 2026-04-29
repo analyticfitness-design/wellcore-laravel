@@ -184,7 +184,7 @@ return [
         'rows' => [
             'r1' => [
                 'feature'  => 'Initial assessment',
-                'wellcore' => '40+ variables',
+                'wellcore' => '25+ variables',
                 'app'      => 'No',
                 'gym'      => 'Partial',
             ],
@@ -242,7 +242,7 @@ return [
     // Cap04 — The Plan
     // -------------------------------------------------------------------------
     'plan' => [
-        'body_p1_html' => 'Before writing a single set, your coach completes a 40+ variable assessment. Training history. Injuries. Available equipment. Average sleep hours. Chronic stress levels. Concrete goals — not "lose weight," but how much, in what timeframe, with what real constraints. That assessment defines your starting point. Nothing more.',
+        'body_p1_html' => 'Before writing a single set, your coach completes a 25+ variable assessment. Training history. Injuries. Available equipment. Average sleep hours. Chronic stress levels. Concrete goals — not "lose weight," but how much, in what timeframe, with what real constraints. That assessment defines your starting point. Nothing more.',
         'body_p2_html' => 'With that data, periodization is built. Four phases distributed across 12 weeks. Each phase has a distinct physiological objective, specific volume and intensity variables, and weekly adjustment criteria. <strong>A day-1 plan is already outdated by week 4</strong> — that\'s why the weekly check-in isn\'t optional: it\'s the central mechanism of the system.',
         'margin_note'  => '"A day-1 plan is already outdated by week 4. The weekly check-in isn\'t optional — it\'s the central mechanism of the system."',
 

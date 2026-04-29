@@ -205,7 +205,7 @@ return [
         'rows' => [
             'r1' => [
                 'feature'  => 'Diagnóstico inicial',
-                'wellcore' => '40+ variables',
+                'wellcore' => '25+ variables',
                 'app'      => 'No',
                 'gym'      => 'Parcial',
             ],
@@ -263,7 +263,7 @@ return [
     // Cap04 — El Plan (periodización)
     // -------------------------------------------------------------------------
     'plan' => [
-        'body_p1_html' => 'Antes de escribir una sola serie, tu coach completa un diagnóstico de 40+ variables. Historial de entrenamiento. Lesiones. Equipamiento disponible. Horas de sueño promedio. Nivel de estrés crónico. Objetivos concretos — no "bajar de peso", sino cuánto, en qué plazo, con qué restricciones reales. Ese diagnóstico define el punto de partida. Nada más.',
+        'body_p1_html' => 'Antes de escribir una sola serie, tu coach completa un diagnóstico de 25+ variables. Historial de entrenamiento. Lesiones. Equipamiento disponible. Horas de sueño promedio. Nivel de estrés crónico. Objetivos concretos — no "bajar de peso", sino cuánto, en qué plazo, con qué restricciones reales. Ese diagnóstico define el punto de partida. Nada más.',
         'body_p2_html' => 'Con esos datos se construye la periodización. Cuatro fases distribuidas en 12 semanas. Cada fase tiene un objetivo fisiológico distinto, variables específicas de volumen e intensidad y criterios de ajuste semanales. <strong>Un plan del día 1 ya está desactualizado en la semana 4</strong> — por eso el check-in semanal no es opcional: es el mecanismo central del sistema.',
         'margin_note'  => '"Un plan del día 1 ya está desactualizado en la semana 4. El check-in semanal no es opcional — es el mecanismo central del sistema."',
 
@@ -328,7 +328,7 @@ return [
     // -------------------------------------------------------------------------
     'checkins' => [
         'body_p1_html' => 'El check-in semanal es el corazón del protocolo. No es una formalidad ni un formulario de satisfacción. Es el mecanismo por el que el plan se mantiene vivo. Reportas métricas reales — cargas, repeticiones, energía, sueño, adherencia nutricional — y tu coach las procesa para decidir si la semana siguiente continúa igual, avanza o retrocede.',
-        'body_p2_html' => 'Semana 1: diagnóstico y construcción del plan base. Semanas 2–4: fase de adaptación, ajuste de cargas iniciales. Semanas 5–8: bloque de hipertrofia, máximo volumen efectivo. Semanas 9–11: intensificación de fuerza. Semana 12: descarga y <strong>informe final de composición corporal</strong> con datos de inicio vs cierre.',
+        'body_p2_html' => 'Semana 1: diagnóstico y construcción del plan base. Semanas 2–4: fase de adaptación, ajuste de cargas iniciales. Semanas 5–8: bloque de hipertrofia, máximo volumen efectivo. Semanas 9–11: intensificación de fuerza. Semana 12: descarga y <strong>evaluación completa con tu coach</strong>, comparando datos de inicio vs cierre desde tu panel.',
 
         'ticker' => [
             ['name' => 'S.V. · CO',  'metric' => '−6.2 kg',     'detail' => 'GRASA · 12 SEM · MÉTODO',  'negative' => true],
