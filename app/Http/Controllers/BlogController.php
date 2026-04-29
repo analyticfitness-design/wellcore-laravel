@@ -399,6 +399,21 @@ class BlogController extends Controller
     }
 
     /**
+     * Display the blog index (article grid).
+     *
+     * Migrated from a closure (`Route::get('/blog', fn () => view(...))`) to a
+     * controller dispatch in Sprint 4 Q4 — the closure pattern that fetches
+     * data via static call inside the blade is the bug pattern documented in
+     * postmortem §11. Controller dispatch makes data flow explicit.
+     */
+    public function index()
+    {
+        return view('public.blog.index', [
+            'articles' => self::getArticles(),
+        ]);
+    }
+
+    /**
      * Display a single blog article.
      */
     public function show(string $slug)

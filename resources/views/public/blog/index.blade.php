@@ -1,5 +1,7 @@
 @php
-    $articles = \App\Http\Controllers\BlogController::getArticles();
+    // $articles is passed by BlogController@index since Sprint 4 Q4
+    // (was: $articles = BlogController::getArticles() static call inline —
+    // closure-with-static-call anti-pattern, postmortem §11).
     $featured = $articles[0] ?? null;
     $rest     = array_slice($articles, 1);
     $isEs     = app()->getLocale() === 'es';

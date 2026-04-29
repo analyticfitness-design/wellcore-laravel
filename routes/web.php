@@ -153,9 +153,7 @@ Route::get('/pago-exitoso', [PaymentController::class, 'result'])->name('pago-ex
 Route::get('/pago-confirmado', [PaymentController::class, 'result'])->name('pago-confirmado');
 
 // Blog
-Route::get('/blog', function () {
-    return view('public.blog.index');
-})->name('blog.index');
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 // Shop routes (public, no auth required) — hidden until shop is production-ready
