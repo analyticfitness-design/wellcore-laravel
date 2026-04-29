@@ -12,7 +12,7 @@ return [
     // =========================================================
     'hero_label_mono'   => 'WellCore / Fit · Coach Personal',
     'hero_name_html'    => 'SILVIA<br><em>MARTÍNEZ</em>',
-    'hero_bio'          => 'Especialista en composición corporal femenina y periodización hormonal. Trabajé con más de 200 mujeres en LATAM que entendieron que el progreso real no se mide en kilos, sino en consistencia.',
+    'hero_bio'          => 'Acompaño a mujeres que entrenan en serio sin obsesionarse con la báscula. Postparto, recomposición, recuperar fuerza, sostenerse en perimenopausia. Sin dietas extremas. Sin culpa los domingos. Con método.',
     'hero_stat1_val'    => '6+',
     'hero_stat1_lbl'    => 'años de experiencia',
     'hero_stat2_val'    => '120+',
@@ -41,9 +41,9 @@ return [
     // =========================================================
     'bio_label'     => 'MI HISTORIA',
     'bio_title'     => 'MI<br><em>HISTORIA.</em>',
-    'bio_p1'        => 'Comencé mi camino en el fitness hace más de 6 años, cuando descubrí que el entrenamiento de fuerza era mucho más que estética — era una herramienta de empoderamiento. Desde entonces, me he especializado en ayudar a mujeres a construir una relación saludable con el ejercicio y la nutrición.',
-    'bio_p2'        => 'Soy mujer antes que coach. Pasé por meses sin energía, por dietas que no funcionaban, por entrenamientos que copiaba de Internet sin sentido. Hoy diseño desde lo que aprendí en mi propio cuerpo y en el de más de 120 mujeres que confiaron en mí.',
-    'bio_p3'        => 'No creo en dietas restrictivas ni en entrenar hasta el agotamiento. Creo en procesos sostenibles que te permitan disfrutar del camino mientras construyes la mejor versión de ti misma.',
+    'bio_p1'        => 'Empecé como tantas: contando calorías, evitando los pesos pesados, creyendo que el cardio infinito iba a darme el cuerpo que quería. Tardé años en entender que entrenar fuerte no me iba a hacer "masculina" — me iba a hacer fuerte.',
+    'bio_p2'        => 'Hace más de seis años entendí que mi cuerpo no necesitaba castigo. Necesitaba método. Y que la mayoría de las mujeres con las que hablaba estaban exactamente donde yo había estado: cansadas de empezar y abandonar, frustradas con planes que no se sostenían.',
+    'bio_p3'        => 'Por eso hago esto. No vendo dietas restrictivas ni rutinas que vas a abandonar en tres semanas. Diseño procesos reales para mujeres reales — con ciclos, con hijos, con trabajos, con vida. Si llegaste hasta acá, probablemente no es casualidad.',
 
     // =========================================================
     // DASHBOARD MOCKUP / TU EXPERIENCIA (recuperado del v1)
@@ -65,31 +65,31 @@ return [
     // =========================================================
     // MANIFIESTO
     // =========================================================
-    'manifiesto_label'   => 'Mi forma de trabajar',
-    'manifiesto_title'   => 'MI <em>FORMA</em><br>DE TRABAJAR',
-    'manifiesto_p1'      => 'No diseño dietas restrictivas. Diseño protocolos sostenibles adaptados a tu ciclo, tu agenda y tu historial real — no al cuerpo ideal de alguien más. Llevo ocho años haciendo esto y aprendí que la única variable que predice el resultado es la adherencia.',
-    'manifiesto_p2'      => 'Trabajo con mujeres que entienden que el progreso real no es lineal. Que habrá semanas buenas y semanas de ajuste. Que un protocolo que no puedes sostener no es un protocolo, es una tortura con fecha de vencimiento.',
-    'manifiesto_p3'      => 'Acá no hay transformaciones milagrosas. Hay datos, ajustes, y constancia. Tu cuerpo no es un proyecto a corregir — es el sistema en el que vives. Mi trabajo es que ese sistema funcione mejor.',
-    'manifiesto_cite'    => '"Tu ciclo importa. Tu agenda importa. Tu vida no se pausa."',
-    'manifiesto_author'  => '— Silvia Martínez, Coach WellCore',
+    'manifiesto_label'   => 'Cómo trabajo',
+    'manifiesto_title'   => 'COMO <em>TRABAJO</em><br>YO.',
+    'manifiesto_p1'      => 'No te voy a mandar una rutina genérica que copié de Pinterest. Tu plan se arma según tu historial real, tu ciclo, tus horarios y lo que de verdad puedes sostener en una semana normal — no en la fantasía donde todo te sale bien.',
+    'manifiesto_p2'      => 'Si esta semana no entrenaste tres días porque tu hijo se enfermó o porque tu menstruación llegó como camión, no me importa. Ajustamos. La adherencia es la única variable que predice resultados. Todo lo demás es marketing.',
+    'manifiesto_p3'      => 'No prometo transformaciones de 30 días. Prometo que en tres meses vas a entender por qué entrenas, en seis vas a verte distinta, y en un año vas a ser otra persona. Eso es lo único que se sostiene.',
+    'manifiesto_cite'    => '"Tu ciclo importa. Tu agenda importa. Tu vida no se pausa por un plan."',
+    'manifiesto_author'  => '— Silvia',
 
     // =========================================================
     // ESPECIALIDADES
     // =========================================================
     'spec_label'       => 'CON QUIÉN TRABAJO',
     'spec_title'       => 'CON QUIÉN<br><em>SÍ</em><br>FUNCIONA.',
-    'spec_sub'         => 'Cinco etapas de la mujer real. No copio rutinas de Instagram. Diseño protocolos que respetan dónde estás hoy.',
-    'spec_1_title'     => 'POSTPARTO Y RECUPERACIÓN',
-    'spec_1_desc'      => 'Volver más fuerte que antes. Para mamás recientes con alta médica: recuperación de suelo pélvico, diástasis abdominal, recomposición sin restricción extrema. Respeto absoluto al ritmo del cuerpo.',
-    'spec_2_title'     => 'MAMÁS QUE NO TIENEN TIEMPO',
-    'spec_2_desc'      => 'Sesiones cortas que sí funcionan. 30 a 45 minutos máximo, 3 o 4 veces por semana. Diseñado para entrenarte entre la oficina, los hijos, el lonche y la vida real — sin culpa.',
-    'spec_3_title'     => 'FUERZA FEMENINA REAL',
-    'spec_3_desc'      => 'Levantar pesos de verdad sin miedo a "ponerte grande". Periodización progresiva para que veas tu sentadilla, peso muerto y press subir mes a mes. La fuerza cambia más que el cuerpo: cambia cómo te paras.',
-    'spec_4_title'     => 'MUJERES +35 · PERIMENOPAUSIA',
-    'spec_4_desc'      => 'El cuerpo cambia. El método se adapta. Estrategias para mantener masa muscular, densidad ósea y energía cuando las hormonas dejan de jugar a tu favor. Esto es ciencia, no resignación.',
-    'spec_5_title'     => 'HÁBITOS QUE SOBREVIVEN',
-    'spec_5_desc'      => 'Sin dietas extremas. Sin culpa los domingos. Construimos un sistema de alimentación y ejercicio que sigues sosteniendo aunque yo no te esté revisando. Eso es el resultado real.',
-    'spec_editorial'   => 'No trabajo con todas. Trabajo con las que están listas para un proceso real.',
+    'spec_sub'         => 'Cinco escenarios reales de mujer real. No protocolos genéricos. Diseño según dónde estás hoy y qué necesita tu cuerpo en este momento.',
+    'spec_1_title'     => 'POSTPARTO',
+    'spec_1_desc'      => 'Volver fuerte después de tener un hijo no es ir directo al gym a hacer abdominales. Trabajamos suelo pélvico, diástasis, recomposición sin restricción. Tu cuerpo cambió por una razón hermosa — vamos a respetarla.',
+    'spec_2_title'     => 'MAMÁS SIN TIEMPO',
+    'spec_2_desc'      => '30 a 45 minutos, máximo 4 veces por semana. Diseñado para entrenarte entre el cole, el trabajo, la cena y la lavadora. Si esta semana solo lograste 2 días, no pasa nada — la consistencia es el promedio, no la perfección.',
+    'spec_3_title'     => 'FUERZA SIN MIEDO',
+    'spec_3_desc'      => 'Levantar pesos de verdad no te va a hacer "masculina". Te va a cambiar cómo te paras frente al espejo. Sentadilla, peso muerto, press — periodización progresiva, porque tu cuerpo está hecho para esto.',
+    'spec_4_title'     => 'MUJERES +35',
+    'spec_4_desc'      => 'Si tu cuerpo no responde como antes, no es que estés "vieja". Son las hormonas. Diseño protocolos para mantener masa muscular, densidad ósea y energía durante perimenopausia y después. Esto es ciencia, no resignación.',
+    'spec_5_title'     => 'CONSISTENCIA REAL',
+    'spec_5_desc'      => 'Sin dietas que abandonas el viernes. Sin entrenamientos que ya no haces en febrero. Un sistema de hábitos que vas a sostener aunque yo no te esté revisando — porque la verdad, en algún momento yo me bajo del barco. Tú no.',
+    'spec_editorial'   => 'No trabajo con todas. Solo con las que están listas para hacer esto en serio.',
 
     // =========================================================
     // PROCESO 4 PASOS
@@ -128,10 +128,10 @@ return [
     // =========================================================
     // PRICING — 3 planes Silvia (estilo /planes con paleta rosa)
     // =========================================================
-    'pricing_label'   => 'INVERSIÓN',
+    'pricing_label'   => 'PLANES',
     'pricing_title'   => 'ELIGE<br><em>TU PLAN.</em>',
-    'pricing_sub'     => 'Tres niveles de acompañamiento. Mínimo 3 meses para ver resultados reales.',
-    'pricing_note'    => 'Cancelas cuando quieras tras los 3 primeros meses. Cupos limitados — Silvia trabaja con máximo 25 clientas activas.',
+    'pricing_sub'     => 'Tres niveles, según qué tan cerca quieras que esté de ti. Mínimo 3 meses — porque menos no funciona y no quiero venderte humo.',
+    'pricing_note'    => 'Cancelas cuando quieras después de los 3 primeros meses. Cupos limitados — trabajo con máximo 25 mujeres activas, así puedo responder de verdad.',
 
     // Proof bar
     'pricing_proof_active'       => '+45 mujeres en proceso',
@@ -149,92 +149,92 @@ return [
 
     // Plan ESENCIAL
     'pricing_esencial_name'  => 'ESENCIAL',
-    'pricing_esencial_quote' => 'Para mujeres que vuelven después de tiempo sin entrenar. Recuperar fuerza con método y sin presión.',
-    'pricing_esencial_p1'    => 'Plan personalizado · entrenamiento + nutrición no restrictiva ajustados a tu vida real',
-    'pricing_esencial_p2'    => 'Coach asignada · revisión mensual con check-in semanal y ajustes del plan',
-    'pricing_esencial_p3'    => 'Comunidad cerrada · grupo solo mujeres en proceso real, sin postureo de Instagram',
-    'pricing_esencial_cta'   => 'Comenzar Esencial',
+    'pricing_esencial_quote' => 'Si llevas tiempo sin entrenar o nunca has entrenado en serio. Vamos a empezar bien — sin que sea una tortura.',
+    'pricing_esencial_p1'    => 'Plan armado a tu medida · entrenamiento + comida real ajustados a tus horarios y nivel actual',
+    'pricing_esencial_p2'    => 'Una coach asignada · te revisa cada semana y te ajusta el plan cada mes según cómo vas',
+    'pricing_esencial_p3'    => 'Grupo cerrado de mujeres como tú · sin postureo, sin filtros, todas en proceso real',
+    'pricing_esencial_cta'   => 'Empezar con esencial',
 
     // Plan MÉTODO (mejor valor)
     'pricing_metodo_name'    => 'MÉTODO',
-    'pricing_metodo_badge'   => 'MEJOR VALOR',
-    'pricing_metodo_quote'   => 'Para mujeres que ya entrenan y necesitan un plan que se mueva con tu ciclo cada quincena.',
-    'pricing_metodo_p1'      => 'Periodización por ciclo menstrual · ajusto carga e intensidad según fase hormonal real',
-    'pricing_metodo_p2'      => 'Coach ajusta el plan cada quincena · seguimiento detallado de progreso y métricas',
-    'pricing_metodo_p3'      => 'Hábitos diarios + mindset · soporte cognitivo-conductual incluido para sostener el proceso',
-    'pricing_metodo_cta'     => 'Comenzar Método',
+    'pricing_metodo_badge'   => 'EL QUE LA MAYORÍA ELIGE',
+    'pricing_metodo_quote'   => 'Si ya entrenas pero sientes que estás dando vueltas. Vamos a darle estructura — y a ajustar el plan con tu ciclo.',
+    'pricing_metodo_p1'      => 'Periodización por ciclo menstrual · ajusto cargas e intensidad según en qué fase estás cada semana',
+    'pricing_metodo_p2'      => 'Tu coach te revisa cada quincena · revisamos progreso, métricas, fotos y ajustamos en serio',
+    'pricing_metodo_p3'      => 'Soporte para hábitos · hablamos también de cómo dormir mejor, gestionar antojos y sostener el proceso',
+    'pricing_metodo_cta'     => 'Empezar con método',
 
     // Plan ÍNTIMO 1:1
     'pricing_intimo_name'    => 'ÍNTIMO 1:1',
-    'pricing_intimo_badge'   => 'CON SILVIA',
-    'pricing_intimo_quote'   => 'Para postparto, perimenopausia o mujeres que necesitan el oído de Silvia más cerca.',
-    'pricing_intimo_p1'      => 'Coaching 1:1 directo con Silvia · WhatsApp con respuesta en 8 horas, soporte humano real',
-    'pricing_intimo_p2'      => 'Videollamada quincenal · sesión 1:1 personalizada cada 15 días para revisar progreso',
-    'pricing_intimo_p3'      => 'Análisis composición + bloodwork · datos reales para decisiones precisas, no estimaciones',
-    'pricing_intimo_cta'     => 'Aplicar al Íntimo',
+    'pricing_intimo_badge'   => 'CONMIGO',
+    'pricing_intimo_quote'   => 'Si necesitas que sea yo quien te lleve. Postparto, perimenopausia, deportistas, casos que requieren mi ojo directo.',
+    'pricing_intimo_p1'      => 'WhatsApp directo conmigo · respondo en menos de 8 horas, hablamos de lo que sea cuando lo necesites',
+    'pricing_intimo_p2'      => 'Videollamada cada 15 días · 45 minutos uno a uno para revisar todo y ajustar lo que haga falta',
+    'pricing_intimo_p3'      => 'Análisis de composición + lectura de tu bloodwork · trabajamos con datos reales, no con suposiciones',
+    'pricing_intimo_cta'     => 'Hablar conmigo',
 
     // =========================================================
     // INCLUDED FEATURES (8 features grid "EN TODOS LOS PLANES")
     // =========================================================
     'incl_label'   => 'EN TODOS LOS PLANES',
     'incl_title'   => 'LO QUE VIENES A BUSCAR.<br><em>LO QUE YA ESTÁ ADENTRO.</em>',
-    'incl_sub'     => 'No te cobro extra por las herramientas que hacen que vuelvas mañana.',
+    'incl_sub'     => 'No te cobro extra por las cosas que hacen que el plan funcione. Todo esto va incluido — en los tres niveles.',
 
     'incl_1_title'   => 'CHAT DIRECTO',
-    'incl_1_desc'    => 'Sin bots. Sin tickets. Mensaje directo a tu coach humana — yo o el equipo.',
+    'incl_1_desc'    => 'Sin tickets. Sin bots. Sin que esperes 3 días. Me escribes, te respondo. Como hablar con una amiga que sabe.',
     'incl_1_badge'   => 'RESPUESTA <24H',
 
-    'incl_2_title'   => 'PERIODIZACIÓN POR CICLO',
-    'incl_2_desc'    => 'Ajusto tu entrenamiento según fase del ciclo menstrual. La ciencia que la mayoría ignora.',
-    'incl_2_badge'   => 'EXCLUSIVO SILVIA',
+    'incl_2_title'   => 'AJUSTE POR CICLO',
+    'incl_2_desc'    => 'Tu fase folicular no entrena igual que tu fase lútea. Ajusto cargas, intensidad y comida según dónde está tu cuerpo esa semana.',
+    'incl_2_badge'   => 'CASI NADIE LO HACE',
 
-    'incl_3_title'   => 'NUTRICIÓN NO RESTRICTIVA',
-    'incl_3_desc'    => 'Sin listas de prohibidos. Sin culpa los domingos. Estrategia que puedes sostener.',
+    'incl_3_title'   => 'COMER SIN CULPA',
+    'incl_3_desc'    => 'Sin lista de prohibidos. Sin domingos en pánico. Comes, vives, sales con amigas, y aún así avanzas.',
 
     'incl_4_title'   => 'VIDEOS DE TÉCNICA',
-    'incl_4_desc'    => 'Cada ejercicio con explicación filmada. Aprendes la técnica correcta desde el día uno.',
+    'incl_4_desc'    => 'Cada ejercicio explicado en video. Aprendes a hacerlo bien desde el primer día — no a lastimarte.',
 
     'incl_5_title'   => 'POSTPARTO Y EMBARAZO',
-    'incl_5_desc'    => 'Protocolos específicos para mamás recientes con alta médica y mujeres que planean concebir.',
+    'incl_5_desc'    => 'Si vienes de tener un hijo o estás buscando, tengo protocolos específicos. No te mando lo mismo que a una chica de 22.',
 
-    'incl_6_title'   => 'AGENDA DE VIDA REAL',
-    'incl_6_desc'    => 'Tres a cuatro sesiones por semana, máximo 45 minutos. Diseñado para mujeres ocupadas.',
+    'incl_6_title'   => 'AGENDA REAL',
+    'incl_6_desc'    => '3 o 4 sesiones de máximo 45 minutos. Diseñado para entrenarte entre el trabajo, los hijos y el resto de tu vida.',
 
-    'incl_7_title'   => 'PROGRESO DOCUMENTADO',
-    'incl_7_desc'    => 'Mediciones, fotos opcionales y métricas. Tu evolución no se inventa: se demuestra con datos.',
+    'incl_7_title'   => 'PROGRESO QUE SE VE',
+    'incl_7_desc'    => 'Mediciones, fotos opcionales, métricas reales. No te digo "vas bien" — te muestro con datos qué cambió y qué no.',
 
-    'incl_8_title'   => 'AUTONOMÍA AL CIERRE',
-    'incl_8_desc'    => 'Terminas sabiendo entrenarte sola. Eso es el resultado real del proceso, no la dependencia.',
+    'incl_8_title'   => 'TE ENSEÑO A VOLAR SOLA',
+    'incl_8_desc'    => 'Cuando termines conmigo, vas a saber armarte un plan, ajustar tus comidas y entrenar sin necesitarme. Esa es la meta.',
 
     // =========================================================
     // FAQ (6-8 preguntas específicas coaching femenino)
     // =========================================================
-    'faq_label'    => 'LO QUE / PREGUNTAN.',
+    'faq_label'    => 'LO QUE PREGUNTAN.',
     'faq_title'    => 'LO QUE<br><em>PREGUNTAN.</em>',
-    'faq_q1' => '¿Es para principiantes?',
-    'faq_a1' => 'Sí. Trabajo con mujeres en todos los niveles, desde las que nunca han entrenado hasta las que llevan años en el gimnasio y no están viendo progreso. El protocolo parte de donde tú estás.',
-    'faq_q2' => '¿Trabajas con embarazo o postparto?',
-    'faq_a2' => 'Para embarazo activo, derivo a especialistas obstétricos. Para postparto (pasadas las 12 semanas y con alta médica), sí trabajo con protocolos de recuperación y recomposición adaptados.',
-    'faq_q3' => '¿Adaptas el plan según el ciclo menstrual?',
-    'faq_a3' => 'Sí. Es uno de mis pilares. Ajusto carga, volumen e intensidad según la fase del ciclo. Los días de alta intensidad tienen sentido biológico — no son al azar.',
+    'faq_q1' => '¿Y si nunca he entrenado en serio?',
+    'faq_a1' => 'Mejor — vas a aprender bien desde el inicio. Trabajo con mujeres que nunca pisaron un gym y con otras que llevan 10 años entrenando sin progreso. El plan parte de donde tú estás, no de un nivel inventado.',
+    'faq_q2' => '¿Puedo entrenar si estoy embarazada o tuve hijo hace poco?',
+    'faq_a2' => 'Embarazo activo: te derivo a un médico que te dé alta para entrenar y trabajamos juntas. Postparto: a partir de las 12 semanas y con alta médica, sí. Tengo protocolos específicos para suelo pélvico, diástasis y volver con calma.',
+    'faq_q3' => '¿De verdad ajustas según mi ciclo?',
+    'faq_a3' => 'Sí, en serio. Tu fase folicular y tu fase lútea no son lo mismo — los días que vas a estar fuerte y los días en los que vas a querer dormir todo el día tienen explicación biológica. Los aprovechamos en lugar de pelear contra ellos.',
     'faq_q4' => '¿Necesito un gimnasio completo?',
-    'faq_a4' => 'No. Diseño el protocolo según tu equipamiento real. Gimnasio, mancuernas en casa, o solo peso corporal — el principio de sobrecarga progresiva funciona con cualquier herramienta.',
-    'faq_q5' => '¿Cuántas sesiones de entrenamiento por semana?',
-    'faq_a5' => 'Depende de tu disponibilidad real y tu nivel actual. En general: 3-5 sesiones semanales de 45-60 minutos. No más, no menos — lo que sea sostenible a largo plazo.',
-    'faq_q6' => '¿Cómo es el seguimiento semanal?',
-    'faq_a6' => 'Cada semana envías tu check-in con métricas, fotos opcionales, energía y cómo se sintió el entrenamiento. Yo lo analizo y ajusto el plan dentro de las 24h. Nada se deja pasar.',
+    'faq_a4' => 'No. Hay clientas que entrenan solo en casa con dos mancuernas y una banda elástica, y avanzan igual. Diseño según el equipamiento que tienes — no según el que me gustaría que tuvieras.',
+    'faq_q5' => '¿Cuántos días por semana voy a entrenar?',
+    'faq_a5' => 'Entre 3 y 4 días, máximo 45 minutos cada sesión. No más. La gente cree que entrenar más es mejor — la realidad es que más volumen sin recuperación = lesiones y estancamiento.',
+    'faq_q6' => '¿Cómo funciona el seguimiento?',
+    'faq_a6' => 'Cada semana me mandas tu check-in: cómo te sentiste, qué entrenamientos saliste a hacer, foto opcional si te animas, métricas básicas. Lo reviso, te ajusto el plan, y seguimos. Sin que pase como mensaje en el vacío.',
 
     // =========================================================
     // CTA FINAL
     // =========================================================
-    'cta_label'       => 'SIGUIENTE PASO',
-    'cta_title'       => 'EMPIEZA<br><em>CON</em><br>SILVIA.',
-    'cta_sub'         => 'Tu proceso empieza con una decisión. Sin promesas vacías. Con método.',
-    'cta_primary'     => 'Aplicar al protocolo →',
-    'cta_whatsapp'    => 'Escribir por WhatsApp',
-    'cta_trust1'      => 'Sin dietas restrictivas',
-    'cta_trust2'      => 'Método basado en evidencia',
-    'cta_trust3'      => '91% adherencia',
+    'cta_label'       => 'EL SIGUIENTE PASO',
+    'cta_title'       => 'EMPECEMOS<br><em>JUNTAS.</em>',
+    'cta_sub'         => 'No tomes la decisión esta tarde si no estás lista. Pero si estás lista de verdad — escríbeme y empezamos.',
+    'cta_primary'     => 'Empezar mi proceso →',
+    'cta_whatsapp'    => 'Hablar conmigo por WhatsApp',
+    'cta_trust1'      => 'Sin dietas extremas',
+    'cta_trust2'      => 'Sin promesas vacías',
+    'cta_trust3'      => '96% siguen al sexto mes',
 
     // Sticky CTA
     'sticky_cta_text' => 'Entrenar con Silvia',

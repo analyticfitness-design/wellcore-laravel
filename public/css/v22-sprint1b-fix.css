@@ -301,46 +301,89 @@ body.fit-page .h2-plan-feat-icon { color: #DC3C64; }
     white-space: nowrap;
 }
 
-/* FIT — Hero photo REAL (con foto sin fondo) */
+/* FIT — Hero photo REAL (foto sin fondo, atmósfera cinematográfica)
+   - object-fit: contain → la foto se ve ENTERA, no se corta
+   - max-width 78% del contenedor → silueta más estilizada, más aire alrededor
+   - 3 capas de glow rosa: ambient atrás, direccional desde abajo, halo pelo
+   - Floor shadow blur circular bajo los pies (efecto piso)
+*/
 .fit-hero-photo-real {
-    aspect-ratio: 4/5;
-    border-radius: 16px;
+    aspect-ratio: 5/7;
+    border-radius: 20px;
     overflow: hidden;
     position: relative;
+    isolation: isolate;
     background:
-        radial-gradient(ellipse 70% 60% at 50% 50%, rgba(220, 60, 100, 0.18), transparent 70%),
-        linear-gradient(180deg, rgba(220, 60, 100, 0.04) 0%, transparent 100%);
+        /* Ambient pink glow centro */
+        radial-gradient(ellipse 65% 55% at 50% 60%, rgba(220, 60, 100, 0.22), transparent 70%),
+        /* Halo direccional sutil arriba */
+        radial-gradient(ellipse 40% 35% at 50% 25%, rgba(245, 134, 164, 0.12), transparent 65%),
+        /* Floor pink rim abajo */
+        radial-gradient(ellipse 80% 25% at 50% 100%, rgba(220, 60, 100, 0.32), transparent 70%),
+        /* Base oscura con gradiente */
+        linear-gradient(180deg, #0a0a0a 0%, #14080d 70%, #1a0a12 100%);
     display: flex;
     align-items: flex-end;
     justify-content: center;
+    box-shadow:
+        inset 0 0 80px rgba(220, 60, 100, 0.08),
+        0 24px 64px rgba(220, 60, 100, 0.15);
 }
+/* Halo glow detrás de la silueta — pseudo elemento ::before para llegar al detrás de la foto */
+.fit-hero-photo-real::before {
+    content: '';
+    position: absolute;
+    bottom: 4%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 55%;
+    height: 78%;
+    background: radial-gradient(ellipse 70% 55% at 50% 65%, rgba(220, 60, 100, 0.42) 0%, rgba(220, 60, 100, 0.16) 35%, transparent 70%);
+    filter: blur(14px);
+    pointer-events: none;
+    z-index: 1;
+}
+/* Floor shadow circular bajo los pies */
 .fit-hero-photo-real::after {
     content: '';
     position: absolute;
-    inset: 0;
-    border-radius: 16px;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 6%;
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.6), transparent 70%);
+    filter: blur(8px);
     pointer-events: none;
-    background: linear-gradient(180deg, transparent 60%, rgba(10, 10, 10, 0.45) 100%);
+    z-index: 1;
 }
+/* Picture wrapper — limita el ancho de la silueta para dar atmósfera lateral */
 .fit-hero-photo-real picture {
+    position: relative !important;
+    z-index: 2 !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
     width: 100% !important;
     height: 100% !important;
-    display: block !important;
-    position: relative;
-    z-index: 1;
+    padding: 6% 0 0 0 !important;
 }
 .fit-hero-photo-real img {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: none !important;
-    object-fit: cover !important;
+    max-width: 78% !important;
+    max-height: 100% !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
     object-position: center bottom !important;
     display: block !important;
-    position: relative;
-    z-index: 1;
+    position: relative !important;
+    z-index: 2 !important;
+    /* Halo soft alrededor de la silueta */
+    filter: drop-shadow(0 0 24px rgba(220, 60, 100, 0.32)) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
 }
 @media (min-width: 1024px) {
-    .fit-hero-photo-real { aspect-ratio: 4/5; }
+    .fit-hero-photo-real { aspect-ratio: 5/7; }
+    .fit-hero-photo-real img { max-width: 72% !important; }
 }
 
 /* FIT — Mockup section split 2-col (estaba sin grid) */
