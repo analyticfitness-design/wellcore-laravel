@@ -534,6 +534,109 @@ Basado en todos los bugs encontrados en el Sprint 1 `/planes`:
 
 ---
 
+## 14. Sprint 2 (sesión nocturna 2026-04-29) — porting `/metodo`, `/proceso`, `/nosotros`
+
+> **Sesión:** Claude Code Opus 4.7 (1M context) bajo dirección de Daniel Esparza
+> **Resultado:** ✅ Las tres páginas pusheadas a `main` sin incidente. 9 commits incrementales atómicos por página.
+
+### 14.1 Bugs evitados gracias al postmortem
+
+1. **Bug §2 redivivo descubierto en HEAD antes de tocar nada**
+   - Estado encontrado en `main` al iniciar la sesión: `routes/web.php` ya apuntaba a `[MetodoController::class, 'index']` (cambio de sesión anterior, posiblemente del IDE/linter de Daniel) **pero el archivo `app/Http/Controllers/Public/MetodoController.php` NO estaba commiteado** (untracked).
+   - Si Daniel hubiera triggeado `silvia-gitpull-load` antes de mi sesión, `/metodo` daba **500 — Class MetodoController not found**.
+   - Fix: commit aislado `62b9cc97 fix(metodo): commit MetodoController.php que faltaba en repo (bug raíz §2)` antes de cualquier otro cambio.
+   - Detección que funcionó: `git diff HEAD -- routes/web.php` (vacío = ya en HEAD) + `git show HEAD:app/.../MetodoController.php` (path exists on disk but not in HEAD).
+   - **Lección:** la verificación pre-push del checklist §13 ahora se aplica también al **estado heredado de HEAD**, no solo a los cambios que uno hace en la sesión. Si un commit anterior dejó la route apuntando a una clase, **siempre** verificar que la clase está commiteada.
+
+2. **Bug §11 (closure → controller dispatch)** — evitado en `/proceso` y `/nosotros`. Antes de cada feat-commit, el fix-commit espejo (`fe07ff7d` y `7c418683`) trae **controller + route en el mismo commit atómico**. Imposible que la route quede apuntando a una clase no commiteada.
+
+3. **Bug §12.1 (CSS stale en producción)** — evitado. Cada página tiene un build-commit dedicado (`8e816daa`, `1047fc82`, `4a53250a`) con `public/build/` regenerado. Verificación pre-push: `grep -c "<clase-clave-v2>" public/build/assets/app-*.css` ≥ 1 antes de pushear. Las clases `.metodo-sidebar`, `.proceso-form-mockup`, `.nosotros-hero` están todas en el bundle final.
+
+4. **Bug §12.2 (voseo argentino)** — evitado. Grep pre-commit `vos\b\|pagás\|ahorrás\|elegí\|empezá\|cancelás\|querés\|podés\|tenés` sobre blade + lang ES de cada página. Solo aparecieron false positives ("demostrativos", "Activos") en sustantivos plurales — sin voseo real. Docblocks que **documentan** lo prohibido se ignoran.
+
+### 14.2 Patrón de commits que funcionó
+
+**3 commits atómicos por página:**
+
+| Tipo | Contenido | Rollback target |
+|---|---|---|
+| `fix(<page>)` | Controller nuevo + `routes/web.php` (closure → dispatch) | Repara HEAD inconsistente / previene bug §2 |
+| `feat(<page>)` | Blade reescrito + `lang/{es,en}/<page>.php` + componentes Blade nuevos (si aplican) + `resources/js/<page>.js` + import en `alpine-public.js` + sección CSS en `v2-public.css` | El "go-live" de la página v2 — tira la blade legacy y activa la nueva |
+| `build(<page>)` | `public/build/` regenerado | Asegura que los assets minificados van al deploy |
+
+**Ventaja:** rollback granular. Si una página rompe, basta `git revert build feat fix` de esa página y queda como antes — sin afectar las otras.
+
+**Ventaja 2:** los 3 commits del fix-commit (controller + route) van **antes** del feat-commit (blade nuevo). Si entre ambos alguien dispara deploy, el sitio queda con blade legacy + controller nuevo activo (no rompe nada). Si el feat-commit fallara, rollback es trivial.
+
+### 14.3 Decisiones de contenido aplicadas (Daniel pre-decididas)
+
+- **`/metodo`** — Cap04 reemplaza "RIR" por "intensidad relativa". Cap05 NO menciona IA / Claude / GPT / algoritmo (`feedback_ia_confidencial`). Cap06 ticker anonimizado (iniciales + país). Cap07 reusa `<x-public.faq-accordion>` con look editorial.
+- **`/proceso`** — 5 step viz con disclaimer "Vista de ejemplo · datos demostrativos" mono debajo de cada uno. Step 2 NO menciona "algoritmo IA" — usa "sistema de match" / "compatibilidad por afinidad". Stats bar v1 ("4 fases · 12 sem...") eliminada.
+- **`/nosotros`** — Daniel Esparza con bio completa (founder Bucaramanga 2018). 5 placeholders sin bios largas: CR (Coach senior), MV (Nutricionista clínica), LM (Coach especialista mujeres), JR (Coach senior performance), SB (Nutricionista deportiva). Timeline 5 hitos: 2018 fundación → 2020 plan online → 2022 1:1 escalado → 2024 plataforma propia → 2026 expansión LATAM. 3 valores pull-quote literales: "No prometemos milagros." / "Tu progreso es tuyo." / "La ciencia no es opcional." CTA SUAVE — "Sin urgencia · No vas a recibir 17 emails."
+
+### 14.4 Componentes Blade nuevos creados (todos en `resources/views/components/public/`)
+
+Solo en `/metodo`:
+- `editorial-sidebar.blade.php` — sidebar 220px sticky con brand + progress + 8 chapters + footer CTA (reusable para `/proceso` y `/nosotros`)
+- `chapter-header.blade.php` — header pre-cap con `numText` (eyebrow Mono) + `titleHtml` (Oswald display)
+- `compare-table.blade.php` — tabla Bloomberg (cells con tipo `good`/`highlight`/`text`)
+- `period-table.blade.php` — tabla 4 fases con `phase-tag` coloreado (adapt/hyper/fuerza/desc)
+- `inline-cta.blade.php` — CTA editorial intercalado con primary + secondary opcional
+
+`/proceso` y `/nosotros` **reusaron** estos componentes — sin componentes Blade nuevos. Esa es la prueba de que el diseño componentizado funcionó.
+
+### 14.5 Factories Alpine creadas
+
+- `resources/js/metodo.js` → `window.metodoPage()` — IntersectionObserver capítulos + scrollProgress + sticky CTA + SVG curve reveal
+- `resources/js/proceso.js` → `window.procesoPage()` — IntersectionObserver capítulos + scrollProgress + viz reveal observer
+- `resources/js/nosotros.js` → `window.nosotrosPage()` — IntersectionObserver capítulos + reveal timeline/equipo/valores + destroy hook
+
+Las 3 importadas desde `resources/js/alpine-public.js` antes de `Alpine.start()`. **Sin scripts inline en blade.**
+
+### 14.6 CSS namespacing — sin colisiones detectadas
+
+`resources/css/v2-public.css` creció de 2489 líneas pre-sprint a 5608 líneas (+3119 líneas). Tres secciones añadidas:
+
+- `/* PÁGINA: /metodo */` desde línea 2930 (~1333 líneas) — prefijo `.metodo-*`
+- `/* PÁGINA: /proceso */` (~710 líneas) — prefijo `.proceso-*`
+- `/* PÁGINA: /nosotros */` (~812 líneas) — prefijo `.nosotros-*`
+
+Verificación de colisión: cada clase nueva grepeada contra las anteriores → 0 matches. Las clases `.t-*` (planes), `.hp-*` (home), `.h2-*` (home v2.2), `.metodo-*`, `.proceso-*`, `.nosotros-*` no se solapan.
+
+### 14.7 Bug nuevo NO encontrado pero documentado
+
+**Riesgo latente: `routes/web.php` se modifica externamente entre sesiones.** Durante la sesión vi que `routes/web.php` apareció con cambios que el agente la-03-vue3 no había hecho (imports `CoachesController`, `PresencialController`). Esto sugiere que **otro proceso** (IDE linter, autocomplete, o sesión anterior) está agregando líneas. **Mitigación a futuro:** primer paso de cualquier sprint v2 = `git diff routes/web.php` para ver el estado heredado, y si ya hay cambios pre-existentes, evaluar si son intencionales antes de añadir los míos.
+
+### 14.8 Estado al cierre
+
+- ✅ `/metodo` HTTP 200 LOCAL (smoke verde) — pusheado a `main` (commits `62b9cc97`, `e15d104e`, `8e816daa`).
+- ✅ `/proceso` HTTP 200 LOCAL — pusheado a `main` (commits `fe07ff7d`, `60372d8e`, `1047fc82`).
+- ✅ `/nosotros` HTTP 200 LOCAL — pusheado a `main` (commits `7c418683`, `6f2cd564`, `4a53250a`).
+- ✅ `/planes`, `/`, `/fit` no afectados (smoke verde post-sprint).
+- ⚠️ **Producción NO se verificó visualmente** — el MCP de Chrome DevTools se desconectó durante la sesión. Daniel debe:
+  1. Triggear `silvia-gitpull-load` desde EasyPanel cuando despierte.
+  2. Smoke test manual: `https://wellcorefitness.com/{metodo,proceso,nosotros}` HTTP 200.
+  3. Validación visual con Chrome local: scroll completo, sin console errors, CSS editorial aplicado (sidebar 220px en desktop, drop-cap rojo, body Raleway 1.8 line-height, ticker scroll, sticky CTA mobile).
+  4. Lighthouse mobile/desktop: A11y/BP/SEO=100, Performance ≥80 mobile / ≥90 desktop.
+- ⚠️ **`prefers-reduced-motion: reduce`** verificado en CSS de las tres páginas. Smoke browser pendiente.
+
+### 14.9 Lecciones para Sprint 3 (próximas páginas v2)
+
+1. **Verificar HEAD antes de cualquier cambio** — `git diff HEAD -- routes/web.php` y `git status app/Http/Controllers/Public/`. Si hay route apuntando a clase untracked → fix-commit primero.
+2. **Patrón de 3 commits atómicos por página** funciona — replicarlo. Rollback granular vale oro.
+3. **Build siempre antes del push final** — cada página añade ~700-1300 líneas de CSS al bundle. Sin build, prod queda visualmente roto (HTTP 200 con CSS legacy aplicado).
+4. **Componentes Blade reutilizables vale la pena** — los 5 componentes creados en `/metodo` ahorraron horas en `/proceso` y `/nosotros`.
+5. **Factories Alpine por página** (`window.<page>Page()`) escalan bien — patrón consistente, código aislado, importado una vez en `alpine-public.js`.
+6. **Daniel pre-decide contenido** — eso libera la sesión nocturna autónoma de cuestionar copy/datos. Las decisiones críticas (RIR→intensidad relativa, no IA, voz LATAM neutro, equipo placeholders) deben ir documentadas en el prompt inicial.
+
+---
+
+**Actualizado:** 2026-04-29  
+**Por:** sesión Claude Code Opus 4.7 (1M context) bajo dirección de Daniel Esparza  
+**Estado Sprint 2:** ✅ completado en `main` — `/metodo`, `/proceso`, `/nosotros` HTTP 200 local · pendiente `silvia-gitpull-load` por Daniel + smoke visual producción.
+
+---
+
 ## 14. Sprint 3 — `/coaches` y `/presencial` v2 (sesión nocturna autónoma)
 
 > **Fecha:** 2026-04-29 sesión nocturna  
