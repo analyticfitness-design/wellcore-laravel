@@ -189,43 +189,158 @@
         {!! __('fit.pullquote_text') !!}
     </x-public.pullquote>
 
-    <x-public.s-divider label="INVERSIÓN · ENTRENAR CON SILVIA" />
+    <x-public.s-divider label="PLANES · ELIGE TU NIVEL" />
 
     {{-- ================================================================== --}}
-    {{-- COMP 8: PRICING                                                    --}}
+    {{-- COMP 8: PRICING — 3 planes con toggle billing (estilo /planes)     --}}
     {{-- ================================================================== --}}
-    <section class="fit-pricing" id="entrenar" aria-labelledby="fit-pricing-title">
-        <div class="h2-section-head" style="padding: 0 0 12px;">
-            <p class="h2-eyebrow">{{ __('fit.pricing_label') }}</p>
+    <section class="fit-pricing-section"
+             id="entrenar"
+             aria-labelledby="fit-pricing-title"
+             x-data="{ period: 'mensual' }">
+        <div class="h2-section-head" style="padding: 60px 22px 28px;">
+            <p class="h2-eyebrow h2-eyebrow-red">{{ __('fit.pricing_label') }}</p>
             <h2 id="fit-pricing-title" class="h2-section-title">{!! __('fit.pricing_title') !!}</h2>
             <p class="h2-section-sub">{{ __('fit.pricing_sub') }}</p>
         </div>
 
-        <article class="fit-pricing-card" data-animate="fadeInUp">
-            <h3 class="fit-pricing-name">{{ __('fit.pricing_plan_name') }}</h3>
-            <p class="fit-pricing-tagline">{{ __('fit.pricing_plan_tagline') }}</p>
-
-            <div class="fit-pricing-price">
-                <span class="fit-pricing-amount">
-                    {!! __('fit.pricing_price_html') !!}
-                </span>
-                <span class="fit-pricing-period">{{ __('fit.pricing_period') }}</span>
+        {{-- Proof bar --}}
+        <div class="fit-proof-bar" data-animate="fadeInUp">
+            <div class="fit-proof-item">
+                <span class="fit-proof-dot fit-proof-dot-pink"></span>
+                <span><strong>+45</strong> mujeres en proceso</span>
             </div>
+            <div class="fit-proof-item">
+                <span class="fit-proof-pills" aria-hidden="true">
+                    <span></span><span></span><span></span>
+                </span>
+                <span><strong>96%</strong> adherencia</span>
+            </div>
+            <div class="fit-proof-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+                    <path d="m4.5 12.75 6 6 9-13.5"/>
+                </svg>
+                <span>Verificado por <strong>WellCore</strong></span>
+            </div>
+        </div>
 
-            <ul class="fit-pricing-features">
-                @foreach(range(1,5) as $i)
-                    <li>{{ __('fit.pricing_feat'.$i) }}</li>
-                @endforeach
-            </ul>
+        {{-- Billing toggle --}}
+        <div class="fit-billing-toggle" role="tablist" aria-label="Período de facturación">
+            @foreach(['mensual', 'trimestral', 'anual'] as $p)
+                <button type="button"
+                        class="fit-b-pill"
+                        :class="{ 'is-active': period === '{{ $p }}' }"
+                        :aria-selected="period === '{{ $p }}'"
+                        role="tab"
+                        @click="period = '{{ $p }}'">
+                    <span class="fit-b-pill-name">{{ __('fit.pricing_billing_'.$p) }}</span>
+                    @if($p === 'trimestral')
+                        <span class="fit-b-pill-save">{{ __('fit.pricing_discount_trim') }}</span>
+                    @elseif($p === 'anual')
+                        <span class="fit-b-pill-save">{{ __('fit.pricing_discount_anual') }}</span>
+                    @endif
+                </button>
+            @endforeach
+        </div>
 
-            {{-- TODO: validar precio real con Silvia ($180 USD es base de referencia) --}}
-            <a href="https://wa.me/{{ $whatsappSilvia }}?text=Hola%20Silvia%2C%20quiero%20aplicar%20al%20protocolo"
-               target="_blank" rel="noopener"
-               class="h2-btn-primary fit-pricing-cta btn-press">
-                {{ __('fit.pricing_cta') }} →
-            </a>
-            <p class="fit-pricing-note">{{ __('fit.pricing_note') }}</p>
-        </article>
+        {{-- 3 Tier cards --}}
+        <div class="fit-tier-track">
+            @php
+                $silviaPlans = [
+                    ['key' => 'esencial', 'badge' => null,                              'is_featured' => false],
+                    ['key' => 'metodo',   'badge' => __('fit.pricing_metodo_badge'),    'is_featured' => true ],
+                    ['key' => 'intimo',   'badge' => __('fit.pricing_intimo_badge'),    'is_featured' => false],
+                ];
+            @endphp
+            @foreach($silviaPlans as $i => $p)
+                <article class="fit-t-card fit-t-card-{{ $p['key'] }} {{ $p['is_featured'] ? 'is-featured' : '' }}"
+                         data-animate="fadeInUp"
+                         @if($i > 0) data-stagger="{{ $i }}" @endif>
+
+                    @if($p['badge'])
+                        <span class="fit-t-badge {{ $p['key'] === 'metodo' ? 'badge-gold' : 'badge-pink' }}">{{ $p['badge'] }}</span>
+                    @endif
+
+                    <h3 class="fit-t-name">{{ __('fit.pricing_'.$p['key'].'_name') }}</h3>
+
+                    <div class="fit-t-price-block">
+                        <span class="fit-t-price-sym">$</span>
+                        <span class="fit-t-price-num"
+                              x-text="({{ json_encode($pricesUsd[$p['key']]) }})[period]">{{ $pricesUsd[$p['key']]['mensual'] }}</span>
+                        <span class="fit-t-price-cop">{{ __('fit.pricing_usd_mes') }}</span>
+                        <span class="fit-t-price-note"
+                              x-text="period === 'trimestral' ? 'Pagas $' + ({{ json_encode($totalsUsd[$p['key']]) }})['trimestral'] + ' · ahorras $' + ({{ json_encode($savingsUsd[$p['key']]) }})['trimestral'] : (period === 'anual' ? 'Pagas $' + ({{ json_encode($totalsUsd[$p['key']]) }})['anual'] + ' · ahorras $' + ({{ json_encode($savingsUsd[$p['key']]) }})['anual'] : '')">&nbsp;</span>
+                    </div>
+
+                    <p class="fit-t-quote">{{ __('fit.pricing_'.$p['key'].'_quote') }}</p>
+
+                    <ul class="fit-t-pillars">
+                        @foreach(['p1', 'p2', 'p3'] as $pillar)
+                            <li class="fit-t-pillar">
+                                <span class="fit-t-pillar-dot" aria-hidden="true"></span>
+                                <span class="fit-t-pillar-text">{{ __('fit.pricing_'.$p['key'].'_'.$pillar) }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+
+                    @if($p['key'] === 'intimo')
+                        {{-- Íntimo va por WhatsApp con Silvia (aplicación, no checkout directo) --}}
+                        <a href="https://wa.me/{{ $whatsappSilvia }}?text=Hola%20Silvia%2C%20quiero%20aplicar%20al%20Plan%20%C3%8Dntimo"
+                           target="_blank" rel="noopener"
+                           class="fit-t-cta fit-t-cta-{{ $p['key'] }}">
+                            {{ __('fit.pricing_'.$p['key'].'_cta') }}
+                        </a>
+                    @else
+                        <a :href="`{{ route('inscripcion') }}?plan={{ $p['key'] }}&coach=silvia&period=${period}`"
+                           class="fit-t-cta fit-t-cta-{{ $p['key'] }}">
+                            {{ __('fit.pricing_'.$p['key'].'_cta') }}
+                        </a>
+                    @endif
+                </article>
+            @endforeach
+        </div>
+
+        <p class="fit-pricing-note">{{ __('fit.pricing_note') }}</p>
+    </section>
+
+    {{-- ================================================================== --}}
+    {{-- COMP 8.5: EN TODOS LOS PLANES (8 features grid)                    --}}
+    {{-- ================================================================== --}}
+    <section class="fit-incl" aria-labelledby="fit-incl-title">
+        <div class="fit-incl-head">
+            <p class="h2-eyebrow h2-eyebrow-red">{{ __('fit.incl_label') }}</p>
+            <h2 id="fit-incl-title" class="h2-section-title" style="text-align:left; max-width: 720px;">{!! __('fit.incl_title') !!}</h2>
+            <p class="fit-incl-sub">{{ __('fit.incl_sub') }}</p>
+        </div>
+
+        <div class="fit-incl-grid">
+            @php
+                $incl = [
+                    1 => ['icon' => '<path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v3M8 21h8"/>',                                                                                                                                  'has_badge' => true],
+                    2 => ['icon' => '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',                                                                                                                                                                                                  'has_badge' => true],
+                    3 => ['icon' => '<path d="M7 7h10M7 12h10M7 17h6"/><circle cx="19" cy="17" r="2"/>',                                                                                                                                                                                       'has_badge' => false],
+                    4 => ['icon' => '<rect x="3" y="6" width="14" height="12" rx="2"/><path d="m17 10 4-2v8l-4-2z"/>',                                                                                                                                                                       'has_badge' => false],
+                    5 => ['icon' => '<path d="M12 21s-7-4.5-7-11a7 7 0 0 1 14 0c0 6.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/>',                                                                                                                                                       'has_badge' => false],
+                    6 => ['icon' => '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',                                                                                                                                                                  'has_badge' => false],
+                    7 => ['icon' => '<path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-5"/>',                                                                                                                                                                                                    'has_badge' => false],
+                    8 => ['icon' => '<circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/>',                                                                                                                                                                                              'has_badge' => false],
+                ];
+            @endphp
+            @foreach($incl as $n => $item)
+                <article class="fit-incl-card {{ $item['has_badge'] ? 'is-highlight' : '' }}" data-animate="fadeInUp" data-stagger="{{ ($n - 1) % 4 + 1 }}">
+                    <div class="fit-incl-icon" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            {!! $item['icon'] !!}
+                        </svg>
+                    </div>
+                    @if($item['has_badge'])
+                        <span class="fit-incl-badge">{{ __('fit.incl_'.$n.'_badge') }}</span>
+                    @endif
+                    <h3 class="fit-incl-title">{{ __('fit.incl_'.$n.'_title') }}</h3>
+                    <p class="fit-incl-desc">{{ __('fit.incl_'.$n.'_desc') }}</p>
+                </article>
+            @endforeach
+        </div>
     </section>
 
     <x-public.s-divider label="FAQ · LO QUE PREGUNTAN" />

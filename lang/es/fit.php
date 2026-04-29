@@ -126,23 +126,85 @@ return [
     'pullquote_cite' => '— Silvia Martínez · WellCore / Fit',
 
     // =========================================================
-    // PRICING
+    // PRICING — 3 planes Silvia (estilo /planes con paleta rosa)
     // =========================================================
     'pricing_label'   => 'INVERSIÓN',
-    'pricing_title'   => 'ENTRENAR<br><em>CON SILVIA.</em>',
-    'pricing_sub'     => 'Un proceso real requiere un compromiso real. Mínimo 3 meses para ver resultados medibles.',
-    // TODO: validar precio real con Silvia — $180 USD/mes es base de referencia
-    'pricing_plan_name'    => 'PROTOCOLO SILVIA',
-    'pricing_plan_tagline' => 'Coaching 1:1 personalizado · mínimo 3 meses',
-    'pricing_price_html'   => '$180 <em>USD</em>',
-    'pricing_period'       => '/mes · mínimo 3 meses',
-    'pricing_feat1'        => 'Plan de entrenamiento personalizado',
-    'pricing_feat2'        => 'Nutrición con macros + periodización hormonal',
-    'pricing_feat3'        => 'Check-in semanal + ajuste del plan',
-    'pricing_feat4'        => 'Acceso al portal de cliente WellCore',
-    'pricing_feat5'        => 'Soporte por mensaje',
-    'pricing_cta'          => 'Aplicar al protocolo',
-    'pricing_note'         => 'Cupos limitados. Silvia trabaja con máximo 20 clientes activas.',
+    'pricing_title'   => 'ELIGE<br><em>TU PLAN.</em>',
+    'pricing_sub'     => 'Tres niveles de acompañamiento. Mínimo 3 meses para ver resultados reales.',
+    'pricing_note'    => 'Cancelas cuando quieras tras los 3 primeros meses. Cupos limitados — Silvia trabaja con máximo 25 clientas activas.',
+
+    // Proof bar
+    'pricing_proof_active'       => '+45 mujeres en proceso',
+    'pricing_proof_satisfaction' => '96% adherencia',
+    'pricing_proof_verified'     => 'Verificado por WellCore',
+
+    // Billing toggle
+    'pricing_billing_mensual'    => 'Mensual',
+    'pricing_billing_trimestral' => 'Trimestral',
+    'pricing_billing_anual'      => 'Anual',
+    'pricing_discount_trim'      => '−10%',
+    'pricing_discount_anual'     => '−20%',
+    'pricing_usd_mes'            => 'USD/mes',
+    'pricing_savings_label'      => 'Ahorras',
+
+    // Plan ESENCIAL
+    'pricing_esencial_name'  => 'ESENCIAL',
+    'pricing_esencial_quote' => 'Para mujeres que vuelven después de tiempo sin entrenar. Recuperar fuerza con método y sin presión.',
+    'pricing_esencial_p1'    => 'Plan personalizado · entrenamiento + nutrición no restrictiva ajustados a tu vida real',
+    'pricing_esencial_p2'    => 'Coach asignada · revisión mensual con check-in semanal y ajustes del plan',
+    'pricing_esencial_p3'    => 'Comunidad cerrada · grupo solo mujeres en proceso real, sin postureo de Instagram',
+    'pricing_esencial_cta'   => 'Comenzar Esencial',
+
+    // Plan MÉTODO (mejor valor)
+    'pricing_metodo_name'    => 'MÉTODO',
+    'pricing_metodo_badge'   => 'MEJOR VALOR',
+    'pricing_metodo_quote'   => 'Para mujeres que ya entrenan y necesitan un plan que se mueva con tu ciclo cada quincena.',
+    'pricing_metodo_p1'      => 'Periodización por ciclo menstrual · ajusto carga e intensidad según fase hormonal real',
+    'pricing_metodo_p2'      => 'Coach ajusta el plan cada quincena · seguimiento detallado de progreso y métricas',
+    'pricing_metodo_p3'      => 'Hábitos diarios + mindset · soporte cognitivo-conductual incluido para sostener el proceso',
+    'pricing_metodo_cta'     => 'Comenzar Método',
+
+    // Plan ÍNTIMO 1:1
+    'pricing_intimo_name'    => 'ÍNTIMO 1:1',
+    'pricing_intimo_badge'   => 'CON SILVIA',
+    'pricing_intimo_quote'   => 'Para postparto, perimenopausia o mujeres que necesitan el oído de Silvia más cerca.',
+    'pricing_intimo_p1'      => 'Coaching 1:1 directo con Silvia · WhatsApp con respuesta en 8 horas, soporte humano real',
+    'pricing_intimo_p2'      => 'Videollamada quincenal · sesión 1:1 personalizada cada 15 días para revisar progreso',
+    'pricing_intimo_p3'      => 'Análisis composición + bloodwork · datos reales para decisiones precisas, no estimaciones',
+    'pricing_intimo_cta'     => 'Aplicar al Íntimo',
+
+    // =========================================================
+    // INCLUDED FEATURES (8 features grid "EN TODOS LOS PLANES")
+    // =========================================================
+    'incl_label'   => 'EN TODOS LOS PLANES',
+    'incl_title'   => 'LO QUE VIENES A BUSCAR.<br><em>LO QUE YA ESTÁ ADENTRO.</em>',
+    'incl_sub'     => 'No te cobro extra por las herramientas que hacen que vuelvas mañana.',
+
+    'incl_1_title'   => 'CHAT DIRECTO',
+    'incl_1_desc'    => 'Sin bots. Sin tickets. Mensaje directo a tu coach humana — yo o el equipo.',
+    'incl_1_badge'   => 'RESPUESTA <24H',
+
+    'incl_2_title'   => 'PERIODIZACIÓN POR CICLO',
+    'incl_2_desc'    => 'Ajusto tu entrenamiento según fase del ciclo menstrual. La ciencia que la mayoría ignora.',
+    'incl_2_badge'   => 'EXCLUSIVO SILVIA',
+
+    'incl_3_title'   => 'NUTRICIÓN NO RESTRICTIVA',
+    'incl_3_desc'    => 'Sin listas de prohibidos. Sin culpa los domingos. Estrategia que puedes sostener.',
+
+    'incl_4_title'   => 'VIDEOS DE TÉCNICA',
+    'incl_4_desc'    => 'Cada ejercicio con explicación filmada. Aprendes la técnica correcta desde el día uno.',
+
+    'incl_5_title'   => 'POSTPARTO Y EMBARAZO',
+    'incl_5_desc'    => 'Protocolos específicos para mamás recientes con alta médica y mujeres que planean concebir.',
+
+    'incl_6_title'   => 'AGENDA DE VIDA REAL',
+    'incl_6_desc'    => 'Tres a cuatro sesiones por semana, máximo 45 minutos. Diseñado para mujeres ocupadas.',
+
+    'incl_7_title'   => 'PROGRESO DOCUMENTADO',
+    'incl_7_desc'    => 'Mediciones, fotos opcionales y métricas. Tu evolución no se inventa: se demuestra con datos.',
+
+    'incl_8_title'   => 'AUTONOMÍA AL CIERRE',
+    'incl_8_desc'    => 'Terminas sabiendo entrenarte sola. Eso es el resultado real del proceso, no la dependencia.',
 
     // =========================================================
     // FAQ (6-8 preguntas específicas coaching femenino)
