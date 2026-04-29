@@ -29,6 +29,9 @@ Thumbs.db
 # Git worktrees
 .worktrees/
 
+# Local backups antes de Sprints v2 (no inflar repo; rollback usa git history)
+/_backups/
+
 # Payment proof files (private — never commit)
 storage/app/private/payment_proofs/*
 !storage/app/private/payment_proofs/.gitkeep

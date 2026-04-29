@@ -6,6 +6,10 @@ import Alpine from 'alpinejs';
 import collapse from '@alpinejs/collapse';
 import intersect from '@alpinejs/intersect';
 
+// Page-specific factories — se registran en window.* antes de Alpine.start().
+// metodo.js define window.metodoPage() (scroll progress + chapter observer + SVG reveal).
+import './metodo.js';
+
 Alpine.plugin(collapse);
 Alpine.plugin(intersect);
 window.Alpine = Alpine;

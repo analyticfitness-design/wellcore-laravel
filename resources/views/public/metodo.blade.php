@@ -1,13 +1,70 @@
-<x-layouts.public>
-    <x-slot:title>El Metodo - Protocolo de Entrenamiento Basado en Evidencia | WellCore Fitness</x-slot:title>
-    <x-slot:description>Protocolo cientifico de entrenamiento personalizado al 100%. 5 pilares basados en evidencia, seguimiento 1:1 con coach real. 87% adherencia promedio.</x-slot:description>
+{{--
+    /metodo · long-form editorial v2 (porting Sprint 2 — 2026-04-29).
 
+    Spec: 02-metodo/prompt-implementacion-blade.md (sección 2 mapping COMPs 1-19)
+          02-metodo/redesigned-mobile.html (HTML target)
+          02-metodo/redesigned-mobile.css (CSS target → portado a v2-public.css)
+
+    Estructura: Hero (Cap00) + Stats + 7 capítulos editoriales numerados,
+    pull-quotes brutales x5, inline CTAs x3, Bloomberg ticker (Cap06),
+    SVG curva animada (Cap03), period table (Cap04), compare table (Cap02).
+
+    Layout:
+        - Compose <x-layouts.public-editorial> (que a su vez compone <x-layouts.public>)
+          → hereda topbar, footer, atmosphere global, dark mode, fonts, JSON-LD chrome.
+        - Sidebar editorial 220px sticky en ≥1024px (manejado por window.metodoPage()).
+        - Main scroll area con cols editorial (var(--col-max) / var(--col-wide)).
+
+    Variables del controller (MetodoController@index):
+        $monthlyEsencialCop  → JSON-LD offers.price (entero pesos COP).
+        $monthlyEsencialUsd  → futuro fallback USD si se necesita.
+
+    Voz: latino neutro estricto (tú/puedes/quieres). NO voseo argentino.
+    Cap05 NUNCA menciona IA/Claude/GPT (feedback_ia_confidencial).
+    "RIR" reemplazado por "intensidad relativa" en period table (Daniel decision).
+--}}
+
+<x-layouts.public-editorial>
+    <x-slot:title>{{ __('metodo.meta_title') }}</x-slot:title>
+    <x-slot:description>{{ __('metodo.meta_description') }}</x-slot:description>
+
+    {{-- Chapter pill mobile (sticky top entre 768-1023px). Bind a Alpine activePill. --}}
+    <x-slot:chapterPill>
+        <span x-text="activePill || '{{ __('metodo.chapters.cap00.pill') }}'">{{ __('metodo.chapters.cap00.pill') }}</span>
+    </x-slot:chapterPill>
+
+    {{-- Sidebar editorial (≥1024px). Render del slot del layout. --}}
+    <x-slot:sidebar>
+        <x-public.editorial-sidebar
+            :brand-sub="__('metodo.sidebar.subtitle')"
+            :progress-label="__('metodo.sidebar.progress_label')"
+            :cta-href="route('planes')"
+            :cta-text="__('metodo.sidebar.cta')"
+            :chapters="[
+                ['id' => 'cap-hero', 'num' => '00', 'title' => __('metodo.chapters.cap00.nav_title')],
+                ['id' => 'cap-01',   'num' => '01', 'title' => __('metodo.chapters.cap01.nav_title')],
+                ['id' => 'cap-02',   'num' => '02', 'title' => __('metodo.chapters.cap02.nav_title')],
+                ['id' => 'cap-03',   'num' => '03', 'title' => __('metodo.chapters.cap03.nav_title')],
+                ['id' => 'cap-04',   'num' => '04', 'title' => __('metodo.chapters.cap04.nav_title')],
+                ['id' => 'cap-05',   'num' => '05', 'title' => __('metodo.chapters.cap05.nav_title')],
+                ['id' => 'cap-06',   'num' => '06', 'title' => __('metodo.chapters.cap06.nav_title')],
+                ['id' => 'cap-07',   'num' => '07', 'title' => __('metodo.chapters.cap07.nav_title')],
+            ]"
+            :nav-links="[
+                ['href' => route('proceso'), 'text' => 'Proceso'],
+                ['href' => route('planes'),  'text' => 'Planes'],
+                ['href' => route('faq'),     'text' => 'FAQ'],
+            ]"
+        />
+    </x-slot:sidebar>
+
+    {{-- JSON-LD EducationalOrganization (preservado del blade legacy). --}}
     <x-json-ld :data="[
         '@context' => 'https://schema.org',
         '@type' => 'EducationalOrganization',
-        'name' => 'WellCore Fitness — El Metodo',
+        'name' => 'WellCore Fitness — El Método',
         'url' => url('/metodo'),
-        'description' => 'Protocolo cientifico de entrenamiento personalizado al 100%. 5 pilares basados en evidencia, seguimiento 1:1 con coach real.',
+        'description' => 'Protocolo cientifico de entrenamiento personalizado al 100%. 5 pilares basados en evidencia, seguimiento 1:1 con coach humano real.',
         'teaches' => [
             'Entrenamiento de fuerza basado en evidencia',
             'Nutricion personalizada y periodizacion calorica',
@@ -23,504 +80,546 @@
         ],
         'offers' => [
             '@type' => 'Offer',
-            'name' => 'Coaching 1:1 con El Metodo WellCore',
+            'name' => 'Coaching 1:1 con El Método WellCore',
             'description' => 'Protocolo de 5 pilares: entrenamiento, nutricion, habitos, recuperacion y mentalidad.',
             'url' => url('/planes'),
             'priceCurrency' => 'COP',
-            'price' => (string) app(\App\Services\PricingService::class)->priceCop('esencial'),
+            'price' => (string) ($monthlyEsencialCop ?? app(\App\Services\PricingService::class)->priceCop('esencial')),
         ],
     ]" />
 
-    {{-- Hero Section --}}
-    <section class="hero-gradient relative overflow-hidden bg-wc-bg-tertiary">
-        <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-transparent"></div>
-        {{-- Parallax decorative orbs --}}
-        <div class="parallax-hero" aria-hidden="true">
-            <div class="parallax-orb parallax-orb-1" data-parallax-speed="0.2"></div>
-            <div class="parallax-orb parallax-orb-2" data-parallax-speed="0.35"></div>
-            <div class="parallax-orb parallax-orb-3" data-parallax-speed="0.15"></div>
-            <div class="parallax-orb parallax-orb-4" data-parallax-speed="0.25"></div>
-            <div class="parallax-orb parallax-orb-5" data-parallax-speed="0.45"></div>
+    {{-- ──────────────────────────────────────────────────────────────
+         Alpine root: window.metodoPage() factory (resources/js/metodo.js)
+         Maneja activeChapter, scrollProgress, stickyVisible, activePill.
+         ────────────────────────────────────────────────────────────── --}}
+    <div class="metodo-root metodo-main"
+         x-data="metodoPage()"
+         x-init="init()"
+         @beforeunload.window="destroy()">
+
+        {{-- ════════════════════════════════════════════════════════════
+             CAP 00 — HERO (Portada)
+             ════════════════════════════════════════════════════════════ --}}
+        <section class="metodo-hero"
+                 id="cap-hero"
+                 data-chapter="00"
+                 data-chapter-label="{{ __('metodo.chapters.cap00.pill') }}">
+            <p class="metodo-hero-kicker">{{ __('metodo.hero.kicker') }}</p>
+            <h1 class="metodo-hero-pullquote">{!! __('metodo.hero.pullquote_html') !!}</h1>
+            <p class="metodo-hero-sub">{{ __('metodo.hero.sub') }}</p>
+            <div class="metodo-hero-scroll-hint" aria-hidden="true">
+                <div class="metodo-scroll-arrow"></div>
+                <span>{{ __('metodo.hero.scroll_hint') }}</span>
+            </div>
+        </section>
+
+        {{-- ════════════════════════════════════════════════════════════
+             STATS BAR (3 KPIs)
+             ════════════════════════════════════════════════════════════ --}}
+        <div class="metodo-stats-bar" data-animate="fadeInUp">
+            <div class="metodo-stat-item">
+                <div class="metodo-stat-value">{{ __('metodo.stats.adherence_value') }}</div>
+                <div class="metodo-stat-label">{{ __('metodo.stats.adherence') }}</div>
+            </div>
+            <div class="metodo-stat-item">
+                <div class="metodo-stat-value">{{ __('metodo.stats.visible_results_value') }}</div>
+                <div class="metodo-stat-label">{{ __('metodo.stats.visible_results') }}</div>
+            </div>
+            <div class="metodo-stat-item">
+                <div class="metodo-stat-value">{{ __('metodo.stats.attention_value') }}</div>
+                <div class="metodo-stat-label">{{ __('metodo.stats.attention') }}</div>
+            </div>
         </div>
-        <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36" data-animate="fadeInUp">
-            <div class="mx-auto max-w-3xl text-center">
-                <p class="text-sm font-semibold uppercase tracking-widest text-red-700 dark:text-red-400">{{ __('metodo.hero.label') }}</p>
-                <h1 class="mt-4 font-display text-5xl leading-none tracking-wide text-wc-text sm:text-6xl lg:text-8xl">
-                    <span class="text-gradient-accent">{{ __('metodo.hero.title') }}</span>
-                </h1>
-                <p class="mt-2 text-xl font-medium text-wc-text-secondary sm:text-2xl">
-                    {{ __('metodo.hero.subtitle') }}
+
+        {{-- ════════════════════════════════════════════════════════════
+             CAP 01 — EL PROBLEMA
+             ════════════════════════════════════════════════════════════ --}}
+        <x-public.s-divider :label="__('metodo.chapters.cap01.divider')" class="metodo-sec-divider" />
+
+        <section class="metodo-chapter"
+                 id="cap-01"
+                 data-chapter="01"
+                 data-chapter-label="{{ __('metodo.chapters.cap01.pill') }}">
+            <div class="metodo-col">
+                <x-public.chapter-header
+                    :num-text="__('metodo.chapters.cap01.num_text')"
+                    :title-html="__('metodo.chapters.cap01.title_html')"
+                />
+
+                <x-public.dropcap-paragraph data-animate="fadeInUp">
+                    {!! __('metodo.problem.intro_p1_html') !!}
+                </x-public.dropcap-paragraph>
+
+                <p class="body-text" data-animate="fadeInUp" data-delay="1">
+                    {!! __('metodo.problem.intro_p2_html') !!}
                 </p>
-                <p class="mx-auto mt-6 max-w-xl text-lg text-wc-text-secondary">
-                    {{ __('metodo.hero.description') }}
+
+                <p class="body-text" data-animate="fadeInUp" data-delay="2">
+                    {!! __('metodo.problem.intro_p3_html') !!}
                 </p>
-            </div>
-        </div>
-    </section>
 
-    <div class="section-divider"></div>
-
-    {{-- Stats Bar --}}
-    <section class="border-y border-wc-border bg-wc-bg hp-cv-section">
-        <div class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8" data-animate="fadeInUp">
-            <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
-                <div class="text-center">
-                    <p class="font-data text-4xl font-bold text-wc-accent">
-                        <span class="counter-highlight" data-counter="87" data-counter-suffix="%">87%</span>
-                    </p>
-                    <p class="mt-1 text-sm font-medium text-wc-text-secondary">{{ __('metodo.stats.adherence') }}</p>
+                <div class="metodo-data-grid" data-animate="fadeInUp">
+                    @foreach (__('metodo.problem.data_cells') as $cell)
+                        <div class="metodo-data-cell {{ ($cell['accent'] ?? false) ? 'is-accent' : '' }}">
+                            <div class="metodo-data-cell-value">{{ $cell['value'] }}</div>
+                            <div class="metodo-data-cell-label">{{ $cell['label'] }}</div>
+                        </div>
+                    @endforeach
                 </div>
-                <div class="text-center">
-                    <p class="font-data text-4xl font-bold text-wc-accent">
-                        <span class="counter-highlight" data-counter="12" data-counter-suffix=" sem">12 sem</span>
-                    </p>
-                    <p class="mt-1 text-sm font-medium text-wc-text-secondary">{{ __('metodo.stats.visible_results') }}</p>
-                </div>
-                <div class="text-center">
-                    <p class="font-data text-4xl font-bold text-wc-accent">1:1</p>
-                    <p class="mt-1 text-sm font-medium text-wc-text-secondary">{{ __('metodo.stats.attention') }}</p>
-                </div>
+                <p class="source-note-v2" data-animate="fadeInUp">{{ __('metodo.problem.source') }}</p>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <div class="section-divider"></div>
+        {{-- Pull-quote 1 — entre Cap01 y Cap02 --}}
+        <x-public.pullquote :cite="__('metodo.pullquotes.q1.cite')">
+            {!! __('metodo.pullquotes.q1.text_html') !!}
+        </x-public.pullquote>
 
-    {{-- Section 01: El Problema --}}
-    <section class="scroll-reveal bg-wc-bg-tertiary hp-cv-section">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
-            <div class="mb-4 flex items-center gap-3">
-                <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">01</span>
-                <div class="h-px flex-1 bg-wc-border"></div>
+        {{-- ════════════════════════════════════════════════════════════
+             CAP 02 — EL MÉTODO (5 pilares + comparativa Bloomberg)
+             ════════════════════════════════════════════════════════════ --}}
+        <x-public.s-divider :label="__('metodo.chapters.cap02.divider')" class="metodo-sec-divider" />
+
+        <section class="metodo-chapter"
+                 id="cap-02"
+                 data-chapter="02"
+                 data-chapter-label="{{ __('metodo.chapters.cap02.pill') }}">
+            <div class="metodo-with-margin-note">
+                <div class="metodo-col">
+                    <x-public.chapter-header
+                        :num-text="__('metodo.chapters.cap02.num_text')"
+                        :title-html="__('metodo.chapters.cap02.title_html')"
+                    />
+
+                    <x-public.dropcap-paragraph data-animate="fadeInUp">
+                        {!! __('metodo.pillars.intro_p1_html') !!}
+                    </x-public.dropcap-paragraph>
+
+                    {{-- Pillar list (5 items) --}}
+                    <div class="metodo-pillar-list">
+                        @foreach (['p1', 'p2', 'p3', 'p4', 'p5'] as $idx => $key)
+                            <div class="metodo-pillar-item"
+                                 data-animate="fadeInUp"
+                                 @if ($idx) data-delay="{{ ($idx % 3) ?: 1 }}" @endif>
+                                <div class="metodo-pillar-num">P0{{ $idx + 1 }}</div>
+                                <div>
+                                    <div class="metodo-pillar-title">{{ __("metodo.pillars.$key.name") }}</div>
+                                    <p class="metodo-pillar-body">{{ __("metodo.pillars.$key.description") }}</p>
+                                    <p class="metodo-pillar-cite">{{ __("metodo.pillars.$key.cite") }}</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                <aside class="margin-note" data-animate="fadeInUp">
+                    {{ __('metodo.pillars.margin_note') }}
+                </aside>
             </div>
-            <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('metodo.problem.title') }}</h2>
-            <p class="mt-2 text-lg text-wc-text-secondary">{{ __('metodo.problem.subtitle') }}</p>
 
-            <div class="mt-8 rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-6 sm:p-8">
-                <p class="text-lg font-medium text-wc-text">
-                    {!! __('metodo.problem.intro', ['percent' => '<span class="counter-highlight font-data text-2xl font-bold text-wc-accent" data-counter="80" data-counter-suffix="%">80%</span>']) !!}
+            {{-- Tabla comparativa Bloomberg (full-width dentro del chapter) --}}
+            <div class="metodo-col-wide" style="margin-top: 50px;">
+                <p class="source-note-v2" style="margin-bottom: 6px;">{{ __('metodo.comparison.title') }} — {{ __('metodo.comparison.subtitle') }}</p>
+                @php
+                    $cmpRows = [];
+                    foreach (['r1', 'r2', 'r3', 'r4', 'r5', 'r6'] as $rk) {
+                        $row = __("metodo.comparison.rows.$rk");
+                        $appVal = $row['app'] ?? '';
+                        $gymVal = $row['gym'] ?? '';
+                        $appIsNo = in_array(mb_strtolower(trim($appVal)), ['no', 'none'], true);
+                        $gymIsNo = in_array(mb_strtolower(trim($gymVal)), ['no', 'none'], true);
+                        $cmpRows[] = [
+                            ['text' => $row['feature'] ?? ''],
+                            ['text' => $row['wellcore'] ?? '', 'good' => true],
+                            ['text' => $appVal, 'good' => $appIsNo ? false : null],
+                            ['text' => $gymVal, 'good' => $gymIsNo ? false : null],
+                        ];
+                    }
+                @endphp
+                <x-public.compare-table
+                    :cols="[
+                        __('metodo.comparison.col_feature'),
+                        __('metodo.comparison.col_wellcore'),
+                        __('metodo.comparison.col_app'),
+                        __('metodo.comparison.col_gym'),
+                    ]"
+                    :rows="$cmpRows"
+                    :wc-col-idx="1"
+                    :source-note="__('metodo.comparison.footnote')"
+                />
+            </div>
+        </section>
+
+        {{-- Inline CTA 1 (después de Cap02) --}}
+        <x-public.inline-cta
+            :label="__('metodo.inline_ctas.c1.label')"
+            :title="__('metodo.inline_ctas.c1.title')"
+            :href="route('planes')"
+            :cta-text="__('metodo.inline_ctas.c1.btn')"
+        />
+
+        {{-- Pull-quote 2 --}}
+        <x-public.pullquote :cite="__('metodo.pullquotes.q2.cite')">
+            {!! __('metodo.pullquotes.q2.text_html') !!}
+        </x-public.pullquote>
+
+        {{-- ════════════════════════════════════════════════════════════
+             CAP 03 — LA CIENCIA (3 párrafos + curva SVG animada)
+             ════════════════════════════════════════════════════════════ --}}
+        <x-public.s-divider :label="__('metodo.chapters.cap03.divider')" class="metodo-sec-divider" />
+
+        <section class="metodo-chapter"
+                 id="cap-03"
+                 data-chapter="03"
+                 data-chapter-label="{{ __('metodo.chapters.cap03.pill') }}">
+            <div class="metodo-col">
+                <x-public.chapter-header
+                    :num-text="__('metodo.chapters.cap03.num_text')"
+                    :title-html="__('metodo.chapters.cap03.title_html')"
+                />
+
+                <x-public.dropcap-paragraph data-animate="fadeInUp">
+                    {!! __('metodo.ciencia.body_p1_html') !!}
+                </x-public.dropcap-paragraph>
+
+                <p class="body-text" data-animate="fadeInUp" data-delay="1">
+                    {!! __('metodo.ciencia.body_p2_html') !!}
                 </p>
-            </div>
 
-            <div class="stagger-grid mt-12 grid grid-cols-1 gap-8 lg:grid-cols-3">
-                {{-- Failure Point 1 --}}
-                <div class="card-hover-lift rounded-xl border border-wc-border bg-wc-bg p-8" data-animate="fadeInUp" style="animation-delay: 100ms">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-wc-accent/10">
-                        <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-                        </svg>
-                    </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('metodo.problem.fp1.title') }}</h3>
-                    <p class="mt-3 text-sm leading-relaxed text-wc-text-secondary">
-                        {{ __('metodo.problem.fp1.description') }}
-                    </p>
-                    <div class="mt-5 border-t border-wc-border pt-4">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('metodo.problem.solution_label') }}</p>
-                        <p class="mt-1 text-sm font-medium text-wc-text">{{ __('metodo.problem.fp1.solution') }}</p>
-                    </div>
-                </div>
+                <p class="body-text" data-animate="fadeInUp" data-delay="2">
+                    {!! __('metodo.ciencia.body_p3_html') !!}
+                </p>
 
-                {{-- Failure Point 2 --}}
-                <div class="card-hover-lift rounded-xl border border-wc-border bg-wc-bg p-8" data-animate="fadeInUp" style="animation-delay: 200ms">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-wc-accent/10">
-                        <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
-                        </svg>
-                    </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('metodo.problem.fp2.title') }}</h3>
-                    <p class="mt-3 text-sm leading-relaxed text-wc-text-secondary">
-                        {{ __('metodo.problem.fp2.description') }}
-                    </p>
-                    <div class="mt-5 border-t border-wc-border pt-4">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('metodo.problem.solution_label') }}</p>
-                        <p class="mt-1 text-sm font-medium text-wc-text">{{ __('metodo.problem.fp2.solution') }}</p>
-                    </div>
-                </div>
-
-                {{-- Failure Point 3 --}}
-                <div class="card-hover-lift rounded-xl border border-wc-border bg-wc-bg p-8" data-animate="fadeInUp" style="animation-delay: 300ms">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-wc-accent/10">
-                        <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342" />
-                        </svg>
-                    </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('metodo.problem.fp3.title') }}</h3>
-                    <p class="mt-3 text-sm leading-relaxed text-wc-text-secondary">
-                        {{ __('metodo.problem.fp3.description') }}
-                    </p>
-                    <div class="mt-5 border-t border-wc-border pt-4">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-red-700 dark:text-red-400">{{ __('metodo.problem.solution_label') }}</p>
-                        <p class="mt-1 text-sm font-medium text-wc-text">{{ __('metodo.problem.fp3.solution') }}</p>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Supporting Stats --}}
-            <div class="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-5 sm:gap-6">
-                <div class="rounded-xl border border-wc-border bg-wc-bg p-5 text-center">
-                    <p class="font-data text-2xl font-bold text-wc-text">8/10</p>
-                    <p class="mt-1 text-xs text-wc-text-tertiary">{{ __('metodo.problem.stats.s1_label') }}</p>
-                </div>
-                <div class="rounded-xl border border-wc-border bg-wc-bg p-5 text-center">
-                    <p class="font-data text-2xl font-bold text-wc-text">
-                        <span class="counter-highlight" data-counter="67" data-counter-suffix="%">67%</span>
-                    </p>
-                    <p class="mt-1 text-xs text-wc-text-tertiary">{{ __('metodo.problem.stats.s2_label') }}</p>
-                </div>
-                <div class="rounded-xl border border-wc-border bg-wc-bg p-5 text-center">
-                    <p class="font-data text-2xl font-bold text-wc-text">
-                        <span class="counter-highlight" data-counter="54" data-counter-suffix="%">54%</span>
-                    </p>
-                    <p class="mt-1 text-xs text-wc-text-tertiary">{{ __('metodo.problem.stats.s3_label') }}</p>
-                </div>
-                <div class="rounded-xl border border-wc-accent/30 bg-wc-accent/5 p-5 text-center">
-                    <p class="font-data text-2xl font-bold text-wc-accent">
-                        <span class="counter-highlight" data-counter="87" data-counter-suffix="%">87%</span>
-                    </p>
-                    <p class="mt-1 text-xs text-wc-text-secondary">{{ __('metodo.problem.stats.s4_label') }}</p>
-                </div>
-                <div class="col-span-2 rounded-xl border border-wc-accent/30 bg-wc-accent/5 p-5 text-center sm:col-span-1">
-                    <p class="font-data text-2xl font-bold text-wc-accent">3.2x</p>
-                    <p class="mt-1 text-xs text-wc-text-secondary">{{ __('metodo.problem.stats.s5_label') }}</p>
-                </div>
-            </div>
-            <p class="mt-6 text-xs text-wc-text-tertiary">
-                {{ __('metodo.problem.source') }}
-            </p>
-        </div>
-    </section>
-
-    <div class="section-divider"></div>
-
-    {{-- Section 02: Los 5 Pilares --}}
-    <section class="bg-wc-bg hp-cv-section">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
-            <div class="mb-4 flex items-center gap-3">
-                <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">02</span>
-                <div class="h-px flex-1 bg-wc-border"></div>
-            </div>
-            <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('metodo.pillars.title') }}</h2>
-            <p class="mt-2 text-lg text-wc-text-secondary">{{ __('metodo.pillars.subtitle') }}</p>
-            <p class="mt-4 max-w-2xl text-sm text-wc-text-tertiary">
-                {{ __('metodo.pillars.note') }}
-            </p>
-
-            <div class="stagger-grid mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {{-- P01: Sobrecarga Progresiva --}}
-                <div class="scroll-reveal-scale card-hover-lift card-glow group rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-animate="scaleIn" style="animation-delay: 100ms">
-                    <div class="flex items-center gap-3">
-                        <span class="font-data text-xs font-bold text-red-700 dark:text-red-400">P01</span>
-                        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-wc-accent/10">
-                            <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('metodo.pillars.p1.name') }}</h3>
-                    <p class="mt-3 text-sm leading-relaxed text-wc-text-secondary">
-                        {{ __('metodo.pillars.p1.description') }}
-                    </p>
-                </div>
-
-                {{-- P02: Periodizacion Inteligente --}}
-                <div class="scroll-reveal-scale card-hover-lift card-glow group rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-animate="scaleIn" style="animation-delay: 200ms">
-                    <div class="flex items-center gap-3">
-                        <span class="font-data text-xs font-bold text-red-700 dark:text-red-400">P02</span>
-                        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-wc-accent/10">
-                            <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('metodo.pillars.p2.name') }}</h3>
-                    <p class="mt-3 text-sm leading-relaxed text-wc-text-secondary">
-                        {{ __('metodo.pillars.p2.description') }}
-                    </p>
-                </div>
-
-                {{-- P03: Nutricion de Precision --}}
-                <div class="scroll-reveal-scale card-hover-lift card-glow group rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-animate="scaleIn" style="animation-delay: 300ms">
-                    <div class="flex items-center gap-3">
-                        <span class="font-data text-xs font-bold text-red-700 dark:text-red-400">P03</span>
-                        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-wc-accent/10">
-                            <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('metodo.pillars.p3.name') }}</h3>
-                    <p class="mt-3 text-sm leading-relaxed text-wc-text-secondary">
-                        {{ __('metodo.pillars.p3.description') }}
-                    </p>
-                </div>
-
-                {{-- P04: Recuperacion Optimizada --}}
-                <div class="scroll-reveal-scale card-hover-lift card-glow group rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-animate="scaleIn" style="animation-delay: 400ms">
-                    <div class="flex items-center gap-3">
-                        <span class="font-data text-xs font-bold text-red-700 dark:text-red-400">P04</span>
-                        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-wc-accent/10">
-                            <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('metodo.pillars.p4.name') }}</h3>
-                    <p class="mt-3 text-sm leading-relaxed text-wc-text-secondary">
-                        {{ __('metodo.pillars.p4.description') }}
-                    </p>
-                </div>
-
-                {{-- P05: Adherencia Conductual --}}
-                <div class="scroll-reveal-scale card-hover-lift card-glow group rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 transition-colors hover:border-wc-accent/40" data-animate="scaleIn" style="animation-delay: 500ms">
-                    <div class="flex items-center gap-3">
-                        <span class="font-data text-xs font-bold text-red-700 dark:text-red-400">P05</span>
-                        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-wc-accent/10">
-                            <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.745 3.745 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="mt-5 text-lg font-semibold text-wc-text">{{ __('metodo.pillars.p5.name') }}</h3>
-                    <p class="mt-3 text-sm leading-relaxed text-wc-text-secondary">
-                        {{ __('metodo.pillars.p5.description') }}
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div class="section-divider"></div>
-
-    {{-- Section 03: Comparativa --}}
-    <section class="scroll-reveal bg-wc-bg-tertiary hp-cv-section">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
-            <div class="mb-4 flex items-center gap-3">
-                <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">03</span>
-                <div class="h-px flex-1 bg-wc-border"></div>
-            </div>
-            <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('metodo.comparison.title') }}</h2>
-            <p class="mt-2 text-lg text-wc-text-secondary">{{ __('metodo.comparison.subtitle') }}</p>
-
-            {{-- Comparison Table: Desktop --}}
-            <div class="mt-12 hidden sm:block">
-                <div class="overflow-x-auto rounded-xl border border-wc-border">
-                    <table class="w-full min-w-[640px] border-collapse">
-                        <thead>
-                            <tr class="border-b border-wc-border bg-wc-bg/50">
-                                <th class="px-6 py-4 text-left text-sm font-medium text-wc-text-tertiary">{{ __('metodo.comparison.col_feature') }}</th>
-                                <th class="bg-wc-accent/5 px-6 py-4 text-center text-sm font-semibold text-red-700 dark:text-red-400 border-x border-wc-accent/20">{{ __('metodo.comparison.col_wellcore') }}</th>
-                                <th class="px-6 py-4 text-center text-sm font-medium text-wc-text-tertiary">{{ __('metodo.comparison.col_app') }}</th>
-                                <th class="px-6 py-4 text-center text-sm font-medium text-wc-text-tertiary">{{ __('metodo.comparison.col_gym') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-wc-border">
-                            @foreach (['r1','r2','r3','r4','r5','r6'] as $i => $rk)
-                            @php $delays = [50,100,150,200,250,300]; @endphp
-                            <tr data-animate="fadeInUp" style="animation-delay: {{ $delays[$i] }}ms">
-                                <td class="px-6 py-4 text-sm text-wc-text">{{ __('metodo.comparison.rows.'.$rk.'.feature') }}</td>
-                                <td class="bg-wc-accent/5 px-6 py-4 text-center border-x border-wc-accent/20">
-                                    <span class="inline-flex items-center gap-1.5 text-sm font-medium text-red-700 dark:text-red-400">
-                                        <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                                        {{ __('metodo.comparison.rows.'.$rk.'.wellcore') }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    @php $appVal = __('metodo.comparison.rows.'.$rk.'.app'); @endphp
-                                    <span class="inline-flex items-center gap-1 text-sm text-wc-text-tertiary">
-                                        @if(str_starts_with($appVal, 'No'))
-                                            <svg class="h-4 w-4 shrink-0 text-red-400/70" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
-                                        @endif
-                                        {{ $appVal }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    @php $gymVal = __('metodo.comparison.rows.'.$rk.'.gym'); @endphp
-                                    <span class="inline-flex items-center gap-1 text-sm text-wc-text-tertiary">
-                                        @if($gymVal === 'No')
-                                            <svg class="h-4 w-4 shrink-0 text-red-400/70" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
-                                        @endif
-                                        {{ $gymVal }}
-                                    </span>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            {{-- Comparison Table: Mobile (stacked cards) --}}
-            <div class="mt-12 space-y-4 sm:hidden">
-                @foreach (['r1','r2','r3','r4','r5','r6'] as $rk)
-                    @php
-                        $appVal = __('metodo.comparison.rows.'.$rk.'.app');
-                        $gymVal = __('metodo.comparison.rows.'.$rk.'.gym');
-                    @endphp
-                    <div class="rounded-xl border border-wc-border bg-wc-bg p-5">
-                        <p class="text-sm font-semibold text-wc-text">{{ __('metodo.comparison.rows.'.$rk.'.feature') }}</p>
-                        <div class="mt-3 space-y-2">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs text-wc-text-tertiary">{{ __('metodo.comparison.col_wellcore') }}</span>
-                                <span class="inline-flex items-center gap-1 text-sm font-medium text-red-700 dark:text-red-400">
-                                    <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                                    {{ __('metodo.comparison.rows.'.$rk.'.wellcore') }}
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs text-wc-text-tertiary">{{ __('metodo.comparison.col_app') }}</span>
-                                <span class="inline-flex items-center gap-1 text-sm text-wc-text-tertiary">
-                                    @if(str_starts_with($appVal, 'No'))
-                                        <svg class="h-3.5 w-3.5 shrink-0 text-red-400/70" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
-                                    @endif
-                                    {{ $appVal }}
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs text-wc-text-tertiary">{{ __('metodo.comparison.col_gym') }}</span>
-                                <span class="text-sm text-wc-text-tertiary">{{ $gymVal }}</span>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-
-            <p class="mt-6 text-xs text-wc-text-tertiary">
-                {{ __('metodo.comparison.footnote') }}
-            </p>
-        </div>
-    </section>
-
-    <div class="section-divider"></div>
-
-    {{-- Section 04: FAQ --}}
-    <section class="bg-wc-bg" x-data="{ active: null }">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
-            <div class="mb-4 flex items-center gap-3">
-                <span class="font-data text-sm font-semibold text-red-700 dark:text-red-400">04</span>
-                <div class="h-px flex-1 bg-wc-border"></div>
-            </div>
-            <h2 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ __('metodo.faq.title') }}</h2>
-            <p class="mt-2 text-lg text-wc-text-secondary">
-                {{ __('metodo.faq.subtitle') }}
-            </p>
-
-            <div class="mt-12 max-w-3xl divide-y divide-wc-border">
-                {{-- Q1 --}}
-                <div class="scroll-reveal" data-animate="fadeInUp" style="animation-delay: 50ms">
-                    <button x-on:click="active = active === 1 ? null : 1" class="flex w-full items-center justify-between py-5 text-left transition-colors hover:text-wc-accent">
-                        <span class="text-sm font-semibold text-wc-text">{{ __('metodo.faq.q1.question') }}</span>
-                        <svg class="h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-300 ease-in-out" :class="{ 'rotate-180': active === 1 }" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                        </svg>
-                    </button>
-                    <div x-show="active === 1" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" x-collapse x-cloak>
-                        <div class="pb-5">
-                            <p class="text-sm leading-relaxed text-wc-text-secondary">
-                                {{ __('metodo.faq.q1.answer') }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Q2 --}}
-                <div class="scroll-reveal" data-animate="fadeInUp" style="animation-delay: 100ms">
-                    <button x-on:click="active = active === 2 ? null : 2" class="flex w-full items-center justify-between py-5 text-left transition-colors hover:text-wc-accent">
-                        <span class="text-sm font-semibold text-wc-text">{{ __('metodo.faq.q2.question') }}</span>
-                        <svg class="h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-300 ease-in-out" :class="{ 'rotate-180': active === 2 }" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                        </svg>
-                    </button>
-                    <div x-show="active === 2" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" x-collapse x-cloak>
-                        <div class="pb-5">
-                            <p class="text-sm leading-relaxed text-wc-text-secondary">
-                                {{ __('metodo.faq.q2.answer') }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Q3 --}}
-                <div class="scroll-reveal" data-animate="fadeInUp" style="animation-delay: 150ms">
-                    <button x-on:click="active = active === 3 ? null : 3" class="flex w-full items-center justify-between py-5 text-left transition-colors hover:text-wc-accent">
-                        <span class="text-sm font-semibold text-wc-text">{{ __('metodo.faq.q3.question') }}</span>
-                        <svg class="h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-300 ease-in-out" :class="{ 'rotate-180': active === 3 }" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                        </svg>
-                    </button>
-                    <div x-show="active === 3" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" x-collapse x-cloak>
-                        <div class="pb-5">
-                            <p class="text-sm leading-relaxed text-wc-text-secondary">
-                                {{ __('metodo.faq.q3.answer') }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Q4 --}}
-                <div class="scroll-reveal" data-animate="fadeInUp" style="animation-delay: 200ms">
-                    <button x-on:click="active = active === 4 ? null : 4" class="flex w-full items-center justify-between py-5 text-left transition-colors hover:text-wc-accent">
-                        <span class="text-sm font-semibold text-wc-text">{{ __('metodo.faq.q4.question') }}</span>
-                        <svg class="h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-300 ease-in-out" :class="{ 'rotate-180': active === 4 }" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                        </svg>
-                    </button>
-                    <div x-show="active === 4" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" x-collapse x-cloak>
-                        <div class="pb-5">
-                            <p class="text-sm leading-relaxed text-wc-text-secondary">
-                                {{ __('metodo.faq.q4.answer') }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-8">
-                <a href="{{ route('faq') }}" class="inline-flex items-center gap-2 text-sm font-medium text-red-700 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
-                    {{ __('metodo.faq.see_all') }}
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                {{-- SVG curva progresión 12 semanas (anim. via .curve-reveal-active class) --}}
+                <figure class="metodo-svg-figure" data-animate="fadeInUp">
+                    <figcaption class="metodo-svg-figure-label">{{ __('metodo.ciencia.svg_label') }}</figcaption>
+                    <svg class="metodo-progress-svg"
+                         viewBox="0 0 640 280"
+                         fill="none"
+                         xmlns="http://www.w3.org/2000/svg"
+                         role="img"
+                         aria-label="{{ __('metodo.ciencia.svg_label') }}">
+                        {{-- Grid lines --}}
+                        <line x1="60" y1="20" x2="60" y2="240" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+                        <line x1="60" y1="240" x2="620" y2="240" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+                        <line x1="60" y1="180" x2="620" y2="180" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4 6"/>
+                        <line x1="60" y1="130" x2="620" y2="130" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4 6"/>
+                        <line x1="60" y1="80"  x2="620" y2="80"  stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4 6"/>
+                        {{-- Week markers --}}
+                        <text x="60"  y="258" fill="#404040" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="middle">S1</text>
+                        <text x="152" y="258" fill="#404040" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="middle">S3</text>
+                        <text x="244" y="258" fill="#404040" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="middle">S5</text>
+                        <text x="336" y="258" fill="#404040" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="middle">S7</text>
+                        <text x="428" y="258" fill="#404040" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="middle">S9</text>
+                        <text x="520" y="258" fill="#404040" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="middle">S11</text>
+                        <text x="612" y="258" fill="#404040" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="middle">S12</text>
+                        {{-- Y labels --}}
+                        <text x="52" y="184" fill="#404040" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="end">+10%</text>
+                        <text x="52" y="134" fill="#404040" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="end">+20%</text>
+                        <text x="52" y="84"  fill="#404040" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="end">+30%</text>
+                        {{-- Area fill under curve --}}
+                        <path id="metodoCurveArea"
+                              d="M60,235 C100,232 120,230 152,224 C184,218 200,210 244,198 C288,186 310,172 336,155 C362,138 384,118 428,98 C472,78 490,72 520,65 C550,58 580,54 612,50 L612,240 L60,240 Z"
+                              fill="url(#metodoAreaGrad)" opacity="0"/>
+                        {{-- WellCore curve (red, animated) --}}
+                        <path id="metodoCurve"
+                              d="M60,235 C100,232 120,230 152,224 C184,218 200,210 244,198 C288,186 310,172 336,155 C362,138 384,118 428,98 C472,78 490,72 520,65 C550,58 580,54 612,50"
+                              stroke="#DC2626" stroke-width="2.5" stroke-linecap="round"
+                              stroke-dasharray="900" stroke-dashoffset="900"/>
+                        {{-- Average curve (gray dashed) --}}
+                        <path d="M60,235 C110,234 160,233 244,230 C328,227 380,222 428,218 C476,214 530,212 612,210"
+                              stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="5 5"/>
+                        {{-- Dots at key milestones --}}
+                        <circle id="metodoDot1" cx="152" cy="224" r="4" fill="#DC2626" opacity="0"/>
+                        <circle id="metodoDot2" cx="336" cy="155" r="4" fill="#DC2626" opacity="0"/>
+                        <circle id="metodoDot3" cx="612" cy="50"  r="5" fill="#DC2626" opacity="0"/>
+                        {{-- Labels --}}
+                        <text id="metodoLbl1" x="158" y="218" fill="#F87171" font-family="JetBrains Mono,monospace" font-size="8" opacity="0">{{ __('metodo.ciencia.svg_dot1') }}</text>
+                        <text id="metodoLbl2" x="342" y="149" fill="#F87171" font-family="JetBrains Mono,monospace" font-size="8" opacity="0">{{ __('metodo.ciencia.svg_dot2') }}</text>
+                        <text id="metodoLbl3" x="540" y="46"  fill="#F87171" font-family="JetBrains Mono,monospace" font-size="8" opacity="0">{{ __('metodo.ciencia.svg_dot3') }}</text>
+                        {{-- Legend --}}
+                        <line x1="68" y1="28" x2="96" y2="28" stroke="#DC2626" stroke-width="2.5"/>
+                        <text x="102" y="32" fill="#A3A3A3" font-family="JetBrains Mono,monospace" font-size="8">{{ __('metodo.ciencia.svg_legend_wc') }}</text>
+                        <line x1="170" y1="28" x2="198" y2="28" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-dasharray="5 4"/>
+                        <text x="204" y="32" fill="#A3A3A3" font-family="JetBrains Mono,monospace" font-size="8">{{ __('metodo.ciencia.svg_legend_avg') }}</text>
+                        <defs>
+                            <linearGradient id="metodoAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#DC2626" stop-opacity="0.18"/>
+                                <stop offset="100%" stop-color="#DC2626" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
                     </svg>
-                </a>
+                </figure>
+                <p class="source-note-v2" data-animate="fadeInUp">{{ __('metodo.ciencia.source') }}</p>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <div class="section-divider"></div>
+        {{-- Pull-quote 3 --}}
+        <x-public.pullquote :cite="__('metodo.pullquotes.q3.cite')">
+            {!! __('metodo.pullquotes.q3.text_html') !!}
+        </x-public.pullquote>
 
-    {{-- Final CTA --}}
-    <section class="relative overflow-hidden bg-wc-bg-tertiary hp-cv-section">
-        <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/8 via-wc-bg-tertiary to-wc-bg-secondary pointer-events-none"></div>
-        <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8" data-animate="fadeInUp">
-            <div class="relative overflow-hidden rounded-2xl border border-wc-accent/20 bg-wc-bg p-10 shadow-2xl sm:p-16">
-                <div class="absolute inset-0 bg-gradient-to-br from-wc-accent/5 via-transparent to-wc-accent/3 pointer-events-none"></div>
-                <div class="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-wc-accent/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
-                <div class="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-wc-accent/3 blur-2xl pointer-events-none" aria-hidden="true"></div>
-                <div class="relative text-center">
-                    <p class="text-sm font-semibold uppercase tracking-widest text-red-700 dark:text-red-400">{{ __('metodo.cta.label') }}</p>
-                    <h2 class="mt-4 font-display text-3xl tracking-wide text-wc-text sm:text-5xl">{{ __('metodo.cta.title') }}</h2>
-                    <p class="mx-auto mt-6 max-w-lg text-wc-text-secondary">
-                        {{ __('metodo.cta.description') }}
+        {{-- ════════════════════════════════════════════════════════════
+             CAP 04 — EL PLAN (period table)
+             ════════════════════════════════════════════════════════════ --}}
+        <x-public.s-divider :label="__('metodo.chapters.cap04.divider')" class="metodo-sec-divider" />
+
+        <section class="metodo-chapter"
+                 id="cap-04"
+                 data-chapter="04"
+                 data-chapter-label="{{ __('metodo.chapters.cap04.pill') }}">
+            <div class="metodo-with-margin-note">
+                <div class="metodo-col">
+                    <x-public.chapter-header
+                        :num-text="__('metodo.chapters.cap04.num_text')"
+                        :title-html="__('metodo.chapters.cap04.title_html')"
+                    />
+
+                    <x-public.dropcap-paragraph data-animate="fadeInUp">
+                        {!! __('metodo.plan.body_p1_html') !!}
+                    </x-public.dropcap-paragraph>
+
+                    <p class="body-text" data-animate="fadeInUp" data-delay="1">
+                        {!! __('metodo.plan.body_p2_html') !!}
                     </p>
-                    <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                        <a href="{{ route('planes') }}" class="btn-press pulse-glow inline-flex items-center justify-center rounded-full bg-wc-accent px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-wc-accent/20 hover:bg-wc-accent-hover">
-                            {{ __('metodo.cta.btn_primary') }}
-                        </a>
-                        <a href="{{ route('proceso') }}" class="btn-press inline-flex items-center justify-center rounded-full border border-wc-border px-8 py-3.5 text-base font-semibold text-wc-text hover:bg-wc-bg-secondary hover:border-wc-accent/30 transition-colors">
-                            {{ __('metodo.cta.btn_secondary') }}
-                        </a>
+
+                    @php
+                        $periodPhases = [
+                            array_merge(['type' => 'adapt'],  __('metodo.plan.period.adapt')),
+                            array_merge(['type' => 'hyper'],  __('metodo.plan.period.hyper')),
+                            array_merge(['type' => 'fuerza'], __('metodo.plan.period.fuerza')),
+                            array_merge(['type' => 'desc'],   __('metodo.plan.period.desc')),
+                        ];
+                    @endphp
+                    <x-public.period-table
+                        :headers="__('metodo.plan.period_headers')"
+                        :phases="$periodPhases"
+                        :source-note="__('metodo.plan.source')"
+                    />
+                </div>
+                <aside class="margin-note" data-animate="fadeInUp">
+                    {{ __('metodo.plan.margin_note') }}
+                </aside>
+            </div>
+        </section>
+
+        {{-- Inline CTA 2 (después de Cap04) --}}
+        <x-public.inline-cta
+            :label="__('metodo.inline_ctas.c2.label')"
+            :title="__('metodo.inline_ctas.c2.title')"
+            :href="route('coaches')"
+            :cta-text="__('metodo.inline_ctas.c2.btn')"
+        />
+
+        {{-- ════════════════════════════════════════════════════════════
+             CAP 05 — EL COACH (coach humano 1:1, sin mención IA)
+             ════════════════════════════════════════════════════════════ --}}
+        <x-public.s-divider :label="__('metodo.chapters.cap05.divider')" class="metodo-sec-divider" />
+
+        <section class="metodo-chapter"
+                 id="cap-05"
+                 data-chapter="05"
+                 data-chapter-label="{{ __('metodo.chapters.cap05.pill') }}">
+            <div class="metodo-with-margin-note">
+                <div class="metodo-col">
+                    <x-public.chapter-header
+                        :num-text="__('metodo.chapters.cap05.num_text')"
+                        :title-html="__('metodo.chapters.cap05.title_html')"
+                    />
+
+                    <x-public.dropcap-paragraph data-animate="fadeInUp">
+                        {!! __('metodo.coach.body_p1_html') !!}
+                    </x-public.dropcap-paragraph>
+
+                    <p class="body-text" data-animate="fadeInUp" data-delay="1">
+                        {!! __('metodo.coach.body_p2_html') !!}
+                    </p>
+
+                    <p class="body-text" data-animate="fadeInUp" data-delay="2">
+                        {!! __('metodo.coach.body_p3_html') !!}
+                    </p>
+                </div>
+                <aside class="margin-note" data-animate="fadeInUp">
+                    {{ __('metodo.coach.margin_note') }}
+                </aside>
+            </div>
+        </section>
+
+        {{-- Pull-quote 4 --}}
+        <x-public.pullquote :cite="__('metodo.pullquotes.q4.cite')">
+            {!! __('metodo.pullquotes.q4.text_html') !!}
+        </x-public.pullquote>
+
+        {{-- ════════════════════════════════════════════════════════════
+             CAP 06 — LOS CHECK-INS (Bloomberg ticker)
+             ════════════════════════════════════════════════════════════ --}}
+        <x-public.s-divider :label="__('metodo.chapters.cap06.divider')" class="metodo-sec-divider" />
+
+        <section class="metodo-chapter"
+                 id="cap-06"
+                 data-chapter="06"
+                 data-chapter-label="{{ __('metodo.chapters.cap06.pill') }}">
+            <div class="metodo-col">
+                <x-public.chapter-header
+                    :num-text="__('metodo.chapters.cap06.num_text')"
+                    :title-html="__('metodo.chapters.cap06.title_html')"
+                />
+
+                <x-public.dropcap-paragraph data-animate="fadeInUp">
+                    {!! __('metodo.checkins.body_p1_html') !!}
+                </x-public.dropcap-paragraph>
+
+                <p class="body-text" data-animate="fadeInUp" data-delay="1">
+                    {!! __('metodo.checkins.body_p2_html') !!}
+                </p>
+            </div>
+
+            {{-- Ticker full-bleed (sale del col estrecho) --}}
+            <x-public.bloomberg-ticker
+                :items="__('metodo.checkins.ticker')"
+                :duration="35"
+                :aria-label="__('metodo.checkins.ticker_label')"
+            />
+            <p class="metodo-ticker-source" data-animate="fadeInUp">{{ __('metodo.checkins.source') }}</p>
+        </section>
+
+        {{-- Inline CTA 3 (después de Cap06) — con secundario --}}
+        <x-public.inline-cta
+            :label="__('metodo.inline_ctas.c3.label')"
+            :title="__('metodo.inline_ctas.c3.title')"
+            :href="route('planes')"
+            :cta-text="__('metodo.inline_ctas.c3.btn')"
+            :secondary-href="route('proceso')"
+            :secondary-text="__('metodo.inline_ctas.c3.btn_secondary')"
+        />
+
+        {{-- ════════════════════════════════════════════════════════════
+             CAP 07 — LAS OBJECIONES (acordeón editorial — usa <details>)
+             ════════════════════════════════════════════════════════════ --}}
+        <x-public.s-divider :label="__('metodo.chapters.cap07.divider')" class="metodo-sec-divider" />
+
+        <section class="metodo-chapter metodo-objections"
+                 id="cap-07"
+                 data-chapter="07"
+                 data-chapter-label="{{ __('metodo.chapters.cap07.pill') }}">
+            <div class="metodo-col">
+                <x-public.chapter-header
+                    :num-text="__('metodo.chapters.cap07.num_text')"
+                    :title-html="__('metodo.chapters.cap07.title_html')"
+                />
+
+                <x-public.dropcap-paragraph data-animate="fadeInUp">
+                    {!! __('metodo.objections.body_intro_html') !!}
+                </x-public.dropcap-paragraph>
+
+                {{-- Acordeón editorial: usa <x-public.faq-accordion> con override visual.
+                     Cada Q llega con prefix de mark numérico (renderea como número grande rojo). --}}
+                @php
+                    $objList = __('metodo.objections.list');
+                    $objItems = [];
+                    foreach ($objList as $obj) {
+                        $mark = $obj['mark'] ?? '';
+                        $q = $obj['q'] ?? '';
+                        $a = $obj['a'] ?? '';
+                        $objItems[] = [
+                            // Concatenamos el HTML del mark dentro del summary via <span>
+                            // pero el componente faq-accordion solo soporta string plain en q;
+                            // por eso nos saltamos faq-accordion y lo pintamos inline más abajo.
+                            'mark' => $mark,
+                            'q' => $q,
+                            'a' => $a,
+                        ];
+                    }
+                @endphp
+
+                <div class="faq-accordion-wrap" data-animate="fadeInUp">
+                    <div class="faq-accordion">
+                        @foreach ($objItems as $i => $obj)
+                            <details class="faq-accordion-item" id="objection-{{ $obj['mark'] }}">
+                                <summary class="faq-accordion-summary">
+                                    <span class="metodo-objection-mark" aria-hidden="true">{{ $obj['mark'] }}</span>
+                                    <span class="metodo-objection-q">{{ $obj['q'] }}</span>
+                                    <svg class="faq-accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+                                        <path d="M12 5v14M5 12h14"/>
+                                    </svg>
+                                </summary>
+                                <div class="faq-accordion-body">{!! $obj['a'] !!}</div>
+                            </details>
+                        @endforeach
                     </div>
-                    <div class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-wc-text-tertiary">
-                        <span>{{ __('metodo.cta.trust1') }}</span>
-                        <span class="hidden sm:inline">&middot;</span>
-                        <span>{{ __('metodo.cta.trust2') }}</span>
-                        <span class="hidden sm:inline">&middot;</span>
-                        <span>{{ __('metodo.cta.trust3') }}</span>
-                        <span class="hidden sm:inline">&middot;</span>
-                        <span>{{ __('metodo.cta.trust4') }}</span>
-                    </div>
+
+                    {{-- JSON-LD FAQPage schema (SEO bonus) --}}
+                    <script type="application/ld+json">
+                        {!! json_encode([
+                            '@context' => 'https://schema.org',
+                            '@type' => 'FAQPage',
+                            'mainEntity' => array_map(function ($obj) {
+                                return [
+                                    '@type' => 'Question',
+                                    'name' => $obj['q'],
+                                    'acceptedAnswer' => [
+                                        '@type' => 'Answer',
+                                        'text' => strip_tags($obj['a']),
+                                    ],
+                                ];
+                            }, $objItems),
+                        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
+                    </script>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-</x-layouts.public>
+        {{-- Pull-quote 5 --}}
+        <x-public.pullquote :cite="__('metodo.pullquotes.q5.cite')">
+            {!! __('metodo.pullquotes.q5.text_html') !!}
+        </x-public.pullquote>
+
+        {{-- ════════════════════════════════════════════════════════════
+             CTA FINAL masivo
+             ════════════════════════════════════════════════════════════ --}}
+        <section class="metodo-cta-final" id="cta-final">
+            <div class="metodo-cta-final-inner" data-animate="fadeInUp">
+                <p class="metodo-cta-final-kicker">{{ __('metodo.cta_final.kicker') }}</p>
+                <h2 class="metodo-cta-final-title">{!! __('metodo.cta_final.title_html') !!}</h2>
+                <p class="metodo-cta-final-sub">{{ __('metodo.cta_final.sub') }}</p>
+                <div class="metodo-cta-final-btns">
+                    <a href="{{ route('planes') }}" class="btn-primary-v2">
+                        <span>{{ __('metodo.cta_final.btn_primary') }}</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M5 12h14M13 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                    <a href="{{ route('proceso') }}" class="btn-ghost-v2">{{ __('metodo.cta_final.btn_secondary') }}</a>
+                </div>
+                <div class="metodo-cta-final-trust">
+                    @foreach (__('metodo.cta_final.trust_items') as $idx => $item)
+                        @if ($idx > 0)<span class="sep" aria-hidden="true">·</span>@endif
+                        <span>{{ $item }}</span>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        {{-- ════════════════════════════════════════════════════════════
+             Sticky mobile CTA — visible tras scroll 60% (Alpine binding).
+             Se oculta cuando #cta-final entra al viewport (evita doble CTA).
+             ════════════════════════════════════════════════════════════ --}}
+        <div class="metodo-sticky-cta"
+             :class="stickyVisible ? 'is-visible' : ''"
+             role="region"
+             aria-label="{{ __('metodo.sticky.text_strong') }}">
+            <div class="metodo-sticky-cta-text">
+                <strong>{{ __('metodo.sticky.text_strong') }}</strong>
+                {{ __('metodo.sticky.text') }}
+            </div>
+            <a href="{{ route('planes') }}" class="btn-primary-v2" style="font-size: 12px; padding: 10px 18px; min-height: 40px;">
+                <span>{{ __('metodo.sticky.cta') }}</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5 12h14M13 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+    </div>{{-- /metodo-root --}}
+
+    {{-- window.metodoPage() viene del bundle alpine-public (importa ./metodo.js).
+         Esa importación lo registra antes de Alpine.start(); no se necesita @vite() extra. --}}
+</x-layouts.public-editorial>
