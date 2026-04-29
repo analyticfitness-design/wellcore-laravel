@@ -80,7 +80,13 @@
 
                 <div>
                     <h2 class="font-display text-xl tracking-wide text-wc-text">8. RETENCION DE DATOS</h2>
-                    <p class="mt-3">Sus datos personales seran conservados mientras mantenga una relacion activa con WellCore y durante el periodo adicional que la legislacion colombiana establezca. Tras la cancelacion, los datos de progreso se anonimizaran despues de 12 meses.</p>
+                    <p class="mt-3">Sus datos personales seran conservados mientras mantenga una relacion activa con WellCore. Despues de la cancelacion aplicamos los siguientes plazos:</p>
+                    <ul class="list-disc pl-6 mt-3 space-y-2">
+                        <li><strong>Fotos de progreso y datos biometricos sensibles:</strong> eliminados dentro de los 30 dias siguientes a la solicitud explicita.</li>
+                        <li><strong>Registros de entrenamiento, check-ins y nutricion:</strong> conservados en forma anonimizada hasta 12 meses para analisis agregado, luego eliminados.</li>
+                        <li><strong>Datos de pago y facturacion:</strong> retenidos segun los plazos que exige la legislacion fiscal colombiana (hasta 6 anos).</li>
+                    </ul>
+                    <p class="mt-3">Para solicitar la eliminacion anticipada de sus datos personales escribanos a <a href="mailto:privacidad@wellcorefitness.com" class="text-red-700 dark:text-red-400 hover:underline">privacidad@wellcorefitness.com</a>.</p>
                 </div>
 
                 <div>

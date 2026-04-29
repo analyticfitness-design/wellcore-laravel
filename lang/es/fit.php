@@ -15,24 +15,24 @@ return [
     'hero_bio'          => 'Acompaño a mujeres que entrenan en serio sin obsesionarse con la báscula. Postparto, recomposición, recuperar fuerza, sostenerse en perimenopausia. Sin dietas extremas. Sin culpa los domingos. Con método.',
     'hero_stat1_val'    => '6+',
     'hero_stat1_lbl'    => 'años de experiencia',
-    'hero_stat2_val'    => '120+',
-    'hero_stat2_lbl'    => 'clientas transformadas',
-    'hero_stat3_val'    => '96%',
-    'hero_stat3_lbl'    => 'tasa de adherencia',
+    'hero_stat2_val'    => '1:1',
+    'hero_stat2_lbl'    => 'acompañamiento real',
+    'hero_stat3_val'    => '3+',
+    'hero_stat3_lbl'    => 'meses · método sostenible',
     'hero_cta_primary'  => 'Entrenar con Silvia',
     'hero_cta_whatsapp' => 'WhatsApp',
 
-    // Legacy keys (blade v1 las usa — mantener)
+    // Legacy keys (blade v1 las usa — mantener sincronizadas con hero v2)
     'hero_badge'        => 'Coach WellCore · Fitness Femenino',
     'hero_name_line1'   => 'SILVIA',
     'hero_name_line2'   => 'MARTÍNEZ',
     'hero_bio_legacy'   => 'Especialista en fitness femenino y recomposición corporal.',
-    'stat_years_value'  => '8+',
+    'stat_years_value'  => '6+',
     'stat_years_label'  => 'años de experiencia',
-    'stat_clients_value' => '214',
-    'stat_clients_label' => 'clientes activas',
-    'stat_adherence_value' => '91%',
-    'stat_adherence_label' => 'tasa de adherencia',
+    'stat_clients_value' => '1:1',
+    'stat_clients_label' => 'acompañamiento real',
+    'stat_adherence_value' => '3+',
+    'stat_adherence_label' => 'meses · método sostenible',
     'hero_cta_train'    => 'Entrenar con Silvia',
     'hero_cta_whatsapp_legacy' => 'WhatsApp',
 
@@ -131,11 +131,11 @@ return [
     'pricing_label'   => 'PLANES',
     'pricing_title'   => 'ELIGE<br><em>TU PLAN.</em>',
     'pricing_sub'     => 'Tres niveles, según qué tan cerca quieras que esté de ti. Mínimo 3 meses — porque menos no funciona y no quiero venderte humo.',
-    'pricing_note'    => 'Cancelas cuando quieras después de los 3 primeros meses. Cupos limitados — trabajo con máximo 25 mujeres activas, así puedo responder de verdad.',
+    'pricing_note'    => 'Cancelas cuando quieras después de los 3 primeros meses. Cupos limitados — trabajo con un número reducido de mujeres activas, así puedo responder de verdad.',
 
     // Proof bar
-    'pricing_proof_active'       => '+45 mujeres en proceso',
-    'pricing_proof_satisfaction' => '96% adherencia',
+    'pricing_proof_active'       => 'Cupos limitados',
+    'pricing_proof_satisfaction' => 'Trabajo 1:1 cercano',
     'pricing_proof_verified'     => 'Verificado por WellCore',
 
     // Billing toggle
@@ -234,7 +234,7 @@ return [
     'cta_whatsapp'    => 'Hablar conmigo por WhatsApp',
     'cta_trust1'      => 'Sin dietas extremas',
     'cta_trust2'      => 'Sin promesas vacías',
-    'cta_trust3'      => '96% siguen al sexto mes',
+    'cta_trust3'      => 'Mínimo 3 meses · método sostenible',
 
     // Sticky CTA
     'sticky_cta_text' => 'Entrenar con Silvia',

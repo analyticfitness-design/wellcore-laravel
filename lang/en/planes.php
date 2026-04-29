@@ -42,14 +42,14 @@ return [
     // Method
     'metodo_name'    => 'METHOD',
     'metodo_desc'    => 'Training + nutrition + behavioral coaching. The complete system.',
-    'metodo_popular' => 'Chosen by 60%+ of our clients',
+    'metodo_popular' => 'The most complete plan · training + macros + bi-weekly adjustment',
     'metodo_badge'   => 'MOST POPULAR',
     'metodo_cta'     => 'Start Method',
 
     // Elite
     'elite_name'     => 'ELITE',
     'elite_desc'     => 'Total accountability. Premium results. For those who demand the absolute best.',
-    'elite_badge'    => 'ONLY 5 SPOTS',
+    'elite_badge'    => 'LIMITED SPOTS',
     'elite_cta'      => 'Start Elite',
 
     // =========================================================
@@ -76,12 +76,12 @@ return [
     'feat_19' => 'Monthly video coaching session',
     'feat_20' => 'Dedicated weekly check-in with coach',
     'feat_21' => 'Monthly video review session',
-    'feat_22' => 'VIP support — 8h response time',
+    'feat_22' => 'Priority support · response during business hours',
     'feat_23' => 'Weekly program optimization',
     'feat_24' => 'Advanced body composition analysis',
     'feat_25' => 'Evidence-based supplementation protocol',
     'feat_26' => 'Hormonal cycle periodization',
-    'feat_27' => 'Bloodwork integration & lab analysis',
+    'feat_27' => 'Bloodwork support · your coach interprets results you provide',
     'feat_28' => 'Travel & contingency programming',
     'feat_29' => 'Direct line to your coach (WhatsApp)',
 
@@ -224,10 +224,10 @@ return [
             'elite'    => ['type' => 'val',  'value' => 'Sport supplementation · Menstrual cycle', 'mod' => 'gd'],
         ],
         [
-            'feat'     => 'Coach response time',
-            'esencial' => ['type' => 'val', 'value' => '48h', 'mod' => null],
-            'metodo'   => ['type' => 'val', 'value' => '24h', 'mod' => 'hl'],
-            'elite'    => ['type' => 'val', 'value' => '8h',  'mod' => 'gd'],
+            'feat'     => 'Coach response priority',
+            'esencial' => ['type' => 'val', 'value' => 'Standard',  'mod' => null],
+            'metodo'   => ['type' => 'val', 'value' => 'Fast',      'mod' => 'hl'],
+            'elite'    => ['type' => 'val', 'value' => 'Top',       'mod' => 'gd'],
         ],
     ],
 

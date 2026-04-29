@@ -13,10 +13,10 @@ return [
     // Stats
     'stat_years_value'  => '6+',
     'stat_years_label'  => 'years of experience',
-    'stat_clients_value' => '120+',
-    'stat_clients_label' => 'women transformed',
-    'stat_adherence_value' => '96%',
-    'stat_adherence_label' => 'adherence rate',
+    'stat_clients_value' => '1:1',
+    'stat_clients_label' => 'real human coaching',
+    'stat_adherence_value' => '3+',
+    'stat_adherence_label' => 'months · sustainable method',
 
     // CTA buttons
     'hero_cta_train'     => 'Train With Me',

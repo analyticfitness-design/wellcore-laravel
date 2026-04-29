@@ -85,7 +85,7 @@ return [
 
         // ── soporte ──
         ['id' => 's1', 'cat' => 'soporte', 'q' => 'Como contacto a soporte?',
-         'a' => 'Email <a href="mailto:info@wellcorefitness.com" class="text-wc-accent hover:underline">info@wellcorefitness.com</a>, chat dentro del dashboard, o WhatsApp. Los clientes Elite tienen soporte prioritario con respuesta en menos de 12 horas.'],
+         'a' => 'Email <a href="mailto:info@wellcorefitness.com" class="text-wc-accent hover:underline">info@wellcorefitness.com</a>, chat dentro del dashboard, o WhatsApp. Respondemos en horario laboral; los clientes Elite tienen prioridad en la cola.'],
         ['id' => 's2', 'cat' => 'soporte', 'q' => 'Puedo cambiar de coach?',
          'a' => 'Si. Solicita el cambio a traves de soporte y se asigna un nuevo coach en 48 horas. Sin costo adicional.'],
         ['id' => 's3', 'cat' => 'soporte', 'q' => 'Que pasa si no puedo entrenar por viaje o enfermedad?',
