@@ -16,6 +16,7 @@ use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\MetodoController;
 use App\Http\Controllers\Public\PlanesController;
 use App\Http\Controllers\Public\PresencialController;
+use App\Http\Controllers\Public\ProcesoController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\WebhookController;
 use App\Livewire\Checkout;
@@ -113,9 +114,7 @@ Route::get('/faq', function () {
     return view('public.faq');
 })->name('faq');
 Route::get('/metodo', [MetodoController::class, 'index'])->name('metodo');
-Route::get('/proceso', function () {
-    return view('public.proceso');
-})->name('proceso');
+Route::get('/proceso', [ProcesoController::class, 'index'])->name('proceso');
 // RISE publico cerrado: redirige al home (clientes RISE existentes siguen con acceso en /rise)
 Route::get('/reto-rise', fn () => redirect('/', 301))->name('reto-rise');
 Route::get('/coaches', [CoachesController::class, 'index'])->name('coaches');
