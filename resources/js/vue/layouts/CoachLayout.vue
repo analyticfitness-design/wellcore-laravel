@@ -90,8 +90,14 @@ onUnmounted(() => {
     if (unwatch) unwatch();
 });
 
-// Navigation sections — 3 groups
+// Navigation sections — orden por flujo de adopción del coach
 const navSections = [
+    {
+        label: 'Aprendizaje',
+        items: [
+            { name: 'Onboarding', to: '/coach/onboarding', icon: 'compass', routeName: 'coach-onboarding', isNew: true },
+        ],
+    },
     {
         label: 'Principal',
         items: [
@@ -99,31 +105,30 @@ const navSections = [
             { name: 'Clientes', to: '/coach/clients', icon: 'clients', routeName: 'coach-clients' },
             { name: 'Check-ins', to: '/coach/checkins', icon: 'checkins', routeName: 'coach-checkins', badge: 'pendingCheckins' },
             { name: 'Mensajes', to: '/coach/messages', icon: 'messages', routeName: 'coach-messages', badge: 'unreadMessages' },
-            { name: 'Estrategia', to: '/coach/strategy', icon: 'strategy', routeName: 'coach-strategy', isNew: true },
         ],
     },
     {
-        label: 'Trabajo',
+        label: 'Gestión',
         items: [
             { name: 'Tickets', to: '/coach/plan-tickets', icon: 'plans', routeName: 'coach-plan-tickets' },
             { name: 'Planes', to: '/coach/plans', icon: 'plans', routeName: 'coach-plans' },
             { name: 'Kanban', to: '/coach/kanban', icon: 'kanban', routeName: 'coach-kanban' },
-            { name: 'Broadcast', to: '/coach/broadcast', icon: 'broadcast', routeName: 'coach-broadcast' },
-            { name: 'Invitaciones', to: '/coach/invitations', icon: 'envelope', routeName: 'coach-invitations' },
             { name: 'Comprobantes', to: '/coach/comprobantes', icon: 'receipt', routeName: 'coach-comprobantes' },
         ],
     },
     {
-        label: 'Insights',
+        label: 'Crecimiento',
         items: [
+            { name: 'Estrategia', to: '/coach/strategy', icon: 'strategy', routeName: 'coach-strategy', isNew: true },
+            { name: 'Broadcast', to: '/coach/broadcast', icon: 'broadcast', routeName: 'coach-broadcast' },
+            { name: 'Invitaciones', to: '/coach/invitations', icon: 'envelope', routeName: 'coach-invitations' },
             { name: 'Analítica', to: '/coach/analytics', icon: 'analytics', routeName: 'coach-analytics' },
-            { name: 'Notas', to: '/coach/notes', icon: 'notes', routeName: 'coach-notes' },
         ],
     },
     {
-        label: 'Aprendizaje',
+        label: 'Personal',
         items: [
-            { name: 'Onboarding', to: '/coach/onboarding', icon: 'compass', routeName: 'coach-onboarding', isNew: true },
+            { name: 'Notas', to: '/coach/notes', icon: 'notes', routeName: 'coach-notes' },
         ],
     },
 ];
