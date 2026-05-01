@@ -58,11 +58,13 @@ class TrainingController extends Controller
                 ? $plan->content
                 : json_decode($plan->content, true);
 
-            match ($plan->plan_type) {
+            $planType = strtolower(trim((string) $plan->plan_type));
+
+            match ($planType) {
                 'entrenamiento' => $trainingPlan = $this->normalizeTrainingPlan($content),
                 'nutricion' => $nutritionPlan = $this->normalizeNutritionPlan($content),
                 'suplementacion' => $supplementPlan = $content,
-                'ciclo_hormonal' => $cicloPlan = $content,
+                'ciclo_hormonal', 'ciclo' => $cicloPlan = $content,
                 default => null,
             };
         }
