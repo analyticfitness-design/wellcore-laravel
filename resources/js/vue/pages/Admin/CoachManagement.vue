@@ -8,7 +8,6 @@ import AdminCoachFilters from '../../components/admin/coaches/AdminCoachFilters.
 import AdminCoachesTable from '../../components/admin/coaches/AdminCoachesTable.vue';
 import AdminCoachCardMobile from '../../components/admin/coaches/AdminCoachCardMobile.vue';
 import AdminCoachDetailDrawer from '../../components/admin/coaches/AdminCoachDetailDrawer.vue';
-import AdminCoachImpersonateModal from '../../components/admin/coaches/AdminCoachImpersonateModal.vue';
 import AdminCoachSuspendModal from '../../components/admin/coaches/AdminCoachSuspendModal.vue';
 import AdminCoachEditModal from '../../components/admin/coaches/AdminCoachEditModal.vue';
 import AdminCoachCreateModal from '../../components/admin/coaches/AdminCoachCreateModal.vue';
@@ -25,7 +24,6 @@ const showCreate = ref(false);
 const editTarget = ref(null);
 const resetTarget = ref(null);
 const suspendTarget = ref(null);
-const impersonateTarget = ref(null);
 
 // Toast
 const toast = ref({ show: false, type: 'success', message: '' });
@@ -54,9 +52,14 @@ function onReset(coach) {
 function onSuspend(coach) {
     suspendTarget.value = coach;
 }
-function onImpersonate(coach) {
+async function onImpersonate(coach) {
     if (!canImpersonate(coach)) return;
-    impersonateTarget.value = coach;
+    try {
+        await authStore.startImpersonation({ type: 'admin', targetId: coach.id });
+        window.location.href = '/coach';
+    } catch (e) {
+        showToast(e.message || 'No se pudo iniciar la impersonacion.', 'error');
+    }
 }
 
 function canImpersonate(coach) {
@@ -87,11 +90,6 @@ function onSuspendSuccess(coach) {
     suspendTarget.value = null;
     showToast(`Coach ${coach.name} desactivado.`, 'success');
     list.refreshSilent();
-}
-
-function onImpersonateSuccess() {
-    impersonateTarget.value = null;
-    // El componente hace window.location.href = '/coach' tras success
 }
 
 // ─── UI helpers ────────────────────────────────────────────────────────
@@ -201,11 +199,6 @@ const refreshHint = computed(() => {
       :coach="suspendTarget"
       @close="suspendTarget = null"
       @success="onSuspendSuccess"
-    />
-    <AdminCoachImpersonateModal
-      :coach="impersonateTarget"
-      @close="impersonateTarget = null"
-      @success="onImpersonateSuccess"
     />
     <AdminCoachToast
       :show="toast.show"
