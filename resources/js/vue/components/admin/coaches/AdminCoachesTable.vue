@@ -88,6 +88,7 @@ function actionClick(action, coach, ev) {
         <div class="coach-info">
           <span class="coach-name">{{ coach.name || 'Sin nombre' }}</span>
           <span class="coach-handle">@{{ coach.username || '—' }}</span>
+          <span class="coach-id">#{{ coach.id }}</span>
         </div>
       </div>
 
@@ -253,6 +254,13 @@ function actionClick(action, coach, ev) {
     color: var(--color-wc-text-tertiary);
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.coach-id {
+    font-family: var(--font-mono, monospace);
+    font-size: 8px;
+    letter-spacing: 0.16em;
+    color: rgba(220, 38, 38, 0.5);
     white-space: nowrap;
 }
 
