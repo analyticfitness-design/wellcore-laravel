@@ -1,0 +1,394 @@
+{
+    "schema_version": "coach_drop_v1",
+    "brief": {
+        "title": "Ciclo menstrual + entrenamiento de fuerza · W18",
+        "objective": "Educar a mujeres 25-35 sobre cómo adaptar el entrenamiento de fuerza a su ciclo menstrual sin parar. Posicionar a Anderson como coach que entiende esto desde la evidencia (no desde mitos). Generar conversaciones reales en DM con la palabra \"CICLO\" para enrolar al Método.",
+        "priority_offer": "metodo",
+        "key_message": "Tu ciclo no te limita; te informa cuándo empujar y cuándo gestionar. Entrenar bien es entender eso.",
+        "target_metric": "8-12 DMs entrantes con palabra clave \"CICLO\" + 40+ guardados en stories educativas",
+        "weekly_theme": "Tu ciclo no es un obstáculo. Es información.",
+        "framing_copy": "Esta semana voy a hablar de lo que la mayoría de los planes de gym ignora: tu ciclo. No para limitarte. Para que entiendas cuándo tu cuerpo te pide más y cuándo te pide ajustar."
+    },
+    "reels": [
+        {
+            "key": "reel_1",
+            "type": "educativo",
+            "title": "Lo que nadie te explicó sobre tu ciclo y el gym",
+            "format_meta": {
+                "duration_sec_min": 45,
+                "duration_sec_max": 60,
+                "platforms": [
+                    "instagram",
+                    "tiktok"
+                ],
+                "bpm_hint": "80-100 BPM ambiente"
+            },
+            "hook": {
+                "text": "Lo que nadie te explicó sobre tu ciclo y el gym: no es un obstáculo. Es la información más útil que tienes para entrenar.",
+                "rationale": "Apertura \"lo que nadie te dijo\" + reframe inmediato (obstáculo → información). El reframe genera curiosidad sin caer en clickbait."
+            },
+            "timecode_table": [
+                {
+                    "time": "00:00-00:04",
+                    "dialogue": "Si eres mujer y entrenas fuerza, hay algo que nadie te está diciendo sobre tu ciclo.",
+                    "visual": "Cámara frontal, plano medio. Anderson mirando a cámara, expresión seria pero accesible.",
+                    "edit_notes": "Cero efectos. Foco en voz. Si hay texto en pantalla, mínimo: \"TU CICLO\"."
+                },
+                {
+                    "time": "00:04-00:12",
+                    "dialogue": "La ciencia revisó 73 estudios con casi 1000 mujeres. El resultado: tu ciclo afecta menos el rendimiento de lo que crees. Lo que sí cambia es cuándo empujar y cuándo recuperar.",
+                    "visual": "Anderson camina hacia la cámara o cambia de plano. Texto superpuesto: \"73 ESTUDIOS · 954 MUJERES\".",
+                    "edit_notes": "Resaltar los números con motion text. Pausa breve después de \"954 mujeres\"."
+                },
+                {
+                    "time": "00:12-00:24",
+                    "dialogue": "Durante la fase folicular, del día 6 al 13, el estrógeno sube, la recuperación es mejor y tu cuerpo tolera más carga. Esa es tu ventana para progresar. Sube el peso. Sube el volumen.",
+                    "visual": "B-roll: clips de sentadilla pesada o peso muerto con buena técnica. Transición suave.",
+                    "edit_notes": "Texto superpuesto: \"FOLICULAR · DÍAS 6-13 · SUBE LA CARGA\". Cortes en sincronía con frases clave."
+                },
+                {
+                    "time": "00:24-00:36",
+                    "dialogue": "En la fase lútea, hacia el final del ciclo, la progesterona sube y la percepción de fatiga puede aumentar. No pares. Ajusta: menos volumen, misma intensidad, más recuperación.",
+                    "visual": "B-roll: ejercicios de máquinas o accesorios con técnica limpia. Tono más calmo.",
+                    "edit_notes": "Texto superpuesto: \"LÚTEA · DÍAS 17-28 · AJUSTA, NO PARES\". Música baja medio punto."
+                },
+                {
+                    "time": "00:36-00:48",
+                    "dialogue": "Tu ciclo no es un obstáculo. Es información. Úsala para entrenar mejor, no para dejar de entrenar. Guarda este video antes de tu próxima sesión.",
+                    "visual": "Anderson de regreso a cámara frontal. Cierre directo, mirada firme.",
+                    "edit_notes": "Texto final: \"GUARDA ESTO\". Logo WellCore esquina inferior último frame."
+                }
+            ],
+            "caption": "La mayoría de las mujeres que entrenan conmigo llegaron creyendo que hay semanas donde no se puede rendir bien.\n\nLa evidencia dice lo contrario.\n\n73 estudios. 954 mujeres. Conclusión: el ciclo afecta poco el rendimiento si sabes cómo usarlo.\n\nLo que sí importa:\n→ Fase folicular: sube la carga. Es tu ventana de adaptación.\n→ Ovulación: buenos intentos máximos.\n→ Lútea: sostén lo ganado. Recupera bien.\n\nTu cuerpo no está en tu contra. Aprende a leerlo.\n\n¿En qué fase estás esta semana?",
+            "music_note": "Track ambiente sin letra en español (para no competir con voz). Buscar algo cinematográfico calmo, 80-100 BPM. Evitar tracks virales con voz.",
+            "production_notes": "Grabar en una sola toma de diálogo si es posible y luego cortar visuales encima. Iluminación frontal suave. Audio limpio (priorizar lavalier o micrófono direccional sobre micrófono de cámara)."
+        },
+        {
+            "key": "reel_2",
+            "type": "conversion",
+            "title": "El error que comete el 90% al entrenar cada mes",
+            "format_meta": {
+                "duration_sec_min": 25,
+                "duration_sec_max": 30,
+                "platforms": [
+                    "instagram",
+                    "tiktok"
+                ],
+                "bpm_hint": "110-130 BPM beat marcado"
+            },
+            "hook": {
+                "text": "¿Entrenas igual todos los días del mes?",
+                "rationale": "Pregunta directa que activa autoconciencia inmediata. El \"el error que comete el 90%\" en el texto superpuesto genera curiosidad por saber si está dentro de ese 90%."
+            },
+            "timecode_table": [
+                {
+                    "time": "00:00-00:03",
+                    "dialogue": "¿Entrenas igual todos los días del mes?",
+                    "visual": "Cámara frontal. Plano cerrado. Pregunta directa con expresión seria.",
+                    "edit_notes": "Texto superpuesto: \"EL ERROR QUE COMETE EL 90%\". Cortar exacto en beat 1."
+                },
+                {
+                    "time": "00:03-00:08",
+                    "dialogue": "Días 11 a 16: sube el peso. Tu cuerpo tolera más.",
+                    "visual": "B-roll: sentadilla pesada o peso muerto, ejecución limpia con carga visible.",
+                    "edit_notes": "Texto: \"DÍAS 11-16 · EMPUJA FUERTE\". Corte en beat 2."
+                },
+                {
+                    "time": "00:08-00:13",
+                    "dialogue": "Días 22 a 28: reduce accesorios, cuida la técnica. Sin culpa.",
+                    "visual": "B-roll: ejercicio con carga moderada, máquinas, técnica perfecta.",
+                    "edit_notes": "Texto: \"DÍAS 22-28 · RECUPERA BIEN\". Música baja un poco."
+                },
+                {
+                    "time": "00:13-00:19",
+                    "dialogue": "No es que no puedas rendir. Es que tienes ciclos de rendimiento. Igual que cualquier atleta.",
+                    "visual": "Cámara frontal. Tono directo, sin dramatismo.",
+                    "edit_notes": "Texto: \"NO ES DEBILIDAD. ES INFORMACIÓN.\" Punto fuerte de la pieza."
+                },
+                {
+                    "time": "00:19-00:24",
+                    "dialogue": "Así entrena una mujer que entiende su cuerpo.",
+                    "visual": "B-roll: clip potente de movimiento (jalón, press, hip thrust). Energía alta.",
+                    "edit_notes": "Texto centrado en pantalla. Beat alto. Sin diálogo, solo voz superpuesta o solo texto."
+                },
+                {
+                    "time": "00:24-00:28",
+                    "dialogue": "Si quieres un plan que entienda cómo funciona tu cuerpo, escríbeme la palabra CICLO.",
+                    "visual": "Cámara frontal. Cierre directo y cercano.",
+                    "edit_notes": "Texto superpuesto: \"DM · CICLO\". Música cierra. Logo WellCore en frame final."
+                }
+            ],
+            "caption": "La mayoría entrena igual el día 5 que el día 14.\n\nY después no entiende por qué hay semanas que todo fluye y otras que todo cuesta el doble.\n\nTu ciclo tiene ventanas de rendimiento.\n→ Días 11 a 16: más carga, más volumen.\n→ Días 22 a 28: sostén lo ganado, recupera bien.\n\nNo es excusa. Es estrategia.\n\nSi quieres una asesoría que tome esto en cuenta, escríbeme la palabra CICLO por DM.",
+            "music_note": "Track con beat marcado 110-130 BPM. Cortes deben caer en beat. Verificar disponibilidad en Instagram antes de grabar.",
+            "production_notes": "Cortar en beat. Cada clip de 3-5 segundos máximo. Texto superpuesto protagonista. La cámara frontal de los segmentos 1, 4 y 6 puede ser el mismo setup; solo cambia expresión."
+        }
+    ],
+    "stories": [
+        {
+            "day": "LUN",
+            "pillar": "activacion",
+            "slides": [
+                {
+                    "kind": "text",
+                    "text": "Esta semana en el perfil:\n\nVoy a hablar de algo que a la mayoría de mujeres nadie les explicó cómo entrenar: el ciclo menstrual.\n\nSin mitos. Sin marketing. Solo lo que dice la evidencia.",
+                    "visual_hint": "Texto blanco sobre fondo negro. Tipografía Oswald grande. Detalle rojo sutil.",
+                    "sticker": "none"
+                }
+            ],
+            "dm_followup_hint": "Si responden con preguntas iniciales, anotar para el Q&A del martes."
+        },
+        {
+            "day": "MAR",
+            "pillar": "qa",
+            "slides": [
+                {
+                    "kind": "template",
+                    "text": "¿Qué te han dicho sobre entrenar en tu período que no sabes si es cierto?",
+                    "visual_hint": "Sticker question box centrado. Fondo oscuro. Pregunta en voz directa de Anderson.",
+                    "sticker": "question"
+                },
+                {
+                    "kind": "text",
+                    "text": "Voy a responder los más comunes esta semana en el reel.",
+                    "visual_hint": "Texto plano sobre fondo oscuro. Estilo conversacional.",
+                    "sticker": "none"
+                }
+            ],
+            "dm_followup_hint": "Recolectar 5-7 respuestas más recurrentes. Las mejores van como hooks alternativos para el reel del próximo martes."
+        },
+        {
+            "day": "MIE",
+            "pillar": "nutricion",
+            "slides": [
+                {
+                    "kind": "text",
+                    "text": "La proteína no cambia con tu ciclo.\n\n1.6 a 2.4 g por kilo de peso, todos los días. Sin excepciones.\n\nLo que sí ajustas: en días 22 a 28, comidas más saciantes; en días 6 a 16, más carbos cerca del entreno.",
+                    "visual_hint": "Texto centrado sobre fondo oscuro. Resaltar el rango de proteína en rojo.",
+                    "sticker": "none"
+                }
+            ],
+            "dm_followup_hint": "Si preguntan por cálculo personalizado, mandar plantilla simple o invitar a DM con peso para revisar."
+        },
+        {
+            "day": "JUE",
+            "pillar": "spotlight",
+            "slides": [
+                {
+                    "kind": "visual",
+                    "text": "¿Te ha pasado que hay semanas que entrenas igual... y tu cuerpo simplemente no responde igual?\n\nNo te estás rindiendo. No estás haciendo nada mal.\n\nEs que tu cuerpo cambia cada semana del mes. Y nadie te enseñó a entrenar con eso a tu favor.\n\nEl próximo martes te lo explico.",
+                    "visual_hint": "Asset diseñado: STORY-1-HOOK-4k.jpg. Eyebrow \"MUJERES\" arriba grande. Hook centrado. Tease al pie.",
+                    "sticker": "none"
+                }
+            ],
+            "dm_followup_hint": "Quien responda con \"yo soy esa\" o algo similar, ofrecer una conversación 1:1 sobre su caso."
+        },
+        {
+            "day": "VIE",
+            "pillar": "motivacion",
+            "slides": [
+                {
+                    "kind": "visual",
+                    "text": "Lo que me hubiera gustado que alguien te explicara desde el principio:\n\n1. Días 1-5 — Si hay dolor, bajas un poco el ritmo. No paras.\n2. Días 6-13 — Tu cuerpo está listo para más. Es la buena.\n3. Días 14-16 — Si vas a intentar peso nuevo, es acá.\n4. Días 17-28 — Ajusta si te sientes pesada. No paras.",
+                    "visual_hint": "Asset diseñado: STORY-2-FASES-4k.jpg. 4 phase rows con orbe de color por fase y descripción corta.",
+                    "sticker": "none"
+                },
+                {
+                    "kind": "template",
+                    "text": "¿En qué fase estás hoy?",
+                    "visual_hint": "Sticker poll con opciones de fase. Fondo oscuro continuación de la slide previa.",
+                    "sticker": "poll"
+                }
+            ],
+            "dm_followup_hint": "Las respuestas del poll dan pista de la audiencia. Quien marque \"lútea\" probablemente está más sensible al tema y es buena lead para el Método."
+        },
+        {
+            "day": "SAB",
+            "pillar": "bts",
+            "slides": [
+                {
+                    "kind": "visual",
+                    "text": "Cuando trabajo con una mujer, lo primero que le pregunto es en qué fase está. No cómo va con el peso.\n\nEsa pregunta cambia todo el plan.\n\nLe exijo más cuando puede dar más. La dejo recuperar cuando lo necesita. La nutrición se ajusta. El resultado: avance real, no sentir que siempre estás empezando.",
+                    "visual_hint": "Asset diseñado: STORY-3-DIFERENCIACION-4k.jpg. Lista con check marks en glass cards.",
+                    "sticker": "none"
+                }
+            ],
+            "dm_followup_hint": "Si alguien dice \"yo siento exactamente eso de que siempre estoy empezando\", iniciar conversación de exploración del Método."
+        },
+        {
+            "day": "DOM",
+            "pillar": "reset",
+            "slides": [
+                {
+                    "kind": "visual",
+                    "text": "Esta semana publico algo que ojalá hubiera existido cuando empecé a entrenar mujeres.\n\nEL PRÓXIMO MARTES — Un video donde te explico cómo usar tu ciclo para entrenar mejor. Sin mitos. Sin rodeos.\n\nActiva las notificaciones para no perdértelo.",
+                    "visual_hint": "Asset diseñado: STORY-4-CTA-4k.jpg. Coming-box estilo Apple Music con pulse dot. Eyebrow \"EL PRÓXIMO MARTES\".",
+                    "sticker": "none"
+                }
+            ],
+            "dm_followup_hint": "Quien escriba \"ya activé\" o similar, agradecer en privado y agregar a lista de hot leads para el reel del martes."
+        }
+    ],
+    "checklist": {
+        "phases": [
+            {
+                "key": "pre",
+                "title": "Pre-producción",
+                "items": [
+                    {
+                        "title": "Revisar script de ambos reels",
+                        "detail": "Leer en voz alta el diálogo del reel educativo y el de conversión. Si tropiezas en alguna frase, ajusta a tu cadencia natural antes de grabar."
+                    },
+                    {
+                        "title": "Verificar canciones disponibles",
+                        "detail": "Antes de grabar, verifica en Instagram que la pista elegida (ambiente para reel 1, beat para reel 2) esté disponible. Si no, busca alternativa con BPM similar."
+                    },
+                    {
+                        "title": "Planificar B-roll",
+                        "detail": "Reel 1 necesita 2 clips de fuerza (sentadilla \/ peso muerto) + 1 clip de máquina. Reel 2 necesita 3 clips de movimiento corto y potente. Lista los movimientos antes de ir al gym."
+                    },
+                    {
+                        "title": "Asistente disponible",
+                        "detail": "Si grabas solo, prepara trípode + temporizador. Si tienes asistente, briefea los planos antes para no perder tiempo."
+                    }
+                ]
+            },
+            {
+                "key": "cam",
+                "title": "Grabación",
+                "items": [
+                    {
+                        "title": "Iluminación frontal",
+                        "detail": "Luz suave de frente. Evita luz lateral fuerte que genere sombras en la mitad del rostro (proyecta amateur). Si grabas con luz natural, busca ventana grande sin sol directo."
+                    },
+                    {
+                        "title": "Audio limpio",
+                        "detail": "Lavalier o micrófono direccional para todos los segmentos de cámara frontal. El reel pierde si el audio tiene eco o ruido del gym de fondo."
+                    },
+                    {
+                        "title": "Reel 1 en una toma de diálogo",
+                        "detail": "Graba el monólogo completo del reel 1 en una sola toma si es posible. Cortar y pegar voces queda forzado. Mejor 5 intentos completos que costuras visibles."
+                    },
+                    {
+                        "title": "Reel 2 cortes rápidos",
+                        "detail": "Reel 2 necesita planos cortos y dinámicos. Cada clip se graba por separado. Repite 2-3 veces cada uno para tener opciones en edición."
+                    },
+                    {
+                        "title": "Variantes del hook",
+                        "detail": "Graba 2-3 variantes de cada hook (reel 1 y reel 2). En edición eliges la que tenga mejor energía."
+                    }
+                ]
+            },
+            {
+                "key": "edit",
+                "title": "Edición",
+                "items": [
+                    {
+                        "title": "Reel 1 — pacing tranquilo",
+                        "detail": "Cortes en cambios de idea, no en cada palabra. Texto superpuesto que resalte números clave (73, 954). Música base, sin efectos exagerados."
+                    },
+                    {
+                        "title": "Reel 2 — cortes en beat",
+                        "detail": "Cada corte cae en beat de la música. Texto en pantalla protagonista. Evitar narración sobre las imágenes B-roll: dejarlas hablar."
+                    },
+                    {
+                        "title": "Subtítulos en ambos reels",
+                        "detail": "Subtítulos legibles en ambos reels (Instagram lee en silencio por default). Tipografía clara, contorno blanco\/negro para visibilidad."
+                    },
+                    {
+                        "title": "Logo WellCore en último frame",
+                        "detail": "Cierre con logo WellCore en esquina inferior. Tamaño discreto pero visible. No en todos los frames, solo el último."
+                    }
+                ]
+            },
+            {
+                "key": "pub",
+                "title": "Publicación",
+                "items": [
+                    {
+                        "title": "Stories de lunes a domingo",
+                        "detail": "Publicar las stories en su día correspondiente, idealmente entre 6-9 PM (mejor horario de engagement femenino). El asset visual de jueves a domingo está pre-diseñado en la carpeta Anderson-5."
+                    },
+                    {
+                        "title": "Reel educativo este domingo o lunes",
+                        "detail": "El reel 1 (educativo) puede salir el domingo cierre de semana. El reel 2 (conversión) sale el martes (W19) como anunciamos en la story de domingo."
+                    },
+                    {
+                        "title": "Caption con palabra clave",
+                        "detail": "Verifica que el caption del reel 2 incluye la palabra \"CICLO\" en mayúsculas para que la audiencia sepa exactamente qué escribir."
+                    },
+                    {
+                        "title": "Responder DMs entrantes en máximo 4 horas",
+                        "detail": "Cualquier mensaje con palabra clave \"CICLO\" debe responderse el mismo día. La conversión cae rápido si el lead se enfría."
+                    }
+                ]
+            }
+        ]
+    },
+    "bank": {
+        "alt_hooks": [
+            "Lo que el gimnasio no te enseña sobre entrenar como mujer.",
+            "Tu ciclo tiene 4 fases. Tu entreno debería tener 4 enfoques.",
+            "¿Por qué hay semanas que levantas más? Tiene una explicación científica.",
+            "Deja de entrenar igual todos los días del mes.",
+            "La fase folicular es tu ventana de oro. ¿La estás aprovechando?"
+        ],
+        "alt_ctas": [
+            "Guarda esto antes de tu próxima sesión.",
+            "¿En qué fase estás hoy? Respóndeme y te digo qué trabajar.",
+            "Escríbeme 'CICLO' por DM y hablamos de cómo aplicarlo a tu plan."
+        ],
+        "alt_captions": [
+            "Hay semanas que llegas al gym y todo fluye. Y hay semanas que haces lo mismo y no rinde igual.\n\nEso no es disciplina. Es tu cuerpo cambiando con tu ciclo. Y la mayoría de los planes lo ignora.\n\nLa próxima vez que sientas que retrocediste, primero revisa en qué día del ciclo estás. Después decides si era falta de descanso, mala noche o simplemente fase lútea.\n\n¿En qué fase estás hoy?",
+            "73 estudios. Casi 1000 mujeres analizadas. La conclusión que pocos coaches mencionan: el ciclo afecta el rendimiento promedio menos de lo que la gente cree.\n\nLo que sí cambia es cuándo tu cuerpo te pide más y cuándo te pide gestionar.\n\nNo se trata de parar una semana al mes. Se trata de saber cuándo empujar.",
+            "Cuando empiezo con una clienta nueva, lo primero que le pregunto no es cuánto pesa.\n\nLe pregunto en qué fase del ciclo está.\n\nEsa información cambia toda la planificación de la semana. Y cambia el resultado de los próximos meses.\n\nSi quieres trabajar así tu plan, escríbeme CICLO por DM."
+        ]
+    },
+    "hashtags": {
+        "sets": [
+            {
+                "name": "General + Nicho",
+                "tags": [
+                    "#MujerFuerte",
+                    "#EntrenamientoMujer",
+                    "#Recomposicion",
+                    "#FuerzaFemenina",
+                    "#Hipertrofia",
+                    "#FitnessFemenino",
+                    "#GymGirl",
+                    "#Fuerza"
+                ]
+            },
+            {
+                "name": "Educativo + Ciclo",
+                "tags": [
+                    "#CicloMenstrual",
+                    "#SaludHormonal",
+                    "#FitnessEducativo",
+                    "#EntrenamientoBasadoEnEvidencia",
+                    "#CicloYEjercicio"
+                ]
+            },
+            {
+                "name": "Local + Marca",
+                "tags": [
+                    "#WellCoreFitness",
+                    "#CoachAnderson",
+                    "#EntrenamientoOnline",
+                    "#AsesoriaPersonalizada",
+                    "#Bucaramanga",
+                    "#Colombia"
+                ]
+            },
+            {
+                "name": "Engagement",
+                "tags": [
+                    "#GuardaEsto",
+                    "#Comparte",
+                    "#FitnessMujeres",
+                    "#GymTips",
+                    "#EntrenaConsciente"
+                ]
+            }
+        ]
+    }
+}
