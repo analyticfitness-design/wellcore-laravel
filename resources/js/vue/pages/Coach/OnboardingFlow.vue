@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ref, computed } from 'vue';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 
 const stages = [
@@ -193,42 +193,19 @@ const stages = [
   },
 ];
 
-const activeStage = ref('preventa');
-const stageRefs = ref({});
-const navRef = ref(null);
+const activeIndex = ref(0);
+const activeStage = computed(() => stages[activeIndex.value]);
+const isFirst = computed(() => activeIndex.value === 0);
+const isLast = computed(() => activeIndex.value === stages.length - 1);
 
-const accentMap = {
-  red: { text: 'text-wc-accent', bg: 'bg-wc-accent/10', ring: 'ring-wc-accent/30', border: 'border-wc-accent/40', dot: 'bg-wc-accent' },
-  gold: { text: 'text-amber-400', bg: 'bg-amber-400/10', ring: 'ring-amber-400/30', border: 'border-amber-400/40', dot: 'bg-amber-400' },
-  blue: { text: 'text-sky-400', bg: 'bg-sky-400/10', ring: 'ring-sky-400/30', border: 'border-sky-400/40', dot: 'bg-sky-400' },
-  green: { text: 'text-emerald-400', bg: 'bg-emerald-400/10', ring: 'ring-emerald-400/30', border: 'border-emerald-400/40', dot: 'bg-emerald-400' },
-};
-
-function accentOf(stage) { return accentMap[stage.accent]; }
-
-function jumpTo(id) {
-  const el = stageRefs.value[id];
-  if (!el) return;
-  const top = el.getBoundingClientRect().top + window.scrollY - 110;
-  window.scrollTo({ top, behavior: 'smooth' });
+function setActive(index) {
+  if (index === activeIndex.value) return;
+  activeIndex.value = index;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-let observer = null;
-onMounted(() => {
-  nextTick(() => {
-    observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) activeStage.value = entry.target.dataset.stageId;
-      });
-    }, { threshold: 0.18, rootMargin: '-80px 0px -55% 0px' });
-
-    Object.values(stageRefs.value).forEach(el => el && observer.observe(el));
-  });
-});
-
-onBeforeUnmount(() => {
-  if (observer) observer.disconnect();
-});
+function goPrev() { if (!isFirst.value) setActive(activeIndex.value - 1); }
+function goNext() { if (!isLast.value) setActive(activeIndex.value + 1); }
 </script>
 
 <template>
@@ -249,109 +226,127 @@ onBeforeUnmount(() => {
       </header>
 
       <!-- ── STAGE NAV ── -->
-      <nav ref="navRef" class="stage-nav-grid">
+      <nav class="stage-nav-grid">
         <button
-          v-for="s in stages"
+          v-for="(s, idx) in stages"
           :key="s.id"
-          @click="jumpTo(s.id)"
-          :class="['stage-nav-tab', activeStage === s.id ? `is-active accent-${s.accent}` : '']"
+          @click="setActive(idx)"
+          :class="['stage-nav-tab', activeIndex === idx ? `is-active accent-${s.accent}` : '']"
         >
           <span class="stage-nav-num">{{ s.num }}</span>
           <span class="stage-nav-label">{{ s.id === 'activo' ? 'Servicio Activo' : (s.id.charAt(0).toUpperCase() + s.id.slice(1)) }}</span>
         </button>
       </nav>
 
-      <!-- ── STAGES ── -->
-      <section
-        v-for="stage in stages"
-        :key="stage.id"
-        :ref="el => stageRefs[stage.id] = el"
-        :data-stage-id="stage.id"
-        class="stage-section"
-      >
-        <!-- Stage header -->
-        <div class="stage-header">
-          <div class="stage-number-bg">{{ stage.num }}</div>
-          <div class="stage-header-text">
-            <span :class="['stage-badge', `accent-${stage.accent}`]">{{ stage.badge }}</span>
-            <h2 class="stage-title">{{ stage.title }}</h2>
-            <p class="stage-objective"><strong>Objetivo:</strong> {{ stage.objective }}</p>
-          </div>
-        </div>
-
-        <!-- Steps (Etapas 1, 2, 3) -->
-        <div v-if="stage.steps" class="space-y-3">
-          <article
-            v-for="(step, idx) in stage.steps"
-            :key="idx"
-            class="step-card"
-          >
-            <header class="step-card-header">
-              <span class="step-index">{{ step.index }}</span>
-              <h3 class="step-title">{{ step.title }}</h3>
-              <span :class="['step-tag', `accent-${stage.accent}`]">{{ step.tag }}</span>
-            </header>
-
-            <div class="step-card-body">
-              <!-- Pull-quote -->
-              <blockquote v-if="step.quote" class="pull-quote">
-                <p class="pull-quote-text">
-                  {{ step.quote.lead }}<br>
-                  <em>{{ step.quote.em }}</em>
-                </p>
-              </blockquote>
-
-              <!-- Editorial note -->
-              <p v-if="step.editorial" class="editorial-note">"{{ step.editorial }}"</p>
-
-              <!-- Body text -->
-              <p v-if="step.body" class="step-body-text" v-html="step.body.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')"></p>
-
-              <!-- Payments -->
-              <div v-if="step.payments" class="payment-grid">
-                <div
-                  v-for="(p, pi) in step.payments"
-                  :key="pi"
-                  :class="['payment-option', p.recommended ? 'recommended' : '']"
-                >
-                  <p class="payment-option-label">{{ p.label }}</p>
-                  <p class="payment-option-title">{{ p.title }}</p>
-                  <p class="payment-option-desc">{{ p.desc }}</p>
-                </div>
-              </div>
-
-              <!-- Rule block -->
-              <div v-if="step.rule" class="rule-block">
-                <p class="rule-block-label">{{ step.rule.label }}</p>
-                <p class="rule-block-text">{{ step.rule.text }}</p>
-              </div>
-
-              <!-- Checklist -->
-              <ul v-if="step.checklist" class="checklist">
-                <li v-for="(item, ci) in step.checklist" :key="ci">
-                  <strong v-if="item.strong">{{ item.strong }}</strong>{{ item.rest }}
-                </li>
-              </ul>
+      <!-- ── ACTIVE STAGE ── -->
+      <Transition name="stage-fade" mode="out-in">
+        <section :key="activeStage.id" class="stage-section">
+          <!-- Stage header -->
+          <div class="stage-header">
+            <div class="stage-number-bg">{{ activeStage.num }}</div>
+            <div class="stage-header-text">
+              <span :class="['stage-badge', `accent-${activeStage.accent}`]">{{ activeStage.badge }}</span>
+              <h2 class="stage-title">{{ activeStage.title }}</h2>
+              <p class="stage-objective"><strong>Objetivo:</strong> {{ activeStage.objective }}</p>
             </div>
-          </article>
-        </div>
+          </div>
 
-        <!-- Cycles (Etapa 4) -->
-        <div v-if="stage.cycles" class="cycle-grid">
-          <article v-for="(c, ci) in stage.cycles" :key="ci" class="cycle-card">
-            <span :class="['cycle-tag', `accent-${stage.accent}`]">{{ c.tag }}</span>
-            <h3 class="cycle-title">{{ c.title }}</h3>
-            <p class="cycle-text">{{ c.text }}</p>
-            <p class="cycle-rule"><strong>·</strong> {{ c.rule }}</p>
-          </article>
-        </div>
+          <!-- Steps (Etapas 1, 2, 3) -->
+          <div v-if="activeStage.steps" class="space-y-3">
+            <article
+              v-for="(step, idx) in activeStage.steps"
+              :key="idx"
+              class="step-card"
+            >
+              <header class="step-card-header">
+                <span class="step-index">{{ step.index }}</span>
+                <h3 class="step-title">{{ step.title }}</h3>
+                <span :class="['step-tag', `accent-${activeStage.accent}`]">{{ step.tag }}</span>
+              </header>
 
-        <!-- Extra rule -->
-        <div v-if="stage.extraRule" class="rule-block mt-4">
-          <p class="rule-block-label">{{ stage.extraRule.label }}</p>
-          <p class="rule-block-text">{{ stage.extraRule.text }}</p>
-        </div>
-      </section>
+              <div class="step-card-body">
+                <blockquote v-if="step.quote" class="pull-quote">
+                  <p class="pull-quote-text">
+                    {{ step.quote.lead }}<br>
+                    <em>{{ step.quote.em }}</em>
+                  </p>
+                </blockquote>
+
+                <p v-if="step.editorial" class="editorial-note">"{{ step.editorial }}"</p>
+
+                <p v-if="step.body" class="step-body-text" v-html="step.body.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')"></p>
+
+                <div v-if="step.payments" class="payment-grid">
+                  <div
+                    v-for="(p, pi) in step.payments"
+                    :key="pi"
+                    :class="['payment-option', p.recommended ? 'recommended' : '']"
+                  >
+                    <p class="payment-option-label">{{ p.label }}</p>
+                    <p class="payment-option-title">{{ p.title }}</p>
+                    <p class="payment-option-desc">{{ p.desc }}</p>
+                  </div>
+                </div>
+
+                <div v-if="step.rule" class="rule-block">
+                  <p class="rule-block-label">{{ step.rule.label }}</p>
+                  <p class="rule-block-text">{{ step.rule.text }}</p>
+                </div>
+
+                <ul v-if="step.checklist" class="checklist">
+                  <li v-for="(item, ci) in step.checklist" :key="ci">
+                    <strong v-if="item.strong">{{ item.strong }}</strong>{{ item.rest }}
+                  </li>
+                </ul>
+              </div>
+            </article>
+          </div>
+
+          <!-- Cycles (Etapa 4) -->
+          <div v-if="activeStage.cycles" class="cycle-grid">
+            <article v-for="(c, ci) in activeStage.cycles" :key="ci" class="cycle-card">
+              <span :class="['cycle-tag', `accent-${activeStage.accent}`]">{{ c.tag }}</span>
+              <h3 class="cycle-title">{{ c.title }}</h3>
+              <p class="cycle-text">{{ c.text }}</p>
+              <p class="cycle-rule"><strong>·</strong> {{ c.rule }}</p>
+            </article>
+          </div>
+
+          <!-- Extra rule -->
+          <div v-if="activeStage.extraRule" class="rule-block mt-4">
+            <p class="rule-block-label">{{ activeStage.extraRule.label }}</p>
+            <p class="rule-block-text">{{ activeStage.extraRule.text }}</p>
+          </div>
+
+          <!-- Prev / Next nav -->
+          <div class="stage-pager">
+            <button
+              type="button"
+              class="pager-btn"
+              :disabled="isFirst"
+              @click="goPrev"
+            >
+              <span class="pager-arrow">←</span>
+              <span class="pager-text">
+                <span class="pager-eyebrow">Anterior</span>
+                <span class="pager-label">{{ isFirst ? '—' : stages[activeIndex - 1].badge }}</span>
+              </span>
+            </button>
+            <button
+              type="button"
+              class="pager-btn pager-btn-next"
+              :disabled="isLast"
+              @click="goNext"
+            >
+              <span class="pager-text pager-text-right">
+                <span class="pager-eyebrow">Siguiente</span>
+                <span class="pager-label">{{ isLast ? '—' : stages[activeIndex + 1].badge }}</span>
+              </span>
+              <span class="pager-arrow">→</span>
+            </button>
+          </div>
+        </section>
+      </Transition>
 
       <!-- ── SUMMARY ── -->
       <div class="summary-divider">
@@ -910,6 +905,88 @@ onBeforeUnmount(() => {
 }
 .powered-bar .brand { color: var(--of-red); font-weight: 700; }
 
+/* ── STAGE PAGER (Prev / Next) ── */
+.stage-pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-wc-border);
+}
+.pager-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--color-wc-bg-secondary);
+  border: 1px solid var(--color-wc-border);
+  border-radius: 12px;
+  color: var(--color-wc-text);
+  cursor: pointer;
+  transition: border-color .18s, background .18s, transform .18s;
+  text-align: left;
+  font-family: inherit;
+}
+.pager-btn:hover:not(:disabled) {
+  border-color: var(--of-red);
+  background: rgba(220,38,38,0.06);
+}
+.pager-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.pager-btn-next { justify-content: flex-end; text-align: right; }
+.pager-arrow {
+  font-family: var(--wc-font-display, 'Oswald', sans-serif);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--of-red);
+  flex-shrink: 0;
+  line-height: 1;
+}
+.pager-btn:disabled .pager-arrow { color: var(--color-wc-text-tertiary); }
+.pager-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.pager-text-right { align-items: flex-end; }
+.pager-eyebrow {
+  font-family: var(--wc-font-display, 'Oswald', sans-serif);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--color-wc-text-tertiary);
+}
+.pager-label {
+  font-family: var(--wc-font-display, 'Oswald', sans-serif);
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-wc-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* ── STAGE FADE TRANSITION ── */
+.stage-fade-enter-active,
+.stage-fade-leave-active {
+  transition: opacity .28s ease, transform .28s ease;
+}
+.stage-fade-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.stage-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
 /* ── MOBILE ── */
 @media (max-width: 640px) {
   .stage-nav-grid {
@@ -974,5 +1051,11 @@ onBeforeUnmount(() => {
   .checklist li::before { top: 16px; }
 
   .powered-bar { font-size: 9px; letter-spacing: 1.5px; }
+
+  .stage-pager { gap: 8px; margin-top: 22px; padding-top: 18px; }
+  .pager-btn { padding: 12px 14px; gap: 10px; }
+  .pager-arrow { font-size: 20px; }
+  .pager-eyebrow { font-size: 8px; letter-spacing: 1.2px; }
+  .pager-label { font-size: 10px; letter-spacing: 0.4px; }
 }
 </style>
