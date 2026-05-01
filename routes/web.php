@@ -241,6 +241,13 @@ Route::view('/coach/features', 'vue')->name('coach.features');
 Route::view('/coach/profile', 'vue')->name('coach.profile');
 Route::view('/coach/brand', 'vue')->name('coach.brand');
 Route::view('/coach/invitations', 'vue')->name('coach.invitations');
+
+// Coach file viewer antes del catch-all — misma razón que admin.payment-proofs.view
+Route::get('/coach/payment-proofs/{id}/view', [AdminPaymentProofViewController::class, 'view'])
+    ->middleware(['auth:wellcore', 'role:coach,admin,superadmin,jefe'])
+    ->whereNumber('id')
+    ->name('coach.payment-proofs.view');
+
 Route::get('/coach/{any}', fn () => view('vue'))->where('any', '.*');
 
 // Admin portal
@@ -263,19 +270,15 @@ Route::view('/admin/tools', 'vue')->name('admin.tools');
 Route::view('/admin/tickets', 'vue')->name('admin.tickets');
 Route::view('/admin/settings', 'vue')->name('admin.settings');
 Route::view('/admin/payment-proofs', 'vue')->name('admin.payment-proofs');
-Route::get('/admin/{any}', fn () => view('vue'))->where('any', '.*');
 
-// Admin — payment proof file viewer (token-gated, single-use cache token)
+// Admin file viewer antes del catch-all — de lo contrario el catch-all /admin/{any}
+// intercepta la URL y sirve HTML en lugar del stream de imagen/PDF.
 Route::get('/admin/payment-proofs/{id}/view', [AdminPaymentProofViewController::class, 'view'])
     ->middleware(['auth:wellcore', 'role:admin,superadmin,jefe'])
     ->whereNumber('id')
     ->name('admin.payment-proofs.view');
 
-// Coach — payment proof file viewer (token-gated, same single-use cache mechanism)
-Route::get('/coach/payment-proofs/{id}/view', [AdminPaymentProofViewController::class, 'view'])
-    ->middleware(['auth:wellcore', 'role:coach,admin,superadmin,jefe'])
-    ->whereNumber('id')
-    ->name('coach.payment-proofs.view');
+Route::get('/admin/{any}', fn () => view('vue'))->where('any', '.*');
 
 // Session logout + impersonation (POST routes — still need auth)
 Route::middleware('auth:wellcore')->group(function () {
