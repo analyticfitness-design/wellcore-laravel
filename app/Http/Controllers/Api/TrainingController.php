@@ -1276,19 +1276,26 @@ class TrainingController extends Controller
             return null;
         }
 
-        // Alias objetivo_calorico → objetivo_cal (PlanViewer checks objetivo_cal first)
-        if (! isset($plan['objetivo_cal']) && isset($plan['objetivo_calorico'])) {
-            $plan['objetivo_cal'] = $plan['objetivo_calorico'];
+        // Alias varios nombres de calorías → objetivo_cal (PlanViewer checks objetivo_cal first)
+        if (! isset($plan['objetivo_cal'])) {
+            $plan['objetivo_cal'] = $plan['objetivo_calorico']
+                ?? $plan['calorias_objetivo']
+                ?? $plan['calorias_diarias']
+                ?? $plan['calorias']
+                ?? null;
         }
 
-        // Alias macros.proteina → macros.proteina_g (macroP computed checks proteina_g)
+        // Alias macros variants → macros normalized keys
+        if (isset($plan['macros_objetivo']) && ! isset($plan['macros'])) {
+            $plan['macros'] = $plan['macros_objetivo'];
+        }
         if (isset($plan['macros']['proteina']) && ! isset($plan['macros']['proteina_g'])) {
             $plan['macros']['proteina_g'] = $plan['macros']['proteina'];
         }
 
-        // Alias notas_generales → notas_coach
-        if (! isset($plan['notas_coach']) && isset($plan['notas_generales'])) {
-            $plan['notas_coach'] = $plan['notas_generales'];
+        // Alias nota_coach / notas_generales → notas_coach
+        if (! isset($plan['notas_coach'])) {
+            $plan['notas_coach'] = $plan['nota_coach'] ?? $plan['notas_generales'] ?? null;
         }
 
         // Alias tips_nutricionales → tips
