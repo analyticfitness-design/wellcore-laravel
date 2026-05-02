@@ -74,18 +74,20 @@ class CoachController extends Controller
 
     /**
      * Get client IDs related to this coach.
-     * Unions several signals because there is no explicit coach↔client pivot:
-     * assigned_plans.assigned_by + coach_messages.coach_id + coach_notes.coach_id + plan_tickets.coach_id.
+     * Unions several signals: client_coach pivot (primary), clients.coach_id FK,
+     * assigned_plans, coach_messages, coach_notes, plan_tickets.
      */
     protected function getCoachClientIds(int $coachId): Collection
     {
+        $fromClientCoach = \DB::table('client_coach')->where('admin_id', $coachId)->where('active', true)->pluck('client_id');
         $fromClientsFk = \DB::table('clients')->where('coach_id', $coachId)->pluck('id');
         $fromPlans = \DB::table('assigned_plans')->where('assigned_by', $coachId)->pluck('client_id');
         $fromMessages = \DB::table('coach_messages')->where('coach_id', $coachId)->pluck('client_id');
         $fromNotes = \DB::table('coach_notes')->where('coach_id', $coachId)->pluck('client_id');
         $fromTickets = \DB::table('plan_tickets')->where('coach_id', $coachId)->pluck('client_id');
 
-        return $fromClientsFk
+        return $fromClientCoach
+            ->concat($fromClientsFk)
             ->concat($fromPlans)
             ->concat($fromMessages)
             ->concat($fromNotes)
