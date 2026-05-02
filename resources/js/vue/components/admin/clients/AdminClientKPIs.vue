@@ -95,26 +95,26 @@ const kpis = computed(() => {
 }
 
 .kpi-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
-    background: rgba(17, 17, 17, 0.7);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface);
     padding: 14px 16px;
     display: flex;
     flex-direction: column;
     gap: 4px;
     min-width: 0;
 }
-.kpi-card--accent     { border-color: rgba(220, 38, 38, 0.18); }
-.kpi-card--info       { border-color: rgba(96, 165, 250, 0.16); }
-.kpi-card--success    { border-color: rgba(16, 185, 129, 0.16); }
-.kpi-card--editorial  { border-color: rgba(200, 167, 105, 0.18); }
+.kpi-card--accent     { border-color: rgba(220,38,38,0.22); }
+.kpi-card--info       { border-color: rgba(96,165,250,0.18); }
+.kpi-card--success    { border-color: rgba(22,163,74,0.22); }
+.kpi-card--editorial  { border-color: rgba(212,168,14,0.22); }
 
 .kpi-label {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.22em;
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .kpi-value-row {
     display: flex;
@@ -123,29 +123,28 @@ const kpis = computed(() => {
     gap: 8px;
 }
 .kpi-value {
-    font-family: var(--font-data, 'Barlow', sans-serif);
-    font-feature-settings: 'tnum' 1;
+    font-family: var(--font-display);
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
     font-size: clamp(28px, 4vw, 38px);
     font-weight: 700;
     line-height: 1;
-    color: var(--color-wc-text);
+    letter-spacing: var(--ls-display, -0.02em);
+    color: var(--c-text);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 .kpi-card--editorial .kpi-value {
-    font-family: var(--font-display, 'Bebas Neue', sans-serif);
-    letter-spacing: 0.04em;
-    color: var(--color-wc-gold, #C8A769);
+    color: var(--c-amber, #D4A80E);
     font-size: clamp(32px, 4.4vw, 42px);
 }
 
 .kpi-sub {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.18em;
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -153,11 +152,9 @@ const kpis = computed(() => {
 
 /* ── Mini ring SVG ─────────────────────────────────────────────────── */
 .kpi-ring { flex-shrink: 0; }
-.ring-track {
-    stroke: rgba(255, 255, 255, 0.06);
-}
+.ring-track { stroke: rgba(255,255,255,0.06); }
 .ring-progress {
-    stroke: var(--color-wc-green-text, #34D399);
+    stroke: #34D399;
     transform: rotate(-90deg);
     transform-origin: 50% 50%;
     transition: stroke-dasharray 1.2s var(--ease-out, ease);

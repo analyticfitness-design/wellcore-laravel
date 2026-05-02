@@ -131,7 +131,7 @@ function cards(colKey) {
 /* Tab bar — mobile only */
 .board-tabs {
     display: flex;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
     overflow-x: auto;
     scrollbar-width: none;
     margin-bottom: 12px;
@@ -145,10 +145,11 @@ function cards(colKey) {
     align-items: center;
     gap: 6px;
     padding: 9px 14px;
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.14em;
-    color: var(--color-wc-text-tertiary);
+    min-height: var(--tap-comfort, 48px);
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
     background: transparent;
     border: none;
     border-bottom: 2px solid transparent;
@@ -157,8 +158,8 @@ function cards(colKey) {
     transition: color 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
 }
 .board-tab--active {
-    color: var(--color-wc-text);
-    border-bottom-color: var(--color-wc-accent);
+    color: var(--c-text);
+    border-bottom-color: var(--c-accent);
 }
 .board-tab-dot {
     width: 6px;
@@ -173,10 +174,10 @@ function cards(colKey) {
     .board-tab-label { display: inline; }
 }
 .board-tab-count {
-    background: rgba(255,255,255,0.07);
-    border-radius: 8px;
-    padding: 1px 6px;
-    font-size: 9px;
+    background: var(--c-surface-2);
+    border-radius: var(--r-pill, 999px);
+    padding: 1px 7px;
+    font-size: 10px; font-weight: 700;
 }
 
 /* Board grid */
@@ -197,9 +198,9 @@ function cards(colKey) {
     display: none;
     flex-direction: column;
     gap: 8px;
-    border-radius: 12px;
-    border: 1px solid var(--color-wc-border);
-    background: rgba(17,17,17,0.5);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface);
     padding: 12px;
     min-height: 180px;
     transition: border-color 0.15s var(--ease-out), background 0.15s var(--ease-out);
@@ -220,15 +221,15 @@ function cards(colKey) {
 }
 
 .board-col--dragover {
-    border-color: var(--color-wc-accent) !important;
-    background: var(--color-wc-red-soft) !important;
+    border-color: var(--c-accent) !important;
+    background: var(--c-accent-dim) !important;
 }
 .board-col-header {
     display: flex;
     align-items: center;
     gap: 7px;
     padding-bottom: 10px;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
     margin-bottom: 2px;
 }
 .board-col-dot {
@@ -238,16 +239,16 @@ function cards(colKey) {
     flex-shrink: 0;
 }
 .board-col-label {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 1.4px;
+    color: var(--c-text-3);
     flex: 1;
 }
 .board-col-count {
-    font-family: var(--font-data);
+    font-family: var(--font-display);
     font-size: 11px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .board-col-cards {
     display: flex;
@@ -263,17 +264,17 @@ function cards(colKey) {
 .empty-num {
     font-family: var(--font-display);
     font-size: 42px;
-    color: var(--color-wc-bg-tertiary);
+    color: var(--c-surface-2);
     letter-spacing: 0.1em;
     line-height: 1;
     margin-bottom: 8px;
     user-select: none;
 }
 .empty-msg {
-    font-family: var(--font-editorial);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 11px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     line-height: 1.55;
     margin: 0;
     text-wrap: balance;

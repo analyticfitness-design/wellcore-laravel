@@ -133,40 +133,40 @@ async function submit() {
 .modal-card {
     pointer-events: auto;
     width: 100%; max-width: 460px;
-    background: var(--color-wc-bg-secondary, #111111);
-    border: 1px solid var(--color-wc-border);
-    border-radius: 16px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md, 16px);
     overflow: hidden;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
 }
 
 .card-head {
     padding: 20px 22px 16px;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
     position: relative;
     display: flex; flex-direction: column; gap: 4px;
 }
 .eyebrow {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .title {
     font-family: var(--font-display);
     font-size: 22px; letter-spacing: 0.04em;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
 }
 .close-btn {
     position: absolute; top: 14px; right: 14px;
-    width: 28px; height: 28px;
-    border-radius: 8px;
+    width: var(--tap-comfort, 48px); height: var(--tap-comfort, 48px);
+    border-radius: var(--r-sm, 12px);
     background: transparent;
-    border: 1px solid var(--color-wc-border);
-    color: var(--color-wc-text-secondary);
+    border: 1px solid var(--c-border);
+    color: var(--c-text-2);
     font-size: 18px; line-height: 1; cursor: pointer;
 }
-.close-btn:hover { background: rgba(255, 255, 255, 0.04); color: var(--color-wc-text); }
+.close-btn:hover { background: rgba(255, 255, 255, 0.04); color: var(--c-text); }
 
 .card-body {
     padding: 18px 22px 22px;
@@ -175,53 +175,53 @@ async function submit() {
 
 .field { display: flex; flex-direction: column; gap: 5px; }
 .field-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
 }
 .field-input {
     height: 38px;
-    border-radius: 10px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: rgba(255, 255, 255, 0.03);
     padding: 0 12px;
     font-family: var(--font-sans);
     font-size: 13px;
-    color: var(--color-wc-text);
+    color: var(--c-text);
 }
-.field-input--mono { font-family: var(--font-mono, monospace); letter-spacing: 0.08em; }
-.field-input:focus { outline: none; border-color: var(--color-wc-accent, #DC2626); }
+.field-input--mono { font-family: var(--font-display); letter-spacing: 0.08em; }
+.field-input:focus { outline: none; border-color: var(--c-accent); }
 .field-error {
     margin: 0;
     font-size: 11px;
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
 }
 
 .toggle-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-radius: 10px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     padding: 12px;
     background: rgba(255, 255, 255, 0.02);
     gap: 10px;
 }
 .toggle-label { display: flex; flex-direction: column; gap: 2px; }
 .toggle-title {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--color-wc-text);
+    color: var(--c-text);
 }
 .toggle-hint {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px; letter-spacing: 0.14em;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .toggle {
     width: 44px; height: 24px;
     border-radius: 12px;
-    border: 1px solid var(--color-wc-border);
+    border: 1px solid var(--c-border);
     background: rgba(255, 255, 255, 0.04);
     position: relative;
     cursor: pointer;
@@ -229,7 +229,7 @@ async function submit() {
     flex-shrink: 0;
 }
 .toggle--on {
-    background: var(--color-wc-green-soft, rgba(16, 185, 129, 0.18));
+    background: rgba(16, 185, 129, 0.18);
     border-color: rgba(16, 185, 129, 0.45);
 }
 .toggle-knob {
@@ -237,27 +237,27 @@ async function submit() {
     top: 2px; left: 2px;
     width: 18px; height: 18px;
     border-radius: 50%;
-    background: var(--color-wc-text-tertiary);
+    background: var(--c-text-3);
     transition: transform 0.18s var(--ease-out, ease), background 0.15s var(--ease-out, ease);
 }
 .toggle--on .toggle-knob {
     transform: translateX(20px);
-    background: var(--color-wc-green-text, #34D399);
+    background: #34D399;
 }
 
 .error-block {
-    border-radius: 10px;
+    border-radius: var(--r-sm, 12px);
     border: 1px solid rgba(220, 38, 38, 0.35);
-    background: var(--color-wc-red-soft, rgba(220, 38, 38, 0.1));
+    background: var(--c-accent-dim);
     padding: 10px 12px;
     font-size: 12px;
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
 }
 
 .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
 .btn {
     padding: 9px 16px;
-    border-radius: 10px;
+    border-radius: var(--r-sm, 12px);
     font-family: var(--font-sans);
     font-size: 13px; font-weight: 600;
     cursor: pointer;
@@ -265,19 +265,19 @@ async function submit() {
 }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 .btn--primary {
-    background: var(--color-wc-accent, #DC2626);
-    border: 1px solid var(--color-wc-accent, #DC2626);
+    background: var(--c-accent);
+    border: 1px solid var(--c-accent);
     color: #fff;
 }
 .btn--primary:hover:not(:disabled) { background: #B91C1C; }
 .btn--secondary {
     background: transparent;
-    border: 1px solid var(--color-wc-border);
-    color: var(--color-wc-text-secondary);
+    border: 1px solid var(--c-border);
+    color: var(--c-text-2);
 }
 .btn--secondary:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.04);
-    color: var(--color-wc-text);
+    color: var(--c-text);
 }
 
 .modal-fade-enter-active,

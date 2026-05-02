@@ -67,13 +67,14 @@ function iconPath(key) {
 <style scoped>
 /* ============================================================================
    AdminToolsGrid — accesos rapidos a 12 modulos editoriales del admin.
+   v2: Oswald titles, Raleway tool-name, tokens v2.
    Mobile: grid 2-col. Desktop: grid 4-col.
    ============================================================================ */
 
 .tools-grid-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
-    background: rgba(17, 17, 17, 0.7);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface);
     padding: 18px;
 }
 .tools-grid-header {
@@ -84,18 +85,18 @@ function iconPath(key) {
 }
 .tools-grid-title {
     font-family: var(--font-display);
-    font-size: 13px;
-    letter-spacing: 0.14em;
+    font-size: 16px; font-weight: 600;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
 }
 .tools-grid-meta {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.15em;
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 .tools-grid {
@@ -111,22 +112,22 @@ function iconPath(key) {
 }
 
 .tool-card {
-    border-radius: 12px;
-    border: 1px solid var(--color-wc-border);
-    background: rgba(24, 24, 24, 0.6);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface-2);
     padding: 14px 12px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
     text-decoration: none;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     position: relative;
     transition: transform 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease), color 0.15s var(--ease-out, ease);
 }
 .tool-card:hover {
-    border-color: var(--color-wc-border-2, rgba(255, 255, 255, 0.12));
-    color: var(--color-wc-text);
+    border-color: var(--c-border-bright);
+    color: var(--c-text);
     transform: translateY(-1px);
 }
 .tool-card:active { transform: scale(0.98); }
@@ -140,18 +141,17 @@ function iconPath(key) {
     justify-content: center;
     flex-shrink: 0;
 }
-.tool-card--red    .tool-icon { background: var(--color-wc-red-soft, rgba(220, 38, 38, 0.1)); color: var(--color-wc-red-text, #F87171); }
-.tool-card--amber  .tool-icon { background: var(--color-wc-amber-soft, rgba(245, 158, 11, 0.1)); color: var(--color-wc-amber-text, #FCD34D); }
-.tool-card--green  .tool-icon { background: var(--color-wc-green-soft, rgba(16, 185, 129, 0.1)); color: var(--color-wc-green-text, #34D399); }
-.tool-card--blue   .tool-icon { background: var(--color-wc-blue-soft, rgba(59, 130, 246, 0.1)); color: var(--color-wc-blue-text, #60A5FA); }
-.tool-card--neutral .tool-icon { background: rgba(255, 255, 255, 0.05); color: var(--color-wc-text-tertiary); }
+.tool-card--red    .tool-icon { background: var(--c-accent-dim); color: #F87171; }
+.tool-card--amber  .tool-icon { background: var(--c-amber-dim); color: #FCD34D; }
+.tool-card--green  .tool-icon { background: var(--c-success-dim); color: #34D399; }
+.tool-card--blue   .tool-icon { background: rgba(59,130,246,0.1); color: #60A5FA; }
+.tool-card--neutral .tool-icon { background: rgba(255,255,255,0.05); color: var(--c-text-3); }
 
 .tool-name {
     font-family: var(--font-sans);
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 13px; font-weight: 600;
     line-height: 1.3;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     flex: 1;
 }
 
@@ -159,14 +159,14 @@ function iconPath(key) {
     position: absolute;
     top: 10px;
     right: 10px;
-    font-family: var(--font-mono, monospace);
-    font-size: 7px;
-    letter-spacing: 0.15em;
-    color: var(--color-wc-gold, #C8A769);
+    font-family: var(--font-display);
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 1.2px;
+    color: var(--c-amber, #D4A80E);
     text-transform: uppercase;
-    background: rgba(212, 160, 76, 0.1);
-    border: 1px solid rgba(212, 160, 76, 0.25);
-    border-radius: 3px;
-    padding: 2px 5px;
+    background: var(--c-amber-dim);
+    border: 1px solid rgba(212,168,14,0.25);
+    border-radius: var(--r-pill, 999px);
+    padding: 2px 7px;
 }
 </style>

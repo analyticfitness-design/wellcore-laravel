@@ -72,11 +72,11 @@ const STEP_COLORS = [
 }
 
 .funnel-label {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 .funnel-nums {
@@ -86,17 +86,17 @@ const STEP_COLORS = [
 }
 
 .funnel-value {
-    font-family: var(--font-data);
+    font-family: var(--font-display);
     font-size: 15px;
     font-weight: 700;
     font-feature-settings: 'tnum' 1;
 }
 
 .funnel-conv {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.12em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.0px;
+    color: var(--c-text-3);
 }
 
 .funnel-track {

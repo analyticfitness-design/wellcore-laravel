@@ -128,9 +128,9 @@ async function confirmContact() {
     .modal-backdrop { align-items: center; }
 }
 .modal-panel {
-    background: var(--color-wc-bg-secondary);
-    border: 1px solid var(--color-wc-border-2);
-    border-radius: 14px 14px 0 0;
+    background: var(--c-surface);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--r-md, 16px) var(--r-md, 16px) 0 0;
     padding: 20px;
     width: 100%;
     max-width: 460px;
@@ -138,7 +138,7 @@ async function confirmContact() {
     overflow-y: auto;
 }
 @media (min-width: 640px) {
-    .modal-panel { border-radius: 14px; }
+    .modal-panel { border-radius: var(--r-md, 16px); }
 }
 .modal-header {
     display: flex;
@@ -150,12 +150,12 @@ async function confirmContact() {
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: var(--color-wc-blue-soft);
-    color: var(--color-wc-blue-text);
+    background: rgba(59,130,246,0.1);
+    color: #60A5FA;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--font-data);
+    font-family: var(--font-display);
     font-size: 15px;
     font-weight: 600;
     flex-shrink: 0;
@@ -165,100 +165,102 @@ async function confirmContact() {
     font-family: var(--font-sans);
     font-size: 14px;
     font-weight: 600;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0 0 2px;
 }
 .modal-sub {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.12em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.0px;
+    color: var(--c-text-3);
 }
 .modal-close {
     margin-left: auto;
     padding: 6px;
     border: none;
     background: transparent;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     cursor: pointer;
     border-radius: 6px;
+    min-height: var(--tap-comfort, 48px);
     flex-shrink: 0;
     transition: color 0.15s;
 }
-.modal-close:hover { color: var(--color-wc-text); }
+.modal-close:hover { color: var(--c-text); }
 .modal-section { margin-bottom: 14px; }
 .modal-section-label {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.6px;
+    color: var(--c-text-3);
     margin-bottom: 7px;
 }
 .modal-textarea {
     width: 100%;
     background: rgba(255,255,255,0.03);
-    border: 1px solid var(--color-wc-border);
-    border-radius: 8px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm, 12px);
     padding: 9px 10px;
     font-family: var(--font-sans);
     font-size: 12px;
     line-height: 1.55;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     resize: vertical;
     outline: none;
     margin-bottom: 8px;
     display: block;
     transition: border-color 0.15s;
 }
-.modal-textarea:focus { border-color: var(--color-wc-border-2); }
+.modal-textarea:focus { border-color: rgba(255,255,255,0.12); }
 .modal-btn {
     display: inline-flex;
     align-items: center;
     gap: 7px;
     padding: 7px 13px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: transparent;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.16em;
+    letter-spacing: 1.4px;
     cursor: pointer;
     transition: all 0.15s var(--ease-out);
 }
 .modal-btn--wa {
-    color: var(--color-wc-green-text);
+    color: #34D399;
     border-color: rgba(52,211,153,0.2);
 }
 .modal-btn--wa:hover {
-    background: var(--color-wc-green-soft);
+    background: rgba(16,185,129,0.1);
     border-color: rgba(52,211,153,0.4);
 }
 .modal-btn--email {
-    color: var(--color-wc-blue-text);
+    color: #60A5FA;
     border-color: rgba(96,165,250,0.2);
 }
 .modal-btn--email:hover {
-    background: var(--color-wc-blue-soft);
+    background: rgba(59,130,246,0.1);
     border-color: rgba(96,165,250,0.4);
 }
 .modal-confirm {
     width: 100%;
     margin-top: 6px;
     padding: 11px;
-    border-radius: 10px;
+    border-radius: var(--r-sm, 12px);
     border: none;
-    background: var(--color-wc-accent);
-    font-family: var(--font-mono);
+    background: var(--c-accent);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     color: white;
     cursor: pointer;
+    min-height: var(--tap-comfort, 48px);
     transition: background 0.15s var(--ease-out);
 }
 .modal-confirm:hover:not(:disabled) { background: #b91c1c; }
 .modal-confirm--sent {
-    background: var(--color-wc-green-soft);
-    color: var(--color-wc-green-text);
+    background: rgba(16,185,129,0.1);
+    color: #34D399;
     border: 1px solid rgba(52,211,153,0.3);
 }
 .modal-confirm:disabled { cursor: not-allowed; opacity: 0.7; }

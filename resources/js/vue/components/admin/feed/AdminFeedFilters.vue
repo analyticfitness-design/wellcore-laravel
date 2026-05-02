@@ -49,26 +49,27 @@ function toggleType(type) {
 }
 
 .filter-pill {
-    height: 28px;
-    padding: 0 10px;
-    border-radius: 6px;
-    border: 1px solid var(--color-wc-border);
+    height: var(--tap-comfort, 48px);
+    padding: 0 12px;
+    border-radius: var(--r-pill, 999px);
+    border: 1px solid var(--c-border);
     background: transparent;
     cursor: pointer;
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.18em;
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     transition: background 0.15s var(--ease-out), color 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
     white-space: nowrap;
 }
 .filter-pill:hover {
-    color: var(--color-wc-text-secondary);
-    border-color: var(--color-wc-border-2);
+    color: var(--c-text-2);
+    border-color: rgba(255,255,255,0.16);
 }
 
-.filter-pill--active.filter-pill--blue  { background: var(--color-wc-blue-soft);  color: var(--color-wc-blue-text);  border-color: var(--color-wc-blue-text); }
-.filter-pill--active.filter-pill--green { background: var(--color-wc-green-soft); color: var(--color-wc-green-text); border-color: var(--color-wc-green-text); }
-.filter-pill--active.filter-pill--amber { background: var(--color-wc-amber-soft); color: var(--color-wc-amber-text); border-color: var(--color-wc-amber-text); }
+.filter-pill--active.filter-pill--blue  { background: rgba(59,130,246,0.10);  color: #60A5FA; border-color: #60A5FA; }
+.filter-pill--active.filter-pill--green { background: rgba(16,185,129,0.10); color: #34D399; border-color: #34D399; }
+.filter-pill--active.filter-pill--amber { background: rgba(245,158,11,0.10);  color: #FCD34D; border-color: #FCD34D; }
 </style>

@@ -118,15 +118,15 @@ function platformStyle(platform) {
 <style scoped>
 .campaign-card {
     background: rgba(17,17,17,0.7);
-    border: 1px solid var(--color-wc-border);
-    border-radius: 14px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md, 16px);
     padding: 16px;
     cursor: pointer;
     transition: border-color 0.15s var(--ease-out), background 0.15s var(--ease-out);
 }
 
 .campaign-card:hover {
-    border-color: var(--color-wc-border-2);
+    border-color: rgba(255,255,255,0.12);
     background: rgba(24,24,24,0.9);
 }
 
@@ -144,12 +144,12 @@ function platformStyle(platform) {
     font-family: var(--font-sans);
     font-size: 14px;
     font-weight: 600;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     line-height: 1.3;
 }
 
 .card-chevron {
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     flex-shrink: 0;
     margin-top: 2px;
 }
@@ -161,12 +161,12 @@ function platformStyle(platform) {
 }
 
 .badge {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     padding: 3px 8px;
-    border-radius: 100px;
+    border-radius: var(--r-pill, 999px);
 }
 
 .card-metrics {
@@ -174,8 +174,8 @@ function platformStyle(platform) {
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
     padding: 10px 0;
-    border-top: 1px solid var(--color-wc-border);
-    border-bottom: 1px solid var(--color-wc-border);
+    border-top: 1px solid var(--c-border);
+    border-bottom: 1px solid var(--c-border);
     margin-bottom: 10px;
 }
 
@@ -186,18 +186,18 @@ function platformStyle(platform) {
 }
 
 .metric-label {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 7px;
-    letter-spacing: 0.18em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.6px;
+    color: var(--c-text-3);
     text-transform: uppercase;
 }
 
 .metric-value {
-    font-family: var(--font-data);
+    font-family: var(--font-display);
     font-size: 13px;
     font-weight: 600;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     font-feature-settings: 'tnum' 1;
 }
 
@@ -210,13 +210,13 @@ function platformStyle(platform) {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.14em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     background: rgba(255,255,255,0.04);
-    border: 1px solid var(--color-wc-border);
+    border: 1px solid var(--c-border);
     border-radius: 6px;
     padding: 5px 10px;
     cursor: pointer;
@@ -225,12 +225,12 @@ function platformStyle(platform) {
 
 .card-btn:hover {
     background: rgba(255,255,255,0.07);
-    color: var(--color-wc-text);
+    color: var(--c-text);
 }
 
 .card-btn--green {
-    color: var(--color-wc-green-text);
-    background: var(--color-wc-green-soft);
+    color: #34D399;
+    background: rgba(16,185,129,0.1);
 }
 
 .card-btn--green:hover {

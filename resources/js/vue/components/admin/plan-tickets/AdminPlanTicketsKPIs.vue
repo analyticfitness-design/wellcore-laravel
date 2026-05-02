@@ -80,7 +80,7 @@ function ringClass(variant) {
 
 .kpi-card {
     flex: 0 0 220px;
-    border-radius: 14px;
+    border-radius: var(--r-md, 16px);
     padding: 16px 14px 14px;
     display: flex;
     flex-direction: column;
@@ -93,30 +93,30 @@ function ringClass(variant) {
 }
 @media (min-width: 1024px) { .kpi-card { flex: none; } }
 
-.kpi-card--urgent  { background: rgba(220, 38, 38, 0.07); border: 1px solid rgba(220, 38, 38, 0.22); }
-.kpi-card--warn    { background: rgba(245, 158, 11, 0.07); border: 1px solid rgba(245, 158, 11, 0.20); }
-.kpi-card--healthy { background: rgba(16, 185, 129, 0.07); border: 1px solid rgba(16, 185, 129, 0.20); }
-.kpi-card--info    { background: rgba(59, 130, 246, 0.07); border: 1px solid rgba(59, 130, 246, 0.20); }
+.kpi-card--urgent  { background: var(--c-accent-dim); border: 1px solid rgba(220,38,38,0.22); }
+.kpi-card--warn    { background: var(--c-amber-dim); border: 1px solid rgba(212,168,14,0.22); }
+.kpi-card--healthy { background: var(--c-success-dim); border: 1px solid rgba(22,163,74,0.22); }
+.kpi-card--info    { background: var(--c-surface); border: 1px solid var(--c-border); }
 
 .kpi-ring-wrap { position: absolute; top: 12px; right: 12px; }
 .kpi-ring { transform: rotate(-90deg); }
-.ring-track { fill: none; stroke: rgba(255, 255, 255, 0.06); }
+.ring-track { fill: none; stroke: rgba(255,255,255,0.06); }
 .ring-fill {
     fill: none;
     stroke-linecap: round;
     transition: stroke-dashoffset 1.2s var(--ease-out, ease);
 }
-.ring-fill--red    { stroke: var(--color-wc-red-text, #F87171); }
-.ring-fill--amber  { stroke: var(--color-wc-amber-text, #FCD34D); }
-.ring-fill--green  { stroke: var(--color-wc-green-text, #34D399); }
-.ring-fill--blue   { stroke: var(--color-wc-blue-text, #60A5FA); }
+.ring-fill--red    { stroke: #F87171; }
+.ring-fill--amber  { stroke: #FCD34D; }
+.ring-fill--green  { stroke: #34D399; }
+.ring-fill--blue   { stroke: #60A5FA; }
 
 .kpi-label {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.2em;
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin-bottom: 8px;
     padding-right: 60px;
     line-height: 1.4;
@@ -124,20 +124,20 @@ function ringClass(variant) {
 }
 .kpi-value {
     font-family: var(--font-display);
-    font-size: 32px;
-    letter-spacing: 0.03em;
+    font-size: var(--t-xl, 37px);
+    letter-spacing: var(--ls-display, -0.02em);
     line-height: 1;
     margin-bottom: 4px;
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
 }
-.kpi-value--urgent  { color: var(--color-wc-red-text, #F87171); }
-.kpi-value--warn    { color: var(--color-wc-amber-text, #FCD34D); }
-.kpi-value--healthy { color: var(--color-wc-green-text, #34D399); }
-.kpi-value--info    { color: var(--color-wc-text); }
+.kpi-value--urgent  { color: #F87171; }
+.kpi-value--warn    { color: #FCD34D; }
+.kpi-value--healthy { color: #34D399; }
+.kpi-value--info    { color: var(--c-text); }
 .kpi-sub {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-sans);
+    font-size: 12px; font-weight: 400;
+    color: var(--c-text-3);
     margin-top: 2px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -146,7 +146,7 @@ function ringClass(variant) {
 
 @media (min-width: 1024px) {
     .kpi-card { min-height: 120px; padding: 18px 16px 14px; }
-    .kpi-value { font-size: 36px; }
+    .kpi-value { font-size: var(--t-xl, 37px); }
 }
 
 @media (prefers-reduced-motion: reduce) {

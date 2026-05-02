@@ -128,9 +128,9 @@ const onConfirm = () => {
 .modal-panel {
     width: 100%;
     max-width: 420px;
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border-2);
-    background: var(--color-wc-bg-secondary);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid rgba(255,255,255,0.12);
+    background: var(--c-surface);
     overflow: hidden;
 }
 .modal-header {
@@ -138,40 +138,40 @@ const onConfirm = () => {
     align-items: center;
     justify-content: space-between;
     padding: 16px 18px;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
 }
 .modal-title {
     font-family: var(--font-display);
     font-size: 13px;
-    letter-spacing: 0.14em;
-    color: var(--color-wc-text);
+    letter-spacing: 1.2px;
+    color: var(--c-text);
     margin: 0;
 }
 .modal-close {
     background: transparent;
     border: none;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     cursor: pointer;
     padding: 4px;
     border-radius: 6px;
     display: flex;
     transition: color 0.15s var(--ease-out);
 }
-.modal-close:hover { color: var(--color-wc-text); }
+.modal-close:hover { color: var(--c-text); }
 
 .modal-body { padding: 18px; display: flex; flex-direction: column; gap: 16px; }
-.modal-desc { font-size: 13px; color: var(--color-wc-text-secondary); margin: 0; line-height: 1.55; }
-.modal-name { color: var(--color-wc-text); font-weight: 600; }
-.modal-amount { font-family: var(--font-data); color: var(--color-wc-green-text); font-weight: 700; font-feature-settings: 'tnum' 1; }
+.modal-desc { font-size: 13px; color: var(--c-text-2); margin: 0; line-height: 1.55; }
+.modal-name { color: var(--c-text); font-weight: 600; }
+.modal-amount { font-family: var(--font-display); color: #34D399; font-weight: 700; font-feature-settings: 'tnum' 1; }
 
 /* ── Method selector ──────────────────────────────────────────────────── */
 .method-group { border: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
 .method-legend {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin-bottom: 8px;
 }
 .method-option {
@@ -179,41 +179,41 @@ const onConfirm = () => {
     align-items: center;
     gap: 10px;
     padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     cursor: pointer;
     transition: border-color 0.15s var(--ease-out), background 0.15s var(--ease-out);
 }
 .method-option--active {
-    border-color: var(--color-wc-accent);
-    background: var(--color-wc-red-soft);
+    border-color: var(--c-accent);
+    background: var(--c-accent-dim);
 }
-.method-radio { accent-color: var(--color-wc-accent); flex-shrink: 0; }
-.method-label { font-size: 12px; color: var(--color-wc-text-secondary); }
-.method-option--active .method-label { color: var(--color-wc-text); }
+.method-radio { accent-color: var(--c-accent); flex-shrink: 0; }
+.method-label { font-size: 12px; color: var(--c-text-2); }
+.method-option--active .method-label { color: var(--c-text); }
 
 /* ── NEQUI ref ────────────────────────────────────────────────────────── */
 .nequi-wrap { display: flex; flex-direction: column; gap: 6px; }
 .nequi-label {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .nequi-input {
     height: 36px;
     padding: 0 12px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: rgba(255,255,255,0.03);
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 12px;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     outline: none;
     transition: border-color 0.15s var(--ease-out);
 }
-.nequi-input:focus { border-color: var(--color-wc-border-2); }
+.nequi-input:focus { border-color: rgba(255,255,255,0.12); }
 
 /* ── Footer ───────────────────────────────────────────────────────────── */
 .modal-footer {
@@ -221,32 +221,34 @@ const onConfirm = () => {
     justify-content: flex-end;
     gap: 8px;
     padding: 14px 18px;
-    border-top: 1px solid var(--color-wc-border);
+    border-top: 1px solid var(--c-border);
 }
 .btn-cancel {
     height: 36px;
+    min-height: var(--tap-comfort, 48px);
     padding: 0 16px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: transparent;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 10px;
-    letter-spacing: 0.12em;
+    letter-spacing: 1.0px;
     text-transform: uppercase;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     cursor: pointer;
     transition: background 0.15s var(--ease-out), color 0.15s var(--ease-out);
 }
-.btn-cancel:hover { background: rgba(255,255,255,0.04); color: var(--color-wc-text); }
+.btn-cancel:hover { background: rgba(255,255,255,0.04); color: var(--c-text); }
 .btn-confirm {
     height: 36px;
+    min-height: var(--tap-comfort, 48px);
     padding: 0 18px;
-    border-radius: 8px;
+    border-radius: var(--r-sm, 12px);
     border: none;
-    background: var(--color-wc-accent);
-    font-family: var(--font-mono);
+    background: var(--c-accent);
+    font-family: var(--font-display);
     font-size: 10px;
-    letter-spacing: 0.12em;
+    letter-spacing: 1.0px;
     text-transform: uppercase;
     color: #fff;
     cursor: pointer;

@@ -106,33 +106,33 @@ function tooltipLabel(day, hour) {
 
 <style scoped>
 .heatmap-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17,17,17,0.7);
     padding: 18px;
     overflow: hidden;
 }
 .hm-head { margin-bottom: 14px; }
 .hm-title {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--color-wc-text); margin: 0 0 2px;
+    font-family: var(--font-display);
+    font-size: 9px; letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--c-text); margin: 0 0 2px;
 }
 .hm-eyebrow {
-    font-family: var(--font-mono, monospace);
-    font-size: 7px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 7px; letter-spacing: 1.6px; text-transform: uppercase;
+    color: var(--c-text-3);
 }
 .hm-empty { padding: 24px 8px; text-align: center; }
 .empty-num {
     font-family: var(--font-display); font-size: 56px;
-    color: var(--color-wc-bg-tertiary); letter-spacing: 0.1em;
+    color: var(--c-surface-2); letter-spacing: 0.1em;
     line-height: 1; margin-bottom: 12px; user-select: none;
 }
 .empty-msg {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic; font-size: 12px;
-    color: var(--color-wc-text-tertiary); margin: 0;
+    color: var(--c-text-3); margin: 0;
 }
 .hm-grid-wrap {
     width: 100%;
@@ -149,9 +149,9 @@ function tooltipLabel(day, hour) {
 }
 .hm-day-spacer { width: 28px; }
 .hm-hour-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 7px; letter-spacing: 0.05em;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     text-align: center;
     min-height: 10px;
 }
@@ -163,9 +163,9 @@ function tooltipLabel(day, hour) {
     min-width: 360px;
 }
 .hm-day-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px; letter-spacing: 0.1em;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     display: flex; align-items: center;
     padding-right: 4px;
 }
@@ -185,9 +185,9 @@ function tooltipLabel(day, hour) {
 }
 .hm-tooltip {
     margin-top: 10px;
-    font-family: var(--font-mono, monospace);
-    font-size: 9px; letter-spacing: 0.12em;
-    color: var(--color-wc-text-secondary);
+    font-family: var(--font-display);
+    font-size: 9px; letter-spacing: 1.0px;
+    color: var(--c-text-2);
     min-height: 14px;
 }
 .hm-legend {
@@ -195,9 +195,9 @@ function tooltipLabel(day, hour) {
     margin-top: 10px;
 }
 .legend-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .legend-scale { display: flex; gap: 2px; }
 .legend-cell {

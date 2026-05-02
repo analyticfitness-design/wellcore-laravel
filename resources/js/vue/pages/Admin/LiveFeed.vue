@@ -104,10 +104,10 @@ onBeforeUnmount(() => {
 
 .feed-count {
     margin-left: auto;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 10px;
-    letter-spacing: 0.15em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
     white-space: nowrap;
     text-transform: uppercase;
 }
@@ -117,8 +117,8 @@ onBeforeUnmount(() => {
     align-items: center;
     gap: 12px;
     border-radius: 12px;
-    border: 1px solid var(--color-wc-red-soft);
-    background: var(--color-wc-red-soft);
+    border: 1px solid var(--c-accent-dim);
+    background: var(--c-accent-dim);
     padding: 12px 16px;
     margin-bottom: 12px;
 }
@@ -126,28 +126,28 @@ onBeforeUnmount(() => {
     flex: 1;
     font-family: var(--font-sans);
     font-size: 13px;
-    color: var(--color-wc-red-text);
+    color: #F87171;
     margin: 0;
 }
 .feed-retry {
     height: 28px;
     padding: 0 10px;
-    border-radius: 6px;
-    border: 1px solid var(--color-wc-accent);
-    background: var(--color-wc-red-soft);
-    color: var(--color-wc-text);
+    border-radius: var(--r-pill, 999px);
+    border: 1px solid var(--c-accent);
+    background: var(--c-accent-dim);
+    color: var(--c-text);
     cursor: pointer;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     transition: background 0.15s var(--ease-out);
 }
 .feed-retry:hover { background: rgba(220, 38, 38, 0.2); }
 
 .feed-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 18px;
 }

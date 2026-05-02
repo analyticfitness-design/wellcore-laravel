@@ -146,8 +146,8 @@ function actionClick(action, coach, ev) {
 
 <style scoped>
 .coaches-table {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 18px;
 }
@@ -171,15 +171,15 @@ function actionClick(action, coach, ev) {
 .table-head {
     padding-bottom: 10px;
     margin-bottom: 6px;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
 }
 
 .th {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     user-select: none;
 }
 .col-coach,
@@ -188,8 +188,8 @@ function actionClick(action, coach, ev) {
     cursor: pointer;
 }
 .sort-glyph {
-    color: var(--color-wc-red-text, #F87171);
-    font-family: var(--font-data, sans-serif);
+    color: #F87171;
+    font-family: var(--font-display);
     margin-left: 2px;
 }
 .col-actions { text-align: right; }
@@ -203,7 +203,7 @@ function actionClick(action, coach, ev) {
 .row:last-child { border-bottom: none; }
 .row:hover { background: rgba(255, 255, 255, 0.02); }
 .row:focus-visible {
-    outline: 1px solid var(--color-wc-accent, #DC2626);
+    outline: 1px solid var(--c-accent);
     outline-offset: -1px;
     background: rgba(220, 38, 38, 0.04);
 }
@@ -224,7 +224,7 @@ function actionClick(action, coach, ev) {
     border-radius: 50%;
     background: rgba(220, 38, 38, 0.12);
     border: 1px solid rgba(220, 38, 38, 0.25);
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -242,22 +242,22 @@ function actionClick(action, coach, ev) {
     font-family: var(--font-sans);
     font-size: 13px;
     font-weight: 600;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 .coach-handle {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
     letter-spacing: 0.14em;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 .coach-id {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
     letter-spacing: 0.16em;
     color: rgba(220, 38, 38, 0.5);
@@ -268,46 +268,46 @@ function actionClick(action, coach, ev) {
 .col-contact { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .contact-mail {
     font-size: 11px;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 .contact-wa {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
     letter-spacing: 0.12em;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 /* ── Numbers ───────────────────────────────────────────────────────── */
 .num-data {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-feature-settings: 'tnum' 1;
     font-size: 16px;
     font-weight: 700;
-    color: var(--color-wc-text);
+    color: var(--c-text);
 }
 .num-soft {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 14px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     opacity: 0.55;
 }
 
 /* ── Last login ────────────────────────────────────────────────────── */
 .login-mono {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
 }
 
 /* ── Status pill ───────────────────────────────────────────────────── */
 .pill {
     display: inline-block;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -315,8 +315,8 @@ function actionClick(action, coach, ev) {
     border-radius: 4px;
     line-height: 1.4;
 }
-.pill--success { background: var(--color-wc-green-soft, rgba(16, 185, 129, 0.1)); color: var(--color-wc-green-text, #34D399); }
-.pill--neutral { background: rgba(255, 255, 255, 0.04); color: var(--color-wc-text-tertiary); }
+.pill--success { background: rgba(16, 185, 129, 0.1); color: #34D399; }
+.pill--neutral { background: rgba(255, 255, 255, 0.04); color: var(--c-text-3); }
 
 /* ── Actions ───────────────────────────────────────────────────────── */
 .col-actions {
@@ -329,9 +329,9 @@ function actionClick(action, coach, ev) {
     width: 30px;
     height: 30px;
     border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.4);
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -340,10 +340,10 @@ function actionClick(action, coach, ev) {
 }
 .action-btn:hover {
     background: rgba(255, 255, 255, 0.04);
-    border-color: var(--color-wc-border-2, rgba(255, 255, 255, 0.12));
-    color: var(--color-wc-text);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: var(--c-text);
 }
-.action-btn--amber:hover  { color: var(--color-wc-amber-text, #FCD34D); border-color: rgba(245, 158, 11, 0.4); }
-.action-btn--accent:hover { color: var(--color-wc-red-text, #F87171); border-color: rgba(220, 38, 38, 0.4); }
-.action-btn--danger:hover { color: var(--color-wc-red-text, #F87171); border-color: rgba(220, 38, 38, 0.4); }
+.action-btn--amber:hover  { color: #FCD34D; border-color: rgba(245, 158, 11, 0.4); }
+.action-btn--accent:hover { color: #F87171; border-color: rgba(220, 38, 38, 0.4); }
+.action-btn--danger:hover { color: #F87171; border-color: rgba(220, 38, 38, 0.4); }
 </style>

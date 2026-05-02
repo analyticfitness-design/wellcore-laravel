@@ -120,16 +120,16 @@ function remove() {
 .siu-wrap { display: flex; flex-direction: column; gap: 8px; }
 
 .siu-label {
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 9px;
-  letter-spacing: 0.18em;
+  letter-spacing: 1.6px;
   text-transform: uppercase;
-  color: var(--color-wc-text-tertiary);
+  color: var(--c-text-3);
 }
 
 .siu-dropzone {
-  border: 1px dashed var(--color-wc-border-2);
-  border-radius: 12px;
+  border: 1px dashed rgba(255,255,255,0.12);
+  border-radius: var(--r-sm, 12px);
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -143,8 +143,8 @@ function remove() {
   cursor: default;
 }
 .siu-dropzone--dragging {
-  border-color: var(--color-wc-accent);
-  background: var(--color-wc-red-soft);
+  border-color: var(--c-accent);
+  background: var(--c-accent-dim);
 }
 .siu-dropzone--disabled { opacity: 0.45; pointer-events: none; }
 .siu-dropzone--has-image { padding: 12px; min-height: 80px; }
@@ -156,27 +156,27 @@ function remove() {
   border-radius: 6px;
 }
 
-.siu-icon { color: var(--color-wc-text-tertiary); }
+.siu-icon { color: var(--c-text-3); }
 .siu-prompt {
   font-family: var(--font-sans);
   font-size: 13px;
-  color: var(--color-wc-text-secondary);
+  color: var(--c-text-2);
   text-align: center;
   margin: 0;
 }
 .siu-browse {
   background: none;
   border: none;
-  color: var(--color-wc-accent);
+  color: var(--c-accent);
   cursor: pointer;
   font: inherit;
   text-decoration: underline;
 }
 .siu-sub {
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 9px;
-  letter-spacing: 0.12em;
-  color: var(--color-wc-text-tertiary);
+  letter-spacing: 1.0px;
+  color: var(--c-text-3);
   text-transform: uppercase;
   margin: 0;
   text-align: center;
@@ -190,31 +190,31 @@ function remove() {
   height: 28px;
   padding: 0 12px;
   border-radius: 6px;
-  border: 1px solid var(--color-wc-border);
+  border: 1px solid var(--c-border);
   background: transparent;
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 9px;
-  letter-spacing: 0.14em;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
   cursor: pointer;
   transition: color 0.12s, border-color 0.12s;
 }
-.siu-action--change { color: var(--color-wc-text-secondary); }
-.siu-action--change:hover { color: var(--color-wc-text); border-color: var(--color-wc-border-2); }
-.siu-action--remove { color: var(--color-wc-red-text); border-color: rgba(220,38,38,0.25); }
-.siu-action--remove:hover { background: var(--color-wc-red-soft); }
+.siu-action--change { color: var(--c-text-2); }
+.siu-action--change:hover { color: var(--c-text); border-color: rgba(255,255,255,0.12); }
+.siu-action--remove { color: #F87171; border-color: rgba(220,38,38,0.25); }
+.siu-action--remove:hover { background: var(--c-accent-dim); }
 .siu-action:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .siu-hint {
   font-family: var(--font-sans);
   font-size: 11px;
-  color: var(--color-wc-text-tertiary);
+  color: var(--c-text-3);
   margin: 0;
 }
 .siu-error {
   font-family: var(--font-sans);
   font-size: 11px;
-  color: var(--color-wc-red-text);
+  color: #F87171;
   margin: 0;
 }
 </style>

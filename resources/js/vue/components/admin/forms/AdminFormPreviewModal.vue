@@ -132,8 +132,8 @@ watch(() => props.form, (val) => {
     justify-content: space-between;
     gap: 12px;
     padding: 12px 16px;
-    border-bottom: 1px solid var(--color-wc-border);
-    background: var(--color-wc-bg-secondary);
+    border-bottom: 1px solid var(--c-border);
+    background: var(--c-surface);
     flex-shrink: 0;
 }
 
@@ -149,18 +149,18 @@ watch(() => props.form, (val) => {
     display: inline-flex;
     align-items: center;
     padding: 2px 8px;
-    border-radius: 99px;
-    font-family: var(--font-mono);
+    border-radius: var(--r-pill, 999px);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     font-weight: 500;
     border: 1px solid transparent;
 }
-.form-tag--amber { background: var(--color-wc-amber-soft); color: var(--color-wc-amber-text); border-color: rgba(245,158,11,0.2); }
-.form-tag--sky   { background: var(--color-wc-blue-soft);  color: var(--color-wc-blue-text);  border-color: rgba(59,130,246,0.2); }
-.form-tag--violet{ background: rgba(139,92,246,0.1);       color: #a78bfa;                    border-color: rgba(139,92,246,0.2); }
-.form-tag--default{ background: rgba(255,255,255,0.05); color: var(--color-wc-text-secondary); }
+.form-tag--amber { background: rgba(245,158,11,0.1); color: #FCD34D; border-color: rgba(245,158,11,0.2); }
+.form-tag--sky   { background: rgba(59,130,246,0.1);  color: #60A5FA;  border-color: rgba(59,130,246,0.2); }
+.form-tag--violet{ background: rgba(139,92,246,0.1);  color: #a78bfa;  border-color: rgba(139,92,246,0.2); }
+.form-tag--default{ background: rgba(255,255,255,0.05); color: var(--c-text-2); }
 
 .preview-toolbar__info {
     min-width: 0;
@@ -169,7 +169,7 @@ watch(() => props.form, (val) => {
     font-family: var(--font-display);
     font-size: 15px;
     letter-spacing: 0.04em;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
     line-height: 1.1;
     white-space: nowrap;
@@ -179,7 +179,7 @@ watch(() => props.form, (val) => {
 .preview-toolbar__desc {
     font-family: var(--font-sans);
     font-size: 10px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin: 2px 0 0;
     white-space: nowrap;
     overflow: hidden;
@@ -196,17 +196,17 @@ watch(() => props.form, (val) => {
 .preview-btn-icon {
     width: 34px;
     height: 34px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
-    background: var(--color-wc-bg-tertiary);
-    color: var(--color-wc-text-secondary);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface-2);
+    color: var(--c-text-2);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: color 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
 }
-.preview-btn-icon:hover { color: var(--color-wc-text); border-color: var(--color-wc-border-2); }
+.preview-btn-icon:hover { color: var(--c-text); border-color: rgba(255,255,255,0.12); }
 
 .preview-btn-text {
     display: inline-flex;
@@ -214,25 +214,26 @@ watch(() => props.form, (val) => {
     gap: 5px;
     height: 34px;
     padding: 0 12px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
-    background: var(--color-wc-bg-tertiary);
-    color: var(--color-wc-text-secondary);
-    font-family: var(--font-mono);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface-2);
+    color: var(--c-text-2);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     cursor: pointer;
     transition: color 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
 }
-.preview-btn-text:hover { color: var(--color-wc-text); border-color: var(--color-wc-border-2); }
+.preview-btn-text:hover { color: var(--c-text); border-color: rgba(255,255,255,0.12); }
 
 .preview-btn-close {
     width: 34px;
     height: 34px;
-    border-radius: 8px;
+    min-height: var(--tap-comfort, 48px);
+    border-radius: var(--r-sm, 12px);
     border: none;
-    background: var(--color-wc-accent);
+    background: var(--c-accent);
     color: #fff;
     cursor: pointer;
     display: flex;
@@ -245,7 +246,7 @@ watch(() => props.form, (val) => {
 .preview-body {
     flex: 1;
     overflow: hidden;
-    background: var(--color-wc-bg);
+    background: var(--c-surface);
     position: relative;
 }
 .preview-iframe {

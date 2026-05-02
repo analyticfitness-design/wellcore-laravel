@@ -6,6 +6,7 @@ import AdminLayout from '../../../layouts/AdminLayout.vue';
 import StatusPill from '../../../components/admin/marketing/StatusPill.vue';
 import DropContentEditor from '../../../components/admin/marketing/DropContentEditor.vue';
 import DropAssetUploader from '../../../components/admin/marketing/DropAssetUploader.vue';
+import AdminDropApproveModal from '../../../components/admin/marketing/queue/AdminDropApproveModal.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -15,6 +16,7 @@ const dropId = Number(route.params.id);
 const isApproving = ref(false);
 const isRegenerating = ref(false);
 const actionError = ref(null);
+const showApproveModal = ref(false);
 
 onMounted(() => {
     store.fetchDrop(dropId);
@@ -29,12 +31,12 @@ async function saveContent(newContent) {
     }
 }
 
-async function approve() {
-    if (!confirm('Aprobar y publicar este drop al coach?')) return;
+async function handleApproveConfirm() {
     isApproving.value = true;
     actionError.value = null;
     try {
         await store.approveDrop(dropId);
+        showApproveModal.value = false;
         router.push({ name: 'admin-marketing-queue' });
     } catch (e) {
         actionError.value = e?.response?.data?.message ?? e?.message ?? 'Error al aprobar';
@@ -45,7 +47,7 @@ async function approve() {
 
 async function requestRegenerate() {
     const reason = prompt('Razon para regenerar (opcional):');
-    if (reason === null) return; // user cancelled
+    if (reason === null) return;
     isRegenerating.value = true;
     actionError.value = null;
     try {
@@ -124,7 +126,7 @@ async function requestRegenerate() {
               {{ isRegenerating ? 'Solicitando...' : 'Pedir regenerar' }}
             </button>
             <button
-              @click="approve"
+              @click="showApproveModal = true"
               :disabled="isApproving || isRegenerating"
               class="rounded-lg bg-wc-accent px-5 py-2.5 font-mono text-xs uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
@@ -180,5 +182,15 @@ async function requestRegenerate() {
       </div>
 
     </div>
+
+    <!-- Approve modal (reemplaza confirm() nativo que el browser bloquea silenciosamente) -->
+    <AdminDropApproveModal
+      :open="showApproveModal"
+      :drop="store.selectedDrop"
+      :submitting="isApproving"
+      :error="actionError ?? ''"
+      @close="showApproveModal = false; actionError = null"
+      @confirm="handleApproveConfirm"
+    />
   </AdminLayout>
 </template>

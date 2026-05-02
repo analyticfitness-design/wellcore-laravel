@@ -52,8 +52,8 @@ const emit = defineEmits(['save', 'discard']);
   justify-content: space-between;
   gap: 16px;
   padding: 14px 20px;
-  background: var(--color-wc-bg-secondary);
-  border-top: 1px solid var(--color-wc-border-2);
+  background: var(--c-surface);
+  border-top: 1px solid rgba(255,255,255,0.12);
   backdrop-filter: blur(12px);
   flex-wrap: wrap;
 }
@@ -68,18 +68,18 @@ const emit = defineEmits(['save', 'discard']);
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 10px;
-  letter-spacing: 0.14em;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
-  color: var(--color-wc-text-secondary);
+  color: var(--c-text-2);
   margin: 0;
 }
 .save-bar-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--color-wc-amber-text);
+  background: #FCD34D;
   flex-shrink: 0;
   animation: pulse-dot 2s ease-in-out infinite;
 }
@@ -96,22 +96,22 @@ const emit = defineEmits(['save', 'discard']);
 }
 
 .save-bar-discard {
-  height: 34px;
+  height: 48px;
   padding: 0 14px;
-  border-radius: 8px;
-  border: 1px solid var(--color-wc-border-2);
+  border-radius: var(--r-sm, 12px);
+  border: 1px solid rgba(255,255,255,0.12);
   background: transparent;
-  color: var(--color-wc-text-secondary);
-  font-family: var(--font-mono);
+  color: var(--c-text-2);
+  font-family: var(--font-display);
   font-size: 9px;
-  letter-spacing: 0.18em;
+  letter-spacing: 1.6px;
   text-transform: uppercase;
   cursor: pointer;
   transition: color 0.12s, border-color 0.12s;
 }
 .save-bar-discard:hover:not(:disabled) {
-  color: var(--color-wc-text);
-  border-color: var(--color-wc-border-2);
+  color: var(--c-text);
+  border-color: rgba(255,255,255,0.12);
 }
 .save-bar-discard:disabled { opacity: 0.4; cursor: not-allowed; }
 
@@ -119,15 +119,15 @@ const emit = defineEmits(['save', 'discard']);
   display: flex;
   align-items: center;
   gap: 8px;
-  height: 34px;
+  height: 48px;
   padding: 0 18px;
-  border-radius: 8px;
+  border-radius: var(--r-sm, 12px);
   border: none;
-  background: var(--color-wc-accent);
+  background: var(--c-accent);
   color: #fff;
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 9px;
-  letter-spacing: 0.18em;
+  letter-spacing: 1.6px;
   text-transform: uppercase;
   cursor: pointer;
   transition: opacity 0.12s;

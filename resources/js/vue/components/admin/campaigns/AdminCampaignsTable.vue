@@ -212,8 +212,8 @@ function handleKebabAction(action, campaign) {
 
 <style scoped>
 .table-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17,17,17,0.7);
     padding: 18px;
     overflow: hidden;
@@ -231,14 +231,14 @@ function handleKebabAction(action, campaign) {
 
 thead th {
     padding: 0 12px 11px 0;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     text-align: left;
     white-space: nowrap;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
 }
 
 .th-num { text-align: right; }
@@ -250,7 +250,7 @@ thead th {
     transition: color 0.15s var(--ease-out);
 }
 
-.th-sortable:hover { color: var(--color-wc-text-secondary); }
+.th-sortable:hover { color: var(--c-text-2); }
 
 .table-row {
     cursor: pointer;
@@ -268,7 +268,7 @@ thead th {
 .table-row:last-child td { border-bottom: none; }
 
 .td-name { min-width: 200px; }
-.td-num  { text-align: right; font-family: var(--font-data); font-feature-settings: 'tnum' 1; }
+.td-num  { text-align: right; font-family: var(--font-display); font-feature-settings: 'tnum' 1; }
 .td-actions { text-align: right; }
 
 .name-cell {
@@ -281,7 +281,7 @@ thead th {
     font-family: var(--font-sans);
     font-size: 13px;
     font-weight: 500;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -289,22 +289,22 @@ thead th {
 }
 
 .platform-badge {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 7px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     padding: 2px 7px;
-    border-radius: 100px;
+    border-radius: var(--r-pill, 999px);
     align-self: flex-start;
 }
 
 .status-pill {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 7px;
-    letter-spacing: 0.16em;
+    letter-spacing: 1.4px;
     text-transform: uppercase;
     padding: 3px 9px;
-    border-radius: 100px;
+    border-radius: var(--r-pill, 999px);
     white-space: nowrap;
 }
 
@@ -317,13 +317,13 @@ thead th {
 
 .val-main {
     font-size: 13px;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     font-feature-settings: 'tnum' 1;
 }
 
 .val-sub {
     font-size: 10px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     font-feature-settings: 'tnum' 1;
 }
 
@@ -348,23 +348,23 @@ thead th {
     background: transparent;
     border: 1px solid transparent;
     border-radius: 6px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     cursor: pointer;
     transition: background 0.15s var(--ease-out), color 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
 }
 
 .kebab-btn:hover {
     background: rgba(255,255,255,0.05);
-    border-color: var(--color-wc-border);
-    color: var(--color-wc-text-secondary);
+    border-color: var(--c-border);
+    color: var(--c-text-2);
 }
 
 .kebab-menu {
     position: absolute;
     right: 0;
     top: calc(100% + 4px);
-    background: var(--color-wc-bg-secondary);
-    border: 1px solid var(--color-wc-border);
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
     border-radius: 10px;
     padding: 6px;
     min-width: 130px;
@@ -376,11 +376,11 @@ thead th {
     display: block;
     width: 100%;
     padding: 8px 12px;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.16em;
+    letter-spacing: 1.4px;
     text-transform: uppercase;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     background: transparent;
     border: none;
     border-radius: 6px;
@@ -391,7 +391,7 @@ thead th {
 
 .kebab-item:hover {
     background: rgba(255,255,255,0.05);
-    color: var(--color-wc-text);
+    color: var(--c-text);
 }
 
 /* Skeleton */
@@ -403,8 +403,8 @@ thead th {
 
 .row-skeleton {
     height: 44px;
-    background: var(--color-wc-bg-tertiary);
-    border-radius: 8px;
+    background: var(--c-surface-2);
+    border-radius: var(--r-sm, 12px);
     animation: page-pulse 1.5s ease-in-out infinite;
 }
 
@@ -417,18 +417,18 @@ thead th {
 .empty-num {
     font-family: var(--font-display);
     font-size: 56px;
-    color: var(--color-wc-bg-tertiary);
-    letter-spacing: 0.1em;
+    color: var(--c-surface-2);
+    letter-spacing: 0.8px;
     line-height: 1;
     margin-bottom: 12px;
     user-select: none;
 }
 
 .empty-msg {
-    font-family: var(--font-editorial);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     line-height: 1.55;
     margin: 0 0 16px;
     text-wrap: balance;

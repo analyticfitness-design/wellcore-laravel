@@ -178,7 +178,8 @@ function formatShortCOP(n) {
 <style scoped>
 /* ============================================================================
    AdminPulseCharts — MRR bars + donut planes + client breakdown stacked bar.
-   Mobile: stack vertical. Desktop: grid 2-col superior + breakdown abajo full-width.
+   v2: Oswald titles/labels, Raleway body, tokens v2.
+   Mobile: stack vertical. Desktop: grid 2-col superior + breakdown full-width.
    ============================================================================ */
 
 .pulse-charts {
@@ -199,9 +200,9 @@ function formatShortCOP(n) {
 }
 
 .chart-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
-    background: rgba(17, 17, 17, 0.7);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface);
     padding: 18px;
 }
 .chart-header {
@@ -212,24 +213,24 @@ function formatShortCOP(n) {
 }
 .chart-title {
     font-family: var(--font-display);
-    font-size: 13px;
-    letter-spacing: 0.14em;
+    font-size: 16px; font-weight: 600;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
 }
 .chart-period {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.15em;
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .chart-empty {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
-    font-size: 12px;
-    color: var(--color-wc-text-tertiary);
+    font-size: 13px;
+    color: var(--c-text-3);
     text-align: center;
     padding: 24px 0;
     margin: 0;
@@ -254,12 +255,12 @@ function formatShortCOP(n) {
     min-width: 0;
 }
 .mrr-bar-value {
-    font-family: var(--font-data, 'Barlow', sans-serif);
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--color-wc-text);
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 700;
+    color: var(--c-text);
     text-align: center;
     margin-bottom: 2px;
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
 }
 .mrr-bar {
     width: 100%;
@@ -268,10 +269,10 @@ function formatShortCOP(n) {
     min-height: 4px;
 }
 .mrr-bar-label {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.1em;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--c-text-3);
     text-align: center;
 }
 
@@ -292,7 +293,7 @@ function formatShortCOP(n) {
     position: absolute;
     inset: 14px;
     border-radius: 50%;
-    background: var(--color-wc-bg-secondary, #111);
+    background: var(--c-surface);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -300,16 +301,17 @@ function formatShortCOP(n) {
 }
 .donut-hole-num {
     font-family: var(--font-display);
-    font-size: 22px;
-    color: var(--color-wc-text);
-    letter-spacing: 0.02em;
+    font-size: 22px; font-weight: 700;
+    color: var(--c-text);
+    letter-spacing: var(--ls-display, -0.02em);
     line-height: 1;
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
 }
 .donut-hole-label {
-    font-family: var(--font-mono, monospace);
-    font-size: 7px;
-    color: var(--color-wc-text-tertiary);
-    letter-spacing: 0.18em;
+    font-family: var(--font-display);
+    font-size: 8px; font-weight: 600;
+    color: var(--c-text-3);
+    letter-spacing: 1.2px;
     text-transform: uppercase;
 }
 .donut-legend {
@@ -326,8 +328,9 @@ function formatShortCOP(n) {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 12px;
-    color: var(--color-wc-text-secondary);
+    font-family: var(--font-sans);
+    font-size: 13px; font-weight: 400;
+    color: var(--c-text-2);
 }
 .donut-dot {
     width: 8px;
@@ -342,10 +345,11 @@ function formatShortCOP(n) {
     text-overflow: ellipsis;
 }
 .donut-item-count {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: 13px;
-    color: var(--color-wc-text);
+    color: var(--c-text);
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
 }
 
 /* ── Breakdown stacked bar ─────────────────────────────────────────────── */
@@ -357,16 +361,17 @@ function formatShortCOP(n) {
 }
 .breakdown-total {
     font-family: var(--font-display);
-    font-size: 34px;
-    letter-spacing: 0.03em;
+    font-size: var(--t-xl, 37px);
+    letter-spacing: var(--ls-display, -0.02em);
     line-height: 1;
-    color: var(--color-wc-text);
+    color: var(--c-text);
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
 }
 .breakdown-total-sub {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.18em;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
     text-transform: uppercase;
     margin-left: 6px;
 }
@@ -375,17 +380,18 @@ function formatShortCOP(n) {
 }
 .breakdown-ratio-num {
     font-family: var(--font-display);
-    font-size: 18px;
-    color: var(--color-wc-green-text, #34D399);
-    letter-spacing: 0.03em;
+    font-size: 18px; font-weight: 700;
+    color: #34D399;
+    letter-spacing: var(--ls-display, -0.02em);
     line-height: 1;
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
 }
 .breakdown-ratio-label {
-    font-family: var(--font-mono, monospace);
-    font-size: 7px;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    color: var(--c-text-3);
     text-transform: uppercase;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.2px;
 }
 .stacked-bar {
     height: 8px;
@@ -394,7 +400,7 @@ function formatShortCOP(n) {
     display: flex;
     gap: 2px;
     margin-bottom: 8px;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255,255,255,0.03);
 }
 .stacked-seg {
     border-radius: 99px;
@@ -413,10 +419,10 @@ function formatShortCOP(n) {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-family: var(--font-mono, monospace);
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--c-text-3);
     text-transform: uppercase;
 }
 .breakdown-item-dot {

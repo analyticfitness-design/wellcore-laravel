@@ -235,8 +235,8 @@ function actionClick(action, client, ev) {
 
 <style scoped>
 .clients-table {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 18px;
     overflow: hidden;
@@ -260,15 +260,15 @@ function actionClick(action, client, ev) {
 .table-head {
     padding-bottom: 10px;
     margin-bottom: 6px;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
 }
 
 .th {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     user-select: none;
 }
 .col-client,
@@ -277,8 +277,8 @@ function actionClick(action, client, ev) {
 .col-status,
 .col-joined { cursor: pointer; }
 .sort-glyph {
-    color: var(--color-wc-red-text, #F87171);
-    font-family: var(--font-data, sans-serif);
+    color: #F87171;
+    font-family: var(--font-display);
     margin-left: 2px;
 }
 .col-actions { text-align: right; }
@@ -292,7 +292,7 @@ function actionClick(action, client, ev) {
 .row:last-child { border-bottom: none; }
 .row:hover { background: rgba(255, 255, 255, 0.02); }
 .row:focus-visible {
-    outline: 1px solid var(--color-wc-accent, #DC2626);
+    outline: 1px solid var(--c-accent);
     outline-offset: -1px;
     background: rgba(220, 38, 38, 0.04);
 }
@@ -313,7 +313,7 @@ function actionClick(action, client, ev) {
     border-radius: 50%;
     background: rgba(220, 38, 38, 0.12);
     border: 1px solid rgba(220, 38, 38, 0.25);
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -331,14 +331,14 @@ function actionClick(action, client, ev) {
     font-family: var(--font-sans);
     font-size: 13px;
     font-weight: 600;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 .client-mail {
     font-size: 11px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -346,57 +346,57 @@ function actionClick(action, client, ev) {
 
 /* ── Code ──────────────────────────────────────────────────────────── */
 .code-mono {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 10px;
-    letter-spacing: 0.12em;
-    color: var(--color-wc-text-secondary);
+    letter-spacing: 1.0px;
+    color: var(--c-text-2);
     text-transform: uppercase;
 }
 
 /* ── Plan pill ─────────────────────────────────────────────────────── */
 .plan-pill {
     display: inline-block;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     padding: 3px 7px;
-    border-radius: 4px;
+    border-radius: var(--r-pill, 999px);
     line-height: 1.4;
     background: rgba(96, 165, 250, 0.08);
-    color: var(--color-wc-blue-text, #60A5FA);
+    color: #60A5FA;
     border: 1px solid rgba(96, 165, 250, 0.18);
 }
 
 /* ── Status pill ───────────────────────────────────────────────────── */
 .pill {
     display: inline-block;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     padding: 3px 7px;
-    border-radius: 4px;
+    border-radius: var(--r-pill, 999px);
     line-height: 1.4;
 }
-.pill--success { background: var(--color-wc-green-soft, rgba(16, 185, 129, 0.1)); color: var(--color-wc-green-text, #34D399); }
-.pill--neutral { background: rgba(255, 255, 255, 0.04); color: var(--color-wc-text-tertiary); }
-.pill--amber   { background: var(--color-wc-amber-soft, rgba(245, 158, 11, 0.1)); color: var(--color-wc-amber-text, #FCD34D); }
-.pill--danger  { background: var(--color-wc-red-soft, rgba(220, 38, 38, 0.1)); color: var(--color-wc-red-text, #F87171); }
-.pill--info    { background: var(--color-wc-blue-soft, rgba(59, 130, 246, 0.1)); color: var(--color-wc-blue-text, #60A5FA); }
+.pill--success { background: rgba(16,185,129,0.1); color: #34D399; }
+.pill--neutral { background: rgba(255, 255, 255, 0.04); color: var(--c-text-3); }
+.pill--amber   { background: rgba(245,158,11,0.1); color: #FCD34D; }
+.pill--danger  { background: var(--c-accent-dim); color: #F87171; }
+.pill--info    { background: rgba(59,130,246,0.1); color: #60A5FA; }
 
 /* ── Date / login ──────────────────────────────────────────────────── */
 .date-mono,
 .login-mono {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
 }
-.login-warn   { color: var(--color-wc-amber-text, #FCD34D); }
-.login-urgent { color: var(--color-wc-red-text, #F87171); }
-.login-never  { color: var(--color-wc-text-tertiary); opacity: 0.55; }
+.login-warn   { color: #FCD34D; }
+.login-urgent { color: #F87171; }
+.login-never  { color: var(--c-text-3); opacity: 0.55; }
 
 /* ── Actions ───────────────────────────────────────────────────────── */
 .col-actions {
@@ -408,10 +408,10 @@ function actionClick(action, client, ev) {
 .action-btn {
     width: 30px;
     height: 30px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.4);
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -420,10 +420,10 @@ function actionClick(action, client, ev) {
 }
 .action-btn:hover {
     background: rgba(255, 255, 255, 0.04);
-    border-color: var(--color-wc-border-2, rgba(255, 255, 255, 0.12));
-    color: var(--color-wc-text);
+    border-color: rgba(255,255,255,0.12);
+    color: var(--c-text);
 }
-.action-btn--amber:hover  { color: var(--color-wc-amber-text, #FCD34D); border-color: rgba(245, 158, 11, 0.4); }
-.action-btn--danger:hover { color: var(--color-wc-red-text, #F87171); border-color: rgba(220, 38, 38, 0.4); }
-.action-btn--accent:hover { color: var(--color-wc-accent, #DC2626); border-color: rgba(220, 38, 38, 0.4); background: rgba(220, 38, 38, 0.06); }
+.action-btn--amber:hover  { color: #FCD34D; border-color: rgba(245, 158, 11, 0.4); }
+.action-btn--danger:hover { color: #F87171; border-color: rgba(220, 38, 38, 0.4); }
+.action-btn--accent:hover { color: var(--c-accent); border-color: rgba(220, 38, 38, 0.4); background: rgba(220, 38, 38, 0.06); }
 </style>

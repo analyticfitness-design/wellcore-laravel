@@ -152,7 +152,7 @@ function iconPath(key) {
 <style scoped>
 /* ============================================================================
    AdminSidebar — desktop sticky 240px / mobile drawer overlay.
-   Sin header/logo (el AdminTopBar tiene la brand-area).
+   v2: Oswald section labels + Raleway items + 48px touch targets
    ============================================================================ */
 
 .admin-sidebar {
@@ -162,24 +162,28 @@ function iconPath(key) {
     bottom: 0;
     width: var(--admin-sidebar-w, 240px);
     z-index: 30;
-    background: var(--color-wc-bg-secondary, #111);
-    border-right: 1px solid var(--color-wc-border);
+    background: var(--c-surface);
+    border-right: 1px solid var(--c-border);
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
     display: flex;
     flex-direction: column;
-
-    /* Mobile default: oculto fuera de pantalla */
     transform: translateX(-100%);
-    transition: transform 0.3s var(--ease-out, ease);
+    transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .admin-sidebar--open { transform: translateX(0); }
 
+@media (max-width: 1023px) {
+    .admin-sidebar {
+        bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+}
 @media (min-width: 1024px) {
-    /* Desktop: siempre visible, top empieza despues del topbar */
-    .admin-sidebar { transform: translateX(0); }
+    .admin-sidebar { transform: translateX(0); bottom: 0; }
     .admin-sidebar--open { transform: translateX(0); }
 }
 
@@ -197,28 +201,29 @@ function iconPath(key) {
     flex-direction: column;
 }
 
-.nav-group { margin-bottom: 6px; }
+.nav-group { margin-bottom: 4px; }
 .nav-group-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 10px 16px 5px;
+    padding: 10px 16px 6px;
     cursor: pointer;
     user-select: none;
     background: transparent;
     border: 0;
 }
+/* Section labels: Oswald 10px weight 600 ls 2.5px uppercase */
 .nav-group-label {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 10px;
     font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--c-text-3);
 }
 .nav-group-chevron {
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     display: inline-flex;
     align-items: center;
     transition: transform 0.2s var(--ease-out, ease);
@@ -228,38 +233,36 @@ function iconPath(key) {
 .nav-group-items {
     list-style: none;
     margin: 0;
-    padding: 0 0 4px;
+    padding: 0 8px 4px;
 }
+/* Items: Raleway 15px mobile weight 500. Min-height 48px (touch target). */
 .nav-item {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 8px 16px;
-    color: var(--color-wc-text-tertiary);
-    font-size: 13px;
+    padding: 0 12px;
+    min-height: var(--tap-comfort, 48px);
+    color: var(--c-text-2);
+    font-family: var(--font-sans);
+    font-size: 15px;
     font-weight: 500;
     text-decoration: none;
+    border-radius: var(--r-md);
     position: relative;
     transition: color 0.15s var(--ease-out, ease), background 0.15s var(--ease-out, ease);
 }
+@media (min-width: 1024px) {
+    .nav-item { font-size: 14px; }
+}
 .nav-item:hover {
-    color: var(--color-wc-text-secondary);
-    background: rgba(255, 255, 255, 0.03);
+    color: var(--c-text);
+    background: var(--c-surface-2);
 }
 .nav-item--active {
-    color: var(--color-wc-text);
-    background: var(--color-wc-red-soft, rgba(220, 38, 38, 0.08));
-}
-.nav-item--active::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 60%;
-    background: var(--color-wc-accent, #DC2626);
-    border-radius: 0 2px 2px 0;
+    color: var(--c-text);
+    background: var(--c-accent-dim);
+    border-left: 2px solid var(--c-accent);
+    padding-left: 10px;
 }
 .nav-item-icon {
     width: 16px;
@@ -270,7 +273,7 @@ function iconPath(key) {
     justify-content: center;
     opacity: 0.7;
 }
-.nav-item--active .nav-item-icon { opacity: 1; }
+.nav-item--active .nav-item-icon { opacity: 1; color: var(--c-accent); }
 .nav-item-label {
     flex: 1;
     min-width: 0;
@@ -280,35 +283,38 @@ function iconPath(key) {
 }
 .nav-item-badge {
     margin-left: auto;
-    font-family: var(--font-mono, monospace);
-    font-size: 7px;
-    letter-spacing: 0.15em;
-    color: var(--color-wc-gold, #C8A769);
+    font-family: var(--font-display);
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    background: rgba(212, 160, 76, 0.1);
-    border: 1px solid rgba(212, 160, 76, 0.25);
-    border-radius: 3px;
-    padding: 1px 5px;
+    color: var(--c-amber);
+    background: var(--c-amber-dim);
+    border: 1px solid rgba(212, 168, 14, 0.25);
+    border-radius: var(--r-pill);
+    padding: 2px 7px;
     flex-shrink: 0;
 }
 
-/* ── Footer con rol + nombre ────────────────────────────────────────────── */
+/* ── Footer ─────────────────────────────────────────────────────────────── */
 .admin-sidebar-footer {
     padding: 14px 16px;
-    border-top: 1px solid var(--color-wc-border);
+    border-top: 1px solid var(--c-border);
 }
 .admin-sidebar-footer-role {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.22em;
+    font-family: var(--font-display);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin-bottom: 4px;
 }
 .admin-sidebar-footer-name {
-    font-size: 13px;
+    font-family: var(--font-sans);
+    font-size: 14px;
     font-weight: 600;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -316,23 +322,25 @@ function iconPath(key) {
 }
 .admin-sidebar-logout {
     width: 100%;
+    min-height: 44px;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 10px;
-    border-radius: 6px;
+    padding: 0 12px;
+    border-radius: var(--r-md);
     background: transparent;
-    border: 1px solid var(--color-wc-border);
-    color: var(--color-wc-text-tertiary);
-    font-family: var(--font-mono, monospace);
-    font-size: 9px;
-    letter-spacing: 0.18em;
+    border: 1px solid var(--c-border);
+    color: var(--c-text-3);
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     cursor: pointer;
     transition: border-color 0.15s var(--ease-out, ease), color 0.15s var(--ease-out, ease);
 }
 .admin-sidebar-logout:hover {
-    border-color: rgba(220, 38, 38, 0.35);
-    color: var(--color-wc-red-text, #F87171);
+    border-color: var(--c-accent-border);
+    color: var(--c-accent);
 }
 </style>

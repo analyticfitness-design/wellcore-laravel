@@ -77,8 +77,8 @@ const BUCKET_COLORS = {
 
 <style scoped>
 .rt-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17,17,17,0.7);
     padding: 18px;
 }
@@ -87,38 +87,38 @@ const BUCKET_COLORS = {
     gap: 10px; flex-wrap: wrap; margin-bottom: 16px;
 }
 .rt-title {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--color-wc-text); margin: 0 0 2px;
+    font-family: var(--font-display);
+    font-size: 9px; letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--c-text); margin: 0 0 2px;
 }
 .rt-eyebrow {
-    font-family: var(--font-mono, monospace);
-    font-size: 7px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 7px; letter-spacing: 1.6px; text-transform: uppercase;
+    color: var(--c-text-3);
 }
 .rt-stats { display: flex; gap: 14px; flex-wrap: wrap; }
 .rt-stat { display: flex; flex-direction: column; gap: 1px; }
 .stat-label {
-    font-family: var(--font-mono, monospace);
-    font-size: 7px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 7px; letter-spacing: 1.6px; text-transform: uppercase;
+    color: var(--c-text-3);
 }
 .stat-val {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-size: 13px; font-weight: 600;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     font-feature-settings: 'tnum' 1;
 }
 .rt-empty { padding: 24px 8px; text-align: center; }
 .empty-num {
     font-family: var(--font-display); font-size: 56px;
-    color: var(--color-wc-bg-tertiary); letter-spacing: 0.1em;
+    color: var(--c-surface-2); letter-spacing: 0.1em;
     line-height: 1; margin-bottom: 12px; user-select: none;
 }
 .empty-msg {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic; font-size: 12px;
-    color: var(--color-wc-text-tertiary); margin: 0;
+    color: var(--c-text-3); margin: 0;
 }
 .rt-bars { display: flex; flex-direction: column; gap: 8px; }
 .bar-row {
@@ -128,9 +128,9 @@ const BUCKET_COLORS = {
     gap: 10px;
 }
 .bar-label {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--color-wc-text-secondary);
+    font-family: var(--font-display);
+    font-size: 9px; letter-spacing: 1.0px; text-transform: uppercase;
+    color: var(--c-text-2);
     text-align: right;
 }
 .bar-track {
@@ -144,9 +144,9 @@ const BUCKET_COLORS = {
     min-width: 2px;
 }
 .bar-count {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-size: 11px; font-weight: 600;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     font-feature-settings: 'tnum' 1;
     text-align: right;
 }

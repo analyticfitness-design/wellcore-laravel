@@ -157,11 +157,11 @@ defineExpose({ visible });
 <style scoped>
 /* ============================================================================
    AdminHeroMetrics — 4 KPI cards con mini-rings SVG.
+   v2: Oswald labels + tabular values, Raleway sub/delta, tokens v2.
    Mobile: scroll-snap horizontal. Desktop: grid 4 columnas.
    ============================================================================ */
 
 .hero-metrics {
-    /* Mobile: flexbox horizontal scroll-snap (predecible que grid-auto-columns) */
     display: flex;
     gap: 10px;
     overflow-x: auto;
@@ -170,14 +170,12 @@ defineExpose({ visible });
     scroll-padding-left: 0;
     scrollbar-width: none;
     padding-bottom: 4px;
-    /* permitir que la primera card respire desde el edge sin clipping */
     margin-left: 0;
     margin-right: 0;
 }
 .hero-metrics::-webkit-scrollbar { display: none; }
 
 @media (min-width: 1024px) {
-    /* Desktop: grid 4-col, sin scroll horizontal */
     .hero-metrics {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -188,9 +186,8 @@ defineExpose({ visible });
 }
 
 .metric-card {
-    /* Mobile: card de ancho fijo dentro del flexbox carousel */
     flex: 0 0 220px;
-    border-radius: 14px;
+    border-radius: var(--r-md, 16px);
     padding: 16px 14px 14px;
     display: flex;
     flex-direction: column;
@@ -209,13 +206,13 @@ defineExpose({ visible });
     .metric-card { flex: none; }
 }
 .metric-card > * { min-width: 0; max-width: 100%; }
-.metric-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); }
+.metric-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-card-hover, 0 8px 32px rgba(0,0,0,0.4)); }
 .metric-card:active { transform: scale(0.98); }
 
-.metric-card--urgent  { background: rgba(220, 38, 38, 0.07); border: 1px solid rgba(220, 38, 38, 0.22); }
-.metric-card--warn    { background: rgba(245, 158, 11, 0.07); border: 1px solid rgba(245, 158, 11, 0.2); }
-.metric-card--healthy { background: rgba(16, 185, 129, 0.07); border: 1px solid rgba(16, 185, 129, 0.2); }
-.metric-card--info    { background: rgba(59, 130, 246, 0.07); border: 1px solid rgba(59, 130, 246, 0.2); }
+.metric-card--urgent  { background: var(--c-accent-dim); border: 1px solid rgba(220,38,38,0.22); }
+.metric-card--warn    { background: var(--c-amber-dim); border: 1px solid rgba(212,168,14,0.22); }
+.metric-card--healthy { background: var(--c-success-dim); border: 1px solid rgba(22,163,74,0.22); }
+.metric-card--info    { background: var(--c-surface); border: 1px solid var(--c-border); }
 
 /* ── Mini ring ───────────────────────────────────────────────────────────── */
 .metric-ring-wrap {
@@ -224,27 +221,26 @@ defineExpose({ visible });
     right: 12px;
 }
 .metric-ring { transform: rotate(-90deg); }
-.ring-track { fill: none; stroke: rgba(255, 255, 255, 0.06); }
+.ring-track { fill: none; stroke: rgba(255,255,255,0.06); }
 .ring-fill {
     fill: none;
     stroke-linecap: round;
-    /* Animacion clave del rediseño: 1.2s easeOut */
     transition: stroke-dashoffset 1.2s var(--ease-out, ease);
 }
-.ring-fill--red    { stroke: var(--color-wc-red-text, #F87171); }
-.ring-fill--amber  { stroke: var(--color-wc-amber-text, #FCD34D); }
-.ring-fill--green  { stroke: var(--color-wc-green-text, #34D399); }
-.ring-fill--blue   { stroke: var(--color-wc-blue-text, #60A5FA); }
+.ring-fill--red    { stroke: #F87171; }
+.ring-fill--amber  { stroke: #FCD34D; }
+.ring-fill--green  { stroke: #34D399; }
+.ring-fill--blue   { stroke: #60A5FA; }
 
 /* ── Texto ───────────────────────────────────────────────────────────────── */
 .metric-label {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.2em;
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin-bottom: 8px;
-    padding-right: 60px; /* dejar lugar al mini ring 56x56 + 4px gap */
+    padding-right: 60px;
     line-height: 1.4;
     min-height: 12px;
 }
@@ -256,43 +252,44 @@ defineExpose({ visible });
 }
 .metric-value {
     font-family: var(--font-display);
-    font-size: 32px;
-    letter-spacing: 0.03em;
+    font-size: var(--t-xl, 37px);
+    letter-spacing: var(--ls-display, -0.02em);
     line-height: 1;
     margin-bottom: 4px;
     display: inline-flex;
     align-items: baseline;
     gap: 4px;
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
 }
-.metric-value--urgent  { color: var(--color-wc-red-text, #F87171); }
-.metric-value--warn    { color: var(--color-wc-amber-text, #FCD34D); }
-.metric-value--healthy { color: var(--color-wc-green-text, #34D399); }
-.metric-value--info    { color: var(--color-wc-text); }
+.metric-value--urgent  { color: #F87171; }
+.metric-value--warn    { color: #FCD34D; }
+.metric-value--healthy { color: #34D399; }
+.metric-value--info    { color: var(--c-text); }
 .metric-value-unit {
-    font-size: 16px;
+    font-size: 18px;
     opacity: 0.7;
     font-family: var(--font-display);
 }
 
 .metric-delta {
-    font-family: var(--font-data, 'Barlow', sans-serif);
-    font-size: 11px;
+    font-family: var(--font-sans);
+    font-size: 12px;
     font-weight: 600;
     margin-bottom: 2px;
 }
-.metric-delta--down    { color: var(--color-wc-red-text, #F87171); }
-.metric-delta--up      { color: var(--color-wc-green-text, #34D399); }
-.metric-delta--neutral { color: var(--color-wc-amber-text, #FCD34D); }
+.metric-delta--down    { color: #F87171; }
+.metric-delta--up      { color: #34D399; }
+.metric-delta--neutral { color: var(--c-amber, #FCD34D); }
 
 .metric-sub {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-sans);
+    font-size: 12px; font-weight: 400;
+    color: var(--c-text-3);
     margin-top: 2px;
 }
 
 @media (min-width: 1024px) {
-    .metric-value { font-size: 36px; }
+    .metric-value { font-size: var(--t-xl, 37px); }
     .metric-card { min-height: 120px; padding: 18px 16px 14px; }
 }
 </style>

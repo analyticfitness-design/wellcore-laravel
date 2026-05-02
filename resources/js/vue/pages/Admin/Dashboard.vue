@@ -126,8 +126,8 @@ onBeforeUnmount(() => {
 .dashboard-loading-bar {
     height: 48px;
     width: min(100%, 380px);
-    border-radius: 8px;
-    background: var(--color-wc-bg-tertiary, #181818);
+    border-radius: var(--r-sm, 12px);
+    background: var(--c-surface-2);
     animation: dashboard-pulse 1.5s ease-in-out infinite;
 }
 .dashboard-loading-grid {
@@ -140,9 +140,9 @@ onBeforeUnmount(() => {
 }
 .dashboard-loading-card {
     height: 120px;
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
-    background: var(--color-wc-bg-tertiary, #181818);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface-2);
     animation: dashboard-pulse 1.5s ease-in-out infinite;
 }
 @keyframes dashboard-pulse {
@@ -152,27 +152,28 @@ onBeforeUnmount(() => {
 
 /* ── Error state ───────────────────────────────────────────────────────── */
 .dashboard-error {
-    border-radius: 14px;
+    border-radius: var(--r-md, 16px);
     border: 1px solid rgba(220, 38, 38, 0.2);
-    background: var(--color-wc-red-soft, rgba(220, 38, 38, 0.05));
+    background: var(--c-accent-dim);
     padding: 24px;
     text-align: center;
 }
 .dashboard-error-msg {
     font-size: 14px;
     font-weight: 500;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0 0 16px;
 }
 .dashboard-error-btn {
-    background: var(--color-wc-accent, #DC2626);
+    background: var(--c-accent);
     color: #fff;
     border: 0;
-    border-radius: 8px;
+    border-radius: var(--r-sm, 12px);
     padding: 8px 16px;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
+    min-height: var(--tap-comfort, 48px);
     transition: background 0.15s var(--ease-out, ease);
 }
 .dashboard-error-btn:hover { background: #B91C1C; }

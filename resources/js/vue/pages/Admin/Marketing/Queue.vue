@@ -185,20 +185,20 @@ onBeforeUnmount(() => {
 }
 
 .queue-eyebrow {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin: 0;
 }
 
 .queue-tagline {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12.5px;
     line-height: 1.55;
-    color: var(--color-wc-gold, #C8A769);
+    color: #C8A769;
     margin: -4px 0 0;
     text-wrap: balance;
     max-width: 64ch;
@@ -207,7 +207,7 @@ onBeforeUnmount(() => {
 .queue-error {
     font-family: var(--font-sans);
     font-size: 12.5px;
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
     background: rgba(220, 38, 38, 0.07);
     border: 1px solid rgba(220, 38, 38, 0.20);
     border-radius: 10px;
@@ -222,9 +222,9 @@ onBeforeUnmount(() => {
 }
 .queue-loading-bar {
     height: 32px;
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
-    background: var(--color-wc-bg-tertiary, #181818);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface-2);
     width: 60%;
     animation: queue-pulse 1.5s ease-in-out infinite;
 }
@@ -238,9 +238,9 @@ onBeforeUnmount(() => {
 }
 .queue-loading-card,
 .queue-loading-board {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
-    background: var(--color-wc-bg-tertiary, #181818);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface-2);
     animation: queue-pulse 1.5s ease-in-out infinite;
 }
 .queue-loading-card { height: 124px; }

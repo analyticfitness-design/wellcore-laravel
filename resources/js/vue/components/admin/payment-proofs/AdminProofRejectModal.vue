@@ -165,9 +165,9 @@ watch(() => props.open, async (open) => {
     width: min(92vw, 520px);
     max-height: 90vh;
     overflow-y: auto;
-    background: var(--color-wc-bg-secondary, #111111);
-    border: 1px solid var(--color-wc-border);
-    border-radius: 16px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md, 16px);
     padding: 22px;
     display: flex;
     flex-direction: column;
@@ -182,43 +182,44 @@ watch(() => props.open, async (open) => {
     gap: 12px;
 }
 .reject-eyebrow {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin: 0 0 4px;
 }
 .reject-title {
     font-family: var(--font-display);
     font-size: 22px;
     letter-spacing: 0.06em;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
     line-height: 1;
 }
 .reject-editorial {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
-    color: var(--color-wc-gold, #C8A769);
+    color: #C8A769;
     font-size: 12px;
     margin: 6px 0 0;
     line-height: 1.45;
 }
 .reject-close {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+    width: var(--tap-comfort, 48px);
+    height: var(--tap-comfort, 48px);
+    border-radius: var(--r-sm, 12px);
     background: transparent;
-    border: 1px solid var(--color-wc-border);
-    color: var(--color-wc-text-secondary);
+    border: 1px solid var(--c-border);
+    color: var(--c-text-2);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    flex-shrink: 0;
     transition: border-color 0.15s var(--ease-out, ease), color 0.15s var(--ease-out, ease);
 }
-.reject-close:hover { border-color: var(--color-wc-border-2, rgba(255, 255, 255, 0.12)); color: var(--color-wc-text); }
+.reject-close:hover { border-color: rgba(255, 255, 255, 0.12); color: var(--c-text); }
 .reject-close svg { width: 14px; height: 14px; }
 
 .reject-summary {
@@ -226,23 +227,23 @@ watch(() => props.open, async (open) => {
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     padding: 12px;
-    border-radius: 10px;
+    border-radius: var(--r-sm, 12px);
     background: rgba(220, 38, 38, 0.06);
     border: 1px solid rgba(220, 38, 38, 0.18);
 }
 .reject-summary-item { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .reject-summary-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 7px;
-    letter-spacing: 0.2em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .reject-summary-value {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-size: 13px;
     font-weight: 600;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -251,21 +252,21 @@ watch(() => props.open, async (open) => {
 
 .reject-templates { display: flex; flex-direction: column; gap: 6px; }
 .reject-templates-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.4px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin: 0;
 }
 .reject-templates-list { display: flex; flex-direction: column; gap: 6px; }
 .reject-template {
     text-align: left;
     padding: 8px 10px;
-    border-radius: 8px;
+    border-radius: var(--r-sm, 12px);
     background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--color-wc-border);
-    color: var(--color-wc-text-secondary);
+    border: 1px solid var(--c-border);
+    color: var(--c-text-2);
     font-family: var(--font-sans);
     font-size: 12px;
     line-height: 1.4;
@@ -273,25 +274,25 @@ watch(() => props.open, async (open) => {
     transition: border-color 0.15s var(--ease-out, ease), background 0.15s var(--ease-out, ease);
 }
 .reject-template:hover:not(:disabled) {
-    border-color: var(--color-wc-border-2, rgba(255, 255, 255, 0.12));
+    border-color: rgba(255, 255, 255, 0.12);
     background: rgba(255, 255, 255, 0.04);
 }
 .reject-template:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .reject-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.4px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .reject-textarea {
     width: 100%;
     padding: 12px;
-    border-radius: 10px;
+    border-radius: var(--r-sm, 12px);
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--color-wc-border);
-    color: var(--color-wc-text);
+    border: 1px solid var(--c-border);
+    color: var(--c-text);
     font-family: var(--font-sans);
     font-size: 13px;
     line-height: 1.5;
@@ -301,10 +302,10 @@ watch(() => props.open, async (open) => {
 }
 .reject-textarea:focus {
     outline: none;
-    border-color: var(--color-wc-accent, #DC2626);
+    border-color: var(--c-accent);
     background: rgba(255, 255, 255, 0.05);
 }
-.reject-textarea--error { border-color: var(--color-wc-accent, #DC2626); background: rgba(220, 38, 38, 0.06); }
+.reject-textarea--error { border-color: var(--c-accent); background: rgba(220, 38, 38, 0.06); }
 .reject-textarea:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .reject-meta-row {
@@ -314,15 +315,15 @@ watch(() => props.open, async (open) => {
 .reject-error {
     font-family: var(--font-sans);
     font-size: 11px;
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
 }
 .reject-counter {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.14em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
 }
-.reject-counter--ok { color: var(--color-wc-green-text, #34D399); }
+.reject-counter--ok { color: #34D399; }
 
 .reject-footer {
     display: flex;
@@ -331,8 +332,9 @@ watch(() => props.open, async (open) => {
 }
 .reject-btn {
     flex: 1;
-    padding: 11px 18px;
-    border-radius: 10px;
+    min-height: var(--tap-comfort, 48px);
+    padding: 0 18px;
+    border-radius: var(--r-sm, 12px);
     font-family: var(--font-sans);
     font-size: 13px;
     font-weight: 600;
@@ -345,13 +347,13 @@ watch(() => props.open, async (open) => {
 }
 .reject-btn--secondary {
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--color-wc-border);
-    color: var(--color-wc-text);
+    border: 1px solid var(--c-border);
+    color: var(--c-text);
 }
-.reject-btn--secondary:hover:not(:disabled) { border-color: var(--color-wc-border-2, rgba(255, 255, 255, 0.12)); }
+.reject-btn--secondary:hover:not(:disabled) { border-color: rgba(255, 255, 255, 0.12); }
 .reject-btn--primary {
-    background: var(--color-wc-accent, #DC2626);
-    border: 1px solid var(--color-wc-accent, #DC2626);
+    background: var(--c-accent);
+    border: 1px solid var(--c-accent);
     color: #fff;
 }
 .reject-btn--primary:hover:not(:disabled) { background: #B91C1C; }

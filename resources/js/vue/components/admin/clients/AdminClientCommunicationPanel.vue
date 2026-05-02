@@ -42,8 +42,8 @@ defineProps({
 .comm-panel { display: flex; flex-direction: column; gap: 12px; }
 
 .card {
-    border-radius: 14px;
-    border: 1px dashed var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px dashed var(--c-border);
     background: rgba(17, 17, 17, 0.5);
     padding: 18px;
     display: flex;
@@ -53,29 +53,29 @@ defineProps({
 
 .card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .card-eyebrow {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .badge-pending {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.2em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     padding: 3px 7px;
-    border-radius: 4px;
-    background: var(--color-wc-amber-soft, rgba(245, 158, 11, 0.1));
-    color: var(--color-wc-amber-text, #FCD34D);
+    border-radius: var(--r-pill, 999px);
+    background: rgba(245,158,11,0.1);
+    color: #FCD34D;
 }
 
 .placeholder-body { display: flex; flex-direction: column; gap: 12px; }
 .placeholder-quote {
-    font-family: var(--font-editorial, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 13px;
-    color: var(--color-wc-gold, #C8A769);
+    color: #C8A769;
     line-height: 1.55;
     margin: 0;
     text-wrap: balance;
@@ -91,21 +91,21 @@ defineProps({
 .checklist li {
     font-family: var(--font-sans);
     font-size: 12px;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     display: flex;
     align-items: baseline;
     gap: 8px;
 }
 .check {
-    color: var(--color-wc-text-tertiary);
-    font-family: var(--font-mono, monospace);
+    color: var(--c-text-3);
+    font-family: var(--font-display);
     flex-shrink: 0;
 }
 .placeholder-note {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.14em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
     margin: 4px 0 0;
     line-height: 1.6;
 }

@@ -48,8 +48,8 @@ defineProps({
 .notes-panel { display: flex; flex-direction: column; gap: 12px; }
 
 .card {
-    border-radius: 14px;
-    border: 1px dashed var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px dashed var(--c-border);
     background: rgba(17, 17, 17, 0.5);
     padding: 18px;
     display: flex;
@@ -59,38 +59,38 @@ defineProps({
 
 .card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .card-eyebrow {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .badge-pending {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.2em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     padding: 3px 7px;
-    border-radius: 4px;
-    background: var(--color-wc-amber-soft, rgba(245, 158, 11, 0.1));
-    color: var(--color-wc-amber-text, #FCD34D);
+    border-radius: var(--r-pill, 999px);
+    background: rgba(245,158,11,0.1);
+    color: #FCD34D;
 }
 
 .note-form { display: flex; flex-direction: column; gap: 8px; }
 .note-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .note-textarea {
     width: 100%;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: rgba(255, 255, 255, 0.02);
     padding: 10px 12px;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     font-family: var(--font-sans);
     font-size: 13px;
     resize: vertical;
@@ -102,28 +102,28 @@ defineProps({
     opacity: 0.6;
 }
 .note-textarea::placeholder {
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     font-style: italic;
 }
 
 .form-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .form-hint {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .btn-disabled {
     padding: 0 14px;
-    height: 32px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    min-height: var(--tap-comfort, 48px);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: rgba(255, 255, 255, 0.02);
-    color: var(--color-wc-text-tertiary);
-    font-family: var(--font-mono, monospace);
+    color: var(--c-text-3);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.2em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     cursor: not-allowed;
     opacity: 0.55;
@@ -131,10 +131,10 @@ defineProps({
 
 .placeholder-body { padding-top: 4px; border-top: 1px solid rgba(255, 255, 255, 0.04); }
 .placeholder-quote {
-    font-family: var(--font-editorial, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12px;
-    color: var(--color-wc-gold, #C8A769);
+    color: #C8A769;
     line-height: 1.55;
     margin: 8px 0 0;
     text-wrap: balance;

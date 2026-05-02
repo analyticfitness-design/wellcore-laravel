@@ -56,17 +56,17 @@ onBeforeUnmount(() => clearTimeout(timer));
 .toast--success {
     border-color: rgba(16, 185, 129, 0.45);
     background: rgba(16, 185, 129, 0.12);
-    color: var(--color-wc-green-text, #34D399);
+    color: #34D399;
 }
 .toast--error {
     border-color: rgba(220, 38, 38, 0.45);
     background: rgba(220, 38, 38, 0.12);
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
 }
 .toast--info {
-    border-color: var(--color-wc-border);
+    border-color: var(--c-border);
     background: rgba(17, 17, 17, 0.92);
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
 }
 
 .toast-up-enter-active,

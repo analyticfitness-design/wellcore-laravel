@@ -111,14 +111,14 @@ async function copyToClipboard() {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 9px;
-  letter-spacing: 0.18em;
+  letter-spacing: 1.6px;
   text-transform: uppercase;
-  color: var(--color-wc-text-tertiary);
+  color: var(--c-text-3);
 }
-.ssf-req { color: var(--color-wc-accent); }
-.ssf-lock { display: flex; align-items: center; color: var(--color-wc-text-tertiary); cursor: help; }
+.ssf-req { color: var(--c-accent); }
+.ssf-lock { display: flex; align-items: center; color: var(--c-text-3); cursor: help; }
 
 .ssf-input-row {
   display: flex;
@@ -130,18 +130,18 @@ async function copyToClipboard() {
   height: 36px;
   padding: 0 10px;
   background: rgba(255,255,255,0.03);
-  border: 1px solid var(--color-wc-border);
-  border-radius: 8px;
-  color: var(--color-wc-text);
-  font-family: var(--font-mono);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-sm, 12px);
+  color: var(--c-text);
+  font-family: var(--font-display);
   font-size: 13px;
   outline: none;
   transition: border-color 0.15s var(--ease-out);
   min-width: 0;
 }
-.ssf-input:focus { border-color: var(--color-wc-accent); box-shadow: 0 0 0 2px rgba(220,38,38,0.12); }
+.ssf-input:focus { border-color: var(--c-accent); box-shadow: 0 0 0 2px rgba(220,38,38,0.12); }
 .ssf-input:disabled { opacity: 0.45; cursor: not-allowed; }
-.ssf-input--error { border-color: var(--color-wc-accent); }
+.ssf-input--error { border-color: var(--c-accent); }
 
 .ssf-btn {
   display: flex;
@@ -149,30 +149,30 @@ async function copyToClipboard() {
   justify-content: center;
   width: 32px;
   height: 36px;
-  border-radius: 8px;
-  border: 1px solid var(--color-wc-border);
+  border-radius: var(--r-sm, 12px);
+  border: 1px solid var(--c-border);
   background: rgba(255,255,255,0.03);
-  color: var(--color-wc-text-tertiary);
+  color: var(--c-text-3);
   cursor: pointer;
   flex-shrink: 0;
   transition: color 0.12s, border-color 0.12s;
 }
 .ssf-btn:hover:not(:disabled) {
-  color: var(--color-wc-text);
-  border-color: var(--color-wc-border-2);
+  color: var(--c-text);
+  border-color: rgba(255,255,255,0.12);
 }
 .ssf-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .ssf-hint {
   font-family: var(--font-sans);
   font-size: 11px;
-  color: var(--color-wc-text-tertiary);
+  color: var(--c-text-3);
   margin: 0;
 }
 .ssf-error {
   font-family: var(--font-sans);
   font-size: 11px;
-  color: var(--color-wc-red-text);
+  color: #F87171;
   margin: 0;
 }
 </style>

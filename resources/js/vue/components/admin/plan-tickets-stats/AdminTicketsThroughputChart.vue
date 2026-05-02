@@ -125,8 +125,8 @@ function fmtLabel(date) {
 
 <style scoped>
 .throughput-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 18px;
 }
@@ -141,9 +141,9 @@ function fmtLabel(date) {
 .chart-title {
     font-family: var(--font-display);
     font-size: 13px;
-    letter-spacing: 0.14em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
 }
 .chart-legend {
@@ -155,11 +155,11 @@ function fmtLabel(date) {
     display: flex;
     align-items: center;
     gap: 5px;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.14em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .legend-dot {
     width: 8px;
@@ -168,8 +168,8 @@ function fmtLabel(date) {
     flex-shrink: 0;
 }
 .legend-dot--gray  { background: rgba(250,250,250,0.3); }
-.legend-dot--green { background: var(--color-wc-green-text, #34D399); }
-.legend-dot--red   { background: var(--color-wc-red-text, #F87171); }
+.legend-dot--green { background: #34D399; }
+.legend-dot--red   { background: #F87171; }
 
 .chart-wrap {
     width: 100%;
@@ -193,13 +193,13 @@ function fmtLabel(date) {
     vector-effect: non-scaling-stroke;
 }
 .line--gray  { stroke: rgba(250,250,250,0.28); }
-.line--green { stroke: var(--color-wc-green-text, #34D399); }
-.line--red   { stroke: var(--color-wc-red-text, #F87171); }
+.line--green { stroke: #34D399; }
+.line--red   { stroke: #F87171; }
 
 .axis-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    fill: var(--color-wc-text-tertiary);
+    fill: var(--c-text-3);
     letter-spacing: 0.08em;
 }
 
@@ -211,17 +211,17 @@ function fmtLabel(date) {
     display: block;
     font-family: var(--font-display);
     font-size: 56px;
-    color: var(--color-wc-bg-tertiary, #181818);
-    letter-spacing: 0.1em;
+    color: var(--c-surface-2);
+    letter-spacing: 0.8px;
     line-height: 1;
     margin-bottom: 12px;
     user-select: none;
 }
 .chart-empty-msg {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     line-height: 1.55;
     margin: 0;
 }

@@ -95,79 +95,86 @@ const clockDate = computed(() => {
 
 <style scoped>
 /* ============================================================================
-   AdminGreeting — hero saludo con tagline Fraunces italic.
+   AdminGreeting — hero saludo + tagline Raleway italic.
+   v2: Oswald eyebrow + title, Raleway quote, tokens v2.
    Mobile: stack vertical compact. Desktop: greeting bar inline con CTAs.
    ============================================================================ */
 
 /* ── Mobile ──────────────────────────────────────────────────────────────── */
 .greeting-mobile {
-    padding: 22px 16px 20px;
+    padding: 22px 16px 28px;
     position: relative; overflow: hidden;
+    border-bottom: 1px solid var(--c-border);
 }
 .greeting-eyebrow {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
-    margin: 0 0 8px;
+    font-family: var(--font-display);
+    font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--c-accent);
+    margin: 0 0 12px;
 }
 .greeting-title {
     font-family: var(--font-display);
-    font-size: 32px; letter-spacing: 0.04em; line-height: 0.98;
-    color: var(--color-wc-text);
-    margin: 0 0 10px;
-    text-wrap: balance;
+    font-size: var(--t-3xl, 56px); font-weight: 700;
+    letter-spacing: var(--ls-display, -0.02em); line-height: var(--lh-display, 0.95);
+    color: var(--c-text);
+    margin: 0 0 12px;
+    text-transform: uppercase; text-wrap: balance;
 }
 .greeting-editorial {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
-    font-style: italic;
-    font-size: 12px; line-height: 1.5;
-    color: var(--color-wc-gold, #D4A04C);
-    margin: 0 0 14px;
+    font-family: var(--font-editorial, var(--font-sans));
+    font-style: italic; font-weight: 300;
+    font-size: 15px; line-height: var(--lh-body, 1.65);
+    color: var(--c-text-2);
+    margin: 0 0 16px;
 }
 .greeting-badge-row {
     display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
 }
 .greeting-badge-critical {
     display: inline-flex; align-items: center; gap: 7px;
-    background: rgba(220, 38, 38, 0.14);
+    background: var(--c-accent-dim);
     border: 1px solid rgba(220, 38, 38, 0.35);
-    border-radius: 8px;
-    padding: 6px 11px;
+    border-radius: var(--r-sm, 12px);
+    padding: 6px 12px;
     font-family: var(--font-display);
-    font-size: 12px; letter-spacing: 0.14em;
-    color: var(--color-wc-red-text, #F87171);
+    font-size: 10px; font-weight: 600; letter-spacing: 1.4px;
+    color: #F87171;
     text-transform: uppercase;
 }
 .greeting-badge-dot {
     width: 6px; height: 6px; border-radius: 50%;
-    background: var(--color-wc-red-text, #F87171);
+    background: #F87171;
     animation: greeting-pulse 1.8s ease-in-out infinite;
 }
 @keyframes greeting-pulse { 0%, 100% { opacity: 1 } 50% { opacity: 0.5 } }
 .greeting-badge-time {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--c-text-3);
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
 }
 
 /* ── Desktop ──────────────────────────────────────────────────────────────── */
 .greeting-desktop {
     align-items: flex-start; justify-content: space-between;
-    padding: 28px 0 20px;
+    padding: 28px 0 28px;
     gap: 24px;
+    border-bottom: 1px solid var(--c-border);
 }
 .greeting-desktop-left { flex: 1; min-width: 0; }
 .greeting-title-desktop {
     font-family: var(--font-display);
-    font-size: 38px; letter-spacing: 0.04em; line-height: 1;
-    color: var(--color-wc-text);
-    margin: 0 0 6px;
+    font-size: var(--t-2xl, 49px); font-weight: 700;
+    letter-spacing: var(--ls-display, -0.02em); line-height: var(--lh-display, 0.95);
+    color: var(--c-text);
+    margin: 0 0 8px;
+    text-transform: uppercase;
 }
 .greeting-editorial-desktop {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
-    font-style: italic;
-    font-size: 13px; line-height: 1.5;
-    color: var(--color-wc-gold, #D4A04C);
+    font-family: var(--font-editorial, var(--font-sans));
+    font-style: italic; font-weight: 300;
+    font-size: 15px; line-height: var(--lh-body, 1.65);
+    color: var(--c-text-2);
     margin: 0;
 }
 .greeting-desktop-right {
@@ -175,33 +182,35 @@ const clockDate = computed(() => {
 }
 .greeting-cta {
     display: inline-flex; align-items: center; gap: 8px;
-    padding: 10px 16px; border-radius: 10px;
-    font-family: var(--font-sans);
-    font-size: 13px; font-weight: 600;
+    padding: 12px 18px; border-radius: var(--r-sm, 12px);
+    min-height: var(--tap-comfort, 48px);
+    font-family: var(--font-display);
+    font-size: 11px; font-weight: 600; letter-spacing: 1.4px;
+    text-transform: uppercase;
     transition: background 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease);
     text-decoration: none;
 }
 .greeting-cta--primary {
-    background: var(--color-wc-accent, #DC2626);
+    background: var(--c-accent);
     color: #fff;
-    border: 1px solid var(--color-wc-accent, #DC2626);
+    border: 1px solid var(--c-accent);
 }
 .greeting-cta--primary:hover { background: #B91C1C; }
 .greeting-cta--secondary {
-    background: rgba(17, 17, 17, 0.7);
-    color: var(--color-wc-text);
-    border: 1px solid var(--color-wc-border);
+    background: var(--c-surface-2);
+    color: var(--c-text);
+    border: 1px solid var(--c-border);
 }
-.greeting-cta--secondary:hover { border-color: var(--color-wc-border-2, rgba(255, 255, 255, 0.12)); }
+.greeting-cta--secondary:hover { border-color: var(--c-border-bright); }
 .greeting-cta-badge {
     background: rgba(255, 255, 255, 0.18);
-    border-radius: 999px; padding: 1px 7px;
-    font-family: var(--font-data, 'Barlow', sans-serif);
-    font-size: 11px; font-weight: 700;
+    border-radius: var(--r-pill, 999px); padding: 1px 7px;
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 700;
 }
 .greeting-cta-badge--blue {
     background: rgba(59, 130, 246, 0.2);
-    color: var(--color-wc-blue-text, #60A5FA);
+    color: #60A5FA;
 }
 .greeting-meta {
     text-align: right;
@@ -209,13 +218,14 @@ const clockDate = computed(() => {
 }
 .greeting-time {
     font-family: var(--font-display);
-    font-size: 26px; letter-spacing: 0.08em;
-    color: var(--color-wc-text-tertiary);
-    line-height: 1; margin-bottom: 3px;
+    font-size: 28px; letter-spacing: var(--ls-mono, 0.04em);
+    color: var(--c-text-3);
+    line-height: 1; margin-bottom: 4px;
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
 }
 .greeting-date {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--c-text-3);
 }
 </style>

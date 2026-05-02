@@ -154,8 +154,8 @@ function openDetail() {
     display: block;
     width: 100%;
     text-align: left;
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 14px;
     cursor: pointer;
@@ -163,10 +163,10 @@ function openDetail() {
 }
 .client-card:hover {
     background: rgba(17, 17, 17, 0.9);
-    border-color: var(--color-wc-border-2, rgba(255, 255, 255, 0.12));
+    border-color: rgba(255,255,255,0.12);
 }
 .client-card:focus-visible {
-    outline: 1px solid var(--color-wc-accent, #DC2626);
+    outline: 1px solid var(--c-accent);
     outline-offset: -1px;
 }
 
@@ -183,7 +183,7 @@ function openDetail() {
     border-radius: 50%;
     background: rgba(220, 38, 38, 0.12);
     border: 1px solid rgba(220, 38, 38, 0.25);
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -202,7 +202,7 @@ function openDetail() {
     font-family: var(--font-sans);
     font-size: 14px;
     font-weight: 700;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -210,7 +210,7 @@ function openDetail() {
 }
 .card-mail {
     font-size: 11px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -223,20 +223,20 @@ function openDetail() {
 .pill--danger,
 .pill--info {
     display: inline-block;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     padding: 3px 7px;
-    border-radius: 4px;
+    border-radius: var(--r-pill, 999px);
     line-height: 1.4;
     flex-shrink: 0;
 }
-.pill--success { background: var(--color-wc-green-soft, rgba(16, 185, 129, 0.1)); color: var(--color-wc-green-text, #34D399); }
-.pill--neutral { background: rgba(255, 255, 255, 0.04); color: var(--color-wc-text-tertiary); }
-.pill--amber   { background: var(--color-wc-amber-soft, rgba(245, 158, 11, 0.1)); color: var(--color-wc-amber-text, #FCD34D); }
-.pill--danger  { background: var(--color-wc-red-soft, rgba(220, 38, 38, 0.1)); color: var(--color-wc-red-text, #F87171); }
-.pill--info    { background: var(--color-wc-blue-soft, rgba(59, 130, 246, 0.1)); color: var(--color-wc-blue-text, #60A5FA); }
+.pill--success { background: rgba(16,185,129,0.1); color: #34D399; }
+.pill--neutral { background: rgba(255, 255, 255, 0.04); color: var(--c-text-3); }
+.pill--amber   { background: rgba(245,158,11,0.1); color: #FCD34D; }
+.pill--danger  { background: var(--c-accent-dim); color: #F87171; }
+.pill--info    { background: rgba(59,130,246,0.1); color: #60A5FA; }
 
 .card-stats {
     display: grid;
@@ -245,61 +245,61 @@ function openDetail() {
     margin-bottom: 12px;
 }
 .stat {
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     padding: 8px 10px;
     background: rgba(255, 255, 255, 0.02);
     min-width: 0;
 }
 .stat-label {
     display: block;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 7px;
-    letter-spacing: 0.2em;
+    letter-spacing: 1.4px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin-bottom: 4px;
 }
 .stat-pill {
     display: inline-block;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     padding: 2px 6px;
-    border-radius: 4px;
+    border-radius: var(--r-pill, 999px);
     line-height: 1.4;
     background: rgba(96, 165, 250, 0.08);
-    color: var(--color-wc-blue-text, #60A5FA);
+    color: #60A5FA;
     border: 1px solid rgba(96, 165, 250, 0.18);
 }
 .stat-mono {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 11px;
-    letter-spacing: 0.12em;
-    color: var(--color-wc-text-secondary);
+    letter-spacing: 1.0px;
+    color: var(--c-text-2);
     text-transform: uppercase;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     display: block;
 }
-.login-warn   { color: var(--color-wc-amber-text, #FCD34D); }
-.login-urgent { color: var(--color-wc-red-text, #F87171); }
-.login-never  { color: var(--color-wc-text-tertiary); opacity: 0.55; }
+.login-warn   { color: #FCD34D; }
+.login-urgent { color: #F87171; }
+.login-never  { color: var(--c-text-3); opacity: 0.55; }
 
 .card-cta {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding-top: 10px;
-    border-top: 1px solid var(--color-wc-border);
-    color: var(--color-wc-text-secondary);
+    border-top: 1px solid var(--c-border);
+    color: var(--c-text-2);
 }
 .cta-text {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
 }
 .cta-tail {
@@ -312,19 +312,19 @@ function openDetail() {
     align-items: center;
     gap: 4px;
     padding: 4px 8px;
-    border-radius: 6px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: rgba(255, 255, 255, 0.02);
-    color: var(--color-wc-text-tertiary);
-    font-family: var(--font-mono, monospace);
+    color: var(--c-text-3);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.2em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     cursor: pointer;
     transition: background 0.15s var(--ease-out, ease), color 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease);
 }
 .cta-impersonate:hover {
-    color: var(--color-wc-accent, #DC2626);
+    color: var(--c-accent);
     border-color: rgba(220, 38, 38, 0.4);
     background: rgba(220, 38, 38, 0.06);
 }

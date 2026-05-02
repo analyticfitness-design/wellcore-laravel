@@ -237,9 +237,9 @@ const filteredProofs = computed(() => store.proofs);
 
 <style scoped>
 .queue-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
-    background: rgba(17, 17, 17, 0.7);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface);
     padding: 16px;
     display: flex;
     flex-direction: column;
@@ -271,13 +271,13 @@ const filteredProofs = computed(() => store.proofs);
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    height: 28px;
+    height: var(--tap-comfort, 48px);
     padding: 0 12px;
-    border-radius: 999px;
+    border-radius: var(--r-pill, 999px);
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--color-wc-border);
-    color: var(--color-wc-text-tertiary);
-    font-family: var(--font-mono, monospace);
+    border: 1px solid var(--c-border);
+    color: var(--c-text-3);
+    font-family: var(--font-display);
     font-size: 9px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -285,18 +285,18 @@ const filteredProofs = computed(() => store.proofs);
     white-space: nowrap;
     transition: background 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease), color 0.15s var(--ease-out, ease);
 }
-.queue-tab:hover { border-color: var(--color-wc-border-2, rgba(255,255,255,0.12)); color: var(--color-wc-text-secondary); }
+.queue-tab:hover { border-color: rgba(255,255,255,0.12); color: var(--c-text-2); }
 .queue-tab--active {
-    background: var(--color-wc-red-soft, rgba(220, 38, 38, 0.1));
+    background: var(--c-accent-dim);
     border-color: rgba(220, 38, 38, 0.4);
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
 }
 .queue-tab-count {
     background: rgba(220, 38, 38, 0.18);
-    color: var(--color-wc-red-text, #F87171);
-    border-radius: 999px;
+    color: #F87171;
+    border-radius: var(--r-pill, 999px);
     padding: 1px 6px;
-    font-family: var(--font-data, sans-serif);
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: 10px;
     letter-spacing: 0;
@@ -316,27 +316,27 @@ const filteredProofs = computed(() => store.proofs);
     transform: translateY(-50%);
     width: 14px;
     height: 14px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     pointer-events: none;
 }
 .queue-search-input {
     width: 100%;
-    height: 36px;
+    height: 40px;
     padding: 0 12px 0 34px;
-    border-radius: 8px;
+    border-radius: var(--r-sm, 12px);
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--color-wc-border);
-    color: var(--color-wc-text);
+    border: 1px solid var(--c-border);
+    color: var(--c-text);
     font-family: var(--font-sans);
     font-size: 13px;
     transition: border-color 0.15s var(--ease-out, ease);
 }
 .queue-search-input:focus {
     outline: none;
-    border-color: var(--color-wc-accent, #DC2626);
+    border-color: var(--c-accent);
     background: rgba(255, 255, 255, 0.05);
 }
-.queue-search-input::placeholder { color: var(--color-wc-text-tertiary); }
+.queue-search-input::placeholder { color: var(--c-text-3); }
 
 /* ── New badge ──────────────────────────────────────────────────────────── */
 .queue-new-banner {
@@ -344,11 +344,11 @@ const filteredProofs = computed(() => store.proofs);
     align-items: center;
     gap: 10px;
     padding: 9px 14px;
-    border-radius: 10px;
-    background: var(--color-wc-red-soft, rgba(220, 38, 38, 0.1));
+    border-radius: var(--r-sm, 12px);
+    background: var(--c-accent-dim);
     border: 1px solid rgba(220, 38, 38, 0.32);
-    color: var(--color-wc-red-text, #F87171);
-    font-family: var(--font-mono, monospace);
+    color: #F87171;
+    font-family: var(--font-display);
     font-size: 10px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -359,7 +359,7 @@ const filteredProofs = computed(() => store.proofs);
 .queue-new-banner:hover { background: rgba(220, 38, 38, 0.16); }
 .queue-new-dot {
     width: 8px; height: 8px; border-radius: 50%;
-    background: var(--color-wc-red-text, #F87171);
+    background: #F87171;
     animation: queue-pulse 1.6s ease-in-out infinite;
 }
 @keyframes queue-pulse { 0%, 100% { opacity: 1 } 50% { opacity: 0.4 } }
@@ -369,9 +369,9 @@ const filteredProofs = computed(() => store.proofs);
 .queue-skeleton { display: flex; flex-direction: column; gap: 10px; }
 .queue-skeleton-card {
     height: 96px;
-    border-radius: 12px;
-    border: 1px solid var(--color-wc-border);
-    background: var(--color-wc-bg-tertiary, #181818);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface-2);
     animation: queue-skeleton 1.5s ease-in-out infinite;
 }
 @keyframes queue-skeleton { 0%, 100% { opacity: 0.6 } 50% { opacity: 0.9 } }
@@ -384,17 +384,17 @@ const filteredProofs = computed(() => store.proofs);
 .queue-empty-num {
     font-family: var(--font-display);
     font-size: 56px;
-    color: var(--color-wc-bg-tertiary, #181818);
+    color: var(--c-surface-2);
     letter-spacing: 0.1em;
     line-height: 1;
     margin-bottom: 12px;
     user-select: none;
 }
 .queue-empty-msg {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 13px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     line-height: 1.55;
     margin: 0 auto 14px;
     max-width: 380px;
@@ -406,19 +406,19 @@ const filteredProofs = computed(() => store.proofs);
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
     letter-spacing: 0.22em;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     text-transform: uppercase;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
     padding: 0 0 4px;
     cursor: pointer;
     transition: color 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease);
 }
 .queue-empty-cta:hover {
-    color: var(--color-wc-text);
-    border-bottom-color: var(--color-wc-accent, #DC2626);
+    color: var(--c-text);
+    border-bottom-color: var(--c-accent);
 }
 
 /* ── List ──────────────────────────────────────────────────────────────── */
@@ -433,8 +433,8 @@ const filteredProofs = computed(() => store.proofs);
     grid-template-columns: 88px 1fr;
     gap: 12px;
     padding: 12px;
-    border-radius: 12px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: rgba(20, 20, 20, 0.5);
     cursor: pointer;
     transition: transform 0.18s var(--ease-out, ease), border-color 0.18s var(--ease-out, ease), background 0.18s var(--ease-out, ease);
@@ -449,13 +449,13 @@ const filteredProofs = computed(() => store.proofs);
     }
 }
 .proof-card:hover {
-    border-color: var(--color-wc-border-2, rgba(255, 255, 255, 0.12));
+    border-color: rgba(255,255,255,0.12);
     background: rgba(24, 24, 24, 0.7);
     transform: translateY(-1px);
 }
 .proof-card:active { transform: scale(0.99); }
 .proof-card:focus-visible {
-    outline: 2px solid var(--color-wc-accent, #DC2626);
+    outline: 2px solid var(--c-accent);
     outline-offset: 2px;
 }
 .proof-card--pending {
@@ -467,13 +467,13 @@ const filteredProofs = computed(() => store.proofs);
     width: 100%;
     aspect-ratio: 16 / 9;
     align-self: start;
-    border-radius: 8px;
-    background: var(--color-wc-bg-tertiary, #181818);
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    background: var(--c-surface-2);
+    border: 1px solid var(--c-border);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     position: relative;
 }
 .proof-thumb svg { width: 28px; height: 28px; }
@@ -481,10 +481,10 @@ const filteredProofs = computed(() => store.proofs);
     position: absolute;
     bottom: 4px;
     right: 4px;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 7px;
     letter-spacing: 0.16em;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     background: rgba(0, 0, 0, 0.4);
     padding: 1px 5px;
     border-radius: 3px;
@@ -507,16 +507,16 @@ const filteredProofs = computed(() => store.proofs);
     font-family: var(--font-sans);
     font-size: 14px;
     font-weight: 600;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 .proof-email {
     margin: 0;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 10px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     letter-spacing: 0.04em;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -533,26 +533,26 @@ const filteredProofs = computed(() => store.proofs);
     flex-direction: column;
     gap: 1px;
     padding: 4px 8px;
-    border-radius: 6px;
+    border-radius: var(--r-sm, 12px);
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--color-wc-border);
+    border: 1px solid var(--c-border);
     min-width: 0;
 }
 .proof-data-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 7px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .proof-data-value {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-size: 12px;
     font-weight: 600;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     font-variant-numeric: tabular-nums;
 }
-.proof-data-value--amount { color: var(--color-wc-text); }
+.proof-data-value--amount { color: var(--c-text); }
 
 .proof-foot {
     display: flex;
@@ -564,17 +564,17 @@ const filteredProofs = computed(() => store.proofs);
 .proof-coach {
     font-family: var(--font-sans);
     font-size: 11px;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 .proof-time {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     white-space: nowrap;
 }
 
@@ -586,13 +586,13 @@ const filteredProofs = computed(() => store.proofs);
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        height: 36px;
+        height: var(--tap-comfort, 48px);
         padding: 0 14px;
-        border-radius: 8px;
+        border-radius: var(--r-sm, 12px);
         background: rgba(220, 38, 38, 0.08);
         border: 1px solid rgba(220, 38, 38, 0.28);
-        color: var(--color-wc-red-text, #F87171);
-        font-family: var(--font-mono, monospace);
+        color: #F87171;
+        font-family: var(--font-display);
         font-size: 9px;
         letter-spacing: 0.22em;
         text-transform: uppercase;
@@ -608,19 +608,19 @@ const filteredProofs = computed(() => store.proofs);
 /* ── Pills (estado) ────────────────────────────────────────────────────── */
 .pill {
     display: inline-block;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     padding: 2px 6px;
-    border-radius: 4px;
+    border-radius: var(--r-pill, 999px);
     white-space: nowrap;
     flex-shrink: 0;
 }
-.pill--urgent  { background: var(--color-wc-red-soft, rgba(220, 38, 38, 0.1)); color: var(--color-wc-red-text, #F87171); }
-.pill--warn    { background: var(--color-wc-amber-soft, rgba(245, 158, 11, 0.1)); color: var(--color-wc-amber-text, #FCD34D); }
-.pill--success { background: var(--color-wc-green-soft, rgba(16, 185, 129, 0.1)); color: var(--color-wc-green-text, #34D399); }
-.pill--info    { background: var(--color-wc-blue-soft, rgba(59, 130, 246, 0.1)); color: var(--color-wc-blue-text, #60A5FA); }
+.pill--urgent  { background: var(--c-accent-dim); color: #F87171; }
+.pill--warn    { background: rgba(245,158,11,0.10); color: #FCD34D; }
+.pill--success { background: rgba(16,185,129,0.10); color: #34D399; }
+.pill--info    { background: rgba(59,130,246,0.10); color: #60A5FA; }
 
 /* ── Pagination ────────────────────────────────────────────────────────── */
 .queue-pagination {
@@ -630,24 +630,24 @@ const filteredProofs = computed(() => store.proofs);
     flex-wrap: wrap;
     gap: 10px;
     padding-top: 8px;
-    border-top: 1px solid var(--color-wc-border);
+    border-top: 1px solid var(--c-border);
 }
 .queue-pagination-meta {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .queue-pagination-buttons { display: flex; gap: 8px; }
 .queue-pagination-buttons button {
-    height: 30px;
+    height: var(--tap-comfort, 48px);
     padding: 0 14px;
-    border-radius: 8px;
+    border-radius: var(--r-sm, 12px);
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--color-wc-border);
-    color: var(--color-wc-text-secondary);
-    font-family: var(--font-mono, monospace);
+    border: 1px solid var(--c-border);
+    color: var(--c-text-2);
+    font-family: var(--font-display);
     font-size: 9px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -655,8 +655,8 @@ const filteredProofs = computed(() => store.proofs);
     transition: border-color 0.15s var(--ease-out, ease), color 0.15s var(--ease-out, ease);
 }
 .queue-pagination-buttons button:hover:not(:disabled) {
-    border-color: var(--color-wc-border-2, rgba(255, 255, 255, 0.12));
-    color: var(--color-wc-text);
+    border-color: rgba(255,255,255,0.12);
+    color: var(--c-text);
 }
 .queue-pagination-buttons button:disabled {
     opacity: 0.35;

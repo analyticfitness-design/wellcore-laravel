@@ -116,14 +116,15 @@ function formatStatus(status) {
 
 <style scoped>
 /* ============================================================================
-   AdminActivityFeed — timeline vertical con dots + tags color-coded.
+   AdminActivityFeed — timeline vertical con dots + pills color-coded.
+   v2: Oswald tags/titles, Raleway names/meta, tokens v2.
    Mobile: stack normal. Desktop: card padding mas grande.
    ============================================================================ */
 
 .activity-feed {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
-    background: rgba(17, 17, 17, 0.7);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface);
     padding: 18px;
 }
 .feed-header {
@@ -134,32 +135,32 @@ function formatStatus(status) {
 }
 .feed-title {
     font-family: var(--font-display);
-    font-size: 13px;
-    letter-spacing: 0.14em;
+    font-size: 16px; font-weight: 600;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
 }
 .feed-link-all {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.18em;
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     text-decoration: none;
     transition: color 0.15s var(--ease-out, ease);
 }
-.feed-link-all:hover { color: var(--color-wc-text); }
+.feed-link-all:hover { color: var(--c-text); }
 
 .feed-empty {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
-    font-size: 12px;
-    color: var(--color-wc-text-tertiary);
+    font-size: 13px;
+    color: var(--c-text-3);
     text-align: center;
     padding: 24px 12px;
     margin: 0;
-    line-height: 1.5;
+    line-height: var(--lh-body, 1.65);
 }
 
 .feed-list {
@@ -173,7 +174,7 @@ function formatStatus(status) {
     display: flex;
     gap: 12px;
     padding: 11px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid var(--c-border);
 }
 .feed-item:last-child { border-bottom: none; }
 
@@ -190,13 +191,13 @@ function formatStatus(status) {
     border-radius: 50%;
     flex-shrink: 0;
 }
-.feed-dot--payment { background: var(--color-wc-green-text, #34D399); box-shadow: 0 0 6px rgba(52, 211, 153, 0.4); }
-.feed-dot--inscription { background: var(--color-wc-blue-text, #60A5FA); box-shadow: 0 0 6px rgba(96, 165, 250, 0.4); }
+.feed-dot--payment     { background: #34D399; box-shadow: 0 0 6px rgba(52,211,153,0.4); }
+.feed-dot--inscription { background: #60A5FA; box-shadow: 0 0 6px rgba(96,165,250,0.4); }
 
 .feed-tail {
     flex: 1;
     width: 1px;
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255,255,255,0.06);
     margin-top: 5px;
     min-height: 16px;
 }
@@ -207,22 +208,22 @@ function formatStatus(status) {
 }
 .feed-tag {
     display: inline-block;
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.18em;
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.4px;
     text-transform: uppercase;
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-bottom: 4px;
+    padding: 3px 8px;
+    border-radius: var(--r-pill, 999px);
+    margin-bottom: 5px;
 }
-.feed-tag--payment { background: var(--color-wc-green-soft, rgba(16, 185, 129, 0.12)); color: var(--color-wc-green-text, #34D399); }
-.feed-tag--inscription { background: var(--color-wc-blue-soft, rgba(59, 130, 246, 0.12)); color: var(--color-wc-blue-text, #60A5FA); }
+.feed-tag--payment     { background: var(--c-success-dim, rgba(22,163,74,0.12)); color: #34D399; }
+.feed-tag--inscription { background: rgba(59,130,246,0.12); color: #60A5FA; }
 
 .feed-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--color-wc-text);
-    margin: 0 0 3px;
+    font-family: var(--font-sans);
+    font-size: 15px; font-weight: 600;
+    color: var(--c-text);
+    margin: 0 0 4px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -235,45 +236,46 @@ function formatStatus(status) {
     flex-wrap: wrap;
 }
 .feed-meta-sep {
-    color: var(--color-wc-text-tertiary);
-    opacity: 0.4;
-    font-size: 9px;
+    color: var(--c-text-3);
+    opacity: 0.5;
+    font-size: 10px;
 }
 .feed-amount {
     font-family: var(--font-display);
-    font-size: 14px;
-    color: var(--color-wc-green-text, #34D399);
-    letter-spacing: 0.02em;
+    font-size: 14px; font-weight: 700;
+    color: #34D399;
+    letter-spacing: var(--ls-display, -0.02em);
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
 }
 .feed-method,
 .feed-plan,
 .feed-time {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px;
-    color: var(--color-wc-text-tertiary);
-    letter-spacing: 0.05em;
+    font-family: var(--font-sans);
+    font-size: 12px; font-weight: 400;
+    color: var(--c-text-3);
 }
 .feed-status {
     display: inline-block;
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.14em;
-    padding: 1px 5px;
-    border-radius: 3px;
-    background: var(--color-wc-amber-soft, rgba(245, 158, 11, 0.1));
-    color: var(--color-wc-amber-text, #FCD34D);
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px;
+    padding: 2px 7px;
+    border-radius: var(--r-pill, 999px);
+    background: var(--c-amber-dim);
+    color: var(--c-amber, #D4A80E);
     text-transform: uppercase;
 }
 .feed-cta {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    font-family: var(--font-mono, monospace);
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    color: var(--color-wc-blue-text, #60A5FA);
+    font-family: var(--font-display);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 1.6px;
+    color: #60A5FA;
     text-transform: uppercase;
-    margin-top: 4px;
+    margin-top: 6px;
+    min-height: 44px;
     text-decoration: none;
     transition: opacity 0.15s var(--ease-out, ease);
 }

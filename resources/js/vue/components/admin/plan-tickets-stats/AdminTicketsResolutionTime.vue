@@ -81,8 +81,8 @@ function fmtH(v) {
 
 <style scoped>
 .resolution-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 18px;
 }
@@ -96,17 +96,17 @@ function fmtH(v) {
 .res-title {
     font-family: var(--font-display);
     font-size: 13px;
-    letter-spacing: 0.14em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
 }
 .res-sub {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.15em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 /* Stats row */
@@ -116,7 +116,7 @@ function fmtH(v) {
     flex-wrap: wrap;
     padding-bottom: 14px;
     margin-bottom: 14px;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
 }
 .stat-item {
     display: flex;
@@ -124,20 +124,20 @@ function fmtH(v) {
     gap: 2px;
 }
 .stat-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 7px;
-    letter-spacing: 0.2em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .stat-value {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-size: 16px;
     font-weight: 700;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     font-variant-numeric: tabular-nums;
 }
-.stat-value--amber { color: var(--color-wc-amber-text, #FCD34D); }
+.stat-value--amber { color: #FCD34D; }
 
 /* Empty */
 .res-empty {
@@ -147,17 +147,17 @@ function fmtH(v) {
 .res-empty-num {
     font-family: var(--font-display);
     font-size: 56px;
-    color: var(--color-wc-bg-tertiary, #181818);
-    letter-spacing: 0.1em;
+    color: var(--c-surface-2);
+    letter-spacing: 0.8px;
     line-height: 1;
     margin-bottom: 12px;
     user-select: none;
 }
 .res-empty-msg {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     line-height: 1.55;
     margin: 0;
     text-wrap: balance;
@@ -176,10 +176,10 @@ function fmtH(v) {
     gap: 8px;
 }
 .bucket-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.12em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.0px;
+    color: var(--c-text-3);
     text-align: right;
 }
 .bucket-bar-track {
@@ -190,7 +190,7 @@ function fmtH(v) {
 }
 .bucket-bar {
     height: 100%;
-    background: linear-gradient(90deg, var(--color-wc-accent, #DC2626), rgba(220,38,38,0.5));
+    background: linear-gradient(90deg, var(--c-accent), rgba(220,38,38,0.5));
     border-radius: 4px;
     transition: width 0.6s var(--ease-out, ease);
     min-width: 2px;
@@ -201,17 +201,17 @@ function fmtH(v) {
     width: 0 !important;
 }
 .bucket-count {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-size: 12px;
     font-weight: 700;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     text-align: right;
     font-variant-numeric: tabular-nums;
 }
 .bucket-pct {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     text-align: right;
 }
 

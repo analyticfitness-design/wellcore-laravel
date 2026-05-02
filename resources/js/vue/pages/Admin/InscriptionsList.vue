@@ -106,19 +106,19 @@ onUnmounted(() => {
     flex-shrink: 0;
 }
 .insc-meta-count {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.14em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
 }
 .insc-meta-refresh {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.1em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 0.8px;
+    color: var(--c-text-3);
     padding: 3px 8px;
-    border: 1px solid var(--color-wc-border);
-    border-radius: 6px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-pill, 999px);
 }
 
 /* New leads badge */
@@ -127,13 +127,13 @@ onUnmounted(() => {
     align-items: center;
     gap: 8px;
     padding: 8px 13px;
-    background: var(--color-wc-blue-soft);
+    background: rgba(59,130,246,0.1);
     border: 1px solid rgba(96,165,250,0.22);
-    border-radius: 8px;
-    font-family: var(--font-mono);
+    border-radius: var(--r-sm, 12px);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.14em;
-    color: var(--color-wc-blue-text);
+    letter-spacing: 1.2px;
+    color: #60A5FA;
     margin-bottom: 12px;
     cursor: pointer;
     width: fit-content;
@@ -155,24 +155,25 @@ onUnmounted(() => {
     text-align: center;
     border: 1px solid rgba(220,38,38,0.18);
     border-radius: 12px;
-    background: var(--color-wc-red-soft);
+    background: var(--c-accent-dim);
 }
 .insc-error-msg {
     font-family: var(--font-sans);
     font-size: 13px;
-    color: var(--color-wc-red-text);
+    color: #F87171;
     margin: 0 0 10px;
 }
 .insc-retry {
     padding: 7px 16px;
-    border-radius: 8px;
-    background: var(--color-wc-accent);
+    border-radius: var(--r-sm, 12px);
+    background: var(--c-accent);
     color: white;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.14em;
+    letter-spacing: 1.2px;
     border: none;
     cursor: pointer;
+    min-height: var(--tap-comfort, 48px);
     transition: background 0.15s;
 }
 .insc-retry:hover { background: #b91c1c; }
@@ -180,9 +181,9 @@ onUnmounted(() => {
 /* Loading skeleton (patrón del master design system) */
 .page-loading-bar,
 .page-loading-card {
-    background: var(--color-wc-bg-tertiary);
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    background: var(--c-surface-2);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     animation: page-pulse 1.5s ease-in-out infinite;
 }
 .page-loading-grid {

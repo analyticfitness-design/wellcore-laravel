@@ -77,8 +77,8 @@ function rankLabel(idx) {
 
 <style scoped>
 .ranking-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 18px;
 }
@@ -92,17 +92,17 @@ function rankLabel(idx) {
 .ranking-title {
     font-family: var(--font-display);
     font-size: 13px;
-    letter-spacing: 0.14em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
 }
 .ranking-sub {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.15em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 /* Empty state */
@@ -113,17 +113,17 @@ function rankLabel(idx) {
 .ranking-empty-num {
     font-family: var(--font-display);
     font-size: 56px;
-    color: var(--color-wc-bg-tertiary, #181818);
-    letter-spacing: 0.1em;
+    color: var(--c-surface-2);
+    letter-spacing: 0.8px;
     line-height: 1;
     margin-bottom: 12px;
     user-select: none;
 }
 .ranking-empty-msg {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     line-height: 1.55;
     margin: 0 0 16px;
     text-wrap: balance;
@@ -132,19 +132,19 @@ function rankLabel(idx) {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.22em;
-    color: var(--color-wc-text-secondary);
+    letter-spacing: 1.8px;
+    color: var(--c-text-2);
     text-decoration: none;
     text-transform: uppercase;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
     padding-bottom: 4px;
     transition: color 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease);
 }
 .ranking-empty-cta:hover {
-    color: var(--color-wc-text);
-    border-bottom-color: var(--color-wc-accent, #DC2626);
+    color: var(--c-text);
+    border-bottom-color: var(--c-accent);
 }
 
 /* Podium */
@@ -158,7 +158,7 @@ function rankLabel(idx) {
     border-radius: 10px;
     padding: 12px 10px;
     text-align: center;
-    border: 1px solid var(--color-wc-border);
+    border: 1px solid var(--c-border);
     background: rgba(24, 24, 24, 0.6);
     display: flex;
     flex-direction: column;
@@ -166,24 +166,24 @@ function rankLabel(idx) {
     text-decoration: none;
     transition: border-color 0.15s var(--ease-out, ease), background 0.15s var(--ease-out, ease);
 }
-.podium-card:hover { border-color: var(--color-wc-border-2); background: rgba(28,28,28,0.8); }
+.podium-card:hover { border-color: rgba(255,255,255,0.12); background: rgba(28,28,28,0.8); }
 .podium-card--gold   { border-color: rgba(212,160,76,0.3); background: linear-gradient(180deg, rgba(212,160,76,0.09), rgba(24,24,24,0.6)); }
 .podium-card--silver { border-color: rgba(163,163,163,0.25); background: linear-gradient(180deg, rgba(163,163,163,0.07), rgba(24,24,24,0.6)); }
 .podium-card--bronze { border-color: rgba(180,83,9,0.3); background: linear-gradient(180deg, rgba(180,83,9,0.07), rgba(24,24,24,0.6)); }
 
 .podium-medal {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.2em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
-.podium-card--gold .podium-medal { color: var(--color-wc-gold, #C8A769); }
+.podium-card--gold .podium-medal { color: #C8A769; }
 
 .podium-name {
     font-size: 11px;
     font-weight: 700;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -192,21 +192,21 @@ function rankLabel(idx) {
 .podium-count {
     font-family: var(--font-display);
     font-size: 24px;
-    color: var(--color-wc-green-text, #34D399);
+    color: #34D399;
     line-height: 1;
     margin-top: 4px;
 }
 .podium-count-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 7px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .podium-rejection {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin-top: 2px;
 }
 
@@ -215,7 +215,7 @@ function rankLabel(idx) {
     list-style: none;
     margin: 0;
     padding: 0;
-    border-top: 1px solid var(--color-wc-border);
+    border-top: 1px solid var(--c-border);
 }
 .rest-row {
     display: flex;
@@ -226,10 +226,10 @@ function rankLabel(idx) {
 }
 .rest-row:last-child { border-bottom: none; }
 .rest-rank {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.6px;
+    color: var(--c-text-3);
     flex-shrink: 0;
     width: 28px;
 }
@@ -237,24 +237,24 @@ function rankLabel(idx) {
     flex: 1;
     font-size: 12px;
     font-weight: 500;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
 .rest-count {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-size: 13px;
     font-weight: 700;
-    color: var(--color-wc-green-text, #34D399);
+    color: #34D399;
     font-variant-numeric: tabular-nums;
 }
 .rest-pct {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     width: 38px;
     text-align: right;
 }
-.rest-pct--high { color: var(--color-wc-red-text, #F87171); }
+.rest-pct--high { color: #F87171; }
 </style>

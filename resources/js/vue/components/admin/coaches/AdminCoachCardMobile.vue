@@ -83,19 +83,19 @@ function actionClick(action, ev) {
     display: block;
     width: 100%;
     text-align: left;
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
-    background: rgba(17, 17, 17, 0.7);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface);
     padding: 14px;
     cursor: pointer;
     transition: background 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease);
 }
 .coach-card:hover {
     background: rgba(17, 17, 17, 0.9);
-    border-color: var(--color-wc-border-2, rgba(255, 255, 255, 0.12));
+    border-color: rgba(255,255,255,0.12);
 }
 .coach-card:focus-visible {
-    outline: 1px solid var(--color-wc-accent, #DC2626);
+    outline: 1px solid var(--c-accent);
     outline-offset: -1px;
 }
 
@@ -110,9 +110,9 @@ function actionClick(action, ev) {
     height: 38px;
     flex-shrink: 0;
     border-radius: 50%;
-    background: rgba(220, 38, 38, 0.12);
-    border: 1px solid rgba(220, 38, 38, 0.25);
-    color: var(--color-wc-red-text, #F87171);
+    background: var(--c-accent-dim);
+    border: 1px solid rgba(220,38,38,0.25);
+    color: #F87171;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -131,34 +131,36 @@ function actionClick(action, ev) {
     font-family: var(--font-sans);
     font-size: 14px;
     font-weight: 700;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 .card-handle {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.16em;
+    font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 .status-pill,
 .pill--success,
 .pill--neutral {
     display: inline-block;
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.18em;
+    font-family: var(--font-display);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    padding: 3px 7px;
-    border-radius: 4px;
+    padding: 3px 8px;
+    border-radius: var(--r-pill, 999px);
     line-height: 1.4;
 }
-.pill--success { background: var(--color-wc-green-soft, rgba(16, 185, 129, 0.1)); color: var(--color-wc-green-text, #34D399); }
-.pill--neutral { background: rgba(255, 255, 255, 0.04); color: var(--color-wc-text-tertiary); }
+.pill--success { background: rgba(16,185,129,0.10); color: #34D399; }
+.pill--neutral { background: rgba(255,255,255,0.04); color: var(--c-text-3); }
 
 .card-stats {
     display: grid;
@@ -167,32 +169,35 @@ function actionClick(action, ev) {
     margin-bottom: 12px;
 }
 .stat {
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     padding: 8px 10px;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255,255,255,0.02);
 }
 .stat-label {
     display: block;
-    font-family: var(--font-mono, monospace);
-    font-size: 7px;
-    letter-spacing: 0.2em;
+    font-family: var(--font-display);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin-bottom: 4px;
 }
 .stat-value {
-    font-family: var(--font-data, 'Barlow', sans-serif);
-    font-feature-settings: 'tnum' 1;
+    font-family: var(--font-display);
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
     font-size: 18px;
     font-weight: 700;
-    color: var(--color-wc-text);
+    color: var(--c-text);
 }
 .stat-value-mono {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
     font-size: 11px;
-    letter-spacing: 0.12em;
-    color: var(--color-wc-text-secondary);
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    color: var(--c-text-2);
 }
 
 .card-contact {
@@ -201,22 +206,23 @@ function actionClick(action, ev) {
     gap: 2px;
     margin-bottom: 12px;
     padding: 8px 10px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--c-border);
 }
 .contact-line {
     font-size: 11px;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 .contact-line--mono {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 10px;
-    letter-spacing: 0.12em;
-    color: var(--color-wc-text-tertiary);
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
 }
 
 .card-actions {
@@ -227,24 +233,25 @@ function actionClick(action, ev) {
 .action-btn {
     flex: 1 1 calc(50% - 3px);
     min-width: 80px;
-    height: 32px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
-    background: rgba(255, 255, 255, 0.02);
-    color: var(--color-wc-text-secondary);
-    font-family: var(--font-mono, monospace);
+    min-height: var(--tap-comfort, 48px);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
+    background: rgba(255,255,255,0.02);
+    color: var(--c-text-2);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     cursor: pointer;
     transition: background 0.15s var(--ease-out, ease), color 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease);
 }
 .action-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--color-wc-text);
-    border-color: var(--color-wc-border-2, rgba(255, 255, 255, 0.12));
+    background: rgba(255,255,255,0.05);
+    color: var(--c-text);
+    border-color: rgba(255,255,255,0.12);
 }
-.action-btn--amber:hover  { color: var(--color-wc-amber-text, #FCD34D); border-color: rgba(245, 158, 11, 0.35); }
-.action-btn--accent:hover { color: var(--color-wc-red-text, #F87171); border-color: rgba(220, 38, 38, 0.4); }
-.action-btn--danger:hover { color: var(--color-wc-red-text, #F87171); border-color: rgba(220, 38, 38, 0.4); }
+.action-btn--amber:hover  { color: #FCD34D; border-color: rgba(245,158,11,0.35); }
+.action-btn--accent:hover { color: #F87171; border-color: rgba(220,38,38,0.4); }
+.action-btn--danger:hover { color: #F87171; border-color: rgba(220,38,38,0.4); }
 </style>

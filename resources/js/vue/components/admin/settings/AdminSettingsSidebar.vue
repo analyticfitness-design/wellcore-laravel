@@ -41,7 +41,7 @@ const emit = defineEmits(['select']);
 .settings-sidebar {
   width: var(--settings-sidebar-w, 240px);
   flex-shrink: 0;
-  border-right: 1px solid var(--color-wc-border);
+  border-right: 1px solid var(--c-border);
   padding: 12px 0;
 }
 .settings-sidebar-list {
@@ -58,22 +58,23 @@ const emit = defineEmits(['select']);
   background: none;
   border: none;
   cursor: pointer;
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 10px;
-  letter-spacing: 0.18em;
+  letter-spacing: 1.6px;
   text-transform: uppercase;
-  color: var(--color-wc-text-secondary);
+  color: var(--c-text-2);
   text-align: left;
   transition: color 0.15s var(--ease-out), background 0.15s var(--ease-out);
   position: relative;
+  min-height: var(--tap-comfort, 48px);
 }
 .settings-sidebar-item:hover {
-  color: var(--color-wc-text);
+  color: var(--c-text);
   background: rgba(255,255,255,0.03);
 }
 .settings-sidebar-item--active {
-  color: var(--color-wc-text);
-  background: var(--color-wc-red-soft);
+  color: var(--c-text);
+  background: var(--c-accent-dim);
 }
 .settings-sidebar-item--active::before {
   content: '';
@@ -82,7 +83,7 @@ const emit = defineEmits(['select']);
   top: 4px;
   bottom: 4px;
   width: 2px;
-  background: var(--color-wc-accent);
+  background: var(--c-accent);
   border-radius: 0 2px 2px 0;
 }
 .settings-sidebar-item--locked {
@@ -107,6 +108,6 @@ const emit = defineEmits(['select']);
 }
 .settings-sidebar-lock {
   flex-shrink: 0;
-  color: var(--color-wc-text-tertiary);
+  color: var(--c-text-3);
 }
 </style>

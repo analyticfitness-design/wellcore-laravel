@@ -128,8 +128,8 @@ onMounted(() => {
 
 <style scoped>
 .stream-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     display: flex;
     flex-direction: column;
@@ -145,16 +145,16 @@ onMounted(() => {
     align-items: flex-start;
     gap: 12px;
     padding: 14px 18px;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
     flex-wrap: wrap;
 }
 .stream-head-left { display: flex; flex-direction: column; gap: 3px; }
 .stream-head-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .stream-eyebrow {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.22em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.8px;
+    color: var(--c-text-3);
     text-transform: uppercase;
     margin: 0;
 }
@@ -163,32 +163,32 @@ onMounted(() => {
     font-size: 22px;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
     line-height: 1.05;
 }
 .stream-stat {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.6px;
+    color: var(--c-text-3);
     text-transform: uppercase;
 }
 .stream-status {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
-    color: var(--color-wc-red-text);
+    letter-spacing: 1.6px;
+    color: #F87171;
     text-transform: uppercase;
 }
 .stream-status-dot {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: var(--color-wc-accent);
+    background: var(--c-accent);
     animation: stream-pulse 1.1s var(--ease-out) infinite;
 }
 @keyframes stream-pulse {
@@ -200,7 +200,7 @@ onMounted(() => {
     padding: 18px 18px 12px;
     overflow-y: auto;
     flex: 1;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     font-family: var(--font-sans);
     font-size: 13.5px;
     line-height: 1.65;
@@ -216,17 +216,17 @@ onMounted(() => {
 .stream-empty-num {
     font-family: var(--font-display);
     font-size: 64px;
-    color: var(--color-wc-bg-tertiary);
-    letter-spacing: 0.1em;
+    color: var(--c-surface-2);
+    letter-spacing: 0.8px;
     line-height: 1;
     margin-bottom: 14px;
     user-select: none;
 }
 .stream-empty-msg {
-    font-family: var(--font-editorial);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12.5px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin: 0 auto;
     max-width: 38ch;
     line-height: 1.6;
@@ -243,24 +243,24 @@ onMounted(() => {
 .stream-error-text {
     font-family: var(--font-sans);
     font-size: 13px;
-    color: var(--color-wc-red-text);
+    color: #F87171;
     margin: 0;
 }
 .stream-error-cta {
     height: 32px;
     padding: 0 18px;
-    border-radius: 999px;
-    border: 1px solid var(--color-wc-accent);
+    border-radius: var(--r-pill, 999px);
+    border: 1px solid var(--c-accent);
     background: transparent;
-    color: var(--color-wc-text);
-    font-family: var(--font-mono);
+    color: var(--c-text);
+    font-family: var(--font-display);
     font-size: 10px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
     cursor: pointer;
     transition: background 0.15s var(--ease-out);
 }
-.stream-error-cta:hover { background: var(--color-wc-red-soft); }
+.stream-error-cta:hover { background: var(--c-accent-dim); }
 
 /* Markdown styles inside streaming output */
 .stream-md :deep(h1),
@@ -268,40 +268,40 @@ onMounted(() => {
 .stream-md :deep(h3),
 .stream-md :deep(h4) {
     font-family: var(--font-display);
-    color: var(--color-wc-text);
+    color: var(--c-text);
     letter-spacing: 0.04em;
     text-transform: uppercase;
     margin: 18px 0 6px;
     line-height: 1.1;
 }
 .stream-md :deep(h1) { font-size: 22px; }
-.stream-md :deep(h2) { font-size: 18px; border-bottom: 1px solid var(--color-wc-border); padding-bottom: 4px; }
-.stream-md :deep(h3) { font-size: 14px; letter-spacing: 0.06em; color: var(--color-wc-gold); }
+.stream-md :deep(h2) { font-size: 18px; border-bottom: 1px solid var(--c-border); padding-bottom: 4px; }
+.stream-md :deep(h3) { font-size: 14px; letter-spacing: 0.06em; color: #C8A769; }
 .stream-md :deep(h4) { font-size: 12px; }
 .stream-md :deep(p) { margin: 8px 0; }
 .stream-md :deep(ul),
 .stream-md :deep(ol) { margin: 8px 0 8px 20px; padding: 0; }
 .stream-md :deep(li) { margin: 4px 0; }
-.stream-md :deep(strong) { color: var(--color-wc-text); font-weight: 600; }
-.stream-md :deep(em) { color: var(--color-wc-text); font-style: italic; }
+.stream-md :deep(strong) { color: var(--c-text); font-weight: 600; }
+.stream-md :deep(em) { color: var(--c-text); font-style: italic; }
 .stream-md :deep(code) {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 11px;
     background: rgba(255, 255, 255, 0.06);
-    color: var(--color-wc-gold);
+    color: #C8A769;
     padding: 1px 5px;
     border-radius: 3px;
 }
 .stream-md :deep(pre) {
     background: rgba(0, 0, 0, 0.4);
-    border: 1px solid var(--color-wc-border);
+    border: 1px solid var(--c-border);
     border-radius: 8px;
     padding: 12px;
     overflow-x: auto;
     margin: 12px 0;
 }
-.stream-md :deep(pre code) { background: none; padding: 0; color: var(--color-wc-text); }
-.stream-md :deep(.md-table-wrap) { overflow-x: auto; margin: 12px 0; border-radius: 8px; border: 1px solid var(--color-wc-border); }
+.stream-md :deep(pre code) { background: none; padding: 0; color: var(--c-text); }
+.stream-md :deep(.md-table-wrap) { overflow-x: auto; margin: 12px 0; border-radius: 8px; border: 1px solid var(--c-border); }
 .stream-md :deep(.md-table) {
     width: 100%;
     border-collapse: collapse;
@@ -310,34 +310,34 @@ onMounted(() => {
 }
 .stream-md :deep(.md-table th) {
     background: rgba(255, 255, 255, 0.03);
-    color: var(--color-wc-text);
-    font-family: var(--font-mono);
+    color: var(--c-text);
+    font-family: var(--font-display);
     font-size: 10px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     text-align: left;
     padding: 8px 10px;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
 }
 .stream-md :deep(.md-table td) {
     padding: 7px 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    font-family: var(--font-data);
+    font-family: var(--font-display);
     font-feature-settings: 'tnum' 1;
 }
 .stream-md :deep(.md-table tr:last-child td) { border-bottom: none; }
 .stream-md :deep(hr) {
     border: 0;
-    border-top: 1px solid var(--color-wc-border);
+    border-top: 1px solid var(--c-border);
     margin: 18px 0;
 }
-.stream-md :deep(a) { color: var(--color-wc-blue-text); text-decoration: underline; text-underline-offset: 2px; }
+.stream-md :deep(a) { color: #60A5FA; text-decoration: underline; text-underline-offset: 2px; }
 
 .stream-cursor {
     display: inline-block;
     margin-left: 1px;
-    color: var(--color-wc-accent);
-    font-family: var(--font-mono);
+    color: var(--c-accent);
+    font-family: var(--font-display);
     font-size: 14px;
     line-height: 1;
     animation: stream-blink 1s steps(2, start) infinite;
@@ -349,7 +349,7 @@ onMounted(() => {
 
 .stream-foot {
     padding: 12px 18px;
-    border-top: 1px solid var(--color-wc-border);
+    border-top: 1px solid var(--c-border);
     display: flex;
     align-items: center;
     gap: 14px;
@@ -357,14 +357,15 @@ onMounted(() => {
 }
 .stream-stop {
     height: 36px;
+    min-height: var(--tap-comfort, 48px);
     padding: 0 22px;
-    border-radius: 999px;
-    border: 1px solid var(--color-wc-accent);
-    background: var(--color-wc-accent);
+    border-radius: var(--r-pill, 999px);
+    border: 1px solid var(--c-accent);
+    background: var(--c-accent);
     color: #fff;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 10px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
     cursor: pointer;
     transition: background 0.15s var(--ease-out), transform 0.15s var(--ease-out);
@@ -372,10 +373,10 @@ onMounted(() => {
 .stream-stop:hover { background: #B91C1C; transform: translateY(-1px); }
 .stream-foot-hint {
     flex: 1;
-    font-family: var(--font-editorial);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 11px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin: 0;
     line-height: 1.5;
 }

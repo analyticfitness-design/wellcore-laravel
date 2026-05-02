@@ -302,8 +302,8 @@ function handleConfirm() {
     right: 0;
     bottom: 0;
     width: min(420px, 100vw);
-    background: var(--color-wc-bg-secondary);
-    border-left: 1px solid var(--color-wc-border);
+    background: var(--c-surface);
+    border-left: 1px solid var(--c-border);
     z-index: 50;
     display: flex;
     flex-direction: column;
@@ -315,20 +315,20 @@ function handleConfirm() {
     align-items: center;
     gap: 12px;
     padding: 18px 20px 14px;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
     flex-shrink: 0;
 }
 
 .drawer-close {
-    width: 32px;
-    height: 32px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(255,255,255,0.04);
-    border: 1px solid var(--color-wc-border);
-    border-radius: 8px;
-    color: var(--color-wc-text-secondary);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm, 12px);
+    color: var(--c-text-2);
     cursor: pointer;
     transition: background 0.15s var(--ease-out);
 }
@@ -336,10 +336,10 @@ function handleConfirm() {
 .drawer-close:hover { background: rgba(255,255,255,0.08); }
 
 .drawer-eyebrow {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.6px;
+    color: var(--c-text-3);
     text-transform: uppercase;
 }
 
@@ -362,7 +362,7 @@ function handleConfirm() {
 
 .drawer-skeleton {
     height: 48px;
-    background: var(--color-wc-bg-tertiary);
+    background: var(--c-surface-2);
     border-radius: 10px;
     animation: page-pulse 1.5s ease-in-out infinite;
 }
@@ -375,7 +375,7 @@ function handleConfirm() {
     font-family: var(--font-display);
     font-size: 26px;
     letter-spacing: 0.04em;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     text-transform: uppercase;
     line-height: 1.1;
     margin: 0 0 10px;
@@ -389,17 +389,17 @@ function handleConfirm() {
 }
 
 .detail-badge {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     padding: 3px 9px;
-    border-radius: 100px;
+    border-radius: var(--r-pill, 999px);
 }
 
 .detail-badge--platform {
     background: rgba(255,255,255,0.06);
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
 }
 
 .detail-dates {
@@ -409,22 +409,22 @@ function handleConfirm() {
 }
 
 .dates-label {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 .dates-value {
-    font-family: var(--font-data);
+    font-family: var(--font-display);
     font-size: 12px;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
 }
 
 .drawer-divider {
     height: 1px;
-    background: var(--color-wc-border);
+    background: var(--c-border);
     margin: 14px 0;
 }
 
@@ -441,18 +441,18 @@ function handleConfirm() {
 }
 
 .ds-label {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 7px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 .ds-value {
-    font-family: var(--font-data);
+    font-family: var(--font-display);
     font-size: 14px;
     font-weight: 700;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     font-feature-settings: 'tnum' 1;
 }
 
@@ -462,18 +462,18 @@ function handleConfirm() {
 
 .section-title {
     display: block;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.2em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin-bottom: 14px;
 }
 
 /* Timeline SVG chart */
 .timeline-chart {
     background: rgba(255,255,255,0.02);
-    border: 1px solid var(--color-wc-border);
+    border: 1px solid var(--c-border);
     border-radius: 10px;
     padding: 12px;
 }
@@ -492,9 +492,9 @@ function handleConfirm() {
 }
 
 .legend-item {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.14em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     display: flex;
     align-items: center;
@@ -509,11 +509,11 @@ function handleConfirm() {
     border-radius: 1px;
 }
 
-.legend-item--spend { color: var(--color-wc-text-tertiary); }
-.legend-item--spend::before { background: var(--color-wc-accent); }
+.legend-item--spend { color: var(--c-text-3); }
+.legend-item--spend::before { background: var(--c-accent); }
 
-.legend-item--conv { color: var(--color-wc-text-tertiary); }
-.legend-item--conv::before { background: var(--color-wc-green-text); }
+.legend-item--conv { color: var(--c-text-3); }
+.legend-item--conv::before { background: #34D399; }
 
 /* Confirm block */
 .confirm-block {
@@ -527,7 +527,7 @@ function handleConfirm() {
 .confirm-msg {
     font-family: var(--font-sans);
     font-size: 12px;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     line-height: 1.5;
     margin: 0 0 12px;
 }
@@ -538,33 +538,35 @@ function handleConfirm() {
 }
 
 .btn-confirm {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.14em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    background: var(--color-wc-accent);
+    background: var(--c-accent);
     color: #fff;
     border: none;
     border-radius: 6px;
     padding: 7px 16px;
     cursor: pointer;
     transition: opacity 0.15s var(--ease-out);
+    min-height: var(--tap-comfort, 48px);
 }
 
 .btn-confirm:hover { opacity: 0.85; }
 
 .btn-cancel {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.14em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     background: rgba(255,255,255,0.04);
-    color: var(--color-wc-text-secondary);
-    border: 1px solid var(--color-wc-border);
+    color: var(--c-text-2);
+    border: 1px solid var(--c-border);
     border-radius: 6px;
     padding: 7px 14px;
     cursor: pointer;
     transition: background 0.15s var(--ease-out);
+    min-height: var(--tap-comfort, 48px);
 }
 
 .btn-cancel:hover { background: rgba(255,255,255,0.08); }
@@ -581,27 +583,28 @@ function handleConfirm() {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.16em;
+    letter-spacing: 1.4px;
     text-transform: uppercase;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     background: rgba(255,255,255,0.04);
-    border: 1px solid var(--color-wc-border);
-    border-radius: 8px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm, 12px);
     padding: 10px 16px;
     cursor: pointer;
     transition: background 0.15s var(--ease-out), color 0.15s var(--ease-out);
+    min-height: var(--tap-comfort, 48px);
 }
 
 .action-btn:hover {
     background: rgba(255,255,255,0.07);
-    color: var(--color-wc-text);
+    color: var(--c-text);
 }
 
 .action-btn--green {
-    color: var(--color-wc-green-text);
-    background: var(--color-wc-green-soft);
+    color: #34D399;
+    background: rgba(16,185,129,0.1);
     border-color: rgba(16,185,129,0.2);
 }
 
@@ -617,10 +620,10 @@ function handleConfirm() {
 }
 
 .empty-msg {
-    font-family: var(--font-editorial);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 13px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     text-align: center;
 }
 

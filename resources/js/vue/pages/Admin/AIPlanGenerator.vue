@@ -177,30 +177,30 @@ const showPreview = computed(() => !stream.isStreaming.value && displayText.valu
     gap: 10px;
 }
 .ai-page-eyebrow {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.22em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.8px;
+    color: var(--c-text-3);
     text-transform: uppercase;
     margin: 0;
 }
 .ai-history-btn {
     height: 32px;
     padding: 0 14px;
-    border-radius: 999px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-pill, 999px);
+    border: 1px solid var(--c-border);
     background: transparent;
-    color: var(--color-wc-text-secondary);
-    font-family: var(--font-mono);
+    color: var(--c-text-2);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     cursor: pointer;
     transition: background 0.15s var(--ease-out), border-color 0.15s var(--ease-out), color 0.15s var(--ease-out);
 }
 .ai-history-btn:hover {
-    border-color: var(--color-wc-border-2);
-    color: var(--color-wc-text);
+    border-color: rgba(255,255,255,0.12);
+    color: var(--c-text);
 }
 
 .ai-grid {

@@ -98,24 +98,24 @@ const { filteredTools, categories, activeCategory, searchQuery, loadingCatalog, 
   transform: translateY(-50%);
   width: 14px;
   height: 14px;
-  color: var(--color-wc-text-tertiary);
+  color: var(--c-text-3);
   pointer-events: none;
 }
 .catalog-search {
   width: 100%;
   height: 36px;
   background: rgba(255,255,255,0.03);
-  border: 1px solid var(--color-wc-border);
-  border-radius: 8px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-sm, 12px);
   padding: 0 12px 0 30px;
   font-family: var(--font-sans);
   font-size: 12px;
-  color: var(--color-wc-text);
+  color: var(--c-text);
   outline: none;
   transition: border-color 0.12s;
 }
-.catalog-search::placeholder { color: var(--color-wc-text-tertiary); }
-.catalog-search:focus { border-color: var(--color-wc-border-2); }
+.catalog-search::placeholder { color: var(--c-text-3); }
+.catalog-search:focus { border-color: rgba(255,255,255,0.12); }
 
 .catalog-chips {
   display: flex;
@@ -126,24 +126,24 @@ const { filteredTools, categories, activeCategory, searchQuery, loadingCatalog, 
   height: 28px;
   padding: 0 12px;
   border-radius: 6px;
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 9px;
-  letter-spacing: 0.18em;
+  letter-spacing: 1.6px;
   text-transform: uppercase;
-  border: 1px solid var(--color-wc-border);
+  border: 1px solid var(--c-border);
   background: transparent;
-  color: var(--color-wc-text-secondary);
+  color: var(--c-text-2);
   cursor: pointer;
   transition: background 0.12s, border-color 0.12s, color 0.12s;
 }
 .catalog-chip:hover {
-  border-color: var(--color-wc-border-2);
-  color: var(--color-wc-text);
+  border-color: rgba(255,255,255,0.12);
+  color: var(--c-text);
 }
 .catalog-chip--active {
-  background: var(--color-wc-red-soft);
-  border-color: var(--color-wc-accent);
-  color: var(--color-wc-red-text);
+  background: var(--c-accent-dim);
+  border-color: var(--c-accent);
+  color: #F87171;
 }
 
 /* Skeleton */
@@ -156,9 +156,9 @@ const { filteredTools, categories, activeCategory, searchQuery, loadingCatalog, 
 @media (min-width: 1280px) { .catalog-skeleton { grid-template-columns: repeat(4, 1fr); } }
 .catalog-skeleton-card {
   height: 180px;
-  border-radius: 14px;
-  border: 1px solid var(--color-wc-border);
-  background: var(--color-wc-bg-tertiary);
+  border-radius: var(--r-md, 16px);
+  border: 1px solid var(--c-border);
+  background: var(--c-surface-2);
   animation: page-pulse 1.5s ease-in-out infinite;
 }
 @keyframes page-pulse {
@@ -170,11 +170,11 @@ const { filteredTools, categories, activeCategory, searchQuery, loadingCatalog, 
 .catalog-error {
   padding: 20px;
   border-radius: 10px;
-  background: var(--color-wc-red-soft);
+  background: var(--c-accent-dim);
   border: 1px solid rgba(220,38,38,0.2);
   font-family: var(--font-sans);
   font-size: 13px;
-  color: var(--color-wc-red-text);
+  color: #F87171;
 }
 
 /* Empty state */
@@ -185,17 +185,17 @@ const { filteredTools, categories, activeCategory, searchQuery, loadingCatalog, 
 .catalog-empty-num {
   font-family: var(--font-display);
   font-size: 56px;
-  color: var(--color-wc-bg-tertiary);
-  letter-spacing: 0.1em;
+  color: var(--c-surface-2);
+  letter-spacing: 0.8px;
   line-height: 1;
   margin-bottom: 12px;
   user-select: none;
 }
 .catalog-empty-msg {
-  font-family: var(--font-editorial);
+  font-family: var(--font-editorial, var(--font-sans));
   font-style: italic;
   font-size: 12px;
-  color: var(--color-wc-text-tertiary);
+  color: var(--c-text-3);
   line-height: 1.55;
   margin: 0 0 16px;
   text-wrap: balance;
@@ -204,21 +204,21 @@ const { filteredTools, categories, activeCategory, searchQuery, loadingCatalog, 
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 9px;
-  letter-spacing: 0.22em;
-  color: var(--color-wc-text-secondary);
+  letter-spacing: 1.8px;
+  color: var(--c-text-2);
   text-transform: uppercase;
   border: none;
   background: none;
-  border-bottom: 1px solid var(--color-wc-border);
+  border-bottom: 1px solid var(--c-border);
   padding-bottom: 4px;
   cursor: pointer;
   transition: color 0.12s, border-color 0.12s;
 }
 .catalog-empty-cta:hover {
-  color: var(--color-wc-text);
-  border-bottom-color: var(--color-wc-accent);
+  color: var(--c-text);
+  border-bottom-color: var(--c-accent);
 }
 
 /* Grid */

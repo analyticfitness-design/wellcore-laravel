@@ -121,8 +121,8 @@ function typeLabel(t) {
 <style scoped>
 .plan-card {
     position: relative;
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 18px;
     display: flex;
@@ -131,14 +131,14 @@ function typeLabel(t) {
     transition: border-color 0.15s var(--ease-out, ease);
 }
 .plan-card:hover {
-    border-color: var(--color-wc-border-2);
+    border-color: rgba(255,255,255,0.12);
 }
 
 .plan-card-accent {
     position: absolute;
     top: 0; left: 18px; right: 18px;
     height: 1px;
-    background: linear-gradient(90deg, var(--color-wc-accent, #DC2626) 0%, transparent 100%);
+    background: linear-gradient(90deg, var(--c-accent) 0%, transparent 100%);
     opacity: 0.3;
     border-radius: 1px;
 }
@@ -151,11 +151,11 @@ function typeLabel(t) {
     gap: 8px;
 }
 .plan-eyebrow {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .plan-badges {
     display: flex;
@@ -163,23 +163,23 @@ function typeLabel(t) {
     gap: 4px;
 }
 .badge {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     padding: 2px 7px;
-    border-radius: 20px;
+    border-radius: var(--r-pill, 999px);
 }
 .badge-ai      { background: rgba(139, 92, 246, 0.12); color: #A78BFA; }
-.badge-public  { background: var(--color-wc-green-soft); color: var(--color-wc-green-text); }
-.badge-private { background: rgba(255, 255, 255, 0.04); color: var(--color-wc-text-tertiary); }
+.badge-public  { background: rgba(16,185,129,0.10); color: #34D399; }
+.badge-private { background: rgba(255, 255, 255, 0.04); color: var(--c-text-3); }
 
 /* Name */
 .plan-name {
     font-family: var(--font-display);
     font-size: 26px;
     letter-spacing: 0.04em;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     line-height: 1.1;
     margin: 0;
 }
@@ -192,37 +192,37 @@ function typeLabel(t) {
     flex-wrap: wrap;
 }
 .plan-type-badge {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     padding: 3px 9px;
-    border-radius: 20px;
+    border-radius: var(--r-pill, 999px);
 }
 .plan-methodology {
     font-family: var(--font-sans);
     font-size: 11px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 /* Description */
 .plan-desc {
     font-family: var(--font-sans);
     font-size: 12px;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     line-height: 1.55;
     margin: 0;
     flex: 1;
 }
 .plan-desc--empty {
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     font-style: italic;
 }
 
 /* Divider */
 .plan-divider {
     height: 1px;
-    background: var(--color-wc-border);
+    background: var(--c-border);
     margin: 2px 0;
 }
 
@@ -239,16 +239,16 @@ function typeLabel(t) {
     flex-wrap: wrap;
 }
 .plan-coach {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.14em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
 }
 .plan-date {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-size: 10px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 /* Actions */
@@ -260,13 +260,13 @@ function typeLabel(t) {
 .plan-btn {
     height: 28px;
     padding: 0 10px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: rgba(255, 255, 255, 0.03);
-    color: var(--color-wc-text-secondary);
-    font-family: var(--font-mono, monospace);
+    color: var(--c-text-2);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     cursor: pointer;
     display: inline-flex;
@@ -276,20 +276,20 @@ function typeLabel(t) {
     transition: border-color 0.15s var(--ease-out, ease), color 0.15s var(--ease-out, ease), background 0.15s var(--ease-out, ease);
 }
 .plan-btn:hover {
-    border-color: var(--color-wc-border-2);
-    color: var(--color-wc-text);
+    border-color: rgba(255,255,255,0.12);
+    color: var(--c-text);
 }
 .plan-btn--edit:hover {
-    border-color: var(--color-wc-accent);
-    color: var(--color-wc-accent);
+    border-color: var(--c-accent);
+    color: var(--c-accent);
 }
 .plan-btn--dup:hover {
-    border-color: var(--color-wc-blue-text);
-    color: var(--color-wc-blue-text);
+    border-color: #60A5FA;
+    color: #60A5FA;
 }
 .plan-btn--del:hover {
-    border-color: var(--color-wc-red-text);
-    color: var(--color-wc-red-text);
+    border-color: #F87171;
+    color: #F87171;
 }
 
 @media (prefers-reduced-motion: reduce) {

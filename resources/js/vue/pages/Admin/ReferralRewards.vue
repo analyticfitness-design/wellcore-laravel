@@ -110,10 +110,10 @@ const onExpire = async (id) => { await store.expire(id); };
 .page-error {
     padding: 12px 16px;
     border-radius: 10px;
-    border: 1px solid var(--color-wc-red-soft);
-    background: var(--color-wc-red-soft);
+    border: 1px solid var(--c-accent-dim);
+    background: var(--c-accent-dim);
     font-family: var(--font-sans);
     font-size: 12px;
-    color: var(--color-wc-red-text);
+    color: #F87171;
 }
 </style>

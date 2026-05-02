@@ -131,39 +131,43 @@ watch(() => route.fullPath, () => { drawerOpen.value = false; });
 <style scoped>
 /* ============================================================================
    AdminBottomNav — sticky bottom 5 tabs + drawer "Mas".
-   Mobile only. Drawer usa Teleport al body para escapar contenedores con overflow.
+   v2: Oswald 10px labels + 48px touch targets + safe-area-inset
    ============================================================================ */
 
 .bottom-nav {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
     display: flex; align-items: stretch; justify-content: space-around;
-    background: rgba(10, 10, 10, 0.95);
-    backdrop-filter: blur(20px) saturate(150%);
-    -webkit-backdrop-filter: blur(20px) saturate(150%);
-    border-top: 1px solid var(--color-wc-border);
-    padding: 6px 4px calc(6px + env(safe-area-inset-bottom)) 4px;
+    background: rgba(8, 8, 8, 0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--c-border);
+    padding: 6px 0 calc(6px + env(safe-area-inset-bottom, 0px)) 0;
 }
-/* Ocultar en desktop (>= 1024px breakpoint Tailwind lg) — el media query gana
-   sobre la utility .lg\:hidden por especificidad scoped. */
 @media (min-width: 1024px) {
     .bottom-nav { display: none; }
 }
+
+/* Cada tab: min-height 48px (touch target), SVG 22px, Oswald label 10px */
 .bottom-nav-tab {
     flex: 1; max-width: 80px;
-    display: flex; flex-direction: column; align-items: center; gap: 3px;
-    padding: 6px 4px;
-    color: var(--color-wc-text-tertiary);
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 3px;
+    padding: 4px;
+    min-height: var(--tap-comfort, 48px);
+    color: var(--c-text-3);
     background: transparent; border: 0;
     text-decoration: none; cursor: pointer;
     transition: color 0.15s var(--ease-out, ease);
 }
-.bottom-nav-tab:active { transform: scale(0.95); }
-.bottom-nav-tab--active { color: var(--color-wc-accent, #DC2626); }
+.bottom-nav-tab:active { transform: scale(0.92); transition: transform 0.08s; }
+.bottom-nav-tab--active { color: var(--c-accent); }
 .bottom-nav-icon { width: 22px; height: 22px; flex-shrink: 0; }
 .bottom-nav-label {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px; letter-spacing: 0.1em;
+    font-family: var(--font-display);
+    font-size: 10px;
     font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 /* ── Drawer "Mas" ─────────────────────────────────────────────────────────── */
@@ -176,51 +180,55 @@ watch(() => route.fullPath, () => { drawerOpen.value = false; });
 .drawer-panel {
     position: fixed; right: 0; top: 0; bottom: 0; z-index: 70;
     width: min(85vw, 340px);
-    background: var(--color-wc-bg-secondary, #111);
-    border-left: 1px solid var(--color-wc-border);
+    background: var(--c-surface);
+    border-left: 1px solid var(--c-border);
     display: flex; flex-direction: column;
     overflow: hidden;
 }
 .drawer-header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 18px 18px 14px;
-    border-bottom: 1px solid var(--color-wc-border);
+    padding: var(--s-5) var(--s-5) var(--s-4);
+    border-bottom: 1px solid var(--c-border);
 }
 .drawer-title {
     font-family: var(--font-display);
-    font-size: 14px; letter-spacing: 0.22em;
-    color: var(--color-wc-text);
+    font-size: 12px; font-weight: 600; letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--c-text);
 }
 .drawer-close {
-    width: 32px; height: 32px; border-radius: 8px;
+    width: var(--s-8); height: var(--s-8); border-radius: var(--r-sm);
     display: inline-flex; align-items: center; justify-content: center;
-    color: var(--color-wc-text-tertiary);
-    background: transparent; border: 1px solid var(--color-wc-border);
+    color: var(--c-text-2);
+    background: var(--c-surface-2); border: 1px solid var(--c-border);
     cursor: pointer;
 }
-.drawer-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+.drawer-list { flex: 1; overflow-y: auto; padding: var(--s-2) 0; }
+
+/* Items drawer: Raleway 15px weight 500, min-height 48px */
 .drawer-item {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 18px;
-    color: var(--color-wc-text-secondary);
+    padding: 0 var(--s-5);
+    min-height: var(--tap-comfort, 48px);
+    color: var(--c-text-2);
     font-family: var(--font-sans);
-    font-size: 14px; font-weight: 500;
+    font-size: 15px; font-weight: 500;
     text-decoration: none;
     transition: background 0.12s var(--ease-out, ease), color 0.12s var(--ease-out, ease);
     border-left: 2px solid transparent;
 }
-.drawer-item:active { background: rgba(255, 255, 255, 0.04); }
+.drawer-item:active { background: var(--c-surface-2); }
 .drawer-item--active {
-    color: var(--color-wc-text);
-    background: rgba(220, 38, 38, 0.08);
-    border-left-color: var(--color-wc-accent, #DC2626);
+    color: var(--c-text);
+    background: var(--c-accent-dim);
+    border-left-color: var(--c-accent);
 }
 .drawer-item-badge {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px; letter-spacing: 0.18em;
-    background: rgba(212, 160, 76, 0.14);
-    color: var(--color-wc-gold, #D4A04C);
-    padding: 2px 7px; border-radius: 4px;
+    font-family: var(--font-display);
+    font-size: 8px; font-weight: 600; letter-spacing: 1.2px;
+    background: var(--c-amber-dim);
+    color: var(--c-amber);
+    padding: 2px 8px; border-radius: var(--r-pill);
     text-transform: uppercase;
 }
 

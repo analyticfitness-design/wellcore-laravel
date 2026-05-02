@@ -232,44 +232,44 @@ const pages = computed(() => {
     transform: translateY(-50%);
     width: 14px;
     height: 14px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     pointer-events: none;
 }
 .search-input {
     width: 100%;
     height: 36px;
     padding: 0 10px 0 30px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: rgba(255,255,255,0.03);
     font-family: var(--font-sans);
     font-size: 12px;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     outline: none;
     transition: border-color 0.15s var(--ease-out);
 }
-.search-input::placeholder { color: var(--color-wc-text-tertiary); }
-.search-input:focus { border-color: var(--color-wc-border-2); }
+.search-input::placeholder { color: var(--c-text-3); }
+.search-input:focus { border-color: rgba(255,255,255,0.12); }
 
 .filter-pills { display: flex; gap: 4px; flex-wrap: wrap; }
 .filter-pill {
     height: 28px;
     padding: 0 10px;
     border-radius: 6px;
-    border: 1px solid var(--color-wc-border);
+    border: 1px solid var(--c-border);
     background: transparent;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     cursor: pointer;
     transition: background 0.15s var(--ease-out), border-color 0.15s var(--ease-out), color 0.15s var(--ease-out);
 }
 .filter-pill--active {
-    background: var(--color-wc-red-soft);
-    border-color: var(--color-wc-accent);
-    color: var(--color-wc-text);
+    background: var(--c-accent-dim);
+    border-color: var(--c-accent);
+    color: var(--c-text);
 }
 
 /* ── Status tabs ──────────────────────────────────────────────────────── */
@@ -284,23 +284,23 @@ const pages = computed(() => {
     border-radius: 6px;
     border: none;
     background: transparent;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.15em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     cursor: pointer;
     transition: background 0.12s var(--ease-out), color 0.12s var(--ease-out);
 }
 .status-tab--active {
-    background: var(--color-wc-red-soft);
-    color: var(--color-wc-text);
+    background: var(--c-accent-dim);
+    color: var(--c-text);
 }
 
 /* ── Table card ───────────────────────────────────────────────────────── */
 .table-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 18px;
     overflow: hidden;
@@ -310,8 +310,8 @@ const pages = computed(() => {
 .table-skeleton { display: flex; flex-direction: column; gap: 8px; }
 .table-skeleton-row {
     height: 48px;
-    border-radius: 8px;
-    background: var(--color-wc-bg-tertiary);
+    border-radius: var(--r-sm, 12px);
+    background: var(--c-surface-2);
     animation: page-pulse 1.5s ease-in-out infinite;
 }
 @keyframes page-pulse {
@@ -324,17 +324,17 @@ const pages = computed(() => {
 .empty-num {
     font-family: var(--font-display);
     font-size: 56px;
-    color: var(--color-wc-bg-tertiary);
-    letter-spacing: 0.1em;
+    color: var(--c-surface-2);
+    letter-spacing: 0.8px;
     line-height: 1;
     margin-bottom: 12px;
     user-select: none;
 }
 .empty-msg {
-    font-family: var(--font-editorial);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     line-height: 1.55;
     margin: 0 0 16px;
     text-wrap: balance;
@@ -343,31 +343,31 @@ const pages = computed(() => {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.22em;
-    color: var(--color-wc-text-secondary);
+    letter-spacing: 1.8px;
+    color: var(--c-text-2);
     text-decoration: none;
     text-transform: uppercase;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
     padding-bottom: 4px;
     transition: color 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
 }
-.empty-cta:hover { color: var(--color-wc-text); border-bottom-color: var(--color-wc-accent); }
+.empty-cta:hover { color: var(--c-text); border-bottom-color: var(--c-accent); }
 
 /* ── Data table ───────────────────────────────────────────────────────── */
 .table-scroll { overflow-x: auto; }
 .data-table { width: 100%; border-collapse: collapse; }
 
-.table-head-row { border-bottom: 1px solid var(--color-wc-border); }
+.table-head-row { border-bottom: 1px solid var(--c-border); }
 .th {
     padding: 8px 10px;
     text-align: left;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     white-space: nowrap;
 }
 .th--num, .th--right { text-align: right; }
@@ -381,32 +381,32 @@ const pages = computed(() => {
 
 .td { padding: 11px 10px; vertical-align: middle; }
 .td--num, .td--right { text-align: right; }
-.td-name { font-size: 12px; font-weight: 500; color: var(--color-wc-text); margin: 0; }
-.td-sub  { font-size: 11px; color: var(--color-wc-text-secondary); margin: 0; }
+.td-name { font-size: 12px; font-weight: 500; color: var(--c-text); margin: 0; }
+.td-sub  { font-size: 11px; color: var(--c-text-2); margin: 0; }
 
 /* ── Status pills ─────────────────────────────────────────────────────── */
 .pill {
     display: inline-flex;
     align-items: center;
     padding: 2px 8px;
-    border-radius: 100px;
-    font-family: var(--font-mono);
+    border-radius: var(--r-pill, 999px);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.14em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     white-space: nowrap;
 }
-.pill-pending   { background: var(--color-wc-amber-soft); color: var(--color-wc-amber-text); }
-.pill-qualified { background: var(--color-wc-blue-soft);  color: var(--color-wc-blue-text); }
-.pill-paid      { background: var(--color-wc-green-soft); color: var(--color-wc-green-text); }
-.pill-expired   { background: var(--color-wc-red-soft);   color: var(--color-wc-red-text); }
+.pill-pending   { background: rgba(245,158,11,0.1); color: #FCD34D; }
+.pill-qualified { background: rgba(59,130,246,0.1);  color: #60A5FA; }
+.pill-paid      { background: rgba(16,185,129,0.1); color: #34D399; }
+.pill-expired   { background: var(--c-accent-dim);  color: #F87171; }
 
 /* ── Reward ───────────────────────────────────────────────────────────── */
 .reward-cop {
-    font-family: var(--font-data);
+    font-family: var(--font-display);
     font-size: 13px;
     font-weight: 600;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     font-feature-settings: 'tnum' 1;
 }
 
@@ -416,25 +416,25 @@ const pages = computed(() => {
     height: 28px;
     padding: 0 10px;
     border-radius: 6px;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.14em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     cursor: pointer;
     transition: background 0.15s var(--ease-out), color 0.15s var(--ease-out);
 }
 .action-btn--primary {
-    background: var(--color-wc-green-soft);
+    background: rgba(16,185,129,0.1);
     border: 1px solid rgba(52,211,153,0.2);
-    color: var(--color-wc-green-text);
+    color: #34D399;
 }
 .action-btn--primary:hover { background: rgba(52,211,153,0.2); }
 .action-btn--ghost {
     background: transparent;
-    border: 1px solid var(--color-wc-border);
-    color: var(--color-wc-text-secondary);
+    border: 1px solid var(--c-border);
+    color: var(--c-text-2);
 }
-.action-btn--ghost:hover { border-color: var(--color-wc-border-2); color: var(--color-wc-text); }
+.action-btn--ghost:hover { border-color: rgba(255,255,255,0.12); color: var(--c-text); }
 
 /* ── Pagination ───────────────────────────────────────────────────────── */
 .pagination {
@@ -443,7 +443,7 @@ const pages = computed(() => {
     gap: 4px;
     justify-content: center;
     padding-top: 14px;
-    border-top: 1px solid var(--color-wc-border);
+    border-top: 1px solid var(--c-border);
     margin-top: 14px;
 }
 .page-btn {
@@ -451,15 +451,15 @@ const pages = computed(() => {
     height: 28px;
     padding: 0 6px;
     border-radius: 6px;
-    border: 1px solid var(--color-wc-border);
+    border: 1px solid var(--c-border);
     background: transparent;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 10px;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     cursor: pointer;
     transition: background 0.12s var(--ease-out), color 0.12s var(--ease-out);
 }
-.page-btn--active { background: var(--color-wc-red-soft); border-color: var(--color-wc-accent); color: var(--color-wc-text); }
+.page-btn--active { background: var(--c-accent-dim); border-color: var(--c-accent); color: var(--c-text); }
 .page-btn:disabled { opacity: 0.3; cursor: default; }
 
 @media (prefers-reduced-motion: reduce) {

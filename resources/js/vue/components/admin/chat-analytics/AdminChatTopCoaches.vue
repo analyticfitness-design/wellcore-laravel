@@ -95,32 +95,32 @@ function goToCoach(coachId) {
 
 <style scoped>
 .top-coaches-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17,17,17,0.7);
     padding: 18px;
 }
 .tc-head { margin-bottom: 14px; }
 .tc-title {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--color-wc-text); margin: 0 0 2px;
+    font-family: var(--font-display);
+    font-size: 9px; letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--c-text); margin: 0 0 2px;
 }
 .tc-eyebrow {
-    font-family: var(--font-mono, monospace);
-    font-size: 7px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 7px; letter-spacing: 1.6px; text-transform: uppercase;
+    color: var(--c-text-3);
 }
 .tc-empty { padding: 24px 8px; text-align: center; }
 .empty-num {
     font-family: var(--font-display); font-size: 56px;
-    color: var(--color-wc-bg-tertiary); letter-spacing: 0.1em;
+    color: var(--c-surface-2); letter-spacing: 0.1em;
     line-height: 1; margin-bottom: 12px; user-select: none;
 }
 .empty-msg {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic; font-size: 12px;
-    color: var(--color-wc-text-tertiary); margin: 0; text-wrap: balance;
+    color: var(--c-text-3); margin: 0; text-wrap: balance;
 }
 
 .podium-grid {
@@ -143,54 +143,54 @@ function goToCoach(coachId) {
 .podium-tile:hover { border-color: rgba(255,255,255,0.18); }
 
 .tile-rank {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 8px; letter-spacing: 1.6px; text-transform: uppercase;
+    color: var(--c-text-3);
 }
 .tile-avatar {
     font-family: var(--font-display);
     font-size: 22px; letter-spacing: 0.04em;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     line-height: 1.1;
 }
-.podium-tile--gold   .tile-avatar { color: var(--color-wc-gold,   #C8A769); }
+.podium-tile--gold   .tile-avatar { color: #C8A769; }
 .podium-tile--silver .tile-avatar { color: #94A3B8; }
 .podium-tile--bronze .tile-avatar { color: #B4783C; }
 
 .tile-name {
-    font-family: var(--font-sans, 'Inter', sans-serif);
+    font-family: var(--font-sans);
     font-size: 11px; font-weight: 600;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .tile-metric {
     font-family: var(--font-display);
     font-size: 22px; letter-spacing: 0.03em;
-    color: var(--color-wc-text); line-height: 1.1;
+    color: var(--c-text); line-height: 1.1;
 }
 .tile-metric-label {
-    font-family: var(--font-mono, monospace);
-    font-size: 7px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--color-wc-text-tertiary); margin-bottom: 2px;
+    font-family: var(--font-display);
+    font-size: 7px; letter-spacing: 1.6px; text-transform: uppercase;
+    color: var(--c-text-3); margin-bottom: 2px;
 }
 .tile-score {
     display: flex; gap: 4px; align-items: baseline;
 }
 .score-label {
-    font-family: var(--font-mono, monospace);
-    font-size: 7px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 7px; letter-spacing: 1.0px; text-transform: uppercase;
+    color: var(--c-text-3);
 }
 .score-val {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-size: 11px; font-weight: 600;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     font-feature-settings: 'tnum' 1;
 }
 
 .rest-list {
     list-style: none; margin: 0; padding: 0;
-    border-top: 1px solid var(--color-wc-border);
+    border-top: 1px solid var(--c-border);
 }
 .rest-row {
     display: grid;
@@ -206,27 +206,27 @@ function goToCoach(coachId) {
 .rest-row:last-child { border-bottom: none; }
 .rest-row:hover { background: rgba(255,255,255,0.02); }
 .rest-rank {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px; letter-spacing: 0.12em;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 9px; letter-spacing: 1.0px;
+    color: var(--c-text-3);
 }
 .rest-name {
-    font-family: var(--font-sans, 'Inter', sans-serif);
+    font-family: var(--font-sans);
     font-size: 12px; font-weight: 500;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .rest-msgs {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-size: 12px; font-weight: 600;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     text-align: right;
     font-feature-settings: 'tnum' 1;
 }
 .rest-score {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-size: 11px; font-weight: 500;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     text-align: right;
     font-feature-settings: 'tnum' 1;
 }

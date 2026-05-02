@@ -69,8 +69,8 @@ function fmtDate(iso) {
 
 <style scoped>
 .tpl-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 16px 18px;
     display: flex;
@@ -81,10 +81,10 @@ function fmtDate(iso) {
 }
 .tpl-head { display: flex; justify-content: space-between; align-items: flex-start; }
 .tpl-eyebrow {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.22em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.8px;
+    color: var(--c-text-3);
     text-transform: uppercase;
     margin: 0 0 3px;
 }
@@ -93,31 +93,31 @@ function fmtDate(iso) {
     font-size: 18px;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
 }
 .tpl-refresh {
     height: 26px;
     padding: 0 11px;
-    border-radius: 999px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-pill, 999px);
+    border: 1px solid var(--c-border);
     background: transparent;
-    color: var(--color-wc-text-secondary);
-    font-family: var(--font-mono);
+    color: var(--c-text-2);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     cursor: pointer;
     transition: border-color 0.15s var(--ease-out), color 0.15s var(--ease-out);
 }
-.tpl-refresh:hover:not(:disabled) { border-color: var(--color-wc-border-2); color: var(--color-wc-text); }
+.tpl-refresh:hover:not(:disabled) { border-color: rgba(255,255,255,0.12); color: var(--c-text); }
 .tpl-refresh:disabled { opacity: 0.5; }
 
 .tpl-tagline {
-    font-family: var(--font-editorial);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 11.5px;
-    color: var(--color-wc-gold);
+    color: #C8A769;
     margin: 0;
     line-height: 1.5;
 }
@@ -125,9 +125,9 @@ function fmtDate(iso) {
 .tpl-skeleton { display: flex; flex-direction: column; gap: 8px; }
 .tpl-skeleton-row {
     height: 44px;
-    border-radius: 8px;
-    background: var(--color-wc-bg-tertiary);
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    background: var(--c-surface-2);
+    border: 1px solid var(--c-border);
     animation: tpl-pulse 1.5s ease-in-out infinite;
 }
 @keyframes tpl-pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 0.85; } }
@@ -136,17 +136,17 @@ function fmtDate(iso) {
 .tpl-empty-num {
     font-family: var(--font-display);
     font-size: 48px;
-    color: var(--color-wc-bg-tertiary);
+    color: var(--c-surface-2);
     letter-spacing: 0.1em;
     line-height: 1;
     user-select: none;
     margin-bottom: 10px;
 }
 .tpl-empty-msg {
-    font-family: var(--font-editorial);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     line-height: 1.55;
     margin: 0;
 }
@@ -157,7 +157,7 @@ function fmtDate(iso) {
     text-align: left;
     background: transparent;
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: var(--r-sm, 12px);
     padding: 8px 10px;
     cursor: pointer;
     display: flex;
@@ -165,36 +165,36 @@ function fmtDate(iso) {
     gap: 3px;
     transition: background 0.12s var(--ease-out), border-color 0.12s var(--ease-out);
 }
-.tpl-item-btn:hover { background: rgba(255, 255, 255, 0.03); border-color: var(--color-wc-border); }
+.tpl-item-btn:hover { background: rgba(255, 255, 255, 0.03); border-color: var(--c-border); }
 .tpl-item-name {
     font-family: var(--font-sans);
     font-size: 13px;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     line-height: 1.3;
 }
 .tpl-item-meta { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .tpl-tag {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 8.5px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text);
-    background: var(--color-wc-red-soft);
-    border-radius: 4px;
+    color: var(--c-text);
+    background: var(--c-accent-dim);
+    border-radius: var(--r-pill, 999px);
     padding: 2px 6px;
 }
 .tpl-tag--muted {
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     background: rgba(255, 255, 255, 0.04);
 }
 .tpl-tag--gold {
     color: #2a1e08;
-    background: var(--color-wc-gold);
+    background: #C8A769;
 }
 .tpl-date {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     letter-spacing: 0.06em;
 }
 </style>

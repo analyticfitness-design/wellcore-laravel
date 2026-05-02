@@ -68,24 +68,25 @@ const liveLabel = computed(() => props.paused ? 'PAUSADO' : 'EN VIVO');
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    height: 32px;
-    padding: 0 10px;
-    border-radius: 6px;
-    border: 1px solid var(--color-wc-green-text);
-    background: var(--color-wc-green-soft);
-    color: var(--color-wc-green-text);
+    height: var(--tap-comfort, 48px);
+    padding: 0 12px;
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid #34D399;
+    background: rgba(16,185,129,0.10);
+    color: #34D399;
     cursor: pointer;
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.2em;
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     transition: background 0.15s var(--ease-out), border-color 0.15s var(--ease-out), color 0.15s var(--ease-out);
     flex-shrink: 0;
 }
 .live-btn--paused {
-    border-color: var(--color-wc-amber-text);
-    background: var(--color-wc-amber-soft);
-    color: var(--color-wc-amber-text);
+    border-color: #FCD34D;
+    background: rgba(245,158,11,0.10);
+    color: #FCD34D;
 }
 
 .live-dot {
@@ -113,47 +114,48 @@ const liveLabel = computed(() => props.paused ? 'PAUSADO' : 'EN VIVO');
     position: absolute;
     left: 10px; top: 50%; transform: translateY(-50%);
     width: 14px; height: 14px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     pointer-events: none;
 }
 .search-input {
     width: 100%;
-    height: 32px;
+    height: 40px;
     padding: 0 10px 0 30px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
-    background: rgba(255, 255, 255, 0.03);
-    color: var(--color-wc-text);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
+    background: rgba(255,255,255,0.03);
+    color: var(--c-text);
     font-family: var(--font-sans);
     font-size: 12px;
     outline: none;
     transition: border-color 0.15s var(--ease-out);
 }
-.search-input:focus { border-color: var(--color-wc-border-2); }
-.search-input::placeholder { color: var(--color-wc-text-tertiary); }
+.search-input:focus { border-color: rgba(255,255,255,0.16); }
+.search-input::placeholder { color: var(--c-text-3); }
 
 .toolbar-btn {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    height: 32px;
-    padding: 0 10px;
-    border-radius: 6px;
-    border: 1px solid var(--color-wc-border);
+    height: var(--tap-comfort, 48px);
+    padding: 0 12px;
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: transparent;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     cursor: pointer;
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.18em;
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     transition: background 0.15s var(--ease-out), color 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
     flex-shrink: 0;
 }
 .toolbar-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--color-wc-text);
-    border-color: var(--color-wc-border-2);
+    background: rgba(255,255,255,0.05);
+    color: var(--c-text);
+    border-color: rgba(255,255,255,0.16);
 }
 .toolbar-btn svg { width: 14px; height: 14px; }
 </style>

@@ -131,9 +131,9 @@ async function submit() {
 .modal-panel {
     width: 100%;
     max-width: 440px;
-    border-radius: 16px;
-    border: 1px solid var(--color-wc-border);
-    background: var(--color-wc-bg-secondary, #111111);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -145,28 +145,28 @@ async function submit() {
     align-items: center;
     justify-content: space-between;
     padding: 18px 20px 14px;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
 }
 .modal-title {
     font-family: var(--font-display);
     font-size: 18px;
     letter-spacing: 0.04em;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
 }
 .modal-close {
-    width: 28px; height: 28px;
-    border-radius: 6px;
-    border: 1px solid var(--color-wc-border);
+    width: var(--tap-comfort, 48px); height: var(--tap-comfort, 48px);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: transparent;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     transition: color 0.15s var(--ease-out);
 }
-.modal-close:hover { color: var(--color-wc-text); }
+.modal-close:hover { color: var(--c-text); }
 
 .modal-body {
     padding: 18px 20px;
@@ -181,8 +181,8 @@ async function submit() {
     gap: 8px;
 }
 .target-pair {
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: rgba(255,255,255,0.02);
     padding: 8px 10px;
     display: flex;
@@ -190,16 +190,16 @@ async function submit() {
     gap: 3px;
 }
 .t-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 7px;
-    letter-spacing: 0.2em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.4px;
+    color: var(--c-text-3);
 }
 .t-val {
-    font-family: var(--font-sans, 'Inter', sans-serif);
+    font-family: var(--font-sans);
     font-size: 12px;
     font-weight: 500;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -211,46 +211,46 @@ async function submit() {
     gap: 6px;
 }
 .field-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--color-wc-text-secondary);
+    letter-spacing: 1.8px;
+    color: var(--c-text-2);
     display: block;
 }
-.required { color: var(--color-wc-accent); }
+.required { color: var(--c-accent); }
 .field-textarea {
     width: 100%;
     resize: vertical;
     min-height: 96px;
-    border-radius: 10px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: rgba(255,255,255,0.025);
-    color: var(--color-wc-text);
-    font-family: var(--font-sans, 'Inter', sans-serif);
+    color: var(--c-text);
+    font-family: var(--font-sans);
     font-size: 13px;
     line-height: 1.55;
     padding: 10px 12px;
     transition: border-color 0.15s var(--ease-out);
     box-sizing: border-box;
 }
-.field-textarea::placeholder { color: var(--color-wc-text-tertiary); }
-.field-textarea:focus { outline: none; border-color: var(--color-wc-accent); }
+.field-textarea::placeholder { color: var(--c-text-3); }
+.field-textarea:focus { outline: none; border-color: var(--c-accent); }
 .field-textarea:disabled { opacity: 0.5; cursor: not-allowed; }
 .field-hint {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.14em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
     margin: 0;
 }
 
 .error-msg {
-    font-family: var(--font-sans, 'Inter', sans-serif);
+    font-family: var(--font-sans);
     font-size: 12px;
-    color: var(--color-wc-red-text);
-    border-radius: 8px;
+    color: #F87171;
+    border-radius: var(--r-sm, 12px);
     border: 1px solid rgba(220,38,38,0.2);
-    background: var(--color-wc-red-soft);
+    background: var(--c-accent-dim);
     padding: 10px 12px;
     margin: 0;
 }
@@ -259,40 +259,42 @@ async function submit() {
     display: flex;
     gap: 10px;
     padding: 14px 20px 18px;
-    border-top: 1px solid var(--color-wc-border);
+    border-top: 1px solid var(--c-border);
 }
 .btn-cancel {
     flex: 1;
-    border-radius: 10px;
-    border: 1px solid var(--color-wc-border);
+    min-height: var(--tap-comfort, 48px);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: transparent;
-    color: var(--color-wc-text-secondary);
-    font-family: var(--font-mono, monospace);
+    color: var(--c-text-2);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    padding: 12px;
+    padding: 0 12px;
     cursor: pointer;
     transition: color 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
 }
 .btn-cancel:hover:not(:disabled) {
-    color: var(--color-wc-text);
-    border-color: var(--color-wc-border-2);
+    color: var(--c-text);
+    border-color: rgba(255,255,255,0.12);
 }
 .btn-cancel:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .btn-confirm {
     flex: 2;
-    border-radius: 10px;
-    background: var(--color-wc-red-soft);
+    min-height: var(--tap-comfort, 48px);
+    border-radius: var(--r-sm, 12px);
+    background: var(--c-accent-dim);
     border: 1px solid rgba(220,38,38,0.3);
-    color: var(--color-wc-red-text);
-    font-family: var(--font-mono, monospace);
+    color: #F87171;
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     font-weight: 600;
-    padding: 12px;
+    padding: 0 12px;
     cursor: pointer;
     transition: background 0.15s var(--ease-out);
 }

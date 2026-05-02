@@ -144,7 +144,7 @@ const metrics = computed(() => {
 
 .metric-card {
     flex: 0 0 220px;
-    border-radius: 14px;
+    border-radius: var(--r-md, 16px);
     padding: 16px 14px 14px;
     display: flex;
     flex-direction: column;
@@ -169,15 +169,15 @@ const metrics = computed(() => {
 .metric-ring { transform: rotate(-90deg); }
 .ring-track { fill: none; stroke: rgba(255,255,255,0.06); }
 .ring-fill { fill: none; stroke-linecap: round; transition: stroke-dashoffset 1.2s var(--ease-out, ease); }
-.ring-fill--red   { stroke: var(--color-wc-red-text,  #F87171); }
-.ring-fill--amber { stroke: var(--color-wc-amber-text,#FCD34D); }
-.ring-fill--green { stroke: var(--color-wc-green-text,#34D399); }
-.ring-fill--blue  { stroke: var(--color-wc-blue-text, #60A5FA); }
+.ring-fill--red   { stroke: #F87171; }
+.ring-fill--amber { stroke: #FCD34D; }
+.ring-fill--green { stroke: #34D399; }
+.ring-fill--blue  { stroke: #60A5FA; }
 
 .metric-label {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 8px; letter-spacing: 1.6px; text-transform: uppercase;
+    color: var(--c-text-3);
     margin-bottom: 8px; padding-right: 60px; line-height: 1.4; min-height: 12px;
 }
 .metric-value {
@@ -188,18 +188,18 @@ const metrics = computed(() => {
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .metric-value--text { font-size: 22px; letter-spacing: 0.05em; text-transform: uppercase; }
-.metric-value--urgent { color: var(--color-wc-red-text, #F87171); }
-.metric-value--warn   { color: var(--color-wc-amber-text, #FCD34D); }
-.metric-value--green  { color: var(--color-wc-green-text, #34D399); }
-.metric-value--info   { color: var(--color-wc-text); }
+.metric-value--urgent { color: #F87171; }
+.metric-value--warn   { color: #FCD34D; }
+.metric-value--green  { color: #34D399; }
+.metric-value--info   { color: var(--c-text); }
 .metric-sub {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px; color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 9px; color: var(--c-text-3);
     margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .metric-tooltip-hint {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px; color: var(--color-wc-amber-text, #FCD34D);
+    font-family: var(--font-display);
+    font-size: 8px; color: #FCD34D;
     margin-top: 2px;
 }
 @media (min-width: 1024px) {

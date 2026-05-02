@@ -76,17 +76,17 @@ function closeHistory() {
   flex-wrap: wrap;
 }
 .tools-page-eyebrow {
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 9px;
-  letter-spacing: 0.22em;
+  letter-spacing: 1.8px;
   text-transform: uppercase;
-  color: var(--color-wc-text-tertiary);
+  color: var(--c-text-3);
   margin-bottom: 4px;
 }
 .tools-page-hint {
   font-family: var(--font-sans);
   font-size: 12px;
-  color: var(--color-wc-text-secondary);
+  color: var(--c-text-2);
   line-height: 1.5;
   max-width: 480px;
 }
@@ -96,14 +96,14 @@ function closeHistory() {
   gap: 6px;
   height: 34px;
   padding: 0 14px;
-  border-radius: 8px;
-  font-family: var(--font-mono);
+  border-radius: var(--r-sm, 12px);
+  font-family: var(--font-display);
   font-size: 9px;
-  letter-spacing: 0.18em;
+  letter-spacing: 1.6px;
   text-transform: uppercase;
-  color: var(--color-wc-text-secondary);
+  color: var(--c-text-2);
   background: rgba(255,255,255,0.03);
-  border: 1px solid var(--color-wc-border);
+  border: 1px solid var(--c-border);
   cursor: pointer;
   transition: background 0.12s, border-color 0.12s, color 0.12s;
   flex-shrink: 0;
@@ -111,7 +111,7 @@ function closeHistory() {
 .tools-history-btn svg { width: 14px; height: 14px; }
 .tools-history-btn:hover {
   background: rgba(255,255,255,0.06);
-  border-color: var(--color-wc-border-2);
-  color: var(--color-wc-text);
+  border-color: rgba(255,255,255,0.12);
+  color: var(--c-text);
 }
 </style>

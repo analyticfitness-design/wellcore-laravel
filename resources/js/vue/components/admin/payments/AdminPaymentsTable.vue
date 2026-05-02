@@ -137,9 +137,9 @@ function sortGlyph(field) {
 
 <style scoped>
 .table-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
-    background: rgba(17, 17, 17, 0.7);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface);
     padding: 18px;
 }
 
@@ -161,15 +161,15 @@ function sortGlyph(field) {
 .table-head {
     padding-bottom: 10px;
     margin-bottom: 6px;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
 }
 
 .th {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.18em;
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     cursor: default;
     user-select: none;
 }
@@ -179,8 +179,8 @@ function sortGlyph(field) {
 .col-date.th { cursor: pointer; }
 
 .sort-glyph {
-    color: var(--color-wc-red-text, #F87171);
-    font-family: var(--font-data, sans-serif);
+    color: #F87171;
+    font-family: var(--font-display);
     margin-left: 2px;
 }
 
@@ -190,18 +190,18 @@ function sortGlyph(field) {
     background: transparent;
     border: none;
     padding: 11px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid var(--c-border);
     cursor: pointer;
     color: inherit;
     font: inherit;
     transition: background 0.15s var(--ease-out, ease);
 }
 .row:last-child { border-bottom: none; }
-.row:hover { background: rgba(255, 255, 255, 0.02); }
+.row:hover { background: rgba(255,255,255,0.02); }
 .row:focus-visible {
-    outline: 1px solid var(--color-wc-accent, #DC2626);
+    outline: 1px solid var(--c-accent);
     outline-offset: -1px;
-    background: rgba(220, 38, 38, 0.04);
+    background: var(--c-accent-dim);
 }
 
 .cell { min-width: 0; }
@@ -217,15 +217,15 @@ function sortGlyph(field) {
     height: 30px;
     flex-shrink: 0;
     border-radius: 50%;
-    background: rgba(220, 38, 38, 0.12);
-    border: 1px solid rgba(220, 38, 38, 0.25);
-    color: var(--color-wc-red-text, #F87171);
+    background: var(--c-accent-dim);
+    border: 1px solid rgba(220,38,38,0.25);
+    color: #F87171;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-family: var(--font-display);
-    font-size: 13px;
-    letter-spacing: 0.04em;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: var(--ls-display, -0.02em);
 }
 .client-info {
     display: flex;
@@ -234,19 +234,18 @@ function sortGlyph(field) {
 }
 .client-name {
     font-family: var(--font-sans);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--color-wc-text);
+    font-size: 14px; font-weight: 600;
+    color: var(--c-text);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 .client-sub {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px;
-    letter-spacing: 0.16em;
+    font-family: var(--font-display);
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -254,68 +253,67 @@ function sortGlyph(field) {
 
 .pill {
     display: inline-block;
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.18em;
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    padding: 3px 7px;
-    border-radius: 4px;
+    padding: 3px 8px;
+    border-radius: var(--r-pill, 999px);
     line-height: 1.4;
 }
-.pill--success { background: var(--color-wc-green-soft, rgba(16, 185, 129, 0.1)); color: var(--color-wc-green-text, #34D399); }
-.pill--warn    { background: var(--color-wc-amber-soft, rgba(245, 158, 11, 0.1)); color: var(--color-wc-amber-text, #FCD34D); }
-.pill--urgent  { background: var(--color-wc-red-soft, rgba(220, 38, 38, 0.1)); color: var(--color-wc-red-text, #F87171); }
-.pill--info    { background: var(--color-wc-blue-soft, rgba(59, 130, 246, 0.1)); color: var(--color-wc-blue-text, #60A5FA); }
-.pill--gold    { background: rgba(200, 167, 105, 0.12); color: var(--color-wc-gold, #C8A769); border: 1px solid rgba(200, 167, 105, 0.25); }
-.pill--amber   { background: var(--color-wc-amber-soft, rgba(245, 158, 11, 0.1)); color: var(--color-wc-amber-text, #FCD34D); }
-.pill--red     { background: var(--color-wc-red-soft, rgba(220, 38, 38, 0.1)); color: var(--color-wc-red-text, #F87171); }
-.pill--neutral { background: rgba(255, 255, 255, 0.04); color: var(--color-wc-text-tertiary); }
+.pill--success { background: var(--c-success-dim); color: #34D399; }
+.pill--warn    { background: var(--c-amber-dim); color: #FCD34D; }
+.pill--urgent  { background: var(--c-accent-dim); color: #F87171; }
+.pill--info    { background: rgba(59,130,246,0.12); color: #60A5FA; }
+.pill--gold    { background: rgba(200,167,105,0.12); color: var(--c-amber, #D4A80E); border: 1px solid rgba(200,167,105,0.25); }
+.pill--amber   { background: var(--c-amber-dim); color: #FCD34D; }
+.pill--red     { background: var(--c-accent-dim); color: #F87171; }
+.pill--neutral { background: rgba(255,255,255,0.05); color: var(--c-text-3); }
 
 .amount-num {
-    font-family: var(--font-data, 'Barlow', sans-serif);
-    font-feature-settings: 'tnum' 1;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--color-wc-text);
+    font-family: var(--font-display);
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
+    font-size: 14px; font-weight: 700;
+    color: var(--c-text);
 }
 .amount-cop {
     display: block;
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.18em;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
     margin-top: 2px;
 }
 
 .method {
-    font-family: var(--font-mono, monospace);
-    font-size: 10px;
-    letter-spacing: 0.16em;
-    color: var(--color-wc-text-secondary);
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px;
+    color: var(--c-text-2);
 }
 
 .date-rel {
     display: block;
-    font-family: var(--font-data, 'Barlow', sans-serif);
-    font-size: 12px;
-    color: var(--color-wc-text-secondary);
+    font-family: var(--font-sans);
+    font-size: 13px; font-weight: 400;
+    color: var(--c-text-2);
 }
 .date-abs {
     display: block;
-    font-family: var(--font-mono, monospace);
-    font-size: 9px;
-    letter-spacing: 0.14em;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
     margin-top: 1px;
 }
 
 .col-actions { text-align: right; }
 .chev {
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     font-size: 18px;
     line-height: 1;
 }
-.row:hover .chev { color: var(--color-wc-red-text, #F87171); }
+.row:hover .chev { color: #F87171; }
 
-.dash { color: var(--color-wc-text-tertiary); }
+.dash { color: var(--c-text-3); }
 </style>

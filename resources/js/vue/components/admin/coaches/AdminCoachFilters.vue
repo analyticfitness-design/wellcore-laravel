@@ -74,9 +74,9 @@ const STATUS_PILLS = [
 
 <style scoped>
 .filters-card {
-    border-radius: 12px;
-    border: 1px solid var(--color-wc-border);
-    background: rgba(17, 17, 17, 0.6);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface);
     padding: 12px;
 }
 .filters-row {
@@ -95,26 +95,26 @@ const STATUS_PILLS = [
     left: 11px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     pointer-events: none;
 }
 .search-input {
     width: 100%;
-    height: 36px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
-    background: rgba(255, 255, 255, 0.03);
+    height: 40px;
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
+    background: rgba(255,255,255,0.03);
     padding: 0 32px 0 32px;
     font-family: var(--font-sans);
     font-size: 13px;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     transition: border-color 0.15s var(--ease-out, ease), background 0.15s var(--ease-out, ease);
 }
-.search-input::placeholder { color: var(--color-wc-text-tertiary); }
+.search-input::placeholder { color: var(--c-text-3); }
 .search-input:focus {
     outline: none;
-    border-color: var(--color-wc-accent, #DC2626);
-    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--c-accent);
+    background: rgba(255,255,255,0.05);
 }
 .search-clear {
     position: absolute;
@@ -123,7 +123,7 @@ const STATUS_PILLS = [
     transform: translateY(-50%);
     background: transparent;
     border: none;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     width: 22px;
     height: 22px;
     border-radius: 50%;
@@ -135,8 +135,8 @@ const STATUS_PILLS = [
     justify-content: center;
 }
 .search-clear:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: var(--color-wc-text);
+    background: rgba(255,255,255,0.06);
+    color: var(--c-text);
 }
 
 .status-pills {
@@ -145,42 +145,45 @@ const STATUS_PILLS = [
     flex-wrap: wrap;
 }
 .pill {
-    height: 28px;
+    height: var(--tap-comfort, 48px);
     padding: 0 12px;
-    border-radius: 999px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-pill, 999px);
+    border: 1px solid var(--c-border);
     background: transparent;
-    color: var(--color-wc-text-secondary);
-    font-family: var(--font-mono, monospace);
-    font-size: 9px;
-    letter-spacing: 0.18em;
+    color: var(--c-text-2);
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     cursor: pointer;
     transition: background 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease), color 0.15s var(--ease-out, ease);
 }
 .pill:hover {
-    background: rgba(255, 255, 255, 0.04);
-    color: var(--color-wc-text);
+    background: rgba(255,255,255,0.04);
+    color: var(--c-text);
 }
 .pill--active {
-    background: var(--color-wc-red-soft, rgba(220, 38, 38, 0.1));
-    border-color: var(--color-wc-accent, #DC2626);
-    color: var(--color-wc-red-text, #F87171);
+    background: var(--c-accent-dim);
+    border-color: var(--c-accent);
+    color: #F87171;
 }
 
 .clear-all {
     margin-left: auto;
     background: transparent;
     border: none;
-    color: var(--color-wc-text-tertiary);
-    font-family: var(--font-mono, monospace);
+    color: var(--c-text-3);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.2em;
+    font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     cursor: pointer;
     padding: 6px 8px;
-    border-radius: 6px;
+    min-height: var(--tap-comfort, 48px);
+    border-radius: var(--r-sm, 12px);
     transition: color 0.15s var(--ease-out, ease);
 }
-.clear-all:hover { color: var(--color-wc-red-text, #F87171); }
+.clear-all:hover { color: #F87171; }
 </style>

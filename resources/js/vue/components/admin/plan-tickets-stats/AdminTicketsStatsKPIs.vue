@@ -58,8 +58,8 @@ function fmtHours(v) {
 }
 
 .kpi-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 16px 14px 14px;
     display: flex;
@@ -83,30 +83,30 @@ function fmtHours(v) {
 .kpi-card::before { opacity: 1; }
 
 .kpi-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.2em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .kpi-value {
     font-family: var(--font-display);
     font-size: clamp(28px, 4vw, 40px);
     letter-spacing: 0.04em;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     line-height: 1;
     margin: 2px 0;
     font-variant-numeric: tabular-nums;
 }
-.kpi-value--green  { color: var(--color-wc-green-text, #34D399); }
-.kpi-value--red    { color: var(--color-wc-red-text, #F87171); }
-.kpi-value--amber  { color: var(--color-wc-amber-text, #FCD34D); }
+.kpi-value--green  { color: #34D399; }
+.kpi-value--red    { color: #F87171; }
+.kpi-value--amber  { color: #FCD34D; }
 
 .kpi-sub {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.12em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.0px;
+    color: var(--c-text-3);
     text-transform: uppercase;
 }
 </style>

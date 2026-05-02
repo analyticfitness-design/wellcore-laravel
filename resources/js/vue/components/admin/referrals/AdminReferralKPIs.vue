@@ -116,8 +116,8 @@ const ringColor = (variant) => {
     flex: 0 0 auto;
     width: clamp(148px, 22vw, 190px);
     scroll-snap-align: start;
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 16px 14px;
     display: flex;
@@ -151,23 +151,23 @@ const ringColor = (variant) => {
     gap: 2px;
 }
 .metric-label {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin: 0;
 }
 .metric-sub {
     font-family: var(--font-sans);
     font-size: 11px;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     margin: 0;
 }
 
 .metric-skeleton {
     animation: page-pulse 1.5s ease-in-out infinite;
-    background: var(--color-wc-bg-tertiary);
+    background: var(--c-surface-2);
     min-height: 100px;
 }
 @keyframes page-pulse {

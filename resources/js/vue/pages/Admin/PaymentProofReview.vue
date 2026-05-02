@@ -63,14 +63,14 @@ onBeforeUnmount(() => {
 }
 
 .proofs-eyebrow {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin: -8px 0 0;
 }
-.proofs-refresh { color: var(--color-wc-text-tertiary); opacity: 0.7; }
+.proofs-refresh { color: var(--c-text-3); opacity: 0.7; }
 
 @media (min-width: 1024px) {
     .proofs-eyebrow { margin-top: -10px; }

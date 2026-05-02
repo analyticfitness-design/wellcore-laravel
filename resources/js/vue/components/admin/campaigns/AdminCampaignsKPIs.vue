@@ -93,8 +93,8 @@ function roasColor(roas) {
 
 .kpi-card {
     background: rgba(17,17,17,0.7);
-    border: 1px solid var(--color-wc-border);
-    border-radius: 14px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md, 16px);
     padding: 16px;
 }
 
@@ -106,10 +106,10 @@ function roasColor(roas) {
 }
 
 .kpi-label {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.2em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.6px;
+    color: var(--c-text-3);
     text-transform: uppercase;
 }
 
@@ -119,17 +119,17 @@ function roasColor(roas) {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
-    background: var(--color-wc-red-soft);
-    color: var(--color-wc-accent);
+    border-radius: var(--r-sm, 12px);
+    background: var(--c-accent-dim);
+    color: var(--c-accent);
     flex-shrink: 0;
 }
 
 .kpi-value {
-    font-family: var(--font-data);
+    font-family: var(--font-display);
     font-size: 22px;
     font-weight: 700;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     line-height: 1.1;
     margin: 0 0 4px;
     font-feature-settings: 'tnum' 1;
@@ -137,7 +137,7 @@ function roasColor(roas) {
 
 .kpi-value-skeleton {
     height: 28px;
-    background: var(--color-wc-bg-tertiary);
+    background: var(--c-surface-2);
     border-radius: 6px;
     animation: page-pulse 1.5s ease-in-out infinite;
     margin-bottom: 4px;
@@ -146,7 +146,7 @@ function roasColor(roas) {
 .kpi-sub {
     font-family: var(--font-sans);
     font-size: 11px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin: 0;
 }
 

@@ -76,66 +76,69 @@ const hasFilters = computed(() =>
     left: 10px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     pointer-events: none;
 }
 .insc-search {
     width: 100%;
-    height: 36px;
+    height: 40px;
     background: rgba(255,255,255,0.03);
-    border: 1px solid var(--color-wc-border);
-    border-radius: 8px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm, 12px);
     padding: 0 12px 0 30px;
     font-family: var(--font-sans);
     font-size: 12px;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     outline: none;
     transition: border-color 0.15s var(--ease-out);
 }
-.insc-search:focus { border-color: var(--color-wc-border-2); }
-.insc-search::placeholder { color: var(--color-wc-text-tertiary); }
+.insc-search:focus { border-color: rgba(255,255,255,0.16); }
+.insc-search::placeholder { color: var(--c-text-3); }
 .insc-pills {
     display: flex;
     gap: 5px;
     flex-wrap: wrap;
 }
 .insc-pill {
-    height: 28px;
-    padding: 0 11px;
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    height: var(--tap-comfort, 48px);
+    padding: 0 12px;
+    border-radius: var(--r-pill, 999px);
+    border: 1px solid var(--c-border);
     background: transparent;
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
     cursor: pointer;
     transition: all 0.15s var(--ease-out);
 }
 .insc-pill:hover {
-    border-color: var(--color-wc-border-2);
-    color: var(--color-wc-text-secondary);
+    border-color: rgba(255,255,255,0.16);
+    color: var(--c-text-2);
 }
 .insc-pill--active {
-    background: var(--color-wc-red-soft);
-    border-color: var(--color-wc-accent);
-    color: var(--color-wc-text);
+    background: var(--c-accent-dim);
+    border-color: var(--c-accent);
+    color: var(--c-text);
 }
 .insc-clear {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
-    color: var(--color-wc-text-tertiary);
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
     background: transparent;
     border: none;
     cursor: pointer;
     padding: 0;
+    min-height: var(--tap-comfort, 48px);
     transition: color 0.15s var(--ease-out);
 }
-.insc-clear:hover { color: var(--color-wc-accent); }
+.insc-clear:hover { color: var(--c-accent); }
 
 .fade-enter-active, .fade-leave-active { transition: opacity 0.15s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }

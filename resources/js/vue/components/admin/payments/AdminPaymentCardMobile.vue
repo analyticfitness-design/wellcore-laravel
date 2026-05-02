@@ -59,8 +59,8 @@ function avatarInitial(name) {
     display: block;
     width: 100%;
     text-align: left;
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 14px;
     color: inherit;
@@ -83,7 +83,7 @@ function avatarInitial(name) {
     border-radius: 50%;
     background: rgba(220, 38, 38, 0.12);
     border: 1px solid rgba(220, 38, 38, 0.25);
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -100,18 +100,18 @@ function avatarInitial(name) {
     font-family: var(--font-sans);
     font-size: 14px;
     font-weight: 600;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     line-height: 1.2;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 .meta {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.16em;
+    letter-spacing: 1.4px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin-top: 2px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -120,18 +120,18 @@ function avatarInitial(name) {
 
 .pill {
     display: inline-block;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     padding: 3px 7px;
-    border-radius: 4px;
+    border-radius: var(--r-pill, 999px);
     flex-shrink: 0;
 }
-.pill--success { background: var(--color-wc-green-soft, rgba(16, 185, 129, 0.1)); color: var(--color-wc-green-text, #34D399); }
-.pill--warn    { background: var(--color-wc-amber-soft, rgba(245, 158, 11, 0.1)); color: var(--color-wc-amber-text, #FCD34D); }
-.pill--urgent  { background: var(--color-wc-red-soft, rgba(220, 38, 38, 0.1)); color: var(--color-wc-red-text, #F87171); }
-.pill--info    { background: var(--color-wc-blue-soft, rgba(59, 130, 246, 0.1)); color: var(--color-wc-blue-text, #60A5FA); }
+.pill--success { background: rgba(16,185,129,0.1); color: #34D399; }
+.pill--warn    { background: rgba(245,158,11,0.1); color: #FCD34D; }
+.pill--urgent  { background: var(--c-accent-dim); color: #F87171; }
+.pill--info    { background: rgba(59,130,246,0.1); color: #60A5FA; }
 
 .card-foot {
     display: flex;
@@ -147,22 +147,22 @@ function avatarInitial(name) {
     gap: 6px;
 }
 .amount-num {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-feature-settings: 'tnum' 1;
     font-size: 16px;
     font-weight: 700;
-    color: var(--color-wc-text);
+    color: var(--c-text);
 }
 .amount-cop {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.6px;
+    color: var(--c-text-3);
 }
 .time {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.14em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
 }
 </style>

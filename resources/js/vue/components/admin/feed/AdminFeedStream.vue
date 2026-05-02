@@ -39,9 +39,9 @@ defineProps({
 
 .feed-skeleton-row {
     height: 52px;
-    background: var(--color-wc-bg-tertiary);
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    background: var(--c-surface-2);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     margin-bottom: 4px;
     animation: feed-pulse 1.5s ease-in-out infinite;
 }
@@ -59,7 +59,7 @@ defineProps({
     position: absolute;
     left: 3px; top: 20px; bottom: 20px;
     width: 1px;
-    background: var(--color-wc-border);
+    background: var(--c-border);
     z-index: 0;
 }
 
@@ -76,17 +76,17 @@ defineProps({
 .empty-num {
     font-family: var(--font-display);
     font-size: 56px;
-    color: var(--color-wc-bg-tertiary);
+    color: var(--c-surface-2);
     letter-spacing: 0.1em;
     line-height: 1;
     margin-bottom: 12px;
     user-select: none;
 }
 .empty-msg {
-    font-family: var(--font-editorial);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     line-height: 1.55;
     margin: 0 auto;
     text-wrap: balance;

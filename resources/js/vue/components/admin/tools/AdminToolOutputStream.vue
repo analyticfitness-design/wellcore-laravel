@@ -55,7 +55,7 @@ watch(() => props.lines.length, async () => {
   min-height: 140px;
   max-height: 340px;
   overflow-y: auto;
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 11px;
   line-height: 1.7;
   color: rgba(250,250,250,0.72);
@@ -69,12 +69,12 @@ watch(() => props.lines.length, async () => {
   white-space: pre-wrap;
   word-break: break-all;
 }
-.line-error { color: var(--color-wc-red-text); }
-.line-warn  { color: var(--color-wc-amber-text); }
+.line-error { color: #F87171; }
+.line-warn  { color: #FCD34D; }
 
 .tool-terminal-cursor {
   display: inline-block;
-  color: var(--color-wc-accent);
+  color: var(--c-accent);
   animation: term-blink 0.9s step-end infinite;
   margin-left: 2px;
 }
@@ -92,20 +92,20 @@ watch(() => props.lines.length, async () => {
   border-top: 1px solid rgba(255,255,255,0.06);
 }
 .tool-terminal-status {
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 9px;
-  letter-spacing: 0.18em;
+  letter-spacing: 1.6px;
   text-transform: uppercase;
   padding: 2px 8px;
-  border-radius: 4px;
+  border-radius: var(--r-pill, 999px);
 }
-.status-ok   { background: var(--color-wc-green-soft);  color: var(--color-wc-green-text); }
-.status-fail { background: var(--color-wc-red-soft);    color: var(--color-wc-red-text); }
+.status-ok   { background: rgba(16,185,129,0.1);  color: #34D399; }
+.status-fail { background: var(--c-accent-dim);    color: #F87171; }
 .tool-terminal-duration {
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 9px;
-  color: var(--color-wc-text-tertiary);
-  letter-spacing: 0.1em;
+  color: var(--c-text-3);
+  letter-spacing: 0.8px;
 }
 
 @media (prefers-reduced-motion: reduce) {

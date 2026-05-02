@@ -100,11 +100,11 @@ function go(p) {
 }
 
 .summary-mono {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 10px;
-    letter-spacing: 0.16em;
+    letter-spacing: 1.4px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 .page-controls {
@@ -116,16 +116,16 @@ function go(p) {
 
 .page-btn,
 .page-num {
-    height: 30px;
-    min-width: 30px;
+    height: var(--tap-comfort, 48px);
+    min-width: var(--tap-comfort, 48px);
     padding: 0 10px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.5);
-    color: var(--color-wc-text-secondary);
-    font-family: var(--font-mono, monospace);
+    color: var(--c-text-2);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     cursor: pointer;
     transition: background 0.15s var(--ease-out, ease), color 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease);
@@ -133,8 +133,8 @@ function go(p) {
 .page-btn:hover:not(:disabled),
 .page-num:hover {
     background: rgba(255, 255, 255, 0.04);
-    color: var(--color-wc-text);
-    border-color: var(--color-wc-border-2, rgba(255, 255, 255, 0.12));
+    color: var(--c-text);
+    border-color: rgba(255,255,255,0.12);
 }
 .page-btn:disabled {
     opacity: 0.35;
@@ -142,9 +142,9 @@ function go(p) {
 }
 
 .page-num--active {
-    background: var(--color-wc-red-soft, rgba(220, 38, 38, 0.1));
-    border-color: var(--color-wc-accent, #DC2626);
-    color: var(--color-wc-red-text, #F87171);
+    background: var(--c-accent-dim);
+    border-color: var(--c-accent);
+    color: #F87171;
 }
 
 .page-numbers {
@@ -154,8 +154,8 @@ function go(p) {
 }
 
 .ellipsis {
-    font-family: var(--font-mono, monospace);
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    color: var(--c-text-3);
     padding: 0 4px;
     user-select: none;
 }

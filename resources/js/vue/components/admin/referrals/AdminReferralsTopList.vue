@@ -65,8 +65,8 @@ const podiumColor = (idx) => ['gold', 'silver', 'bronze'][idx] ?? 'neutral';
 
 <style scoped>
 .top-refs {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 18px;
 }
@@ -79,17 +79,17 @@ const podiumColor = (idx) => ['gold', 'silver', 'bronze'][idx] ?? 'neutral';
 .refs-title {
     font-family: var(--font-display);
     font-size: 13px;
-    letter-spacing: 0.14em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
 }
 .refs-period {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.15em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 /* ── Empty state ──────────────────────────────────────────────────────── */
@@ -97,17 +97,17 @@ const podiumColor = (idx) => ['gold', 'silver', 'bronze'][idx] ?? 'neutral';
 .refs-empty-num {
     font-family: var(--font-display);
     font-size: 56px;
-    color: var(--color-wc-bg-tertiary);
-    letter-spacing: 0.1em;
+    color: var(--c-surface-2);
+    letter-spacing: 0.8px;
     line-height: 1;
     margin-bottom: 12px;
     user-select: none;
 }
 .refs-empty-msg {
-    font-family: var(--font-editorial);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     line-height: 1.55;
     margin: 0 0 16px;
     text-wrap: balance;
@@ -116,17 +116,17 @@ const podiumColor = (idx) => ['gold', 'silver', 'bronze'][idx] ?? 'neutral';
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.22em;
-    color: var(--color-wc-text-secondary);
+    letter-spacing: 1.8px;
+    color: var(--c-text-2);
     text-decoration: none;
     text-transform: uppercase;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
     padding-bottom: 4px;
     transition: color 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
 }
-.refs-empty-cta:hover { color: var(--color-wc-text); border-bottom-color: var(--color-wc-accent); }
+.refs-empty-cta:hover { color: var(--c-text); border-bottom-color: var(--c-accent); }
 
 /* ── Content ──────────────────────────────────────────────────────────── */
 .refs-content { display: flex; flex-direction: column; gap: 14px; }
@@ -135,7 +135,7 @@ const podiumColor = (idx) => ['gold', 'silver', 'bronze'][idx] ?? 'neutral';
     border-radius: 10px;
     padding: 12px 10px;
     text-align: center;
-    border: 1px solid var(--color-wc-border);
+    border: 1px solid var(--c-border);
     background: rgba(24, 24, 24, 0.6);
 }
 .podium-card--gold   { border-color: rgba(212,160,76,.3);  background: linear-gradient(180deg,rgba(212,160,76,.1),rgba(24,24,24,.6)); }
@@ -143,18 +143,18 @@ const podiumColor = (idx) => ['gold', 'silver', 'bronze'][idx] ?? 'neutral';
 .podium-card--bronze { border-color: rgba(180,83,9,.3);    background: linear-gradient(180deg,rgba(180,83,9,.08),rgba(24,24,24,.6)); }
 
 .podium-rank {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 10px;
-    letter-spacing: 0.18em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.6px;
+    color: var(--c-text-3);
     margin-bottom: 4px;
 }
-.podium-card--gold .podium-rank { color: var(--color-wc-gold); }
+.podium-card--gold .podium-rank { color: #C8A769; }
 .podium-name {
     font-family: var(--font-sans);
     font-size: 12px;
     font-weight: 700;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin-bottom: 8px;
     overflow: hidden;
     white-space: nowrap;
@@ -163,20 +163,20 @@ const podiumColor = (idx) => ['gold', 'silver', 'bronze'][idx] ?? 'neutral';
 .podium-count {
     font-family: var(--font-display);
     font-size: 24px;
-    color: var(--color-wc-blue-text);
+    color: #60A5FA;
     line-height: 1;
 }
 .podium-count-label {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 7px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin-top: 2px;
 }
 
 /* ── Rest list ────────────────────────────────────────────────────────── */
-.refs-rest { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--color-wc-border); }
+.refs-rest { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--c-border); }
 .ref-row {
     display: flex;
     align-items: center;
@@ -186,10 +186,10 @@ const podiumColor = (idx) => ['gold', 'silver', 'bronze'][idx] ?? 'neutral';
 }
 .ref-row:last-child { border-bottom: none; }
 .ref-row-rank {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.6px;
+    color: var(--c-text-3);
     flex-shrink: 0;
     width: 28px;
 }
@@ -197,15 +197,15 @@ const podiumColor = (idx) => ['gold', 'silver', 'bronze'][idx] ?? 'neutral';
     flex: 1;
     font-size: 12px;
     font-weight: 500;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
 .ref-row-count {
-    font-family: var(--font-data);
+    font-family: var(--font-display);
     font-size: 13px;
     font-weight: 700;
-    color: var(--color-wc-blue-text);
+    color: #60A5FA;
 }
 </style>

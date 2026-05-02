@@ -310,9 +310,9 @@ function onBackdropKey(e) {
     max-width: 640px;
     max-height: 90vh;
     overflow-y: auto;
-    border-radius: 16px;
-    border: 1px solid var(--color-wc-border-2);
-    background: var(--color-wc-bg-secondary, #111111);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid rgba(255,255,255,0.12);
+    background: var(--c-surface);
     padding: 24px;
     box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
 }
@@ -329,17 +329,17 @@ function onBackdropKey(e) {
     font-family: var(--font-display);
     font-size: 22px;
     letter-spacing: 0.04em;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
 }
 .modal-close {
     flex-shrink: 0;
     width: 32px;
     height: 32px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: transparent;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -347,8 +347,8 @@ function onBackdropKey(e) {
     transition: color 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease);
 }
 .modal-close:hover {
-    color: var(--color-wc-text);
-    border-color: var(--color-wc-border-2);
+    color: var(--c-text);
+    border-color: rgba(255,255,255,0.12);
 }
 
 /* Error banner */
@@ -362,7 +362,7 @@ function onBackdropKey(e) {
 .modal-error-global p {
     font-family: var(--font-sans);
     font-size: 12px;
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
     margin: 0;
 }
 
@@ -377,7 +377,7 @@ function onBackdropKey(e) {
     height: 14px;
     width: 100%;
     border-radius: 6px;
-    background: var(--color-wc-bg-tertiary);
+    background: var(--c-surface-2);
     animation: modal-pulse 1.5s ease-in-out infinite;
 }
 @keyframes modal-pulse {
@@ -406,21 +406,21 @@ function onBackdropKey(e) {
     .field-row { grid-template-columns: 1fr 1fr; }
 }
 .field-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
 }
-.field-required { color: var(--color-wc-accent, #DC2626); }
+.field-required { color: var(--c-accent); }
 
 .field-input,
 .field-select,
 .field-textarea {
     border-radius: 10px;
-    border: 1px solid var(--color-wc-border);
-    background: var(--color-wc-bg-tertiary, #181818);
-    color: var(--color-wc-text);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface-2);
+    color: var(--c-text);
     font-family: var(--font-sans);
     font-size: 13px;
     padding: 10px 12px;
@@ -429,22 +429,22 @@ function onBackdropKey(e) {
     box-sizing: border-box;
 }
 .field-input::placeholder,
-.field-textarea::placeholder { color: var(--color-wc-text-tertiary); }
+.field-textarea::placeholder { color: var(--c-text-3); }
 .field-input:focus,
 .field-select:focus,
 .field-textarea:focus {
     outline: none;
-    border-color: var(--color-wc-accent, #DC2626);
+    border-color: var(--c-accent);
 }
 .field-input--error { border-color: rgba(220, 38, 38, 0.6) !important; }
 .field-select { appearance: none; cursor: pointer; }
 .field-textarea { resize: vertical; }
-.field-textarea--mono { font-family: var(--font-mono, monospace); font-size: 11px; }
+.field-textarea--mono { font-family: var(--font-display); font-size: 11px; }
 
 .field-error {
     font-family: var(--font-sans);
     font-size: 11px;
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
     margin: 0;
 }
 
@@ -458,14 +458,14 @@ function onBackdropKey(e) {
     position: relative;
     width: 40px;
     height: 22px;
-    border-radius: 20px;
+    border-radius: var(--r-pill, 999px);
     border: 2px solid transparent;
     background: rgba(255, 255, 255, 0.08);
     cursor: pointer;
     transition: background 0.2s ease;
     flex-shrink: 0;
 }
-.toggle-track--on { background: var(--color-wc-green-soft, rgba(16,185,129,0.3)); }
+.toggle-track--on { background: rgba(16,185,129,0.3); }
 .toggle-thumb {
     position: absolute;
     top: 2px;
@@ -473,17 +473,17 @@ function onBackdropKey(e) {
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background: var(--color-wc-text-tertiary);
+    background: var(--c-text-3);
     transition: transform 0.2s ease, background 0.2s ease;
 }
 .toggle-thumb--on {
     transform: translateX(18px);
-    background: var(--color-wc-green-text, #34D399);
+    background: #34D399;
 }
 .toggle-label {
     font-family: var(--font-sans);
     font-size: 13px;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
 }
 
 /* Modal actions */
@@ -495,10 +495,11 @@ function onBackdropKey(e) {
 .btn-cancel {
     flex: 1;
     height: 40px;
+    min-height: var(--tap-comfort, 48px);
     border-radius: 10px;
-    border: 1px solid var(--color-wc-border);
+    border: 1px solid var(--c-border);
     background: transparent;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     font-family: var(--font-sans);
     font-size: 13px;
     font-weight: 500;
@@ -506,15 +507,16 @@ function onBackdropKey(e) {
     transition: color 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease);
 }
 .btn-cancel:hover {
-    color: var(--color-wc-text);
-    border-color: var(--color-wc-border-2);
+    color: var(--c-text);
+    border-color: rgba(255,255,255,0.12);
 }
 .btn-save {
     flex: 1;
     height: 40px;
+    min-height: var(--tap-comfort, 48px);
     border-radius: 10px;
     border: none;
-    background: var(--color-wc-accent, #DC2626);
+    background: var(--c-accent);
     color: #fff;
     font-family: var(--font-sans);
     font-size: 13px;

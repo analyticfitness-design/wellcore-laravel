@@ -77,8 +77,8 @@ const assignedPlans = computed(() => store.plans || []);
 .plan-panel { display: flex; flex-direction: column; gap: 12px; }
 
 .card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.65);
     padding: 16px;
     display: flex;
@@ -89,26 +89,26 @@ const assignedPlans = computed(() => store.plans || []);
 
 .card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .card-eyebrow {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .line-mono {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.16em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.4px;
+    color: var(--c-text-3);
     text-transform: uppercase;
 }
 .line-mono--dim { opacity: 0.5; }
 .line-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.2em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     display: block;
     margin-bottom: 2px;
 }
@@ -121,20 +121,20 @@ const assignedPlans = computed(() => store.plans || []);
     flex-wrap: wrap;
 }
 .plan-name {
-    font-family: var(--font-display, 'Bebas Neue', sans-serif);
+    font-family: var(--font-display);
     font-size: clamp(34px, 5vw, 52px);
     letter-spacing: 0.04em;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     line-height: 1;
 }
 .hero-stats { display: flex; gap: 16px; }
 .hero-stat { display: flex; flex-direction: column; align-items: flex-start; }
 .hero-value {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-feature-settings: 'tnum' 1;
     font-size: 28px;
     font-weight: 700;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     line-height: 1;
 }
 
@@ -142,7 +142,7 @@ const assignedPlans = computed(() => store.plans || []);
     display: flex;
     flex-direction: column;
     gap: 8px;
-    border-top: 1px solid var(--color-wc-border);
+    border-top: 1px solid var(--c-border);
     padding-top: 8px;
 }
 .plan-row {
@@ -157,10 +157,10 @@ const assignedPlans = computed(() => store.plans || []);
 .plan-row--inactive { opacity: 0.55; }
 .plan-row-main { display: flex; align-items: center; gap: 8px; }
 .plan-row-meta {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.14em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
 }
 .plan-row-meta-line { display: flex; align-items: center; gap: 8px; }
 
@@ -168,23 +168,23 @@ const assignedPlans = computed(() => store.plans || []);
 .pill--success,
 .pill--neutral {
     display: inline-block;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     padding: 3px 7px;
-    border-radius: 4px;
+    border-radius: var(--r-pill, 999px);
     line-height: 1.4;
 }
-.pill--success { background: var(--color-wc-green-soft, rgba(16, 185, 129, 0.1)); color: var(--color-wc-green-text, #34D399); }
-.pill--neutral { background: rgba(255, 255, 255, 0.04); color: var(--color-wc-text-tertiary); }
+.pill--success { background: rgba(16,185,129,0.1); color: #34D399; }
+.pill--neutral { background: rgba(255, 255, 255, 0.04); color: var(--c-text-3); }
 
 .card-empty { padding: 8px 0; }
 .empty-msg {
-    font-family: var(--font-editorial, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin: 0;
 }
 </style>

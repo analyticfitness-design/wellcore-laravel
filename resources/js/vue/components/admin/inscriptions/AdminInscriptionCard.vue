@@ -77,16 +77,16 @@ function onDragStart(evt) {
 
 <style scoped>
 .insc-card {
-    background: var(--color-wc-bg-tertiary);
-    border: 1px solid var(--color-wc-border);
-    border-radius: 12px;
+    background: var(--c-surface-2);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md, 16px);
     padding: 12px;
     cursor: grab;
     transition: border-color 0.15s var(--ease-out), background 0.15s var(--ease-out);
     user-select: none;
 }
 .insc-card:hover {
-    border-color: var(--color-wc-border-2);
+    border-color: rgba(255,255,255,0.16);
     background: rgba(24,24,24,0.95);
 }
 .insc-card:active { cursor: grabbing; }
@@ -101,12 +101,12 @@ function onDragStart(evt) {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: var(--color-wc-blue-soft);
-    color: var(--color-wc-blue-text);
+    background: rgba(59,130,246,0.10);
+    color: #60A5FA;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--font-data);
+    font-family: var(--font-display);
     font-size: 13px;
     font-weight: 600;
     flex-shrink: 0;
@@ -120,25 +120,27 @@ function onDragStart(evt) {
     font-family: var(--font-sans);
     font-size: 13px;
     font-weight: 500;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 .insc-time {
     display: block;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.1em;
-    color: var(--color-wc-text-tertiary);
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
     margin-top: 2px;
 }
 .insc-plan-badge {
-    font-family: var(--font-mono);
-    font-size: 8px;
-    letter-spacing: 0.18em;
+    font-family: var(--font-display);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
     padding: 3px 7px;
-    border-radius: 4px;
+    border-radius: var(--r-pill, 999px);
     white-space: nowrap;
     flex-shrink: 0;
 }
@@ -152,19 +154,21 @@ function onDragStart(evt) {
     align-items: center;
     gap: 5px;
     padding: 5px 10px;
-    border-radius: 6px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: transparent;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.14em;
-    color: var(--color-wc-text-secondary);
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    color: var(--c-text-2);
     cursor: pointer;
+    min-height: var(--tap-comfort, 48px);
     transition: all 0.15s var(--ease-out);
 }
 .insc-action-contact:hover {
-    background: var(--color-wc-blue-soft);
-    color: var(--color-wc-blue-text);
+    background: rgba(59,130,246,0.10);
+    color: #60A5FA;
     border-color: rgba(59,130,246,0.3);
 }
 .insc-action-reject {
@@ -172,8 +176,8 @@ function onDragStart(evt) {
     margin-left: auto;
 }
 .insc-action-reject:hover {
-    background: var(--color-wc-red-soft);
-    color: var(--color-wc-red-text);
+    background: var(--c-accent-dim);
+    color: #F87171;
     border-color: rgba(220,38,38,0.3);
 }
 

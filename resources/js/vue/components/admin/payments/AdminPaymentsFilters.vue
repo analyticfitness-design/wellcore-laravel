@@ -208,8 +208,8 @@ function clearAll() {
 
 <style scoped>
 .filters-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 16px 14px;
     display: flex;
@@ -226,18 +226,18 @@ function clearAll() {
     justify-content: space-between;
 }
 .filters-eyebrow {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .filters-clear {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
     background: transparent;
     border: none;
     border-bottom: 1px solid transparent;
@@ -246,7 +246,7 @@ function clearAll() {
     transition: border-color 0.15s var(--ease-out, ease);
 }
 .filters-clear:hover {
-    border-bottom-color: var(--color-wc-red-text, #F87171);
+    border-bottom-color: #F87171;
 }
 
 .filters-row {
@@ -263,11 +263,11 @@ function clearAll() {
 }
 
 .filters-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     flex-shrink: 0;
     width: 70px;
 }
@@ -284,24 +284,24 @@ function clearAll() {
     align-items: center;
     height: 28px;
     padding: 0 10px;
-    border-radius: 999px;
+    border-radius: var(--r-pill, 999px);
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--color-wc-border);
-    color: var(--color-wc-text-tertiary);
-    font-family: var(--font-mono, monospace);
+    border: 1px solid var(--c-border);
+    color: var(--c-text-3);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     cursor: pointer;
     transition: background 0.15s var(--ease-out, ease),
                 border-color 0.15s var(--ease-out, ease),
                 color 0.15s var(--ease-out, ease);
 }
-.chip:hover { border-color: var(--color-wc-border-2, rgba(255, 255, 255, 0.12)); color: var(--color-wc-text-secondary); }
+.chip:hover { border-color: rgba(255,255,255,0.12); color: var(--c-text-2); }
 .chip--active {
-    background: var(--color-wc-red-soft, rgba(220, 38, 38, 0.1));
+    background: var(--c-accent-dim);
     border-color: rgba(220, 38, 38, 0.4);
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
 }
 
 .filters-custom {
@@ -316,19 +316,19 @@ function clearAll() {
     min-width: 140px;
 }
 .form-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .form-input {
     height: 36px;
     padding: 0 10px;
-    border-radius: 8px;
+    border-radius: var(--r-sm, 12px);
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--color-wc-border);
-    color: var(--color-wc-text);
+    border: 1px solid var(--c-border);
+    color: var(--c-text);
     font-family: var(--font-sans);
     font-size: 13px;
     transition: border-color 0.15s var(--ease-out, ease);
@@ -336,7 +336,7 @@ function clearAll() {
 }
 .form-input:focus {
     outline: none;
-    border-color: var(--color-wc-accent, #DC2626);
+    border-color: var(--c-accent);
     background: rgba(255, 255, 255, 0.05);
 }
 
@@ -351,25 +351,25 @@ function clearAll() {
     left: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     pointer-events: none;
 }
 .search-input {
     width: 100%;
     height: 36px;
     padding: 0 12px 0 34px;
-    border-radius: 8px;
+    border-radius: var(--r-sm, 12px);
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--color-wc-border);
-    color: var(--color-wc-text);
+    border: 1px solid var(--c-border);
+    color: var(--c-text);
     font-family: var(--font-sans);
     font-size: 13px;
     transition: border-color 0.15s var(--ease-out, ease);
 }
 .search-input:focus {
     outline: none;
-    border-color: var(--color-wc-accent, #DC2626);
+    border-color: var(--c-accent);
     background: rgba(255, 255, 255, 0.05);
 }
-.search-input::placeholder { color: var(--color-wc-text-tertiary); }
+.search-input::placeholder { color: var(--c-text-3); }
 </style>

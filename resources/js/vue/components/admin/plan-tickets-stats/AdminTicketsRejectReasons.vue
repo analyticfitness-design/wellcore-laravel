@@ -73,8 +73,8 @@ const isEmpty = computed(() => !donut.value);
 
 <style scoped>
 .reasons-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 18px;
 }
@@ -88,17 +88,17 @@ const isEmpty = computed(() => !donut.value);
 .reasons-title {
     font-family: var(--font-display);
     font-size: 13px;
-    letter-spacing: 0.14em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
 }
 .reasons-sub {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.15em;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 /* Empty */
@@ -109,17 +109,17 @@ const isEmpty = computed(() => !donut.value);
 .reasons-empty-num {
     font-family: var(--font-display);
     font-size: 56px;
-    color: var(--color-wc-bg-tertiary, #181818);
-    letter-spacing: 0.1em;
+    color: var(--c-surface-2);
+    letter-spacing: 0.8px;
     line-height: 1;
     margin-bottom: 12px;
     user-select: none;
 }
 .reasons-empty-msg {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     line-height: 1.55;
     margin: 0;
     text-wrap: balance;
@@ -175,23 +175,23 @@ const isEmpty = computed(() => !donut.value);
 .legend-name {
     flex: 1;
     font-size: 11px;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
 .legend-count {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-size: 12px;
     font-weight: 700;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     font-variant-numeric: tabular-nums;
     flex-shrink: 0;
 }
 .legend-pct {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     width: 34px;
     text-align: right;
     flex-shrink: 0;

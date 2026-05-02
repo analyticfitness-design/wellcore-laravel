@@ -70,20 +70,20 @@ function exportCsv() {
     gap: 6px;
     height: 36px;
     padding: 0 14px;
-    border-radius: 10px;
+    border-radius: var(--r-sm, 12px);
     background: rgba(17, 17, 17, 0.7);
-    color: var(--color-wc-text);
-    border: 1px solid var(--color-wc-border);
-    font-family: var(--font-mono, monospace);
+    color: var(--c-text);
+    border: 1px solid var(--c-border);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
     cursor: pointer;
     transition: border-color 0.15s var(--ease-out, ease), color 0.15s var(--ease-out, ease);
 }
 .export-btn:hover:not(:disabled) {
-    border-color: var(--color-wc-border-2, rgba(255, 255, 255, 0.12));
-    color: var(--color-wc-red-text, #F87171);
+    border-color: rgba(255,255,255,0.12);
+    color: #F87171;
 }
 .export-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .export-btn svg { color: currentColor; }

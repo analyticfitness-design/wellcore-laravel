@@ -83,9 +83,9 @@ function close() {
 .del-panel {
     position: relative; z-index: 1;
     width: 100%; max-width: 380px;
-    border-radius: 16px;
+    border-radius: var(--r-md, 16px);
     border: 1px solid rgba(220, 38, 38, 0.22);
-    background: var(--color-wc-bg-secondary, #111111);
+    background: var(--c-surface);
     padding: 28px 24px;
     text-align: center;
     display: flex; flex-direction: column; align-items: center; gap: 12px;
@@ -95,38 +95,38 @@ function close() {
     width: 48px; height: 48px; border-radius: 50%;
     background: rgba(220, 38, 38, 0.1);
     display: flex; align-items: center; justify-content: center;
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
 }
 .del-title {
     font-family: var(--font-display);
     font-size: 20px; letter-spacing: 0.04em;
-    color: var(--color-wc-text); margin: 0;
+    color: var(--c-text); margin: 0;
 }
 .del-msg {
     font-family: var(--font-sans);
-    font-size: 13px; color: var(--color-wc-text-secondary);
+    font-size: 13px; color: var(--c-text-2);
     line-height: 1.55; margin: 0;
 }
 .del-plan-name {
-    font-weight: 600; color: var(--color-wc-text);
+    font-weight: 600; color: var(--c-text);
     display: block; margin-bottom: 4px;
 }
 .del-actions {
     display: flex; gap: 10px; width: 100%; margin-top: 4px;
 }
 .btn-cancel {
-    flex: 1; height: 40px; border-radius: 10px;
-    border: 1px solid var(--color-wc-border); background: transparent;
-    color: var(--color-wc-text-secondary);
+    flex: 1; height: 40px; min-height: var(--tap-comfort, 48px); border-radius: 10px;
+    border: 1px solid var(--c-border); background: transparent;
+    color: var(--c-text-2);
     font-family: var(--font-sans); font-size: 13px; font-weight: 500; cursor: pointer;
     transition: color 0.15s ease, border-color 0.15s ease;
 }
-.btn-cancel:hover:not(:disabled) { color: var(--color-wc-text); border-color: var(--color-wc-border-2); }
+.btn-cancel:hover:not(:disabled) { color: var(--c-text); border-color: rgba(255,255,255,0.12); }
 .btn-cancel:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .btn-delete {
-    flex: 1; height: 40px; border-radius: 10px; border: none;
-    background: var(--color-wc-accent, #DC2626); color: #fff;
+    flex: 1; height: 40px; min-height: var(--tap-comfort, 48px); border-radius: 10px; border: none;
+    background: var(--c-accent); color: #fff;
     font-family: var(--font-sans); font-size: 13px; font-weight: 600; cursor: pointer;
     display: flex; align-items: center; justify-content: center; gap: 8px;
     transition: background 0.15s ease;

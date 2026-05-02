@@ -74,9 +74,9 @@ function avatarInitial(name) {
 
 <style scoped>
 .podium-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
-    background: rgba(17, 17, 17, 0.7);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface);
     padding: 18px;
 }
 .podium-head {
@@ -89,18 +89,18 @@ function avatarInitial(name) {
 .head-titles { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .podium-title {
     font-family: var(--font-display);
-    font-size: 16px;
-    letter-spacing: 0.14em;
+    font-size: 16px; font-weight: 600;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
 }
 .podium-eyebrow {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.2em;
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 /* ── Empty ────────────────────────────────────────────────────────────── */
@@ -110,28 +110,28 @@ function avatarInitial(name) {
 }
 .empty-num {
     font-family: var(--font-display);
-    font-size: 56px;
-    color: var(--color-wc-bg-tertiary, #181818);
-    letter-spacing: 0.1em;
+    font-size: 56px; font-weight: 700;
+    color: var(--c-surface-2);
+    letter-spacing: var(--ls-display, -0.02em);
     line-height: 1;
     margin-bottom: 10px;
     user-select: none;
 }
 .empty-msg {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
-    font-style: italic;
+    font-family: var(--font-editorial, var(--font-sans));
+    font-style: italic; font-weight: 300;
     font-size: 13px;
-    color: var(--color-wc-text-tertiary);
-    line-height: 1.55;
+    color: var(--c-text-3);
+    line-height: var(--lh-body, 1.65);
     margin: 0 0 10px;
     text-wrap: balance;
 }
 .empty-hint {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px;
-    letter-spacing: 0.16em;
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     opacity: 0.7;
     margin: 0;
 }
@@ -148,62 +148,61 @@ function avatarInitial(name) {
     gap: 10px;
 }
 .podium-tile {
-    border-radius: 12px;
+    border-radius: var(--r-sm, 12px);
     padding: 14px 10px 12px;
     text-align: center;
-    border: 1px solid var(--color-wc-border);
-    background: rgba(24, 24, 24, 0.6);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface-2);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
 }
 .podium-tile--gold {
-    border-color: rgba(212, 160, 76, 0.35);
-    background: linear-gradient(180deg, rgba(212, 160, 76, 0.12), rgba(24, 24, 24, 0.6));
+    border-color: rgba(212,160,76,0.35);
+    background: linear-gradient(180deg, rgba(212,160,76,0.12), var(--c-surface-2));
 }
 .podium-tile--silver {
-    border-color: rgba(163, 163, 163, 0.28);
-    background: linear-gradient(180deg, rgba(163, 163, 163, 0.1), rgba(24, 24, 24, 0.6));
+    border-color: rgba(163,163,163,0.28);
+    background: linear-gradient(180deg, rgba(163,163,163,0.1), var(--c-surface-2));
 }
 .podium-tile--bronze {
-    border-color: rgba(180, 83, 9, 0.32);
-    background: linear-gradient(180deg, rgba(180, 83, 9, 0.1), rgba(24, 24, 24, 0.6));
+    border-color: rgba(180,83,9,0.32);
+    background: linear-gradient(180deg, rgba(180,83,9,0.1), var(--c-surface-2));
 }
 
 .tile-rank {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 1.4px;
+    color: var(--c-text-3);
 }
-.podium-tile--gold .tile-rank { color: var(--color-wc-gold, #C8A769); }
+.podium-tile--gold .tile-rank { color: var(--c-amber, #D4A80E); }
 
 .tile-avatar {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: rgba(220, 38, 38, 0.1);
-    border: 1px solid rgba(220, 38, 38, 0.24);
-    color: var(--color-wc-red-text, #F87171);
+    background: var(--c-accent-dim);
+    border: 1px solid rgba(220,38,38,0.25);
+    color: #F87171;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-family: var(--font-display);
-    font-size: 14px;
-    letter-spacing: 0.04em;
+    font-size: 14px; font-weight: 700;
+    letter-spacing: var(--ls-display, -0.02em);
 }
 .podium-tile--gold .tile-avatar {
-    background: rgba(212, 160, 76, 0.12);
-    border-color: rgba(212, 160, 76, 0.35);
-    color: var(--color-wc-gold, #C8A769);
+    background: rgba(212,160,76,0.12);
+    border-color: rgba(212,160,76,0.35);
+    color: var(--c-amber, #D4A80E);
 }
 
 .tile-name {
     font-family: var(--font-sans);
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--color-wc-text);
+    font-size: 13px; font-weight: 600;
+    color: var(--c-text);
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -211,22 +210,22 @@ function avatarInitial(name) {
 }
 .tile-tickets {
     font-family: var(--font-display);
-    font-size: 26px;
-    color: var(--color-wc-green-text, #34D399);
+    font-size: 26px; font-weight: 700;
+    color: #34D399;
     line-height: 1;
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
 }
 .tile-tickets-label {
-    font-family: var(--font-mono, monospace);
-    font-size: 7px;
-    letter-spacing: 0.2em;
+    font-family: var(--font-display);
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .tile-clients {
-    font-family: var(--font-mono, monospace);
-    font-size: 8px;
-    letter-spacing: 0.14em;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-sans);
+    font-size: 12px; font-weight: 400;
+    color: var(--c-text-3);
     margin-top: 2px;
 }
 
@@ -235,7 +234,7 @@ function avatarInitial(name) {
     list-style: none;
     margin: 0;
     padding: 8px 0 0;
-    border-top: 1px solid var(--color-wc-border);
+    border-top: 1px solid var(--c-border);
     display: flex;
     flex-direction: column;
 }
@@ -244,30 +243,31 @@ function avatarInitial(name) {
     align-items: center;
     gap: 10px;
     padding: 8px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    min-height: var(--tap-comfort, 48px);
+    border-bottom: 1px solid var(--c-border);
 }
 .rest-row:last-child { border-bottom: none; }
 .rest-rank {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 1.4px;
+    color: var(--c-text-3);
     flex-shrink: 0;
     width: 28px;
 }
 .rest-name {
     flex: 1;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--color-wc-text-secondary);
+    font-family: var(--font-sans);
+    font-size: 14px; font-weight: 500;
+    color: var(--c-text-2);
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
 .rest-tickets {
-    font-family: var(--font-data, 'Barlow', sans-serif);
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--color-wc-green-text, #34D399);
+    font-family: var(--font-display);
+    font-size: 14px; font-weight: 700;
+    color: #34D399;
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
 }
 </style>

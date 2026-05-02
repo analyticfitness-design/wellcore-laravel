@@ -130,7 +130,7 @@ function ringColorClass(variant) {
 
 .metric-card {
     flex: 0 0 220px;
-    border-radius: 14px;
+    border-radius: var(--r-md, 16px);
     padding: 16px 14px 14px;
     display: flex;
     flex-direction: column;
@@ -159,17 +159,17 @@ function ringColorClass(variant) {
     stroke-linecap: round;
     transition: stroke-dashoffset 1.2s var(--ease-out, ease);
 }
-.ring-fill--red    { stroke: var(--color-wc-red-text, #F87171); }
-.ring-fill--amber  { stroke: var(--color-wc-amber-text, #FCD34D); }
-.ring-fill--green  { stroke: var(--color-wc-green-text, #34D399); }
-.ring-fill--blue   { stroke: var(--color-wc-blue-text, #60A5FA); }
+.ring-fill--red    { stroke: #F87171; }
+.ring-fill--amber  { stroke: #FCD34D; }
+.ring-fill--green  { stroke: #34D399; }
+.ring-fill--blue   { stroke: #60A5FA; }
 
 .metric-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.2em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin-bottom: 8px;
     padding-right: 60px;
     line-height: 1.4;
@@ -188,16 +188,16 @@ function ringColorClass(variant) {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.metric-value--urgent  { color: var(--color-wc-red-text, #F87171); }
-.metric-value--warn    { color: var(--color-wc-amber-text, #FCD34D); }
-.metric-value--healthy { color: var(--color-wc-green-text, #34D399); }
-.metric-value--info    { color: var(--color-wc-text); }
+.metric-value--urgent  { color: #F87171; }
+.metric-value--warn    { color: #FCD34D; }
+.metric-value--healthy { color: #34D399; }
+.metric-value--info    { color: var(--c-text); }
 .metric-value-unit { font-size: 16px; opacity: 0.7; font-family: var(--font-display); }
 
 .metric-sub {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin-top: 2px;
     overflow: hidden;
     text-overflow: ellipsis;

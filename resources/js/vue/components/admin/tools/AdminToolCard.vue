@@ -76,14 +76,14 @@ const locked = props.tool.destructive && !props.isSuperadmin;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  border-radius: 14px;
-  border: 1px solid var(--color-wc-border);
+  border-radius: var(--r-md, 16px);
+  border: 1px solid var(--c-border);
   background: rgba(17, 17, 17, 0.7);
   padding: 18px;
   transition: border-color 0.15s var(--ease-out), background 0.15s var(--ease-out);
 }
 .tool-card:hover:not(.tool-card--locked) {
-  border-color: var(--color-wc-border-2);
+  border-color: rgba(255,255,255,0.12);
   background: rgba(24, 24, 24, 0.9);
 }
 
@@ -95,18 +95,18 @@ const locked = props.tool.destructive && !props.isSuperadmin;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-wc-red-text);
+  color: #F87171;
   flex-shrink: 0;
 }
 .tool-card-icon svg { width: 18px; height: 18px; }
 .tool-card--locked .tool-card-icon {
   background: rgba(255,255,255,0.04);
-  color: var(--color-wc-text-tertiary);
+  color: var(--c-text-3);
 }
 
 .tool-card-divider {
   height: 1px;
-  background: var(--color-wc-border);
+  background: var(--c-border);
   margin: 2px 0;
 }
 
@@ -114,16 +114,16 @@ const locked = props.tool.destructive && !props.isSuperadmin;
   font-family: var(--font-display);
   font-size: 16px;
   letter-spacing: 0.06em;
-  color: var(--color-wc-text);
+  color: var(--c-text);
   text-transform: uppercase;
   line-height: 1.2;
 }
-.tool-card--locked .tool-card-title { color: var(--color-wc-text-secondary); }
+.tool-card--locked .tool-card-title { color: var(--c-text-2); }
 
 .tool-card-desc {
   font-family: var(--font-sans);
   font-size: 12px;
-  color: var(--color-wc-text-secondary);
+  color: var(--c-text-2);
   line-height: 1.55;
 }
 
@@ -131,13 +131,13 @@ const locked = props.tool.destructive && !props.isSuperadmin;
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 8px;
-  letter-spacing: 0.2em;
+  letter-spacing: 1.6px;
   text-transform: uppercase;
-  color: var(--color-wc-red-text);
-  background: var(--color-wc-red-soft);
-  border-radius: 4px;
+  color: #F87171;
+  background: var(--c-accent-dim);
+  border-radius: var(--r-pill, 999px);
   padding: 2px 7px;
   width: fit-content;
 }
@@ -146,11 +146,12 @@ const locked = props.tool.destructive && !props.isSuperadmin;
 .tool-card-btn {
   margin-top: 4px;
   width: 100%;
-  border-radius: 8px;
+  min-height: var(--tap-comfort, 48px);
+  border-radius: var(--r-sm, 12px);
   padding: 9px 12px;
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 10px;
-  letter-spacing: 0.2em;
+  letter-spacing: 1.6px;
   text-transform: uppercase;
   cursor: pointer;
   border: 1px solid;
@@ -159,7 +160,7 @@ const locked = props.tool.destructive && !props.isSuperadmin;
 .tool-card-btn--active {
   background: rgba(220,38,38,0.08);
   border-color: rgba(220,38,38,0.25);
-  color: var(--color-wc-red-text);
+  color: #F87171;
 }
 .tool-card-btn--active:hover {
   background: rgba(220,38,38,0.15);
@@ -167,8 +168,8 @@ const locked = props.tool.destructive && !props.isSuperadmin;
 }
 .tool-card-btn--disabled {
   background: rgba(255,255,255,0.02);
-  border-color: var(--color-wc-border);
-  color: var(--color-wc-text-tertiary);
+  border-color: var(--c-border);
+  color: var(--c-text-3);
   cursor: not-allowed;
   opacity: 0.6;
 }

@@ -49,8 +49,8 @@ const checkins = computed(() => props.client?.checkins || []);
 .checkins-panel { display: flex; flex-direction: column; gap: 12px; }
 
 .card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.65);
     padding: 16px;
     display: flex;
@@ -59,11 +59,11 @@ const checkins = computed(() => props.client?.checkins || []);
 }
 .card-head { display: flex; align-items: center; justify-content: space-between; }
 .card-eyebrow {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 .timeline { display: flex; flex-direction: column; gap: 0; }
@@ -99,46 +99,46 @@ const checkins = computed(() => props.client?.checkins || []);
     font-size: 14px;
     flex-shrink: 0;
     z-index: 1;
-    background: var(--color-wc-bg, #0a0a0a);
+    background: var(--c-surface);
 }
 .marker--reviewed {
-    color: var(--color-wc-green-text, #34D399);
+    color: #34D399;
     border-color: rgba(16, 185, 129, 0.4);
-    background: var(--color-wc-green-soft, rgba(16, 185, 129, 0.1));
+    background: rgba(16,185,129,0.1);
 }
 .marker--pending {
-    color: var(--color-wc-amber-text, #FCD34D);
+    color: #FCD34D;
     border-color: rgba(245, 158, 11, 0.4);
-    background: var(--color-wc-amber-soft, rgba(245, 158, 11, 0.1));
+    background: rgba(245,158,11,0.1);
 }
 
 .timeline-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .row-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 
 .line-mono {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.16em;
-    color: var(--color-wc-text-secondary);
+    letter-spacing: 1.4px;
+    color: var(--c-text-2);
     text-transform: uppercase;
 }
 
-.pill { display: inline-block; font-family: var(--font-mono, monospace); font-size: 8px; letter-spacing: 0.18em; text-transform: uppercase; padding: 3px 7px; border-radius: 4px; line-height: 1.4; }
-.pill--success { background: var(--color-wc-green-soft, rgba(16, 185, 129, 0.1)); color: var(--color-wc-green-text, #34D399); }
-.pill--amber   { background: var(--color-wc-amber-soft, rgba(245, 158, 11, 0.1)); color: var(--color-wc-amber-text, #FCD34D); }
+.pill { display: inline-block; font-family: var(--font-display); font-size: 8px; letter-spacing: 1.6px; text-transform: uppercase; padding: 3px 7px; border-radius: var(--r-pill, 999px); line-height: 1.4; }
+.pill--success { background: rgba(16,185,129,0.1); color: #34D399; }
+.pill--amber   { background: rgba(245,158,11,0.1); color: #FCD34D; }
 
 .row-note {
     font-family: var(--font-sans);
     font-size: 12px;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     line-height: 1.55;
     margin: 4px 0 0;
 }
 .row-empty {
-    font-family: var(--font-editorial, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 11px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin: 4px 0 0;
 }
 
@@ -149,17 +149,17 @@ const checkins = computed(() => props.client?.checkins || []);
 .empty-num {
     font-family: var(--font-display);
     font-size: 56px;
-    color: var(--color-wc-bg-tertiary);
-    letter-spacing: 0.1em;
+    color: var(--c-surface-2);
+    letter-spacing: 0.8px;
     line-height: 1;
     margin-bottom: 12px;
     user-select: none;
 }
 .empty-msg {
-    font-family: var(--font-editorial, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin: 0;
     max-width: 380px;
     margin-inline: auto;

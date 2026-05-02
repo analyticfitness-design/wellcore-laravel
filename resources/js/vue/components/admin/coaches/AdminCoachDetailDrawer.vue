@@ -198,8 +198,8 @@ const specsList = computed(() => {
     bottom: 0;
     width: 100%;
     max-width: 480px;
-    background: var(--color-wc-bg-secondary, #111111);
-    border-left: 1px solid var(--color-wc-border);
+    background: var(--c-surface);
+    border-left: 1px solid var(--c-border);
     z-index: 90;
     display: flex;
     flex-direction: column;
@@ -212,7 +212,7 @@ const specsList = computed(() => {
 /* ── Head ────────────────────────────────────────────────────────────── */
 .drawer-head {
     padding: 18px 18px 14px;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
     display: flex;
     align-items: flex-start;
     gap: 12px;
@@ -231,7 +231,7 @@ const specsList = computed(() => {
     border-radius: 50%;
     background: rgba(220, 38, 38, 0.12);
     border: 1px solid rgba(220, 38, 38, 0.3);
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -246,17 +246,17 @@ const specsList = computed(() => {
     min-width: 0;
 }
 .eyebrow {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .title {
     font-family: var(--font-display);
     font-size: 22px;
     letter-spacing: 0.04em;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
     line-height: 1;
     overflow: hidden;
@@ -264,18 +264,18 @@ const specsList = computed(() => {
     white-space: nowrap;
 }
 .handle {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 10px;
-    letter-spacing: 0.16em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
 }
 .head-close {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    width: var(--tap-comfort, 48px);
+    height: var(--tap-comfort, 48px);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: transparent;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -285,13 +285,13 @@ const specsList = computed(() => {
 }
 .head-close:hover {
     background: rgba(255, 255, 255, 0.04);
-    color: var(--color-wc-text);
+    color: var(--c-text);
 }
 
 /* ── Tabs ────────────────────────────────────────────────────────────── */
 .drawer-tabs {
     display: flex;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
     padding: 0 18px;
     gap: 4px;
     overflow-x: auto;
@@ -303,8 +303,8 @@ const specsList = computed(() => {
 .drawer-tab {
     background: transparent;
     border: none;
-    color: var(--color-wc-text-tertiary);
-    font-family: var(--font-mono, monospace);
+    color: var(--c-text-3);
+    font-family: var(--font-display);
     font-size: 9px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -314,10 +314,10 @@ const specsList = computed(() => {
     transition: color 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease);
     flex-shrink: 0;
 }
-.drawer-tab:hover { color: var(--color-wc-text-secondary); }
+.drawer-tab:hover { color: var(--c-text-2); }
 .drawer-tab--active {
-    color: var(--color-wc-red-text, #F87171);
-    border-bottom-color: var(--color-wc-accent, #DC2626);
+    color: #F87171;
+    border-bottom-color: var(--c-accent);
 }
 
 /* ── Body ────────────────────────────────────────────────────────────── */
@@ -338,8 +338,8 @@ const specsList = computed(() => {
     gap: 8px;
 }
 .metric {
-    border-radius: 10px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: rgba(255, 255, 255, 0.02);
     padding: 10px;
     display: flex;
@@ -347,25 +347,25 @@ const specsList = computed(() => {
     gap: 4px;
 }
 .metric-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 7px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .metric-value-data {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-feature-settings: 'tnum' 1;
     font-size: 22px;
     font-weight: 700;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     line-height: 1;
 }
 .metric-value-mono {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 10px;
     letter-spacing: 0.12em;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
 }
 
 .block {
@@ -374,23 +374,23 @@ const specsList = computed(() => {
     gap: 10px;
 }
 .block-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .bio {
     font-family: var(--font-sans);
     font-size: 13px;
     line-height: 1.55;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     margin: 0;
 }
 .bio--empty {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .specs {
     display: flex;
@@ -399,14 +399,14 @@ const specsList = computed(() => {
     margin-top: 4px;
 }
 .spec-pill {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
     letter-spacing: 0.18em;
     background: rgba(220, 38, 38, 0.08);
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
     border: 1px solid rgba(220, 38, 38, 0.22);
     padding: 4px 8px;
-    border-radius: 4px;
+    border-radius: var(--r-pill, 999px);
 }
 
 .meta-line {
@@ -419,33 +419,33 @@ const specsList = computed(() => {
 }
 .meta-line:last-child { border-bottom: none; }
 .meta-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
     letter-spacing: 0.18em;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     flex-shrink: 0;
     width: 100px;
 }
 .meta-val {
     flex: 1;
     font-size: 12px;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 .meta-val.mono {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 11px;
     letter-spacing: 0.1em;
 }
 
 .poll-hint {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     text-align: right;
     opacity: 0.5;
     margin: 0;
@@ -455,23 +455,23 @@ const specsList = computed(() => {
 .empty-block {
     text-align: center;
     padding: 24px 12px;
-    border-radius: 12px;
-    border: 1px dashed var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px dashed var(--c-border);
     background: rgba(255, 255, 255, 0.02);
 }
 .empty-num {
     font-family: var(--font-display);
     font-size: 56px;
-    color: var(--color-wc-bg-tertiary, #181818);
+    color: var(--c-surface-2);
     letter-spacing: 0.1em;
     line-height: 1;
     margin-bottom: 12px;
 }
 .empty-msg {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     line-height: 1.55;
     margin: 0;
     text-wrap: balance;

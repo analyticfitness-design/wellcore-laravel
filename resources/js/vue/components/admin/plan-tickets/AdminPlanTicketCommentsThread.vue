@@ -140,8 +140,8 @@ async function onSubmit() {
     flex-direction: column;
     gap: 14px;
     padding: 16px;
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.55);
     min-width: 0;
 }
@@ -152,24 +152,24 @@ async function onSubmit() {
     justify-content: space-between;
     gap: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
 }
 .thread-eyebrow {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .thread-count {
-    font-family: var(--font-data, 'Barlow', sans-serif);
+    font-family: var(--font-display);
     font-feature-settings: 'tnum' 1;
     font-size: 12px;
     font-weight: 600;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     background: rgba(255, 255, 255, 0.04);
     padding: 1px 8px;
-    border-radius: 999px;
+    border-radius: var(--r-pill, 999px);
     min-width: 22px;
     text-align: center;
 }
@@ -185,17 +185,17 @@ async function onSubmit() {
 .thread-empty-num {
     font-family: var(--font-display);
     font-size: 48px;
-    color: var(--color-wc-bg-tertiary);
+    color: var(--c-surface-2);
     letter-spacing: 0.1em;
     line-height: 1;
     user-select: none;
 }
 .thread-empty-msg {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12px;
     line-height: 1.55;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin: 0;
     text-wrap: balance;
     max-width: 36ch;
@@ -215,7 +215,7 @@ async function onSubmit() {
 .thread-msg {
     padding: 10px 12px;
     border-radius: 10px;
-    border: 1px solid var(--color-wc-border);
+    border: 1px solid var(--c-border);
     background: rgba(10, 10, 10, 0.55);
     display: flex;
     flex-direction: column;
@@ -240,37 +240,37 @@ async function onSubmit() {
     font-family: var(--font-sans);
     font-size: 12.5px;
     font-weight: 600;
-    color: var(--color-wc-text);
+    color: var(--c-text);
 }
 .thread-msg-role {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
     padding: 1px 6px;
-    border-radius: 4px;
+    border-radius: var(--r-pill, 999px);
 }
 .thread-msg--admin .thread-msg-role {
     background: rgba(220, 38, 38, 0.12);
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
 }
 .thread-msg--coach .thread-msg-role {
     background: rgba(59, 130, 246, 0.12);
-    color: var(--color-wc-blue-text, #60A5FA);
+    color: #60A5FA;
 }
 .thread-msg-time {
     margin-left: auto;
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.10em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 0.8px;
+    color: var(--c-text-3);
     text-transform: lowercase;
 }
 .thread-msg-body {
     font-family: var(--font-sans);
     font-size: 13px;
     line-height: 1.6;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
     white-space: pre-wrap;
 }
@@ -280,20 +280,20 @@ async function onSubmit() {
     flex-direction: column;
     gap: 8px;
     padding-top: 6px;
-    border-top: 1px solid var(--color-wc-border);
+    border-top: 1px solid var(--c-border);
 }
 .thread-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .thread-input {
     border-radius: 10px;
     background: rgba(0, 0, 0, 0.30);
-    border: 1px solid var(--color-wc-border);
-    color: var(--color-wc-text);
+    border: 1px solid var(--c-border);
+    color: var(--c-text);
     font-family: var(--font-sans);
     font-size: 13px;
     line-height: 1.55;
@@ -303,11 +303,11 @@ async function onSubmit() {
     transition: border-color 0.15s var(--ease-out, ease);
 }
 .thread-input::placeholder {
-    color: var(--color-wc-text-tertiary);
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    color: var(--c-text-3);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
 }
-.thread-input:focus { outline: none; border-color: var(--color-wc-accent, #DC2626); }
+.thread-input:focus { outline: none; border-color: var(--c-accent); }
 .thread-input:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .thread-form-foot {
@@ -316,18 +316,19 @@ async function onSubmit() {
     align-items: center;
 }
 .thread-counter {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.14em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.2px;
+    color: var(--c-text-3);
 }
-.thread-counter--warn { color: var(--color-wc-amber-text, #FCD34D); }
+.thread-counter--warn { color: #FCD34D; }
 
 .thread-submit {
     height: 36px;
+    min-height: var(--tap-comfort, 48px);
     padding: 0 16px;
     border-radius: 10px;
-    background: var(--color-wc-accent, #DC2626);
+    background: var(--c-accent);
     color: #fff;
     border: 1px solid transparent;
     font-family: var(--font-sans);
@@ -342,10 +343,10 @@ async function onSubmit() {
 .thread-error {
     font-family: var(--font-sans);
     font-size: 12px;
-    color: var(--color-wc-red-text, #F87171);
+    color: #F87171;
     background: rgba(220, 38, 38, 0.07);
     border: 1px solid rgba(220, 38, 38, 0.20);
-    border-radius: 8px;
+    border-radius: var(--r-sm, 12px);
     padding: 8px 10px;
     margin: 0;
 }
@@ -354,8 +355,8 @@ async function onSubmit() {
 .thread-skeleton {
     height: 64px;
     border-radius: 10px;
-    border: 1px solid var(--color-wc-border);
-    background: var(--color-wc-bg-tertiary, #181818);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface-2);
     animation: thread-pulse 1.5s ease-in-out infinite;
 }
 .thread-skeleton--admin { width: 75%; }

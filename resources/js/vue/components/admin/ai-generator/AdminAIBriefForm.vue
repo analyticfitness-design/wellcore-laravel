@@ -324,8 +324,8 @@ function onGenerate() {
 
 <style scoped>
 .brief-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 18px;
     display: flex;
@@ -339,13 +339,13 @@ function onGenerate() {
     flex-direction: column;
     gap: 4px;
     padding-bottom: 10px;
-    border-bottom: 1px solid var(--color-wc-border);
+    border-bottom: 1px solid var(--c-border);
 }
 .brief-eyebrow {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.22em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.8px;
+    color: var(--c-text-3);
     margin: 0;
     text-transform: uppercase;
 }
@@ -354,15 +354,15 @@ function onGenerate() {
     font-size: 24px;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     margin: 0;
     line-height: 1.05;
 }
 .brief-tagline {
-    font-family: var(--font-editorial);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12px;
-    color: var(--color-wc-gold);
+    color: #C8A769;
     margin: 0;
     line-height: 1.45;
 }
@@ -380,10 +380,10 @@ function onGenerate() {
     position: relative;
 }
 .brief-label {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
-    color: var(--color-wc-text-tertiary);
+    letter-spacing: 1.6px;
+    color: var(--c-text-3);
     text-transform: uppercase;
 }
 .brief-input,
@@ -392,10 +392,10 @@ function onGenerate() {
     width: 100%;
     height: 36px;
     padding: 0 12px;
-    border-radius: 8px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
     background: rgba(255, 255, 255, 0.03);
-    color: var(--color-wc-text);
+    color: var(--c-text);
     font-family: var(--font-sans);
     font-size: 13px;
     transition: border-color 0.15s var(--ease-out), background 0.15s var(--ease-out);
@@ -411,7 +411,7 @@ function onGenerate() {
 .brief-select:focus,
 .brief-textarea:focus {
     outline: none;
-    border-color: var(--color-wc-border-2);
+    border-color: rgba(255,255,255,0.12);
     background: rgba(255, 255, 255, 0.05);
 }
 .brief-input:disabled,
@@ -428,26 +428,26 @@ function onGenerate() {
 .brief-pill {
     height: 32px;
     padding: 0 14px;
-    border-radius: 999px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-pill, 999px);
+    border: 1px solid var(--c-border);
     background: rgba(255, 255, 255, 0.02);
-    color: var(--color-wc-text-secondary);
-    font-family: var(--font-mono);
+    color: var(--c-text-2);
+    font-family: var(--font-display);
     font-size: 10px;
-    letter-spacing: 0.16em;
+    letter-spacing: 1.4px;
     text-transform: uppercase;
     cursor: pointer;
     transition: background 0.15s var(--ease-out), border-color 0.15s var(--ease-out), color 0.15s var(--ease-out);
 }
 .brief-pill--small { height: 28px; padding: 0 11px; font-size: 9px; }
 .brief-pill:hover:not(:disabled) {
-    border-color: var(--color-wc-border-2);
-    color: var(--color-wc-text);
+    border-color: rgba(255,255,255,0.12);
+    color: var(--c-text);
 }
 .brief-pill--active {
-    background: var(--color-wc-red-soft);
-    border-color: var(--color-wc-accent);
-    color: var(--color-wc-text);
+    background: var(--c-accent-dim);
+    border-color: var(--c-accent);
+    color: var(--c-text);
 }
 .brief-pill:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -462,22 +462,22 @@ function onGenerate() {
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    border: 1px solid var(--color-wc-border);
+    border: 1px solid var(--c-border);
     background: rgba(0, 0, 0, 0.4);
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     cursor: pointer;
     font-size: 16px;
     line-height: 1;
 }
-.brief-client-clear:hover { color: var(--color-wc-text); }
+.brief-client-clear:hover { color: var(--c-text); }
 .brief-client-results {
     position: absolute;
     top: calc(100% + 4px);
     left: 0;
     right: 0;
     z-index: 30;
-    background: var(--color-wc-bg-tertiary);
-    border: 1px solid var(--color-wc-border);
+    background: var(--c-surface-2);
+    border: 1px solid var(--c-border);
     border-radius: 10px;
     list-style: none;
     margin: 0;
@@ -498,25 +498,26 @@ function onGenerate() {
 .brief-client-name {
     font-family: var(--font-sans);
     font-size: 13px;
-    color: var(--color-wc-text);
+    color: var(--c-text);
 }
 .brief-client-email {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 10px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     letter-spacing: 0.04em;
 }
 
 .brief-cta {
     margin-top: 4px;
     height: 44px;
+    min-height: var(--tap-comfort, 48px);
     border-radius: 10px;
-    border: 1px solid var(--color-wc-accent);
-    background: var(--color-wc-accent);
+    border: 1px solid var(--c-accent);
+    background: var(--c-accent);
     color: #fff;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 11px;
-    letter-spacing: 0.22em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
     cursor: pointer;
     display: inline-flex;
@@ -532,14 +533,14 @@ function onGenerate() {
 .brief-cta:disabled { opacity: 0.5; cursor: not-allowed; }
 .brief-cta--streaming {
     background: rgba(220, 38, 38, 0.2);
-    border-color: var(--color-wc-accent);
-    color: var(--color-wc-text);
+    border-color: var(--c-accent);
+    color: var(--c-text);
 }
 .brief-cta-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--color-wc-accent);
+    background: var(--c-accent);
     animation: brief-pulse 1.2s var(--ease-out) infinite;
 }
 @keyframes brief-pulse {
@@ -547,10 +548,10 @@ function onGenerate() {
     50%      { opacity: 1;   transform: scale(1.15); }
 }
 .brief-hint {
-    font-family: var(--font-editorial);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 11px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin: 0;
     text-align: center;
     line-height: 1.5;

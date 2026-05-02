@@ -95,8 +95,8 @@ const deltaLabel = computed(() => {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17, 17, 17, 0.7);
     padding: 16px;
     cursor: pointer;
@@ -104,15 +104,15 @@ const deltaLabel = computed(() => {
     outline: none;
 }
 .form-card:hover {
-    border-color: var(--color-wc-border-2);
+    border-color: rgba(255,255,255,0.12);
     background: rgba(24, 24, 24, 0.9);
 }
 .form-card--active {
-    border-color: var(--color-wc-accent);
+    border-color: var(--c-accent);
     background: rgba(220, 38, 38, 0.04);
 }
 .form-card:focus-visible {
-    outline: 2px solid var(--color-wc-accent);
+    outline: 2px solid var(--c-accent);
     outline-offset: 2px;
 }
 
@@ -127,18 +127,18 @@ const deltaLabel = computed(() => {
     display: inline-flex;
     align-items: center;
     padding: 2px 8px;
-    border-radius: 99px;
-    font-family: var(--font-mono);
+    border-radius: var(--r-pill, 999px);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     font-weight: 500;
     border: 1px solid transparent;
 }
-.form-tag--amber { background: var(--color-wc-amber-soft); color: var(--color-wc-amber-text); border-color: rgba(245,158,11,0.2); }
-.form-tag--sky   { background: var(--color-wc-blue-soft);  color: var(--color-wc-blue-text);  border-color: rgba(59,130,246,0.2); }
-.form-tag--violet{ background: rgba(139,92,246,0.1);       color: #a78bfa;                    border-color: rgba(139,92,246,0.2); }
-.form-tag--default{ background: rgba(255,255,255,0.05); color: var(--color-wc-text-secondary); }
+.form-tag--amber { background: rgba(245,158,11,0.1); color: #FCD34D; border-color: rgba(245,158,11,0.2); }
+.form-tag--sky   { background: rgba(59,130,246,0.1);  color: #60A5FA;  border-color: rgba(59,130,246,0.2); }
+.form-tag--violet{ background: rgba(139,92,246,0.1);  color: #a78bfa;  border-color: rgba(139,92,246,0.2); }
+.form-tag--default{ background: rgba(255,255,255,0.05); color: var(--c-text-2); }
 
 .form-card__preview-btn {
     display: inline-flex;
@@ -147,26 +147,26 @@ const deltaLabel = computed(() => {
     padding: 6px 10px;
     min-height: 24px;
     border-radius: 6px;
-    border: 1px solid var(--color-wc-border);
+    border: 1px solid var(--c-border);
     background: transparent;
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     cursor: pointer;
     transition: color 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
 }
 .form-card__preview-btn:hover {
-    color: var(--color-wc-text);
-    border-color: var(--color-wc-border-2);
+    color: var(--c-text);
+    border-color: rgba(255,255,255,0.12);
 }
 
 .form-card__name {
     font-family: var(--font-display);
     font-size: 18px;
     letter-spacing: 0.04em;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     line-height: 1.1;
     margin: 0;
 }
@@ -175,7 +175,7 @@ const deltaLabel = computed(() => {
     font-family: var(--font-sans);
     font-size: 12px;
     line-height: 1.5;
-    color: var(--color-wc-text-secondary);
+    color: var(--c-text-2);
     margin: 0;
     flex: 1;
 }
@@ -187,43 +187,43 @@ const deltaLabel = computed(() => {
     margin-top: 2px;
 }
 .form-card__total {
-    font-family: var(--font-data);
+    font-family: var(--font-display);
     font-size: 20px;
     font-feature-settings: 'tnum' 1;
-    color: var(--color-wc-text);
+    color: var(--c-text);
     line-height: 1;
 }
 .form-card__total-label {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 .form-card__delta {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.12em;
+    letter-spacing: 1.0px;
     margin-left: auto;
 }
 
 .form-card__no-sub {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 8px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 .form-card__route {
     display: flex;
     align-items: center;
     gap: 5px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     margin-top: auto;
 }
 .form-card__route code {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
     letter-spacing: 0.08em;
 }

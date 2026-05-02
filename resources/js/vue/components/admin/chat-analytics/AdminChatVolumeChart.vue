@@ -204,8 +204,8 @@ function onMouseLeave() { tooltip.value = null; }
 
 <style scoped>
 .volume-card {
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
     background: rgba(17,17,17,0.7);
     padding: 18px;
 }
@@ -214,65 +214,65 @@ function onMouseLeave() { tooltip.value = null; }
     gap: 10px; flex-wrap: wrap; margin-bottom: 16px;
 }
 .chart-title {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--color-wc-text); margin: 0 0 2px;
+    font-family: var(--font-display);
+    font-size: 9px; letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--c-text); margin: 0 0 2px;
 }
 .chart-eyebrow {
-    font-family: var(--font-mono, monospace);
-    font-size: 7px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    font-family: var(--font-display);
+    font-size: 7px; letter-spacing: 1.6px; text-transform: uppercase;
+    color: var(--c-text-3);
 }
 .chart-legend { display: flex; gap: 12px; flex-wrap: wrap; }
 .legend-item {
     display: flex; align-items: center; gap: 5px;
-    font-family: var(--font-mono, monospace);
-    font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--color-wc-text-secondary);
+    font-family: var(--font-display);
+    font-size: 8px; letter-spacing: 1.0px; text-transform: uppercase;
+    color: var(--c-text-2);
 }
 .legend-dot {
     width: 8px; height: 2px; border-radius: 1px; flex-shrink: 0;
 }
-.legend-dot--coach  { background: var(--color-wc-accent, #DC2626); }
-.legend-dot--client { background: var(--color-wc-blue-text, #60A5FA); }
+.legend-dot--coach  { background: var(--c-accent); }
+.legend-dot--client { background: #60A5FA; }
 
 .chart-empty { padding: 24px 8px; text-align: center; }
 .empty-num {
     font-family: var(--font-display); font-size: 56px;
-    color: var(--color-wc-bg-tertiary); letter-spacing: 0.1em;
+    color: var(--c-surface-2); letter-spacing: 0.1em;
     line-height: 1; margin-bottom: 12px; user-select: none;
 }
 .empty-msg {
-    font-family: var(--font-editorial, 'Fraunces', Georgia, serif);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic; font-size: 12px;
-    color: var(--color-wc-text-tertiary); margin: 0;
+    color: var(--c-text-3); margin: 0;
 }
 .chart-wrap { width: 100%; overflow: hidden; }
 .chart-svg { display: block; width: 100%; }
 
 .grid-line { stroke: rgba(255,255,255,0.04); stroke-width: 1; }
 .axis-label {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-display);
     font-size: 9px; fill: rgba(250,250,250,0.4);
 }
 .axis-label--y { font-size: 8px; }
 .axis-label--x { font-size: 7px; }
 
 .chart-line { stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-.chart-line--coach  { stroke: var(--color-wc-accent, #DC2626); }
-.chart-line--client { stroke: var(--color-wc-blue-text, #60A5FA); }
+.chart-line--coach  { stroke: var(--c-accent); }
+.chart-line--client { stroke: #60A5FA; }
 
 .dot { r: 4; }
-.dot--coach  { fill: var(--color-wc-accent, #DC2626); }
-.dot--client { fill: var(--color-wc-blue-text, #60A5FA); }
+.dot--coach  { fill: var(--c-accent); }
+.dot--client { fill: #60A5FA; }
 
 .crosshair { stroke: rgba(255,255,255,0.12); stroke-width: 1; stroke-dasharray: 3 3; }
 
 .tooltip-bg { fill: rgba(24,24,24,0.95); stroke: rgba(255,255,255,0.08); stroke-width: 1; }
-.tooltip-text { font-family: var(--font-mono, monospace); font-size: 9px; letter-spacing: 0.06em; }
-.tooltip-label { fill: var(--color-wc-text-secondary); }
-.tooltip-coach  { fill: var(--color-wc-red-text, #F87171); }
-.tooltip-client { fill: var(--color-wc-blue-text, #60A5FA); }
+.tooltip-text { font-family: var(--font-display); font-size: 9px; letter-spacing: 0.06em; }
+.tooltip-label { fill: var(--c-text-2); }
+.tooltip-coach  { fill: #F87171; }
+.tooltip-client { fill: #60A5FA; }
 
 @media (prefers-reduced-motion: reduce) {
     .chart-line { transition: none !important; }

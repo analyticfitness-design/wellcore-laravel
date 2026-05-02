@@ -48,9 +48,9 @@ const emit = defineEmits(['select', 'preview']);
 
 .forms-skeleton-card {
     height: 152px;
-    border-radius: 14px;
-    border: 1px solid var(--color-wc-border);
-    background: var(--color-wc-bg-tertiary);
+    border-radius: var(--r-md, 16px);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface-2);
     animation: forms-pulse 1.5s ease-in-out infinite;
 }
 @keyframes forms-pulse {
@@ -65,27 +65,27 @@ const emit = defineEmits(['select', 'preview']);
 .empty-num {
     font-family: var(--font-display);
     font-size: 56px;
-    color: var(--color-wc-bg-tertiary);
+    color: var(--c-surface-2);
     letter-spacing: 0.1em;
     line-height: 1;
     margin-bottom: 12px;
     user-select: none;
 }
 .empty-msg {
-    font-family: var(--font-editorial);
+    font-family: var(--font-editorial, var(--font-sans));
     font-style: italic;
     font-size: 12px;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
     line-height: 1.55;
     margin: 0 0 8px;
     text-wrap: balance;
 }
 .empty-hint {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 9px;
-    letter-spacing: 0.18em;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    color: var(--color-wc-text-tertiary);
+    color: var(--c-text-3);
 }
 
 @media (prefers-reduced-motion: reduce) {
