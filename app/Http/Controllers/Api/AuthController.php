@@ -150,7 +150,7 @@ class AuthController extends Controller
             ['token' => Hash::make($token), 'created_at' => now()]
         );
 
-        $resetUrl = url('/v/reset-password/' . $token . '?email=' . urlencode($request->email));
+        $resetUrl = url('/reset-password/' . $token . '?email=' . urlencode($request->email));
 
         try {
             Mail::send('emails.password-reset', [
