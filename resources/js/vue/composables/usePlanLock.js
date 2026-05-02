@@ -96,6 +96,7 @@ export function usePlanLock() {
   const hasPlan = computed(() => !!status.value?.has_plan);
   const isLocked = computed(() => !!status.value?.is_locked);
   const isInGrace = computed(() => !!status.value?.is_in_grace);
+  const isAwaitingAssignment = computed(() => status.value?.reason === 'awaiting_coach_assignment');
   const daysUntilExpiry = computed(() => {
     const n = status.value?.days_until_expiry;
     return typeof n === 'number' ? n : null;
@@ -103,6 +104,7 @@ export function usePlanLock() {
   const expiresAt = computed(() => status.value?.expires_at ?? null);
   const planType = computed(() => status.value?.plan_type ?? null);
   const clientId = computed(() => status.value?.client_id ?? null);
+  const reason = computed(() => status.value?.reason ?? null);
 
   return {
     // raw + meta
@@ -112,10 +114,12 @@ export function usePlanLock() {
     hasPlan,
     isLocked,
     isInGrace,
+    isAwaitingAssignment,
     daysUntilExpiry,
     expiresAt,
     planType,
     clientId,
+    reason,
     // actions
     fetchStatus: fetchPlanStatus,
     refresh: fetchPlanStatus,
