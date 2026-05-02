@@ -51,7 +51,7 @@ function goToDashboard() {
 <template>
   <Transition name="fade" appear>
     <div
-      class="absolute inset-0 z-40 flex items-center justify-center overflow-hidden rounded-2xl"
+      class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto py-10"
       role="dialog"
       aria-modal="true"
       aria-labelledby="lock-overlay-title"
