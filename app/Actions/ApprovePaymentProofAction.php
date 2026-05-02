@@ -64,9 +64,12 @@ final class ApprovePaymentProofAction
                 'buyer_name' => $proof->client_name,
             ]);
 
-            $client = Client::where('email', $proof->client_email)->first();
+            $client = Client::withTrashed()->where('email', $proof->client_email)->first();
 
             if ($client) {
+                if ($client->trashed()) {
+                    $client->restore();
+                }
                 $client->update([
                     'status' => ClientStatus::Activo->value,
                     'plan' => $proof->plan->value,
