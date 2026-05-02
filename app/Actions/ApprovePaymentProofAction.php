@@ -17,6 +17,7 @@ use App\Models\PaymentProof;
 use App\Models\WellcoreNotification;
 use App\Services\AuditService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -31,8 +32,9 @@ final class ApprovePaymentProofAction
         $client = null;
         $invitation = null;
         $payment = null;
+        $isNewClient = false;
 
-        DB::transaction(function () use ($proof, $reviewer, &$client, &$invitation, &$payment) {
+        DB::transaction(function () use ($proof, $reviewer, &$client, &$invitation, &$payment, &$isNewClient) {
             $manualRef = 'MAN-'.Str::uuid();
 
             $invitation = CoachInvitation::create([
@@ -82,6 +84,8 @@ final class ApprovePaymentProofAction
                     'status' => ClientStatus::Activo->value,
                     'plan' => $proof->plan->value,
                 ]);
+
+                $isNewClient = true;
             }
 
             $payment->update(['client_id' => $client->id]);
@@ -110,7 +114,17 @@ final class ApprovePaymentProofAction
             ]);
         });
 
-        Mail::to($proof->client_email)->queue(new PaymentProofApproved($proof, $client, $invitation));
+        $resetUrl = null;
+        if ($isNewClient) {
+            $resetToken = Str::random(64);
+            DB::table('password_reset_tokens')->updateOrInsert(
+                ['email' => $client->email],
+                ['token' => Hash::make($resetToken), 'created_at' => now()]
+            );
+            $resetUrl = url('/reset-password/'.$resetToken.'?email='.urlencode($client->email));
+        }
+
+        Mail::to($proof->client_email)->queue(new PaymentProofApproved($proof, $client, $invitation, $resetUrl));
 
         WellcoreNotification::create([
             'user_type' => UserType::Admin,

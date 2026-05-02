@@ -20,6 +20,7 @@ class PaymentProofApproved extends Mailable implements ShouldQueue
         public PaymentProof $proof,
         public Client $client,
         public CoachInvitation $invitation,
+        public ?string $resetUrl = null,
     ) {}
 
     public function envelope(): Envelope
@@ -38,6 +39,7 @@ class PaymentProofApproved extends Mailable implements ShouldQueue
                 'planLabel' => $this->proof->plan->label(),
                 'coachName' => $this->proof->coach->name ?? 'Tu Coach WellCore',
                 'loginUrl' => url('/login'),
+                'resetUrl' => $this->resetUrl,
             ],
         );
     }

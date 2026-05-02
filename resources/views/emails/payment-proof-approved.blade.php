@@ -42,11 +42,23 @@
       </tr>
     </table>
 
+    @if($resetUrl)
     <p style="color:rgba(250,250,250,0.64);font-size:14px;line-height:1.6;margin:0 0 28px 0;">
-      Ingresa a la plataforma con tu correo y contraseña para comenzar. Si es tu primera vez, usa la opcion de recuperar contrasena.
+      Para acceder, primero necesitas crear tu contraseña. Haz clic en el botón — solo toma un momento. El enlace es válido por <strong style="color:#FAFAFA;">60 minutos</strong>; si expiró, usa "¿Olvidaste tu contraseña?" en el login.
     </p>
-
-    <!-- CTA button -->
+    <!-- CTA button — new client: set password -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
+      <tr>
+        <td align="center">
+          <a href="{{ $resetUrl }}" style="display:inline-block;background:#DC2626;color:white;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px;">Crear mi contraseña y entrar</a>
+        </td>
+      </tr>
+    </table>
+    @else
+    <p style="color:rgba(250,250,250,0.64);font-size:14px;line-height:1.6;margin:0 0 28px 0;">
+      Ingresa a la plataforma con tu correo y contraseña para comenzar.
+    </p>
+    <!-- CTA button — existing client -->
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
       <tr>
         <td align="center">
@@ -54,6 +66,7 @@
         </td>
       </tr>
     </table>
+    @endif
 
     <p style="color:rgba(250,250,250,0.4);font-size:12px;text-align:center;margin:0;">
       Soporte: <a href="mailto:soporte@wellcorefitness.com" style="color:#DC2626;text-decoration:none;">soporte@wellcorefitness.com</a>
