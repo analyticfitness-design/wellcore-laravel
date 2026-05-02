@@ -410,11 +410,16 @@ onBeforeUnmount(() => {
     height: 36px;
     border-radius: 8px;
     border: 1px solid var(--color-wc-border);
-    background: rgba(255, 255, 255, 0.03);
-    color: var(--color-wc-text);
+    background: #18181b;
+    color: #fafafa;
     font-family: var(--font-sans);
     font-size: 13px;
     padding: 0 10px;
+    color-scheme: dark;
+}
+.modal-select option {
+    background: #18181b;
+    color: #fafafa;
 }
 .modal-select:focus {
     outline: none;
