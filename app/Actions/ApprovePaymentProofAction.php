@@ -44,6 +44,7 @@ final class ApprovePaymentProofAction
                 'plan' => $proof->plan->value,
                 'amount' => $proof->amount ?? 0,
                 'currency' => $proof->currency,
+                'subject' => "Tu plan {$proof->plan->value} en WellCore Fitness está activo",
                 'wompi_reference' => $manualRef,
                 'status' => CoachInvitationStatus::Paid->value,
                 'paid_at' => now(),
