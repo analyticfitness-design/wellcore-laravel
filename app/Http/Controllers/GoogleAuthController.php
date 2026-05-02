@@ -30,9 +30,14 @@ class GoogleAuthController extends Controller
                 ->with('google_error', 'Error al autenticar con Google. Intenta de nuevo.');
         }
 
-        // 1. Try to find by google_id first, then by email
-        $client = Client::where('google_id', $googleUser->getId())->first()
-            ?? Client::where('email', $googleUser->getEmail())->first();
+        // 1. Try to find by google_id first, then by email (including soft-deleted)
+        $client = Client::withTrashed()->where('google_id', $googleUser->getId())->first()
+            ?? Client::withTrashed()->where('email', $googleUser->getEmail())->first();
+
+        if ($client && $client->trashed()) {
+            return redirect()->route('login')
+                ->with('google_error', 'Tu cuenta fue desactivada. Escríbenos a info@wellcorefitness.com para reactivarla.');
+        }
 
         if (! $client) {
             // No existing account — redirect to inscription page with Google info pre-filled.

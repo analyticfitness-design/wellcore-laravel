@@ -281,18 +281,26 @@ class CoachInvitationService
 
     private function createOrActivateClient(CoachInvitation $invitation): Client
     {
-        $client = Client::where('email', $invitation->email)->first();
+        $client = Client::withTrashed()->where('email', $invitation->email)->first();
 
         if ($client) {
+            if ($client->trashed()) {
+                $client->restore();
+            }
             $client->update(['status' => ClientStatus::Activo->value]);
 
             return $client;
         }
 
+        do {
+            $clientCode = 'WC-'.strtoupper(\Illuminate\Support\Str::random(6));
+        } while (Client::withTrashed()->where('client_code', $clientCode)->exists());
+
         return Client::create([
+            'client_code' => $clientCode,
             'email' => $invitation->email,
             'name' => $invitation->name ?? explode('@', $invitation->email)[0],
-            'password_hash' => bcrypt(Str::password(12)),
+            'password_hash' => bcrypt(\Illuminate\Support\Str::password(12)),
             'status' => ClientStatus::Activo->value,
             'plan' => $invitation->plan->value,
         ]);
@@ -329,9 +337,9 @@ class CoachInvitationService
 
     private function checkExistingClient(string $email): void
     {
-        $client = Client::where('email', $email)->first();
+        $client = Client::withTrashed()->where('email', $email)->first();
 
-        if ($client && $client->status === ClientStatus::Activo) {
+        if ($client && ! $client->trashed() && $client->status === ClientStatus::Activo) {
             throw new CoachInvitationBlockedException(
                 'Este email ya pertenece a un cliente activo en WellCore.',
                 'CLIENT_ACTIVE'

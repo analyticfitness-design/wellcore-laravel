@@ -329,7 +329,11 @@ class PublicFormController extends Controller
         ]);
 
         try {
-            $client = Client::where('email', $validated['email'])->first();
+            $client = Client::withTrashed()->where('email', $validated['email'])->first();
+
+            if ($client && $client->trashed()) {
+                $client->restore();
+            }
 
             if ($client) {
                 // Existing client: create RISE program with start_date = next Monday + 7 days
@@ -606,8 +610,8 @@ class PublicFormController extends Controller
             return response()->json(['errors' => $e->errors()], 422);
         }
 
-        // 3. Race-condition guard for email uniqueness
-        if (Client::where('email', $validated['email'])->exists()) {
+        // 3. Race-condition guard for email uniqueness (include soft-deleted to avoid UNIQUE crash)
+        if (Client::withTrashed()->where('email', $validated['email'])->exists()) {
             return response()->json([
                 'errors' => ['email' => ['Este email ya tiene una cuenta registrada.']],
             ], 409);

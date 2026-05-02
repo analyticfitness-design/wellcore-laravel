@@ -1804,7 +1804,7 @@ class AdminController extends Controller
         }
 
         // Check email doesn't already exist as client
-        if (Client::where('email', $inscription->email)->exists()) {
+        if (Client::withTrashed()->where('email', $inscription->email)->exists()) {
             return response()->json(['error' => 'Ya existe un cliente con este email'], 409);
         }
 

@@ -33,8 +33,14 @@ final class ApprovePaymentProofAction
         $invitation = null;
         $payment = null;
         $isNewClient = false;
+        $wasRestored = false;
 
-        DB::transaction(function () use ($proof, $reviewer, &$client, &$invitation, &$payment, &$isNewClient) {
+        DB::transaction(function () use ($proof, $reviewer, &$client, &$invitation, &$payment, &$isNewClient, &$wasRestored) {
+            // Lock the proof row for the duration of the transaction to prevent double-approval.
+            $proof = PaymentProof::where('status', PaymentProofStatus::Pendiente)
+                ->lockForUpdate()
+                ->findOrFail($proof->id);
+
             $manualRef = 'MAN-'.Str::uuid();
 
             $invitation = CoachInvitation::create([
@@ -69,6 +75,7 @@ final class ApprovePaymentProofAction
             if ($client) {
                 if ($client->trashed()) {
                     $client->restore();
+                    $wasRestored = true;
                 }
                 $client->update([
                     'status' => ClientStatus::Activo->value,
@@ -118,7 +125,7 @@ final class ApprovePaymentProofAction
         });
 
         $resetUrl = null;
-        if ($isNewClient) {
+        if ($isNewClient || $wasRestored) {
             $resetToken = Str::random(64);
             DB::table('password_reset_tokens')->updateOrInsert(
                 ['email' => $client->email],

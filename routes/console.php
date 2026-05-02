@@ -36,7 +36,7 @@ Schedule::job(new ExpireCoachInvitationsJob)->dailyAt('00:05');
 Schedule::command('wellcore:cleanup-pending-payments')->dailyAt('02:00');
 
 // Expire manual payment proofs that were not reviewed within 7 days
-Schedule::command('wellcore:expire-payment-proofs')->daily()->runInBackground();
+Schedule::command('wellcore:expire-payment-proofs')->dailyAt('01:00')->runInBackground();
 
 // Strategy Hub — archive completed drops older than 30 days
 Schedule::command('wellcore:archive-old-drops')->dailyAt('03:00')->withoutOverlapping(60);
