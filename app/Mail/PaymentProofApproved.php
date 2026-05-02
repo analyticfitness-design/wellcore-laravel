@@ -36,6 +36,7 @@ class PaymentProofApproved extends Mailable implements ShouldQueue
             view: 'emails.payment-proof-approved',
             with: [
                 'clientName' => $this->client->name,
+                'clientEmail' => $this->client->email,
                 'planLabel' => $this->proof->plan->label(),
                 'coachName' => $this->proof->coach->name ?? 'Tu Coach WellCore',
                 'loginUrl' => url('/login'),
