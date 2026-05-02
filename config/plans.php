@@ -14,9 +14,9 @@
 return [
     'promo' => [
         'active' => true,
-        'label' => 'Promoción Abril',
+        'label' => 'Promoción Mayo',
         'discount_pct' => 15,
-        'ends_at' => '2026-04-30',
+        'ends_at' => '2026-05-31',
     ],
     'esencial' => [
         'name' => 'Esencial',
