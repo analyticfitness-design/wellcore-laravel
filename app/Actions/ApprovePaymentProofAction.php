@@ -70,7 +70,12 @@ final class ApprovePaymentProofAction
                     'plan' => $proof->plan->value,
                 ]);
             } else {
+                do {
+                    $clientCode = 'WC-'.strtoupper(Str::random(6));
+                } while (Client::where('client_code', $clientCode)->exists());
+
                 $client = Client::create([
+                    'client_code' => $clientCode,
                     'email' => $proof->client_email,
                     'name' => $proof->client_name,
                     'password_hash' => bcrypt(Str::password(12)),
