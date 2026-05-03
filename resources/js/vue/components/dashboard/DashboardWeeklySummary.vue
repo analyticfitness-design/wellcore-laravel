@@ -18,15 +18,15 @@ defineProps({
 
     <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
       <div class="rounded-xl bg-wc-bg-secondary px-4 py-3 text-center">
-        <p class="font-data text-2xl font-bold text-wc-text">{{ data.lastWeekWorkouts || 0 }}</p>
+        <p class="font-data text-2xl font-bold text-wc-text wc-tnum">{{ data.lastWeekWorkouts || 0 }}</p>
         <p class="mt-0.5 text-sm text-wc-text-tertiary">Entrenamientos</p>
       </div>
       <div class="rounded-xl bg-wc-bg-secondary px-4 py-3 text-center">
-        <p class="font-data text-2xl font-bold text-wc-text">{{ data.lastWeekCheckins || 0 }}</p>
+        <p class="font-data text-2xl font-bold text-wc-text wc-tnum">{{ data.lastWeekCheckins || 0 }}</p>
         <p class="mt-0.5 text-sm text-wc-text-tertiary">Check-ins</p>
       </div>
       <div class="col-span-2 rounded-xl bg-wc-bg-secondary px-4 py-3 text-center sm:col-span-1">
-        <p class="font-data text-2xl font-bold text-wc-text">{{ data.lastWeekWeight || '--' }}</p>
+        <p class="font-data text-2xl font-bold text-wc-text wc-tnum">{{ data.lastWeekWeight || '--' }}</p>
         <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ data.lastWeekWeight ? 'kg actuales' : 'Sin registro' }}</p>
       </div>
     </div>

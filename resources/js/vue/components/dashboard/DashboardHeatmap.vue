@@ -29,7 +29,7 @@ function getCalendarCount(dateStr) {
           </svg>
         </div>
         <h3 class="text-lg font-semibold text-wc-text">Racha de entrenamiento</h3>
-        <span v-if="(data.calendarStreak || 0) > 0" class="inline-flex items-center gap-1 rounded-full bg-orange-500/10 px-2 py-0.5 text-xs font-bold text-orange-500">
+        <span v-if="(data.calendarStreak || 0) > 0" class="inline-flex items-center gap-1 rounded-full bg-orange-500/10 px-2 py-0.5 text-xs font-bold text-orange-500 wc-tnum">
           {{ data.calendarStreak }} dia{{ data.calendarStreak !== 1 ? 's' : '' }} seguido{{ data.calendarStreak !== 1 ? 's' : '' }}
         </span>
       </div>
