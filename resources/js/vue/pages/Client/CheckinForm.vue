@@ -314,7 +314,7 @@ onBeforeUnmount(() => {
       <!-- Error -->
       <div v-else-if="error" class="rounded-card border border-red-500/30 bg-red-500/10 p-6 text-center">
         <p class="text-sm text-red-400">{{ error }}</p>
-        <button @click="fetchCheckin" class="mt-4 rounded-button bg-wc-accent px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover">Reintentar</button>
+        <button @click="fetchCheckin" class="wc-btn-primary mt-4">Reintentar</button>
       </div>
 
       <template v-else>
@@ -411,7 +411,7 @@ onBeforeUnmount(() => {
               </header>
 
               <div>
-                <p class="mb-2 text-[11px] font-bold uppercase tracking-widest text-wc-text-tertiary">Días entrenados</p>
+                <p class="mb-2 wc-caption">Días entrenados</p>
                 <DaysPicker v-model="diasEntrenados" :max="7" />
                 <p class="mt-2 text-xs text-wc-text-tertiary">
                   <span class="font-data font-semibold text-wc-text">{{ diasEntrenados }}</span>
@@ -531,7 +531,7 @@ onBeforeUnmount(() => {
 
               <!-- Resumen previo al envío -->
               <div class="rounded-card border border-wc-border bg-wc-bg-secondary p-4">
-                <p class="mb-3 text-[11px] font-bold uppercase tracking-widest text-wc-text-tertiary">Resumen</p>
+                <p class="mb-3 wc-caption">Resumen</p>
                 <dl class="grid grid-cols-2 gap-3 sm:grid-cols-4">
                   <div>
                     <dt class="text-[11px] text-wc-text-tertiary">Bienestar</dt>
