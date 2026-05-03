@@ -1,10 +1,15 @@
 <script setup>
-import { RouterLink } from 'vue-router';
-import WcEmptyState from '../ui/wellcore/WcEmptyState.vue';
+import { useRouter } from 'vue-router';
 
-defineProps({
+const props = defineProps({
     weightChartData: { type: Array, default: () => [] },
 });
+
+const router = useRouter();
+
+function goToMetrics() {
+    router.push('/client/metrics');
+}
 
 function getWeightBarHeight(weight, min, range) {
     if (range === 0) return 50;
@@ -13,58 +18,69 @@ function getWeightBarHeight(weight, min, range) {
 </script>
 
 <template>
-  <div v-if="weightChartData && weightChartData.length > 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-    <div class="mb-4 flex items-center justify-between">
-      <h3 class="text-lg font-semibold text-wc-text">Tendencia de peso</h3>
-      <span class="text-sm text-wc-text-tertiary">Ultimos 90 dias</span>
+  <!-- Con datos: chart simple usando estética del dashboard-mobile -->
+  <section v-if="weightChartData && weightChartData.length > 0" class="card section" :style="{ animationDelay: '380ms' }">
+    <div class="card-head">
+      <div class="card-head-left">
+        <span class="card-title">Peso corporal</span>
+      </div>
+      <span class="card-meta">Últimos 90 días</span>
     </div>
-
-    <div class="flex items-end justify-center gap-1 sm:gap-2 overflow-x-auto" style="height: 140px;">
-      <div
-        v-for="(entry, idx) in weightChartData"
-        :key="idx"
-        class="group relative flex w-8 sm:w-10 shrink-0 flex-col items-center justify-end"
-        style="height: 100%;"
-      >
-        <!-- Tooltip -->
-        <div class="pointer-events-none absolute -top-8 z-10 hidden rounded bg-wc-bg-secondary px-2 py-1 text-xs font-medium text-wc-text shadow-lg group-hover:block">
-          {{ Number(entry.weight).toFixed(1) }} kg
-        </div>
-        <!-- Bar -->
+    <div style="padding: 6px 20px 20px;">
+      <div class="flex items-end justify-center gap-1 sm:gap-2 overflow-x-auto" style="height: 140px;">
         <div
-          class="w-full rounded-t bg-wc-accent/80 transition-all group-hover:bg-wc-accent"
-          :style="{
-            height: getWeightBarHeight(
-              entry.weight,
-              Math.min(...weightChartData.map(e => e.weight)),
-              Math.max(...weightChartData.map(e => e.weight)) - Math.min(...weightChartData.map(e => e.weight)) || 1
-            ) + '%'
-          }"
-        ></div>
-        <!-- Label -->
-        <span class="mt-1 w-full truncate text-center text-xs text-wc-text-tertiary">
-          {{ entry.date ? String(entry.date).slice(0, 5) : '' }}
-        </span>
+          v-for="(entry, idx) in weightChartData"
+          :key="idx"
+          class="group relative flex w-8 sm:w-10 shrink-0 flex-col items-center justify-end"
+          style="height: 100%;"
+        >
+          <div class="pointer-events-none absolute -top-8 z-10 hidden rounded bg-wc-bg-secondary px-2 py-1 text-xs font-medium text-wc-text shadow-lg group-hover:block">
+            {{ Number(entry.weight).toFixed(1) }} kg
+          </div>
+          <div
+            class="w-full rounded-t bg-wc-accent/80 transition-all group-hover:bg-wc-accent"
+            :style="{
+              height: getWeightBarHeight(
+                entry.weight,
+                Math.min(...weightChartData.map(e => e.weight)),
+                Math.max(...weightChartData.map(e => e.weight)) - Math.min(...weightChartData.map(e => e.weight)) || 1
+              ) + '%'
+            }"
+          ></div>
+          <span class="mt-1 w-full truncate text-center text-xs" style="color: var(--wc-text-3)">
+            {{ entry.date ? String(entry.date).slice(0, 5) : '' }}
+          </span>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="mt-2 flex justify-between text-sm text-wc-text-tertiary wc-tnum">
-      <span>Min: {{ Math.min(...weightChartData.map(e => e.weight)).toFixed(1) }} kg</span>
-      <span>Max: {{ Math.max(...weightChartData.map(e => e.weight)).toFixed(1) }} kg</span>
+  <!-- Empty state -->
+  <section v-else class="card section" :style="{ animationDelay: '380ms' }">
+    <div class="card-head">
+      <div class="card-head-left">
+        <span class="card-title">Peso corporal</span>
+      </div>
+      <span class="card-meta">Sin datos</span>
     </div>
-  </div>
-  <!-- Weight chart empty state — DS v1: WcEmptyState con SVG báscula custom -->
-  <WcEmptyState
-    v-else
-    title="Sin datos de peso aun"
-    subtitle="Registra tu peso cada semana para ver tu progreso"
-    cta-label="Registrar peso"
-    cta-to="/client/metrics"
-  >
-    <template #icon>
-      <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
-      </svg>
-    </template>
-  </WcEmptyState>
+    <div class="empty">
+      <div class="empty-art">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="8" y="14" width="48" height="40" rx="6"></rect>
+          <path d="M14 22h36"></path>
+          <circle cx="32" cy="38" r="9"></circle>
+          <path d="M32 31v7l4-3"></path>
+          <path d="M22 50h2M28 50h2M34 50h2M40 50h2"></path>
+        </svg>
+      </div>
+      <div>
+        <div class="empty-title">Sin datos de peso aún</div>
+        <p class="empty-sub">Registra tu peso semanal para ver tu progreso a lo largo del plan.</p>
+      </div>
+      <button class="empty-cta" @click="goToMetrics">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+        Registrar peso
+      </button>
+    </div>
+  </section>
 </template>

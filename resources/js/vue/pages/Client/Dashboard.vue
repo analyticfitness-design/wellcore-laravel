@@ -276,7 +276,7 @@ const weekMarkers = computed(() => {
     <PullToRefreshIndicator :distance="pullDistance" :refreshing="isRefreshing" />
 
     <!-- Loading Skeleton -->
-    <div v-if="loading" class="space-y-6">
+    <div v-if="loading" class="dash-mobile space-y-6">
       <!-- Greeting skeleton -->
       <div class="space-y-2">
         <div class="h-9 w-72 animate-pulse rounded-lg bg-wc-bg-tertiary"></div>
@@ -341,35 +341,66 @@ const weekMarkers = computed(() => {
       </button>
     </div>
 
-    <!-- Dashboard Content -->
-    <div v-else-if="data" ref="staggerRoot" class="space-y-6">
+    <!-- Dashboard Content (Target Mobile Redesign) -->
+    <div v-else-if="data" class="dash-mobile">
+      <main ref="staggerRoot" class="scroll">
 
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- 1. HERO — greeting + plan badge + quote + CTAs desktop         -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- §1 HERO -->
       <DashboardHero :data="data" :greeting="greeting" :motivational-quote="motivationalQuote" />
 
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- 2. QUOTE diaria del coach (opcional)                           -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div v-if="data.dailyQuote" class="wc-topline flex items-start gap-3 rounded-xl border border-wc-border/50 bg-wc-bg-tertiary/50 px-4 py-3">
-        <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 mt-0.5">
-          <svg class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
-          </svg>
-        </div>
-        <div class="min-w-0 flex-1">
-          <p class="text-base italic text-wc-text-secondary leading-relaxed">
-            &ldquo;{{ data.dailyQuote }}&rdquo;
-          </p>
-          <p class="mt-1 text-xs font-medium uppercase tracking-wider text-wc-text-tertiary/60">&mdash; Tu coach</p>
-        </div>
-      </div>
+      <!-- §2 QUOTE diaria del coach -->
+      <section v-if="data.dailyQuote" class="quote section" :style="{ animationDelay: '90ms' }">
+        <p class="quote-text">{{ data.dailyQuote }}</p>
+        <span class="quote-src">— Tu Coach</span>
+      </section>
 
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- 3. PLAN ALERT (con live-dot verde)                             -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- §3 PLAN INDICATOR / banner sin plan -->
       <DashboardPlanAlert :data="data" />
+
+      <!-- §4 BANNER CHECK-IN PENDIENTE (sólo cuando vencido) -->
+      <DashboardCheckin
+        :data="data"
+        :show-checkin-timer="showCheckinTimer"
+        :checkin-hours="checkinHours"
+        :checkin-minutes="checkinMinutes"
+        :checkin-seconds="checkinSeconds"
+      />
+
+      <!-- §5 STATS GRID 2x2 -->
+      <DashboardStats :data="data" :xp-progress="xpProgress" :trained-ring-offset="trainedRingOffset" />
+
+      <!-- §6 MISSIONS -->
+      <DashboardMissions :missions="data.dailyMissions || []" />
+
+      <!-- §7 PROGRESS TIMELINE -->
+      <DashboardTimeline :data="data" :week-markers="weekMarkers" />
+
+      <!-- §8 HEATMAP -->
+      <DashboardHeatmap :data="data" :calendar-days="calendarDays" />
+
+      <!-- §9 EMPTY STATE WEIGHT -->
+      <DashboardWeight :weight-chart-data="data.weightChartData || []" />
+
+      <!-- §10 WEEK GRID -->
+      <DashboardWeeklyGrid :week-days="data.weekDays || []" />
+
+      <!-- §11 ACTIVITY -->
+      <DashboardActivity :activities="data.recentActivity || []" />
+
+      <!-- §12 WEEKLY SUMMARY -->
+      <DashboardWeeklySummary :data="data" :weekly-summary-message="weeklySummaryMessage" />
+
+      <!-- §13 COACH -->
+      <DashboardCoach :data="data" />
+
+      <!-- Espaciado final -->
+      <div style="height: 16px" aria-hidden="true"></div>
+
+      </main>
+    </div>
+
+    <!-- BLOQUES SECUNDARIOS LEGADO (banners de perfil/onboarding) — fuera del wrapper .dash-mobile -->
+    <div v-if="data && !loading && !error" class="space-y-6 mt-4">
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- 3b. COMPLETAR PERFIL — para clientes con score < 80%           -->
@@ -509,65 +540,6 @@ const weekMarkers = computed(() => {
           <p class="text-sm font-semibold text-emerald-400">Perfil inicial completo. Tu punto de partida queda registrado.</p>
         </div>
       </div>
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- 4. CHECK-IN COUNTDOWN (urgente arriba)                         -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <DashboardCheckin
-        :data="data"
-        :show-checkin-timer="showCheckinTimer"
-        :checkin-hours="checkinHours"
-        :checkin-minutes="checkinMinutes"
-        :checkin-seconds="checkinSeconds"
-      />
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- 5. STATS CARDS (racha · check-ins · XP · esta semana)          -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <DashboardStats :data="data" :xp-progress="xpProgress" :trained-ring-offset="trainedRingOffset" />
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- 6. MISIONES DIARIAS (acciones del día)                         -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <DashboardMissions :missions="data.dailyMissions || []" />
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- 7. TIMELINE DEL PLAN (visible, no colapsable)                  -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <DashboardTimeline :data="data" :week-markers="weekMarkers" />
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- 8. HEATMAP RACHA + TENDENCIA PESO (grid 2 cols en desktop)     -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <DashboardHeatmap :data="data" :calendar-days="calendarDays" />
-        <DashboardWeight :weight-chart-data="data.weightChartData || []" />
-      </div>
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- 9. SEMANA ENTRENAMIENTO + ACTIVIDAD RECIENTE (grid 2:1)        -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div class="lg:col-span-2">
-          <DashboardWeeklyGrid :week-days="data.weekDays || []" />
-        </div>
-        <DashboardActivity :activities="data.recentActivity || []" />
-      </div>
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- 10. RESUMEN SEMANAL                                            -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <DashboardWeeklySummary :data="data" :weekly-summary-message="weeklySummaryMessage" />
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- 11. COACH CARD (al final como footer)                          -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <DashboardCoach :data="data" />
-
-      <!-- NOTE: los 3 CTAs mobile (Registrar entrenamiento / Check-in / Ver plan)
-           se eliminaron en Fase 10. El FloatingActionButton (DashboardFab.vue)
-           montado globalmente en ClientLayout cubre esas 3 acciones de forma
-           más ergonómica (fixed bottom-right, siempre accesible durante scroll). -->
 
       <!-- Espaciado final para que el contenido no quede pegado al bottom nav mobile -->
       <div class="h-4 sm:h-0" aria-hidden="true"></div>

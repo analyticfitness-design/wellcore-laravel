@@ -1,56 +1,47 @@
 <script setup>
-import WcSectionHeader from '../ui/wellcore/WcSectionHeader.vue';
+import { computed } from 'vue';
 
-defineProps({
+const props = defineProps({
     data: { type: Object, required: true },
     weekMarkers: { type: Array, default: () => [] },
 });
+
+const totalWeeks = computed(() => props.data.totalWeeks || 12);
+const weeksActive = computed(() => Math.min(props.data.weeksActive || 0, totalWeeks.value));
+const progressPct = computed(() => props.data.progressPercent || 0);
+const isContinuous = computed(() => weeksActive.value >= totalWeeks.value);
+const planMetaLabel = computed(() => `Plan ${totalWeeks.value} semanas`);
 </script>
 
 <template>
-  <div v-if="data.hasActivePlan" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-    <WcSectionHeader title="Tu progreso">
-      <template #actions>
-        <span class="text-sm wc-tnum" style="color: var(--color-wc-text-secondary);">
-          Semana {{ Math.min(data.weeksActive || 0, data.totalWeeks || 12) }} de {{ data.totalWeeks || 12 }}
-        </span>
-      </template>
-    </WcSectionHeader>
-
-    <div class="relative">
-      <div class="h-2.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
-        <div
-          class="prog-line-fg transition-all duration-700 ease-out"
-          :style="{ width: (data.progressPercent || 0) + '%' }"
-        ></div>
+  <section v-if="data.hasActivePlan" class="card section" :style="{ animationDelay: '300ms' }">
+    <div class="card-head">
+      <div class="card-head-left">
+        <span class="card-title">Tu progreso</span>
       </div>
-      <div
-        class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-700"
-        :style="{ left: (data.progressPercent || 0) + '%' }"
-      >
-        <div class="prog-indicator h-5 w-5 rounded-full border-[3px] border-wc-accent bg-wc-bg-tertiary"></div>
-      </div>
+      <span class="card-meta">{{ planMetaLabel }}</span>
     </div>
-
-    <!-- Week markers -->
-    <div class="mt-3 flex items-center justify-between">
-      <div class="text-left">
-        <p class="wc-caption">Inicio</p>
-        <p class="text-sm text-wc-text-secondary">{{ data.startDate || '--' }}</p>
+    <div class="timeline">
+      <div class="timeline-meta">
+        <div class="timeline-week tnum">
+          Semana <strong>{{ weeksActive }}</strong>
+          <span class="of">de {{ totalWeeks }}</span>
+        </div>
+        <div class="timeline-pct tnum">{{ progressPct }}%</div>
       </div>
-      <!-- Desktop week dots -->
-      <div class="hidden items-center gap-0 flex-1 mx-4 sm:flex">
-        <div v-for="marker in weekMarkers" :key="marker.week" class="flex flex-1 flex-col items-center">
-          <div :class="marker.isActive ? 'prog-mk-on' : 'prog-mk-off'"></div>
-          <span v-if="marker.showLabel" class="mt-1 text-xs text-wc-text-tertiary">{{ marker.week }}</span>
+      <div class="timeline-bar">
+        <div class="timeline-fill" :style="{ '--pct': progressPct + '%' }"></div>
+      </div>
+      <div class="timeline-axis">
+        <div class="timeline-tick start">
+          <span>Inicio</span>
+          <small class="tnum">{{ data.startDate || '--' }}</small>
+        </div>
+        <div class="timeline-tick end">
+          <span>{{ isContinuous ? 'Continuo' : 'Semana ' + totalWeeks }}</span>
+          <small class="tnum">{{ progressPct }}%</small>
         </div>
       </div>
-      <div class="text-right">
-        <p class="wc-caption">
-          {{ (data.weeksActive || 0) >= (data.totalWeeks || 12) ? 'Continuo' : 'Semana 12' }}
-        </p>
-        <p class="text-sm font-semibold wc-tnum text-wc-accent">{{ data.progressPercent || 0 }}%</p>
-      </div>
     </div>
-  </div>
+  </section>
 </template>
