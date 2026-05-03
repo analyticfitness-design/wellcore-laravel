@@ -307,7 +307,7 @@ onMounted(fetchMedals);
 
         <div class="mt-4 space-y-3">
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3">
-            <p class="text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">
+            <p class="wc-caption">
               Requisito
             </p>
             <p class="mt-1 text-sm text-wc-text">{{ selectedMedal.requirement }}</p>
@@ -362,7 +362,7 @@ onMounted(fetchMedals);
             v-else
             class="flex items-center justify-between rounded-xl border border-wc-border bg-wc-bg-tertiary p-3"
           >
-            <span class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">
+            <span class="wc-caption">
               Recompensa
             </span>
             <div class="rounded-full bg-[#C4D92E] px-3 py-1 text-xs font-bold text-black">

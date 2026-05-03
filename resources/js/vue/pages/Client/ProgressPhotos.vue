@@ -450,7 +450,7 @@ onMounted(fetchPhotos);
       <p class="mt-2 text-sm text-wc-text-secondary">{{ error }}</p>
       <button
         @click="fetchPhotos"
-        class="mt-6 rounded-xl bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg"
+        class="wc-btn-primary mt-6"
       >
         Reintentar
       </button>
@@ -669,7 +669,7 @@ onMounted(fetchPhotos);
             <button
               type="submit"
               :disabled="uploading || !hasUploads"
-              class="flex items-center gap-2 rounded-xl bg-wc-accent px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-red-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+              class="wc-btn-primary disabled:cursor-not-allowed disabled:opacity-60"
             >
               <!-- Spinner -->
               <svg v-if="uploading" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">

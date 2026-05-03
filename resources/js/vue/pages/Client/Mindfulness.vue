@@ -83,7 +83,7 @@
               </svg>
               <div class="relative text-center" aria-live="polite" aria-atomic="true">
                 <span class="font-data text-4xl font-bold tabular-nums text-wc-text sm:text-5xl">{{ formatSessionTime(sessionRemaining) }}</span>
-                <p class="mt-1 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">restante</p>
+                <p class="mt-1 wc-caption">restante</p>
               </div>
             </div>
 
@@ -107,7 +107,7 @@
               <button
                 v-if="!sessionRunning && sessionRemaining > 0"
                 @click="resumeSession"
-                class="rounded-lg bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent"
+                class="wc-btn-primary"
               >
                 Reanudar
               </button>
