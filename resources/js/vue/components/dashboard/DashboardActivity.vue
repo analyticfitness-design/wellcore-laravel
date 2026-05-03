@@ -1,4 +1,6 @@
 <script setup>
+import WcSectionHeader from '../ui/wellcore/WcSectionHeader.vue';
+
 defineProps({
     activities: { type: Array, default: () => [] },
 });
@@ -6,7 +8,7 @@ defineProps({
 
 <template>
   <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-    <h2 class="text-lg font-semibold text-wc-text">Actividad reciente</h2>
+    <WcSectionHeader title="Actividad reciente" />
 
     <ul v-if="activities && activities.length > 0" class="mt-4 space-y-3">
       <li v-for="(activity, idx) in activities" :key="idx" class="flex items-start gap-3">
