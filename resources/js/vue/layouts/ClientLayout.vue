@@ -12,6 +12,7 @@ import LevelUpCelebration from '../components/LevelUpCelebration.vue';
 import ToastContainer from '../components/ui/ToastContainer.vue';
 import BentoCelebration from '../components/celebrations/BentoCelebration.vue';
 import WcIcon from '../components/ui/WcIcon.vue';
+import WcAvatar from '../components/ui/wellcore/WcAvatar.vue';
 import DashboardFab from '../components/dashboard/DashboardFab.vue';
 import InstallPrompt from '../components/dashboard/InstallPrompt.vue';
 import { useMedals } from '../composables/useMedals';
@@ -126,12 +127,7 @@ async function stopImpersonation() {
 }
 
 const userName = computed(() => {
-    // Attempt to read name from localStorage cache, fallback to 'Usuario'
     return localStorage.getItem('wc_user_name') || 'Usuario';
-});
-
-const userInitial = computed(() => {
-    return (userName.value || 'U').charAt(0).toUpperCase();
 });
 
 function toggleDarkMode() {
@@ -281,7 +277,8 @@ const bottomNav = [
       <!-- Navigation -->
       <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-6">
         <div v-for="section in navSections" :key="section.label">
-          <p class="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-wc-text-tertiary">{{ section.label }}</p>
+          <!-- DS v1: section header con utility wc-caption (uppercase + tracking + token color) -->
+          <p class="wc-caption mb-2 px-3">{{ section.label }}</p>
           <ul class="space-y-0.5">
             <li v-for="item in section.items" :key="item.routeName">
               <RouterLink
@@ -310,7 +307,7 @@ const bottomNav = [
         </div>
       </nav>
 
-      <!-- Sidebar footer / Logout -->
+      <!-- Sidebar footer / Logout (mismo patron de hover que los nav items para coherencia) -->
       <div class="border-t border-wc-border px-3 py-3">
         <button
           @click="handleLogout"
@@ -363,11 +360,9 @@ const bottomNav = [
             <span class="hidden dark:block"><WcIcon name="wc-sun" :size="20" /></span>
           </button>
 
-          <!-- User avatar + name -->
+          <!-- User avatar + name — DS v1: WcAvatar primitive con conic ring (degrada a solid fill si no se renderiza) -->
           <div class="flex items-center gap-2">
-            <div class="flex h-8 w-8 items-center justify-center rounded-full bg-wc-accent/20">
-              <span class="text-sm font-semibold text-wc-accent">{{ userInitial }}</span>
-            </div>
+            <WcAvatar :name="userName" size="sm" />
             <span class="hidden text-sm font-medium text-wc-text sm:inline">{{ userName }}</span>
           </div>
         </div>
