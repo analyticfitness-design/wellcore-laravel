@@ -31,6 +31,9 @@ const stoppingImpersonation = ref(false);
 
 const { anyImpersonation } = useImpersonation();
 
+// Coach-initiated impersonation takes precedence — hide superadmin banner when both are active (fix Bug 4)
+const isCoachImpersonating = computed(() => localStorage.getItem('wc_impersonating_by_coach') === '1');
+
 // Account status check — set to true when API returns 403 {inactive:true}
 const accountInactive = ref(false);
 const accountStatusValue = ref('inactivo');
@@ -222,8 +225,8 @@ const bottomNav = [
     :style="coachBrand?.primary_color ? { '--coach-accent': coachBrand.primary_color } : {}"
   >
 
-    <SuperadminImpersonationBanner />
-    <!-- Coach-initiated impersonation banner (only visible in coach's browser session) -->
+    <!-- Only show superadmin banner when not already inside a coach->client impersonation (fix Bug 4) -->
+    <SuperadminImpersonationBanner v-if="!isCoachImpersonating" />
     <CoachImpersonationBanner />
 
     <!-- Admin impersonation banner -->
