@@ -1,5 +1,6 @@
 <script setup>
 import { RouterLink } from 'vue-router';
+import WcCapsule from '../ui/wellcore/WcCapsule.vue';
 
 defineProps({
     data: { type: Object, required: true },
@@ -21,9 +22,7 @@ defineProps({
         {{ greeting }}, {{ data.clientName }}
       </h1>
       <div v-if="data.planLabel" class="mt-2 flex items-center gap-2">
-        <span class="inline-flex rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-semibold text-wc-accent">
-          Plan {{ data.planLabel }}
-        </span>
+        <WcCapsule variant="accent">Plan {{ data.planLabel }}</WcCapsule>
       </div>
       <!-- Plan-specific motivational phrase -->
       <div class="mt-3 flex items-start gap-2">
@@ -34,21 +33,15 @@ defineProps({
       </div>
     </div>
 
-    <!-- Quick actions (desktop) -->
+    <!-- Quick actions (desktop) — DS v1: wc-btn-primary + wc-btn-secondary -->
     <div class="hidden items-center gap-2 sm:flex">
-      <RouterLink
-        to="/client/plan"
-        class="btn-ripple inline-flex items-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-wc-accent-hover"
-      >
+      <RouterLink to="/client/plan" class="wc-btn-primary btn-ripple">
         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
         </svg>
         Registrar entrenamiento
       </RouterLink>
-      <RouterLink
-        to="/client/checkin"
-        class="inline-flex items-center gap-2 rounded-lg border border-wc-border bg-wc-bg-tertiary px-4 py-2 text-sm font-medium text-wc-text transition-colors hover:bg-wc-bg-secondary"
-      >
+      <RouterLink to="/client/checkin" class="wc-btn-secondary">
         Hacer check-in
       </RouterLink>
     </div>

@@ -3,6 +3,7 @@ import { computed, watch } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useHaptics } from '../../composables/useHaptics';
 import { useCelebration } from '../../composables/useCelebration';
+import WcSectionHeader from '../ui/wellcore/WcSectionHeader.vue';
 
 const props = defineProps({
     missions: { type: Array, default: () => [] },
@@ -66,12 +67,14 @@ watch(() => props.missions, (next) => {
 
 <template>
   <div v-if="missions && missions.length > 0">
-    <div class="mb-3 flex items-center justify-between">
-      <h2 class="text-lg font-semibold text-wc-text">Misiones diarias</h2>
-      <span class="text-sm text-wc-text-secondary">
-        {{ completedCount }}/{{ missions.length }} completadas
-      </span>
-    </div>
+    <!-- DS v1: WcSectionHeader con count en slot actions -->
+    <WcSectionHeader title="Misiones diarias">
+      <template #actions>
+        <span class="text-sm wc-tnum" style="color: var(--color-wc-text-secondary);">
+          {{ completedCount }}/{{ missions.length }} completadas
+        </span>
+      </template>
+    </WcSectionHeader>
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
       <RouterLink
         v-for="(mission, idx) in missions"

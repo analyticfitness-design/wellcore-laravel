@@ -7,7 +7,7 @@ defineProps({
 <template>
   <div v-if="weekDays && weekDays.length > 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
     <h2 class="text-lg font-semibold text-wc-text">Semana de entrenamiento</h2>
-    <p class="mt-1 text-sm text-wc-text-secondary">Semana {{ new Date().toLocaleDateString('es', { year: 'numeric' }).split('/').pop() }}</p>
+    <p class="mt-1 wc-caption">Semana {{ new Date().toLocaleDateString('es', { year: 'numeric' }).split('/').pop() }}</p>
 
     <div class="mt-5 flex items-center justify-between gap-2 sm:justify-start sm:gap-4">
       <div v-for="(day, idx) in weekDays" :key="idx" class="flex flex-col items-center gap-2">
