@@ -415,7 +415,7 @@ onBeforeUnmount(() => {
           </svg>
         </div>
         <p class="mt-4 text-sm text-wc-text-secondary">{{ error }}</p>
-        <button @click="fetchMetrics" class="mt-4 rounded-xl bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover">
+        <button @click="fetchMetrics" class="wc-btn-primary mt-4">
           Reintentar
         </button>
       </div>
@@ -605,7 +605,7 @@ onBeforeUnmount(() => {
             <button
               type="submit"
               :disabled="saving"
-              class="rounded-xl bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg disabled:opacity-50"
+              class="wc-btn-primary disabled:opacity-50"
             >
               <span v-if="!saving">Guardar registro</span>
               <span v-else class="inline-flex items-center gap-2">

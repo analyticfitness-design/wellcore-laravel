@@ -139,7 +139,7 @@
 
         <!-- Exercise name -->
         <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">
+          <label class="mb-1.5 block wc-caption">
             Ejercicio <span class="text-wc-accent">*</span>
           </label>
           <input
@@ -158,7 +158,7 @@
 
         <!-- Notes -->
         <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-secondary">
+          <label class="mb-1.5 block wc-caption">
             Notas (opcional)
           </label>
           <textarea
@@ -288,7 +288,7 @@
 
               <!-- Notes -->
               <div v-if="checkin.notes" class="rounded-lg border border-wc-border bg-wc-bg-secondary p-3">
-                <p class="mb-1 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Tus notas</p>
+                <p class="mb-1 wc-caption">Tus notas</p>
                 <p class="text-sm text-wc-text-secondary">{{ checkin.notes }}</p>
               </div>
 
