@@ -337,7 +337,7 @@ onMounted(() => {
       <div class="rounded-2xl border border-wc-border bg-wc-bg-secondary overflow-hidden">
         <!-- Section header -->
         <div class="flex items-center justify-between border-b border-wc-border px-4 py-3 sm:px-6 sm:py-4">
-          <h3 class="text-xs font-bold uppercase tracking-widest text-wc-text-tertiary">Historial de referidos</h3>
+          <h3 class="wc-caption">Historial de referidos</h3>
           <span v-if="history.length > 0" class="rounded-full bg-wc-bg-tertiary px-2.5 py-0.5 text-[10px] font-bold text-wc-text-secondary">
             {{ history.length }}
           </span>
