@@ -72,7 +72,7 @@ const weekCells = computed(() => {
 </script>
 
 <template>
-  <section class="card section" :style="{ animationDelay: '420ms' }">
+  <section class="card section dash-card-week" :style="{ animationDelay: '440ms' }">
     <div class="card-head">
       <div class="card-head-left">
         <span class="card-title">Semana de entrenamiento</span>

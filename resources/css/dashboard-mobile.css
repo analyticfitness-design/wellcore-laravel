@@ -1479,11 +1479,7 @@
   .dash-mobile .card-body{ padding:8px 22px 22px; }
 
   /* TIMELINE: span 8 (lado a lado con coach) */
-  .dash-mobile .timeline{
-    /* el componente Vue es <section class="card"> wrapping <div class="timeline"> */
-    /* a nivel grid el card padre es el que necesita span; alias usando :has */
-  }
-  .dash-mobile .card:has(> .timeline){ grid-column:span 8; }
+  .dash-mobile .dash-card-timeline{ grid-column:span 8; }
   .dash-mobile .timeline{ padding:8px 22px 22px; }
   .dash-mobile .timeline-meta{ margin-bottom:16px; }
   .dash-mobile .timeline-week{ font-size:26px; }
@@ -1523,7 +1519,7 @@
   }
 
   /* MISSIONS: span 12 con grid 4-col */
-  .dash-mobile .card:has(> .missions-progress, > .missions-list){ grid-column:span 12; }
+  .dash-mobile .dash-card-missions{ grid-column:span 12; }
   .dash-mobile .missions-list{
     display:grid;
     grid-template-columns:repeat(4, 1fr);
@@ -1561,7 +1557,7 @@
   .dash-mobile .missions-progress{ padding:0 22px 16px; }
 
   /* HEATMAP card: span 8 */
-  .dash-mobile .card:has(> .heatmap){ grid-column:span 8; }
+  .dash-mobile .dash-card-heatmap{ grid-column:span 8; }
   .dash-mobile .heatmap{ padding:8px 22px 22px; }
   .dash-mobile .heat-months{
     font-size:9.5px;
@@ -1580,7 +1576,7 @@
   .dash-mobile .heat-summary{ padding:0 22px 18px; }
 
   /* WEIGHT card: span 4 */
-  .dash-mobile .card:has(> .empty){ grid-column:span 4; }
+  .dash-mobile .dash-card-weight{ grid-column:span 4; }
   .dash-mobile .empty{
     padding:24px 24px 28px;
     gap:14px;
@@ -1590,7 +1586,7 @@
   .dash-mobile .empty-sub{ font-size:12.5px; max-width:260px; }
 
   /* WEEK card: span 4 */
-  .dash-mobile .card:has(> .week-grid){ grid-column:span 4; }
+  .dash-mobile .dash-card-week{ grid-column:span 4; }
   .dash-mobile .week-grid{
     gap:8px;
     padding:6px 22px 14px;
@@ -1613,7 +1609,7 @@
   }
 
   /* ACTIVITY card: span 5 */
-  .dash-mobile .card:has(> .activity){ grid-column:span 5; }
+  .dash-mobile .dash-card-activity{ grid-column:span 5; }
   .dash-mobile .activity{ padding:6px 22px 18px; }
   .dash-mobile .act-row{ padding:13px 0; gap:14px; }
   .dash-mobile .act-icon{ width:34px; height:34px; }
@@ -1622,10 +1618,10 @@
   .dash-mobile .act-time{ font-size:11.5px; }
 
   /* SUMMARY card: span 3 */
-  .dash-mobile .card:has(> .summary){ grid-column:span 3; }
+  .dash-mobile .dash-card-summary{ grid-column:span 3; }
 
   /* PROFILE COMPLETION: span 12 */
-  .dash-mobile .card:has(> .profile-row){ grid-column:span 12; }
+  .dash-mobile .dash-card-profile{ grid-column:span 12; }
   .dash-mobile .summary{ padding:6px 22px 22px; }
   .dash-mobile .summary-numbers{
     display:flex;

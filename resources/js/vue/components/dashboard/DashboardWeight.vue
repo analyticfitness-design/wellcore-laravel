@@ -19,7 +19,7 @@ function getWeightBarHeight(weight, min, range) {
 
 <template>
   <!-- Con datos: chart simple usando estética del dashboard-mobile -->
-  <section v-if="weightChartData && weightChartData.length > 0" class="card section" :style="{ animationDelay: '380ms' }">
+  <section v-if="weightChartData && weightChartData.length > 0" class="card section dash-card-weight" :style="{ animationDelay: '400ms' }">
     <div class="card-head">
       <div class="card-head-left">
         <span class="card-title">Peso corporal</span>
@@ -56,7 +56,7 @@ function getWeightBarHeight(weight, min, range) {
   </section>
 
   <!-- Empty state -->
-  <section v-else class="card section" :style="{ animationDelay: '380ms' }">
+  <section v-else class="card section dash-card-weight" :style="{ animationDelay: '400ms' }">
     <div class="card-head">
       <div class="card-head-left">
         <span class="card-title">Peso corporal</span>

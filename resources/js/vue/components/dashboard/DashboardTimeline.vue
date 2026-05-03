@@ -14,7 +14,7 @@ const planMetaLabel = computed(() => `Plan ${totalWeeks.value} semanas`);
 </script>
 
 <template>
-  <section v-if="data.hasActivePlan" class="card section" :style="{ animationDelay: '300ms' }">
+  <section v-if="data.hasActivePlan" class="card section dash-card-timeline" :style="{ animationDelay: '300ms' }">
     <div class="card-head">
       <div class="card-head-left">
         <span class="card-title">Tu progreso</span>

@@ -74,7 +74,7 @@ watch(() => props.missions, (next) => {
 </script>
 
 <template>
-  <section v-if="missions && missions.length > 0" class="card section" :style="{ animationDelay: '260ms' }">
+  <section v-if="missions && missions.length > 0" class="card section dash-card-missions" :style="{ animationDelay: '340ms' }">
     <div class="card-head">
       <div class="card-head-left">
         <span class="card-title">Misiones diarias</span>

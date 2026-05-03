@@ -27,7 +27,7 @@ function goToChat() {
 </script>
 
 <template>
-  <section v-if="data.coachName" class="coach section grain" :style="{ animationDelay: '540ms' }">
+  <section v-if="data.coachName" class="coach section grain dash-card-coach" :style="{ animationDelay: '320ms' }">
     <div class="coach-av">{{ coachInitial }}</div>
     <div class="coach-body">
       <div class="coach-label">Tu coach</div>

@@ -369,34 +369,26 @@ const weekMarkers = computed(() => {
       <!-- §5 STATS GRID 2x2 -->
       <DashboardStats :data="data" :xp-progress="xpProgress" :trained-ring-offset="trainedRingOffset" />
 
-      <!-- §6 MISSIONS -->
+      <!-- §6 PROGRESS TIMELINE (span 8 desktop) + §7 COACH (span 4 desktop) lado a lado -->
+      <DashboardTimeline :data="data" :week-markers="weekMarkers" />
+      <DashboardCoach :data="data" />
+
+      <!-- §8 MISSIONS (span 12, grid 4 cards desktop) -->
       <DashboardMissions :missions="data.dailyMissions || []" />
 
-      <!-- §7 PROGRESS TIMELINE -->
-      <DashboardTimeline :data="data" :week-markers="weekMarkers" />
-
-      <!-- §8 HEATMAP -->
+      <!-- §9 HEATMAP (span 8) + §10 WEIGHT (span 4) lado a lado -->
       <DashboardHeatmap :data="data" :calendar-days="calendarDays" />
-
-      <!-- §9 EMPTY STATE WEIGHT -->
       <DashboardWeight :weight-chart-data="data.weightChartData || []" />
 
-      <!-- §10 WEEK GRID -->
+      <!-- §11 WEEK (span 4) + §12 ACTIVITY (span 5) + §13 SUMMARY (span 3) -->
       <DashboardWeeklyGrid :week-days="data.weekDays || []" />
-
-      <!-- §11 ACTIVITY -->
       <DashboardActivity :activities="data.recentActivity || []" />
-
-      <!-- §12 WEEKLY SUMMARY -->
       <DashboardWeeklySummary :data="data" :weekly-summary-message="weeklySummaryMessage" />
-
-      <!-- §13 COACH -->
-      <DashboardCoach :data="data" />
 
       <!-- §14 PROFILE COMPLETION (estilo target — solo cuando score < 80%) -->
       <section
         v-if="data.profileCompletion && data.profileCompletion.score < 80 && !profileBannerDismissed"
-        class="card section"
+        class="card section dash-card-profile"
         :style="{ animationDelay: '580ms' }"
       >
         <div class="card-head">
