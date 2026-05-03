@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi propuesta para vos · WellCore Fitness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Fraunces:ital,wght@0,400;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:           #080808;
+      --bg-2:         #101010;
+      --bg-3:         #181818;
+      --bg-4:         #202020;
+      --border:       rgba(255,255,255,0.07);
+      --border-bright:rgba(255,255,255,0.13);
+      --red:          #DC2626;
+      --red-dim:      rgba(220,38,38,0.10);
+      --red-border:   rgba(220,38,38,0.30);
+      --gold:         #B8960C;
+      --gold-light:   #D4A80E;
+      --text:         #F0F0F0;
+      --text-2:       #A8A8A8;
+      --text-3:       #606060;
+      --green:        #16A34A;
+      --green-dim:    rgba(22,163,74,0.10);
+      --font-display: 'Oswald', Impact, sans-serif;
+      --font-body:    'Inter', system-ui, sans-serif;
+      --font-edit:    'Fraunces', Georgia, serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* TOPBAR */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(8,8,8,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 20px; height: 52px;
+    }
+    .topbar-logo {
+      font-family: var(--font-display);
+      font-size: 18px; font-weight: 700; letter-spacing: 5px;
+      color: var(--text); text-transform: uppercase;
+    }
+    .topbar-logo span { color: var(--red); }
+
+    /* CONTAINER */
+    .container { max-width: 880px; margin: 0 auto; padding: 48px 24px 120px; }
+
+    /* SECTION */
+    .section { margin-bottom: 64px; }
+    .section-eyebrow {
+      font-family: var(--font-display);
+      font-size: 10px; letter-spacing: 3px;
+      color: var(--red); text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(30px, 5vw, 52px);
+      font-weight: 700; letter-spacing: 1.5px;
+      line-height: 1.05; text-transform: uppercase;
+      color: var(--text); margin-bottom: 18px;
+    }
+    .section-title em {
+      color: var(--red); font-style: normal;
+    }
+    .section-subtitle {
+      font-size: 16px; line-height: 1.7;
+      color: var(--text-2); max-width: 640px;
+    }
+    .section-subtitle strong { color: var(--text); }
+
+    /* COACH GREETING (intro personal) */
+    .coach-intro {
+      padding: 32px 28px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--bg-2);
+      margin-bottom: 64px;
+      position: relative;
+    }
+    .coach-intro::before {
+      content: '';
+      position: absolute; top: 0; left: 0; bottom: 0;
+      width: 3px; background: var(--red);
+      border-radius: 16px 0 0 16px;
+    }
+    .coach-greeting {
+      font-family: var(--font-edit);
+      font-style: italic;
+      font-size: 17px;
+      color: var(--gold-light);
+      margin-bottom: 18px;
+    }
+    .coach-name-block {
+      display: flex; align-items: center; gap: 14px;
+      padding-top: 18px; border-top: 1px solid var(--border);
+      margin-top: 18px;
+    }
+    .coach-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--red-dim);
+      border: 1px solid var(--red-border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-size: 18px; font-weight: 700; color: var(--red);
+    }
+    .coach-meta-text { font-size: 13px; color: var(--text-2); }
+    .coach-meta-text strong {
+      display: block; color: var(--text);
+      font-family: var(--font-display);
+      font-size: 14px; letter-spacing: 1px; text-transform: uppercase;
+    }
+
+    /* PILLARS GRID (5 pilares de WellCore) */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .pillar-card {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--bg-2);
+    }
+    .pillar-num {
+      font-family: var(--font-display);
+      font-size: 11px; letter-spacing: 1.5px;
+      color: var(--red); text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .pillar-title {
+      font-family: var(--font-display);
+      font-size: 15px; font-weight: 600; letter-spacing: 0.5px;
+      text-transform: uppercase; margin-bottom: 8px;
+      color: var(--text);
+    }
+    .pillar-text {
+      font-size: 13.5px; line-height: 1.65; color: var(--text-2);
+    }
+
+    /* PROCESS STEPS */
+    .process-list {
+      display: grid; gap: 14px; margin-top: 24px;
+    }
+    .process-step {
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      gap: 18px; align-items: flex-start;
+      padding: 20px 22px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--bg-2);
+    }
+    .process-num {
+      font-family: var(--font-display);
+      font-size: 38px; font-weight: 700; line-height: 1;
+      color: var(--red);
+    }
+    .process-num-tag {
+      font-size: 9px; letter-spacing: 1.2px;
+      color: var(--text-3); text-transform: uppercase;
+      margin-top: 4px; display: block;
+    }
+    .process-title {
+      font-family: var(--font-display);
+      font-size: 17px; font-weight: 600; letter-spacing: 0.5px;
+      text-transform: uppercase; margin-bottom: 6px;
+      color: var(--text);
+    }
+    .process-desc {
+      font-size: 14px; line-height: 1.65; color: var(--text-2);
+    }
+
+    /* PLANS */
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .plan-card {
+      padding: 28px 22px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--bg-2);
+      position: relative;
+      display: flex; flex-direction: column;
+    }
+    .plan-card.recommended {
+      border-color: var(--red);
+      background: linear-gradient(180deg, rgba(220,38,38,0.04) 0%, var(--bg-2) 60%);
+    }
+    .plan-badge {
+      position: absolute; top: -10px; left: 22px;
+      padding: 4px 10px;
+      font-family: var(--font-display);
+      font-size: 9px; letter-spacing: 1.5px;
+      text-transform: uppercase; color: #fff;
+      background: var(--red); border-radius: 999px;
+    }
+    .plan-name {
+      font-family: var(--font-display);
+      font-size: 26px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--text);
+      margin-bottom: 4px;
+    }
+    .plan-tagline {
+      font-size: 12px; letter-spacing: 1px;
+      color: var(--text-3); text-transform: uppercase;
+      margin-bottom: 18px; font-family: var(--font-display);
+    }
+    .plan-price {
+      font-family: var(--font-display);
+      font-size: 36px; font-weight: 700; line-height: 1;
+      color: var(--text); margin-bottom: 4px;
+    }
+    .plan-price-currency {
+      font-size: 13px; color: var(--text-2);
+      letter-spacing: 1px; margin-bottom: 18px;
+      font-family: var(--font-display);
+      display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+    }
+    .plan-price-usd {
+      font-size: 11px; color: var(--text-3);
+      letter-spacing: 0.8px; padding-left: 8px;
+      border-left: 1px solid var(--border);
+    }
+    .plan-description {
+      font-size: 13.5px; line-height: 1.6;
+      color: var(--text-2); margin-bottom: 18px;
+      padding-bottom: 18px; border-bottom: 1px solid var(--border);
+    }
+    .plan-features { list-style: none; padding: 0; margin: 0; flex: 1; }
+    .plan-features li {
+      position: relative; padding: 10px 0 10px 22px;
+      font-size: 13.5px; line-height: 1.6;
+      color: var(--text-2);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .plan-features li:last-child { border-bottom: none; }
+    .plan-features li::before {
+      content: ''; position: absolute; left: 0; top: 17px;
+      width: 10px; height: 1px; background: var(--red);
+    }
+    .plan-features li strong { color: var(--text); font-weight: 600; }
+
+    /* FEATURES IN ALL PLANS */
+    .all-features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .feature-tile {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-2);
+    }
+    .feature-tag {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-size: 9px; letter-spacing: 1.5px;
+      color: var(--gold-light);
+      background: rgba(212,168,14,0.10);
+      padding: 3px 8px; border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .feature-name {
+      font-family: var(--font-display);
+      font-size: 14px; font-weight: 600; letter-spacing: 0.5px;
+      text-transform: uppercase; color: var(--text);
+      margin-bottom: 6px;
+    }
+    .feature-desc {
+      font-size: 13px; line-height: 1.6; color: var(--text-2);
+    }
+
+    /* SIGNUP STEPS */
+    .signup-steps {
+      display: grid; gap: 12px; margin-top: 24px;
+    }
+    .signup-step {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 18px; align-items: flex-start;
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--bg-2);
+    }
+    .signup-num {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--red);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-size: 16px; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+    .signup-title {
+      font-family: var(--font-display);
+      font-size: 15px; font-weight: 600; letter-spacing: 0.5px;
+      text-transform: uppercase; color: var(--text);
+      margin-bottom: 4px;
+    }
+    .signup-desc {
+      font-size: 13.5px; line-height: 1.6; color: var(--text-2);
+    }
+
+    /* CTA CLOSE */
+    .cta-close {
+      padding: 36px 28px;
+      border: 1px solid var(--red);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(220,38,38,0.06) 0%, var(--bg-2) 100%);
+      text-align: center;
+      margin-top: 32px;
+    }
+    .cta-close-text {
+      font-family: var(--font-edit);
+      font-style: italic;
+      font-size: 18px; line-height: 1.6;
+      color: var(--text);
+      max-width: 540px; margin: 0 auto;
+    }
+    .cta-close-text em { color: var(--red); font-weight: 500; }
+
+    /* POWERED */
+    .powered-bar {
+      display: flex; align-items: center; justify-content: center;
+      flex-wrap: wrap; gap: 8px 12px;
+      padding: 20px 14px; margin-top: 32px;
+      border: 1px solid var(--border); border-radius: 14px;
+      background: var(--bg-2);
+      font-family: var(--font-display);
+      font-size: 10px; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--text-3);
+    }
+    .powered-bar .dot {
+      width: 3px; height: 3px;
+      background: var(--text-3); border-radius: 50%; opacity: 0.5;
+    }
+    .powered-bar .brand { color: var(--red); font-weight: 700; }
+
+    /* MOBILE */
+    @media (max-width: 640px) {
+      .container { padding: 32px 18px 80px; }
+      .section { margin-bottom: 48px; }
+      .coach-intro { padding: 24px 20px; }
+      .coach-greeting { font-size: 15.5px; }
+      .process-step { padding: 16px; gap: 14px; grid-template-columns: 50px 1fr; }
+      .process-num { font-size: 32px; }
+      .plan-card { padding: 24px 20px; }
+      .plan-name { font-size: 22px; }
+      .plan-price { font-size: 30px; }
+      .powered-bar { font-size: 9px; letter-spacing: 1.5px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-logo">WELLCORE <span>FITNESS</span></div>
+  </header>
+
+  <div class="container">
+
+    <!-- INTRO DEL COACH -->
+    <section class="coach-intro">
+      <p class="coach-greeting">
+        "Te escribo porque después de hablar contigo entendí qué buscas. No te voy a mandar el catálogo. Te voy a contar exactamente qué puedo hacer por vos — y cómo se ve cuando empezamos a trabajar juntos."
+      </p>
+      <div class="coach-name-block">
+        <div class="coach-avatar">[C]</div>
+        <div class="coach-meta-text">
+          <strong>[Nombre del Coach]</strong>
+          Coach certificado · WellCore Fitness
+        </div>
+      </div>
+    </section>
+
+    <!-- ¿QUÉ ES ESTO? -->
+    <section class="section">
+      <p class="section-eyebrow">Lo que vas a obtener</p>
+      <h2 class="section-title">Un coach humano,<br>un <em>protocolo real,</em><br>tu cuerpo de vuelta.</h2>
+      <p class="section-subtitle">
+        Esto no es una app de rutinas. Es un sistema 1:1 donde yo diseño tu protocolo basado en tu diagnóstico real
+        — entrenamiento, nutrición y hábitos — y lo ajusto contigo cada semana, quincena o mes según el plan que elijas.
+        <strong>Sin bots. Sin plantillas. Sin promesas vacías.</strong>
+      </p>
+    </section>
+
+    <!-- 5 PILARES -->
+    <section class="section">
+      <p class="section-eyebrow">El método · 5 pilares</p>
+      <h2 class="section-title">Lo que está<br>detrás de tu plan.</h2>
+      <p class="section-subtitle">
+        Cada decisión que tomo cuando construyo tu protocolo está respaldada por evidencia científica. Estos son los 5 pilares.
+      </p>
+      <div class="pillars-grid">
+        <div class="pillar-card">
+          <p class="pillar-num">P01</p>
+          <h3 class="pillar-title">Sobrecarga progresiva</h3>
+          <p class="pillar-text">Incremento sistemático de carga. Sin progresión no hay estímulo, sin estímulo no hay cambio.</p>
+        </div>
+        <div class="pillar-card">
+          <p class="pillar-num">P02</p>
+          <h3 class="pillar-title">Periodización inteligente</h3>
+          <p class="pillar-text">Cada semana tiene un propósito: adaptación, hipertrofia, fuerza, descarga. No es variedad aleatoria.</p>
+        </div>
+        <div class="pillar-card">
+          <p class="pillar-num">P03</p>
+          <h3 class="pillar-title">Nutrición de precisión</h3>
+          <p class="pillar-text">Macros calculados según tu objetivo real, tu metabolismo y tu nivel de actividad. Cero dietas genéricas.</p>
+        </div>
+        <div class="pillar-card">
+          <p class="pillar-num">P04</p>
+          <h3 class="pillar-title">Recuperación optimizada</h3>
+          <p class="pillar-text">El crecimiento ocurre en la recuperación, no en el entrenamiento. Sueño, estrés y descanso integrados al plan.</p>
+        </div>
+        <div class="pillar-card">
+          <p class="pillar-num">P05</p>
+          <h3 class="pillar-title">Adherencia conductual</h3>
+          <p class="pillar-text">El mejor plan es el que se sigue. Comunicación directa conmigo y manejo real de barreras.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HERRAMIENTAS EN TODOS LOS PLANES -->
+    <section class="section">
+      <p class="section-eyebrow">Herramientas incluidas en todos los planes</p>
+      <h2 class="section-title">Lo que ya está<br><em>adentro.</em></h2>
+      <p class="section-subtitle">
+        No hay extras de pago. Estas son las herramientas que vas a usar todos los días — vienen en cualquier plan que elijas.
+      </p>
+      <div class="all-features-grid">
+        <div class="feature-tile">
+          <span class="feature-tag">Primero en LATAM</span>
+          <p class="feature-name">Voice Logger</p>
+          <p class="feature-desc">Anotás tu entrenamiento por voz mientras entrenás. Series, repeticiones, sensaciones — sin teclado.</p>
+        </div>
+        <div class="feature-tile">
+          <p class="feature-name">3 opciones por plato</p>
+          <p class="feature-desc">¿No te gusta el desayuno? Lo cambiás con un click. Misma macro, otro plato. Recetas para cada comida.</p>
+        </div>
+        <div class="feature-tile">
+          <p class="feature-name">Variaciones de ejercicios</p>
+          <p class="feature-desc">Mismo músculo, otra ejecución. Para que no te aburras ni te lesiones por repetir lo mismo.</p>
+        </div>
+        <div class="feature-tile">
+          <p class="feature-name">Videotutoriales</p>
+          <p class="feature-desc">Cada ejercicio con técnica explicada en video. Ejecutás correcto desde el día uno.</p>
+        </div>
+        <div class="feature-tile">
+          <p class="feature-name">Chat 1:1 directo</p>
+          <p class="feature-desc">Sin bots. Sin tickets. Mensaje directo conmigo cuando lo necesites.</p>
+        </div>
+        <div class="feature-tile">
+          <p class="feature-name">Comunidad activa</p>
+          <p class="feature-desc">Otros clientes en proceso. PRs, dudas, resultados compartidos. No estás solo.</p>
+        </div>
+        <div class="feature-tile">
+          <p class="feature-name">Medallas y logros</p>
+          <p class="feature-desc">Cada hito que rompés queda guardado. Tu progreso se ve, no se olvida.</p>
+        </div>
+        <div class="feature-tile">
+          <p class="feature-name">Misiones diarias + XP</p>
+          <p class="feature-desc">4 misiones cada día — entrenar, check-in, peso, nutrición — sumás XP y subís de nivel.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOS 3 PLANES -->
+    <section class="section">
+      <p class="section-eyebrow">Los 3 planes</p>
+      <h2 class="section-title">Elegí el ritmo<br>que te <em>funciona.</em></h2>
+      <p class="section-subtitle">
+        El check-in semanal y el coach humano vienen en los tres. Lo que cambia es la frecuencia con que ajusto tu plan
+        y el nivel de personalización en entrenamiento y nutrición. Todos los precios en pesos colombianos (COP).
+      </p>
+
+      <div class="plans-grid">
+        <!-- ESENCIAL -->
+        <div class="plan-card">
+          <p class="plan-name">Esencial</p>
+          <p class="plan-tagline">Sistema completo · Ajuste mensual</p>
+          <p class="plan-price">$299.000</p>
+          <p class="plan-price-currency">COP / mes <span class="plan-price-usd">≈ $75 USD</span></p>
+          <p class="plan-description">
+            Para quien quiere el sistema completo — entrenamiento, macros y suplementación — con ajuste mensual de tu coach.
+          </p>
+          <ul class="plan-features">
+            <li><strong>Entrenamiento personalizado</strong> · ejercicios con instrucciones, registro de pesos, récords automáticos</li>
+            <li><strong>Nutrición con macros + suplementación</strong> · plan de comidas, macros calculados, suplementos con horarios</li>
+            <li><strong>Coach asignado</strong> · revisa tu check-in semanal y ajusta tu plan cada mes</li>
+          </ul>
+        </div>
+
+        <!-- METODO (recomendado) -->
+        <div class="plan-card recommended">
+          <span class="plan-badge">Mejor valor</span>
+          <p class="plan-name">Método</p>
+          <p class="plan-tagline">Plan que se mueve contigo · Quincenal</p>
+          <p class="plan-price">$399.000</p>
+          <p class="plan-price-currency">COP / mes <span class="plan-price-usd">≈ $100 USD</span></p>
+          <p class="plan-description">
+            Para quien ya entrena y necesita un plan que se mueva con tu progreso real cada quincena.
+          </p>
+          <ul class="plan-features">
+            <li><strong>Entrenamiento + nutrición personalizada</strong> · macros calculados, plan de comidas, agua diaria</li>
+            <li><strong>Tu coach ajusta el plan cada quincena</strong> · revisión cada 15 días según tu progreso real</li>
+            <li><strong>Hábitos + suplementación con horarios</strong> · 5 hábitos diarios, suplementos programados</li>
+          </ul>
+        </div>
+
+        <!-- ELITE -->
+        <div class="plan-card">
+          <p class="plan-name">Elite</p>
+          <p class="plan-tagline">Atletas y especialización · Semanal</p>
+          <p class="plan-price">$549.000</p>
+          <p class="plan-price-currency">COP / mes <span class="plan-price-usd">≈ $137 USD</span></p>
+          <p class="plan-description">
+            Para atletas y deportistas que buscan especialización avanzada y ajuste semanal del protocolo.
+          </p>
+          <ul class="plan-features">
+            <li><strong>Entrenamiento avanzado</strong> · progresiones semanales, variaciones, análisis de volumen, timing nutricional</li>
+            <li><strong>Optimización deportiva avanzada</strong> · suplementación deportiva con guía profesional o entrenamiento periodizado por ciclo menstrual</li>
+            <li><strong>Tu coach ajusta el plan cada semana</strong> · check-in 1:1 con coaching integral, soporte 8 horas</li>
+          </ul>
+        </div>
+      </div>
+
+      <p style="margin-top:18px; font-size:12px; color:var(--text-3); text-align:center; letter-spacing:1px; text-transform:uppercase; font-family:var(--font-display)">
+        Trimestral −10% · Anual −20%
+      </p>
+    </section>
+
+    <!-- PROCESO -->
+    <section class="section">
+      <p class="section-eyebrow">Cómo trabajamos juntos</p>
+      <h2 class="section-title">El acompañamiento<br>conmigo, paso a paso.</h2>
+      <p class="section-subtitle">
+        No te entrego un PDF y desaparezco. Esto es lo que pasa desde que decís sí hasta que tenemos tu plan corriendo.
+      </p>
+
+      <div class="process-list">
+        <div class="process-step">
+          <div>
+            <div class="process-num">01</div>
+            <span class="process-num-tag">5–8 min</span>
+          </div>
+          <div>
+            <h3 class="process-title">Diagnóstico inicial</h3>
+            <p class="process-desc">Llenás un cuestionario de 8 pasos — tu objetivo, biometría, experiencia, lesiones, hábitos. Sin pago, sin tarjeta de crédito, sin compromiso. Esa data es la base de tu plan.</p>
+          </div>
+        </div>
+
+        <div class="process-step">
+          <div>
+            <div class="process-num">02</div>
+            <span class="process-num-tag">24–48 h</span>
+          </div>
+          <div>
+            <h3 class="process-title">Match con tu coach</h3>
+            <p class="process-desc">El equipo revisa tu inscripción y te asigna manualmente. Especialidad, género, zona horaria. Yo (o quien sea tu coach) recibe tu perfil y te contacto.</p>
+          </div>
+        </div>
+
+        <div class="process-step">
+          <div>
+            <div class="process-num">03</div>
+            <span class="process-num-tag">3–5 días</span>
+          </div>
+          <div>
+            <h3 class="process-title">Tu plan en el panel</h3>
+            <p class="process-desc">Diseño tu entrenamiento, nutrición y hábitos según tu inscripción y nuestra conversación inicial. Lo cargo directo en tu panel — sin PDFs sueltos.</p>
+          </div>
+        </div>
+
+        <div class="process-step">
+          <div>
+            <div class="process-num">04</div>
+            <span class="process-num-tag">Continuo</span>
+          </div>
+          <div>
+            <h3 class="process-title">Check-ins y ajustes</h3>
+            <p class="process-desc">Logueás tu check-in en el panel: bienestar, días entrenados, nutrición, comentario. Yo lo reviso y respondo con ajustes. Frecuencia según el plan que elijas (mensual, quincenal o semanal).</p>
+          </div>
+        </div>
+
+        <div class="process-step">
+          <div>
+            <div class="process-num">05</div>
+            <span class="process-num-tag">8–12 sem</span>
+          </div>
+          <div>
+            <h3 class="process-title">Resultados reales</h3>
+            <p class="process-desc">Cada semana ves tus métricas — peso, composición corporal, adherencia. A las 8–12 semanas hacemos una evaluación completa con tus datos reales, no curvas inventadas.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CÓMO INSCRIBIRTE -->
+    <section class="section">
+      <p class="section-eyebrow">El siguiente paso</p>
+      <h2 class="section-title">Si querés empezar,<br>así lo hacemos.</h2>
+      <p class="section-subtitle">
+        Cuando me digas "vamos", el flujo es simple. Yo te guío en cada paso.
+      </p>
+
+      <div class="signup-steps">
+        <div class="signup-step">
+          <div class="signup-num">1</div>
+          <div>
+            <h3 class="signup-title">Me decís cuál plan</h3>
+            <p class="signup-desc">Esencial, Método o Elite. Si tenés dudas sobre cuál te conviene, me preguntás y te oriento según lo que ya hablamos.</p>
+          </div>
+        </div>
+
+        <div class="signup-step">
+          <div class="signup-num">2</div>
+          <div>
+            <h3 class="signup-title">Eligimos forma de pago</h3>
+            <p class="signup-desc"><strong style="color:var(--text)">Opción A:</strong> Te paso mi link de Wompi (pago automático, acceso inmediato).<br><strong style="color:var(--text)">Opción B:</strong> Pago externo por Nequi, transferencia o cuenta — me mandás el comprobante y subo tu acceso al sistema en máximo 30 minutos.</p>
+          </div>
+        </div>
+
+        <div class="signup-step">
+          <div class="signup-num">3</div>
+          <div>
+            <h3 class="signup-title">Recibís tu acceso</h3>
+            <p class="signup-desc">Te llega tu enlace de inscripción con tus credenciales. Entrás al portal y completás tu perfil con la información detallada que necesito para construir tu plan.</p>
+          </div>
+        </div>
+
+        <div class="signup-step">
+          <div class="signup-num">4</div>
+          <div>
+            <h3 class="signup-title">Hacemos la entrevista de perfil</h3>
+            <p class="signup-desc">Por WhatsApp o videollamada — te hago una entrevista profesional para entender lo que el formulario no captura. Esto define la calidad del plan.</p>
+          </div>
+        </div>
+
+        <div class="signup-step">
+          <div class="signup-num">5</div>
+          <div>
+            <h3 class="signup-title">Plan en 48 horas</h3>
+            <p class="signup-desc">Con tu información completa, en máximo 48 horas tenés tu protocolo cargado en el panel. Y empezamos.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA Close -->
+      <div class="cta-close">
+        <p class="cta-close-text">
+          Si después de leer esto sentís que <em>esto es lo que estabas buscando</em>,
+          contestame por aquí y empezamos. Si tenés más dudas, también.
+        </p>
+      </div>
+    </section>
+
+    <!-- POWERED BAR -->
+    <div class="powered-bar">
+      <span>Powered</span><span class="dot"></span>
+      <span>by</span><span class="dot"></span>
+      <span class="brand">WellCore Fitness</span><span class="dot"></span>
+      <span>Coaching online basado en evidencia</span>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ticket de Plan — WellCore (Formulario Completo)</title>
+  <style>
+    :root {
+      --bg:           #0a0a0a;
+      --bg-secondary: #111111;
+      --bg-tertiary:  #1a1a1a;
+      --border:       #2a2a2a;
+      --accent:       #DC2626;
+      --accent-dim:   rgba(220, 38, 38, 0.12);
+      --text:         #f0f0f0;
+      --text-secondary: #a0a0a0;
+      --text-tertiary:  #606060;
+      --radius:       10px;
+      --font-display: 'Oswald', 'Bebas Neue', Impact, sans-serif;
+      --font-body:    'Raleway', 'Inter', system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 24px 16px 60px;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-family: var(--font-display);
+      font-size: 22px;
+      letter-spacing: 3px;
+      color: var(--text);
+    }
+    .logo span { color: var(--accent); }
+    .badge {
+      background: var(--accent-dim);
+      color: var(--accent);
+      border: 1px solid rgba(220,38,38,.3);
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    h1.page-title {
+      font-family: var(--font-display);
+      font-size: 26px;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      color: var(--text-tertiary);
+      font-size: 12px;
+      margin-bottom: 28px;
+    }
+
+    /* ── Step pill nav ── */
+    .step-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 32px;
+    }
+    .step-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      letter-spacing: .5px;
+      text-decoration: none;
+    }
+    .step-pill.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* ── Section card ── */
+    .section {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      letter-spacing: 1.5px;
+      color: var(--text);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-num {
+      background: var(--accent);
+      color: #fff;
+      border-radius: 6px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* ── Fields ── */
+    .field-group { margin-bottom: 18px; }
+    .field-group:last-child { margin-bottom: 0; }
+
+    label.field-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 13px;
+      padding: 9px 12px;
+      outline: none;
+      transition: border-color .2s;
+      appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(220,38,38,.15);
+    }
+    textarea { resize: vertical; }
+
+    /* ── Grid helpers ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .col-span-2 { grid-column: 1 / -1; }
+
+    @media (max-width: 640px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    /* ── Radio cards ── */
+    .radio-cards { display: grid; gap: 10px; }
+    .radio-cards.cols-2 { grid-template-columns: 1fr 1fr; }
+    .radio-cards.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    @media (max-width: 640px) {
+      .radio-cards.cols-2, .radio-cards.cols-3 { grid-template-columns: 1fr; }
+    }
+
+    .radio-card {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    .radio-card:has(input:checked),
+    .radio-card.selected {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+    .radio-card input { display: none; }
+    .radio-card .rc-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .radio-card .rc-desc {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    /* ── Toggle buttons (chips) ── */
+    .chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: border-color .2s, color .2s, background .2s;
+      user-select: none;
+    }
+    .chip.on {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .chip input { display: none; }
+
+    /* ── Inline gender buttons ── */
+    .gender-row { display: flex; gap: 8px; }
+    .gender-btn {
+      flex: 1;
+      text-align: center;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .gender-btn:has(input:checked) { border-color: var(--accent); }
+    .gender-btn input { display: none; }
+
+    /* ── Split semanal ── */
+    .split-day {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .split-day-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .split-day input.prioridad {
+      margin-top: 8px;
+      font-size: 11px;
+      padding: 6px 10px;
+    }
+
+    /* ── Suplemento row ── */
+    .suplements-empty {
+      border: 2px dashed rgba(220,38,38,.3);
+      background: rgba(220,38,38,.04);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      color: var(--accent);
+      font-size: 12px;
+    }
+    .sup-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+    .sup-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .sup-num { font-size: 11px; font-weight: 700; color: var(--text-tertiary); }
+    .btn-remove {
+      background: transparent;
+      border: 1px solid rgba(220,38,38,.4);
+      border-radius: 6px;
+      color: #f87171;
+      font-size: 11px;
+      padding: 3px 10px;
+      cursor: pointer;
+    }
+
+    /* ── Info note ── */
+    .note {
+      background: rgba(139,92,246,.08);
+      border: 1px solid rgba(139,92,246,.25);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #a78bfa;
+      margin-bottom: 16px;
+    }
+    .note-elite {
+      background: rgba(234,179,8,.08);
+      border-color: rgba(234,179,8,.25);
+      color: #fbbf24;
+    }
+
+    /* ── Adjuntos ── */
+    .dropzone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .dropzone:hover { border-color: var(--accent); }
+    .dropzone-icon { font-size: 32px; margin-bottom: 8px; }
+    .dropzone-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+    .dropzone-hint { font-size: 11px; color: var(--text-tertiary); margin-top: 4px; }
+
+    /* ── Category select ── */
+    .cat-select-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .cat-select-wrap label.field-label { margin: 0; white-space: nowrap; }
+    .cat-select-wrap select { max-width: 220px; }
+
+    /* ── Revision summary ── */
+    .review-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 640px) { .review-grid { grid-template-columns: 1fr; } }
+    .review-cell {
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .review-cell .rc-key {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 4px;
+    }
+    .review-cell .rc-val {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .review-cell.full { grid-column: 1 / -1; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 10px 20px;
+      cursor: pointer;
+      border: none;
+      transition: opacity .2s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .btn-submit {
+      background: #16a34a;
+      color: #fff;
+      font-size: 15px;
+      padding: 14px 32px;
+    }
+    .btn:hover { opacity: .85; }
+
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Horarios tags ── */
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .tag {
+      background: var(--accent-dim);
+      border: 1px solid rgba(220,38,38,.25);
+      border-radius: 999px;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 12px;
+    }
+    .horario-input { display: flex; gap: 8px; }
+    .horario-input input { flex: 1; }
+
+    hr.sep { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+    .helper { font-size: 11px; color: var(--text-tertiary); margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">WCORE <span>FIT</span></div>
+    <span class="badge">Coach Portal</span>
+  </div>
+
+  <h1 class="page-title">NUEVO TICKET DE PLAN</h1>
+  <p class="subtitle">Formulario completo · Todos los pasos en una sola vista</p>
+
+  <!-- Step nav -->
+  <nav class="step-nav">
+    <a href="#step1" class="step-pill active">1. Cliente y Plan</a>
+    <a href="#step2" class="step-pill">2. Datos Generales</a>
+    <a href="#step3" class="step-pill">3. Entrenamiento</a>
+    <a href="#step4" class="step-pill">4. Nutrición</a>
+    <a href="#step5" class="step-pill">5. Hábitos</a>
+    <a href="#step6" class="step-pill">6. Suplementación</a>
+    <a href="#step7" class="step-pill">7. Ciclo Hormonal <small style="font-size:9px;opacity:.6">(Elite)</small></a>
+    <a href="#step8" class="step-pill">8. Adjuntos</a>
+    <a href="#step9" class="step-pill">9. Revisión y Envío</a>
+  </nav>
+
+  <form>
+
+    <!-- ══════════════════════════════════════════
+         PASO 1 · CLIENTE Y TIPO DE PLAN
+    ══════════════════════════════════════════ -->
+    <div class="section" id="step1">
+      <div class="section-title">
+        <span class="section-num">1</span>
+        Cliente y tipo de plan
+      </div>
+
+      <!-- Cliente -->
+      <div class="field-group">
+        <label class="field-label">Cliente</label>
+        <select>
+          <option value="">Selecciona un cliente...</option>
+          <option>cristian oquendo</option>
+          <option>John Carvajal</option>
+          <option>— (agregar más desde DB) —</option>
+        </select>
+      </div>
+
+      <!-- Tipo de plan -->
+      <div class="field-group">
+        <label class="field-label">Tipo de plan</label>
+        <div class="radio-cards cols-3">
+          <label class="radio-card">
+            <input type="radio" name="plan_type" value="esencial" />
+            <span class="rc-label">Esencial</span>
+            <span class="rc-desc">Entrenamiento, nutrición, hábitos y suplementación.</span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="plan_type" value="metodo" />
+            <span class="rc-label">Método</span>
+            <span class="rc-desc">Plan completo con seguimiento avanzado.</span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="plan_type" value="elite" />
+            <span class="rc-label">Elite</span>
+            <span class="rc-desc">Plan completo + ciclo hormonal.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Tipo solicitud -->
+      <div class="field-group">
+        <label class="field-label">Tipo de solicitud</label>
+        <div class="radio-cards cols-2">
+          <label class="radio-card selected">
+            <input type="radio" name="category" value="plan_nuevo" checked />
+            <span class="rc-label">Plan nuevo</span>
+            <span class="rc-desc">Cliente nuevo o plan completo desde cero. Requiere todas las secciones.</span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="category" value="ajuste_plan" />
+            <span class="rc-label">Ajuste de plan</span>
+            <span class="rc-desc">Cliente existente que necesita ajustes. Solo llena las secciones que cambian.</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         PASO 2 · DATOS GENERALES
+    ══════════════════════════════════════════ -->
+    <div class="section" id="step2">
+      <div class="section-title">
+        <span class="section-num">2</span>
+        Datos generales
+      </div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label">Nombre del cliente</label>
+          <input type="text" placeholder="Ej: María López" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Plan</label>
+          <select>
+            <option value="">Selecciona...</option>
+            <option>Esencial</option>
+            <option>Método</option>
+            <option>Elite</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Edad</label>
+          <input type="number" min="15" max="99" placeholder="Ej: 28" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Género</label>
+          <div class="gender-row">
+            <label class="gender-btn"><input type="radio" name="genero" value="masculino" /> Masculino</label>
+            <label class="gender-btn"><input type="radio" name="genero" value="femenino" /> Femenino</label>
+            <label class="gender-btn"><input type="radio" name="genero" value="otro" /> Otro</label>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Peso (kg)</label>
+          <input type="number" step="0.1" placeholder="Ej: 68.5" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Estatura (cm)</label>
+          <input type="number" step="1" placeholder="Ej: 165" />
+        </div>
+        <div class="field-group col-span-2">
+          <label class="field-label">Nivel de actividad diario</label>
+          <select>
+            <option value="">Selecciona...</option>
+            <option value="sedentario">Sedentario (trabajo de oficina, poco movimiento)</option>
+            <option value="ligero">Ligero (ejercicio 1-2x por semana)</option>
+            <option value="moderado">Moderado (ejercicio 3-4x por semana)</option>
+            <option value="activo">Activo (ejercicio 5-6x por semana)</option>
+            <option value="muy_activo">Muy activo (trabajo físico + ejercicio)</option>
+          </select>
+        </div>
+        <div class="field-group col-span-2">
+          <label class="field-label">Objetivo principal</label>
+          <textarea rows="3" placeholder="Describe el objetivo del cliente en sus propias palabras..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         PASO 3 · ENTRENAMIENTO
+    ══════════════════════════════════════════ -->
+    <div class="section" id="step3">
+      <div class="section-title">
+        <span class="section-num">3</span>
+        Plan de entrenamiento
+      </div>
+
+      <!-- Lugar -->
+      <div class="field-group">
+        <label class="field-label">Lugar de entrenamiento</label>
+        <div class="radio-cards cols-2">
+          <label class="radio-card">
+            <input type="radio" name="lugar" value="gym" />
+            <span class="rc-label">Gimnasio</span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="lugar" value="casa" />
+            <span class="rc-label">Casa</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Implementos (solo si casa) -->
+      <div class="field-group">
+        <label class="field-label">Implementos disponibles <small style="color:var(--text-tertiary)">(solo si es en casa)</small></label>
+        <div class="chip-group">
+          <label class="chip"><input type="checkbox" value="bandas_elasticas" /> Bandas elásticas</label>
+          <label class="chip"><input type="checkbox" value="mancuernas" /> Mancuernas</label>
+          <label class="chip"><input type="checkbox" value="polea" /> Polea</label>
+          <label class="chip"><input type="checkbox" value="trx" /> TRX</label>
+          <label class="chip"><input type="checkbox" value="peso_corporal" /> Peso corporal</label>
+          <label class="chip"><input type="checkbox" value="barra" /> Barra</label>
+          <label class="chip"><input type="checkbox" value="kettlebell" /> Kettlebell</label>
+          <label class="chip"><input type="checkbox" value="step" /> Step</label>
+          <label class="chip"><input type="checkbox" value="pelota_pilates" /> Pelota pilates</label>
+          <label class="chip"><input type="checkbox" value="liga_circular" /> Liga circular</label>
+        </div>
+      </div>
+
+      <!-- Días + tiempos -->
+      <div class="grid-3">
+        <div class="field-group">
+          <label class="field-label">Días por semana</label>
+          <select>
+            <option value="">Selecciona...</option>
+            <option value="3">3 días</option>
+            <option value="4">4 días</option>
+            <option value="5">5 días</option>
+            <option value="6">6 días</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Tiempo pesas (min)</label>
+          <input type="number" min="0" placeholder="Ej: 60" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Tiempo cardio (min)</label>
+          <input type="number" min="0" placeholder="Ej: 20" />
+        </div>
+      </div>
+
+      <!-- Preferencia cardio -->
+      <div class="field-group">
+        <label class="field-label">Preferencia de cardio</label>
+        <textarea rows="2" placeholder="Ej: Le gusta caminar afuera, no le gusta la caminadora..."></textarea>
+      </div>
+
+      <!-- Modalidad cardio -->
+      <div class="field-group">
+        <label class="field-label">Modalidad de cardio</label>
+        <div class="chip-group">
+          <label class="chip"><input type="checkbox" value="caminadora" /> Caminadora</label>
+          <label class="chip"><input type="checkbox" value="escaladora" /> Escaladora</label>
+          <label class="chip"><input type="checkbox" value="caminata_exterior" /> Caminata exterior</label>
+          <label class="chip"><input type="checkbox" value="rumbaterapia" /> Rumbaterapia</label>
+          <label class="chip"><input type="checkbox" value="eliptica" /> Elíptica</label>
+          <label class="chip"><input type="checkbox" value="bicicleta" /> Bicicleta</label>
+          <label class="chip"><input type="checkbox" value="hiit" /> HIIT</label>
+          <label class="chip"><input type="checkbox" value="spinning" /> Spinning</label>
+        </div>
+      </div>
+
+      <!-- Nivel -->
+      <div class="field-group">
+        <label class="field-label">Nivel</label>
+        <div class="radio-cards cols-3">
+          <label class="radio-card">
+            <input type="radio" name="nivel" value="principiante" />
+            <span class="rc-label">Principiante</span>
+            <span class="rc-desc">Menos de 6 meses entrenando.</span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="nivel" value="intermedio" />
+            <span class="rc-label">Intermedio</span>
+            <span class="rc-desc">6-24 meses con técnica sólida.</span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="nivel" value="avanzado" />
+            <span class="rc-label">Avanzado</span>
+            <span class="rc-desc">Más de 2 años, carga alta.</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label">Lesiones</label>
+          <textarea rows="3" placeholder="Ej: Rodilla derecha operada, dolor lumbar crónico..."></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Restricciones</label>
+          <textarea rows="3" placeholder="Ej: No incluir peso muerto, no caminadora."></textarea>
+        </div>
+      </div>
+
+      <!-- Split semanal -->
+      <div class="field-group">
+        <label class="field-label">Split semanal</label>
+        <p class="helper" style="margin-bottom:10px">Selecciona grupos musculares por día. Chips = músculos activos. Campo de texto = prioridad (opcional).</p>
+
+        <div class="split-day">
+          <p class="split-day-title">Lunes</p>
+          <div class="chip-group">
+            <label class="chip"><input type="checkbox" /> Pecho</label>
+            <label class="chip"><input type="checkbox" /> Espalda</label>
+            <label class="chip"><input type="checkbox" /> Hombros</label>
+            <label class="chip"><input type="checkbox" /> Bíceps</label>
+            <label class="chip"><input type="checkbox" /> Tríceps</label>
+            <label class="chip"><input type="checkbox" /> Piernas</label>
+            <label class="chip"><input type="checkbox" /> Glúteos</label>
+            <label class="chip"><input type="checkbox" /> Core</label>
+            <label class="chip"><input type="checkbox" /> Cardio</label>
+            <label class="chip"><input type="checkbox" /> Descanso</label>
+          </div>
+          <input class="prioridad" type="text" placeholder="Prioridad (opcional): ej. glúteo alto" style="width:100%;margin-top:8px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:11px;color:var(--text);outline:none;" />
+        </div>
+
+        <div class="split-day">
+          <p class="split-day-title">Martes</p>
+          <div class="chip-group">
+            <label class="chip"><input type="checkbox" /> Pecho</label>
+            <label class="chip"><input type="checkbox" /> Espalda</label>
+            <label class="chip"><input type="checkbox" /> Hombros</label>
+            <label class="chip"><input type="checkbox" /> Bíceps</label>
+            <label class="chip"><input type="checkbox" /> Tríceps</label>
+            <label class="chip"><input type="checkbox" /> Piernas</label>
+            <label class="chip"><input type="checkbox" /> Glúteos</label>
+            <label class="chip"><input type="checkbox" /> Core</label>
+            <label class="chip"><input type="checkbox" /> Cardio</label>
+            <label class="chip"><input type="checkbox" /> Descanso</label>
+          </div>
+          <input type="text" placeholder="Prioridad (opcional)" style="width:100%;margin-top:8px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:11px;color:var(--text);outline:none;" />
+        </div>
+
+        <div class="split-day">
+          <p class="split-day-title">Miércoles</p>
+          <div class="chip-group">
+            <label class="chip"><input type="checkbox" /> Pecho</label>
+            <label class="chip"><input type="checkbox" /> Espalda</label>
+            <label class="chip"><input type="checkbox" /> Hombros</label>
+            <label class="chip"><input type="checkbox" /> Bíceps</label>
+            <label class="chip"><input type="checkbox" /> Tríceps</label>
+            <label class="chip"><input type="checkbox" /> Piernas</label>
+            <label class="chip"><input type="checkbox" /> Glúteos</label>
+            <label class="chip"><input type="checkbox" /> Core</label>
+            <label class="chip"><input type="checkbox" /> Cardio</label>
+            <label class="chip"><input type="checkbox" /> Descanso</label>
+          </div>
+          <input type="text" placeholder="Prioridad (opcional)" style="width:100%;margin-top:8px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:11px;color:var(--text);outline:none;" />
+        </div>
+
+        <div class="split-day">
+          <p class="split-day-title">Jueves</p>
+          <div class="chip-group">
+            <label class="chip"><input type="checkbox" /> Pecho</label>
+            <label class="chip"><input type="checkbox" /> Espalda</label>
+            <label class="chip"><input type="checkbox" /> Hombros</label>
+            <label class="chip"><input type="checkbox" /> Bíceps</label>
+            <label class="chip"><input type="checkbox" /> Tríceps</label>
+            <label class="chip"><input type="checkbox" /> Piernas</label>
+            <label class="chip"><input type="checkbox" /> Glúteos</label>
+            <label class="chip"><input type="checkbox" /> Core</label>
+            <label class="chip"><input type="checkbox" /> Cardio</label>
+            <label class="chip"><input type="checkbox" /> Descanso</label>
+          </div>
+          <input type="text" placeholder="Prioridad (opcional)" style="width:100%;margin-top:8px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:11px;color:var(--text);outline:none;" />
+        </div>
+
+        <div class="split-day">
+          <p class="split-day-title">Viernes</p>
+          <div class="chip-group">
+            <label class="chip"><input type="checkbox" /> Pecho</label>
+            <label class="chip"><input type="checkbox" /> Espalda</label>
+            <label class="chip"><input type="checkbox" /> Hombros</label>
+            <label class="chip"><input type="checkbox" /> Bíceps</label>
+            <label class="chip"><input type="checkbox" /> Tríceps</label>
+            <label class="chip"><input type="checkbox" /> Piernas</label>
+            <label class="chip"><input type="checkbox" /> Glúteos</label>
+            <label class="chip"><input type="checkbox" /> Core</label>
+            <label class="chip"><input type="checkbox" /> Cardio</label>
+            <label class="chip"><input type="checkbox" /> Descanso</label>
+          </div>
+          <input type="text" placeholder="Prioridad (opcional)" style="width:100%;margin-top:8px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:11px;color:var(--text);outline:none;" />
+        </div>
+
+        <div class="split-day">
+          <p class="split-day-title">Sábado</p>
+          <div class="chip-group">
+            <label class="chip"><input type="checkbox" /> Pecho</label>
+            <label class="chip"><input type="checkbox" /> Espalda</label>
+            <label class="chip"><input type="checkbox" /> Hombros</label>
+            <label class="chip"><input type="checkbox" /> Bíceps</label>
+            <label class="chip"><input type="checkbox" /> Tríceps</label>
+            <label class="chip"><input type="checkbox" /> Piernas</label>
+            <label class="chip"><input type="checkbox" /> Glúteos</label>
+            <label class="chip"><input type="checkbox" /> Core</label>
+            <label class="chip"><input type="checkbox" /> Cardio</label>
+            <label class="chip"><input type="checkbox" /> Descanso</label>
+          </div>
+          <input type="text" placeholder="Prioridad (opcional)" style="width:100%;margin-top:8px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:11px;color:var(--text);outline:none;" />
+        </div>
+
+        <div class="split-day">
+          <p class="split-day-title">Domingo</p>
+          <div class="chip-group">
+            <label class="chip"><input type="checkbox" /> Pecho</label>
+            <label class="chip"><input type="checkbox" /> Espalda</label>
+            <label class="chip"><input type="checkbox" /> Hombros</label>
+            <label class="chip"><input type="checkbox" /> Bíceps</label>
+            <label class="chip"><input type="checkbox" /> Tríceps</label>
+            <label class="chip"><input type="checkbox" /> Piernas</label>
+            <label class="chip"><input type="checkbox" /> Glúteos</label>
+            <label class="chip"><input type="checkbox" /> Core</label>
+            <label class="chip"><input type="checkbox" /> Cardio</label>
+            <label class="chip"><input type="checkbox" /> Descanso</label>
+          </div>
+          <input type="text" placeholder="Prioridad (opcional)" style="width:100%;margin-top:8px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:11px;color:var(--text);outline:none;" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         PASO 4 · NUTRICIÓN
+    ══════════════════════════════════════════ -->
+    <div class="section" id="step4">
+      <div class="section-title">
+        <span class="section-num">4</span>
+        Plan nutricional
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Objetivo nutricional</label>
+        <textarea rows="2" placeholder="Ej: Pérdida de grasa sin pasar hambre, recomposición corporal..."></textarea>
+      </div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label">Cuántas comidas al día</label>
+          <input type="number" min="3" max="7" placeholder="Ej: 4" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Metodología</label>
+          <select>
+            <option value="">Selecciona...</option>
+            <option value="deficit_calorico">Déficit calórico — pérdida de grasa sostenible</option>
+            <option value="flexible">Flexible / IIFYM — macros flexibles</option>
+            <option value="carb_cycling">Carb cycling — ciclado alto/bajo</option>
+            <option value="ayuno_intermitente">Ayuno intermitente — ventana 16:8 / 18:6</option>
+            <option value="mantenimiento">Mantenimiento — recomposición</option>
+            <option value="volumen_limpio">Volumen limpio — superávit controlado</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Horarios de comida</label>
+        <div class="horario-input">
+          <input type="text" placeholder="Ej: 7:00 am — escribe y presiona Agregar" />
+          <button type="button" class="btn btn-primary">Agregar</button>
+        </div>
+        <div class="tags">
+          <span class="tag">7:00 am</span>
+          <span class="tag">12:00 pm</span>
+          <span class="tag">3:00 pm</span>
+          <span class="tag">7:00 pm</span>
+        </div>
+        <p class="helper">Ejemplo visual — en el sistema real estos se agregan dinámicamente.</p>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Alimentos que NO incluir</label>
+        <textarea rows="2" placeholder="Ej: No mariscos, intolerante a la lactosa, sin gluten..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Alimentos a priorizar</label>
+        <textarea rows="2" placeholder="Ej: Pollo, arroz, vegetales, legumbres..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Descripción y configuración de comidas</label>
+        <textarea rows="5" placeholder="Ej: Desayuno con huevo y avena; snack AM con frutas; almuerzo con proteína + carbohidrato + vegetal..."></textarea>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         PASO 5 · HÁBITOS
+    ══════════════════════════════════════════ -->
+    <div class="section" id="step5">
+      <div class="section-title">
+        <span class="section-num">5</span>
+        Plan de hábitos
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Áreas de foco</label>
+        <div class="chip-group">
+          <label class="chip"><input type="checkbox" value="sueno" /> Sueño</label>
+          <label class="chip"><input type="checkbox" value="estres" /> Estrés</label>
+          <label class="chip"><input type="checkbox" value="hidratacion" /> Hidratación</label>
+          <label class="chip"><input type="checkbox" value="mindfulness" /> Mindfulness</label>
+          <label class="chip"><input type="checkbox" value="recuperacion_activa" /> Recuperación activa</label>
+          <label class="chip"><input type="checkbox" value="rutina_matutina" /> Rutina matutina</label>
+          <label class="chip"><input type="checkbox" value="rutina_nocturna" /> Rutina nocturna</label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Rutina matutina actual del cliente</label>
+        <textarea rows="3" placeholder="Ej: Se levanta a las 6:30 am, toma café, sale directo al trabajo sin desayunar..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Rutina nocturna actual del cliente</label>
+        <textarea rows="3" placeholder="Ej: Se duerme cerca de la 1 am con el celular, no tiene rutina establecida..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Otros hábitos a trabajar</label>
+        <textarea rows="3" placeholder="Ej: Quiere dejar el azúcar, tomar más agua, reducir estrés laboral..."></textarea>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         PASO 6 · SUPLEMENTACIÓN
+    ══════════════════════════════════════════ -->
+    <div class="section" id="step6">
+      <div class="section-title">
+        <span class="section-num">6</span>
+        Plan de suplementación
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Objetivo del stack</label>
+        <textarea rows="2" placeholder="Para qué se optimiza — Ej: Rendimiento base, Recomposición, Recuperación..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Suplementos</label>
+
+        <!-- Suplemento #1 -->
+        <div class="sup-card">
+          <div class="sup-card-header">
+            <span class="sup-num">#1</span>
+            <button type="button" class="btn-remove">Eliminar</button>
+          </div>
+          <div class="grid-2">
+            <div class="field-group">
+              <label class="field-label">Nombre</label>
+              <input type="text" placeholder="Ej: Proteína de suero, Creatina monohidrato" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Dosis</label>
+              <input type="text" placeholder="Ej: 30g, 5g" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Momento</label>
+              <input type="text" placeholder="Ej: Post-entrenamiento, Antes de dormir" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Frecuencia</label>
+              <select>
+                <option value="">Selecciona...</option>
+                <option value="diario">Diario</option>
+                <option value="dias_entrenamiento">Días de entrenamiento</option>
+                <option value="3_veces_semana">3 veces por semana</option>
+                <option value="ciclico">Cíclico</option>
+              </select>
+            </div>
+            <div class="field-group col-span-2">
+              <label class="field-label">Notas (opcional)</label>
+              <input type="text" placeholder="Ej: Tomar con agua, evitar con cafeína" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Suplemento #2 (ejemplo) -->
+        <div class="sup-card">
+          <div class="sup-card-header">
+            <span class="sup-num">#2</span>
+            <button type="button" class="btn-remove">Eliminar</button>
+          </div>
+          <div class="grid-2">
+            <div class="field-group">
+              <label class="field-label">Nombre</label>
+              <input type="text" placeholder="Ej: Proteína de suero, Creatina monohidrato" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Dosis</label>
+              <input type="text" placeholder="Ej: 30g, 5g" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Momento</label>
+              <input type="text" placeholder="Ej: Post-entrenamiento, Antes de dormir" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Frecuencia</label>
+              <select>
+                <option value="">Selecciona...</option>
+                <option value="diario">Diario</option>
+                <option value="dias_entrenamiento">Días de entrenamiento</option>
+                <option value="3_veces_semana">3 veces por semana</option>
+                <option value="ciclico">Cíclico</option>
+              </select>
+            </div>
+            <div class="field-group col-span-2">
+              <label class="field-label">Notas (opcional)</label>
+              <input type="text" placeholder="Ej: Tomar con agua, evitar con cafeína" />
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary" style="margin-top:4px">
+          + Añadir suplemento
+        </button>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Notas del coach para el stack (opcional)</label>
+        <textarea rows="3" placeholder="Indicaciones generales, advertencias, período de ciclado..."></textarea>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         PASO 7 · CICLO HORMONAL (solo plan Elite)
+    ══════════════════════════════════════════ -->
+    <div class="section" id="step7">
+      <div class="section-title">
+        <span class="section-num">7</span>
+        Ciclo hormonal
+        <span style="font-size:11px;background:rgba(234,179,8,.12);border:1px solid rgba(234,179,8,.3);color:#fbbf24;border-radius:999px;padding:2px 10px;font-weight:700;letter-spacing:.5px">SOLO PLAN ELITE</span>
+      </div>
+
+      <div class="note note-elite">
+        Esta sección solo aparece para clientes con plan <strong>Elite</strong>. Si el plan es Esencial o Método, este paso no existe.
+      </div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label">Fecha de última menstruación</label>
+          <input type="date" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Duración del ciclo (días)</label>
+          <input type="number" min="15" max="60" placeholder="Ej: 28" />
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Síntomas</label>
+        <textarea rows="3" placeholder="Ej: Cólicos fuertes, retención de líquidos, cambios de humor, fatiga..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Anticonceptivo (si usa)</label>
+        <input type="text" placeholder="Ej: Pastillas, DIU hormonal, ninguno..." />
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Notas adicionales</label>
+        <textarea rows="3" placeholder="Cualquier información relevante sobre el ciclo hormonal..."></textarea>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         PASO 8 · ADJUNTOS
+    ══════════════════════════════════════════ -->
+    <div class="section" id="step8">
+      <div class="section-title">
+        <span class="section-num">8</span>
+        Adjuntos <span style="color:var(--text-tertiary);font-size:14px;font-weight:400">(opcional)</span>
+      </div>
+
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px">
+        Fotos de progreso, laboratorios, documentos médicos, etc. Máx 10 MB por archivo.
+      </p>
+
+      <div class="cat-select-wrap">
+        <label class="field-label">Categoría del archivo</label>
+        <select>
+          <option value="">Sin categoría</option>
+          <option value="foto_progreso">Foto de progreso</option>
+          <option value="laboratorio">Laboratorio</option>
+          <option value="documento_medico">Documento médico</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+
+      <div class="dropzone">
+        <div class="dropzone-icon">📎</div>
+        <p class="dropzone-label">Arrastra un archivo o haz clic para subir</p>
+        <p class="dropzone-hint">JPG, PNG, WEBP, HEIC, PDF o DOCX · máx 10 MB</p>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         PASO 9 · REVISIÓN Y ENVÍO
+    ══════════════════════════════════════════ -->
+    <div class="section" id="step9">
+      <div class="section-title">
+        <span class="section-num">9</span>
+        Revisión final y envío
+      </div>
+
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px">
+        Resumen de los datos capturados antes de enviar el ticket al equipo WellCore.
+      </p>
+
+      <div class="review-grid">
+        <div class="review-cell">
+          <p class="rc-key">Cliente</p>
+          <p class="rc-val">—</p>
+        </div>
+        <div class="review-cell">
+          <p class="rc-key">Plan</p>
+          <p class="rc-val">—</p>
+        </div>
+        <div class="review-cell">
+          <p class="rc-key">Edad / Género</p>
+          <p class="rc-val">— · —</p>
+        </div>
+        <div class="review-cell">
+          <p class="rc-key">Peso / Estatura</p>
+          <p class="rc-val">— kg · — cm</p>
+        </div>
+        <div class="review-cell">
+          <p class="rc-key">Lugar de entrenamiento</p>
+          <p class="rc-val">— · — días</p>
+        </div>
+        <div class="review-cell">
+          <p class="rc-key">Nivel</p>
+          <p class="rc-val">—</p>
+        </div>
+        <div class="review-cell">
+          <p class="rc-key">Nutrición</p>
+          <p class="rc-val">— comidas · sin metodología</p>
+        </div>
+        <div class="review-cell">
+          <p class="rc-key">Hábitos</p>
+          <p class="rc-val">0 áreas de foco</p>
+        </div>
+        <div class="review-cell full">
+          <p class="rc-key">Suplementación</p>
+          <p class="rc-val">0 suplemento(s)</p>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;display:flex;justify-content:flex-end">
+        <button type="submit" class="btn btn-submit">
+          ✔ Enviar ticket al equipo WellCore
+        </button>
+      </div>
+    </div>
+
+  </form>
+
+  <script>
+    // Activar chips visualmente al hacer click
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        chip.classList.toggle('on');
+      });
+    });
+
+    // Activar radio-cards al seleccionar
+    document.querySelectorAll('.radio-card input[type="radio"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const name = radio.name;
+        document.querySelectorAll(`.radio-card input[name="${name}"]`).forEach(r => {
+          r.closest('.radio-card').classList.toggle('selected', r.checked);
+        });
+      });
+    });
+
+    // Highlight step pills on scroll
+    const pills = document.querySelectorAll('.step-pill');
+    const sections = document.querySelectorAll('.section[id]');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(sec => {
+        if (window.scrollY >= sec.offsetTop - 100) current = sec.id;
+      });
+      pills.forEach(p => {
+        const href = p.getAttribute('href').replace('#','');
+        p.classList.toggle('active', href === current);
+      });
+    });
+  </script>
+
+</body>
+</html>

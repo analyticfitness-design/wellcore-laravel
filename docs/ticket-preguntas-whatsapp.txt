@@ -1,0 +1,306 @@
+╔══════════════════════════════════════════════════╗
+       WELLCORE FITNESS — ENTREVISTA INICIAL
+       Formulario de Perfil del Cliente
+╚══════════════════════════════════════════════════╝
+
+Hola, [NOMBRE]. Bienvenido/a a WellCore.
+
+Antes de comenzar a diseñar tu plan, quiero conocerte un poco mejor.
+Esta entrevista nos permite reunir toda la información necesaria para
+crear un programa completamente personalizado a tu cuerpo, tu estilo
+de vida y tus objetivos reales.
+
+No hay respuestas incorrectas. Entre más detallado seas, mejor
+podremos ajustar cada variable de tu plan para que los resultados
+lleguen de forma consistente y sostenible.
+
+Tómate el tiempo que necesites. ✓
+
+─────────────────────────────────────────────────────
+  PARTE 1 · INFORMACIÓN PERSONAL Y PUNTO DE PARTIDA
+─────────────────────────────────────────────────────
+
+1. ¿Cuál es tu nombre completo?
+
+2. ¿Cuántos años tienes?
+
+3. ¿Cuál es tu género?
+   (Masculino / Femenino / Prefiero no especificarlo)
+
+4. ¿Cuánto pesas actualmente?
+   → Escríbelo en kilogramos.
+   Ej: 72 kg
+
+5. ¿Cuánto mides?
+   → Escríbelo en centímetros.
+   Ej: 168 cm
+
+6. Fuera del ejercicio estructurado, ¿cómo describirías tu nivel de
+   actividad física en un día normal de trabajo o estudio?
+
+   a) Sedentario — paso la mayor parte del día sentado/a,
+      trabajo de oficina o en casa.
+   b) Ligero — me muevo algo, pero no de forma significativa.
+   c) Moderado — tengo un trabajo activo o me desplazo bastante.
+   d) Activo — estoy en movimiento casi todo el día.
+   e) Muy activo — trabajo físico intenso más actividad adicional.
+
+7. ¿Cuál es el objetivo principal que quieres lograr con este programa?
+   Cuéntame con tus propias palabras, sin filtros.
+
+   → Esta es la pregunta más importante. No te limites a decir
+     "bajar de peso" o "ganar músculo" — cuéntame cómo te sientes
+     ahora, qué te frustra, qué quieres cambiar y por qué esto es
+     importante para ti en este momento de tu vida.
+
+─────────────────────────────────────────────────────
+  PARTE 2 · ENTRENAMIENTO
+─────────────────────────────────────────────────────
+
+Para diseñar un plan que realmente puedas cumplir, necesito entender
+tu contexto real de entrenamiento — no el ideal, sino el que es
+posible con tu vida actual.
+
+8. ¿Dónde vas a entrenar principalmente?
+   a) Gimnasio
+   b) En casa
+
+   → Si entrenas en casa, ¿qué implementos tienes disponibles?
+   Marca todo lo que tengas:
+
+   □ Mancuernas
+   □ Barra
+   □ Bandas elásticas / ligas
+   □ Polea o rack
+   □ Kettlebell
+   □ TRX
+   □ Step
+   □ Pelota de pilates
+   □ Solo peso corporal
+   □ Otro: _______________
+
+9. ¿Cuántos días por semana puedes comprometerte a entrenar de forma
+   realista con tu horario actual?
+   (3 / 4 / 5 / 6 días)
+
+10. ¿Cuánto tiempo puedes dedicarle a la sesión de pesas o ejercicio
+    de fuerza? Esto en minutos por sesión.
+    Ej: 50 minutos
+
+11. ¿Cuánto tiempo estarías dispuesto/a a dedicarle al cardio dentro
+    o fuera de esa sesión? (puede ser 0 si no quieres incluirlo)
+    Ej: 20 minutos
+
+12. ¿Tienes alguna preferencia sobre el cardio? ¿Hay algo que
+    disfrutes o que definitivamente no quieras hacer?
+    Ej: "Prefiero caminar al aire libre, no me gusta la caminadora"
+
+13. ¿Qué modalidades de cardio tienes disponibles o te interesan?
+    Marca las que apliquen:
+
+    □ Caminadora
+    □ Escaladora
+    □ Caminata al aire libre
+    □ Elíptica
+    □ Bicicleta estática
+    □ HIIT (intervalos de alta intensidad)
+    □ Spinning
+    □ Rumbaterapia / Zumba
+    □ Otro: _______________
+
+14. ¿Cómo describirías tu nivel de experiencia entrenando?
+
+    a) Principiante — llevo menos de 6 meses entrenando o estoy
+       comenzando desde cero.
+    b) Intermedio — llevo entre 6 meses y 2 años, tengo técnica
+       en los movimientos básicos.
+    c) Avanzado — llevo más de 2 años entrenando con constancia
+       y manejo cargas altas con buena técnica.
+
+15. ¿Tienes alguna lesión activa, condición física o zona del cuerpo
+    que debamos cuidar al diseñar tu plan?
+    Ej: "Rodilla derecha con condromalacia", "Hernia lumbar L4-L5"
+    → Si no tienes ninguna, escribe: Sin lesiones.
+
+16. ¿Existe algún ejercicio o tipo de movimiento que prefieras
+    no incluir en tu plan, por la razón que sea?
+    Ej: "No quiero peso muerto", "Evitar sentadillas profundas",
+        "Sin ejercicios de alto impacto"
+    → Si no tienes restricciones, escribe: Sin restricciones.
+
+17. Por último en esta sección — ¿cómo te gustaría distribuir los
+    grupos musculares durante la semana?
+
+    Si tienes una preferencia, indícala día por día.
+    Si prefieres que lo definamos nosotros según tu objetivo,
+    puedes dejar esta parte en blanco.
+
+    Grupos disponibles: Pecho · Espalda · Hombros · Bíceps ·
+    Tríceps · Piernas · Glúteos · Core · Cardio · Descanso
+
+    Lunes:     ______________________________
+    Martes:    ______________________________
+    Miércoles: ______________________________
+    Jueves:    ______________________________
+    Viernes:   ______________________________
+    Sábado:    ______________________________
+    Domingo:   ______________________________
+
+─────────────────────────────────────────────────────
+  PARTE 3 · NUTRICIÓN
+─────────────────────────────────────────────────────
+
+La nutrición es la base de cualquier transformación. Para poder
+diseñar un plan alimentario que funcione en tu día a día y que
+puedas sostener en el tiempo, necesito entender tus hábitos reales.
+
+18. ¿Cuál es tu objetivo nutricional principal?
+    Ej: "Perder grasa sin pasar hambre", "Ganar masa muscular
+    de forma limpia", "Mejorar mi relación con la comida"
+
+19. ¿Cuántas comidas al día puedes hacer de manera realista,
+    considerando tu horario y estilo de vida?
+    (Entre 3 y 7 comidas)
+
+20. ¿Cuál de los siguientes enfoques nutricionales se adapta mejor
+    a ti o te genera más interés?
+
+    a) Déficit calórico — reducción progresiva de calorías
+       para perder grasa de forma sostenible.
+    b) Flexible / IIFYM — libertad de alimentos, controlando
+       macronutrientes totales al día.
+    c) Carb cycling — días de alto y bajo consumo de carbohidratos
+       según la intensidad del entrenamiento.
+    d) Ayuno intermitente — ventana de alimentación definida,
+       como 16:8 o 18:6.
+    e) Mantenimiento — calorías de mantenimiento enfocadas en
+       recomposición corporal.
+    f) Volumen limpio — superávit calórico controlado para
+       ganar masa muscular con mínimo aumento de grasa.
+
+21. ¿A qué horas comes aproximadamente durante el día?
+    → Comparte tus horarios habituales de comidas.
+    Ej: 7:00 am / 12:00 pm / 3:30 pm / 7:00 pm
+
+22. ¿Hay algún alimento que no puedas consumir o que prefieras
+    no incluir en tu plan?
+    → Por alergias, intolerancias, preferencias o restricciones
+      médicas o personales.
+    Ej: "Soy intolerante a la lactosa", "No como cerdo",
+        "Alergia al maní"
+    → Si no tienes restricciones, escribe: Sin restricciones.
+
+23. ¿Hay alimentos que disfrutes y que te gustaría priorizar en tu
+    plan alimentario?
+    Ej: "Me gusta mucho el pollo, el arroz y los vegetales"
+
+24. Descríbeme cómo es un día normal de alimentación para ti —
+    desde que te despiertas hasta que te duermes.
+    → No importa si no es "perfecto". Necesito saber tu realidad
+      actual para partir de ahí y hacer ajustes reales.
+
+─────────────────────────────────────────────────────
+  PARTE 4 · HÁBITOS Y ESTILO DE VIDA
+─────────────────────────────────────────────────────
+
+Los resultados no dependen solo del entrenamiento y la nutrición.
+Tu sueño, tu estrés, tu rutina diaria tienen un impacto directo en
+cómo responde tu cuerpo. Esta sección nos ayuda a construir una
+base sólida.
+
+25. ¿En cuáles de estas áreas sientes que necesitas trabajar
+    o mejorar? Selecciona las que apliquen:
+
+    □ Calidad del sueño
+    □ Manejo del estrés
+    □ Hidratación
+    □ Mindfulness o salud mental
+    □ Recuperación activa (estiramientos, caminatas ligeras)
+    □ Rutina matutina
+    □ Rutina nocturna
+
+26. ¿Cómo son tus mañanas actualmente?
+    Cuéntame qué haces desde que te despiertas hasta que comienzas
+    tu día de trabajo o estudio.
+    → Ej: "Me levanto a las 6:30, tomo café y salgo directo
+      al trabajo sin desayunar. Llego cansado/a."
+
+27. ¿Cómo son tus noches antes de dormir?
+    ¿A qué hora te duermes? ¿Cuántas horas duermes en promedio?
+    → Ej: "Me duermo cerca de la 1 am viendo el celular,
+      duermo unas 5-6 horas y me cuesta levantarme."
+
+28. ¿Hay algún hábito específico que quieras trabajar o dejar
+    durante este proceso?
+    Ej: "Quiero reducir el consumo de azúcar",
+        "Quiero tomar al menos 2 litros de agua al día",
+        "Quiero manejar mejor el estrés del trabajo"
+
+─────────────────────────────────────────────────────
+  PARTE 5 · SUPLEMENTACIÓN
+─────────────────────────────────────────────────────
+
+La suplementación es un complemento estratégico al plan, no un
+reemplazo. Esta información nos permite hacer recomendaciones
+precisas y seguras para tu perfil.
+
+29. ¿Para qué área principal te gustaría optimizar tu
+    suplementación?
+    Ej: "Mejorar el rendimiento en el entrenamiento",
+        "Acelerar la recuperación muscular",
+        "Mejorar el sueño y la energía general"
+
+30. ¿Actualmente tomas algún suplemento?
+    Si es así, cuéntame cuáles, en qué dosis, cuándo los tomas
+    y con qué frecuencia.
+
+    Formato sugerido:
+    → Nombre — Dosis — Cuándo — Frecuencia
+    Ej: Proteína de suero — 30g — después del entreno — diario
+        Creatina — 5g — antes de entrenar — días de entrenamiento
+
+    → Si no tomas ninguno, escribe: No tomo suplementos.
+
+31. ¿Tienes alguna restricción o preferencia con respecto a los
+    suplementos?
+    Ej: "Prefiero no tomar estimulantes", "Solo suplementos
+    de origen natural", "Tengo sensibilidad a la cafeína"
+    → Si no tienes restricciones, escribe: Sin restricciones.
+
+─────────────────────────────────────────────────────
+  PARTE 6 · ADJUNTOS (opcional pero muy valioso)
+─────────────────────────────────────────────────────
+
+Si tienes alguno de los siguientes, te pedimos compartirlo.
+Esta información nos ayuda a tomar decisiones más precisas
+y a personalizar aún más tu plan desde el primer día.
+
+□ Fotos de progreso actuales
+  (frente, lado y espalda, con buena iluminación)
+
+□ Resultados de laboratorio recientes
+  (hemograma, perfil lipídico, glucosa, hormonas si aplica)
+
+□ Cualquier documento médico relevante
+  (diagnósticos, recomendaciones de especialistas, etc.)
+
+→ Formatos aceptados: JPG, PNG, PDF
+→ Máximo 10 MB por archivo
+
+Si no tienes nada de esto, no te preocupes.
+Podemos comenzar con lo que tienes.
+
+─────────────────────────────────────────────────────
+
+Gracias por tomarte el tiempo de completar esta entrevista.
+
+Con toda esta información, nuestro equipo va a diseñar un plan
+que realmente tenga sentido para ti — uno que se ajuste a tu
+cuerpo, tu ritmo de vida y tus metas reales.
+
+En los próximos días recibirás tu programa personalizado.
+Cualquier duda adicional, estoy aquí.
+
+— Tu Coach WellCore
+
+╚══════════════════════════════════════════════════╝
