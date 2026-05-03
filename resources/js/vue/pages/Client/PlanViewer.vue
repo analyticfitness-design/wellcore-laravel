@@ -987,7 +987,7 @@ onBeforeUnmount(() => {
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
         </svg>
         <p class="mt-3 text-sm text-red-400">{{ error }}</p>
-        <button @click="fetchPlan" class="mt-4 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors">
+        <button @click="fetchPlan" class="wc-btn-primary mt-4">
           Reintentar
         </button>
       </div>
@@ -1219,7 +1219,7 @@ onBeforeUnmount(() => {
                       <div v-if="(dia.ejercicios || []).length > 0" class="border-t border-wc-border/40 px-4 py-2.5">
                         <button
                           @click="goToWorkout(dIdx + 1)"
-                          class="btn-ripple btn-press shadow-lg shadow-wc-accent/20 flex w-full items-center justify-center gap-2 rounded-lg bg-wc-accent px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 transition-colors"
+                          class="wc-btn-primary btn-ripple btn-press w-full justify-center"
                         >
                           <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"/></svg>
                           Entrenar este dia
@@ -2732,7 +2732,7 @@ onBeforeUnmount(() => {
             <button
               type="button"
               @click="confirmDeleteBloodwork"
-              class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-red-700"
+              class="wc-btn-primary flex-1 justify-center"
             >
               Eliminar
             </button>
