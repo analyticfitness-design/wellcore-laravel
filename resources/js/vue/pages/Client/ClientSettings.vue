@@ -276,7 +276,7 @@ onMounted(() => {
       <!-- Error -->
       <div v-else-if="profileError" class="flex flex-col items-center justify-center py-12">
         <p class="text-sm text-wc-text-secondary">{{ profileError }}</p>
-        <button @click="fetchSettings" class="mt-4 rounded-xl bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover">
+        <button @click="fetchSettings" class="wc-btn-primary mt-4">
           Reintentar
         </button>
       </div>

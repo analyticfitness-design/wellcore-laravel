@@ -185,7 +185,7 @@ onMounted(fetchProfile);
 
       <!-- Medals -->
       <div v-if="profile.medals && profile.medals.length > 0">
-        <h2 class="mb-3 text-xs font-bold uppercase tracking-widest text-wc-text-secondary">Medallas</h2>
+        <h2 class="mb-3 wc-caption">Medallas</h2>
         <div class="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
           <div
             v-for="medal in profile.medals"
