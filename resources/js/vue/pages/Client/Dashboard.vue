@@ -393,65 +393,48 @@ const weekMarkers = computed(() => {
       <!-- §13 COACH -->
       <DashboardCoach :data="data" />
 
+      <!-- §14 PROFILE COMPLETION (estilo target — solo cuando score < 80%) -->
+      <section
+        v-if="data.profileCompletion && data.profileCompletion.score < 80 && !profileBannerDismissed"
+        class="card section"
+        :style="{ animationDelay: '580ms' }"
+      >
+        <div class="card-head">
+          <div class="card-head-left">
+            <span class="card-title">Perfil de comunidad</span>
+          </div>
+          <span class="card-meta tnum">{{ data.profileCompletion.score }}% completo</span>
+        </div>
+        <div class="profile-row">
+          <div class="profile-art">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="4"></circle>
+              <path d="M4 21a8 8 0 0 1 16 0"></path>
+            </svg>
+          </div>
+          <div class="profile-body">
+            <div class="profile-title">Completa tu perfil</div>
+            <div v-if="data.profileCompletion.missing.length" class="profile-sub">
+              Falta: {{ data.profileCompletion.missing.slice(0, 3).map(m => m.label).join(', ') }}{{ data.profileCompletion.missing.length > 3 ? '…' : '' }}
+            </div>
+          </div>
+          <button class="profile-cta" @click="$router.push('/client/profile')">
+            Completar
+          </button>
+          <button class="profile-close" @click="dismissProfileBanner" aria-label="Cerrar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 18 18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </section>
+
       <!-- Espaciado final -->
       <div style="height: 16px" aria-hidden="true"></div>
 
       </main>
     </div>
 
-    <!-- BLOQUES SECUNDARIOS LEGADO (banners de perfil/onboarding) — fuera del wrapper .dash-mobile -->
+    <!-- BLOQUES SECUNDARIOS LEGADO (onboarding primeros pasos) — fuera del wrapper .dash-mobile -->
     <div v-if="data && !loading && !error" class="space-y-6 mt-4">
-
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- 3b. COMPLETAR PERFIL — para clientes con score < 80%           -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div
-        v-if="data.profileCompletion && data.profileCompletion.score < 80 && !profileBannerDismissed"
-        class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4"
-      >
-        <div class="flex items-center gap-3">
-          <!-- Avatar placeholder con score -->
-          <div class="relative shrink-0">
-            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-wc-bg-secondary border-2"
-              :style="{ borderColor: data.profileCompletion.score >= 50 ? '#F59E0B' : '#DC2626' }">
-              <svg class="h-6 w-6 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-              </svg>
-            </div>
-            <span class="absolute -bottom-1 -right-1 rounded-full bg-wc-bg-secondary px-1.5 py-0.5 font-data text-[10px] font-bold leading-none ring-1 ring-wc-border"
-              :style="{ color: data.profileCompletion.score >= 50 ? '#F59E0B' : '#DC2626' }">
-              {{ data.profileCompletion.score }}%
-            </span>
-          </div>
-
-          <!-- Texto -->
-          <div class="min-w-0 flex-1">
-            <p class="text-sm font-semibold text-wc-text">Tu perfil en la comunidad está incompleto</p>
-            <p v-if="data.profileCompletion.missing.length" class="mt-0.5 text-xs text-wc-text-tertiary truncate">
-              Falta: {{ data.profileCompletion.missing.slice(0, 3).map(m => m.label).join(', ') }}{{ data.profileCompletion.missing.length > 3 ? '…' : '' }}
-            </p>
-          </div>
-
-          <!-- Acciones -->
-          <div class="flex shrink-0 items-center gap-2">
-            <button
-              @click="$router.push('/client/profile')"
-              class="rounded-lg bg-wc-accent px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-wc-accent-hover"
-            >
-              Completar
-            </button>
-            <button
-              @click="dismissProfileBanner"
-              class="flex h-7 w-7 items-center justify-center rounded-lg text-wc-text-tertiary transition-colors hover:text-wc-text"
-              aria-label="Cerrar"
-            >
-              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- 3d. PRIMEROS PASOS — solo primeros 3 días                      -->

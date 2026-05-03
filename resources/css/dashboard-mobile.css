@@ -1193,3 +1193,454 @@
 
 /* tiny fade for ghost icons in stat cards */
 .dash-mobile .icon-stroke{stroke:currentColor; stroke-width:1.5; fill:none}
+
+/* ─────────────── PROFILE COMPLETION CARD ─────────────── */
+.dash-mobile .profile-row{
+  display:flex; align-items:center; gap:14px;
+  padding:6px var(--s20) 18px;
+}
+.dash-mobile .profile-art{
+  width:42px; height:42px;
+  border-radius:11px;
+  display:grid; place-items:center;
+  background:rgba(245,158,11,.12);
+  box-shadow:inset 0 0 0 1px rgba(245,158,11,.30);
+  color:var(--wc-amber);
+  flex-shrink:0;
+}
+.dash-mobile .profile-body{ flex:1; min-width:0; }
+.dash-mobile .profile-title{
+  font:600 13.5px/1.3 var(--fs);
+  color:var(--wc-text);
+}
+.dash-mobile .profile-sub{
+  margin-top:3px;
+  font-size:11.5px;
+  color:var(--wc-text-3);
+  letter-spacing:.04em;
+}
+.dash-mobile .profile-cta{
+  padding:9px 14px;
+  border-radius:var(--r-pill);
+  background:rgba(220,38,38,.14);
+  color:#FCA5A5;
+  font:700 11px/1 var(--fs);
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  box-shadow:inset 0 0 0 1px rgba(220,38,38,.40), inset 0 1px 0 rgba(255,255,255,.06);
+  cursor:pointer;
+  border:0;
+  flex-shrink:0;
+  transition:transform 200ms var(--ease-spring), background 200ms var(--ease-out), box-shadow 300ms var(--ease-out);
+}
+.dash-mobile .profile-cta:hover{
+  transform:translateY(-1px);
+  background:rgba(220,38,38,.22);
+  box-shadow:inset 0 0 0 1px rgba(220,38,38,.65), inset 0 1px 0 rgba(255,255,255,.08), 0 6px 18px rgba(220,38,38,.30);
+}
+.dash-mobile .profile-close{
+  width:28px; height:28px;
+  border-radius:var(--r-pill);
+  background:transparent;
+  border:0;
+  color:var(--wc-text-3);
+  display:grid; place-items:center;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:color 180ms var(--ease-out), background 180ms var(--ease-out);
+}
+.dash-mobile .profile-close:hover{
+  color:var(--wc-text);
+  background:rgba(255,255,255,.04);
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
+   DESKTOP RESPONSIVE — Target Claude Design Desktop standalone (>= 1024px)
+   Sin sidebar (lo provee ClientLayout). Solo el grid del main content.
+   Spec extraída: _audit/target-desktop-dashboard-formatted.css
+   ═════════════════════════════════════════════════════════════════════════ */
+
+@media (min-width: 1024px){
+
+  /* MAIN: grid 12 cols con gap 24px (sin .main wrapper porque la app usa
+     ClientLayout — el grid se aplica al .scroll directamente) */
+  .dash-mobile > .scroll{
+    display:grid;
+    gap:24px;
+    grid-template-columns:repeat(12, 1fr);
+    grid-auto-rows:min-content;
+    align-content:start;
+    padding:28px 32px 56px;
+  }
+
+  /* HERO full-width con layout 1.4fr 1fr (texto + actions) */
+  .dash-mobile .hero{
+    grid-column:span 12;
+    padding:36px 40px;
+    border-radius:var(--r-lg);
+    display:grid;
+    grid-template-columns:1.4fr 1fr;
+    align-items:center;
+    gap:24px;
+    background:
+      linear-gradient(135deg, #1A1A1E 0%, #111113 100%) padding-box,
+      linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.02) 60%) border-box;
+  }
+  .dash-mobile .hero::before{
+    top:-120px; right:-60px;
+    width:540px; height:540px;
+  }
+  .dash-mobile .hero::after{
+    /* subtle grid backdrop solo en desktop */
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size:48px 48px;
+    mask-image:radial-gradient(ellipse at left center, black 30%, transparent 70%);
+    -webkit-mask-image:radial-gradient(ellipse at left center, black 30%, transparent 70%);
+    pointer-events:none;
+  }
+  .dash-mobile .hero-content{ position:relative; z-index:1; }
+  .dash-mobile .hero-greeting{
+    font-size:46px;
+    margin-bottom:14px;
+    text-shadow:0 1px 0 rgba(0,0,0,.5);
+  }
+  .dash-mobile .hero-row{ margin-top:0; margin-bottom:0; }
+  .dash-mobile .hero-sub{
+    font-size:14.5px;
+    line-height:1.55;
+    margin-top:14px;
+    max-width:520px;
+  }
+  .dash-mobile .hero-actions{
+    position:relative;
+    z-index:1;
+    display:flex;
+    gap:12px;
+    justify-content:flex-end;
+    flex-wrap:wrap;
+  }
+  /* Buttons hero (CTAs desktop) — mobile no los muestra */
+  .dash-mobile .btn-primary{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:13px 22px;
+    border:0;
+    border-radius:var(--r-pill);
+    font:700 13px/1 var(--fs);
+    letter-spacing:.04em;
+    cursor:pointer;
+    color:#fff;
+    background:linear-gradient(180deg, #EF4444 0%, #DC2626 60%, #B91C1C 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.20),
+      inset 0 -1px 0 rgba(0,0,0,.20),
+      0 0 0 1px rgba(255,255,255,.06),
+      0 8px 24px rgba(220,38,38,.40),
+      0 16px 36px rgba(0,0,0,.30);
+    transition:transform 200ms var(--ease-spring), box-shadow 300ms var(--ease-out);
+    text-decoration:none;
+  }
+  .dash-mobile .btn-primary:hover{
+    transform:translateY(-1px) scale(1.01);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.25),
+      inset 0 -1px 0 rgba(0,0,0,.20),
+      0 0 0 1px rgba(255,255,255,.10),
+      0 12px 30px rgba(220,38,38,.55),
+      0 22px 50px rgba(0,0,0,.40);
+  }
+  .dash-mobile .btn-primary:active{ transform:scale(.98); }
+  .dash-mobile .btn-secondary{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:13px 22px;
+    border-radius:var(--r-pill);
+    font:600 13px/1 var(--fs);
+    letter-spacing:.04em;
+    color:var(--wc-text);
+    background:rgba(255,255,255,.05);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.10), inset 0 1px 0 rgba(255,255,255,.04);
+    cursor:pointer;
+    transition:transform 200ms var(--ease-spring), box-shadow 300ms var(--ease-out), background 200ms var(--ease-out);
+    text-decoration:none;
+  }
+  .dash-mobile .btn-secondary:hover{
+    background:rgba(255,255,255,.09);
+    transform:translateY(-1px);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.18), inset 0 1px 0 rgba(255,255,255,.06), 0 6px 18px rgba(0,0,0,.4);
+  }
+
+  /* QUOTE: span 12, layout horizontal con quote-src al lado */
+  .dash-mobile .quote{
+    grid-column:span 12;
+    padding:18px 24px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+  }
+  .dash-mobile .quote::before{
+    top:-8px; left:18px;
+    font-size:84px;
+  }
+  .dash-mobile .quote-text{
+    font-size:15.5px;
+    flex:1;
+    padding-left:36px;
+  }
+  .dash-mobile .quote-src{
+    display:inline;
+    margin-top:0;
+    flex-shrink:0;
+    font-size:10.5px;
+  }
+
+  /* PLAN INDICATOR + BANNER */
+  .dash-mobile .plan-indicator{ grid-column:span 12; }
+  .dash-mobile .banner{
+    grid-column:span 12;
+    padding:18px 24px;
+    gap:16px;
+  }
+  .dash-mobile .banner-icon{
+    width:42px; height:42px;
+  }
+  .dash-mobile .banner-sub{ font-size:13.5px; }
+  /* Banner CTA desktop */
+  .dash-mobile .banner-cta{
+    margin-left:auto;
+    padding:10px 18px;
+    border-radius:var(--r-pill);
+    background:rgba(220,38,38,.18);
+    color:#fff;
+    font:700 12px/1 var(--fs);
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    box-shadow:inset 0 0 0 1px rgba(220,38,38,.55), inset 0 1px 0 rgba(255,255,255,.06);
+    cursor:pointer;
+    transition:transform 200ms var(--ease-spring), box-shadow 300ms var(--ease-out);
+    border:0;
+  }
+  .dash-mobile .banner-cta:hover{
+    transform:translateY(-1px);
+    background:rgba(220,38,38,.32);
+    box-shadow:inset 0 0 0 1px rgba(220,38,38,.85), inset 0 1px 0 rgba(255,255,255,.08), 0 6px 18px rgba(220,38,38,.40);
+  }
+
+  /* STATS: 4 cols en desktop */
+  .dash-mobile .stats-grid{
+    grid-column:span 12;
+    grid-template-columns:repeat(4, 1fr);
+    gap:18px;
+  }
+  .dash-mobile .stat-card{
+    padding:22px;
+    min-height:128px;
+  }
+  .dash-mobile .stat-label{
+    margin-bottom:14px;
+    font-size:10px;
+    letter-spacing:.18em;
+  }
+  .dash-mobile .stat-value{
+    font-size:46px;
+    gap:8px;
+  }
+  .dash-mobile .stat-value .unit{ font-size:16px; }
+  .dash-mobile .stat-sub{ font-size:12px; }
+  .dash-mobile .stat-ghost{
+    top:18px; right:18px;
+    width:26px; height:26px;
+    opacity:.10;
+  }
+  .dash-mobile .stat-card.red .stat-ghost{ opacity:.20; }
+  .dash-mobile .xp-bar{
+    margin-top:12px;
+    height:5px;
+  }
+
+  /* CARD BASE — paddings más grandes */
+  .dash-mobile .card-head{ padding:18px 22px 14px; }
+  .dash-mobile .card-title{ font-size:14px; }
+  .dash-mobile .card-meta{ font-size:10.5px; letter-spacing:.16em; }
+  .dash-mobile .card-body{ padding:8px 22px 22px; }
+
+  /* TIMELINE: span 8 (lado a lado con coach) */
+  .dash-mobile .timeline{
+    /* el componente Vue es <section class="card"> wrapping <div class="timeline"> */
+    /* a nivel grid el card padre es el que necesita span; alias usando :has */
+  }
+  .dash-mobile .card:has(> .timeline){ grid-column:span 8; }
+  .dash-mobile .timeline{ padding:8px 22px 22px; }
+  .dash-mobile .timeline-meta{ margin-bottom:16px; }
+  .dash-mobile .timeline-week{ font-size:26px; }
+  .dash-mobile .timeline-pct{ font-size:13px; letter-spacing:.10em; }
+  .dash-mobile .timeline-bar{ height:8px; }
+  .dash-mobile .timeline-axis{ margin-top:12px; }
+  .dash-mobile .timeline-tick{ font-size:10px; letter-spacing:.16em; }
+  .dash-mobile .timeline-tick small{ margin-top:4px; font-size:10px; }
+
+  /* COACH: span 4 layout vertical desktop */
+  .dash-mobile .coach{
+    grid-column:span 4;
+    padding:24px;
+    flex-direction:column;
+    gap:16px;
+    align-items:stretch;
+  }
+  .dash-mobile .coach::before{
+    inset:auto auto -60px -60px;
+    width:200px; height:200px;
+  }
+  .dash-mobile .coach-top{
+    display:flex; align-items:center; gap:14px;
+    position:relative;
+  }
+  .dash-mobile .coach-av{
+    width:54px; height:54px;
+    font-size:22px;
+  }
+  .dash-mobile .coach-name{ font-size:16px; }
+  .dash-mobile .coach-role{ font-size:11.5px; margin-top:3px; }
+  .dash-mobile .coach-cta{
+    justify-content:center;
+    padding:12px 16px;
+    font-size:12px;
+    letter-spacing:.06em;
+  }
+
+  /* MISSIONS: span 12 con grid 4-col */
+  .dash-mobile .card:has(> .missions-progress, > .missions-list){ grid-column:span 12; }
+  .dash-mobile .missions-list{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:14px;
+    padding:8px 22px 22px;
+    flex-direction:initial;
+  }
+  .dash-mobile .mission{
+    border-radius:14px;
+    padding:18px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.005)) padding-box,
+      linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)) border-box;
+    border:1px solid transparent;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
+  }
+  .dash-mobile .mission + .mission{ border-top:0; }
+  .dash-mobile .mission:hover{
+    transform:translateY(-1px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.04),
+      0 8px 24px rgba(0,0,0,.30),
+      0 0 0 1px rgba(220,38,38,.20),
+      0 0 18px rgba(220,38,38,.10);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.005)) padding-box,
+      linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)) border-box;
+  }
+  .dash-mobile .mission-check{ width:24px; height:24px; }
+  .dash-mobile .mission-name{ font-size:13.5px; }
+  .dash-mobile .mission-status{ margin-top:4px; font-size:11.5px; }
+  /* Las arrow se ocultan en cards (no aplican al grid 4-col) */
+  .dash-mobile .mission-arrow{ display:none; }
+  /* missions-progress va arriba (dentro card-head se mantiene) */
+  .dash-mobile .missions-progress{ padding:0 22px 16px; }
+
+  /* HEATMAP card: span 8 */
+  .dash-mobile .card:has(> .heatmap){ grid-column:span 8; }
+  .dash-mobile .heatmap{ padding:8px 22px 22px; }
+  .dash-mobile .heat-months{
+    font-size:9.5px;
+    letter-spacing:.16em;
+    padding-left:22px;
+  }
+  .dash-mobile .heat-grid{ gap:4px; }
+  .dash-mobile .heat-days{
+    gap:4px;
+    font-size:9px;
+    margin-right:6px;
+  }
+  .dash-mobile .heat-days span{ height:14px; }
+  .dash-mobile .heat-cols, .dash-mobile .heat-col{ gap:4px; }
+  .dash-mobile .heat-cell{ border-radius:3.5px; }
+  .dash-mobile .heat-summary{ padding:0 22px 18px; }
+
+  /* WEIGHT card: span 4 */
+  .dash-mobile .card:has(> .empty){ grid-column:span 4; }
+  .dash-mobile .empty{
+    padding:24px 24px 28px;
+    gap:14px;
+  }
+  .dash-mobile .empty-art{ width:96px; height:96px; }
+  .dash-mobile .empty-title{ font-size:14.5px; }
+  .dash-mobile .empty-sub{ font-size:12.5px; max-width:260px; }
+
+  /* WEEK card: span 4 */
+  .dash-mobile .card:has(> .week-grid){ grid-column:span 4; }
+  .dash-mobile .week-grid{
+    gap:8px;
+    padding:6px 22px 14px;
+  }
+  .dash-mobile .weekday{
+    border-radius:11px;
+    padding:12px 4px 10px;
+  }
+  .dash-mobile .weekday-name{
+    font-size:9.5px;
+    margin-bottom:5px;
+  }
+  .dash-mobile .weekday-num{
+    font-size:18px;
+    margin-bottom:8px;
+  }
+  .dash-mobile .week-legend{
+    padding:0 22px 18px;
+    font-size:10px;
+  }
+
+  /* ACTIVITY card: span 5 */
+  .dash-mobile .card:has(> .activity){ grid-column:span 5; }
+  .dash-mobile .activity{ padding:6px 22px 18px; }
+  .dash-mobile .act-row{ padding:13px 0; gap:14px; }
+  .dash-mobile .act-icon{ width:34px; height:34px; }
+  .dash-mobile .act-title{ font-size:13.5px; }
+  .dash-mobile .act-meta{ font-size:11.5px; margin-top:3px; }
+  .dash-mobile .act-time{ font-size:11.5px; }
+
+  /* SUMMARY card: span 3 */
+  .dash-mobile .card:has(> .summary){ grid-column:span 3; }
+
+  /* PROFILE COMPLETION: span 12 */
+  .dash-mobile .card:has(> .profile-row){ grid-column:span 12; }
+  .dash-mobile .summary{ padding:6px 22px 22px; }
+  .dash-mobile .summary-numbers{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .dash-mobile .summary-num{ padding:14px 16px; }
+  .dash-mobile .summary-num .k{
+    font-size:9.5px;
+    letter-spacing:.18em;
+    margin-bottom:8px;
+  }
+  .dash-mobile .summary-num .v{ font-size:30px; }
+  .dash-mobile .summary-status{
+    flex-direction:column;
+    gap:8px;
+    padding:14px;
+  }
+  .dash-mobile .summary-status .badge{
+    align-self:flex-start;
+  }
+  .dash-mobile .summary-status .msg{ font-size:12.5px; }
+}
+
+/* Hide hero actions on mobile (only desktop tiene los CTAs) */
+@media (max-width: 1023px){
+  .dash-mobile .hero-actions{ display:none; }
+}
