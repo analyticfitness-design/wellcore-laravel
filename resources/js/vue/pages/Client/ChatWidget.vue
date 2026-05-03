@@ -213,7 +213,7 @@ onBeforeUnmount(() => {
       <p class="mt-2 text-sm text-wc-text-secondary">{{ error }}</p>
       <button
         @click="fetchChat"
-        class="mt-6 rounded-xl bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg"
+        class="wc-btn-primary mt-6"
       >
         Reintentar
       </button>
