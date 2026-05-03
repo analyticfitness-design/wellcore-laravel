@@ -174,17 +174,16 @@
     /* DS v1 Fase 0 — surface prominent dark (Liquid Glass cuarto nivel).
        En light mode toma el #FFFFFF declarado en @theme. */
     --color-wc-bg-prominent: #1E1E22;
-}
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   DESIGN SYSTEM v1 — Variables NO utility (sombras layered, easings adicionales,
-   gradients, durations, filters, spacing del system).
-   Se usan via var(--foo) directamente en CSS scoped o en estilos inline.
-   No expuestas como utilities Tailwind para no inflar el bundle.
-   Fuente: WellCore Design System v1 _Standalone_.html (Claude Design Opus 4.7)
-   ═══════════════════════════════════════════════════════════════════════════ */
-:root {
-    /* ─── Sombras layered estilo Linear ─────────────────────────── */
+    /* ═══════════════════════════════════════════════════════════════
+       DS v1 Fase 0 — Overrides dark de tokens NO utility.
+       Las vars con valores light por default viven en :root mas abajo.
+       Aqui restauramos los valores originales del Design System v1
+       (Linear-style sombras, gradients y translucents sobre fondo OLED).
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* Sombras layered v1 dark (highlights blancos casi imperceptibles,
+       drops fuertes para profundidad sobre #09090B/#111113). */
     --sh-card:
         inset 0 1px 0 rgba(255, 255, 255, 0.04),
         0 0 0 1px rgba(255, 255, 255, 0.06),
@@ -210,6 +209,56 @@
         0 40px 100px rgba(0, 0, 0, 0.40),
         0 0 60px rgba(220, 38, 38, 0.06);
 
+    /* Gradients translucidos v1 dark */
+    --grad-divider:      linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 20%, rgba(255, 255, 255, 0.08) 80%, transparent 100%);
+    --grad-border-card:  linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+
+    /* Translucidos sobre superficie v1 dark */
+    --wc-translucent-bg-soft:    rgba(255, 255, 255, 0.06);
+    --wc-translucent-bg-medium:  rgba(255, 255, 255, 0.08);
+    --wc-translucent-border:     rgba(255, 255, 255, 0.12);
+    --wc-translucent-hover:      rgba(255, 255, 255, 0.04);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DESIGN SYSTEM v1 — Variables NO utility (sombras layered, easings adicionales,
+   gradients, durations, filters, spacing del system).
+   Se usan via var(--foo) directamente en CSS scoped o en estilos inline.
+   No expuestas como utilities Tailwind para no inflar el bundle.
+   Fuente: WellCore Design System v1 _Standalone_.html (Claude Design Opus 4.7)
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root {
+    /* ─── Sombras layered — valores LIGHT por default.
+       Override dark en .dark { } más arriba. Patrón idiomático Tailwind 4:
+       una sola var --sh-X consumida por las utilities, valor segun tema.
+       Light: highlight inset alto sobre superficies blancas (efecto glass top
+       edge), hairlines y drops oscuros suaves. Dark (override): highlights
+       blancos casi imperceptibles, drops fuertes para profundidad OLED. */
+    --sh-card:
+        inset 0 1px 0 rgba(255, 255, 255, 0.50),
+        0 0 0 1px rgba(0, 0, 0, 0.06),
+        0 4px 12px rgba(0, 0, 0, 0.04),
+        0 16px 40px rgba(0, 0, 0, 0.06);
+
+    --sh-soft:
+        inset 0 1px 0 rgba(255, 255, 255, 0.40),
+        0 0 0 1px rgba(0, 0, 0, 0.04),
+        0 2px 8px rgba(0, 0, 0, 0.04);
+
+    --sh-hover:
+        inset 0 1px 0 rgba(255, 255, 255, 0.60),
+        0 0 0 1px rgba(0, 0, 0, 0.10),
+        0 8px 20px rgba(0, 0, 0, 0.06),
+        0 20px 48px rgba(0, 0, 0, 0.08),
+        0 0 24px rgba(220, 38, 38, 0.12);
+
+    --sh-prominent:
+        inset 0 1px 0 rgba(255, 255, 255, 0.70),
+        0 0 0 1px rgba(0, 0, 0, 0.08),
+        0 12px 32px rgba(0, 0, 0, 0.06),
+        0 32px 80px rgba(0, 0, 0, 0.08),
+        0 0 60px rgba(220, 38, 38, 0.08);
+
     /* ─── Motion curves DS v1 ────────────────────────────────────
        --ease-out ya existe en @theme con la curva v2 canon (.22,1,.36,1).
        Se preserva intacta. La variante DS v1 entra como --ease-out-classic. */
@@ -229,13 +278,24 @@
     /* ─── Gradients reutilizables ─────────────────────────────── */
     --grad-accent-soft:  linear-gradient(180deg, rgba(220, 38, 38, 0.18) 0%, rgba(220, 38, 38, 0) 70%);
     --grad-accent-glow:  linear-gradient(90deg, #DC2626 0%, #EF4444 50%, #DC2626 100%);
-    --grad-divider:      linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 20%, rgba(255, 255, 255, 0.08) 80%, transparent 100%);
-    --grad-border-card:  linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+    /* Translúcidos LIGHT (rgba(0,0,0,X) sobre superficie clara). Override dark. */
+    --grad-divider:      linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.08) 20%, rgba(0, 0, 0, 0.08) 80%, transparent 100%);
+    --grad-border-card:  linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.02) 100%);
     --grad-conic-avatar: conic-gradient(from 0deg, #DC2626, #71717A, #DC2626);
 
     /* ─── Backdrop filters reutilizables ─────────────────────── */
     --filter-glass:        blur(40px);
     --filter-liquid-glass: blur(80px) saturate(180%);
+
+    /* ─── Translúcidos sobre superficie — LIGHT por default.
+       Reemplazan los rgba(255,255,255,X) hardcoded del patch v1 que en
+       light mode quedaban invisibles. Override dark restaura los del v1.
+       Las utilities .wc-card-glass / .wc-chip-neutral / .wc-btn-ghost:hover /
+       .wc-progress / .wc-heat-cell consumen estas vars en lugar de hardcoded. */
+    --wc-translucent-bg-soft:    rgba(0, 0, 0, 0.04);
+    --wc-translucent-bg-medium:  rgba(0, 0, 0, 0.06);
+    --wc-translucent-border:     rgba(0, 0, 0, 0.08);
+    --wc-translucent-hover:      rgba(0, 0, 0, 0.05);
 
     /* ─── DS spacing scale (rem-based, a11y-friendly).
        Namespace propio --ds-s-* para no redefinir la escala default de
@@ -1890,12 +1950,20 @@ body.fit-page.public-page::before {
     }
 
     .wc-card-glass {
-        background: rgba(255, 255, 255, 0.06);
+        background: var(--wc-translucent-bg-medium);
         backdrop-filter: var(--filter-liquid-glass);
         -webkit-backdrop-filter: var(--filter-liquid-glass);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        border: 1px solid var(--wc-translucent-border);
         border-radius: var(--radius-wc-lg);
         padding: var(--ds-s-6);
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.30),
+            0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Sombra interna del glass card en dark — restaura los valores v1
+       (highlight inset blanco sutil + drop oscuro fuerte sobre OLED). */
+    .dark .wc-card-glass {
         box-shadow:
             inset 0 1px 0 rgba(255, 255, 255, 0.08),
             0 12px 32px rgba(0, 0, 0, 0.40);
@@ -1927,9 +1995,9 @@ body.fit-page.public-page::before {
     }
 
     .wc-chip-neutral {
-        background: rgba(255, 255, 255, 0.06);
+        background: var(--wc-translucent-bg-soft);
         color: var(--color-wc-text-secondary);
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+        box-shadow: inset 0 0 0 1px var(--wc-translucent-border);
     }
 
     .wc-chip-success {
@@ -2020,7 +2088,7 @@ body.fit-page.public-page::before {
     }
 
     .wc-btn-ghost:hover {
-        background: rgba(255, 255, 255, 0.04);
+        background: var(--wc-translucent-hover);
         color: var(--color-wc-text);
     }
 
@@ -2129,7 +2197,7 @@ body.fit-page.public-page::before {
         position: relative;
         height: 6px;
         border-radius: var(--radius-wc-pill);
-        background: rgba(255, 255, 255, 0.06);
+        background: var(--wc-translucent-bg-medium);
         overflow: hidden;
     }
 
@@ -2240,7 +2308,7 @@ body.fit-page.public-page::before {
         width: 12px;
         height: 12px;
         border-radius: 3px;
-        background: rgba(255, 255, 255, 0.04);
+        background: var(--wc-translucent-bg-soft);
         transition: background var(--dur-fast) var(--ease-out);
     }
 
