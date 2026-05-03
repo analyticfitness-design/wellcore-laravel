@@ -844,7 +844,7 @@ function exerciseSummaryText(exIndex) {
         <div class="w-full max-w-sm rounded-2xl border border-red-500/30 bg-red-500/10 p-8 text-center">
           <svg class="mx-auto h-10 w-10 text-red-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" /></svg>
           <p class="mt-3 text-sm text-red-400">{{ error }}</p>
-          <button @click="fetchWorkout" class="mt-4 rounded-lg bg-wc-accent px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors">Reintentar</button>
+          <button @click="fetchWorkout" class="wc-btn-primary mt-4">Reintentar</button>
         </div>
       </div>
 
@@ -1870,12 +1870,12 @@ function exerciseSummaryText(exIndex) {
               <button
                 v-if="tutorialStep < TUTORIAL_TOTAL"
                 @click="tutorialStep++"
-                class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-red-700 transition-colors"
+                class="wc-btn-primary flex-1 justify-center"
               >Siguiente</button>
               <button
                 v-if="tutorialStep === TUTORIAL_TOTAL"
                 @click="dismissTutorial"
-                class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white hover:bg-red-700 transition-colors"
+                class="wc-btn-primary flex-1 justify-center"
               >Listo, a entrenar!</button>
             </div>
           </div>
