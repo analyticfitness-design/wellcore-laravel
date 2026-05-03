@@ -191,11 +191,18 @@
 .dash-mobile .avatar:hover{ transform:scale(1.05) }
 
 /* ─────────────── SCROLL CONTAINER ─────────────── */
+/* Mobile: rompe el padding lateral del ClientLayout (px-4 = 16px) con
+   margin negativo para que las cards se vean más anchas, dejando solo
+   12px de gap visual al borde de la pantalla. */
+.dash-mobile{
+  margin-left:calc(var(--s16) * -1);
+  margin-right:calc(var(--s16) * -1);
+}
 .dash-mobile .scroll{
-  padding: var(--s20) var(--s20) calc(var(--s80) + 64px);
+  padding: var(--s16) var(--s12) calc(var(--s80) + 64px);
   display:flex;
   flex-direction:column;
-  gap:var(--s24);
+  gap:var(--s20);
 }
 
 /* ─────────────── HERO ─────────────── */
@@ -1262,8 +1269,12 @@
 
 @media (min-width: 1024px){
 
-  /* MAIN: grid 12 cols con gap 24px (sin .main wrapper porque la app usa
-     ClientLayout — el grid se aplica al .scroll directamente) */
+  /* Quitar el margin negativo en desktop (donde el sidebar y main padding ya
+     componen bien). El grid 12-col se aplica al .scroll directamente. */
+  .dash-mobile{
+    margin-left:0;
+    margin-right:0;
+  }
   .dash-mobile > .scroll{
     display:grid;
     gap:24px;
