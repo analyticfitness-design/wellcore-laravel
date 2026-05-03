@@ -140,7 +140,9 @@ class AdminImpersonateController extends Controller
             if (empty($chain)) {
                 return response()->json(['ok' => true, 'noop' => true]);
             }
-            $rootToken = session('wc_root_token');
+            $rootToken    = session('wc_root_token');
+            $rootUserId   = session('wc_root_user_id');
+            $rootUserName = session('wc_root_user_name');
             foreach ($chain as $entry) {
                 ImpersonationLog::where('id', $entry['log_id'])
                     ->whereNull('ended_at')
@@ -152,9 +154,11 @@ class AdminImpersonateController extends Controller
                 'wc_impersonation_chain', 'wc_admin_token',
             ]);
             return response()->json([
-                'ok'           => true,
-                'redirect_url' => '/admin/coaches',
-                'root_token'   => $rootToken,
+                'ok'             => true,
+                'redirect_url'   => '/admin/coaches',
+                'root_token'     => $rootToken,
+                'root_user_id'   => $rootUserId,
+                'root_user_name' => $rootUserName,
             ]);
         }
 
@@ -202,10 +206,14 @@ class AdminImpersonateController extends Controller
             'closed_logs'     => $closedLogIds,
         ]);
 
+        $rootAdmin = Admin::find($rootActorId);
+
         return response()->json([
-            'ok'           => true,
-            'redirect_url' => '/admin/coaches',
-            'root_token'   => $rootToken,
+            'ok'             => true,
+            'redirect_url'   => '/admin/coaches',
+            'root_token'     => $rootToken,
+            'root_user_id'   => $rootActorId,
+            'root_user_name' => $rootAdmin?->name ?? $rootAdmin?->username ?? '',
         ]);
     }
 

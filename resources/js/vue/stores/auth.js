@@ -12,7 +12,15 @@ export const useAuthStore = defineStore('auth', () => {
         const s = window.__WC_SESSION;
         const currentLocalToken = localStorage.getItem('wc_token');
         const hasLocalToken = !!currentLocalToken;
-        const isImpersonationStart = s.impersonating && s.token && s.token !== currentLocalToken;
+
+        // Si endImpersonation() se llamó justo antes de esta recarga, el servidor
+        // todavía puede inyectar __WC_SESSION.impersonating=true (sesión cookie
+        // desactualizada). Sin esta bandera el token admin recién restaurado se
+        // sobreescribe con el token del coach → 403 en todos los endpoints admin.
+        const justEndedImpersonation = sessionStorage.getItem('wc_ended_impersonation') === '1';
+        if (justEndedImpersonation) sessionStorage.removeItem('wc_ended_impersonation');
+
+        const isImpersonationStart = s.impersonating && s.token && s.token !== currentLocalToken && !justEndedImpersonation;
 
         if (isImpersonationStart) {
             // Admin/coach just impersonated: server-side session is authoritative.
@@ -33,14 +41,22 @@ export const useAuthStore = defineStore('auth', () => {
             if (s.userName) {
                 localStorage.setItem('wc_user_name', s.userName);
             }
+        } else if (!isImpersonationStart && s.userName && !s.impersonating) {
+            // Reload normal (misma sesión, token ya en localStorage): refrescar
+            // siempre el nombre desde el servidor para que el avatar sea correcto
+            // después de volver de una impersonación.
+            localStorage.setItem('wc_user_name', s.userName);
         }
-        if (s.portal && !localStorage.getItem('wc_user_portal')) {
+        if (s.portal && !localStorage.getItem('wc_user_portal') && !justEndedImpersonation) {
             localStorage.setItem('wc_user_portal', s.portal);
         }
-        if (s.impersonating) {
+        // No aplicar flags de impersonación si acabamos de terminarla —
+        // la sesión cookie del servidor puede seguir marcada pero el estado
+        // local ya está limpio y restaurado como admin.
+        if (s.impersonating && !justEndedImpersonation) {
             localStorage.setItem('wc_impersonating', 'true');
         }
-        if (s.adminToken && !localStorage.getItem('wc_admin_token')) {
+        if (s.adminToken && !localStorage.getItem('wc_admin_token') && !justEndedImpersonation) {
             localStorage.setItem('wc_admin_token', s.adminToken);
         }
     }
@@ -159,12 +175,10 @@ export const useAuthStore = defineStore('auth', () => {
      * Caller is responsible for performing the redirect.
      */
     async function startImpersonation({ type, targetId }) {
-        if (!localStorage.getItem('wc_root_token')) {
-            const currentToken = token.value || localStorage.getItem('wc_token') || '';
-            localStorage.setItem('wc_root_token', currentToken);
-            localStorage.setItem('wc_root_user_id', String(userId.value || ''));
-            localStorage.setItem('wc_root_user_name', localStorage.getItem('wc_user_name') || '');
-        }
+        // Capture current identity BEFORE API call — root snapshot only written after success (fix Bug 1)
+        const capturedToken    = token.value || localStorage.getItem('wc_token') || '';
+        const capturedUserId   = String(userId.value || '');
+        const capturedUserName = localStorage.getItem('wc_user_name') || '';
 
         const url = type === 'admin'
             ? `/api/v/admin/coaches/${targetId}/impersonate`
@@ -172,7 +186,7 @@ export const useAuthStore = defineStore('auth', () => {
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
         const headers = {
-            Authorization: `Bearer ${token.value || localStorage.getItem('wc_token')}`,
+            Authorization: `Bearer ${capturedToken}`,
             'Content-Type': 'application/json',
             Accept: 'application/json',
             'X-CSRF-TOKEN': csrfToken,
@@ -184,6 +198,13 @@ export const useAuthStore = defineStore('auth', () => {
         }
         const data = await res.json();
 
+        // Root snapshot written only after confirmed API success; preserve existing root (fix Bug 1)
+        if (!localStorage.getItem('wc_root_token')) {
+            localStorage.setItem('wc_root_token', capturedToken);
+            localStorage.setItem('wc_root_user_id', capturedUserId);
+            localStorage.setItem('wc_root_user_name', capturedUserName);
+        }
+
         const chain = JSON.parse(localStorage.getItem('wc_impersonation_chain') || '[]');
         chain.push({
             level: chain.length + 1,
@@ -192,6 +213,7 @@ export const useAuthStore = defineStore('auth', () => {
             target_type: type,
             target_id: targetId,
             target_name: data.client_name || data.target_name || '',
+            expires_at: data.expires_at || null,
         });
         localStorage.setItem('wc_impersonation_chain', JSON.stringify(chain));
 
@@ -231,11 +253,14 @@ export const useAuthStore = defineStore('auth', () => {
             data = {};
         }
 
-        const rootToken = localStorage.getItem('wc_root_token') || data.root_token || '';
-        const rootId    = localStorage.getItem('wc_root_user_id') || '';
-        const rootName  = localStorage.getItem('wc_root_user_name') || '';
+        // Prefer fresh server token over potentially stale localStorage value (fix Bug 2)
+        const rootToken = data.root_token || localStorage.getItem('wc_root_token') || '';
+        // Use server identity data as authoritative fallback (fix Bug 3)
+        const rootId    = String(data.root_user_id || localStorage.getItem('wc_root_user_id') || '');
+        const rootName  = data.root_user_name || localStorage.getItem('wc_root_user_name') || '';
 
-        if (rootToken && rootId) {
+        // Only require rootToken — rootId may be empty but the token is enough to restore (fix Bug 3)
+        if (rootToken) {
             // Happy path: restore root admin session.
             localStorage.setItem('wc_token', rootToken);
             localStorage.setItem('wc_user_type', 'admin');
@@ -251,6 +276,11 @@ export const useAuthStore = defineStore('auth', () => {
              'wc_impersonation_chain', 'wc_admin_token', 'wc_impersonating',
              'wc_impersonating_by_coach']
                 .forEach(k => localStorage.removeItem(k));
+
+            // Señal para el bloque __WC_SESSION de la próxima carga: la sesión
+            // server (cookie) puede seguir marcada como impersonating pero ya
+            // restauramos el token admin — no sobreescribir.
+            sessionStorage.setItem('wc_ended_impersonation', '1');
 
             return data.redirect_url || '/admin/coaches';
         }
