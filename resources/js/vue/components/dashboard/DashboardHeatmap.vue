@@ -1,83 +1,125 @@
 <script setup>
+import { computed } from 'vue';
+
 const props = defineProps({
     data: { type: Object, required: true },
     calendarDays: { type: Array, default: () => [] },
 });
 
-function getCalendarColor(count) {
-    if (count >= 5) return 'bg-wc-accent';
-    if (count >= 4) return 'bg-wc-accent/80';
-    if (count >= 3) return 'bg-wc-accent/60';
-    if (count === 2) return 'bg-wc-accent/40';
-    if (count === 1) return 'bg-wc-accent/20';
-    return 'bg-wc-bg-secondary';
+// Convertir flat [day...] en columnas de 7 filas (Lun-Dom).
+const heatColumns = computed(() => {
+    const cols = [];
+    const days = props.calendarDays || [];
+    for (let i = 0; i < days.length; i += 7) {
+        cols.push(days.slice(i, i + 7));
+    }
+    return cols;
+});
+
+function getCount(day) {
+    if (!day || day.isFuture || day.isBeforeRange) return 0;
+    if (!props.data?.streakCalendar) return 0;
+    return props.data.streakCalendar[day.date] || 0;
 }
 
-function getCalendarCount(dateStr) {
-    if (!props.data?.streakCalendar) return 0;
-    return props.data.streakCalendar[dateStr] || 0;
+function getCellClass(day) {
+    if (!day) return '';
+    const classes = [];
+    if (day.isToday) classes.push('today');
+    if (day.isFuture || day.isBeforeRange) {
+        // empty / hidden
+        return classes.join(' ');
+    }
+    const count = getCount(day);
+    if (count >= 5) classes.push('l4');
+    else if (count >= 3) classes.push('l3');
+    else if (count === 2) classes.push('l2');
+    else if (count === 1) classes.push('l1');
+    return classes.join(' ');
 }
+
+// Today color usa l1 al menos para el ring; si hay sesión hoy, usar el nivel real.
+function getCellStyle(day) {
+    if (!day) return { visibility: 'hidden' };
+    if (day.isFuture && !day.isToday) return { visibility: 'hidden' };
+    return null;
+}
+
+// Sesiones totales en los 90 días
+const totalSessions = computed(() => {
+    const cal = props.data?.streakCalendar || {};
+    return Object.values(cal).reduce((sum, c) => sum + (Number(c) || 0), 0);
+});
+
+// Mejor racha: usar data.calendarStreak si existe
+const bestStreak = computed(() => props.data?.calendarStreak || 0);
+
+// Etiquetas de meses: distribuir Feb/Mar/Abr/May según rango ~3 meses pasados
+const monthLabels = computed(() => {
+    const today = new Date();
+    const labels = [];
+    // 4 etiquetas: hace 3 meses, hace 2, hace 1, mes actual
+    const fmt = new Intl.DateTimeFormat('es', { month: 'short' });
+    for (let m = 3; m >= 0; m--) {
+        const d = new Date(today.getFullYear(), today.getMonth() - m, 1);
+        let label = fmt.format(d).replace('.', '');
+        // Capitalizar primera letra
+        label = label.charAt(0).toUpperCase() + label.slice(1);
+        labels.push(label);
+    }
+    return labels;
+});
 </script>
 
 <template>
-  <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-5">
-    <div class="mb-3 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-orange-500/10">
-          <svg class="h-4 w-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
-            <path fill-rule="evenodd" d="M12.963 2.286a.75.75 0 0 0-1.071-.136 9.742 9.742 0 0 0-3.539 6.176A7.547 7.547 0 0 1 6.648 6.61a.75.75 0 0 0-1.152.082A9 9 0 1 0 15.68 4.534a7.46 7.46 0 0 1-2.717-2.248ZM15.75 14.25a3.75 3.75 0 1 1-7.313-1.172c.628.465 1.35.81 2.133 1a5.99 5.99 0 0 1 1.925-3.546 3.75 3.75 0 0 1 3.255 3.718Z" clip-rule="evenodd" />
-          </svg>
+  <section class="card section" :style="{ animationDelay: '340ms' }">
+    <div class="card-head">
+      <div class="card-head-left">
+        <span class="card-title">Racha de entrenamiento</span>
+      </div>
+      <span class="card-meta">90 días</span>
+    </div>
+    <div class="heatmap">
+      <div class="heat-months">
+        <span v-for="(m, idx) in monthLabels" :key="idx">{{ m }}</span>
+      </div>
+      <div class="heat-grid">
+        <div class="heat-days">
+          <span>L</span><span></span><span>M</span><span></span><span>V</span><span></span><span>D</span>
         </div>
-        <h3 class="text-lg font-semibold text-wc-text">Racha de entrenamiento</h3>
-        <span v-if="(data.calendarStreak || 0) > 0" class="inline-flex items-center gap-1 rounded-full bg-orange-500/10 px-2 py-0.5 text-xs font-bold text-orange-500 wc-tnum">
-          {{ data.calendarStreak }} dia{{ data.calendarStreak !== 1 ? 's' : '' }} seguido{{ data.calendarStreak !== 1 ? 's' : '' }}
-        </span>
+        <div class="heat-cols">
+          <div v-for="(col, ci) in heatColumns" :key="ci" class="heat-col">
+            <div
+              v-for="(day, ri) in col"
+              :key="ri"
+              class="heat-cell"
+              :class="getCellClass(day)"
+              :style="getCellStyle(day)"
+              :title="day ? day.displayDate + (getCount(day) ? ' · ' + getCount(day) + ' sesión(es)' : '') : ''"
+            ></div>
+          </div>
+        </div>
       </div>
-      <span class="hidden text-sm text-wc-text-tertiary sm:inline">Ultimos 90 dias</span>
-    </div>
-
-    <!-- Calendar grid -->
-    <div class="flex gap-0.5 overflow-x-auto pb-1">
-      <!-- Day labels -->
-      <div class="flex flex-col gap-0.5 pr-1 shrink-0">
-        <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">L</span>
-        <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">M</span>
-        <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">X</span>
-        <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">J</span>
-        <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">V</span>
-        <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">S</span>
-        <span class="h-2.5 w-4 text-xs leading-tight text-wc-text-tertiary sm:h-3">D</span>
-      </div>
-
-      <!-- Grid -->
-      <div class="grid grid-flow-col grid-rows-7 gap-0.5 flex-1">
-        <div
-          v-for="day in calendarDays"
-          :key="day.date"
-          :class="[
-            'h-2.5 w-2.5 rounded-[2px] sm:h-3 sm:w-3 sm:rounded-sm transition-all duration-150 hover:scale-125 hover:z-10 relative',
-            day.isFuture || day.isBeforeRange
-              ? 'bg-wc-bg-secondary/30'
-              : getCalendarColor(getCalendarCount(day.date)),
-            day.isToday ? 'ring-1 ring-wc-text/30' : ''
-          ]"
-          :style="day.isFuture ? 'opacity: 0.2' : ''"
-          :title="day.displayDate + (getCalendarCount(day.date) ? ' - ' + getCalendarCount(day.date) + ' sesion(es)' : '')"
-        ></div>
-      </div>
-    </div>
-
-    <!-- Legend -->
-    <div class="mt-2 flex items-center justify-between">
-      <span class="text-xs text-wc-text-tertiary sm:hidden">Ultimos 90 dias</span>
-      <div class="ml-auto flex items-center gap-1 text-sm text-wc-text-tertiary">
+      <div class="heat-legend">
         <span>Menos</span>
-        <div class="h-2 w-2 rounded-[2px] bg-wc-bg-secondary sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
-        <div class="h-2 w-2 rounded-[2px] bg-wc-accent/40 sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
-        <div class="h-2 w-2 rounded-[2px] bg-wc-accent/70 sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
-        <div class="h-2 w-2 rounded-[2px] bg-wc-accent sm:h-2.5 sm:w-2.5 sm:rounded-sm"></div>
-        <span>Mas</span>
+        <div class="heat-legend-cells">
+          <div class="heat-cell"></div>
+          <div class="heat-cell l1"></div>
+          <div class="heat-cell l2"></div>
+          <div class="heat-cell l3"></div>
+          <div class="heat-cell l4"></div>
+        </div>
+        <span>Más</span>
       </div>
     </div>
-  </div>
+    <hr class="divider" />
+    <div class="heat-summary">
+      <div class="heat-count tnum">
+        <span class="accent">{{ totalSessions }}</span><small>sesiones · 90 días</small>
+      </div>
+      <div class="heat-count tnum">
+        Mejor racha <span class="accent">{{ bestStreak }}</span><small>{{ bestStreak === 1 ? 'día' : 'días' }}</small>
+      </div>
+    </div>
+  </section>
 </template>

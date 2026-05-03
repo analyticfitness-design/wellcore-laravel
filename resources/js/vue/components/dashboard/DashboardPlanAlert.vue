@@ -1,38 +1,31 @@
 <script setup>
-import { RouterLink } from 'vue-router';
-
 defineProps({
     data: { type: Object, required: true },
 });
 </script>
 
 <template>
-  <!-- DS v1: wc-banner-alert (radial + grain) para escenario "sin plan activo" -->
-  <div v-if="!data.hasActivePlan" class="wc-banner-alert flex items-start gap-4">
-    <div class="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
-      <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-      </svg>
+  <!-- Plan indicator (cuando hay plan activo) -->
+  <div v-if="data.hasActivePlan" class="plan-indicator section" :style="{ animationDelay: '140ms' }">
+    <div class="plan-icon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
     </div>
-    <div class="relative z-10 min-w-0 flex-1">
-      <p class="text-sm font-semibold text-wc-text">No tienes un plan activo</p>
-      <p class="mt-0.5 text-sm text-wc-text-secondary">Contacta a tu coach para que te asigne un plan de entrenamiento.</p>
+    <div class="plan-text">
+      <strong>Plan <span class="capitalize">{{ data.planPhase || 'Entrenamiento' }}</span></strong>
+      <span>activo</span>
     </div>
-    <RouterLink to="/client/chat" class="wc-btn-primary relative z-10 shrink-0" style="padding: 6px 12px; font-size: 13px;">
-      Contactar coach
-    </RouterLink>
+    <div class="plan-day tnum">DÍA {{ data.planDaysActive || 1 }}</div>
   </div>
-  <div v-else class="wc-glass flex items-center gap-3 rounded-xl border border-wc-border bg-wc-bg-tertiary px-4 py-3">
-    <div class="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10">
-      <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-      </svg>
+
+  <!-- Sin plan: banner alerta tipo target -->
+  <div v-else class="banner section grain" :style="{ animationDelay: '140ms' }" role="button" tabindex="0">
+    <div class="banner-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"></path></svg>
     </div>
-    <span class="relative z-10 min-w-0 flex-1 text-sm text-wc-text-secondary">
-      Plan
-      <span v-if="data.planPhase" class="font-semibold capitalize text-wc-text">{{ data.planPhase }}</span>
-      activo &mdash; Dia <span class="font-semibold text-wc-text">{{ data.planDaysActive }}</span>
-    </span>
-    <span class="live-dot shrink-0"></span>
+    <div style="flex:1; min-width:0">
+      <div class="banner-title">Sin plan activo</div>
+      <div class="banner-sub">Contacta a tu coach para asignarte un plan.</div>
+    </div>
+    <svg class="banner-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
   </div>
 </template>

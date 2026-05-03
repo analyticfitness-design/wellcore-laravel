@@ -1,46 +1,100 @@
 <script setup>
-defineProps({
+import { computed } from 'vue';
+
+const props = defineProps({
     weekDays: { type: Array, default: () => [] },
+});
+
+// ── ISO week + rango Lun-Dom calculado en frontend ──
+function getIsoWeek(date) {
+    const target = new Date(date.valueOf());
+    const dayNr = (date.getDay() + 6) % 7;
+    target.setDate(target.getDate() - dayNr + 3);
+    const firstThursday = target.valueOf();
+    target.setMonth(0, 1);
+    if (target.getDay() !== 4) {
+        target.setMonth(0, 1 + ((4 - target.getDay()) + 7) % 7);
+    }
+    return 1 + Math.ceil((firstThursday - target) / 604800000);
+}
+
+function startOfIsoWeek(date) {
+    const d = new Date(date);
+    const day = (d.getDay() + 6) % 7; // 0 = Lun
+    d.setDate(d.getDate() - day);
+    d.setHours(0, 0, 0, 0);
+    return d;
+}
+
+const today = new Date();
+const isoWeek = getIsoWeek(today);
+const monday = startOfIsoWeek(today);
+const sunday = new Date(monday);
+sunday.setDate(monday.getDate() + 6);
+
+const monthFmt = new Intl.DateTimeFormat('es', { month: 'short' });
+
+function fmtDayMonth(d) {
+    let m = monthFmt.format(d).replace('.', '');
+    return `${d.getDate()} ${m}`;
+}
+
+const weekRangeLabel = computed(() => {
+    return `Sem. ${isoWeek} · ${fmtDayMonth(monday)} — ${fmtDayMonth(sunday)}`;
+});
+
+// Construir array Lun..Dom con número de día y estado.
+// `weekDays` (del backend) trae .label, .completed, .isToday en orden Lun..Dom.
+const weekCells = computed(() => {
+    const labels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+    const cells = [];
+    for (let i = 0; i < 7; i++) {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        const backendDay = (props.weekDays && props.weekDays[i]) || {};
+        const isToday = d.toDateString() === today.toDateString();
+        const completed = !!backendDay.completed;
+        // Domingo y miércoles tipicamente son rest si no está completed y no es today
+        // pero solo marcar "rest" si sabemos que es no-entrenamiento y no completado
+        // Heurística simple: si i === 6 (Dom) o si backend dice rest. Como backend
+        // no lo manda, dejamos solo: done | today | (default).
+        let status = '';
+        if (completed) status = 'done';
+        else if (isToday) status = 'today';
+        cells.push({
+            label: labels[i],
+            num: d.getDate(),
+            status,
+        });
+    }
+    return cells;
 });
 </script>
 
 <template>
-  <div v-if="weekDays && weekDays.length > 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-    <h2 class="text-lg font-semibold text-wc-text">Semana de entrenamiento</h2>
-    <p class="mt-1 wc-caption">Semana {{ new Date().toLocaleDateString('es', { year: 'numeric' }).split('/').pop() }}</p>
-
-    <div class="mt-5 flex items-center justify-between gap-2 sm:justify-start sm:gap-4">
-      <div v-for="(day, idx) in weekDays" :key="idx" class="flex flex-col items-center gap-2">
-        <span :class="['text-sm font-medium text-wc-text-secondary', day.isToday ? '!text-wc-accent !font-semibold' : '']">
-          {{ day.label }}
-        </span>
-        <!-- Completed day -->
-        <div v-if="day.completed" class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/15 sm:h-12 sm:w-12">
-          <svg class="h-5 w-5 text-emerald-500 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-          </svg>
-        </div>
-        <!-- Pending day -->
-        <div v-else :class="['flex h-10 w-10 items-center justify-center rounded-full border-2 border-wc-border sm:h-12 sm:w-12', day.isToday ? '!border-wc-accent/40' : '']">
-          <div v-if="day.isToday" class="h-2 w-2 rounded-full bg-wc-accent"></div>
-        </div>
+  <section class="card section" :style="{ animationDelay: '420ms' }">
+    <div class="card-head">
+      <div class="card-head-left">
+        <span class="card-title">Semana de entrenamiento</span>
+      </div>
+      <span class="card-meta tnum">{{ weekRangeLabel }}</span>
+    </div>
+    <div class="week-grid">
+      <div
+        v-for="(cell, idx) in weekCells"
+        :key="idx"
+        class="weekday"
+        :class="cell.status"
+      >
+        <div class="weekday-name">{{ cell.label }}</div>
+        <div class="weekday-num tnum">{{ cell.num }}</div>
+        <div class="weekday-dot"></div>
       </div>
     </div>
-
-    <!-- Legend -->
-    <div class="mt-5 flex items-center gap-4 text-sm text-wc-text-secondary">
-      <div class="flex items-center gap-1.5">
-        <div class="h-2.5 w-2.5 rounded-full bg-emerald-500/40"></div>
-        Completado
-      </div>
-      <div class="flex items-center gap-1.5">
-        <div class="h-2.5 w-2.5 rounded-full border border-wc-border"></div>
-        Pendiente
-      </div>
-      <div class="flex items-center gap-1.5">
-        <div class="h-2.5 w-2.5 rounded-full bg-wc-accent"></div>
-        Hoy
-      </div>
+    <div class="week-legend">
+      <span><i style="background:#10B981"></i>Completado</span>
+      <span><i style="background:#DC2626"></i>Hoy</span>
+      <span><i style="background:rgba(255,255,255,.2)"></i>Pendiente</span>
     </div>
-  </div>
+  </section>
 </template>
