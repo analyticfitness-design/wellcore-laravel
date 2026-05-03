@@ -114,6 +114,48 @@
     --topbar-h: 64px;     /* matches nav h-16 actual del public.blade.php */
     --col-max: 720px;     /* editorial col estrecho (long-form blog/metodo) */
     --col-wide: 960px;    /* editorial col ancho */
+
+    /* ═══════════════════════════════════════════════════════════════
+       DESIGN SYSTEM v1 — Tokens del Client Dashboard (Fase 0)
+       Origen: WellCore Design System v1 _Standalone_.html (Claude Design Opus 4.7)
+       Estrategia: extender sin eliminar — coexisten con tokens v2 públicos y admin v2.
+       Ningún componente Vue los usa todavía; entran inertes para que las
+       fases siguientes puedan referenciarlos.
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* Surface "prominent" — cuarto nivel de elevation (Liquid Glass).
+       Light: derivado de bg-tertiary; Dark: override en .dark { }. */
+    --color-wc-bg-prominent: #FFFFFF;
+
+    /* Accent variantes adicionales — el v1 distingue "deep" (sombra/dark) y
+       "glow" (hover/halo). Coexisten con --color-wc-accent-hover (#B91C1C),
+       que sigue siendo el darken oficial para light mode. */
+    --color-wc-accent-deep: #7F1D1D;
+    --color-wc-accent-glow: #EF4444;
+
+    /* Texto adicional — niveles muted (debajo de tertiary) y on-accent
+       (sobre fondos accent alpha). */
+    --color-wc-text-muted: #52525B;
+    --color-wc-text-on-accent: #FCA5A5;
+
+    /* Borders translúcidos del v1 — usados por wc-card-prominent y dividers. */
+    --color-wc-border-subtle: rgba(255, 255, 255, 0.06);
+    --color-wc-border-prominent: rgba(255, 255, 255, 0.12);
+
+    /* Semánticos del v1 (alias short de success/info/warning para utilities
+       .wc-list-row-leading-*, .wc-chip-success, etc). Valores idénticos a
+       --color-wc-success/info/warning para no introducir nuevos hex. */
+    --color-wc-green: #10B981;
+    --color-wc-blue: #3B82F6;
+    --color-wc-amber: #F59E0B;
+    /* --color-wc-purple ya existe en línea 41 con #A78BFA */
+
+    /* Radii del v1 — namespace -wc-* para evitar colisión con --radius-card
+       y --radius-button existentes. Generan utilities rounded-wc-{sm,md,lg,pill}. */
+    --radius-wc-sm: 12px;
+    --radius-wc-md: 16px;
+    --radius-wc-lg: 20px;
+    --radius-wc-pill: 999px;
 }
 
 /* Dark mode overrides */
@@ -128,6 +170,162 @@
     --color-wc-text-tertiary: rgba(250, 250, 250, 0.56);
     --color-wc-border: rgba(255, 255, 255, 0.08);
     --color-wc-accent-light: rgba(220, 38, 38, 0.15);
+
+    /* DS v1 Fase 0 — surface prominent dark (Liquid Glass cuarto nivel).
+       En light mode toma el #FFFFFF declarado en @theme. */
+    --color-wc-bg-prominent: #1E1E22;
+
+    /* ═══════════════════════════════════════════════════════════════
+       DS v1 Fase 0 — Overrides dark de tokens NO utility.
+       Las vars con valores light por default viven en :root mas abajo.
+       Aqui restauramos los valores originales del Design System v1
+       (Linear-style sombras, gradients y translucents sobre fondo OLED).
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* Sombras layered v1 dark (highlights blancos casi imperceptibles,
+       drops fuertes para profundidad sobre #09090B/#111113). */
+    --sh-card:
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 8px 24px rgba(0, 0, 0, 0.40),
+        0 24px 60px rgba(0, 0, 0, 0.30);
+
+    --sh-soft:
+        inset 0 1px 0 rgba(255, 255, 255, 0.03),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        0 4px 14px rgba(0, 0, 0, 0.35);
+
+    --sh-hover:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 0 0 1px rgba(255, 255, 255, 0.10),
+        0 12px 32px rgba(0, 0, 0, 0.45),
+        0 30px 70px rgba(0, 0, 0, 0.35),
+        0 0 24px rgba(220, 38, 38, 0.10);
+
+    --sh-prominent:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 0 0 1px rgba(255, 255, 255, 0.08),
+        0 16px 48px rgba(0, 0, 0, 0.50),
+        0 40px 100px rgba(0, 0, 0, 0.40),
+        0 0 60px rgba(220, 38, 38, 0.06);
+
+    /* Gradients translucidos v1 dark */
+    --grad-divider:      linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 20%, rgba(255, 255, 255, 0.08) 80%, transparent 100%);
+    --grad-border-card:  linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+
+    /* Translucidos sobre superficie v1 dark */
+    --wc-translucent-bg-soft:    rgba(255, 255, 255, 0.06);
+    --wc-translucent-bg-medium:  rgba(255, 255, 255, 0.08);
+    --wc-translucent-border:     rgba(255, 255, 255, 0.12);
+    --wc-translucent-hover:      rgba(255, 255, 255, 0.04);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DESIGN SYSTEM v1 — Variables NO utility (sombras layered, easings adicionales,
+   gradients, durations, filters, spacing del system).
+   Se usan via var(--foo) directamente en CSS scoped o en estilos inline.
+   No expuestas como utilities Tailwind para no inflar el bundle.
+   Fuente: WellCore Design System v1 _Standalone_.html (Claude Design Opus 4.7)
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root {
+    /* ─── Sombras layered — valores LIGHT por default.
+       Override dark en .dark { } más arriba. Patrón idiomático Tailwind 4:
+       una sola var --sh-X consumida por las utilities, valor segun tema.
+       Light: highlight inset alto sobre superficies blancas (efecto glass top
+       edge), hairlines y drops oscuros suaves. Dark (override): highlights
+       blancos casi imperceptibles, drops fuertes para profundidad OLED. */
+    --sh-card:
+        inset 0 1px 0 rgba(255, 255, 255, 0.50),
+        0 0 0 1px rgba(0, 0, 0, 0.06),
+        0 4px 12px rgba(0, 0, 0, 0.04),
+        0 16px 40px rgba(0, 0, 0, 0.06);
+
+    --sh-soft:
+        inset 0 1px 0 rgba(255, 255, 255, 0.40),
+        0 0 0 1px rgba(0, 0, 0, 0.04),
+        0 2px 8px rgba(0, 0, 0, 0.04);
+
+    --sh-hover:
+        inset 0 1px 0 rgba(255, 255, 255, 0.60),
+        0 0 0 1px rgba(0, 0, 0, 0.10),
+        0 8px 20px rgba(0, 0, 0, 0.06),
+        0 20px 48px rgba(0, 0, 0, 0.08),
+        0 0 24px rgba(220, 38, 38, 0.12);
+
+    --sh-prominent:
+        inset 0 1px 0 rgba(255, 255, 255, 0.70),
+        0 0 0 1px rgba(0, 0, 0, 0.08),
+        0 12px 32px rgba(0, 0, 0, 0.06),
+        0 32px 80px rgba(0, 0, 0, 0.08),
+        0 0 60px rgba(220, 38, 38, 0.08);
+
+    /* ─── Motion curves DS v1 ────────────────────────────────────
+       --ease-out ya existe en @theme con la curva v2 canon (.22,1,.36,1).
+       Se preserva intacta. La variante DS v1 entra como --ease-out-classic. */
+    --ease-out-classic: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-spring:      cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-glide:       cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-smooth:      cubic-bezier(0.5, 1.4, 0.5, 1);
+
+    /* ─── Durations estándar ──────────────────────────────────── */
+    --dur-instant: 120ms;
+    --dur-fast:    180ms;
+    --dur-base:    280ms;
+    --dur-slow:    350ms;
+    --dur-glide:   600ms;
+    --dur-fill:    800ms;
+
+    /* ─── Gradients reutilizables ─────────────────────────────── */
+    --grad-accent-soft:  linear-gradient(180deg, rgba(220, 38, 38, 0.18) 0%, rgba(220, 38, 38, 0) 70%);
+    --grad-accent-glow:  linear-gradient(90deg, #DC2626 0%, #EF4444 50%, #DC2626 100%);
+    /* Translúcidos LIGHT (rgba(0,0,0,X) sobre superficie clara). Override dark. */
+    --grad-divider:      linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.08) 20%, rgba(0, 0, 0, 0.08) 80%, transparent 100%);
+    --grad-border-card:  linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.02) 100%);
+    --grad-conic-avatar: conic-gradient(from 0deg, #DC2626, #71717A, #DC2626);
+
+    /* ─── Backdrop filters reutilizables ─────────────────────── */
+    --filter-glass:        blur(40px);
+    --filter-liquid-glass: blur(80px) saturate(180%);
+
+    /* ─── Translúcidos sobre superficie — LIGHT por default.
+       Reemplazan los rgba(255,255,255,X) hardcoded del patch v1 que en
+       light mode quedaban invisibles. Override dark restaura los del v1.
+       Las utilities .wc-card-glass / .wc-chip-neutral / .wc-btn-ghost:hover /
+       .wc-progress / .wc-heat-cell consumen estas vars en lugar de hardcoded. */
+    --wc-translucent-bg-soft:    rgba(0, 0, 0, 0.04);
+    --wc-translucent-bg-medium:  rgba(0, 0, 0, 0.06);
+    --wc-translucent-border:     rgba(0, 0, 0, 0.08);
+    --wc-translucent-hover:      rgba(0, 0, 0, 0.05);
+
+    /* ─── DS spacing scale (rem-based, a11y-friendly).
+       Namespace propio --ds-s-* para no redefinir la escala default de
+       Tailwind 4 (--spacing-*) y preservar responsividad por root font-size.
+       Las utilities .wc-* del @layer components consumen estas variables. */
+    --ds-s-1:  0.25rem;   /*  4px @ root 16px */
+    --ds-s-2:  0.5rem;    /*  8px */
+    --ds-s-3:  0.75rem;   /* 12px */
+    --ds-s-4:  1rem;      /* 16px */
+    --ds-s-5:  1.25rem;   /* 20px */
+    --ds-s-6:  1.5rem;    /* 24px */
+    --ds-s-7:  1.75rem;   /* 28px */
+    --ds-s-8:  2rem;      /* 32px */
+    --ds-s-10: 2.5rem;    /* 40px */
+    --ds-s-14: 3.5rem;    /* 56px */
+    --ds-s-20: 5rem;      /* 80px */
+}
+
+/* ─── Reduced motion para DS v1 ──────────────────────────────────
+   Cero todas las durations. La regla universal *::before/after ya existe
+   más abajo en el archivo (línea ~351), no se duplica para evitar override. */
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --dur-instant: 0ms;
+        --dur-fast:    0ms;
+        --dur-base:    0ms;
+        --dur-slow:    0ms;
+        --dur-glide:   0ms;
+        --dur-fill:    0ms;
+    }
 }
 
 /* Base styles */
@@ -1703,4 +1901,441 @@ body.fit-page.public-page::before {
 }
 .animate-spin-slow {
   animation: spin-slow 3s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DESIGN SYSTEM v1 — @layer components con utilities .wc-*
+   Fuente: WellCore Design System v1 _Standalone_.html (Claude Design Opus 4.7)
+   Fase 0: estas utilities entran inertes (ningún componente Vue las usa todavía).
+   Las fases siguientes (1+) van migrando componente por componente sustituyendo
+   clases viejas por estas utilities sin tocar lógica ni props.
+
+   Notas de adaptación al fork DS v1:
+   - Spacing usa --ds-s-* (rem-based) en lugar de --spacing-* para no
+     redefinir la escala de Tailwind 4 ni romper a11y por root font-size.
+   - --color-wc-accent-hover (existente, #B91C1C darken) se preserva. Para el
+     efecto "glow" del v1 se usa --color-wc-accent-glow (#EF4444).
+   - --font-data se mantiene Raleway (memoria proyecto: fuentes oficiales
+     WellCore son Oswald + Raleway, no Barlow).
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer components {
+    /* ─── CARDS — surface stack + sombras layered ────────────────────────── */
+
+    .wc-card {
+        background: var(--color-wc-bg-secondary);
+        border-radius: var(--radius-wc-md);
+        padding: var(--ds-s-5);
+        box-shadow: var(--sh-soft);
+        border: 1px solid transparent;
+        transition:
+            box-shadow var(--dur-base) var(--ease-out),
+            transform var(--dur-fast) var(--ease-spring);
+    }
+
+    .wc-card-elevated {
+        background: var(--color-wc-bg-tertiary);
+        border-radius: var(--radius-wc-md);
+        padding: var(--ds-s-6);
+        box-shadow: var(--sh-card);
+    }
+
+    .wc-card-prominent {
+        background:
+            linear-gradient(var(--color-wc-bg-tertiary), var(--color-wc-bg-tertiary)) padding-box,
+            var(--grad-border-card) border-box;
+        border: 1px solid transparent;
+        border-radius: var(--radius-wc-lg);
+        padding: var(--ds-s-7, 1.75rem);
+        box-shadow: var(--sh-prominent);
+    }
+
+    .wc-card-glass {
+        background: var(--wc-translucent-bg-medium);
+        backdrop-filter: var(--filter-liquid-glass);
+        -webkit-backdrop-filter: var(--filter-liquid-glass);
+        border: 1px solid var(--wc-translucent-border);
+        border-radius: var(--radius-wc-lg);
+        padding: var(--ds-s-6);
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.30),
+            0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Sombra interna del glass card en dark — restaura los valores v1
+       (highlight inset blanco sutil + drop oscuro fuerte sobre OLED). */
+    .dark .wc-card-glass {
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.08),
+            0 12px 32px rgba(0, 0, 0, 0.40);
+    }
+
+    .wc-card:hover,
+    .wc-card-elevated:hover {
+        transform: translateY(-1px) scale(1.005);
+        box-shadow: var(--sh-hover);
+    }
+
+    /* ─── CHIPS / CAPSULES — pill 999px ─────────────────────────────────── */
+
+    .wc-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--ds-s-2);
+        padding: 4px 10px;
+        font-family: var(--font-sans);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        line-height: 1;
+        border-radius: var(--radius-wc-pill);
+        background: rgba(220, 38, 38, 0.12);
+        color: var(--color-wc-text-on-accent);
+        box-shadow: inset 0 0 0 1px rgba(220, 38, 38, 0.24);
+        white-space: nowrap;
+    }
+
+    .wc-chip-neutral {
+        background: var(--wc-translucent-bg-soft);
+        color: var(--color-wc-text-secondary);
+        box-shadow: inset 0 0 0 1px var(--wc-translucent-border);
+    }
+
+    .wc-chip-success {
+        background: rgba(16, 185, 129, 0.12);
+        color: #6EE7B7;
+        box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.24);
+    }
+
+    .wc-chip-amber {
+        background: rgba(245, 158, 11, 0.12);
+        color: #FCD34D;
+        box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.24);
+    }
+
+    /* ─── BUTTONS ─────────────────────────────────────────────────────── */
+
+    .wc-btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--ds-s-2);
+        padding: 10px 20px;
+        font-family: var(--font-sans);
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        border-radius: var(--radius-wc-sm);
+        background: var(--color-wc-accent);
+        color: white;
+        border: 0;
+        cursor: pointer;
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.15),
+            0 0 0 1px rgba(255, 255, 255, 0.05),
+            0 4px 14px rgba(220, 38, 38, 0.40);
+        transition:
+            transform var(--dur-fast) var(--ease-spring),
+            box-shadow var(--dur-base) var(--ease-out),
+            background var(--dur-fast) var(--ease-out);
+    }
+
+    .wc-btn-primary:hover {
+        background: var(--color-wc-accent-glow);
+        transform: translateY(-1px);
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.20),
+            0 0 0 1px rgba(255, 255, 255, 0.08),
+            0 8px 24px rgba(220, 38, 38, 0.50);
+    }
+
+    .wc-btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--ds-s-2);
+        padding: 10px 20px;
+        font-family: var(--font-sans);
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: var(--radius-wc-sm);
+        background: var(--color-wc-bg-tertiary);
+        color: var(--color-wc-text);
+        border: 0;
+        cursor: pointer;
+        box-shadow: var(--sh-soft);
+        transition:
+            transform var(--dur-fast) var(--ease-spring),
+            box-shadow var(--dur-base) var(--ease-out);
+    }
+
+    .wc-btn-secondary:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--sh-hover);
+    }
+
+    .wc-btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--ds-s-2);
+        padding: 10px 16px;
+        font-family: var(--font-sans);
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: var(--radius-wc-sm);
+        background: transparent;
+        color: var(--color-wc-text-secondary);
+        border: 0;
+        cursor: pointer;
+        transition: background var(--dur-fast) var(--ease-out);
+    }
+
+    .wc-btn-ghost:hover {
+        background: var(--wc-translucent-hover);
+        color: var(--color-wc-text);
+    }
+
+    /* ─── AVATARS — conic ring ─────────────────────────────────────────── */
+
+    .wc-avatar {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 16px;
+        background:
+            linear-gradient(135deg, var(--color-wc-accent), var(--color-wc-bg-tertiary)) padding-box,
+            var(--grad-conic-avatar) border-box;
+        border: 2px solid transparent;
+        color: white;
+    }
+
+    .wc-avatar-sm { width: 32px; height: 32px; font-size: 13px; }
+    .wc-avatar-lg { width: 56px; height: 56px; font-size: 22px; }
+
+    /* ─── DIVIDERS — gradient fade ─────────────────────────────────────── */
+
+    .wc-divider {
+        height: 1px;
+        background: var(--grad-divider);
+        border: 0;
+        margin: var(--ds-s-4) 0;
+    }
+
+    .wc-divider-tight {
+        margin: var(--ds-s-2) 0;
+    }
+
+    /* ─── NUMBERS — tabular nums + ligatures ──────────────────────────── */
+
+    .wc-tnum {
+        font-feature-settings: 'tnum' on, 'ss01' on;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .wc-num-large {
+        font-family: var(--font-data);
+        font-weight: 700;
+        font-size: 48px;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        font-feature-settings: 'tnum' on, 'ss01' on;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .wc-num-medium {
+        font-family: var(--font-data);
+        font-weight: 700;
+        font-size: 32px;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        font-feature-settings: 'tnum' on, 'ss01' on;
+    }
+
+    /* ─── CAPTION HEADERS — uppercase + spacing ───────────────────────── */
+
+    .wc-caption {
+        font-family: var(--font-sans);
+        font-weight: 600;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--color-wc-text-secondary);
+    }
+
+    /* ─── PULSE DOT — notificación ─────────────────────────────────────── */
+
+    .wc-pulse-dot {
+        position: relative;
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background: var(--color-wc-accent);
+        border-radius: 50%;
+    }
+
+    .wc-pulse-dot::after {
+        content: '';
+        position: absolute;
+        inset: -4px;
+        border-radius: 50%;
+        border: 2px solid var(--color-wc-accent);
+        opacity: 0;
+        animation: wc-pulse 2s ease-out infinite;
+    }
+
+    @keyframes wc-pulse {
+        0%   { opacity: 0.6; transform: scale(0.8); }
+        100% { opacity: 0;   transform: scale(1.6); }
+    }
+
+    /* ─── PROGRESS BAR — shimmer + gradient ───────────────────────────── */
+
+    .wc-progress {
+        position: relative;
+        height: 6px;
+        border-radius: var(--radius-wc-pill);
+        background: var(--wc-translucent-bg-medium);
+        overflow: hidden;
+    }
+
+    .wc-progress-fill {
+        height: 100%;
+        border-radius: inherit;
+        background: var(--grad-accent-glow);
+        background-size: 200% 100%;
+        animation: wc-shimmer 3s linear infinite;
+        transition: width var(--dur-fill) var(--ease-glide);
+    }
+
+    @keyframes wc-shimmer {
+        0%   { background-position: 0% 50%; }
+        100% { background-position: 200% 50%; }
+    }
+
+    /* ─── LIST ROW — grouped inset con leading-color ──────────────────── */
+
+    .wc-list-row {
+        display: flex;
+        align-items: center;
+        gap: var(--ds-s-3);
+        padding: var(--ds-s-3) var(--ds-s-4);
+        border-radius: var(--radius-wc-sm);
+        background: var(--color-wc-bg-secondary);
+        transition: background var(--dur-fast) var(--ease-out);
+    }
+
+    .wc-list-row:hover {
+        background: var(--color-wc-bg-tertiary);
+    }
+
+    .wc-list-row-leading {
+        width: 4px;
+        height: 100%;
+        align-self: stretch;
+        border-radius: 2px;
+    }
+
+    .wc-list-row-leading-accent  { background: var(--color-wc-accent); }
+    .wc-list-row-leading-success { background: var(--color-wc-green); }
+    .wc-list-row-leading-info    { background: var(--color-wc-blue); }
+    .wc-list-row-leading-amber   { background: var(--color-wc-amber); }
+
+    /* ─── BANNER ALERT — gradient radial + grain ──────────────────────── */
+
+    .wc-banner-alert {
+        position: relative;
+        padding: var(--ds-s-5);
+        border-radius: var(--radius-wc-md);
+        background:
+            radial-gradient(circle at 100% 0%, rgba(220, 38, 38, 0.18), transparent 60%),
+            var(--color-wc-bg-secondary);
+        box-shadow:
+            inset 0 0 0 1px rgba(220, 38, 38, 0.20),
+            var(--sh-soft);
+        overflow: hidden;
+    }
+
+    .wc-banner-alert::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100' height='100' filter='url(%23n)' opacity='0.04'/></svg>");
+        pointer-events: none;
+    }
+
+    /* ─── FAB — glass layer ───────────────────────────────────────────── */
+
+    .wc-fab {
+        position: fixed;
+        bottom: calc(env(safe-area-inset-bottom, 24px) + 80px);
+        right: var(--ds-s-5);
+        z-index: 50;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: rgba(220, 38, 38, 0.85);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        color: white;
+        border: 0;
+        cursor: pointer;
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.20),
+            0 8px 32px rgba(220, 38, 38, 0.40),
+            0 0 0 1px rgba(255, 255, 255, 0.08);
+        transition:
+            transform var(--dur-fast) var(--ease-spring),
+            box-shadow var(--dur-base) var(--ease-out);
+    }
+
+    .wc-fab:hover {
+        transform: scale(1.05);
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.24),
+            0 12px 40px rgba(220, 38, 38, 0.50),
+            0 0 0 1px rgba(255, 255, 255, 0.12);
+    }
+
+    /* ─── HEATMAP CELL — halo en activas + breath en hoy ──────────────── */
+
+    .wc-heat-cell {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        background: var(--wc-translucent-bg-soft);
+        transition: background var(--dur-fast) var(--ease-out);
+    }
+
+    .wc-heat-cell-1 { background: rgba(220, 38, 38, 0.30); }
+    .wc-heat-cell-2 { background: rgba(220, 38, 38, 0.60); }
+    .wc-heat-cell-3 {
+        background: var(--color-wc-accent);
+        filter: drop-shadow(0 0 4px rgba(220, 38, 38, 0.4));
+    }
+    .wc-heat-cell-4 {
+        background: var(--color-wc-accent-glow);
+        filter: drop-shadow(0 0 8px rgba(220, 38, 38, 0.6));
+    }
+
+    .wc-heat-cell-today {
+        animation: wc-heat-breath 2s ease-in-out infinite;
+    }
+
+    @keyframes wc-heat-breath {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+        50%      { box-shadow: 0 0 0 4px rgba(220, 38, 38, 0); }
+    }
+
+    /* ─── SAFE AREA HELPERS ───────────────────────────────────────────── */
+
+    .wc-safe-top    { padding-top:    env(safe-area-inset-top, 0); }
+    .wc-safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom, 0) + 8px); }
+    .wc-safe-left   { padding-left:   env(safe-area-inset-left, 0); }
+    .wc-safe-right  { padding-right:  env(safe-area-inset-right, 0); }
 }
