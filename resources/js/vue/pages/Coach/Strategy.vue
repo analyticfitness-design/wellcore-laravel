@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onActivated } from 'vue';
 import { useCoachStrategyStore } from '../../stores/coachStrategy';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import StrategyHero from '../../components/coach/strategy/StrategyHero.vue';
@@ -18,6 +18,12 @@ const store = useCoachStrategyStore();
 const tab = ref('this-week');
 
 onMounted(async () => {
+    await store.fetchCurrentDrop();
+});
+
+// Re-fetch si el componente vuelve activo desde keep-alive (e.g. al navegar
+// con el bottom-nav y volver a la tab de estrategia)
+onActivated(async () => {
     await store.fetchCurrentDrop();
 });
 </script>

@@ -659,7 +659,7 @@
    NOT Teleport — but uses fixed positioning with high z-index)
    ═══════════════════════════════════════════════════════════════════ */
 .story-drawer-backdrop{
-  position:fixed;inset:0;z-index:80;
+  position:fixed;inset:0;z-index:110;
   background:rgba(9,9,11,.78);
   backdrop-filter:blur(6px);
   display:flex;justify-content:flex-end;
@@ -889,7 +889,23 @@
   .sd-body{padding:1.25rem 1.25rem 1.75rem;}
   .sd-footer{padding:.875rem 1.25rem;}
   .sd-slide-text{font-size:1.2rem;}
+  .sd-close-mobile{display:inline-flex;}
 }
+
+/* Botón cerrar mobile — visible solo en móvil dentro del footer */
+.sd-close-mobile{
+  display:none;
+  align-items:center;gap:.4rem;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);
+  color:rgba(250,250,250,.7);cursor:pointer;
+  padding:.55rem .875rem;border-radius:.45rem;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:10px;text-transform:uppercase;letter-spacing:.2em;
+  transition:border-color .15s,color .15s,background .15s;
+  flex-shrink:0;
+}
+.sd-close-mobile:hover{border-color:var(--sd-day);color:var(--sd-day);background:color-mix(in srgb,var(--sd-day) 8%,transparent);}
+.sd-close-mobile svg{width:13px;height:13px;}
 
 @media(prefers-reduced-motion:reduce){
   .strategy-page-v2 *,

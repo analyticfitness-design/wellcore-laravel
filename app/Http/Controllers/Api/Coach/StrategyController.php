@@ -27,7 +27,7 @@ final class StrategyController extends Controller
 
         $drop = Cache::remember(
             "coach_drop_v3:{$coach->id}:{$year}:{$week}",
-            300,
+            60,
             fn () => CoachContentDrop::with('pieceStates')
                 ->where('coach_id', $coach->id)
                 ->where('iso_year', $year)
