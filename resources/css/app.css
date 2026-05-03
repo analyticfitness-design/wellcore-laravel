@@ -328,6 +328,134 @@
     }
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   ADMIN MOBILE DESIGN SYSTEM v2 — Tokens tipográficos, colores, espaciado
+   Fuente de verdad: tipografia-admin-mobile-v2.html
+   Solo aplica en el portal admin (dark-only). No afecta coach ni cliente.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root {
+  /* ─── Escala tipográfica (Major Third body + Perfect Fourth display) ─── */
+  --t-base: 17px;  /* Cuerpo. Mínimo presbicia-friendly. No bajar. */
+  --t-xs:   12px;  /* Captions, timestamps, metadata */
+  --t-sm:   14px;  /* Labels, tags, badges */
+  --t-md:   21px;  /* Lead text, card subheads */
+  --t-lg:   28px;  /* Card titles, section headers */
+  --t-xl:   37px;  /* Page titles, hero subheads */
+  --t-2xl:  49px;  /* Hero display mobile */
+  --t-3xl:  56px;  /* CEO greeting, hero stamp */
+
+  /* ─── Line-height ─── */
+  --lh-display: 0.95;
+  --lh-tight:   1.15;
+  --lh-body:    1.65;
+  --lh-loose:   1.75;
+
+  /* ─── Letter-spacing ─── */
+  --ls-display: -0.02em;  /* Oswald grandes: tighter para peso visual */
+  --ls-caps:     0.14em;  /* Labels uppercase: aire entre letras */
+  --ls-mono:     0.04em;  /* Números tabulares */
+
+  /* ─── Paleta admin dark v2 ─── */
+  --c-bg:            #080808;
+  --c-surface:       #111111;
+  --c-surface-2:     #1A1A1A;
+  --c-surface-3:     #222222;
+  --c-border:        rgba(255,255,255,0.07);
+  --c-border-bright: rgba(255,255,255,0.14);
+  --c-text:          #F0F0F0;
+  --c-text-2:        #A8A8A8;
+  --c-text-3:        #757575;
+  --c-accent:        #DC2626;
+  --c-accent-dim:    rgba(220,38,38,0.12);
+  --c-accent-glow:   rgba(220,38,38,0.18);
+  --c-accent-border: rgba(220,38,38,0.25);
+  --c-success:       #16A34A;
+  --c-success-dim:   rgba(22,163,74,0.12);
+  --c-amber:         #D4A80E;
+  --c-amber-dim:     rgba(212,168,14,0.12);
+
+  /* ─── Espaciado 8px grid ─── */
+  --s-1:   4px;
+  --s-2:   8px;
+  --s-3:  12px;
+  --s-4:  16px;
+  --s-5:  20px;
+  --s-6:  24px;
+  --s-8:  32px;
+  --s-10: 40px;
+  --s-12: 48px;  /* Mínimo touch target iOS/Android */
+  --s-16: 64px;
+
+  /* ─── Border radius ─── */
+  --r-sm:   12px;
+  --r-md:   16px;
+  --r-lg:   20px;
+  --r-xl:   24px;
+  --r-pill: 999px;
+
+  /* ─── Sombras ─── */
+  --shadow-card:       0 4px 24px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.55), 0 2px 6px rgba(0,0,0,0.35);
+  --shadow-glow:       0 0 40px rgba(220,38,38,0.12);
+  --shadow-fab:        0 8px 32px rgba(220,38,38,0.50), 0 0 0 1px rgba(255,255,255,0.08) inset;
+  --shadow-header:     0 2px 20px rgba(0,0,0,0.35);
+
+  /* ─── Touch target mínimo ─── */
+  --tap-comfort: 48px;
+
+  /* ─── Z-index admin ─── */
+  --z-progress: 110;
+  --z-header:   100;
+  --z-drawer:    90;
+  --z-fab:       80;
+  --z-bottom:    70;
+}
+
+/* ─── Aliases legacy → v2 solo dentro de .admin-shell (siempre dark).
+   Permite que componentes admin no migrados sigan funcionando sin cambios.
+   NO aplica globalmente para no romper coach/cliente en light mode. ─── */
+.admin-shell {
+  --color-wc-bg:             var(--c-bg);
+  --color-wc-bg-secondary:   var(--c-surface);
+  --color-wc-bg-tertiary:    var(--c-surface-2);
+  --color-wc-text:           var(--c-text);
+  --color-wc-text-secondary: var(--c-text-2);
+  --color-wc-text-tertiary:  var(--c-text-3);
+  --color-wc-accent:         var(--c-accent);
+  --color-wc-border:         var(--c-border);
+}
+
+/* ─── Utilidades tipográficas v2 ─── */
+
+/* Números tabulares: alinean decimales/montos en tablas y KPIs */
+.t-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Animación de entrada: fade + translateY para revelar secciones */
+@keyframes wcFadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.wc-reveal {
+  opacity: 0;
+  animation: wcFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.wc-reveal-1 { animation-delay: 0.05s; }
+.wc-reveal-2 { animation-delay: 0.12s; }
+.wc-reveal-3 { animation-delay: 0.20s; }
+.wc-reveal-4 { animation-delay: 0.28s; }
+.wc-reveal-5 { animation-delay: 0.36s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wc-reveal, .wc-reveal-1, .wc-reveal-2, .wc-reveal-3, .wc-reveal-4, .wc-reveal-5 {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 /* Base styles */
 html {
     /* Hereda el token wc-bg para que el área safe-area-inset (gesture bar Android,
