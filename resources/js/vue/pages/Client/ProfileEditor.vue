@@ -319,7 +319,7 @@ onBeforeUnmount(() => {
         </svg>
       </div>
       <p class="mt-4 text-sm text-wc-text-secondary">{{ error }}</p>
-      <button @click="fetchProfile" class="mt-4 rounded-xl bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white hover:bg-wc-accent-hover">
+      <button @click="fetchProfile" class="wc-btn-primary mt-4">
         Reintentar
       </button>
     </div>
@@ -567,7 +567,7 @@ onBeforeUnmount(() => {
         <button
           type="submit"
           :disabled="saving"
-          class="flex w-full items-center justify-center gap-2 rounded-xl bg-wc-accent px-8 py-3.5 text-sm font-semibold text-white transition-all hover:bg-wc-accent-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:py-3"
+          class="wc-btn-primary w-full justify-center sm:w-auto disabled:cursor-not-allowed disabled:opacity-60"
         >
           <svg v-if="saving" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
