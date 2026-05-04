@@ -113,6 +113,7 @@ onMounted(() => {
 
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--referrals">
 
     <!-- Loading Skeleton -->
     <div v-if="loading" class="mx-auto max-w-4xl space-y-6 sm:space-y-8">
@@ -397,6 +398,7 @@ onMounted(() => {
         </div>
       </div>
 
+    </div>
     </div>
   </ClientLayout>
 </template>

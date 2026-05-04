@@ -98,6 +98,7 @@ function progressColor(pct) {
 
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--challenges">
     <!-- Loading Skeleton -->
     <div v-if="loading" class="space-y-6">
       <div class="h-36 animate-pulse rounded-2xl border border-wc-border bg-wc-bg-tertiary"></div>
@@ -278,6 +279,7 @@ function progressColor(pct) {
           </div>
         </div>
       </div>
+    </div>
     </div>
   </ClientLayout>
 </template>

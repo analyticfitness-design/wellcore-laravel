@@ -177,6 +177,7 @@ onMounted(() => {
 
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--settings">
     <!-- Success Toasts -->
     <Transition
       enter-active-class="transition ease-out duration-300"
@@ -658,6 +659,7 @@ onMounted(() => {
           </p>
         </div>
       </div>
+    </div>
     </div>
   </ClientLayout>
 </template>

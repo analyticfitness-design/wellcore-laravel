@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6">
+  <div class="wc-shell wc-shell--recipes space-y-6">
     <!-- Premium compact header -->
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-3">

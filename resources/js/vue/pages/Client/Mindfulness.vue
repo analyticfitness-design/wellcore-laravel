@@ -1,5 +1,6 @@
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--mindfulness">
   <div class="space-y-8 px-4 sm:px-0 sm:space-y-10">
 
     <!-- ═══ HERO HEADER ═══════════════════════════════════════════════════════ -->
@@ -472,6 +473,7 @@
     </section>
 
   </div>
+    </div>
   </ClientLayout>
 </template>
 

@@ -97,6 +97,7 @@ function formatImprovement(value) {
 
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--records">
     <!-- Loading Skeleton -->
     <div v-if="loading" class="space-y-6">
       <div class="flex items-center justify-between">
@@ -244,6 +245,7 @@ function formatImprovement(value) {
             : 'Tus records personales apareceran aqui cuando los registres.' }}
         </p>
       </div>
+    </div>
     </div>
   </ClientLayout>
 </template>

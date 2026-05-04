@@ -820,6 +820,7 @@ function exerciseSummaryText(exIndex) {
 
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--training">
     <div class="relative">
       <LockOverlay v-if="isLocked" />
       <div :class="isLocked ? 'pointer-events-none blur-sm select-none' : ''" :aria-hidden="isLocked ? 'true' : undefined">
@@ -1891,6 +1892,7 @@ function exerciseSummaryText(exIndex) {
       @close="closeMedia"
     />
       </div>
+    </div>
     </div>
   </ClientLayout>
 </template>

@@ -119,6 +119,7 @@ onMounted(() => {
 
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--training-view">
     <div class="relative">
       <LockOverlay v-if="isLocked" />
       <div :class="isLocked ? 'pointer-events-none blur-sm select-none' : ''" :aria-hidden="isLocked ? 'true' : undefined">
@@ -238,6 +239,7 @@ onMounted(() => {
       </template>
     </div>
       </div>
+    </div>
     </div>
   </ClientLayout>
 </template>

@@ -288,6 +288,7 @@ onBeforeUnmount(() => {
 
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--checkin">
     <div class="space-y-6 pb-24 md:pb-6">
       <!-- Title -->
       <div class="flex items-start justify-between gap-4">
@@ -855,6 +856,7 @@ onBeforeUnmount(() => {
         </Transition>
       </Teleport>
       <!-- ===== /ONBOARDING TUTORIAL: CHECK-IN ===== -->
+    </div>
     </div>
   </ClientLayout>
 </template>

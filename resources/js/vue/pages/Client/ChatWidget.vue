@@ -193,6 +193,7 @@ onBeforeUnmount(() => {
 
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--chat">
     <!-- Loading Skeleton -->
     <div v-if="loading" class="space-y-6">
       <div class="space-y-2">
@@ -346,6 +347,7 @@ onBeforeUnmount(() => {
           </div>
         </template>
       </div>
+    </div>
     </div>
   </ClientLayout>
 </template>

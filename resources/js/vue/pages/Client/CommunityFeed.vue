@@ -511,6 +511,7 @@ function getReactionCount(post, type) {
 
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--community">
     <!-- Loading Skeleton -->
     <div v-if="loading" class="space-y-6">
       <div class="h-32 animate-pulse rounded-2xl border border-wc-border bg-wc-bg-tertiary"></div>
@@ -1146,6 +1147,7 @@ function getReactionCount(post, type) {
       @close="showPulsoUploader = false"
       @created="onPulsoCreated"
     />
+    </div>
   </ClientLayout>
 </template>
 

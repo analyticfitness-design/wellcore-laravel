@@ -1989,3 +1989,39 @@ html:not(.dark) .wc-shell--plan .plan-session-status.is-locked{
   background:rgba(0,0,0,.04);
   box-shadow:inset 0 0 0 1px rgba(0,0,0,.09);
 }
+
+/* ── §9.4+ Tabs restantes — light overrides (Tailwind tokens se manejan vía .dark en app.css) ── */
+html:not(.dark) .wc-shell--training-view,
+html:not(.dark) .wc-shell--training,
+html:not(.dark) .wc-shell--summary,
+html:not(.dark) .wc-shell--photos,
+html:not(.dark) .wc-shell--mindfulness,
+html:not(.dark) .wc-shell--chat,
+html:not(.dark) .wc-shell--settings,
+html:not(.dark) .wc-shell--profile,
+html:not(.dark) .wc-shell--community,
+html:not(.dark) .wc-shell--challenges,
+html:not(.dark) .wc-shell--referrals,
+html:not(.dark) .wc-shell--public-profile,
+html:not(.dark) .wc-shell--records,
+html:not(.dark) .wc-shell--audio,
+html:not(.dark) .wc-shell--academia,
+html:not(.dark) .wc-shell--evidence,
+html:not(.dark) .wc-shell--videos,
+html:not(.dark) .wc-shell--coach-feedback,
+html:not(.dark) .wc-shell--recipes,
+html:not(.dark) .wc-shell--ai-nutrition,
+html:not(.dark) .wc-shell--supplements,
+html:not(.dark) .wc-shell--tickets,
+html:not(.dark) .wc-shell--timer,
+html:not(.dark) .wc-shell--habits,
+html:not(.dark) .wc-shell--checkin,
+html:not(.dark) .wc-shell--video-checkin {
+  --wc-bg:  #F7F7FB;
+  --wc-bg2: #EEEEF6;
+  --wc-bg3: #FFFFFF;
+  --wc-text: #0F0F14;
+  --wc-text2: #2A2A35;
+  --wc-text3: #5A5A72;
+  --wc-border: rgba(0,0,0,.10);
+}

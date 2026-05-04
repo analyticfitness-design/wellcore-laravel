@@ -184,6 +184,7 @@ onBeforeUnmount(() => {
 
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--profile">
     <!-- Success Toast -->
     <Transition
       enter-active-class="transition ease-out duration-300"
@@ -579,5 +580,6 @@ onBeforeUnmount(() => {
       </div>
       </fieldset>
     </form>
+    </div>
   </ClientLayout>
 </template>

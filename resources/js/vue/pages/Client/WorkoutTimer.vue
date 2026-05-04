@@ -207,6 +207,7 @@ onUnmounted(() => {
 
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--timer">
     <div class="space-y-6">
       <!-- Header -->
       <div class="flex items-center justify-between">
@@ -380,6 +381,7 @@ onUnmounted(() => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   </ClientLayout>
 </template>

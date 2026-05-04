@@ -247,6 +247,7 @@ onBeforeUnmount(() => {
 
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--summary">
     <div class="space-y-8 pb-24 lg:pb-8">
 
       <!-- Loading -->
@@ -606,6 +607,7 @@ onBeforeUnmount(() => {
           </div>
         </template>
       </template>
+    </div>
     </div>
   </ClientLayout>
 </template>

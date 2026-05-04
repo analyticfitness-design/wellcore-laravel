@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6">
+  <div class="wc-shell wc-shell--video-checkin space-y-6">
     <!-- Header -->
     <div class="flex items-start justify-between">
       <div>

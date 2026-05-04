@@ -127,6 +127,7 @@ function formatDate(dateStr) {
 
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--ai-nutrition">
     <div class="space-y-6">
       <!-- Header -->
       <div>
@@ -301,6 +302,7 @@ function formatDate(dateStr) {
           </div>
         </div>
       </div>
+    </div>
     </div>
   </ClientLayout>
 </template>

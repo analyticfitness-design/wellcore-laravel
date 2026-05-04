@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6">
+  <div class="wc-shell wc-shell--evidence space-y-6">
     <!-- Header -->
     <div>
       <h1 class="font-display text-3xl tracking-wide text-wc-text">EVIDENCE-BASED HACKS</h1>

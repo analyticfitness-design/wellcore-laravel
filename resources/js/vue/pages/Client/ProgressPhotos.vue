@@ -344,6 +344,7 @@ onMounted(fetchPhotos);
 
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--photos">
     <!-- ===== ACHIEVEMENT OVERLAY ===== -->
     <Teleport to="body">
       <Transition
@@ -847,6 +848,7 @@ onMounted(fetchPhotos);
         <h3 class="mt-4 font-display text-xl text-wc-text">SIN FOTOS AUN</h3>
         <p class="mt-2 text-sm text-wc-text-secondary">Sube tu primera foto de progreso para empezar a registrar tu transformacion.</p>
       </div>
+    </div>
     </div>
   </ClientLayout>
 </template>

@@ -176,6 +176,7 @@ function getHabitLabel(type) {
 
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--habits">
 
     <!-- ── Loading skeleton ───────────────────────────────────────────────── -->
     <div v-if="loading" class="space-y-6">
@@ -455,6 +456,7 @@ function getHabitLabel(type) {
         </div>
       </div>
 
+    </div>
     </div>
   </ClientLayout>
 </template>

@@ -1,5 +1,6 @@
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--tickets">
     <div class="space-y-6">
 
       <!-- Header -->
@@ -307,6 +308,7 @@
         </div>
       </Transition>
 
+    </div>
     </div>
   </ClientLayout>
 </template>

@@ -1,5 +1,6 @@
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--coach-feedback">
     <div class="space-y-6">
 
       <!-- Header -->
@@ -230,6 +231,7 @@
         </template>
       </template>
 
+    </div>
     </div>
   </ClientLayout>
 </template>

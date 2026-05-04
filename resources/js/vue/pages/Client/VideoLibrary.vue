@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6">
+  <div class="wc-shell wc-shell--videos space-y-6">
     <div>
       <h1 class="font-display text-3xl tracking-wide text-wc-text">VIDEOS</h1>
       <p class="mt-1 text-sm text-wc-text-secondary">Tips y demostraciones en video de tu coach.</p>

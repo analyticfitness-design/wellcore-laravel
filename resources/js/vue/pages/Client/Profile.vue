@@ -65,6 +65,7 @@ onMounted(fetchProfile);
 
 <template>
   <ClientLayout>
+    <div class="wc-shell wc-shell--public-profile">
     <!-- Loading skeleton -->
     <div v-if="loading" class="space-y-6 animate-pulse">
       <div class="flex items-center gap-4">
@@ -205,6 +206,7 @@ onMounted(fetchProfile);
         <p class="text-sm text-wc-text/40">Aún no tiene medallas desbloqueadas.</p>
       </div>
 
+    </div>
     </div>
   </ClientLayout>
 </template>

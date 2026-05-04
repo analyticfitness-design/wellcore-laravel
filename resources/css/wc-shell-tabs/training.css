@@ -1,0 +1,169 @@
+/* ── §9.4 Training Tab ─────────────────────────────────────────────────── */
+
+/* Wrapper principal */
+.wc-shell--training {
+  min-height: 100dvh;
+}
+
+/* Sticky header del workout player */
+.wc-shell--training .workout-sticky-header {
+  background: color-mix(in srgb, var(--wc-bg) 95%, transparent);
+  border-bottom: 1px solid var(--wc-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Cards de ejercicio */
+.wc-shell--training .exercise-card {
+  background: var(--wc-bg2);
+  border: 1px solid var(--wc-border);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+/* Estado completado en exercise card */
+.wc-shell--training .exercise-card.is-done {
+  border-color: rgba(16, 185, 129, 0.3);
+  background: color-mix(in srgb, var(--wc-bg2) 90%, rgba(16,185,129,.1));
+}
+
+/* GIF del ejercicio */
+.training-gif {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 12px;
+  background: var(--wc-bg3, #1a1a22);
+}
+
+/* Inputs de series/reps/peso */
+.training-rep-input {
+  width: 68px;
+  height: 42px;
+  background: var(--wc-bg3, #1a1a22);
+  border: 1px solid var(--wc-border);
+  border-radius: 10px;
+  color: var(--wc-text);
+  font: 600 16px/1 var(--fm, monospace);
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.training-rep-input:focus {
+  outline: none;
+  border-color: var(--wc-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--wc-accent) 20%, transparent);
+}
+.training-rep-input::-webkit-outer-spin-button,
+.training-rep-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Botones +/- de rep count */
+.training-rep-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--wc-bg3, #1a1a22);
+  border: 1px solid var(--wc-border);
+  color: var(--wc-text);
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.training-rep-btn:active {
+  background: var(--wc-accent);
+  border-color: var(--wc-accent);
+  color: #fff;
+}
+
+/* Fila de acción completar set */
+.training-set-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--wc-border);
+}
+.training-set-row:last-child {
+  border-bottom: none;
+}
+.training-set-row.is-completed {
+  opacity: 0.55;
+}
+
+/* Rest timer overlay */
+.training-rest-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--wc-bg) 92%, transparent);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Barra de progreso del workout */
+.training-progress-bar {
+  height: 4px;
+  background: var(--wc-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.training-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--wc-accent), color-mix(in srgb, var(--wc-accent) 70%, #ff6b35));
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+/* Up-next sidebar (desktop) */
+.up-next-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.up-next-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--wc-bg2);
+  border: 1px solid var(--wc-border);
+  border-radius: 12px;
+  font-size: 13px;
+  color: var(--wc-text2);
+}
+.up-next-item.is-current {
+  border-color: var(--wc-accent);
+  color: var(--wc-text);
+}
+
+/* Desktop layout (grid 12-col heredado del .scroll padre) */
+@media (min-width: 1024px) {
+  /* El WorkoutPlayer mantiene su propio scroll por el sticky header */
+  /* No usamos el grid de 12 cols aqui — el contenido interno gestiona su propio layout */
+}
+
+/* Light theme overrides especificas de training */
+html:not(.dark) .wc-shell--training .training-rep-input {
+  background: #FFFFFF;
+  border-color: rgba(0,0,0,0.12);
+  color: #0F0F14;
+}
+html:not(.dark) .wc-shell--training .training-rep-btn {
+  background: #F0F0F8;
+  border-color: rgba(0,0,0,0.10);
+  color: #0F0F14;
+}
+html:not(.dark) .wc-shell--training .exercise-card {
+  background: #FFFFFF;
+  border-color: rgba(0,0,0,0.08);
+}
