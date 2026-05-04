@@ -47,19 +47,27 @@ const unwatch = router.afterEach(() => { sidebarOpen.value = false; });
 onUnmounted(() => { if (unwatch) unwatch(); });
 
 // ── Strangler Fig: detección de vista migrada al nuevo shell ────────────
-// Una ruta se considera migrada cuando:
-//  1. Define `meta.adminMigrated: true` en el router, O
-//  2. Está en MIGRATED_PATHS (fallback explícito por alcance de fase).
-// Las vistas no migradas siguen renderizando el shell legacy intacto.
-const MIGRATED_PATHS = new Set([
-  '/admin', // Fase 2 — Dashboard home
-]);
-const isMigrated = computed(() => {
-  if (route.meta?.adminMigrated === true) return true;
-  return MIGRATED_PATHS.has(route.path);
-});
+// Map de rutas migradas → modifier del wrapper. Cada entry: pathPrefix → tab.
+// Las vistas no listadas siguen renderizando el shell legacy intacto.
+//
+// Estrategia Fase 3+: las vistas operacionales reciben el shell visual nuevo
+// (sidebar/topbar/bottomnav target), pero su contenido legacy interno sigue
+// usando admin-atmosphere CSS via `.admin-shell` que aplicamos AL MISMO TIEMPO.
+const MIGRATED_ROUTES = [
+  // Fase 2 — Dashboard home (full target — sin .admin-shell legacy fallback)
+  { match: (p) => p === '/admin',                   tab: 'dashboard',      cosmetic: false },
+  // Fase 3 — Operaciones financieras (cosmetic shell, contenido legacy)
+  { match: (p) => p.startsWith('/admin/clients'),         tab: 'clients',        cosmetic: true },
+  { match: (p) => p.startsWith('/admin/payments'),        tab: 'payments',       cosmetic: true },
+  { match: (p) => p.startsWith('/admin/inscriptions'),    tab: 'inscriptions',   cosmetic: true },
+  { match: (p) => p.startsWith('/admin/payment-proofs'),  tab: 'payment-proofs', cosmetic: true },
+  { match: (p) => p.startsWith('/admin/invitations'),     tab: 'invitations',    cosmetic: true },
+];
 
-const adminTab = computed(() => route.meta?.adminTab || 'dashboard');
+const matchedRoute = computed(() => MIGRATED_ROUTES.find(r => r.match(route.path)) || null);
+const isMigrated = computed(() => route.meta?.adminMigrated === true || !!matchedRoute.value);
+const adminTab = computed(() => route.meta?.adminTab || matchedRoute.value?.tab || 'dashboard');
+const isCosmetic = computed(() => !!matchedRoute.value?.cosmetic);
 
 function openSearch() { cmdPalette.value?.open(); }
 
@@ -82,9 +90,11 @@ const SHORTCUTS = [
 
 <template>
   <!-- ═══════ NUEVO SHELL (vistas migradas) ═══════ -->
+  <!-- Cuando isCosmetic, agregamos también `.admin-shell` para que los selectores
+       legacy de admin-atmosphere.css apliquen al contenido interno de la vista. -->
   <div
     v-if="isMigrated"
-    :class="['wc-admin-shell', `wc-admin-shell--${adminTab}`]"
+    :class="['wc-admin-shell', `wc-admin-shell--${adminTab}`, { 'admin-shell': isCosmetic }]"
   >
     <!-- Mobile sidebar overlay -->
     <Transition

@@ -1,0 +1,58 @@
+/* ════════════════════════════════════════════════════════
+   wc-admin-shell-tabs/operaciones.css
+   Scope: vistas operacionales con shell cosmetic (Fase 3).
+     .wc-admin-shell--clients
+     .wc-admin-shell--payments
+     .wc-admin-shell--inscriptions
+     .wc-admin-shell--payment-proofs
+     .wc-admin-shell--invitations
+   Estas vistas tienen el shell visual nuevo (sidebar/topbar/bottomnav target)
+   pero el contenido legacy via admin-atmosphere.css (clase .admin-shell
+   tambien aplicada al wrapper). Las reglas aqui ajustan el padding del
+   .canvas y compatibilidad de tokens.
+   ════════════════════════════════════════════════════════ */
+
+/* Padding del canvas (donde se renderiza el <slot> legacy) — equivalente a
+   .admin-main del shell legacy (padding 20px 16px 90px mobile, 24px 28px desktop). */
+.wc-admin-shell--clients .canvas,
+.wc-admin-shell--payments .canvas,
+.wc-admin-shell--inscriptions .canvas,
+.wc-admin-shell--payment-proofs .canvas,
+.wc-admin-shell--invitations .canvas{
+  padding: 20px 16px 32px;
+  max-width: none;
+  margin: 0;
+  width: 100%;
+}
+
+@media (min-width: 1024px){
+  .wc-admin-shell--clients .canvas,
+  .wc-admin-shell--payments .canvas,
+  .wc-admin-shell--inscriptions .canvas,
+  .wc-admin-shell--payment-proofs .canvas,
+  .wc-admin-shell--invitations .canvas{
+    padding: 24px 32px 64px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+}
+
+/* Compat tokens: admin-atmosphere define --color-wc-* dentro de .admin-shell.
+   Cuando aplicamos AMBAS (.wc-admin-shell + .admin-shell + cosmetic modifier),
+   los tokens legacy ya estan disponibles. Aqui solo aliasamos a los tokens
+   nuevos por si algun componente legacy los referencia con nombres alt. */
+.wc-admin-shell--clients,
+.wc-admin-shell--payments,
+.wc-admin-shell--inscriptions,
+.wc-admin-shell--payment-proofs,
+.wc-admin-shell--invitations{
+  --color-wc-bg: var(--wc-bg);
+  --color-wc-bg-secondary: var(--wc-bg2);
+  --color-wc-bg-tertiary: var(--wc-bg3);
+  --color-wc-text: var(--wc-text);
+  --color-wc-text-secondary: var(--wc-text-2);
+  --color-wc-text-tertiary: var(--wc-text-3);
+  --color-wc-border: var(--wc-border);
+  --admin-sidebar-w: var(--wc-admin-side-w);
+  --admin-topbar-h: var(--wc-admin-topbar-h);
+}
