@@ -146,6 +146,11 @@ final class ManagedAgentService
                     } elseif (in_array($type, ['session.status_idle', 'session.completed'], true)) {
                         $done = true;
                         return -1;
+                    } elseif ($type === 'session.error') {
+                        $errorMsg = $event['error']['message'] ?? 'unknown session error';
+                        Log::error('ManagedAgentService session.error: ' . $errorMsg, $event);
+                        $done = true;
+                        return -1;
                     } elseif ($type === 'error') {
                         Log::error('ManagedAgentService SSE error', $event);
                     }
