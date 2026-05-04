@@ -1,0 +1,216 @@
+/* ═════════════════════════════════════════════════════════════════════════
+   Logros · Specifics for .wc-shell--logros
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.wc-shell--logros .logros-grid{
+  display:grid;
+  grid-template-columns:repeat(2, 1fr);
+  gap:14px;
+  padding:6px var(--s20) 18px;
+}
+.wc-shell--logros .logro-card{
+  position:relative;
+  display:flex; flex-direction:column; align-items:center;
+  gap:10px;
+  padding:18px 14px;
+  border-radius:14px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.005)) padding-box,
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)) border-box;
+  border:1px solid transparent;
+  text-align:center;
+  transition:transform 200ms var(--ease-spring), box-shadow 300ms var(--ease-out);
+  cursor:pointer;
+}
+.wc-shell--logros .logro-card.is-unlocked{
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(245,158,11,.18), transparent 60%) padding-box,
+    linear-gradient(180deg, rgba(245,158,11,.40), rgba(245,158,11,.10)) border-box;
+}
+.wc-shell--logros .logro-card.is-unlocked:hover{
+  transform:translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.04),
+    0 8px 24px rgba(0,0,0,.30),
+    0 0 24px rgba(245,158,11,.18);
+}
+.wc-shell--logros .logro-card.is-locked{
+  opacity:.55;
+}
+.wc-shell--logros .logro-art{
+  color:var(--wc-amber);
+}
+.wc-shell--logros .logro-card.is-locked .logro-art{
+  color:var(--wc-text-3);
+}
+.wc-shell--logros .logro-title{
+  font:700 13px/1.2 var(--fs);
+  color:var(--wc-text);
+}
+.wc-shell--logros .logro-sub{
+  font-size:11px;
+  color:var(--wc-text-3);
+  line-height:1.4;
+}
+.wc-shell--logros .logro-xp{
+  font:700 11px/1 var(--fm);
+  color:var(--wc-amber);
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  padding:4px 8px;
+  border-radius:var(--r-pill);
+  background:rgba(245,158,11,.12);
+  box-shadow:inset 0 0 0 1px rgba(245,158,11,.30);
+}
+
+/* Filtros */
+.wc-shell--logros .logros-filters{
+  display:flex; gap:8px; overflow-x:auto;
+  padding:0 var(--s20) 14px;
+  scrollbar-width:none;
+}
+.wc-shell--logros .logros-filters::-webkit-scrollbar{ display:none; }
+.wc-shell--logros .logros-filter{
+  flex-shrink:0;
+  padding:8px 14px;
+  border-radius:var(--r-pill);
+  background:rgba(255,255,255,.04);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
+  font:600 11px/1 var(--fs);
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--wc-text-2);
+  cursor:pointer;
+  transition:background 180ms var(--ease-out), color 180ms var(--ease-out);
+  border:none;
+  appearance:none;
+}
+.wc-shell--logros .logros-filter.is-active{
+  background:rgba(220,38,38,.14);
+  color:#FCA5A5;
+  box-shadow:inset 0 0 0 1px rgba(220,38,38,.40);
+}
+
+/* Bottom-sheet detail */
+.wc-shell--logros .logros-overlay{
+  position:fixed; inset:0; z-index:50;
+  background:rgba(0,0,0,.70);
+}
+.wc-shell--logros .logros-sheet{
+  position:fixed; inset-inline:0; bottom:0; z-index:51;
+  background:var(--wc-bg2);
+  border-top:1px solid var(--wc-border);
+  border-radius:24px 24px 0 0;
+  padding:24px;
+  box-shadow:0 -8px 40px rgba(0,0,0,.50);
+}
+.wc-shell--logros .logros-sheet-handle{
+  width:48px; height:4px;
+  border-radius:var(--r-pill);
+  background:var(--wc-border);
+  margin:0 auto 20px;
+}
+.wc-shell--logros .logros-sheet-header{
+  display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
+  margin-bottom:16px;
+}
+.wc-shell--logros .logros-sheet-status{
+  font:600 10px/1 var(--fs);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-bottom:4px;
+}
+.wc-shell--logros .logros-sheet-title{
+  font:700 22px/1.1 var(--fd);
+  text-transform:uppercase;
+  letter-spacing:.02em;
+  color:var(--wc-text);
+}
+.wc-shell--logros .logros-sheet-close{
+  flex-shrink:0;
+  width:32px; height:32px;
+  border-radius:var(--r-pill);
+  border:1px solid var(--wc-border);
+  background:transparent;
+  color:var(--wc-text-3);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  transition:color 150ms;
+}
+.wc-shell--logros .logros-sheet-close:hover{ color:var(--wc-text); }
+.wc-shell--logros .logros-sheet-art{
+  display:flex; justify-content:center;
+  margin:16px 0;
+}
+.wc-shell--logros .logros-sheet-desc{
+  font:400 14px/1.5 var(--fs);
+  color:var(--wc-text-2);
+  margin-bottom:16px;
+}
+.wc-shell--logros .logros-sheet-block{
+  border-radius:var(--r-md);
+  border:1px solid var(--wc-border);
+  background:var(--wc-bg3);
+  padding:14px;
+  margin-bottom:10px;
+}
+.wc-shell--logros .logros-sheet-block-label{
+  font:600 10px/1 var(--fs);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--wc-text-3);
+  margin-bottom:6px;
+}
+.wc-shell--logros .logros-sheet-block-value{
+  font:400 14px/1.4 var(--fs);
+  color:var(--wc-text);
+}
+.wc-shell--logros .logros-xp-badge{
+  display:inline-block;
+  padding:4px 12px;
+  border-radius:var(--r-pill);
+  background:#C4D92E;
+  font:700 12px/1 var(--fm);
+  color:#000;
+  letter-spacing:.04em;
+}
+.wc-shell--logros .logros-sheet-progress{
+  margin-top:8px;
+}
+.wc-shell--logros .logros-sheet-progress-bar{
+  height:8px;
+  border-radius:var(--r-pill);
+  background:var(--wc-bg);
+  overflow:hidden;
+  margin-top:6px;
+}
+.wc-shell--logros .logros-sheet-progress-fill{
+  height:100%;
+  border-radius:var(--r-pill);
+  background:linear-gradient(90deg, #DC2626, #F59E0B);
+  transition:width .7s var(--ease-out);
+}
+
+/* Desktop grid spans */
+@media (min-width: 1024px){
+  .wc-shell--logros .wc-card-logros-stats{ grid-column: span 12; }
+  .wc-shell--logros .wc-card-logros-filters{ grid-column: span 12; }
+  .wc-shell--logros .wc-card-logros-grid{ grid-column: span 12; }
+  .wc-shell--logros .logros-grid{
+    grid-template-columns:repeat(4, 1fr);
+    gap:18px;
+    padding:8px 22px 22px;
+  }
+}
+@media (min-width: 640px){
+  .wc-shell--logros .logros-sheet{
+    position:fixed; top:50%; left:50%; right:auto; bottom:auto;
+    inset-inline:auto;
+    transform:translate(-50%,-50%);
+    width:100%; max-width:448px;
+    border-radius:20px;
+    border:1px solid var(--wc-border);
+    border-top:1px solid var(--wc-border);
+  }
+  .wc-shell--logros .logros-sheet-handle{ display:none; }
+}

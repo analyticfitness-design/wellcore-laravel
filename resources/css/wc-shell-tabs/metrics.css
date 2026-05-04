@@ -1,0 +1,86 @@
+/* ═════════════════════════════════════════════════════════════════════════
+   Métricas · Specifics for .wc-shell--metrics
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.wc-shell--metrics .metrics-chart-wrap{
+  height:280px;
+  padding:6px var(--s20) var(--s20);
+}
+
+/* Form styles */
+.wc-shell--metrics .metrics-form{
+  padding:18px var(--s20);
+}
+.wc-shell--metrics .metrics-form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.wc-shell--metrics .metrics-field{
+  display:flex; flex-direction:column; gap:6px;
+}
+.wc-shell--metrics .metrics-label{
+  font:600 11px/1 var(--fs);
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--wc-text-2);
+}
+.wc-shell--metrics .metrics-input{
+  background:var(--wc-bg3);
+  border:1px solid var(--wc-border);
+  border-radius:var(--r-sm);
+  padding:10px 14px;
+  font:400 15px/1 var(--fm);
+  color:var(--wc-text);
+  outline:none;
+  transition:border-color 150ms;
+  width:100%;
+}
+.wc-shell--metrics .metrics-input:focus{
+  border-color:var(--wc-accent);
+  box-shadow:0 0 0 2px rgba(220,38,38,.15);
+}
+.wc-shell--metrics .metrics-input::placeholder{
+  color:var(--wc-text-3);
+}
+.wc-shell--metrics .metrics-error{
+  font-size:11px;
+  color:var(--wc-accent);
+  margin-top:2px;
+}
+
+/* History table */
+.wc-shell--metrics .metrics-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+.wc-shell--metrics .metrics-table th{
+  font:600 10px/1 var(--fs);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--wc-text-3);
+  padding:10px 16px;
+  text-align:left;
+  border-bottom:1px solid var(--wc-border);
+}
+.wc-shell--metrics .metrics-table td{
+  padding:10px 16px;
+  color:var(--wc-text-2);
+  border-bottom:1px solid rgba(255,255,255,.03);
+  font-family:var(--fm);
+}
+.wc-shell--metrics .metrics-table tr:hover td{
+  background:rgba(255,255,255,.015);
+}
+
+@media (min-width: 1024px){
+  .wc-shell--metrics .wc-card-metrics-stats{ grid-column: span 12; }
+  .wc-shell--metrics .wc-card-metrics-weight{ grid-column: span 8; }
+  .wc-shell--metrics .wc-card-metrics-bestworst{ grid-column: span 4; }
+  .wc-shell--metrics .wc-card-metrics-charts{ grid-column: span 12; }
+  .wc-shell--metrics .wc-card-metrics-form{ grid-column: span 12; }
+  .wc-shell--metrics .wc-card-metrics-history{ grid-column: span 12; }
+  .wc-shell--metrics .metrics-chart-wrap{ height:340px; padding:8px 22px 22px; }
+  .wc-shell--metrics .metrics-form-grid{ grid-template-columns: repeat(4, 1fr); }
+}

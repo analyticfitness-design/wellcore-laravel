@@ -4,6 +4,8 @@ import { useApi } from '../../composables/useApi';
 import { useCancellableFetch } from '../../composables/useCancellableFetch';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import { Chart, registerables } from 'chart.js';
+import MetricsHero from '../../components/metrics/MetricsHero.vue';
+import WcStatCard from '../../components/ui/wellcore/WcStatCard.vue';
 
 Chart.register(...registerables);
 
@@ -391,524 +393,568 @@ onBeforeUnmount(() => {
 
 <template>
   <ClientLayout>
-    <div class="space-y-6">
-      <!-- Page header -->
-      <div>
-        <h1 class="font-display text-3xl tracking-wide text-wc-text">METRICAS CORPORALES</h1>
-        <p class="mt-1 text-sm text-wc-text-secondary">Registra y monitorea tu composicion corporal</p>
-      </div>
-
-      <!-- Loading skeleton -->
-      <div v-if="loading" class="space-y-4">
-        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          <div v-for="i in 3" :key="i" class="h-24 animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary"></div>
-        </div>
-        <div class="h-64 animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary"></div>
-        <div class="h-48 animate-pulse rounded-xl border border-wc-border bg-wc-bg-tertiary"></div>
-      </div>
-
-      <!-- Error state -->
-      <div v-else-if="error" class="flex flex-col items-center justify-center py-20">
-        <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-wc-accent/10">
-          <svg class="h-8 w-8 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-          </svg>
-        </div>
-        <p class="mt-4 text-sm text-wc-text-secondary">{{ error }}</p>
-        <button @click="fetchMetrics" class="wc-btn-primary mt-4">
-          Reintentar
-        </button>
-      </div>
-
-      <!-- Main content -->
-      <template v-else>
-        <!-- Stat Cards -->
-        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          <!-- Current Weight -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Peso actual</p>
-            <p class="mt-1 font-display text-3xl text-wc-accent">
-              {{ currentWeight ? Number(currentWeight).toFixed(1) : '--' }}
-              <span class="text-sm text-wc-text-secondary">kg</span>
-            </p>
-          </div>
-
-          <!-- Monthly Change -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Cambio mensual</p>
-            <p :class="[
-              'mt-1 font-display text-3xl',
-              weightChange !== null
-                ? (weightChange > 0 ? 'text-amber-500' : weightChange < 0 ? 'text-emerald-500' : 'text-wc-text')
-                : 'text-wc-text'
-            ]">
-              <template v-if="weightChange !== null">
-                {{ weightChange > 0 ? '+' : '' }}{{ Number(weightChange).toFixed(1) }}
-                <span class="text-sm text-wc-text-secondary">kg</span>
-              </template>
-              <template v-else>--</template>
-            </p>
-          </div>
-
-          <!-- Goal Placeholder -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
-            <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Objetivo</p>
-            <p class="mt-1 font-display text-3xl text-wc-text-tertiary">
-              -- <span class="text-base font-normal">kg</span>
-            </p>
-            <p class="mt-1 text-sm text-wc-text-tertiary">Consulta con tu coach</p>
+    <!-- ═══════════ LOADING STATE ═══════════ -->
+    <div v-if="loading" class="wc-shell wc-shell--metrics">
+      <main class="scroll">
+        <div style="grid-column:span 12; padding:var(--s20);">
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:12px;">
+              <div v-for="i in 4" :key="i" style="height:96px; border-radius:16px; background:var(--wc-bg3); animation:pulse 1.5s ease-in-out infinite;"></div>
+            </div>
+            <div style="height:260px; border-radius:16px; background:var(--wc-bg3); animation:pulse 1.5s ease-in-out infinite;"></div>
+            <div style="height:180px; border-radius:16px; background:var(--wc-bg3); animation:pulse 1.5s ease-in-out infinite;"></div>
           </div>
         </div>
+      </main>
+    </div>
+
+    <!-- ═══════════ ERROR STATE ═══════════ -->
+    <div v-else-if="error" class="wc-shell wc-shell--metrics">
+      <main class="scroll">
+        <div style="grid-column:span 12; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px var(--s20);">
+          <div style="width:64px; height:64px; border-radius:16px; background:rgba(220,38,38,.10); display:flex; align-items:center; justify-content:center;">
+            <svg style="width:32px; height:32px; color:var(--wc-accent);" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+          </div>
+          <p style="margin-top:16px; font-size:14px; color:var(--wc-text-2);">{{ error }}</p>
+          <button @click="fetchMetrics" class="btn btn-accent" style="margin-top:16px;">Reintentar</button>
+        </div>
+      </main>
+    </div>
+
+    <!-- ═══════════ MAIN CONTENT ═══════════ -->
+    <div v-else class="wc-shell wc-shell--metrics">
+      <main class="scroll">
+
+        <!-- Hero -->
+        <MetricsHero
+          :current-weight="currentWeight"
+          :weight-change="weightChange"
+        />
+
+        <!-- Stats Grid -->
+        <div class="stats-grid section wc-card-metrics-stats" :style="{ animationDelay: '180ms' }">
+          <WcStatCard
+            variant="red"
+            label="Peso actual"
+            :value="currentWeight ? Number(currentWeight).toFixed(1) : '--'"
+            unit="kg"
+            sub="último registro"
+          />
+          <WcStatCard
+            :variant="weightChange !== null ? (weightChange > 0 ? 'amber' : 'green') : 'red'"
+            label="Cambio mensual"
+            :value="weightChange !== null ? (weightChange > 0 ? '+' : '') + Number(weightChange).toFixed(1) : '--'"
+            unit="kg"
+            sub="este mes"
+          />
+          <WcStatCard
+            variant="purple"
+            label="Objetivo"
+            value="--"
+            unit="kg"
+            sub="Consulta al coach"
+          />
+          <WcStatCard
+            variant="green"
+            label="Registros"
+            :value="history.length"
+            sub="historial total"
+          />
+        </div>
+
+        <!-- Weight Chart (primary, wide) -->
+        <section class="card section wc-card-metrics-weight" :style="{ animationDelay: '220ms' }">
+          <div class="card-head">
+            <div class="card-head-left">
+              <span class="card-title">Peso Corporal</span>
+            </div>
+            <span class="card-meta">Últimos 90 días</span>
+          </div>
+          <div class="metrics-chart-wrap" style="position:relative;">
+            <canvas ref="weightChartRef"></canvas>
+            <p
+              v-if="!hasWeight"
+              style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:13px; color:var(--wc-text-3);"
+            >
+              Sin datos de peso aún
+            </p>
+          </div>
+        </section>
+
+        <!-- Analysis Charts (2x2 grid) -->
+        <section class="card section wc-card-metrics-charts" :style="{ animationDelay: '260ms' }">
+          <div class="card-head">
+            <div class="card-head-left">
+              <span class="card-title">Análisis</span>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--wc-border);">
+            <!-- Check-ins Semanales -->
+            <div style="background:var(--wc-bg2); padding:16px 20px;">
+              <p style="font:600 12px/1 var(--fd); text-transform:uppercase; letter-spacing:.06em; color:var(--wc-text);">Check-ins Semanales</p>
+              <p style="font-size:11px; color:var(--wc-text-3); margin-top:2px;">Últimas 12 semanas</p>
+              <div style="position:relative; margin-top:14px; height:180px;">
+                <canvas ref="checkinChartRef"></canvas>
+                <p
+                  v-if="!hasCheckins"
+                  style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:13px; color:var(--wc-text-3);"
+                >
+                  Sin check-ins recientes
+                </p>
+              </div>
+            </div>
+
+            <!-- Composición Corporal -->
+            <div style="background:var(--wc-bg2); padding:16px 20px;">
+              <p style="font:600 12px/1 var(--fd); text-transform:uppercase; letter-spacing:.06em; color:var(--wc-text);">Composición Corporal</p>
+              <p style="font-size:11px; color:var(--wc-text-3); margin-top:2px;">Última medición</p>
+              <div style="position:relative; margin-top:14px; height:180px; display:flex; align-items:center; justify-content:center;">
+                <canvas ref="compositionChartRef"></canvas>
+                <p
+                  v-if="!hasComposition"
+                  style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:13px; color:var(--wc-text-3);"
+                >
+                  Sin datos de composición
+                </p>
+              </div>
+            </div>
+
+            <!-- Volumen de Entrenamiento -->
+            <div style="background:var(--wc-bg2); padding:16px 20px; grid-column:span 2;">
+              <p style="font:600 12px/1 var(--fd); text-transform:uppercase; letter-spacing:.06em; color:var(--wc-text);">Volumen de Entrenamiento</p>
+              <p style="font-size:11px; color:var(--wc-text-3); margin-top:2px;">Sesiones por semana</p>
+              <div style="position:relative; margin-top:14px; height:180px;">
+                <canvas ref="trainingChartRef"></canvas>
+                <p
+                  v-if="!hasTraining"
+                  style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:13px; color:var(--wc-text-3);"
+                >
+                  Sin sesiones registradas
+                </p>
+              </div>
+            </div>
+
+            <!-- Tendencia de Peso (CSS bar chart mini) -->
+            <div v-if="chartData.length > 0" style="background:var(--wc-bg2); padding:16px 20px; grid-column:span 2;">
+              <p style="font:600 12px/1 var(--fd); text-transform:uppercase; letter-spacing:.06em; color:var(--wc-text-3); margin-bottom:12px;">Tendencia de peso</p>
+              <div style="display:flex; align-items:flex-end; gap:4px; height:120px;">
+                <div
+                  v-for="(entry, idx) in chartData"
+                  :key="idx"
+                  style="position:relative; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%;"
+                  class="group"
+                >
+                  <div
+                    style="width:100%; border-radius:4px 4px 0 0; background:rgba(220,38,38,0.6); transition:background 200ms;"
+                    :style="{ height: getBarHeight(entry.peso) + '%' }"
+                  ></div>
+                  <span style="margin-top:4px; font-size:9px; color:var(--wc-text-3);">{{ formatDate(entry.date) }}</span>
+                </div>
+              </div>
+              <div style="margin-top:8px; display:flex; justify-content:space-between; font-size:11px; color:var(--wc-text-3); font-family:var(--fm);">
+                <span>Min: {{ Math.min(...chartData.map(e => Number(e.peso))).toFixed(1) }} kg</span>
+                <span>Max: {{ Math.max(...chartData.map(e => Number(e.peso))).toFixed(1) }} kg</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <!-- Log Form -->
-        <form @submit.prevent="saveMetric" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 sm:p-6">
-          <h2 class="mb-4 text-lg font-semibold text-wc-text">Nuevo registro</h2>
-
-          <!-- Save error -->
-          <div v-if="saveError" class="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
-            {{ saveError }}
-          </div>
-
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <!-- Peso -->
-            <div>
-              <label for="peso" class="mb-1 block text-sm font-medium text-wc-text">Peso (kg) <span class="text-wc-accent">*</span></label>
-              <input
-                type="number"
-                id="peso"
-                v-model.number="form.peso"
-                step="0.1"
-                min="20"
-                max="300"
-                placeholder="75.0"
-                class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-2.5 font-data text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
-              >
-              <p v-if="formErrors.peso" class="mt-1 text-xs text-red-500">{{ formErrors.peso[0] }}</p>
-            </div>
-
-            <!-- % Musculo -->
-            <div>
-              <label for="porcentajeMusculo" class="mb-1 block text-sm font-medium text-wc-text">% Musculo</label>
-              <input
-                type="number"
-                id="porcentajeMusculo"
-                v-model.number="form.porcentajeMusculo"
-                step="0.1"
-                min="0"
-                max="100"
-                placeholder="40.0"
-                class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-2.5 font-data text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
-              >
-              <p v-if="formErrors.porcentaje_musculo" class="mt-1 text-xs text-red-500">{{ formErrors.porcentaje_musculo[0] }}</p>
-            </div>
-
-            <!-- % Grasa -->
-            <div>
-              <label for="porcentajeGrasa" class="mb-1 block text-sm font-medium text-wc-text">% Grasa</label>
-              <input
-                type="number"
-                id="porcentajeGrasa"
-                v-model.number="form.porcentajeGrasa"
-                step="0.1"
-                min="0"
-                max="100"
-                placeholder="18.0"
-                class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-2.5 font-data text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
-              >
-              <p v-if="formErrors.porcentaje_grasa" class="mt-1 text-xs text-red-500">{{ formErrors.porcentaje_grasa[0] }}</p>
-            </div>
-
-            <!-- Notas -->
-            <div>
-              <label for="notas" class="mb-1 block text-sm font-medium text-wc-text">Notas</label>
-              <input
-                type="text"
-                id="notas"
-                v-model="form.notas"
-                placeholder="En ayunas, post-entrenamiento..."
-                class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
-              >
+        <section class="card section wc-card-metrics-form" :style="{ animationDelay: '300ms' }">
+          <div class="card-head">
+            <div class="card-head-left">
+              <span class="card-title">Nuevo Registro</span>
             </div>
           </div>
 
-          <!-- Body Measurements Section -->
-          <div class="mt-6 border-t border-wc-border pt-5">
-            <div class="mb-4 flex items-center gap-3">
-              <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10">
-                <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                </svg>
-              </div>
-              <div>
-                <h3 class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Mediciones corporales</h3>
-                <p class="text-sm text-wc-text-tertiary">Mide con cinta metrica flexible, en la manana</p>
-              </div>
-            </div>
+          <form @submit.prevent="saveMetric" class="metrics-form">
 
-            <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-              <div>
-                <label for="chest" class="mb-1 block text-sm font-medium text-wc-text">Pecho (cm)</label>
-                <input type="number" id="chest" v-model.number="form.chest" step="0.1" min="30" max="200" placeholder="95.0"
-                  class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
-              </div>
-              <div>
-                <label for="waist" class="mb-1 block text-sm font-medium text-wc-text">Cintura (cm)</label>
-                <input type="number" id="waist" v-model.number="form.waist" step="0.1" min="30" max="200" placeholder="80.0"
-                  class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
-              </div>
-              <div>
-                <label for="hip" class="mb-1 block text-sm font-medium text-wc-text">Cadera (cm)</label>
-                <input type="number" id="hip" v-model.number="form.hip" step="0.1" min="30" max="200" placeholder="95.0"
-                  class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
-              </div>
-              <div>
-                <label for="thigh" class="mb-1 block text-sm font-medium text-wc-text">Muslo (cm)</label>
-                <input type="number" id="thigh" v-model.number="form.thigh" step="0.1" min="20" max="100" placeholder="55.0"
-                  class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
-              </div>
-              <div>
-                <label for="arm" class="mb-1 block text-sm font-medium text-wc-text">Brazo (cm)</label>
-                <input type="number" id="arm" v-model.number="form.arm" step="0.1" min="15" max="60" placeholder="32.0"
-                  class="w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-3 py-2 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
-              </div>
-            </div>
-
-            <!-- Measurement guide -->
-            <div class="mt-4 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
-              <button @click="showGuide = !showGuide" type="button" class="flex w-full items-center justify-between text-left">
-                <span class="text-sm font-semibold text-amber-400">Como tomar las mediciones correctamente</span>
-                <svg :class="['h-4 w-4 text-amber-400 transition-transform', showGuide && 'rotate-180']" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                </svg>
-              </button>
-              <Transition
-                enter-active-class="transition-all duration-300 ease-out"
-                enter-from-class="max-h-0 opacity-0"
-                enter-to-class="max-h-96 opacity-100"
-                leave-active-class="transition-all duration-200 ease-in"
-                leave-from-class="max-h-96 opacity-100"
-                leave-to-class="max-h-0 opacity-0"
-              >
-                <div v-show="showGuide" class="mt-3 space-y-2 overflow-hidden text-sm text-wc-text-secondary">
-                  <p><strong class="text-wc-text">Pecho:</strong> Cinta alrededor del torso a la altura de los pezones. Brazos relajados a los lados. No inflar el pecho.</p>
-                  <p><strong class="text-wc-text">Cintura:</strong> En el punto mas estrecho del abdomen, generalmente 2-3 cm arriba del ombligo. Medir al exhalar normalmente.</p>
-                  <p><strong class="text-wc-text">Cadera:</strong> En el punto mas ancho de los gluteos. Pies juntos, de pie recto.</p>
-                  <p><strong class="text-wc-text">Muslo:</strong> En el punto mas grueso del muslo, generalmente justo debajo del gluteo. Pierna relajada sin flexionar.</p>
-                  <p><strong class="text-wc-text">Brazo:</strong> Brazo relajado a un lado. Medir en el punto mas grueso del biceps sin flexionar.</p>
-                  <p class="mt-2 text-amber-400/70">Medir siempre en las mismas condiciones: por la manana, antes de comer, mismo lado del cuerpo.</p>
-                </div>
-              </Transition>
-            </div>
-          </div>
-
-          <div class="mt-5">
-            <button
-              type="submit"
-              :disabled="saving"
-              class="wc-btn-primary disabled:opacity-50"
-            >
-              <span v-if="!saving">Guardar registro</span>
-              <span v-else class="inline-flex items-center gap-2">
-                <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                </svg>
-                Guardando...
-              </span>
-            </button>
-          </div>
-        </form>
-
-        <!-- Weight CSS Bar Chart (mini) -->
-        <div v-if="chartData.length > 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-          <h2 class="mb-4 text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Tendencia de peso</h2>
-
-          <div class="flex items-end gap-1 sm:gap-2" style="height: 120px;">
+            <!-- Save error banner -->
             <div
-              v-for="(entry, idx) in chartData"
-              :key="idx"
-              class="group relative flex flex-1 flex-col items-center justify-end"
-              style="height: 100%;"
+              v-if="saveError"
+              style="margin-bottom:16px; border-radius:10px; border:1px solid rgba(220,38,38,.30); background:rgba(220,38,38,.08); padding:12px 16px; font-size:13px; color:#FCA5A5;"
             >
-              <div class="pointer-events-none absolute -top-8 z-10 hidden rounded bg-wc-bg-secondary px-2 py-1 text-xs font-medium text-wc-text shadow-lg group-hover:block">
-                {{ Number(entry.peso).toFixed(1) }} kg
+              {{ saveError }}
+            </div>
+
+            <!-- Primary fields grid -->
+            <div class="metrics-form-grid">
+              <!-- Peso -->
+              <div class="metrics-field">
+                <label for="peso" class="metrics-label">
+                  Peso (kg) <span style="color:var(--wc-accent);">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="peso"
+                  v-model.number="form.peso"
+                  step="0.1"
+                  min="20"
+                  max="300"
+                  placeholder="75.0"
+                  class="metrics-input"
+                >
+                <p v-if="formErrors.peso" class="metrics-error">{{ formErrors.peso[0] }}</p>
               </div>
-              <div
-                class="w-full rounded-t bg-wc-accent/80 transition-all group-hover:bg-wc-accent"
-                :style="{ height: getBarHeight(entry.peso) + '%' }"
-              ></div>
-              <span class="mt-1 text-[10px] text-wc-text-tertiary">{{ formatDate(entry.date) }}</span>
-            </div>
-          </div>
 
-          <div class="mt-2 flex justify-between text-xs text-wc-text-tertiary">
-            <span>Min: {{ Math.min(...chartData.map(e => Number(e.peso))).toFixed(1) }} kg</span>
-            <span>Max: {{ Math.max(...chartData.map(e => Number(e.peso))).toFixed(1) }} kg</span>
-          </div>
-        </div>
+              <!-- % Musculo -->
+              <div class="metrics-field">
+                <label for="porcentajeMusculo" class="metrics-label">% Músculo</label>
+                <input
+                  type="number"
+                  id="porcentajeMusculo"
+                  v-model.number="form.porcentajeMusculo"
+                  step="0.1"
+                  min="0"
+                  max="100"
+                  placeholder="40.0"
+                  class="metrics-input"
+                >
+                <p v-if="formErrors.porcentaje_musculo" class="metrics-error">{{ formErrors.porcentaje_musculo[0] }}</p>
+              </div>
 
-        <!-- Chart.js Charts Section (2x2 grid) -->
-        <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <!-- 1. Weight Trend (Line, 90 days) -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-            <h3 class="font-display text-lg tracking-wide text-wc-text">Peso Corporal</h3>
-            <p class="text-sm text-wc-text-tertiary">Ultimos 90 dias</p>
-            <div class="relative mt-4" style="height: 180px">
-              <canvas ref="weightChartRef"></canvas>
-              <p v-if="!hasWeight" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
-                Sin datos de peso aun
-              </p>
-            </div>
-          </div>
+              <!-- % Grasa -->
+              <div class="metrics-field">
+                <label for="porcentajeGrasa" class="metrics-label">% Grasa</label>
+                <input
+                  type="number"
+                  id="porcentajeGrasa"
+                  v-model.number="form.porcentajeGrasa"
+                  step="0.1"
+                  min="0"
+                  max="100"
+                  placeholder="18.0"
+                  class="metrics-input"
+                >
+                <p v-if="formErrors.porcentaje_grasa" class="metrics-error">{{ formErrors.porcentaje_grasa[0] }}</p>
+              </div>
 
-          <!-- 2. Weekly Check-ins (Bar, 12 weeks) -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-            <h3 class="font-display text-lg tracking-wide text-wc-text">Check-ins Semanales</h3>
-            <p class="text-sm text-wc-text-tertiary">Ultimas 12 semanas</p>
-            <div class="relative mt-4" style="height: 180px">
-              <canvas ref="checkinChartRef"></canvas>
-              <p v-if="!hasCheckins" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
-                Sin check-ins recientes
-              </p>
+              <!-- Notas -->
+              <div class="metrics-field">
+                <label for="notas" class="metrics-label">Notas</label>
+                <input
+                  type="text"
+                  id="notas"
+                  v-model="form.notas"
+                  placeholder="En ayunas, post-entrenamiento..."
+                  class="metrics-input"
+                >
+              </div>
             </div>
-          </div>
 
-          <!-- 3. Body Composition (Doughnut) -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-            <h3 class="font-display text-lg tracking-wide text-wc-text">Composicion Corporal</h3>
-            <p class="text-sm text-wc-text-tertiary">Ultima medicion</p>
-            <div class="relative mx-auto mt-4 flex items-center justify-center" style="height: 180px; max-width: 260px">
-              <canvas ref="compositionChartRef"></canvas>
-              <p v-if="!hasComposition" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
-                Sin datos de composicion
-              </p>
-            </div>
-          </div>
+            <!-- Body Measurements Section -->
+            <div style="margin-top:24px; border-top:1px solid var(--wc-border); padding-top:20px;">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+                <div style="width:32px; height:32px; flex-shrink:0; border-radius:10px; background:rgba(220,38,38,.10); display:flex; align-items:center; justify-content:center;">
+                  <svg style="width:16px; height:16px; color:var(--wc-accent);" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                  </svg>
+                </div>
+                <div>
+                  <p style="font:600 11px/1 var(--fs); letter-spacing:.06em; text-transform:uppercase; color:var(--wc-text-2);">Mediciones corporales</p>
+                  <p style="font-size:12px; color:var(--wc-text-3); margin-top:2px;">Mide con cinta métrica flexible, en la mañana</p>
+                </div>
+              </div>
 
-          <!-- 4. Training Volume (Line, 12 weeks) -->
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-            <h3 class="font-display text-lg tracking-wide text-wc-text">Volumen de Entrenamiento</h3>
-            <p class="text-sm text-wc-text-tertiary">Sesiones por semana</p>
-            <div class="relative mt-4" style="height: 180px">
-              <canvas ref="trainingChartRef"></canvas>
-              <p v-if="!hasTraining" class="absolute inset-0 flex items-center justify-center text-sm text-wc-text-tertiary">
-                Sin sesiones registradas
-              </p>
+              <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:14px;">
+                <!-- Pecho -->
+                <div class="metrics-field">
+                  <label for="chest" class="metrics-label">Pecho (cm)</label>
+                  <input type="number" id="chest" v-model.number="form.chest" step="0.1" min="30" max="200" placeholder="95.0" class="metrics-input">
+                </div>
+                <!-- Cintura -->
+                <div class="metrics-field">
+                  <label for="waist" class="metrics-label">Cintura (cm)</label>
+                  <input type="number" id="waist" v-model.number="form.waist" step="0.1" min="30" max="200" placeholder="80.0" class="metrics-input">
+                </div>
+                <!-- Cadera -->
+                <div class="metrics-field">
+                  <label for="hip" class="metrics-label">Cadera (cm)</label>
+                  <input type="number" id="hip" v-model.number="form.hip" step="0.1" min="30" max="200" placeholder="95.0" class="metrics-input">
+                </div>
+                <!-- Muslo -->
+                <div class="metrics-field">
+                  <label for="thigh" class="metrics-label">Muslo (cm)</label>
+                  <input type="number" id="thigh" v-model.number="form.thigh" step="0.1" min="20" max="100" placeholder="55.0" class="metrics-input">
+                </div>
+                <!-- Brazo -->
+                <div class="metrics-field">
+                  <label for="arm" class="metrics-label">Brazo (cm)</label>
+                  <input type="number" id="arm" v-model.number="form.arm" step="0.1" min="15" max="60" placeholder="32.0" class="metrics-input">
+                </div>
+              </div>
+
+              <!-- Measurement guide accordion -->
+              <div style="margin-top:16px; border-radius:12px; border:1px solid rgba(245,158,11,.20); background:rgba(245,158,11,.05); padding:14px 16px;">
+                <button @click="showGuide = !showGuide" type="button" style="display:flex; width:100%; align-items:center; justify-content:space-between; text-align:left; background:none; border:none; cursor:pointer; padding:0;">
+                  <span style="font-size:13px; font-weight:600; color:#F59E0B;">Cómo tomar las mediciones correctamente</span>
+                  <svg
+                    :style="{ transform: showGuide ? 'rotate(180deg)' : 'none', transition: 'transform 200ms', width:'16px', height:'16px', color:'#F59E0B' }"
+                    fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                  </svg>
+                </button>
+                <Transition
+                  enter-active-class="transition-all duration-300 ease-out"
+                  enter-from-class="max-h-0 opacity-0"
+                  enter-to-class="max-h-96 opacity-100"
+                  leave-active-class="transition-all duration-200 ease-in"
+                  leave-from-class="max-h-96 opacity-100"
+                  leave-to-class="max-h-0 opacity-0"
+                >
+                  <div v-show="showGuide" style="margin-top:12px; overflow:hidden; display:flex; flex-direction:column; gap:8px; font-size:13px; color:var(--wc-text-2); line-height:1.5;">
+                    <p><strong style="color:var(--wc-text);">Pecho:</strong> Cinta alrededor del torso a la altura de los pezones. Brazos relajados a los lados. No inflar el pecho.</p>
+                    <p><strong style="color:var(--wc-text);">Cintura:</strong> En el punto más estrecho del abdomen, generalmente 2-3 cm arriba del ombligo. Medir al exhalar normalmente.</p>
+                    <p><strong style="color:var(--wc-text);">Cadera:</strong> En el punto más ancho de los glúteos. Pies juntos, de pie recto.</p>
+                    <p><strong style="color:var(--wc-text);">Muslo:</strong> En el punto más grueso del muslo, generalmente justo debajo del glúteo. Pierna relajada sin flexionar.</p>
+                    <p><strong style="color:var(--wc-text);">Brazo:</strong> Brazo relajado a un lado. Medir en el punto más grueso del bíceps sin flexionar.</p>
+                    <p style="margin-top:4px; color:rgba(245,158,11,.70);">Medir siempre en las mismas condiciones: por la mañana, antes de comer, mismo lado del cuerpo.</p>
+                  </div>
+                </Transition>
+              </div>
             </div>
-          </div>
-        </div>
+
+            <!-- Submit button -->
+            <div style="margin-top:20px;">
+              <button
+                type="submit"
+                :disabled="saving"
+                class="btn btn-accent"
+                style="opacity:1;"
+                :style="{ opacity: saving ? 0.5 : 1 }"
+              >
+                <span v-if="!saving">Guardar registro</span>
+                <span v-else style="display:inline-flex; align-items:center; gap:8px;">
+                  <svg style="width:16px; height:16px; animation:spin 1s linear infinite;" fill="none" viewBox="0 0 24 24">
+                    <circle style="opacity:.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path style="opacity:.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                  </svg>
+                  Guardando...
+                </span>
+              </button>
+            </div>
+          </form>
+        </section>
 
         <!-- History Table -->
-        <div v-if="history.length > 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary">
-          <div class="border-b border-wc-border px-5 py-3">
-            <h2 class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Historial</h2>
+        <section v-if="history.length > 0" class="card section wc-card-metrics-history" :style="{ animationDelay: '340ms' }">
+          <div class="card-head">
+            <div class="card-head-left">
+              <span class="card-title">Historial</span>
+            </div>
+            <span class="card-meta">{{ history.length }} registros</span>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm">
+          <div style="overflow-x:auto;">
+            <table class="metrics-table">
               <thead>
-                <tr class="border-b border-wc-border text-left">
-                  <th class="px-3 py-3 text-xs font-semibold tracking-widest uppercase text-wc-text-secondary sm:px-5">Fecha</th>
-                  <th class="px-3 py-3 text-xs font-semibold tracking-widest uppercase text-wc-text-secondary sm:px-5">Peso</th>
-                  <th class="px-3 py-3 text-xs font-semibold tracking-widest uppercase text-wc-text-secondary sm:px-5">Musc%</th>
-                  <th class="px-3 py-3 text-xs font-semibold tracking-widest uppercase text-wc-text-secondary sm:px-5">Grasa%</th>
-                  <th class="hidden px-3 py-3 text-xs font-semibold tracking-widest uppercase text-wc-text-secondary sm:table-cell sm:px-5">Notas</th>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Peso</th>
+                  <th>Musc%</th>
+                  <th>Grasa%</th>
+                  <th>Notas</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-wc-border">
+              <tbody>
                 <tr
                   v-for="(entry, idx) in history"
                   :key="idx"
-                  class="hover:bg-wc-bg-secondary/50"
                 >
-                  <td class="whitespace-nowrap px-3 py-3 text-sm text-wc-text-tertiary sm:px-5">
+                  <td style="white-space:nowrap; color:var(--wc-text-3);">
                     {{ formatDate(entry.date || entry.log_date) }}
                   </td>
-                  <td class="whitespace-nowrap px-3 py-3 font-data text-sm text-wc-text-secondary sm:px-5">
+                  <td style="white-space:nowrap; font-variant-numeric:tabular-nums;">
                     {{ entry.peso ? Number(entry.peso).toFixed(1) + ' kg' : '--' }}
                   </td>
-                  <td class="whitespace-nowrap px-3 py-3 font-data text-sm text-wc-text-secondary sm:px-5">
+                  <td style="white-space:nowrap; font-variant-numeric:tabular-nums;">
                     {{ entry.porcentaje_musculo ? Number(entry.porcentaje_musculo).toFixed(1) + '%' : '--' }}
                   </td>
-                  <td class="whitespace-nowrap px-3 py-3 font-data text-sm text-wc-text-secondary sm:px-5">
+                  <td style="white-space:nowrap; font-variant-numeric:tabular-nums;">
                     {{ entry.porcentaje_grasa ? Number(entry.porcentaje_grasa).toFixed(1) + '%' : '--' }}
                   </td>
-                  <td class="hidden max-w-[200px] truncate px-3 py-3 text-sm text-wc-text-tertiary sm:table-cell sm:px-5"
-                      :title="entry.notas || ''">
+                  <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" :title="entry.notas || ''">
                     {{ entry.notas || '--' }}
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
-        </div>
-      </template>
-    </div>
+        </section>
 
-    <!-- ===== ACHIEVEMENT OVERLAY: METRICAS ===== -->
-    <Transition
-      enter-active-class="transition ease-out duration-300"
-      enter-from-class="opacity-0"
-      enter-to-class="opacity-100"
-      leave-active-class="transition ease-in duration-200"
-      leave-from-class="opacity-100"
-      leave-to-class="opacity-0"
-    >
-      <div
-        v-if="showSuccess"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4"
-        style="background: rgba(0,0,0,0.85);"
-        @click.self="dismissSuccess"
+      </main>
+
+      <!-- ===== ACHIEVEMENT OVERLAY: METRICAS ===== -->
+      <Transition
+        enter-active-class="transition ease-out duration-300"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition ease-in duration-200"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
       >
-        <!-- Confetti -->
-        <div v-if="showConfetti" class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-          <div class="wc-confetti" style="left:8%;background:#DC2626;animation:wc-confetti-fall 2.8s ease-in forwards 0.1s;"></div>
-          <div class="wc-confetti" style="left:22%;background:#F59E0B;animation:wc-confetti-fall 3.2s ease-in forwards 0.3s;border-radius:50%;"></div>
-          <div class="wc-confetti" style="left:38%;background:#10B981;animation:wc-confetti-fall 2.5s ease-in forwards 0s;"></div>
-          <div class="wc-confetti" style="left:52%;background:#DC2626;animation:wc-confetti-fall 3s ease-in forwards 0.5s;border-radius:50%;"></div>
-          <div class="wc-confetti" style="left:65%;background:#8B5CF6;animation:wc-confetti-fall 2.7s ease-in forwards 0.2s;"></div>
-          <div class="wc-confetti" style="left:78%;background:#F59E0B;animation:wc-confetti-fall 3.4s ease-in forwards 0.4s;border-radius:50%;"></div>
-          <div class="wc-confetti" style="left:90%;background:#10B981;animation:wc-confetti-fall 2.6s ease-in forwards 0.15s;"></div>
-          <div class="wc-confetti" style="left:45%;background:#8B5CF6;animation:wc-confetti-fall 3.1s ease-in forwards 0.6s;"></div>
-        </div>
-
-        <!-- Card -->
-        <Transition
-          enter-active-class="transition ease-out duration-400"
-          enter-from-class="opacity-0 scale-90"
-          enter-to-class="opacity-100 scale-100"
+        <div
+          v-if="showSuccess"
+          class="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style="background: rgba(0,0,0,0.85);"
+          @click.self="dismissSuccess"
         >
-          <div
-            v-if="showSuccess"
-            class="relative w-full max-w-sm overflow-hidden rounded-2xl text-center"
-            style="background: linear-gradient(160deg, #0C1015 0%, #131F2B 50%, #0C1015 100%);"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="metrics-success-title"
+          <!-- Confetti -->
+          <div v-if="showConfetti" class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+            <div class="wc-confetti" style="left:8%;background:#DC2626;animation:wc-confetti-fall 2.8s ease-in forwards 0.1s;"></div>
+            <div class="wc-confetti" style="left:22%;background:#F59E0B;animation:wc-confetti-fall 3.2s ease-in forwards 0.3s;border-radius:50%;"></div>
+            <div class="wc-confetti" style="left:38%;background:#10B981;animation:wc-confetti-fall 2.5s ease-in forwards 0s;"></div>
+            <div class="wc-confetti" style="left:52%;background:#DC2626;animation:wc-confetti-fall 3s ease-in forwards 0.5s;border-radius:50%;"></div>
+            <div class="wc-confetti" style="left:65%;background:#8B5CF6;animation:wc-confetti-fall 2.7s ease-in forwards 0.2s;"></div>
+            <div class="wc-confetti" style="left:78%;background:#F59E0B;animation:wc-confetti-fall 3.4s ease-in forwards 0.4s;border-radius:50%;"></div>
+            <div class="wc-confetti" style="left:90%;background:#10B981;animation:wc-confetti-fall 2.6s ease-in forwards 0.15s;"></div>
+            <div class="wc-confetti" style="left:45%;background:#8B5CF6;animation:wc-confetti-fall 3.1s ease-in forwards 0.6s;"></div>
+          </div>
+
+          <!-- Card -->
+          <Transition
+            enter-active-class="transition ease-out duration-400"
+            enter-from-class="opacity-0 scale-90"
+            enter-to-class="opacity-100 scale-100"
           >
-            <div class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse at 50% -5%, rgba(255,255,255,0.08) 0%, transparent 60%);" aria-hidden="true"></div>
+            <div
+              v-if="showSuccess"
+              class="relative w-full max-w-sm overflow-hidden rounded-2xl text-center"
+              style="background: linear-gradient(160deg, #0C1015 0%, #131F2B 50%, #0C1015 100%);"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="metrics-success-title"
+            >
+              <div class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse at 50% -5%, rgba(255,255,255,0.08) 0%, transparent 60%);" aria-hidden="true"></div>
 
-            <div class="relative z-10 p-8">
-              <span class="wc-emoji-bounce mb-4 block text-6xl" aria-hidden="true">&#x1F4CA;</span>
+              <div class="relative z-10 p-8">
+                <span class="wc-emoji-bounce mb-4 block text-6xl" aria-hidden="true">&#x1F4CA;</span>
 
-              <div class="mb-3 flex items-center justify-center gap-2">
-                <span class="font-display text-xl tracking-[0.25em] text-white/90">WELLCORE</span>
-                <span class="h-2 w-2 rounded-full bg-white/30" aria-hidden="true"></span>
+                <div class="mb-3 flex items-center justify-center gap-2">
+                  <span class="font-display text-xl tracking-[0.25em] text-white/90">WELLCORE</span>
+                  <span class="h-2 w-2 rounded-full bg-white/30" aria-hidden="true"></span>
+                </div>
+
+                <h2 id="metrics-success-title" class="mb-2 font-sans text-2xl font-bold text-white">Métricas guardadas!</h2>
+
+                <div v-if="lastPeso && Number(lastPeso) > 0" class="my-5 rounded-xl border border-white/10 bg-white/[0.06] px-5 py-4">
+                  <p class="font-data text-3xl font-bold text-white">{{ Number(lastPeso).toFixed(1) }} <span class="text-lg font-normal text-white/50">kg</span></p>
+                  <p class="mt-0.5 text-xs text-white/50">peso registrado</p>
+                </div>
+                <div v-else class="my-5"></div>
+
+                <p class="mb-6 text-sm text-white/70">El seguimiento consistente es la base del progreso.</p>
+
+                <button
+                  @click="dismissSuccess"
+                  class="w-full rounded-xl bg-wc-accent px-6 py-3 font-display text-lg tracking-wider text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-black"
+                >
+                  PERFECTO!
+                </button>
               </div>
+            </div>
+          </Transition>
+        </div>
+      </Transition>
+      <!-- ===== /ACHIEVEMENT OVERLAY ===== -->
 
-              <h2 id="metrics-success-title" class="mb-2 font-sans text-2xl font-bold text-white">Metricas guardadas!</h2>
-
-              <div v-if="lastPeso && Number(lastPeso) > 0" class="my-5 rounded-xl border border-white/10 bg-white/[0.06] px-5 py-4">
-                <p class="font-data text-3xl font-bold text-white">{{ Number(lastPeso).toFixed(1) }} <span class="text-lg font-normal text-white/50">kg</span></p>
-                <p class="mt-0.5 text-xs text-white/50">peso registrado</p>
-              </div>
-              <div v-else class="my-5"></div>
-
-              <p class="mb-6 text-sm text-white/70">El seguimiento consistente es la base del progreso.</p>
-
-              <button
-                @click="dismissSuccess"
-                class="w-full rounded-xl bg-wc-accent px-6 py-3 font-display text-lg tracking-wider text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-black"
-              >
-                PERFECTO!
+      <!-- ===== ONBOARDING TUTORIAL: METRICAS ===== -->
+      <Transition
+        enter-active-class="transition ease-out duration-300"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition ease-in duration-200"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <div
+          v-if="showTutorial"
+          class="fixed inset-0 z-[80] flex items-end justify-center bg-black/70 px-4 pb-6"
+        >
+          <div class="w-full max-w-sm rounded-2xl border border-wc-border bg-wc-bg p-6 shadow-2xl">
+            <!-- Header -->
+            <div class="mb-4 flex items-center justify-between">
+              <h3 class="font-display text-lg tracking-widest text-wc-text">TUS METRICAS</h3>
+              <button @click="dismissTutorial" class="text-wc-text-tertiary transition-colors hover:text-wc-text" aria-label="Cerrar">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
-          </div>
-        </Transition>
-      </div>
-    </Transition>
-    <!-- ===== /ACHIEVEMENT OVERLAY ===== -->
 
-    <!-- ===== ONBOARDING TUTORIAL: METRICAS ===== -->
-    <Transition
-      enter-active-class="transition ease-out duration-300"
-      enter-from-class="opacity-0"
-      enter-to-class="opacity-100"
-      leave-active-class="transition ease-in duration-200"
-      leave-from-class="opacity-100"
-      leave-to-class="opacity-0"
-    >
-      <div
-        v-if="showTutorial"
-        class="fixed inset-0 z-[80] flex items-end justify-center bg-black/70 px-4 pb-6"
-      >
-        <div class="w-full max-w-sm rounded-2xl border border-wc-border bg-wc-bg p-6 shadow-2xl">
-          <!-- Header -->
-          <div class="mb-4 flex items-center justify-between">
-            <h3 class="font-display text-lg tracking-widest text-wc-text">TUS METRICAS</h3>
-            <button @click="dismissTutorial" class="text-wc-text-tertiary transition-colors hover:text-wc-text" aria-label="Cerrar">
-              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
-          </div>
-
-          <!-- Step 1 -->
-          <div v-show="tutorialStep === 1">
-            <div class="flex items-start gap-4">
-              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-sm font-bold text-white">1</div>
-              <div>
-                <p class="text-sm font-semibold text-wc-text">Registra tu peso</p>
-                <p class="mt-1 text-sm leading-relaxed text-wc-text-secondary">Pesate en ayunas, despues de ir al bano y antes de desayunar. Siempre a la misma hora para tener datos comparables semana a semana.</p>
+            <!-- Step 1 -->
+            <div v-show="tutorialStep === 1">
+              <div class="flex items-start gap-4">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-sm font-bold text-white">1</div>
+                <div>
+                  <p class="text-sm font-semibold text-wc-text">Registra tu peso</p>
+                  <p class="mt-1 text-sm leading-relaxed text-wc-text-secondary">Pésate en ayunas, después de ir al baño y antes de desayunar. Siempre a la misma hora para tener datos comparables semana a semana.</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Step 2 -->
-          <div v-show="tutorialStep === 2">
-            <div class="flex items-start gap-4">
-              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-sm font-bold text-white">2</div>
-              <div>
-                <p class="text-sm font-semibold text-wc-text">Las fluctuaciones son normales</p>
-                <p class="mt-1 text-sm leading-relaxed text-wc-text-secondary">El peso puede variar 1-3 kg en un dia por agua, comida y sal. Lo que importa es la tendencia de semanas, no el numero de un dia especifico.</p>
+            <!-- Step 2 -->
+            <div v-show="tutorialStep === 2">
+              <div class="flex items-start gap-4">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-sm font-bold text-white">2</div>
+                <div>
+                  <p class="text-sm font-semibold text-wc-text">Las fluctuaciones son normales</p>
+                  <p class="mt-1 text-sm leading-relaxed text-wc-text-secondary">El peso puede variar 1-3 kg en un día por agua, comida y sal. Lo que importa es la tendencia de semanas, no el número de un día específico.</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Step 3 -->
-          <div v-show="tutorialStep === 3">
-            <div class="flex items-start gap-4">
-              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-sm font-bold text-white">3</div>
-              <div>
-                <p class="text-sm font-semibold text-wc-text">El peso no es todo</p>
-                <p class="mt-1 text-sm leading-relaxed text-wc-text-secondary">La escala no distingue musculo de grasa. Registra tambien tus medidas y fotos de progreso — la transformacion visual siempre supera a los numeros.</p>
+            <!-- Step 3 -->
+            <div v-show="tutorialStep === 3">
+              <div class="flex items-start gap-4">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-sm font-bold text-white">3</div>
+                <div>
+                  <p class="text-sm font-semibold text-wc-text">El peso no es todo</p>
+                  <p class="mt-1 text-sm leading-relaxed text-wc-text-secondary">La escala no distingue músculo de grasa. Registra también tus medidas y fotos de progreso — la transformación visual siempre supera a los números.</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Step indicators -->
-          <div class="mt-4 flex justify-center gap-1.5">
-            <div
-              v-for="i in TUTORIAL_TOTAL"
-              :key="i"
-              class="h-1.5 rounded-full transition-all"
-              :class="i === tutorialStep ? 'w-4 bg-wc-accent' : 'w-1.5 bg-wc-bg-tertiary'"
-            ></div>
-          </div>
+            <!-- Step indicators -->
+            <div class="mt-4 flex justify-center gap-1.5">
+              <div
+                v-for="i in TUTORIAL_TOTAL"
+                :key="i"
+                class="h-1.5 rounded-full transition-all"
+                :class="i === tutorialStep ? 'w-4 bg-wc-accent' : 'w-1.5 bg-wc-bg-tertiary'"
+              ></div>
+            </div>
 
-          <!-- Navigation buttons -->
-          <div class="mt-5 flex gap-3">
-            <button
-              v-show="tutorialStep > 1"
-              @click="tutorialStep--"
-              type="button"
-              class="flex-1 rounded-xl border border-wc-border bg-wc-bg-secondary py-2.5 text-sm font-medium text-wc-text-secondary transition-colors hover:text-wc-text"
-            >Atras</button>
-            <button
-              v-show="tutorialStep < TUTORIAL_TOTAL"
-              @click="tutorialStep++"
-              type="button"
-              class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover"
-            >Siguiente</button>
-            <button
-              v-show="tutorialStep === TUTORIAL_TOTAL"
-              @click="dismissTutorial"
-              type="button"
-              class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover"
-            >Entendido!</button>
+            <!-- Navigation buttons -->
+            <div class="mt-5 flex gap-3">
+              <button
+                v-show="tutorialStep > 1"
+                @click="tutorialStep--"
+                type="button"
+                class="flex-1 rounded-xl border border-wc-border bg-wc-bg-secondary py-2.5 text-sm font-medium text-wc-text-secondary transition-colors hover:text-wc-text"
+              >Atrás</button>
+              <button
+                v-show="tutorialStep < TUTORIAL_TOTAL"
+                @click="tutorialStep++"
+                type="button"
+                class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover"
+              >Siguiente</button>
+              <button
+                v-show="tutorialStep === TUTORIAL_TOTAL"
+                @click="dismissTutorial"
+                type="button"
+                class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover"
+              >Entendido!</button>
+            </div>
           </div>
         </div>
-      </div>
-    </Transition>
-    <!-- ===== /ONBOARDING TUTORIAL ===== -->
+      </Transition>
+      <!-- ===== /ONBOARDING TUTORIAL ===== -->
+
+    </div>
+    <!-- ===== /wc-shell--metrics ===== -->
   </ClientLayout>
 </template>
 
@@ -930,5 +976,12 @@ onBeforeUnmount(() => {
 .wc-emoji-bounce {
   animation: wc-emoji-bounce 2s ease-in-out infinite;
   display: inline-block;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 </style>

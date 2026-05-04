@@ -1641,3 +1641,351 @@
 @media (max-width: 1023px){
   .wc-shell .hero-actions{ display:none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LIGHT THEME — html:not(.dark) overrides
+   Todos los elementos con backgrounds hardcodeados en dark hex o
+   rgba(255,255,255,...) reciben override aquí. No se modifica ninguna
+   regla existente — solo se añaden overrides al final.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html:not(.dark) .wc-shell{
+  --wc-bg:   #F7F7FB;
+  --wc-bg2:  #EEEEF6;
+  --wc-bg3:  #FFFFFF;
+  --wc-bg4:  #E4E4EE;
+  --wc-text:   #0F0F14;
+  --wc-text-2: #4A4A5C;
+  --wc-text-3: #70708A;
+  --wc-border: rgba(0,0,0,.10);
+
+  --sh-card:
+    0 0 0 1px rgba(0,0,0,.08),
+    0 4px 16px rgba(0,0,0,.06),
+    0 12px 40px rgba(0,0,0,.04);
+  --sh-soft:
+    0 0 0 1px rgba(0,0,0,.07),
+    0 2px 8px rgba(0,0,0,.05);
+  --sh-hover:
+    0 0 0 1px rgba(220,38,38,.20),
+    0 8px 24px rgba(0,0,0,.10),
+    0 0 20px rgba(220,38,38,.06);
+
+  background:var(--wc-bg);
+}
+
+/* Topbar */
+html:not(.dark) .wc-shell .topbar{
+  background:rgba(247,247,251,.88);
+  border-bottom-color:rgba(0,0,0,.07);
+}
+html:not(.dark) .wc-shell .icon-btn:hover{
+  background:rgba(0,0,0,.04);
+  border-color:rgba(0,0,0,.06);
+}
+html:not(.dark) .wc-shell .icon-btn .dot{
+  box-shadow:0 0 0 2px var(--wc-bg), 0 0 8px rgba(220,38,38,.5);
+}
+
+/* grad-border helpers */
+html:not(.dark) .wc-shell .grad-border{
+  background:
+    linear-gradient(var(--wc-bg3),var(--wc-bg3)) padding-box,
+    linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.04) 60%) border-box;
+}
+html:not(.dark) .wc-shell .grad-border-2{
+  background:
+    linear-gradient(var(--wc-bg2),var(--wc-bg2)) padding-box,
+    linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.03) 60%) border-box;
+}
+
+/* Grain: reducir opacidad en light */
+html:not(.dark) .wc-shell .grain::after{
+  opacity:.015;
+  mix-blend-mode:multiply;
+}
+
+/* Divider (era rgba white line) */
+html:not(.dark) .wc-shell .divider{
+  background:linear-gradient(90deg,
+    transparent,
+    rgba(0,0,0,.06) 18%,
+    rgba(0,0,0,.06) 82%,
+    transparent);
+}
+
+/* Hero */
+html:not(.dark) .wc-shell .hero{
+  background:
+    linear-gradient(180deg, #EAEAF5 0%, #E2E2F0 100%) padding-box,
+    linear-gradient(180deg, rgba(0,0,0,.07), rgba(0,0,0,.03) 70%) border-box;
+}
+
+/* Hero greeting .name gradient (era blanco sobre dark) */
+html:not(.dark) .wc-shell .hero-greeting .name{
+  background:linear-gradient(180deg, #1A1A2E 0%, #3A3A58 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+/* Hero sub text */
+html:not(.dark) .wc-shell .hero-sub{
+  color:var(--wc-text-2);
+}
+
+/* Quote */
+html:not(.dark) .wc-shell .quote{
+  background:
+    rgba(235,235,248,.90) padding-box,
+    linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.04)) border-box;
+}
+html:not(.dark) .wc-shell .quote::before{
+  color:rgba(220,38,38,.14);
+}
+
+/* Card base */
+html:not(.dark) .wc-shell .card{
+  background:
+    linear-gradient(180deg, #FFFFFF 0%, #FAFAFE 100%) padding-box,
+    linear-gradient(180deg, rgba(0,0,0,.07), rgba(0,0,0,.03) 70%) border-box;
+}
+
+/* Stat card */
+html:not(.dark) .wc-shell .stat-card{
+  background:
+    linear-gradient(180deg, #FFFFFF 0%, #FAFAFE 100%) padding-box,
+    linear-gradient(180deg, rgba(0,0,0,.07), rgba(0,0,0,.03) 70%) border-box;
+}
+/* Reducir opacidad del ghost SVG en light (menos contraste) */
+html:not(.dark) .wc-shell .stat-ghost{ opacity:.07 !important; }
+
+/* XP bar track (era rgba white sobre dark) */
+html:not(.dark) .wc-shell .xp-bar{
+  background:rgba(0,0,0,.08);
+}
+
+/* Timeline bar track */
+html:not(.dark) .wc-shell .timeline-bar{
+  background:rgba(0,0,0,.07);
+  box-shadow:inset 0 1px 1px rgba(0,0,0,.06);
+}
+
+/* Heatmap empty cell */
+html:not(.dark) .wc-shell .heat-cell{
+  background:rgba(0,0,0,.05);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.04);
+}
+
+/* Missions progress bar track */
+html:not(.dark) .wc-shell .mp-bar{
+  background:rgba(0,0,0,.07);
+}
+
+/* Mission row separator */
+html:not(.dark) .wc-shell .mission + .mission{
+  border-top-color:rgba(0,0,0,.05);
+}
+html:not(.dark) .wc-shell .mission:hover{
+  background:rgba(0,0,0,.025);
+}
+html:not(.dark) .wc-shell .mission-check{
+  box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.20);
+}
+html:not(.dark) .wc-shell .mission.done .mission-name{
+  text-decoration-color:rgba(0,0,0,.18);
+}
+
+/* Activity row separator */
+html:not(.dark) .wc-shell .act-row + .act-row::before{
+  background:linear-gradient(90deg,
+    transparent,
+    rgba(0,0,0,.06) 12%,
+    rgba(0,0,0,.06) 88%,
+    transparent);
+}
+
+/* Summary numbers surface */
+html:not(.dark) .wc-shell .summary-num{
+  background:rgba(0,0,0,.03);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.05);
+}
+
+/* Week grid day cell */
+html:not(.dark) .wc-shell .weekday{
+  background:rgba(0,0,0,.03);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.05);
+}
+html:not(.dark) .wc-shell .weekday-dot{
+  background:rgba(0,0,0,.12);
+}
+
+/* Bottom nav */
+html:not(.dark) .wc-shell .bottom-nav{
+  background:rgba(247,247,251,.90);
+  border-top-color:rgba(0,0,0,.07);
+}
+
+/* Empty state */
+html:not(.dark) .wc-shell .empty{
+  background:var(--wc-bg2);
+}
+html:not(.dark) .wc-shell .empty-art{
+  color:var(--wc-text-3);
+  background:rgba(0,0,0,.05);
+}
+html:not(.dark) .wc-shell .empty-cta{
+  color:var(--wc-text);
+  background:rgba(0,0,0,.05);
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.08),
+    inset 0 1px 0 rgba(255,255,255,.60);
+}
+html:not(.dark) .wc-shell .empty-cta:hover{
+  background:rgba(220,38,38,.07);
+  box-shadow:
+    inset 0 0 0 1px rgba(220,38,38,.30),
+    inset 0 1px 0 rgba(255,255,255,.60),
+    0 6px 16px rgba(220,38,38,.10);
+}
+
+/* Banner */
+html:not(.dark) .wc-shell .banner{
+  background:
+    linear-gradient(135deg, #EAEAF5 0%, #E4E4EF 100%) padding-box,
+    linear-gradient(135deg, rgba(0,0,0,.07), rgba(0,0,0,.03)) border-box;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.70),
+    0 8px 24px rgba(220,38,38,.08),
+    0 16px 40px rgba(0,0,0,.06);
+}
+html:not(.dark) .wc-shell .banner:hover{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.80),
+    0 12px 32px rgba(220,38,38,.14),
+    0 20px 50px rgba(0,0,0,.08);
+}
+html:not(.dark) .wc-shell .banner-title{
+  color:var(--wc-text);
+  text-shadow:none;
+}
+html:not(.dark) .wc-shell .banner-sub{
+  color:var(--wc-text-2);
+}
+
+/* Coach card */
+html:not(.dark) .wc-shell .coach{
+  background:
+    linear-gradient(180deg, #FFFFFF 0%, #FAFAFF 100%) padding-box,
+    linear-gradient(180deg, rgba(0,0,0,.07), rgba(0,0,0,.03) 70%) border-box;
+}
+
+/* Buttons: secondary button */
+html:not(.dark) .wc-shell .btn-secondary{
+  background:rgba(0,0,0,.04);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.10);
+  color:var(--wc-text);
+}
+html:not(.dark) .wc-shell .btn-secondary:hover{
+  background:rgba(0,0,0,.07);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.15), 0 6px 18px rgba(0,0,0,.08);
+}
+
+/* Profile close button */
+html:not(.dark) .wc-shell .profile-close:hover{
+  background:rgba(0,0,0,.04);
+}
+
+/* Desktop missions grid cards */
+@media (min-width: 1024px){
+  html:not(.dark) .wc-shell .mission{
+    background:
+      rgba(0,0,0,.025) padding-box,
+      rgba(0,0,0,.06) border-box;
+    border-color:rgba(0,0,0,.06);
+    box-shadow:none;
+  }
+  html:not(.dark) .wc-shell .mission:hover{
+    transform:translateY(-1px);
+    box-shadow:
+      0 8px 24px rgba(0,0,0,.08),
+      0 0 0 1px rgba(220,38,38,.18),
+      0 0 18px rgba(220,38,38,.06);
+    background:
+      rgba(0,0,0,.025) padding-box,
+      rgba(0,0,0,.06) border-box;
+  }
+
+  /* Desktop hero */
+  html:not(.dark) .wc-shell .hero{
+    background:
+      linear-gradient(135deg, #E8E8F5 0%, #E0E0EE 100%) padding-box,
+      linear-gradient(135deg, rgba(0,0,0,.07), rgba(0,0,0,.03) 60%) border-box;
+  }
+}
+
+/* ── Tab: Logros ── */
+html:not(.dark) .wc-shell--logros .logro-card{
+  background:
+    rgba(0,0,0,.025) padding-box,
+    rgba(0,0,0,.06) border-box;
+  border:1px solid rgba(0,0,0,.06);
+}
+html:not(.dark) .wc-shell--logros .logro-card.is-unlocked{
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(245,158,11,.12), transparent 60%) padding-box,
+    linear-gradient(180deg, rgba(245,158,11,.35), rgba(245,158,11,.08)) border-box;
+}
+html:not(.dark) .wc-shell--logros .logros-filter{
+  background:rgba(0,0,0,.04);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+  color:var(--wc-text-2);
+}
+html:not(.dark) .wc-shell--logros .logros-sheet{
+  background:var(--wc-bg3);
+}
+html:not(.dark) .wc-shell--logros .logros-sheet-block{
+  background:var(--wc-bg2);
+}
+
+/* ── Tab: Metrics ── */
+html:not(.dark) .wc-shell--metrics .metrics-input{
+  background:var(--wc-bg3);
+  border-color:rgba(0,0,0,.12);
+  color:var(--wc-text);
+}
+html:not(.dark) .wc-shell--metrics .metrics-input:focus{
+  border-color:var(--wc-accent);
+  box-shadow:0 0 0 2px rgba(220,38,38,.12);
+}
+html:not(.dark) .wc-shell--metrics .metrics-table td{
+  border-bottom-color:rgba(0,0,0,.04);
+}
+html:not(.dark) .wc-shell--metrics .metrics-table tr:hover td{
+  background:rgba(0,0,0,.02);
+}
+
+/* ── Tab: Plan ── */
+html:not(.dark) .wc-shell--plan .plan-week{
+  background:rgba(0,0,0,.025);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);
+}
+html:not(.dark) .wc-shell--plan .plan-week.is-current{
+  background:rgba(220,38,38,.04);
+  box-shadow:inset 0 0 0 1px rgba(220,38,38,.22);
+}
+html:not(.dark) .wc-shell--plan .plan-week-head{
+  color:var(--wc-text);
+}
+html:not(.dark) .wc-shell--plan .plan-week-num{
+  background:rgba(0,0,0,.05);
+}
+html:not(.dark) .wc-shell--plan .plan-session{
+  background:rgba(0,0,0,.025);
+}
+html:not(.dark) .wc-shell--plan .plan-session:hover{
+  background:rgba(0,0,0,.05);
+}
+html:not(.dark) .wc-shell--plan .plan-session-status.is-locked{
+  background:rgba(0,0,0,.04);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.09);
+}

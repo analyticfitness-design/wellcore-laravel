@@ -7,6 +7,7 @@ import { usePlanLock } from '../../composables/usePlanLock';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import AiFoodEstimator from '../../components/AiFoodEstimator.vue';
 import LockOverlay from '../../components/LockOverlay.vue';
+import PlanHero from '../../components/plan/PlanHero.vue';
 import {
   FlaskConical, Dumbbell, Pill, Fish, Sun, Citrus, Star, Moon,
   Atom, Leaf, Zap, Dna, Flame, Bone, TestTube, Bed,
@@ -960,7 +961,17 @@ onBeforeUnmount(() => {
     <div class="relative">
       <LockOverlay v-if="isLocked" />
       <div :class="isLocked ? 'pointer-events-none blur-sm select-none' : ''" :aria-hidden="isLocked ? 'true' : undefined">
-    <div class="space-y-6">
+    <div class="wc-shell wc-shell--plan">
+      <main class="scroll">
+    <div class="space-y-6" style="grid-column:span 12">
+      <!-- PlanHero — wc-shell header section -->
+      <PlanHero
+        :plan-name="planTypeLabel ? 'Plan ' + planTypeLabel : 'Mi Plan'"
+        :current-week="currentWeek || 1"
+        :total-weeks="trainingPlan?.weeks?.length || 12"
+        :adherence="habitCompliance || 0"
+      />
+
       <!-- Header: todos los planes son mensuales renovables — no hay "N semanas" ni navegador -->
       <div class="mb-8">
         <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">MI PLAN</h1>
@@ -2740,6 +2751,8 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </Transition>
+      </main><!-- /scroll -->
+    </div><!-- /wc-shell -->
       </div>
     </div>
   </ClientLayout>
