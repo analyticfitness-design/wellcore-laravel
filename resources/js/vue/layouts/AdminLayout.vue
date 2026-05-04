@@ -68,6 +68,20 @@ const MIGRATED_ROUTES = [
   { match: (p) => p.startsWith('/admin/plan-tickets'),    tab: 'plan-tickets',    cosmetic: true },
   { match: (p) => p.startsWith('/admin/tickets'),         tab: 'tickets',         cosmetic: true },
   { match: (p) => p.startsWith('/admin/client-requests'), tab: 'client-requests', cosmetic: true },
+  // Fase 5 — Marketing + RISE + Planes (cosmetic shell)
+  { match: (p) => p.startsWith('/admin/campaigns'),       tab: 'campaigns',       cosmetic: true },
+  { match: (p) => p.startsWith('/admin/rise'),            tab: 'rise',            cosmetic: true },
+  { match: (p) => p.startsWith('/admin/plans'),           tab: 'plans',           cosmetic: true },
+  { match: (p) => p.startsWith('/admin/marketing'),       tab: 'marketing',       cosmetic: true },
+  { match: (p) => p.startsWith('/admin/ai-generator'),    tab: 'ai-generator',    cosmetic: true },
+  { match: (p) => p.startsWith('/admin/referrals'),       tab: 'referrals',       cosmetic: true },
+  { match: (p) => p.startsWith('/admin/chat-analytics'),  tab: 'chat-analytics',  cosmetic: true },
+  { match: (p) => p.startsWith('/admin/formularios'),     tab: 'formularios',     cosmetic: true },
+  // Fase 6 — Sistema (cosmetic shell)
+  { match: (p) => p.startsWith('/admin/tools'),           tab: 'tools',           cosmetic: true },
+  { match: (p) => p.startsWith('/admin/settings'),        tab: 'settings',        cosmetic: true },
+  { match: (p) => p.startsWith('/admin/audit-log'),       tab: 'audit-log',       cosmetic: true },
+  { match: (p) => p.startsWith('/admin/feed'),            tab: 'live-feed',       cosmetic: true },
 ];
 
 const matchedRoute = computed(() => MIGRATED_ROUTES.find(r => r.match(route.path)) || null);
