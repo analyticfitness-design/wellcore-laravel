@@ -32,6 +32,8 @@ const PLAN_OPTIONS = [
     { value: 'esencial', label: 'Esencial' },
     { value: 'metodo', label: 'Metodo' },
     { value: 'elite', label: 'Elite' },
+    { value: 'entreno_solo', label: 'Entreno Solo' },
+    { value: 'nutricion_solo', label: 'Nutricion Solo' },
     { value: 'presencial', label: 'Presencial' },
 ] as const;
 
