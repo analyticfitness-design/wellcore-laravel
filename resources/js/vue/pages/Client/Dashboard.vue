@@ -276,7 +276,7 @@ const weekMarkers = computed(() => {
     <PullToRefreshIndicator :distance="pullDistance" :refreshing="isRefreshing" />
 
     <!-- Loading Skeleton -->
-    <div v-if="loading" class="dash-mobile space-y-6">
+    <div v-if="loading" class="wc-shell space-y-6">
       <!-- Greeting skeleton -->
       <div class="space-y-2">
         <div class="h-9 w-72 animate-pulse rounded-lg bg-wc-bg-tertiary"></div>
@@ -342,7 +342,7 @@ const weekMarkers = computed(() => {
     </div>
 
     <!-- Dashboard Content (Target Mobile Redesign) -->
-    <div v-else-if="data" class="dash-mobile">
+    <div v-else-if="data" class="wc-shell wc-shell--dashboard">
       <main ref="staggerRoot" class="scroll">
 
       <!-- §1 HERO -->
@@ -388,7 +388,7 @@ const weekMarkers = computed(() => {
       <!-- §14 PROFILE COMPLETION (estilo target — solo cuando score < 80%) -->
       <section
         v-if="data.profileCompletion && data.profileCompletion.score < 80 && !profileBannerDismissed"
-        class="card section dash-card-profile"
+        class="card section wc-card-dashboard-profile"
         :style="{ animationDelay: '580ms' }"
       >
         <div class="card-head">
@@ -425,7 +425,7 @@ const weekMarkers = computed(() => {
       </main>
     </div>
 
-    <!-- BLOQUES SECUNDARIOS LEGADO (onboarding primeros pasos) — fuera del wrapper .dash-mobile -->
+    <!-- BLOQUES SECUNDARIOS LEGADO (onboarding primeros pasos) — fuera del wrapper .wc-shell -->
     <div v-if="data && !loading && !error" class="space-y-6 mt-4">
 
       <!-- ═══════════════════════════════════════════════════════════════ -->

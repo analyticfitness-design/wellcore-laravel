@@ -35,7 +35,7 @@ function buildMeta(activity) {
 </script>
 
 <template>
-  <section class="card section dash-card-activity" :style="{ animationDelay: '480ms' }">
+  <section class="card section wc-card-dashboard-activity" :style="{ animationDelay: '480ms' }">
     <div class="card-head">
       <div class="card-head-left">
         <span class="card-title">Actividad reciente</span>

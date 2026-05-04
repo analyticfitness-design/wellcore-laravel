@@ -27,7 +27,7 @@ const lastWeekIso = computed(() => {
 </script>
 
 <template>
-  <section class="card section dash-card-summary" :style="{ animationDelay: '520ms' }">
+  <section class="card section wc-card-dashboard-summary" :style="{ animationDelay: '520ms' }">
     <div class="card-head">
       <div class="card-head-left">
         <span class="card-title">Resumen semanal</span>

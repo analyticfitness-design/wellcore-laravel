@@ -72,7 +72,7 @@ const monthLabels = computed(() => {
 </script>
 
 <template>
-  <section class="card section dash-card-heatmap" :style="{ animationDelay: '380ms' }">
+  <section class="card section wc-card-dashboard-heatmap" :style="{ animationDelay: '380ms' }">
     <div class="card-head">
       <div class="card-head-left">
         <span class="card-title">Racha de entrenamiento</span>
