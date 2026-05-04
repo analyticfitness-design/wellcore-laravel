@@ -1,8 +1,9 @@
 /* ════════════════════════════════════════════════════════
    WC-ADMIN-SHELL · Base universal del portal admin
    Tokens del target Claude Design literal (admin densidad).
-   Extiende wc-shell.css: agrega --wc-text-4, --wc-gold,
-   --fc (JetBrains Mono) y layout grid con sidebar 240px.
+   Reglas estructurales del sidebar / topbar / bottomnav son
+   UNIVERSALES (aplican mobile y desktop). Las @media solo
+   contienen overrides específicos por viewport.
    ════════════════════════════════════════════════════════ */
 
 .wc-admin-shell{
@@ -25,20 +26,16 @@
   --wc-purple:#A78BFA;
   --wc-gold:#C8A769;
 
-  /* Fuentes */
   --fd:'Oswald','Impact',sans-serif;
   --fs:'Raleway',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
   --fm:'Barlow',ui-monospace,sans-serif;
   --fc:'JetBrains Mono',ui-monospace,monospace;
 
-  /* Espaciado (compartido con cliente) */
   --s4:4px; --s8:8px; --s12:12px; --s16:16px; --s20:20px;
   --s24:24px; --s32:32px; --s40:40px; --s56:56px; --s80:80px;
 
-  /* Radii */
   --r-sm:12px; --r-md:16px; --r-lg:20px; --r-pill:999px;
 
-  /* Sombras del manual */
   --sh-card:
     inset 0 1px 0 rgba(255,255,255,.04),
     0 0 0 1px rgba(255,255,255,.06),
@@ -55,23 +52,20 @@
     0 24px 60px rgba(0,0,0,.30),
     0 0 24px rgba(220,38,38,.10);
 
-  /* Easings */
   --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-glide: cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* Layout admin */
   --wc-admin-side-w: 240px;
   --wc-admin-topbar-h: 64px;
 
-  /* Base */
   background:#000;
   color:var(--wc-text);
   font-family:var(--fs);
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
   font-size:14px; line-height:1.5;
-  letter-spacing:0;  /* override body letter-spacing global */
+  letter-spacing:0;
 }
 
 .wc-admin-shell *,
@@ -80,7 +74,7 @@
   box-sizing:border-box;
 }
 
-/* Body atmosphere — se aplica al wrapper */
+/* Body atmosphere */
 .wc-admin-shell{
   background:
     radial-gradient(1200px 600px at 50% -200px, rgba(220,38,38,.06), transparent 60%),
@@ -89,7 +83,378 @@
   min-height:100vh;
 }
 
-/* Mobile: max-width 430px centered + padding-bottom para bottomnav */
+/* ════════════════════════════════════════════════════════
+   UNIVERSAL — SVG icon size guards (mobile + desktop)
+   `!important` necesario porque vistas Fase 3+ aplican
+   .admin-shell legacy, cuyas reglas pueden override con
+   mayor specificity. Aplica en TODOS los viewports.
+   ════════════════════════════════════════════════════════ */
+.wc-admin-shell .side-item .ic{
+  width:16px !important;
+  height:16px !important;
+  flex-shrink:0;
+  display:inline-grid !important;
+  place-items:center;
+  color:var(--wc-text-3);
+}
+.wc-admin-shell .side-item .ic svg{
+  width:16px !important;
+  height:16px !important;
+  max-width:16px !important;
+  max-height:16px !important;
+}
+.wc-admin-shell .brand-mark.brand-mark-img{
+  width:32px !important;
+  height:32px !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  padding:0 !important;
+  border-radius:0 !important;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.wc-admin-shell .brand-mark.brand-mark-img picture,
+.wc-admin-shell .brand-mark.brand-mark-img img{
+  width:32px !important;
+  height:32px !important;
+  max-width:32px !important;
+  max-height:32px !important;
+  object-fit:contain;
+  display:block;
+}
+.wc-admin-shell .brand-mark:not(.brand-mark-img){
+  width:28px !important;
+  height:28px !important;
+  flex-shrink:0;
+}
+.wc-admin-shell .brand-mark:not(.brand-mark-img) svg{
+  width:14px !important;
+  height:14px !important;
+}
+.wc-admin-shell .bn-item .ic{
+  width:22px !important;
+  height:22px !important;
+  flex-shrink:0;
+  display:inline-grid;
+  place-items:center;
+}
+.wc-admin-shell .bn-item .ic svg{
+  width:22px !important;
+  height:22px !important;
+  max-width:22px !important;
+  max-height:22px !important;
+}
+.wc-admin-shell .hamburger svg{
+  width:20px !important;
+  height:20px !important;
+}
+.wc-admin-shell .close-drawer svg{
+  width:18px !important;
+  height:18px !important;
+}
+.wc-admin-shell .collapse-btn svg{
+  width:12px !important;
+  height:12px !important;
+}
+.wc-admin-shell .side-foot .avatar svg,
+.wc-admin-shell .side-foot .gear svg{
+  width:14px !important;
+  height:14px !important;
+}
+.wc-admin-shell .topbar .bell svg,
+.wc-admin-shell .topbar .cmdk-pill svg,
+.wc-admin-shell .topbar .role-chip svg{
+  max-width:24px !important;
+  max-height:24px !important;
+}
+
+/* ════════════════════════════════════════════════════════
+   UNIVERSAL — Sidebar / Topbar / Bottomnav structural rules
+   Aplican siempre. Mobile/desktop overrides van en @media.
+   ════════════════════════════════════════════════════════ */
+
+/* Sidebar base (estructura común) */
+.wc-admin-shell .sidebar{
+  display:flex;
+  flex-direction:column;
+  background:linear-gradient(180deg, #0B0B0D 0%, #09090B 100%);
+  border-right:1px solid rgba(255,255,255,.04);
+  overflow:hidden;
+}
+
+.wc-admin-shell .side-brand{
+  display:flex; align-items:center; gap:10px;
+  padding:18px 16px 14px;
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+.wc-admin-shell .side-brand .meta{flex:1; min-width:0; overflow:hidden}
+.wc-admin-shell .side-brand .brand-name{
+  font-family:var(--fd); font-weight:700; font-size:14px;
+  letter-spacing:.18em; text-transform:uppercase; line-height:1;
+}
+.wc-admin-shell .side-brand .brand-name b{color:var(--wc-accent); font-weight:700}
+.wc-admin-shell .side-brand .role-chip{
+  margin-top:4px;
+  display:inline-flex; align-items:center; gap:5px;
+  padding:3px 8px; border-radius:var(--r-pill);
+  background:rgba(220,38,38,.12);
+  box-shadow: inset 0 0 0 1px rgba(220,38,38,.24);
+  color:#FCA5A5;
+  font-family:var(--fs); font-weight:700; font-size:9px;
+  letter-spacing:.14em; text-transform:uppercase;
+}
+.wc-admin-shell .side-brand .role-chip .dot{
+  width:5px; height:5px; border-radius:50%;
+  background:var(--wc-accent);
+  box-shadow:0 0 6px rgba(220,38,38,.7);
+}
+
+.wc-admin-shell .side-scroll{
+  flex:1; overflow-y:auto; overflow-x:hidden;
+  padding:14px 8px 16px;
+  scrollbar-width:thin;
+  scrollbar-color: #27272A transparent;
+}
+.wc-admin-shell .side-scroll::-webkit-scrollbar{width:6px}
+.wc-admin-shell .side-scroll::-webkit-scrollbar-thumb{background:#27272A; border-radius:999px}
+
+.wc-admin-shell .side-cat{
+  padding:10px 12px 6px;
+  font-family:var(--fs); font-weight:700; font-size:9.5px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--wc-text-4);
+  display:flex; align-items:center; gap:6px;
+}
+
+.wc-admin-shell .side-item{
+  position:relative;
+  display:flex; align-items:center; gap:10px;
+  padding:8px 10px; margin:1px 0;
+  border-radius:10px;
+  color:var(--wc-text-2);
+  font-family:var(--fs); font-weight:500; font-size:13px;
+  letter-spacing:.01em;
+  cursor:pointer;
+  transition:all 160ms var(--ease-out);
+  white-space:nowrap;
+}
+.wc-admin-shell .side-item:hover{
+  background:rgba(255,255,255,.03);
+  color:var(--wc-text);
+}
+.wc-admin-shell .side-item.active{
+  background:linear-gradient(90deg, rgba(220,38,38,.16), rgba(220,38,38,.04));
+  color:var(--wc-text);
+  box-shadow:inset 0 0 0 1px rgba(220,38,38,.18);
+}
+.wc-admin-shell .side-item.active::before{
+  content:""; position:absolute; left:-8px; top:6px; bottom:6px; width:3px;
+  background:var(--wc-accent); border-radius:0 3px 3px 0;
+  box-shadow:0 0 10px rgba(220,38,38,.6);
+}
+.wc-admin-shell .side-item:hover .ic,
+.wc-admin-shell .side-item.active .ic{color:var(--wc-text-2)}
+.wc-admin-shell .side-item.active .ic{color:#FCA5A5}
+.wc-admin-shell .side-item .lbl{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis}
+.wc-admin-shell .side-item .badge{
+  font-family:var(--fm); font-weight:700; font-size:10px;
+  padding:1px 6px; border-radius:999px;
+  background:rgba(220,38,38,.16); color:#FCA5A5;
+  box-shadow:inset 0 0 0 1px rgba(220,38,38,.32);
+  font-variant-numeric:tabular-nums;
+}
+.wc-admin-shell .side-item .pulse-dot{
+  position:relative; width:6px; height:6px; border-radius:50%;
+  background:var(--wc-accent); box-shadow:0 0 8px rgba(220,38,38,.7);
+}
+
+.wc-admin-shell .side-foot{
+  border-top:1px solid rgba(255,255,255,.04);
+  padding:10px 8px;
+  display:flex; align-items:center; gap:10px;
+}
+.wc-admin-shell .side-foot .avatar{
+  width:32px; height:32px; border-radius:50%;
+  padding:1.5px; flex-shrink:0;
+  background: conic-gradient(from 200deg, var(--wc-accent), #7F1D1D, #DC2626 70%, var(--wc-accent));
+}
+.wc-admin-shell .side-foot .avatar .inner{
+  width:100%; height:100%; border-radius:50%;
+  background:linear-gradient(135deg, #2A0808, #18181B);
+  display:grid; place-items:center;
+  font-family:var(--fd); font-weight:700; font-size:12px;
+  color:var(--wc-text);
+}
+.wc-admin-shell .side-foot .who{flex:1; min-width:0; overflow:hidden}
+.wc-admin-shell .side-foot .who .nm{font-size:12.5px; font-weight:600; color:var(--wc-text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.wc-admin-shell .side-foot .who .rl{font-size:10px; color:var(--wc-text-3); letter-spacing:.06em}
+.wc-admin-shell .side-foot .gear{
+  width:28px; height:28px; border-radius:8px;
+  display:grid; place-items:center; color:var(--wc-text-3);
+  background:rgba(255,255,255,.02);
+  border:0;
+  cursor:pointer;
+  transition:all 180ms var(--ease-out);
+}
+.wc-admin-shell .side-foot .gear:hover{color:var(--wc-text); background:rgba(255,255,255,.06)}
+
+.wc-admin-shell .collapse-btn{
+  width:24px; height:24px; border-radius:7px;
+  display:grid; place-items:center;
+  background:rgba(255,255,255,.03);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+  color:var(--wc-text-3); flex-shrink:0;
+  border:0;
+  cursor:pointer;
+  transition:all 180ms var(--ease-out);
+}
+.wc-admin-shell .collapse-btn:hover{color:var(--wc-text); box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+
+/* Topbar base */
+.wc-admin-shell .topbar{
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; gap:10px;
+  background:rgba(9,9,11,.78);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+.wc-admin-shell .tb-actions{margin-left:auto; display:flex; align-items:center; gap:8px}
+.wc-admin-shell .cmdk-pill{
+  display:inline-flex; align-items:center; gap:6px;
+  height:30px; padding:0 10px; border-radius:var(--r-pill);
+  background:rgba(255,255,255,.04);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+  color:var(--wc-text-2); font-size:11px; font-weight:600;
+  letter-spacing:.06em;
+  cursor:pointer; border:0;
+  transition:all 180ms var(--ease-out);
+}
+.wc-admin-shell .cmdk-pill kbd{
+  font-family:var(--fc); font-size:10px;
+  padding:2px 5px; border-radius:5px;
+  background:rgba(255,255,255,.06);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.wc-admin-shell .bell{
+  position:relative;
+  width:34px; height:34px; border-radius:10px;
+  background:rgba(255,255,255,.03);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+  display:grid; place-items:center;
+  color:var(--wc-text-2);
+  border:0;
+  cursor:pointer;
+  transition:all 180ms var(--ease-out);
+}
+.wc-admin-shell .bell-badge{
+  position:absolute; top:-3px; right:-3px;
+  min-width:16px; height:16px; padding:0 4px; border-radius:8px;
+  background:var(--wc-accent); color:#fff;
+  font-family:var(--fm); font-weight:700; font-size:9.5px;
+  display:grid; place-items:center;
+  box-shadow:0 0 0 2px var(--wc-bg), 0 0 8px rgba(220,38,38,.5);
+}
+.wc-admin-shell .topbar .avatar{
+  width:34px; height:34px; border-radius:50%;
+  padding:1.5px;
+  background: conic-gradient(from 200deg, var(--wc-accent), #7F1D1D, #DC2626 70%, var(--wc-accent));
+  cursor:pointer;
+}
+.wc-admin-shell .topbar .avatar .inner{
+  width:100%; height:100%; border-radius:50%;
+  background:linear-gradient(135deg, #2A0808, #18181B);
+  display:grid; place-items:center;
+  font-family:var(--fd); font-weight:700; font-size:13px;
+  color:var(--wc-text); letter-spacing:.04em;
+}
+.wc-admin-shell .topbar .brand-name{
+  font-family:var(--fd); font-weight:700; font-size:13px;
+  letter-spacing:.18em; text-transform:uppercase; line-height:1;
+}
+.wc-admin-shell .topbar .brand-name b{color:var(--wc-accent); font-weight:700}
+.wc-admin-shell .topbar .role-chip{
+  margin-left:6px;
+  display:inline-flex; align-items:center; gap:5px;
+  padding:4px 9px; border-radius:var(--r-pill);
+  background:rgba(220,38,38,.12);
+  box-shadow: inset 0 0 0 1px rgba(220,38,38,.24);
+  color:#FCA5A5;
+  font-family:var(--fs); font-weight:700; font-size:9.5px;
+  letter-spacing:.14em; text-transform:uppercase;
+}
+.wc-admin-shell .topbar .role-chip .dot{
+  width:5px; height:5px; border-radius:50%;
+  background:var(--wc-accent);
+  box-shadow:0 0 6px rgba(220,38,38,.7);
+}
+
+/* Hamburger button */
+.wc-admin-shell .hamburger{
+  width:36px; height:36px; border-radius:10px;
+  display:grid; place-items:center;
+  background:rgba(255,255,255,.04);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+  color:var(--wc-text-2);
+  cursor:pointer; border:0;
+  flex-shrink:0;
+  transition:all 180ms var(--ease-out);
+}
+
+/* Close drawer button (sidebar mobile) */
+.wc-admin-shell .close-drawer{
+  width:32px; height:32px; border-radius:8px;
+  display:grid; place-items:center;
+  background:rgba(255,255,255,.04);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+  color:var(--wc-text-2);
+  cursor:pointer; border:0;
+  flex-shrink:0;
+  transition:all 180ms var(--ease-out);
+}
+
+/* Bottomnav */
+.wc-admin-shell .bottomnav{
+  position:fixed; bottom:0; left:0; right:0; z-index:60;
+  max-width:430px; margin:0 auto;
+  padding:8px 12px calc(env(safe-area-inset-bottom) + 8px);
+  background:rgba(9,9,11,.82);
+  backdrop-filter:blur(28px) saturate(180%);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);
+  border-top:1px solid rgba(255,255,255,.05);
+  display:flex;
+}
+.wc-admin-shell .bn-item{
+  flex:1; position:relative;
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  padding:8px 4px;
+  border-radius:14px;
+  cursor:pointer;
+  transition:color 180ms var(--ease-out);
+  color:var(--wc-text-3);
+}
+.wc-admin-shell .bn-item.active{color:var(--wc-text)}
+.wc-admin-shell .bn-item .lbl{
+  font-family:var(--fs); font-weight:700; font-size:9px;
+  letter-spacing:.10em; text-transform:uppercase;
+}
+.wc-admin-shell .bn-item .cap{
+  position:absolute; left:50%; bottom:2px;
+  transform:translateX(-50%);
+  width:24px; height:3px; border-radius:999px;
+  background:transparent;
+  transition:background 220ms var(--ease-spring);
+}
+.wc-admin-shell .bn-item.active .cap{
+  background:var(--wc-accent);
+  box-shadow:0 0 8px rgba(220,38,38,.6);
+}
+
+/* ════════════════════════════════════════════════════════
+   MOBILE overrides (max-width 1023px)
+   ════════════════════════════════════════════════════════ */
 @media (max-width: 1023px){
   .wc-admin-shell{
     max-width:430px;
@@ -97,18 +462,13 @@
     padding-bottom:96px;
   }
 
-  /* Sidebar mobile: drawer oculto por default. Se muestra con .open via toggle. */
+  /* Sidebar mobile = drawer fijo, oculto por default */
   .wc-admin-shell .sidebar{
     position:fixed;
     top:0; left:0;
     width:280px; max-width:80vw;
     height:100vh;
     z-index:100;
-    background:linear-gradient(180deg, #0B0B0D 0%, #09090B 100%);
-    border-right:1px solid rgba(255,255,255,.04);
-    display:flex;
-    flex-direction:column;
-    overflow:hidden;
     transform:translateX(-100%);
     transition:transform 240ms var(--ease-glide);
     box-shadow:0 0 32px rgba(0,0,0,.6);
@@ -116,185 +476,18 @@
   .wc-admin-shell .sidebar.open{
     transform:translateX(0);
   }
-
-  /* Iconos del sidebar (mobile): forzar 16x16 — sin esto, SVG con viewBox sin
-     width/height heredan al contenedor y ocupan todo el ancho disponible.
-     `!important` necesario porque admin-shell legacy puede override con
-     mayor specificity en vistas Fase 3+. */
-  .wc-admin-shell .side-item .ic{
-    width:16px !important;
-    height:16px !important;
-    flex-shrink:0;
-    display:inline-grid !important;
-    place-items:center;
-    color:var(--wc-text-3);
-  }
-  .wc-admin-shell .side-item .ic svg{
-    width:16px !important;
-    height:16px !important;
-    max-width:16px !important;
-    max-height:16px !important;
-  }
-  .wc-admin-shell .side-item{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:10px 14px;
-    color:var(--wc-text-2);
-    font-family:var(--fs);
-    font-weight:500;
-    font-size:13.5px;
-    cursor:pointer;
-    transition:all 160ms var(--ease-out);
-  }
-  .wc-admin-shell .side-item:hover,
-  .wc-admin-shell .side-item.active{
-    background:rgba(220,38,38,.08);
-    color:var(--wc-text);
-  }
-  .wc-admin-shell .side-item .lbl{
-    flex:1; min-width:0;
-    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-  }
-  .wc-admin-shell .side-item .badge{
-    font-family:var(--fm); font-weight:700; font-size:10px;
-    padding:1px 6px; border-radius:999px;
-    background:rgba(220,38,38,.16); color:#FCA5A5;
-    box-shadow:inset 0 0 0 1px rgba(220,38,38,.32);
-  }
-
-  /* Sidebar header / footer mobile */
-  .wc-admin-shell .side-brand{
-    display:flex; align-items:center; gap:10px;
-    padding:18px 16px 14px;
-    border-bottom:1px solid rgba(255,255,255,.04);
-  }
-  .wc-admin-shell .side-brand .meta{flex:1; min-width:0}
   .wc-admin-shell .side-brand .collapse-btn{display:none}
-  .wc-admin-shell .side-brand .close-drawer{
-    width:32px; height:32px; border-radius:8px;
-    display:grid; place-items:center;
-    background:rgba(255,255,255,.04);
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
-    color:var(--wc-text-2);
-    cursor:pointer; border:0;
-    flex-shrink:0;
-    transition:all 180ms var(--ease-out);
-  }
-  .wc-admin-shell .side-brand .close-drawer:hover{
-    color:var(--wc-text);
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);
-  }
 
-  /* Brand-mark image override (mobile) — !important para ganar specificity
-     contra reglas .admin-shell .brand-mark del legacy. */
-  .wc-admin-shell .brand-mark.brand-mark-img{
-    width:32px !important;
-    height:32px !important;
-    background:transparent !important;
-    border:0 !important;
-    box-shadow:none !important;
-    padding:0 !important;
-    border-radius:0 !important;
-    flex-shrink:0;
-  }
-  .wc-admin-shell .brand-mark.brand-mark-img picture,
-  .wc-admin-shell .brand-mark.brand-mark-img img{
-    width:32px !important;
-    height:32px !important;
-    max-width:32px !important;
-    max-height:32px !important;
-    object-fit:contain;
-    display:block;
-  }
-
-  /* Hamburger icon mobile size guard */
-  .wc-admin-shell .hamburger svg{
-    width:20px !important;
-    height:20px !important;
-  }
-
-  /* Bottomnav icons mobile (vistas Fase 3+ heredan tamaño universal) */
-  .wc-admin-shell .bn-item .ic{
-    width:22px !important;
-    height:22px !important;
-    flex-shrink:0;
-    display:inline-grid;
-    place-items:center;
-  }
-  .wc-admin-shell .bn-item .ic svg{
-    width:22px !important;
-    height:22px !important;
-    max-width:22px !important;
-    max-height:22px !important;
-  }
-
-  /* Avatar/bell/cmdk-pill SVG attribute defaults respetados — el SVG inline ya
-     trae width="11" height="11" o similar. Forzar para evitar estiramiento. */
-  .wc-admin-shell .topbar-mobile .bell svg,
-  .wc-admin-shell .topbar-mobile .cmdk-pill svg,
-  .wc-admin-shell .topbar-mobile .role-chip svg,
-  .wc-admin-shell .side-foot .gear svg{
-    max-width:24px !important;
-    max-height:24px !important;
-  }
-  /* Avatar inner W del logo (en topbar mobile, dentro de brand-mark sin la
-     clase brand-mark-img) — evitar que el SVG explote si se renderiza el
-     legacy en lugar del logo PNG. */
-  .wc-admin-shell .brand-mark:not(.brand-mark-img){
-    width:28px !important;
-    height:28px !important;
-    flex-shrink:0;
-  }
-  .wc-admin-shell .brand-mark:not(.brand-mark-img) svg{
-    width:14px !important;
-    height:14px !important;
-  }
-
-  /* Side-foot avatar/gear icons (sidebar mobile) */
-  .wc-admin-shell .side-foot .avatar svg,
-  .wc-admin-shell .side-foot .gear svg{
-    width:14px !important;
-    height:14px !important;
-  }
-
-  /* Close-drawer button icon */
-  .wc-admin-shell .close-drawer svg{
-    width:18px !important;
-    height:18px !important;
-  }
-  /* Collapse-btn icon (oculto mobile pero por si acaso) */
-  .wc-admin-shell .collapse-btn svg{
-    width:12px !important;
-    height:12px !important;
-  }
-  .wc-admin-shell .side-scroll{
-    flex:1; overflow-y:auto; padding:8px 0 16px;
-    scrollbar-width:thin;
-  }
-  .wc-admin-shell .side-cat{
-    padding:14px 16px 6px;
-    font-family:var(--fs); font-weight:700; font-size:9.5px;
-    letter-spacing:.18em; text-transform:uppercase; color:var(--wc-text-4);
-  }
-  .wc-admin-shell .side-foot{
-    border-top:1px solid rgba(255,255,255,.04);
-    padding:12px 14px;
-    display:flex; align-items:center; gap:10px;
-  }
-  .wc-admin-shell .side-foot .avatar{ width:32px; height:32px; padding:1.5px; flex-shrink:0; }
-  .wc-admin-shell .side-foot .avatar .inner{ font-size:12px; }
-  .wc-admin-shell .side-foot .who{flex:1; min-width:0; overflow:hidden}
-  .wc-admin-shell .side-foot .who .nm{font-size:12.5px; font-weight:600; color:var(--wc-text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-  .wc-admin-shell .side-foot .who .rl{font-size:10px; color:var(--wc-text-3); letter-spacing:.06em}
-  .wc-admin-shell .side-foot .gear{
-    width:28px; height:28px; border-radius:8px;
-    display:grid; place-items:center; color:var(--wc-text-3);
-    background:rgba(255,255,255,.02);
+  /* Topbar mobile padding ajustado para safe-area */
+  .wc-admin-shell .topbar{
+    padding:calc(env(safe-area-inset-top) + 10px) 16px 10px;
+    background:rgba(9,9,11,.72);
   }
 }
 
-/* Desktop: grid app shell con sidebar fija + main */
+/* ════════════════════════════════════════════════════════
+   DESKTOP overrides (min-width 1024px)
+   ════════════════════════════════════════════════════════ */
 @media (min-width: 1024px){
   .wc-admin-shell{
     background:
@@ -311,9 +504,34 @@
   .wc-admin-shell.is-collapsed{
     --wc-admin-side-w:68px;
   }
+
+  /* Sidebar desktop = sticky 240px (no drawer) */
+  .wc-admin-shell .sidebar{
+    position:sticky; top:0;
+    height:100vh;
+    width:auto;
+    max-width:none;
+    transform:none;
+    box-shadow:none;
+    transition:all 240ms var(--ease-glide);
+  }
+
+  /* Close-drawer hidden desktop (es solo para mobile drawer) */
+  .wc-admin-shell .close-drawer{display:none}
+
+  /* Bottomnav hidden desktop */
+  .wc-admin-shell .bottomnav{display:none}
+
+  /* Topbar desktop padding */
+  .wc-admin-shell .topbar{
+    padding:14px 32px;
+    gap:14px;
+  }
 }
 
-/* ── Utilities ── */
+/* ════════════════════════════════════════════════════════
+   Utilities
+   ════════════════════════════════════════════════════════ */
 .wc-admin-shell .tnum{font-variant-numeric:tabular-nums; font-feature-settings:'tnum' on,'ss01' on}
 .wc-admin-shell .os{font-family:var(--fd); text-transform:uppercase; letter-spacing:.02em}
 .wc-admin-shell .mono{font-family:var(--fc)}
@@ -322,7 +540,6 @@
   background:linear-gradient(90deg, transparent, rgba(255,255,255,.08) 20%, rgba(255,255,255,.08) 80%, transparent);
 }
 
-/* Gradient borders helpers */
 .wc-admin-shell .gb2{
   background:
     linear-gradient(var(--wc-bg2),var(--wc-bg2)) padding-box,
@@ -336,7 +553,7 @@
   border:1px solid transparent;
 }
 
-/* ── Card primitive (consumido por WcAdminCard.vue, Fase 1) ── */
+/* ── Card primitive (consumido por WcAdminCard.vue) ── */
 .wc-admin-shell .wc-admin-card{
   border-radius:var(--r-md);
 }
