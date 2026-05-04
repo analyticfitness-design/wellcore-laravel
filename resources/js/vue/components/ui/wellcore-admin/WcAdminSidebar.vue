@@ -103,7 +103,10 @@ function go(target) {
   <aside :class="['sidebar', { open, collapsed }]">
     <div class="side-brand">
       <div class="brand-mark brand-mark-img">
-        <img src="/images/wellcore-logo-blanco-sombras.png" alt="WellCore" />
+        <picture>
+          <source srcset="/images/wellcore-logo-128.webp" type="image/webp" />
+          <img src="/images/wellcore-logo-128.png" alt="WellCore" width="34" height="34" loading="eager" />
+        </picture>
       </div>
       <div class="meta">
         <div class="brand-name">WELLCORE</div>

@@ -38,7 +38,10 @@ const dateLabel = computed(() => {
       </svg>
     </button>
     <div class="brand-mark brand-mark-img">
-      <img src="/images/wellcore-logo-blanco-sombras.png" alt="WellCore" />
+      <picture>
+        <source srcset="/images/wellcore-logo-128.webp" type="image/webp" />
+        <img src="/images/wellcore-logo-128.png" alt="WellCore" width="32" height="32" loading="eager" />
+      </picture>
     </div>
     <div class="brand-name">WELLCORE</div>
     <div class="role-chip"><span class="dot"></span>{{ userRole }}</div>
