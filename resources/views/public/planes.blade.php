@@ -107,6 +107,20 @@
             </div>
         </section>
 
+        {{-- ═══ COMP 1.5: Banner Promo Mayo — temporalidad explícita para no deslegitimizar precio normal ═══ --}}
+        @if($promoActive)
+        <section class="promo-banner" data-animate aria-label="{{ __('planes.promo_banner_h2_acc') }}">
+            <div class="promo-banner-inner">
+                <p class="promo-banner-eyebrow">{{ __('planes.promo_banner_eyebrow') }}</p>
+                <h2 class="promo-banner-h2">
+                    <span class="promo-banner-h2-pre">{{ __('planes.promo_banner_h2_pre') }}</span>
+                    <span class="promo-banner-h2-acc">{{ __('planes.promo_banner_h2_acc') }}</span>
+                </h2>
+                <p class="promo-banner-sub">{{ __('planes.promo_banner_sub') }}</p>
+            </div>
+        </section>
+        @endif
+
         {{-- ═══ COMP 2+3: SocialProofBar + BillingToggle en sticky unificado ═══
              La proof bar vive DENTRO del billing-wrap para que ambos se peguen juntos
              al scroll y no se separen. --}}

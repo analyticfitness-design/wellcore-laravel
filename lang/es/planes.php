@@ -394,6 +394,12 @@ return [
     'promo_off_short'    => 'OFF',
     'promo_strike_label' => 'Antes',
 
+    // Banner promo (strip prominente arriba del billing toggle)
+    'promo_banner_eyebrow' => 'PROMOCIÓN · MAYO 2026',
+    'promo_banner_h2_pre'  => 'SOLO POR ESTE MES',
+    'promo_banner_h2_acc'  => '−15% EN TODOS LOS PLANES',
+    'promo_banner_sub'     => 'Termina el 31 de mayo. Después vuelven al precio normal.',
+
     // =========================================================
     // V2 — Planes simples (vertical única) — entreno_solo / nutricion_solo
     // =========================================================
