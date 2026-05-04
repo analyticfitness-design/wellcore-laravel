@@ -388,4 +388,33 @@ return [
     'plan_label_prefix' => 'Plan',
     'sticky_continue'   => 'Continuar',
 
+    // =========================================================
+    // V2 — Planes simples (vertical única) — entreno_solo / nutricion_solo
+    // =========================================================
+    'simple_section_eyebrow' => 'PLANES SIMPLES · UNA VERTICAL',
+    'simple_section_h2'      => '¿Solo necesitas una?',
+    'simple_section_sub'     => 'Plan de entrenamiento o nutrición por separado, con tu coach humano y ajuste mensual. Cuando estés listo, subes a un plan completo.',
+
+    // ENTRENO (solo entrenamiento)
+    'entreno_solo_name'  => 'ENTRENO',
+    'entreno_solo_desc'  => 'Solo entrenamiento — tu coach ajusta cada mes.',
+    'entreno_solo_quote' => 'Para quien tiene la nutrición resuelta y solo necesita un plan de entrenamiento que se ajuste cada mes con tu coach.',
+    'entreno_solo_pillars' => [
+        'Entrenamiento personalizado · ejercicios con video o demostración, registro de pesos, récords automáticos',
+        'Tu coach humano ajusta el plan cada mes · revisa tu check-in y adapta volumen, ejercicios y progresiones',
+        'Acceso completo a la plataforma · Voice Logger, variaciones, comunidad, misiones diarias y XP',
+    ],
+    'entreno_solo_cta' => 'Comenzar Entreno',
+
+    // NUTRICIÓN (solo nutrición)
+    'nutricion_solo_name'  => 'NUTRICIÓN',
+    'nutricion_solo_desc'  => 'Solo nutrición — tu coach ajusta cada mes.',
+    'nutricion_solo_quote' => 'Para quien ya entrena bien y necesita una estrategia nutricional con macros, plan de comidas y ajuste mensual.',
+    'nutricion_solo_pillars' => [
+        'Nutrición 100% personalizada · macros, plan de comidas con 3 opciones por plato, agua diaria',
+        'Tu coach humano ajusta el plan cada mes · revisa tu check-in y adapta calorías, macros y horarios',
+        'Acceso completo a la plataforma · 3 opciones por plato, agua diaria, comunidad y XP',
+    ],
+    'nutricion_solo_cta' => 'Comenzar Nutrición',
+
 ];

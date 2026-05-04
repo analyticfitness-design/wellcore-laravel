@@ -14,9 +14,11 @@
             '@type' => 'OfferCatalog',
             'name' => 'Planes WellCore',
             'itemListElement' => [
-                ['@type' => 'Offer', 'name' => 'Esencial', 'price' => (string) $monthlyCop['esencial'], 'priceCurrency' => 'COP'],
-                ['@type' => 'Offer', 'name' => 'Metodo',   'price' => (string) $monthlyCop['metodo'],   'priceCurrency' => 'COP'],
-                ['@type' => 'Offer', 'name' => 'Elite',    'price' => (string) $monthlyCop['elite'],    'priceCurrency' => 'COP'],
+                ['@type' => 'Offer', 'name' => 'Esencial',  'price' => (string) $monthlyCop['esencial'],       'priceCurrency' => 'COP'],
+                ['@type' => 'Offer', 'name' => 'Metodo',    'price' => (string) $monthlyCop['metodo'],         'priceCurrency' => 'COP'],
+                ['@type' => 'Offer', 'name' => 'Elite',     'price' => (string) $monthlyCop['elite'],          'priceCurrency' => 'COP'],
+                ['@type' => 'Offer', 'name' => 'Entreno',   'price' => (string) $monthlyCop['entreno_solo'],   'priceCurrency' => 'COP'],
+                ['@type' => 'Offer', 'name' => 'Nutricion', 'price' => (string) $monthlyCop['nutricion_solo'], 'priceCurrency' => 'COP'],
             ],
         ],
     ]" />
@@ -62,7 +64,13 @@
                 if (plans[idx]) this.selectedPlan = plans[idx];
             },
             planName(p) {
-                const names = { esencial: @js(__('planes.esencial_name')), metodo: @js(__('planes.metodo_name')), elite: @js(__('planes.elite_name')) };
+                const names = {
+                    esencial: @js(__('planes.esencial_name')),
+                    metodo: @js(__('planes.metodo_name')),
+                    elite: @js(__('planes.elite_name')),
+                    entreno_solo: @js(__('planes.entreno_solo_name')),
+                    nutricion_solo: @js(__('planes.nutricion_solo_name')),
+                };
                 return names[p] || '';
             },
         }"
@@ -177,6 +185,55 @@
                         <a
                             :href="`{{ route('pagar') }}?plan={{ $plan }}&period=${period}`"
                             class="t-cta {{ $plan === 'metodo' ? 'cta-red' : ($plan === 'elite' ? 'cta-outline-gold' : 'cta-ghost') }}"
+                            @click.stop
+                        >
+                            {{ __("planes.{$plan}_cta") }}
+                        </a>
+                    </article>
+                @endforeach
+            </div>
+        </section>
+
+        {{-- ═══ COMP 4b: TiersSimple — planes vertical única (entreno_solo / nutricion_solo) ═══ --}}
+        <section class="tiers-simple" id="tier-simple" data-animate>
+            <div class="tiers-simple-header">
+                <p class="tiers-simple-eyebrow">{{ __('planes.simple_section_eyebrow') }}</p>
+                <h2 class="tiers-simple-h2">{{ __('planes.simple_section_h2') }}</h2>
+                <p class="tiers-simple-sub">{{ __('planes.simple_section_sub') }}</p>
+            </div>
+
+            <div class="tiers-simple-grid">
+                @foreach($plansSimple as $i => $plan)
+                    <article
+                        class="t-card-simple t-card-simple-{{ $plan }}"
+                        data-plan="{{ $plan }}"
+                        data-animate
+                        @if($i > 0) data-stagger="{{ $i }}" @endif
+                        @click="selectPlan('{{ $plan }}')"
+                        :class="{ 'is-selected': selectedPlan === '{{ $plan }}' }"
+                    >
+                        <div class="t-card-simple-eyebrow">· {{ __("planes.{$plan}_name") }}</div>
+
+                        <div class="t-card-simple-name">{{ __("planes.{$plan}_name") }}</div>
+
+                        <div class="t-card-simple-price-block">
+                            <span class="t-card-simple-price-sym">$</span>
+                            <span class="t-card-simple-price-num" x-text="priceOf('{{ $plan }}')">{{ number_format($pricesCop[$plan]['mensual'], 0, ',', '.') }}</span>
+                            <span class="t-card-simple-cop">{{ __('planes.cop_mes') }}</span>
+                        </div>
+                        <p class="t-card-simple-note" x-text="noteOf('{{ $plan }}')">&nbsp;</p>
+
+                        <p class="t-card-simple-quote">{{ __("planes.{$plan}_quote") }}</p>
+
+                        <ul class="t-card-simple-pillars">
+                            @foreach(__("planes.{$plan}_pillars") as $pillar)
+                                <li class="t-card-simple-pillar">{{ $pillar }}</li>
+                            @endforeach
+                        </ul>
+
+                        <a
+                            :href="`{{ route('pagar') }}?plan={{ $plan }}&period=${period}`"
+                            class="t-card-simple-cta"
                             @click.stop
                         >
                             {{ __("planes.{$plan}_cta") }}

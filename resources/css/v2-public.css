@@ -899,6 +899,199 @@
     .t-cta.cta-ghost:hover { border-color: rgba(255, 255, 255, 0.2); }
 }
 
+/* ============================================================
+   TIERS SIMPLES — entreno_solo / nutricion_solo (vertical única)
+   Cards hermanas en par, más livianas que las 3 grandes,
+   grid 2-cols desktop, stacked mobile (sin scroll-snap).
+   ============================================================ */
+.tiers-simple {
+    position: relative;
+    z-index: 1;
+    padding: 12px 22px 28px;
+    max-width: 1080px;
+    margin: 0 auto;
+}
+@media (min-width: 1024px) {
+    .tiers-simple { padding: 24px 22px 36px; }
+}
+
+.tiers-simple-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+.tiers-simple-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: rgba(255, 255, 255, 0.55);
+    text-transform: uppercase;
+    margin: 0 0 10px;
+}
+.tiers-simple-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.05;
+    color: var(--color-wc-text);
+    margin: 0 0 8px;
+    letter-spacing: 0.02em;
+}
+.tiers-simple-sub {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-size: clamp(15px, 1.6vw, 17px);
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.65);
+    max-width: 580px;
+    margin: 0 auto;
+}
+
+.tiers-simple-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 8px;
+}
+@media (min-width: 720px) {
+    .tiers-simple-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+}
+
+.t-card-simple {
+    position: relative;
+    background: rgba(26, 26, 26, 0.55);
+    backdrop-filter: blur(16px) saturate(145%);
+    -webkit-backdrop-filter: blur(16px) saturate(145%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 18px;
+    padding: 22px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: border-color 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+}
+.t-card-simple.is-selected {
+    border-color: rgba(220, 38, 38, 0.32);
+    box-shadow: 0 0 36px rgba(220, 38, 38, 0.08);
+}
+@media (hover: hover) and (min-width: 1024px) {
+    .t-card-simple:hover { transform: translateY(-3px); border-color: rgba(255, 255, 255, 0.16); }
+}
+
+.t-card-simple-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: rgba(220, 38, 38, 0.85);
+    text-transform: uppercase;
+    margin: 0 0 12px;
+}
+
+.t-card-simple-name {
+    font-family: var(--font-display);
+    font-size: 26px;
+    letter-spacing: 0.06em;
+    color: var(--color-wc-text);
+    margin: 0 0 14px;
+}
+
+.t-card-simple-price-block {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+}
+.t-card-simple-price-sym {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+}
+.t-card-simple-price-num {
+    font-family: var(--font-display);
+    font-size: 34px;
+    color: var(--color-wc-text);
+    line-height: 1;
+    letter-spacing: 0.01em;
+}
+.t-card-simple-cop {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+.t-card-simple-note {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.5);
+    min-height: 14px;
+    margin: 4px 0 14px;
+}
+
+.t-card-simple-quote {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.78);
+    margin: 0 0 16px;
+}
+
+.t-card-simple-pillars {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.t-card-simple-pillar {
+    position: relative;
+    padding-left: 14px;
+    font-family: var(--font-sans, 'Inter', sans-serif);
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.85);
+}
+.t-card-simple-pillar::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #DC2626;
+}
+
+.t-card-simple-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: auto;
+    padding: 12px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--color-wc-text);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background-color 180ms var(--ease-out), border-color 180ms var(--ease-out);
+}
+@media (hover: hover) {
+    .t-card-simple-cta:hover {
+        background: rgba(220, 38, 38, 0.10);
+        border-color: rgba(220, 38, 38, 0.35);
+    }
+}
+
 /* ───── Comparador Table ───── */
 .comparador {
     position: relative;

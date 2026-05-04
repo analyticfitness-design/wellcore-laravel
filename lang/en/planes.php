@@ -316,4 +316,31 @@ return [
     'plan_label_prefix' => 'Plan',
     'sticky_continue'   => 'Continue',
 
+    // =========================================================
+    // V2 — Simple plans (single vertical) — entreno_solo / nutricion_solo
+    // =========================================================
+    'simple_section_eyebrow' => 'SIMPLE PLANS · SINGLE VERTICAL',
+    'simple_section_h2'      => 'Need just one?',
+    'simple_section_sub'     => 'Training-only or nutrition-only plan, with your human coach and monthly adjustments. When you are ready, you upgrade to a complete plan.',
+
+    'entreno_solo_name'  => 'TRAINING',
+    'entreno_solo_desc'  => 'Training only — your coach adjusts every month.',
+    'entreno_solo_quote' => 'For those who have nutrition handled and only need a training plan that adjusts monthly with your coach.',
+    'entreno_solo_pillars' => [
+        'Personalized training · exercises with video or demo, weight logging, automatic records',
+        'Your human coach adjusts the plan every month · reviews your check-in and adapts volume, exercises and progressions',
+        'Full platform access · Voice Logger, variations, community, daily missions and XP',
+    ],
+    'entreno_solo_cta' => 'Start Training',
+
+    'nutricion_solo_name'  => 'NUTRITION',
+    'nutricion_solo_desc'  => 'Nutrition only — your coach adjusts every month.',
+    'nutricion_solo_quote' => 'For those who train well and need a nutritional strategy with macros, meal plan and monthly adjustments.',
+    'nutricion_solo_pillars' => [
+        '100% personalized nutrition · macros, meal plan with 3 options per dish, daily water',
+        'Your human coach adjusts the plan every month · reviews your check-in and adapts calories, macros and timing',
+        'Full platform access · 3 options per dish, daily water, community and XP',
+    ],
+    'nutricion_solo_cta' => 'Start Nutrition',
+
 ];
