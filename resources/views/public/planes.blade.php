@@ -51,6 +51,7 @@
             fmt(n) { return Number(n).toLocaleString(this.locale === 'en' ? 'en-US' : 'es-CO'); },
             priceOf(plan)     { return this.fmt(this.prices[plan][this.period]); },
             priceOrigOf(plan) { return this.fmt(this.pricesOrig[plan][this.period]); },
+            priceUsdOf(plan)  { return this.fmt(this.pricesUsd[plan][this.period]); },
             hasPromo(plan)    { return this.promoActive && this.pricesOrig[plan][this.period] > this.prices[plan][this.period]; },
             totalOf(plan)     { return this.fmt(this.totals[plan][this.period]); },
             savingsOf(plan)   { return this.fmt(this.savings[plan][this.period]); },
@@ -223,6 +224,12 @@
                             <span class="t-price-num" x-text="priceOf('{{ $plan }}')">{{ number_format($pricesCop[$plan]['mensual'], 0, ',', '.') }}</span>
                             <span class="t-price-cop">{{ __('planes.cop_mes') }}</span>
                             <span class="t-price-note" x-text="noteOf('{{ $plan }}')">&nbsp;</span>
+                        </div>
+
+                        <div class="t-price-usd-row">
+                            <span class="t-price-usd-label">USD</span>
+                            <span class="t-price-usd-num" x-text="priceUsdOf('{{ $plan }}')">{{ $pricesUsd[$plan]['mensual'] }}</span>
+                            <span class="t-price-usd-per">/ mo</span>
                         </div>
 
                         <p class="t-quote">{{ __("planes.{$plan}_quote") }}</p>

@@ -825,6 +825,42 @@
     text-overflow: ellipsis;
 }
 
+/* USD equivalent — siempre visible, prominente para clientes USA */
+.t-price-usd-row {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin-top: 10px;
+    margin-bottom: 2px;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+}
+.t-price-usd-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-wc-text-2);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+.t-price-usd-num {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-wc-text);
+    line-height: 1;
+    letter-spacing: -0.01em;
+}
+.t-card-metodo .t-price-usd-num { color: var(--color-wc-accent); }
+.t-price-usd-per {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-wc-text-3);
+    letter-spacing: 0.10em;
+}
+
 .t-card .t-quote {
     font-family: var(--font-editorial);
     font-style: italic;
