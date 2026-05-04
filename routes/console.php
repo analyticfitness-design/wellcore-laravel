@@ -41,6 +41,13 @@ Schedule::command('wellcore:expire-payment-proofs')->dailyAt('01:00')->runInBack
 // Strategy Hub — archive completed drops older than 30 days
 Schedule::command('wellcore:archive-old-drops')->dailyAt('03:00')->withoutOverlapping(60);
 
+// Managed Agents — analisis diario de clientes (8:30 AM Colombia)
+Schedule::command('agent:run checkin-analysis')
+    ->dailyAt('08:30')
+    ->withoutOverlapping(120)
+    ->runInBackground()
+    ->name('agent:daily-checkin-analysis');
+
 // Prune expired auth tokens and inactive sessions older than 14 days
 Schedule::call(function () {
     AuthToken::where('expires_at', '<', now())
