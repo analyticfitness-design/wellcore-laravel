@@ -178,14 +178,5 @@
 }
 .wc-admin-shell .wc-admin-card .section-h .lnk:hover{color:var(--wc-accent)}
 
-/* ── Animations globales ── */
-@keyframes wc-admin-pulse{0%,100%{opacity:1}50%{opacity:.4}}
-@keyframes wc-admin-pulse-ring{
-  0%{transform:scale(0.7); opacity:.9}
-  100%{transform:scale(2.4); opacity:0}
-}
-@keyframes wc-admin-shimmer{
-  0%{transform:translateX(-100%)}
-  60%{transform:translateX(100%)}
-  100%{transform:translateX(100%)}
-}
+/* @keyframes globales viven en wc-admin-shell-tabs/{tab}.css con prefijo
+   wcAdmin* para evitar colisión con animaciones del portal cliente. */
