@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
+import NotificationBell from '../../NotificationBell.vue';
 
 const props = defineProps({
   userName: { type: String, default: '' },
@@ -53,13 +54,11 @@ const dateLabel = computed(() => {
         </svg>
         <kbd>⌘K</kbd>
       </button>
-      <button class="bell" aria-label="Notificaciones">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-        </svg>
-        <span v-if="notifBadge" class="bell-badge">{{ notifBadge }}</span>
-      </button>
+      <NotificationBell
+        endpoint="/api/v/admin/notifications"
+        :poll-interval="60000"
+        class="bell-wrapper"
+      />
       <div class="avatar"><div class="inner">{{ userInitial }}</div></div>
     </div>
   </header>
@@ -80,13 +79,11 @@ const dateLabel = computed(() => {
         <span class="ph">Buscar acciones, clientes, herramientas…</span>
         <kbd>⌘K</kbd>
       </button>
-      <button class="bell" aria-label="Notificaciones">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-        </svg>
-        <span v-if="notifBadge" class="bell-badge">{{ notifBadge }}</span>
-      </button>
+      <NotificationBell
+        endpoint="/api/v/admin/notifications"
+        :poll-interval="60000"
+        class="bell-wrapper"
+      />
       <div class="tb-clock"><span class="mono tnum">{{ clock }}</span></div>
     </div>
   </header>

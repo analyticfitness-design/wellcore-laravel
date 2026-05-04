@@ -62,6 +62,12 @@ const MIGRATED_ROUTES = [
   { match: (p) => p.startsWith('/admin/inscriptions'),    tab: 'inscriptions',   cosmetic: true },
   { match: (p) => p.startsWith('/admin/payment-proofs'),  tab: 'payment-proofs', cosmetic: true },
   { match: (p) => p.startsWith('/admin/invitations'),     tab: 'invitations',    cosmetic: true },
+  // Fase 4 — Equipo (cosmetic shell)
+  { match: (p) => p.startsWith('/admin/coaches'),         tab: 'coaches',         cosmetic: true },
+  { match: (p) => p.startsWith('/admin/plan-tickets/stats'), tab: 'stats-tickets', cosmetic: true },
+  { match: (p) => p.startsWith('/admin/plan-tickets'),    tab: 'plan-tickets',    cosmetic: true },
+  { match: (p) => p.startsWith('/admin/tickets'),         tab: 'tickets',         cosmetic: true },
+  { match: (p) => p.startsWith('/admin/client-requests'), tab: 'client-requests', cosmetic: true },
 ];
 
 const matchedRoute = computed(() => MIGRATED_ROUTES.find(r => r.match(route.path)) || null);
