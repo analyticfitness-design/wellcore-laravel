@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Enums\ClientStatus;
 use App\Models\Admin;
+use App\Models\Client;
 use App\Services\ManagedAgentService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 final class AgentRunCommand extends Command
 {
@@ -62,10 +63,8 @@ final class AgentRunCommand extends Command
     {
         $this->info('Obteniendo clientes activos de la BD...');
 
-        // Toma clientes activos con check-ins de las ultimas 2 semanas
-        $clientIds = DB::table('clients')
-            ->where('is_active', 1)
-            ->limit(50) // maximo razonable por sesion
+        $clientIds = Client::where('status', ClientStatus::Activo)
+            ->limit(50)
             ->pluck('id')
             ->toArray();
 
