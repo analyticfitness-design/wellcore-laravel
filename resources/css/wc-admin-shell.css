@@ -118,16 +118,22 @@
   }
 
   /* Iconos del sidebar (mobile): forzar 16x16 — sin esto, SVG con viewBox sin
-     width/height heredan al contenedor y ocupan todo el ancho disponible. */
+     width/height heredan al contenedor y ocupan todo el ancho disponible.
+     `!important` necesario porque admin-shell legacy puede override con
+     mayor specificity en vistas Fase 3+. */
   .wc-admin-shell .side-item .ic{
-    width:16px; height:16px;
+    width:16px !important;
+    height:16px !important;
     flex-shrink:0;
-    display:inline-grid;
+    display:inline-grid !important;
     place-items:center;
     color:var(--wc-text-3);
   }
   .wc-admin-shell .side-item .ic svg{
-    width:16px; height:16px;
+    width:16px !important;
+    height:16px !important;
+    max-width:16px !important;
+    max-height:16px !important;
   }
   .wc-admin-shell .side-item{
     display:flex;
@@ -180,20 +186,87 @@
     box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);
   }
 
-  /* Brand-mark image override (mobile) */
+  /* Brand-mark image override (mobile) — !important para ganar specificity
+     contra reglas .admin-shell .brand-mark del legacy. */
   .wc-admin-shell .brand-mark.brand-mark-img{
-    width:32px; height:32px;
+    width:32px !important;
+    height:32px !important;
     background:transparent !important;
     border:0 !important;
     box-shadow:none !important;
-    padding:0;
-    border-radius:0;
+    padding:0 !important;
+    border-radius:0 !important;
     flex-shrink:0;
   }
+  .wc-admin-shell .brand-mark.brand-mark-img picture,
   .wc-admin-shell .brand-mark.brand-mark-img img{
-    width:100%; height:100%;
+    width:32px !important;
+    height:32px !important;
+    max-width:32px !important;
+    max-height:32px !important;
     object-fit:contain;
     display:block;
+  }
+
+  /* Hamburger icon mobile size guard */
+  .wc-admin-shell .hamburger svg{
+    width:20px !important;
+    height:20px !important;
+  }
+
+  /* Bottomnav icons mobile (vistas Fase 3+ heredan tamaño universal) */
+  .wc-admin-shell .bn-item .ic{
+    width:22px !important;
+    height:22px !important;
+    flex-shrink:0;
+    display:inline-grid;
+    place-items:center;
+  }
+  .wc-admin-shell .bn-item .ic svg{
+    width:22px !important;
+    height:22px !important;
+    max-width:22px !important;
+    max-height:22px !important;
+  }
+
+  /* Avatar/bell/cmdk-pill SVG attribute defaults respetados — el SVG inline ya
+     trae width="11" height="11" o similar. Forzar para evitar estiramiento. */
+  .wc-admin-shell .topbar-mobile .bell svg,
+  .wc-admin-shell .topbar-mobile .cmdk-pill svg,
+  .wc-admin-shell .topbar-mobile .role-chip svg,
+  .wc-admin-shell .side-foot .gear svg{
+    max-width:24px !important;
+    max-height:24px !important;
+  }
+  /* Avatar inner W del logo (en topbar mobile, dentro de brand-mark sin la
+     clase brand-mark-img) — evitar que el SVG explote si se renderiza el
+     legacy en lugar del logo PNG. */
+  .wc-admin-shell .brand-mark:not(.brand-mark-img){
+    width:28px !important;
+    height:28px !important;
+    flex-shrink:0;
+  }
+  .wc-admin-shell .brand-mark:not(.brand-mark-img) svg{
+    width:14px !important;
+    height:14px !important;
+  }
+
+  /* Side-foot avatar/gear icons (sidebar mobile) */
+  .wc-admin-shell .side-foot .avatar svg,
+  .wc-admin-shell .side-foot .gear svg{
+    width:14px !important;
+    height:14px !important;
+  }
+
+  /* Close-drawer button icon */
+  .wc-admin-shell .close-drawer svg{
+    width:18px !important;
+    height:18px !important;
+  }
+  /* Collapse-btn icon (oculto mobile pero por si acaso) */
+  .wc-admin-shell .collapse-btn svg{
+    width:12px !important;
+    height:12px !important;
   }
   .wc-admin-shell .side-scroll{
     flex:1; overflow-y:auto; padding:8px 0 16px;
