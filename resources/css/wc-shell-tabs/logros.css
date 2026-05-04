@@ -214,3 +214,24 @@
   }
   .wc-shell--logros .logros-sheet-handle{ display:none; }
 }
+
+/* ── Light mode overrides ─────────────────────────────────────────────── */
+html:not(.dark) .wc-shell--logros .logros-filter{
+  background:rgba(0,0,0,.05);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.07);
+  color:var(--wc-text-2);
+}
+html:not(.dark) .wc-shell--logros .logros-filter.is-active{
+  background:rgba(220,38,38,.10);
+  color:#B91C1C;
+  box-shadow:inset 0 0 0 1px rgba(220,38,38,.35);
+}
+html:not(.dark) .wc-shell--logros .logro-card{
+  background:#FFFFFF;
+  border:1px solid rgba(0,0,0,.07);
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
+html:not(.dark) .wc-shell--logros .logro-card.is-unlocked{
+  background:linear-gradient(180deg,rgba(245,158,11,.08),#FFFFFF 60%);
+  border-color:rgba(245,158,11,.35);
+}

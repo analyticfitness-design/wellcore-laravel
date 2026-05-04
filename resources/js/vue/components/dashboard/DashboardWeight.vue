@@ -65,7 +65,7 @@ function getWeightBarHeight(weight, min, range) {
     </div>
     <div class="empty">
       <div class="empty-art">
-        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
           <rect x="8" y="14" width="48" height="40" rx="6"></rect>
           <path d="M14 22h36"></path>
           <circle cx="32" cy="38" r="9"></circle>

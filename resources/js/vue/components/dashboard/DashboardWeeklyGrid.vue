@@ -94,7 +94,7 @@ const weekCells = computed(() => {
     <div class="week-legend">
       <span><i style="background:#10B981"></i>Completado</span>
       <span><i style="background:#DC2626"></i>Hoy</span>
-      <span><i style="background:rgba(255,255,255,.2)"></i>Pendiente</span>
+      <span><i class="legend-pending"></i>Pendiente</span>
     </div>
   </section>
 </template>

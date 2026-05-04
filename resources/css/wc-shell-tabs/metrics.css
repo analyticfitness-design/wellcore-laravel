@@ -84,3 +84,11 @@
   .wc-shell--metrics .metrics-chart-wrap{ height:340px; padding:8px 22px 22px; }
   .wc-shell--metrics .metrics-form-grid{ grid-template-columns: repeat(4, 1fr); }
 }
+
+/* ── Light mode overrides ─────────────────────────────────────────────── */
+html:not(.dark) .wc-shell--metrics .metrics-table td{
+  border-bottom-color:rgba(0,0,0,.04);
+}
+html:not(.dark) .wc-shell--metrics .metrics-table tr:hover td{
+  background:rgba(0,0,0,.025);
+}
