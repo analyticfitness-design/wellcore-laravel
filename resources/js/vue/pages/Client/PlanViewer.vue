@@ -371,8 +371,25 @@ const tabs = [
   { key: 'bloodwork', label: 'Bloodwork' },
 ];
 
+// Acceso por tab según clients.plan (matriz oficial — ver spec planes-entreno-nutricion §6.4.1)
+const canAccessEntrenamiento = computed(() => {
+  // Todos los planes EXCEPTO nutricion_solo pueden ver entrenamiento
+  return clientPlanType.value !== 'nutricion_solo';
+});
+
 const canAccessNutricion = computed(() => {
-  return ['esencial', 'metodo', 'elite', 'presencial', 'rise'].includes(clientPlanType.value);
+  // Esencial+, RISE, presencial, Y el plan vertical nutricion_solo
+  return ['esencial', 'metodo', 'elite', 'presencial', 'rise', 'nutricion_solo'].includes(clientPlanType.value);
+});
+
+const canAccessHabitos = computed(() => {
+  // Habitos NO disponibles para entreno_solo, nutricion_solo, trial
+  return !['entreno_solo', 'nutricion_solo', 'trial'].includes(clientPlanType.value);
+});
+
+const canAccessSuplementacion = computed(() => {
+  // Suplementacion NO disponible para entreno_solo, nutricion_solo, trial
+  return !['entreno_solo', 'nutricion_solo', 'trial'].includes(clientPlanType.value);
 });
 
 const canAccessElite = computed(() => {
@@ -380,18 +397,55 @@ const canAccessElite = computed(() => {
 });
 
 function isTabLocked(key) {
-  if (['nutricion', 'suplementacion'].includes(key) && !canAccessNutricion.value) return true;
+  if (key === 'entrenamiento' && !canAccessEntrenamiento.value) return true;
+  if (key === 'nutricion' && !canAccessNutricion.value) return true;
+  if (key === 'habitos' && !canAccessHabitos.value) return true;
+  if (key === 'suplementacion' && !canAccessSuplementacion.value) return true;
   if (['ciclo', 'bloodwork'].includes(key) && !canAccessElite.value) return true;
   return false;
 }
 
+// Permite click en tabs lockeadas para mostrar TabLockUpsell (decisión P11 spec)
 function setTab(key) {
-  if (!isTabLocked(key)) {
-    activeTab.value = key;
-    if (key === 'habitos' && habitsLive.value === null) {
-      fetchHabits();
-    }
+  activeTab.value = key;
+  if (key === 'habitos' && !isTabLocked(key) && habitsLive.value === null) {
+    fetchHabits();
   }
+}
+
+// TabLockUpsell — copy contextual por tab + plan actual
+function tabLockTitle(key) {
+  const titles = {
+    entrenamiento: 'Tu plan no incluye entrenamiento',
+    nutricion: 'Tu plan no incluye nutrición',
+    habitos: 'Tu plan no incluye hábitos',
+    suplementacion: 'Tu plan no incluye suplementación',
+    ciclo: 'Disponible solo en Plan Elite',
+    bloodwork: 'Disponible solo en Plan Elite',
+  };
+  return titles[key] || 'Sección no disponible';
+}
+
+function tabLockBody(key) {
+  const planLabel = planTypeLabel.value || 'actual';
+  const upsell = ' Súmalo con Plan Esencial desde $84.000/mes más.';
+
+  if (key === 'entrenamiento') {
+    return `Tu plan ${planLabel} se enfoca en nutrición. Suma entrenamiento personalizado con un plan completo desde $84.000/mes más con Plan Esencial.`;
+  }
+  if (key === 'nutricion') {
+    return `Tu plan ${planLabel} se enfoca en entrenamiento. Suma nutrición con macros y plan de comidas con un plan completo desde $84.000/mes más con Plan Esencial.`;
+  }
+  if (key === 'habitos') {
+    return `Tu plan ${planLabel} no incluye seguimiento de hábitos.${upsell}`;
+  }
+  if (key === 'suplementacion') {
+    return `El protocolo de suplementación con horarios viene en Plan Esencial.${upsell}`;
+  }
+  if (key === 'ciclo' || key === 'bloodwork') {
+    return 'Esta sección está disponible solo en Plan Elite — el más completo de la suite WellCore.';
+  }
+  return 'Esta sección no está disponible en tu plan actual.';
 }
 
 // Training computed
@@ -413,7 +467,17 @@ const planObjetivo = computed(() => {
 // Header: plan type label (capitalized). "basico" → "Esencial" (brand mapping).
 const planTypeLabel = computed(() => {
   const t = (clientPlanType.value || '').toLowerCase();
-  const map = { basico: 'Esencial', metodo: 'Método', elite: 'Elite', rise: 'RISE', presencial: 'Presencial', trial: 'Trial' };
+  const map = {
+    basico: 'Esencial',
+    esencial: 'Esencial',
+    metodo: 'Método',
+    elite: 'Elite',
+    rise: 'RISE',
+    presencial: 'Presencial',
+    trial: 'Trial',
+    entreno_solo: 'Entreno',
+    nutricion_solo: 'Nutrición',
+  };
   return map[t] || (t ? t.charAt(0).toUpperCase() + t.slice(1) : '');
 });
 
@@ -1030,7 +1094,7 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- ==================== TAB: ENTRENAMIENTO ==================== -->
-        <div v-if="activeTab === 'entrenamiento'">
+        <div v-if="activeTab === 'entrenamiento' && !isTabLocked('entrenamiento')">
           <template v-if="trainingPlan">
             <!-- Program Overview Card -->
             <div class="wc-topline wc-grain relative mb-6 overflow-hidden rounded-xl border border-wc-accent/20 bg-gradient-to-br from-wc-accent/[0.08] via-wc-bg-tertiary to-transparent p-5 sm:p-6">
@@ -1335,7 +1399,7 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- ==================== TAB: HABITOS ==================== -->
-        <div v-else-if="activeTab === 'habitos'">
+        <div v-else-if="activeTab === 'habitos' && !isTabLocked('habitos')">
           <div class="space-y-6">
             <!-- Compliance bar -->
             <div class="relative overflow-hidden rounded-xl border border-wc-accent/20 bg-gradient-to-br from-wc-accent/[0.08] via-wc-bg-tertiary to-transparent p-5">
@@ -1435,7 +1499,7 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- ==================== TAB: NUTRICION ==================== -->
-        <div v-else-if="activeTab === 'nutricion'">
+        <div v-else-if="activeTab === 'nutricion' && !isTabLocked('nutricion')">
           <template v-if="canAccessNutricion && nutritionPlan">
             <div class="space-y-5">
 
@@ -1945,7 +2009,7 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- ==================== TAB: SUPLEMENTACION ==================== -->
-        <div v-else-if="activeTab === 'suplementacion'">
+        <div v-else-if="activeTab === 'suplementacion' && !isTabLocked('suplementacion')">
           <template v-if="canAccessNutricion && supplementPlan">
             <div class="space-y-5 wc-stagger-enter">
               <!-- COMPACT PREMIUM HEADER -->
@@ -2707,6 +2771,14 @@ onBeforeUnmount(() => {
             </div>
           </template>
         </div>
+
+        <!-- ==================== TAB LOCKED — Upsell para planes vertical única ==================== -->
+        <div v-else-if="isTabLocked(activeTab)" class="tab-lock-upsell">
+          <div class="tab-lock-upsell-icon" aria-hidden="true">&#x1F512;</div>
+          <h3 class="tab-lock-upsell-title">{{ tabLockTitle(activeTab) }}</h3>
+          <p class="tab-lock-upsell-body">{{ tabLockBody(activeTab) }}</p>
+          <a href="/planes#tier-cards" class="tab-lock-upsell-cta">Ver Plan Esencial</a>
+        </div>
       </template>
     </div>
 
@@ -2764,4 +2836,54 @@ onBeforeUnmount(() => {
 .accordion-enter-active, .accordion-leave-active { transition: max-height 0.3s ease, opacity 0.2s ease; overflow: hidden; max-height: 600px; }
 .accordion-enter-from, .accordion-leave-to { max-height: 0; opacity: 0; }
 .wc-swap-ghost:hover :deep(svg) { filter: drop-shadow(0 0 6px rgba(220,38,38,0.5)); }
+
+/* ============================================================
+   TabLockUpsell — card contextual cuando la tab está bloqueada
+   por el plan del cliente (entreno_solo, nutricion_solo, trial)
+   ============================================================ */
+.tab-lock-upsell {
+  max-width: 480px;
+  margin: 3rem auto;
+  padding: 2.4rem 1.6rem 2rem;
+  text-align: center;
+  background: var(--color-wc-bg-secondary, #111);
+  border: 1px solid var(--color-wc-border, rgba(255, 255, 255, 0.08));
+  border-radius: 18px;
+}
+.tab-lock-upsell-icon {
+  font-size: 2.4rem;
+  margin-bottom: 0.8rem;
+  opacity: 0.65;
+}
+.tab-lock-upsell-title {
+  font-family: var(--font-display, 'Oswald', 'Bebas Neue', sans-serif);
+  font-weight: 700;
+  font-size: 1.4rem;
+  margin: 0 0 0.6rem;
+  color: var(--color-wc-text, #fff);
+  letter-spacing: 0.01em;
+}
+.tab-lock-upsell-body {
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--color-wc-text-secondary, rgba(255, 255, 255, 0.72));
+  margin: 0 0 1.4rem;
+}
+.tab-lock-upsell-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.4rem;
+  background: var(--color-wc-accent, #DC2626);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 10px;
+  transition: filter 180ms ease;
+}
+.tab-lock-upsell-cta:hover { filter: brightness(1.12); }
 </style>
