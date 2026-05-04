@@ -43,6 +43,16 @@
 .wc-shell--logros .logro-card.is-locked .logro-art{
   color:var(--wc-text-3);
 }
+
+/* Medal SVG image */
+.wc-shell--logros .logro-medal-img{
+  width:64px; height:64px;
+  object-fit:contain;
+  display:block;
+}
+.wc-shell--logros .logro-medal-locked{
+  filter:grayscale(0.75) brightness(0.5);
+}
 .wc-shell--logros .logro-title{
   font:700 13px/1.2 var(--fs);
   color:var(--wc-text);
@@ -227,11 +237,23 @@ html:not(.dark) .wc-shell--logros .logros-filter.is-active{
   box-shadow:inset 0 0 0 1px rgba(220,38,38,.35);
 }
 html:not(.dark) .wc-shell--logros .logro-card{
-  background:#FFFFFF;
-  border:1px solid rgba(0,0,0,.07);
+  background:#F8F8FA;
+  border:1px solid rgba(0,0,0,.08);
   box-shadow:0 1px 4px rgba(0,0,0,.06);
 }
 html:not(.dark) .wc-shell--logros .logro-card.is-unlocked{
-  background:linear-gradient(180deg,rgba(245,158,11,.08),#FFFFFF 60%);
-  border-color:rgba(245,158,11,.35);
+  background:linear-gradient(180deg,rgba(245,158,11,.12),#FFFDF5 60%);
+  border-color:rgba(245,158,11,.40);
+  box-shadow:0 2px 8px rgba(245,158,11,.12);
+}
+html:not(.dark) .wc-shell--logros .logro-card.is-locked{
+  opacity:1;
+  background:#F4F4F8;
+  border:1px solid rgba(0,0,0,.06);
+}
+html:not(.dark) .wc-shell--logros .logro-card.is-locked .logro-art{
+  color:rgba(0,0,0,.30);
+}
+html:not(.dark) .wc-shell--logros .logro-medal-locked{
+  filter:grayscale(1) brightness(0.65) opacity(0.55);
 }
