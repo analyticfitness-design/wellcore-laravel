@@ -96,6 +96,99 @@
     margin:0 auto;
     padding-bottom:96px;
   }
+
+  /* Sidebar mobile: drawer oculto por default. Se muestra con .open via toggle. */
+  .wc-admin-shell .sidebar{
+    position:fixed;
+    top:0; left:0;
+    width:280px; max-width:80vw;
+    height:100vh;
+    z-index:100;
+    background:linear-gradient(180deg, #0B0B0D 0%, #09090B 100%);
+    border-right:1px solid rgba(255,255,255,.04);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    transform:translateX(-100%);
+    transition:transform 240ms var(--ease-glide);
+    box-shadow:0 0 32px rgba(0,0,0,.6);
+  }
+  .wc-admin-shell .sidebar.open{
+    transform:translateX(0);
+  }
+
+  /* Iconos del sidebar (mobile): forzar 16x16 — sin esto, SVG con viewBox sin
+     width/height heredan al contenedor y ocupan todo el ancho disponible. */
+  .wc-admin-shell .side-item .ic{
+    width:16px; height:16px;
+    flex-shrink:0;
+    display:inline-grid;
+    place-items:center;
+    color:var(--wc-text-3);
+  }
+  .wc-admin-shell .side-item .ic svg{
+    width:16px; height:16px;
+  }
+  .wc-admin-shell .side-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 14px;
+    color:var(--wc-text-2);
+    font-family:var(--fs);
+    font-weight:500;
+    font-size:13.5px;
+    cursor:pointer;
+    transition:all 160ms var(--ease-out);
+  }
+  .wc-admin-shell .side-item:hover,
+  .wc-admin-shell .side-item.active{
+    background:rgba(220,38,38,.08);
+    color:var(--wc-text);
+  }
+  .wc-admin-shell .side-item .lbl{
+    flex:1; min-width:0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .wc-admin-shell .side-item .badge{
+    font-family:var(--fm); font-weight:700; font-size:10px;
+    padding:1px 6px; border-radius:999px;
+    background:rgba(220,38,38,.16); color:#FCA5A5;
+    box-shadow:inset 0 0 0 1px rgba(220,38,38,.32);
+  }
+
+  /* Sidebar header / footer mobile */
+  .wc-admin-shell .side-brand{
+    display:flex; align-items:center; gap:10px;
+    padding:18px 16px 14px;
+    border-bottom:1px solid rgba(255,255,255,.04);
+  }
+  .wc-admin-shell .side-brand .meta{flex:1; min-width:0}
+  .wc-admin-shell .side-brand .collapse-btn{display:none}
+  .wc-admin-shell .side-scroll{
+    flex:1; overflow-y:auto; padding:8px 0 16px;
+    scrollbar-width:thin;
+  }
+  .wc-admin-shell .side-cat{
+    padding:14px 16px 6px;
+    font-family:var(--fs); font-weight:700; font-size:9.5px;
+    letter-spacing:.18em; text-transform:uppercase; color:var(--wc-text-4);
+  }
+  .wc-admin-shell .side-foot{
+    border-top:1px solid rgba(255,255,255,.04);
+    padding:12px 14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .wc-admin-shell .side-foot .avatar{ width:32px; height:32px; padding:1.5px; flex-shrink:0; }
+  .wc-admin-shell .side-foot .avatar .inner{ font-size:12px; }
+  .wc-admin-shell .side-foot .who{flex:1; min-width:0; overflow:hidden}
+  .wc-admin-shell .side-foot .who .nm{font-size:12.5px; font-weight:600; color:var(--wc-text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .wc-admin-shell .side-foot .who .rl{font-size:10px; color:var(--wc-text-3); letter-spacing:.06em}
+  .wc-admin-shell .side-foot .gear{
+    width:28px; height:28px; border-radius:8px;
+    display:grid; place-items:center; color:var(--wc-text-3);
+    background:rgba(255,255,255,.02);
+  }
 }
 
 /* Desktop: grid app shell con sidebar fija + main */
