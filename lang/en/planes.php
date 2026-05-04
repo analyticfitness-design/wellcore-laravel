@@ -322,11 +322,16 @@ return [
     'promo_off_short'    => 'OFF',
     'promo_strike_label' => 'Was',
 
-    // Banner promo (prominent strip above billing toggle)
-    'promo_banner_eyebrow' => 'PROMO · MAY 2026',
-    'promo_banner_h2_pre'  => 'THIS MONTH ONLY',
-    'promo_banner_h2_acc'  => '−15% ON EVERY PLAN',
-    'promo_banner_sub'     => 'Ends May 31. Then prices go back to normal.',
+    // Banner promo — editorial strip (3 cols: discount · context · countdown)
+    'promo_strip_eyebrow'      => 'Promo · May 2026',
+    'promo_strip_value_label'  => 'off',
+    'promo_strip_scope_h'      => 'This month only',
+    'promo_strip_scope_sub'    => 'Every plan',
+    'promo_strip_ends_label'   => 'Ends',
+    'promo_strip_ends_value'   => 'MAY · 31',
+    'promo_strip_days_one'     => 'day left',
+    'promo_strip_days_many'    => 'days left',
+    'promo_strip_after'        => 'Then, regular price.',
 
     // =========================================================
     // V2 — Simple plans (single vertical) — entreno_solo / nutricion_solo

@@ -394,11 +394,16 @@ return [
     'promo_off_short'    => 'OFF',
     'promo_strike_label' => 'Antes',
 
-    // Banner promo (strip prominente arriba del billing toggle)
-    'promo_banner_eyebrow' => 'PROMOCIÓN · MAYO 2026',
-    'promo_banner_h2_pre'  => 'SOLO POR ESTE MES',
-    'promo_banner_h2_acc'  => '−15% EN TODOS LOS PLANES',
-    'promo_banner_sub'     => 'Termina el 31 de mayo. Después vuelven al precio normal.',
+    // Banner promo — editorial strip (3 cols: descuento · contexto · countdown)
+    'promo_strip_eyebrow'      => 'Promoción · Mayo 2026',
+    'promo_strip_value_label'  => 'descuento',
+    'promo_strip_scope_h'      => 'Solo este mes',
+    'promo_strip_scope_sub'    => 'En todos los planes',
+    'promo_strip_ends_label'   => 'Termina',
+    'promo_strip_ends_value'   => '31 · MAY',
+    'promo_strip_days_one'     => 'día restante',
+    'promo_strip_days_many'    => 'días restantes',
+    'promo_strip_after'        => 'Después, precio regular.',
 
     // =========================================================
     // V2 — Planes simples (vertical única) — entreno_solo / nutricion_solo

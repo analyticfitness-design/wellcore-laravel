@@ -107,16 +107,39 @@
             </div>
         </section>
 
-        {{-- ═══ COMP 1.5: Banner Promo Mayo — temporalidad explícita para no deslegitimizar precio normal ═══ --}}
+        {{-- ═══ COMP 1.5: Promo Strip — editorial brutal-minimal (3 cols: descuento · scope · countdown) ═══ --}}
         @if($promoActive)
-        <section class="promo-banner" data-animate aria-label="{{ __('planes.promo_banner_h2_acc') }}">
-            <div class="promo-banner-inner">
-                <p class="promo-banner-eyebrow">{{ __('planes.promo_banner_eyebrow') }}</p>
-                <h2 class="promo-banner-h2">
-                    <span class="promo-banner-h2-pre">{{ __('planes.promo_banner_h2_pre') }}</span>
-                    <span class="promo-banner-h2-acc">{{ __('planes.promo_banner_h2_acc') }}</span>
-                </h2>
-                <p class="promo-banner-sub">{{ __('planes.promo_banner_sub') }}</p>
+        <section class="promo-strip" data-animate aria-label="{{ __('planes.promo_strip_eyebrow') }}">
+            <p class="promo-strip-eyebrow">{{ __('planes.promo_strip_eyebrow') }}</p>
+            <div class="promo-strip-grid">
+                {{-- Col 1: descuento dominante --}}
+                <div class="promo-strip-col promo-strip-col-value">
+                    <span class="promo-strip-value">−{{ $discountPct }}<span class="promo-strip-value-pct">%</span></span>
+                    <span class="promo-strip-value-label">{{ __('planes.promo_strip_value_label') }}</span>
+                </div>
+
+                {{-- Divider 1 --}}
+                <span class="promo-strip-div" aria-hidden="true"></span>
+
+                {{-- Col 2: scope --}}
+                <div class="promo-strip-col promo-strip-col-scope">
+                    <span class="promo-strip-scope-h">{{ __('planes.promo_strip_scope_h') }}</span>
+                    <span class="promo-strip-scope-sub">{{ __('planes.promo_strip_scope_sub') }} · {{ __('planes.promo_strip_after') }}</span>
+                </div>
+
+                {{-- Divider 2 --}}
+                <span class="promo-strip-div" aria-hidden="true"></span>
+
+                {{-- Col 3: countdown / ends --}}
+                <div class="promo-strip-col promo-strip-col-ends">
+                    <span class="promo-strip-ends-label">{{ __('planes.promo_strip_ends_label') }}</span>
+                    <span class="promo-strip-ends-value">{{ __('planes.promo_strip_ends_value') }}</span>
+                    @if(!is_null($promoDaysLeft))
+                        <span class="promo-strip-days">
+                            {{ $promoDaysLeft }} {{ $promoDaysLeft === 1 ? __('planes.promo_strip_days_one') : __('planes.promo_strip_days_many') }}
+                        </span>
+                    @endif
+                </div>
             </div>
         </section>
         @endif

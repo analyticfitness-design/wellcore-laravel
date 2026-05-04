@@ -27,6 +27,19 @@ class PlanesController extends Controller
         $plansSimple   = ['entreno_solo', 'nutricion_solo'];
         $plans         = array_merge($plansComplete, $plansSimple);
 
+        // Countdown dinámico para el banner promo (mayo 2026)
+        $promoEndsAt   = config('plans.promo.ends_at');
+        $promoDaysLeft = null;
+        if ($promoEndsAt) {
+            try {
+                $end  = \Carbon\Carbon::parse($promoEndsAt)->endOfDay();
+                $diff = (int) floor(now()->diffInHours($end, false) / 24);
+                $promoDaysLeft = max(0, $diff);
+            } catch (\Throwable) {
+                $promoDaysLeft = null;
+            }
+        }
+
         $periods = ['mensual', 'trimestral', 'anual'];
         $months  = ['mensual' => 1, 'trimestral' => 3, 'anual' => 12];
 
@@ -85,6 +98,8 @@ class PlanesController extends Controller
             'promoActive'      => $pricing->isPromoActive(),
             'discountPct'      => (int) config('plans.promo.discount_pct', 0),
             'promoLabel'       => (string) config('plans.promo.label', ''),
+            'promoEndsAt'      => $promoEndsAt,
+            'promoDaysLeft'    => $promoDaysLeft,
         ]);
     }
 }
