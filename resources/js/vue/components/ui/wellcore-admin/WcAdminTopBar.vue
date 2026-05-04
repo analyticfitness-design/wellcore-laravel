@@ -30,14 +30,17 @@ const dateLabel = computed(() => {
 <template>
   <!-- MOBILE TOPBAR (visible solo < 1024px via CSS) -->
   <header class="topbar topbar-mobile">
-    <div class="brand-mark">
-      <svg viewBox="0 0 16 16" fill="none">
-        <path d="M2 4 L4.5 12 L8 6 L11.5 12 L14 4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <button class="hamburger" aria-label="Abrir menú lateral" @click="emit('toggleSidebar')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
       </svg>
+    </button>
+    <div class="brand-mark brand-mark-img">
+      <img src="/images/wellcore-logo-blanco-sombras.png" alt="WellCore" />
     </div>
-    <div>
-      <div class="brand-name">WCORE<b>FIT</b></div>
-    </div>
+    <div class="brand-name">WELLCORE</div>
     <div class="role-chip"><span class="dot"></span>{{ userRole }}</div>
     <div class="tb-actions">
       <button class="cmdk-pill" aria-label="Buscar" @click="emit('openSearch')">
@@ -92,5 +95,37 @@ const dateLabel = computed(() => {
 @media (min-width: 1024px){
   .topbar-mobile { display: none; }
   .topbar-desktop { display: flex; }
+}
+
+/* Hamburger button — visible solo mobile */
+.hamburger{
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: grid; place-items: center;
+  background: rgba(255,255,255,.04);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+  color: var(--wc-text-2);
+  cursor: pointer;
+  transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  border: 0;
+}
+.hamburger:hover{
+  color: var(--wc-text);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.16);
+}
+
+/* Brand-mark con imagen (override del SVG-only del CSS general) */
+.brand-mark.brand-mark-img{
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0;
+}
+.brand-mark.brand-mark-img img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 </style>

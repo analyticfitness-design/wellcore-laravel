@@ -102,18 +102,22 @@ function go(target) {
 <template>
   <aside :class="['sidebar', { open, collapsed }]">
     <div class="side-brand">
-      <div class="brand-mark">
-        <svg viewBox="0 0 16 16" fill="none">
-          <path d="M2 4 L4.5 12 L8 6 L11.5 12 L14 4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+      <div class="brand-mark brand-mark-img">
+        <img src="/images/wellcore-logo-blanco-sombras.png" alt="WellCore" />
       </div>
       <div class="meta">
-        <div class="brand-name">WCORE<b>FIT</b></div>
+        <div class="brand-name">WELLCORE</div>
         <div class="role-chip"><span class="dot"></span>{{ userRole }}</div>
       </div>
       <button class="collapse-btn" @click="collapsed = !collapsed" aria-label="Collapse sidebar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <button class="close-drawer" @click="emit('close')" aria-label="Cerrar menú">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
     </div>
