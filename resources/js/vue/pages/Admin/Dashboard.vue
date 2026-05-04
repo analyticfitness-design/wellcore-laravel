@@ -31,14 +31,17 @@ const {
 // Cuando el endpoint exponga el shape exacto, los computed se vuelven thin
 // pass-throughs (TODO Fase 7 polish).
 
+// Backend retorna keys en español (mrr_actual_cop, clientBreakdown.activo,
+// tasa_retencion_mes_pct). Mapeamos al shape del target Claude Design.
 const mrrData = computed(() => {
   const fin = financial.value || {};
-  const current = Number(fin.mrr_current ?? fin.current ?? 0);
-  const previous = Number(fin.mrr_previous ?? fin.previous ?? 0);
+  const current = Number(fin.mrr_actual_cop ?? fin.mrr_current ?? 0);
+  const previous = Number(fin.mrr_mes_anterior_cop ?? fin.mrr_previous ?? 0);
   const delta = current - previous;
-  const deltaPercent = previous > 0
-    ? Math.round((delta / previous) * 1000) / 10
-    : (current > 0 ? 100 : 0);
+  const deltaPercent = Number(
+    fin.mrr_delta_pct
+    ?? (previous > 0 ? Math.round((delta / previous) * 1000) / 10 : (current > 0 ? 100 : 0))
+  );
   const fmt = (n) => '$' + Number(n).toLocaleString('es-CO', { maximumFractionDigits: 0 });
   return {
     current,
@@ -49,22 +52,21 @@ const mrrData = computed(() => {
   };
 });
 
-// Sparkline: últimos 3-12 puntos del histórico de ingresos. revenueChartData
-// puede venir como [{ month, value }, ...] o [number, ...].
+// Sparkline: histórico de ingresos. Backend manda [{ month, total }, ...].
 const mrrSparkData = computed(() => {
   const arr = revenueChartData.value || [];
   if (!arr.length) return [];
   if (typeof arr[0] === 'number') return arr;
-  return arr.map(x => Number(x.value ?? x.amount ?? x.mrr ?? 0));
+  return arr.map(x => Number(x.total ?? x.value ?? x.amount ?? x.mrr ?? 0));
 });
 
-// Alias del breakdown de clientes (el store usa singular, target plural).
+// Backend usa "activo/inactivo" (español); el target espera active/inactive.
 const clientsBreakdown = computed(() => {
   const b = clientBreakdown.value || {};
   return {
     total: Number(b.total ?? b.totalClients ?? 0),
-    active: Number(b.active ?? b.activos ?? 0),
-    inactive: Number(b.inactive ?? b.inactivos ?? 0),
+    active: Number(b.activo ?? b.active ?? b.activos ?? 0),
+    inactive: Number(b.inactivo ?? b.inactive ?? b.inactivos ?? 0),
   };
 });
 
@@ -72,7 +74,13 @@ const retention = computed(() => {
   const ops = operational.value || {};
   const prod = production.value || {};
   return {
-    percent: Number(ops.retention_percent ?? prod.retention_percent ?? ops.retencion ?? 0),
+    percent: Number(
+      ops.tasa_retencion_mes_pct
+      ?? ops.retention_percent
+      ?? prod.retention_percent
+      ?? ops.retencion
+      ?? 0
+    ),
     target: 85,
     delta: ops.retention_delta || prod.retention_delta || '',
   };

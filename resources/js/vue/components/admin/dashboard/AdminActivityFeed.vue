@@ -35,7 +35,7 @@ const inscriptionsList = computed(() => props.inscriptions.slice(0, 3));
         :name="p.buyerName || p.clientName || p.nombre || 'Cliente'"
         :plan="p.plan || p.planName || ''"
         :when="p.timeAgo || ''"
-        :amount="p.amountFormatted || (p.amount ? `$${Number(p.amount).toLocaleString('es-CO')}` : '')"
+        :amount="p.amountFormatted || (typeof p.amount === 'number' ? `$${p.amount.toLocaleString('es-CO', { maximumFractionDigits: 0 })}` : (p.amount ? `$${p.amount}` : ''))"
       />
     </WcAdminFeedGroup>
     <WcAdminFeedGroup
@@ -87,7 +87,7 @@ const inscriptionsList = computed(() => props.inscriptions.slice(0, 3));
         :name="p.buyerName || p.clientName || p.nombre || 'Cliente'"
         :plan="p.plan || p.planName || ''"
         :when="p.timeAgo || ''"
-        :amount="p.amountFormatted || (p.amount ? `$${Number(p.amount).toLocaleString('es-CO')}` : '')"
+        :amount="p.amountFormatted || (typeof p.amount === 'number' ? `$${p.amount.toLocaleString('es-CO', { maximumFractionDigits: 0 })}` : (p.amount ? `$${p.amount}` : ''))"
         meta="Pago recibido"
       />
     </WcAdminFeedGroup>
