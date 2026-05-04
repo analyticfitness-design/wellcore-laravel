@@ -1,0 +1,191 @@
+/* ════════════════════════════════════════════════════════
+   WC-ADMIN-SHELL · Base universal del portal admin
+   Tokens del target Claude Design literal (admin densidad).
+   Extiende wc-shell.css: agrega --wc-text-4, --wc-gold,
+   --fc (JetBrains Mono) y layout grid con sidebar 240px.
+   ════════════════════════════════════════════════════════ */
+
+.wc-admin-shell{
+  /* ── Tokens del target (literal del HTML target) ── */
+  --wc-bg:#09090B;
+  --wc-bg2:#111113;
+  --wc-bg3:#18181B;
+  --wc-bg4:#1E1E22;
+  --wc-accent:#DC2626;
+  --wc-accent-2:#EF4444;
+  --wc-accent-deep:#7F1D1D;
+  --wc-text:#FAFAFA;
+  --wc-text-2:#A1A1AA;
+  --wc-text-3:#71717A;
+  --wc-text-4:#52525B;
+  --wc-border:#27272A;
+  --wc-green:#10B981;
+  --wc-blue:#3B82F6;
+  --wc-amber:#F59E0B;
+  --wc-purple:#A78BFA;
+  --wc-gold:#C8A769;
+
+  /* Fuentes */
+  --fd:'Oswald','Impact',sans-serif;
+  --fs:'Raleway',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --fm:'Barlow',ui-monospace,sans-serif;
+  --fc:'JetBrains Mono',ui-monospace,monospace;
+
+  /* Espaciado (compartido con cliente) */
+  --s4:4px; --s8:8px; --s12:12px; --s16:16px; --s20:20px;
+  --s24:24px; --s32:32px; --s40:40px; --s56:56px; --s80:80px;
+
+  /* Radii */
+  --r-sm:12px; --r-md:16px; --r-lg:20px; --r-pill:999px;
+
+  /* Sombras del manual */
+  --sh-card:
+    inset 0 1px 0 rgba(255,255,255,.04),
+    0 0 0 1px rgba(255,255,255,.06),
+    0 8px 24px rgba(0,0,0,.40),
+    0 24px 60px rgba(0,0,0,.30);
+  --sh-soft:
+    inset 0 1px 0 rgba(255,255,255,.03),
+    0 0 0 1px rgba(255,255,255,.05),
+    0 4px 14px rgba(0,0,0,.35);
+  --sh-hover:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    0 0 0 1px rgba(255,255,255,.10),
+    0 12px 32px rgba(0,0,0,.45),
+    0 24px 60px rgba(0,0,0,.30),
+    0 0 24px rgba(220,38,38,.10);
+
+  /* Easings */
+  --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-glide: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Layout admin */
+  --wc-admin-side-w: 240px;
+  --wc-admin-topbar-h: 64px;
+
+  /* Base */
+  background:#000;
+  color:var(--wc-text);
+  font-family:var(--fs);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  font-size:14px; line-height:1.5;
+  letter-spacing:0;  /* override body letter-spacing global */
+}
+
+.wc-admin-shell *,
+.wc-admin-shell *::before,
+.wc-admin-shell *::after{
+  box-sizing:border-box;
+}
+
+/* Body atmosphere — se aplica al wrapper */
+.wc-admin-shell{
+  background:
+    radial-gradient(1200px 600px at 50% -200px, rgba(220,38,38,.06), transparent 60%),
+    var(--wc-bg);
+  position:relative;
+  min-height:100vh;
+}
+
+/* Mobile: max-width 430px centered + padding-bottom para bottomnav */
+@media (max-width: 1023px){
+  .wc-admin-shell{
+    max-width:430px;
+    margin:0 auto;
+    padding-bottom:96px;
+  }
+}
+
+/* Desktop: grid app shell con sidebar fija + main */
+@media (min-width: 1024px){
+  .wc-admin-shell{
+    background:
+      radial-gradient(1400px 700px at 50% -300px, rgba(220,38,38,.05), transparent 60%),
+      var(--wc-bg);
+    min-width:1280px;
+    max-width:none;
+    margin:0;
+    padding-bottom:0;
+    display:grid;
+    grid-template-columns:var(--wc-admin-side-w) 1fr;
+    align-items:start;
+  }
+  .wc-admin-shell.is-collapsed{
+    --wc-admin-side-w:68px;
+  }
+}
+
+/* ── Utilities ── */
+.wc-admin-shell .tnum{font-variant-numeric:tabular-nums; font-feature-settings:'tnum' on,'ss01' on}
+.wc-admin-shell .os{font-family:var(--fd); text-transform:uppercase; letter-spacing:.02em}
+.wc-admin-shell .mono{font-family:var(--fc)}
+.wc-admin-shell .div-fade{
+  height:1px;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.08) 20%, rgba(255,255,255,.08) 80%, transparent);
+}
+
+/* Gradient borders helpers */
+.wc-admin-shell .gb2{
+  background:
+    linear-gradient(var(--wc-bg2),var(--wc-bg2)) padding-box,
+    linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.02) 60%) border-box;
+  border:1px solid transparent;
+}
+.wc-admin-shell .gb3{
+  background:
+    linear-gradient(var(--wc-bg3),var(--wc-bg3)) padding-box,
+    linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.02) 60%) border-box;
+  border:1px solid transparent;
+}
+
+/* ── Card primitive (consumido por WcAdminCard.vue, Fase 1) ── */
+.wc-admin-shell .wc-admin-card{
+  border-radius:var(--r-md);
+}
+.wc-admin-shell .wc-admin-card.gb2{
+  background:
+    linear-gradient(var(--wc-bg2),var(--wc-bg2)) padding-box,
+    linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.02) 60%) border-box;
+  border:1px solid transparent;
+  box-shadow:var(--sh-card);
+}
+.wc-admin-shell .wc-admin-card.gb3{
+  background:
+    linear-gradient(var(--wc-bg3),var(--wc-bg3)) padding-box,
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02) 60%) border-box;
+  border:1px solid transparent;
+  box-shadow:var(--sh-soft);
+}
+.wc-admin-shell .wc-admin-card .section-h{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 16px 10px;
+}
+.wc-admin-shell .wc-admin-card .section-h .ttl{
+  font-family:var(--fs); font-weight:700; font-size:10.5px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--wc-text-3);
+}
+.wc-admin-shell .wc-admin-card .section-h .meta{
+  font-family:var(--fs); font-weight:500; font-size:11px;
+  color:var(--wc-text-4); letter-spacing:.04em;
+}
+.wc-admin-shell .wc-admin-card .section-h .lnk{
+  font-family:var(--fs); font-weight:600; font-size:11px;
+  letter-spacing:.10em; text-transform:uppercase;
+  color:var(--wc-text-2); cursor:pointer;
+  transition:color 180ms var(--ease-out);
+}
+.wc-admin-shell .wc-admin-card .section-h .lnk:hover{color:var(--wc-accent)}
+
+/* ── Animations globales ── */
+@keyframes wc-admin-pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes wc-admin-pulse-ring{
+  0%{transform:scale(0.7); opacity:.9}
+  100%{transform:scale(2.4); opacity:0}
+}
+@keyframes wc-admin-shimmer{
+  0%{transform:translateX(-100%)}
+  60%{transform:translateX(100%)}
+  100%{transform:translateX(100%)}
+}

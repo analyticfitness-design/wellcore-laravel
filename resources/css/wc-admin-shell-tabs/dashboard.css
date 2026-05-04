@@ -1,0 +1,9 @@
+/* ════════════════════════════════════════════════════════
+   wc-admin-shell-tabs/dashboard.css
+   Scopeado bajo .wc-admin-shell--dashboard.
+   Placeholder de Fase 0 — el contenido literal del target
+   (mobile + desktop) se rellena en Fase 2 a partir de:
+   - _audit/target-admin-mobile.css
+   - _audit/target-admin-desktop.css
+   prefijando cada selector raíz con `.wc-admin-shell--dashboard `.
+   ════════════════════════════════════════════════════════ */

@@ -11,6 +11,8 @@
 @import './wc-shell-tabs/metrics.css';
 @import './wc-shell-tabs/plan.css';
 @import './wc-shell-tabs/training.css';
+@import './wc-admin-shell.css';
+@import './wc-admin-shell-tabs/dashboard.css';
 
 /* Dark mode via .dark class on <html>, not prefers-color-scheme */
 @custom-variant dark (&:where(.dark, .dark *));
