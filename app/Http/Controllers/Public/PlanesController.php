@@ -17,6 +17,9 @@ class PlanesController extends Controller
      * Los descuentos por período (-10% trim / -20% anual) se aplican aquí —
      * NO en PricingService — para evitar afectar otras vistas que solo usan
      * el precio mensual (admin, cliente, schema.org).
+     *
+     * También se exponen los precios ORIGINALES (sin promo) para mostrar
+     * tachados cuando hay promo activa.
      */
     public function index(PricingService $pricing)
     {
@@ -37,9 +40,13 @@ class PlanesController extends Controller
 
         $monthlyCop = [];
         $monthlyUsd = [];
+        $monthlyCopOriginal = [];
+        $monthlyUsdOriginal = [];
         foreach ($plans as $plan) {
             $monthlyCop[$plan] = $pricing->priceCop($plan);
             $monthlyUsd[$plan] = $pricing->priceUsd($plan);
+            $monthlyCopOriginal[$plan] = (int) config("plans.{$plan}.price_cop_original", $monthlyCop[$plan]);
+            $monthlyUsdOriginal[$plan] = (int) config("plans.{$plan}.price_usd_original", $monthlyUsd[$plan]);
         }
 
         $build = static function (array $monthlyByPlan) use ($plans, $periods, $months, $applyDiscount): array {
@@ -59,21 +66,25 @@ class PlanesController extends Controller
 
         $cop = $build($monthlyCop);
         $usd = $build($monthlyUsd);
+        $copOrig = $build($monthlyCopOriginal);
+        $usdOrig = $build($monthlyUsdOriginal);
 
         return view('public.planes', [
-            'plansComplete' => $plansComplete,
-            'plansSimple'   => $plansSimple,
-            'monthlyCop'    => $monthlyCop,
-            'monthlyUsd'    => $monthlyUsd,
-            'pricesCop'     => $cop['prices'],
-            'totalsCop'     => $cop['totals'],
-            'savingsCop'    => $cop['savings'],
-            'pricesUsd'     => $usd['prices'],
-            'totalsUsd'     => $usd['totals'],
-            'savingsUsd'    => $usd['savings'],
-            'promoActive'   => $pricing->isPromoActive(),
-            'discountPct'   => (int) config('plans.promo.discount_pct', 0),
-            'promoLabel'    => (string) config('plans.promo.label', ''),
+            'plansComplete'    => $plansComplete,
+            'plansSimple'      => $plansSimple,
+            'monthlyCop'       => $monthlyCop,
+            'monthlyUsd'       => $monthlyUsd,
+            'pricesCop'        => $cop['prices'],
+            'totalsCop'        => $cop['totals'],
+            'savingsCop'       => $cop['savings'],
+            'pricesUsd'        => $usd['prices'],
+            'totalsUsd'        => $usd['totals'],
+            'savingsUsd'       => $usd['savings'],
+            'pricesCopOrig'    => $copOrig['prices'],
+            'pricesUsdOrig'    => $usdOrig['prices'],
+            'promoActive'      => $pricing->isPromoActive(),
+            'discountPct'      => (int) config('plans.promo.discount_pct', 0),
+            'promoLabel'       => (string) config('plans.promo.label', ''),
         ]);
     }
 }

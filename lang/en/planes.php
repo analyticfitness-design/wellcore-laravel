@@ -317,6 +317,12 @@ return [
     'sticky_continue'   => 'Continue',
 
     // =========================================================
+    // V2 — Promo badge (struck-through price + discount percent)
+    // =========================================================
+    'promo_off_short'    => 'OFF',
+    'promo_strike_label' => 'Was',
+
+    // =========================================================
     // V2 — Simple plans (single vertical) — entreno_solo / nutricion_solo
     // =========================================================
     'simple_section_eyebrow' => 'SIMPLE PLANS · SINGLE VERTICAL',

@@ -40,13 +40,20 @@
             pricesUsd: @js($pricesUsd),
             totalsUsd: @js($totalsUsd),
             savingsUsd: @js($savingsUsd),
-            get prices()  { return this.locale === 'en' ? this.pricesUsd  : this.pricesCop  },
-            get totals()  { return this.locale === 'en' ? this.totalsUsd  : this.totalsCop  },
-            get savings() { return this.locale === 'en' ? this.savingsUsd : this.savingsCop },
+            pricesCopOrig: @js($pricesCopOrig),
+            pricesUsdOrig: @js($pricesUsdOrig),
+            promoActive: @js($promoActive),
+            discountPct: @js($discountPct),
+            get prices()      { return this.locale === 'en' ? this.pricesUsd     : this.pricesCop     },
+            get pricesOrig()  { return this.locale === 'en' ? this.pricesUsdOrig : this.pricesCopOrig },
+            get totals()      { return this.locale === 'en' ? this.totalsUsd     : this.totalsCop     },
+            get savings()     { return this.locale === 'en' ? this.savingsUsd    : this.savingsCop    },
             fmt(n) { return Number(n).toLocaleString(this.locale === 'en' ? 'en-US' : 'es-CO'); },
-            priceOf(plan)   { return this.fmt(this.prices[plan][this.period]); },
-            totalOf(plan)   { return this.fmt(this.totals[plan][this.period]); },
-            savingsOf(plan) { return this.fmt(this.savings[plan][this.period]); },
+            priceOf(plan)     { return this.fmt(this.prices[plan][this.period]); },
+            priceOrigOf(plan) { return this.fmt(this.pricesOrig[plan][this.period]); },
+            hasPromo(plan)    { return this.promoActive && this.pricesOrig[plan][this.period] > this.prices[plan][this.period]; },
+            totalOf(plan)     { return this.fmt(this.totals[plan][this.period]); },
+            savingsOf(plan)   { return this.fmt(this.savings[plan][this.period]); },
             noteOf(plan) {
                 if (this.period === 'mensual') return ' ';
                 const total = this.totalOf(plan);
@@ -165,6 +172,16 @@
                         @endif
 
                         <div class="t-price-block">
+                            <template x-if="hasPromo('{{ $plan }}')">
+                                <div class="t-price-promo-row">
+                                    <span class="t-price-strike">
+                                        <span class="t-price-strike-label">{{ __('planes.promo_strike_label') }}</span>
+                                        <span class="t-price-strike-sym">$</span>
+                                        <span class="t-price-strike-num" x-text="priceOrigOf('{{ $plan }}')">{{ number_format($pricesCopOrig[$plan]['mensual'], 0, ',', '.') }}</span>
+                                    </span>
+                                    <span class="t-price-off-pill">−<span x-text="discountPct">{{ $discountPct }}</span>%</span>
+                                </div>
+                            </template>
                             <span class="t-price-sym">$</span>
                             <span class="t-price-num" x-text="priceOf('{{ $plan }}')">{{ number_format($pricesCop[$plan]['mensual'], 0, ',', '.') }}</span>
                             <span class="t-price-cop">{{ __('planes.cop_mes') }}</span>
@@ -216,6 +233,16 @@
 
                         <div class="t-card-simple-name">{{ __("planes.{$plan}_name") }}</div>
 
+                        <template x-if="hasPromo('{{ $plan }}')">
+                            <div class="t-card-simple-promo-row">
+                                <span class="t-card-simple-strike">
+                                    <span class="t-card-simple-strike-label">{{ __('planes.promo_strike_label') }}</span>
+                                    <span class="t-card-simple-strike-sym">$</span>
+                                    <span class="t-card-simple-strike-num" x-text="priceOrigOf('{{ $plan }}')">{{ number_format($pricesCopOrig[$plan]['mensual'], 0, ',', '.') }}</span>
+                                </span>
+                                <span class="t-card-simple-off-pill">−<span x-text="discountPct">{{ $discountPct }}</span>%</span>
+                            </div>
+                        </template>
                         <div class="t-card-simple-price-block">
                             <span class="t-card-simple-price-sym">$</span>
                             <span class="t-card-simple-price-num" x-text="priceOf('{{ $plan }}')">{{ number_format($pricesCop[$plan]['mensual'], 0, ',', '.') }}</span>

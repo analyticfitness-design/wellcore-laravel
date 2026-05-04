@@ -389,6 +389,12 @@ return [
     'sticky_continue'   => 'Continuar',
 
     // =========================================================
+    // V2 — Promo badge (precio tachado + porcentaje descuento)
+    // =========================================================
+    'promo_off_short'    => 'OFF',
+    'promo_strike_label' => 'Antes',
+
+    // =========================================================
     // V2 — Planes simples (vertical única) — entreno_solo / nutricion_solo
     // =========================================================
     'simple_section_eyebrow' => 'PLANES SIMPLES · UNA VERTICAL',

@@ -899,6 +899,62 @@
     .t-cta.cta-ghost:hover { border-color: rgba(255, 255, 255, 0.2); }
 }
 
+/* ───── Promo badge (precio tachado + pill -X%) ───── */
+.t-price-promo-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+}
+.t-price-strike {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    color: rgba(255, 255, 255, 0.45);
+    font-family: var(--font-mono);
+}
+.t-price-strike-label {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+}
+.t-price-strike-sym {
+    font-size: 11px;
+    text-decoration: line-through;
+    text-decoration-color: rgba(255, 255, 255, 0.4);
+}
+.t-price-strike-num {
+    font-size: 14px;
+    text-decoration: line-through;
+    text-decoration-color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 0.01em;
+}
+.t-price-off-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    background: rgba(220, 38, 38, 0.16);
+    color: #FCA5A5;
+    border: 1px solid rgba(220, 38, 38, 0.32);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+}
+.t-card-metodo .t-price-off-pill {
+    background: rgba(212, 160, 76, 0.14);
+    color: var(--color-wc-gold-editorial);
+    border-color: rgba(212, 160, 76, 0.36);
+}
+.t-card-elite .t-price-off-pill {
+    background: rgba(212, 160, 76, 0.10);
+    color: var(--color-wc-gold-editorial);
+    border-color: rgba(212, 160, 76, 0.28);
+}
+
 /* ============================================================
    TIERS SIMPLES — entreno_solo / nutricion_solo (vertical única)
    Cards hermanas en par, más livianas que las 3 grandes,
@@ -994,6 +1050,51 @@
     letter-spacing: 0.06em;
     color: var(--color-wc-text);
     margin: 0 0 14px;
+}
+
+.t-card-simple-promo-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+.t-card-simple-strike {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    color: rgba(255, 255, 255, 0.45);
+    font-family: var(--font-mono);
+}
+.t-card-simple-strike-label {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+}
+.t-card-simple-strike-sym {
+    font-size: 11px;
+    text-decoration: line-through;
+    text-decoration-color: rgba(255, 255, 255, 0.4);
+}
+.t-card-simple-strike-num {
+    font-size: 14px;
+    text-decoration: line-through;
+    text-decoration-color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 0.01em;
+}
+.t-card-simple-off-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    background: rgba(220, 38, 38, 0.16);
+    color: #FCA5A5;
+    border: 1px solid rgba(220, 38, 38, 0.32);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
 }
 
 .t-card-simple-price-block {
