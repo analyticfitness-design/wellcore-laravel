@@ -73,7 +73,7 @@ function tooltipLabel(day, hour) {
           v-for="d in 7" :key="`day-${d}`"
           class="hm-row"
         >
-          <span class="hm-day-label" aria-label="Día de la semana">{{ DAYS[d - 1] }}</span>
+          <span class="hm-day-label" role="note" aria-label="Día de la semana">{{ DAYS[d - 1] }}</span>
           <div
             v-for="h in HOURS" :key="`cell-${d}-${h}`"
             class="hm-cell"

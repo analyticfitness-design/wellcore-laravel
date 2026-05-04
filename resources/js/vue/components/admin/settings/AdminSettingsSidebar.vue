@@ -25,7 +25,7 @@ const emit = defineEmits(['select']);
         >
           <span class="settings-sidebar-icon" v-html="sec.icon" aria-hidden="true"></span>
           <span class="settings-sidebar-label">{{ sec.label }}</span>
-          <span v-if="sec.superadminOnly && !isSuperAdmin" class="settings-sidebar-lock" aria-label="Restringido">
+          <span v-if="sec.superadminOnly && !isSuperAdmin" class="settings-sidebar-lock" role="img" aria-label="Restringido">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"/>

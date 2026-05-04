@@ -45,7 +45,7 @@ const containerClass = computed(() => [
 </script>
 
 <template>
-  <span :class="containerClass" :aria-label="name || 'avatar'">
+  <span :class="containerClass" role="img" :aria-label="name || 'avatar'">
     <img
       v-if="src"
       :src="src"

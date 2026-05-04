@@ -120,7 +120,7 @@ function handleClick() {
         </span>
 
         <!-- Achieved check (top-right) -->
-        <span v-if="medal.achieved" class="achieved-check" aria-label="Logrado">
+        <span v-if="medal.achieved" class="achieved-check" role="img" aria-label="Logrado">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12" />
           </svg>

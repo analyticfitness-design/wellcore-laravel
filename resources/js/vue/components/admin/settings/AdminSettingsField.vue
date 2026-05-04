@@ -48,7 +48,7 @@ function onSelect(e) {
           />
           <span class="sf-toggle-track" :class="{ 'sf-toggle-track--on': !!modelValue }"></span>
         </span>
-        <span v-if="disabled" class="sf-lock-icon" title="Solo Superadmin puede modificar esta seccion" aria-label="Restringido">
+        <span v-if="disabled" class="sf-lock-icon" role="img" title="Solo Superadmin puede modificar esta seccion" aria-label="Restringido">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </span>
       </label>

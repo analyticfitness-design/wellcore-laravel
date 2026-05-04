@@ -140,7 +140,7 @@ const pages = computed(() => {
 
               <!-- Status pill -->
               <td class="td">
-                <span class="pill" :class="statusMeta(r.status).cls" :aria-label="`Estado: ${statusMeta(r.status).label}`">
+                <span class="pill" :class="statusMeta(r.status).cls" role="img" :aria-label="`Estado: ${statusMeta(r.status).label}`">
                   {{ statusMeta(r.status).label }}
                 </span>
               </td>

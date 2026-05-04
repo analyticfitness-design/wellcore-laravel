@@ -115,7 +115,7 @@ const metrics = computed(() => {
         :class="[`metric-value--${m.variant}`, m.isText ? 'metric-value--text' : '']"
       >{{ m.value }}</span>
       <span v-if="m.sub" class="metric-sub">{{ m.sub }}</span>
-      <span v-if="m.tooltip" class="metric-tooltip-hint" aria-label="Nota">*</span>
+      <span v-if="m.tooltip" class="metric-tooltip-hint" role="img" aria-label="Nota">*</span>
     </div>
   </div>
 </template>

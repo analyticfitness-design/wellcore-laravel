@@ -56,7 +56,7 @@ const podiumColor = (idx) => ['gold', 'silver', 'bronze'][idx] ?? 'neutral';
         >
           <span class="ref-row-rank">#{{ idx + 4 }}</span>
           <span class="ref-row-name">{{ ref.name }}</span>
-          <span class="ref-row-count" :aria-label="`${ref.qualified_count} qualified`">{{ ref.qualified_count }}</span>
+          <span class="ref-row-count" role="img" :aria-label="`${ref.qualified_count} qualified`">{{ ref.qualified_count }}</span>
         </li>
       </ul>
     </div>
