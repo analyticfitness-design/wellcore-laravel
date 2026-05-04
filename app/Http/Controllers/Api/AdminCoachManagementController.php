@@ -46,6 +46,18 @@ class AdminCoachManagementController extends Controller
         return $admin;
     }
 
+    protected function resolveSuperAdminOrFail(Request $request): Admin
+    {
+        $admin = $this->resolveAdminOrFail($request);
+        $role = $admin->role instanceof UserRole ? $admin->role->value : $admin->role;
+
+        if (! in_array($role, ['superadmin', 'jefe'])) {
+            abort(403, 'Solo superadmins pueden realizar esta accion.');
+        }
+
+        return $admin;
+    }
+
     public function index(Request $request): JsonResponse
     {
         $this->resolveAdminOrFail($request);
