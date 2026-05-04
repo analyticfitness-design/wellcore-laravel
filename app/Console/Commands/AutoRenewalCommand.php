@@ -57,7 +57,7 @@ class AutoRenewalCommand extends Command
             ->with('client')
             ->get();
 
-        $monthlyPlans = ['esencial', 'metodo', 'elite'];
+        $monthlyPlans = ['esencial', 'metodo', 'elite', 'entreno_solo', 'nutricion_solo'];
 
         // Deduplicar por cliente: un cliente puede tener varios planes (entrenamiento/nutricion/habitos/supl)
         // pero solo queremos enviar 1 email y crear 1 notificación por cliente por día.

@@ -6,7 +6,7 @@ use Carbon\Carbon;
 
 class PricingService
 {
-    private const BILLABLE_PLANS = ['esencial', 'metodo', 'elite', 'rise'];
+    private const BILLABLE_PLANS = ['esencial', 'metodo', 'elite', 'entreno_solo', 'nutricion_solo', 'rise'];
 
     public function priceFor(string $plan): int
     {

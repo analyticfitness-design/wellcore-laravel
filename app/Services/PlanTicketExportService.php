@@ -352,7 +352,7 @@ final class PlanTicketExportService
                 'training_methodology' => 'TESIS_ENTRENAMIENTO_WELLCORE.md — periodizacion y progresion',
                 'nutrition_methodology' => 'TESIS_NUTRICION_WELLCORE.md — calculo de macros, flexible dieting',
                 'elite_protocols' => 'METODOLOGIAS_ELITE_COMPLETAS.md — protocolos hormonales, ciclo, bloodwork',
-                'plan_guides' => ['plan-esencial.md', 'plan-metodo.md', 'plan-elite.md'],
+                'plan_guides' => ['plan-esencial.md', 'plan-metodo.md', 'plan-elite.md', 'plan-entreno-solo.md', 'plan-nutricion-solo.md'],
             ],
             'apis' => $this->buildApiEndpoints(),
             'entrenamiento' => self::SECTION_INSTRUCTIONS['entrenamiento'],

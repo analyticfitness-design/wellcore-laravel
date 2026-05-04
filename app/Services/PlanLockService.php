@@ -47,12 +47,13 @@ class PlanLockService
     }
 
     /**
-     * ¿El cliente tiene un plan mensual (esencial / metodo / elite)?
-     * Solo esos planes están sujetos al lock de 30 días.
+     * ¿El cliente tiene un plan mensual sujeto al lock de 30 días?
+     * Aplica a: esencial, metodo, elite, entreno_solo, nutricion_solo.
+     * NO aplica a: rise (one-time 30 días), presencial (rango), trial (3 días).
      */
     private function isMonthlyPlan(Client $client): bool
     {
-        return in_array($this->clientPlanValue($client), ['esencial', 'metodo', 'elite'], true);
+        return in_array($this->clientPlanValue($client), ['esencial', 'metodo', 'elite', 'entreno_solo', 'nutricion_solo'], true);
     }
 
     public function isLocked(Client $client): bool
