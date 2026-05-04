@@ -611,5 +611,86 @@
 }
 .wc-admin-shell .wc-admin-card .section-h .lnk:hover{color:var(--wc-accent)}
 
+/* ════════════════════════════════════════════════════════
+   COMMAND PALETTE (Cmd+K) — universal (oculto por default)
+   ════════════════════════════════════════════════════════ */
+.wc-admin-shell .cmd-overlay{
+  position:fixed; inset:0; z-index:200;
+  background:rgba(0,0,0,.6);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  display:none;
+  align-items:flex-start;
+  justify-content:center;
+  padding:80px 20px 20px;
+}
+.wc-admin-shell .cmd-overlay.open{display:flex}
+.wc-admin-shell .cmd-panel{
+  width:100%; max-width:420px;
+  border-radius:var(--r-lg);
+  background:
+    linear-gradient(var(--wc-bg2),var(--wc-bg2)) padding-box,
+    linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.02) 60%) border-box;
+  border:1px solid transparent;
+  box-shadow:var(--sh-card);
+  overflow:hidden;
+}
+.wc-admin-shell .cmd-search{
+  display:flex; align-items:center; gap:10px;
+  padding:14px 16px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.wc-admin-shell .cmd-search input{
+  flex:1; background:transparent; border:0; outline:none;
+  font-family:var(--fs); font-weight:500; font-size:14px;
+  color:var(--wc-text); letter-spacing:.01em;
+}
+.wc-admin-shell .cmd-search input::placeholder{color:var(--wc-text-4)}
+.wc-admin-shell .cmd-search kbd{
+  font-family:var(--fc); font-size:10px; color:var(--wc-text-3);
+  padding:2px 6px; border-radius:5px;
+  background:rgba(255,255,255,.05);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.wc-admin-shell .cmd-section{ padding:8px 0; }
+.wc-admin-shell .cmd-section .h{
+  padding:6px 16px;
+  font-family:var(--fs); font-weight:700; font-size:9.5px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--wc-text-4);
+}
+.wc-admin-shell .cmd-item{
+  display:flex; align-items:center; gap:10px;
+  padding:9px 16px;
+  font-family:var(--fs); font-weight:500; font-size:13px;
+  color:var(--wc-text-2);
+  cursor:pointer; transition:all 160ms var(--ease-out);
+}
+.wc-admin-shell .cmd-item:hover,
+.wc-admin-shell .cmd-item.active{ background:rgba(220,38,38,.08); color:var(--wc-text) }
+.wc-admin-shell .cmd-item .ic{width:18px; height:18px; color:var(--wc-text-3)}
+.wc-admin-shell .cmd-item:hover .ic,
+.wc-admin-shell .cmd-item.active .ic{color:var(--wc-accent)}
+.wc-admin-shell .cmd-item .meta{
+  margin-left:auto; font-family:var(--fc); font-size:10px;
+  color:var(--wc-text-4); letter-spacing:.04em;
+}
+
+@media (min-width: 1024px){
+  .wc-admin-shell .cmd-overlay{
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    padding:120px 20px 20px;
+  }
+  .wc-admin-shell .cmd-panel{ max-width:560px; }
+  .wc-admin-shell .cmd-search{ padding:16px 18px; gap:12px; }
+  .wc-admin-shell .cmd-search input{ font-size:15px; }
+  .wc-admin-shell .cmd-section .h{ padding:6px 18px; }
+  .wc-admin-shell .cmd-item{
+    padding:10px 18px;
+    font-size:13.5px;
+    gap:12px;
+  }
+}
+
 /* @keyframes globales viven en wc-admin-shell-tabs/{tab}.css con prefijo
    wcAdmin* para evitar colisión con animaciones del portal cliente. */
