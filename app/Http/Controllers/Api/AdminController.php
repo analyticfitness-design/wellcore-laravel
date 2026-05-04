@@ -1988,7 +1988,7 @@ class AdminController extends Controller
         $admin = $this->resolveAdminOrFail($request);
 
         $validated = $request->validate([
-            'plan' => 'required|in:rise,esencial,metodo,elite,presencial',
+            'plan' => 'required|in:rise,esencial,metodo,elite,presencial,entreno_solo,nutricion_solo',
             'email_hint' => 'nullable|string|max:255',
             'note' => 'nullable|string|max:500',
             'expires_at' => 'nullable|date|after:today',
@@ -3029,7 +3029,7 @@ class AdminController extends Controller
         $validated = $request->validate([
             'recipient_name' => 'required|string|max:255',
             'recipient_email' => 'required|email|max:255',
-            'plan' => 'required|in:rise,esencial,metodo,elite,presencial',
+            'plan' => 'required|in:rise,esencial,metodo,elite,presencial,entreno_solo,nutricion_solo',
         ], [
             'recipient_name.required' => 'El nombre es obligatorio.',
             'recipient_email.required' => 'El email es obligatorio.',
@@ -3093,7 +3093,7 @@ class AdminController extends Controller
             'recipient_name' => 'required|string|max:255',
             'recipient_email' => 'required|email|max:255|different:gifter_email',
             'gift_message' => 'nullable|string|max:500',
-            'plan' => 'required|in:rise,esencial,metodo,elite,presencial',
+            'plan' => 'required|in:rise,esencial,metodo,elite,presencial,entreno_solo,nutricion_solo',
         ], [
             'gifter_name.required' => 'El nombre de quien regala es obligatorio.',
             'gifter_email.required' => 'El email de quien regala es obligatorio.',

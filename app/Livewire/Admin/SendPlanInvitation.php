@@ -65,7 +65,7 @@ class SendPlanInvitation extends Component
         $this->validate([
             'recipientName' => 'required|string|max:255',
             'recipientEmail' => 'required|email|max:255',
-            'selectedPlan' => 'required|in:rise,esencial,metodo,elite,presencial',
+            'selectedPlan' => 'required|in:rise,esencial,metodo,elite,presencial,entreno_solo,nutricion_solo',
         ], [
             'recipientName.required' => 'El nombre es obligatorio.',
             'recipientEmail.required' => 'El email es obligatorio.',

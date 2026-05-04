@@ -69,7 +69,7 @@ class InscriptionForm extends Component
     public function rules(): array
     {
         return match ($this->step) {
-            0 => ['plan' => 'required|in:esencial,metodo,elite'],
+            0 => ['plan' => 'required|in:esencial,metodo,elite,entreno_solo,nutricion_solo'],
             1 => [
                 'nombre' => 'required|string|max:255',
                 'email' => 'required|email|max:255',

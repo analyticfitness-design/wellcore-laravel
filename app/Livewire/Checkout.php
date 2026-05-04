@@ -74,7 +74,7 @@ class Checkout extends Component
     protected function getPlans(): array
     {
         $plans = [];
-        foreach (['rise', 'esencial', 'metodo', 'elite'] as $key) {
+        foreach (['rise', 'esencial', 'metodo', 'elite', 'entreno_solo', 'nutricion_solo'] as $key) {
             $cfg = app(PricingService::class)->configFor($key);
             $plans[$key] = [
                 'name' => $cfg['name'],
@@ -125,7 +125,7 @@ class Checkout extends Component
                 ? $user->plan->value
                 : (string) ($user->plan ?? '');
 
-            if (in_array($planValue, ['esencial', 'metodo', 'elite'], true)) {
+            if (in_array($planValue, ['esencial', 'metodo', 'elite', 'entreno_solo', 'nutricion_solo'], true)) {
                 $this->selectPlan($planValue);
             }
         } catch (\Throwable) {

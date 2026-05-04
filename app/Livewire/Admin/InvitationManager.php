@@ -68,7 +68,7 @@ class InvitationManager extends Component
     public function createInvitation(): void
     {
         $this->validate([
-            'newPlan'      => 'required|in:rise,esencial,metodo,elite,presencial',
+            'newPlan'      => 'required|in:rise,esencial,metodo,elite,presencial,entreno_solo,nutricion_solo',
             'newEmailHint' => 'nullable|string|max:255',
             'newNote'      => 'nullable|string|max:500',
             'newExpiresAt' => 'nullable|date|after:today',

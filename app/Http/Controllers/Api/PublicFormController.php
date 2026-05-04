@@ -41,7 +41,7 @@ class PublicFormController extends Controller
             'estatura' => 'required|numeric|min:100|max:230',
             'genero' => 'required|string|max:50',
             'objetivo' => 'required|string|max:500',
-            'plan' => 'required|in:esencial,metodo,elite',
+            'plan' => 'required|in:esencial,metodo,elite,entreno_solo,nutricion_solo',
             'experiencia' => 'required|string|max:100',
             'dias_disponibles' => 'required|string|max:50',
             'equipamiento' => 'nullable|string|max:255',

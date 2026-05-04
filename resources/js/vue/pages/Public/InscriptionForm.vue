@@ -100,6 +100,20 @@ const plans = [
     description: 'La experiencia completa con acompanamiento premium.',
     features: ['Todo de El Metodo', 'Coaching semanal 1:1', 'Ajustes ilimitados', 'Prioridad en soporte'],
   },
+  {
+    id: 'entreno_solo',
+    name: 'Entreno',
+    price: '$170,000',
+    description: 'Solo plan de entrenamiento — coach humano ajusta cada mes.',
+    features: ['Plan de entrenamiento personalizado', 'Coach humano con ajuste mensual', 'Acceso a plataforma (sin nutricion ni habitos)'],
+  },
+  {
+    id: 'nutricion_solo',
+    name: 'Nutricion',
+    price: '$153,000',
+    description: 'Solo plan nutricional — coach humano ajusta cada mes.',
+    features: ['Plan nutricional con macros', '3 opciones por plato', 'Coach humano con ajuste mensual'],
+  },
 ];
 
 // Dynamic step structure.
@@ -109,12 +123,25 @@ const plans = [
 // which numbers are actually visible in this mode and in which order.
 const stepOrder = computed(() => {
   if (!isInvitation.value) {
+    // Public mode: planes vertical única omiten steps de la vertical no contratada.
+    if (form.value.plan === 'entreno_solo') {
+      return [0, 1, 2, 3, 4, 6, 7]; // skip 5 (Nutricion)
+    }
+    if (form.value.plan === 'nutricion_solo') {
+      return [0, 1, 5, 6, 7]; // skip 2,3,4 (Experiencia, Preferencias, Lesiones)
+    }
     return [0, 1, 2, 3, 4, 5, 6, 7];
   }
   const plan = invitationData.value?.plan;
   // Step 8 is the new "Avanzado" (Elite-only) step, inserted between Estilo de vida (6) and Final (7).
   if (plan === 'elite') {
     return [1, 2, 3, 4, 5, 6, 8, 7];
+  }
+  if (plan === 'entreno_solo') {
+    return [1, 2, 3, 4, 6, 7];
+  }
+  if (plan === 'nutricion_solo') {
+    return [1, 5, 6, 7];
   }
   return [1, 2, 3, 4, 5, 6, 7];
 });
