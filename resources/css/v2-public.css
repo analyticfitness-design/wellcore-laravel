@@ -825,31 +825,33 @@
     text-overflow: ellipsis;
 }
 
-/* USD equivalent — siempre visible, prominente para clientes USA */
+/* USD equivalent — línea secundaria integrada, sin caja */
 .t-price-usd-row {
     display: flex;
-    align-items: baseline;
-    gap: 5px;
-    margin-top: 10px;
-    margin-bottom: 2px;
-    padding: 8px 14px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    margin-bottom: 4px;
+    padding-left: 2px;
+}
+.t-price-usd-tilde {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.30);
 }
 .t-price-usd-label {
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 700;
-    color: var(--color-wc-text-2);
-    letter-spacing: 0.18em;
+    color: rgba(255, 255, 255, 0.35);
+    letter-spacing: 0.14em;
     text-transform: uppercase;
 }
 .t-price-usd-num {
     font-family: var(--font-display);
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 700;
-    color: var(--color-wc-text);
+    color: rgba(255, 255, 255, 0.90);
     line-height: 1;
     letter-spacing: -0.01em;
 }
@@ -857,7 +859,43 @@
 .t-price-usd-per {
     font-family: var(--font-mono);
     font-size: 11px;
-    color: var(--color-wc-text-3);
+    color: rgba(255, 255, 255, 0.30);
+    letter-spacing: 0.10em;
+}
+/* USD en cards simples (entreno/nutrición) */
+.t-card-simple-usd-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    margin-bottom: 4px;
+    padding-left: 2px;
+}
+.t-card-simple-usd-tilde {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.28);
+}
+.t-card-simple-usd-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.32);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+.t-card-simple-usd-num {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.88);
+    line-height: 1;
+    letter-spacing: -0.01em;
+}
+.t-card-simple-usd-per {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.28);
     letter-spacing: 0.10em;
 }
 

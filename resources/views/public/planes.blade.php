@@ -227,6 +227,7 @@
                         </div>
 
                         <div class="t-price-usd-row">
+                            <span class="t-price-usd-tilde">≈</span>
                             <span class="t-price-usd-label">USD</span>
                             <span class="t-price-usd-num" x-text="priceUsdOf('{{ $plan }}')">{{ $pricesUsd[$plan]['mensual'] }}</span>
                             <span class="t-price-usd-per">/ mo</span>
@@ -293,6 +294,13 @@
                             <span class="t-card-simple-cop">{{ __('planes.cop_mes') }}</span>
                         </div>
                         <p class="t-card-simple-note" x-text="noteOf('{{ $plan }}')">&nbsp;</p>
+
+                        <div class="t-card-simple-usd-row">
+                            <span class="t-card-simple-usd-tilde">≈</span>
+                            <span class="t-card-simple-usd-label">USD</span>
+                            <span class="t-card-simple-usd-num" x-text="priceUsdOf('{{ $plan }}')">{{ $pricesUsd[$plan]['mensual'] }}</span>
+                            <span class="t-card-simple-usd-per">/ mo</span>
+                        </div>
 
                         <p class="t-card-simple-quote">{{ __("planes.{$plan}_quote") }}</p>
 
