@@ -2,10 +2,17 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
+
+// Nuevos primitives target Claude Design (Fase 1)
 import WcAdminTopBar from '../components/ui/wellcore-admin/WcAdminTopBar.vue';
 import WcAdminSidebar from '../components/ui/wellcore-admin/WcAdminSidebar.vue';
 import WcAdminBottomNav from '../components/ui/wellcore-admin/WcAdminBottomNav.vue';
 import WcAdminCommandPalette from '../components/ui/wellcore-admin/WcAdminCommandPalette.vue';
+
+// Componentes legacy — usados mientras la vista no esté migrada al nuevo shell.
+import AdminTopBarLegacy from '../components/admin/dashboard/AdminTopBar.vue';
+import AdminSidebarLegacy from '../components/admin/dashboard/AdminSidebar.vue';
+import AdminBottomNavLegacy from '../components/admin/dashboard/AdminBottomNav.vue';
 
 const authStore = useAuthStore();
 const route = useRoute();
@@ -16,12 +23,10 @@ const loggingOut = ref(false);
 const cmdPalette = ref(null);
 
 const userName = computed(() => localStorage.getItem('wc_user_name') || 'Admin');
-const userRole = computed(() => (localStorage.getItem('wc_user_type') || 'admin').toUpperCase());
+const userRoleUpper = computed(() => (localStorage.getItem('wc_user_type') || 'admin').toUpperCase());
+const userInitial = computed(() => (userName.value || 'A').charAt(0).toUpperCase());
 
-// Admin esta diseñado dark-first (cards rojas/gold tuneadas sobre #0a0a0a;
-// custom classes como .wc-admin-shell, .sidebar tienen fondos hardcoded).
-// Forzamos dark al entrar al portal y persistimos para que el toggle del
-// PublicLayout no se quede en light cuando volves a /admin desde /metodo, etc.
+// Admin es dark-first. Forzamos dark al entrar.
 onMounted(() => {
   document.documentElement.classList.add('dark');
   try { localStorage.setItem('darkMode', 'true'); } catch (_) {}
@@ -41,17 +46,28 @@ async function handleLogout() {
 const unwatch = router.afterEach(() => { sidebarOpen.value = false; });
 onUnmounted(() => { if (unwatch) unwatch(); });
 
-// Tab modifier — cada vista admin establece route.meta.adminTab para que
-// .wc-admin-shell--{tab} cargue el CSS scopeado correspondiente.
+// ── Strangler Fig: detección de vista migrada al nuevo shell ────────────
+// Una ruta se considera migrada cuando:
+//  1. Define `meta.adminMigrated: true` en el router, O
+//  2. Está en MIGRATED_PATHS (fallback explícito por alcance de fase).
+// Las vistas no migradas siguen renderizando el shell legacy intacto.
+const MIGRATED_PATHS = new Set([
+  '/admin', // Fase 2 — Dashboard home
+]);
+const isMigrated = computed(() => {
+  if (route.meta?.adminMigrated === true) return true;
+  return MIGRATED_PATHS.has(route.path);
+});
+
 const adminTab = computed(() => route.meta?.adminTab || 'dashboard');
 
 function openSearch() { cmdPalette.value?.open(); }
 
-// Shortcuts del Command Palette
+// Shortcuts Cmd+K palette
 const SHORTCUTS = [
-  { id: 'a1', label: 'Contactar inscripciones pendientes', route: '/admin/inscriptions', meta: '3 nuevas', section: 'Sugerencias' },
-  { id: 'a2', label: 'Abrir Live Feed',                    route: '/admin/feed',         meta: '⌘ L',     section: 'Sugerencias' },
-  { id: 'a3', label: 'Cola de Drops',                      route: '/admin/marketing/queue', meta: '⌘ R',  section: 'Sugerencias' },
+  { id: 'a1', label: 'Contactar inscripciones pendientes', route: '/admin/inscriptions',    meta: '3 nuevas', section: 'Sugerencias' },
+  { id: 'a2', label: 'Abrir Live Feed',                    route: '/admin/feed',            meta: '⌘ L',      section: 'Sugerencias' },
+  { id: 'a3', label: 'Cola de Drops',                      route: '/admin/marketing/queue', meta: '⌘ R',      section: 'Sugerencias' },
   { id: 'n1', label: 'Dashboard',     route: '/admin',                  meta: 'G D', section: 'Navegación' },
   { id: 'n2', label: 'Clientes',      route: '/admin/clients',          meta: 'G C', section: 'Navegación' },
   { id: 'n3', label: 'Pagos',         route: '/admin/payments',         meta: 'G P', section: 'Navegación' },
@@ -65,10 +81,11 @@ const SHORTCUTS = [
 </script>
 
 <template>
-  <!-- Wrapper .wc-admin-shell + modifier por tab. CSS scopeado en
-       wc-admin-shell.css (universal) + wc-admin-shell-tabs/{tab}.css (específico). -->
-  <div :class="['wc-admin-shell', `wc-admin-shell--${adminTab}`]">
-
+  <!-- ═══════ NUEVO SHELL (vistas migradas) ═══════ -->
+  <div
+    v-if="isMigrated"
+    :class="['wc-admin-shell', `wc-admin-shell--${adminTab}`]"
+  >
     <!-- Mobile sidebar overlay -->
     <Transition
       enter-active-class="transition-opacity ease-linear duration-300"
@@ -86,20 +103,18 @@ const SHORTCUTS = [
       ></div>
     </Transition>
 
-    <!-- Sidebar — fixed 240px desktop / drawer mobile con 9 grupos -->
     <WcAdminSidebar
       :open="sidebarOpen"
       :user-name="userName"
-      :user-role="userRole"
+      :user-role="userRoleUpper"
       @close="sidebarOpen = false"
       @logout="handleLogout"
     />
 
-    <!-- Main column (topbar + canvas) -->
     <main class="main">
       <WcAdminTopBar
         :user-name="userName"
-        :user-role="userRole"
+        :user-role="userRoleUpper"
         @toggle-sidebar="sidebarOpen = !sidebarOpen"
         @open-search="openSearch"
       />
@@ -109,11 +124,49 @@ const SHORTCUTS = [
       </div>
     </main>
 
-    <!-- Bottom nav mobile (5 tabs) -->
     <WcAdminBottomNav />
 
-    <!-- Cmd+K palette montado a nivel layout (mobile + desktop) -->
     <WcAdminCommandPalette ref="cmdPalette" :shortcuts="SHORTCUTS" />
+  </div>
+
+  <!-- ═══════ LEGACY SHELL (vistas no migradas — Fase 3+ las migra) ═══════ -->
+  <div v-else class="admin-shell min-h-screen bg-wc-bg text-wc-text">
+    <Transition
+      enter-active-class="transition-opacity ease-linear duration-300"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition-opacity ease-linear duration-300"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="sidebarOpen"
+        class="admin-sidebar-overlay lg:hidden"
+        @click="sidebarOpen = false"
+        aria-hidden="true"
+      ></div>
+    </Transition>
+
+    <AdminTopBarLegacy
+      :avatar-initial="userInitial"
+      :user-name="userName"
+      notifications-endpoint="/api/v/admin/notifications"
+      @toggle-sidebar="sidebarOpen = !sidebarOpen"
+    />
+
+    <AdminSidebarLegacy
+      :open="sidebarOpen"
+      :user-name="userName"
+      user-role="SUPERADMIN"
+      @close="sidebarOpen = false"
+      @logout="handleLogout"
+    />
+
+    <main class="admin-main">
+      <slot />
+    </main>
+
+    <AdminBottomNavLegacy />
   </div>
 </template>
 
@@ -129,5 +182,19 @@ const SHORTCUTS = [
 
 @media (min-width: 1024px) {
   .admin-sidebar-overlay { display: none; }
+}
+
+/* Padding del shell legacy — preservado del estado anterior */
+.admin-main {
+  padding: 20px 16px 90px;
+  min-height: calc(100vh - 52px);
+}
+
+@media (min-width: 1024px) {
+  .admin-main {
+    padding: 24px 28px 40px;
+    margin-left: var(--admin-sidebar-w, 240px);
+    min-height: calc(100vh - var(--admin-topbar-h, 64px));
+  }
 }
 </style>
