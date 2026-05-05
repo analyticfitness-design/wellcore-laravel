@@ -3,6 +3,8 @@ import { ref, onMounted, computed } from 'vue';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import WcPageHeader from '../../components/WcPageHeader.vue';
+import AvatarConic from '../../components/coach/ios/AvatarConic.vue';
+import EmptyState from '../../components/coach/ios/EmptyState.vue';
 
 const api = useApi();
 const loading = ref(true);
@@ -106,19 +108,22 @@ onMounted(loadCheckins);
         </svg>
       </div>
 
-      <!-- Check-in cards -->
-      <div v-else-if="filteredCheckins.length > 0" class="space-y-4">
+      <!-- Check-in cards (iOS style) -->
+      <div v-else-if="filteredCheckins.length > 0" class="space-y-4 anim-entry anim-entry-2">
         <div
           v-for="checkin in filteredCheckins"
           :key="checkin.id"
-          class="rounded-card border border-wc-border bg-wc-bg-tertiary overflow-hidden"
-          :class="{ 'border-l-2 border-l-wc-accent': !checkin.coach_reply }"
+          class="rounded-[14px] border border-[var(--b1)] overflow-hidden"
+          :class="{ 'border-l-[3px] border-l-wc-accent': !checkin.coach_reply }"
+          style="background: var(--s2); box-shadow: var(--shadow-card-ios);"
         >
           <!-- Header -->
-          <div class="flex items-center gap-4 p-4 sm:p-5">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent/15">
-              <span class="text-sm font-semibold text-wc-accent">{{ (checkin.client_name || 'C').charAt(0) }}</span>
-            </div>
+          <div class="flex items-center gap-3 p-4 sm:p-5">
+            <AvatarConic
+              :initial="(checkin.client_name || 'C').charAt(0).toUpperCase()"
+              :tone="!checkin.coach_reply ? 'accent' : 'gold'"
+              size="md"
+            />
             <div class="min-w-0 flex-1">
               <div class="flex items-center gap-2">
                 <p class="text-sm font-medium text-wc-text">{{ checkin.client_name }}</p>
@@ -220,14 +225,13 @@ onMounted(loadCheckins);
         </div>
       </div>
 
-      <!-- Empty state -->
-      <div v-else class="rounded-card border border-wc-border bg-wc-bg-tertiary p-12 text-center">
-        <svg class="mx-auto h-12 w-12 text-wc-text-tertiary/40" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-        </svg>
-        <p class="mt-3 font-display text-sm uppercase tracking-wide text-wc-text">{{ showReplied ? 'No hay check-ins registrados' : 'Todos los check-ins respondidos' }}</p>
-        <p class="mt-1 text-xs text-wc-text-tertiary">{{ showReplied ? 'Tus clientes aun no han enviado check-ins' : 'Excelente trabajo -- tus clientes estan al dia' }}</p>
-      </div>
+      <!-- Empty state iOS -->
+      <EmptyState
+        v-else
+        :kind="showReplied ? 'activity' : 'success'"
+        :title="showReplied ? 'No hay check-ins registrados' : 'Todos los check-ins respondidos'"
+        :subtitle="showReplied ? 'Tus clientes aún no han enviado check-ins' : 'Excelente trabajo — tus clientes están al día'"
+      />
     </div>
   </CoachLayout>
 </template>
