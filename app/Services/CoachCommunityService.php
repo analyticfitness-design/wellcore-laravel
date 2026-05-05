@@ -104,9 +104,21 @@ class CoachCommunityService
             ->limit($limit)
             ->get();
 
+        if ($rows->isEmpty()) {
+            return [];
+        }
+
+        $clients = Client::whereIn('id', $rows->pluck('client_id')->all())
+            ->select(['id', 'name', 'avatar_url'])
+            ->get()
+            ->keyBy('id');
+
         return $rows->map(fn ($r) => [
             'client_id' => (int) $r->client_id,
+            'client_name' => $clients[$r->client_id]?->name ?? "Cliente {$r->client_id}",
+            'avatar_url' => $clients[$r->client_id]?->avatar_url ?? null,
             'workout_count' => (int) $r->workout_count,
+            'metric' => "{$r->workout_count} entrenamientos",
         ])->all();
     }
 
@@ -135,13 +147,33 @@ class CoachCommunityService
             return [];
         }
 
-        $columns = Schema::hasColumn('clients', 'last_login_at')
+        $hasLastLogin = Schema::hasColumn('clients', 'last_login_at');
+        $columns = $hasLastLogin
             ? ['id', 'name', 'last_login_at']
             : ['id', 'name'];
 
+        // Retornar plain arrays para evitar serialización de Eloquent models en Cache::remember
+        // (causaba __PHP_Incomplete_Class_Name al deserializar desde Redis).
         return Client::whereIn('id', $silentIds)
             ->select($columns)
             ->get()
+            ->map(function ($c) use ($hasLastLogin) {
+                $daysInactive = null;
+                if ($hasLastLogin && $c->last_login_at) {
+                    $lastLogin = $c->last_login_at instanceof Carbon
+                        ? $c->last_login_at
+                        : Carbon::parse($c->last_login_at);
+                    $daysInactive = $lastLogin->diffInDays(Carbon::now());
+                }
+
+                return [
+                    'id' => (int) $c->id,
+                    'client_id' => (int) $c->id,
+                    'name' => $c->name,
+                    'client_name' => $c->name,
+                    'days_inactive' => $daysInactive,
+                ];
+            })
             ->all();
     }
 
