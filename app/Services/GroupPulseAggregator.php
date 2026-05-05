@@ -14,6 +14,14 @@ use Illuminate\Support\Facades\Schema;
 final class GroupPulseAggregator
 {
     /**
+     * Minimum number of recent workouts that triggers the aggregate card
+     * "X personas terminaron entrenamiento en la última hora". Below this
+     * threshold each workout would render as an individual event (future task);
+     * above it we collapse them into a single group card to avoid noise.
+     */
+    private const AGGREGATE_MIN_PEOPLE = 6;
+
+    /**
      * Aggregated counters for the "Latido del Grupo" feed of a single coach.
      *
      * The "group" in WellCore is implicitly defined by clients.coach_id —
@@ -39,15 +47,17 @@ final class GroupPulseAggregator
     }
 
     /**
-     * Activity feed for the coach's group, sorted newest-first.
+     * Activity feed for the coach's group, sorted newest-first by minutes_ago.
      *
-     * Each event is a self-contained array (type, client_name, client_initials,
-     * headline, minutes_ago) ready to render. PR events respect each client's
-     * autoshare_pr flag — opt-out clients are filtered at the query level.
+     * Mixes two event shapes:
+     *  - PR events  (per-client) — respect clients.autoshare_pr opt-out.
+     *  - Aggregate workout card — only emitted when 6+ clients completed a
+     *    workout in the last hour (avoids individual-event noise on busy days).
+     *    Respects clients.autoshare_workout opt-out.
      *
      * @param  string  $time  'today' | 'week' | 'all'
-     * @param  string  $type  'all' | 'pr'  (extended in later tasks)
-     * @return array<int, array{type:string, client_name:string, client_initials:string, headline:string, minutes_ago:int}>
+     * @param  string  $type  'all' | 'pr' | 'workout'  (extended in later tasks)
+     * @return array<int, array<string, mixed>>
      */
     public function buildFeed(int $coachId, string $time = 'today', string $type = 'all'): array
     {
@@ -62,6 +72,13 @@ final class GroupPulseAggregator
 
         if ($type === 'all' || $type === 'pr') {
             $events = $events->merge($this->prEvents($clientIds, $since));
+        }
+
+        if ($type === 'all' || $type === 'workout') {
+            $aggregate = $this->aggregateRecentWorkouts($clientIds, $since);
+            if ($aggregate !== null) {
+                $events->push($aggregate);
+            }
         }
 
         return $events
@@ -147,6 +164,52 @@ final class GroupPulseAggregator
             ->limit(50)
             ->get()
             ->map(fn (PersonalRecord $pr) => $this->prToEvent($pr));
+    }
+
+    /**
+     * Returns null when fewer than AGGREGATE_MIN_PEOPLE clients trained in the
+     * last hour. The window is intersected with $since so 'today' calls early
+     * in the morning don't reach into yesterday.
+     *
+     * @return array{type:string, headline:string, people_count:int, preview_initials:array<int,string>, extra:string, minutes_ago:int}|null
+     */
+    private function aggregateRecentWorkouts(Collection $clientIds, Carbon $since): ?array
+    {
+        $hourAgo = Carbon::now()->subHour();
+        $window = $since->greaterThan($hourAgo) ? $since : $hourAgo;
+
+        $rows = WorkoutSession::withoutGlobalScope(OwnedByClientScope::class)
+            ->whereIn('client_id', $clientIds)
+            ->where('completed', true)
+            ->where('updated_at', '>=', $window)
+            ->whereHas('client', fn ($q) => $q->where('autoshare_workout', 1))
+            ->with('client:id,name')
+            ->select('client_id', 'total_volume_kg')
+            ->get();
+
+        $count = $rows->count();
+
+        if ($count < self::AGGREGATE_MIN_PEOPLE) {
+            return null;
+        }
+
+        $totalVolume = (int) $rows->sum('total_volume_kg');
+        $previewInitials = $rows->take(3)
+            ->map(fn ($row) => $this->initials($row->client?->name ?? 'M'))
+            ->all();
+
+        if ($count > 3) {
+            $previewInitials[] = '+'.($count - 3);
+        }
+
+        return [
+            'type' => 'aggregate',
+            'headline' => "{$count} personas terminaron entrenamiento en la última hora",
+            'people_count' => $count,
+            'preview_initials' => $previewInitials,
+            'extra' => number_format($totalVolume).' kg movidos en total',
+            'minutes_ago' => 0,
+        ];
     }
 
     /**
