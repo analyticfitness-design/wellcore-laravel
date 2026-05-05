@@ -11,8 +11,17 @@ uses(DatabaseTransactions::class);
 
 describe('GroupPulseAggregator workout aggregation', function () {
     beforeEach(function () {
+        // Pin clock al mediodía para evitar flakiness:
+        // el aggregator usa max(today_midnight, now()->subHour()) como ventana.
+        // Cuando "now" está antes de las 01:00 AM, los rand offsets pueden landear
+        // antes de midnight y caer fuera de la ventana, fallando el test.
+        Carbon::setTestNow('2026-05-05 12:00:00');
         $this->coach = Admin::factory()->create();
         $this->aggregator = new GroupPulseAggregator;
+    });
+
+    afterEach(function () {
+        Carbon::setTestNow();
     });
 
     it('aggregates when more than 5 workouts in last hour', function () {
