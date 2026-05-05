@@ -269,6 +269,12 @@ Route::prefix('v/coach')->middleware(['auth:wellcore', 'throttle:api', 'role:coa
         Route::get('/kanban/detail/{id}', [CoachController::class, 'kanbanClientDetail'])->where('id', '[0-9]+');
         Route::get('/checkins', [CoachController::class, 'checkins']);
         Route::post('/checkins/{id}/reply', [CoachController::class, 'checkinReply'])->where('id', '[0-9]+');
+
+        // Food Photo Review (coach)
+        Route::get('/food-photos', [\App\Http\Controllers\Api\Coach\FoodPhotoReviewController::class, 'index']);
+        Route::post('/food-photos/{id}/react', [\App\Http\Controllers\Api\Coach\FoodPhotoReviewController::class, 'react'])->where('id', '[0-9]+');
+        Route::patch('/food-photos/{id}/note', [\App\Http\Controllers\Api\Coach\FoodPhotoReviewController::class, 'saveNote'])->where('id', '[0-9]+');
+        Route::post('/food-photos/{id}/seen', [\App\Http\Controllers\Api\Coach\FoodPhotoReviewController::class, 'markSeen'])->where('id', '[0-9]+');
         Route::get('/messages', [CoachController::class, 'messages']);
         Route::post('/messages', [CoachController::class, 'sendMessage']);
         Route::post('/broadcast', [CoachController::class, 'broadcast']);

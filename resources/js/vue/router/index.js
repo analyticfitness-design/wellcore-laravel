@@ -76,6 +76,7 @@ const routes = [
     { path: '/coach/clients', name: 'coach-clients', component: () => import('../pages/Coach/ClientList.vue'), meta: { auth: true, title: 'Mis Clientes — WellCore' } },
     { path: '/coach/kanban', name: 'coach-kanban', component: () => import('../pages/Coach/ClientKanban.vue'), meta: { auth: true, title: 'Kanban Clientes — WellCore' } },
     { path: '/coach/checkins', name: 'coach-checkins', component: () => import('../pages/Coach/CheckinReview.vue'), meta: { auth: true, title: 'Check-ins — WellCore' } },
+    { path: '/coach/food-photos', name: 'coach-food-photos', component: () => import('../pages/Coach/FoodPhotoReview.vue'), meta: { auth: true, title: 'Fotos de Comida — WellCore' } },
     { path: '/coach/messages', name: 'coach-messages', component: () => import('../pages/Coach/MessageCenter.vue'), meta: { auth: true, title: 'Mensajes — WellCore' } },
     { path: '/coach/broadcast', name: 'coach-broadcast', component: () => import('../pages/Coach/BroadcastCenter.vue'), meta: { auth: true, title: 'Broadcast — WellCore' } },
     { path: '/coach/plans', name: 'coach-plans', component: () => import('../pages/Coach/PlansManager.vue'), meta: { auth: true, title: 'Planes — WellCore' } },

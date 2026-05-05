@@ -248,10 +248,8 @@ Route::get('/coach/payment-proofs/{id}/view', [AdminPaymentProofViewController::
     ->whereNumber('id')
     ->name('coach.payment-proofs.view');
 
-// Coach Food Photo Review (Livewire) antes del catch-all
-Route::get('/coach/food-photos', \App\Livewire\Coach\FoodPhotoReview::class)
-    ->middleware(['auth:wellcore', 'role:coach,admin,superadmin,jefe'])
-    ->name('coach.food-photos');
+// Coach Food Photo Review — Vue SPA (consistente con resto de coach)
+Route::view('/coach/food-photos', 'vue')->name('coach.food-photos');
 
 Route::get('/coach/{any}', fn () => view('vue'))->where('any', '.*');
 
