@@ -2,6 +2,8 @@
 import { onMounted, ref, computed } from 'vue';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import { useApi } from '../../composables/useApi';
+import AvatarConic from '../../components/coach/ios/AvatarConic.vue';
+import EmptyState from '../../components/coach/ios/EmptyState.vue';
 
 const api = useApi();
 
@@ -99,20 +101,25 @@ const headerCount = computed(() => `${pendingCount.value} pendiente${pendingCoun
       </div>
 
       <!-- Empty -->
-      <div v-else-if="photos.length === 0"
-           class="rounded-xl border border-wc-border bg-wc-bg-secondary p-10 text-center text-wc-text-secondary">
-        {{ showReviewed ? 'No has revisado fotos aún.' : 'Sin fotos pendientes.' }}
-      </div>
+      <EmptyState
+        v-else-if="photos.length === 0"
+        :kind="showReviewed ? 'activity' : 'success'"
+        :title="showReviewed ? 'No has revisado fotos aún' : 'Sin fotos pendientes'"
+        :subtitle="showReviewed ? 'Cuando aprueba o sugieras mejoras, las fotos pasarán al historial.' : '¡Buen trabajo! Estás al día con la revisión de fotos de tus clientes.'"
+      />
 
       <!-- Photos grid -->
-      <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div v-else class="grid grid-cols-1 gap-4 anim-entry anim-entry-2 md:grid-cols-2">
         <div v-for="photo in photos" :key="photo.id"
-             class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-secondary">
+             class="overflow-hidden rounded-[14px] border border-[var(--b1)]"
+             style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
           <!-- Card header -->
           <div class="flex items-center gap-3 border-b border-wc-border p-4">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-wc-accent/10 text-sm font-bold text-wc-accent">
-              {{ (photo.client_name || 'C').charAt(0) }}
-            </div>
+            <AvatarConic
+              :initial="(photo.client_name || 'C').charAt(0).toUpperCase()"
+              tone="accent"
+              size="md"
+            />
             <div class="min-w-0 flex-1">
               <p class="truncate font-medium text-wc-text">{{ photo.client_name }}</p>
               <p class="text-xs text-wc-text-tertiary">

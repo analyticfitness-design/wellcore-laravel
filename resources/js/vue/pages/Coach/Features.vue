@@ -2,6 +2,8 @@
 import { ref, onMounted } from 'vue';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
+import AvatarConic from '../../components/coach/ios/AvatarConic.vue';
+import EmptyState from '../../components/coach/ios/EmptyState.vue';
 
 const api = useApi();
 const loading = ref(true);
@@ -78,31 +80,38 @@ onMounted(loadFeatures);
 
         <!-- PODS TAB -->
         <template v-if="activeTab === 'pods'">
-          <div v-if="pods.length > 0" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div v-for="pod in pods" :key="pod.id" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
+          <div v-if="pods.length > 0" class="grid grid-cols-1 gap-4 anim-entry anim-entry-2 sm:grid-cols-2 lg:grid-cols-3">
+            <div v-for="pod in pods" :key="pod.id" class="rounded-[14px] border border-[var(--b1)] p-4" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <div class="flex items-center justify-between">
                 <h3 class="text-sm font-semibold text-wc-text">{{ pod.name }}</h3>
                 <span class="text-xs text-wc-text-tertiary">{{ pod.member_count }}/{{ pod.max_members }}</span>
               </div>
               <p v-if="pod.description" class="mt-2 text-xs text-wc-text-secondary">{{ pod.description }}</p>
-              <div class="mt-3 flex -space-x-1">
-                <div v-for="member in (pod.members || []).slice(0, 5)" :key="member.id" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-wc-bg-tertiary bg-wc-accent/15 text-[10px] font-semibold text-wc-accent">
-                  {{ (member.name || 'M').charAt(0) }}
-                </div>
-                <div v-if="(pod.members || []).length > 5" class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-wc-bg-tertiary bg-wc-bg-secondary text-[10px] font-semibold text-wc-text-tertiary">
+              <div class="mt-3 flex -space-x-2">
+                <AvatarConic
+                  v-for="member in (pod.members || []).slice(0, 5)"
+                  :key="member.id"
+                  :initial="(member.name || 'M').charAt(0).toUpperCase()"
+                  tone="accent"
+                  size="sm"
+                />
+                <div v-if="(pod.members || []).length > 5" class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-wc-bg-tertiary bg-wc-bg-secondary text-[10px] font-semibold text-wc-text-tertiary">
                   +{{ (pod.members || []).length - 5 }}
                 </div>
               </div>
             </div>
           </div>
-          <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-12 text-center">
-            <p class="text-sm text-wc-text-tertiary">Sin pods de accountability</p>
-          </div>
+          <EmptyState
+            v-else
+            kind="tickets"
+            title="Sin pods de accountability"
+            subtitle="Crea grupos de clientes para potenciar la motivación colectiva."
+          />
         </template>
 
         <!-- AVAILABILITY TAB -->
         <template v-if="activeTab === 'availability'">
-          <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+          <div class="rounded-[14px] border border-[var(--b1)] p-5 anim-entry anim-entry-2" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
             <h3 class="text-sm font-semibold text-wc-text mb-4">Horarios de disponibilidad</h3>
             <div v-if="availability.length > 0" class="space-y-2">
               <div v-for="slot in availability" :key="slot.id" class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3">
@@ -121,8 +130,8 @@ onMounted(loadFeatures);
 
         <!-- AUDIO TAB -->
         <template v-if="activeTab === 'audio'">
-          <div v-if="audioLibrary.length > 0" class="space-y-3">
-            <div v-for="audio in audioLibrary" :key="audio.id" class="flex items-center gap-4 rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
+          <div v-if="audioLibrary.length > 0" class="space-y-3 anim-entry anim-entry-2">
+            <div v-for="audio in audioLibrary" :key="audio.id" class="flex items-center gap-4 rounded-[14px] border border-[var(--b1)] p-4" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-violet-500/10">
                 <svg class="h-5 w-5 text-violet-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" />
@@ -134,19 +143,24 @@ onMounted(loadFeatures);
               </div>
             </div>
           </div>
-          <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-12 text-center">
-            <p class="text-sm text-wc-text-tertiary">Sin audios en la biblioteca</p>
-          </div>
+          <EmptyState
+            v-else
+            kind="tickets"
+            title="Sin audios en la biblioteca"
+            subtitle="Pronto podrás compartir audios motivacionales y guías con tus clientes."
+          />
         </template>
 
         <!-- VIDEO CHECK-INS TAB -->
         <template v-if="activeTab === 'video_checkins'">
-          <div v-if="videoCheckins.length > 0" class="space-y-3">
-            <div v-for="vc in videoCheckins" :key="vc.id" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4" :class="{ 'border-l-2 border-l-orange-500': vc.status === 'pending' }">
+          <div v-if="videoCheckins.length > 0" class="space-y-3 anim-entry anim-entry-2">
+            <div v-for="vc in videoCheckins" :key="vc.id" class="rounded-[14px] border border-[var(--b1)] p-4" :class="{ 'border-l-2 border-l-orange-500': vc.status === 'pending' }" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <div class="flex items-center gap-4">
-                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent/15">
-                  <span class="text-sm font-semibold text-wc-accent">{{ (vc.client_name || 'C').charAt(0) }}</span>
-                </div>
+                <AvatarConic
+                  :initial="(vc.client_name || 'C').charAt(0).toUpperCase()"
+                  tone="accent"
+                  size="md"
+                />
                 <div class="min-w-0 flex-1">
                   <div class="flex items-center gap-2">
                     <p class="text-sm font-medium text-wc-text">{{ vc.client_name }}</p>
@@ -159,9 +173,12 @@ onMounted(loadFeatures);
               </div>
             </div>
           </div>
-          <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-12 text-center">
-            <p class="text-sm text-wc-text-tertiary">Sin video check-ins</p>
-          </div>
+          <EmptyState
+            v-else
+            kind="success"
+            title="Sin video check-ins"
+            subtitle="Cuando tus clientes envíen videos, aparecerán aquí para revisar."
+          />
         </template>
 
       </template>

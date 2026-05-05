@@ -3,6 +3,8 @@ import { ref, onMounted, computed } from 'vue';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import WcPageHeader from '../../components/WcPageHeader.vue';
+import AvatarConic from '../../components/coach/ios/AvatarConic.vue';
+import EmptyState from '../../components/coach/ios/EmptyState.vue';
 
 const api = useApi();
 const loading = ref(true);
@@ -152,7 +154,7 @@ onMounted(loadData);
       </div>
 
       <!-- Note form modal -->
-      <div v-if="showForm" class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 space-y-4">
+      <div v-if="showForm" class="rounded-[14px] border border-[var(--b1)] p-5 space-y-4" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
         <div class="flex items-center justify-between">
           <h3 class="text-sm font-semibold text-wc-text">{{ editingId ? 'Editar nota' : 'Nueva nota' }}</h3>
           <button @click="showForm = false" class="text-wc-text-tertiary hover:text-wc-text">
@@ -199,13 +201,20 @@ onMounted(loadData);
       </div>
 
       <!-- Notes list -->
-      <div v-else-if="filteredNotes.length > 0" class="space-y-3">
+      <div v-else-if="filteredNotes.length > 0" class="space-y-3 anim-entry anim-entry-2">
         <div
           v-for="note in filteredNotes"
           :key="note.id"
-          class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4"
+          class="rounded-[14px] border border-[var(--b1)] p-4"
+          style="background: var(--s2); box-shadow: var(--shadow-card-ios);"
         >
           <div class="flex items-start justify-between gap-3">
+            <AvatarConic
+              v-if="note.client_name"
+              :initial="(note.client_name || 'C').charAt(0).toUpperCase()"
+              :tone="note.note_type === 'alerta' ? 'accent' : (note.note_type === 'logro' ? 'gold' : 'accent')"
+              size="md"
+            />
             <div class="min-w-0 flex-1">
               <div class="flex items-center gap-2 flex-wrap">
                 <span class="inline-flex rounded-full border px-2 py-0.5 text-[10px] font-semibold capitalize" :class="typeColors[note.note_type] || typeColors.general">{{ note.note_type }}</span>
@@ -230,13 +239,13 @@ onMounted(loadData);
         </div>
       </div>
 
-      <div v-else class="rounded-card border border-wc-border bg-wc-bg-tertiary p-12 text-center">
-        <svg class="mx-auto h-12 w-12 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-        </svg>
-        <p class="mt-3 font-display text-sm uppercase tracking-wide text-wc-text">Sin notas</p>
-        <p class="mt-1 text-xs text-wc-text-tertiary">Crea tu primera nota</p>
-      </div>
+      <EmptyState
+        v-else
+        kind="activity"
+        title="Sin notas"
+        subtitle="Crea tu primera nota"
+      />
+
     </div>
   </CoachLayout>
 </template>

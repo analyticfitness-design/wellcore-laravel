@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
+import EmptyState from '../../components/coach/ios/EmptyState.vue';
 
 const api = useApi();
 const loading = ref(true);
@@ -72,7 +73,7 @@ onMounted(loadResources);
 
         <!-- Sidebar navigation -->
         <nav class="w-full shrink-0 lg:w-56">
-          <div class="rounded-xl border border-wc-border bg-wc-bg-secondary p-2 space-y-0.5">
+          <div class="rounded-[14px] border border-[var(--b1)] p-2 space-y-0.5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
             <button
               v-for="mod in modules"
               :key="mod.key"
@@ -122,11 +123,12 @@ onMounted(loadResources);
 
           <template v-else>
             <!-- Content items -->
-            <div v-if="currentItems().length > 0" class="space-y-3">
+            <div v-if="currentItems().length > 0" class="space-y-3 anim-entry anim-entry-2">
               <div
                 v-for="item in currentItems()"
                 :key="item.id"
-                class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden"
+                class="rounded-[14px] border border-[var(--b1)] overflow-hidden"
+                style="background: var(--s2); box-shadow: var(--shadow-card-ios);"
               >
                 <button
                   v-if="activeModule === 'guides'"
@@ -172,13 +174,12 @@ onMounted(loadResources);
             </div>
 
             <!-- Empty state -->
-            <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-12 text-center">
-              <svg class="mx-auto h-12 w-12 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
-              </svg>
-              <p class="mt-3 text-sm font-medium text-wc-text">Sin recursos disponibles</p>
-              <p class="mt-1 text-xs text-wc-text-tertiary">El contenido se agregara proximamente</p>
-            </div>
+            <EmptyState
+              v-else
+              kind="tickets"
+              title="Sin recursos disponibles"
+              subtitle="El contenido se agregará próximamente."
+            />
           </template>
         </div>
       </div>

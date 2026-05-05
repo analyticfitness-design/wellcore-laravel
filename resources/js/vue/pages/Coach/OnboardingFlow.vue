@@ -210,7 +210,7 @@ function goNext() { if (!isLast.value) setActive(activeIndex.value + 1); }
 
 <template>
   <CoachLayout>
-    <div class="onboarding-flow space-y-10 pb-16">
+    <div class="onboarding-flow space-y-10 pb-16 anim-entry anim-entry-2">
 
       <!-- ── HERO ── -->
       <header class="hero-block">
@@ -569,10 +569,11 @@ function goNext() { if (!isLast.value) setActive(activeIndex.value + 1); }
 
 /* ── STEP CARD ── */
 .step-card {
-  border: 1px solid var(--color-wc-border);
-  background: var(--color-wc-bg-secondary);
+  border: 1px solid var(--b1, var(--color-wc-border));
+  background: var(--s2, var(--color-wc-bg-secondary));
   border-radius: 14px;
   overflow: hidden;
+  box-shadow: var(--shadow-card-ios);
 }
 .step-card-header {
   display: flex;
@@ -754,10 +755,11 @@ function goNext() { if (!isLast.value) setActive(activeIndex.value + 1); }
   gap: 12px;
 }
 .cycle-card {
-  border: 1px solid var(--color-wc-border);
-  background: var(--color-wc-bg-secondary);
+  border: 1px solid var(--b1, var(--color-wc-border));
+  background: var(--s2, var(--color-wc-bg-secondary));
   border-radius: 14px;
   padding: 18px;
+  box-shadow: var(--shadow-card-ios);
 }
 .cycle-tag {
   display: inline-block;
@@ -815,10 +817,11 @@ function goNext() { if (!isLast.value) setActive(activeIndex.value + 1); }
   color: var(--color-wc-text-tertiary);
 }
 .summary-table {
-  border: 1px solid var(--color-wc-border);
+  border: 1px solid var(--b1, var(--color-wc-border));
   border-radius: 14px;
   overflow: hidden;
-  background: var(--color-wc-bg-secondary);
+  background: var(--s2, var(--color-wc-bg-secondary));
+  box-shadow: var(--shadow-card-ios);
 }
 .summary-header {
   padding: 14px 18px;
@@ -887,9 +890,10 @@ function goNext() { if (!isLast.value) setActive(activeIndex.value + 1); }
   flex-wrap: wrap;
   gap: 8px 12px;
   padding: 18px 14px;
-  border: 1px solid var(--color-wc-border);
+  border: 1px solid var(--b1, var(--color-wc-border));
   border-radius: 14px;
-  background: var(--color-wc-bg-secondary);
+  background: var(--s2, var(--color-wc-bg-secondary));
+  box-shadow: var(--shadow-card-ios);
   font-family: var(--wc-font-display, 'Oswald', sans-serif);
   font-size: 10px;
   letter-spacing: 2px;

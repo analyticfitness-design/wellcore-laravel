@@ -88,44 +88,46 @@ onMounted(() => {
       </div>
 
       <template v-else-if="prefs">
-        <section class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-5">
-          <h2 class="font-semibold text-wc-text mb-3">Canales</h2>
-          <div class="space-y-3">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm font-medium text-wc-text">Push (browser)</p>
-                <p class="text-xs text-wc-text-tertiary">Notificaciones del navegador en tiempo real.</p>
+        <div class="space-y-6 anim-entry anim-entry-2">
+          <section class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
+            <h2 class="font-semibold text-wc-text mb-3">Canales</h2>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-wc-text">Push (browser)</p>
+                  <p class="text-xs text-wc-text-tertiary">Notificaciones del navegador en tiempo real.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span v-if="push.permission.value === 'granted'" class="text-xs text-emerald-500 font-semibold">Activado</span>
+                  <button v-else-if="push.permission.value === 'default'" @click="activatePush" class="rounded-full bg-wc-accent text-white text-xs font-semibold px-3 py-1.5">
+                    Activar
+                  </button>
+                  <span v-else class="text-xs text-rose-500 font-semibold">Bloqueado</span>
+                  <input type="checkbox" v-model="prefs.push_enabled" class="h-5 w-9 accent-wc-accent" />
+                </div>
               </div>
-              <div class="flex items-center gap-2">
-                <span v-if="push.permission.value === 'granted'" class="text-xs text-emerald-500 font-semibold">Activado</span>
-                <button v-else-if="push.permission.value === 'default'" @click="activatePush" class="rounded-full bg-wc-accent text-white text-xs font-semibold px-3 py-1.5">
-                  Activar
-                </button>
-                <span v-else class="text-xs text-rose-500 font-semibold">Bloqueado</span>
-                <input type="checkbox" v-model="prefs.push_enabled" class="h-5 w-9 accent-wc-accent" />
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-wc-text">In-app (campana)</p>
+                  <p class="text-xs text-wc-text-tertiary">Aparecen en el ícono de campana del topbar.</p>
+                </div>
+                <input type="checkbox" v-model="prefs.in_app_enabled" class="h-5 w-9 accent-wc-accent" />
               </div>
             </div>
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm font-medium text-wc-text">In-app (campana)</p>
-                <p class="text-xs text-wc-text-tertiary">Aparecen en el ícono de campana del topbar.</p>
-              </div>
-              <input type="checkbox" v-model="prefs.in_app_enabled" class="h-5 w-9 accent-wc-accent" />
+          </section>
+
+          <section class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
+            <h2 class="font-semibold text-wc-text mb-3">Cuándo notificarme</h2>
+            <div class="space-y-3">
+              <label v-for="t in TOGGLES" :key="t.key" class="flex items-center justify-between gap-3 cursor-pointer">
+                <span class="text-sm text-wc-text-secondary">{{ t.label }}</span>
+                <input type="checkbox" v-model="prefs[t.key]" class="h-5 w-9 accent-wc-accent" />
+              </label>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-5">
-          <h2 class="font-semibold text-wc-text mb-3">Cuándo notificarme</h2>
-          <div class="space-y-3">
-            <label v-for="t in TOGGLES" :key="t.key" class="flex items-center justify-between gap-3 cursor-pointer">
-              <span class="text-sm text-wc-text-secondary">{{ t.label }}</span>
-              <input type="checkbox" v-model="prefs[t.key]" class="h-5 w-9 accent-wc-accent" />
-            </label>
-          </div>
-        </section>
-
-        <p v-if="saving" class="text-xs text-wc-text-tertiary text-center">Guardando…</p>
+          <p v-if="saving" class="text-xs text-wc-text-tertiary text-center">Guardando…</p>
+        </div>
       </template>
     </div>
   </CoachLayout>

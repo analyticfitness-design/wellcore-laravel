@@ -30,7 +30,7 @@ onActivated(async () => {
 
 <template>
     <CoachLayout>
-        <div class="strategy-page-v2 page-wrap">
+        <div class="strategy-page-v2 page-wrap anim-entry anim-entry-2">
             <div class="container">
 
                 <nav class="tabs">

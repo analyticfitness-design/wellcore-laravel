@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
+import AvatarConic from '../../components/coach/ios/AvatarConic.vue';
 
 const api = useApi();
 
@@ -267,13 +268,13 @@ onBeforeUnmount(() => {
 
       <template v-else>
         <!-- NEW BRAND SECTION -->
-        <div class="grid grid-cols-1 gap-6 lg:grid-cols-5">
+        <div class="grid grid-cols-1 gap-6 anim-entry anim-entry-2 lg:grid-cols-5">
 
           <!-- Controls -->
           <div class="space-y-5 lg:col-span-3">
 
             <!-- Logo uploader -->
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+            <div class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <div class="flex items-baseline justify-between">
                 <h3 class="font-display text-lg tracking-wide text-wc-text">Logo de tu marca</h3>
                 <span class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">JPG / PNG / WebP - max 10MB</span>
@@ -341,7 +342,7 @@ onBeforeUnmount(() => {
             </div>
 
             <!-- Color -->
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+            <div class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <h3 class="font-display text-lg tracking-wide text-wc-text">Color principal</h3>
               <p class="mt-1 text-xs text-wc-text-tertiary">Se usa como acento en el portal de tus clientes.</p>
               <div class="mt-4 flex items-center gap-3">
@@ -365,7 +366,7 @@ onBeforeUnmount(() => {
             </div>
 
             <!-- Nombre comercial -->
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+            <div class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <div class="flex items-baseline justify-between">
                 <h3 class="font-display text-lg tracking-wide text-wc-text">Nombre comercial</h3>
                 <span class="text-[10px] text-wc-text-tertiary" :class="nombreCount > 150 ? 'text-red-400' : ''">{{ nombreCount }}/150</span>
@@ -383,7 +384,7 @@ onBeforeUnmount(() => {
             </div>
 
             <!-- Tagline -->
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+            <div class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <div class="flex items-baseline justify-between">
                 <h3 class="font-display text-lg tracking-wide text-wc-text">Tagline</h3>
                 <span class="text-[10px] text-wc-text-tertiary" :class="taglineCount > 250 ? 'text-red-400' : ''">{{ taglineCount }}/250</span>
@@ -407,17 +408,22 @@ onBeforeUnmount(() => {
               <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Preview - tus clientes veran</p>
 
               <!-- Preview card with side bar of primary color -->
-              <div class="rounded-xl overflow-hidden border border-wc-border bg-wc-bg-tertiary flex">
+              <div class="rounded-[14px] overflow-hidden border border-[var(--b1)] flex" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
                 <div class="w-2 shrink-0" :style="{ backgroundColor: primaryColor }"></div>
                 <div class="flex-1 p-5">
                   <div class="flex items-center gap-3">
-                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary overflow-hidden">
-                      <picture v-if="logoUrl">
+                    <div v-if="logoUrl" class="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary overflow-hidden">
+                      <picture>
                         <source v-if="logoUrlWebp" :srcset="logoUrlWebp" type="image/webp" />
                         <img :src="logoUrl" alt="" class="max-h-full max-w-full object-contain" />
                       </picture>
-                      <span v-else class="font-display text-xl" :style="{ color: primaryColor }">{{ (nombreComercial || coachName || 'C').charAt(0).toUpperCase() }}</span>
                     </div>
+                    <AvatarConic
+                      v-else
+                      :initial="(nombreComercial || coachName || 'C').charAt(0).toUpperCase()"
+                      tone="accent"
+                      size="lg"
+                    />
                     <div class="min-w-0 flex-1">
                       <p class="font-display text-lg tracking-wide text-wc-text truncate">{{ nombreComercial || coachName }}</p>
                       <p v-if="tagline" class="mt-0.5 text-xs text-wc-text-secondary line-clamp-2">{{ tagline }}</p>

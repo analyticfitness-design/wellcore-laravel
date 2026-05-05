@@ -23,7 +23,7 @@ async function handleSubmit(payload) {
 
 <template>
   <CoachLayout>
-    <div class="onboarding-page mx-auto max-w-3xl px-6 py-12">
+    <div class="onboarding-page mx-auto max-w-3xl px-6 py-12 anim-entry anim-entry-2">
       <header class="mb-12">
         <p class="font-mono text-xs uppercase tracking-[0.2em] text-wc-text-tertiary">
           WC &middot; ONBOARDING / BRAND-PROFILE
@@ -36,11 +36,16 @@ async function handleSubmit(payload) {
         </p>
       </header>
 
-      <BrandProfileForm
-        :initial="store.profile"
-        :is-saving="store.isLoadingProfile"
-        @submit="handleSubmit"
-      />
+      <div
+        class="rounded-[14px] border border-[var(--b1)] p-6 sm:p-8"
+        style="background: var(--s2); box-shadow: var(--shadow-card-ios);"
+      >
+        <BrandProfileForm
+          :initial="store.profile"
+          :is-saving="store.isLoadingProfile"
+          @submit="handleSubmit"
+        />
+      </div>
     </div>
   </CoachLayout>
 </template>

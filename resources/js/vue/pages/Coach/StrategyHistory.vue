@@ -18,7 +18,9 @@ import StrategyHistoryList from '../../components/coach/strategy/StrategyHistory
                 </p>
             </header>
 
-            <StrategyHistoryList />
+            <div class="anim-entry anim-entry-2">
+                <StrategyHistoryList />
+            </div>
         </div>
     </CoachLayout>
 </template>
