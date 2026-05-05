@@ -31,10 +31,10 @@ class BroadcastSent implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'broadcast_id'     => $this->broadcastId,
-            'audience_type'    => $this->audienceType,
+            'broadcast_id' => $this->broadcastId,
+            'audience_type' => $this->audienceType,
             'recipients_count' => $this->recipientsCount,
-            'at'               => now()->toIso8601String(),
+            'at' => now()->toIso8601String(),
         ];
     }
 }

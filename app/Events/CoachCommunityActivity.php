@@ -33,12 +33,12 @@ class CoachCommunityActivity implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'coach_id'    => $this->coachId,
-            'event_type'  => $this->eventType,
-            'client_id'   => $this->clientId,
+            'coach_id' => $this->coachId,
+            'event_type' => $this->eventType,
+            'client_id' => $this->clientId,
             'client_name' => $this->clientName,
-            'payload'     => $this->payload,
-            'at'          => now()->toIso8601String(),
+            'payload' => $this->payload,
+            'at' => now()->toIso8601String(),
         ];
     }
 }

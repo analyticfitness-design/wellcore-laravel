@@ -6,6 +6,7 @@ use App\Events\BroadcastSent;
 use App\Events\CoachCommunityActivity;
 use App\Events\PostMadeOfficial;
 use App\Events\PostPinned;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -46,15 +47,15 @@ class InvalidateCommunityCaches
     /**
      * Subscribe to multiple events.
      *
-     * @param  \Illuminate\Events\Dispatcher  $events
+     * @param  Dispatcher  $events
      * @return array<class-string, string>
      */
     public function subscribe($events): array
     {
         return [
-            PostPinned::class             => 'handlePostPinned',
-            PostMadeOfficial::class       => 'handlePostMadeOfficial',
-            BroadcastSent::class          => 'handleBroadcastSent',
+            PostPinned::class => 'handlePostPinned',
+            PostMadeOfficial::class => 'handlePostMadeOfficial',
+            BroadcastSent::class => 'handleBroadcastSent',
             CoachCommunityActivity::class => 'handleCoachActivity',
         ];
     }

@@ -34,11 +34,11 @@ class MentionCreated implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'post_id'        => $this->postId,
-            'comment_id'     => $this->commentId,
+            'post_id' => $this->postId,
+            'comment_id' => $this->commentId,
             'mentioner_type' => $this->mentionerType,
-            'mentioner_id'   => $this->mentionerId,
-            'at'             => now()->toIso8601String(),
+            'mentioner_id' => $this->mentionerId,
+            'at' => now()->toIso8601String(),
         ];
     }
 }

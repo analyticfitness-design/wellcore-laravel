@@ -48,12 +48,12 @@ class FoodPhotoService
         try {
             $photo = DB::transaction(function () use ($client, $existing, $mealName, $mealIndex, $photoDate, $newFilename, $file, $note) {
                 $payload = [
-                    'client_id'  => $client->id,
-                    'meal_name'  => $mealName,
+                    'client_id' => $client->id,
+                    'meal_name' => $mealName,
                     'meal_index' => $mealIndex,
                     'photo_date' => $photoDate,
-                    'filename'   => $newFilename,
-                    'file_size'  => $file->getSize() ?: null,
+                    'filename' => $newFilename,
+                    'file_size' => $file->getSize() ?: null,
                 ];
                 if ($note !== null) {
                     $payload['client_note'] = $note;
@@ -144,8 +144,8 @@ class FoodPhotoService
         } catch (\Throwable $e) {
             Log::warning('FoodPhotoService::awardXp skipped', [
                 'client_id' => $client->id,
-                'photo_id'  => $photo->id,
-                'error'     => $e->getMessage(),
+                'photo_id' => $photo->id,
+                'error' => $e->getMessage(),
             ]);
 
             return;
@@ -184,17 +184,17 @@ class FoodPhotoService
 
             try {
                 HabitLog::create([
-                    'client_id'  => $client->id,
-                    'log_date'   => $photoDate,
+                    'client_id' => $client->id,
+                    'log_date' => $photoDate,
                     'habit_type' => 'food_day_bonus',
-                    'value'      => 30,
+                    'value' => 30,
                 ]);
                 ClientXp::where('client_id', $client->id)->increment('xp_total', 30);
             } catch (\Throwable $e) {
                 Log::warning('FoodPhotoService::dayBonus skipped', [
                     'client_id' => $client->id,
-                    'date'      => $photoDate,
-                    'error'     => $e->getMessage(),
+                    'date' => $photoDate,
+                    'error' => $e->getMessage(),
                 ]);
             }
         });
@@ -247,17 +247,17 @@ class FoodPhotoService
         try {
             WellcoreNotification::create([
                 'user_type' => 'admin',
-                'user_id'   => $coachId,
-                'type'      => 'food_photo_uploaded',
-                'title'     => 'Foto de comida nueva',
-                'body'      => "{$client->name} subió foto de {$mealName}",
-                'link'      => '/coach/food-photos',
+                'user_id' => $coachId,
+                'type' => 'food_photo_uploaded',
+                'title' => 'Foto de comida nueva',
+                'body' => "{$client->name} subió foto de {$mealName}",
+                'link' => '/coach/food-photos',
             ]);
         } catch (\Throwable $e) {
             Log::warning('FoodPhotoService::notifyCoach skipped', [
-                'coach_id'  => $coachId,
+                'coach_id' => $coachId,
                 'client_id' => $client->id,
-                'error'     => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
         }
     }

@@ -25,6 +25,7 @@ class PostMadeOfficial implements ShouldBroadcast
         if ($this->coachAdminId) {
             $channels[] = new PrivateChannel("coach.{$this->coachAdminId}.community");
         }
+
         return $channels;
     }
 
@@ -36,10 +37,10 @@ class PostMadeOfficial implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'post_id'    => $this->postId,
-            'actor_id'   => $this->actorId,
+            'post_id' => $this->postId,
+            'actor_id' => $this->actorId,
             'actor_type' => $this->actorType,
-            'at'         => now()->toIso8601String(),
+            'at' => now()->toIso8601String(),
         ];
     }
 }

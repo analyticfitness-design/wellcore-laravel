@@ -25,6 +25,7 @@ class PostReported implements ShouldBroadcast
         if ($this->coachAdminId) {
             $channels[] = new PrivateChannel("coach.{$this->coachAdminId}.community");
         }
+
         return $channels;
     }
 
@@ -36,10 +37,10 @@ class PostReported implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'post_id'     => $this->postId,
+            'post_id' => $this->postId,
             'reporter_id' => $this->reporterId,
-            'reason'      => $this->reason,
-            'at'          => now()->toIso8601String(),
+            'reason' => $this->reason,
+            'at' => now()->toIso8601String(),
         ];
     }
 }

@@ -20,11 +20,11 @@ class NotifyCoachOnClientActivity implements ShouldQueue
         }
 
         $shouldNotify = match ($event->eventType) {
-            'pr_broken'     => $prefs->notify_pr_broken,
-            'streak'        => $prefs->notify_streak_milestone,
-            'post_created'  => $prefs->notify_post_created,
+            'pr_broken' => $prefs->notify_pr_broken,
+            'streak' => $prefs->notify_streak_milestone,
+            'post_created' => $prefs->notify_post_created,
             'comment_reply' => $prefs->notify_comment_on_my_reply,
-            default         => false,
+            default => false,
         };
 
         if (! $shouldNotify) {

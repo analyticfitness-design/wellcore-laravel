@@ -14,12 +14,12 @@ class PostCommentFactory extends Factory
     public function definition(): array
     {
         return [
-            'post_id'         => CommunityPost::factory(),
-            'client_id'       => Client::factory(),
-            'content'         => $this->faker->sentence(),
-            'author_type'     => 'client',
+            'post_id' => CommunityPost::factory(),
+            'client_id' => Client::factory(),
+            'content' => $this->faker->sentence(),
+            'author_type' => 'client',
             'author_admin_id' => null,
-            'created_at'      => now(),
+            'created_at' => now(),
         ];
     }
 }

@@ -30,9 +30,9 @@ class CommunityPost extends Model
     protected function casts(): array
     {
         return [
-            'visible'     => 'boolean',
+            'visible' => 'boolean',
             'is_official' => 'boolean',
-            'is_global'   => 'boolean',
+            'is_global' => 'boolean',
         ];
     }
 

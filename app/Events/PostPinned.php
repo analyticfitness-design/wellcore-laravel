@@ -33,11 +33,11 @@ class PostPinned implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'post_id'    => $this->postId,
-            'actor_id'   => $this->actorId,
+            'post_id' => $this->postId,
+            'actor_id' => $this->actorId,
             'actor_type' => $this->actorType,
-            'hours'      => $this->hours,
-            'at'         => now()->toIso8601String(),
+            'hours' => $this->hours,
+            'at' => now()->toIso8601String(),
         ];
     }
 }
