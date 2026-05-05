@@ -145,6 +145,14 @@ const routes = [
       component: () => import('../pages/Admin/Marketing/CoachProfileEdit.vue'),
       meta: { auth: true, title: 'Editar Perfil Coach — WellCore Admin' }, props: true },
 
+    // Community Cross-Role Fase C
+    { path: '/admin/community', name: 'admin-community',
+      component: () => import('../pages/Admin/Community.vue'),
+      meta: { auth: true, title: 'Comunidad — WellCore Admin' } },
+    { path: '/admin/notifications', name: 'admin-notifications',
+      component: () => import('../pages/Admin/NotificationsPreferences.vue'),
+      meta: { auth: true, title: 'Notificaciones — WellCore Admin' } },
+
     // Catch-all: redirect unknown routes to login
     { path: '/:pathMatch(.*)*', redirect: '/login' },
 ];
