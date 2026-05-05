@@ -11,13 +11,10 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Livewire\WithPagination;
 
-#[Layout('layouts.coach')]
+#[Layout('layouts.coach', ['title' => 'Fotos de Comida'])]
 class FoodPhotoReview extends Component
 {
-    use WithPagination;
-
     public $showReviewed = false;
 
     public $selectedClientId = null;
@@ -91,13 +88,11 @@ class FoodPhotoReview extends Component
     public function toggleFilter(): void
     {
         $this->showReviewed = ! $this->showReviewed;
-        $this->resetPage();
     }
 
     public function selectClient($clientId): void
     {
         $this->selectedClientId = $clientId;
-        $this->resetPage();
     }
 
     public function render()
@@ -108,7 +103,8 @@ class FoodPhotoReview extends Component
             ->where('coach_seen', $this->showReviewed)
             ->when($this->selectedClientId, fn ($q) => $q->where('client_id', $this->selectedClientId))
             ->orderByDesc('created_at')
-            ->paginate(15);
+            ->limit(40)
+            ->get();
 
         $clientsById = Client::whereIn('id', $photos->pluck('client_id')->unique())
             ->get(['id', 'name'])
