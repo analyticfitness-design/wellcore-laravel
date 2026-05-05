@@ -574,7 +574,14 @@ Route::prefix('v/admin/broadcast')->middleware(['auth:wellcore', 'throttle:api']
     Route::get('history', [BroadcastController::class, 'history']);
 });
 
-// Client post reports
+// Client post reports + Fase D mention search
 Route::prefix('v/community')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
     Route::post('posts/{post}/report', [PostReportController::class, 'store'])->whereNumber('post');
+    Route::get('mention-search', [App\Http\Controllers\Api\MentionSearchController::class, 'search']);
+});
+
+// Client notifications preferences (Fase D)
+Route::prefix('v/client')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
+    Route::get('notifications/preferences', [App\Http\Controllers\Api\Client\NotificationPreferencesController::class, 'show']);
+    Route::patch('notifications/preferences', [App\Http\Controllers\Api\Client\NotificationPreferencesController::class, 'update']);
 });

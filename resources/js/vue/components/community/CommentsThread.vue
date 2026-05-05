@@ -1,6 +1,9 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useApi } from '../../composables/useApi';
+import CoachBadge from './CoachBadge.vue';
+import OfficialBadge from './OfficialBadge.vue';
+import MentionRenderer from './MentionRenderer.vue';
 
 const props = defineProps({
   postId: {
@@ -50,6 +53,16 @@ async function load() {
   }
 }
 
+// Cross-Role sort: admin > coach > client (most recent first within each group).
+const sortedComments = computed(() => {
+  const adminComments = comments.value.filter(c => c.author_type === 'admin');
+  const coachComments = comments.value.filter(c => c.author_type === 'coach');
+  const clientComments = comments.value
+    .filter(c => !c.author_type || c.author_type === 'client')
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  return [...adminComments, ...coachComments, ...clientComments];
+});
+
 async function send() {
   const text = newComment.value.trim();
   if (!text || sending.value) return;
@@ -96,19 +109,21 @@ watch(
         Se el primero en comentar.
       </div>
       <div
-        v-for="c in comments"
+        v-for="c in sortedComments"
         :key="c.id"
         class="flex items-start gap-2 text-sm"
       >
         <div class="h-6 w-6 shrink-0 rounded-full bg-wc-accent/20 flex items-center justify-center text-[10px] font-bold text-wc-accent">
-          {{ initials(c.client?.name) }}
+          {{ initials(c.client?.name || c.author_name) }}
         </div>
         <div class="min-w-0 flex-1">
-          <div class="flex items-baseline gap-1.5">
-            <span class="font-semibold text-xs text-wc-text">{{ c.client?.name ?? 'Miembro' }}</span>
+          <div class="flex items-baseline gap-1.5 flex-wrap">
+            <span class="font-semibold text-xs text-wc-text">{{ c.client?.name ?? c.author_name ?? 'Miembro' }}</span>
+            <CoachBadge v-if="c.author_type === 'coach'" size="xs" />
+            <OfficialBadge v-if="c.author_type === 'admin'" />
             <span class="text-[10px] text-wc-text-tertiary tabular-nums">{{ timeAgo(c.created_at) }}</span>
           </div>
-          <span class="text-sm text-wc-text-secondary">{{ c.content }}</span>
+          <MentionRenderer :content="c.content" />
         </div>
       </div>
     </div>

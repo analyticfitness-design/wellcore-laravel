@@ -9,6 +9,8 @@ import { resetCoachAnnounce } from '../composables/useCoachAnnounce';
 import { resetAdminCommunity } from '../composables/useAdminCommunity';
 import { resetBroadcast } from '../composables/useBroadcast';
 import { resetModerationQueue } from '../composables/useModerationQueue';
+import { resetMentions } from '../composables/useMentions';
+import { resetGroupPresence } from '../composables/useGroupPresence';
 
 export const useAuthStore = defineStore('auth', () => {
     // Si Laravel inyecto auth data en sesion (login vía Livewire), sincronizar
@@ -92,6 +94,8 @@ export const useAuthStore = defineStore('auth', () => {
             resetAdminCommunity();
             resetBroadcast();
             resetModerationQueue();
+            resetMentions();
+            resetGroupPresence();
         }
         token.value = data.token;
         userType.value = data.userType;
@@ -153,6 +157,9 @@ export const useAuthStore = defineStore('auth', () => {
         resetAdminCommunity();
         resetBroadcast();
         resetModerationQueue();
+        // Community Cross-Role Fase D: cleanup mentions + presence channel.
+        resetMentions();
+        resetGroupPresence();
         token.value = null;
         userType.value = null;
         userId.value = null;
