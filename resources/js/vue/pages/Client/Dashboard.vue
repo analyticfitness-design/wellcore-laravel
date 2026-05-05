@@ -383,7 +383,10 @@ const weekMarkers = computed(() => {
       <DashboardCoach :data="data" />
 
       <!-- §8 MISSIONS (span 12, grid 4 cards desktop) -->
-      <DashboardMissions :missions="data.dailyMissions || []" />
+      <DashboardMissions
+        :missions="data.dailyMissions || []"
+        :peer-counts="groupPulseSummary?.user_vs_group?.missions_peers ?? {}"
+      />
 
       <!-- §9 HEATMAP (span 8) + §10 WEIGHT (span 4) lado a lado -->
       <DashboardHeatmap
