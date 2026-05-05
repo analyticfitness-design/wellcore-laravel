@@ -18,6 +18,7 @@ class FoodPhotoResource extends JsonResource
             'coach_seen'     => $this->coach_seen,
             'coach_reaction' => $this->coach_reaction,
             'coach_note'     => $this->coach_note,
+            'client_note'    => $this->client_note,
             'xp_awarded'     => $this->xp_awarded,
             'uploaded_at'    => $this->created_at?->toIso8601String(),
         ];

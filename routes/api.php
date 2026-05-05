@@ -151,6 +151,8 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'plan.lock:strict', 'thr
     Route::get('/food-photos/history', [\App\Http\Controllers\Api\Client\FoodPhotoController::class, 'history']);
     Route::post('/food-photos', [\App\Http\Controllers\Api\Client\FoodPhotoController::class, 'store'])
         ->middleware('throttle:20,1');
+    Route::patch('/food-photos/{id}/note', [\App\Http\Controllers\Api\Client\FoodPhotoController::class, 'updateNote'])
+        ->where('id', '[0-9]+');
     Route::delete('/food-photos/{id}', [\App\Http\Controllers\Api\Client\FoodPhotoController::class, 'destroy'])
         ->where('id', '[0-9]+');
 });

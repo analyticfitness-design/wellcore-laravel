@@ -106,7 +106,8 @@ class FoodPhotoController extends Controller
             $request->file('photo'),
             $request->input('meal_name'),
             (int) $request->input('meal_index'),
-            $request->photoDate()
+            $request->photoDate(),
+            $request->input('client_note')
         );
 
         Cache::forget("food_streak:{$client->id}");
@@ -114,6 +115,24 @@ class FoodPhotoController extends Controller
         return (new FoodPhotoResource($photo))
             ->response()
             ->setStatusCode(201);
+    }
+
+    public function updateNote(Request $request, int $id): JsonResponse
+    {
+        $request->validate(['client_note' => 'nullable|string|max:1000']);
+
+        /** @var Client $client */
+        $client = $request->user('wellcore');
+
+        $photo = FoodPhoto::where('client_id', $client->id)->find($id);
+        if (! $photo) {
+            return response()->json(['message' => 'No encontrada'], 404);
+        }
+
+        $note = trim((string) $request->input('client_note', ''));
+        $photo->update(['client_note' => $note === '' ? null : $note]);
+
+        return response()->json(['ok' => true]);
     }
 
     public function destroy(Request $request, int $id): JsonResponse
