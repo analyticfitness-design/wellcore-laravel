@@ -70,10 +70,14 @@ class Dashboard extends Component
 
     /**
      * Called by wire:poll.30s — refreshes all dashboard data.
+     *
+     * NOTE: No invalida 'admin_dashboard_stats' a propósito. El cache (300s)
+     * absorbe el polling para evitar ~24k queries/admin/día. Las stats
+     * principales se refrescan al expirar el TTL; el resto de bloques
+     * (breakdown, recent, timeline) son queries livianas o cacheadas aparte.
      */
     public function refreshStats(): void
     {
-        Cache::forget('admin_dashboard_stats');
         $this->loadAllData();
     }
 
