@@ -124,20 +124,33 @@ Orden de lectura: `00-INDEX.md` primero, luego los demás según aplica. Contien
 
 **No crear planes sin haber consultado este sistema.** Evita errores repetidos de formato, voz, GIFs y metodología.
 
-## Community Cross-Role (Fase A — Backend ready)
+## Community Cross-Role (Fase A backend + Fase B Coach Hub shipped)
 
-Backend foundations completed in Fase A. Endpoints disponibles:
+### Fase A — Backend foundations
+- 9 migrations aditivas, 6 models, 5 services, 6 controllers, 1 policy, 6 events Reverb
+- 16 endpoints REST originales
 
-- `GET /api/v/coach/community/pulse` — pulse del equipo del coach
-- `GET /api/v/coach/community/posts?filter=all|pinned|reported|achievements|prs`
-- `POST /api/v/coach/posts/{id}/pin|unpin|make-official` + `DELETE /api/v/coach/posts/{id}`
-- `GET /api/v/admin/community/pulse-cross-coach?period=day|week|month`
-- `POST /api/v/admin/broadcast/preview|send` + `GET /api/v/admin/broadcast/history`
-- `GET /api/v/admin/community/moderation/queue` + `POST .../{id}/dismiss|action`
-- `POST /api/v/community/posts/{id}/report`
+### Fase B — Coach Community Hub (UI + backend extensions)
+Endpoints adicionales:
+- `GET /api/v/coach/community/threads` — Tab Conversaciones
+- `GET /api/v/coach/community/achievements?period=week|month|all` — Tab Logros
+- `POST /api/v/coach/community/announce` — funcional (post o push) (antes 501)
+- `GET /api/v/coach/clients/count` — preview recipientes en modal
+- `POST/DELETE /api/v/coach/push/subscribe` — service worker push
+- `GET/PATCH /api/v/coach/notifications/preferences` — toggles granulares
 
+Frontend Vue 3 SPA:
+- `/coach/community` con 5 tabs (Latido / Posts / Conversaciones / Pulsos / Logros)
+- `/coach/notifications` page con live save
+- Sidebar: nueva sección "Comunidad" + item "Notificaciones" en Personal
+- FAB móvil: 4ta opción "Mensaje al equipo" (CoachAnnounceModal)
+- Real-time threshold-based: auto-prepend si scroll<200px, toast flotante si lejos
+- 11 components compartidos (CoachBadge, OfficialBadge, TeamHealthRing, etc.)
+- 5 composables singleton TTL+dedup: useCoachCommunity, useCoachPulse, useModeration, useCoachAnnounce, usePushSubscription
+- auth.js extendido con 3 reset hooks (anti cache leak en impersonations)
+
+Scheduled: `wellcore:precompute-coach-pulse` cada 5min.
 Reverb channels: `coach.{id}.community`, `admin.community`, `user.{type}.{id}`.
+Cache: `wc:coach-pulse:v1:{id}` (60s backend / 25s frontend).
 
-Cache: `wc:coach-pulse:v1:{id}` (60s), `wc:admin-community-analytics:v1:{period}` (300s).
-
-UI sigue en Fase B (Coach Community Hub). Spec: `docs/superpowers/specs/2026-05-05-community-cross-role-design.md`. Plan A: `docs/superpowers/plans/2026-05-05-community-cross-role-fase-a.md`.
+UI siguiente en Fase C (Admin Community Center) y Fase D (Cross-Role Layer). Specs/plans en `docs/superpowers/{specs,plans}/2026-05-05-community-cross-role-fase-{a,b,c,d}-*`.
