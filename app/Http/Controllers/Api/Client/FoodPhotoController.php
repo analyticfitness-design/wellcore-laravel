@@ -107,7 +107,7 @@ class FoodPhotoController extends Controller
         return response()->json(['week_history' => $days->values()->all()]);
     }
 
-    public function store(StoreFoodPhotoRequest $request): JsonResource
+    public function store(StoreFoodPhotoRequest $request): JsonResponse
     {
         /** @var Client $client */
         $client = $request->user('wellcore');
