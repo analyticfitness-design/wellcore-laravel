@@ -90,6 +90,8 @@ const routes = [
     { path: '/coach/features', name: 'coach-features', component: () => import('../pages/Coach/Features.vue'), meta: { auth: true, title: 'Herramientas — WellCore' } },
     { path: '/coach/resources', name: 'coach-resources', component: () => import('../pages/Coach/Resources.vue'), meta: { auth: true, title: 'Recursos — WellCore' } },
     { path: '/coach/onboarding', name: 'coach-onboarding', component: () => import('../pages/Coach/OnboardingFlow.vue'), meta: { auth: true, title: 'Onboarding del Coach — WellCore' } },
+    { path: '/coach/community', name: 'coach-community', component: () => import('../pages/Coach/Community.vue'), meta: { auth: true, title: 'Comunidad — WellCore' } },
+    { path: '/coach/notifications', name: 'coach-notifications', component: () => import('../pages/Coach/NotificationsPreferences.vue'), meta: { auth: true, title: 'Notificaciones — WellCore' } },
     { path: '/coach/invitations', name: 'coach-invitations', component: () => import('../pages/Coach/Invitations/InvitationManager.vue'), meta: { auth: true, title: 'Mis Invitaciones — WellCore' } },
     { path: '/coach/comprobantes', name: 'coach-comprobantes', component: () => import('../pages/Coach/PaymentProofs.vue'), meta: { auth: true, title: 'Comprobantes — WellCore' } },
     // Coach Strategy Hub (Marketing Drops)
