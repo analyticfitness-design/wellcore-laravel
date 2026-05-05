@@ -123,3 +123,21 @@ Orden de lectura: `00-INDEX.md` primero, luego los demás según aplica. Contien
 - Notificaciones semanales
 
 **No crear planes sin haber consultado este sistema.** Evita errores repetidos de formato, voz, GIFs y metodología.
+
+## Community Cross-Role (Fase A — Backend ready)
+
+Backend foundations completed in Fase A. Endpoints disponibles:
+
+- `GET /api/v/coach/community/pulse` — pulse del equipo del coach
+- `GET /api/v/coach/community/posts?filter=all|pinned|reported|achievements|prs`
+- `POST /api/v/coach/posts/{id}/pin|unpin|make-official` + `DELETE /api/v/coach/posts/{id}`
+- `GET /api/v/admin/community/pulse-cross-coach?period=day|week|month`
+- `POST /api/v/admin/broadcast/preview|send` + `GET /api/v/admin/broadcast/history`
+- `GET /api/v/admin/community/moderation/queue` + `POST .../{id}/dismiss|action`
+- `POST /api/v/community/posts/{id}/report`
+
+Reverb channels: `coach.{id}.community`, `admin.community`, `user.{type}.{id}`.
+
+Cache: `wc:coach-pulse:v1:{id}` (60s), `wc:admin-community-analytics:v1:{period}` (300s).
+
+UI sigue en Fase B (Coach Community Hub). Spec: `docs/superpowers/specs/2026-05-05-community-cross-role-design.md`. Plan A: `docs/superpowers/plans/2026-05-05-community-cross-role-fase-a.md`.
