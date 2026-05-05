@@ -121,6 +121,7 @@ const navSections = [
             { name: 'Chat', to: '/rise/chat', icon: 'chat', routeName: 'rise-chat' },
             { name: 'Entrenamiento', to: '/rise/training', icon: 'training', routeName: 'rise-training' },
             { name: 'Nutricion', to: '/rise/nutrition', icon: 'nutrition', routeName: 'rise-nutrition' },
+            { name: 'Mi Alimentacion', to: '/rise/food-tracking', icon: 'photos', routeName: 'rise-food-tracking' },
             { name: 'Perfil', to: '/rise/profile', icon: 'profile', routeName: 'rise-profile' },
         ],
     },
