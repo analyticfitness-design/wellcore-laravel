@@ -4,9 +4,9 @@ namespace App\Livewire\Coach;
 
 use App\Models\AssignedPlan;
 use App\Models\Client;
-use App\Models\ClientProfile;
 use App\Models\PlanTemplate;
 use App\Services\AIService;
+use App\Support\CoachScope;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
@@ -20,53 +20,89 @@ class PlansManager extends Component
 
     // ── My Templates tab ──
     public string $templateSearch = '';
+
     public string $templateTypeFilter = '';
+
     public bool $showTemplateModal = false;
+
     public bool $editingTemplate = false;
+
     public ?int $editTemplateId = null;
+
     public string $tplName = '';
+
     public string $tplPlanType = 'entrenamiento';
+
     public string $tplMethodology = '';
+
     public string $tplDescription = '';
+
     public string $tplContentJson = '';
+
     public bool $tplIsPublic = false;
+
     public bool $showPreviewModal = false;
+
     public ?array $previewContent = null;
+
     public string $previewTitle = '';
+
     public bool $showDeleteConfirm = false;
+
     public ?int $deleteTemplateId = null;
 
     // ── Assigned tab ──
     public string $assignedClientFilter = '';
+
     public string $assignedTypeFilter = '';
+
     public string $assignedActiveFilter = 'active'; // active | inactive | all
+
     public bool $showAssignModal = false;
+
     public ?int $assignClientId = null;
+
     public ?int $assignTemplateId = null;
+
     public bool $showAssignedContentModal = false;
+
     public ?array $assignedContentPreview = null;
+
     public string $assignedContentTitle = '';
 
     // ── Generate tab ──
     public int $genStep = 1; // Step A=1, Step B=2
+
     public string $planType = '';
+
     public string $methodology = '';
+
     public int $durationWeeks = 8;
+
     public int $frequency = 4;
+
     public ?int $targetClientId = null;
+
     public string $clientSearch = '';
 
     // Training params
     public string $experienceLevel = 'intermedio';
+
     public string $trainingGoal = 'hipertrofia';
+
     public string $injuries = '';
 
     // Nutrition params
     public int $calorieTarget = 2200;
+
     public int $proteinPct = 30;
+
     public int $carbsPct = 45;
+
     public int $fatPct = 25;
+
     public int $mealsPerDay = 4;
+
     public string $dietaryRestrictions = '';
 
     // Habits params
@@ -74,18 +110,28 @@ class PlansManager extends Component
 
     // Generation state
     public bool $isGenerating = false;
+
     public bool $planGenerated = false;
+
     public ?array $generatedPlan = null;
+
     public string $generatedPlanJson = '';
+
     public bool $showRawJson = false;
+
     public string $generationError = '';
 
     // Save state
     public string $templateName = '';
+
     public bool $saveAsPublic = false;
+
     public string $saveMode = 'template_only'; // template_only | template_and_assign
+
     public bool $saved = false;
+
     public ?int $savedTemplateId = null;
+
     public ?int $savedAssignedId = null;
 
     // ── Methodology definitions ──
@@ -195,7 +241,9 @@ class PlansManager extends Component
     public function openEditTemplate(int $id): void
     {
         $tpl = PlanTemplate::where('coach_id', auth('wellcore')->id())->find($id);
-        if (!$tpl) return;
+        if (! $tpl) {
+            return;
+        }
 
         $this->editingTemplate = true;
         $this->editTemplateId = $id;
@@ -218,10 +266,11 @@ class PlansManager extends Component
         ]);
 
         $contentArray = null;
-        if (!empty($this->tplContentJson)) {
+        if (! empty($this->tplContentJson)) {
             $contentArray = json_decode($this->tplContentJson, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                $this->addError('tplContentJson', 'JSON invalido: ' . json_last_error_msg());
+                $this->addError('tplContentJson', 'JSON invalido: '.json_last_error_msg());
+
                 return;
             }
         }
@@ -253,11 +302,13 @@ class PlansManager extends Component
     public function duplicateTemplate(int $id): void
     {
         $tpl = PlanTemplate::where('coach_id', auth('wellcore')->id())->find($id);
-        if (!$tpl) return;
+        if (! $tpl) {
+            return;
+        }
 
         PlanTemplate::create([
             'coach_id' => auth('wellcore')->id(),
-            'name' => $tpl->name . ' (copia)',
+            'name' => $tpl->name.' (copia)',
             'plan_type' => $tpl->plan_type,
             'methodology' => $tpl->methodology,
             'description' => $tpl->description,
@@ -271,7 +322,7 @@ class PlansManager extends Component
     {
         $tpl = PlanTemplate::where('coach_id', auth('wellcore')->id())->find($id);
         if ($tpl) {
-            $tpl->update(['is_public' => !$tpl->is_public]);
+            $tpl->update(['is_public' => ! $tpl->is_public]);
         }
     }
 
@@ -295,7 +346,9 @@ class PlansManager extends Component
     public function previewTemplate(int $id): void
     {
         $tpl = PlanTemplate::find($id);
-        if (!$tpl) return;
+        if (! $tpl) {
+            return;
+        }
 
         $this->previewTitle = $tpl->name;
         $this->previewContent = is_array($tpl->content_json) ? $tpl->content_json : json_decode($tpl->content_json ?? '{}', true);
@@ -322,16 +375,18 @@ class PlansManager extends Component
     {
         $plan = AssignedPlan::where('assigned_by', auth('wellcore')->id())->find($id);
         if ($plan) {
-            $plan->update(['active' => !$plan->active]);
+            $plan->update(['active' => ! $plan->active]);
         }
     }
 
     public function viewAssignedContent(int $id): void
     {
         $plan = AssignedPlan::with('client')->where('assigned_by', auth('wellcore')->id())->find($id);
-        if (!$plan) return;
+        if (! $plan) {
+            return;
+        }
 
-        $this->assignedContentTitle = ($plan->client?->name ?? 'Cliente') . ' — ' . ucfirst($plan->plan_type) . ' v' . $plan->version;
+        $this->assignedContentTitle = ($plan->client?->name ?? 'Cliente').' — '.ucfirst($plan->plan_type).' v'.$plan->version;
         $this->assignedContentPreview = is_array($plan->content) ? $plan->content : json_decode($plan->content ?? '{}', true);
         $this->showAssignedContentModal = true;
     }
@@ -354,7 +409,9 @@ class PlansManager extends Component
         ]);
 
         $template = PlanTemplate::find($this->assignTemplateId);
-        if (!$template) return;
+        if (! $template) {
+            return;
+        }
 
         $coachId = auth('wellcore')->id();
 
@@ -417,10 +474,18 @@ class PlansManager extends Component
 
     public function goToGenerate(): void
     {
-        if (empty($this->planType)) return;
-        if ($this->planType === 'entrenamiento' && empty($this->methodology)) return;
-        if ($this->planType === 'nutricion' && empty($this->methodology)) return;
-        if ($this->planType === 'habitos' && empty($this->habitFocusAreas)) return;
+        if (empty($this->planType)) {
+            return;
+        }
+        if ($this->planType === 'entrenamiento' && empty($this->methodology)) {
+            return;
+        }
+        if ($this->planType === 'nutricion' && empty($this->methodology)) {
+            return;
+        }
+        if ($this->planType === 'habitos' && empty($this->habitFocusAreas)) {
+            return;
+        }
 
         $this->genStep = 2;
 
@@ -457,6 +522,7 @@ class PlansManager extends Component
                         $this->generatedPlanJson = json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
                         $this->planGenerated = true;
                         $this->isGenerating = false;
+
                         return;
                     }
                 }
@@ -479,14 +545,14 @@ class PlansManager extends Component
 
     public function toggleRawJson(): void
     {
-        $this->showRawJson = !$this->showRawJson;
+        $this->showRawJson = ! $this->showRawJson;
     }
 
     // ── Exercise reorder (drag-and-drop) in generated plan ──
 
     public function reorderExercise(int $weekIdx, int $sessionIdx, int $fromIndex, int $toIndex): void
     {
-        if (!$this->generatedPlan || !isset($this->generatedPlan['weeks'][$weekIdx]['sessions'][$sessionIdx]['exercises'])) {
+        if (! $this->generatedPlan || ! isset($this->generatedPlan['weeks'][$weekIdx]['sessions'][$sessionIdx]['exercises'])) {
             return;
         }
 
@@ -510,7 +576,7 @@ class PlansManager extends Component
 
     public function reorderFood(int $mealIdx, int $fromIndex, int $toIndex): void
     {
-        if (!$this->generatedPlan || !isset($this->generatedPlan['meal_plan'][$mealIdx]['foods'])) {
+        if (! $this->generatedPlan || ! isset($this->generatedPlan['meal_plan'][$mealIdx]['foods'])) {
             return;
         }
 
@@ -534,7 +600,7 @@ class PlansManager extends Component
 
     public function reorderHabit(int $fromIndex, int $toIndex): void
     {
-        if (!$this->generatedPlan || !isset($this->generatedPlan['habits'])) {
+        if (! $this->generatedPlan || ! isset($this->generatedPlan['habits'])) {
             return;
         }
 
@@ -560,7 +626,7 @@ class PlansManager extends Component
 
     public function reorderPreviewExercise(int $weekIdx, int $sessionIdx, int $fromIndex, int $toIndex): void
     {
-        if (!$this->previewContent || !isset($this->previewContent['weeks'][$weekIdx]['sessions'][$sessionIdx]['exercises'])) {
+        if (! $this->previewContent || ! isset($this->previewContent['weeks'][$weekIdx]['sessions'][$sessionIdx]['exercises'])) {
             return;
         }
 
@@ -588,7 +654,7 @@ class PlansManager extends Component
 
     public function reorderPreviewFood(int $mealIdx, int $fromIndex, int $toIndex): void
     {
-        if (!$this->previewContent || !isset($this->previewContent['meal_plan'][$mealIdx]['foods'])) {
+        if (! $this->previewContent || ! isset($this->previewContent['meal_plan'][$mealIdx]['foods'])) {
             return;
         }
 
@@ -615,7 +681,7 @@ class PlansManager extends Component
 
     public function reorderPreviewHabit(int $fromIndex, int $toIndex): void
     {
-        if (!$this->previewContent || !isset($this->previewContent['habits'])) {
+        if (! $this->previewContent || ! isset($this->previewContent['habits'])) {
             return;
         }
 
@@ -663,7 +729,7 @@ class PlansManager extends Component
             $this->generatedPlan = $decoded;
             $this->generationError = '';
         } else {
-            $this->generationError = 'JSON invalido: ' . json_last_error_msg();
+            $this->generationError = 'JSON invalido: '.json_last_error_msg();
         }
     }
 
@@ -820,7 +886,8 @@ El JSON debe tener esta estructura:
 Responde SOLO con JSON valido.";
         }
 
-        $areas = implode(', ', array_map(fn($a) => $this->habitAreas[$a]['name'] ?? $a, $this->habitFocusAreas));
+        $areas = implode(', ', array_map(fn ($a) => $this->habitAreas[$a]['name'] ?? $a, $this->habitFocusAreas));
+
         return "Eres un coach de habitos y bienestar especializado en: {$areas}.
 Genera un plan de habitos COMPLETO en formato JSON puro.
 El JSON debe tener esta estructura:
@@ -861,45 +928,51 @@ Responde SOLO con JSON valido.";
         $lines = [];
 
         if ($client) {
-            $lines[] = "DATOS DEL CLIENTE:";
+            $lines[] = 'DATOS DEL CLIENTE:';
             $lines[] = "- Nombre: {$client['name']}";
-            $lines[] = "- Edad: " . ($client['age'] ?? 'No especificada');
-            $lines[] = "- Peso: " . ($client['peso'] ? "{$client['peso']} kg" : 'No especificado');
-            $lines[] = "- Altura: " . ($client['altura'] ? "{$client['altura']} cm" : 'No especificada');
+            $lines[] = '- Edad: '.($client['age'] ?? 'No especificada');
+            $lines[] = '- Peso: '.($client['peso'] ? "{$client['peso']} kg" : 'No especificado');
+            $lines[] = '- Altura: '.($client['altura'] ? "{$client['altura']} cm" : 'No especificada');
             $lines[] = "- Objetivo: {$client['objetivo']}";
             $lines[] = "- Nivel: {$client['nivel']}";
             $lines[] = "- Lugar de entreno: {$client['lugar_entreno']}";
-            $lines[] = "- Dias disponibles: " . (is_array($client['dias_disponibles']) ? count($client['dias_disponibles']) . " dias" : $client['dias_disponibles']);
-            $lines[] = "";
+            $lines[] = '- Dias disponibles: '.(is_array($client['dias_disponibles']) ? count($client['dias_disponibles']).' dias' : $client['dias_disponibles']);
+            $lines[] = '';
         } else {
-            $lines[] = "PLAN GENERICO (sin cliente especifico):";
-            $lines[] = "";
+            $lines[] = 'PLAN GENERICO (sin cliente especifico):';
+            $lines[] = '';
         }
 
-        $lines[] = "CONFIGURACION DEL PLAN:";
+        $lines[] = 'CONFIGURACION DEL PLAN:';
         $lines[] = "- Tipo: {$this->planType}";
         $lines[] = "- Duracion: {$this->durationWeeks} semanas";
         $lines[] = "- Frecuencia: {$this->frequency} dias/semana";
 
         if ($this->planType === 'entrenamiento') {
-            $lines[] = "- Metodologia: " . $this->getMethodologyLabel();
+            $lines[] = '- Metodologia: '.$this->getMethodologyLabel();
             $lines[] = "- Meta: {$this->trainingGoal}";
             $lines[] = "- Nivel: {$this->experienceLevel}";
-            if ($this->injuries) $lines[] = "- Lesiones: {$this->injuries}";
+            if ($this->injuries) {
+                $lines[] = "- Lesiones: {$this->injuries}";
+            }
         } elseif ($this->planType === 'nutricion') {
-            $lines[] = "- Enfoque: " . $this->getMethodologyLabel();
+            $lines[] = '- Enfoque: '.$this->getMethodologyLabel();
             $lines[] = "- Calorias: {$this->calorieTarget} kcal";
             $lines[] = "- Macros: P {$this->proteinPct}%, C {$this->carbsPct}%, G {$this->fatPct}%";
             $lines[] = "- Comidas/dia: {$this->mealsPerDay}";
-            if ($this->dietaryRestrictions) $lines[] = "- Restricciones: {$this->dietaryRestrictions}";
-            if ($client && $client['restricciones']) $lines[] = "- Restricciones perfil: {$client['restricciones']}";
+            if ($this->dietaryRestrictions) {
+                $lines[] = "- Restricciones: {$this->dietaryRestrictions}";
+            }
+            if ($client && $client['restricciones']) {
+                $lines[] = "- Restricciones perfil: {$client['restricciones']}";
+            }
         } else {
-            $areas = implode(', ', array_map(fn($a) => $this->habitAreas[$a]['name'] ?? $a, $this->habitFocusAreas));
+            $areas = implode(', ', array_map(fn ($a) => $this->habitAreas[$a]['name'] ?? $a, $this->habitFocusAreas));
             $lines[] = "- Areas: {$areas}";
         }
 
-        $lines[] = "";
-        $lines[] = "Genera el plan completo en formato JSON. Solo JSON, sin texto adicional.";
+        $lines[] = '';
+        $lines[] = 'Genera el plan completo en formato JSON. Solo JSON, sin texto adicional.';
 
         return implode("\n", $lines);
     }
@@ -1007,7 +1080,7 @@ Responde SOLO con JSON valido.";
 
         $meals = [];
         for ($i = 0; $i < $this->mealsPerDay && $i < 6; $i++) {
-            $meals[] = ['meal_number' => $i + 1, 'name' => $mealNames[$i] ?? "Comida " . ($i + 1), 'time' => $mealTimes[$i] ?? '12:00', 'calories' => $calPerMeal, 'foods' => $mealFoods[$i] ?? $mealFoods[0]];
+            $meals[] = ['meal_number' => $i + 1, 'name' => $mealNames[$i] ?? 'Comida '.($i + 1), 'time' => $mealTimes[$i] ?? '12:00', 'calories' => $calPerMeal, 'foods' => $mealFoods[$i] ?? $mealFoods[0]];
         }
 
         return [
@@ -1062,7 +1135,9 @@ Responde SOLO con JSON valido.";
             foreach ($templates as $t) {
                 $progression = [];
                 for ($w = 1; $w <= min($this->durationWeeks, 4); $w++) {
-                    $progression[] = ['week' => $w, 'goal' => "Semana {$w}: " . match ($w) { 1 => 'Establecer habito', 2 => 'Consolidar', 3 => 'Aumentar exigencia', default => 'Automatizar' }];
+                    $progression[] = ['week' => $w, 'goal' => "Semana {$w}: ".match ($w) {
+                        1 => 'Establecer habito', 2 => 'Consolidar', 3 => 'Aumentar exigencia', default => 'Automatizar'
+                    }];
                 }
                 $habits[] = array_merge($t, ['area' => $areaName, 'weeks_progression' => $progression]);
             }
@@ -1070,7 +1145,7 @@ Responde SOLO con JSON valido.";
 
         return [
             'plan_type' => 'habitos',
-            'focus_areas' => array_map(fn($a) => $this->habitAreas[$a]['name'] ?? $a, $this->habitFocusAreas),
+            'focus_areas' => array_map(fn ($a) => $this->habitAreas[$a]['name'] ?? $a, $this->habitFocusAreas),
             'duration_weeks' => $this->durationWeeks,
             'habits' => $habits,
             'daily_routine' => [
@@ -1094,7 +1169,8 @@ Responde SOLO con JSON valido.";
         if ($this->planType === 'nutricion') {
             return $this->methodologies['nutrition'][$this->methodology]['name'] ?? $this->methodology;
         }
-        return implode(', ', array_map(fn($a) => $this->habitAreas[$a]['name'] ?? $a, $this->habitFocusAreas));
+
+        return implode(', ', array_map(fn ($a) => $this->habitAreas[$a]['name'] ?? $a, $this->habitFocusAreas));
     }
 
     protected function buildDefaultTemplateName(): string
@@ -1111,6 +1187,7 @@ Responde SOLO con JSON valido.";
             $c = Client::find($this->targetClientId);
             $clientName = $c ? " — {$c->name}" : '';
         }
+
         return "{$type} — {$method}{$clientName}";
     }
 
@@ -1122,6 +1199,7 @@ Responde SOLO con JSON valido.";
             $c = Client::find($this->targetClientId);
             $clientName = $c ? " para {$c->name}" : '';
         }
+
         return "Plan generado por IA{$clientName}. Metodologia: {$method}. Duracion: {$this->durationWeeks} semanas, {$this->frequency} dias/semana.";
     }
 
@@ -1141,7 +1219,7 @@ Responde SOLO con JSON valido.";
         if ($this->templateSearch) {
             $templatesQuery->where(function ($q) {
                 $q->where('name', 'like', "%{$this->templateSearch}%")
-                  ->orWhere('methodology', 'like', "%{$this->templateSearch}%");
+                    ->orWhere('methodology', 'like', "%{$this->templateSearch}%");
             });
         }
         $templates = $templatesQuery->orderByDesc('updated_at')->get();
@@ -1156,9 +1234,11 @@ Responde SOLO con JSON valido.";
             'ai_generated' => $allCoachTemplates->where('ai_generated', true)->count(),
         ];
 
-        // Assigned plans
+        // Assigned plans — all plans for clients in this coach's scope
+        // (six-source union via CoachScope), not just plans this coach assigned.
+        $coachClientIds = CoachScope::clientIdsFor($coachId);
         $assignedQuery = AssignedPlan::with('client')
-            ->where('assigned_by', $coachId);
+            ->whereIn('client_id', $coachClientIds);
         if ($this->assignedActiveFilter === 'active') {
             $assignedQuery->where('active', true);
         } elseif ($this->assignedActiveFilter === 'inactive') {
@@ -1181,9 +1261,9 @@ Responde SOLO con JSON valido.";
         $searchClients = [];
         if (strlen($this->clientSearch) >= 2) {
             $searchClients = Client::where(function ($q) {
-                    $q->where('name', 'like', "%{$this->clientSearch}%")
-                      ->orWhere('email', 'like', "%{$this->clientSearch}%");
-                })
+                $q->where('name', 'like', "%{$this->clientSearch}%")
+                    ->orWhere('email', 'like', "%{$this->clientSearch}%");
+            })
                 ->where('status', 'activo')
                 ->orderBy('name')
                 ->limit(15)

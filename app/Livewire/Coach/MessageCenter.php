@@ -2,9 +2,9 @@
 
 namespace App\Livewire\Coach;
 
-use App\Models\AssignedPlan;
 use App\Models\Client;
 use App\Models\CoachMessage;
+use App\Support\CoachScope;
 use Carbon\Carbon;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -13,6 +13,7 @@ use Livewire\Component;
 class MessageCenter extends Component
 {
     public ?int $selectedClientId = null;
+
     public string $newMessage = '';
 
     public function selectClient(int $clientId): void
@@ -31,18 +32,16 @@ class MessageCenter extends Component
 
     public function sendMessage(): void
     {
-        if (!$this->selectedClientId || trim($this->newMessage) === '') {
+        if (! $this->selectedClientId || trim($this->newMessage) === '') {
             return;
         }
 
         $coachId = auth('wellcore')->id();
 
-        // Verify this client is assigned to this coach
-        $clientIds = AssignedPlan::where('assigned_by', $coachId)
-            ->pluck('client_id')
-            ->unique();
+        // Verify this client is assigned to this coach (six-source union)
+        $clientIds = CoachScope::clientIdsFor($coachId);
 
-        if (!$clientIds->contains($this->selectedClientId)) {
+        if (! $clientIds->contains($this->selectedClientId)) {
             return;
         }
 
@@ -60,10 +59,8 @@ class MessageCenter extends Component
     {
         $coachId = auth('wellcore')->id();
 
-        // Get client IDs assigned to this coach
-        $clientIds = AssignedPlan::where('assigned_by', $coachId)
-            ->pluck('client_id')
-            ->unique();
+        // Get client IDs assigned to this coach (six-source union)
+        $clientIds = CoachScope::clientIdsFor($coachId);
 
         // Build client list with unread counts
         $clients = Client::whereIn('id', $clientIds)
