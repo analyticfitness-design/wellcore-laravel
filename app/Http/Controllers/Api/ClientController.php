@@ -37,6 +37,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
@@ -207,12 +208,12 @@ class ClientController extends Controller
     private function profileCompletion(Client $client, ?object $profile): array
     {
         $fields = [
-            'avatar'   => ['points' => 20, 'label' => 'Foto de perfil',   'done' => filled($client->avatar_url)],
-            'bio'      => ['points' => 20, 'label' => 'Bio',              'done' => filled($client->bio)],
-            'city'     => ['points' => 10, 'label' => 'Ciudad',           'done' => filled($client->city)],
-            'peso'     => ['points' => 15, 'label' => 'Peso',             'done' => filled($profile?->peso)],
+            'avatar' => ['points' => 20, 'label' => 'Foto de perfil',   'done' => filled($client->avatar_url)],
+            'bio' => ['points' => 20, 'label' => 'Bio',              'done' => filled($client->bio)],
+            'city' => ['points' => 10, 'label' => 'Ciudad',           'done' => filled($client->city)],
+            'peso' => ['points' => 15, 'label' => 'Peso',             'done' => filled($profile?->peso)],
             'objetivo' => ['points' => 15, 'label' => 'Objetivo',         'done' => filled($profile?->objetivo)],
-            'nivel'    => ['points' => 10, 'label' => 'Nivel',            'done' => filled($profile?->nivel)],
+            'nivel' => ['points' => 10, 'label' => 'Nivel',            'done' => filled($profile?->nivel)],
             'whatsapp' => ['points' => 10, 'label' => 'WhatsApp',         'done' => filled($profile?->whatsapp)],
         ];
 
@@ -227,7 +228,7 @@ class ClientController extends Controller
         }
 
         return [
-            'score'   => $score,
+            'score' => $score,
             'missing' => $missing,
         ];
     }
@@ -249,10 +250,10 @@ class ClientController extends Controller
         }
 
         return [
-            'show'       => true,
-            'hasPhotos'  => ProgressPhoto::withoutGlobalScopes()->where('client_id', $clientId)->exists(),
+            'show' => true,
+            'hasPhotos' => ProgressPhoto::withoutGlobalScopes()->where('client_id', $clientId)->exists(),
             'hasMetrics' => Metric::withoutGlobalScopes()->where('client_id', $clientId)->exists(),
-            'daysLeft'   => max(0, 3 - $daysRegistered),
+            'daysLeft' => max(0, 3 - $daysRegistered),
         ];
     }
 
@@ -937,7 +938,7 @@ class ClientController extends Controller
         // Delete old avatar files if previously set and stored on public disk
         if ($client->avatar_url) {
             $old = ltrim(parse_url($client->avatar_url, PHP_URL_PATH) ?? '', '/storage/');
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($old);
+            Storage::disk('public')->delete($old);
         }
 
         $client->update(['avatar_url' => $result['url_webp']]);
@@ -1001,6 +1002,8 @@ class ClientController extends Controller
      * GET /api/v/client/settings
      *
      * Settings data (profile tab). Mirrors Livewire ClientSettings mount().
+     * Includes the 5 autoshare_* privacy flags so the frontend toggles can
+     * hydrate from the persisted state instead of defaulting to ON.
      */
     public function settings(Request $request): JsonResponse
     {
@@ -1010,6 +1013,11 @@ class ClientController extends Controller
             'name' => $client->name ?? '',
             'email' => $client->email ?? '',
             'phone' => $client->phone ?? '',
+            'autoshare_workout' => (bool) $client->autoshare_workout,
+            'autoshare_pr' => (bool) $client->autoshare_pr,
+            'autoshare_medal' => (bool) $client->autoshare_medal,
+            'autoshare_weight' => (bool) $client->autoshare_weight,
+            'autoshare_streak' => (bool) $client->autoshare_streak,
         ]);
     }
 
