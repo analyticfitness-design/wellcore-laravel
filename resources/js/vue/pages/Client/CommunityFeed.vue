@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, onUnmounted, nextTick } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
@@ -9,6 +9,7 @@ import ClientLayout from '../../layouts/ClientLayout.vue';
 import PulsoRing from '../../components/community/PulsoRing.vue';
 import PulsoViewer from '../../components/community/PulsoViewer.vue';
 import PulsoUploader from '../../components/community/PulsoUploader.vue';
+import GroupPulseFeed from '../../components/community/GroupPulseFeed.vue';
 
 const api = useApi();
 const authStore = useAuthStore();
@@ -25,8 +26,10 @@ const lastPage = ref(1);
 const hasMore = ref(true);
 const loadingMore = ref(false);
 
-// ── Feed tab (all | following) ───────────────────────────────────────
-const feedTab = ref('all'); // 'all' | 'following'
+// ── Feed tab (latido | all | following) ──────────────────────────────
+// 'latido' renders <GroupPulseFeed/> (eventos agregados del grupo),
+// 'all' y 'following' renderizan el feed de posts de la comunidad.
+const feedTab = ref('latido'); // 'latido' | 'all' | 'following'
 
 // ── New post ─────────────────────────────────────────────────────────
 const postType = ref('text');
@@ -423,10 +426,25 @@ function unsubscribeAllPostChannels() {
 }
 
 // ── Switch feed tab ──────────────────────────────────────────────────
+// Latido renderiza <GroupPulseFeed/> que tiene su propio loader;
+// no hace falta refetch del community feed cuando vamos a esa pestaña.
+// Al volver a 'all'/'following' rehicimos infinite scroll: el sentinel
+// div estaba unmounted bajo Latido y el IntersectionObserver perdió target.
 function switchFeedTab(tab) {
   if (feedTab.value === tab) return;
   feedTab.value = tab;
-  fetchFeed(true);
+  if (tab !== 'latido') {
+    fetchFeed(true);
+    nextTick(() => {
+      // Dispose previous observer si existía, luego re-attach al sentinel
+      // recién montado por el v-else.
+      if (scrollObserver) {
+        scrollObserver.disconnect();
+        scrollObserver = null;
+      }
+      setupInfiniteScroll();
+    });
+  }
 }
 
 // ── Infinite scroll ──────────────────────────────────────────────────
@@ -444,6 +462,10 @@ function setupInfiniteScroll() {
 }
 
 onMounted(() => {
+  // Si arrancamos en 'latido', GroupPulseFeed se encarga de su propia carga.
+  // Igual hacemos fetch del community feed para que el contador del header
+  // (communityStats) y la lista de pulsos del lateral estén poblados, pero
+  // no pagamos doble loading visible — el feed de posts está oculto.
   fetchFeed(true).then(() => {
     setTimeout(() => setupInfiniteScroll(), 100);
   });
@@ -673,9 +695,19 @@ function getReactionCount(post, type) {
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- FEED TABS (All | Following)                                    -->
+      <!-- FEED TABS (Latido | All | Following)                           -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <div class="flex gap-1 rounded-xl border border-wc-border bg-wc-bg-secondary p-1">
+        <button
+          type="button"
+          @click="switchFeedTab('latido')"
+          class="flex-1 rounded-lg py-2 text-sm font-semibold uppercase tracking-wider transition-all"
+          :class="feedTab === 'latido'
+            ? 'bg-wc-bg-tertiary text-wc-text shadow-sm'
+            : 'text-wc-text-tertiary hover:text-wc-text-secondary'"
+        >
+          Latido
+        </button>
         <button
           type="button"
           @click="switchFeedTab('all')"
@@ -806,7 +838,11 @@ function getReactionCount(post, type) {
       <!-- ═══════════════════════════════════════════════════════════════ -->
       <!-- FEED                                                            -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <div class="space-y-3">
+      <!-- Tab Latido: render Latido del Grupo (eventos agregados) -->
+      <GroupPulseFeed v-if="feedTab === 'latido'" />
+
+      <!-- Tabs Comunidad / Siguiendo: feed tradicional de posts -->
+      <div v-else class="space-y-3">
         <TransitionGroup name="feed-item" tag="div" class="space-y-3">
           <div
             v-for="post in posts"

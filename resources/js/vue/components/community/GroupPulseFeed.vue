@@ -115,6 +115,16 @@ onMounted(() => load(true));
 </template>
 
 <style scoped>
+/* Cancela el negative side margin que .wc-shell aplica para el layout
+   breakout del dashboard, cuando este componente queda anidado dentro
+   de OTRO .wc-shell (ej. CommunityFeed.vue ya envuelve en .wc-shell).
+   Si se montara solo (page-level), el wrapper externo conserva sus
+   márgenes; este reset solo aplica al wrapper interior anidado. */
+.wc-shell .wc-shell {
+    margin-left: 0;
+    margin-right: 0;
+}
+
 /* Component-specific. Tokens vienen del .wc-shell wrapper. */
 .gpf-root {
     display: flex;
