@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\AssignedPlan;
 use App\Models\Client;
+use App\Models\CoachMessage;
 use App\Models\PersonalRecord;
 use App\Models\WorkoutSession;
 use App\Scopes\OwnedByClientScope;
@@ -32,7 +34,7 @@ final class GroupPulseAggregator
      */
     public function computeStats(int $coachId): array
     {
-        $clientIds = Client::where('coach_id', $coachId)->pluck('id');
+        $clientIds = $this->resolveCoachClientIds($coachId);
 
         if ($clientIds->isEmpty()) {
             return $this->zeroStats();
@@ -61,7 +63,7 @@ final class GroupPulseAggregator
      */
     public function buildFeed(int $coachId, string $time = 'today', string $type = 'all'): array
     {
-        $clientIds = Client::where('coach_id', $coachId)->pluck('id');
+        $clientIds = $this->resolveCoachClientIds($coachId);
 
         if ($clientIds->isEmpty()) {
             return [];
@@ -98,7 +100,7 @@ final class GroupPulseAggregator
      */
     public function userVsGroup(int $coachId, int $clientId): array
     {
-        $clientIds = Client::where('coach_id', $coachId)->pluck('id');
+        $clientIds = $this->resolveCoachClientIds($coachId);
 
         if ($clientIds->isEmpty()) {
             return $this->emptyUserVsGroup();
@@ -221,6 +223,47 @@ final class GroupPulseAggregator
             ->whereIn('client_id', $clientIds)
             ->where('created_at', '>=', Carbon::now()->subDays(7))
             ->count();
+    }
+
+    /**
+     * Resolve the set of client_ids belonging to a coach using the same
+     * 3-fallback rule as ClientController::myCoach (since clients.coach_id
+     * is sparsely populated in production):
+     *   1. clients.coach_id = $coachId
+     *   2. assigned_plans.assigned_by = $coachId (latest per client)
+     *   3. coach_messages.coach_id = $coachId (latest per client)
+     *
+     * Union of all three. Returns a Collection<int> of distinct client_ids.
+     */
+    private function resolveCoachClientIds(int $coachId): Collection
+    {
+        $ids = collect();
+
+        if (Schema::hasColumn('clients', 'coach_id')) {
+            $ids = $ids->merge(
+                Client::where('coach_id', $coachId)->pluck('id')
+            );
+        }
+
+        if (Schema::hasTable('assigned_plans')) {
+            $ids = $ids->merge(
+                AssignedPlan::where('assigned_by', $coachId)
+                    ->whereNotNull('client_id')
+                    ->distinct()
+                    ->pluck('client_id')
+            );
+        }
+
+        if (Schema::hasTable('coach_messages')) {
+            $ids = $ids->merge(
+                CoachMessage::where('coach_id', $coachId)
+                    ->whereNotNull('client_id')
+                    ->distinct()
+                    ->pluck('client_id')
+            );
+        }
+
+        return $ids->map(fn ($id) => (int) $id)->unique()->values();
     }
 
     private function resolveSince(string $time): Carbon

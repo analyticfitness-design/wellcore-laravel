@@ -4,6 +4,8 @@ import { computed } from 'vue';
 const props = defineProps({
     data: { type: Object, required: true },
     calendarDays: { type: Array, default: () => [] },
+    userVsGroup: { type: Object, default: null },
+    // shape: { user: number, group_avg: number, rank_pct: number } | null
 });
 
 // Convertir flat [day...] en columnas de 7 filas (Lun-Dom).
@@ -121,5 +123,79 @@ const monthLabels = computed(() => {
         Mejor racha <span class="accent">{{ bestStreak }}</span><small>{{ bestStreak === 1 ? 'día' : 'días' }}</small>
       </div>
     </div>
+    <div v-if="userVsGroup" class="hm-vs-group">
+      <span class="hm-vs-item">
+        <span class="hm-vs-label">Tu promedio</span>
+        <span class="hm-vs-num tnum">{{ userVsGroup.user }}<span class="hm-vs-unit">/sem</span></span>
+      </span>
+      <span class="hm-vs-divider" aria-hidden="true"></span>
+      <span class="hm-vs-item">
+        <span class="hm-vs-label">Grupo</span>
+        <span class="hm-vs-num tnum">{{ userVsGroup.group_avg }}<span class="hm-vs-unit">/sem</span></span>
+      </span>
+      <span class="hm-vs-rank">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+          <polyline points="16 7 22 7 22 13"></polyline>
+        </svg>
+        Top {{ userVsGroup.rank_pct }}%
+      </span>
+    </div>
   </section>
 </template>
+
+<style scoped>
+/* Tu vs Grupo comparativa — tokens-only, hereda .wc-shell--dashboard tokens */
+.hm-vs-group {
+    display: flex;
+    align-items: center;
+    gap: var(--s12);
+    margin-top: var(--s12);
+    padding-top: var(--s12);
+    border-top: 1px solid var(--wc-border);
+    font-family: var(--fs);
+}
+.hm-vs-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.hm-vs-label {
+    font-size: 10px;
+    color: var(--wc-text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.hm-vs-num {
+    font-family: var(--fd);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--wc-text);
+    letter-spacing: -0.01em;
+}
+.hm-vs-unit {
+    font-size: 11px;
+    color: var(--wc-text-3);
+    font-weight: 400;
+    margin-left: 2px;
+}
+.hm-vs-divider {
+    width: 1px;
+    align-self: stretch;
+    background: var(--wc-border);
+}
+.hm-vs-rank {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    padding: 4px 10px;
+    border-radius: var(--r-pill);
+    /* var(--wc-amber) #F59E0B con transparencias para bg/border de la pill */
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.30);
+    color: var(--wc-amber);
+    font: 600 11px/1 var(--fs);
+    letter-spacing: 0.02em;
+}
+</style>
