@@ -781,6 +781,37 @@
 }
 
 /* =================================================================
+   31b · UTILITIES — Override Tailwind hidden con specificity boost
+   El namespace .coach-ios añade un nivel de specificity, lo que hace
+   que las reglas internas (display:flex de topbar-ios, etc.) ganen
+   sobre Tailwind .hidden (specificity 0,1,0). Estas reglas restablecen
+   el comportamiento esperado.
+   ================================================================= */
+.coach-ios .hidden {
+  display: none;
+}
+.coach-ios .lg\:hidden {
+  /* Default: visible en <lg */
+}
+@media (min-width: 1024px) {
+  .coach-ios .lg\:hidden {
+    display: none;
+  }
+  .coach-ios .lg\:flex {
+    display: flex;
+  }
+  .coach-ios .lg\:block {
+    display: block;
+  }
+  .coach-ios .lg\:grid {
+    display: grid;
+  }
+  .coach-ios .lg\:inline-flex {
+    display: inline-flex;
+  }
+}
+
+/* =================================================================
    32 · OVERRIDES — Light mode (minimal)
    ================================================================= */
 :root:not(.dark) .coach-ios {
