@@ -2,7 +2,7 @@
      x-data="{ autoScroll() { this.$nextTick(() => { const el = document.getElementById('chat-messages'); if(el) el.scrollTop = el.scrollHeight; }); } }"
      x-init="autoScroll()"
      x-on:message-sent.window="autoScroll()"
-     wire:poll.5s>
+     wire:poll.15s>
 
     {{-- Page header --}}
     <div class="mb-4">
