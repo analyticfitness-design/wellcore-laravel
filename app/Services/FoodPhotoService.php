@@ -115,7 +115,14 @@ class FoodPhotoService
     private function processImage(UploadedFile $file, int $clientId): string
     {
         $manager = new ImageManager(new Driver);
-        $image = $manager->read($file->getRealPath());
+        // Intervention v4.0.1 expone decode/decodePath/decodeBinary; algunas versiones
+        // mas nuevas usan read(). Probamos read() primero (oficial v4 docs) y
+        // fallback a decode() si no existe.
+        if (method_exists($manager, 'read')) {
+            $image = $manager->read($file->getRealPath());
+        } else {
+            $image = $manager->decode($file->getRealPath());
+        }
 
         if (method_exists($image, 'orientate')) {
             $image->orientate();
