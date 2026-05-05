@@ -18,6 +18,7 @@ class PostReportFactory extends Factory
             'reporter_id' => Client::factory(),
             'reason' => $this->faker->randomElement(['spam', 'offensive', 'off_topic', 'other']),
             'status' => 'pending',
+            'created_at' => now(),
         ];
     }
 }
