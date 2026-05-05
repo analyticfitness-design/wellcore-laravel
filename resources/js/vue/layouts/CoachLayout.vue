@@ -104,6 +104,7 @@ const navSections = [
             { name: 'Inicio', to: '/coach', icon: 'dashboard', routeName: 'coach-dashboard' },
             { name: 'Clientes', to: '/coach/clients', icon: 'clients', routeName: 'coach-clients' },
             { name: 'Check-ins', to: '/coach/checkins', icon: 'checkins', routeName: 'coach-checkins', badge: 'pendingCheckins' },
+            { name: 'Fotos de Comida', to: '/coach/food-photos', icon: 'checkins', routeName: 'coach-food-photos' },
             { name: 'Mensajes', to: '/coach/messages', icon: 'messages', routeName: 'coach-messages', badge: 'unreadMessages' },
         ],
     },
