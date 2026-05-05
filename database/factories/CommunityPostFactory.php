@@ -13,16 +13,16 @@ class CommunityPostFactory extends Factory
     public function definition(): array
     {
         return [
-            'client_id'      => Client::factory(),
+            'client_id' => Client::factory(),
             'coach_admin_id' => null,
-            'content'        => $this->faker->paragraph(),
-            'post_type'      => 'general',
-            'image_path'     => null,
-            'visible'        => true,
-            'author_type'    => 'client',
+            'content' => $this->faker->paragraph(),
+            'post_type' => 'text',
+            'image_path' => null,
+            'visible' => true,
+            'author_type' => 'client',
             'author_admin_id' => null,
-            'is_official'    => false,
-            'is_global'      => false,
+            'is_official' => false,
+            'is_global' => false,
         ];
     }
 }
