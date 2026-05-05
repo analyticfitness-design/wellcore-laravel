@@ -35,6 +35,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
     'autoshare_medal',
     'autoshare_weight',
     'autoshare_streak',
+    'coach_id',
 ])]
 #[Hidden(['password_hash'])]
 class Client extends Authenticatable
