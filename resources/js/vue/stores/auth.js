@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import axios from 'axios';
 import { resetContractGate } from '../composables/useContractGate';
+import { resetGroupPulse } from '../composables/useGroupPulse';
 
 export const useAuthStore = defineStore('auth', () => {
     // Si Laravel inyecto auth data en sesion (login vía Livewire), sincronizar
@@ -73,6 +74,13 @@ export const useAuthStore = defineStore('auth', () => {
     const forcePasswordChange = ref(localStorage.getItem('wc_force_password_change') === 'true');
 
     function setAuth(data) {
+        // Audit fix: si el token cambió (login fresh, impersonation in/out),
+        // invalidamos el cache singleton del Latido del Grupo. Sin esto el
+        // admin que impersona cliente A → impersona cliente B veía el
+        // summary del A durante 25s.
+        if (data.token && data.token !== token.value) {
+            resetGroupPulse();
+        }
         token.value = data.token;
         userType.value = data.userType;
         userId.value = data.userId;
@@ -120,6 +128,10 @@ export const useAuthStore = defineStore('auth', () => {
 
     function clearAuth() {
         resetContractGate();
+        // Audit fix 2026-05-05: cache singleton del Latido del Grupo se
+        // limpiaba solo al timeout (25s); en impersonation back-and-forth
+        // el admin podía ver summary del cliente anterior.
+        resetGroupPulse();
         token.value = null;
         userType.value = null;
         userId.value = null;

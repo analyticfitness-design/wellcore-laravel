@@ -68,6 +68,13 @@ export function useGroupPulse() {
                 return response.data;
             } catch (err) {
                 error.value = err.response?.data?.message || 'No se pudo cargar el latido del grupo.';
+                // Audit fix: visibility de fallas que antes se silenciaban —
+                // 204 (sin coach) y 5xx (server error) ambos terminaban con
+                // summary=null y widget oculto. Ahora al menos queda traza.
+                if (err.response?.status >= 500 || !err.response) {
+                    // eslint-disable-next-line no-console
+                    console.error('[useGroupPulse] fetchSummary failed', err);
+                }
                 return null;
             } finally {
                 loading.value = false;
@@ -95,6 +102,10 @@ export function useGroupPulse() {
             return response.data;
         } catch (err) {
             error.value = err.response?.data?.message || 'No se pudo cargar el feed del grupo.';
+            if (err.response?.status >= 500 || !err.response) {
+                // eslint-disable-next-line no-console
+                console.error('[useGroupPulse] fetchFeed failed', err);
+            }
             return null;
         } finally {
             loading.value = false;

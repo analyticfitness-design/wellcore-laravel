@@ -19,6 +19,7 @@ use App\Models\ChallengeParticipant;
 use App\Models\ChatMessageReaction;
 use App\Models\Client;
 use App\Models\ClientProfile;
+use App\Models\ClientPulso;
 use App\Models\CoachMessage;
 use App\Models\CoachVideoTip;
 use App\Models\CommunityPost;
@@ -72,7 +73,7 @@ class SocialController extends Controller
             ];
         });
 
-        $storiesMembers = \App\Models\ClientPulso::where('expires_at', '>', now())
+        $storiesMembers = ClientPulso::where('expires_at', '>', now())
             ->with('client:id,name')
             ->orderByDesc('created_at')
             ->limit(50)
@@ -80,15 +81,15 @@ class SocialController extends Controller
             ->groupBy('client_id')
             ->map(fn ($group) => $group->first())
             ->values()
-            ->map(fn (\App\Models\ClientPulso $p) => [
-                'id'         => $p->id,
-                'client_id'  => $p->client_id,
-                'name'       => $p->client?->name ?? 'Miembro',
-                'initials'   => mb_strtoupper(mb_substr(trim($p->client?->name ?? 'M'), 0, 2)),
-                'has_new'    => true,
-                'ring_color' => \App\Models\ClientPulso::ringColorForType($p->pulso_type),
-                'pulso_id'   => $p->id,
-                'color'      => $this->colorForName($p->client?->name ?? ''),
+            ->map(fn (ClientPulso $p) => [
+                'id' => $p->id,
+                'client_id' => $p->client_id,
+                'name' => $p->client?->name ?? 'Miembro',
+                'initials' => mb_strtoupper(mb_substr(trim($p->client?->name ?? 'M'), 0, 2)),
+                'has_new' => true,
+                'ring_color' => ClientPulso::ringColorForType($p->pulso_type),
+                'pulso_id' => $p->id,
+                'color' => $this->colorForName($p->client?->name ?? ''),
             ])
             ->all();
 
@@ -104,6 +105,18 @@ class SocialController extends Controller
                     'initials' => mb_strtoupper(mb_substr(trim($c->name) ?: 'M', 0, 2)),
                     'updated_at' => $c->updated_at?->toIso8601String(),
                 ])->all();
+        });
+
+        // Audit fix 2026-05-05: el widget Latido del Grupo lee
+        // community:active-now-count y la key NO se seteaba en ningún lado
+        // → siempre mostraba "0 activos". Lo seteamos junto al cache de
+        // active-list (mismo TTL) usando "clientes con updated_at < 5min" como
+        // proxy de presencia (heurística, no real-time). Reemplazar por
+        // presence channel cuando Reverb tenga ese feature.
+        Cache::remember('community:active-now-count', 120, function () {
+            return Client::where('status', 'activo')
+                ->where('updated_at', '>=', now()->subMinutes(5))
+                ->count();
         });
 
         $baseQuery = $request->query('tab') === 'following'
@@ -392,11 +405,11 @@ class SocialController extends Controller
 
         // Broadcast the new comment to all other clients viewing this post in real-time.
         event(new CommentAdded(
-            postId:     $id,
-            clientId:   $clientId,
+            postId: $id,
+            clientId: $clientId,
             clientName: $client->name ?? 'Anónimo',
-            content:    $request->input('content'),
-            createdAt:  $comment->created_at?->toIso8601String() ?? now()->toIso8601String(),
+            content: $request->input('content'),
+            createdAt: $comment->created_at?->toIso8601String() ?? now()->toIso8601String(),
         ));
 
         return response()->json([

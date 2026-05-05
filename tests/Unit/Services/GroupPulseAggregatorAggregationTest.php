@@ -50,8 +50,9 @@ describe('GroupPulseAggregator workout aggregation', function () {
         expect($aggregateEvent['extra'])->toContain('kg');
     });
 
-    it('does NOT aggregate when 5 or fewer workouts', function () {
-        $clients = Client::factory()->count(3)->create([
+    it('does NOT aggregate when fewer than threshold workouts', function () {
+        // AGGREGATE_MIN_PEOPLE = 3 (audit fix 2026-05-05). 2 clientes < threshold.
+        $clients = Client::factory()->count(2)->create([
             'coach_id' => $this->coach->id,
             'autoshare_workout' => 1,
         ]);

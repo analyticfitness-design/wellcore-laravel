@@ -392,7 +392,9 @@ const weekMarkers = computed(() => {
       <DashboardHeatmap
         :data="data"
         :calendar-days="calendarDays"
-        :user-vs-group="groupPulseSummary?.user_vs_group?.weekly_workouts ?? null"
+        :user-vs-group="(groupPulseSummary?.group_size ?? 0) > 1
+          ? (groupPulseSummary?.user_vs_group?.weekly_workouts ?? null)
+          : null"
       />
       <DashboardWeight :weight-chart-data="data.weightChartData || []" />
 

@@ -20,8 +20,11 @@ final class GroupPulseAggregator
      * "X personas terminaron entrenamiento en la última hora". Below this
      * threshold each workout would render as an individual event (future task);
      * above it we collapse them into a single group card to avoid noise.
+     *
+     * Audit fix 2026-05-05: bajado de 6 a 3 — grupos reales WellCore (~5
+     * clientes/coach) jamás llegaban al threshold y la card era dead code.
      */
-    private const AGGREGATE_MIN_PEOPLE = 6;
+    private const AGGREGATE_MIN_PEOPLE = 3;
 
     /**
      * Aggregated counters for the "Latido del Grupo" feed of a single coach.
@@ -32,9 +35,9 @@ final class GroupPulseAggregator
      *
      * @return array{workouts_today:int, prs_week:int, achievements_today:int, checkins_week:int}
      */
-    public function computeStats(int $coachId): array
+    public function computeStats(int $coachId, ?Collection $preResolvedClientIds = null): array
     {
-        $clientIds = $this->resolveCoachClientIds($coachId);
+        $clientIds = $preResolvedClientIds ?? $this->resolveCoachClientIds($coachId);
 
         if ($clientIds->isEmpty()) {
             return $this->zeroStats();
@@ -61,9 +64,9 @@ final class GroupPulseAggregator
      * @param  string  $type  'all' | 'pr' | 'workout'  (extended in later tasks)
      * @return array<int, array<string, mixed>>
      */
-    public function buildFeed(int $coachId, string $time = 'today', string $type = 'all'): array
+    public function buildFeed(int $coachId, string $time = 'today', string $type = 'all', ?Collection $preResolvedClientIds = null): array
     {
-        $clientIds = $this->resolveCoachClientIds($coachId);
+        $clientIds = $preResolvedClientIds ?? $this->resolveCoachClientIds($coachId);
 
         if ($clientIds->isEmpty()) {
             return [];
@@ -98,9 +101,9 @@ final class GroupPulseAggregator
      *
      * @return array{weekly_workouts: array{user:int, group_avg:float, rank_pct:int}, missions_peers: array<int,int>}
      */
-    public function userVsGroup(int $coachId, int $clientId): array
+    public function userVsGroup(int $coachId, int $clientId, ?Collection $preResolvedClientIds = null): array
     {
-        $clientIds = $this->resolveCoachClientIds($coachId);
+        $clientIds = $preResolvedClientIds ?? $this->resolveCoachClientIds($coachId);
 
         if ($clientIds->isEmpty()) {
             return $this->emptyUserVsGroup();
@@ -184,13 +187,36 @@ final class GroupPulseAggregator
         return (int) round(100 * (1 - $strictlyBelow / count($allValues)));
     }
 
+    /**
+     * Subset de clientIds que tienen $flag activo. Para cada counter aplicamos
+     * el flag correspondiente (audit fix 2026-05-05): antes los counters de
+     * achievements/medal y checkins ignoraban el opt-out, contradiciendo la
+     * promesa de privacidad granular.
+     */
+    private function clientIdsWithFlag(Collection $clientIds, string $flag): Collection
+    {
+        if ($clientIds->isEmpty()) {
+            return collect();
+        }
+
+        return Client::whereIn('id', $clientIds)
+            ->where($flag, 1)
+            ->pluck('id')
+            ->map(fn ($id) => (int) $id);
+    }
+
     private function countWorkoutsToday(Collection $clientIds): int
     {
+        $visible = $this->clientIdsWithFlag($clientIds, 'autoshare_workout');
+        if ($visible->isEmpty()) {
+            return 0;
+        }
+
         // Bypass OwnedByClientScope: aggregator runs in client-authenticated
         // context, but we need to count across the entire coach's group, not
         // just the auth user's own sessions.
         return WorkoutSession::withoutGlobalScope(OwnedByClientScope::class)
-            ->whereIn('client_id', $clientIds)
+            ->whereIn('client_id', $visible)
             ->where('completed', true)
             ->whereDate('session_date', Carbon::today())
             ->count();
@@ -198,7 +224,12 @@ final class GroupPulseAggregator
 
     private function countPrsThisWeek(Collection $clientIds): int
     {
-        return PersonalRecord::whereIn('client_id', $clientIds)
+        $visible = $this->clientIdsWithFlag($clientIds, 'autoshare_pr');
+        if ($visible->isEmpty()) {
+            return 0;
+        }
+
+        return PersonalRecord::whereIn('client_id', $visible)
             ->where('is_current', 1)
             ->where('created_at', '>=', Carbon::now()->subDays(7))
             ->count();
@@ -206,8 +237,13 @@ final class GroupPulseAggregator
 
     private function countAchievementsToday(Collection $clientIds): int
     {
+        $visible = $this->clientIdsWithFlag($clientIds, 'autoshare_medal');
+        if ($visible->isEmpty()) {
+            return 0;
+        }
+
         return DB::table('client_achievements')
-            ->whereIn('client_id', $clientIds)
+            ->whereIn('client_id', $visible)
             ->whereDate('created_at', Carbon::today())
             ->count();
     }
@@ -219,8 +255,15 @@ final class GroupPulseAggregator
             return 0;
         }
 
+        // Check-ins son progreso íntimo — los respetamos solo si autoshare_streak
+        // está on (semánticamente: si compartes tu racha, compartes que hiciste check-in).
+        $visible = $this->clientIdsWithFlag($clientIds, 'autoshare_streak');
+        if ($visible->isEmpty()) {
+            return 0;
+        }
+
         return DB::table('checkins')
-            ->whereIn('client_id', $clientIds)
+            ->whereIn('client_id', $visible)
             ->where('created_at', '>=', Carbon::now()->subDays(7))
             ->count();
     }
@@ -235,7 +278,12 @@ final class GroupPulseAggregator
      *
      * Union of all three. Returns a Collection<int> of distinct client_ids.
      */
-    private function resolveCoachClientIds(int $coachId): Collection
+    /**
+     * Resolve client_ids para un coach. Public porque el controller lo invoca
+     * UNA vez antes de llamar las 3 funciones públicas — evita 3× la misma
+     * resolución (3 queries) en cada hit de cache miss. Audit fix 2026-05-05.
+     */
+    public function resolveCoachClientIds(int $coachId): Collection
     {
         $ids = collect();
 
