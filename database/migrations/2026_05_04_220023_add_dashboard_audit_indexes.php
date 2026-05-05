@@ -68,12 +68,40 @@ return new class extends Migration
             DB::statement('ALTER TABLE clients ADD FULLTEXT INDEX ft_clients_search (name, email, client_code)');
         }
 
-        // client_coach unique
+        // client_coach unique — auto-deduplica si hay <=10 duplicados (seguro)
         if (Schema::hasTable('client_coach') && ! $this->indexExists('client_coach', 'uq_client_coach_unique')) {
-            $dupes = DB::table('client_coach')->select('client_id', 'admin_id')->groupBy('client_id', 'admin_id')->havingRaw('COUNT(*) > 1')->count();
-            if ($dupes > 0) {
-                throw new RuntimeException("client_coach tiene {$dupes} pares duplicados — limpia antes de agregar UNIQUE");
+            $dupePairs = DB::table('client_coach')
+                ->select('client_id', 'admin_id', DB::raw('COUNT(*) as cnt'))
+                ->groupBy('client_id', 'admin_id')
+                ->havingRaw('COUNT(*) > 1')
+                ->get();
+
+            if ($dupePairs->count() > 10) {
+                throw new RuntimeException("client_coach tiene {$dupePairs->count()} pares duplicados (>10) — revisar manualmente antes de UNIQUE");
             }
+
+            // Eliminar duplicados conservando el id MAX por par (más reciente)
+            // Logged via DB::table.delete count
+            $deletedTotal = 0;
+            foreach ($dupePairs as $pair) {
+                $maxId = DB::table('client_coach')
+                    ->where('client_id', $pair->client_id)
+                    ->where('admin_id', $pair->admin_id)
+                    ->max('id');
+
+                $deleted = DB::table('client_coach')
+                    ->where('client_id', $pair->client_id)
+                    ->where('admin_id', $pair->admin_id)
+                    ->where('id', '<', $maxId)
+                    ->delete();
+
+                $deletedTotal += $deleted;
+            }
+
+            if ($deletedTotal > 0) {
+                logger()->info("Migration: client_coach deduplicado, {$deletedTotal} filas viejas eliminadas");
+            }
+
             Schema::table('client_coach', fn (Blueprint $t) => $t->unique(['client_id', 'admin_id'], 'uq_client_coach_unique'));
         }
     }
