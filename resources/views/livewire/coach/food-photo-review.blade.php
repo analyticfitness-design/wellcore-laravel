@@ -82,6 +82,8 @@
             @endforeach
         </div>
 
-        <div class="mt-4">{{ $photos->links() }}</div>
+        @if ($photos->count() === 40)
+            <p class="mt-4 text-center text-xs text-wc-text-tertiary">Mostrando los 40 más recientes</p>
+        @endif
     @endif
 </div>
