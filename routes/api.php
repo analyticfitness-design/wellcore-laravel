@@ -145,6 +145,14 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'plan.lock:strict', 'thr
     Route::delete('/nutrition/swap/{id}', [NutritionController::class, 'deleteSwap'])->where('id', '[0-9]+');
     // AI food estimation — elite only
     Route::post('/ai-nutrition/estimate', [NutritionController::class, 'estimateFood'])->middleware('ensure.plan:elite');
+
+    // Food Tracking — fotos de comida revisadas por el coach
+    Route::get('/food-photos', [\App\Http\Controllers\Api\Client\FoodPhotoController::class, 'index']);
+    Route::get('/food-photos/history', [\App\Http\Controllers\Api\Client\FoodPhotoController::class, 'history']);
+    Route::post('/food-photos', [\App\Http\Controllers\Api\Client\FoodPhotoController::class, 'store'])
+        ->middleware('throttle:20,1');
+    Route::delete('/food-photos/{id}', [\App\Http\Controllers\Api\Client\FoodPhotoController::class, 'destroy'])
+        ->where('id', '[0-9]+');
 });
 
 // Social & Resources (Phase 6)
