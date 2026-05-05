@@ -41,12 +41,13 @@ export function useFoodTracking() {
         }
     }
 
-    async function uploadPhoto(file, mealName, mealIndex) {
+    async function uploadPhoto(file, mealName, mealIndex, clientNote = '') {
         uploadingIndex.value = mealIndex;
         const fd = new FormData();
         fd.append('photo', file);
         fd.append('meal_name', mealName);
         fd.append('meal_index', String(mealIndex));
+        if (clientNote && clientNote.trim()) fd.append('client_note', clientNote.trim());
         try {
             await api.post('/api/v/client/food-photos', fd, {
                 headers: { 'Content-Type': 'multipart/form-data' },
@@ -55,6 +56,13 @@ export function useFoodTracking() {
         } finally {
             uploadingIndex.value = null;
         }
+    }
+
+    async function updateNote(photoId, clientNote) {
+        await api.patch(`/api/v/client/food-photos/${photoId}/note`, {
+            client_note: clientNote ?? '',
+        });
+        await fetchToday();
     }
 
     async function deletePhoto(photoId) {
@@ -75,6 +83,6 @@ export function useFoodTracking() {
         loading, uploadingIndex, error,
         hasNutritionPlan, meals, xpToday, bonusEarnedToday, streakDays, weekHistory,
         completedToday, totalToday, completionPct,
-        fetchToday, fetchHistory, uploadPhoto, deletePhoto,
+        fetchToday, fetchHistory, uploadPhoto, updateNote, deletePhoto,
     };
 }

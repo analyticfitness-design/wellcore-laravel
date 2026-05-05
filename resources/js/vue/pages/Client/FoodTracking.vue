@@ -1,10 +1,19 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import { useFoodTracking } from '../../composables/useFoodTracking';
+import { useVoiceTranscription } from '../../composables/useVoiceTranscription';
 
 const food = useFoodTracking();
 const fileInputs = ref({});
+const voice = useVoiceTranscription({ lang: 'es-CO' });
+
+// Per-meal local state: pending file (pre-upload) and editable note
+const noteDrafts = reactive({});           // mealIndex -> texto borrador antes de subir
+const pendingFile = reactive({});          // mealIndex -> File seleccionado pero no subido
+const pendingPreview = reactive({});       // mealIndex -> object URL para preview
+const savingNote = reactive({});           // photoId -> bool (debouncer post-upload)
+const recordingFor = ref(null);            // mealIndex actualmente grabando ('pre-{idx}' o photoId)
 
 function getMealColor(nombre) {
     const n = (nombre || '').toLowerCase();
@@ -21,16 +30,40 @@ function triggerUpload(mealIndex) {
     if (inputRef) inputRef.click();
 }
 
-async function onFileSelected(e, meal) {
+function onFileSelected(e, meal) {
     const file = e.target.files?.[0];
     if (!file) return;
+    // Save file locally and show preview — el upload sucede al confirmar
+    if (pendingPreview[meal.index]) {
+        try { URL.revokeObjectURL(pendingPreview[meal.index]); } catch (_) {}
+    }
+    pendingFile[meal.index] = file;
+    pendingPreview[meal.index] = URL.createObjectURL(file);
+    if (noteDrafts[meal.index] === undefined) noteDrafts[meal.index] = '';
+    e.target.value = '';
+}
+
+async function confirmUpload(meal) {
+    const file = pendingFile[meal.index];
+    if (!file) return;
     try {
-        await food.uploadPhoto(file, meal.nombre, meal.index);
+        await food.uploadPhoto(file, meal.nombre, meal.index, noteDrafts[meal.index] || '');
+        // limpiar locales tras éxito
+        try { URL.revokeObjectURL(pendingPreview[meal.index]); } catch (_) {}
+        delete pendingFile[meal.index];
+        delete pendingPreview[meal.index];
+        delete noteDrafts[meal.index];
     } catch (err) {
         console.error('Upload failed', err);
-    } finally {
-        e.target.value = '';
     }
+}
+
+function cancelUpload(mealIndex) {
+    if (pendingPreview[mealIndex]) {
+        try { URL.revokeObjectURL(pendingPreview[mealIndex]); } catch (_) {}
+    }
+    delete pendingFile[mealIndex];
+    delete pendingPreview[mealIndex];
 }
 
 async function removePhoto(meal) {
@@ -41,6 +74,55 @@ async function removePhoto(meal) {
     } catch (err) {
         console.error('Delete failed', err);
     }
+}
+
+let _saveNoteTimer = null;
+function onPostNoteInput(photo, value) {
+    photo.client_note = value;
+    if (_saveNoteTimer) clearTimeout(_saveNoteTimer);
+    _saveNoteTimer = setTimeout(async () => {
+        savingNote[photo.id] = true;
+        try {
+            await food.updateNote(photo.id, value);
+        } catch (err) {
+            console.error('Save note failed', err);
+        } finally {
+            savingNote[photo.id] = false;
+        }
+    }, 600);
+}
+
+async function startDictating(target) {
+    // target: { kind: 'pre', index } o { kind: 'post', photoId, mealIndex }
+    if (!voice.supported.value) {
+        alert(voice.error.value || 'Tu navegador no soporta dictado por voz');
+        return;
+    }
+    recordingFor.value = target.kind === 'pre' ? `pre-${target.index}` : `post-${target.photoId}`;
+    try {
+        const text = await voice.start({ continuous: false, interim: true });
+        if (text) {
+            if (target.kind === 'pre') {
+                const prev = (noteDrafts[target.index] || '').trim();
+                noteDrafts[target.index] = prev ? `${prev} ${text}` : text;
+            } else {
+                const meal = food.meals.value.find((m) => m.photo?.id === target.photoId);
+                if (meal?.photo) {
+                    const prev = (meal.photo.client_note || '').trim();
+                    const next = prev ? `${prev} ${text}` : text;
+                    onPostNoteInput(meal.photo, next);
+                }
+            }
+        }
+    } catch (err) {
+        console.error('Voice failed', err);
+    } finally {
+        recordingFor.value = null;
+    }
+}
+
+function stopDictating() {
+    voice.stop();
 }
 
 onMounted(() => {
@@ -128,6 +210,7 @@ onMounted(() => {
                   class="rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-bold text-amber-400">+15 XP</span>
           </div>
 
+          <!-- Foto ya subida -->
           <div v-if="meal.photo" class="relative group">
             <img :src="meal.photo.photo_url" :alt="`Foto de ${meal.nombre}`"
                  class="w-full max-h-72 object-cover">
@@ -154,7 +237,99 @@ onMounted(() => {
             </div>
           </div>
 
-          <button v-else
+          <!-- Nota editable post-upload con dictado -->
+          <div v-if="meal.photo && !meal.photo.coach_seen"
+               class="border-t border-wc-border bg-wc-bg px-4 py-3">
+            <div class="mb-1 flex items-center justify-between">
+              <label class="text-[11px] uppercase tracking-wider text-wc-text-tertiary">Tu descripción</label>
+              <span v-if="savingNote[meal.photo.id]" class="text-[10px] text-wc-text-tertiary">Guardando...</span>
+            </div>
+            <div class="relative">
+              <textarea
+                :value="meal.photo.client_note || ''"
+                @input="onPostNoteInput(meal.photo, $event.target.value)"
+                rows="2"
+                placeholder="Describe lo que comiste o dicta con voz"
+                class="w-full resize-none rounded-lg border border-wc-border bg-wc-bg-secondary p-2 pr-10 text-sm text-wc-text"
+              ></textarea>
+              <button v-if="voice.supported.value"
+                      @click="recordingFor === `post-${meal.photo.id}` ? stopDictating() : startDictating({ kind: 'post', photoId: meal.photo.id, mealIndex: meal.index })"
+                      type="button"
+                      :title="recordingFor === `post-${meal.photo.id}` ? 'Detener dictado' : 'Dictar por voz'"
+                      class="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full transition"
+                      :class="recordingFor === `post-${meal.photo.id}` ? 'bg-red-500 text-white animate-pulse' : 'bg-wc-accent/10 text-wc-accent hover:bg-wc-accent/20'">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Nota fija si coach ya revisó (sin edicion) -->
+          <div v-else-if="meal.photo?.client_note"
+               class="border-t border-wc-border bg-wc-bg px-4 py-3">
+            <p class="text-[11px] uppercase tracking-wider text-wc-text-tertiary">Tu descripción</p>
+            <p class="mt-1 text-sm text-wc-text-secondary">{{ meal.photo.client_note }}</p>
+          </div>
+
+          <!-- Preview pre-upload con textarea + dictado + confirmar/cancelar -->
+          <div v-if="!meal.photo && pendingFile[meal.index]" class="border-t border-wc-border">
+            <div class="relative">
+              <img :src="pendingPreview[meal.index]" :alt="`Preview ${meal.nombre}`"
+                   class="w-full max-h-72 object-cover">
+              <span class="absolute left-3 top-3 rounded-full bg-amber-500/90 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                Pendiente
+              </span>
+            </div>
+            <div class="space-y-3 p-4">
+              <div>
+                <div class="mb-1 flex items-center justify-between">
+                  <label class="text-[11px] uppercase tracking-wider text-wc-text-tertiary">¿Qué comiste? (opcional)</label>
+                  <span v-if="recordingFor === `pre-${meal.index}`" class="flex items-center gap-1 text-[10px] font-bold text-red-400">
+                    <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500"></span>
+                    Grabando...
+                  </span>
+                </div>
+                <div class="relative">
+                  <textarea
+                    v-model="noteDrafts[meal.index]"
+                    rows="2"
+                    placeholder="Ej: huevos revueltos con avena, café sin azúcar"
+                    class="w-full resize-none rounded-lg border border-wc-border bg-wc-bg-secondary p-2 pr-10 text-sm text-wc-text"
+                  ></textarea>
+                  <button v-if="voice.supported.value"
+                          @click="recordingFor === `pre-${meal.index}` ? stopDictating() : startDictating({ kind: 'pre', index: meal.index })"
+                          type="button"
+                          :title="recordingFor === `pre-${meal.index}` ? 'Detener dictado' : 'Dictar por voz'"
+                          class="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full transition"
+                          :class="recordingFor === `pre-${meal.index}` ? 'bg-red-500 text-white animate-pulse' : 'bg-wc-accent/10 text-wc-accent hover:bg-wc-accent/20'">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
+                    </svg>
+                  </button>
+                </div>
+                <p v-if="!voice.supported.value" class="mt-1 text-[10px] text-wc-text-tertiary">
+                  Tu navegador no soporta dictado por voz. Usa el teclado.
+                </p>
+              </div>
+
+              <div class="flex gap-2">
+                <button @click="cancelUpload(meal.index)"
+                        :disabled="food.uploadingIndex.value === meal.index"
+                        class="flex-1 rounded-lg border border-wc-border bg-wc-bg-secondary py-2 text-sm font-medium text-wc-text-secondary transition hover:bg-wc-bg-tertiary disabled:opacity-50">
+                  Cancelar
+                </button>
+                <button @click="confirmUpload(meal)"
+                        :disabled="food.uploadingIndex.value === meal.index"
+                        class="flex-1 rounded-lg bg-wc-accent py-2 text-sm font-semibold text-white transition hover:bg-wc-accent-hover disabled:opacity-50">
+                  {{ food.uploadingIndex.value === meal.index ? 'Subiendo...' : 'Confirmar foto' }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón Subir foto (sin pending y sin photo) -->
+          <button v-else-if="!meal.photo"
                   @click="triggerUpload(meal.index)"
                   :disabled="food.uploadingIndex.value === meal.index"
                   class="flex w-full items-center justify-center gap-2 border-t border-dashed border-wc-border bg-wc-accent/5 py-3 text-sm font-medium text-wc-accent transition hover:bg-wc-accent/10 disabled:opacity-50">

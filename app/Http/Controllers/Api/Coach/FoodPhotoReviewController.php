@@ -62,6 +62,7 @@ class FoodPhotoReviewController extends Controller
                 'coach_seen'     => $p->coach_seen,
                 'coach_reaction' => $p->coach_reaction,
                 'coach_note'     => $p->coach_note,
+                'client_note'    => $p->client_note,
                 'created_at'     => $p->created_at?->toIso8601String(),
                 'created_diff'   => $p->created_at?->diffForHumans(),
             ]),

@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'coach_seen_at',
     'coach_reaction',
     'coach_note',
+    'client_note',
     'xp_awarded',
     'ai_analysis',
 ])]

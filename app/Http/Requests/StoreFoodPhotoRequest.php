@@ -25,6 +25,7 @@ class StoreFoodPhotoRequest extends FormRequest
             'meal_name'  => 'required|string|max:255',
             'meal_index' => 'required|integer|min:0|max:20',
             'photo_date' => "sometimes|date|after_or_equal:{$yesterday}|before_or_equal:{$tomorrow}",
+            'client_note' => 'nullable|string|max:1000',
         ];
     }
 
