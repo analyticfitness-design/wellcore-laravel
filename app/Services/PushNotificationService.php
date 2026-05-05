@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\PushSubscription;
 use App\Models\WellcoreNotification;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Minishlink\WebPush\MessageSentReport;
 use Minishlink\WebPush\Subscription;
@@ -12,7 +13,9 @@ use Minishlink\WebPush\WebPush;
 class PushNotificationService
 {
     protected string $publicKey;
+
     protected string $privateKey;
+
     protected string $subject;
 
     /** Maximum retries per subscription endpoint */
@@ -163,11 +166,11 @@ class PushNotificationService
 
         return (new static)->send($clientId, [
             'title' => "Tu coach revisó tu comida {$emoji}",
-            'body'  => $body,
-            'icon'  => '/images/logo-dark.png',
+            'body' => $body,
+            'icon' => '/images/logo-dark.png',
             'badge' => '/icons/icon-192x192.png',
-            'tag'   => 'food-photo-reacted',
-            'data'  => ['url' => '/client/food-tracking', 'type' => 'food_photo_reacted'],
+            'tag' => 'food-photo-reacted',
+            'data' => ['url' => '/client/food-tracking', 'type' => 'food_photo_reacted'],
         ]);
     }
 
@@ -176,8 +179,8 @@ class PushNotificationService
     /**
      * Send a push notification to a specific client with retry logic.
      *
-     * @param int   $clientId  The client to notify
-     * @param array $payload   Notification payload (title, body, icon, badge, tag, data, actions)
+     * @param  int  $clientId  The client to notify
+     * @param  array  $payload  Notification payload (title, body, icon, badge, tag, data, actions)
      * @return bool True if at least one notification was delivered
      */
     public function send(int $clientId, array $payload): bool
@@ -188,6 +191,7 @@ class PushNotificationService
 
         if ($subscriptions->isEmpty()) {
             Log::debug('[PushNotification] No active subscriptions', ['client_id' => $clientId]);
+
             return false;
         }
 
@@ -212,7 +216,7 @@ class PushNotificationService
     /**
      * Send a push notification to all active subscribers (broadcast).
      *
-     * @param array $payload Notification payload
+     * @param  array  $payload  Notification payload
      * @return int Number of successful deliveries
      */
     public function sendToAll(array $payload): int
@@ -259,8 +263,8 @@ class PushNotificationService
     /**
      * Send a batch of notifications to multiple clients with the same payload.
      *
-     * @param array $clientIds Array of client IDs
-     * @param array $payload   Notification payload
+     * @param  array  $clientIds  Array of client IDs
+     * @param  array  $payload  Notification payload
      * @return array ['sent' => int, 'failed' => int]
      */
     public function sendBatch(array $clientIds, array $payload): array
@@ -300,8 +304,9 @@ class PushNotificationService
             Log::info('[PushNotification] VAPID keys not configured — logging only', [
                 'client_id' => $sub->client_id,
                 'title' => $payload['title'] ?? 'N/A',
-                'endpoint' => substr($sub->endpoint, 0, 60) . '...',
+                'endpoint' => substr($sub->endpoint, 0, 60).'...',
             ]);
+
             return true; // Return true so in-app notification is still created
         }
 
@@ -332,6 +337,7 @@ class PushNotificationService
                             'client_id' => $sub->client_id,
                             'endpoint' => substr($sub->endpoint, 0, 60),
                         ]);
+
                         return true;
                     }
 
@@ -345,6 +351,7 @@ class PushNotificationService
                             'endpoint' => substr($sub->endpoint, 0, 60),
                         ]);
                         $sub->update(['active' => false]);
+
                         return false;
                     }
 
@@ -359,6 +366,7 @@ class PushNotificationService
                                 'status' => $statusCode,
                                 'client_id' => $sub->client_id,
                             ]);
+
                             continue;
                         }
                     }
@@ -370,11 +378,12 @@ class PushNotificationService
                         'reason' => $report->getReason(),
                         'endpoint' => substr($sub->endpoint, 0, 60),
                     ]);
+
                     return false;
                 }
             } catch (\Exception $e) {
                 $attempt++;
-                Log::error('[PushNotification] Exception on attempt ' . $attempt, [
+                Log::error('[PushNotification] Exception on attempt '.$attempt, [
                     'client_id' => $sub->client_id,
                     'error' => $e->getMessage(),
                 ]);
@@ -384,6 +393,7 @@ class PushNotificationService
                     if (str_contains($e->getMessage(), 'expired') || str_contains($e->getMessage(), 'unsubscribed')) {
                         $sub->update(['active' => false]);
                     }
+
                     return false;
                 }
 
@@ -456,5 +466,230 @@ class PushNotificationService
         return PushSubscription::where('client_id', $clientId)
             ->where('active', true)
             ->count();
+    }
+
+    // ─── COACH NOTIFICATIONS (community cross-role) ────────────────────
+
+    /**
+     * Coach push: dispatched when a client breaks a personal record.
+     */
+    public function notifyCoachClientPr(int $coachId, string $clientName, string $exercise, float $weight): void
+    {
+        $payload = [
+            'title' => "{$clientName} rompió un PR",
+            'body' => "{$weight}kg en {$exercise}",
+            'url' => '/coach/community?filter=prs',
+            'tag' => "coach-pr-{$coachId}",
+        ];
+
+        $this->dispatchToCoachSubscriptions($this->getCoachSubscriptions($coachId), $payload);
+    }
+
+    /**
+     * Coach push: dispatched when a client hits a streak milestone.
+     */
+    public function notifyCoachClientStreakMilestone(int $coachId, string $clientName, int $days): void
+    {
+        $payload = [
+            'title' => "{$clientName} llegó a {$days} días",
+            'body' => 'Felicítalo en su comunidad',
+            'url' => '/coach/community',
+            'tag' => "coach-streak-{$coachId}",
+        ];
+
+        $this->dispatchToCoachSubscriptions($this->getCoachSubscriptions($coachId), $payload);
+    }
+
+    /**
+     * Coach push: dispatched when a client appears at-risk (silent days).
+     */
+    public function notifyCoachAtRiskClient(int $coachId, string $clientName, int $silentDays): void
+    {
+        $payload = [
+            'title' => "{$clientName} sin actividad",
+            'body' => "{$silentDays} días sin entrenar — mensaje de apoyo?",
+            'url' => '/coach/community?filter=at-risk',
+            'tag' => "coach-at-risk-{$coachId}",
+        ];
+
+        $this->dispatchToCoachSubscriptions($this->getCoachSubscriptions($coachId), $payload);
+    }
+
+    /**
+     * Coach push: generic client community activity (post created, comment reply, etc).
+     */
+    public function notifyCoachClientActivity(int $coachId, string $clientName, string $eventType, array $payload): void
+    {
+        $title = match ($eventType) {
+            'post_created' => "{$clientName} publicó",
+            'comment_reply' => "{$clientName} respondió a tu mensaje",
+            default => "{$clientName} actividad",
+        };
+
+        $this->dispatchToCoachSubscriptions($this->getCoachSubscriptions($coachId), [
+            'title' => $title,
+            'body' => $payload['preview'] ?? '',
+            'url' => $payload['url'] ?? '/coach/community',
+            'tag' => "coach-activity-{$coachId}",
+        ]);
+    }
+
+    /**
+     * Mention push: routes to the right subscription table based on mentioned actor type.
+     */
+    public function notifyMention(string $mentionedType, int $mentionedId, string $mentionerType, int $mentionerId, ?int $postId, ?int $commentId): void
+    {
+        if ($mentionedType === 'client') {
+            $this->send($mentionedId, [
+                'title' => 'Te mencionaron',
+                'body' => 'Alguien te etiquetó en la comunidad',
+                'icon' => '/images/logo-dark.png',
+                'badge' => '/icons/icon-192x192.png',
+                'tag' => "mention-client-{$mentionedId}",
+                'data' => [
+                    'url' => '/client/community',
+                    'type' => 'mention',
+                    'post_id' => $postId,
+                    'comment_id' => $commentId,
+                ],
+            ]);
+
+            return;
+        }
+
+        if ($mentionedType === 'coach') {
+            $this->dispatchToCoachSubscriptions($this->getCoachSubscriptions($mentionedId), [
+                'title' => 'Te mencionaron',
+                'body' => 'Mention en la comunidad',
+                'url' => '/coach/community',
+                'tag' => "mention-coach-{$mentionedId}",
+            ]);
+        }
+    }
+
+    /**
+     * Fetch active coach push subscriptions.
+     */
+    private function getCoachSubscriptions(int $coachId)
+    {
+        return DB::table('coach_push_subscriptions')
+            ->where('coach_id', $coachId)
+            ->where('active', true)
+            ->get();
+    }
+
+    /**
+     * Dispatch a payload to a collection of coach subscription rows.
+     * Mirrors sendToSubscription() patterns: VAPID guard, 404/410 deactivation.
+     */
+    private function dispatchToCoachSubscriptions($subscriptions, array $payload): void
+    {
+        if ($subscriptions->isEmpty()) {
+            return;
+        }
+
+        if (empty($this->publicKey) || empty($this->privateKey)) {
+            Log::info('[PushNotification] VAPID keys not configured — coach push logged only', [
+                'title' => $payload['title'] ?? 'N/A',
+                'recipients' => $subscriptions->count(),
+            ]);
+
+            return;
+        }
+
+        foreach ($subscriptions as $sub) {
+            try {
+                $webPush = new WebPush([
+                    'VAPID' => [
+                        'subject' => $this->subject,
+                        'publicKey' => $this->publicKey,
+                        'privateKey' => $this->privateKey,
+                    ],
+                ]);
+
+                $subscription = Subscription::create([
+                    'endpoint' => $sub->endpoint,
+                    'publicKey' => $sub->p256dh,
+                    'authToken' => $sub->auth_key,
+                ]);
+
+                $webPush->queueNotification($subscription, json_encode($payload, JSON_UNESCAPED_UNICODE));
+
+                /** @var MessageSentReport $report */
+                foreach ($webPush->flush() as $report) {
+                    if ($report->isSuccess()) {
+                        DB::table('coach_push_subscriptions')
+                            ->where('id', $sub->id)
+                            ->update(['last_used_at' => now()]);
+
+                        continue;
+                    }
+
+                    $statusCode = $report->getResponse()?->getStatusCode() ?? 0;
+
+                    if (in_array($statusCode, [404, 410], true)) {
+                        Log::warning('[PushNotification] Coach subscription expired — deactivating', [
+                            'subscription_id' => $sub->id,
+                            'coach_id' => $sub->coach_id,
+                            'status' => $statusCode,
+                        ]);
+                        DB::table('coach_push_subscriptions')
+                            ->where('id', $sub->id)
+                            ->update(['active' => false]);
+
+                        continue;
+                    }
+
+                    Log::error('[PushNotification] Coach push delivery failed', [
+                        'subscription_id' => $sub->id,
+                        'coach_id' => $sub->coach_id,
+                        'status' => $statusCode,
+                        'reason' => $report->getReason(),
+                    ]);
+                }
+            } catch (\Throwable $e) {
+                Log::warning('[PushNotification] Coach push exception', [
+                    'subscription_id' => $sub->id,
+                    'error' => $e->getMessage(),
+                ]);
+
+                if (str_contains($e->getMessage(), '410') || str_contains($e->getMessage(), 'expired')) {
+                    DB::table('coach_push_subscriptions')
+                        ->where('id', $sub->id)
+                        ->update(['active' => false]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Send a coach announcement push notification to a list of clients.
+     * Used by Fase B coach "Mensaje al equipo" feature when type=push.
+     *
+     * @param  int[]  $clientIds
+     * @return int delivered count
+     */
+    public function notifyCoachAnnounceToClients(int $coachId, array $clientIds, string $message): int
+    {
+        if (empty($clientIds)) {
+            return 0;
+        }
+
+        $coach = \App\Models\Admin::find($coachId);
+        $firstName = $coach?->name ? explode(' ', trim($coach->name))[0] : 'tu coach';
+        $title = "Mensaje de {$firstName}";
+
+        $payload = [
+            'title' => $title,
+            'body' => mb_substr($message, 0, 200),
+            'icon' => '/images/logo-dark.png',
+            'badge' => '/icons/icon-192x192.png',
+            'tag' => 'coach-announce',
+            'data' => ['url' => '/client/community', 'type' => 'coach_announce'],
+        ];
+
+        $results = $this->sendBatch($clientIds, $payload);
+
+        return (int) ($results['sent'] ?? 0);
     }
 }

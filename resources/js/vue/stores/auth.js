@@ -3,6 +3,14 @@ import { ref, computed } from 'vue';
 import axios from 'axios';
 import { resetContractGate } from '../composables/useContractGate';
 import { resetGroupPulse } from '../composables/useGroupPulse';
+import { resetCoachCommunity } from '../composables/useCoachCommunity';
+import { resetCoachPulse } from '../composables/useCoachPulse';
+import { resetCoachAnnounce } from '../composables/useCoachAnnounce';
+import { resetAdminCommunity } from '../composables/useAdminCommunity';
+import { resetBroadcast } from '../composables/useBroadcast';
+import { resetModerationQueue } from '../composables/useModerationQueue';
+import { resetMentions } from '../composables/useMentions';
+import { resetGroupPresence } from '../composables/useGroupPresence';
 
 export const useAuthStore = defineStore('auth', () => {
     // Si Laravel inyecto auth data en sesion (login vía Livewire), sincronizar
@@ -80,6 +88,14 @@ export const useAuthStore = defineStore('auth', () => {
         // summary del A durante 25s.
         if (data.token && data.token !== token.value) {
             resetGroupPulse();
+            resetCoachCommunity();
+            resetCoachPulse();
+            resetCoachAnnounce();
+            resetAdminCommunity();
+            resetBroadcast();
+            resetModerationQueue();
+            resetMentions();
+            resetGroupPresence();
         }
         token.value = data.token;
         userType.value = data.userType;
@@ -132,6 +148,18 @@ export const useAuthStore = defineStore('auth', () => {
         // limpiaba solo al timeout (25s); en impersonation back-and-forth
         // el admin podía ver summary del cliente anterior.
         resetGroupPulse();
+        // Community Cross-Role Fase B: invalida caches del Coach Hub
+        // para evitar leak entre impersonations.
+        resetCoachCommunity();
+        resetCoachPulse();
+        resetCoachAnnounce();
+        // Community Cross-Role Fase C: invalida caches del Admin Center.
+        resetAdminCommunity();
+        resetBroadcast();
+        resetModerationQueue();
+        // Community Cross-Role Fase D: cleanup mentions + presence channel.
+        resetMentions();
+        resetGroupPresence();
         token.value = null;
         userType.value = null;
         userId.value = null;

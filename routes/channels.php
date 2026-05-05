@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\AccountabilityPod;
 use App\Models\Admin;
 use App\Models\Client;
 use App\Models\CoachMessage;
@@ -49,7 +48,7 @@ Broadcast::channel('user.{userId}', function ($user, $userId) {
 // Returns user identity data for the presence member list.
 Broadcast::channel('online-users', function ($user) {
     return [
-        'id'   => $user->id,
+        'id' => $user->id,
         'name' => $user->name ?? 'User',
         'type' => $user instanceof Admin ? 'coach' : 'client',
     ];
@@ -65,6 +64,66 @@ Broadcast::channel('rise-pod.{podId}', function ($user, int $podId) {
     return PodMember::where('pod_id', $podId)
         ->where('client_id', $user->id)
         ->exists();
+});
+
+// === Community Cross-Role channels (Fase A) ===
+
+/**
+ * Normalize a user's role to a string. Admin::role is cast to UserRole BackedEnum,
+ * so plain string comparison won't work directly. This helper accepts either form.
+ */
+$wcResolveRole = static function ($role): ?string {
+    if ($role instanceof BackedEnum) {
+        return (string) $role->value;
+    }
+
+    return $role !== null ? (string) $role : null;
+};
+
+// Coach listens to activity from THEIR clients (community-scoped activity feed).
+// Channel name format: coach.{coachId}.community
+Broadcast::channel('coach.{coachId}.community', function ($user, int $coachId) use ($wcResolveRole) {
+    if (! ($user instanceof Admin)) {
+        return false;
+    }
+    $role = $wcResolveRole($user->role);
+
+    return (int) $user->id === $coachId
+        && in_array($role, ['coach', 'admin', 'superadmin'], true);
+});
+
+// Admin listens to GLOBAL community activity (cross-coach moderation, broadcasts).
+Broadcast::channel('admin.community', function ($user) use ($wcResolveRole) {
+    if (! ($user instanceof Admin)) {
+        return false;
+    }
+    $role = $wcResolveRole($user->role);
+
+    return in_array($role, ['admin', 'superadmin', 'jefe'], true);
+});
+
+// Per-user mention channel (any role). Channel: user.{type}.{id}
+// Disambiguates from the generic 'user.{userId}' channel above.
+Broadcast::channel('user.{type}.{id}', function ($user, string $type, int $id) use ($wcResolveRole) {
+    if ((int) $user->id !== $id) {
+        return false;
+    }
+
+    if ($type === 'client') {
+        return $user instanceof Client;
+    }
+
+    if ($type === 'coach') {
+        return $user instanceof Admin
+            && $wcResolveRole($user->role) === 'coach';
+    }
+
+    if ($type === 'admin') {
+        return $user instanceof Admin
+            && in_array($wcResolveRole($user->role), ['admin', 'superadmin', 'jefe'], true);
+    }
+
+    return false;
 });
 
 // Private community post channel — only clients who can see this post may listen.

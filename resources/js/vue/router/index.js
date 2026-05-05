@@ -54,6 +54,7 @@ const routes = [
     { path: '/client/tickets', name: 'client-tickets', component: () => import('../pages/Client/TicketSupport.vue'), meta: { auth: true, title: 'Soporte — WellCore' } },
     { path: '/client/video-checkin', name: 'client-video-checkin', component: () => import('../pages/Client/VideoCheckinUpload.vue'), meta: { auth: true, title: 'Video Check-in — WellCore' } },
     { path: '/client/evidence-hacks', name: 'client-evidence-hacks', component: () => import('../pages/Client/EvidenceHacks.vue'), meta: { auth: true, title: 'Evidence Hacks — WellCore' } },
+    { path: '/client/notifications', name: 'client-notifications', component: () => import('../pages/Client/NotificationsPreferences.vue'), meta: { auth: true, title: 'Notificaciones — WellCore' } },
     { path: '/client/profile/:id', name: 'client-public-profile', component: () => import('../pages/Client/Profile.vue'), meta: { auth: true, title: 'Perfil — WellCore' } },
 
     // Rise (lazy loaded, auth required)
@@ -90,6 +91,8 @@ const routes = [
     { path: '/coach/features', name: 'coach-features', component: () => import('../pages/Coach/Features.vue'), meta: { auth: true, title: 'Herramientas — WellCore' } },
     { path: '/coach/resources', name: 'coach-resources', component: () => import('../pages/Coach/Resources.vue'), meta: { auth: true, title: 'Recursos — WellCore' } },
     { path: '/coach/onboarding', name: 'coach-onboarding', component: () => import('../pages/Coach/OnboardingFlow.vue'), meta: { auth: true, title: 'Onboarding del Coach — WellCore' } },
+    { path: '/coach/community', name: 'coach-community', component: () => import('../pages/Coach/Community.vue'), meta: { auth: true, title: 'Comunidad — WellCore' } },
+    { path: '/coach/notifications', name: 'coach-notifications', component: () => import('../pages/Coach/NotificationsPreferences.vue'), meta: { auth: true, title: 'Notificaciones — WellCore' } },
     { path: '/coach/invitations', name: 'coach-invitations', component: () => import('../pages/Coach/Invitations/InvitationManager.vue'), meta: { auth: true, title: 'Mis Invitaciones — WellCore' } },
     { path: '/coach/comprobantes', name: 'coach-comprobantes', component: () => import('../pages/Coach/PaymentProofs.vue'), meta: { auth: true, title: 'Comprobantes — WellCore' } },
     // Coach Strategy Hub (Marketing Drops)
@@ -142,6 +145,14 @@ const routes = [
     { path: '/admin/marketing/coaches/:coachId/profile', name: 'admin-marketing-coach-profile',
       component: () => import('../pages/Admin/Marketing/CoachProfileEdit.vue'),
       meta: { auth: true, title: 'Editar Perfil Coach — WellCore Admin' }, props: true },
+
+    // Community Cross-Role Fase C
+    { path: '/admin/community', name: 'admin-community',
+      component: () => import('../pages/Admin/Community.vue'),
+      meta: { auth: true, title: 'Comunidad — WellCore Admin' } },
+    { path: '/admin/notifications', name: 'admin-notifications',
+      component: () => import('../pages/Admin/NotificationsPreferences.vue'),
+      meta: { auth: true, title: 'Notificaciones — WellCore Admin' } },
 
     // Catch-all: redirect unknown routes to login
     { path: '/:pathMatch(.*)*', redirect: '/login' },

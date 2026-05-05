@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -10,9 +11,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'post_id',
     'client_id',
     'content',
+    'author_type',
+    'author_admin_id',
 ])]
 class PostComment extends Model
 {
+    use HasFactory;
+
     protected $table = 'post_comments';
 
     public $timestamps = false;
@@ -32,5 +37,15 @@ class PostComment extends Model
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function scopeByCoach($query)
+    {
+        return $query->where('author_type', 'coach');
+    }
+
+    public function scopeByAdmin($query)
+    {
+        return $query->where('author_type', 'admin');
     }
 }

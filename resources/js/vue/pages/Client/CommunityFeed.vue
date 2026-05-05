@@ -10,6 +10,11 @@ import PulsoRing from '../../components/community/PulsoRing.vue';
 import PulsoViewer from '../../components/community/PulsoViewer.vue';
 import PulsoUploader from '../../components/community/PulsoUploader.vue';
 import GroupPulseFeed from '../../components/community/GroupPulseFeed.vue';
+import MentionInput from '../../components/community/MentionInput.vue';
+import MentionRenderer from '../../components/community/MentionRenderer.vue';
+import ReportPostMenu from '../../components/community/ReportPostMenu.vue';
+import CoachBadge from '../../components/community/CoachBadge.vue';
+import OfficialBadge from '../../components/community/OfficialBadge.vue';
 
 const api = useApi();
 const authStore = useAuthStore();
@@ -759,14 +764,14 @@ function getReactionCount(post, type) {
         <!-- Input area -->
         <form @submit.prevent="createPost" class="p-4">
           <div class="relative">
-            <textarea
+            <MentionInput
               v-model="postContent"
-              rows="3"
-              maxlength="1000"
+              :rows="3"
+              :max-length="1000"
               :placeholder="getPlaceholder()"
-              class="wc-input-focus w-full resize-none rounded-xl border border-wc-border bg-wc-bg px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary transition-all"
-            ></textarea>
-            <span class="absolute bottom-3 right-3 text-[10px] tabular-nums text-wc-text-tertiary">
+              scope="coach-team"
+            />
+            <span class="absolute bottom-3 right-3 text-[10px] tabular-nums text-wc-text-tertiary pointer-events-none">
               {{ charCount }}/1000
             </span>
           </div>
@@ -882,8 +887,10 @@ function getReactionCount(post, type) {
                       >{{ getPostTypeInfo(post.post_type).emoji }}</span>
                     </div>
                     <div>
-                      <div class="flex items-center gap-2">
-                        <p class="text-sm font-semibold leading-tight text-wc-text group-hover:text-wc-accent transition-colors">{{ post.client_name || 'Miembro' }}</p>
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <p class="text-sm font-semibold leading-tight text-wc-text group-hover:text-wc-accent transition-colors">{{ post.client_name || post.author_name || 'Miembro' }}</p>
+                        <CoachBadge v-if="post.author_type === 'coach'" size="xs" />
+                        <OfficialBadge v-if="post.author_type === 'admin' || post.is_official" />
                         <!-- Post type badge -->
                         <span
                           v-if="post.post_type === 'achievement' || post.post_type === 'pr'"
@@ -914,23 +921,26 @@ function getReactionCount(post, type) {
                   </RouterLink>
                 </div>
 
-                <!-- Delete (own posts only, visible on group hover) -->
-                <button
-                  v-if="isOwnPost(post)"
-                  @click="deletePost(post.id)"
-                  :disabled="deletingPost === post.id"
-                  :title="confirmDeleteId === post.id ? 'Confirmar eliminar' : 'Eliminar publicacion'"
-                  class="shrink-0 rounded-lg p-1.5 text-wc-text-tertiary opacity-0 transition-all group-hover:opacity-100 hover:bg-red-500/10 hover:text-red-400 disabled:opacity-50"
-                  :class="confirmDeleteId === post.id ? 'opacity-100 bg-red-500/10 text-red-400' : ''"
-                >
-                  <svg v-if="deletingPost !== post.id" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                  </svg>
-                  <svg v-else class="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                  </svg>
-                </button>
+                <!-- Right-side actions: Report (any post) + Delete (own only) -->
+                <div class="shrink-0 flex items-center gap-1">
+                  <ReportPostMenu v-if="!isOwnPost(post)" :post-id="post.id" />
+                  <button
+                    v-if="isOwnPost(post)"
+                    @click="deletePost(post.id)"
+                    :disabled="deletingPost === post.id"
+                    :title="confirmDeleteId === post.id ? 'Confirmar eliminar' : 'Eliminar publicacion'"
+                    class="rounded-lg p-1.5 text-wc-text-tertiary opacity-0 transition-all group-hover:opacity-100 hover:bg-red-500/10 hover:text-red-400 disabled:opacity-50"
+                    :class="confirmDeleteId === post.id ? 'opacity-100 bg-red-500/10 text-red-400' : ''"
+                  >
+                    <svg v-if="deletingPost !== post.id" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                    </svg>
+                    <svg v-else class="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                  </button>
+                </div>
               </div>
 
               <!-- Delete confirmation banner -->
@@ -947,7 +957,7 @@ function getReactionCount(post, type) {
               </Transition>
 
               <!-- Content -->
-              <div v-if="post.content" class="mt-3 whitespace-pre-line text-sm leading-relaxed text-wc-text">{{ post.content }}</div>
+              <MentionRenderer v-if="post.content" :content="post.content" class="mt-3" />
 
               <!-- Image -->
               <div v-if="post.image_url" class="mt-3 overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary">

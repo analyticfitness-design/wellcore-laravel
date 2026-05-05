@@ -123,3 +123,73 @@ Orden de lectura: `00-INDEX.md` primero, luego los demás según aplica. Contien
 - Notificaciones semanales
 
 **No crear planes sin haber consultado este sistema.** Evita errores repetidos de formato, voz, GIFs y metodología.
+
+## Community Cross-Role (COMPLETE — A+B+C+D shipped)
+
+### Fase A — Backend foundations
+- 9 migrations aditivas, 6 models, 5 services, 6 controllers, 1 policy, 6 events Reverb
+- 16 endpoints REST originales
+
+### Fase B — Coach Community Hub (UI + backend extensions)
+Endpoints adicionales:
+- `GET /api/v/coach/community/threads` — Tab Conversaciones
+- `GET /api/v/coach/community/achievements?period=week|month|all` — Tab Logros
+- `POST /api/v/coach/community/announce` — funcional (post o push) (antes 501)
+- `GET /api/v/coach/clients/count` — preview recipientes en modal
+- `POST/DELETE /api/v/coach/push/subscribe` — service worker push
+- `GET/PATCH /api/v/coach/notifications/preferences` — toggles granulares
+
+Frontend Vue 3 SPA:
+- `/coach/community` con 5 tabs (Latido / Posts / Conversaciones / Pulsos / Logros)
+- `/coach/notifications` page con live save
+- Sidebar: nueva sección "Comunidad" + item "Notificaciones" en Personal
+- FAB móvil: 4ta opción "Mensaje al equipo" (CoachAnnounceModal)
+- Real-time threshold-based: auto-prepend si scroll<200px, toast flotante si lejos
+- 11 components compartidos (CoachBadge, OfficialBadge, TeamHealthRing, etc.)
+- 5 composables singleton TTL+dedup: useCoachCommunity, useCoachPulse, useModeration, useCoachAnnounce, usePushSubscription
+- auth.js extendido con 3 reset hooks (anti cache leak en impersonations)
+
+Scheduled: `wellcore:precompute-coach-pulse` cada 5min.
+Reverb channels: `coach.{id}.community`, `admin.community`, `user.{type}.{id}`.
+Cache: `wc:coach-pulse:v1:{id}` (60s backend / 25s frontend).
+
+### Fase C — Admin Community Center
+Endpoints adicionales:
+- `GET /api/v/admin/community/coaches/{id}/analytics` (cache 600s)
+- `POST /api/v/admin/community/posts/{id}/pin` (admin override)
+- `POST /api/v/admin/community/posts/{id}/make-global` (superadmin only)
+- `GET/PATCH /api/v/admin/notifications/preferences`
+
+Frontend Vue 3 admin:
+- `/admin/community` con 5 tabs (Pulse Cross-Coach / Live Feed / Broadcast / Moderation / Analytics Coach)
+- `/admin/notifications` admin preferences page
+- 9 components compartidos (CoachAnalyticsTable, Sparkline, Heatmap, KPIBar, Broadcast bars, Moderation cards, Chart.js)
+- 3 composables: useAdminCommunity, useBroadcast, useModerationQueue
+- Drill-down con URL hash sync (`/admin/community#analytics-12`)
+- Migration aditiva: `admin_notification_preferences`
+
+### Fase D — Cross-Role Communication Layer
+Endpoints adicionales:
+- `GET /api/v/community/mention-search?q=` (cache 300s, scope-aware)
+- `GET/PATCH /api/v/client/notifications/preferences`
+
+Frontend Vue 3 cross-portal:
+- MentionInput (textarea wrapper con autocomplete + special tokens @coach/@wellcore)
+- MentionRenderer (chips colored por rol: cliente blue, coach amber, admin red)
+- ReportPostMenu cliente (4 razones + textarea opcional)
+- OnlineRoleIndicator (pulse dot reactive)
+- CommentsThread modificado: sort admin>coach>client + badges + MentionRenderer
+- 2 composables: useMentions (search + extract), useGroupPresence (Echo PresenceChannel filter)
+- `/client/notifications` cliente preferences page
+- Migration aditiva: `client_notification_preferences`
+
+### Total métricas finales
+- **3 migrations aditivas** (coach + admin + client notification_preferences)
+- **24 endpoints REST** cross-portal
+- **10 composables singleton** TTL+dedup+reset (group_pulse, coach_*, admin_*, mentions, presence)
+- **30+ Vue components** nuevos
+- **9 reset hooks** consolidados en `auth.js setAuth/clearAuth`
+- **Cache namespaces**: wc:coach-pulse, wc:admin-community-analytics, wc:admin-coach-analytics, wc:mention-search, wc:coach-community-feed
+- **Reverb channels**: coach.{id}.community, admin.community, user.{type}.{id}, online-users
+
+Specs/plans en `docs/superpowers/{specs,plans}/2026-05-05-community-cross-role-fase-{a,b,c,d}-*`.

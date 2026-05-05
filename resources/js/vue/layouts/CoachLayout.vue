@@ -80,6 +80,11 @@ function closeSidebar() {
     sidebarOpen.value = false;
 }
 
+function onAnnounceClick() {
+    fabOpen.value = false;
+    window.dispatchEvent(new CustomEvent('coach-community:open-announce'));
+}
+
 // Close sidebar on route change
 const unwatch = router.afterEach(() => {
     sidebarOpen.value = false;
@@ -109,6 +114,12 @@ const navSections = [
         ],
     },
     {
+        label: 'Comunidad',
+        items: [
+            { name: 'Comunidad', to: '/coach/community', icon: 'community', routeName: 'coach-community', isNew: true },
+        ],
+    },
+    {
         label: 'Gestión',
         items: [
             { name: 'Tickets', to: '/coach/plan-tickets', icon: 'plans', routeName: 'coach-plan-tickets' },
@@ -130,6 +141,7 @@ const navSections = [
         label: 'Personal',
         items: [
             { name: 'Notas', to: '/coach/notes', icon: 'notes', routeName: 'coach-notes' },
+            { name: 'Notificaciones', to: '/coach/notifications', icon: 'bell', routeName: 'coach-notifications' },
         ],
     },
 ];
@@ -283,6 +295,14 @@ const bottomNav = [
                 <svg v-else-if="item.icon === 'compass'" class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <circle cx="12" cy="12" r="9" />
                   <path stroke-linecap="round" stroke-linejoin="round" d="m14.5 9.5-2 5-5 2 2-5 5-2z" />
+                </svg>
+                <!-- Community -->
+                <svg v-else-if="item.icon === 'community'" class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                </svg>
+                <!-- Bell -->
+                <svg v-else-if="item.icon === 'bell'" class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                 </svg>
                 <span :class="sidebarCollapsed ? 'lg:hidden' : ''" class="truncate">{{ item.name }}</span>
                 <span v-if="item.isNew" :class="sidebarCollapsed ? 'lg:hidden' : ''" class="ml-auto rounded-full bg-wc-accent px-1.5 py-0.5 text-[9px] font-display uppercase tracking-wide text-white">Nuevo</span>
@@ -454,6 +474,17 @@ const bottomNav = [
            style="background:var(--color-wc-bg-secondary); border-color:var(--color-wc-border)">
         <div class="p-4 space-y-1">
           <div class="w-10 h-1 rounded-full bg-wc-border mx-auto mb-4"></div>
+          <button @click="onAnnounceClick" class="flex items-center gap-3 px-4 py-3 rounded-card hover:bg-wc-bg-tertiary transition-colors w-full text-left">
+            <div class="w-10 h-10 rounded-lg bg-wc-accent/15 flex items-center justify-center shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-wc-accent)" stroke-width="2" stroke-linecap="round">
+                <path d="M3 11l18-5v12L3 13v-2zm0 0v3a2 2 0 002 2h3"></path>
+              </svg>
+            </div>
+            <div>
+              <div class="font-medium text-wc-text text-sm">Mensaje al equipo</div>
+              <div class="text-xs text-wc-text-tertiary">Anuncio in-feed o push</div>
+            </div>
+          </button>
           <RouterLink to="/coach/invitations" @click="fabOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-card hover:bg-wc-bg-tertiary transition-colors">
             <div class="w-10 h-10 rounded-lg bg-wc-accent/15 flex items-center justify-center shrink-0">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-wc-accent)" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>

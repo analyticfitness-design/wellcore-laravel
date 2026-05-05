@@ -82,6 +82,9 @@ const MIGRATED_ROUTES = [
   { match: (p) => p.startsWith('/admin/settings'),        tab: 'settings',        cosmetic: true },
   { match: (p) => p.startsWith('/admin/audit-log'),       tab: 'audit-log',       cosmetic: true },
   { match: (p) => p.startsWith('/admin/feed'),            tab: 'live-feed',       cosmetic: true },
+  // Community Cross-Role Fase C — full target shell (no cosmetic legacy)
+  { match: (p) => p.startsWith('/admin/community'),       tab: 'community',       cosmetic: false },
+  { match: (p) => p.startsWith('/admin/notifications'),   tab: 'notifications',   cosmetic: false },
 ];
 
 const matchedRoute = computed(() => MIGRATED_ROUTES.find(r => r.match(route.path)) || null);

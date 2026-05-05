@@ -1,0 +1,1 @@
+var e={light:[10],success:[15,50,15],achievement:[20,40,20,40,60],levelUp:[30,60,30,60,100],error:[50,30,50]};function t(e){typeof navigator<`u`&&navigator.vibrate&&navigator.vibrate(e)}function n(){function n(){t(e.light)}function r(n){t(e[n]||e.light)}return{light:n,pattern:r}}export{n as t};
