@@ -282,8 +282,8 @@ describe('GroupPulseAggregator::buildFeed', function () {
         ]);
         PersonalRecord::factory()->create([
             'client_id' => $client->id,
-            'exercise_name' => 'Sentadilla',
-            'weight_kg' => 120,
+            'exercise' => 'Sentadilla',
+            'weight' => 120,
             'reps' => 5,
             'is_current' => 1,
             'created_at' => Carbon::now()->subMinutes(8),
@@ -402,8 +402,8 @@ Open `app/Services/GroupPulseAggregator.php` and add at the end of the class (be
 
     protected function prHeadline(PersonalRecord $pr): string
     {
-        $exercise = $pr->exercise_name ?? 'Ejercicio';
-        $weight = $pr->weight_kg ? "{$pr->weight_kg}kg" : '';
+        $exercise = $pr->exercise ?? 'Ejercicio';
+        $weight = $pr->weight ? "{$pr->weight}kg" : '';
         $reps = $pr->reps ? " x{$pr->reps}" : '';
         return trim("rompió PR de {$exercise} {$weight}{$reps}");
     }
