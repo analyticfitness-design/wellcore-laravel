@@ -67,3 +67,8 @@ Schedule::command('wellcore:close-orphaned-impersonations')
 Schedule::command('wellcore:precompute-group-pulse')
     ->everyFiveMinutes()
     ->withoutOverlapping(10);
+
+// Community Cross-Role Fase B — coach community pulse precompute (5 min cadence)
+Schedule::command('wellcore:precompute-coach-pulse')
+    ->everyFiveMinutes()
+    ->withoutOverlapping(10);

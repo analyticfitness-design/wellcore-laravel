@@ -524,7 +524,18 @@ Route::prefix('v/coach/community')->middleware(['auth:wellcore', 'throttle:api']
     Route::get('pulse', [CommunityController::class, 'pulse']);
     Route::get('posts', [CommunityController::class, 'posts']);
     Route::get('pulsos', [CommunityController::class, 'pulsos']);
+    Route::get('threads', [CommunityController::class, 'threads']);
+    Route::get('achievements', [CommunityController::class, 'achievements']);
     Route::post('announce', [CommunityController::class, 'announce']);
+});
+
+// Coach Fase B — clients count + push subscriptions + notifications preferences
+Route::prefix('v/coach')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
+    Route::get('clients/count', [App\Http\Controllers\Api\Coach\ClientsController::class, 'count']);
+    Route::post('push/subscribe', [App\Http\Controllers\Api\Coach\PushSubscriptionController::class, 'subscribe']);
+    Route::delete('push/subscribe/{id}', [App\Http\Controllers\Api\Coach\PushSubscriptionController::class, 'unsubscribe'])->whereNumber('id');
+    Route::get('notifications/preferences', [App\Http\Controllers\Api\Coach\PushSubscriptionController::class, 'preferences']);
+    Route::patch('notifications/preferences', [App\Http\Controllers\Api\Coach\PushSubscriptionController::class, 'updatePreferences']);
 });
 
 // Coach moderation (pin/unpin/delete/make-official) — policy enforced in controller

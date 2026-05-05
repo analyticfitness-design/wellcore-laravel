@@ -661,4 +661,35 @@ class PushNotificationService
             }
         }
     }
+
+    /**
+     * Send a coach announcement push notification to a list of clients.
+     * Used by Fase B coach "Mensaje al equipo" feature when type=push.
+     *
+     * @param  int[]  $clientIds
+     * @return int delivered count
+     */
+    public function notifyCoachAnnounceToClients(int $coachId, array $clientIds, string $message): int
+    {
+        if (empty($clientIds)) {
+            return 0;
+        }
+
+        $coach = \App\Models\Admin::find($coachId);
+        $firstName = $coach?->name ? explode(' ', trim($coach->name))[0] : 'tu coach';
+        $title = "Mensaje de {$firstName}";
+
+        $payload = [
+            'title' => $title,
+            'body' => mb_substr($message, 0, 200),
+            'icon' => '/images/logo-dark.png',
+            'badge' => '/icons/icon-192x192.png',
+            'tag' => 'coach-announce',
+            'data' => ['url' => '/client/community', 'type' => 'coach_announce'],
+        ];
+
+        $results = $this->sendBatch($clientIds, $payload);
+
+        return (int) ($results['sent'] ?? 0);
+    }
 }
