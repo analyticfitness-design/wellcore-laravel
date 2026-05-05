@@ -147,6 +147,30 @@ class PushNotificationService
         ]);
     }
 
+    /**
+     * Notify client that their coach reacted to a food photo.
+     */
+    public static function notifyClientFoodPhotoReacted(
+        int $clientId,
+        string $coachName,
+        string $reaction,
+        string $mealName
+    ): bool {
+        $emoji = $reaction === 'bien' ? '✅' : '⚠️';
+        $body = $reaction === 'bien'
+            ? "{$coachName} revisó tu {$mealName} y todo bien"
+            : "{$coachName} tiene un comentario sobre tu {$mealName}";
+
+        return (new static)->send($clientId, [
+            'title' => "Tu coach revisó tu comida {$emoji}",
+            'body'  => $body,
+            'icon'  => '/images/logo-dark.png',
+            'badge' => '/icons/icon-192x192.png',
+            'tag'   => 'food-photo-reacted',
+            'data'  => ['url' => '/rise/food-tracking', 'type' => 'food_photo_reacted'],
+        ]);
+    }
+
     // ─── CORE SEND METHOD ──────────────────────────────────────────────
 
     /**
