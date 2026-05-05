@@ -179,6 +179,7 @@ const navSections = [
         items: [
             { name: 'Metricas', to: '/client/metrics', icon: 'wc-chart-line-up', routeName: 'client-metrics' },
             { name: 'Fotos', to: '/client/photos', icon: 'wc-camera', routeName: 'client-photos' },
+            { name: 'Mi Alimentacion', to: '/client/food-tracking', icon: 'wc-camera', routeName: 'client-food-tracking' },
             { name: 'Logros', to: '/client/logros', icon: 'wc-trophy', routeName: 'client-logros' },
             { name: 'Bienestar', to: '/client/mindfulness', icon: 'wc-moon', routeName: 'client-mindfulness' },
         ],

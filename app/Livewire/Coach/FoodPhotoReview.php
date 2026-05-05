@@ -13,16 +13,16 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-#[Layout('layouts.coach', ['title' => 'Fotos de Comida'])]
+#[Layout('layouts.coach')]
 class FoodPhotoReview extends Component
 {
     use WithPagination;
 
-    public bool $showReviewed = false;
+    public $showReviewed = false;
 
-    public ?int $selectedClientId = null;
+    public $selectedClientId = null;
 
-    public array $noteMap = [];
+    public $noteMap = [];
 
     protected function getCoachClientIds(): \Illuminate\Support\Collection
     {
@@ -94,7 +94,7 @@ class FoodPhotoReview extends Component
         $this->resetPage();
     }
 
-    public function selectClient(?int $clientId): void
+    public function selectClient($clientId): void
     {
         $this->selectedClientId = $clientId;
         $this->resetPage();
