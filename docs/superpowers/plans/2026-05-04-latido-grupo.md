@@ -12,6 +12,45 @@
 
 ---
 
+## Design System Mandate (READ FIRST FOR ALL FRONTEND TASKS)
+
+Every Vue component touched in this plan **MUST** match the visual language already established in the client Dashboard. The Dashboard is the reference. Any new component that drifts from these rules is a regression and must be rejected at code review.
+
+**Tokens (defined in `resources/css/wc-shell.css`, scoped to `.wc-shell`):**
+
+- Fonts: `var(--fd)` = Oswald (titles, numerics, labels uppercase). `var(--fs)` = Raleway (body, paragraphs).
+  **NEVER** use `Bebas Neue`, `Barlow`, `Inter` — they were removed from the system.
+- Colors: `var(--wc-accent)` (#DC2626), `var(--wc-accent-2)`, `var(--wc-accent-deep)`, `var(--wc-bg)`, `var(--wc-bg2)`, `var(--wc-bg3)`, `var(--wc-bg4)`, `var(--wc-text)`, `var(--wc-text-2)`, `var(--wc-text-3)`, `var(--wc-border)`, `var(--wc-green)`, `var(--wc-blue)`, `var(--wc-amber)`, `var(--wc-purple)`.
+  **NEVER** use raw hex (#fca5a5, #86efac, #fde047) for brand surfaces — use tokens.
+- Spacing: `var(--s4)`, `var(--s8)`, `var(--s12)`, `var(--s16)`, `var(--s20)`, `var(--s24)`, `var(--s32)`, `var(--s40)`, `var(--s56)`, `var(--s80)`.
+- Radius: `var(--r-sm)` 12px, `var(--r-md)` 16px, `var(--r-lg)` 20px, `var(--r-pill)` 999px.
+- Shadows: `var(--sh-card)`, `var(--sh-soft)`, `var(--sh-hover)`.
+- Easings: `var(--ease-out)`, `var(--ease-spring)`, `var(--ease-glide)`.
+
+**Reusable classes from `wc-shell.css`:**
+
+- `.section` — entry stagger animation. Always set `:style="{ animationDelay: 'Xms' }"` (Hero=0ms, Stats=220ms, Coach=320ms, Activity=480ms — pick a value that fits position).
+- `.card` — surface with shadow + grad border. Combine with `.section` for entry.
+- `.card-head`, `.card-head-left`, `.card-title`, `.card-meta` — header layout.
+- `.tnum` — tabular numbers. `.tight` — letter-spacing −0.02em on big numbers.
+- `.grain` — Stripe-style grain overlay. `.divider` — fade-out line.
+- `.stat-card.red`, `.stat-card.green`, `.stat-card.amber`, `.stat-card.purple` — color-coded stat cards (see `DashboardStats.vue`).
+
+**Reference files (study before coding):**
+
+- `resources/js/vue/pages/Client/Dashboard.vue` — page composition.
+- `resources/js/vue/components/dashboard/DashboardStats.vue` — `.stat-card` variants.
+- `resources/js/vue/components/dashboard/DashboardCoach.vue` — slim component using `.section.grain`.
+- `resources/js/vue/components/dashboard/DashboardActivity.vue` — list with `.card-head` and stagger 480ms.
+- `resources/css/wc-shell.css` — token definitions and primitives (`.chip`, `.chip-accent`, `.avatar` with conic ring, etc.).
+- `resources/css/wc-shell-tabs/dashboard.css` — desktop grid spans for `.wc-card-dashboard-XXX` classes.
+
+**Dark-first:** the dashboard tokens ARE the visual identity. `.wc-shell` sets `background: var(--wc-bg)` (#09090B). Components are dark-first by design. No light-mode handling needed — the parent shell controls bg.
+
+**`prefers-reduced-motion`:** all animations (heartbeat, stagger, transitions) MUST disable when `(prefers-reduced-motion: reduce)`. Reuse the `useReducedMotion` composable for JS-driven animations.
+
+---
+
 ## Task 0: Branch Setup
 
 **Files:**
@@ -1209,6 +1248,20 @@ git commit -m "feat(group-pulse): useGroupPulse composable con cache 25s in-memo
 **Files:**
 - Create: `resources/js/vue/components/dashboard/DashboardGroupPulse.vue`
 
+### Design system mandate
+
+**The component MUST live inside `.wc-shell--dashboard > main.scroll` and inherit ALL its tokens.** No hardcoded colors, no `Bebas Neue`, no `Barlow`. Use only:
+
+- Fonts: `var(--fd)` (Oswald, titulares) and `var(--fs)` (Raleway, body) — defined in `resources/css/wc-shell.css`.
+- Colors: `var(--wc-accent)`, `var(--wc-text)`, `var(--wc-text-2)`, `var(--wc-text-3)`, `var(--wc-bg2)`, `var(--wc-bg3)`, `var(--wc-bg4)`, `var(--wc-border)`, `var(--wc-green)`, `var(--wc-amber)`, `var(--wc-purple)`, `var(--wc-blue)`.
+- Spacing: `var(--s4)`, `var(--s8)`, `var(--s12)`, `var(--s16)`, `var(--s20)`, `var(--s24)`.
+- Radius: `var(--r-sm)`, `var(--r-md)`, `var(--r-lg)`, `var(--r-pill)`.
+- Shadows: `var(--sh-card)`, `var(--sh-soft)`.
+- Easings: `var(--ease-out)`, `var(--ease-spring)`, `var(--ease-glide)`.
+- Pattern classes that already exist in `wc-shell.css`: `.section` (provides stagger fade-in), `.card`, `.card-head`, `.card-head-left`, `.card-title`, `.card-meta`, `.tnum`, `.tight`, `.grain`, `.divider`.
+
+The component reuses the `.stat-card` variant pattern (`.stat-card.red/.green/.amber/.purple`) from `DashboardStats.vue` — see that file for the exact markup and CSS reference.
+
 - [ ] **Step 1: Create component**
 
 ```vue
@@ -1228,6 +1281,8 @@ const stats = computed(() => summary.value?.stats ?? null);
 const topEvents = computed(() => summary.value?.top_events ?? []);
 const bpm = computed(() => summary.value?.bpm ?? 60);
 const activeNow = computed(() => summary.value?.active_now ?? 0);
+
+// Heartbeat duration scales with BPM (60 BPM = 1s per beat)
 const heartbeatStyle = computed(() => ({
     animationDuration: reducedMotion.value ? '0s' : `${60 / bpm.value}s`,
 }));
@@ -1240,119 +1295,198 @@ function goToCommunity() {
 <template>
   <section
     v-if="summary && stats"
-    class="card section wc-card-group-pulse"
-    :style="{ animationDelay: '320ms' }"
+    class="card section grain wc-card-group-pulse"
+    :style="{ animationDelay: '260ms' }"
   >
     <div class="card-head">
       <div class="card-head-left">
-        <span class="heartbeat" :style="heartbeatStyle" aria-hidden="true"></span>
+        <span class="gp-pulse-dot" :style="heartbeatStyle" aria-hidden="true"></span>
         <span class="card-title">Latido del Grupo</span>
       </div>
-      <span class="card-meta">{{ activeNow }} activos · {{ bpm }} BPM</span>
+      <span class="card-meta tnum">{{ activeNow }} activos · {{ bpm }} BPM</span>
     </div>
 
-    <div class="stats-row">
-      <div class="stat" data-tone="red">
-        <div class="stat-num">{{ stats.workouts_today }}</div>
+    <div class="gp-stats">
+      <div class="stat-card red">
         <div class="stat-label">Entrenos hoy</div>
+        <div class="stat-value tight tnum">{{ stats.workouts_today }}</div>
       </div>
-      <div class="stat" data-tone="green">
-        <div class="stat-num">{{ stats.prs_week }}</div>
-        <div class="stat-label">PRs esta semana</div>
+      <div class="stat-card green">
+        <div class="stat-label">PRs semana</div>
+        <div class="stat-value tight tnum">{{ stats.prs_week }}</div>
       </div>
-      <div class="stat" data-tone="yellow">
-        <div class="stat-num">{{ stats.achievements_today }}</div>
+      <div class="stat-card amber">
         <div class="stat-label">Logros hoy</div>
+        <div class="stat-value tight tnum">{{ stats.achievements_today }}</div>
       </div>
     </div>
 
-    <div v-if="topEvents.length" class="events">
+    <div v-if="topEvents.length" class="gp-events">
       <div
         v-for="(ev, idx) in topEvents"
         :key="idx"
-        class="event-row"
+        class="gp-event"
         :data-type="ev.type"
       >
-        <span class="event-text">
+        <span class="gp-event-text">
           <strong v-if="ev.client_name">{{ ev.client_name }}</strong>
           <span>{{ ev.headline }}</span>
         </span>
-        <span v-if="ev.minutes_ago !== undefined" class="event-time">
+        <span v-if="ev.minutes_ago !== undefined" class="gp-event-time tnum">
           hace {{ ev.minutes_ago }}min
         </span>
       </div>
     </div>
 
-    <button type="button" class="see-all" @click="goToCommunity">
-      Ver todo el latido →
+    <button type="button" class="gp-see-all" @click="goToCommunity">
+      Ver todo el latido
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 5l7 7-7 7"/>
+      </svg>
     </button>
   </section>
 
   <section
     v-else-if="loading"
-    class="card section wc-card-group-pulse skeleton"
+    class="card section wc-card-group-pulse"
     aria-busy="true"
+    :style="{ animationDelay: '260ms' }"
   >
-    <div class="skeleton-line" style="width: 50%"></div>
-    <div class="skeleton-line" style="width: 90%"></div>
-    <div class="skeleton-line" style="width: 70%"></div>
+    <div class="gp-skel-line" style="width:42%"></div>
+    <div class="gp-skel-line" style="width:88%"></div>
+    <div class="gp-skel-line" style="width:64%"></div>
   </section>
 </template>
 
 <style scoped>
-.wc-card-group-pulse { padding: 16px; }
-.card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-.card-head-left { display: flex; align-items: center; gap: 12px; }
-.heartbeat {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
+/* Component-specific only. All tokens come from .wc-shell scope. */
+.wc-card-group-pulse {
+    padding: var(--s16) var(--s20);
+}
+
+/* Animated pulsing dot, replaces emoji-like heart with brand-token red */
+.gp-pulse-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--r-pill);
     background: var(--wc-accent);
-    animation: heartbeat 1.2s infinite ease-in-out;
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.6), 0 0 6px rgba(220, 38, 38, 0.5);
+    animation: gp-beat 1.2s ease-in-out infinite;
 }
-@keyframes heartbeat {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.4); opacity: 0.6; }
+@keyframes gp-beat {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.55), 0 0 6px rgba(220, 38, 38, 0.5); }
+    50% { transform: scale(1.35); box-shadow: 0 0 0 5px rgba(220, 38, 38, 0), 0 0 12px rgba(220, 38, 38, 0.3); }
 }
-.card-title { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1.5px; }
-.card-meta { font-size: 11px; color: var(--wc-text-3); text-transform: uppercase; letter-spacing: 0.5px; }
-.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
-.stat { padding: 10px; border-radius: 6px; border: 1px solid; }
-.stat[data-tone="red"] { background: rgba(220, 38, 38, 0.08); border-color: rgba(220, 38, 38, 0.2); }
-.stat[data-tone="green"] { background: rgba(34, 197, 94, 0.08); border-color: rgba(34, 197, 94, 0.2); }
-.stat[data-tone="yellow"] { background: rgba(234, 179, 8, 0.08); border-color: rgba(234, 179, 8, 0.2); }
-.stat-num { font-family: 'Barlow', sans-serif; font-size: 22px; font-weight: 700; }
-.stat[data-tone="red"] .stat-num { color: #fca5a5; }
-.stat[data-tone="green"] .stat-num { color: #86efac; }
-.stat[data-tone="yellow"] .stat-num { color: #fde047; }
-.stat-label { font-size: 10px; color: var(--wc-text-3); text-transform: uppercase; letter-spacing: 0.5px; }
-.events { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-.event-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 12px; background: rgba(255, 255, 255, 0.03);
-    border-left: 2px solid var(--wc-accent);
-    font-size: 13px;
-}
-.event-row[data-type="aggregate"] { border-left-color: #94a3b8; }
-.event-row[data-type="streak_milestone"] { border-left-color: #fde047; }
-.event-time { color: var(--wc-text-3); font-size: 11px; flex-shrink: 0; margin-left: 8px; }
-.see-all {
-    width: 100%; text-align: right; padding: 4px 0;
-    color: var(--wc-accent); font-size: 12px; text-decoration: underline;
-    background: transparent; border: 0; cursor: pointer;
-}
-.skeleton-line { height: 14px; background: var(--wc-bg-tertiary); border-radius: 4px; margin-bottom: 8px; }
 @media (prefers-reduced-motion: reduce) {
-    .heartbeat { animation: none; }
+    .gp-pulse-dot { animation: none; }
+}
+
+/* Stats grid reuses .stat-card variant pattern (red/green/amber/purple)
+   from DashboardStats.vue — definitions live in wc-shell.css.
+   This component just lays them out 3-up. */
+.gp-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s8);
+    margin-top: var(--s12);
+    margin-bottom: var(--s16);
+}
+
+/* Events list — uses --wc-bg3 for subtle row bg, accent left rule.
+   Variants by event type via data-type. */
+.gp-events {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: var(--s12);
+}
+.gp-event {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s8);
+    padding: var(--s8) var(--s12);
+    background: var(--wc-bg3);
+    border: 1px solid var(--wc-border);
+    border-left: 2px solid var(--wc-accent);
+    border-radius: var(--r-sm);
+    font: 400 13px/1.4 var(--fs);
+    color: var(--wc-text-2);
+    transition: background 200ms var(--ease-out), border-color 200ms var(--ease-out);
+}
+.gp-event:hover {
+    background: var(--wc-bg4);
+}
+.gp-event[data-type="aggregate"] { border-left-color: var(--wc-text-3); }
+.gp-event[data-type="streak_milestone"] { border-left-color: var(--wc-amber); }
+.gp-event[data-type="achievement"] { border-left-color: var(--wc-purple); }
+.gp-event-text strong {
+    color: var(--wc-text);
+    font-weight: 600;
+    margin-right: 4px;
+}
+.gp-event-time {
+    color: var(--wc-text-3);
+    font-size: 11px;
+    flex-shrink: 0;
+    text-transform: lowercase;
+}
+
+/* "Ver todo" CTA — minimal, accent text, arrow icon */
+.gp-see-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    padding: 6px 0;
+    background: transparent;
+    border: 0;
+    color: var(--wc-accent);
+    font: 600 12px/1 var(--fs);
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: color 200ms var(--ease-out), gap 200ms var(--ease-out);
+}
+.gp-see-all:hover {
+    color: var(--wc-accent-2);
+    gap: 10px;
+}
+.gp-see-all svg { transition: transform 200ms var(--ease-out); }
+
+/* Skeleton — same primitive used elsewhere in dashboard */
+.gp-skel-line {
+    height: 14px;
+    background: linear-gradient(90deg, var(--wc-bg3), var(--wc-bg4), var(--wc-bg3));
+    background-size: 200% 100%;
+    border-radius: var(--r-sm);
+    margin-bottom: var(--s8);
+    animation: gp-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes gp-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .gp-skel-line { animation: none; }
 }
 </style>
 ```
 
-- [ ] **Step 2: Commit**
+- [ ] **Step 2: Add desktop grid span (matches sibling cards)**
+
+Open `resources/css/wc-shell-tabs/dashboard.css`. Inside the existing `@media (min-width: 1024px)` block, after `.wc-shell--dashboard .wc-card-dashboard-coach{ grid-column:span 4; }`, add:
+
+```css
+  .wc-shell--dashboard .wc-card-group-pulse{ grid-column:span 12; }
+```
+
+(Full width on desktop — matches `.wc-card-dashboard-missions` and `.wc-card-dashboard-profile`.)
+
+- [ ] **Step 3: Commit**
 
 ```bash
-git add resources/js/vue/components/dashboard/DashboardGroupPulse.vue
-git commit -m "feat(group-pulse): DashboardGroupPulse widget con heartbeat + 3 stats + 3 eventos"
+git add resources/js/vue/components/dashboard/DashboardGroupPulse.vue resources/css/wc-shell-tabs/dashboard.css
+git commit -m "feat(group-pulse): DashboardGroupPulse widget con tokens wc-shell + grid span 12"
 ```
 
 ---
@@ -1397,6 +1531,18 @@ git commit -m "feat(group-pulse): insertar DashboardGroupPulse en Dashboard.vue 
 
 **Files:**
 - Create: `resources/js/vue/components/community/GroupPulseFeed.vue`
+
+### Design system mandate
+
+This component renders inside `CommunityFeed.vue`. CommunityFeed is NOT scoped under `.wc-shell--dashboard`, so component CSS must NOT depend on `--wc-bg2`, `--wc-bg3` etc. (those are scoped to `.wc-shell`). Instead, **wrap the component root in `.wc-shell` to inherit all dashboard tokens**. This keeps the visual language identical to the Dashboard.
+
+Use only these primitives:
+- Fonts: `var(--fd)` (Oswald) for titles, `var(--fs)` (Raleway) for body.
+- Tokens: `var(--wc-accent)`, `var(--wc-text)`, `var(--wc-text-2)`, `var(--wc-text-3)`, `var(--wc-bg2)`, `var(--wc-bg3)`, `var(--wc-bg4)`, `var(--wc-border)`, `var(--wc-amber)`, `var(--wc-purple)`, `var(--wc-green)`.
+- Spacing/radius: `var(--s8)`, `var(--s12)`, `var(--s16)`, `var(--r-sm)`, `var(--r-md)`, `var(--r-pill)`.
+- Shadows/easings: `var(--sh-soft)`, `var(--ease-out)`, `var(--ease-spring)`.
+
+Avatar gradients use the same conic+linear pattern as `.wc-shell .avatar` from `wc-shell.css:174` (red-to-deep-red linear, conic ring border). Reuse that pattern, do not invent new gradients.
 
 - [ ] **Step 1: Create component**
 
@@ -1448,119 +1594,238 @@ onMounted(() => load(true));
 </script>
 
 <template>
-  <section class="group-pulse-feed">
-    <div class="filters">
-      <button
-        v-for="opt in TIME_OPTIONS"
-        :key="opt.key"
-        type="button"
-        class="filter-pill"
-        :class="{ active: time === opt.key }"
-        @click="setTime(opt.key)"
-      >
-        {{ opt.label }}
-      </button>
-    </div>
-
-    <div v-if="loading && events.length === 0" class="empty-state">
-      Cargando latido del grupo...
-    </div>
-
-    <div v-else-if="events.length === 0" class="empty-state">
-      Sin actividad del grupo en este rango.
-    </div>
-
-    <div v-else class="events-list">
-      <div
-        v-for="(ev, idx) in events"
-        :key="idx"
-        class="event-card"
-        :data-type="ev.type"
-      >
-        <div v-if="ev.client_initials" class="avatar">{{ ev.client_initials }}</div>
-        <div v-else class="avatar avatar-aggregate">{{ ev.people_count }}</div>
-
-        <div class="body">
-          <div class="headline">
-            <strong v-if="ev.client_name">{{ ev.client_name }}</strong>
-            {{ ev.headline }}
-          </div>
-          <div v-if="ev.delta" class="meta">{{ ev.delta }}</div>
-          <div v-if="ev.extra" class="meta">{{ ev.extra }}</div>
-          <div v-if="ev.preview_initials" class="avatar-stack">
-            <span
-              v-for="(init, i) in ev.preview_initials"
-              :key="i"
-              class="avatar-mini"
-            >{{ init }}</span>
-          </div>
-          <div v-if="ev.minutes_ago !== undefined" class="time">
-            hace {{ ev.minutes_ago }}min
-          </div>
-        </div>
+  <!-- .wc-shell wrapper inherits dashboard tokens -->
+  <div class="wc-shell">
+    <section class="gpf-root">
+      <div class="gpf-filters">
+        <button
+          v-for="opt in TIME_OPTIONS"
+          :key="opt.key"
+          type="button"
+          class="gpf-filter"
+          :class="{ active: time === opt.key }"
+          @click="setTime(opt.key)"
+        >
+          {{ opt.label }}
+        </button>
       </div>
-    </div>
 
-    <button
-      v-if="hasMore"
-      type="button"
-      class="load-more"
-      :disabled="loading"
-      @click="loadMore"
-    >
-      {{ loading ? 'Cargando...' : 'Cargar más' }}
-    </button>
-  </section>
+      <div v-if="loading && events.length === 0" class="gpf-empty">
+        Cargando latido del grupo...
+      </div>
+
+      <div v-else-if="events.length === 0" class="gpf-empty">
+        Sin actividad del grupo en este rango.
+      </div>
+
+      <div v-else class="gpf-list">
+        <article
+          v-for="(ev, idx) in events"
+          :key="idx"
+          class="gpf-card"
+          :data-type="ev.type"
+        >
+          <div v-if="ev.client_initials" class="gpf-avatar">{{ ev.client_initials }}</div>
+          <div v-else class="gpf-avatar gpf-avatar--aggregate">{{ ev.people_count }}</div>
+
+          <div class="gpf-body">
+            <div class="gpf-headline">
+              <strong v-if="ev.client_name">{{ ev.client_name }}</strong>
+              <span>{{ ev.headline }}</span>
+            </div>
+            <div v-if="ev.delta" class="gpf-meta">{{ ev.delta }}</div>
+            <div v-if="ev.extra" class="gpf-meta">{{ ev.extra }}</div>
+            <div v-if="ev.preview_initials" class="gpf-stack" aria-hidden="true">
+              <span
+                v-for="(init, i) in ev.preview_initials"
+                :key="i"
+                class="gpf-stack-item"
+              >{{ init }}</span>
+            </div>
+            <div v-if="ev.minutes_ago !== undefined" class="gpf-time tnum">
+              hace {{ ev.minutes_ago }}min
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <button
+        v-if="hasMore"
+        type="button"
+        class="gpf-load-more"
+        :disabled="loading"
+        @click="loadMore"
+      >
+        {{ loading ? 'Cargando...' : 'Cargar más' }}
+      </button>
+    </section>
+  </div>
 </template>
 
 <style scoped>
-.group-pulse-feed { display: flex; flex-direction: column; gap: 12px; }
-.filters { display: flex; gap: 8px; }
-.filter-pill {
-    padding: 4px 12px; border-radius: 999px; font-size: 12px;
-    background: transparent; color: var(--wc-text-3); border: 1px solid var(--wc-border);
+/* Component-specific. Tokens come from .wc-shell wrapper. */
+.gpf-root {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s12);
+    color: var(--wc-text);
+    font-family: var(--fs);
+}
+
+/* Filter pills — match .chip pattern from wc-shell.css */
+.gpf-filters {
+    display: flex;
+    gap: var(--s8);
+    flex-wrap: wrap;
+}
+.gpf-filter {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 12px;
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: var(--wc-text-2);
+    border: 1px solid var(--wc-border);
+    font: 600 11px/1 var(--fs);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     cursor: pointer;
+    transition: color 180ms var(--ease-out), background 180ms var(--ease-out), border-color 180ms var(--ease-out);
 }
-.filter-pill.active {
-    background: rgba(220, 38, 38, 0.15);
-    color: #fca5a5;
-    border-color: rgba(220, 38, 38, 0.3);
+.gpf-filter:hover {
+    color: var(--wc-text);
+    background: rgba(255, 255, 255, 0.04);
 }
-.empty-state { padding: 24px; text-align: center; color: var(--wc-text-3); font-size: 13px; }
-.events-list { display: flex; flex-direction: column; gap: 10px; }
-.event-card {
-    display: flex; gap: 12px; padding: 14px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--wc-border); border-radius: 8px;
+.gpf-filter.active {
+    color: #FCA5A5;
+    background: rgba(220, 38, 38, 0.12);
+    border-color: rgba(220, 38, 38, 0.30);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
-.event-card[data-type="pr"] { background: rgba(220, 38, 38, 0.05); border-color: rgba(220, 38, 38, 0.15); }
-.event-card[data-type="streak_milestone"] { background: rgba(234, 179, 8, 0.05); border-color: rgba(234, 179, 8, 0.15); }
-.avatar {
-    width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
-    background: linear-gradient(135deg, var(--wc-accent), #7f1d1d);
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 14px; color: white;
+
+/* Empty state */
+.gpf-empty {
+    padding: var(--s24);
+    text-align: center;
+    color: var(--wc-text-3);
+    font-size: 13px;
 }
-.avatar-aggregate { background: linear-gradient(135deg, #fde047, #ca8a04); color: #0a0a0a; }
-.body { flex: 1; }
-.headline { font-size: 14px; line-height: 1.4; }
-.meta { font-size: 12px; color: var(--wc-text-3); margin-top: 4px; }
-.avatar-stack { display: flex; margin-top: 8px; }
-.avatar-mini {
-    width: 24px; height: 24px; border-radius: 50%;
-    background: var(--wc-bg-tertiary);
-    border: 2px solid var(--wc-bg);
-    margin-left: -6px; font-size: 10px;
-    display: flex; align-items: center; justify-content: center; color: var(--wc-text-2);
+
+/* Event cards list */
+.gpf-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s8);
 }
-.avatar-mini:first-child { margin-left: 0; }
-.time { font-size: 11px; color: var(--wc-text-3); margin-top: 6px; text-align: right; }
-.load-more {
-    padding: 10px; background: var(--wc-bg-tertiary);
-    border: 1px solid var(--wc-border); border-radius: 6px;
-    color: var(--wc-text-2); font-size: 13px; cursor: pointer;
+.gpf-card {
+    display: flex;
+    gap: var(--s12);
+    padding: var(--s12) var(--s16);
+    background: var(--wc-bg3);
+    border: 1px solid var(--wc-border);
+    border-left: 3px solid var(--wc-accent);
+    border-radius: var(--r-md);
+    box-shadow: var(--sh-soft);
+    transition: background 200ms var(--ease-out), transform 200ms var(--ease-spring), box-shadow 200ms var(--ease-out);
 }
-.load-more:disabled { opacity: 0.6; cursor: not-allowed; }
+.gpf-card:hover {
+    background: var(--wc-bg4);
+    transform: translateY(-1px);
+}
+.gpf-card[data-type="aggregate"] { border-left-color: var(--wc-text-3); }
+.gpf-card[data-type="streak_milestone"] { border-left-color: var(--wc-amber); }
+.gpf-card[data-type="achievement"] { border-left-color: var(--wc-purple); }
+
+/* Avatar — same conic ring pattern as .wc-shell .avatar */
+.gpf-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--r-pill);
+    flex-shrink: 0;
+    position: relative;
+    background:
+      linear-gradient(135deg, #DC2626 0%, #7F1D1D 100%) padding-box,
+      conic-gradient(from 140deg, #DC2626, #71717A 50%, #DC2626 100%) border-box;
+    border: 2px solid transparent;
+    display: grid;
+    place-items: center;
+    font-family: var(--fd);
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+    letter-spacing: 0.02em;
+}
+.gpf-avatar--aggregate {
+    background:
+      linear-gradient(135deg, var(--wc-amber) 0%, #92400E 100%) padding-box,
+      conic-gradient(from 140deg, var(--wc-amber), #71717A 50%, var(--wc-amber) 100%) border-box;
+    color: #1A1A1A;
+}
+
+.gpf-body { flex: 1; min-width: 0; }
+.gpf-headline {
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--wc-text-2);
+}
+.gpf-headline strong {
+    color: var(--wc-text);
+    font-weight: 600;
+    margin-right: 4px;
+}
+.gpf-meta {
+    font-size: 12px;
+    color: var(--wc-text-3);
+    margin-top: 4px;
+}
+
+/* Mini avatar stack (for aggregate event preview) */
+.gpf-stack {
+    display: flex;
+    margin-top: var(--s8);
+}
+.gpf-stack-item {
+    width: 24px;
+    height: 24px;
+    border-radius: var(--r-pill);
+    background: var(--wc-bg4);
+    border: 2px solid var(--wc-bg2);
+    margin-left: -6px;
+    font: 600 10px/1 var(--fs);
+    display: grid;
+    place-items: center;
+    color: var(--wc-text-2);
+}
+.gpf-stack-item:first-child { margin-left: 0; }
+
+.gpf-time {
+    font-size: 11px;
+    color: var(--wc-text-3);
+    margin-top: 6px;
+    text-align: right;
+    text-transform: lowercase;
+}
+
+/* Load-more — secondary button style consistent with dashboard */
+.gpf-load-more {
+    padding: 10px var(--s16);
+    background: var(--wc-bg3);
+    border: 1px solid var(--wc-border);
+    border-radius: var(--r-sm);
+    color: var(--wc-text-2);
+    font: 600 13px/1 var(--fs);
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background 200ms var(--ease-out), color 200ms var(--ease-out);
+}
+.gpf-load-more:hover:not(:disabled) {
+    background: var(--wc-bg4);
+    color: var(--wc-text);
+}
+.gpf-load-more:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 </style>
 ```
 
@@ -1690,37 +1955,101 @@ autoshareStreak.value = !!response.data.autoshare_streak;
 
 - [ ] **Step 3: Add UI section in template**
 
-Find a sensible position (after notification preferences). Insert:
+Find a sensible position (after notification preferences) and follow the same `card`/`section` pattern that ClientSettings already uses. Use the dashboard token pill toggle (custom checkbox styled with brand red when checked):
 
 ```vue
-<section class="card section">
-  <h3 class="card-title">Privacidad de actividad</h3>
-  <p class="card-meta">Controla qué eventos tuyos aparecen en el Latido del Grupo de tu coach.</p>
+<section class="card section gp-privacy-card" :style="{ animationDelay: '180ms' }">
+  <div class="card-head">
+    <div class="card-head-left">
+      <span class="card-title">Privacidad de actividad</span>
+    </div>
+    <span class="card-meta">Latido del grupo</span>
+  </div>
+  <p class="gp-privacy-desc">Controla qué eventos tuyos aparecen en el Latido del Grupo de tu coach. Por defecto todos están activos.</p>
 
-  <label class="toggle-row">
+  <label class="gp-toggle">
     <input type="checkbox" v-model="autoshareWorkout" @change="saveAutoshare">
-    <span>Mostrar mis entrenamientos al grupo</span>
+    <span class="gp-toggle-track" aria-hidden="true"></span>
+    <span class="gp-toggle-label">Mostrar mis entrenamientos</span>
   </label>
-  <label class="toggle-row">
+  <label class="gp-toggle">
     <input type="checkbox" v-model="autosharePr" @change="saveAutoshare">
-    <span>Mostrar mis PRs al grupo</span>
+    <span class="gp-toggle-track" aria-hidden="true"></span>
+    <span class="gp-toggle-label">Mostrar mis PRs</span>
   </label>
-  <label class="toggle-row">
+  <label class="gp-toggle">
     <input type="checkbox" v-model="autoshareMedal" @change="saveAutoshare">
-    <span>Mostrar mis logros al grupo</span>
+    <span class="gp-toggle-track" aria-hidden="true"></span>
+    <span class="gp-toggle-label">Mostrar mis logros</span>
   </label>
-  <label class="toggle-row">
+  <label class="gp-toggle">
     <input type="checkbox" v-model="autoshareWeight" @change="saveAutoshare">
-    <span>Mostrar cambios de peso al grupo</span>
+    <span class="gp-toggle-track" aria-hidden="true"></span>
+    <span class="gp-toggle-label">Mostrar cambios de peso</span>
   </label>
-  <label class="toggle-row">
+  <label class="gp-toggle">
     <input type="checkbox" v-model="autoshareStreak" @change="saveAutoshare">
-    <span>Mostrar mi racha al grupo</span>
+    <span class="gp-toggle-track" aria-hidden="true"></span>
+    <span class="gp-toggle-label">Mostrar mi racha</span>
   </label>
 </section>
 ```
 
-If `.toggle-row` style does not exist, add minimal scoped styles. Otherwise reuse existing.
+Add scoped styles using only tokens (no hardcoded hex):
+
+```css
+.gp-privacy-card { padding: var(--s16) var(--s20); }
+.gp-privacy-desc {
+    font: 400 13px/1.5 var(--fs);
+    color: var(--wc-text-2);
+    margin: var(--s8) 0 var(--s16);
+}
+.gp-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--s12);
+    padding: var(--s8) 0;
+    cursor: pointer;
+    color: var(--wc-text);
+    font: 500 14px/1.4 var(--fs);
+    border-bottom: 1px solid var(--wc-border);
+}
+.gp-toggle:last-child { border-bottom: 0; }
+.gp-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.gp-toggle-track {
+    position: relative;
+    width: 38px;
+    height: 22px;
+    border-radius: var(--r-pill);
+    background: var(--wc-bg4);
+    border: 1px solid var(--wc-border);
+    transition: background 200ms var(--ease-out), border-color 200ms var(--ease-out);
+    flex-shrink: 0;
+}
+.gp-toggle-track::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: var(--r-pill);
+    background: var(--wc-text-2);
+    transition: transform 200ms var(--ease-spring), background 200ms var(--ease-out);
+}
+.gp-toggle input:checked + .gp-toggle-track {
+    background: rgba(220, 38, 38, 0.20);
+    border-color: rgba(220, 38, 38, 0.40);
+}
+.gp-toggle input:checked + .gp-toggle-track::after {
+    transform: translateX(16px);
+    background: var(--wc-accent);
+}
+.gp-toggle:hover .gp-toggle-track { border-color: var(--wc-text-3); }
+.gp-toggle-label { flex: 1; }
+```
+
+If ClientSettings already has a toggle component (e.g. `<Toggle v-model=...>`), use it instead and skip the custom CSS — match the existing pattern.
 
 - [ ] **Step 4: Visual smoke check**
 
@@ -1756,25 +2085,83 @@ const props = defineProps({
 
 - [ ] **Step 2: Add comparativa row in template**
 
-Inside the heatmap card, after the grid, add:
+Inside the heatmap card, after the grid, add the row using only tokens:
 
 ```vue
-<div v-if="userVsGroup" class="user-vs-group">
-  <span>Tu promedio: {{ userVsGroup.user }}/sem</span>
-  <span>Grupo: {{ userVsGroup.group_avg }}/sem</span>
-  <span class="rank">Top {{ userVsGroup.rank_pct }}% del grupo</span>
+<div v-if="userVsGroup" class="hm-vs-group">
+  <span class="hm-vs-item">
+    <span class="hm-vs-label">Tu promedio</span>
+    <span class="hm-vs-num tnum">{{ userVsGroup.user }}<span class="hm-vs-unit">/sem</span></span>
+  </span>
+  <span class="hm-vs-divider" aria-hidden="true"></span>
+  <span class="hm-vs-item">
+    <span class="hm-vs-label">Grupo</span>
+    <span class="hm-vs-num tnum">{{ userVsGroup.group_avg }}<span class="hm-vs-unit">/sem</span></span>
+  </span>
+  <span class="hm-vs-rank">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+      <polyline points="16 7 22 7 22 13"></polyline>
+    </svg>
+    Top {{ userVsGroup.rank_pct }}%
+  </span>
 </div>
 ```
 
-Add scoped styles:
+Add scoped styles using only tokens:
 
 ```css
-.user-vs-group {
-    display: flex; justify-content: space-between;
-    font-size: 10px; color: var(--wc-text-3);
-    margin-top: 6px;
+.hm-vs-group {
+    display: flex;
+    align-items: center;
+    gap: var(--s12);
+    margin-top: var(--s12);
+    padding-top: var(--s12);
+    border-top: 1px solid var(--wc-border);
+    font-family: var(--fs);
 }
-.user-vs-group .rank { color: #fde047; }
+.hm-vs-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.hm-vs-label {
+    font-size: 10px;
+    color: var(--wc-text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.hm-vs-num {
+    font-family: var(--fd);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--wc-text);
+    letter-spacing: -0.01em;
+}
+.hm-vs-unit {
+    font-size: 11px;
+    color: var(--wc-text-3);
+    font-weight: 400;
+    margin-left: 2px;
+}
+.hm-vs-divider {
+    width: 1px;
+    align-self: stretch;
+    background: var(--wc-border);
+}
+.hm-vs-rank {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    padding: 4px 10px;
+    border-radius: var(--r-pill);
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.30);
+    color: var(--wc-amber);
+    font: 600 11px/1 var(--fs);
+    letter-spacing: 0.02em;
+}
 ```
 
 - [ ] **Step 3: Pass prop from Dashboard.vue**
@@ -1829,20 +2216,37 @@ peerCounts: { type: Object, default: () => ({}) }, // { mission_id: count }
 In the mission row template, add inside the mission item (next to title or progress):
 
 ```vue
-<span v-if="peerCounts[mission.id] > 0" class="peer-pill">
-  🔥 {{ peerCounts[mission.id] }} contigo
+<span v-if="peerCounts[mission.id] > 0" class="ms-peer-pill">
+  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5Z"></path>
+  </svg>
+  <span class="tnum">{{ peerCounts[mission.id] }}</span>
+  contigo
 </span>
 ```
 
-Scoped style:
+Scoped style — uses only tokens, mirrors the `.chip-accent` pattern from `wc-shell.css`:
 
 ```css
-.peer-pill {
-    display: inline-block; padding: 2px 8px;
-    background: rgba(220, 38, 38, 0.1);
+.ms-peer-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px 4px 8px;
+    border-radius: var(--r-pill);
+    background: rgba(220, 38, 38, 0.12);
+    color: #FCA5A5;
+    font: 600 11px/1 var(--fs);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    box-shadow:
+      inset 0 0 0 1px rgba(220, 38, 38, 0.30),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    margin-left: var(--s8);
+}
+.ms-peer-pill svg {
     color: var(--wc-accent);
-    border-radius: 999px; font-size: 11px;
-    margin-left: 8px;
+    flex-shrink: 0;
 }
 ```
 
