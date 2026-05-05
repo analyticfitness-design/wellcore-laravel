@@ -89,6 +89,7 @@ CREATE TABLE food_photos (
 | `routes/web.php` | Agregar ruta `/coach/food-photos` → FoodPhotoReview |
 | `app/Services/PushNotificationService.php` | Agregar 2 métodos nuevos |
 | `resources/views/layouts/coach.blade.php` | Badge de fotos pendientes en nav |
+| `app/Livewire/Client/NutritionPlan.php` | Refactorizar `parseMeals()` + `normalizeMeal()` para delegar a `NutritionPlanParser` |
 | Router Vue / nav cliente | Agregar tab "Mi Alimentación" |
 
 ---
@@ -476,7 +477,7 @@ Con overlay de "Reemplazar" en hover: `absolute inset-0 bg-black/40 flex items-c
 
 ### Botón primario (Subir / Confirmar)
 ```
-bg-wc-accent hover:bg-red-700 text-white
+bg-wc-accent hover:bg-wc-accent-hover text-white
 rounded-lg px-4 py-2 text-sm font-medium
 transition-colors disabled:opacity-50 disabled:cursor-not-allowed
 ```
