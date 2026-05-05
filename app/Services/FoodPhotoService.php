@@ -27,7 +27,8 @@ class FoodPhotoService
         UploadedFile $file,
         string $mealName,
         int $mealIndex,
-        string $photoDate
+        string $photoDate,
+        ?string $clientNote = null
     ): FoodPhoto {
         Validator::make(['photo' => $file], [
             'photo' => 'required|file|mimetypes:image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif|max:15360',
@@ -41,9 +42,11 @@ class FoodPhotoService
 
         $oldFilename = $existing?->filename;
         $newFilename = $this->processImage($file, $client->id);
+        $note = $clientNote !== null ? trim($clientNote) : null;
+        $note = $note === '' ? null : $note;
 
         try {
-            $photo = DB::transaction(function () use ($client, $existing, $mealName, $mealIndex, $photoDate, $newFilename, $file) {
+            $photo = DB::transaction(function () use ($client, $existing, $mealName, $mealIndex, $photoDate, $newFilename, $file, $note) {
                 $payload = [
                     'client_id'  => $client->id,
                     'meal_name'  => $mealName,
@@ -52,6 +55,9 @@ class FoodPhotoService
                     'filename'   => $newFilename,
                     'file_size'  => $file->getSize() ?: null,
                 ];
+                if ($note !== null) {
+                    $payload['client_note'] = $note;
+                }
 
                 if ($existing) {
                     $existing->fill($payload)->save();

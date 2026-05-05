@@ -125,6 +125,13 @@ const headerCount = computed(() => `${pendingCount.value} pendiente${pendingCoun
           <img :src="photo.photo_url" :alt="`Foto de ${photo.meal_name}`"
                class="h-64 w-full object-cover" loading="lazy">
 
+          <!-- Descripcion del cliente -->
+          <div v-if="photo.client_note"
+               class="border-t border-wc-border bg-wc-bg px-4 py-3">
+            <p class="text-[11px] uppercase tracking-wider text-wc-text-tertiary">Descripción del cliente</p>
+            <p class="mt-1 text-sm text-wc-text-secondary">{{ photo.client_note }}</p>
+          </div>
+
           <!-- Actions -->
           <div class="space-y-3 p-4">
             <div v-if="photo.coach_seen" class="flex items-center gap-2 text-sm">
