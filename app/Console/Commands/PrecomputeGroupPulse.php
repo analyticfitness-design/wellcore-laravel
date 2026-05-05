@@ -2,10 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Models\AssignedPlan;
 use App\Models\Client;
+use App\Models\CoachMessage;
 use App\Services\GroupPulseAggregator;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 
 class PrecomputeGroupPulse extends Command
 {
@@ -15,10 +18,34 @@ class PrecomputeGroupPulse extends Command
 
     public function handle(GroupPulseAggregator $aggregator): int
     {
-        $coachIds = Client::where('status', 'activo')
-            ->whereNotNull('coach_id')
-            ->distinct()
-            ->pluck('coach_id');
+        // Coaches con clientes activos via 3-fallback (clients.coach_id es
+        // sparso en prod; la mayoría se asigna via assigned_plans/coach_messages)
+        $coachIds = collect();
+
+        if (Schema::hasColumn('clients', 'coach_id')) {
+            $coachIds = $coachIds->merge(
+                Client::where('status', 'activo')
+                    ->whereNotNull('coach_id')
+                    ->distinct()
+                    ->pluck('coach_id')
+            );
+        }
+
+        $coachIds = $coachIds->merge(
+            AssignedPlan::whereNotNull('assigned_by')
+                ->whereIn('client_id', Client::where('status', 'activo')->pluck('id'))
+                ->distinct()
+                ->pluck('assigned_by')
+        );
+
+        $coachIds = $coachIds->merge(
+            CoachMessage::whereNotNull('coach_id')
+                ->whereIn('client_id', Client::where('status', 'activo')->pluck('id'))
+                ->distinct()
+                ->pluck('coach_id')
+        );
+
+        $coachIds = $coachIds->map(fn ($id) => (int) $id)->unique()->values();
 
         $count = 0;
 
