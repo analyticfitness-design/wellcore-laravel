@@ -20,13 +20,14 @@ class ChurnDetectionCommand extends Command
     {
         $this->info('Running churn detection...');
 
-        $clients = Client::where('status', 'activo')->get();
         $flagged = 0;
 
-        foreach ($clients as $client) {
-            $flagged += $this->checkTrainingInactivity($client);
-            $flagged += $this->checkCheckinInactivity($client);
-        }
+        Client::where('status', 'activo')->chunkById(100, function ($clients) use (&$flagged) {
+            foreach ($clients as $client) {
+                $flagged += $this->checkTrainingInactivity($client);
+                $flagged += $this->checkCheckinInactivity($client);
+            }
+        });
 
         $this->info("Flagged {$flagged} churn risk notifications.");
 
