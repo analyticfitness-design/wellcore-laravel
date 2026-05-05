@@ -8,6 +8,7 @@ import PlanOnboarding from '../../components/PlanOnboarding.vue';
 import DashboardHero from '../../components/dashboard/DashboardHero.vue';
 import DashboardPlanAlert from '../../components/dashboard/DashboardPlanAlert.vue';
 import DashboardStats from '../../components/dashboard/DashboardStats.vue';
+import DashboardGroupPulse from '../../components/dashboard/DashboardGroupPulse.vue';
 import DashboardCheckin from '../../components/dashboard/DashboardCheckin.vue';
 import DashboardMissions from '../../components/dashboard/DashboardMissions.vue';
 import DashboardCoach from '../../components/dashboard/DashboardCoach.vue';
@@ -368,6 +369,9 @@ const weekMarkers = computed(() => {
 
       <!-- §5 STATS GRID 2x2 -->
       <DashboardStats :data="data" :xp-progress="xpProgress" :trained-ring-offset="trainedRingOffset" />
+
+      <!-- §5b LATIDO DEL GRUPO (span 12 desktop) — self-contained: usa useGroupPulse internamente -->
+      <DashboardGroupPulse />
 
       <!-- §6 PROGRESS TIMELINE (span 8 desktop) + §7 COACH (span 4 desktop) lado a lado -->
       <DashboardTimeline :data="data" :week-markers="weekMarkers" />
