@@ -546,9 +546,18 @@ Route::prefix('v/coach/posts')->middleware(['auth:wellcore', 'throttle:api'])->g
     Route::delete('{post}', [ModerationController::class, 'delete'])->whereNumber('post');
 });
 
-// Admin community analytics
+// Admin community analytics + Fase C extensions
 Route::prefix('v/admin/community')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
     Route::get('pulse-cross-coach', [App\Http\Controllers\Api\Admin\CommunityController::class, 'pulseCrossCoach']);
+    Route::get('coaches/{coachId}/analytics', [App\Http\Controllers\Api\Admin\CoachAnalyticsController::class, 'show'])->whereNumber('coachId');
+    Route::post('posts/{postId}/pin', [App\Http\Controllers\Api\Admin\CommunityController::class, 'pinAdminOverride'])->whereNumber('postId');
+    Route::post('posts/{postId}/make-global', [App\Http\Controllers\Api\Admin\CommunityController::class, 'makeGlobal'])->whereNumber('postId');
+});
+
+// Admin notifications preferences
+Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
+    Route::get('notifications/preferences', [App\Http\Controllers\Api\Admin\NotificationPreferencesController::class, 'show']);
+    Route::patch('notifications/preferences', [App\Http\Controllers\Api\Admin\NotificationPreferencesController::class, 'update']);
 });
 
 // Admin moderation queue
