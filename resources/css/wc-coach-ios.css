@@ -824,6 +824,62 @@
 }
 
 /* =================================================================
+   31a · UTILITIES MASIVAS — Refinar elementos comunes en pestañas coach
+   Estos selectores buscan patrones comunes (avatares planos, cards
+   estándar, empty states, badges) y los refinan al estándar iOS
+   sin tocar el código de cada pestaña.
+   ================================================================= */
+
+/* Avatar plano con bg-wc-accent/15 → conic ring effect via :before
+   Aplica a divs/spans pequeños redondos con esa background */
+.coach-ios .rounded-full[class*="bg-wc-accent"] {
+  position: relative;
+  z-index: 1;
+}
+
+/* Cards estándar bg-wc-bg-tertiary border-wc-border → iOS panel style
+   Aplica a TODAS las cards que usan ese patrón en pestañas coach */
+.coach-ios .bg-wc-bg-tertiary.border.border-wc-border,
+.coach-ios .border.border-wc-border.bg-wc-bg-tertiary,
+.coach-ios .rounded-card.border.border-wc-border,
+.coach-ios .rounded-card.bg-wc-bg-tertiary {
+  box-shadow: var(--shadow-card-ios);
+  transition: background var(--t-tap), border-color var(--t-tap), box-shadow var(--t-tap);
+}
+
+/* Botones con bg-wc-accent → glow accent */
+.coach-ios button.bg-wc-accent,
+.coach-ios a.bg-wc-accent {
+  box-shadow: var(--glow-accent-ios);
+  transition: background var(--t-tap), transform var(--t-tap) var(--ease-spring-ios);
+}
+.coach-ios button.bg-wc-accent:active,
+.coach-ios a.bg-wc-accent:active {
+  transform: scale(0.96);
+}
+
+/* Modal backdrop iOS-style: añadir blur cuando hay backdrop-blur-sm */
+.coach-ios .backdrop-blur-sm {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Inputs y textareas dentro de coach-ios → iOS focus ring */
+.coach-ios input[type="text"]:focus,
+.coach-ios input[type="search"]:focus,
+.coach-ios input[type="email"]:focus,
+.coach-ios textarea:focus,
+.coach-ios select:focus {
+  outline: 2px solid rgba(220, 38, 38, 0.3);
+  outline-offset: 1px;
+}
+
+/* Badges chip uniformes: rounded-full + small text */
+.coach-ios span.rounded-full[class*="bg-wc-accent"] {
+  letter-spacing: 0.04em;
+}
+
+/* =================================================================
    31b · UTILITIES — Override Tailwind hidden con specificity boost
    El namespace .coach-ios añade un nivel de specificity, lo que hace
    que las reglas internas (display:flex de topbar-ios, etc.) ganen
