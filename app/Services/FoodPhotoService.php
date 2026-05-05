@@ -30,7 +30,7 @@ class FoodPhotoService
         string $photoDate
     ): FoodPhoto {
         Validator::make(['photo' => $file], [
-            'photo' => 'required|file|image|mimes:jpg,jpeg,png,webp|max:10240',
+            'photo' => 'required|file|mimetypes:image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif|max:15360',
         ])->validate();
 
         $existing = FoodPhoto::withoutGlobalScopes()
