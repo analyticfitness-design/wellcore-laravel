@@ -14,6 +14,8 @@ const stats = computed(() => summary.value?.stats ?? null);
 const topEvents = computed(() => summary.value?.top_events ?? []);
 const bpm = computed(() => summary.value?.bpm ?? 60);
 const activeNow = computed(() => summary.value?.active_now ?? 0);
+const isQuiet = computed(() => Boolean(summary.value?.is_quiet));
+const groupSize = computed(() => summary.value?.group_size ?? 0);
 
 // Heartbeat duration scales with BPM (60 BPM = 1s per beat).
 // Reduced motion → 0s desactiva la animación CSS por completo.
@@ -21,8 +23,18 @@ const heartbeatStyle = computed(() => ({
     animationDuration: reducedMotion.value ? '0s' : `${60 / bpm.value}s`,
 }));
 
+// Meta line: cuando el grupo es solo el usuario (1) o no hay actividad,
+// mostramos copy más humano que "0 activos · 50 BPM".
+const metaText = computed(() => {
+    if (groupSize.value <= 1) return 'Tu grupo crece pronto';
+    if (isQuiet.value) return 'Grupo descansando';
+    return `${activeNow.value} activos · ${bpm.value} BPM`;
+});
+
 function goToCommunity() {
-    router.push('/comunidad?tab=latido');
+    // Vue router registra /client/community (NO /comunidad). Sin /client el
+    // CTA aterrizaba en 404 — bug encontrado en smoke audit 2026-05-05.
+    router.push({ path: '/client/community', query: { tab: 'latido' } });
 }
 </script>
 
@@ -37,7 +49,7 @@ function goToCommunity() {
         <span class="gp-pulse-dot" :style="heartbeatStyle" aria-hidden="true"></span>
         <span class="card-title">Latido del Grupo</span>
       </div>
-      <span class="card-meta tnum">{{ activeNow }} activos · {{ bpm }} BPM</span>
+      <span class="card-meta">{{ metaText }}</span>
     </div>
 
     <div class="gp-stats">

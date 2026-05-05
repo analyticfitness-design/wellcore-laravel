@@ -30,6 +30,11 @@ class GroupPulseController extends Controller
      * 204 when the client has no coach assigned (orphan, e.g. fresh signup
      * without coach yet) so the frontend can hide the section cleanly.
      */
+    /** Allowed query string values — guard against cache cardinality attacks */
+    private const VALID_TIMES = ['today', 'week', 'all'];
+
+    private const VALID_TYPES = ['all', 'pr', 'workout'];
+
     public function index(Request $request): JsonResponse|Response
     {
         $client = $this->resolveClientOrFail($request);
@@ -41,12 +46,11 @@ class GroupPulseController extends Controller
         }
 
         $clientId = (int) $client->id;
-        $scope = $request->query('scope', 'summary');
+        $scope = $request->query('scope', 'summary') === 'feed' ? 'feed' : 'summary';
 
-        return match ($scope) {
-            'feed' => $this->feed($request, $coachId),
-            default => $this->summary($coachId, $clientId),
-        };
+        return $scope === 'feed'
+            ? $this->feed($request, $coachId)
+            : $this->summary($coachId, $clientId);
     }
 
     /**
@@ -87,32 +91,56 @@ class GroupPulseController extends Controller
         return null;
     }
 
+    /**
+     * Summary card payload. Estrategia de cache de 2 niveles:
+     *  - shared (per-coach, 30s) para stats + top_events + bpm + active_now
+     *    [escrito por PrecomputeGroupPulse cron + lazy on miss]
+     *  - per-client (30s) wraps el shared con user_vs_group del cliente.
+     *
+     * Antes (audit pre-fix) cada cliente tenía SU summary cacheado y el
+     * precompute escribía a una key huérfana — Redis bloat sin beneficio.
+     * Audit fix 2026-05-05.
+     */
     private function summary(int $coachId, int $clientId): JsonResponse
     {
-        $key = "wc:group-pulse:v1:{$coachId}:summary:{$clientId}";
+        $clientIds = $this->aggregator->resolveCoachClientIds($coachId);
 
-        $payload = Cache::remember($key, 30, function () use ($coachId, $clientId) {
-            $stats = $this->aggregator->computeStats($coachId);
-            $events = $this->aggregator->buildFeed($coachId, 'today', 'all');
-            $activeNow = (int) (Cache::get('community:active-list-count') ?? 0);
-            $bpm = max(40, min(180, $stats['workouts_today'] * 4 + 40));
+        $sharedKey = "wc:group-pulse:v1:{$coachId}:summary:shared";
+        $shared = Cache::remember($sharedKey, 30, function () use ($coachId, $clientIds) {
+            $stats = $this->aggregator->computeStats($coachId, $clientIds);
+            $events = $this->aggregator->buildFeed($coachId, 'today', 'all', $clientIds);
+            // active_now: idealmente medida real-time (presence channel); fallback 0.
+            $activeNow = (int) (Cache::get('community:active-now-count') ?? 0);
+            $isQuiet = $stats['workouts_today'] === 0
+                && $stats['prs_week'] === 0
+                && $stats['achievements_today'] === 0;
 
             return [
                 'active_now' => $activeNow,
-                'bpm' => $bpm,
+                'bpm' => $isQuiet ? 50 : max(60, min(180, $stats['workouts_today'] * 4 + 60)),
+                'is_quiet' => $isQuiet,
+                'group_size' => $clientIds->count(),
                 'stats' => $stats,
                 'top_events' => array_slice($events, 0, 3),
-                'user_vs_group' => $this->aggregator->userVsGroup($coachId, $clientId),
             ];
         });
 
-        return response()->json($payload);
+        // Wrap shared con la pieza per-client.
+        $userVsGroup = $this->aggregator->userVsGroup($coachId, $clientId, $clientIds);
+
+        return response()->json($shared + ['user_vs_group' => $userVsGroup]);
     }
 
     private function feed(Request $request, int $coachId): JsonResponse
     {
-        $time = $request->query('time', 'today');
-        $type = $request->query('type', 'all');
+        $rawTime = (string) $request->query('time', 'today');
+        $rawType = (string) $request->query('type', 'all');
+
+        // Whitelist guards contra cache cardinality attack:
+        // sin ellos, ?time=foo&type=bar genera N keys distintas con el mismo
+        // payload (default = today/all en el match), inflando Redis.
+        $time = in_array($rawTime, self::VALID_TIMES, true) ? $rawTime : 'today';
+        $type = in_array($rawType, self::VALID_TYPES, true) ? $rawType : 'all';
         $page = max(1, (int) $request->query('page', 1));
         $perPage = min(20, max(5, (int) $request->query('per_page', 10)));
 

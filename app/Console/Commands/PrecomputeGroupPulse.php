@@ -20,6 +20,7 @@ class PrecomputeGroupPulse extends Command
     {
         // Coaches con clientes activos via 3-fallback (clients.coach_id es
         // sparso en prod; la mayoría se asigna via assigned_plans/coach_messages)
+        $activeClientIds = Client::where('status', 'activo')->pluck('id');
         $coachIds = collect();
 
         if (Schema::hasColumn('clients', 'coach_id')) {
@@ -31,19 +32,23 @@ class PrecomputeGroupPulse extends Command
             );
         }
 
-        $coachIds = $coachIds->merge(
-            AssignedPlan::whereNotNull('assigned_by')
-                ->whereIn('client_id', Client::where('status', 'activo')->pluck('id'))
-                ->distinct()
-                ->pluck('assigned_by')
-        );
+        if (Schema::hasTable('assigned_plans')) {
+            $coachIds = $coachIds->merge(
+                AssignedPlan::whereNotNull('assigned_by')
+                    ->whereIn('client_id', $activeClientIds)
+                    ->distinct()
+                    ->pluck('assigned_by')
+            );
+        }
 
-        $coachIds = $coachIds->merge(
-            CoachMessage::whereNotNull('coach_id')
-                ->whereIn('client_id', Client::where('status', 'activo')->pluck('id'))
-                ->distinct()
-                ->pluck('coach_id')
-        );
+        if (Schema::hasTable('coach_messages')) {
+            $coachIds = $coachIds->merge(
+                CoachMessage::whereNotNull('coach_id')
+                    ->whereIn('client_id', $activeClientIds)
+                    ->distinct()
+                    ->pluck('coach_id')
+            );
+        }
 
         $coachIds = $coachIds->map(fn ($id) => (int) $id)->unique()->values();
 
@@ -51,19 +56,24 @@ class PrecomputeGroupPulse extends Command
 
         foreach ($coachIds as $coachId) {
             $coachId = (int) $coachId;
-            $stats = $aggregator->computeStats($coachId);
-            $events = $aggregator->buildFeed($coachId, 'today', 'all');
-            $bpm = max(40, min(180, $stats['workouts_today'] * 4 + 40));
-            $activeNow = (int) (Cache::get('community:active-list-count') ?? 0);
+            $clientIds = $aggregator->resolveCoachClientIds($coachId);
+            $stats = $aggregator->computeStats($coachId, $clientIds);
+            $events = $aggregator->buildFeed($coachId, 'today', 'all', $clientIds);
+            $isQuiet = $stats['workouts_today'] === 0
+                && $stats['prs_week'] === 0
+                && $stats['achievements_today'] === 0;
+            $activeNow = (int) (Cache::get('community:active-now-count') ?? 0);
 
-            // Warm "shared" partial — sin user_vs_group, que depende del cliente.
-            // El controller no consume este key todavía (Task 6 hace su propio
-            // Cache::remember per-client). Hookup como fallback parcial es
-            // tarea futura — esta key ya tiene el shape correcto para entonces.
+            // Shape MUST match GroupPulseController::summary() shared payload —
+            // el controller hace Cache::remember sobre esta key, así que si
+            // pre-existe no recomputa. Audit fix 2026-05-05: antes esta key
+            // era huérfana (controller usaba :summary:{clientId}).
             $key = "wc:group-pulse:v1:{$coachId}:summary:shared";
             Cache::put($key, [
                 'active_now' => $activeNow,
-                'bpm' => $bpm,
+                'bpm' => $isQuiet ? 50 : max(60, min(180, $stats['workouts_today'] * 4 + 60)),
+                'is_quiet' => $isQuiet,
+                'group_size' => $clientIds->count(),
                 'stats' => $stats,
                 'top_events' => array_slice($events, 0, 3),
             ], 30);
