@@ -4,11 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
 use App\Http\Controllers\Controller;
+use App\Models\AssignedPlan;
+use App\Models\CoachMessage;
 use App\Services\GroupPulseAggregator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class GroupPulseController extends Controller
 {
@@ -30,11 +34,12 @@ class GroupPulseController extends Controller
     {
         $client = $this->resolveClientOrFail($request);
 
-        if (! $client->coach_id) {
+        $coachId = $this->resolveClientCoachId((int) $client->id);
+
+        if ($coachId === null) {
             return response()->noContent();
         }
 
-        $coachId = (int) $client->coach_id;
         $clientId = (int) $client->id;
         $scope = $request->query('scope', 'summary');
 
@@ -42,6 +47,44 @@ class GroupPulseController extends Controller
             'feed' => $this->feed($request, $coachId),
             default => $this->summary($coachId, $clientId),
         };
+    }
+
+    /**
+     * Resolve coach_id for a client using the 3-fallback rule (matches
+     * ClientController::myCoach). clients.coach_id is sparsely populated
+     * in production — most assignments live in assigned_plans.assigned_by
+     * or coach_messages.coach_id.
+     */
+    private function resolveClientCoachId(int $clientId): ?int
+    {
+        if (Schema::hasColumn('clients', 'coach_id')) {
+            $direct = DB::table('clients')->where('id', $clientId)->value('coach_id');
+            if ($direct) {
+                return (int) $direct;
+            }
+        }
+
+        if (Schema::hasTable('assigned_plans')) {
+            $fromPlan = AssignedPlan::where('client_id', $clientId)
+                ->whereNotNull('assigned_by')
+                ->orderByDesc('valid_from')
+                ->value('assigned_by');
+            if ($fromPlan) {
+                return (int) $fromPlan;
+            }
+        }
+
+        if (Schema::hasTable('coach_messages')) {
+            $fromMsg = CoachMessage::where('client_id', $clientId)
+                ->whereNotNull('coach_id')
+                ->orderByDesc('created_at')
+                ->value('coach_id');
+            if ($fromMsg) {
+                return (int) $fromMsg;
+            }
+        }
+
+        return null;
     }
 
     private function summary(int $coachId, int $clientId): JsonResponse
