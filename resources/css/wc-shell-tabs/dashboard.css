@@ -14,4 +14,5 @@
   .wc-shell--dashboard .wc-card-dashboard-summary{ grid-column:span 3; }
   .wc-shell--dashboard .wc-card-dashboard-profile{ grid-column:span 12; }
   .wc-shell--dashboard .wc-card-dashboard-coach{ grid-column:span 4; }
+  .wc-shell--dashboard .wc-card-group-pulse{ grid-column:span 12; }
 }
