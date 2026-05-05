@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\BroadcastController;
 use App\Http\Controllers\Api\Admin\Marketing\CoachProfileController;
 use App\Http\Controllers\Api\Admin\Marketing\DropAssetController;
 use App\Http\Controllers\Api\Admin\Marketing\DropReviewController;
 use App\Http\Controllers\Api\Admin\Marketing\QueueController;
+use App\Http\Controllers\Api\Admin\ModerationQueueController;
 use App\Http\Controllers\Api\Admin\PaymentProofReviewController;
 use App\Http\Controllers\Api\AdminAIGeneratorController;
 use App\Http\Controllers\Api\AdminAuditLogController;
@@ -16,10 +18,14 @@ use App\Http\Controllers\Api\AdminImpersonateController;
 use App\Http\Controllers\Api\AdminPlanTicketController;
 use App\Http\Controllers\Api\AdminToolsController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\Client\FoodPhotoController;
 use App\Http\Controllers\Api\ClientController;
+use App\Http\Controllers\Api\Coach\CommunityController;
 use App\Http\Controllers\Api\Coach\ContractController;
+use App\Http\Controllers\Api\Coach\FoodPhotoReviewController;
 use App\Http\Controllers\Api\Coach\InvitationController;
 use App\Http\Controllers\Api\Coach\MarketingProfileController;
+use App\Http\Controllers\Api\Coach\ModerationController;
 use App\Http\Controllers\Api\Coach\PieceStateController;
 use App\Http\Controllers\Api\Coach\StrategyAssetController;
 use App\Http\Controllers\Api\Coach\StrategyController;
@@ -34,6 +40,7 @@ use App\Http\Controllers\Api\MedalController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\NutritionController;
 use App\Http\Controllers\Api\PaymentProofController;
+use App\Http\Controllers\Api\PostReportController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PublicFormController;
 use App\Http\Controllers\Api\PulsoController;
@@ -147,13 +154,13 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'plan.lock:strict', 'thr
     Route::post('/ai-nutrition/estimate', [NutritionController::class, 'estimateFood'])->middleware('ensure.plan:elite');
 
     // Food Tracking — fotos de comida revisadas por el coach
-    Route::get('/food-photos', [\App\Http\Controllers\Api\Client\FoodPhotoController::class, 'index']);
-    Route::get('/food-photos/history', [\App\Http\Controllers\Api\Client\FoodPhotoController::class, 'history']);
-    Route::post('/food-photos', [\App\Http\Controllers\Api\Client\FoodPhotoController::class, 'store'])
+    Route::get('/food-photos', [FoodPhotoController::class, 'index']);
+    Route::get('/food-photos/history', [FoodPhotoController::class, 'history']);
+    Route::post('/food-photos', [FoodPhotoController::class, 'store'])
         ->middleware('throttle:20,1');
-    Route::patch('/food-photos/{id}/note', [\App\Http\Controllers\Api\Client\FoodPhotoController::class, 'updateNote'])
+    Route::patch('/food-photos/{id}/note', [FoodPhotoController::class, 'updateNote'])
         ->where('id', '[0-9]+');
-    Route::delete('/food-photos/{id}', [\App\Http\Controllers\Api\Client\FoodPhotoController::class, 'destroy'])
+    Route::delete('/food-photos/{id}', [FoodPhotoController::class, 'destroy'])
         ->where('id', '[0-9]+');
 });
 
@@ -273,10 +280,10 @@ Route::prefix('v/coach')->middleware(['auth:wellcore', 'throttle:api', 'role:coa
         Route::post('/checkins/{id}/reply', [CoachController::class, 'checkinReply'])->where('id', '[0-9]+');
 
         // Food Photo Review (coach)
-        Route::get('/food-photos', [\App\Http\Controllers\Api\Coach\FoodPhotoReviewController::class, 'index']);
-        Route::post('/food-photos/{id}/react', [\App\Http\Controllers\Api\Coach\FoodPhotoReviewController::class, 'react'])->where('id', '[0-9]+');
-        Route::patch('/food-photos/{id}/note', [\App\Http\Controllers\Api\Coach\FoodPhotoReviewController::class, 'saveNote'])->where('id', '[0-9]+');
-        Route::post('/food-photos/{id}/seen', [\App\Http\Controllers\Api\Coach\FoodPhotoReviewController::class, 'markSeen'])->where('id', '[0-9]+');
+        Route::get('/food-photos', [FoodPhotoReviewController::class, 'index']);
+        Route::post('/food-photos/{id}/react', [FoodPhotoReviewController::class, 'react'])->where('id', '[0-9]+');
+        Route::patch('/food-photos/{id}/note', [FoodPhotoReviewController::class, 'saveNote'])->where('id', '[0-9]+');
+        Route::post('/food-photos/{id}/seen', [FoodPhotoReviewController::class, 'markSeen'])->where('id', '[0-9]+');
         Route::get('/messages', [CoachController::class, 'messages']);
         Route::post('/messages', [CoachController::class, 'sendMessage']);
         Route::post('/broadcast', [CoachController::class, 'broadcast']);
@@ -506,4 +513,48 @@ Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:adm
     Route::get('/tools', [AdminToolsController::class, 'catalog']);
     Route::get('/tools/history', [AdminToolsController::class, 'history']);
     Route::post('/tools/{id}/run', [AdminToolsController::class, 'run'])->where('id', '[\w\-]+');
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// Community Cross-Role (Fase A) — Coach / Admin / Client community endpoints
+// ───────────────────────────────────────────────────────────────────────────
+
+// Coach community feed + pulse + announce (auth-only — role check in controllers)
+Route::prefix('v/coach/community')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
+    Route::get('pulse', [CommunityController::class, 'pulse']);
+    Route::get('posts', [CommunityController::class, 'posts']);
+    Route::get('pulsos', [CommunityController::class, 'pulsos']);
+    Route::post('announce', [CommunityController::class, 'announce']);
+});
+
+// Coach moderation (pin/unpin/delete/make-official) — policy enforced in controller
+Route::prefix('v/coach/posts')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
+    Route::post('{post}/pin', [ModerationController::class, 'pin'])->whereNumber('post');
+    Route::post('{post}/unpin', [ModerationController::class, 'unpin'])->whereNumber('post');
+    Route::post('{post}/make-official', [ModerationController::class, 'makeOfficial'])->whereNumber('post');
+    Route::delete('{post}', [ModerationController::class, 'delete'])->whereNumber('post');
+});
+
+// Admin community analytics
+Route::prefix('v/admin/community')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
+    Route::get('pulse-cross-coach', [App\Http\Controllers\Api\Admin\CommunityController::class, 'pulseCrossCoach']);
+});
+
+// Admin moderation queue
+Route::prefix('v/admin/community/moderation')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
+    Route::get('queue', [ModerationQueueController::class, 'index']);
+    Route::post('{report}/dismiss', [ModerationQueueController::class, 'dismiss'])->whereNumber('report');
+    Route::post('{report}/action', [ModerationQueueController::class, 'action'])->whereNumber('report');
+});
+
+// Admin broadcast
+Route::prefix('v/admin/broadcast')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
+    Route::post('preview', [BroadcastController::class, 'preview']);
+    Route::post('send', [BroadcastController::class, 'send']);
+    Route::get('history', [BroadcastController::class, 'history']);
+});
+
+// Client post reports
+Route::prefix('v/community')->middleware(['auth:wellcore', 'throttle:api'])->group(function () {
+    Route::post('posts/{post}/report', [PostReportController::class, 'store'])->whereNumber('post');
 });
