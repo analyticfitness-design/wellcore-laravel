@@ -150,12 +150,6 @@ onMounted(() => {
       </button>
     </div>
 
-    <div v-else-if="!food.hasNutritionPlan.value"
-         class="rounded-2xl border border-dashed border-wc-border bg-wc-bg-tertiary/50 p-16 text-center">
-      <h3 class="font-display text-2xl tracking-wide text-wc-text">SIN PLAN DE NUTRICIÓN</h3>
-      <p class="mt-2 text-sm text-wc-text-secondary">Tu coach está armando tu plan. Pronto podrás documentar tus comidas.</p>
-    </div>
-
     <div v-else class="space-y-6">
       <div class="flex items-end justify-between">
         <div>
@@ -171,6 +165,11 @@ onMounted(() => {
             +{{ food.xpToday.value }} XP hoy
           </span>
         </div>
+      </div>
+
+      <div v-if="!food.hasNutritionPlan.value"
+           class="rounded-xl border border-wc-border bg-wc-bg-tertiary/50 px-4 py-3 text-sm text-wc-text-secondary">
+        <span class="text-wc-accent">ℹ</span> Aún no tienes un plan de nutrición personalizado. Mientras tu coach lo arma, puedes documentar tus comidas con las categorías generales de abajo.
       </div>
 
       <div class="rounded-xl border border-wc-border bg-wc-bg-secondary p-5">

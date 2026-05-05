@@ -38,6 +38,17 @@ class FoodPhotoController extends Controller
             ? NutritionPlanParser::extractMeals(is_array($plan->content) ? $plan->content : [])
             : [];
 
+        // Fallback: si no hay plan de nutricion, mostrar 4 comidas genericas para
+        // que el cliente pueda igual subir/describir lo que come.
+        if (empty($meals)) {
+            $meals = [
+                ['nombre' => 'Desayuno', 'calorias' => 0, 'alimentos' => [], 'macros' => ['proteina' => 0, 'carbohidratos' => 0, 'grasas' => 0], 'notas' => null],
+                ['nombre' => 'Almuerzo', 'calorias' => 0, 'alimentos' => [], 'macros' => ['proteina' => 0, 'carbohidratos' => 0, 'grasas' => 0], 'notas' => null],
+                ['nombre' => 'Snack',    'calorias' => 0, 'alimentos' => [], 'macros' => ['proteina' => 0, 'carbohidratos' => 0, 'grasas' => 0], 'notas' => null],
+                ['nombre' => 'Cena',     'calorias' => 0, 'alimentos' => [], 'macros' => ['proteina' => 0, 'carbohidratos' => 0, 'grasas' => 0], 'notas' => null],
+            ];
+        }
+
         $todayPhotos = FoodPhoto::where('photo_date', $today)
             ->where('client_id', $client->id)
             ->get()
