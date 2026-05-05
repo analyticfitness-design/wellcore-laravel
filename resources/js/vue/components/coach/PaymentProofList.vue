@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { usePaymentProofs, type PaymentProof } from '../../composables/usePaymentProofs';
+import EmptyState from './ios/EmptyState.vue';
 
 const { proofs, loading, error, fetchProofs, fetchProofFileUrl } = usePaymentProofs();
 
@@ -73,7 +74,7 @@ onMounted(fetchProofs);
 </script>
 
 <template>
-  <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 space-y-4">
+  <div class="rounded-[14px] border border-[var(--b1)] p-5 space-y-4" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
     <div class="flex items-center justify-between">
       <h3 class="font-display text-lg tracking-wide text-wc-text">Comprobantes enviados</h3>
       <button
@@ -104,23 +105,20 @@ onMounted(fetchProofs);
     </div>
 
     <!-- Empty state -->
-    <div
+    <EmptyState
       v-else-if="proofs.length === 0"
-      class="rounded-xl border border-wc-border bg-wc-bg-secondary p-10 text-center"
-    >
-      <svg class="mx-auto h-10 w-10 text-wc-text-tertiary mb-3" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-      </svg>
-      <p class="text-sm text-wc-text-secondary">No hay comprobantes aun</p>
-      <p class="mt-1 text-xs text-wc-text-tertiary">Los comprobantes que subas apareceran aqui.</p>
-    </div>
+      kind="tickets"
+      title="No hay comprobantes aun"
+      subtitle="Los comprobantes que subas apareceran aqui."
+    />
 
     <!-- List -->
-    <div v-else class="space-y-2">
+    <div v-else class="space-y-2 anim-entry anim-entry-2">
       <div
         v-for="proof in proofs"
         :key="proof.id"
-        class="rounded-lg border border-wc-border bg-wc-bg-secondary p-4 space-y-3"
+        class="rounded-[14px] border border-[var(--b1)] p-4 space-y-3"
+        style="background: var(--s3, var(--wc-bg-tertiary, #1a1a1d));"
       >
         <!-- Top row: client + status badge -->
         <div class="flex items-start justify-between gap-2">

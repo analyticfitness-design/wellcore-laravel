@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import WcPageHeader from '../../components/WcPageHeader.vue';
+import AvatarConic from '../../components/coach/ios/AvatarConic.vue';
+import EmptyState from '../../components/coach/ios/EmptyState.vue';
 import { RouterLink } from 'vue-router';
 
 const router = useRouter();
@@ -95,20 +97,20 @@ onMounted(loadData);
         <!-- MY TEMPLATES TAB (read-only archive) -->
         <template v-if="activeTab === 'my_templates'">
           <!-- Stats (4 cards, no IA counter) -->
-          <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-            <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4">
+          <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 anim-entry anim-entry-2">
+            <div class="rounded-[14px] border border-[var(--b1)] p-4" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">Total</p>
               <p class="mt-1 font-data text-2xl font-bold text-wc-text">{{ templateStats.total }}</p>
             </div>
-            <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4">
+            <div class="rounded-[14px] border border-[var(--b1)] p-4" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">Entrenamiento</p>
               <p class="mt-1 font-data text-2xl font-bold text-wc-text">{{ templateStats.entrenamiento }}</p>
             </div>
-            <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4">
+            <div class="rounded-[14px] border border-[var(--b1)] p-4" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">Nutricion</p>
               <p class="mt-1 font-data text-2xl font-bold text-wc-text">{{ templateStats.nutricion }}</p>
             </div>
-            <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4">
+            <div class="rounded-[14px] border border-[var(--b1)] p-4" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">Habitos</p>
               <p class="mt-1 font-data text-2xl font-bold text-wc-text">{{ templateStats.habitos }}</p>
             </div>
@@ -132,11 +134,12 @@ onMounted(loadData);
           </div>
 
           <!-- Templates list (read-only) -->
-          <div v-if="filteredTemplates.length > 0" class="space-y-3">
+          <div v-if="filteredTemplates.length > 0" class="space-y-3 anim-entry anim-entry-3">
             <div
               v-for="tpl in filteredTemplates"
               :key="tpl.id"
-              class="flex items-center gap-4 rounded-card border border-wc-border bg-wc-bg-tertiary p-4 hover:border-wc-accent/40 transition-colors"
+              class="flex items-center gap-4 rounded-[14px] border border-[var(--b1)] p-4 hover:border-wc-accent/40 transition-colors"
+              style="background: var(--s2); box-shadow: var(--shadow-card-ios);"
             >
               <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-button bg-wc-accent/10">
                 <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -149,18 +152,29 @@ onMounted(loadData);
               </div>
             </div>
           </div>
-          <div v-else class="rounded-card border border-wc-border bg-wc-bg-tertiary p-12 text-center">
-            <p class="text-sm text-wc-text-tertiary">No se encontraron templates</p>
-          </div>
+          <EmptyState
+            v-else
+            kind="tickets"
+            title="Sin templates"
+            subtitle="No se encontraron templates con esos filtros"
+          />
         </template>
 
         <!-- ASSIGNED TAB -->
         <template v-if="activeTab === 'assigned'">
-          <div v-if="assignedPlans.length > 0" class="space-y-3">
-            <div v-for="plan in assignedPlans" :key="plan.id" class="flex items-center gap-4 rounded-card border border-wc-border bg-wc-bg-tertiary p-4">
-              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent/15">
-                <span class="text-sm font-semibold text-wc-accent">{{ (plan.client_name || 'C').charAt(0) }}</span>
-              </div>
+          <div v-if="assignedPlans.length > 0" class="space-y-3 anim-entry anim-entry-2">
+            <div
+              v-for="plan in assignedPlans"
+              :key="plan.id"
+              class="flex items-center gap-4 rounded-[14px] border border-[var(--b1)] p-4"
+              style="background: var(--s2); box-shadow: var(--shadow-card-ios);"
+            >
+              <AvatarConic
+                :initial="(plan.client_name || 'C').charAt(0).toUpperCase()"
+                :image-url="plan.client_photo_url || ''"
+                tone="accent"
+                size="md"
+              />
               <div class="min-w-0 flex-1">
                 <p class="text-sm font-medium text-wc-text">{{ plan.client_name }}</p>
                 <p class="text-xs text-wc-text-tertiary">{{ plan.plan_name }} -- {{ plan.type }}</p>
@@ -170,9 +184,12 @@ onMounted(loadData);
               </span>
             </div>
           </div>
-          <div v-else class="rounded-card border border-wc-border bg-wc-bg-tertiary p-12 text-center">
-            <p class="text-sm text-wc-text-tertiary">No hay planes asignados</p>
-          </div>
+          <EmptyState
+            v-else
+            kind="success"
+            title="Sin planes asignados"
+            subtitle="Aún no has asignado planes a tus clientes"
+          />
         </template>
 
       </template>

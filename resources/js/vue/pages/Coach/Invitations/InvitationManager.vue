@@ -61,7 +61,12 @@ onMounted(() => {
           key="list"
           @new-invitation="showForm"
         />
-        <div v-else key="form" class="rounded-xl border border-wc-border bg-wc-bg-secondary p-6">
+        <div
+          v-else
+          key="form"
+          class="rounded-[14px] border border-[var(--b1)] p-6 anim-entry anim-entry-2"
+          style="background: var(--s2); box-shadow: var(--shadow-card-ios);"
+        >
           <InvitationForm
             @success="onFormSuccess"
             @cancel="showList"

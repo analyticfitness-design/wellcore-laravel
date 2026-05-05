@@ -5,6 +5,7 @@ import TeamHealthRing from '../../../components/community/TeamHealthRing.vue';
 import TopPerformerCard from '../../../components/community/TopPerformerCard.vue';
 import AtRiskClientChip from '../../../components/community/AtRiskClientChip.vue';
 import PushPermissionBanner from '../../../components/community/PushPermissionBanner.vue';
+import EmptyState from '../../../components/coach/ios/EmptyState.vue';
 
 const { summary, loading, error, fetchSummary } = useCoachPulse();
 const ringRef = ref(null);
@@ -49,11 +50,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div class="anim-entry anim-entry-2 space-y-6">
     <PushPermissionBanner />
 
     <div v-if="loading && !summary" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div class="h-80 rounded-2xl border border-wc-border bg-wc-bg-secondary p-6 flex items-center justify-center">
+      <div class="h-80 rounded-[14px] border border-[var(--b1)] p-6 flex items-center justify-center" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
         <div class="h-48 w-48 rounded-full bg-wc-bg-tertiary animate-pulse"></div>
       </div>
       <div class="space-y-3">
@@ -68,16 +69,16 @@ onBeforeUnmount(() => {
       </button>
     </div>
 
-    <div v-else-if="isEmpty" class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-12 text-center">
-      <p class="text-lg font-display tracking-wide text-wc-text">Tu equipo aún no tiene actividad</p>
-      <p class="text-sm text-wc-text-tertiary mt-2 max-w-md mx-auto">
-        Cuando uno de tus clientes rompa un PR o complete un check-in, esta vista se llenará de insights.
-      </p>
-    </div>
+    <EmptyState
+      v-else-if="isEmpty"
+      kind="activity"
+      title="Tu equipo aún no tiene actividad"
+      subtitle="Cuando uno de tus clientes rompa un PR o complete un check-in, esta vista se llenará de insights."
+    />
 
     <template v-else-if="summary">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-6 flex flex-col items-center justify-center">
+        <div class="rounded-[14px] border border-[var(--b1)] p-6 flex flex-col items-center justify-center" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
           <TeamHealthRing ref="ringRef" :score="summary.team_health_score" :size="220" label="Latido del Equipo" />
           <p class="text-xs text-wc-text-tertiary mt-4">
             Calculado a las {{ computedAtFormatted }} · refresca cada 60s
@@ -91,7 +92,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
-      <div v-if="summary.at_risk_clients?.length" class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-5">
+      <div v-if="summary.at_risk_clients?.length" class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
         <h3 class="text-xs font-semibold uppercase tracking-widest text-wc-text-tertiary mb-3">
           Riesgo de churn (5+ días sin actividad)
         </h3>

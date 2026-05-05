@@ -17,6 +17,8 @@ import { useAuthStore } from '../../stores/auth';
 import { useSmartPolling } from '../../composables/useSmartPolling';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import WcPageHeader from '../../components/WcPageHeader.vue';
+import AvatarConic from '../../components/coach/ios/AvatarConic.vue';
+import EmptyState from '../../components/coach/ios/EmptyState.vue';
 
 const api = useApi();
 const authStore = useAuthStore();
@@ -258,24 +260,29 @@ onBeforeUnmount(() => {
       </template>
 
       <!-- Message center layout -->
-      <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-12" style="min-height: 70vh;">
+      <div v-else class="anim-entry anim-entry-2 grid grid-cols-1 gap-4 lg:grid-cols-12" style="min-height: 70vh;">
 
         <!-- Client list panel -->
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary lg:col-span-4 overflow-hidden flex flex-col">
-          <div class="border-b border-wc-border px-4 py-3">
+        <div class="rounded-[14px] border border-[var(--b1)] lg:col-span-4 overflow-hidden flex flex-col" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
+          <div class="border-b border-[var(--b1)] px-4 py-3">
             <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">Clientes</p>
           </div>
           <div class="flex-1 overflow-y-auto">
-            <ul v-if="clients.length > 0" class="divide-y divide-wc-border">
+            <ul v-if="clients.length > 0" class="divide-y divide-[var(--b1)]">
               <li v-for="client in clients" :key="client.id">
                 <button
                   @click="selectClient(client)"
                   class="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors"
                   :class="selectedClientId === client.id ? 'bg-wc-accent/5 border-l-2 border-l-wc-accent' : 'hover:bg-wc-bg-secondary/50'"
                 >
-                  <!-- Avatar with unread indicator -->
-                  <div class="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-wc-accent/15">
-                    <span class="text-sm font-semibold text-wc-accent">{{ (client.name || 'C').charAt(0) }}</span>
+                  <!-- Avatar conic with unread indicator -->
+                  <div class="relative shrink-0">
+                    <AvatarConic
+                      :initial="(client.name || 'C').charAt(0).toUpperCase()"
+                      :image-url="client.avatar_url || client.photo_url || ''"
+                      tone="accent"
+                      size="sm"
+                    />
                     <div v-if="client.unread_count > 0" class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-wc-accent text-[9px] font-bold text-white">
                       {{ client.unread_count > 9 ? '9+' : client.unread_count }}
                     </div>
@@ -291,23 +298,26 @@ onBeforeUnmount(() => {
                 </button>
               </li>
             </ul>
-            <div v-else class="flex flex-col items-center justify-center py-12 text-center px-4">
-              <svg class="h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 4.5 0Z" />
-              </svg>
-              <p class="mt-2 text-sm text-wc-text-tertiary">Sin clientes asignados</p>
-            </div>
+            <EmptyState
+              v-else
+              kind="messages"
+              title="Sin clientes asignados"
+              subtitle="Cuando se te asigne un cliente, aparecerá aquí."
+            />
           </div>
         </div>
 
         <!-- Conversation panel -->
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary lg:col-span-8 overflow-hidden flex flex-col">
+        <div class="rounded-[14px] border border-[var(--b1)] lg:col-span-8 overflow-hidden flex flex-col" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
           <template v-if="selectedClient">
             <!-- Conversation header -->
-            <div class="flex items-center gap-3 border-b border-wc-border px-4 py-3">
-              <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-wc-accent/15">
-                <span class="text-sm font-semibold text-wc-accent">{{ (selectedClient.name || 'C').charAt(0) }}</span>
-              </div>
+            <div class="flex items-center gap-3 border-b border-[var(--b1)] px-4 py-3">
+              <AvatarConic
+                :initial="(selectedClient.name || 'C').charAt(0).toUpperCase()"
+                :image-url="selectedClient.avatar_url || selectedClient.photo_url || ''"
+                tone="accent"
+                size="sm"
+              />
               <div class="flex-1">
                 <p class="text-sm font-medium text-wc-text">{{ selectedClient.name }}</p>
                 <p class="text-xs text-wc-text-tertiary">{{ selectedClient.plan || 'Sin plan' }}</p>
@@ -332,16 +342,16 @@ onBeforeUnmount(() => {
                   </div>
                 </div>
               </template>
-              <div v-else class="flex flex-col items-center justify-center py-12 text-center">
-                <svg class="h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-                </svg>
-                <p class="mt-2 text-sm text-wc-text-tertiary">Inicia la conversacion</p>
-              </div>
+              <EmptyState
+                v-else
+                kind="messages"
+                title="Inicia la conversación"
+                subtitle="Envía el primer mensaje para empezar el chat."
+              />
             </div>
 
             <!-- Message input with template selector -->
-            <div class="border-t border-wc-border px-4 py-3">
+            <div class="border-t border-[var(--b1)] px-4 py-3">
               <form @submit.prevent="sendMessage" class="flex items-center gap-2">
                 <!-- Template selector -->
                 <div class="relative inline-flex">
@@ -447,14 +457,12 @@ onBeforeUnmount(() => {
           </template>
 
           <!-- No client selected -->
-          <div v-else class="flex flex-1 flex-col items-center justify-center py-12 text-center">
-            <div class="flex h-16 w-16 items-center justify-center rounded-full bg-wc-bg-secondary">
-              <svg class="h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-              </svg>
-            </div>
-            <p class="mt-4 text-sm font-medium text-wc-text">Selecciona un cliente</p>
-            <p class="mt-1 text-xs text-wc-text-tertiary">Elige un cliente del panel izquierdo para ver la conversacion</p>
+          <div v-else class="flex flex-1 items-center justify-center">
+            <EmptyState
+              kind="messages"
+              title="Selecciona un cliente"
+              subtitle="Elige un cliente del panel izquierdo para ver la conversación."
+            />
           </div>
         </div>
       </div>

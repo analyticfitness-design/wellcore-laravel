@@ -6,6 +6,8 @@ import OfficialBadge from '../../../components/community/OfficialBadge.vue';
 import PinnedIndicator from '../../../components/community/PinnedIndicator.vue';
 import PostCardCoachActions from '../../../components/community/PostCardCoachActions.vue';
 import CommunityEmptyIllustration from '../../../components/community/CommunityEmptyIllustration.vue';
+import AvatarConic from '../../../components/coach/ios/AvatarConic.vue';
+import EmptyState from '../../../components/coach/ios/EmptyState.vue';
 
 const props = defineProps({
     triggerRefresh: { type: Number, default: 0 },
@@ -120,7 +122,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div class="anim-entry anim-entry-2 space-y-4">
     <div class="flex items-center gap-2 overflow-x-auto pb-1">
       <button
         v-for="f in FILTERS" :key="f.key"
@@ -148,7 +150,7 @@ onBeforeUnmount(() => {
     </Transition>
 
     <div v-if="loading && !posts.length" class="space-y-3">
-      <div v-for="i in 3" :key="i" class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-5 animate-pulse">
+      <div v-for="i in 3" :key="i" class="rounded-[14px] border border-[var(--b1)] p-5 animate-pulse" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
         <div class="flex gap-3">
           <div class="h-10 w-10 rounded-full bg-wc-bg-tertiary"></div>
           <div class="flex-1 space-y-2">
@@ -167,34 +169,35 @@ onBeforeUnmount(() => {
       </button>
     </div>
 
-    <div v-else-if="!posts.length" class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-12 text-center">
-      <CommunityEmptyIllustration class="mx-auto h-32 w-32 mb-4" />
-      <h3 class="text-lg font-display tracking-wide text-wc-text">Tu equipo aún no postea</h3>
-      <p class="mt-2 text-sm text-wc-text-tertiary max-w-md mx-auto">
-        Cuando un cliente comparta un PR, foto o pensamiento, aparecerá aquí.
-      </p>
+    <EmptyState
+      v-else-if="!posts.length"
+      kind="activity"
+      title="Tu equipo aún no postea"
+      subtitle="Cuando un cliente comparta un PR, foto o pensamiento, aparecerá aquí."
+    >
       <button @click="emit('open-announce')" class="mt-4 rounded-full bg-wc-accent text-white px-5 py-2 text-sm font-semibold">
         Mensaje al equipo
       </button>
-    </div>
+    </EmptyState>
 
     <div v-else class="space-y-3">
       <article
         v-for="post in posts" :key="post.id"
-        class="rounded-2xl border bg-wc-bg-secondary p-5 transition-all"
-        :class="post.pinned ? 'border-wc-accent/40' : 'border-wc-border'"
+        class="rounded-[14px] border p-5 transition-all"
+        :class="post.pinned ? 'border-wc-accent/40' : 'border-[var(--b1)]'"
+        style="background: var(--s2); box-shadow: var(--shadow-card-ios);"
       >
         <div v-if="post.pinned" class="mb-3">
           <PinnedIndicator :pinned-until="post.pinned.pinned_until" :note="post.pinned.note" />
         </div>
 
         <header class="flex items-start gap-3">
-          <div class="h-10 w-10 rounded-full bg-wc-accent/15 flex items-center justify-center shrink-0 overflow-hidden">
-            <img v-if="post.author_avatar || post.avatar_url" :src="post.author_avatar || post.avatar_url" :alt="post.author_name" class="h-full w-full object-cover" />
-            <span v-else class="text-sm font-semibold text-wc-accent">
-              {{ (post.author_name || post.client_name || '?').charAt(0) }}
-            </span>
-          </div>
+          <AvatarConic
+            :initial="(post.author_name || post.client_name || '?').charAt(0).toUpperCase()"
+            :image-url="post.author_avatar || post.avatar_url || ''"
+            tone="accent"
+            size="md"
+          />
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 flex-wrap">
               <span class="font-semibold text-wc-text truncate">{{ post.author_name || post.client_name || 'Cliente' }}</span>

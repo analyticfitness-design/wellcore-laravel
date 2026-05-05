@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { useApi } from '../composables/useApi';
 
-const TABS = ['resumen', 'plan', 'checkins', 'pagos', 'comunicacion', 'notas'];
+const TABS = ['resumen', 'plan', 'checkins', 'pagos', 'comunicacion', 'notas', 'intake'];
 const POLL_TABS = new Set(['resumen', 'checkins']);
 
 /**

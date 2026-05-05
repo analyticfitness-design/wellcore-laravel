@@ -2,6 +2,8 @@
 import { computed } from 'vue';
 import { useInvitationsStore } from '../../../stores/invitationsStore';
 import InvitationStatusBadge from './InvitationStatusBadge.vue';
+import EmptyState from '../../../components/coach/ios/EmptyState.vue';
+import AvatarConic from '../../../components/coach/ios/AvatarConic.vue';
 
 const emit = defineEmits(['new-invitation']);
 
@@ -165,19 +167,19 @@ const hasPrevPage = computed(() => store.filters.page > 1);
     </template>
 
     <!-- Empty state -->
-    <div
+    <EmptyState
       v-else-if="!store.loading && store.invitations.length === 0"
-      class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-12 text-center"
-    >
-      <svg class="mx-auto mb-4 h-12 w-12 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-      </svg>
-      <p class="text-sm font-medium text-wc-text">Aun no has enviado invitaciones</p>
-      <p class="mt-1 text-xs text-wc-text-tertiary">Envia tu primera invitacion haciendo clic en "Nueva invitacion".</p>
-    </div>
+      kind="messages"
+      title="Aun no has enviado invitaciones"
+      subtitle='Envia tu primera invitacion haciendo clic en "Nueva invitacion".'
+    />
 
     <!-- Table -->
-    <div v-else class="overflow-hidden rounded-xl border border-wc-border">
+    <div
+      v-else
+      class="overflow-hidden rounded-[14px] border border-[var(--b1)] anim-entry anim-entry-2"
+      style="box-shadow: var(--shadow-card-ios);"
+    >
       <div class="overflow-x-auto">
         <table class="w-full text-left text-sm">
           <thead class="border-b border-wc-border bg-wc-bg-tertiary">
@@ -198,8 +200,17 @@ const hasPrevPage = computed(() => store.filters.page > 1);
             >
               <!-- Email / Name -->
               <td class="px-4 py-3">
-                <p class="font-medium text-wc-text">{{ inv.email }}</p>
-                <p v-if="inv.name" class="text-xs text-wc-text-tertiary">{{ inv.name }}</p>
+                <div class="flex items-center gap-3">
+                  <AvatarConic
+                    :initial="((inv.name || inv.email || '?').charAt(0)).toUpperCase()"
+                    tone="accent"
+                    size="sm"
+                  />
+                  <div class="min-w-0">
+                    <p class="font-medium text-wc-text truncate">{{ inv.email }}</p>
+                    <p v-if="inv.name" class="text-xs text-wc-text-tertiary truncate">{{ inv.name }}</p>
+                  </div>
+                </div>
               </td>
 
               <!-- Plan + Amount -->

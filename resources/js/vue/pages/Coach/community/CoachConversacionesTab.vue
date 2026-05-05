@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useCoachCommunity } from '../../../composables/useCoachCommunity';
+import EmptyState from '../../../components/coach/ios/EmptyState.vue';
 
 const { fetchThreads, loading, error } = useCoachCommunity();
 const threads = ref([]);
@@ -39,7 +40,7 @@ onMounted(() => load());
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div class="anim-entry anim-entry-2 space-y-4">
     <div class="flex items-center gap-2 overflow-x-auto pb-1">
       <button
         v-for="f in FILTERS" :key="f.key"
@@ -55,14 +56,17 @@ onMounted(() => load());
     <div v-else-if="error" class="rounded-xl border border-rose-500/30 bg-rose-500/5 p-6 text-center text-sm text-wc-text">
       {{ error }}
     </div>
-    <div v-else-if="!filtered.length" class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-12 text-center">
-      <p class="text-wc-text font-display text-lg">Sin conversaciones recientes</p>
-      <p class="text-sm text-wc-text-tertiary mt-2">Anímalos a interactuar con un mensaje al equipo.</p>
-    </div>
+    <EmptyState
+      v-else-if="!filtered.length"
+      kind="activity"
+      title="Sin conversaciones recientes"
+      subtitle="Anímalos a interactuar con un mensaje al equipo."
+    />
     <div v-else class="space-y-2">
       <article
         v-for="thread in filtered" :key="thread.post_id"
-        class="rounded-xl border border-wc-border bg-wc-bg-secondary p-4 hover:border-wc-accent/30 transition-colors cursor-pointer"
+        class="rounded-[14px] border border-[var(--b1)] p-4 hover:border-wc-accent/30 transition-colors cursor-pointer"
+        style="background: var(--s2); box-shadow: var(--shadow-card-ios);"
       >
         <div class="flex items-start justify-between gap-3">
           <div class="flex-1 min-w-0">

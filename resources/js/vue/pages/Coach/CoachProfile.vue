@@ -4,6 +4,7 @@ import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import PaymentProofUploader from '../../components/coach/PaymentProofUploader.vue';
 import PaymentProofList from '../../components/coach/PaymentProofList.vue';
+import AvatarConic from '../../components/coach/ios/AvatarConic.vue';
 
 const api = useApi();
 const loading = ref(true);
@@ -83,9 +84,11 @@ onMounted(loadProfile);
 
       <!-- Header -->
       <div class="flex items-center gap-4">
-        <div class="flex h-14 w-14 items-center justify-center rounded-full bg-wc-accent/20">
-          <span class="font-display text-2xl text-wc-accent">{{ coachInitial }}</span>
-        </div>
+        <AvatarConic
+          :initial="coachInitial"
+          tone="accent"
+          size="lg"
+        />
         <div>
           <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">Mi Perfil</h1>
           <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ coachName }} -- Gestiona tu perfil y revenue</p>
@@ -127,10 +130,10 @@ onMounted(loadProfile);
       <template v-else>
 
         <!-- PROFILE TAB -->
-        <div v-if="activeTab === 'profile'" class="grid grid-cols-1 gap-6 lg:grid-cols-5">
+        <div v-if="activeTab === 'profile'" class="grid grid-cols-1 gap-6 lg:grid-cols-5 anim-entry anim-entry-2">
           <div class="space-y-5 lg:col-span-3">
             <!-- Bio -->
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+            <div class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <h3 class="font-display text-lg tracking-wide text-wc-text">Informacion basica</h3>
               <div class="mt-4 space-y-4">
                 <div>
@@ -151,7 +154,7 @@ onMounted(loadProfile);
             </div>
 
             <!-- Social links -->
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+            <div class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <h3 class="font-display text-lg tracking-wide text-wc-text">Redes sociales</h3>
               <div class="mt-4 space-y-4">
                 <div>
@@ -185,12 +188,14 @@ onMounted(loadProfile);
 
           <!-- Preview card -->
           <div class="lg:col-span-2">
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 sticky top-24">
+            <div class="rounded-[14px] border border-[var(--b1)] p-5 sticky top-24" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary mb-3">Preview</p>
               <div class="flex items-center gap-3">
-                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-wc-accent/20">
-                  <span class="font-display text-xl text-wc-accent">{{ coachInitial }}</span>
-                </div>
+                <AvatarConic
+                  :initial="coachInitial"
+                  tone="accent"
+                  size="md"
+                />
                 <div>
                   <p class="text-sm font-semibold text-wc-text">{{ coachName }}</p>
                   <p class="text-xs text-wc-text-tertiary">{{ city || 'Sin ciudad' }} -- {{ experience || 'N/A' }} exp.</p>
@@ -206,21 +211,21 @@ onMounted(loadProfile);
         </div>
 
         <!-- REVENUE TAB -->
-        <div v-if="activeTab === 'revenue'" class="space-y-6">
+        <div v-if="activeTab === 'revenue'" class="space-y-6 anim-entry anim-entry-2">
           <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 text-center">
+            <div class="rounded-[14px] border border-[var(--b1)] p-5 text-center" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <p class="font-data text-3xl font-bold text-wc-text">${{ revenue.total.toLocaleString() }}</p>
               <p class="mt-1 text-xs text-wc-text-tertiary">Revenue total</p>
             </div>
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 text-center">
+            <div class="rounded-[14px] border border-[var(--b1)] p-5 text-center" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <p class="font-data text-3xl font-bold text-emerald-500">${{ revenue.monthly.toLocaleString() }}</p>
               <p class="mt-1 text-xs text-wc-text-tertiary">Este mes</p>
             </div>
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 text-center">
+            <div class="rounded-[14px] border border-[var(--b1)] p-5 text-center" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <p class="font-data text-3xl font-bold text-wc-text">{{ revenue.clients_paying }}</p>
               <p class="mt-1 text-xs text-wc-text-tertiary">Clientes activos</p>
             </div>
-            <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 text-center">
+            <div class="rounded-[14px] border border-[var(--b1)] p-5 text-center" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <p class="font-data text-3xl font-bold text-violet-500">{{ revenue.referrals }}</p>
               <p class="mt-1 text-xs text-wc-text-tertiary">Referidos</p>
             </div>
@@ -228,7 +233,7 @@ onMounted(loadProfile);
         </div>
 
         <!-- COMPROBANTES TAB -->
-        <div v-if="activeTab === 'comprobantes'" class="space-y-6">
+        <div v-if="activeTab === 'comprobantes'" class="space-y-6 anim-entry anim-entry-2">
           <PaymentProofUploader @submitted="refreshProofList" />
           <PaymentProofList ref="proofListRef" />
         </div>

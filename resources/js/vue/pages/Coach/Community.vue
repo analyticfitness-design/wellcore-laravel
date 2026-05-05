@@ -114,7 +114,7 @@ watch(() => route.hash, (h) => {
         </div>
       </nav>
 
-      <div class="pt-2">
+      <div class="anim-entry anim-entry-2 pt-2">
         <Transition
           mode="out-in"
           :enter-from-class="transitionDirection === 'right' ? 'opacity-0 translate-x-4' : 'opacity-0 -translate-x-4'"

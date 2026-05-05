@@ -3,6 +3,7 @@ import { ref, onMounted, watch } from 'vue';
 import { useCoachCommunity } from '../../../composables/useCoachCommunity';
 import { useToast } from '../../../composables/useToast';
 import { useHaptics } from '../../../composables/useHaptics';
+import EmptyState from '../../../components/coach/ios/EmptyState.vue';
 
 const { fetchAchievements, loading, error } = useCoachCommunity();
 const toast = useToast();
@@ -39,7 +40,7 @@ onMounted(() => load());
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div class="anim-entry anim-entry-2 space-y-4">
     <div class="flex items-center gap-2 overflow-x-auto pb-1">
       <button
         v-for="p in PERIODS" :key="p.key"
@@ -57,12 +58,14 @@ onMounted(() => load());
       <div v-for="i in 4" :key="i" class="h-24 rounded-xl border border-wc-border bg-wc-bg-secondary animate-pulse"></div>
     </div>
     <div v-else-if="error" class="rounded-xl border border-rose-500/30 bg-rose-500/5 p-6 text-center text-sm">{{ error }}</div>
-    <div v-else-if="!items.length" class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-12 text-center">
-      <p class="font-display text-lg text-wc-text">Aún no hay logros</p>
-      <p class="text-sm text-wc-text-tertiary mt-2">Sé proactivo: motiva al cliente que esté cerca de un PR.</p>
-    </div>
+    <EmptyState
+      v-else-if="!items.length"
+      kind="success"
+      title="Aún no hay logros"
+      subtitle="Sé proactivo: motiva al cliente que esté cerca de un PR."
+    />
     <div v-else class="space-y-3">
-      <article v-for="(item, idx) in items" :key="`${item.type}-${item.client_id}-${idx}`" class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-4 flex items-start gap-3">
+      <article v-for="(item, idx) in items" :key="`${item.type}-${item.client_id}-${idx}`" class="rounded-[14px] border border-[var(--b1)] p-4 flex items-start gap-3" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
         <div class="text-3xl">{{ item.type === 'pr' ? '\u{1F3CB}' : '\u{1F3C6}' }}</div>
         <div class="flex-1 min-w-0">
           <p class="font-semibold text-wc-text">{{ item.client_name }}</p>

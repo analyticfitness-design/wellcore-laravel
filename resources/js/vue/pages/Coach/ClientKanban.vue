@@ -4,6 +4,8 @@ import { useApi } from '../../composables/useApi';
 import { useRouter } from 'vue-router';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import WcPageHeader from '../../components/WcPageHeader.vue';
+import AvatarConic from '../../components/coach/ios/AvatarConic.vue';
+import EmptyState from '../../components/coach/ios/EmptyState.vue';
 
 const api = useApi();
 const router = useRouter();
@@ -240,11 +242,12 @@ onBeforeUnmount(() => {
       </WcPageHeader>
 
       <!-- Summary stats -->
-      <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 anim-entry anim-entry-2">
         <div
           v-for="(col, key) in columns"
           :key="key"
-          class="flex items-center gap-3 rounded-card border border-wc-border bg-wc-bg-tertiary p-3"
+          class="flex items-center gap-3 rounded-[14px] border border-[var(--b1)] p-3"
+          style="background: var(--s2); box-shadow: var(--shadow-card-ios);"
           :class="columnStyles[key]?.statTop"
         >
           <span class="h-2 w-2 rounded-full shrink-0" :class="columnStyles[key]?.dot"></span>
@@ -264,13 +267,13 @@ onBeforeUnmount(() => {
       </template>
 
       <!-- Kanban Board -->
-      <div v-else class="kanban-scroll -mx-4 flex gap-4 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8" style="scroll-snap-type: x mandatory;">
+      <div v-else class="kanban-scroll -mx-4 flex gap-4 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 anim-entry anim-entry-3" style="scroll-snap-type: x mandatory;">
         <div
           v-for="(col, colKey) in columns"
           :key="colKey"
-          class="kanban-column flex w-72 shrink-0 flex-col rounded-card border border-wc-border bg-wc-bg-secondary sm:w-[280px]"
+          class="kanban-column flex w-72 shrink-0 flex-col rounded-[14px] border border-[var(--b1)] sm:w-[280px]"
           :class="dragOverColumn === colKey ? 'ring-2 ring-wc-accent/40 bg-wc-accent/5' : ''"
-          style="scroll-snap-align: start; min-height: 420px;"
+          style="scroll-snap-align: start; min-height: 420px; background: var(--s2); box-shadow: var(--shadow-card-ios);"
           @dragover.prevent="onDragOver($event, colKey)"
           @dragleave="onDragLeave($event)"
           @drop.prevent="onDrop($event, colKey)"
@@ -303,9 +306,12 @@ onBeforeUnmount(() => {
               >
                 <!-- Card top: avatar + name -->
                 <div class="flex items-start gap-2.5">
-                  <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-wc-accent/15">
-                    <span class="text-sm font-semibold text-wc-accent">{{ client.avatar_initial || (client.name || 'C').charAt(0).toUpperCase() }}</span>
-                  </div>
+                  <AvatarConic
+                    :initial="client.avatar_initial || (client.name || 'C').charAt(0).toUpperCase()"
+                    :image-url="client.photo_url || ''"
+                    tone="accent"
+                    size="sm"
+                  />
                   <div class="min-w-0 flex-1">
                     <p class="text-sm font-medium text-wc-text truncate leading-tight">{{ client.name }}</p>
                     <span class="mt-0.5 inline-block rounded-full bg-wc-accent/10 px-1.5 py-0.5 text-[10px] font-semibold text-wc-accent leading-none">
@@ -374,12 +380,8 @@ onBeforeUnmount(() => {
             </template>
 
             <!-- Empty column -->
-            <div v-else class="flex flex-col items-center justify-center rounded-button border border-dashed border-wc-border/50 py-8 text-center">
-              <svg class="h-8 w-8 text-wc-text-tertiary/50" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-              </svg>
-              <p class="mt-2 text-xs text-wc-text-tertiary/70">Sin clientes</p>
-            </div>
+            <EmptyState v-else kind="activity" title="Sin clientes" subtitle="Arrastra tarjetas aquí" />
+
           </div>
         </div>
       </div>
@@ -432,9 +434,12 @@ onBeforeUnmount(() => {
               <div v-else class="p-6">
                 <!-- Client header -->
                 <div class="flex items-center gap-4">
-                  <div class="flex h-14 w-14 items-center justify-center rounded-full bg-wc-accent/15">
-                    <span class="text-xl font-bold text-wc-accent">{{ detailClient.avatar_initial }}</span>
-                  </div>
+                  <AvatarConic
+                    :initial="detailClient.avatar_initial || (detailClient.name || 'C').charAt(0).toUpperCase()"
+                    :image-url="detailClient.photo_url || ''"
+                    tone="accent"
+                    size="lg"
+                  />
                   <div>
                     <h3 class="text-lg font-semibold text-wc-text">{{ detailClient.name }}</h3>
                     <p class="text-xs text-wc-text-tertiary">{{ detailClient.email }}</p>

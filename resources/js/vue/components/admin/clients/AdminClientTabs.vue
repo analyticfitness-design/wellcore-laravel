@@ -10,6 +10,7 @@ const TABS = [
     { id: 'pagos',        label: 'PAGOS' },
     { id: 'comunicacion', label: 'COMUNICACION' },
     { id: 'notas',        label: 'NOTAS' },
+    { id: 'intake',       label: 'INTAKE' },
 ];
 </script>
 

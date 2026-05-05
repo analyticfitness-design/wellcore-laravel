@@ -3,6 +3,8 @@ import { ref, onMounted, computed } from 'vue';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import WcPageHeader from '../../components/WcPageHeader.vue';
+import AvatarConic from '../../components/coach/ios/AvatarConic.vue';
+import EmptyState from '../../components/coach/ios/EmptyState.vue';
 
 const api = useApi();
 const loading = ref(false);
@@ -126,13 +128,13 @@ onMounted(loadClients);
         </div>
       </Transition>
 
-      <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 anim-entry anim-entry-2">
 
         <!-- Compose (2 cols) -->
         <div class="space-y-5 lg:col-span-2">
 
           <!-- Recipient mode -->
-          <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+          <div class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
             <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary mb-3">Destinatarios</p>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
               <button
@@ -159,16 +161,19 @@ onMounted(loadClients);
                   @change="toggleClient(client.id)"
                   class="h-4 w-4 rounded border-wc-border text-wc-accent focus:ring-wc-accent"
                 />
-                <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-wc-accent/15">
-                  <span class="text-xs font-semibold text-wc-accent">{{ (client.name || 'C').charAt(0) }}</span>
-                </div>
+                <AvatarConic
+                  :initial="(client.name || 'C').charAt(0).toUpperCase()"
+                  :image-url="client.photo_url || ''"
+                  tone="accent"
+                  size="sm"
+                />
                 <span class="text-sm text-wc-text">{{ client.name }}</span>
               </label>
             </div>
           </div>
 
           <!-- Message compose -->
-          <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+          <div class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
             <div class="flex items-center justify-between mb-3">
               <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">Mensaje</p>
               <button
@@ -208,14 +213,15 @@ onMounted(loadClients);
         </div>
 
         <!-- Templates panel -->
-        <div class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5">
+        <div class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
           <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary mb-4">Templates rápidos</p>
           <div class="space-y-2">
             <button
               v-for="tpl in builtInTemplates"
               :key="tpl.id"
               @click="useTemplate(tpl)"
-              class="w-full rounded-card border border-wc-border bg-wc-bg-tertiary p-3 text-left hover:border-wc-accent/40 transition-colors"
+              class="w-full rounded-[12px] border border-[var(--b1)] p-3 text-left hover:border-wc-accent/40 transition-colors"
+              style="background: var(--s2);"
             >
               <div class="flex items-center justify-between">
                 <p class="text-xs font-semibold text-wc-text">{{ tpl.name }}</p>

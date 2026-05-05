@@ -13,7 +13,7 @@ function refreshProofList() {
 
 <template>
     <CoachLayout>
-        <div class="mx-auto max-w-2xl space-y-6 px-4 py-6 sm:px-6">
+        <div class="mx-auto max-w-2xl space-y-6 px-4 py-6 sm:px-6 anim-entry anim-entry-2">
             <div>
                 <h1 class="font-display text-2xl uppercase tracking-wider text-wc-text">Comprobantes</h1>
                 <p class="mt-1 text-sm text-wc-text/60">Sube y revisa los comprobantes de pago de tus clientes.</p>

@@ -163,7 +163,7 @@ onBeforeUnmount(revokePreview);
 </script>
 
 <template>
-  <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 space-y-5">
+  <div class="rounded-[14px] border border-[var(--b1)] p-5 space-y-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
     <div>
       <h3 class="font-display text-lg tracking-wide text-wc-text">Subir comprobante de pago</h3>
       <p class="mt-0.5 text-xs text-wc-text-tertiary">JPG, PNG o PDF — maximo 10 MB</p>
