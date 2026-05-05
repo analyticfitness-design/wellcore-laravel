@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'post_id',
     'client_id',
     'content',
+    'author_type',
+    'author_admin_id',
 ])]
 class PostComment extends Model
 {
@@ -32,5 +34,15 @@ class PostComment extends Model
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function scopeByCoach($query)
+    {
+        return $query->where('author_type', 'coach');
+    }
+
+    public function scopeByAdmin($query)
+    {
+        return $query->where('author_type', 'admin');
     }
 }
