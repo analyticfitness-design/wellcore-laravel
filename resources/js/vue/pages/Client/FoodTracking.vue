@@ -177,8 +177,8 @@ onMounted(() => {
 
           <input
             type="file"
-            accept="image/jpeg,image/jpg,image/png,image/webp"
-            class="hidden"
+            accept="image/*"
+            style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;pointer-events:none"
             :ref="(el) => fileInputs[meal.index] = el"
             @change="(e) => onFileSelected(e, meal)"
           />
