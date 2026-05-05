@@ -1,27 +1,34 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\Marketing\CoachProfileController;
+use App\Http\Controllers\Api\Admin\Marketing\DropAssetController;
 use App\Http\Controllers\Api\Admin\Marketing\DropReviewController;
 use App\Http\Controllers\Api\Admin\Marketing\QueueController;
 use App\Http\Controllers\Api\Admin\PaymentProofReviewController;
 use App\Http\Controllers\Api\AdminAIGeneratorController;
 use App\Http\Controllers\Api\AdminAuditLogController;
+use App\Http\Controllers\Api\AdminCampaignController;
 use App\Http\Controllers\Api\AdminClientRequestController;
 use App\Http\Controllers\Api\AdminCoachManagementController;
 use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\Api\AdminFormsController;
+use App\Http\Controllers\Api\AdminImpersonateController;
 use App\Http\Controllers\Api\AdminPlanTicketController;
+use App\Http\Controllers\Api\AdminToolsController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\Coach\ContractController;
 use App\Http\Controllers\Api\Coach\InvitationController;
 use App\Http\Controllers\Api\Coach\MarketingProfileController;
 use App\Http\Controllers\Api\Coach\PieceStateController;
+use App\Http\Controllers\Api\Coach\StrategyAssetController;
 use App\Http\Controllers\Api\Coach\StrategyController;
 use App\Http\Controllers\Api\CoachBrandController;
 use App\Http\Controllers\Api\CoachClientRequestController;
 use App\Http\Controllers\Api\CoachController;
 use App\Http\Controllers\Api\CoachPlanTicketController;
 use App\Http\Controllers\Api\EjerciciosController;
+use App\Http\Controllers\Api\GroupPulseController;
 use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\MedalController;
 use App\Http\Controllers\Api\NotificationController;
@@ -110,6 +117,9 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'throttle:api'])->group(
     Route::post('/tickets', [ClientController::class, 'createTicket'])->middleware('throttle:ticket-create');
     Route::post('/notifications/{id}/read', [ClientController::class, 'markRead']);
     Route::get('/my-coach', [ClientController::class, 'myCoach']);
+
+    // Latido del Grupo — feed de actividad agregada del grupo del coach
+    Route::get('/group-pulse', [GroupPulseController::class, 'index']);
 });
 
 // Training (Phase 5)
@@ -332,8 +342,8 @@ Route::prefix('v/coach')->middleware(['auth:wellcore', 'throttle:api', 'role:coa
             Route::post('/strategy/drops/{drop}/pieces/{pieceKey}/publish', [PieceStateController::class, 'publish']);
             Route::post('/strategy/drops/{drop}/pieces/{pieceKey}/skip', [PieceStateController::class, 'skip']);
             Route::post('/strategy/drops/{drop}/pieces/{pieceKey}/in-progress', [PieceStateController::class, 'inProgress']);
-            Route::get('/strategy/drops/{drop}/assets/{assetId}', [\App\Http\Controllers\Api\Coach\StrategyAssetController::class, 'show']);
-            Route::get('/strategy/drops/{drop}/assets.zip', [\App\Http\Controllers\Api\Coach\StrategyAssetController::class, 'zip']);
+            Route::get('/strategy/drops/{drop}/assets/{assetId}', [StrategyAssetController::class, 'show']);
+            Route::get('/strategy/drops/{drop}/assets.zip', [StrategyAssetController::class, 'zip']);
         });
     });
 });
@@ -341,13 +351,13 @@ Route::prefix('v/coach')->middleware(['auth:wellcore', 'throttle:api', 'role:coa
 // Coach impersonation END — accessible by ANY authenticated user (admin or client)
 // because while impersonating, the active token's role may be coach/client.
 // The controller itself checks for an active chain in session before doing anything.
-Route::post('/v/admin/impersonate/end', [\App\Http\Controllers\Api\AdminImpersonateController::class, 'end'])
+Route::post('/v/admin/impersonate/end', [AdminImpersonateController::class, 'end'])
     ->middleware(['auth:wellcore', 'throttle:api']);
 
 // Admin (Phase 9 — authenticated admin with admin/superadmin/jefe role)
 Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:admin,superadmin,jefe'])->group(function () {
     // Coach impersonation (superadmin only)
-    Route::post('/coaches/{id}/impersonate', [\App\Http\Controllers\Api\AdminImpersonateController::class, 'start'])
+    Route::post('/coaches/{id}/impersonate', [AdminImpersonateController::class, 'start'])
         ->middleware(['role:superadmin', 'throttle:impersonate'])
         ->whereNumber('id');
 
@@ -451,25 +461,25 @@ Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:adm
     Route::put('/marketing/drops/{drop}/content', [DropReviewController::class, 'updateContent']);
     Route::post('/marketing/drops/{drop}/approve', [DropReviewController::class, 'approve']);
     Route::post('/marketing/drops/{drop}/request-regenerate', [DropReviewController::class, 'requestRegenerate']);
-    Route::post('/marketing/drops/{drop}/assets', [\App\Http\Controllers\Api\Admin\Marketing\DropAssetController::class, 'store']);
-    Route::delete('/marketing/drops/{drop}/assets/{assetId}', [\App\Http\Controllers\Api\Admin\Marketing\DropAssetController::class, 'destroy']);
+    Route::post('/marketing/drops/{drop}/assets', [DropAssetController::class, 'store']);
+    Route::delete('/marketing/drops/{drop}/assets/{assetId}', [DropAssetController::class, 'destroy']);
     Route::get('/coaches/{coach}/marketing-profile', [CoachProfileController::class, 'show'])->whereNumber('coach');
     Route::put('/coaches/{coach}/marketing-profile', [CoachProfileController::class, 'update'])->whereNumber('coach');
 
     // Forms catalog + responses (CMS read-only)
-    Route::get('/forms', [\App\Http\Controllers\Api\AdminFormsController::class, 'catalog']);
-    Route::get('/forms/{area}/{slug}/responses', [\App\Http\Controllers\Api\AdminFormsController::class, 'responses'])
+    Route::get('/forms', [AdminFormsController::class, 'catalog']);
+    Route::get('/forms/{area}/{slug}/responses', [AdminFormsController::class, 'responses'])
         ->where(['area' => 'client|public|rise', 'slug' => '[a-z0-9-]+']);
-    Route::get('/forms/{area}/{slug}/export', [\App\Http\Controllers\Api\AdminFormsController::class, 'exportCsv'])
+    Route::get('/forms/{area}/{slug}/export', [AdminFormsController::class, 'exportCsv'])
         ->where(['area' => 'client|public|rise', 'slug' => '[a-z0-9-]+']);
 
     // Campaigns tracker
-    Route::get('/campaigns', [\App\Http\Controllers\Api\AdminCampaignController::class, 'index']);
-    Route::get('/campaigns/{id}', [\App\Http\Controllers\Api\AdminCampaignController::class, 'show'])->whereNumber('id');
-    Route::post('/campaigns/{id}/pause', [\App\Http\Controllers\Api\AdminCampaignController::class, 'pause'])->whereNumber('id');
-    Route::post('/campaigns/{id}/resume', [\App\Http\Controllers\Api\AdminCampaignController::class, 'resume'])->whereNumber('id');
-    Route::post('/campaigns/{id}/duplicate', [\App\Http\Controllers\Api\AdminCampaignController::class, 'duplicate'])->whereNumber('id');
-    Route::post('/campaigns/import', [\App\Http\Controllers\Api\AdminCampaignController::class, 'import']);
+    Route::get('/campaigns', [AdminCampaignController::class, 'index']);
+    Route::get('/campaigns/{id}', [AdminCampaignController::class, 'show'])->whereNumber('id');
+    Route::post('/campaigns/{id}/pause', [AdminCampaignController::class, 'pause'])->whereNumber('id');
+    Route::post('/campaigns/{id}/resume', [AdminCampaignController::class, 'resume'])->whereNumber('id');
+    Route::post('/campaigns/{id}/duplicate', [AdminCampaignController::class, 'duplicate'])->whereNumber('id');
+    Route::post('/campaigns/import', [AdminCampaignController::class, 'import']);
 
     // Referrals
     Route::get('/referrals', [AdminController::class, 'referrals']);
@@ -477,7 +487,7 @@ Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:adm
     Route::post('/referrals/{id}/expire', [AdminController::class, 'expireReferral'])->whereNumber('id');
 
     // Admin Tools — break-glass utilities
-    Route::get('/tools',              [\App\Http\Controllers\Api\AdminToolsController::class, 'catalog']);
-    Route::get('/tools/history',      [\App\Http\Controllers\Api\AdminToolsController::class, 'history']);
-    Route::post('/tools/{id}/run',    [\App\Http\Controllers\Api\AdminToolsController::class, 'run'])->where('id', '[\w\-]+');
+    Route::get('/tools', [AdminToolsController::class, 'catalog']);
+    Route::get('/tools/history', [AdminToolsController::class, 'history']);
+    Route::post('/tools/{id}/run', [AdminToolsController::class, 'run'])->where('id', '[\w\-]+');
 });

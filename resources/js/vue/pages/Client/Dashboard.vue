@@ -8,6 +8,7 @@ import PlanOnboarding from '../../components/PlanOnboarding.vue';
 import DashboardHero from '../../components/dashboard/DashboardHero.vue';
 import DashboardPlanAlert from '../../components/dashboard/DashboardPlanAlert.vue';
 import DashboardStats from '../../components/dashboard/DashboardStats.vue';
+import DashboardGroupPulse from '../../components/dashboard/DashboardGroupPulse.vue';
 import DashboardCheckin from '../../components/dashboard/DashboardCheckin.vue';
 import DashboardMissions from '../../components/dashboard/DashboardMissions.vue';
 import DashboardCoach from '../../components/dashboard/DashboardCoach.vue';
@@ -21,11 +22,16 @@ import PullToRefreshIndicator from '../../components/dashboard/PullToRefreshIndi
 import { useStaggerIn } from '../../composables/dashboard/useStaggerIn';
 import { usePullToRefresh } from '../../composables/dashboard/usePullToRefresh';
 import { useHaptics } from '../../composables/useHaptics';
+import { useGroupPulse } from '../../composables/useGroupPulse';
 
 // Stagger entry: aplica data-stagger-index + fade-in progresivo a las secciones
 // hijas directas del contenedor. Respeta prefers-reduced-motion.
 const staggerRoot = useStaggerIn();
 const haptics = useHaptics();
+
+// Singleton compartido con DashboardGroupPulse (in-flight dedup garantiza
+// single-flight aunque ambos consumers monten en paralelo).
+const { summary: groupPulseSummary } = useGroupPulse();
 
 // Pull-to-refresh: refetch dashboard + haptic success al completar
 const { pullDistance, isRefreshing } = usePullToRefresh(async () => {
@@ -369,15 +375,25 @@ const weekMarkers = computed(() => {
       <!-- §5 STATS GRID 2x2 -->
       <DashboardStats :data="data" :xp-progress="xpProgress" :trained-ring-offset="trainedRingOffset" />
 
+      <!-- §5b LATIDO DEL GRUPO (span 12 desktop) — self-contained: usa useGroupPulse internamente -->
+      <DashboardGroupPulse />
+
       <!-- §6 PROGRESS TIMELINE (span 8 desktop) + §7 COACH (span 4 desktop) lado a lado -->
       <DashboardTimeline :data="data" :week-markers="weekMarkers" />
       <DashboardCoach :data="data" />
 
       <!-- §8 MISSIONS (span 12, grid 4 cards desktop) -->
-      <DashboardMissions :missions="data.dailyMissions || []" />
+      <DashboardMissions
+        :missions="data.dailyMissions || []"
+        :peer-counts="groupPulseSummary?.user_vs_group?.missions_peers ?? {}"
+      />
 
       <!-- §9 HEATMAP (span 8) + §10 WEIGHT (span 4) lado a lado -->
-      <DashboardHeatmap :data="data" :calendar-days="calendarDays" />
+      <DashboardHeatmap
+        :data="data"
+        :calendar-days="calendarDays"
+        :user-vs-group="groupPulseSummary?.user_vs_group?.weekly_workouts ?? null"
+      />
       <DashboardWeight :weight-chart-data="data.weightChartData || []" />
 
       <!-- §11 WEEK (span 4) + §12 ACTIVITY (span 5) + §13 SUMMARY (span 3) -->

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted, watch } from 'vue';
+import { ref, reactive, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
 import { safeStorage } from '../../utils/safeStorage';
@@ -48,6 +48,48 @@ const notifications = reactive({
 // Sound preference (localStorage)
 const soundEnabled = ref(true);
 
+// ── Latido del Grupo · privacidad (servidor) ─────────────────────────
+// 5 banderas en clients.autoshare_* que controlan qué eventos del cliente
+// aparecen en el feed Latido del Grupo de su coach. Default true (todos
+// los eventos visibles) — el usuario puede apagar los que no quiera
+// compartir. Se persisten vía PATCH /api/v/me/preferences (debounce 400ms
+// para no saturar al usuario que toggle varias en serie).
+const autoshare = reactive({
+    workout: true,
+    pr: true,
+    medal: true,
+    weight: true,
+    streak: true,
+});
+const savingAutoshare = ref(false);
+let autoshareDebounceTimer = null;
+let autoshareHydrated = false;  // evita PATCH durante hidratación inicial
+
+async function saveAutoshare() {
+    savingAutoshare.value = true;
+    try {
+        await api.patch('/api/v/me/preferences', {
+            autoshare_workout: autoshare.workout,
+            autoshare_pr: autoshare.pr,
+            autoshare_medal: autoshare.medal,
+            autoshare_weight: autoshare.weight,
+            autoshare_streak: autoshare.streak,
+        });
+    } catch (err) {
+        toast.apiError(err, 'No pudimos guardar tus preferencias de privacidad.');
+    } finally {
+        savingAutoshare.value = false;
+    }
+}
+
+// Auto-persist on toggle (debounced). Skip durante hidratación inicial
+// para no rebotar el state al backend con los defaults locales.
+watch(autoshare, () => {
+    if (!autoshareHydrated) return;
+    clearTimeout(autoshareDebounceTimer);
+    autoshareDebounceTimer = setTimeout(saveAutoshare, 400);
+}, { deep: true });
+
 // Initialize notifications from localStorage
 function loadNotificationPrefs() {
     const stored = safeStorage.getJSON('wc_notifications');
@@ -81,10 +123,24 @@ async function fetchSettings() {
             email: d.email || '',
             phone: d.phone || '',
         };
+        // Hidrata flags autoshare desde la respuesta. Si el endpoint todavía
+        // no las expone (extensión backend pendiente), quedan en sus defaults
+        // (true) y la primera vez que el usuario toggle se persiste el state
+        // real. `!== false` mantiene true si el campo viene undefined.
+        autoshare.workout = d.autoshare_workout !== false;
+        autoshare.pr = d.autoshare_pr !== false;
+        autoshare.medal = d.autoshare_medal !== false;
+        autoshare.weight = d.autoshare_weight !== false;
+        autoshare.streak = d.autoshare_streak !== false;
     } catch (err) {
         profileError.value = err.response?.data?.message || 'Error al cargar configuracion';
     } finally {
         loadingProfile.value = false;
+        // Marca hidratación completa DESPUÉS del flush reactivo de Vue
+        // para que el watcher no dispare PATCH al asignar los valores
+        // de hidratación arriba. nextTick garantiza el orden vs. la
+        // cola de scheduling propia de Vue.
+        nextTick(() => { autoshareHydrated = true; });
     }
 }
 
@@ -172,6 +228,17 @@ function isDarkMode() {
 onMounted(() => {
     loadNotificationPrefs();
     fetchSettings();
+});
+
+onBeforeUnmount(() => {
+    // Si el usuario navega antes que dispare el debounce, fuerza el save
+    // para no perder el toggle pendiente. clearTimeout primero por si ya
+    // estaba programado.
+    if (autoshareDebounceTimer) {
+        clearTimeout(autoshareDebounceTimer);
+        autoshareDebounceTimer = null;
+        if (autoshareHydrated) saveAutoshare();
+    }
 });
 </script>
 
@@ -500,6 +567,137 @@ onMounted(() => {
           </div>
 
           <p class="mt-4 text-xs text-wc-text-tertiary">Las preferencias se guardan automaticamente en este dispositivo.</p>
+        </div>
+
+        <!-- Privacidad de actividad — Latido del Grupo -->
+        <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
+          <div class="mb-5 flex items-center gap-3">
+            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-wc-accent/10">
+              <svg class="h-5 w-5 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="font-display text-lg tracking-wide text-wc-text">PRIVACIDAD DE ACTIVIDAD</h2>
+              <p class="text-sm text-wc-text-tertiary">Controla qué eventos tuyos aparecen en el Latido del Grupo de tu coach</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Entrenamientos -->
+            <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
+              <div>
+                <p class="text-sm font-medium text-wc-text">Mostrar mis entrenamientos</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">Cuando completes un entrenamiento aparecerá en el feed del grupo</p>
+              </div>
+              <button
+                type="button"
+                @click="autoshare.workout = !autoshare.workout"
+                :class="autoshare.workout ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
+                class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg"
+                role="switch"
+                :aria-checked="autoshare.workout"
+              >
+                <span
+                  :class="autoshare.workout ? 'translate-x-5' : 'translate-x-0'"
+                  class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
+                ></span>
+              </button>
+            </div>
+
+            <!-- PRs (récords personales) -->
+            <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
+              <div>
+                <p class="text-sm font-medium text-wc-text">Mostrar mis récords (PR)</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">Comparte tus levantamientos máximos para motivar al grupo</p>
+              </div>
+              <button
+                type="button"
+                @click="autoshare.pr = !autoshare.pr"
+                :class="autoshare.pr ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
+                class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg"
+                role="switch"
+                :aria-checked="autoshare.pr"
+              >
+                <span
+                  :class="autoshare.pr ? 'translate-x-5' : 'translate-x-0'"
+                  class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
+                ></span>
+              </button>
+            </div>
+
+            <!-- Medallas / logros -->
+            <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
+              <div>
+                <p class="text-sm font-medium text-wc-text">Mostrar mis medallas</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">Tus medallas y logros aparecerán cuando los desbloquees</p>
+              </div>
+              <button
+                type="button"
+                @click="autoshare.medal = !autoshare.medal"
+                :class="autoshare.medal ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
+                class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg"
+                role="switch"
+                :aria-checked="autoshare.medal"
+              >
+                <span
+                  :class="autoshare.medal ? 'translate-x-5' : 'translate-x-0'"
+                  class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
+                ></span>
+              </button>
+            </div>
+
+            <!-- Peso / mediciones -->
+            <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
+              <div>
+                <p class="text-sm font-medium text-wc-text">Mostrar cambios de peso</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">Tus actualizaciones de peso aparecerán como hitos en el grupo</p>
+              </div>
+              <button
+                type="button"
+                @click="autoshare.weight = !autoshare.weight"
+                :class="autoshare.weight ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
+                class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg"
+                role="switch"
+                :aria-checked="autoshare.weight"
+              >
+                <span
+                  :class="autoshare.weight ? 'translate-x-5' : 'translate-x-0'"
+                  class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
+                ></span>
+              </button>
+            </div>
+
+            <!-- Rachas -->
+            <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
+              <div>
+                <p class="text-sm font-medium text-wc-text">Mostrar mis rachas</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">Cuando alcances una racha de entrenamiento aparecerá en el grupo</p>
+              </div>
+              <button
+                type="button"
+                @click="autoshare.streak = !autoshare.streak"
+                :class="autoshare.streak ? 'bg-wc-accent' : 'bg-wc-bg-secondary'"
+                class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg"
+                role="switch"
+                :aria-checked="autoshare.streak"
+              >
+                <span
+                  :class="autoshare.streak ? 'translate-x-5' : 'translate-x-0'"
+                  class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
+                ></span>
+              </button>
+            </div>
+          </div>
+
+          <p class="mt-4 flex items-center gap-2 text-xs text-wc-text-tertiary">
+            <svg v-if="savingAutoshare" class="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <span>{{ savingAutoshare ? 'Guardando…' : 'Tus preferencias se sincronizan automáticamente.' }}</span>
+          </p>
         </div>
       </div>
     </div>
