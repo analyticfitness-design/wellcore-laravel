@@ -22,11 +22,16 @@ import PullToRefreshIndicator from '../../components/dashboard/PullToRefreshIndi
 import { useStaggerIn } from '../../composables/dashboard/useStaggerIn';
 import { usePullToRefresh } from '../../composables/dashboard/usePullToRefresh';
 import { useHaptics } from '../../composables/useHaptics';
+import { useGroupPulse } from '../../composables/useGroupPulse';
 
 // Stagger entry: aplica data-stagger-index + fade-in progresivo a las secciones
 // hijas directas del contenedor. Respeta prefers-reduced-motion.
 const staggerRoot = useStaggerIn();
 const haptics = useHaptics();
+
+// Singleton compartido con DashboardGroupPulse (in-flight dedup garantiza
+// single-flight aunque ambos consumers monten en paralelo).
+const { summary: groupPulseSummary } = useGroupPulse();
 
 // Pull-to-refresh: refetch dashboard + haptic success al completar
 const { pullDistance, isRefreshing } = usePullToRefresh(async () => {
@@ -381,7 +386,11 @@ const weekMarkers = computed(() => {
       <DashboardMissions :missions="data.dailyMissions || []" />
 
       <!-- §9 HEATMAP (span 8) + §10 WEIGHT (span 4) lado a lado -->
-      <DashboardHeatmap :data="data" :calendar-days="calendarDays" />
+      <DashboardHeatmap
+        :data="data"
+        :calendar-days="calendarDays"
+        :user-vs-group="groupPulseSummary?.user_vs_group?.weekly_workouts ?? null"
+      />
       <DashboardWeight :weight-chart-data="data.weightChartData || []" />
 
       <!-- §11 WEEK (span 4) + §12 ACTIVITY (span 5) + §13 SUMMARY (span 3) -->
