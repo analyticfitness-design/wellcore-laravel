@@ -16,6 +16,8 @@
 @import './wc-admin-shell.css';
 @import './wc-admin-shell-tabs/dashboard.css';
 @import './wc-admin-shell-tabs/operaciones.css';
+/* Coach iOS-native redesign foundations (scoped a .coach-ios) */
+@import './wc-coach-ios.css';
 
 /* Dark mode via .dark class on <html>, not prefers-color-scheme */
 @custom-variant dark (&:where(.dark, .dark *));
