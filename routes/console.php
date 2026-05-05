@@ -62,3 +62,8 @@ Schedule::call(function () {
 Schedule::command('wellcore:close-orphaned-impersonations')
     ->dailyAt('03:30')
     ->name('impersonations:close-orphaned');
+
+// Latido del Grupo — warm cache de stats/feed por coach (5 min cadence)
+Schedule::command('wellcore:precompute-group-pulse')
+    ->everyFiveMinutes()
+    ->withoutOverlapping(10);
