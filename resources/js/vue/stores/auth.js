@@ -3,6 +3,9 @@ import { ref, computed } from 'vue';
 import axios from 'axios';
 import { resetContractGate } from '../composables/useContractGate';
 import { resetGroupPulse } from '../composables/useGroupPulse';
+import { resetCoachCommunity } from '../composables/useCoachCommunity';
+import { resetCoachPulse } from '../composables/useCoachPulse';
+import { resetCoachAnnounce } from '../composables/useCoachAnnounce';
 
 export const useAuthStore = defineStore('auth', () => {
     // Si Laravel inyecto auth data en sesion (login vía Livewire), sincronizar
@@ -80,6 +83,9 @@ export const useAuthStore = defineStore('auth', () => {
         // summary del A durante 25s.
         if (data.token && data.token !== token.value) {
             resetGroupPulse();
+            resetCoachCommunity();
+            resetCoachPulse();
+            resetCoachAnnounce();
         }
         token.value = data.token;
         userType.value = data.userType;
@@ -132,6 +138,11 @@ export const useAuthStore = defineStore('auth', () => {
         // limpiaba solo al timeout (25s); en impersonation back-and-forth
         // el admin podía ver summary del cliente anterior.
         resetGroupPulse();
+        // Community Cross-Role Fase B: invalida caches del Coach Hub
+        // para evitar leak entre impersonations.
+        resetCoachCommunity();
+        resetCoachPulse();
+        resetCoachAnnounce();
         token.value = null;
         userType.value = null;
         userId.value = null;
