@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\UserRole;
 use App\Enums\UserType;
 use App\Events\NewMessageSent;
 use App\Http\Controllers\Api\Concerns\AuthenticatesVueRequests;
@@ -34,12 +35,12 @@ use App\Models\TrainingLog;
 use App\Models\VideoCheckin;
 use App\Models\WellcoreNotification;
 use App\Services\PushNotificationService;
+use App\Support\CoachScope;
 use App\Traits\Auditable;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class CoachController extends Controller
@@ -74,27 +75,13 @@ class CoachController extends Controller
 
     /**
      * Get client IDs related to this coach.
-     * Unions several signals: client_coach pivot (primary), clients.coach_id FK,
-     * assigned_plans, coach_messages, coach_notes, plan_tickets.
+     * Delegates to App\Support\CoachScope so the REST API and Livewire surfaces
+     * share a single source of truth (six signals: client_coach, clients.coach_id,
+     * assigned_plans, coach_messages, coach_notes, plan_tickets).
      */
     protected function getCoachClientIds(int $coachId): Collection
     {
-        $fromClientCoach = \DB::table('client_coach')->where('admin_id', $coachId)->where('active', true)->pluck('client_id');
-        $fromClientsFk = \DB::table('clients')->where('coach_id', $coachId)->pluck('id');
-        $fromPlans = \DB::table('assigned_plans')->where('assigned_by', $coachId)->pluck('client_id');
-        $fromMessages = \DB::table('coach_messages')->where('coach_id', $coachId)->pluck('client_id');
-        $fromNotes = \DB::table('coach_notes')->where('coach_id', $coachId)->pluck('client_id');
-        $fromTickets = \DB::table('plan_tickets')->where('coach_id', $coachId)->pluck('client_id');
-
-        return $fromClientCoach
-            ->concat($fromClientsFk)
-            ->concat($fromPlans)
-            ->concat($fromMessages)
-            ->concat($fromNotes)
-            ->concat($fromTickets)
-            ->filter()
-            ->unique()
-            ->values();
+        return CoachScope::clientIdsFor($coachId);
     }
 
     // ─── Dashboard ──────────────────────────────────────────────────────
@@ -981,12 +968,12 @@ class CoachController extends Controller
         ]);
 
         event(new NewMessageSent(
-            coachId:        $coachId,
-            clientId:       (int) $validated['client_id'],
-            senderId:       $coachId,
-            senderName:     $coach->name ?? 'Coach',
+            coachId: $coachId,
+            clientId: (int) $validated['client_id'],
+            senderId: $coachId,
+            senderName: $coach->name ?? 'Coach',
             messagePreview: mb_substr($msg->message, 0, 100),
-            sentAt:         $msg->created_at?->toIso8601String() ?? now()->toIso8601String(),
+            sentAt: $msg->created_at?->toIso8601String() ?? now()->toIso8601String(),
         ));
 
         return response()->json(['sent' => true, 'message_id' => $msg->id], 201);
@@ -1054,7 +1041,7 @@ class CoachController extends Controller
         $now = now();
         $count = 0;
 
-        \DB::transaction(function () use ($recipientIds, $coachId, $messageText, $now, &$count) {
+        \DB::transaction(function () use ($recipientIds, $coachId, $messageText, &$count) {
             foreach ($recipientIds as $clientId) {
                 CoachMessage::create([
                     'coach_id' => $coachId,
@@ -1349,11 +1336,11 @@ class CoachController extends Controller
             ->pluck('cnt', 'note_type');
 
         $noteStats = [
-            'total'       => $noteCountsByType->sum(),
-            'general'     => $noteCountsByType->get('general', 0),
+            'total' => $noteCountsByType->sum(),
+            'general' => $noteCountsByType->get('general', 0),
             'seguimiento' => $noteCountsByType->get('seguimiento', 0),
-            'alerta'      => $noteCountsByType->get('alerta', 0),
-            'logro'       => $noteCountsByType->get('logro', 0),
+            'alerta' => $noteCountsByType->get('alerta', 0),
+            'logro' => $noteCountsByType->get('logro', 0),
         ];
 
         // Clients for dropdown
@@ -1420,6 +1407,13 @@ class CoachController extends Controller
             'note_type' => 'nullable|in:general,seguimiento,alerta,logro',
             'note' => 'nullable|string|min:3|max:5000',
         ]);
+
+        if (isset($validated['client_id']) && $validated['client_id'] !== null) {
+            $clientIds = $this->getCoachClientIds($coach->id);
+            if (! $clientIds->contains($validated['client_id'])) {
+                return response()->json(['error' => 'Cliente no asignado a ti.'], 403);
+            }
+        }
 
         $note->update(array_filter([
             'client_id' => $validated['client_id'] ?? null,
@@ -1727,7 +1721,7 @@ class CoachController extends Controller
 
         // Superadmin puede ver el portal de cualquier cliente desde Admin/Clients.
         // Coaches y resto de roles siguen limitados a sus clientes asignados.
-        $coachRole = $coach->role instanceof \App\Enums\UserRole
+        $coachRole = $coach->role instanceof UserRole
             ? $coach->role->value
             : (string) $coach->role;
 
@@ -1750,37 +1744,37 @@ class CoachController extends Controller
         $isChain = ! empty($rootChain) && $rootUserId !== null;
 
         $actorType = $isChain ? 'admin' : 'coach';
-        $actorId   = $isChain ? $rootUserId : $coach->id;
+        $actorId = $isChain ? $rootUserId : $coach->id;
         $actorName = $isChain ? $rootUserName : ($coach->name ?? $coach->username ?? 'Coach');
 
         $viaActorType = $isChain ? 'admin' : null;
-        $viaActorId   = $isChain ? $coach->id : null;
+        $viaActorId = $isChain ? $coach->id : null;
         $viaActorName = $isChain ? ($coach->name ?? $coach->username ?? 'Coach') : null;
 
         $log = ImpersonationLog::create([
-            'actor_type'         => $actorType,
-            'actor_id'           => $actorId,
-            'actor_name'         => $actorName,
-            'via_actor_type'     => $viaActorType,
-            'via_actor_id'       => $viaActorId,
-            'via_actor_name'     => $viaActorName,
-            'target_type'        => 'client',
-            'target_id'          => $client->id,
-            'target_name'        => $client->name ?? '',
-            'target_client_id'   => $client->id,
+            'actor_type' => $actorType,
+            'actor_id' => $actorId,
+            'actor_name' => $actorName,
+            'via_actor_type' => $viaActorType,
+            'via_actor_id' => $viaActorId,
+            'via_actor_name' => $viaActorName,
+            'target_type' => 'client',
+            'target_id' => $client->id,
+            'target_name' => $client->name ?? '',
+            'target_client_id' => $client->id,
             'target_client_name' => $client->name ?? '',
-            'token'              => $token,
-            'started_at'         => now(),
-            'ip'                 => $request->ip(),
-            'user_agent'         => substr((string) $request->userAgent(), 0, 500),
+            'token' => $token,
+            'started_at' => now(),
+            'ip' => $request->ip(),
+            'user_agent' => substr((string) $request->userAgent(), 0, 500),
         ]);
 
         AuthToken::create([
-            'user_type'            => 'client',
-            'user_id'              => $client->id,
-            'token'                => $token,
-            'expires_at'           => $expiresAt,
-            'ip_address'           => $request->ip(),
+            'user_type' => 'client',
+            'user_id' => $client->id,
+            'token' => $token,
+            'expires_at' => $expiresAt,
+            'ip_address' => $request->ip(),
             'impersonation_log_id' => $log->id,
         ]);
 
@@ -1794,42 +1788,42 @@ class CoachController extends Controller
         if (! $rootToken) {
             $coachBearer = $request->bearerToken() ?? session('wc_token') ?? '';
             session([
-                'wc_root_token'     => $coachBearer,
-                'wc_root_user_id'   => $coach->id,
+                'wc_root_token' => $coachBearer,
+                'wc_root_user_id' => $coach->id,
                 'wc_root_user_name' => $coach->name ?? $coach->username ?? 'Coach',
             ]);
         }
 
         $chain = session('wc_impersonation_chain', []);
         $chain[] = [
-            'level'          => count($chain) + 1,
-            'log_id'         => $log->id,
-            'token'          => $token,
-            'target_type'    => 'client',
-            'target_id'      => $client->id,
-            'target_name'    => $client->name ?? 'Cliente',
+            'level' => count($chain) + 1,
+            'log_id' => $log->id,
+            'token' => $token,
+            'target_type' => 'client',
+            'target_id' => $client->id,
+            'target_name' => $client->name ?? 'Cliente',
             'via_actor_type' => $viaActorType,
-            'via_actor_id'   => $viaActorId,
+            'via_actor_id' => $viaActorId,
             'via_actor_name' => $viaActorName,
         ];
 
         session([
             'wc_impersonation_chain' => $chain,
-            'wc_admin_token'         => session('wc_admin_token') ?: ($request->bearerToken() ?? session('wc_token') ?? ''),
-            'wc_token'               => $token,
-            'wc_user_type'           => 'client',
-            'wc_user_id'             => $client->id,
-            'wc_user_name'           => $client->name ?? 'Cliente',
-            'wc_user_portal'         => '/client',
+            'wc_admin_token' => session('wc_admin_token') ?: ($request->bearerToken() ?? session('wc_token') ?? ''),
+            'wc_token' => $token,
+            'wc_user_type' => 'client',
+            'wc_user_id' => $client->id,
+            'wc_user_name' => $client->name ?? 'Cliente',
+            'wc_user_portal' => '/client',
         ]);
 
         return response()->json([
-            'token'        => $token,
-            'client_id'    => $client->id,
-            'client_name'  => $client->name,
-            'expires_at'   => $expiresAt->toIso8601String(),
+            'token' => $token,
+            'client_id' => $client->id,
+            'client_name' => $client->name,
+            'expires_at' => $expiresAt->toIso8601String(),
             'redirect_url' => '/client',
-            'log_id'       => $log->id,
+            'log_id' => $log->id,
         ]);
     }
 
@@ -1841,7 +1835,7 @@ class CoachController extends Controller
         // If a chain is present this endpoint is a thin wrapper around
         // AdminImpersonateController::end — single source of truth.
         if (! empty(session('wc_impersonation_chain', []))) {
-            return app(\App\Http\Controllers\Api\AdminImpersonateController::class)->end($request);
+            return app(AdminImpersonateController::class)->end($request);
         }
 
         // Legacy single-level fallback (preserved for backwards compat).

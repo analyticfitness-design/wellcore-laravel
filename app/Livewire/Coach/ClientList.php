@@ -7,6 +7,7 @@ use App\Models\Checkin;
 use App\Models\Client;
 use App\Models\ClientXp;
 use App\Models\CoachMessage;
+use App\Support\CoachScope;
 use Carbon\Carbon;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -15,6 +16,7 @@ use Livewire\Component;
 class ClientList extends Component
 {
     public string $search = '';
+
     public ?int $expandedClient = null;
 
     public function toggleExpand(int $clientId): void
@@ -26,16 +28,14 @@ class ClientList extends Component
     {
         $coachId = auth('wellcore')->id();
 
-        // Get client IDs assigned to this coach
-        $clientIds = AssignedPlan::where('assigned_by', $coachId)
-            ->pluck('client_id')
-            ->unique();
+        // Get client IDs assigned to this coach (six-source union)
+        $clientIds = CoachScope::clientIdsFor($coachId);
 
         // Build client query
         $query = Client::whereIn('id', $clientIds)->where('status', 'activo');
 
         if ($this->search !== '') {
-            $query->where('name', 'like', '%' . $this->search . '%');
+            $query->where('name', 'like', '%'.$this->search.'%');
         }
 
         $clients = $query->orderBy('name')->get();

@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Models\CoachMessage;
 use App\Models\Ticket;
 use App\Models\TrainingLog;
+use App\Support\CoachScope;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -69,10 +70,7 @@ class Dashboard extends Component
         $this->coachName = explode(' ', $coach->name ?? 'Coach')[0];
         $this->todayDateLabel = mb_strtoupper(now()->locale('es')->isoFormat('dddd D MMM'));
 
-        $clientIds = AssignedPlan::where('assigned_by', $coachId)
-            ->pluck('client_id')
-            ->unique()
-            ->values();
+        $clientIds = CoachScope::clientIdsFor($coachId);
 
         $cached = Cache::remember("coach_dashboard:{$coachId}", 300, function () use ($coachId, $clientIds) {
             return [

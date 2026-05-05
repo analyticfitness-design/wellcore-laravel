@@ -27,7 +27,7 @@ class AdminPaymentProofViewController extends Controller
         }
 
         $cacheKey = "proof_view_{$token}";
-        $cachedId = Cache::get($cacheKey);
+        $cachedId = Cache::pull($cacheKey);
 
         if ($cachedId === null) {
             abort(403, 'Token inválido o expirado.');

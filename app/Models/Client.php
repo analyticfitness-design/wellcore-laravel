@@ -114,7 +114,8 @@ class Client extends Authenticatable
 
     public function notifications(): HasMany
     {
-        return $this->hasMany(WellcoreNotification::class, 'user_id');
+        return $this->hasMany(WellcoreNotification::class, 'user_id')
+            ->where('user_type', 'client');
     }
 
     public function pushSubscriptions(): HasMany

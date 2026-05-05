@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller
@@ -59,15 +60,18 @@ class AuthController extends Controller
         $token = bin2hex(random_bytes(32));
 
         AuthToken::create([
-            'user_type'    => $userType->value,
-            'user_id'      => $user->id,
-            'token'        => $token,
-            'ip_address'   => $request->ip(),
-            'fingerprint'  => mb_substr((string) $request->userAgent(), 0, 64),
-            'expires_at'   => now()->addDays(7),
-            'created_at'   => now(),
+            'user_type' => $userType->value,
+            'user_id' => $user->id,
+            'token' => $token,
+            'ip_address' => $request->ip(),
+            'fingerprint' => mb_substr((string) $request->userAgent(), 0, 64),
+            'expires_at' => now()->addDays(7),
+            'created_at' => now(),
             'last_used_at' => now(),
         ]);
+
+        // Prevent session fixation: regenerate session ID after successful auth
+        $request->session()->regenerate();
 
         // Store in session for Livewire compatibility
         session()->put('wc_token', $token);
@@ -102,9 +106,10 @@ class AuthController extends Controller
             if ($authToken && $authToken->impersonation_log_id) {
                 \Illuminate\Support\Facades\Log::channel('security')->info('IMPERSONATE_LOGOUT_REDIRECTED', [
                     'token_id' => $authToken->id,
-                    'log_id'   => $authToken->impersonation_log_id,
+                    'log_id' => $authToken->impersonation_log_id,
                 ]);
-                return app(\App\Http\Controllers\Api\AdminImpersonateController::class)->end($request);
+
+                return app(AdminImpersonateController::class)->end($request);
             }
             AuthToken::where('token', $token)->delete();
         }
@@ -123,14 +128,14 @@ class AuthController extends Controller
             'email.email' => 'Ingresa un email valido.',
         ]);
 
-        $rateLimitKey = 'password-reset:' . Str::lower($request->email);
+        $rateLimitKey = 'password-reset:'.Str::lower($request->email);
 
         if (RateLimiter::tooManyAttempts($rateLimitKey, 3)) {
             $seconds = RateLimiter::availableIn($rateLimitKey);
             $minutes = (int) ceil($seconds / 60);
 
             return response()->json([
-                'message' => "Has solicitado demasiados enlaces. Intenta de nuevo en {$minutes} minuto" . ($minutes > 1 ? 's' : '') . '.',
+                'message' => "Has solicitado demasiados enlaces. Intenta de nuevo en {$minutes} minuto".($minutes > 1 ? 's' : '').'.',
             ], 429);
         }
 
@@ -150,7 +155,7 @@ class AuthController extends Controller
             ['token' => Hash::make($token), 'created_at' => now()]
         );
 
-        $resetUrl = url('/reset-password/' . $token . '?email=' . urlencode($request->email));
+        $resetUrl = url('/reset-password/'.$token.'?email='.urlencode($request->email));
 
         try {
             Mail::send('emails.password-reset', [
@@ -321,7 +326,7 @@ class AuthController extends Controller
         if ($userType === UserType::Admin) {
             $updates['must_change_password'] = false;
             // password_changed_at may not yet exist in prod — guard.
-            if (\Illuminate\Support\Facades\Schema::hasColumn('admins', 'password_changed_at')) {
+            if (Schema::hasColumn('admins', 'password_changed_at')) {
                 $updates['password_changed_at'] = now();
             }
         }
