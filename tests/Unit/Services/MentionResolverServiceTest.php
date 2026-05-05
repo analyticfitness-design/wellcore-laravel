@@ -1,15 +1,18 @@
 <?php
 
+use App\Events\MentionCreated;
 use App\Models\Admin;
 use App\Models\Client;
 use App\Models\CommunityPost;
 use App\Models\PostMention;
 use App\Services\MentionResolverService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 
 uses(DatabaseTransactions::class);
 
 beforeEach(function () {
+    Event::fake([MentionCreated::class]);
     $this->service = new MentionResolverService;
 });
 
