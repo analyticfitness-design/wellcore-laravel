@@ -62,6 +62,13 @@ function createPreviewMockClient() {
     };
 }
 
+// Singleton instance: avoids creating dozens of orphan axios clients with
+// duplicate interceptors when 50+ components call useApi() (especially with
+// 30s polling). The auth store reference is captured once but its `token`
+// field is read inside the interceptor on every request, so impersonation
+// token swaps remain reactive.
+let _instance = null;
+
 export function useApi() {
     const authStore = useAuthStore();
 
@@ -69,7 +76,11 @@ export function useApi() {
         return createPreviewMockClient();
     }
 
-    const instance = axios.create({
+    if (_instance) {
+        return _instance;
+    }
+
+    _instance = axios.create({
         baseURL: '',
         headers: {
             'Accept': 'application/json',
@@ -77,7 +88,7 @@ export function useApi() {
     });
 
     // Attach token on every request and handle Content-Type
-    instance.interceptors.request.use((config) => {
+    _instance.interceptors.request.use((config) => {
         if (authStore.token) {
             config.headers.Authorization = `Bearer ${authStore.token}`;
         }
@@ -90,7 +101,7 @@ export function useApi() {
     });
 
     // Handle 401 responses globally — clear auth and redirect to login
-    instance.interceptors.response.use(
+    _instance.interceptors.response.use(
         (response) => response,
         (error) => {
             if (error?.response?.status === 403 && error.response?.data?.contract_required) {
@@ -106,5 +117,5 @@ export function useApi() {
         }
     );
 
-    return instance;
+    return _instance;
 }

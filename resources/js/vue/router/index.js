@@ -194,6 +194,17 @@ router.beforeEach(async (to, from, next) => {
         }
     }
 
+    // Role guard: prevent client/coach users from mounting admin/coach SPA pages.
+    // Backend rejects API calls anyway, but this stops the page from rendering.
+    if (authStore.isAuthenticated) {
+        const ROLE_PREFIX = { '/admin': 'admin', '/coach': 'coach' };
+        for (const [prefix, role] of Object.entries(ROLE_PREFIX)) {
+            if (to.path.startsWith(prefix) && authStore.userType !== role) {
+                return next(authStore.userPortal || '/login');
+            }
+        }
+    }
+
     // Brand profile gate for /coach/strategy/*
     if (to.meta.requiresBrandProfile && authStore.isAuthenticated && authStore.userType === 'coach') {
         try {
