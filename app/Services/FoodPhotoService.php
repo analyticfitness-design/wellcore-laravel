@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\JpegEncoder;
 use Intervention\Image\ImageManager;
 
 class FoodPhotoService
@@ -130,7 +131,11 @@ class FoodPhotoService
         $image->scaleDown(width: 1200);
 
         $filename = sprintf('food-photos/%d/%s.jpg', $clientId, Str::uuid());
-        $encoded = $image->toJpeg(85);
+        // Intervention v4 oficial: $image->toJpeg(quality); v4.0.1 instalada
+        // expone solo encode(new JpegEncoder(quality)). Fallback method_exists.
+        $encoded = method_exists($image, 'toJpeg')
+            ? $image->toJpeg(85)
+            : $image->encode(new JpegEncoder(quality: 85));
 
         Storage::disk('public')->put($filename, (string) $encoded);
 
