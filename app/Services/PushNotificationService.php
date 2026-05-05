@@ -167,7 +167,7 @@ class PushNotificationService
             'icon'  => '/images/logo-dark.png',
             'badge' => '/icons/icon-192x192.png',
             'tag'   => 'food-photo-reacted',
-            'data'  => ['url' => '/rise/food-tracking', 'type' => 'food_photo_reacted'],
+            'data'  => ['url' => '/client/food-tracking', 'type' => 'food_photo_reacted'],
         ]);
     }
 

@@ -10,7 +10,7 @@
         <div class="flex items-center gap-2">
             <select wire:model.live="selectedClientId"
                     class="rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text">
-                <option :value="null">Todos los clientes</option>
+                <option value="">Todos los clientes</option>
                 @foreach ($allClients as $c)
                     <option value="{{ $c->id }}">{{ $c->name }}</option>
                 @endforeach
