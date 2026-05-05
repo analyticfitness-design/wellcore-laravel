@@ -144,6 +144,29 @@ const specsList = computed(() => {
               </p>
             </div>
 
+            <div class="block visibility-block">
+              <span class="block-label">VISIBILIDAD PUBLICA</span>
+              <div class="visibility-row">
+                <button
+                  type="button"
+                  role="switch"
+                  :aria-checked="view.public_visible ? 'true' : 'false'"
+                  :disabled="!view.has_profile"
+                  class="toggle-track"
+                  :class="{ on: view.public_visible, disabled: !view.has_profile }"
+                  @click="store.toggleVisibility()"
+                >
+                  <span class="toggle-thumb"></span>
+                </button>
+                <span class="visibility-label">
+                  {{ view.public_visible ? 'Visible en página de coaches' : 'Oculto en página de coaches' }}
+                </span>
+              </div>
+              <p v-if="!view.has_profile" class="visibility-hint">
+                Requiere perfil completo para activar
+              </p>
+            </div>
+
             <p v-if="refreshHint" class="poll-hint">{{ refreshHint }}</p>
           </section>
 
@@ -475,6 +498,65 @@ const specsList = computed(() => {
     line-height: 1.55;
     margin: 0;
     text-wrap: balance;
+}
+
+/* ── Visibility toggle ───────────────────────────────────────────────── */
+.visibility-block {
+    padding: 12px;
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid var(--c-border);
+    background: rgba(255, 255, 255, 0.02);
+}
+.visibility-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.toggle-track {
+    width: 40px;
+    height: 22px;
+    border-radius: 11px;
+    background: var(--c-border);
+    border: none;
+    transition: background 0.2s;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    padding: 0;
+}
+.toggle-track.on {
+    background: #22C55E;
+}
+.toggle-track.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.toggle-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    transition: left 0.2s;
+    pointer-events: none;
+}
+.toggle-track.on .toggle-thumb {
+    left: 21px;
+}
+.visibility-label {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--c-text-2);
+}
+.visibility-hint {
+    font-family: var(--font-display);
+    font-size: 8px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--c-text-3);
+    margin: 6px 0 0;
 }
 
 /* ── Transitions ─────────────────────────────────────────────────────── */

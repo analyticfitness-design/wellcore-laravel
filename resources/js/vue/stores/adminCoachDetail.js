@@ -95,6 +95,19 @@ export const useAdminCoachDetailStore = defineStore('adminCoachDetail', {
             this.activeTab = 'resumen';
         },
 
+        async toggleVisibility() {
+            if (!this.coachId) return;
+            const api = useApi();
+            try {
+                const { data } = await api.patch(`/api/v/admin/coaches/${this.coachId}/visibility`);
+                if (this.detail) {
+                    this.detail = { ...this.detail, public_visible: data.public_visible };
+                }
+            } catch (err) {
+                // silenciar — UI no cambia si falla
+            }
+        },
+
         $resetState() {
             this.close();
             this.loading = false;

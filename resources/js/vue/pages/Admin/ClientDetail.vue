@@ -14,6 +14,7 @@ import AdminClientCommunicationPanel from '../../components/admin/clients/AdminC
 import AdminClientNotesPanel from '../../components/admin/clients/AdminClientNotesPanel.vue';
 import AdminClientQuickActions from '../../components/admin/clients/AdminClientQuickActions.vue';
 import AdminClientIntakePanel from '../../components/admin/clients/AdminClientIntakePanel.vue';
+import AdminClientActivityPanel from '../../components/admin/clients/AdminClientActivityPanel.vue';
 
 import { useAdminClientDetailStore } from '../../stores/adminClientDetail';
 
@@ -118,6 +119,7 @@ onBeforeUnmount(() => {
                   comunicacion: AdminClientCommunicationPanel,
                   notas: AdminClientNotesPanel,
                   intake: AdminClientIntakePanel,
+                  actividad: AdminClientActivityPanel,
                 }[activeTab]"
                 :key="activeTab"
                 :client="client"

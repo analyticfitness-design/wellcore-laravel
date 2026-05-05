@@ -11,6 +11,7 @@ const TABS = [
     { id: 'comunicacion', label: 'COMUNICACION' },
     { id: 'notas',        label: 'NOTAS' },
     { id: 'intake',       label: 'INTAKE' },
+    { id: 'actividad',    label: 'ACTIVIDAD' },
 ];
 </script>
 
