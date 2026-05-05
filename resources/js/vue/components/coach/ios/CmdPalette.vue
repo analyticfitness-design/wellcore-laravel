@@ -101,6 +101,7 @@ function indexOfItem(itemId) {
 
 <template>
   <Teleport to="body">
+    <div class="coach-ios">
     <div
       :class="['palette-backdrop', { open }]"
       @click="close"
@@ -166,6 +167,7 @@ function indexOfItem(itemId) {
         <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 border rounded text-[9px]" style="background: var(--s2); border-color: var(--b1);">↵</kbd> Seleccionar</span>
         <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 border rounded text-[9px]" style="background: var(--s2); border-color: var(--b1);">Esc</kbd> Cerrar</span>
       </div>
+    </div>
     </div>
   </Teleport>
 </template>

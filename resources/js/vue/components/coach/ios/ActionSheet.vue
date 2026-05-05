@@ -48,6 +48,7 @@ onUnmounted(() => {
 
 <template>
   <Teleport to="body">
+    <div class="coach-ios">
     <div
       :class="['sheet-backdrop', { open }]"
       @click="close"
@@ -96,6 +97,7 @@ onUnmounted(() => {
       >
         Cancelar
       </button>
+    </div>
     </div>
   </Teleport>
 </template>
