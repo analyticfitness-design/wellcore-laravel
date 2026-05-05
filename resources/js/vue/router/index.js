@@ -196,14 +196,19 @@ router.beforeEach(async (to, from, next) => {
         }
     }
 
-    // Role guard: prevent client/coach users from mounting admin/coach SPA pages.
-    // Backend rejects API calls anyway, but this stops the page from rendering.
+    // Role guard: prevent client users from mounting admin/coach SPA pages.
+    // userType solo es 'admin' o 'client' (UserType enum); coach es un Admin con role=Coach.
+    // userPortal = '/admin' | '/coach' | '/rise' | '/client' (resolveRedirectUrl en AuthController).
+    // Permitimos:
+    //  - /admin/*: solo userType='admin' (coaches con userPortal='/coach' tambien — el role check lo hace API)
+    //  - /coach/*: userType='admin' (admin/superadmin/jefe/coach) — clientes bloqueados
     if (authStore.isAuthenticated) {
-        const ROLE_PREFIX = { '/admin': 'admin', '/coach': 'coach' };
-        for (const [prefix, role] of Object.entries(ROLE_PREFIX)) {
-            if (to.path.startsWith(prefix) && authStore.userType !== role) {
-                return next(authStore.userPortal || '/login');
-            }
+        const ut = authStore.userType;
+        if (to.path.startsWith('/admin') && ut !== 'admin') {
+            return next(authStore.userPortal || '/login');
+        }
+        if (to.path.startsWith('/coach') && ut !== 'admin') {
+            return next(authStore.userPortal || '/login');
         }
     }
 
