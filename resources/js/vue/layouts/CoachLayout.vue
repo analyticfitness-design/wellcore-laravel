@@ -242,19 +242,17 @@ const cmdPaletteSections = computed(() => [
       :class="[sidebarOpen ? 'translate-x-0' : '-translate-x-full', sidebarCollapsed ? 'lg:w-[4.5rem]' : 'lg:w-60']"
       class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col border-r border-wc-border bg-wc-bg-secondary transition-all duration-300 ease-in-out lg:translate-x-0"
     >
-      <!-- Logo (theme-aware) -->
-      <div class="flex h-16 items-center gap-3 border-b border-wc-border px-5 overflow-hidden">
-        <img
-          src="/images/logo-coach-dark.png"
-          alt="WellCore"
-          class="hidden h-9 w-9 object-contain shrink-0 dark:block"
-        />
-        <img
-          src="/images/logo-coach-light.png"
-          alt="WellCore"
-          class="block h-9 w-9 object-contain shrink-0 dark:hidden"
-        />
-        <span :class="sidebarCollapsed ? 'lg:hidden' : ''" class="font-display text-xl tracking-wider text-wc-text">WELLCORE</span>
+      <!-- Logo with conic ring accent (iOS signature) -->
+      <div class="flex h-16 items-center gap-2.5 border-b border-wc-border px-5 overflow-hidden">
+        <span class="ring-conic-accent w-9 h-9 shrink-0 inline-block">
+          <span class="absolute inset-[2px] rounded-full bg-wc-accent flex items-center justify-center z-[1]">
+            <svg viewBox="0 0 48 48" fill="none" class="w-5 h-5" aria-hidden="true">
+              <path d="M10 19 L16 33 L22 22 L26 22 L32 33 L38 19" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="24" cy="22" r="2" fill="#fff"/>
+            </svg>
+          </span>
+        </span>
+        <span :class="sidebarCollapsed ? 'lg:hidden' : ''" class="font-display text-lg tracking-[0.12em] font-bold text-wc-text">WELLCORE</span>
       </div>
 
       <!-- Navigation -->

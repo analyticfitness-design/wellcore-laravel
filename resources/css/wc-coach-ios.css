@@ -589,14 +589,22 @@
   position: absolute;
   top: -40px;
   left: -40px;
-  width: 200px;
-  height: 160px;
+  width: 220px;
+  height: 180px;
   background: radial-gradient(
     ellipse at 30% 30%,
-    rgba(220, 38, 38, 0.45) 0%,
+    rgba(220, 38, 38, 0.55) 0%,
     transparent 70%
   );
   pointer-events: none;
+  z-index: 0;
+}
+/* Reforzar visibilidad del Liquid Glass:
+   gradient interno que se mezcla con el blur — Apple Wallet trick. */
+.coach-ios .hero-alert-base.liquid-glass {
+  background:
+    radial-gradient(ellipse at 25% 25%, rgba(220, 38, 38, 0.22) 0%, transparent 55%),
+    var(--glass);
 }
 .coach-ios .hero-alert-base::after {
   content: '';
@@ -611,6 +619,41 @@
     rgba(220, 38, 38, 0.3)
   );
   border-radius: 3px 0 0 3px;
+}
+
+/* =================================================================
+   23b · UTILITIES — Grain texture + gradient border (hero alert)
+   Apple Wallet / iOS hero card signature.
+   ================================================================= */
+.coach-ios .hero-grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+  pointer-events: none;
+  border-radius: inherit;
+  mix-blend-mode: overlay;
+  opacity: 0.6;
+  z-index: 0;
+}
+
+.coach-ios .hero-grad-border {
+  position: relative;
+}
+.coach-ios .hero-grad-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04));
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* =================================================================

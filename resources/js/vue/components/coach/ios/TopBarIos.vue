@@ -67,7 +67,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
     </span>
 
     <div class="flex items-center gap-2">
-      <div v-if="showUpdated" class="updated-indicator hidden sm:inline-flex">
+      <div v-if="showUpdated" class="updated-indicator">
         <span class="dot pulse-green" />
         <span>ahora</span>
       </div>
