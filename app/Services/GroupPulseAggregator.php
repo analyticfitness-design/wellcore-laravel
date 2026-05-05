@@ -88,6 +88,55 @@ final class GroupPulseAggregator
     }
 
     /**
+     * Compare a single client's weekly activity against the rest of the
+     * coach's group. Used by the dashboard "tu eres top X%" card.
+     *
+     * Always returns a populated shape (even with zeros) so callers don't need
+     * null checks. missions_peers is reserved for a future task; today empty.
+     *
+     * @return array{weekly_workouts: array{user:int, group_avg:float, rank_pct:int}, missions_peers: array<int,int>}
+     */
+    public function userVsGroup(int $coachId, int $clientId): array
+    {
+        $clientIds = Client::where('coach_id', $coachId)->pluck('id');
+
+        if ($clientIds->isEmpty()) {
+            return $this->emptyUserVsGroup();
+        }
+
+        $weekAgo = Carbon::now()->subDays(7);
+
+        $userCount = (int) WorkoutSession::withoutGlobalScope(OwnedByClientScope::class)
+            ->where('client_id', $clientId)
+            ->where('completed', true)
+            ->where('session_date', '>=', $weekAgo)
+            ->count();
+
+        $groupCounts = WorkoutSession::withoutGlobalScope(OwnedByClientScope::class)
+            ->whereIn('client_id', $clientIds)
+            ->where('completed', true)
+            ->where('session_date', '>=', $weekAgo)
+            ->select('client_id', DB::raw('COUNT(*) as cnt'))
+            ->groupBy('client_id')
+            ->pluck('cnt')
+            ->map(fn ($v) => (int) $v)
+            ->toArray();
+
+        $groupAvg = $groupCounts === []
+            ? 0.0
+            : round(array_sum($groupCounts) / count($groupCounts), 1);
+
+        return [
+            'weekly_workouts' => [
+                'user' => $userCount,
+                'group_avg' => (float) $groupAvg,
+                'rank_pct' => $this->rankPercentile($userCount, $groupCounts),
+            ],
+            'missions_peers' => [],
+        ];
+    }
+
+    /**
      * @return array{workouts_today:int, prs_week:int, achievements_today:int, checkins_week:int}
      */
     private function zeroStats(): array
@@ -98,6 +147,39 @@ final class GroupPulseAggregator
             'achievements_today' => 0,
             'checkins_week' => 0,
         ];
+    }
+
+    /**
+     * @return array{weekly_workouts: array{user:int, group_avg:float, rank_pct:int}, missions_peers: array<int,int>}
+     */
+    private function emptyUserVsGroup(): array
+    {
+        return [
+            'weekly_workouts' => [
+                'user' => 0,
+                'group_avg' => 0.0,
+                'rank_pct' => 0,
+            ],
+            'missions_peers' => [],
+        ];
+    }
+
+    /**
+     * Top-percentile rank: percent of the group at or above $value.
+     * Smaller is better — "top 10%" means $value is in the elite 10%.
+     * Empty group → 0.
+     *
+     * @param  array<int,int>  $allValues
+     */
+    private function rankPercentile(int $value, array $allValues): int
+    {
+        if ($allValues === []) {
+            return 0;
+        }
+
+        $strictlyBelow = count(array_filter($allValues, fn ($v) => $v < $value));
+
+        return (int) round(100 * (1 - $strictlyBelow / count($allValues)));
     }
 
     private function countWorkoutsToday(Collection $clientIds): int
