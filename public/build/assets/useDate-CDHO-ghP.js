@@ -1,1 +1,0 @@
-function e(e){return e<10?`0${e}`:`${e}`}function t(t=new Date){return(!(t instanceof Date)||isNaN(t.getTime()))&&(t=new Date),`${t.getFullYear()}-${e(t.getMonth()+1)}-${e(t.getDate())}`}export{t};
