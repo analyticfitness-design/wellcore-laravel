@@ -45,12 +45,18 @@ class CommissionService
 
     public static function getCoachEarnings(int $coachId, ?string $month = null): array
     {
+        // payments table has no coach_id; coach-client assignment lives in
+        // assigned_plans.assigned_by. Join via client_id and de-duplicate so a
+        // single payment is not counted twice when multiple plans exist.
         $query = DB::table('payments')
-            ->where('coach_id', $coachId)
-            ->where('status', 'approved');
+            ->join('assigned_plans', 'assigned_plans.client_id', '=', 'payments.client_id')
+            ->where('assigned_plans.assigned_by', $coachId)
+            ->where('payments.status', 'approved')
+            ->select('payments.id', 'payments.amount', 'payments.plan', 'payments.created_at')
+            ->distinct();
 
         if ($month) {
-            $query->whereRaw("DATE_FORMAT(created_at, '%Y-%m') = ?", [$month]);
+            $query->whereRaw("DATE_FORMAT(payments.created_at, '%Y-%m') = ?", [$month]);
         }
 
         $payments = $query->get();
@@ -58,9 +64,15 @@ class CommissionService
         $details = [];
 
         foreach ($payments as $payment) {
+            // payments.plan is cast to PlanType enum on the model, but DB::table
+            // returns raw strings — so just normalize here.
+            $planSlug = is_string($payment->plan) && $payment->plan !== ''
+                ? $payment->plan
+                : 'esencial';
+
             $calc = self::calculateCommission(
-                $payment->amount,
-                $payment->plan_slug ?? 'esencial',
+                (float) $payment->amount,
+                $planSlug,
                 0 // simplified — would need coach join date
             );
             $totalEarnings += $calc['commission'];
@@ -78,8 +90,11 @@ class CommissionService
     {
         $bonus = 0;
         foreach (self::SENIORITY_BONUS as $threshold => $rate) {
-            if ($months >= $threshold) $bonus = $rate;
+            if ($months >= $threshold) {
+                $bonus = $rate;
+            }
         }
+
         return $bonus;
     }
 }

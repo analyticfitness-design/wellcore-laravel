@@ -38,26 +38,31 @@ class WellCoinsService
     public static function earn(int $clientId, string $action, ?string $description = null): int
     {
         $coins = self::EARN_RULES[$action] ?? 0;
-        if ($coins === 0) return 0;
+        if ($coins === 0) {
+            return 0;
+        }
 
         try {
-            DB::table('wellcoins_transactions')->insert([
-                'client_id' => $clientId,
-                'type' => 'earn',
-                'action' => $action,
-                'amount' => $coins,
-                'description' => $description ?? self::getActionLabel($action),
-                'created_at' => now(),
-            ]);
+            return DB::transaction(function () use ($clientId, $coins, $action, $description) {
+                DB::table('wellcoins_transactions')->insert([
+                    'client_id' => $clientId,
+                    'type' => 'earn',
+                    'action' => $action,
+                    'amount' => $coins,
+                    'description' => $description ?? self::getActionLabel($action),
+                    'created_at' => now(),
+                ]);
 
-            // Update client's total coins
-            DB::table('clients')
-                ->where('id', $clientId)
-                ->increment('wellcoins_balance', $coins);
+                // Update client's total coins
+                DB::table('clients')
+                    ->where('id', $clientId)
+                    ->increment('wellcoins_balance', $coins);
 
-            return $coins;
+                return $coins;
+            });
         } catch (\Exception $e) {
             Log::error('WellCoins earn failed', ['client_id' => $clientId, 'action' => $action, 'error' => $e->getMessage()]);
+
             return 0;
         }
     }
@@ -65,7 +70,9 @@ class WellCoinsService
     public static function spend(int $clientId, int $amount, string $description): bool
     {
         $balance = self::getBalance($clientId);
-        if ($balance < $amount) return false;
+        if ($balance < $amount) {
+            return false;
+        }
 
         try {
             DB::table('wellcoins_transactions')->insert([
@@ -84,6 +91,7 @@ class WellCoinsService
             return true;
         } catch (\Exception $e) {
             Log::error('WellCoins spend failed', ['client_id' => $clientId, 'error' => $e->getMessage()]);
+
             return false;
         }
     }
@@ -99,8 +107,11 @@ class WellCoinsService
     {
         $tier = 'bronce';
         foreach (self::TIERS as $name => $threshold) {
-            if ($totalEarned >= $threshold) $tier = $name;
+            if ($totalEarned >= $threshold) {
+                $tier = $name;
+            }
         }
+
         return $tier;
     }
 
@@ -140,7 +151,7 @@ class WellCoinsService
 
     private static function getActionLabel(string $action): string
     {
-        return match($action) {
+        return match ($action) {
             'daily_checkin' => 'Check-in diario',
             'weekly_checkin' => 'Check-in semanal completado',
             'workout_completed' => 'Entrenamiento completado',

@@ -21,79 +21,80 @@ class BehavioralTriggersCommand extends Command
     {
         $this->info('Running behavioral triggers...');
 
-        $clients = Client::where('status', 'activo')->get();
         $triggered = 0;
 
-        foreach ($clients as $client) {
-            // Check for inactivity (no training in 3+ days)
-            $lastTraining = TrainingLog::where('client_id', $client->id)
-                ->where('completed', true)
-                ->latest('log_date')
-                ->first();
+        Client::where('status', 'activo')->chunkById(100, function ($clients) use (&$triggered) {
+            foreach ($clients as $client) {
+                // Check for inactivity (no training in 3+ days)
+                $lastTraining = TrainingLog::where('client_id', $client->id)
+                    ->where('completed', true)
+                    ->latest('log_date')
+                    ->first();
 
-            if ($lastTraining && $lastTraining->log_date->diffInDays(now()) >= 3) {
-                $alreadySent = AutoMessageLog::where('client_id', $client->id)
-                    ->where('trigger_type', 'inactivity_3d')
-                    ->where('date_sent', today())
-                    ->exists();
+                if ($lastTraining && $lastTraining->log_date->diffInDays(now()) >= 3) {
+                    $alreadySent = AutoMessageLog::where('client_id', $client->id)
+                        ->where('trigger_type', 'inactivity_3d')
+                        ->where('date_sent', today())
+                        ->exists();
 
-                if (! $alreadySent) {
-                    WellcoreNotification::create([
-                        'user_type' => 'client',
-                        'user_id' => $client->id,
-                        'type' => 'behavioral_trigger',
-                        'title' => 'Te extrañamos en el gym',
-                        'body' => 'Llevas '.$lastTraining->log_date->diffInDays(now()).' dias sin entrenar. Cada dia cuenta.',
-                    ]);
+                    if (! $alreadySent) {
+                        WellcoreNotification::create([
+                            'user_type' => 'client',
+                            'user_id' => $client->id,
+                            'type' => 'behavioral_trigger',
+                            'title' => 'Te extrañamos en el gym',
+                            'body' => 'Llevas '.$lastTraining->log_date->diffInDays(now()).' dias sin entrenar. Cada dia cuenta.',
+                        ]);
 
-                    AutoMessageLog::create([
-                        'client_id' => $client->id,
-                        'trigger_type' => 'inactivity_3d',
-                        'channel' => 'notification',
-                        'date_sent' => today(),
-                    ]);
-                    $triggered++;
-                }
-            }
-
-            // Check for missed check-in (no checkin this week)
-            $hasCheckin = Checkin::where('client_id', $client->id)
-                ->where('checkin_date', '>=', now()->startOfWeek())
-                ->exists();
-
-            if (! $hasCheckin && now()->dayOfWeek >= 5) { // Friday+
-                $alreadySent = AutoMessageLog::where('client_id', $client->id)
-                    ->where('trigger_type', 'missed_checkin')
-                    ->where('date_sent', today())
-                    ->exists();
-
-                if (! $alreadySent) {
-                    WellcoreNotification::create([
-                        'user_type' => 'client',
-                        'user_id' => $client->id,
-                        'type' => 'behavioral_trigger',
-                        'title' => 'No olvides tu check-in semanal',
-                        'body' => 'Tu coach necesita saber como va tu semana. Completa tu check-in.',
-                    ]);
-
-                    if ($client->email) {
-                        try {
-                            Mail::to($client->email)->queue(new CheckinReminder($client));
-                        } catch (\Throwable $e) {
-                            \Log::error('BehavioralTriggers mail failed', ['client_id' => $client->id, 'error' => $e->getMessage()]);
-                        }
+                        AutoMessageLog::create([
+                            'client_id' => $client->id,
+                            'trigger_type' => 'inactivity_3d',
+                            'channel' => 'notification',
+                            'date_sent' => today(),
+                        ]);
+                        $triggered++;
                     }
+                }
 
-                    AutoMessageLog::create([
-                        'client_id' => $client->id,
-                        'trigger_type' => 'missed_checkin',
-                        'channel' => 'notification',
-                        'date_sent' => today(),
-                    ]);
-                    $triggered++;
+                // Check for missed check-in (no checkin this week)
+                $hasCheckin = Checkin::where('client_id', $client->id)
+                    ->where('checkin_date', '>=', now()->startOfWeek())
+                    ->exists();
+
+                if (! $hasCheckin && now()->dayOfWeek >= 5) { // Friday+
+                    $alreadySent = AutoMessageLog::where('client_id', $client->id)
+                        ->where('trigger_type', 'missed_checkin')
+                        ->where('date_sent', today())
+                        ->exists();
+
+                    if (! $alreadySent) {
+                        WellcoreNotification::create([
+                            'user_type' => 'client',
+                            'user_id' => $client->id,
+                            'type' => 'behavioral_trigger',
+                            'title' => 'No olvides tu check-in semanal',
+                            'body' => 'Tu coach necesita saber como va tu semana. Completa tu check-in.',
+                        ]);
+
+                        if ($client->email) {
+                            try {
+                                Mail::to($client->email)->queue(new CheckinReminder($client));
+                            } catch (\Throwable $e) {
+                                \Log::error('BehavioralTriggers mail failed', ['client_id' => $client->id, 'error' => $e->getMessage()]);
+                            }
+                        }
+
+                        AutoMessageLog::create([
+                            'client_id' => $client->id,
+                            'trigger_type' => 'missed_checkin',
+                            'channel' => 'notification',
+                            'date_sent' => today(),
+                        ]);
+                        $triggered++;
+                    }
                 }
             }
-        }
+        });
 
         $this->info("Triggered {$triggered} notifications.");
 
