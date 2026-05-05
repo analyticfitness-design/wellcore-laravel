@@ -6,6 +6,9 @@ import { resetGroupPulse } from '../composables/useGroupPulse';
 import { resetCoachCommunity } from '../composables/useCoachCommunity';
 import { resetCoachPulse } from '../composables/useCoachPulse';
 import { resetCoachAnnounce } from '../composables/useCoachAnnounce';
+import { resetAdminCommunity } from '../composables/useAdminCommunity';
+import { resetBroadcast } from '../composables/useBroadcast';
+import { resetModerationQueue } from '../composables/useModerationQueue';
 
 export const useAuthStore = defineStore('auth', () => {
     // Si Laravel inyecto auth data en sesion (login vía Livewire), sincronizar
@@ -86,6 +89,9 @@ export const useAuthStore = defineStore('auth', () => {
             resetCoachCommunity();
             resetCoachPulse();
             resetCoachAnnounce();
+            resetAdminCommunity();
+            resetBroadcast();
+            resetModerationQueue();
         }
         token.value = data.token;
         userType.value = data.userType;
@@ -143,6 +149,10 @@ export const useAuthStore = defineStore('auth', () => {
         resetCoachCommunity();
         resetCoachPulse();
         resetCoachAnnounce();
+        // Community Cross-Role Fase C: invalida caches del Admin Center.
+        resetAdminCommunity();
+        resetBroadcast();
+        resetModerationQueue();
         token.value = null;
         userType.value = null;
         userId.value = null;
