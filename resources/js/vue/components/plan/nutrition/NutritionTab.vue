@@ -54,6 +54,7 @@
       :meals="meals"
       :current-meal-index="dayProgress.currentMealIndex.value"
       :swapped-meal-indices="swappedIndices"
+      :checked-meal-indices="checkedIndices"
     />
 
     <!-- 7. Plan de comidas — formato completo -->
@@ -271,5 +272,8 @@ const checkins = useMealCheckins();
 
 // Counter "X de Y" basado en comidas REALMENTE marcadas por el cliente.
 const doneCount = computed(() => checkins.checkedCount.value);
+
+// Array reactivo de indices marcados — para DayTimeline (estado 'done' verde).
+const checkedIndices = computed(() => [...checkins.checkedSet.value]);
 
 </script>
