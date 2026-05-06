@@ -1050,8 +1050,11 @@ onBeforeUnmount(() => {
 .page {
   width: 100%;
   max-width: 100%;
-  padding: 16px 16px 240px;
+  padding: 12px 10px 240px;
   position: relative;
+}
+@media (min-width: 768px) {
+  .page { padding: 16px 16px 240px; }
 }
 @media (min-width: 1024px) {
   .page { padding: 24px 32px 140px; max-width: 1200px; margin: 0 auto; }
@@ -1060,8 +1063,8 @@ onBeforeUnmount(() => {
 /* Rest timer floating mobile — widget compacto sobre bottom-bar */
 .rest-floating {
   position: fixed;
-  left: 10px;
-  right: 10px;
+  left: 8px;
+  right: 8px;
   bottom: calc(92px + env(safe-area-inset-bottom));
   z-index: 49;
 }

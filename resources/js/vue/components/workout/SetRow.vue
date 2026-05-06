@@ -131,11 +131,11 @@ const targetRepsLabel = computed(() => {
     <template v-if="!isCardio">
       <!-- PESO stepper -->
       <div class="stepper">
-        <span class="stepper-label">Peso</span>
         <button type="button" aria-label="Disminuir peso" class="stepper-btn" @click="bumpWeight(-weightStep)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
         <div class="val-stack">
+          <span class="stepper-label">Peso</span>
           <input
             type="number"
             inputmode="decimal"
@@ -155,11 +155,11 @@ const targetRepsLabel = computed(() => {
 
       <!-- REPS stepper -->
       <div class="stepper">
-        <span class="stepper-label">Reps</span>
         <button type="button" aria-label="Disminuir reps" class="stepper-btn" @click="bumpReps(-1)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
         <div class="val-stack">
+          <span class="stepper-label">Reps</span>
           <input
             type="number"
             inputmode="numeric"
@@ -181,33 +181,39 @@ const targetRepsLabel = computed(() => {
     <!-- CARDIO variant -->
     <template v-else>
       <div class="stepper">
-        <span class="stepper-label">Tiempo</span>
         <button type="button" class="stepper-btn" @click="bumpDuration(-30)" aria-label="Menos tiempo">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
-        <input
-          type="number"
-          inputmode="numeric"
-          step="30"
-          min="0"
-          :value="duration"
-          class="stepper-input stepper-input--always"
-          @input="onDurationInput"
-        />
-        <span class="cardio-unit">seg</span>
+        <div class="val-stack">
+          <span class="stepper-label">Tiempo</span>
+          <input
+            type="number"
+            inputmode="numeric"
+            step="30"
+            min="0"
+            :value="duration"
+            class="stepper-input"
+            placeholder="0"
+            @input="onDurationInput"
+          />
+          <span class="target">seg</span>
+        </div>
         <button type="button" class="stepper-btn" @click="bumpDuration(+30)" aria-label="Más tiempo">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
       </div>
       <div class="stepper">
-        <span class="stepper-label">Vel · Inc</span>
         <button type="button" class="stepper-btn" @click="bumpSpeed(-0.5)" aria-label="Menos velocidad">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
-        <div class="cardio-pair">
-          <input type="number" inputmode="decimal" step="0.5" min="0" :value="speed"   class="cardio-input" @input="onSpeedInput"   placeholder="0" aria-label="Velocidad km/h" />
-          <span class="cardio-sep">·</span>
-          <input type="number" inputmode="decimal" step="1"   min="0" :value="incline" class="cardio-input" @input="onInclineInput" placeholder="0" aria-label="Inclinación %" />
+        <div class="val-stack">
+          <span class="stepper-label">Vel · Inc</span>
+          <div class="cardio-pair">
+            <input type="number" inputmode="decimal" step="0.5" min="0" :value="speed"   class="cardio-input" @input="onSpeedInput"   placeholder="0" aria-label="Velocidad km/h" />
+            <span class="cardio-sep">·</span>
+            <input type="number" inputmode="decimal" step="1"   min="0" :value="incline" class="cardio-input" @input="onInclineInput" placeholder="0" aria-label="Inclinación %" />
+          </div>
+          <span class="target">km/h · %</span>
         </div>
         <button type="button" class="stepper-btn" @click="bumpSpeed(+0.5)" aria-label="Más velocidad">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -304,11 +310,11 @@ const targetRepsLabel = computed(() => {
 .stepper {
   display: grid;
   grid-template-columns: 44px 1fr 44px;
-  align-items: center;
+  align-items: stretch;
   background: rgba(255,255,255,0.04);
   border: 1px solid var(--color-wc-border);
   border-radius: 16px;
-  height: 56px;
+  height: 64px;
   overflow: hidden;
   position: relative;
 }
@@ -319,21 +325,6 @@ const targetRepsLabel = computed(() => {
 .wc-set-row[data-state="completed"] .stepper {
   background: rgba(16,185,129,0.04);
   border-color: rgba(16,185,129,0.14);
-}
-
-.stepper-label {
-  position: absolute;
-  top: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--font-display);
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--color-wc-text-tertiary);
-  pointer-events: none;
-  z-index: 1;
 }
 
 .stepper-btn {
@@ -353,15 +344,27 @@ const targetRepsLabel = computed(() => {
 .stepper-btn:active { background: rgba(220,38,38,0.18); color: var(--color-wc-accent-glow, #EF4444); }
 .stepper-btn svg    { width: 16px; height: 16px; }
 
-/* Stack: input arriba + target hint abajo (replica target HTML) */
+/* Stack: label (top) + input (middle) + target hint (bottom) — sin overlap */
 .val-stack {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 14px 1fr 14px;
   align-items: center;
-  justify-content: center;
+  justify-items: center;
   height: 100%;
-  padding-top: 12px;
+  padding: 4px 0;
   position: relative;
+  min-width: 0;
+}
+
+.stepper-label {
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-wc-text-tertiary);
+  pointer-events: none;
+  line-height: 1;
 }
 
 .stepper-input {
@@ -371,13 +374,14 @@ const targetRepsLabel = computed(() => {
   text-align: center;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 22px;
+  font-size: 20px;
   color: var(--color-wc-text);
   font-variant-numeric: tabular-nums;
   outline: none;
   line-height: 1;
   padding: 0;
   height: 22px;
+  align-self: center;
 }
 .stepper-input::placeholder { color: var(--color-wc-text-tertiary); opacity: 0.4; }
 .stepper-input::-webkit-outer-spin-button,
@@ -389,13 +393,13 @@ const targetRepsLabel = computed(() => {
 
 .val-stack .target {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 400;
   color: var(--color-wc-text-tertiary);
   letter-spacing: 0.04em;
-  margin-top: 2px;
   text-transform: lowercase;
   pointer-events: none;
+  line-height: 1;
 }
 
 .stepper-input--always { padding-top: 0; }

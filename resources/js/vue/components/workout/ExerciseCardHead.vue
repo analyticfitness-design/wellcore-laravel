@@ -138,9 +138,10 @@ const rirClass = computed(() => {
 <style scoped>
 .wcv2-card-head {
   display: block;
-  padding: 16px 16px 12px;
+  padding: 14px 12px 10px;
   position: relative;
 }
+@media (min-width: 768px)  { .wcv2-card-head { padding: 16px 16px 12px; } }
 @media (min-width: 1024px) { .wcv2-card-head { padding: 18px 22px 14px; } }
 
 /* TOP LINE — counter + actions */
