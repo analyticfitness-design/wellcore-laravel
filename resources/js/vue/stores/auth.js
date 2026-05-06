@@ -11,6 +11,7 @@ import { resetBroadcast } from '../composables/useBroadcast';
 import { resetModerationQueue } from '../composables/useModerationQueue';
 import { resetMentions } from '../composables/useMentions';
 import { resetGroupPresence } from '../composables/useGroupPresence';
+import { resetPlanViewerState } from '../composables/usePlanViewer';
 
 export const useAuthStore = defineStore('auth', () => {
     // Si Laravel inyecto auth data en sesion (login vía Livewire), sincronizar
@@ -96,6 +97,7 @@ export const useAuthStore = defineStore('auth', () => {
             resetModerationQueue();
             resetMentions();
             resetGroupPresence();
+            resetPlanViewerState();
         }
         token.value = data.token;
         userType.value = data.userType;
@@ -160,6 +162,8 @@ export const useAuthStore = defineStore('auth', () => {
         // Community Cross-Role Fase D: cleanup mentions + presence channel.
         resetMentions();
         resetGroupPresence();
+        // Plan Viewer V2: clear in-memory variation toggle state to prevent leak
+        resetPlanViewerState();
         token.value = null;
         userType.value = null;
         userId.value = null;

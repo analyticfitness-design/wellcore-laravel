@@ -64,6 +64,19 @@
         @include('partials.wc-sprite')
     </div>
     <div id="vue-app"></div>
+    @php
+        // Feature flags resueltos server-side. La pct-eligibility se calcula con session uid
+        // para que la decision sea auditable y consistente entre vista y APIs.
+        $pv2Enabled = (bool) (cache('feature.plan_viewer_v2', config('features.plan_viewer_v2', false)));
+        $pv2Pct = (int) (cache('feature.plan_viewer_v2_pct', config('features.plan_viewer_v2_rollout_pct', 0)));
+        $pv2Uid = (int) session('wc_user_id', 0);
+        $pv2Eligible = $pv2Enabled && $pv2Uid > 0 && ($pv2Uid % 100) < max(0, min(100, $pv2Pct));
+    @endphp
+    <script nonce="@cspNonce">
+        window.__WC_FEATURES = window.__WC_FEATURES || {};
+        window.__WC_FEATURES.plan_viewer_v2 = @json($pv2Eligible);
+        window.__WC_FEATURES.plan_viewer_v2_pct = @json($pv2Pct);
+    </script>
     @if(session('wc_token'))
     <script nonce="@cspNonce">
         window.__WC_SESSION = {

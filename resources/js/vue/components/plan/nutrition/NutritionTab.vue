@@ -22,7 +22,7 @@
       v-if="nutritionPlan.notas_coach"
       :note="nutritionPlan.notas_coach"
       :coach-name="coachInfo?.name || 'Tu coach'"
-      :coach-role="coachInfo?.role || 'Coach de nutricion'"
+      :coach-role="coachInfo?.role || 'Coach de nutrición'"
       :coach-avatar="coachInfo?.avatar"
       :timestamp="coachInfo?.lastNoteAt"
       @acknowledge="$emit('note-acknowledged')"
@@ -122,7 +122,7 @@
       class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center"
     >
       <p class="text-sm text-wc-text-secondary">
-        Tu coach esta preparando tu plan de nutricion.
+        Tu coach está preparando tu plan de nutrición.
       </p>
     </div>
   </div>

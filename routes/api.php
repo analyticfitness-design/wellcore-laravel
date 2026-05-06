@@ -132,6 +132,10 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'throttle:api'])->group(
 // Training (Phase 5)
 Route::prefix('v/client')->middleware(['auth:wellcore', 'plan.lock:strict', 'throttle:api'])->group(function () {
     Route::get('/plan', [TrainingController::class, 'plan']);
+    // Plan Viewer V2: toggle variation per exercise (idempotent, IDOR-safe, rate-limited).
+    Route::post('/plan/exercise/{id}/toggle-variation', [TrainingController::class, 'toggleVariation'])
+        ->whereNumber('id')
+        ->middleware('throttle:30,1');
     Route::get('/training', [TrainingController::class, 'training']);
     Route::post('/training/toggle', [TrainingController::class, 'toggleTrainingDay']);
     Route::get('/workout/{day?}', [TrainingController::class, 'workout'])->where('day', '[0-9]+');
