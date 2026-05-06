@@ -6,6 +6,7 @@ import { useToast } from '../../composables/useToast';
 import { useAuthStore } from '../../stores/auth';
 import { useCancellableFetch } from '../../composables/useCancellableFetch';
 import ClientLayout from '../../layouts/ClientLayout.vue';
+import WcErrorState from '../../components/WcErrorState.vue';
 import PulsoRing from '../../components/community/PulsoRing.vue';
 import PulsoViewer from '../../components/community/PulsoViewer.vue';
 import PulsoUploader from '../../components/community/PulsoUploader.vue';
@@ -547,21 +548,7 @@ function getReactionCount(post, type) {
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="flex flex-col items-center justify-center py-20">
-      <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-wc-accent/10">
-        <svg class="h-8 w-8 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-        </svg>
-      </div>
-      <h2 class="mt-4 font-display text-xl tracking-wide text-wc-text">ERROR AL CARGAR</h2>
-      <p class="mt-2 text-sm text-wc-text-secondary">{{ error }}</p>
-      <button
-        @click="fetchFeed(true)"
-        class="mt-6 rounded-xl bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wc-accent/90 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg"
-      >
-        Reintentar
-      </button>
-    </div>
+    <WcErrorState v-else-if="error" :message="error" @retry="fetchFeed(true)" />
 
     <!-- Content: two-column grid (feed + right panel) -->
     <div v-else class="flex flex-col gap-6 lg:grid lg:grid-cols-[1fr_300px] lg:items-start">
