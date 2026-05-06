@@ -42,31 +42,31 @@ const padNum = (n) => String(n ?? 0).padStart(2, '0');
         <span class="h-1.5 w-1.5 rounded-full bg-wc-accent" aria-hidden="true"></span>
         Fotos de progreso
       </div>
-      <h1 class="font-display text-3xl font-medium uppercase leading-none tracking-tight text-wc-text sm:text-5xl">
+      <h1 class="font-display text-4xl font-medium uppercase leading-[0.95] tracking-tight text-wc-text sm:text-6xl">
         Tu cuerpo,<br />
         <em class="font-normal not-italic text-wc-text-tertiary">semana a semana.</em>
       </h1>
-      <p class="mt-3 max-w-xl text-sm leading-relaxed text-wc-text-secondary">
-        Estas fotos cuentan una historia que el peso no puede contar. Suben aquí solo para tu coach — privadas, encriptadas, tuyas.
+      <p class="mt-4 max-w-[46ch] text-[15px] leading-relaxed text-wc-text-secondary sm:text-[17px]">
+        Estas fotos cuentan una historia que el peso no puede contar. Suben aquí solo para tu coach Marina — privadas, encriptadas, tuyas.
       </p>
     </div>
 
     <div class="grid grid-cols-3 gap-2 rounded-2xl border border-wc-border bg-wc-bg-tertiary p-3.5 sm:gap-4 sm:p-4">
       <div class="flex min-w-0 flex-col gap-0.5">
         <span class="font-display text-[9px] font-medium uppercase tracking-widest text-wc-text-tertiary">Sesiones</span>
-        <span class="font-data text-2xl font-semibold leading-none text-wc-text tabular-nums sm:text-3xl">
+        <span class="font-display text-2xl font-medium leading-none text-wc-text tabular-nums sm:text-[38px]">
           {{ padNum(sessionCount) }}
         </span>
       </div>
       <div class="flex min-w-0 flex-col gap-0.5">
-        <span class="font-display text-[9px] font-medium uppercase tracking-widest text-wc-text-tertiary">Esta semana</span>
-        <span class="font-data text-2xl font-semibold leading-none text-wc-text tabular-nums sm:text-3xl">
-          {{ padNum(weekCount) }}<small class="ml-1 text-[10px] font-normal text-wc-text-tertiary">ses</small>
+        <span class="font-display text-[9px] font-medium uppercase tracking-widest text-wc-text-tertiary">Semanas</span>
+        <span class="font-display text-2xl font-medium leading-none text-wc-text tabular-nums sm:text-[38px]">
+          {{ padNum(weekCount) }}<small class="ml-1 text-[10px] font-normal text-wc-text-tertiary">sem</small>
         </span>
       </div>
       <div class="flex min-w-0 flex-col gap-0.5">
         <span class="font-display text-[9px] font-medium uppercase tracking-widest text-wc-text-tertiary">Última</span>
-        <span class="font-data text-2xl font-semibold leading-none text-wc-text tabular-nums sm:text-3xl">
+        <span class="font-display text-2xl font-medium leading-none text-wc-text tabular-nums sm:text-[38px]">
           {{ latestParts.day }}<small class="ml-1 text-[10px] font-normal text-wc-text-tertiary">{{ latestParts.month }}</small>
         </span>
       </div>

@@ -53,7 +53,7 @@ const formatted = computed(() => {
       <div class="min-w-0">
         <p
           v-if="weekLabel"
-          class="font-display text-[10px] font-medium uppercase tracking-widest text-wc-text-tertiary"
+          class="font-display text-[10px] font-medium uppercase tracking-[0.16em] text-wc-text-tertiary"
         >
           {{ weekLabel }}
         </p>
@@ -71,12 +71,12 @@ const formatted = computed(() => {
       />
     </header>
 
-    <div class="grid grid-cols-3 gap-1.5">
+    <div class="grid grid-cols-3 gap-2">
       <button
         v-for="angle in ANGLES"
         :key="angle"
         type="button"
-        class="group relative aspect-[3/4] overflow-hidden rounded-lg bg-wc-bg-secondary transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-wc-accent/40"
+        class="group relative aspect-[3/4] overflow-hidden rounded-[10px] bg-wc-bg-secondary transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-wc-accent/40"
         :aria-label="`Ver ${ANGLE_LABELS[angle]} de la sesión`"
         @click="session.photos[angle] && $emit('select', session.photos[angle])"
       >
@@ -96,8 +96,19 @@ const formatted = computed(() => {
             </svg>
           </div>
         </template>
-        <span class="absolute bottom-1 left-1 rounded bg-black/55 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-widest text-white backdrop-blur">
+        <!-- Tag top-left (HTML ref uses top:8px) -->
+        <span class="absolute left-1.5 top-1.5 rounded border border-white/15 bg-black/55 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-widest text-white backdrop-blur">
           {{ ANGLE_LABELS[angle] }}
+        </span>
+        <!-- Has-note pin: shows when this specific photo has coach notes -->
+        <span
+          v-if="session.photos[angle]?.has_notes"
+          class="absolute bottom-1.5 right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-white text-black"
+          aria-label="Tiene notas del coach"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-2.5 w-2.5" aria-hidden="true">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
         </span>
       </button>
     </div>

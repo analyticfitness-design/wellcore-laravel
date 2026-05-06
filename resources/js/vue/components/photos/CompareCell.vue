@@ -26,7 +26,7 @@ const stamp = computed(() => {
   const [y, m, d] = props.date.split('-').map(Number);
   if (!y || !m || !d) return props.date;
   const MESES = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
-  return `${String(d).padStart(2, '0')} ${MESES[m - 1]} ${y}`;
+  return `${String(d).padStart(2, '0')} ${MESES[m - 1]}`;
 });
 </script>
 
@@ -50,14 +50,11 @@ const stamp = computed(() => {
       </div>
     </template>
 
-    <!-- Stamp -->
-    <div
-      class="absolute top-2 rounded bg-black/65 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-widest text-white backdrop-blur"
-      :class="side === 'a' ? 'left-2' : 'right-2'"
-    >
+    <!-- Stamp — HTML ref places both stamps top-left of their cell -->
+    <div class="absolute left-2.5 top-2.5 rounded-md border border-white/15 bg-black/65 px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-white backdrop-blur">
       {{ stamp }}
-      <small v-if="ANGLE_LABELS[angle]" class="mt-0.5 block text-[8px] text-white/60">
-        {{ ANGLE_LABELS[angle] }}
+      <small v-if="photo?.weight_kg" class="mt-0.5 block text-[9px] text-white/60">
+        {{ photo.weight_kg }} kg
       </small>
     </div>
   </div>

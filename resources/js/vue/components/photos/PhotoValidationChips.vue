@@ -35,16 +35,15 @@ const items = computed(() => {
 
 <template>
   <div class="flex flex-wrap gap-1.5" role="list" aria-label="Validación de la foto">
+    <!-- HTML ref: .dz-check — fondo negro semi-transparente + texto verde/ámbar -->
     <span
       v-for="item in items"
       :key="item.key"
       role="listitem"
-      class="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider backdrop-blur"
-      :class="item.tone === 'ok'
-        ? 'border-emerald-400/30 bg-emerald-500/10 text-emerald-300'
-        : 'border-amber-400/40 bg-amber-500/10 text-amber-300'"
+      class="inline-flex items-center gap-1 rounded-full border border-white/15 bg-black/55 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider backdrop-blur"
+      :class="item.tone === 'ok' ? 'text-emerald-300' : 'text-amber-300'"
     >
-      <span aria-hidden="true">{{ item.tone === 'ok' ? '✓' : '!' }}</span>
+      <span class="font-sans font-bold leading-none" aria-hidden="true">{{ item.tone === 'ok' ? '✓' : '!' }}</span>
       {{ item.label }}
     </span>
   </div>

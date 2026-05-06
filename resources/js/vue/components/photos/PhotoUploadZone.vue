@@ -40,6 +40,27 @@ const emit = defineEmits(['select', 'drop', 'remove']);
 const ANGLE_LABELS = { frente: 'Frente', perfil: 'Perfil', espalda: 'Espalda' };
 const displayLabel = computed(() => props.label || ANGLE_LABELS[props.angle] || props.angle);
 
+// HTML ref: el "REQ" cambia de color y label según estado
+//   - empty:     "REQ" (gris) — todavía falta
+//   - uploading: "SUBIENDO" (ámbar)
+//   - has flash/error: "REVISAR" (ámbar)
+//   - preview ok: "LISTA" (verde)
+const reqState = computed(() => {
+  if (props.uploading) {
+    return { label: 'SUBIENDO', cls: 'text-amber-300' };
+  }
+  if (props.previewUrl && props.error) {
+    return { label: 'REVISAR', cls: 'text-amber-300' };
+  }
+  if (props.previewUrl && props.chips?.lighting === 'low') {
+    return { label: 'REVISAR', cls: 'text-amber-300' };
+  }
+  if (props.previewUrl) {
+    return { label: 'LISTA', cls: 'text-emerald-400' };
+  }
+  return { label: 'REQ', cls: 'text-wc-text-tertiary' };
+});
+
 const inputRef = ref(null);
 const dragging = ref(false);
 
@@ -73,11 +94,14 @@ const inputId = computed(() => `photo-upload-${props.angle}`);
 <template>
   <div class="flex min-h-[200px] flex-col overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary">
     <!-- Header -->
-    <div class="flex items-center justify-between border-b border-wc-border px-4 py-3">
-      <h4 class="font-display text-[13px] font-semibold uppercase tracking-wider text-wc-text">
+    <div class="flex items-center justify-between border-b border-wc-border px-4 py-3.5">
+      <h4 class="font-display text-[14px] font-semibold uppercase tracking-[0.10em] text-wc-text">
         {{ displayLabel }}
       </h4>
-      <span class="font-mono text-[9px] uppercase tracking-widest text-wc-text-tertiary">Requerida</span>
+      <span
+        class="font-mono text-[10px] uppercase tracking-[0.12em] transition-colors"
+        :class="reqState.cls"
+      >{{ reqState.label }}</span>
     </div>
 
     <!-- Body -->
@@ -106,9 +130,9 @@ const inputId = computed(() => `photo-upload-${props.angle}`);
           </svg>
         </div>
         <div>
-          <p class="text-[13px] font-medium text-wc-text">Toma o elige foto</p>
+          <p class="text-[13px] font-medium text-wc-text">Arrastra o toma la foto</p>
           <small class="mt-1 block font-mono text-[10px] uppercase tracking-widest text-wc-text-tertiary">
-            JPG · max 12MB
+            JPG · PNG · max 12MB
           </small>
         </div>
       </button>
