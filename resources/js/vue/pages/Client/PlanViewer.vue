@@ -8,6 +8,8 @@ import ClientLayout from '../../layouts/ClientLayout.vue';
 import AiFoodEstimator from '../../components/AiFoodEstimator.vue';
 import LockOverlay from '../../components/LockOverlay.vue';
 import PlanHero from '../../components/plan/PlanHero.vue';
+import NutritionTab from '@/components/plan/nutrition/NutritionTab.vue';
+import { useFeatureFlag } from '@/composables/useFeatureFlag';
 import {
   FlaskConical, Dumbbell, Pill, Fish, Sun, Citrus, Star, Moon,
   Atom, Leaf, Zap, Dna, Flame, Bone, TestTube, Bed,
@@ -145,6 +147,24 @@ const applyingNutrSwap = ref(false);
 const nutrToast = ref(null);
 const showAiEstimator = ref(false);
 let nutrToastTimer = null;
+
+// ─── NUTRITION TAB v2 (feature flag) ────────────────────────────────────
+const useNutritionV2 = useFeatureFlag('nutrition_tab_v2');
+
+// Coach info for NutritionTab v2 — actualmente sin ref local; el componente
+// degrada a "Tu coach" cuando recibe null. Se cablea cuando exista fetch /my-coach
+// en este viewer.
+const coachInfoForNutrition = computed(() => null);
+
+// Reusa refs existentes (currentWeek line 73, totalWeeks computed line 452+)
+const currentWeekForPlan = computed(() => currentWeek.value || 1);
+const totalWeeksForPlan = computed(() => totalWeeks.value || 1);
+
+async function onNutritionSwapApplied() {
+  try {
+    await loadNutrMacrosToday();
+  } catch { /* silencioso */ }
+}
 
 async function loadNutrMacrosToday() {
   try {
@@ -1501,7 +1521,19 @@ onBeforeUnmount(() => {
         <!-- ==================== TAB: NUTRICION ==================== -->
         <div v-else-if="activeTab === 'nutricion' && !isTabLocked('nutricion')">
           <template v-if="canAccessNutricion && nutritionPlan">
-            <div class="space-y-5">
+            <!-- v2: detrás de feature flag nutrition_tab_v2 -->
+            <NutritionTab
+              v-if="useNutritionV2"
+              :nutrition-plan="nutritionPlan"
+              :client-plan-type="clientPlanType"
+              :coach-info="coachInfoForNutrition"
+              :current-week="currentWeekForPlan"
+              :total-weeks="totalWeeksForPlan"
+              @swap-applied="onNutritionSwapApplied"
+              @open-ai-estimator="showAiEstimator = true"
+            />
+            <!-- v1 LEGACY: bloque inline original sin cambios (rollback automático cuando flag=OFF) -->
+            <div v-else class="space-y-5">
 
               <!-- Hero: Calorías totales + objetivo -->
               <div

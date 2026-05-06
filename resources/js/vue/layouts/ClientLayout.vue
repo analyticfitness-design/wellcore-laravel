@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onUnmounted, onBeforeUnmount } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
+import { useFeatureFlags } from '../stores/featureFlags';
 import { useApi } from '../composables/useApi';
 import NotificationBell from '../components/NotificationBell.vue';
 import CoachImpersonationBanner from '../components/CoachImpersonationBanner.vue';
@@ -70,6 +71,16 @@ onMounted(async () => {
         if (err?.response?.status === 403 && err.response?.data?.inactive) {
             accountInactive.value = true;
             accountStatusValue.value = err.response.data.status || 'inactivo';
+        }
+    }
+
+    // account-status SUCCESS — propagar feature flags server-side al store
+    // Solo nutrition_tab_v2: workout/profile v2 ya están a 100% rollout sin flag store.
+    if (statusRes.status === 'fulfilled' && statusRes.value?.data?.features) {
+        const ffStore = useFeatureFlags();
+        const features = statusRes.value.data.features;
+        if (typeof features.nutrition_tab_v2 === 'boolean') {
+            ffStore.set('nutrition_tab_v2', features.nutrition_tab_v2);
         }
     }
     accountCheckDone.value = true;

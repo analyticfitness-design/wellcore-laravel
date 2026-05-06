@@ -51,5 +51,3 @@ function handleClick() {
   emit('open');
 }
 </script>
-</content>
-</invoke>
