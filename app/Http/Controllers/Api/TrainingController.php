@@ -232,6 +232,26 @@ class TrainingController extends Controller
      * los campos existentes (gif_url, series, reps, rest, RIR, coach_note,
      * sort_order/numero, etc. quedan IDÉNTICOS al input).
      */
+    /**
+     * Cast defensivo a string: si el valor es array (legacy JSONs estructurados como
+     * { "es": "texto", "en": "..." } o objetos anidados), retorna ''. Evita el
+     * fatal "Array to string conversion" sin tocar el JSON original.
+     */
+    private function safeStr(mixed $v, string $default = ''): string
+    {
+        if (is_string($v)) {
+            return $v;
+        }
+        if (is_int($v) || is_float($v)) {
+            return (string) $v;
+        }
+        if (is_bool($v)) {
+            return $v ? '1' : '';
+        }
+        // arrays / objects / null -> default
+        return $default;
+    }
+
     private function enrichTrainingPlanV2(array $trainingPlan, int $clientId, int $currentWeekNumber = 1): array
     {
         // Variation states cargados de una sola vez (evita N+1)
@@ -243,11 +263,13 @@ class TrainingController extends Controller
                 ->toArray();
         }
 
-        // 1) objetivo_bloque: tomar tal cual del JSON si existe
-        $trainingPlan['objetivo_bloque'] = (string) ($trainingPlan['objetivo_bloque']
+        // 1) objetivo_bloque: tomar tal cual del JSON si existe (safe cast)
+        $trainingPlan['objetivo_bloque'] = $this->safeStr(
+            $trainingPlan['objetivo_bloque']
             ?? $trainingPlan['objetivo']
             ?? $trainingPlan['plan_objetivo']
-            ?? '');
+            ?? ''
+        );
 
         // 2) weekly_schedule: derivado server-side desde semana actual
         $trainingPlan['weekly_schedule'] = $this->deriveWeeklySchedule($trainingPlan);
@@ -306,11 +328,12 @@ class TrainingController extends Controller
      */
     private function enrichSemanaV2(array $semana, int $sIdx, bool $isCurrent, bool $isCompleted): array
     {
-        // numero (1-based)
-        $semana['numero'] = (int) ($semana['numero'] ?? $semana['n'] ?? $sIdx + 1);
+        // numero (1-based) — defensive: solo accept scalar
+        $rawNumero = $semana['numero'] ?? $semana['n'] ?? $sIdx + 1;
+        $semana['numero'] = is_numeric($rawNumero) ? (int) $rawNumero : ($sIdx + 1);
 
-        // titulo (preferir JSON, fallback al label de la fase)
-        $faseRaw = strtolower((string) ($semana['fase'] ?? $semana['phase'] ?? ''));
+        // titulo (preferir JSON, fallback al label de la fase) — safe casts
+        $faseRaw = strtolower($this->safeStr($semana['fase'] ?? $semana['phase'] ?? ''));
         $titleFromPhase = match ($faseRaw) {
             'acumulacion', 'acumulación', 'acumul' => 'Acumulación',
             'intensificacion', 'intensificación', 'intens' => 'Intensificación',
@@ -318,7 +341,8 @@ class TrainingController extends Controller
             'deload', 'descarga' => 'Descarga',
             default => 'Semana ' . $semana['numero'],
         };
-        $semana['titulo'] = (string) ($semana['titulo'] ?? $semana['nombre'] ?? $titleFromPhase);
+        $tituloFromJson = $this->safeStr($semana['titulo'] ?? $semana['nombre'] ?? '');
+        $semana['titulo'] = $tituloFromJson !== '' ? $tituloFromJson : $titleFromPhase;
 
         // fase normalizada
         $semana['fase'] = $faseRaw !== '' ? $faseRaw : 'acumul';
@@ -350,22 +374,22 @@ class TrainingController extends Controller
      */
     private function enrichDiaV2(array $dia, int $dIdx, bool $semanaIsCurrent, int $dayOfWeekNow): array
     {
-        // numero (1-based)
-        $dia['numero'] = (int) ($dia['numero'] ?? $dia['dia'] ?? $dIdx + 1);
+        // numero (1-based) — defensive
+        $rawNumero = $dia['numero'] ?? $dia['dia'] ?? $dIdx + 1;
+        $dia['numero'] = is_numeric($rawNumero) ? (int) $rawNumero : ($dIdx + 1);
 
-        // titulo (preferir JSON, fallback a nombre)
-        $dia['titulo'] = (string) ($dia['titulo'] ?? $dia['nombre'] ?? '');
+        // titulo (preferir JSON, fallback a nombre) — safe cast
+        $dia['titulo'] = $this->safeStr($dia['titulo'] ?? $dia['nombre'] ?? '');
 
         // grupos: si no vienen, parsear desde título (separador · o + o ,)
-        if (empty($dia['grupos']) && ! empty($dia['titulo'])) {
+        if (empty($dia['grupos']) && $dia['titulo'] !== '') {
             $parts = preg_split('/[·\+,]/u', $dia['titulo']);
             $grupos = [];
             foreach ((array) $parts as $p) {
-                $clean = trim((string) $p);
+                $clean = trim($this->safeStr($p));
                 if ($clean === '') {
                     continue;
                 }
-                // Tomar la PRIMERA palabra significativa (eg "Pecho Inserciones" -> "Pecho")
                 $first = explode(' ', $clean)[0] ?? '';
                 $first = trim($first);
                 if ($first !== '' && ! in_array(mb_strtolower($first), ['—', '-', 'al', 'el', 'la', 'de', 'del'], true)) {
@@ -380,20 +404,19 @@ class TrainingController extends Controller
 
         // total_minutos (defensivo)
         if (! isset($dia['total_minutos']) || ! is_numeric($dia['total_minutos'])) {
-            $estimate = count($dia['ejercicios'] ?? []) * 6; // ~6 min/ejercicio promedio
+            $estimate = count($dia['ejercicios'] ?? []) * 6;
             $dia['total_minutos'] = $estimate > 0 ? $estimate : null;
         }
 
-        // rir_promedio (defensivo)
+        // rir_promedio (defensivo) — solo si los ej traen rir como string|number
         if (empty($dia['rir_promedio']) && ! empty($dia['ejercicios'])) {
             $rirs = [];
             foreach ($dia['ejercicios'] as $ej) {
-                $r = trim((string) ($ej['rir'] ?? $ej['rir_semana'] ?? ''));
+                $r = trim($this->safeStr($ej['rir'] ?? $ej['rir_semana'] ?? ''));
                 if ($r !== '') {
                     $rirs[] = $r;
                 }
             }
-            // Tomar el RIR más común (mode) o el primero
             if (! empty($rirs)) {
                 $counts = array_count_values($rirs);
                 arsort($counts);
@@ -401,14 +424,14 @@ class TrainingController extends Controller
             }
         }
 
-        // es_hoy: true si la semana es actual Y el numero del día == day-of-week actual
+        // es_hoy
         $dia['es_hoy'] = $semanaIsCurrent && ((int) $dia['numero'] === $dayOfWeekNow);
 
-        // cooldown canonicalizado
-        $cooldown = $dia['cooldown'] ?? $dia['vuelta_calma'] ?? $dia['vuelta_a_la_calma'] ?? null;
-        $dia['cooldown'] = $cooldown ? (string) $cooldown : null;
+        // cooldown canonicalizado — safe cast
+        $cooldownStr = $this->safeStr($dia['cooldown'] ?? $dia['vuelta_calma'] ?? $dia['vuelta_a_la_calma'] ?? '');
+        $dia['cooldown'] = $cooldownStr !== '' ? $cooldownStr : null;
 
-        // completado: respeta JSON (raramente populated, pero check defensivo)
+        // completado: respeta JSON
         $dia['completado'] = (bool) ($dia['completado'] ?? false);
 
         return $dia;
@@ -428,7 +451,7 @@ class TrainingController extends Controller
         // Tomar la primera semana NO deload como referencia para los stats top-level
         $refSemana = null;
         foreach ($semanas as $s) {
-            $f = strtolower((string) ($s['fase'] ?? ''));
+            $f = strtolower($this->safeStr($s['fase'] ?? ''));
             if (! in_array($f, ['deload', 'descarga'], true)) {
                 $refSemana = $s;
                 break;
@@ -438,12 +461,12 @@ class TrainingController extends Controller
             $refSemana = $semanas[0];
         }
 
-        // Total series semanales (suma series de todos los ejercicios de la semana de referencia)
+        // Total series semanales
         if (empty($tp['total_series_semana'])) {
             $total = 0;
             foreach (($refSemana['dias'] ?? []) as $dia) {
                 foreach (($dia['ejercicios'] ?? []) as $ej) {
-                    $total += (int) ($ej['series'] ?? 0);
+                    $total += is_numeric($ej['series'] ?? null) ? (int) $ej['series'] : 0;
                 }
             }
             if ($total > 0) {
@@ -461,7 +484,7 @@ class TrainingController extends Controller
             $rirs = [];
             foreach (($refSemana['dias'] ?? []) as $dia) {
                 foreach (($dia['ejercicios'] ?? []) as $ej) {
-                    $r = trim((string) ($ej['rir'] ?? $ej['rir_semana'] ?? ''));
+                    $r = trim($this->safeStr($ej['rir'] ?? $ej['rir_semana'] ?? ''));
                     if ($r !== '') {
                         $rirs[] = $r;
                     }
@@ -496,10 +519,8 @@ class TrainingController extends Controller
         $ej['tipo'] = $this->detectExerciseType($ej);
 
         // block_id / es_superset / es_circuito (defaults seguros)
-        $ej['block_id'] = isset($ej['block_id']) ? (string) $ej['block_id'] : (string) ($ej['bloque_id'] ?? '');
-        if ($ej['block_id'] === '') {
-            $ej['block_id'] = null;
-        }
+        $blockId = $this->safeStr($ej['block_id'] ?? $ej['bloque_id'] ?? '');
+        $ej['block_id'] = $blockId !== '' ? $blockId : null;
         $ej['es_superset'] = (bool) ($ej['es_superset'] ?? $ej['superset'] ?? false);
         $ej['es_circuito'] = (bool) ($ej['es_circuito'] ?? $ej['circuito'] ?? false);
 
@@ -512,27 +533,32 @@ class TrainingController extends Controller
             ? (bool) ($variantStates[$exId] ?? false)
             : false;
 
-        // Aliases V2 — algunos planes legacy traen los campos en español; el frontend V2
-        // los lee con nombres canónicos (rest, rir, coach_note). Solo se AGREGAN — los
-        // originales (descanso, rir_semana, notas) quedan intactos por compatibilidad.
-        if (! isset($ej['rest']) && isset($ej['descanso'])) {
-            $ej['rest'] = (string) $ej['descanso'];
+        // Aliases V2 — solo agregar; nunca sobreescribir los originales del JSON.
+        // safeStr garantiza que arrays/objects no causen "Array to string conversion".
+        if (! isset($ej['rest'])) {
+            $ej['rest'] = $this->safeStr($ej['descanso'] ?? '');
+        } else {
+            $ej['rest'] = $this->safeStr($ej['rest']);
         }
         if (! isset($ej['rir'])) {
-            $ej['rir'] = (string) ($ej['rir_semana'] ?? '');
+            $ej['rir'] = $this->safeStr($ej['rir_semana'] ?? '');
+        } else {
+            $ej['rir'] = $this->safeStr($ej['rir']);
         }
         if (! isset($ej['coach_note'])) {
-            $ej['coach_note'] = (string) ($ej['notas'] ?? $ej['nota_coach'] ?? '');
+            $ej['coach_note'] = $this->safeStr($ej['notas'] ?? $ej['nota_coach'] ?? '');
+        } else {
+            $ej['coach_note'] = $this->safeStr($ej['coach_note']);
         }
-        // grupo derivado del primer grupo del campo `musculos_prim` o vacío
+        // grupo derivado del primer músculo del campo `musculos_prim` o vacío
         if (! isset($ej['grupo'])) {
             $primer = '';
             $musc = $ej['musculos_prim'] ?? null;
             if (is_array($musc) && ! empty($musc)) {
-                $primer = (string) $musc[0];
+                $primer = $this->safeStr($musc[0] ?? '');
             } elseif (is_string($musc)) {
                 $parts = preg_split('/[,;·\+]/u', $musc);
-                $primer = trim((string) ($parts[0] ?? ''));
+                $primer = trim($this->safeStr($parts[0] ?? ''));
             }
             $ej['grupo'] = strtolower($primer);
         }
@@ -552,7 +578,7 @@ class TrainingController extends Controller
      */
     private function detectExerciseType(array $ej): string
     {
-        $explicit = strtolower((string) ($ej['tipo'] ?? ''));
+        $explicit = strtolower($this->safeStr($ej['tipo'] ?? ''));
         if ($explicit === 'cardio') {
             return 'cardio';
         }
@@ -560,12 +586,12 @@ class TrainingController extends Controller
             return 'fuerza';
         }
 
-        $grupo = strtolower((string) ($ej['grupo'] ?? ''));
+        $grupo = strtolower($this->safeStr($ej['grupo'] ?? ''));
         if ($grupo === 'cardio') {
             return 'cardio';
         }
 
-        $name = strtolower((string) ($ej['nombre'] ?? $ej['name'] ?? ''));
+        $name = strtolower($this->safeStr($ej['nombre'] ?? $ej['name'] ?? ''));
         $cardioKeywords = ['cinta', 'caminadora', 'bicicleta', 'eliptica', 'elíptica', 'cardio', 'rower', 'remo cardio', 'salto', 'jumping'];
         foreach ($cardioKeywords as $kw) {
             if (str_contains($name, $kw)) {
@@ -589,8 +615,8 @@ class TrainingController extends Controller
         if (! is_array($raw) || empty($raw)) {
             return null;
         }
-        $nombre = (string) ($raw['nombre'] ?? $raw['name'] ?? '');
-        $gif = (string) ($raw['gif_url'] ?? $raw['gif'] ?? '');
+        $nombre = $this->safeStr($raw['nombre'] ?? $raw['name'] ?? '');
+        $gif = $this->safeStr($raw['gif_url'] ?? $raw['gif'] ?? '');
         $orig = $raw['original_id'] ?? $raw['exercise_id'] ?? null;
         if ($nombre === '' && $gif === '') {
             return null;
@@ -598,7 +624,7 @@ class TrainingController extends Controller
         return [
             'nombre' => $nombre,
             'gif_url' => $gif,
-            'original_id' => $orig !== null ? (int) $orig : null,
+            'original_id' => is_numeric($orig) ? (int) $orig : null,
         ];
     }
 
@@ -634,9 +660,9 @@ class TrainingController extends Controller
             if (! is_array($d)) {
                 continue;
             }
-            $titulo = (string) ($d['titulo'] ?? $d['nombre'] ?? '');
+            $titulo = $this->safeStr($d['titulo'] ?? $d['nombre'] ?? '');
             if ($titulo === '' && ! empty($d['grupos']) && is_array($d['grupos'])) {
-                $titulo = implode(' · ', array_map('ucfirst', $d['grupos']));
+                $titulo = implode(' · ', array_map(fn ($g) => ucfirst($this->safeStr($g)), $d['grupos']));
             }
             $out[] = [
                 'day_letter' => $letters[$i] ?? '·',
