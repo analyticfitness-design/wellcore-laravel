@@ -67,6 +67,7 @@ class ClientController extends Controller
                 : 'activo',
             'features' => [
                 'workout_player_v2' => FeatureFlagService::isEnabledForUser('workout_player_v2', $client->id),
+                'profile_v2' => FeatureFlagService::isEnabledForUser('profile_v2', $client->id),
             ],
         ]);
     }
