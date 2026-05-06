@@ -87,7 +87,7 @@ const monthLabels = computed(() => {
       </div>
       <div class="heat-grid">
         <div class="heat-days">
-          <span>L</span><span></span><span>M</span><span></span><span>V</span><span></span><span>D</span>
+          <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
         </div>
         <div class="heat-cols">
           <div v-for="(col, ci) in heatColumns" :key="ci" class="heat-col">

@@ -74,10 +74,10 @@ const weekCells = computed(() => {
 <template>
   <section class="card section wc-card-dashboard-week" :style="{ animationDelay: '440ms' }">
     <div class="card-head">
-      <div class="card-head-left">
-        <span class="card-title">Semana de entrenamiento</span>
+      <div class="card-head-left" style="min-width:0; overflow:hidden;">
+        <span class="card-title" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Sem. entrenamiento</span>
       </div>
-      <span class="card-meta tnum">{{ weekRangeLabel }}</span>
+      <span class="card-meta tnum" style="white-space:nowrap; flex-shrink:0; padding-left:8px;">{{ weekRangeLabel }}</span>
     </div>
     <div class="week-grid">
       <div

@@ -31,7 +31,7 @@ function goToChat() {
     <div class="coach-av">{{ coachInitial }}</div>
     <div class="coach-body">
       <div class="coach-label">Tu coach</div>
-      <div class="coach-name">{{ data.coachName }}</div>
+      <div class="coach-name" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ data.coachName }}</div>
       <div class="coach-role">{{ coachRole }}</div>
     </div>
     <button class="coach-cta" @click="goToChat">

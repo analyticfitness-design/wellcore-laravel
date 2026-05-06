@@ -863,6 +863,7 @@ onBeforeUnmount(() => {
       <!-- ===== /ACHIEVEMENT OVERLAY ===== -->
 
       <!-- ===== ONBOARDING TUTORIAL: METRICAS ===== -->
+      <Teleport to="body">
       <Transition
         enter-active-class="transition ease-out duration-300"
         enter-from-class="opacity-0"
@@ -874,6 +875,7 @@ onBeforeUnmount(() => {
         <div
           v-if="showTutorial"
           class="fixed inset-0 z-[80] flex items-end justify-center bg-black/70 px-4 pb-6"
+          @click.self="dismissTutorial"
         >
           <div class="w-full max-w-sm rounded-2xl border border-wc-border bg-wc-bg p-6 shadow-2xl">
             <!-- Header -->
@@ -951,6 +953,7 @@ onBeforeUnmount(() => {
           </div>
         </div>
       </Transition>
+      </Teleport>
       <!-- ===== /ONBOARDING TUTORIAL ===== -->
 
     </div>

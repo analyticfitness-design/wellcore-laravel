@@ -1071,7 +1071,7 @@ onBeforeUnmount(() => {
       <template v-else>
         <!-- Tabs -->
         <div class="wc-glass mb-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-1" role="tablist" aria-label="Secciones del plan">
-          <div class="flex gap-1 overflow-x-auto">
+          <div class="flex gap-1 overflow-x-auto scrollbar-none pb-0.5" style="-webkit-overflow-scrolling:touch;">
             <button
               v-for="tab in tabs"
               :key="tab.key"

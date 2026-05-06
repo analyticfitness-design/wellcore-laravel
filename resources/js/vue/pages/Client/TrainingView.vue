@@ -123,7 +123,7 @@ onMounted(() => {
     <div class="relative">
       <LockOverlay v-if="isLocked" />
       <div :class="isLocked ? 'pointer-events-none blur-sm select-none' : ''" :aria-hidden="isLocked ? 'true' : undefined">
-    <div class="space-y-6">
+    <div class="space-y-6 px-4">
       <!-- Title -->
       <div class="flex items-center justify-between">
         <h1 class="font-display text-3xl tracking-wide text-wc-text">MI ENTRENAMIENTO</h1>

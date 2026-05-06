@@ -289,7 +289,7 @@ onBeforeUnmount(() => {
 <template>
   <ClientLayout>
     <div class="wc-shell wc-shell--checkin">
-    <div class="space-y-6 pb-24 md:pb-6">
+    <div class="space-y-6 pb-24 md:pb-6 px-4">
       <!-- Title -->
       <div class="flex items-start justify-between gap-4">
         <div>
