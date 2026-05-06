@@ -97,8 +97,8 @@ function onInclineInput(e)  { emit('update:incline',  Math.max(0, +parseFloat(e.
 const targetRepsLabel = computed(() => {
     const tr = String(props.targetReps || '').trim();
     if (!tr) return '';
-    // Compact format sin espacios para evitar wrap en mobile
-    return tr.replace(/\s*-\s*/g, '–');
+    // Formato compacto "8-10" con guión normal (más estrecho que em-dash)
+    return tr.replace(/\s+/g, '');
 });
 </script>
 
@@ -247,12 +247,18 @@ const targetRepsLabel = computed(() => {
 .wc-set-row {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid transparent;
-  padding: 10px 10px 10px 8px;
-  gap: 10px;
-  border-radius: 16px;
+  padding: 8px 6px 8px 4px;
+  gap: 6px;
+  border-radius: 14px;
 }
-.wc-set-row--strength { grid-template-columns: 36px 1fr 1fr 48px; }
-.wc-set-row--cardio   { grid-template-columns: 36px 1.2fr 1fr 48px; }
+.wc-set-row--strength { grid-template-columns: 26px 1fr 1fr 42px; }
+.wc-set-row--cardio   { grid-template-columns: 26px 1.2fr 1fr 42px; }
+
+@media (min-width: 768px) {
+  .wc-set-row { padding: 10px 10px 10px 8px; gap: 10px; }
+  .wc-set-row--strength { grid-template-columns: 36px 1fr 1fr 48px; }
+  .wc-set-row--cardio   { grid-template-columns: 36px 1.2fr 1fr 48px; }
+}
 
 @media (min-width: 1024px) {
   .wc-set-row { grid-template-columns: 44px 1fr 1fr 56px; gap: 14px; padding: 12px 12px 12px 10px; }
@@ -299,25 +305,33 @@ const targetRepsLabel = computed(() => {
 .set-num {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 18px;
+  font-size: 14px;
   text-align: center;
   color: var(--color-wc-text-secondary);
   font-variant-numeric: tabular-nums;
 }
+@media (min-width: 768px)  { .set-num { font-size: 16px; } }
+@media (min-width: 1024px) { .set-num { font-size: 18px; } }
 .wc-set-row[data-state="active"] .set-num    { color: var(--color-wc-accent-glow, #EF4444); }
 .wc-set-row[data-state="completed"] .set-num { color: #10B981; }
 
 /* Stepper container — replica del target HTML */
 .stepper {
   display: grid;
-  grid-template-columns: 44px 1fr 44px;
+  grid-template-columns: 32px 1fr 32px;
   align-items: stretch;
   background: rgba(255,255,255,0.04);
   border: 1px solid var(--color-wc-border);
-  border-radius: 16px;
-  height: 64px;
+  border-radius: 12px;
+  height: 60px;
   overflow: hidden;
   position: relative;
+}
+@media (min-width: 768px) {
+  .stepper { grid-template-columns: 40px 1fr 40px; height: 62px; border-radius: 14px; }
+}
+@media (min-width: 1024px) {
+  .stepper { grid-template-columns: 44px 1fr 44px; height: 64px; border-radius: 16px; }
 }
 .wc-set-row[data-state="active"] .stepper {
   background: rgba(255,255,255,0.05);
@@ -360,18 +374,18 @@ const targetRepsLabel = computed(() => {
 .stepper-label {
   font-family: var(--font-display);
   font-size: 9px;
-  font-weight: 500;
-  letter-spacing: 0.16em;
+  font-weight: 600;
+  letter-spacing: 0.10em;
   text-transform: uppercase;
   color: var(--color-wc-text-tertiary);
   pointer-events: none;
   line-height: 1;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
+  overflow: visible;
+  max-width: none;
   text-align: center;
 }
+@media (min-width: 768px) { .stepper-label { letter-spacing: 0.14em; } }
 
 .stepper-input {
   width: 100%;
@@ -380,7 +394,7 @@ const targetRepsLabel = computed(() => {
   text-align: center;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 20px;
+  font-size: 18px;
   color: var(--color-wc-text);
   font-variant-numeric: tabular-nums;
   outline: none;
@@ -389,6 +403,8 @@ const targetRepsLabel = computed(() => {
   height: 22px;
   align-self: center;
 }
+@media (min-width: 768px)  { .stepper-input { font-size: 19px; } }
+@media (min-width: 1024px) { .stepper-input { font-size: 20px; } }
 .stepper-input::placeholder { color: var(--color-wc-text-tertiary); opacity: 0.4; }
 .stepper-input::-webkit-outer-spin-button,
 .stepper-input::-webkit-inner-spin-button {
@@ -400,18 +416,17 @@ const targetRepsLabel = computed(() => {
 .val-stack .target {
   font-family: var(--font-mono);
   font-size: 9px;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--color-wc-text-tertiary);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   text-transform: lowercase;
   pointer-events: none;
   line-height: 1;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
+  overflow: visible;
   text-align: center;
 }
+@media (min-width: 768px) { .val-stack .target { font-size: 10px; } }
 
 .stepper-input--always { padding-top: 0; }
 
@@ -461,9 +476,9 @@ const targetRepsLabel = computed(() => {
 
 /* Complete button */
 .complete-btn {
-  width: 48px;
-  height: 56px;
-  border-radius: 16px;
+  width: 100%;
+  height: 60px;
+  border-radius: 12px;
   background: rgba(255,255,255,0.04);
   border: 1px solid var(--color-wc-border);
   display: grid;
@@ -474,8 +489,10 @@ const targetRepsLabel = computed(() => {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-@media (min-width: 1024px) { .complete-btn { width: 56px; } }
-.complete-btn svg { width: 22px; height: 22px; }
+@media (min-width: 768px)  { .complete-btn { height: 62px; border-radius: 14px; } }
+@media (min-width: 1024px) { .complete-btn { height: 64px; border-radius: 16px; } }
+.complete-btn svg { width: 18px; height: 18px; }
+@media (min-width: 1024px) { .complete-btn svg { width: 22px; height: 22px; } }
 
 .complete-btn--active {
   background: var(--color-wc-accent, #DC2626);
@@ -504,19 +521,6 @@ const targetRepsLabel = computed(() => {
   40%, 80%  { transform: translateX(4px); }
 }
 .wc-shake { animation: wc-shake 0.4s ease-out; border-color: rgba(239,68,68,0.5) !important; }
-
-/* Mobile breakpoints — viewport pequeño */
-@media (max-width: 380px) {
-  .wc-set-row--strength { grid-template-columns: 30px 1fr 1fr 44px; gap: 6px; padding: 8px 8px 8px 6px; }
-  .wc-set-row--cardio   { grid-template-columns: 30px 1.3fr 1fr 44px; gap: 6px; padding: 8px 8px 8px 6px; }
-  .stepper { height: 52px; grid-template-columns: 40px 1fr 40px; }
-  .stepper-btn { min-height: 40px; }
-  .val, .stepper-input { font-size: 19px; padding-top: 11px; }
-  .complete-btn { width: 44px; height: 52px; }
-  .complete-btn svg { width: 18px; height: 18px; }
-  .set-num { font-size: 15px; }
-  .cardio-input { width: 28px; font-size: 15px; }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .complete-btn--active { animation: none !important; }
