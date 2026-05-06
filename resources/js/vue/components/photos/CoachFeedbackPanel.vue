@@ -35,7 +35,7 @@ const props = defineProps({
   summary: { type: String, default: '' },
 });
 
-const emit = defineEmits(['close', 'change-active']);
+const emit = defineEmits(['close', 'change-active', 'delete-photo']);
 
 const fb = useCoachFeedback();
 
@@ -98,16 +98,29 @@ const initials = computed(() =>
         <h2 id="coach-feedback-title" class="font-display text-base font-semibold uppercase tracking-wider text-wc-text">
           Notas de tu coach
         </h2>
-        <button
-          type="button"
-          class="flex h-9 w-9 items-center justify-center rounded-full border border-wc-border bg-wc-bg-tertiary text-wc-text-secondary transition-colors hover:text-wc-text"
-          aria-label="Cerrar panel"
-          @click="$emit('close')"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true">
-            <path d="M18 6 6 18M6 6l12 12" />
-          </svg>
-        </button>
+        <div class="flex items-center gap-1.5">
+          <button
+            v-if="activePhoto?.id"
+            type="button"
+            class="flex h-9 w-9 items-center justify-center rounded-full border border-wc-border bg-wc-bg-tertiary text-wc-text-secondary transition-colors hover:border-red-500/40 hover:text-red-400"
+            aria-label="Eliminar foto"
+            @click="$emit('delete-photo', activePhoto)"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true">
+              <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="flex h-9 w-9 items-center justify-center rounded-full border border-wc-border bg-wc-bg-tertiary text-wc-text-secondary transition-colors hover:text-wc-text"
+            aria-label="Cerrar panel"
+            @click="$emit('close')"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true">
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
       </header>
 
       <div class="flex-1 overflow-y-auto px-4 py-4">
