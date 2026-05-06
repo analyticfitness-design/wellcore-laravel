@@ -159,12 +159,22 @@ const emit = defineEmits(['set-option', 'open-swap', 'toggle-mark']);
 
 const { foodIcon: getFoodIcon } = useFoodIcon();
 
+// Backend devuelve OPCIONES de DOS shapes posibles (replica getNutrMealOpciones legacy):
+//   1. meal.opcion_a / meal.opcion_b / meal.opcion_c (top-level — caso REAL del backend prod)
+//   2. meal.opciones.opcion_a / etc (anidado — caso legacy alternativo)
+// Detectamos ambos. El backend real (verificado con cliente id=93) usa shape #1.
 const availableOptions = computed(() => {
-  const opciones = props.meal.opciones;
-  if (!opciones || typeof opciones !== 'object') return {};
-  return Object.fromEntries(
-    Object.entries(opciones).filter(([, v]) => Array.isArray(v) && v.length > 0)
-  );
+  const meal = props.meal;
+  if (!meal) return {};
+  const src = (meal.opciones && typeof meal.opciones === 'object') ? meal.opciones : meal;
+  const a = src.opcion_a || src.option_a;
+  const b = src.opcion_b || src.option_b;
+  const c = src.opcion_c || src.option_c;
+  const result = {};
+  if (Array.isArray(a) && a.length > 0) result.a = a;
+  if (Array.isArray(b) && b.length > 0) result.b = b;
+  if (Array.isArray(c) && c.length > 0) result.c = c;
+  return result;
 });
 
 const hasMultiOption = computed(() => Object.keys(availableOptions.value).length > 0);

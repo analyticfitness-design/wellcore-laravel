@@ -17,10 +17,10 @@
         {{ formattedIndex }}
       </span>
       <span
-        class="font-data text-[11px] font-semibold tabular-nums"
+        class="whitespace-nowrap font-data text-[11px] font-semibold tabular-nums"
         :class="isCurrent ? 'text-wc-accent' : indexTimeClass"
       >
-        {{ meal.hora || meal.time || '--:--' }}
+        {{ formattedTime }}
       </span>
     </div>
 
@@ -93,6 +93,20 @@ const kcalValue = computed(() => props.meal.kcal ?? props.meal.calorias ?? props
 const formattedIndex = computed(() => {
   const n = props.meal.numero ?? (props.mealIdx + 1);
   return String(n).padStart(2, '0');
+});
+
+// Backend puede devolver hora en formato "7:00 - 8:00 AM" — muy largo para
+// badge w-46. Extraemos solo la hora de inicio para que quepa.
+const formattedTime = computed(() => {
+  const raw = (props.meal.hora ?? props.meal.time ?? '').toString().trim();
+  if (!raw) return '--:--';
+  // Patron "7:00 - 8:00 AM" → "7:00 AM" · "07:00 — 08:00" → "07:00"
+  // Captura primera hora + AM/PM si lo hay al final
+  const match = raw.match(/^(\d{1,2}:\d{2})(?:\s*[-–—]\s*\d{1,2}:\d{2})?\s*(AM|PM|am|pm)?$/);
+  if (!match) return raw.length > 8 ? raw.slice(0, 8) : raw;
+  const time = match[1];
+  const ampm = match[2] ? ' ' + match[2].toUpperCase() : '';
+  return time + ampm;
 });
 
 const subtitle = computed(() => {
