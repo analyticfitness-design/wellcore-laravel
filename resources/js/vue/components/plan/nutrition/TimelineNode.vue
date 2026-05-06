@@ -34,13 +34,13 @@ const props = defineProps({
 defineEmits(['click']);
 
 const containerClasses = computed(() => [
-  'flex flex-col items-center gap-1 min-w-[60px]',
+  'flex flex-col items-center gap-1 min-w-[68px] sm:min-w-[80px]',
   props.interactive
     ? 'min-h-[44px] px-2 py-1 rounded-lg transition-colors hover:bg-wc-bg-tertiary/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-wc-accent/60'
     : '',
 ]);
 
-const timeClasses = 'font-data text-[10px] tracking-wider text-wc-text-tertiary tabular-nums';
+const timeClasses = 'font-data text-[10px] tracking-wider text-wc-text-tertiary tabular-nums whitespace-nowrap';
 
 const dotSize = computed(() => (props.compact ? 'h-2.5 w-2.5' : 'h-3 w-3'));
 

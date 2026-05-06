@@ -1,7 +1,7 @@
 <template>
   <div
     ref="scrollerRef"
-    class="dt-scroller flex items-start gap-1 overflow-x-auto pb-2 snap-x snap-proximity"
+    class="dt-scroller flex items-start gap-1.5 overflow-x-auto pb-2 px-1 snap-x snap-proximity sm:gap-2"
     :aria-label="ariaLabel"
     role="list"
   >
@@ -12,7 +12,7 @@
         class="snap-center shrink-0"
       >
         <TimelineNode
-          :time="meal.hora || meal.time || ''"
+          :time="formatTime(meal)"
           :label="resolveLabel(meal)"
           :state="resolveMealState(idx)"
           :interactive="interactive"
@@ -23,7 +23,7 @@
       <span
         v-if="idx < meals.length - 1"
         aria-hidden="true"
-        class="self-start mt-[22px] h-px min-w-[12px] flex-1"
+        class="self-start mt-[22px] h-px min-w-[16px] flex-1 sm:min-w-[24px]"
         :class="resolveLineClass(idx)"
       ></span>
     </template>
@@ -54,10 +54,30 @@ const ariaLabel = computed(
 );
 
 function resolveLabel(meal) {
-  const raw = String(meal?.nombre || meal?.name || '').trim();
+  // Quitar hora embebida del nombre antes de extraer primera palabra:
+  // "DESAYUNO DE CARGA — 7:00AM" → "DESAYUNO DE CARGA" → "Desayuno"
+  const raw = String(meal?.nombre || meal?.name || '')
+    .replace(/\s*[—–-]\s*\d{1,2}:\d{2}.*$/, '')
+    .replace(/\s*\(\d{1,2}:\d{2}.*?\)\s*$/, '')
+    .trim();
   if (!raw) return '';
   const firstWord = raw.split(/[\s\-·]+/).filter(Boolean)[0] || raw;
   return firstWord.length > 10 ? firstWord.slice(0, 9) + '…' : firstWord;
+}
+
+// Time formatter para timeline — extrae hora de meal.hora o del nombre
+function formatTime(meal) {
+  if (!meal) return '';
+  const sources = [meal.hora, meal.time, meal.nombre, meal.name];
+  for (const src of sources) {
+    if (!src) continue;
+    const str = String(src);
+    const ampm = str.match(/(\d{1,2}:\d{2})\s*(AM|PM|am|pm)/);
+    if (ampm) return ampm[1] + ' ' + ampm[2].toUpperCase();
+    const plain = str.match(/(\d{1,2}:\d{2})/);
+    if (plain) return plain[1];
+  }
+  return '';
 }
 
 // Prioridad de estado:

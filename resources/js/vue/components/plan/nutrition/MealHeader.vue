@@ -27,7 +27,7 @@
     <!-- Col 2: name + subtitle + macros inline -->
     <div class="min-w-0">
       <p class="truncate font-display text-sm font-medium uppercase tracking-wide text-wc-text leading-tight">
-        {{ (meal.nombre || meal.name || ('Comida ' + (mealIdx + 1))) }}
+        {{ cleanName }}
       </p>
       <p
         v-if="subtitle"
@@ -95,18 +95,42 @@ const formattedIndex = computed(() => {
   return String(n).padStart(2, '0');
 });
 
-// Backend puede devolver hora en formato "7:00 - 8:00 AM" — muy largo para
-// badge w-46. Extraemos solo la hora de inicio para que quepa.
+// Extrae hora corta de cualquier shape:
+//   1. meal.hora "7:00 - 8:00 AM"        → "7:00 AM"
+//   2. meal.hora "13:00 — 14:00"          → "13:00"
+//   3. meal.hora vacia + meal.nombre "DESAYUNO DE CARGA — 7:00AM" → "7:00 AM"
+//   4. meal.nombre "PRE-ENTRENO — 9:30AM (30-45 min antes...)"     → "9:30 AM"
+function extractTime(text) {
+  if (!text) return null;
+  const str = String(text);
+  // Capturar "HH:MM AM" o "HH:MM PM" como primera ocurrencia (con/sin espacio)
+  const ampmMatch = str.match(/(\d{1,2}:\d{2})\s*(AM|PM|am|pm)/);
+  if (ampmMatch) return ampmMatch[1] + ' ' + ampmMatch[2].toUpperCase();
+  // Capturar primera HH:MM sin AM/PM
+  const plainMatch = str.match(/(\d{1,2}:\d{2})/);
+  if (plainMatch) return plainMatch[1];
+  return null;
+}
+
 const formattedTime = computed(() => {
-  const raw = (props.meal.hora ?? props.meal.time ?? '').toString().trim();
-  if (!raw) return '--:--';
-  // Patron "7:00 - 8:00 AM" → "7:00 AM" · "07:00 — 08:00" → "07:00"
-  // Captura primera hora + AM/PM si lo hay al final
-  const match = raw.match(/^(\d{1,2}:\d{2})(?:\s*[-–—]\s*\d{1,2}:\d{2})?\s*(AM|PM|am|pm)?$/);
-  if (!match) return raw.length > 8 ? raw.slice(0, 8) : raw;
-  const time = match[1];
-  const ampm = match[2] ? ' ' + match[2].toUpperCase() : '';
-  return time + ampm;
+  // 1. meal.hora directa
+  const direct = extractTime(props.meal.hora ?? props.meal.time);
+  if (direct) return direct;
+  // 2. fallback al nombre (caso "DESAYUNO DE CARGA — 7:00AM")
+  const fromName = extractTime(props.meal.nombre ?? props.meal.name);
+  if (fromName) return fromName;
+  return '--:--';
+});
+
+// Nombre limpio: quita la hora final si esta embebida ("DESAYUNO DE CARGA — 7:00AM"
+// → "DESAYUNO DE CARGA"). Tambien quita parentesis con info extra.
+const cleanName = computed(() => {
+  const raw = (props.meal.nombre ?? props.meal.name ?? '').toString().trim();
+  if (!raw) return 'Comida ' + (props.mealIdx + 1);
+  return raw
+    .replace(/\s*[—–-]\s*\d{1,2}:\d{2}\s*(AM|PM|am|pm)?(\s*\([^)]*\))?\s*$/, '')
+    .replace(/\s*\(\d{1,2}:\d{2}.*?\)\s*$/, '')
+    .trim() || raw;
 });
 
 const subtitle = computed(() => {
