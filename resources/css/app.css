@@ -169,6 +169,12 @@
     --radius-wc-md: 16px;
     --radius-wc-lg: 20px;
     --radius-wc-pill: 999px;
+
+    /* DS v1 Workout Player v2 — 2026-05-06 */
+    --color-wc-border-strong: rgba(255, 255, 255, 0.14);
+    --radius-wc-xl: 28px;
+    --ease-wc-spring: cubic-bezier(.34, 1.56, .64, 1);
+    --ease-wc-out: cubic-bezier(.22, 1, .36, 1);
 }
 
 /* Dark mode overrides */
@@ -2479,4 +2485,46 @@ body.fit-page.public-page::before {
     .wc-safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom, 0) + 8px); }
     .wc-safe-left   { padding-left:   env(safe-area-inset-left, 0); }
     .wc-safe-right  { padding-right:  env(safe-area-inset-right, 0); }
+}
+
+/* ─── DS v1 Workout Player v2 — Utility classes — 2026-05-06 ───────────────── */
+@layer utilities {
+  .wc-pulse-btn {
+    animation: wcPulseBtn 2.4s ease-out infinite;
+  }
+  .wc-live-dot::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 999px;
+    background: currentColor;
+    animation: wcLiveDotHalo 1.6s ease-out infinite;
+    opacity: 0;
+  }
+  .wc-set-row[data-state="active"] {
+    border-left: 3px solid var(--color-wc-accent, #DC2626);
+    box-shadow: 0 0 16px rgba(220, 38, 38, 0.20);
+    background-color: rgba(220, 38, 38, 0.04);
+  }
+  .wc-set-row[data-state="done"] {
+    background-color: rgba(34, 197, 94, 0.06);
+    border-left: 3px solid #22c55e;
+  }
+  .wc-glass-bb {
+    backdrop-filter: blur(20px) saturate(1.3);
+    -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  }
+  .wc-tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@keyframes wcPulseBtn {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+  50% { transform: scale(1.04); box-shadow: 0 0 0 8px rgba(220, 38, 38, 0.15); }
+}
+
+@keyframes wcLiveDotHalo {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.5); opacity: 0; }
 }

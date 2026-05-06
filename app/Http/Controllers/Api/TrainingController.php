@@ -19,6 +19,7 @@ use App\Services\ClientCacheService;
 use App\Services\ExerciseMediaService;
 use App\Services\PushNotificationService;
 use Carbon\Carbon;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -485,13 +486,13 @@ class TrainingController extends Controller
         if (! $session) {
             try {
                 $session = WorkoutSession::create([
-                    'client_id'    => $clientId,
-                    'plan_id'      => $planId,
-                    'day_name'     => $dayName,
+                    'client_id' => $clientId,
+                    'plan_id' => $planId,
+                    'day_name' => $dayName,
                     'session_date' => $today,
-                    'completed'    => false,
+                    'completed' => false,
                 ]);
-            } catch (\Illuminate\Database\UniqueConstraintViolationException) {
+            } catch (UniqueConstraintViolationException) {
                 // Race: otra petición simultánea creó la sesión entre el SELECT y el INSERT.
                 $session = WorkoutSession::where('client_id', $clientId)
                     ->where('day_name', $dayName)
@@ -524,9 +525,10 @@ class TrainingController extends Controller
         if (blank($request->input('exercise_name'))) {
             \Log::warning('TrainingController.completeSet called without exercise_name', [
                 'client_id' => auth('wellcore')->id(),
-                'payload'   => $request->except(['_token', 'media_file']),
-                'referer'   => $request->headers->get('referer'),
+                'payload' => $request->except(['_token', 'media_file']),
+                'referer' => $request->headers->get('referer'),
             ]);
+
             return response()->json(['ok' => false, 'reason' => 'missing_exercise'], 204);
         }
 
@@ -662,9 +664,10 @@ class TrainingController extends Controller
         if (blank($request->input('exercise_name'))) {
             \Log::warning('TrainingController.uncompleteSet called without exercise_name', [
                 'client_id' => auth('wellcore')->id(),
-                'payload'   => $request->except(['_token', 'media_file']),
-                'referer'   => $request->headers->get('referer'),
+                'payload' => $request->except(['_token', 'media_file']),
+                'referer' => $request->headers->get('referer'),
             ]);
+
             return response()->json(['ok' => false, 'reason' => 'missing_exercise'], 204);
         }
 
@@ -821,20 +824,20 @@ class TrainingController extends Controller
         $pulsoOffer = [
             'session_id' => $session->id,
             'pulso_type' => 'entrenamiento',
-            'stats'      => [
-                'volume_kg'    => round((float) ($session->total_volume_kg ?? 0), 1),
-                'series'       => (int) ($session->total_sets ?? 0),
-                'ejercicios'   => $session->logs()->where('completed', true)->distinct()->count('exercise_name'),
+            'stats' => [
+                'volume_kg' => round((float) ($session->total_volume_kg ?? 0), 1),
+                'series' => (int) ($session->total_sets ?? 0),
+                'ejercicios' => $session->logs()->where('completed', true)->distinct()->count('exercise_name'),
                 'duracion_min' => (int) round($durationSec / 60),
-                'day_name'     => $session->day_name ?? '',
+                'day_name' => $session->day_name ?? '',
             ],
         ];
 
         return response()->json([
-            'session_id'  => $session->id,
-            'xp_earned'   => $xpEarned,
-            'pr_count'    => $prCount,
-            'duration'    => $session->formattedDuration(),
+            'session_id' => $session->id,
+            'xp_earned' => $xpEarned,
+            'pr_count' => $prCount,
+            'duration' => $session->formattedDuration(),
             'pulso_offer' => $pulsoOffer,
         ]);
     }
@@ -1376,7 +1379,7 @@ class TrainingController extends Controller
         // fases ← semanas (week-level phase info)
         if (! isset($plan['fases']) && ! isset($plan['phases']) && ! empty($plan['semanas'])) {
             $plan['fases'] = array_map(fn ($s) => [
-                'nombre' => 'Semana ' . ($s['numero'] ?? '') . ' — ' . ($s['fase'] ?? ''),
+                'nombre' => 'Semana '.($s['numero'] ?? '').' — '.($s['fase'] ?? ''),
                 'descripcion' => $s['notas_semana'] ?? '',
             ], $plan['semanas']);
         }
@@ -1388,7 +1391,7 @@ class TrainingController extends Controller
             $protocolo = $plan['pct']['protocolo'] ?? [];
             $notas = $plan['pct']['notas'] ?? null;
             $plan['pct'] = array_map(fn ($p) => [
-                'nombre' => $farmaco . ' — Semana ' . ($p['semana'] ?? ''),
+                'nombre' => $farmaco.' — Semana '.($p['semana'] ?? ''),
                 'dosis' => $p['dosis'] ?? '',
                 'frecuencia' => 'Diario con comida AM',
                 'inicio' => $inicio,
@@ -1398,7 +1401,7 @@ class TrainingController extends Controller
 
         // emergencia ← protocolo_suspension eventos (suspension timeline)
         if (! isset($plan['emergencia']) && ! empty($plan['protocolo_suspension']['eventos'])) {
-            $plan['emergencia'] = array_map(fn ($e) => $e['fecha'] . ': ' . $e['accion'] . ' — ' . $e['razon'], $plan['protocolo_suspension']['eventos']);
+            $plan['emergencia'] = array_map(fn ($e) => $e['fecha'].': '.$e['accion'].' — '.$e['razon'], $plan['protocolo_suspension']['eventos']);
         }
 
         // monitoreo_diario ← alertas remaining items
@@ -1778,8 +1781,15 @@ class TrainingController extends Controller
     }
 
     /**
-     * Enrich exercises with last_weight and last_reps from the client's
-     * most recent completed session. Single query, no N+1.
+     * Enrich exercises with last_weight / last_reps (legacy fields used by
+     * existing UI) and last_session payload (used by WorkoutPlayer v2
+     * LastSessionStrip), pulled from the client's previous completed sessions.
+     *
+     * Performance: 2 batched queries total, regardless of how many exercises
+     * are in the day (no N+1):
+     *   1) Latest log per exercise (legacy contract).
+     *   2) Per-exercise top-set across the last 2 distinct completed sessions
+     *      (used to compute delta_kg vs previous session).
      */
     private function enrichExercisesWithHistory(int $clientId, array $exercises): array
     {
@@ -1820,16 +1830,125 @@ class TrainingController extends Controller
             return $exercises;
         }
 
+        $lastSessionByExercise = $this->buildLastSessionMap($clientId, $names);
+
         foreach ($exercises as &$ex) {
             $exName = $ex['nombre'] ?? $ex['name'] ?? '';
             $lastLog = $lastLogs[$exName] ?? null;
 
             $ex['last_weight'] = $lastLog ? (float) $lastLog->weight_kg : null;
             $ex['last_reps'] = $lastLog ? (int) $lastLog->reps : null;
+            $ex['last_session'] = $lastSessionByExercise[$exName] ?? null;
         }
         unset($ex);
 
         return $exercises;
+    }
+
+    /**
+     * Build a map of exercise_name → last_session payload for the WorkoutPlayer
+     * v2 LastSessionStrip. For each exercise, picks the heaviest top set of the
+     * most recent completed session and computes delta_kg vs the previous
+     * completed session (0 when there is only one session on record).
+     *
+     * Returns array<string, array{
+     *     weight: float, reps: int, days_ago: int, delta_kg: float, session_id: int
+     * }>
+     */
+    private function buildLastSessionMap(int $clientId, array $names): array
+    {
+        if (empty($names)) {
+            return [];
+        }
+
+        try {
+            $rows = DB::table('workout_logs as wl')
+                ->join('workout_sessions as ws', 'ws.id', '=', 'wl.session_id')
+                ->select([
+                    'wl.exercise_name',
+                    'wl.session_id',
+                    'wl.weight_kg',
+                    'wl.reps',
+                    'ws.session_date',
+                    'ws.created_at as session_created_at',
+                ])
+                ->where('ws.client_id', $clientId)
+                ->where('ws.completed', 1)
+                ->where('wl.completed', 1)
+                ->whereNotNull('wl.weight_kg')
+                ->whereIn('wl.exercise_name', $names)
+                ->orderByDesc('ws.session_date')
+                ->orderByDesc('ws.id')
+                ->orderByDesc('wl.weight_kg')
+                ->get();
+        } catch (\Throwable) {
+            return [];
+        }
+
+        // Per exercise, collapse rows into ordered sessions [latest, previous]
+        // keeping the heaviest set of each session as the representative.
+        $byExercise = [];
+
+        foreach ($rows as $row) {
+            $name = $row->exercise_name;
+            $sessionId = (int) $row->session_id;
+            $weight = (float) $row->weight_kg;
+            $reps = (int) $row->reps;
+
+            $byExercise[$name] ??= [];
+            $sessions = $byExercise[$name];
+
+            if (isset($sessions[$sessionId])) {
+                if ($weight > $sessions[$sessionId]['weight']) {
+                    $sessions[$sessionId]['weight'] = $weight;
+                    $sessions[$sessionId]['reps'] = $reps;
+                }
+                $byExercise[$name] = $sessions;
+
+                continue;
+            }
+
+            if (count($sessions) >= 2) {
+                continue;
+            }
+
+            $sessions[$sessionId] = [
+                'weight' => $weight,
+                'reps' => $reps,
+                'session_id' => $sessionId,
+                'session_date' => $row->session_date,
+            ];
+            $byExercise[$name] = $sessions;
+        }
+
+        $map = [];
+
+        foreach ($byExercise as $name => $sessions) {
+            $sessions = array_values($sessions);
+            $latest = $sessions[0] ?? null;
+            if (! $latest) {
+                continue;
+            }
+
+            $previous = $sessions[1] ?? null;
+            $daysAgo = $latest['session_date']
+                ? (int) Carbon::parse($latest['session_date'])
+                    ->startOfDay()
+                    ->diffInDays(now()->startOfDay())
+                : 0;
+
+            $map[$name] = [
+                'weight' => round($latest['weight'], 2),
+                'reps' => $latest['reps'],
+                'days_ago' => max(0, $daysAgo),
+                'delta_kg' => $previous
+                    ? round($latest['weight'] - $previous['weight'], 2)
+                    : 0.0,
+                'session_id' => $latest['session_id'],
+            ];
+        }
+
+        return $map;
     }
 
     /**
