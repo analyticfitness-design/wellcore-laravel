@@ -271,6 +271,11 @@ class TrainingController extends Controller
             ?? ''
         );
 
+        // is_expired: defensivo (default false). El check real depende de tabla
+        // que puede no estar populated en producción. Frontend usa esto + isLocked
+        // (de plan-status) — si falta, no rompe.
+        $trainingPlan['is_expired'] = (bool) ($trainingPlan['is_expired'] ?? false);
+
         // 2) weekly_schedule: derivado server-side desde semana actual
         $trainingPlan['weekly_schedule'] = $this->deriveWeeklySchedule($trainingPlan);
 
@@ -332,17 +337,26 @@ class TrainingController extends Controller
         $rawNumero = $semana['numero'] ?? $semana['n'] ?? $sIdx + 1;
         $semana['numero'] = is_numeric($rawNumero) ? (int) $rawNumero : ($sIdx + 1);
 
-        // titulo (preferir JSON, fallback al label de la fase) — safe casts
+        // titulo (preferir label de fase sobre genérico "Semana N" — fidelidad V2.1)
         $faseRaw = strtolower($this->safeStr($semana['fase'] ?? $semana['phase'] ?? ''));
         $titleFromPhase = match ($faseRaw) {
             'acumulacion', 'acumulación', 'acumul' => 'Acumulación',
             'intensificacion', 'intensificación', 'intens' => 'Intensificación',
             'pico', 'peak' => 'Pico',
             'deload', 'descarga' => 'Descarga',
-            default => 'Semana ' . $semana['numero'],
+            default => '',
         };
         $tituloFromJson = $this->safeStr($semana['titulo'] ?? $semana['nombre'] ?? '');
-        $semana['titulo'] = $tituloFromJson !== '' ? $tituloFromJson : $titleFromPhase;
+        // Si el JSON solo trae "Semana N" (nombre genérico) Y hay fase válida,
+        // preferir el label de la fase (HTML V2.1 muestra "Acumulación" no "Semana 1").
+        $isGeneric = preg_match('/^semana\s*\d+$/iu', $tituloFromJson) === 1;
+        if ($tituloFromJson !== '' && ! $isGeneric) {
+            $semana['titulo'] = $tituloFromJson;
+        } elseif ($titleFromPhase !== '') {
+            $semana['titulo'] = $titleFromPhase;
+        } else {
+            $semana['titulo'] = 'Semana ' . $semana['numero'];
+        }
 
         // fase normalizada
         $semana['fase'] = $faseRaw !== '' ? $faseRaw : 'acumul';

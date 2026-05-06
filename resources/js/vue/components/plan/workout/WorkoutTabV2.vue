@@ -313,21 +313,29 @@ const errorMessage = computed(() => {
   return props.error?.message || '';
 });
 
-// Week phase mapping
+// Week phase mapping (cls determina el color de la pill)
 const PHASE_MAP = {
-  acumulacion: { label: 'Acumulación', cls: 'acumul' },
-  acumul: { label: 'Acumulación', cls: 'acumul' },
-  intensificacion: { label: 'Intensificación', cls: 'intens' },
-  intens: { label: 'En curso', cls: 'intens' },
-  pico: { label: 'Pico', cls: 'pico' },
-  deload: { label: 'Descarga', cls: 'deload' },
-  descarga: { label: 'Descarga', cls: 'deload' },
+  acumulacion: { cls: 'acumul' },
+  acumul: { cls: 'acumul' },
+  intensificacion: { cls: 'intens' },
+  intens: { cls: 'intens' },
+  pico: { cls: 'pico' },
+  deload: { cls: 'deload' },
+  descarga: { cls: 'deload' },
 };
+// La pill secundaria muestra estado de la semana (V2.1: "En curso" si es_actual,
+// "Listo" si completada, sino vacía). El titulo de la semana (Acumulación/etc)
+// viene server-side y se renderiza en .week-title — no se duplica acá.
 function weekPhaseLabel(s) {
-  const f = String(s?.fase || s?.phase || '').toLowerCase();
-  return PHASE_MAP[f]?.label || '';
+  if (!s) return '';
+  if (s.es_actual) return 'En curso';
+  if (s.completada) return 'Listo';
+  return '';
 }
 function weekPhaseClass(s) {
+  if (!s) return '';
+  if (s.es_actual) return 'intens';
+  if (s.completada) return 'deload';
   const f = String(s?.fase || s?.phase || '').toLowerCase();
   return PHASE_MAP[f]?.cls || '';
 }
