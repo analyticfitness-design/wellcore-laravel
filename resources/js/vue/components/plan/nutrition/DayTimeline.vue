@@ -53,8 +53,12 @@ const ariaLabel = computed(
 );
 
 function resolveLabel(meal) {
-  const raw = meal?.nombre || meal?.name || '';
-  return String(raw).slice(0, 12);
+  const raw = String(meal?.nombre || meal?.name || '').trim();
+  if (!raw) return '';
+  // Primera palabra significativa para evitar overflow horizontal del timeline.
+  // "Almuerzo post-entreno" → "Almuerzo" · "Pre-entreno" → "Pre" · "Merienda nocturna" → "Merienda".
+  const firstWord = raw.split(/[\s\-·]+/).filter(Boolean)[0] || raw;
+  return firstWord.length > 10 ? firstWord.slice(0, 10) : firstWord;
 }
 
 function resolveMealState(idx) {

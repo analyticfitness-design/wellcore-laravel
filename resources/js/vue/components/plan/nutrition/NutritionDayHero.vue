@@ -4,35 +4,29 @@
     class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 sm:p-6 overflow-hidden"
   >
     <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-4 sm:gap-6 items-start">
-      <!-- Lado izquierdo: kcal hero -->
+      <!-- Lado izquierdo: kcal hero (matching m-day-hero del HTML target v2) -->
       <div class="min-w-0">
         <p class="text-xs uppercase tracking-widest text-wc-text-secondary mb-1">
-          Kcal diarias
+          Calorías del día
         </p>
         <p
           class="font-display text-[64px] sm:text-[96px] font-bold leading-none text-wc-text tabular-nums"
         >
-          {{ totalKcal.toLocaleString() }}
+          {{ totalKcal.toLocaleString('es-CO') }}<span class="ml-2 align-baseline font-sans text-sm font-normal text-wc-text-tertiary tracking-normal">kcal · objetivo</span>
         </p>
-        <p class="mt-1 text-base text-wc-text-tertiary">kcal por día</p>
       </div>
 
-      <!-- Lado derecho: pull-quote del coach -->
+      <!-- Lado derecho: objetivo con tag inline + descripción -->
       <div
         v-if="objetivoText"
         class="relative rounded-xl border border-wc-accent/30 bg-wc-accent/5 px-4 py-3 sm:max-w-xs"
       >
-        <span
-          aria-hidden="true"
-          class="absolute -top-2 left-2 font-display text-2xl text-wc-accent/30 leading-none select-none"
-        >&laquo;</span>
-        <p class="text-sm text-wc-accent leading-relaxed">
-          {{ objetivoText }}
-        </p>
-        <span
-          aria-hidden="true"
-          class="absolute -bottom-3 right-2 font-display text-2xl text-wc-accent/30 leading-none select-none"
-        >&raquo;</span>
+        <span class="inline-block rounded-full bg-wc-accent/20 px-2.5 py-0.5 mr-1.5 font-display text-[10px] uppercase tracking-[0.18em] text-wc-accent">
+          {{ objetivoTag }}
+        </span>
+        <span class="text-sm text-wc-text-secondary leading-relaxed">
+          {{ objetivoBody }}
+        </span>
       </div>
     </div>
 
@@ -91,6 +85,23 @@ const totalKcal = computed(() => {
 const objetivoText = computed(() => {
   const v = props.nutritionPlan?.objetivo;
   return typeof v === 'string' && v.trim().length > 0 ? v.trim() : '';
+});
+
+// Si el objetivo viene en formato corto (ej. "Volumen limpio") lo usa como tag completo.
+// Si es largo (>40 chars), extrae primera frase como tag y resto como body descriptivo.
+const objetivoTag = computed(() => {
+  const t = objetivoText.value;
+  if (!t) return '';
+  if (t.length <= 40) return t;
+  const firstSentence = t.split(/[.\-—]\s+/)[0] || t;
+  return firstSentence.length <= 40 ? firstSentence : firstSentence.slice(0, 40);
+});
+
+const objetivoBody = computed(() => {
+  const t = objetivoText.value;
+  if (!t || t.length <= 40) return '';
+  const tag = objetivoTag.value;
+  return t.startsWith(tag) ? t.slice(tag.length).replace(/^[.\-—\s]+/, '').trim() : t;
 });
 
 // Macros — replicado de PlanViewer.vue para soportar es/en + anidado en `macros`.

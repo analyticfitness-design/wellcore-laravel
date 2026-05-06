@@ -19,10 +19,10 @@
 
     <span class="flex min-w-0 flex-1 flex-col">
       <span class="font-display text-sm uppercase tracking-[0.18em] text-wc-text">
-        Analizar mi comida
+        Sube una foto de tu plato
       </span>
       <span class="mt-0.5 text-xs text-wc-text-secondary">
-        Toma una foto y estimamos los macros automáticamente
+        Te decimos los macros y si encaja con tu plan.
       </span>
     </span>
 
