@@ -38,6 +38,9 @@ const props = defineProps({
   meals: { type: Array, required: true },
   currentMealIndex: { type: Number, default: -1 },
   swappedMealIndices: { type: Array, default: () => [] },
+  // Indices de comidas marcadas como hechas (useMealCheckins). Cuando el cliente
+  // marca DESAYUNO con el boton MealBody, el dot del timeline cambia a 'done' verde.
+  checkedMealIndices: { type: Array, default: () => [] },
   interactive: { type: Boolean, default: false },
 });
 
@@ -57,21 +60,24 @@ function resolveLabel(meal) {
   return firstWord.length > 10 ? firstWord.slice(0, 9) + '…' : firstWord;
 }
 
+// Prioridad de estado:
+//   1. swapped → REEMPLAZADA (rojo wc-accent + ring)
+//   2. done    → MARCADA por el cliente (verde emerald + ring)
+//   3. current → comida actual segun hora (rojo pulsing)
+//   4. pending → futura (dot vacio outline)
 function resolveMealState(idx) {
   if (props.swappedMealIndices.includes(idx)) return 'swapped';
+  if (props.checkedMealIndices.includes(idx)) return 'done';
   if (idx === props.currentMealIndex) return 'current';
-  if (props.currentMealIndex >= 0 && idx < props.currentMealIndex) return 'done';
   return 'pending';
 }
 
-// Linea conectora — fuller cuando ya pasó (done), sutil si pendiente
+// Linea conectora — verde si esta o las previas estan marcadas; tertiary
+// si paso por hora pero sin marcar; sino sutil border.
 function resolveLineClass(idx) {
-  // Si el nodo idx (o anterior a current) ya esta done, la linea hacia el siguiente
-  // es "done"; sino es pendiente sutil.
+  if (props.checkedMealIndices.includes(idx)) return 'bg-emerald-400/40';
   const cur = props.currentMealIndex;
-  if (cur >= 0 && idx < cur) {
-    return 'bg-wc-text-tertiary/60';
-  }
+  if (cur >= 0 && idx < cur) return 'bg-wc-text-tertiary/40';
   return 'bg-wc-border';
 }
 
