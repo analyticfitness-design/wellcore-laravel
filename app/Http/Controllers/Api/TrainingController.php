@@ -64,7 +64,7 @@ class TrainingController extends Controller
                 'entrenamiento' => $trainingPlan = $this->normalizeTrainingPlan($content),
                 'nutricion' => $nutritionPlan = $this->normalizeNutritionPlan($content),
                 'suplementacion' => $supplementPlan = $content,
-                'ciclo_hormonal', 'ciclo' => $cicloPlan = $content,
+                'ciclo_hormonal', 'ciclo' => $cicloPlan = $this->normalizeCicloPlan($content),
                 default => null,
             };
         }
@@ -1313,6 +1313,11 @@ class TrainingController extends Controller
         // (handles both comidas_sugeridas-sourced and directly-stored comidas)
         if (isset($plan['comidas']) && is_array($plan['comidas'])) {
             $plan['comidas'] = array_map(function (array $meal): array {
+                // Convert string alimentos to array (split on ". " boundaries)
+                if (isset($meal['alimentos']) && is_string($meal['alimentos'])) {
+                    $parts = preg_split('/\.\s+/', rtrim($meal['alimentos'], '. '));
+                    $meal['alimentos'] = array_values(array_filter(array_map('trim', $parts)));
+                }
                 if (
                     isset($meal['opciones']) &&
                     is_array($meal['opciones']) &&
@@ -1339,6 +1344,72 @@ class TrainingController extends Controller
     }
 
     /**
+     * Normalize a ciclo hormonal plan so it matches the PlanViewer Vue component schema.
+     * Maps Spanish field names (compuestos, pct object) to the English/array keys the template expects.
+     */
+    private function normalizeCicloPlan(?array $plan): ?array
+    {
+        if (! $plan) {
+            return null;
+        }
+
+        // compounds ← compuestos
+        if (! isset($plan['compounds']) && isset($plan['compuestos'])) {
+            $plan['compounds'] = $plan['compuestos'];
+        }
+
+        // nombre ← titulo
+        if (! isset($plan['nombre']) && ! isset($plan['name']) && isset($plan['titulo'])) {
+            $plan['nombre'] = $plan['titulo'];
+        }
+
+        // descripcion_protocolo ← objetivo
+        if (! isset($plan['descripcion_protocolo']) && ! isset($plan['descripcion']) && isset($plan['objetivo'])) {
+            $plan['descripcion_protocolo'] = $plan['objetivo'];
+        }
+
+        // advertencia ← alertas[] joined (first 2 items to avoid wall of text)
+        if (! isset($plan['advertencia']) && ! isset($plan['warning']) && ! empty($plan['alertas'])) {
+            $plan['advertencia'] = implode(' | ', array_slice((array) $plan['alertas'], 0, 2));
+        }
+
+        // fases ← semanas (week-level phase info)
+        if (! isset($plan['fases']) && ! isset($plan['phases']) && ! empty($plan['semanas'])) {
+            $plan['fases'] = array_map(fn ($s) => [
+                'nombre' => 'Semana ' . ($s['numero'] ?? '') . ' — ' . ($s['fase'] ?? ''),
+                'descripcion' => $s['notas_semana'] ?? '',
+            ], $plan['semanas']);
+        }
+
+        // pct object → pct array (component iterates it)
+        if (isset($plan['pct']) && is_array($plan['pct']) && ! isset($plan['pct'][0])) {
+            $farmaco = $plan['pct']['farmaco'] ?? 'PCT';
+            $inicio = $plan['pct']['inicio'] ?? null;
+            $protocolo = $plan['pct']['protocolo'] ?? [];
+            $notas = $plan['pct']['notas'] ?? null;
+            $plan['pct'] = array_map(fn ($p) => [
+                'nombre' => $farmaco . ' — Semana ' . ($p['semana'] ?? ''),
+                'dosis' => $p['dosis'] ?? '',
+                'frecuencia' => 'Diario con comida AM',
+                'inicio' => $inicio,
+                'notas' => $notas,
+            ], $protocolo);
+        }
+
+        // emergencia ← protocolo_suspension eventos (suspension timeline)
+        if (! isset($plan['emergencia']) && ! empty($plan['protocolo_suspension']['eventos'])) {
+            $plan['emergencia'] = array_map(fn ($e) => $e['fecha'] . ': ' . $e['accion'] . ' — ' . $e['razon'], $plan['protocolo_suspension']['eventos']);
+        }
+
+        // monitoreo_diario ← alertas remaining items
+        if (! isset($plan['monitoreo_diario']) && ! empty($plan['alertas'])) {
+            $plan['monitoreo_diario'] = array_map(fn ($a) => ['item' => $a], (array) $plan['alertas']);
+        }
+
+        return $plan;
+    }
+
+    /**
      * Normalize a training plan JSON structure. Ported from PlanViewer.php.
      */
     private function normalizeTrainingPlan(?array $content): ?array
@@ -1348,8 +1419,16 @@ class TrainingController extends Controller
         }
 
         if (isset($content['semanas']) && is_array($content['semanas'])) {
+            // Top-level dias (plan with semanas header + shared days array)
+            $topDias = isset($content['dias']) && is_array($content['dias']) ? $content['dias'] : null;
+
             foreach ($content['semanas'] as &$semana) {
-                $semana['dias'] = $this->normalizeDays($semana['dias'] ?? $semana['days'] ?? []);
+                $raw = $semana['dias'] ?? $semana['days'] ?? [];
+                // If the semana has no days of its own, fall back to the top-level dias array
+                if (empty($raw) && $topDias) {
+                    $raw = $topDias;
+                }
+                $semana['dias'] = $this->normalizeDays($raw);
                 unset($semana['days']);
                 $semana['numero'] = $semana['numero'] ?? $semana['number'] ?? $semana['semana'] ?? null;
                 $semana['fase'] = $semana['fase'] ?? $semana['phase'] ?? $semana['nombre'] ?? null;
