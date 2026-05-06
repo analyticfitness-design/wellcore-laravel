@@ -96,14 +96,16 @@
       <p class="text-xs leading-relaxed text-wc-text-secondary">{{ meal.notas }}</p>
     </div>
 
-    <!-- Actions row: Marcar (toggle local persistido) + Cambiar (swap brand) -->
-    <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+    <!-- Actions row: Marcar (toggle persistido localStorage) + Cambiar (swap).
+         Mobile: flex-1 (cada uno ocupa mitad ancho). Desktop sm+: flex-initial
+         con min-w-[160px] max-w-[220px] (tamano natural, no estira a 600px+). -->
+    <div class="flex flex-wrap items-center gap-2 pt-0.5 sm:gap-3">
       <button
         type="button"
         @click="emit('toggle-mark')"
         :aria-pressed="checked"
         :class="[
-          'inline-flex flex-1 min-h-[44px] items-center justify-center gap-1.5 rounded-full border px-4 py-2.5 font-display text-[11px] uppercase tracking-[0.1em] transition active:scale-[0.98]',
+          'inline-flex flex-1 min-h-[44px] items-center justify-center gap-1.5 rounded-full border px-4 py-2.5 font-display text-[11px] uppercase tracking-[0.1em] transition active:scale-[0.98] sm:flex-initial sm:min-w-[160px] sm:max-w-[220px] sm:px-6',
           checked
             ? 'border-emerald-500/50 bg-emerald-500/[0.14] text-emerald-400 hover:bg-emerald-500/[0.20]'
             : 'border-emerald-500/30 bg-emerald-500/[0.06] text-emerald-400 hover:border-emerald-500/50 hover:bg-emerald-500/[0.12]'
@@ -115,7 +117,7 @@
       <button
         type="button"
         @click="emit('open-swap')"
-        class="inline-flex flex-1 min-h-[44px] items-center justify-center gap-1.5 rounded-full border border-wc-accent/30 bg-wc-accent/[0.06] px-4 py-2.5 font-display text-[11px] uppercase tracking-[0.1em] text-wc-accent transition hover:border-wc-accent/50 hover:bg-wc-accent/[0.12] active:scale-[0.98]"
+        class="inline-flex flex-1 min-h-[44px] items-center justify-center gap-1.5 rounded-full border border-wc-accent/30 bg-wc-accent/[0.06] px-4 py-2.5 font-display text-[11px] uppercase tracking-[0.1em] text-wc-accent transition hover:border-wc-accent/50 hover:bg-wc-accent/[0.12] active:scale-[0.98] sm:flex-initial sm:min-w-[160px] sm:max-w-[220px] sm:px-6"
       >
         <Replace :size="14" :stroke-width="2.5" />
         Cambiar
