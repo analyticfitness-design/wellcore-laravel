@@ -902,13 +902,14 @@ onBeforeUnmount(() => {
               </div>
             </div>
 
-            <!-- REST TIMER FLOATING (mobile) — siempre visible sobre el bottom bar -->
+            <!-- REST TIMER FLOATING (mobile) — widget compacto siempre visible -->
             <Transition name="rest-float">
               <div
                 v-if="showRestTimer && restCard && isMobile"
                 class="rest-floating"
               >
                 <RestTimerCard
+                  compact
                   :seconds-remaining="restSeconds"
                   :total-seconds="restTotal"
                   :next-exercise="restCard.nextExercise"
@@ -1056,14 +1057,13 @@ onBeforeUnmount(() => {
   .page { padding: 24px 32px 140px; max-width: 1200px; margin: 0 auto; }
 }
 
-/* Rest timer floating mobile — sticky sobre bottom-bar */
+/* Rest timer floating mobile — widget compacto sobre bottom-bar */
 .rest-floating {
   position: fixed;
-  left: 12px;
-  right: 12px;
-  bottom: calc(96px + env(safe-area-inset-bottom));
+  left: 10px;
+  right: 10px;
+  bottom: calc(92px + env(safe-area-inset-bottom));
   z-index: 49;
-  filter: drop-shadow(0 12px 32px rgba(0,0,0,0.5));
 }
 @media (min-width: 1024px) {
   .rest-floating { display: none; }

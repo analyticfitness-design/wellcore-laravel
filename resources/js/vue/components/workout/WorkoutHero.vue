@@ -90,13 +90,13 @@ const dotsGridStyle = computed(() => {
 
 <style scoped>
 .hero {
-  margin-top: 14px;
-  padding: 18px 20px;
-  border-radius: 20px;
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
   background:
-    radial-gradient(circle at 100% 0%, rgba(239,68,68,0.16), transparent 60%),
-    linear-gradient(180deg, rgba(220,38,38,0.10), rgba(220,38,38,0.02));
-  border: 1px solid rgba(239,68,68,0.22);
+    radial-gradient(circle at 100% 0%, rgba(239,68,68,0.14), transparent 60%),
+    linear-gradient(180deg, rgba(220,38,38,0.08), rgba(220,38,38,0.02));
+  border: 1px solid rgba(239,68,68,0.20);
   position: relative;
   overflow: hidden;
 }
@@ -104,10 +104,10 @@ const dotsGridStyle = computed(() => {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 0% 100%, rgba(220,38,38,0.10), transparent 50%);
+  background: radial-gradient(circle at 0% 100%, rgba(220,38,38,0.08), transparent 50%);
   pointer-events: none;
 }
-@media (min-width: 1024px) { .hero { padding: 22px 28px; } }
+@media (min-width: 1024px) { .hero { padding: 16px 20px; } }
 
 .hero-row {
   display: flex;
@@ -150,14 +150,14 @@ const dotsGridStyle = computed(() => {
 .timer {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 44px;
+  font-size: 36px;
   line-height: 1;
   letter-spacing: 0.02em;
-  margin-top: 6px;
+  margin-top: 5px;
   color: var(--color-wc-text);
-  text-shadow: 0 0 24px rgba(220,38,38,0.35);
+  text-shadow: 0 0 20px rgba(220,38,38,0.3);
 }
-@media (min-width: 1024px) { .timer { font-size: 56px; } }
+@media (min-width: 1024px) { .timer { font-size: 42px; } }
 
 .timer-sub {
   font-family: var(--font-sans);
@@ -167,12 +167,12 @@ const dotsGridStyle = computed(() => {
 }
 
 .ring-wrap {
-  width: 84px;
-  height: 84px;
+  width: 72px;
+  height: 72px;
   position: relative;
   flex-shrink: 0;
 }
-@media (min-width: 1024px) { .ring-wrap { width: 104px; height: 104px; } }
+@media (min-width: 1024px) { .ring-wrap { width: 84px; height: 84px; } }
 .ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
 .ring-bg { stroke: rgba(255,255,255,0.08); }
 .ring-fg {
@@ -190,12 +190,12 @@ const dotsGridStyle = computed(() => {
 .ring-label .pct {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 22px;
+  font-size: 18px;
   line-height: 1;
 }
 .ring-label .frac {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 9px;
   color: var(--color-wc-text-secondary);
   margin-top: 2px;
 }

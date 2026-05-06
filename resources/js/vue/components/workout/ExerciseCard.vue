@@ -467,7 +467,7 @@ function onOpenMediaModal() { emit('open-media'); }
 .ex-card {
   background: var(--color-wc-bg-tertiary);
   border: 1px solid var(--color-wc-border);
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
   position: relative;
   transition: border-color 0.3s var(--ease-out), transform 0.2s var(--ease-out);
@@ -787,16 +787,16 @@ function onOpenMediaModal() { emit('open-media'); }
 
 /* ═══════════════ ACTIVE state ═══════════════ */
 .notes-block {
-  margin: 0 20px 14px;
-  padding: 14px;
-  border-radius: 14px;
+  margin: 0 16px 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
   background:
     linear-gradient(135deg, rgba(245,158,11,0.06), rgba(245,158,11,0.02)),
     rgba(255,255,255,0.02);
   border: 1px solid rgba(245,158,11,0.18);
   position: relative;
 }
-@media (min-width: 1024px) { .notes-block { margin: 0 28px 16px; } }
+@media (min-width: 1024px) { .notes-block { margin: 0 22px 14px; } }
 .notes-label {
   font-family: var(--font-display);
   font-size: 10px;
@@ -816,9 +816,9 @@ function onOpenMediaModal() { emit('open-media'); }
 
 /* ═══ Media section premium ═══ */
 .media-section {
-  margin: 0 20px 14px;
+  margin: 0 16px 12px;
 }
-@media (min-width: 1024px) { .media-section { margin: 0 28px 16px; } }
+@media (min-width: 1024px) { .media-section { margin: 0 22px 14px; } }
 
 .media-toggle-btn {
   display: inline-flex;
@@ -1070,25 +1070,25 @@ function onOpenMediaModal() { emit('open-media'); }
 }
 
 /* ═══ Strip + sets + footer ═══ */
-.strip-wrap { padding: 0 20px; margin-top: 6px; }
-@media (min-width: 1024px) { .strip-wrap { padding: 0 28px; } }
+.strip-wrap { padding: 0 16px; margin-top: 6px; }
+@media (min-width: 1024px) { .strip-wrap { padding: 0 22px; } }
 
 .sets {
-  margin-top: 16px;
-  padding: 0 12px 12px;
+  margin-top: 12px;
+  padding: 0 10px 10px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
-@media (min-width: 1024px) { .sets { padding: 0 20px 16px; } }
+@media (min-width: 1024px) { .sets { padding: 0 16px 14px; } }
 
 .ex-footer {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 0 12px 14px;
+  padding: 0 10px 12px;
 }
-@media (min-width: 1024px) { .ex-footer { padding: 0 20px 16px; } }
+@media (min-width: 1024px) { .ex-footer { padding: 0 16px 14px; } }
 
 .rest-manual {
   display: inline-flex;

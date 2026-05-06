@@ -138,10 +138,10 @@ const rirClass = computed(() => {
 <style scoped>
 .wcv2-card-head {
   display: block;
-  padding: 18px 18px 14px;
+  padding: 16px 16px 12px;
   position: relative;
 }
-@media (min-width: 1024px) { .wcv2-card-head { padding: 26px 28px 18px; } }
+@media (min-width: 1024px) { .wcv2-card-head { padding: 18px 22px 14px; } }
 
 /* TOP LINE — counter + actions */
 .wcv2-top-line {
@@ -196,8 +196,8 @@ const rirClass = computed(() => {
   flex-shrink: 0;
 }
 .wcv2-icon-btn {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 999px;
   background: rgba(255,255,255,0.04);
   border: 1px solid var(--color-wc-border);
@@ -228,7 +228,7 @@ const rirClass = computed(() => {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 24px;
+  font-size: 22px;
   line-height: 1.1;
   text-transform: uppercase;
   letter-spacing: 0.005em;
@@ -238,8 +238,8 @@ const rirClass = computed(() => {
   overflow-wrap: break-word;
   hyphens: none;
 }
-@media (min-width: 768px)  { .wcv2-name { font-size: 30px; } }
-@media (min-width: 1024px) { .wcv2-name { font-size: 38px; line-height: 1.05; } }
+@media (min-width: 768px)  { .wcv2-name { font-size: 24px; } }
+@media (min-width: 1024px) { .wcv2-name { font-size: 26px; line-height: 1.1; } }
 
 /* META ROW — chips wrap */
 .wcv2-meta-row {
