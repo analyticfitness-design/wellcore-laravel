@@ -82,17 +82,24 @@ watch(() => props.storageKey, () => { open.value = _initial(); });
       <div
         v-show="open"
         id="photo-guide-body"
-        class="border-t border-wc-border px-4 pb-5 pt-4"
+        class="border-t border-wc-border px-4 pb-6 pt-5 sm:px-6 sm:pb-8 sm:pt-6"
       >
-        <p class="mb-3 font-mono text-[10px] font-semibold uppercase tracking-widest text-wc-accent">
-          Ángulos requeridos
-        </p>
+        <div class="mb-5">
+          <p class="mb-2 font-mono text-[11px] uppercase tracking-[0.16em] text-wc-text-tertiary">
+            / guía visual
+          </p>
+          <h3 class="font-display text-2xl font-medium uppercase tracking-wide text-wc-text sm:text-[28px]">
+            Tres ángulos. Una rutina.
+          </h3>
+          <p class="mt-1.5 max-w-[52ch] text-sm text-wc-text-secondary">
+            La técnica importa porque la comparativa solo es honesta si las fotos son consistentes.
+          </p>
+        </div>
         <AnglesGrid />
 
-        <p class="mb-3 mt-5 font-mono text-[10px] font-semibold uppercase tracking-widest text-wc-accent">
-          Tips para una foto precisa
-        </p>
-        <TipsList />
+        <div class="mt-8">
+          <TipsList />
+        </div>
       </div>
     </Transition>
   </section>

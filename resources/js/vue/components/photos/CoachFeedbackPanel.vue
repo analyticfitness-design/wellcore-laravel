@@ -160,24 +160,25 @@ const initials = computed(() =>
           </div>
         </div>
 
-        <!-- Coach line -->
-        <div class="mb-3 flex items-center gap-3 rounded-xl border border-wc-border bg-wc-bg-tertiary p-3">
-          <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-700 to-amber-900 font-display text-sm font-semibold text-white">
+        <!-- Coach line — HTML ref: avatar 42px + name + role + time auto-right -->
+        <div class="mb-4 flex items-center gap-3 border-b border-wc-border pb-4">
+          <div class="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-700 to-amber-900 font-display text-base font-semibold tracking-wider text-white">
             <img v-if="coachAvatar" :src="coachAvatar" alt="" class="h-full w-full rounded-full object-cover" />
             <span v-else>{{ initials }}</span>
           </div>
           <div class="min-w-0 flex-1">
-            <h5 class="font-display text-[13px] font-semibold uppercase tracking-wider text-wc-text">
+            <h5 class="font-display text-[15px] font-semibold uppercase tracking-wider text-wc-text">
               Coach {{ coachName }}
             </h5>
-            <p class="text-[11px] text-wc-text-tertiary">Tu coach 1:1</p>
+            <p class="text-xs text-wc-text-tertiary">Tu coach 1:1</p>
           </div>
+          <time class="ml-auto font-mono text-[11px] tracking-wider text-wc-text-tertiary">hace 2 días</time>
         </div>
 
-        <!-- Summary quote -->
+        <!-- Summary quote — HTML ref 18px + max-36ch + 2px accent border-left -->
         <p
           v-if="summary"
-          class="mb-4 border-l-2 border-wc-accent py-2 pl-3.5 text-[15px] leading-relaxed text-wc-text"
+          class="mb-5 max-w-[36ch] border-l-2 border-wc-accent pl-4 text-[18px] font-normal leading-[1.5] text-wc-text"
         >
           {{ summary }}
         </p>

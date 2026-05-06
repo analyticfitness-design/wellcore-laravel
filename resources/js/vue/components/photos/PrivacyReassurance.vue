@@ -32,32 +32,43 @@ defineProps({
 
     <div class="min-w-0 flex-1">
       <h4
-        class="font-display uppercase tracking-wider text-wc-text"
-        :class="compact ? 'text-[11px]' : 'text-xs'"
+        class="font-display font-semibold uppercase tracking-[0.08em] text-wc-text"
+        :class="compact ? 'text-[11px]' : 'text-[13px]'"
       >
-        Solo {{ coachName }} ve estas fotos
+        Solo tu coach ve estas fotos
       </h4>
       <p
         v-if="!compact"
-        class="mt-1 text-xs leading-snug text-wc-text-secondary"
+        class="mt-0.5 text-[13px] leading-snug text-wc-text-secondary"
       >
-        Privadas, encriptadas, tuyas. Tu coach las usa para guiarte mejor — nadie más tiene acceso.
+        Encriptadas en tránsito y en reposo. Nunca aparecen en tu perfil público ni se comparten con la comunidad.
       </p>
       <div
-        class="flex flex-wrap gap-1.5"
-        :class="compact ? '' : 'mt-2'"
+        class="flex flex-wrap gap-2"
+        :class="compact ? '' : 'mt-2.5'"
       >
-        <span class="inline-flex items-center gap-1 rounded-full border border-wc-border bg-wc-bg-secondary px-2 py-0.5 text-[10px] text-wc-text-secondary">
-          {{ coachName }}
+        <span class="inline-flex items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-secondary px-2.5 py-1 text-[11px] font-medium text-wc-text-secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-2.5 w-2.5 opacity-70" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 8v4M12 16h.01" />
+          </svg>
+          Solo {{ coachName }}
         </span>
-        <span class="inline-flex items-center gap-1 rounded-full border border-wc-border bg-wc-bg-secondary px-2 py-0.5 text-[10px] text-wc-text-secondary">
-          AES-256 en reposo
+        <span class="inline-flex items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-secondary px-2.5 py-1 text-[11px] font-medium text-wc-text-secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-2.5 w-2.5 opacity-70" aria-hidden="true">
+            <rect x="4" y="11" width="16" height="10" rx="2" />
+            <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+          </svg>
+          AES-256
         </span>
         <a
           href="/privacy"
-          class="inline-flex items-center gap-1 rounded-full border border-wc-border bg-wc-bg-secondary px-2 py-0.5 text-[10px] text-wc-text-secondary transition-colors hover:text-wc-text"
+          class="inline-flex items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-secondary px-2.5 py-1 text-[11px] font-medium text-wc-text-secondary transition-colors hover:text-wc-text"
         >
-          Política de privacidad →
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-2.5 w-2.5 opacity-70" aria-hidden="true">
+            <path d="M3 12h18M12 3v18" />
+          </svg>
+          Política
         </a>
       </div>
     </div>

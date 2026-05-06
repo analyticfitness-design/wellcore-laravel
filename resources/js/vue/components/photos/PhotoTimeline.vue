@@ -41,12 +41,19 @@ onMounted(() => {
   requestAnimationFrame(updateArrows);
 });
 
-const enhanced = computed(() =>
-  (props.sessions || []).map((s) => ({
+// HTML reference shows sessions left-to-right chronologically (oldest first)
+// so the user reads "Semana 01 · Inicio → Semana 06 · Reciente". Composable
+// returns newest-first, so reverse a shallow copy here.
+const enhanced = computed(() => {
+  const list = [...(props.sessions || [])].reverse();
+  const total = list.length;
+  return list.map((s, idx) => ({
     session: s,
     meta: props.metaByDate?.[s.date] || {},
-  }))
-);
+    isLatest: idx === total - 1,
+    isFirst: idx === 0,
+  }));
+});
 </script>
 
 <template>
@@ -73,8 +80,8 @@ const enhanced = computed(() =>
         v-for="(item, idx) in enhanced"
         :key="item.session.date"
         :session="item.session"
-        :week-label="item.meta.weekLabel || (idx === 0 ? 'Reciente' : '')"
-        :review-status="item.meta.reviewStatus || 'pending'"
+        :week-label="item.meta.weekLabel || (item.isFirst ? 'Inicio' : (item.isLatest ? 'Reciente' : ''))"
+        :review-status="item.meta.reviewStatus || (item.isLatest ? 'pending' : 'reviewed')"
         :notes-count="item.meta.notesCount || 0"
         :meta="{ weight: item.meta.weight, waist: item.meta.waist }"
         @select="$emit('select', $event)"
