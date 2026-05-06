@@ -59,6 +59,8 @@
           :active-option="activeOption"
           @set-option="(key) => $emit('update:active-option', key)"
           @open-swap="$emit('open-swap')"
+          @toggle-mark="$emit('toggle-mark')"
+          :checked="checked"
         />
       </div>
     </Transition>
@@ -87,6 +89,7 @@ const props = defineProps({
   applying: { type: Boolean, default: false },
   restoring: { type: Boolean, default: false },
   activeOption: { type: String, default: 'a' },
+  checked: { type: Boolean, default: false },
 });
 
 defineEmits([
@@ -95,6 +98,7 @@ defineEmits([
   'close-swap',
   'apply-swap',
   'undo-swap',
+  'toggle-mark',
   'update:swap-search-query',
   'update:active-option',
 ]);

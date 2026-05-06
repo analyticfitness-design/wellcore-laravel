@@ -103,11 +103,13 @@
         :applying="swap.swapping.value"
         :restoring="swap.undoing.value"
         :active-option="activeOptions[mIdx] || 'a'"
+        :checked="checkins.isMealChecked(mIdx)"
         @toggle="toggleMeal(mIdx)"
         @open-swap="swap.openPanel(mIdx, meal)"
         @close-swap="swap.closePanel()"
         @apply-swap="(r) => onApplySwap(r, meal, mIdx)"
         @undo-swap="onUndoSwap(meal, mIdx)"
+        @toggle-mark="checkins.toggleMeal(mIdx)"
         @update:swap-search-query="(q) => swap.search(q)"
         @update:active-option="(k) => activeOptions[mIdx] = k"
       />
@@ -136,6 +138,7 @@ import DayTimeline from './DayTimeline.vue';
 import MealCard from './MealCard.vue';
 import { useMealSwap } from '@/composables/useMealSwap';
 import { useDayProgress } from '@/composables/useDayProgress';
+import { useMealCheckins } from '@/composables/useMealCheckins';
 
 const props = defineProps({
   nutritionPlan: { type: Object, required: true },
@@ -261,11 +264,12 @@ async function onUndoSwap(meal, mIdx) {
 // ─── Day progress ──────────────────────────────────────────────────────
 const dayProgress = useDayProgress(meals);
 
-// Counter "X de Y" — aproximacion: meals "hechas" = las que ya pasaron
-const doneCount = computed(() => {
-  const cur = dayProgress.currentMealIndex.value;
-  if (cur === -1) return meals.value.length;
-  return Math.max(0, cur);
-});
+// ─── Marcar comidas (localStorage por dia) ─────────────────────────────
+// Cuando LA-02 cree POST /api/v/client/nutrition/meals/:idx/check, se
+// migra a backend manteniendo la API del composable.
+const checkins = useMealCheckins();
+
+// Counter "X de Y" basado en comidas REALMENTE marcadas por el cliente.
+const doneCount = computed(() => checkins.checkedCount.value);
 
 </script>

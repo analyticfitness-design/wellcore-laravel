@@ -96,23 +96,37 @@
       <p class="text-xs leading-relaxed text-wc-text-secondary">{{ meal.notas }}</p>
     </div>
 
-    <!-- Action: Cambiar (wc-accent brand). Marcar removido — no hay endpoint
-         backend para tracking de comidas hechas; agregarlo en iteracion v2.1
-         cuando LA-02 cree POST /api/v/client/nutrition/meals/:idx/check. -->
-    <button
-      type="button"
-      @click="emit('open-swap')"
-      class="inline-flex w-full min-h-[44px] items-center justify-center gap-1.5 rounded-full border border-wc-accent/30 bg-wc-accent/[0.06] px-4 py-2.5 font-display text-[11px] uppercase tracking-[0.12em] text-wc-accent transition hover:border-wc-accent/50 hover:bg-wc-accent/[0.12] active:scale-[0.98]"
-    >
-      <Replace :size="14" :stroke-width="2.5" />
-      Cambiar receta
-    </button>
+    <!-- Actions row: Marcar (toggle local persistido) + Cambiar (swap brand) -->
+    <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+      <button
+        type="button"
+        @click="emit('toggle-mark')"
+        :aria-pressed="checked"
+        :class="[
+          'inline-flex flex-1 min-h-[44px] items-center justify-center gap-1.5 rounded-full border px-4 py-2.5 font-display text-[11px] uppercase tracking-[0.1em] transition active:scale-[0.98]',
+          checked
+            ? 'border-emerald-500/50 bg-emerald-500/[0.14] text-emerald-400 hover:bg-emerald-500/[0.20]'
+            : 'border-emerald-500/30 bg-emerald-500/[0.06] text-emerald-400 hover:border-emerald-500/50 hover:bg-emerald-500/[0.12]'
+        ]"
+      >
+        <Check :size="14" :stroke-width="2.5" />
+        {{ checked ? 'Marcada' : 'Marcar' }}
+      </button>
+      <button
+        type="button"
+        @click="emit('open-swap')"
+        class="inline-flex flex-1 min-h-[44px] items-center justify-center gap-1.5 rounded-full border border-wc-accent/30 bg-wc-accent/[0.06] px-4 py-2.5 font-display text-[11px] uppercase tracking-[0.1em] text-wc-accent transition hover:border-wc-accent/50 hover:bg-wc-accent/[0.12] active:scale-[0.98]"
+      >
+        <Replace :size="14" :stroke-width="2.5" />
+        Cambiar
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
-import { Replace } from 'lucide-vue-next';
+import { Check, Replace } from 'lucide-vue-next';
 import MealItem from './MealItem.vue';
 import { useFoodIcon } from '@/composables/useFoodIcon';
 
@@ -133,9 +147,13 @@ const props = defineProps({
     type: String,
     default: 'a',
   },
+  checked: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const emit = defineEmits(['set-option', 'open-swap']);
+const emit = defineEmits(['set-option', 'open-swap', 'toggle-mark']);
 
 const { foodIcon: getFoodIcon } = useFoodIcon();
 
