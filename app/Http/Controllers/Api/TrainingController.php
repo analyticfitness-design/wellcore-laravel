@@ -338,7 +338,12 @@ class TrainingController extends Controller
         $semana['numero'] = is_numeric($rawNumero) ? (int) $rawNumero : ($sIdx + 1);
 
         // titulo (preferir label de fase sobre genérico "Semana N" — fidelidad V2.1)
+        // Si no hay fase explícita en el JSON, asumir 'acumul' (default razonable
+        // para el primer bloque de un plan — coincide con HTML V2.1).
         $faseRaw = strtolower($this->safeStr($semana['fase'] ?? $semana['phase'] ?? ''));
+        if ($faseRaw === '') {
+            $faseRaw = 'acumul';
+        }
         $titleFromPhase = match ($faseRaw) {
             'acumulacion', 'acumulación', 'acumul' => 'Acumulación',
             'intensificacion', 'intensificación', 'intens' => 'Intensificación',
