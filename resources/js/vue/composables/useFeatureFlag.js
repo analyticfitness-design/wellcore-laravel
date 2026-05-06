@@ -18,6 +18,14 @@ export function useFeatureFlag(flag) {
     if (localOverride === '1') return ref(true);
     if (localOverride === '0') return ref(false);
 
+    // Server-injected flags via window.__WC_FEATURES son la fuente de verdad para
+    // rollouts pct (eligibility ya resuelta server-side con session uid).
+    const serverFlag = (typeof window !== 'undefined' && window.__WC_FEATURES)
+        ? window.__WC_FEATURES[flag]
+        : undefined;
+    if (serverFlag === true) return ref(true);
+    if (serverFlag === false) return ref(false);
+
     const ffStore = useFeatureFlags();
     return computed(() => ffStore.isEnabled(flag));
 }
