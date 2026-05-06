@@ -88,12 +88,6 @@ class TrainingController extends Controller
             }
         }
 
-        // Plan Viewer V2: enrich aditivamente con campos derivados sin tocar el JSON original
-        // del plan. NUNCA reescribe gif_url, sort_order, coach_note, series, reps, rest, RIR.
-        if ($trainingPlan) {
-            $trainingPlan = $this->enrichTrainingPlanV2($trainingPlan, $clientId);
-        }
-
         // Week progression
         $currentWeek = 1;
         $totalWeeks = 1;
@@ -112,6 +106,13 @@ class TrainingController extends Controller
                 $totalDays = $totalWeeks * 7;
                 $progressPct = $totalDays > 0 ? min(100, round(($daysElapsed / $totalDays) * 100, 1)) : 0;
             }
+        }
+
+        // Plan Viewer V2: enrich aditivamente con campos derivados sin tocar el JSON original
+        // del plan. NUNCA reescribe gif_url, sort_order, coach_note, series, reps, rest, RIR.
+        // Se hace DESPUÉS del cálculo de currentWeek para marcar es_actual y es_hoy correctamente.
+        if ($trainingPlan) {
+            $trainingPlan = $this->enrichTrainingPlanV2($trainingPlan, $clientId, $currentWeek);
         }
 
         // Habits (last 30 days)
@@ -231,7 +232,7 @@ class TrainingController extends Controller
      * los campos existentes (gif_url, series, reps, rest, RIR, coach_note,
      * sort_order/numero, etc. quedan IDÉNTICOS al input).
      */
-    private function enrichTrainingPlanV2(array $trainingPlan, int $clientId): array
+    private function enrichTrainingPlanV2(array $trainingPlan, int $clientId, int $currentWeekNumber = 1): array
     {
         // Variation states cargados de una sola vez (evita N+1)
         $variantStates = [];
@@ -251,13 +252,33 @@ class TrainingController extends Controller
         // 2) weekly_schedule: derivado server-side desde semana actual
         $trainingPlan['weekly_schedule'] = $this->deriveWeeklySchedule($trainingPlan);
 
-        // 3) Walk semanas/dias/ejercicios para enriquecer cada nodo
+        // 3) Metadata top-level derivada (volumen total / RIR / freq) para hero V2
+        $trainingPlan = $this->enrichPlanMetadataV2($trainingPlan);
+
+        // 4) Walk semanas/dias/ejercicios para enriquecer cada nodo
+        // dayOfWeekNow: 1=Lunes ... 7=Domingo (consistente con backend Carbon)
+        $dayOfWeekNow = (int) Carbon::now()->isoWeekday();
+
         if (isset($trainingPlan['semanas']) && is_array($trainingPlan['semanas'])) {
             foreach ($trainingPlan['semanas'] as $sIdx => $semana) {
+                $isCurrent = ($sIdx + 1) === $currentWeekNumber;
+
+                // Enriquecer semana
+                $trainingPlan['semanas'][$sIdx] = $this->enrichSemanaV2(
+                    $semana,
+                    $sIdx,
+                    $isCurrent,
+                    $sIdx + 1 < $currentWeekNumber
+                );
+
                 foreach (($semana['dias'] ?? []) as $dIdx => $dia) {
-                    // cooldown: nombre canónico V2
-                    $cooldown = $dia['cooldown'] ?? $dia['vuelta_calma'] ?? $dia['vuelta_a_la_calma'] ?? null;
-                    $trainingPlan['semanas'][$sIdx]['dias'][$dIdx]['cooldown'] = $cooldown ? (string) $cooldown : null;
+                    // Enriquecer día (incluye numero, titulo, grupos, es_hoy, subline)
+                    $trainingPlan['semanas'][$sIdx]['dias'][$dIdx] = $this->enrichDiaV2(
+                        $dia,
+                        $dIdx,
+                        $isCurrent,
+                        $dayOfWeekNow
+                    );
 
                     foreach (($dia['ejercicios'] ?? []) as $eIdx => $ej) {
                         $trainingPlan['semanas'][$sIdx]['dias'][$dIdx]['ejercicios'][$eIdx]
@@ -267,8 +288,7 @@ class TrainingController extends Controller
             }
         } elseif (isset($trainingPlan['dias']) && is_array($trainingPlan['dias'])) {
             foreach ($trainingPlan['dias'] as $dIdx => $dia) {
-                $cooldown = $dia['cooldown'] ?? $dia['vuelta_calma'] ?? $dia['vuelta_a_la_calma'] ?? null;
-                $trainingPlan['dias'][$dIdx]['cooldown'] = $cooldown ? (string) $cooldown : null;
+                $trainingPlan['dias'][$dIdx] = $this->enrichDiaV2($dia, $dIdx, true, $dayOfWeekNow);
 
                 foreach (($dia['ejercicios'] ?? []) as $eIdx => $ej) {
                     $trainingPlan['dias'][$dIdx]['ejercicios'][$eIdx]
@@ -278,6 +298,192 @@ class TrainingController extends Controller
         }
 
         return $trainingPlan;
+    }
+
+    /**
+     * Enriquece la semana con campos V2 derivados (numero, titulo, fase, es_actual, completada,
+     * total_minutos, total_series). NO modifica los días — eso lo hace enrichDiaV2.
+     */
+    private function enrichSemanaV2(array $semana, int $sIdx, bool $isCurrent, bool $isCompleted): array
+    {
+        // numero (1-based)
+        $semana['numero'] = (int) ($semana['numero'] ?? $semana['n'] ?? $sIdx + 1);
+
+        // titulo (preferir JSON, fallback al label de la fase)
+        $faseRaw = strtolower((string) ($semana['fase'] ?? $semana['phase'] ?? ''));
+        $titleFromPhase = match ($faseRaw) {
+            'acumulacion', 'acumulación', 'acumul' => 'Acumulación',
+            'intensificacion', 'intensificación', 'intens' => 'Intensificación',
+            'pico', 'peak' => 'Pico',
+            'deload', 'descarga' => 'Descarga',
+            default => 'Semana ' . $semana['numero'],
+        };
+        $semana['titulo'] = (string) ($semana['titulo'] ?? $semana['nombre'] ?? $titleFromPhase);
+
+        // fase normalizada
+        $semana['fase'] = $faseRaw !== '' ? $faseRaw : 'acumul';
+
+        // es_actual / completada
+        $semana['es_actual'] = $isCurrent;
+        $semana['completada'] = $isCompleted;
+
+        // total_minutos / total_series derivados desde dias[]
+        $totalMin = 0;
+        $totalSeries = 0;
+        $totalEj = 0;
+        foreach (($semana['dias'] ?? []) as $dia) {
+            $totalEj += count($dia['ejercicios'] ?? []);
+            $totalMin += (int) ($dia['total_minutos'] ?? $dia['minutos_estimados'] ?? 0);
+            foreach (($dia['ejercicios'] ?? []) as $ej) {
+                $totalSeries += (int) ($ej['series'] ?? 0);
+            }
+        }
+        $semana['total_minutos'] = $totalMin > 0 ? $totalMin : null;
+        $semana['total_series'] = $totalSeries > 0 ? $totalSeries : null;
+
+        return $semana;
+    }
+
+    /**
+     * Enriquece un día con campos V2 derivados (numero, titulo, grupos, es_hoy, subline).
+     * Defensive: respeta campos existentes sin sobreescribir.
+     */
+    private function enrichDiaV2(array $dia, int $dIdx, bool $semanaIsCurrent, int $dayOfWeekNow): array
+    {
+        // numero (1-based)
+        $dia['numero'] = (int) ($dia['numero'] ?? $dia['dia'] ?? $dIdx + 1);
+
+        // titulo (preferir JSON, fallback a nombre)
+        $dia['titulo'] = (string) ($dia['titulo'] ?? $dia['nombre'] ?? '');
+
+        // grupos: si no vienen, parsear desde título (separador · o + o ,)
+        if (empty($dia['grupos']) && ! empty($dia['titulo'])) {
+            $parts = preg_split('/[·\+,]/u', $dia['titulo']);
+            $grupos = [];
+            foreach ((array) $parts as $p) {
+                $clean = trim((string) $p);
+                if ($clean === '') {
+                    continue;
+                }
+                // Tomar la PRIMERA palabra significativa (eg "Pecho Inserciones" -> "Pecho")
+                $first = explode(' ', $clean)[0] ?? '';
+                $first = trim($first);
+                if ($first !== '' && ! in_array(mb_strtolower($first), ['—', '-', 'al', 'el', 'la', 'de', 'del'], true)) {
+                    $grupos[] = $first;
+                }
+            }
+            $dia['grupos'] = array_slice(array_values(array_unique($grupos)), 0, 3);
+        }
+        if (! is_array($dia['grupos'] ?? null)) {
+            $dia['grupos'] = [];
+        }
+
+        // total_minutos (defensivo)
+        if (! isset($dia['total_minutos']) || ! is_numeric($dia['total_minutos'])) {
+            $estimate = count($dia['ejercicios'] ?? []) * 6; // ~6 min/ejercicio promedio
+            $dia['total_minutos'] = $estimate > 0 ? $estimate : null;
+        }
+
+        // rir_promedio (defensivo)
+        if (empty($dia['rir_promedio']) && ! empty($dia['ejercicios'])) {
+            $rirs = [];
+            foreach ($dia['ejercicios'] as $ej) {
+                $r = trim((string) ($ej['rir'] ?? $ej['rir_semana'] ?? ''));
+                if ($r !== '') {
+                    $rirs[] = $r;
+                }
+            }
+            // Tomar el RIR más común (mode) o el primero
+            if (! empty($rirs)) {
+                $counts = array_count_values($rirs);
+                arsort($counts);
+                $dia['rir_promedio'] = (string) array_key_first($counts);
+            }
+        }
+
+        // es_hoy: true si la semana es actual Y el numero del día == day-of-week actual
+        $dia['es_hoy'] = $semanaIsCurrent && ((int) $dia['numero'] === $dayOfWeekNow);
+
+        // cooldown canonicalizado
+        $cooldown = $dia['cooldown'] ?? $dia['vuelta_calma'] ?? $dia['vuelta_a_la_calma'] ?? null;
+        $dia['cooldown'] = $cooldown ? (string) $cooldown : null;
+
+        // completado: respeta JSON (raramente populated, pero check defensivo)
+        $dia['completado'] = (bool) ($dia['completado'] ?? false);
+
+        return $dia;
+    }
+
+    /**
+     * Deriva metadata top-level del plan (volumen total semanal, RIR objetivo, freq, etc.)
+     * desde las semanas — solo si no viene en el JSON. Sin modificar campos existentes.
+     */
+    private function enrichPlanMetadataV2(array $tp): array
+    {
+        $semanas = $tp['semanas'] ?? [];
+        if (empty($semanas) || ! is_array($semanas)) {
+            return $tp;
+        }
+
+        // Tomar la primera semana NO deload como referencia para los stats top-level
+        $refSemana = null;
+        foreach ($semanas as $s) {
+            $f = strtolower((string) ($s['fase'] ?? ''));
+            if (! in_array($f, ['deload', 'descarga'], true)) {
+                $refSemana = $s;
+                break;
+            }
+        }
+        if (! $refSemana) {
+            $refSemana = $semanas[0];
+        }
+
+        // Total series semanales (suma series de todos los ejercicios de la semana de referencia)
+        if (empty($tp['total_series_semana'])) {
+            $total = 0;
+            foreach (($refSemana['dias'] ?? []) as $dia) {
+                foreach (($dia['ejercicios'] ?? []) as $ej) {
+                    $total += (int) ($ej['series'] ?? 0);
+                }
+            }
+            if ($total > 0) {
+                $tp['total_series_semana'] = $total;
+            }
+        }
+
+        // Días de entrenamiento por semana
+        if (empty($tp['dias_semana'])) {
+            $tp['dias_semana'] = count($refSemana['dias'] ?? []) ?: null;
+        }
+
+        // RIR objetivo (más común en la semana de referencia)
+        if (empty($tp['rir_objetivo'])) {
+            $rirs = [];
+            foreach (($refSemana['dias'] ?? []) as $dia) {
+                foreach (($dia['ejercicios'] ?? []) as $ej) {
+                    $r = trim((string) ($ej['rir'] ?? $ej['rir_semana'] ?? ''));
+                    if ($r !== '') {
+                        $rirs[] = $r;
+                    }
+                }
+            }
+            if (! empty($rirs)) {
+                $counts = array_count_values($rirs);
+                arsort($counts);
+                $tp['rir_objetivo'] = (string) array_key_first($counts);
+            }
+        }
+
+        // Volumen label (alto / medio / bajo derivado de total_series)
+        if (empty($tp['volumen_label']) && ! empty($tp['total_series_semana'])) {
+            $tp['volumen_label'] = match (true) {
+                $tp['total_series_semana'] >= 60 => 'Vol. alto',
+                $tp['total_series_semana'] >= 35 => 'Vol. medio',
+                default => 'Vol. bajo',
+            };
+        }
+
+        return $tp;
     }
 
     /**
@@ -305,6 +511,31 @@ class TrainingController extends Controller
         $ej['is_using_variant'] = $exId > 0
             ? (bool) ($variantStates[$exId] ?? false)
             : false;
+
+        // Aliases V2 — algunos planes legacy traen los campos en español; el frontend V2
+        // los lee con nombres canónicos (rest, rir, coach_note). Solo se AGREGAN — los
+        // originales (descanso, rir_semana, notas) quedan intactos por compatibilidad.
+        if (! isset($ej['rest']) && isset($ej['descanso'])) {
+            $ej['rest'] = (string) $ej['descanso'];
+        }
+        if (! isset($ej['rir'])) {
+            $ej['rir'] = (string) ($ej['rir_semana'] ?? '');
+        }
+        if (! isset($ej['coach_note'])) {
+            $ej['coach_note'] = (string) ($ej['notas'] ?? $ej['nota_coach'] ?? '');
+        }
+        // grupo derivado del primer grupo del campo `musculos_prim` o vacío
+        if (! isset($ej['grupo'])) {
+            $primer = '';
+            $musc = $ej['musculos_prim'] ?? null;
+            if (is_array($musc) && ! empty($musc)) {
+                $primer = (string) $musc[0];
+            } elseif (is_string($musc)) {
+                $parts = preg_split('/[,;·\+]/u', $musc);
+                $primer = trim((string) ($parts[0] ?? ''));
+            }
+            $ej['grupo'] = strtolower($primer);
+        }
 
         // Cardio fields (solo populated si tipo === 'cardio')
         if ($ej['tipo'] === 'cardio') {

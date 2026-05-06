@@ -151,7 +151,7 @@
                 </div>
 
                 <button
-                  v-if="isDayToday(semana, dia, sIdx, dIdx)"
+                  v-if="shouldShowCtaToday(semana, dia)"
                   type="button"
                   class="cta-today"
                   @click="onTrainNow(semana, dia)"
@@ -160,8 +160,8 @@
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.25 5.65c0-.86.92-1.4 1.67-.99l11.54 6.35a1.13 1.13 0 0 1 0 1.97L6.92 19.34a1.13 1.13 0 0 1-1.67-.99V5.65Z"/></svg>
                   </span>
                   <span class="tx">
-                    <span class="lab">Sesión de hoy</span>
-                    <span class="ttl">Entrenar ahora</span>
+                    <span class="lab">{{ dia?.es_hoy ? 'Sesión de hoy' : 'Próxima sesión' }}</span>
+                    <span class="ttl">{{ dia?.es_hoy ? 'Entrenar ahora' : 'Empezar' }}</span>
                   </span>
                   <svg class="arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
                 </button>
@@ -395,6 +395,12 @@ function toggleDay(sIdx, dIdx) {
 }
 function isDayToday(semana, dia) {
   return !!(dia?.es_hoy);
+}
+
+// CTA Entrenar ahora se muestra en cualquier día EXPANDIDO (no solo es_hoy).
+// Con label diferente: "Entrenar ahora" si es_hoy, "Empezar" si no.
+function shouldShowCtaToday(semana, dia) {
+  return !!(dia?.ejercicios?.length);
 }
 function dayStateClass(semana, dia) {
   if (dia?.es_hoy) return 'today';
