@@ -218,7 +218,7 @@ export const useAuthStore = defineStore('auth', () => {
         // Capture current identity BEFORE API call — root snapshot only written after success (fix Bug 1)
         const capturedToken    = token.value || localStorage.getItem('wc_token') || '';
         const capturedUserId   = String(userId.value || '');
-        const capturedUserName = localStorage.getItem('wc_user_name') || '';
+        const capturedUserName = localStorage.getItem('wc_user_name') || 'Admin';
 
         const url = type === 'admin'
             ? `/api/v/admin/coaches/${targetId}/impersonate`

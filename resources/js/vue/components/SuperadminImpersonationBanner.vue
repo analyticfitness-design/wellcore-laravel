@@ -110,7 +110,7 @@ onUnmounted(() => {
 
 <template>
     <div
-        v-if="chain.length > 0 && rootUserName"
+        v-if="chain.length > 0"
         class="sticky top-0 left-0 right-0 z-[100] flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-white shadow-lg transition-colors sm:justify-center sm:gap-3 sm:px-4 sm:py-2 sm:text-sm"
         :class="isExpiringSoon ? 'bg-amber-500 animate-pulse' : 'bg-wc-accent'"
         :title="'Mantén presionado 1.5s para salida de emergencia'"
