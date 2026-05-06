@@ -5,12 +5,12 @@
     tabindex="0"
     @keydown.enter="$emit('toggle')"
     @keydown.space.prevent="$emit('toggle')"
-    class="grid w-full cursor-pointer grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3.5 text-left transition hover:bg-wc-bg-tertiary/40"
+    class="grid w-full cursor-pointer grid-cols-[auto_1fr_auto] items-center gap-2.5 px-3 py-3 text-left transition hover:bg-wc-bg-tertiary/40 sm:gap-3 sm:px-4 sm:py-3.5"
     :class="{ 'border-b border-wc-border': expanded }"
   >
     <!-- Col 1: index stack vertical con accent color por tipo de meal -->
     <div
-      class="flex w-[52px] shrink-0 flex-col items-center gap-0.5 rounded-lg border px-1.5 py-1.5 transition-colors"
+      class="flex w-[46px] shrink-0 flex-col items-center gap-0.5 rounded-lg border px-1 py-1 transition-colors sm:w-[52px] sm:px-1.5 sm:py-1.5"
       :class="indexBadgeClass"
     >
       <span class="font-data text-[10px] uppercase tracking-wider tabular-nums" :class="indexNumClass">
@@ -55,9 +55,9 @@
     </div>
 
     <!-- Col 3: kcal big + chevron -->
-    <div class="flex shrink-0 items-center gap-2.5">
+    <div class="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
       <div v-if="kcalValue" class="flex flex-col items-end leading-none">
-        <span class="font-display text-xl font-medium tabular-nums text-wc-text">{{ kcalValue }}</span>
+        <span class="font-display text-lg font-medium tabular-nums text-wc-text sm:text-xl">{{ kcalValue }}</span>
         <span class="mt-0.5 font-data text-[9px] uppercase tracking-[0.1em] text-wc-text-tertiary">kcal</span>
       </div>
       <ChevronDown

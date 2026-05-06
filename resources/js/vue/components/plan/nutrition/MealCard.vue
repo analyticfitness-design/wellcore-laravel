@@ -58,7 +58,6 @@
           :swapped-recipe="swappedRecipe"
           :active-option="activeOption"
           @set-option="(key) => $emit('update:active-option', key)"
-          @mark-meal="$emit('mark-meal')"
           @open-swap="$emit('open-swap')"
         />
       </div>
@@ -96,7 +95,6 @@ defineEmits([
   'close-swap',
   'apply-swap',
   'undo-swap',
-  'mark-meal',
   'update:swap-search-query',
   'update:active-option',
 ]);

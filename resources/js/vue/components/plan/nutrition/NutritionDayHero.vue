@@ -1,19 +1,20 @@
 <template>
   <div
     v-if="totalKcal > 0"
-    class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5 sm:p-6 overflow-hidden"
+    class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 sm:p-6"
   >
-    <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-4 sm:gap-6 items-start">
+    <div class="grid grid-cols-1 items-start gap-4 sm:grid-cols-[1fr_auto] sm:gap-6">
       <!-- Lado izquierdo: kcal hero (matching m-day-hero del HTML target v2) -->
       <div class="min-w-0">
-        <p class="text-xs uppercase tracking-widest text-wc-text-secondary mb-1">
+        <p class="mb-1 text-[10px] uppercase tracking-[0.2em] text-wc-text-secondary sm:text-xs sm:tracking-widest">
           Calorías del día
         </p>
-        <p
-          class="font-display text-[64px] sm:text-[96px] font-bold leading-none text-wc-text tabular-nums"
-        >
-          {{ totalKcal.toLocaleString('es-CO') }}<span class="ml-2 align-baseline font-sans text-sm font-normal text-wc-text-tertiary tracking-normal">kcal · objetivo</span>
-        </p>
+        <div class="flex flex-wrap items-baseline gap-x-2">
+          <span class="font-display text-[56px] font-bold leading-none tabular-nums text-wc-text sm:text-[96px]">
+            {{ totalKcal.toLocaleString('es-CO') }}
+          </span>
+          <span class="font-sans text-xs font-normal text-wc-text-tertiary sm:text-sm">kcal · objetivo</span>
+        </div>
       </div>
 
       <!-- Lado derecho: objetivo con tag inline + descripción -->

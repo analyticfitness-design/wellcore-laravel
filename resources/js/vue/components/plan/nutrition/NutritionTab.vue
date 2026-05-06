@@ -58,11 +58,11 @@
 
     <!-- 7. Plan de comidas — formato completo -->
     <div v-if="hasMeals" class="space-y-3">
-      <div class="flex items-baseline justify-between gap-3 px-0.5 pb-2 border-b border-wc-border">
-        <h3 class="font-display text-base font-medium uppercase tracking-wider text-wc-text">
+      <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 px-0.5 pb-2 border-b border-wc-border">
+        <h3 class="font-display text-sm font-medium uppercase tracking-wider text-wc-text sm:text-base">
           Plan del día
         </h3>
-        <p class="font-data text-[11px] text-wc-text-tertiary tabular-nums">
+        <p class="font-data text-[10px] text-wc-text-tertiary tabular-nums sm:text-[11px]">
           <strong class="text-wc-text">{{ doneCount }}</strong>
           de
           <strong class="text-wc-text">{{ meals.length }}</strong>
@@ -107,7 +107,6 @@
         @close-swap="swap.closePanel()"
         @apply-swap="(r) => onApplySwap(r, meal, mIdx)"
         @undo-swap="onUndoSwap(meal, mIdx)"
-        @mark-meal="onMarkMeal(meal, mIdx)"
         @update:swap-search-query="(q) => swap.search(q)"
         @update:active-option="(k) => activeOptions[mIdx] = k"
       />
@@ -149,7 +148,7 @@ const props = defineProps({
   macrosToday: { type: Object, default: null },
 });
 
-const emit = defineEmits(['swap-applied', 'open-ai-estimator', 'note-acknowledged', 'mark-meal-pending']);
+const emit = defineEmits(['swap-applied', 'open-ai-estimator', 'note-acknowledged']);
 
 // ─── Derived data ──────────────────────────────────────────────────────
 const meals = computed(() =>
@@ -268,9 +267,4 @@ const doneCount = computed(() => {
   return Math.max(0, cur);
 });
 
-// Mark meal — funcionalidad nueva (no hay endpoint backend aun)
-// Por ahora notifica al padre que puede mostrar toast "Próximamente" o no-op
-function onMarkMeal(meal, mIdx) {
-  emit('mark-meal-pending', { mealIdx: mIdx, meal });
-}
 </script>
