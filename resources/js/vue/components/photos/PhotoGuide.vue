@@ -1,0 +1,111 @@
+<script setup>
+/**
+ * PhotoGuide — collapsible guide section combining AnglesGrid + TipsList.
+ * Persists open/closed state in localStorage('wc_photo_guide').
+ *
+ * Props:
+ *   defaultOpen: bool   first-render fallback when no localStorage value
+ *   storageKey:  string override for the LS key (rare)
+ *
+ * Emits:
+ *   toggle (newState: boolean)
+ */
+import { ref, watch } from 'vue';
+import AnglesGrid from './AnglesGrid.vue';
+import TipsList from './TipsList.vue';
+
+const props = defineProps({
+  defaultOpen: { type: Boolean, default: true },
+  storageKey: { type: String, default: 'wc_photo_guide' },
+});
+const emit = defineEmits(['toggle']);
+
+function _initial() {
+  try {
+    const stored = localStorage.getItem(props.storageKey);
+    if (stored === 'open') return true;
+    if (stored === 'closed') return false;
+  } catch { /* SSR / private mode */ }
+  return props.defaultOpen;
+}
+
+const open = ref(_initial());
+
+function toggle() {
+  open.value = !open.value;
+  try { localStorage.setItem(props.storageKey, open.value ? 'open' : 'closed'); } catch { /* noop */ }
+  emit('toggle', open.value);
+}
+
+watch(() => props.storageKey, () => { open.value = _initial(); });
+</script>
+
+<template>
+  <section
+    class="overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary"
+    aria-labelledby="photo-guide-title"
+  >
+    <button
+      type="button"
+      class="flex min-h-[56px] w-full items-center justify-between gap-3 px-4 py-3.5 text-left transition-colors hover:bg-wc-bg-secondary/50"
+      :aria-expanded="open"
+      aria-controls="photo-guide-body"
+      @click="toggle"
+    >
+      <div class="flex items-center gap-3">
+        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-accent">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-4 w-4" aria-hidden="true">
+            <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+          </svg>
+        </div>
+        <div>
+          <h2 id="photo-guide-title" class="font-display text-base font-semibold uppercase tracking-wider text-wc-text">
+            Guía para tus fotos
+          </h2>
+          <p class="text-xs text-wc-text-tertiary">Cómo tomarte las fotos para un progreso preciso</p>
+        </div>
+      </div>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        class="h-5 w-5 shrink-0 text-wc-text-tertiary transition-transform duration-200"
+        :class="open ? 'rotate-180' : ''"
+        aria-hidden="true"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+      </svg>
+    </button>
+
+    <Transition name="guide">
+      <div
+        v-show="open"
+        id="photo-guide-body"
+        class="border-t border-wc-border px-4 pb-5 pt-4"
+      >
+        <p class="mb-3 font-mono text-[10px] font-semibold uppercase tracking-widest text-wc-accent">
+          Ángulos requeridos
+        </p>
+        <AnglesGrid />
+
+        <p class="mb-3 mt-5 font-mono text-[10px] font-semibold uppercase tracking-widest text-wc-accent">
+          Tips para una foto precisa
+        </p>
+        <TipsList />
+      </div>
+    </Transition>
+  </section>
+</template>
+
+<style scoped>
+.guide-enter-active, .guide-leave-active {
+  transition: max-height 0.3s ease, opacity 0.25s ease;
+  overflow: hidden;
+  max-height: 1200px;
+}
+.guide-enter-from, .guide-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+</style>

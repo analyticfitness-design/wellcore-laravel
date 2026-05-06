@@ -42,6 +42,8 @@ const routes = [
     { path: '/client/referrals', name: 'client-referrals', component: () => import('../pages/Client/ReferralProgram.vue'), meta: { auth: true, title: 'Referidos — WellCore' } },
     { path: '/client/supplements', name: 'client-supplements', component: () => import('../pages/Client/SupplementTracker.vue'), meta: { auth: true, title: 'Suplementacion — WellCore' } },
     { path: '/client/photos', name: 'client-photos', component: () => import('../pages/Client/ProgressPhotos.vue'), meta: { auth: true, title: 'Fotos — WellCore' } },
+    // TODO remove en Fase 6 — dev page visual review componentes photos/*
+    { path: '/dev/photos-components', name: 'dev-photos-components', component: () => import('../pages/Client/_PhotosComponents.vue'), meta: { title: 'Photos Components — Dev' } },
     { path: '/client/records', name: 'client-records', component: () => import('../pages/Client/PersonalRecords.vue'), meta: { auth: true, title: 'Personal Records — WellCore' } },
     { path: '/client/logros', name: 'client-logros', component: () => import('../pages/Client/Logros.vue'), meta: { auth: true, title: 'Logros — WellCore' } },
     { path: '/client/ai-nutrition', name: 'client-ai-nutrition', component: () => import('../pages/Client/AINutrition.vue'), meta: { auth: true, title: 'Analisis IA — WellCore' } },
