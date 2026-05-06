@@ -26,6 +26,26 @@
 
     <!-- OK: content completo -->
     <template v-else>
+      <PlanHeroV2
+        :plan-type="clientPlanType"
+        :current-week="currentWeek"
+        :total-weeks="effectiveTotalWeeks"
+        :dias-semana="diasSemanaMeta"
+        :volumen-label="trainingPlan?.volumen_label || ''"
+        :total-series-semana="trainingPlan?.total_series_semana || null"
+        :rir-objetivo="trainingPlan?.rir_objetivo || ''"
+        :semanas="semanas"
+      />
+
+      <CoachQuoteV2
+        v-if="coachMessage"
+        :coach-name="coachDisplayName"
+        :message="coachMessage"
+        :total-weeks="effectiveTotalWeeks"
+        :time-ago="''"
+        :can-reply="false"
+      />
+
       <PlanObjetivoBanner
         v-if="objetivoBloque"
         :objetivo="objetivoBloque"
@@ -199,6 +219,8 @@ import PlanSkeleton from './parts/PlanSkeleton.vue';
 import PlanErrorState from './parts/PlanErrorState.vue';
 import PlanEmptyState from './parts/PlanEmptyState.vue';
 import PlanLockOverlay from './parts/PlanLockOverlay.vue';
+import PlanHeroV2 from './parts/PlanHeroV2.vue';
+import CoachQuoteV2 from './parts/CoachQuoteV2.vue';
 import PlanObjetivoBanner from './parts/PlanObjetivoBanner.vue';
 import WeeklyScheduleOverview from './parts/WeeklyScheduleOverview.vue';
 import BlockDivider from './parts/BlockDivider.vue';
@@ -262,6 +284,27 @@ const coachShortName = computed(() => {
   const n = props.coach?.name || props.coach?.nombre || '';
   if (!n) return '';
   return n.split(/\s+/)[0];
+});
+
+const coachDisplayName = computed(() => {
+  return props.coach?.name || props.coach?.nombre || 'Tu coach';
+});
+
+const coachMessage = computed(() => {
+  // El mensaje del coach se toma de notas_coach del plan (si existe).
+  // El backend lo expone en trainingPlan.notas_coach. Si no hay, no se renderiza.
+  const m = props.trainingPlan?.notas_coach
+    || props.trainingPlan?.coach_note
+    || props.trainingPlan?.notas
+    || '';
+  return typeof m === 'string' ? m.trim() : '';
+});
+
+const diasSemanaMeta = computed(() => {
+  const explicit = props.trainingPlan?.dias_semana;
+  if (typeof explicit === 'number' && explicit > 0) return explicit;
+  const sem = semanas.value.find((s) => s?.es_actual) || semanas.value[0];
+  return sem?.dias?.length || null;
 });
 
 const errorMessage = computed(() => {
