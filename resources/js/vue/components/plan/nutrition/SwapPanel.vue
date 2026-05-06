@@ -1,46 +1,60 @@
 <template>
-  <div class="border-t border-wc-border bg-wc-bg-secondary/30">
-    <div class="px-5 py-4">
-      <!-- Header -->
-      <div class="flex items-start justify-between gap-3">
-        <div class="min-w-0">
-          <p class="font-display text-[10px] tracking-[0.2em] text-wc-accent/80">ALTERNATIVAS</p>
-          <p class="mt-1 truncate text-xs text-wc-text-secondary">
-            Para reemplazar: <span class="text-wc-text">{{ mealName }}</span>
-          </p>
-          <p class="mt-1.5 font-data text-[10px] tabular-nums tracking-wider text-wc-text-tertiary">
-            Macros actuales:
-            <span class="text-wc-text-secondary">{{ mealMacros.cal }}</span> KCAL
-            <span class="mx-1 text-wc-text-tertiary/60">·</span>{{ mealMacros.protein }}P
-            <span class="mx-1 text-wc-text-tertiary/60">·</span>{{ mealMacros.carbs }}C
-            <span class="mx-1 text-wc-text-tertiary/60">·</span>{{ mealMacros.fat }}G
-          </p>
-        </div>
+  <div class="border-t border-wc-border bg-wc-bg/40">
+    <div class="px-4 py-4">
+      <!-- Header simplificado -->
+      <div class="mb-3 flex items-center justify-between gap-3">
+        <p class="font-display text-xs font-medium uppercase tracking-[0.1em] text-wc-text">
+          Cambiar por una alternativa
+        </p>
         <button
           type="button"
           @click="$emit('close')"
-          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-wc-text-tertiary transition-colors hover:text-wc-text-secondary hover:bg-wc-bg-secondary/50 min-h-[44px] min-w-[44px]"
+          class="inline-flex min-h-[36px] items-center gap-1 font-data text-[11px] text-wc-text-tertiary transition hover:text-wc-text"
           aria-label="Cerrar panel de alternativas"
         >
-          <X :size="14" :stroke-width="2" />
+          Cancelar
+          <X :size="12" :stroke-width="2.5" />
         </button>
       </div>
 
-      <!-- Search -->
-      <div class="relative mt-4">
-        <Search :size="13" :stroke-width="2" class="absolute left-3 top-1/2 -translate-y-1/2 text-wc-text-tertiary" />
+      <!-- Search + target macros -->
+      <div class="mb-3 flex items-center gap-2 rounded-full border border-wc-border bg-wc-bg-tertiary px-3 py-2">
+        <Search :size="14" :stroke-width="2" class="shrink-0 text-wc-text-tertiary" />
         <input
           :value="searchQuery"
           @input="$emit('update:searchQuery', $event.target.value)"
           type="text"
-          placeholder="Buscar receta"
-          class="w-full rounded-xl border border-wc-border bg-wc-bg py-2 pl-9 pr-3 text-sm text-wc-text placeholder:text-wc-text-tertiary transition-colors focus:border-wc-accent/40 focus:outline-none min-h-[44px]"
+          placeholder="Buscar receta — atún, pollo, queso, banano..."
+          class="min-w-0 flex-1 bg-transparent text-sm text-wc-text placeholder:text-wc-text-tertiary focus:outline-none"
           aria-label="Buscar receta alternativa"
         />
+        <span
+          v-if="mealMacros && (mealMacros.protein || mealMacros.carbs || mealMacros.fat)"
+          class="hidden shrink-0 font-data text-[10px] tabular-nums text-wc-text-tertiary sm:flex items-center gap-1.5"
+        >
+          <span class="text-red-400">P {{ mealMacros.protein }}</span>
+          <span class="text-wc-text-tertiary/50">·</span>
+          <span class="text-blue-400">C {{ mealMacros.carbs }}</span>
+          <span class="text-wc-text-tertiary/50">·</span>
+          <span class="text-amber-400">G {{ mealMacros.fat }}</span>
+        </span>
       </div>
 
+      <!-- Mobile target macros (separate row) -->
+      <p
+        v-if="mealMacros && (mealMacros.protein || mealMacros.carbs || mealMacros.fat)"
+        class="mb-2 flex items-center gap-2 px-1 font-data text-[10px] tabular-nums text-wc-text-tertiary sm:hidden"
+      >
+        <span>Objetivo:</span>
+        <span class="text-red-400">P {{ mealMacros.protein }}</span>
+        <span class="text-wc-text-tertiary/50">·</span>
+        <span class="text-blue-400">C {{ mealMacros.carbs }}</span>
+        <span class="text-wc-text-tertiary/50">·</span>
+        <span class="text-amber-400">G {{ mealMacros.fat }}</span>
+      </p>
+
       <!-- Candidates list -->
-      <div class="mt-3 max-h-80 space-y-1 overflow-y-auto pr-1">
+      <div class="max-h-80 space-y-1.5 overflow-y-auto pr-1">
         <SwapRow
           v-for="({ recipe, score }) in candidates"
           :key="recipe.id"

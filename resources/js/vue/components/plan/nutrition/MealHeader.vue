@@ -5,63 +5,61 @@
     tabindex="0"
     @keydown.enter="$emit('toggle')"
     @keydown.space.prevent="$emit('toggle')"
-    class="flex w-full cursor-pointer items-center gap-3 p-4 text-left transition hover:bg-wc-bg-tertiary"
+    class="grid w-full cursor-pointer grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3.5 text-left transition hover:bg-wc-bg-tertiary/40"
+    :class="{ 'border-b border-wc-border': expanded }"
   >
-    <!-- Colored number badge -->
-    <div
-      class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-      :class="badgeColorClass"
-    >
-      <span class="font-data text-sm font-bold">{{ meal.numero ?? (mealIdx + 1) }}</span>
-    </div>
-
-    <!-- Name + hora -->
-    <div class="min-w-0 flex-1">
-      <p class="truncate font-display text-sm tracking-wide text-wc-text">
-        {{ (meal.nombre || meal.name || ('Comida ' + (mealIdx + 1))).toUpperCase() }}
-      </p>
-      <p v-if="meal.hora || meal.time" class="text-sm text-wc-text-tertiary">
-        {{ meal.hora || meal.time }}
-      </p>
-    </div>
-
-    <!-- Macro chips desktop only -->
-    <div class="hidden items-center gap-1.5 sm:flex">
-      <span
-        v-if="proteinG > 0"
-        class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-        style="background:rgba(220,38,38,0.12); color:#F87171;"
-      >P {{ proteinG }}g</span>
-      <span
-        v-if="carbsG > 0"
-        class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-        style="background:rgba(59,130,246,0.12); color:#60A5FA;"
-      >C {{ carbsG }}g</span>
-      <span
-        v-if="fatG > 0"
-        class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-        style="background:rgba(245,158,11,0.12); color:#FBBF24;"
-      >G {{ fatG }}g</span>
-    </div>
-
-    <!-- Swap CTA -->
-    <button
-      type="button"
-      @click.stop="$emit('open-swap')"
-      :title="swapped ? 'Cambiar por otra receta' : 'Cambiar por receta'"
-      :class="{ 'text-wc-accent bg-wc-accent/10': swapPanelOpen }"
-      class="wc-swap-ghost group/swap ml-1 sm:ml-2 inline-flex shrink-0 items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-secondary/50 px-2 py-1.5 sm:px-2.5 text-wc-text-secondary transition-all duration-300 ease-out hover:bg-wc-bg-secondary hover:text-wc-accent hover:border-wc-accent/30 active:scale-95 min-h-[36px]"
-      aria-label="Cambiar receta"
-    >
-      <Replace :size="14" :stroke-width="2.5" class="shrink-0 transition-transform duration-300 group-hover/swap:rotate-180" />
-      <span class="hidden font-display text-[10px] tracking-[0.2em] sm:inline">CAMBIAR</span>
-    </button>
-
-    <!-- kcal + chevron -->
-    <div class="ml-2 flex shrink-0 items-center gap-3">
-      <span v-if="kcalValue" class="font-data text-sm font-bold tabular-nums text-wc-text">
-        {{ kcalValue }}<span class="text-xs font-normal text-wc-text-tertiary"> kcal</span>
+    <!-- Col 1: index stack vertical (NN + HH:MM) -->
+    <div class="flex w-[44px] shrink-0 flex-col items-center gap-0.5">
+      <span class="font-data text-[10px] uppercase tracking-wider text-wc-text-tertiary tabular-nums">
+        {{ formattedIndex }}
       </span>
+      <span
+        class="font-data text-[11px] font-semibold tabular-nums"
+        :class="isCurrent ? 'text-wc-accent' : 'text-wc-text'"
+      >
+        {{ meal.hora || meal.time || '--:--' }}
+      </span>
+    </div>
+
+    <!-- Col 2: name + subtitle + macros inline -->
+    <div class="min-w-0">
+      <p class="truncate font-display text-sm font-medium uppercase tracking-wide text-wc-text leading-tight">
+        {{ (meal.nombre || meal.name || ('Comida ' + (mealIdx + 1))) }}
+      </p>
+      <p
+        v-if="subtitle"
+        class="mt-0.5 truncate text-[11px] text-wc-text-tertiary"
+      >
+        {{ subtitle }}
+      </p>
+      <p
+        v-if="proteinG > 0 || carbsG > 0 || fatG > 0"
+        class="mt-1 flex items-center gap-2.5 font-data text-[11px] tabular-nums"
+      >
+        <span v-if="proteinG > 0" class="inline-flex items-center gap-1">
+          <span class="h-1 w-1 rounded-full bg-red-400"></span>
+          <span class="text-wc-text-secondary">{{ proteinG }}<span class="ml-0.5 text-[9px] text-wc-text-tertiary">g</span></span>
+          <span class="text-wc-text-tertiary">P</span>
+        </span>
+        <span v-if="carbsG > 0" class="inline-flex items-center gap-1">
+          <span class="h-1 w-1 rounded-full bg-blue-400"></span>
+          <span class="text-wc-text-secondary">{{ carbsG }}<span class="ml-0.5 text-[9px] text-wc-text-tertiary">g</span></span>
+          <span class="text-wc-text-tertiary">C</span>
+        </span>
+        <span v-if="fatG > 0" class="inline-flex items-center gap-1">
+          <span class="h-1 w-1 rounded-full bg-amber-400"></span>
+          <span class="text-wc-text-secondary">{{ fatG }}<span class="ml-0.5 text-[9px] text-wc-text-tertiary">g</span></span>
+          <span class="text-wc-text-tertiary">G</span>
+        </span>
+      </p>
+    </div>
+
+    <!-- Col 3: kcal big + chevron -->
+    <div class="flex shrink-0 items-center gap-2.5">
+      <div v-if="kcalValue" class="flex flex-col items-end leading-none">
+        <span class="font-display text-xl font-medium tabular-nums text-wc-text">{{ kcalValue }}</span>
+        <span class="mt-0.5 font-data text-[9px] uppercase tracking-[0.1em] text-wc-text-tertiary">kcal</span>
+      </div>
       <ChevronDown
         :size="16"
         :stroke-width="2.5"
@@ -74,7 +72,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { Replace, ChevronDown } from 'lucide-vue-next';
+import { ChevronDown } from 'lucide-vue-next';
 
 const props = defineProps({
   meal: { type: Object, required: true },
@@ -82,6 +80,7 @@ const props = defineProps({
   expanded: { type: Boolean, default: false },
   swapPanelOpen: { type: Boolean, default: false },
   swapped: { type: Boolean, default: false },
+  isCurrent: { type: Boolean, default: false },
 });
 
 defineEmits(['toggle', 'open-swap']);
@@ -91,13 +90,16 @@ const carbsG = computed(() => props.meal.macros?.carbohidratos ?? props.meal.mac
 const fatG = computed(() => props.meal.macros?.grasas ?? props.meal.macros?.grasas_g ?? 0);
 const kcalValue = computed(() => props.meal.kcal ?? props.meal.calorias ?? props.meal.calories ?? null);
 
-const badgeColorClass = computed(() => {
-  const n = (props.meal.nombre || props.meal.name || '').toLowerCase();
-  if (n.includes('desayuno')) return 'bg-amber-500/10 text-amber-400';
-  if (n.includes('pre-entreno') || n.includes('pre entreno')) return 'bg-green-500/10 text-green-400';
-  if (n.includes('almuerzo') || n.includes('post-entreno') || n.includes('post entreno')) return 'bg-blue-500/10 text-blue-400';
-  if (n.includes('cena')) return 'bg-indigo-500/10 text-indigo-400';
-  if (n.includes('snack') || n.includes('merienda') || n.includes('media mañana') || n.includes('media manana')) return 'bg-pink-500/10 text-pink-400';
-  return 'bg-wc-accent/10 text-wc-accent';
+const formattedIndex = computed(() => {
+  const n = props.meal.numero ?? (props.mealIdx + 1);
+  return String(n).padStart(2, '0');
+});
+
+const subtitle = computed(() => {
+  return props.meal.subtitulo
+    || props.meal.subtitle
+    || props.meal.descripcion
+    || props.meal.description
+    || '';
 });
 </script>

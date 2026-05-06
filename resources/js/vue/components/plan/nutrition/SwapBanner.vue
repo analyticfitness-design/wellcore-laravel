@@ -1,33 +1,44 @@
 <template>
-  <div class="relative">
-    <div class="h-px w-full bg-gradient-to-r from-wc-accent/0 via-wc-accent/40 to-wc-accent/0"></div>
-    <div class="flex items-center justify-between gap-3 px-4 py-2.5">
-      <div class="flex min-w-0 items-center gap-2.5 rounded-full border border-wc-border bg-wc-bg-secondary/50 px-3 py-1 backdrop-blur-sm">
-        <span class="relative flex h-1 w-1 shrink-0">
-          <span class="absolute inline-flex h-full w-full motion-safe:animate-ping rounded-full bg-wc-accent opacity-60"></span>
-          <span class="relative inline-flex h-1 w-1 rounded-full bg-wc-accent"></span>
-        </span>
-        <span class="font-display text-[9px] tracking-[0.22em] text-wc-text-tertiary">REEMPLAZADO POR</span>
-        <span class="min-w-0 truncate font-display text-xs tracking-wider text-wc-text">{{ replacementName }}</span>
-      </div>
+  <div class="flex flex-col gap-1.5 border-b border-wc-accent/20 bg-wc-accent/[0.06] px-4 py-2.5">
+    <!-- Row 1: pill + from -->
+    <div class="flex items-center gap-2 flex-wrap">
+      <span class="inline-flex items-center gap-1 rounded-full bg-wc-accent/20 px-2 py-0.5 font-display text-[9px] font-semibold uppercase tracking-[0.14em] text-wc-accent">
+        <span class="h-1 w-1 rounded-full bg-wc-accent"></span>
+        Reemplazada
+      </span>
+      <span
+        v-if="originalName"
+        class="font-data text-[11px] line-through text-wc-text-tertiary truncate"
+      >
+        {{ originalName }}
+      </span>
+    </div>
+
+    <!-- Row 2: arrow + to -->
+    <div class="flex items-center gap-2 flex-wrap">
+      <span class="font-data text-[12px] text-wc-text-tertiary">→</span>
+      <span class="font-data text-[11px] font-semibold text-wc-text truncate flex-1 min-w-0">
+        {{ replacementName }}
+      </span>
       <button
         type="button"
         :disabled="restoring"
         aria-label="Restaurar comida original"
-        class="flex min-h-[36px] shrink-0 items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-secondary/50 px-3 py-1 font-display text-[10px] tracking-[0.15em] text-wc-text-secondary transition hover:border-wc-accent/40 hover:text-wc-accent active:scale-95 disabled:opacity-40 disabled:hover:border-wc-border"
+        class="ml-auto inline-flex min-h-[32px] shrink-0 items-center gap-1 rounded-full border border-wc-accent/30 px-2.5 py-1 font-display text-[10px] uppercase tracking-[0.12em] text-wc-accent transition hover:bg-wc-accent/10 active:scale-95 disabled:opacity-40"
         @click="emit('restore')"
       >
-        <X :size="11" :stroke-width="2.5" />
-        <span>RESTAURAR</span>
+        Restaurar original
       </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { X } from 'lucide-vue-next';
-
 defineProps({
+  originalName: {
+    type: String,
+    default: '',
+  },
   replacementName: {
     type: String,
     required: true,

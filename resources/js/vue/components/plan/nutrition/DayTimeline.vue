@@ -1,20 +1,12 @@
 <template>
-  <div class="relative">
-    <!-- línea horizontal sutil detrás de los dots (alineada con centro del dot) -->
-    <div
-      class="pointer-events-none absolute left-0 right-0 top-[22px] h-px bg-wc-border"
-      aria-hidden="true"
-    ></div>
-
-    <div
-      ref="scrollerRef"
-      class="dt-scroller relative flex items-start gap-1 sm:gap-2 overflow-x-auto snap-x snap-mandatory pb-2"
-      :aria-label="ariaLabel"
-      role="list"
-    >
+  <div
+    ref="scrollerRef"
+    class="dt-scroller flex items-start gap-1 overflow-x-auto pb-2 snap-x snap-proximity"
+    :aria-label="ariaLabel"
+    role="list"
+  >
+    <template v-for="(meal, idx) in meals" :key="idx">
       <div
-        v-for="(meal, idx) in meals"
-        :key="idx"
         ref="nodeRefs"
         role="listitem"
         class="snap-center shrink-0"
@@ -28,7 +20,13 @@
           @click="onNodeClick(idx)"
         />
       </div>
-    </div>
+      <span
+        v-if="idx < meals.length - 1"
+        aria-hidden="true"
+        class="self-start mt-[22px] h-px min-w-[12px] flex-1"
+        :class="resolveLineClass(idx)"
+      ></span>
+    </template>
   </div>
 </template>
 
@@ -55,8 +53,6 @@ const ariaLabel = computed(
 function resolveLabel(meal) {
   const raw = String(meal?.nombre || meal?.name || '').trim();
   if (!raw) return '';
-  // Primera palabra significativa para evitar overflow horizontal del timeline.
-  // "Almuerzo post-entreno" → "Almuerzo" · "Pre-entreno" → "Pre" · "Merienda nocturna" → "Merienda".
   const firstWord = raw.split(/[\s\-·]+/).filter(Boolean)[0] || raw;
   return firstWord.length > 10 ? firstWord.slice(0, 10) : firstWord;
 }
@@ -66,6 +62,17 @@ function resolveMealState(idx) {
   if (idx === props.currentMealIndex) return 'current';
   if (props.currentMealIndex >= 0 && idx < props.currentMealIndex) return 'done';
   return 'pending';
+}
+
+// Linea conectora — fuller cuando ya pasó (done), sutil si pendiente
+function resolveLineClass(idx) {
+  // Si el nodo idx (o anterior a current) ya esta done, la linea hacia el siguiente
+  // es "done"; sino es pendiente sutil.
+  const cur = props.currentMealIndex;
+  if (cur >= 0 && idx < cur) {
+    return 'bg-wc-text-tertiary/60';
+  }
+  return 'bg-wc-border';
 }
 
 function onNodeClick(idx) {

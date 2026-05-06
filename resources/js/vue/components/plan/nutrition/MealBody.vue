@@ -1,24 +1,5 @@
 <template>
-  <div class="space-y-3 p-4">
-
-    <!-- Mobile macro chips (hidden on sm+) -->
-    <div v-if="proteinG > 0 || carbsG > 0 || fatG > 0" class="flex flex-wrap gap-1.5 sm:hidden">
-      <span
-        v-if="proteinG > 0"
-        class="rounded-full px-2.5 py-1 text-xs font-semibold"
-        style="background:rgba(220,38,38,0.12); color:#F87171;"
-      >P {{ proteinG }}g</span>
-      <span
-        v-if="carbsG > 0"
-        class="rounded-full px-2.5 py-1 text-xs font-semibold"
-        style="background:rgba(59,130,246,0.12); color:#60A5FA;"
-      >C {{ carbsG }}g</span>
-      <span
-        v-if="fatG > 0"
-        class="rounded-full px-2.5 py-1 text-xs font-semibold"
-        style="background:rgba(245,158,11,0.12); color:#FBBF24;"
-      >G {{ fatG }}g</span>
-    </div>
+  <div class="flex flex-col gap-3.5 px-4 py-4">
 
     <!-- 1. Swapped recipe details -->
     <template v-if="swapped && swappedRecipe">
@@ -35,12 +16,13 @@
         </p>
 
         <p class="mb-1.5 font-display text-[10px] tracking-[0.18em] text-wc-text-secondary">INGREDIENTES</p>
-        <ul class="space-y-1.5">
+        <ul>
           <MealItem
             v-for="(ing, ii) in swappedRecipe.ingredients || []"
             :key="ii"
             :food="ing"
             :icon="getFoodIcon(ing)"
+            :show-icon="true"
           />
         </ul>
 
@@ -62,7 +44,7 @@
           v-if="swappedRecipe.coachTip"
           class="mt-3 rounded-lg border border-wc-accent/20 bg-wc-bg-tertiary/50 px-3 py-2"
         >
-          <p class="text-xs italic leading-relaxed text-wc-text-tertiary">💡 {{ swappedRecipe.coachTip }}</p>
+          <p class="text-xs italic leading-relaxed text-wc-text-tertiary">{{ swappedRecipe.coachTip }}</p>
         </div>
       </div>
     </template>
@@ -81,35 +63,61 @@
             : 'bg-wc-bg-tertiary text-wc-text-secondary hover:text-wc-text border border-wc-border'"
         >Opcion {{ optKey.toUpperCase() }}</button>
       </div>
-      <ul class="space-y-1.5">
+      <ul>
         <MealItem
           v-for="(alimento, ai) in (availableOptions[activeOption || 'a'] || [])"
           :key="ai"
           :food="alimento"
-          :icon="getFoodIcon(alimento)"
         />
       </ul>
     </template>
 
     <!-- 3. Standard alimentos list -->
-    <ul v-else-if="standardFoods.length > 0" class="space-y-1.5">
+    <ul v-else-if="standardFoods.length > 0">
       <MealItem
         v-for="(alimento, ai) in standardFoods"
         :key="ai"
         :food="alimento"
-        :icon="getFoodIcon(alimento)"
       />
     </ul>
 
-    <!-- Notas del coach -->
-    <MealNote v-if="meal.notas" :note="meal.notas" tone="tip" />
+    <!-- "POR QUÉ" inline (HTML target m-meal-note) -->
+    <div
+      v-if="meal.notas"
+      class="rounded-lg border border-wc-border bg-wc-bg-tertiary px-3.5 py-3"
+    >
+      <p class="mb-1.5 font-data text-[9px] uppercase tracking-[0.14em] text-wc-text-tertiary">
+        Por qué
+      </p>
+      <p class="text-xs leading-relaxed text-wc-text-secondary">{{ meal.notas }}</p>
+    </div>
+
+    <!-- Actions row: Marcar / Cambiar -->
+    <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+      <button
+        type="button"
+        @click="emit('mark-meal')"
+        class="inline-flex flex-1 min-h-[40px] items-center justify-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-tertiary/40 px-4 py-2.5 font-display text-[11px] uppercase tracking-[0.1em] text-wc-text-secondary transition hover:border-emerald-400/40 hover:text-emerald-400 active:scale-[0.98]"
+      >
+        <Check :size="13" :stroke-width="2.5" />
+        Marcar
+      </button>
+      <button
+        type="button"
+        @click="emit('open-swap')"
+        class="inline-flex flex-1 min-h-[40px] items-center justify-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-tertiary/40 px-4 py-2.5 font-display text-[11px] uppercase tracking-[0.1em] text-wc-text-secondary transition hover:border-wc-accent/40 hover:text-wc-accent active:scale-[0.98]"
+      >
+        <Replace :size="13" :stroke-width="2.5" />
+        Cambiar
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
+import { Check, Replace } from 'lucide-vue-next';
 import MealItem from './MealItem.vue';
-import MealNote from './MealNote.vue';
 import { useFoodIcon } from '@/composables/useFoodIcon';
 
 const props = defineProps({
@@ -131,13 +139,9 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['set-option']);
+const emit = defineEmits(['set-option', 'mark-meal', 'open-swap']);
 
 const { foodIcon: getFoodIcon } = useFoodIcon();
-
-const proteinG = computed(() => props.meal.macros?.proteina ?? props.meal.macros?.proteina_g ?? 0);
-const carbsG = computed(() => props.meal.macros?.carbohidratos ?? props.meal.macros?.carbohidratos_g ?? 0);
-const fatG = computed(() => props.meal.macros?.grasas ?? props.meal.macros?.grasas_g ?? 0);
 
 const availableOptions = computed(() => {
   const opciones = props.meal.opciones;

@@ -1,13 +1,12 @@
 <template>
-  <li v-if="parsed.name" class="flex items-start gap-2.5">
-    <span v-if="icon" class="shrink-0 text-base leading-none mt-0.5">{{ icon }}</span>
-    <span v-else class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
-    <span class="min-w-0 flex-1 text-sm leading-relaxed text-wc-text-secondary">
-      <span v-if="parsed.qty" class="mr-1.5 inline-block rounded-md bg-wc-bg-tertiary/60 px-1.5 py-0.5 text-[11px] font-data font-semibold text-wc-text tabular-nums tracking-wide">
-        {{ parsed.qty }}
-      </span>
-      <span class="text-wc-text-secondary">{{ parsed.name }}</span>
-      <em v-if="parsed.detail" class="not-italic ml-1 text-xs text-wc-text-tertiary">{{ parsed.detail }}</em>
+  <li v-if="parsed.name" class="grid grid-cols-[auto_1fr] gap-x-4 border-b border-dashed border-wc-border/40 py-2.5 last:border-b-0">
+    <span class="font-data text-[11px] uppercase tracking-wider text-wc-text-tertiary tabular-nums whitespace-nowrap text-right min-w-[60px] pt-0.5">
+      {{ parsed.qty || '·' }}
+    </span>
+    <span class="min-w-0 text-sm leading-snug text-wc-text">
+      <span v-if="icon && showIcon" class="mr-1.5 text-base leading-none">{{ icon }}</span>
+      <span>{{ parsed.name }}</span>
+      <em v-if="parsed.detail" class="not-italic mt-0.5 block text-[11px] text-wc-text-tertiary">{{ parsed.detail }}</em>
     </span>
   </li>
 </template>
@@ -21,30 +20,27 @@ const props = defineProps({
     type: [String, Object],
     required: true,
   },
+  // El HTML target NO usa emojis. Mantenemos el prop por compatibilidad pero
+  // sin renderizado por default — solo si parent fuerza explicitamente
+  // showIcon=true (caso SwappedRecipe ingredients).
   icon: {
     type: String,
     default: '',
+  },
+  showIcon: {
+    type: Boolean,
+    default: false,
   },
 });
 
 const { formatFoodName } = useFoodIcon();
 
 // Parser heuristico — replica la estructura del HTML target v2 (qty | name | em sub-detail)
-// usando datos reales del backend (que vienen como string libre).
-//
-// Ejemplos:
-//   "4 huevos enteros revueltos con cebolla, tomate y cilantro"
-//     → qty="4 und", name="Huevos enteros revueltos", detail="con cebolla, tomate y cilantro"
-//   "1 taza de frijoles rojos o negros"
-//     → qty="1 taza", name="Frijoles rojos o negros", detail=""
-//   "1/2 aguacate"
-//     → qty="½ und", name="Aguacate", detail=""
 const parsed = computed(() => {
   const raw = formatFoodName(props.food);
   const trimmed = (raw || '').trim();
   if (!trimmed) return { qty: '', name: '', detail: '' };
 
-  // Si viene como object con keys nombre/cantidad explicit, respetar
   if (props.food && typeof props.food === 'object') {
     const qty = (props.food.cantidad || props.food.porcion || props.food.quantity || props.food.amount || '').toString().trim();
     const fullName = (props.food.nombre || props.food.alimento || props.food.name || trimmed).toString().trim();
@@ -52,7 +48,6 @@ const parsed = computed(() => {
     return { qty, name: capitalize(split.name), detail: split.detail };
   }
 
-  // String libre — extraer qty leading
   const qtyMatch = trimmed.match(/^([\d¼½¾]+(?:\.\d+)?(?:\/\d+)?\s*(?:und|unidad(?:es)?|taza[s]?|cucharada[s]?|cucharadita[s]?|ml|g|kg|oz|porcion(?:es)?|vaso[s]?|piezas?|gramos?)?)\s+(?:de\s+)?/i);
 
   let qty = '';
@@ -61,7 +56,6 @@ const parsed = computed(() => {
     qty = normalizeQty(qtyMatch[1]);
     rest = trimmed.slice(qtyMatch[0].length).trim();
   } else {
-    // Si no hay match formal pero arranca con número, captura solo el número
     const numMatch = trimmed.match(/^([\d¼½¾]+(?:\.\d+)?(?:\/\d+)?)\s+/);
     if (numMatch) {
       qty = numMatch[1].replace('1/2', '½').replace('1/4', '¼').replace('3/4', '¾') + ' und';
@@ -75,11 +69,6 @@ const parsed = computed(() => {
 
 function splitDetail(str) {
   if (!str) return { name: '', detail: '' };
-  // Patrones para extraer sub-detail:
-  //  1. "X con Y" → name=X, detail="con Y"
-  //  2. "X (o Y)" → name=X, detail="o Y"
-  //  3. "X — Y" o "X - Y" → name=X, detail=Y
-  //  4. "X, ingrediente1, ingrediente2" → name="X", detail="ingrediente1, ingrediente2"
   const conMatch = str.match(/^(.+?)\s+con\s+(.+)$/i);
   if (conMatch) return { name: conMatch[1].trim(), detail: 'con ' + conMatch[2].trim() };
 
@@ -89,7 +78,6 @@ function splitDetail(str) {
   const dashMatch = str.match(/^(.+?)\s+[—–-]\s+(.+)$/);
   if (dashMatch) return { name: dashMatch[1].trim(), detail: dashMatch[2].trim() };
 
-  // Sin patron → todo es name
   return { name: str.trim(), detail: '' };
 }
 

@@ -1,35 +1,41 @@
 <template>
-  <div
-    class="grid grid-cols-[auto_1fr_auto_auto] items-center gap-3 rounded-xl px-3 py-2 transition-colors hover:bg-wc-bg-secondary/50"
-    :class="{ 'opacity-40 hover:opacity-70': score === 'fuera' }"
+  <button
+    type="button"
+    :disabled="applying"
+    :aria-label="`Reemplazar comida con ${recipe.name}`"
+    class="grid w-full grid-cols-[auto_1fr_auto] items-center gap-x-3 gap-y-1.5 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-left transition hover:border-wc-accent/30 hover:bg-wc-bg-secondary/60 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40"
+    :class="{ 'opacity-50': score === 'fuera' }"
+    @click="emit('apply')"
   >
-    <span class="text-2xl leading-none">{{ recipe.emoji }}</span>
-
-    <div class="min-w-0">
-      <p class="truncate font-display text-sm tracking-wide text-wc-text">{{ recipe.name }}</p>
-      <p class="font-data text-[10px] tabular-nums tracking-wider text-wc-text-tertiary">
-        {{ recipe.macros.cal }} KCAL <span class="mx-1 text-wc-text-tertiary/60">·</span>
-        {{ recipe.macros.protein }}P <span class="mx-1 text-wc-text-tertiary/60">·</span>
-        {{ recipe.macros.carbs }}C <span class="mx-1 text-wc-text-tertiary/60">·</span>
-        {{ recipe.macros.fat }}G
-      </p>
-    </div>
-
-    <div class="flex items-center gap-1.5">
-      <span class="h-1 w-1 rounded-full" :class="dotClass"></span>
-      <span class="font-display text-[9px] tracking-[0.2em]" :class="labelClass">{{ scoreLabel }}</span>
-    </div>
-
-    <button
-      type="button"
-      :disabled="applying"
-      :aria-label="`Reemplazar comida con ${recipe.name}`"
-      class="min-h-[32px] rounded-full border border-wc-border px-3 py-1 font-display text-[10px] tracking-[0.15em] text-wc-text-secondary transition hover:border-wc-accent/40 hover:text-wc-accent disabled:opacity-40 disabled:hover:border-wc-border disabled:hover:text-wc-text-secondary"
-      @click="emit('apply')"
+    <!-- Row 1 col 1: badge score -->
+    <span
+      class="justify-self-start rounded-full border px-2 py-0.5 font-display text-[9px] font-semibold uppercase tracking-[0.14em]"
+      :class="badgeClass"
     >
-      REEMPLAZAR
-    </button>
-  </div>
+      {{ scoreLabel }}
+    </span>
+
+    <!-- Row 1 col 2: spacer (name fills row 2 full-width) -->
+    <span></span>
+
+    <!-- Row 1 col 3: kcal big -->
+    <span class="justify-self-end text-right leading-none">
+      <span class="font-display text-base font-medium tabular-nums text-wc-text">{{ recipe.macros.cal }}</span>
+      <span class="ml-1 font-data text-[9px] uppercase tracking-[0.1em] text-wc-text-tertiary">kcal</span>
+    </span>
+
+    <!-- Row 2 (col-span 3): name -->
+    <span class="col-span-3 font-display text-xs font-medium uppercase tracking-wide text-wc-text leading-tight">
+      {{ recipe.name }}
+    </span>
+
+    <!-- Row 3 (col-span 3): macros -->
+    <span class="col-span-3 flex items-center gap-2.5 font-data text-[10px] tabular-nums">
+      <span class="text-red-400">P {{ recipe.macros.protein }}</span>
+      <span class="text-blue-400">C {{ recipe.macros.carbs }}</span>
+      <span class="text-amber-400">G {{ recipe.macros.fat }}</span>
+    </span>
+  </button>
 </template>
 
 <script setup>
@@ -55,23 +61,19 @@ const emit = defineEmits(['apply']);
 
 const SCORE_MAP = {
   ideal: {
-    dotClass: 'bg-emerald-400',
-    labelClass: 'text-emerald-400/70',
-    label: 'IDEAL',
+    badgeClass: 'border-emerald-500/30 bg-emerald-500/15 text-emerald-400',
+    label: 'Ideal',
   },
   aceptable: {
-    dotClass: 'bg-amber-400',
-    labelClass: 'text-amber-400/70',
-    label: 'ACEPTABLE',
+    badgeClass: 'border-amber-500/30 bg-amber-500/15 text-amber-400',
+    label: 'Aceptable',
   },
   fuera: {
-    dotClass: 'bg-wc-text-tertiary/40',
-    labelClass: 'text-wc-text-tertiary',
-    label: 'FUERA',
+    badgeClass: 'border-wc-border bg-wc-bg-tertiary text-wc-text-tertiary',
+    label: 'Fuera',
   },
 };
 
-const dotClass = computed(() => SCORE_MAP[props.score].dotClass);
-const labelClass = computed(() => SCORE_MAP[props.score].labelClass);
+const badgeClass = computed(() => SCORE_MAP[props.score].badgeClass);
 const scoreLabel = computed(() => SCORE_MAP[props.score].label);
 </script>

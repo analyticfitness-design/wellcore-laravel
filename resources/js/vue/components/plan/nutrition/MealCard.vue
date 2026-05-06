@@ -1,10 +1,11 @@
 <template>
   <div
     class="overflow-hidden rounded-xl border bg-wc-bg-secondary transition-colors"
-    :class="swapped ? 'border-wc-accent/40' : 'border-wc-border'"
+    :class="swapped ? 'border-wc-accent/40' : (isCurrent ? 'border-wc-border-strong' : 'border-wc-border')"
   >
     <SwapBanner
       v-if="swapped && swappedRecipe"
+      :original-name="originalName"
       :replacement-name="swappedRecipe.name"
       :restoring="restoring"
       @restore="$emit('undo-swap')"
@@ -16,6 +17,7 @@
       :expanded="expanded"
       :swap-panel-open="swapPanelOpen"
       :swapped="swapped"
+      :is-current="isCurrent"
       @toggle="$emit('toggle')"
       @open-swap="$emit('open-swap')"
     />
@@ -40,13 +42,15 @@
     </Transition>
 
     <Transition name="accordion">
-      <div v-show="expanded && !swapPanelOpen" class="border-t border-wc-border">
+      <div v-show="expanded && !swapPanelOpen">
         <MealBody
           :meal="meal"
           :swapped="swapped"
           :swapped-recipe="swappedRecipe"
           :active-option="activeOption"
           @set-option="(key) => $emit('update:active-option', key)"
+          @mark-meal="$emit('mark-meal')"
+          @open-swap="$emit('open-swap')"
         />
       </div>
     </Transition>
@@ -62,10 +66,12 @@ import SwapPanel from './SwapPanel.vue';
 defineProps({
   meal: { type: Object, required: true },
   mealIdx: { type: Number, required: true },
+  isCurrent: { type: Boolean, default: false },
   expanded: { type: Boolean, default: false },
   swapPanelOpen: { type: Boolean, default: false },
   swapped: { type: Boolean, default: false },
   swappedRecipe: { type: Object, default: null },
+  originalName: { type: String, default: '' },
   swapContext: { type: Object, default: null },
   swapSearchQuery: { type: String, default: '' },
   swapCandidates: { type: Array, default: () => [] },
@@ -80,6 +86,7 @@ defineEmits([
   'close-swap',
   'apply-swap',
   'undo-swap',
+  'mark-meal',
   'update:swap-search-query',
   'update:active-option',
 ]);
@@ -90,7 +97,7 @@ defineEmits([
 .accordion-leave-active {
   transition: max-height 0.3s ease, opacity 0.2s ease;
   overflow: hidden;
-  max-height: 600px;
+  max-height: 800px;
 }
 .accordion-enter-from,
 .accordion-leave-to {

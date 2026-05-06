@@ -58,9 +58,20 @@
 
     <!-- 7. Plan de comidas — formato completo -->
     <div v-if="hasMeals" class="space-y-3">
-      <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary px-0.5">
-        Plan de comidas
-      </p>
+      <div class="flex items-baseline justify-between gap-3 px-0.5 pb-2 border-b border-wc-border">
+        <h3 class="font-display text-base font-medium uppercase tracking-wider text-wc-text">
+          Plan del día
+        </h3>
+        <p class="font-data text-[11px] text-wc-text-tertiary tabular-nums">
+          <strong class="text-wc-text">{{ doneCount }}</strong>
+          de
+          <strong class="text-wc-text">{{ meals.length }}</strong>
+          <template v-if="dayProgress.nextMealLabel.value">
+            <span class="mx-1 text-wc-text-tertiary/60">·</span>
+            próxima {{ dayProgress.nextMealLabel.value }}
+          </template>
+        </p>
+      </div>
 
       <!-- Toast notification swap (global fixed) -->
       <Transition name="fade">
@@ -80,10 +91,12 @@
         :key="mIdx"
         :meal="meal"
         :meal-idx="mIdx"
+        :is-current="dayProgress.currentMealIndex.value === mIdx"
         :expanded="!!openMeals[mIdx]"
         :swap-panel-open="swap.swapIndex.value === mIdx"
         :swapped="swap.isMealSwapped(meal)"
         :swapped-recipe="swap.getSwappedRecipe(meal)"
+        :original-name="meal.nombre || meal.name || ''"
         :swap-context="swap.swapIndex.value === mIdx ? swap.swapContext.value : null"
         :swap-search-query="swap.searchQuery.value"
         :swap-candidates="swap.swapIndex.value === mIdx ? swap.searchCandidates.value : []"
@@ -94,6 +107,7 @@
         @close-swap="swap.closePanel()"
         @apply-swap="(r) => onApplySwap(r, meal, mIdx)"
         @undo-swap="onUndoSwap(meal, mIdx)"
+        @mark-meal="onMarkMeal(meal, mIdx)"
         @update:swap-search-query="(q) => swap.search(q)"
         @update:active-option="(k) => activeOptions[mIdx] = k"
       />
@@ -135,7 +149,7 @@ const props = defineProps({
   macrosToday: { type: Object, default: null },
 });
 
-const emit = defineEmits(['swap-applied', 'open-ai-estimator', 'note-acknowledged']);
+const emit = defineEmits(['swap-applied', 'open-ai-estimator', 'note-acknowledged', 'mark-meal-pending']);
 
 // ─── Derived data ──────────────────────────────────────────────────────
 const meals = computed(() =>
@@ -246,4 +260,17 @@ async function onUndoSwap(meal, mIdx) {
 
 // ─── Day progress ──────────────────────────────────────────────────────
 const dayProgress = useDayProgress(meals);
+
+// Counter "X de Y" — aproximacion: meals "hechas" = las que ya pasaron
+const doneCount = computed(() => {
+  const cur = dayProgress.currentMealIndex.value;
+  if (cur === -1) return meals.value.length;
+  return Math.max(0, cur);
+});
+
+// Mark meal — funcionalidad nueva (no hay endpoint backend aun)
+// Por ahora notifica al padre que puede mostrar toast "Próximamente" o no-op
+function onMarkMeal(meal, mIdx) {
+  emit('mark-meal-pending', { mealIdx: mIdx, meal });
+}
 </script>
