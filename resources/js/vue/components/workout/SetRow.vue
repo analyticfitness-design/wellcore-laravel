@@ -97,7 +97,8 @@ function onInclineInput(e)  { emit('update:incline',  Math.max(0, +parseFloat(e.
 const targetRepsLabel = computed(() => {
     const tr = String(props.targetReps || '').trim();
     if (!tr) return '';
-    return tr.replace('-', ' – ');
+    // Compact format sin espacios para evitar wrap en mobile
+    return tr.replace(/\s*-\s*/g, '–');
 });
 </script>
 
@@ -365,6 +366,11 @@ const targetRepsLabel = computed(() => {
   color: var(--color-wc-text-tertiary);
   pointer-events: none;
   line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
 }
 
 .stepper-input {
@@ -400,6 +406,11 @@ const targetRepsLabel = computed(() => {
   text-transform: lowercase;
   pointer-events: none;
   line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
 }
 
 .stepper-input--always { padding-top: 0; }
