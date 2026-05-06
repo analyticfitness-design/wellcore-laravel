@@ -1,8 +1,17 @@
 <template>
   <div
-    class="overflow-hidden rounded-xl border bg-wc-bg-secondary transition-colors"
-    :class="swapped ? 'border-wc-accent/40' : (isCurrent ? 'border-wc-border-strong' : 'border-wc-border')"
+    class="relative overflow-hidden rounded-xl border bg-wc-bg-secondary transition-colors"
+    :class="[
+      swapped ? 'border-wc-accent/40' : (isCurrent ? 'border-wc-border-strong' : 'border-wc-border'),
+      isCurrent ? 'shadow-[0_0_0_1px_rgba(220,38,38,0.15)]' : ''
+    ]"
   >
+    <!-- Border-left accent color por tipo de meal (sutil pero da vida) -->
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute left-0 top-0 bottom-0 w-[3px]"
+      :class="leftAccentClass"
+    ></div>
     <SwapBanner
       v-if="swapped && swappedRecipe"
       :original-name="originalName"
@@ -58,12 +67,13 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import MealHeader from './MealHeader.vue';
 import MealBody from './MealBody.vue';
 import SwapBanner from './SwapBanner.vue';
 import SwapPanel from './SwapPanel.vue';
 
-defineProps({
+const props = defineProps({
   meal: { type: Object, required: true },
   mealIdx: { type: Number, required: true },
   isCurrent: { type: Boolean, default: false },
@@ -90,6 +100,18 @@ defineEmits([
   'update:swap-search-query',
   'update:active-option',
 ]);
+
+// Color accent del border-left segun tipo de meal — matchea el badge del index.
+const leftAccentClass = computed(() => {
+  if (props.swapped) return 'bg-wc-accent';
+  const n = (props.meal?.nombre || props.meal?.name || '').toLowerCase();
+  if (n.includes('desayuno')) return 'bg-amber-500/60';
+  if (n.includes('pre-entreno') || n.includes('pre entreno')) return 'bg-emerald-500/60';
+  if (n.includes('almuerzo') || n.includes('post-entreno') || n.includes('post entreno')) return 'bg-blue-500/60';
+  if (n.includes('cena')) return 'bg-indigo-500/60';
+  if (n.includes('snack') || n.includes('merienda')) return 'bg-pink-500/60';
+  return 'bg-wc-accent/40';
+});
 </script>
 
 <style scoped>

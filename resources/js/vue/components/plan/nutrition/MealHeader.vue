@@ -8,14 +8,17 @@
     class="grid w-full cursor-pointer grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3.5 text-left transition hover:bg-wc-bg-tertiary/40"
     :class="{ 'border-b border-wc-border': expanded }"
   >
-    <!-- Col 1: index stack vertical (NN + HH:MM) -->
-    <div class="flex w-[44px] shrink-0 flex-col items-center gap-0.5">
-      <span class="font-data text-[10px] uppercase tracking-wider text-wc-text-tertiary tabular-nums">
+    <!-- Col 1: index stack vertical con accent color por tipo de meal -->
+    <div
+      class="flex w-[52px] shrink-0 flex-col items-center gap-0.5 rounded-lg border px-1.5 py-1.5 transition-colors"
+      :class="indexBadgeClass"
+    >
+      <span class="font-data text-[10px] uppercase tracking-wider tabular-nums" :class="indexNumClass">
         {{ formattedIndex }}
       </span>
       <span
         class="font-data text-[11px] font-semibold tabular-nums"
-        :class="isCurrent ? 'text-wc-accent' : 'text-wc-text'"
+        :class="isCurrent ? 'text-wc-accent' : indexTimeClass"
       >
         {{ meal.hora || meal.time || '--:--' }}
       </span>
@@ -34,22 +37,19 @@
       </p>
       <p
         v-if="proteinG > 0 || carbsG > 0 || fatG > 0"
-        class="mt-1 flex items-center gap-2.5 font-data text-[11px] tabular-nums"
+        class="mt-1.5 flex flex-wrap items-center gap-1.5 font-data text-[10px] tabular-nums"
       >
-        <span v-if="proteinG > 0" class="inline-flex items-center gap-1">
+        <span v-if="proteinG > 0" class="inline-flex items-center gap-1 rounded-full bg-red-500/10 border border-red-500/20 px-2 py-0.5 text-red-400 font-semibold">
           <span class="h-1 w-1 rounded-full bg-red-400"></span>
-          <span class="text-wc-text-secondary">{{ proteinG }}<span class="ml-0.5 text-[9px] text-wc-text-tertiary">g</span></span>
-          <span class="text-wc-text-tertiary">P</span>
+          P {{ proteinG }}<span class="ml-0.5 opacity-70">g</span>
         </span>
-        <span v-if="carbsG > 0" class="inline-flex items-center gap-1">
+        <span v-if="carbsG > 0" class="inline-flex items-center gap-1 rounded-full bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-blue-400 font-semibold">
           <span class="h-1 w-1 rounded-full bg-blue-400"></span>
-          <span class="text-wc-text-secondary">{{ carbsG }}<span class="ml-0.5 text-[9px] text-wc-text-tertiary">g</span></span>
-          <span class="text-wc-text-tertiary">C</span>
+          C {{ carbsG }}<span class="ml-0.5 opacity-70">g</span>
         </span>
-        <span v-if="fatG > 0" class="inline-flex items-center gap-1">
+        <span v-if="fatG > 0" class="inline-flex items-center gap-1 rounded-full bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-amber-400 font-semibold">
           <span class="h-1 w-1 rounded-full bg-amber-400"></span>
-          <span class="text-wc-text-secondary">{{ fatG }}<span class="ml-0.5 text-[9px] text-wc-text-tertiary">g</span></span>
-          <span class="text-wc-text-tertiary">G</span>
+          G {{ fatG }}<span class="ml-0.5 opacity-70">g</span>
         </span>
       </p>
     </div>
@@ -102,4 +102,20 @@ const subtitle = computed(() => {
     || props.meal.description
     || '';
 });
+
+// Color accent del badge del index column basado en tipo de meal.
+// Replica getNutrMealColor del legacy: cada tipo de comida tiene su tinte sutil.
+const mealColorScheme = computed(() => {
+  const n = (props.meal.nombre || props.meal.name || '').toLowerCase();
+  if (n.includes('desayuno')) return { bg: 'bg-amber-500/10', border: 'border-amber-500/30', num: 'text-amber-400', time: 'text-amber-400/80' };
+  if (n.includes('pre-entreno') || n.includes('pre entreno')) return { bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', num: 'text-emerald-400', time: 'text-emerald-400/80' };
+  if (n.includes('almuerzo') || n.includes('post-entreno') || n.includes('post entreno')) return { bg: 'bg-blue-500/10', border: 'border-blue-500/30', num: 'text-blue-400', time: 'text-blue-400/80' };
+  if (n.includes('cena')) return { bg: 'bg-indigo-500/10', border: 'border-indigo-500/30', num: 'text-indigo-400', time: 'text-indigo-400/80' };
+  if (n.includes('snack') || n.includes('merienda') || n.includes('media mañana') || n.includes('media manana')) return { bg: 'bg-pink-500/10', border: 'border-pink-500/30', num: 'text-pink-400', time: 'text-pink-400/80' };
+  return { bg: 'bg-wc-accent/10', border: 'border-wc-accent/30', num: 'text-wc-accent', time: 'text-wc-accent/80' };
+});
+
+const indexBadgeClass = computed(() => `${mealColorScheme.value.bg} ${mealColorScheme.value.border}`);
+const indexNumClass = computed(() => mealColorScheme.value.num);
+const indexTimeClass = computed(() => mealColorScheme.value.time);
 </script>

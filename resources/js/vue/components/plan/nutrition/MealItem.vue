@@ -3,10 +3,13 @@
     <span class="font-data text-[11px] uppercase tracking-wider text-wc-text-tertiary tabular-nums whitespace-nowrap text-right min-w-[60px] pt-0.5">
       {{ parsed.qty || '·' }}
     </span>
-    <span class="min-w-0 text-sm leading-snug text-wc-text">
-      <span v-if="icon && showIcon" class="mr-1.5 text-base leading-none">{{ icon }}</span>
-      <span>{{ parsed.name }}</span>
-      <em v-if="parsed.detail" class="not-italic mt-0.5 block text-[11px] text-wc-text-tertiary">{{ parsed.detail }}</em>
+    <span class="flex min-w-0 items-start gap-2 text-sm leading-snug text-wc-text">
+      <span v-if="showIcon && icon" class="shrink-0 text-base leading-none mt-0.5">{{ icon }}</span>
+      <span v-else-if="showIcon" class="mt-2 h-1 w-1 shrink-0 rounded-full bg-wc-accent"></span>
+      <span class="min-w-0 flex-1">
+        <span>{{ parsed.name }}</span>
+        <em v-if="parsed.detail" class="not-italic mt-0.5 block text-[11px] text-wc-text-tertiary">{{ parsed.detail }}</em>
+      </span>
     </span>
   </li>
 </template>
@@ -20,16 +23,16 @@ const props = defineProps({
     type: [String, Object],
     required: true,
   },
-  // El HTML target NO usa emojis. Mantenemos el prop por compatibilidad pero
-  // sin renderizado por default — solo si parent fuerza explicitamente
-  // showIcon=true (caso SwappedRecipe ingredients).
+  // Emoji por alimento (huevo, aguacate, café, etc) — Daniel pidio explicitamente
+  // que esten siempre presentes para que la interfaz sea mas visual y bonita.
+  // Si parent pasa icon vacio, fallback dot bg-wc-accent.
   icon: {
     type: String,
     default: '',
   },
   showIcon: {
     type: Boolean,
-    default: false,
+    default: true,
   },
 });
 

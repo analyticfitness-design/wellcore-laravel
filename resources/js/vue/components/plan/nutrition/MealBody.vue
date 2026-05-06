@@ -68,6 +68,7 @@
           v-for="(alimento, ai) in (availableOptions[activeOption || 'a'] || [])"
           :key="ai"
           :food="alimento"
+          :icon="getFoodIcon(alimento)"
         />
       </ul>
     </template>
@@ -78,6 +79,7 @@
         v-for="(alimento, ai) in standardFoods"
         :key="ai"
         :food="alimento"
+        :icon="getFoodIcon(alimento)"
       />
     </ul>
 
