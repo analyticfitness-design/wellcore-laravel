@@ -201,6 +201,7 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'plan.lock:strict', 'thr
     Route::post('/photos', [SocialController::class, 'uploadPhoto']);
     Route::get('/photos/{id}/view', [SocialController::class, 'viewPhoto'])->where('id', '[0-9]+');
     Route::delete('/photos/{id}', [SocialController::class, 'deletePhoto'])->where('id', '[0-9]+');
+    Route::get('/photos/{id}/notes', [SocialController::class, 'photoNotes'])->where('id', '[0-9]+');
     Route::get('/records', [SocialController::class, 'records']);
     // AI nutrition history + analysis — elite only
     Route::get('/ai-nutrition', [SocialController::class, 'aiNutritionHistory'])->middleware('ensure.plan:elite');

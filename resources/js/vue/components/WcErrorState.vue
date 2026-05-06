@@ -1,9 +1,22 @@
 <script setup>
 /**
- * WcErrorState.vue — Pantalla de error reusable con Reintentar + Cerrar sesion.
+ * WcErrorState.vue — Pantalla de error reusable con Reintentar + Cerrar sesión.
  *
  * Uso:
  *   <WcErrorState :message="error" @retry="fetchData" />
+ *
+ * Props:
+ *   - title: título principal (default 'Error al cargar')
+ *   - message: descripción del error
+ *   - retryLabel: texto del botón retry (default 'Reintentar')
+ *   - hideLogout: ocultar botón logout (default false)
+ *
+ * Emits:
+ *   - retry: click en Reintentar
+ *
+ * El botón "Cerrar sesión" siempre está disponible como fallback para
+ * casos donde el usuario quedó atrapado en un estado de error (ej: token
+ * expirado o ruta sin permiso).
  */
 import { ref } from 'vue';
 import { useAuthStore } from '../stores/auth';
@@ -24,6 +37,7 @@ async function handleLogout() {
     if (loggingOut.value) return;
     loggingOut.value = true;
 
+    // Si está impersonando, limpiar también keys de impersonación
     try {
         [
             'wc_token_backup', 'wc_user_type_backup', 'wc_user_id_backup',
@@ -35,8 +49,9 @@ async function handleLogout() {
 
     try {
         await authStore.logout();
-    } catch { /* noop */ }
+    } catch { /* logout fails silently — clearAuth ya se ejecutó */ }
 
+    // Hard redirect a login
     window.location.href = '/login';
 }
 </script>
@@ -48,12 +63,15 @@ async function handleLogout() {
         <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
       </svg>
     </div>
+
     <h2 class="wc-err-title">{{ title }}</h2>
     <p v-if="message" class="wc-err-msg">{{ message }}</p>
+
     <div class="wc-err-actions">
       <button type="button" class="wc-err-btn wc-err-btn--primary" @click="$emit('retry')">
         {{ retryLabel }}
       </button>
+
       <button
         v-if="!hideLogout"
         type="button"
@@ -64,7 +82,7 @@ async function handleLogout() {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
         </svg>
-        <span>{{ loggingOut ? 'Cerrando...' : 'Cerrar sesion' }}</span>
+        <span>{{ loggingOut ? 'Cerrando…' : 'Cerrar sesión' }}</span>
       </button>
     </div>
   </div>
@@ -80,8 +98,10 @@ async function handleLogout() {
   text-align: center;
   min-height: 60vh;
 }
+
 .wc-err-icon {
-  width: 64px; height: 64px;
+  width: 64px;
+  height: 64px;
   border-radius: 18px;
   background: rgba(220, 38, 38, 0.10);
   display: grid;
@@ -90,6 +110,7 @@ async function handleLogout() {
   margin-bottom: 18px;
 }
 .wc-err-icon svg { width: 32px; height: 32px; }
+
 .wc-err-title {
   font-family: var(--font-display);
   font-weight: 600;
@@ -98,6 +119,7 @@ async function handleLogout() {
   color: var(--color-wc-text);
   margin: 0;
 }
+
 .wc-err-msg {
   margin: 8px 0 0;
   font-size: 14px;
@@ -105,6 +127,7 @@ async function handleLogout() {
   max-width: 320px;
   line-height: 1.5;
 }
+
 .wc-err-actions {
   margin-top: 24px;
   display: flex;
@@ -113,6 +136,7 @@ async function handleLogout() {
   width: 100%;
   max-width: 280px;
 }
+
 .wc-err-btn {
   display: inline-flex;
   align-items: center;
@@ -131,6 +155,7 @@ async function handleLogout() {
   touch-action: manipulation;
 }
 .wc-err-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
 .wc-err-btn--primary {
   background: var(--color-wc-accent, #DC2626);
   color: white;
@@ -141,6 +166,7 @@ async function handleLogout() {
   transform: translateY(-1px);
   box-shadow: 0 10px 26px -4px rgba(220, 38, 38, 0.5);
 }
+
 .wc-err-btn--ghost {
   background: transparent;
   border-color: var(--color-wc-border);

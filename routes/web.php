@@ -203,6 +203,10 @@ Route::view('/client/nutrition', 'vue')->name('client.nutrition');
 Route::view('/client/ai-nutrition', 'vue')->name('client.ai-nutrition');
 Route::view('/client/settings', 'vue')->name('client.settings');
 Route::view('/client/profile', 'vue')->name('client.profile');
+
+// TODO remove en Fase 6 — dev page para visual review de los componentes Photos v2
+Route::view('/dev/photos-components', 'vue')->name('dev.photos-components');
+
 Route::get('/client/{any}', fn () => view('vue'))->where('any', '.*');
 
 // RISE portal

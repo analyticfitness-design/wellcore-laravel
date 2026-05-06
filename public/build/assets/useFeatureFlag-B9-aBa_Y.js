@@ -1,0 +1,1 @@
+import{E as e,dt as t}from"./vue-core-C7Fk4S-S.js";import{t as n}from"./featureFlags-CP-A5b9L.js";function r(r){let i=localStorage.getItem(`wc_force_${r}`);if(i===`1`)return t(!0);if(i===`0`)return t(!1);let a=typeof window<`u`&&window.__WC_FEATURES?window.__WC_FEATURES[r]:void 0;if(a===!0)return t(!0);if(a===!1)return t(!1);let o=n();return e(()=>o.isEnabled(r))}export{r as t};
