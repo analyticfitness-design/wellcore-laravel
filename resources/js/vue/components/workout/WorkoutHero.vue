@@ -2,37 +2,47 @@
 /**
  * WorkoutHero.vue — Hero "EN CURSO" con timer grande, ring de progreso y dots de ejercicios.
  * Solo se muestra cuando workoutStarted=true.
+ *
+ * Visual fidelity: viewBox 100x100 r=44 (target HTML).
  */
 import { computed } from 'vue';
 
 const props = defineProps({
-  elapsedDisplay:      { type: String, default: '00:00' },
-  progressPct:         { type: Number, default: 0 },
-  completedExercises:  { type: Number, default: 0 },
-  totalExercises:      { type: Number, default: 0 },
-  phaseLabel:          { type: String, default: '' },
-  exercises:           { type: Array, default: () => [] },
-  currentExerciseIndex:{ type: Number, default: 0 },
-  exerciseStates:      { type: Array, default: () => [] }, // ['done','done','active','pending',...]
+    elapsedDisplay:       { type: String, default: '00:00' },
+    progressPct:          { type: Number, default: 0 },
+    completedExercises:   { type: Number, default: 0 },
+    totalExercises:       { type: Number, default: 0 },
+    phaseLabel:           { type: String, default: '' },
+    exercises:            { type: Array, default: () => [] },
+    currentExerciseIndex: { type: Number, default: 0 },
+    exerciseStates:       { type: Array, default: () => [] },
 });
 
-const ringCircumference = 2 * Math.PI * 38; // r=38
+// Ring: viewBox 100x100, r=44 → C = 2*pi*44 = 276.46
+const RING_RADIUS = 44;
+const RING_CIRC = 2 * Math.PI * RING_RADIUS;
+
 const ringDashOffset = computed(() => {
-  return ringCircumference * (1 - Math.min(100, props.progressPct) / 100);
+    return RING_CIRC * (1 - Math.min(100, Math.max(0, props.progressPct)) / 100);
 });
 
 const subline = computed(() => {
-  const phase = props.phaseLabel ? ` · ${props.phaseLabel}` : '';
-  if (props.progressPct === 0)  return `Sesión iniciada${phase}`;
-  if (props.progressPct < 50)   return `Progresando${phase}`;
-  if (props.progressPct < 100)  return `Más del 50%${phase}`;
-  return `Sesión completa${phase}`;
+    const phase = props.phaseLabel ? ` · ${props.phaseLabel}` : '';
+    if (props.progressPct === 0)  return `Sesión activa${phase}`;
+    if (props.progressPct < 50)   return `Progresando${phase}`;
+    if (props.progressPct < 100)  return `Más del 50%${phase}`;
+    return `Sesión completa${phase}`;
 });
 
 const dots = computed(() => {
-  const total = Math.max(1, props.totalExercises || props.exercises.length || 0);
-  const states = props.exerciseStates;
-  return Array.from({ length: total }, (_, i) => states[i] || 'pending');
+    const total = Math.max(1, props.totalExercises || props.exercises.length || 0);
+    const states = props.exerciseStates;
+    return Array.from({ length: total }, (_, i) => states[i] || 'pending');
+});
+
+const dotsGridStyle = computed(() => {
+    const n = dots.value.length;
+    return `grid-template-columns: repeat(${Math.min(n, 12)}, 1fr);`;
 });
 </script>
 
@@ -42,35 +52,37 @@ const dots = computed(() => {
       <div class="hero-left">
         <div class="live-tag">
           <span class="live-dot" aria-hidden="true"></span>
-          <span>EN CURSO</span>
+          <span>En curso</span>
         </div>
-        <div class="timer wc-tabular wc-timer-glow">{{ elapsedDisplay }}</div>
+        <div class="timer wc-tabular">{{ elapsedDisplay }}</div>
         <div class="timer-sub">{{ subline }}</div>
       </div>
 
       <div class="ring-wrap" aria-label="Progreso de la sesión">
-        <svg viewBox="0 0 84 84">
-          <circle cx="42" cy="42" r="38" fill="none" stroke-width="6" class="ring-bg"/>
+        <svg viewBox="0 0 100 100">
+          <circle class="ring-bg" cx="50" cy="50" r="44" fill="none" stroke-width="6"/>
           <circle
-            cx="42" cy="42" r="38" fill="none" stroke-width="6"
             class="ring-fg"
-            :stroke-dasharray="ringCircumference"
+            cx="50" cy="50" r="44" fill="none" stroke-width="6"
+            :stroke-dasharray="RING_CIRC"
             :stroke-dashoffset="ringDashOffset"
           />
         </svg>
         <div class="ring-label">
-          <span class="pct">{{ progressPct }}%</span>
-          <span class="frac">{{ completedExercises }}/{{ totalExercises }}</span>
+          <div>
+            <div class="pct">{{ progressPct }}%</div>
+            <div class="frac">{{ completedExercises }}/{{ totalExercises }}</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="exercise-dots" :style="`grid-template-columns: repeat(${Math.max(dots.length, 1)}, 1fr);`" role="presentation">
+    <div class="exercise-dots" :style="dotsGridStyle" role="presentation">
       <span
         v-for="(s, i) in dots"
         :key="i"
         class="dot"
-        :class="{ 'dot-done': s === 'done', 'dot-active': s === 'active' }"
+        :class="{ 'dot--done': s === 'done', 'dot--active': s === 'active' }"
       ></span>
     </div>
   </section>
@@ -105,6 +117,11 @@ const dots = computed(() => {
   position: relative;
 }
 
+.hero-left {
+  min-width: 0;
+  flex: 1;
+}
+
 .live-tag {
   display: inline-flex;
   align-items: center;
@@ -117,9 +134,11 @@ const dots = computed(() => {
   color: var(--color-wc-accent-glow, #EF4444);
 }
 .live-dot {
-  width: 8px; height: 8px;
+  width: 8px;
+  height: 8px;
   border-radius: 999px;
   background: var(--color-wc-accent-glow, #EF4444);
+  box-shadow: 0 0 0 0 rgba(239,68,68,0.6);
   animation: hero-live-pulse 1.6s ease-out infinite;
 }
 @keyframes hero-live-pulse {
@@ -136,9 +155,9 @@ const dots = computed(() => {
   letter-spacing: 0.02em;
   margin-top: 6px;
   color: var(--color-wc-text);
+  text-shadow: 0 0 24px rgba(220,38,38,0.35);
 }
 @media (min-width: 1024px) { .timer { font-size: 56px; } }
-.wc-timer-glow { text-shadow: 0 0 24px rgba(220,38,38,0.35); }
 
 .timer-sub {
   font-family: var(--font-sans);
@@ -148,14 +167,19 @@ const dots = computed(() => {
 }
 
 .ring-wrap {
-  width: 84px; height: 84px;
+  width: 84px;
+  height: 84px;
   position: relative;
   flex-shrink: 0;
 }
 @media (min-width: 1024px) { .ring-wrap { width: 104px; height: 104px; } }
 .ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
 .ring-bg { stroke: rgba(255,255,255,0.08); }
-.ring-fg { stroke: var(--color-wc-accent-glow, #EF4444); stroke-linecap: round; transition: stroke-dashoffset 0.5s var(--ease-out); }
+.ring-fg {
+  stroke: var(--color-wc-accent-glow, #EF4444);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s var(--ease-out);
+}
 .ring-label {
   position: absolute;
   inset: 0;
@@ -188,10 +212,21 @@ const dots = computed(() => {
   background: rgba(255,255,255,0.10);
   transition: background 0.3s, box-shadow 0.3s;
 }
-.dot-done   { background: #10B981; }
-.dot-active { background: var(--color-wc-accent, #DC2626); box-shadow: 0 0 8px rgba(239,68,68,0.6); }
+.dot--done   { background: #10B981; }
+.dot--active { background: var(--color-wc-accent, #DC2626); box-shadow: 0 0 8px rgba(239,68,68,0.6); }
+
+/* Mobile small */
+@media (max-width: 380px) {
+  .hero { padding: 14px 16px; margin-top: 10px; }
+  .timer { font-size: 38px; }
+  .timer-sub { font-size: 12px; }
+  .ring-wrap { width: 72px; height: 72px; }
+  .ring-label .pct { font-size: 18px; }
+  .ring-label .frac { font-size: 9px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .live-dot { animation: none; }
+  .ring-fg  { transition: none; }
 }
 </style>

@@ -1,31 +1,34 @@
 <script setup>
 /**
- * WorkoutBottomBar.vue — Bottom bar fija con stats + abandon + finish.
+ * WorkoutBottomBar.vue — Bottom bar fija con stats (Sesión + Volumen) + abandon + finish.
  *
  * Mobile: position fixed bottom + safe-area-inset-bottom.
  * Desktop: respeta sidebar (left: var(--sidebar-w)).
+ *
+ * Visual fidelity: replica el target HTML — solo 2 stats (Sesión + Volumen)
+ * para mantener el layout limpio. Sets count se muestra en el WorkoutHero.
  */
 import { computed } from 'vue';
 
 const props = defineProps({
-  elapsedDisplay: { type: String, default: '00:00' },
-  totalVolume:   { type: Number, default: 0 },
-  completedSets: { type: Number, default: 0 },
-  totalSets:     { type: Number, default: 0 },
-  progressPct:   { type: Number, default: 0 },
-  canFinish:     { type: Boolean, default: false },
-  saving:        { type: Boolean, default: false },
-  weightUnit:    { type: String, default: 'kg' },
+    elapsedDisplay: { type: String, default: '00:00' },
+    totalVolume:    { type: Number, default: 0 },
+    completedSets:  { type: Number, default: 0 },
+    totalSets:      { type: Number, default: 0 },
+    progressPct:    { type: Number, default: 0 },
+    canFinish:      { type: Boolean, default: false },
+    saving:         { type: Boolean, default: false },
+    weightUnit:     { type: String, default: 'kg' },
 });
 
 defineEmits(['abandon', 'finish']);
 
 const progressVar = computed(() => `${Math.min(100, Math.max(0, props.progressPct))}%`);
 const volumeText = computed(() => {
-  const v = props.totalVolume || 0;
-  if (v === 0) return '0';
-  if (v >= 1000) return `${(v / 1000).toFixed(1)}t`;
-  return Math.round(v).toString();
+    const v = props.totalVolume || 0;
+    if (v === 0) return '0';
+    if (v >= 1000) return `${(v / 1000).toFixed(1).replace('.', ',')}t`;
+    return Math.round(v).toString();
 });
 </script>
 
@@ -39,7 +42,7 @@ const volumeText = computed(() => {
         aria-label="Abandonar sesión"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          <path d="M18 6L6 18"/><path d="M6 6l12 12"/>
         </svg>
       </button>
 
@@ -51,18 +54,13 @@ const volumeText = computed(() => {
         <span class="sep" aria-hidden="true"></span>
         <div class="l">
           <span class="lbl">Volumen</span>
-          <span class="v wc-tabular">{{ volumeText }}{{ weightUnit }}</span>
-        </div>
-        <span class="sep" aria-hidden="true"></span>
-        <div class="l">
-          <span class="lbl">Sets</span>
-          <span class="v wc-tabular">{{ completedSets }}/{{ totalSets }}</span>
+          <span class="v wc-tabular">{{ volumeText }} {{ weightUnit }}</span>
         </div>
         <div class="r">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6"/>
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="3" fill="currentColor"/>
           </svg>
-          <span>EN CURSO</span>
+          <span>En curso</span>
         </div>
       </div>
 
@@ -72,14 +70,15 @@ const volumeText = computed(() => {
         :class="{ ready: canFinish && !saving }"
         :disabled="!canFinish || saving"
         @click="$emit('finish')"
+        :aria-label="saving ? 'Guardando' : 'Completar sesión'"
       >
-        <svg v-if="!saving" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"/>
+        <svg v-if="!saving" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12l5 5L20 7"/>
         </svg>
         <svg v-else class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
           <circle cx="12" cy="12" r="10" opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/>
         </svg>
-        <span class="label-text">{{ saving ? 'Guardando…' : 'Finalizar' }}</span>
+        <span class="label-text">{{ saving ? 'Guardando…' : 'Completar sesión' }}</span>
       </button>
     </div>
   </div>
@@ -96,7 +95,9 @@ const volumeText = computed(() => {
   backdrop-filter: blur(20px) saturate(1.3);
   -webkit-backdrop-filter: blur(20px) saturate(1.3);
   z-index: 50;
+  pointer-events: none;
 }
+.bottom-bar > * { pointer-events: auto; }
 @media (min-width: 1024px) {
   .bottom-bar { left: var(--sidebar-w, 0px); padding: 16px 32px 24px; }
 }
@@ -115,7 +116,8 @@ const volumeText = computed(() => {
 }
 
 .bb-quit {
-  width: 48px; height: 48px;
+  width: 48px;
+  height: 48px;
   border-radius: 14px;
   background: rgba(255,255,255,0.04);
   border: 1px solid var(--color-wc-border);
@@ -124,6 +126,8 @@ const volumeText = computed(() => {
   color: var(--color-wc-text-secondary);
   flex-shrink: 0;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 .bb-quit:hover { color: var(--color-wc-text); background: rgba(255,255,255,0.08); }
 .bb-quit svg { width: 18px; height: 18px; }
@@ -140,21 +144,26 @@ const volumeText = computed(() => {
   gap: 12px;
   position: relative;
   overflow: hidden;
+  min-width: 0;
 }
 .bb-cta::before {
   content: '';
   position: absolute;
-  left: 0; top: 0; bottom: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
   width: var(--p, 0%);
   background: linear-gradient(90deg, rgba(220,38,38,0.18), rgba(220,38,38,0.04));
   transition: width 0.4s var(--ease-out);
 }
+
 .bb-cta .l {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   line-height: 1.1;
+  min-width: 0;
 }
 .bb-cta .l .lbl {
   font-family: var(--font-display);
@@ -170,11 +179,16 @@ const volumeText = computed(() => {
   font-size: 16px;
   margin-top: 3px;
   color: var(--color-wc-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .bb-cta .sep {
-  width: 1px; height: 28px;
+  width: 1px;
+  height: 28px;
   background: var(--color-wc-border);
   position: relative;
+  flex-shrink: 0;
 }
 .bb-cta .r {
   margin-left: auto;
@@ -188,8 +202,11 @@ const volumeText = computed(() => {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-wc-accent-glow, #EF4444);
+  flex-shrink: 0;
 }
 .bb-cta .r svg { width: 12px; height: 12px; }
+.bb-cta .r span { display: none; }
+@media (min-width: 480px) { .bb-cta .r span { display: inline; } }
 
 .bb-finish {
   height: 56px;
@@ -213,6 +230,8 @@ const volumeText = computed(() => {
   cursor: pointer;
   min-width: 56px;
   justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 .bb-finish.ready { opacity: 1; pointer-events: auto; }
 .bb-finish:disabled { cursor: not-allowed; }
@@ -222,6 +241,20 @@ const volumeText = computed(() => {
 
 .spinner { animation: bb-spin 1s linear infinite; }
 @keyframes bb-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* Mobile small */
+@media (max-width: 380px) {
+  .bottom-bar { padding: 10px 10px max(16px, env(safe-area-inset-bottom)); }
+  .bb-card { padding: 10px; gap: 8px; }
+  .bb-quit { width: 44px; height: 44px; }
+  .bb-cta { padding: 0 10px; gap: 8px; height: 52px; }
+  .bb-cta .l .v { font-size: 14px; }
+  .bb-cta .l .lbl { font-size: 9px; letter-spacing: 0.14em; }
+  .bb-cta .r { display: none; }
+  .bb-cta .sep { height: 24px; }
+  .bb-finish { height: 52px; padding: 0 14px; min-width: 52px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .spinner { animation: none; }
   .bb-cta::before { transition: none; }
