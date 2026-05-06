@@ -17,6 +17,12 @@ import SetRow from './SetRow.vue';
 import VoiceCTA from './VoiceCTA.vue';
 import { getEmbedUrl } from '../../composables/useExerciseMedia';
 
+// Track imgs que fallaron — usado para mostrar fallback
+const brokenImgs = ref(new Set());
+function onImgError(key) {
+    brokenImgs.value.add(key);
+}
+
 const props = defineProps({
     exerciseIndex:     { type: Number, required: true },
     exercise:          { type: Object, required: true },
@@ -184,11 +190,12 @@ function onOpenMediaModal() { emit('open-media'); }
     <div v-if="state === 'done'" class="done-summary" @click="onOpenMediaModal" role="button" tabindex="0" @keydown.enter="onOpenMediaModal">
       <div class="done-thumb-wrap">
         <img
-          v-if="thumbnailUrl"
+          v-if="thumbnailUrl && !brokenImgs.has('done')"
           :src="thumbnailUrl"
           :alt="displayName(exercise)"
           class="done-thumb"
           loading="lazy"
+          @error="onImgError('done')"
         />
         <div v-else class="done-thumb done-thumb--fallback">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l3 3M18 20l-3-3M14 4h4v4M10 20H6v-4"/></svg>
@@ -227,11 +234,12 @@ function onOpenMediaModal() { emit('open-media'); }
       <!-- Thumbnail GIF column con gradient overlay -->
       <div class="thumb-col">
         <img
-          v-if="thumbnailUrl"
+          v-if="thumbnailUrl && !brokenImgs.has('upcoming')"
           :src="thumbnailUrl"
           :alt="displayName(exercise)"
           class="thumb-img"
           loading="lazy"
+          @error="onImgError('upcoming')"
         />
         <div v-else class="thumb-fallback">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -340,7 +348,7 @@ function onOpenMediaModal() { emit('open-media'); }
 
             <!-- GIF cinemático con play overlay -->
             <div
-              v-else-if="thumbnailUrl"
+              v-else-if="thumbnailUrl && !brokenImgs.has('active')"
               class="gif-wrap"
               :class="{ 'gif-wrap--clickable': hasYoutubeVideo }"
               @click="startYoutubePlay"
@@ -350,6 +358,7 @@ function onOpenMediaModal() { emit('open-media'); }
                 :alt="displayName(exercise)"
                 class="gif-img"
                 loading="lazy"
+                @error="onImgError('active')"
               />
               <!-- Edge gradients para look cinematográfico -->
               <div class="gif-edge-top" aria-hidden="true"></div>

@@ -2,68 +2,72 @@
 /**
  * ExerciseCardHead.vue — Header de cada exercise card.
  * Counter + label estado + nombre + meta-row + action buttons.
+ *
+ * IMPORTANTE: clases prefijadas con wcv2- para evitar conflicto con wc-shell.css
+ * (que define .card-head, .meta-row globalmente y rompe el layout en mobile).
  */
 import { computed } from 'vue';
 
 const props = defineProps({
-  exerciseIndex:     { type: Number, required: true },
-  exercise:          { type: Object, required: true },
-  isVariationActive: { type: Boolean, default: false },
-  state:             { type: String, default: 'upcoming' }, // 'active' | 'upcoming' | 'done'
-  hasNotes:          { type: Boolean, default: false },
-  hasMedia:          { type: Boolean, default: false },
-  hasVariation:      { type: Boolean, default: false },
-  notesExpanded:     { type: Boolean, default: false },
+    exerciseIndex:     { type: Number, required: true },
+    exercise:          { type: Object, required: true },
+    isVariationActive: { type: Boolean, default: false },
+    state:             { type: String, default: 'upcoming' },
+    hasNotes:          { type: Boolean, default: false },
+    hasMedia:          { type: Boolean, default: false },
+    hasVariation:      { type: Boolean, default: false },
+    notesExpanded:     { type: Boolean, default: false },
 });
 
 defineEmits(['notes-toggle', 'media-open', 'variation-toggle']);
 
 const counterText = computed(() =>
-  String(props.exerciseIndex + 1).padStart(2, '0')
+    String(props.exerciseIndex + 1).padStart(2, '0')
 );
 
 const stateLabel = computed(() => {
-  if (props.state === 'done') return 'Completado';
-  if (props.state === 'active') return 'Ejercicio actual';
-  return 'Próximo ejercicio';
+    if (props.state === 'done') return 'Completado';
+    if (props.state === 'active') return 'Ejercicio actual';
+    return 'Próximo ejercicio';
 });
 
 const displayName = computed(() => {
-  const ex = props.exercise || {};
-  if (props.isVariationActive && ex.variacion?.nombre) return ex.variacion.nombre;
-  return ex.nombre || ex.name || ex.ejercicio || 'Ejercicio';
+    const ex = props.exercise || {};
+    if (props.isVariationActive && ex.variacion?.nombre) return ex.variacion.nombre;
+    return ex.nombre || ex.name || ex.ejercicio || 'Ejercicio';
 });
 
 const muscle = computed(() => props.exercise?.musculo || props.exercise?.muscle_group || null);
 const series = computed(() => props.exercise?.series || props.exercise?.sets || null);
 const reps   = computed(() => props.exercise?.repeticiones || props.exercise?.reps || null);
 const descanso = computed(() => props.exercise?.descanso || props.exercise?.rest || '90s');
-const rir    = computed(() => {
-  const r = props.exercise?.rir;
-  return (r === null || r === undefined || r === '') ? null : Number(r);
+const rir = computed(() => {
+    const r = props.exercise?.rir;
+    return (r === null || r === undefined || r === '') ? null : Number(r);
 });
 
 const rirClass = computed(() => {
-  if (rir.value === null) return '';
-  if (rir.value <= 1) return 'rir rir-low';
-  if (rir.value === 2) return 'rir rir-mid';
-  return 'rir rir-high';
+    if (rir.value === null) return '';
+    if (rir.value <= 1) return 'wcv2-rir wcv2-rir--low';
+    if (rir.value === 2) return 'wcv2-rir wcv2-rir--mid';
+    return 'wcv2-rir wcv2-rir--high';
 });
 </script>
 
 <template>
-  <div class="card-head">
-    <div class="top-line">
-      <div class="ex-counter" :class="{ muted: state !== 'active' }">
-        <span class="num">{{ counterText }}</span>
-        <span>{{ stateLabel }}</span>
+  <div class="wcv2-card-head">
+    <!-- TOP LINE: counter + label + action buttons -->
+    <div class="wcv2-top-line">
+      <div class="wcv2-counter" :class="{ 'wcv2-counter--muted': state !== 'active' }">
+        <span class="wcv2-counter-num">{{ counterText }}</span>
+        <span class="wcv2-counter-label">{{ stateLabel }}</span>
       </div>
-      <div class="head-actions">
+      <div class="wcv2-head-actions">
         <button
           v-if="hasVariation"
           type="button"
-          class="icon-btn"
-          :class="{ 'icon-btn--active': isVariationActive }"
+          class="wcv2-icon-btn"
+          :class="{ 'wcv2-icon-btn--active': isVariationActive }"
           aria-label="Cambiar variación"
           @click="$emit('variation-toggle')"
         >
@@ -75,8 +79,8 @@ const rirClass = computed(() => {
         <button
           v-if="hasNotes"
           type="button"
-          class="icon-btn"
-          :class="{ 'icon-btn--active': notesExpanded }"
+          class="wcv2-icon-btn"
+          :class="{ 'wcv2-icon-btn--active': notesExpanded }"
           :aria-label="notesExpanded ? 'Ocultar notas del coach' : 'Ver notas del coach'"
           @click="$emit('notes-toggle')"
         >
@@ -88,8 +92,8 @@ const rirClass = computed(() => {
         <button
           v-if="hasMedia"
           type="button"
-          class="icon-btn"
-          aria-label="Ver demostración"
+          class="wcv2-icon-btn"
+          aria-label="Ver demostración en pantalla completa"
           @click="$emit('media-open')"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -99,75 +103,101 @@ const rirClass = computed(() => {
       </div>
     </div>
 
-    <h2 class="ex-name">{{ displayName }}</h2>
+    <!-- NAME (full width, block) -->
+    <h2 class="wcv2-name">{{ displayName }}</h2>
 
-    <div class="meta-row">
-      <span v-if="muscle" class="meta-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- META ROW (chips horizontales, wrap) -->
+    <div class="wcv2-meta-row">
+      <span v-if="muscle" class="wcv2-meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="wcv2-meta-ico">
           <path d="M20.5 14.5L9.5 3.5l-4 4 11 11 4-4z"/><path d="M3 21l3-3"/>
         </svg>
         <span>{{ muscle }}</span>
       </span>
-      <span v-if="series && reps" class="meta-item">
-        <span class="v">{{ series }}×{{ reps }}</span>
+
+      <span v-if="series && reps" class="wcv2-meta-item wcv2-meta-item--accent">
+        <strong class="wcv2-meta-v">{{ series }}×{{ reps }}</strong>
         <span>series</span>
       </span>
+
       <div v-if="rir !== null" :class="rirClass">
-        <span class="rir-label">RIR</span>
-        <span class="rir-val">{{ rir }}</span>
+        <span class="wcv2-rir-label">RIR</span>
+        <span class="wcv2-rir-val">{{ rir }}</span>
       </div>
-      <span class="meta-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+
+      <span class="wcv2-meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="wcv2-meta-ico">
           <circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>
         </svg>
-        <span>Descanso <span class="v">{{ descanso }}</span></span>
+        <span>{{ descanso }}</span>
       </span>
     </div>
   </div>
 </template>
 
 <style scoped>
-.card-head { padding: 20px 20px 14px; position: relative; }
-@media (min-width: 1024px) { .card-head { padding: 26px 28px 18px; } }
+.wcv2-card-head {
+  display: block;
+  padding: 18px 18px 14px;
+  position: relative;
+}
+@media (min-width: 1024px) { .wcv2-card-head { padding: 26px 28px 18px; } }
 
-.top-line {
+/* TOP LINE — counter + actions */
+.wcv2-top-line {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   margin-bottom: 12px;
+  flex-wrap: nowrap;
 }
 
-.ex-counter {
+.wcv2-counter {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   font-family: var(--font-display);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-wc-text-secondary);
+  min-width: 0;
 }
-.ex-counter .num {
+.wcv2-counter-num {
   font-family: var(--font-display);
   font-weight: 700;
   background: rgba(239,68,68,0.15);
   color: var(--color-wc-accent-glow, #EF4444);
-  width: 26px; height: 26px;
+  width: 26px;
+  height: 26px;
   border-radius: 8px;
   display: grid;
   place-items: center;
   font-size: 13px;
   letter-spacing: 0;
+  flex-shrink: 0;
 }
-.ex-counter.muted .num {
+.wcv2-counter--muted .wcv2-counter-num {
   background: rgba(255,255,255,0.06);
   color: var(--color-wc-text-secondary);
 }
+.wcv2-counter-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
 
-.head-actions { display: flex; gap: 8px; }
-.icon-btn {
-  width: 44px; height: 44px;
+.wcv2-head-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.wcv2-icon-btn {
+  width: 40px;
+  height: 40px;
   border-radius: 999px;
   background: rgba(255,255,255,0.04);
   border: 1px solid var(--color-wc-border);
@@ -176,60 +206,114 @@ const rirClass = computed(() => {
   color: var(--color-wc-text-secondary);
   cursor: pointer;
   transition: all 0.15s var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  padding: 0;
 }
-.icon-btn:hover { color: var(--color-wc-text); background: rgba(255,255,255,0.08); }
-.icon-btn--active {
+.wcv2-icon-btn:hover {
+  color: var(--color-wc-text);
+  background: rgba(255,255,255,0.08);
+}
+.wcv2-icon-btn--active {
   background: rgba(220,38,38,0.15);
   border-color: rgba(220,38,38,0.3);
   color: var(--color-wc-accent-glow, #EF4444);
 }
-.icon-btn svg { width: 18px; height: 18px; }
+.wcv2-icon-btn svg { width: 16px; height: 16px; }
 
-.ex-name {
+/* NAME — block-level, full width */
+.wcv2-name {
+  display: block;
+  width: 100%;
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 28px;
-  line-height: 1.05;
+  font-size: 24px;
+  line-height: 1.1;
   text-transform: uppercase;
   letter-spacing: 0.005em;
   color: var(--color-wc-text);
   text-wrap: balance;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: none;
 }
-@media (min-width: 1024px) { .ex-name { font-size: 38px; } }
+@media (min-width: 768px)  { .wcv2-name { font-size: 30px; } }
+@media (min-width: 1024px) { .wcv2-name { font-size: 38px; line-height: 1.05; } }
 
-.meta-row {
-  margin-top: 14px;
+/* META ROW — chips wrap */
+.wcv2-meta-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 14px;
+  gap: 6px 10px;
   align-items: center;
+  margin-top: 12px;
+  width: 100%;
 }
-.meta-item {
+.wcv2-meta-item {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
+  gap: 5px;
+  font-size: 12px;
   color: var(--color-wc-text-secondary);
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--color-wc-border);
+  border-radius: 999px;
+  white-space: nowrap;
 }
-.meta-item svg { width: 14px; height: 14px; opacity: 0.7; }
-.meta-item .v {
-  color: var(--color-wc-text);
-  font-weight: 600;
+.wcv2-meta-item--accent {
+  background: rgba(220,38,38,0.08);
+  border-color: rgba(220,38,38,0.20);
+  color: var(--color-wc-accent-glow, #EF4444);
+}
+.wcv2-meta-ico { width: 12px; height: 12px; opacity: 0.7; flex-shrink: 0; }
+.wcv2-meta-v {
+  font-family: var(--font-display);
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
+  font-size: 13px;
 }
 
-.rir { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
-.rir .rir-label { color: var(--color-wc-text-secondary); }
-.rir .rir-val {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  padding: 2px 8px;
-  border-radius: 999px;
+/* RIR chip */
+.wcv2-rir {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: 12px;
-  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
 }
-.rir.rir-low .rir-val  { background: rgba(220,38,38,0.16);  color: var(--color-wc-accent-glow, #EF4444); }
-.rir.rir-mid .rir-val  { background: rgba(245,158,11,0.16); color: #F59E0B; }
-.rir.rir-high .rir-val { background: rgba(16,185,129,0.16); color: #10B981; }
+.wcv2-rir-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.wcv2-rir-val {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.wcv2-rir--low  { background: rgba(220,38,38,0.16);  color: var(--color-wc-accent-glow, #EF4444); }
+.wcv2-rir--mid  { background: rgba(245,158,11,0.16); color: #F59E0B; }
+.wcv2-rir--high { background: rgba(16,185,129,0.16); color: #10B981; }
+
+/* Mobile small */
+@media (max-width: 380px) {
+  .wcv2-card-head { padding: 14px 14px 12px; }
+  .wcv2-top-line { margin-bottom: 10px; gap: 8px; }
+  .wcv2-counter { font-size: 10px; gap: 6px; }
+  .wcv2-counter-num { width: 22px; height: 22px; font-size: 11px; }
+  .wcv2-icon-btn { width: 36px; height: 36px; }
+  .wcv2-icon-btn svg { width: 14px; height: 14px; }
+  .wcv2-name { font-size: 21px; }
+  .wcv2-meta-row { gap: 5px 8px; }
+  .wcv2-meta-item, .wcv2-rir { font-size: 11px; padding: 3px 8px; }
+  .wcv2-meta-v, .wcv2-rir-val { font-size: 12px; }
+}
 </style>

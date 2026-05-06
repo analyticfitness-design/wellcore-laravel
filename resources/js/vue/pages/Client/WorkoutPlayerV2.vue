@@ -81,6 +81,12 @@ const mediaModal = ref({ show: false, exercise: null });
 function openMedia(ex) { mediaModal.value = { show: true, exercise: ex }; }
 function closeMedia()  { mediaModal.value = { show: false, exercise: null }; }
 
+// ── Mobile detection (reactive) ──
+const isMobile = ref(false);
+function checkMobile() {
+    isMobile.value = typeof window !== 'undefined' && window.matchMedia('(max-width: 1023px)').matches;
+}
+
 // ── Timers ──
 let timerInterval = null;
 let restInterval = null;
@@ -678,8 +684,12 @@ function goBack() {
 // ── Lifecycle ──
 onMounted(() => {
     fetchWorkout();
+    checkMobile();
     if (typeof document !== 'undefined') {
         document.addEventListener('visibilitychange', handleVisibilityChange);
+    }
+    if (typeof window !== 'undefined') {
+        window.addEventListener('resize', checkMobile);
     }
 });
 
@@ -690,6 +700,9 @@ onBeforeUnmount(() => {
     if (typeof document !== 'undefined') {
         document.removeEventListener('visibilitychange', handleVisibilityChange);
     }
+    if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', checkMobile);
+    }
     if (audioCtx) {
         audioCtx.close().catch(() => {});
         audioCtx = null;
@@ -699,7 +712,7 @@ onBeforeUnmount(() => {
 
 <template>
   <ClientLayout>
-    <div class="wc-shell wc-shell--training" data-component-version="v2">
+    <div class="wcv2-shell" data-component-version="v2">
       <div class="relative">
         <LockOverlay v-if="isLocked" />
         <div :class="isLocked ? 'pointer-events-none blur-sm select-none' : ''" :aria-hidden="isLocked ? 'true' : undefined">
@@ -836,9 +849,9 @@ onBeforeUnmount(() => {
               <!-- ACTIVE STATE — Content grid -->
               <div v-else class="content mt-4">
                 <div class="col-main space-y-4">
-                  <!-- Rest timer card (inline cuando descansa) -->
+                  <!-- Rest timer card inline (solo desktop; mobile usa floating) -->
                   <RestTimerCard
-                    v-if="showRestTimer && restCard"
+                    v-if="showRestTimer && restCard && !isMobile"
                     :seconds-remaining="restSeconds"
                     :total-seconds="restTotal"
                     :next-exercise="restCard.nextExercise"
@@ -888,6 +901,28 @@ onBeforeUnmount(() => {
                 </div>
               </div>
             </div>
+
+            <!-- REST TIMER FLOATING (mobile) — siempre visible sobre el bottom bar -->
+            <Transition name="rest-float">
+              <div
+                v-if="showRestTimer && restCard && isMobile"
+                class="rest-floating"
+              >
+                <RestTimerCard
+                  :seconds-remaining="restSeconds"
+                  :total-seconds="restTotal"
+                  :next-exercise="restCard.nextExercise"
+                  :next-set-number="restCard.nextSetNumber"
+                  :next-set-target="restCard.nextSetTarget"
+                  :is-paused="restPaused"
+                  @skip="clearRestTimer"
+                  @pause="pauseRestTimer"
+                  @resume="resumeRestTimer"
+                  @add-15="adjustRest(15)"
+                  @subtract-15="adjustRest(-15)"
+                />
+              </div>
+            </Transition>
 
             <!-- BOTTOM BAR -->
             <WorkoutBottomBar
@@ -1008,14 +1043,42 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+/* Wrapper local sin cascada wc-shell */
+.wcv2-shell { position: relative; }
+
 .page {
   width: 100%;
   max-width: 100%;
-  padding: 16px 16px 200px;
+  padding: 16px 16px 240px;
   position: relative;
 }
 @media (min-width: 1024px) {
-  .page { padding: 24px 32px 120px; max-width: 1200px; margin: 0 auto; }
+  .page { padding: 24px 32px 140px; max-width: 1200px; margin: 0 auto; }
+}
+
+/* Rest timer floating mobile — sticky sobre bottom-bar */
+.rest-floating {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(96px + env(safe-area-inset-bottom));
+  z-index: 49;
+  filter: drop-shadow(0 12px 32px rgba(0,0,0,0.5));
+}
+@media (min-width: 1024px) {
+  .rest-floating { display: none; }
+}
+
+.rest-float-enter-active, .rest-float-leave-active {
+  transition: opacity 0.25s var(--ease-out), transform 0.3s var(--ease-out);
+}
+.rest-float-enter-from, .rest-float-leave-to {
+  opacity: 0;
+  transform: translateY(24px) scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rest-float-enter-active, .rest-float-leave-active { transition: none; }
 }
 
 .meta-sep {
