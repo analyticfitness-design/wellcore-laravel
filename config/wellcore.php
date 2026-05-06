@@ -32,12 +32,12 @@ return [
     | Values: 'laravel' or 'legacy'
     */
     'features' => [
-        'auth'             => env('FEATURE_AUTH', 'laravel'),
-        'public_pages'     => env('FEATURE_PUBLIC_PAGES', 'laravel'),
+        'auth' => env('FEATURE_AUTH', 'laravel'),
+        'public_pages' => env('FEATURE_PUBLIC_PAGES', 'laravel'),
         'client_dashboard' => env('FEATURE_CLIENT_DASHBOARD', 'legacy'),
-        'admin_dashboard'  => env('FEATURE_ADMIN_DASHBOARD', 'legacy'),
-        'coach_portal'     => env('FEATURE_COACH_PORTAL', 'legacy'),
-        'rise_dashboard'   => env('FEATURE_RISE_DASHBOARD', 'legacy'),
+        'admin_dashboard' => env('FEATURE_ADMIN_DASHBOARD', 'legacy'),
+        'coach_portal' => env('FEATURE_COACH_PORTAL', 'legacy'),
+        'rise_dashboard' => env('FEATURE_RISE_DASHBOARD', 'legacy'),
     ],
 
     /*
@@ -47,11 +47,11 @@ return [
     */
     'dashboards' => [
         'superadmin' => '/admin',
-        'admin'      => '/admin',
-        'jefe'       => '/admin',
-        'coach'      => '/coach',
-        'client'     => '/client',
-        'rise'       => '/client',
+        'admin' => '/admin',
+        'jefe' => '/admin',
+        'coach' => '/coach',
+        'client' => '/client',
+        'rise' => '/client',
     ],
 
     /*
@@ -170,8 +170,22 @@ return [
     | becomes a no-op.
     */
     'coach_contract' => [
-        'enabled'  => env('COACH_CONTRACT_GATE_ENABLED', true),
-        'version'  => env('COACH_CONTRACT_VERSION', '1.0'),
+        'enabled' => env('COACH_CONTRACT_GATE_ENABLED', true),
+        'version' => env('COACH_CONTRACT_VERSION', '1.0'),
         'is_draft' => env('COACH_CONTRACT_IS_DRAFT', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Workout Player v2 Feature Flag (rollout gradual)
+    |--------------------------------------------------------------------------
+    | WC_WORKOUT_PLAYER_V2=false        — off para todos (default)
+    | WC_WORKOUT_PLAYER_V2_PCT=10       — on para 10% de usuarios
+    | WC_WORKOUT_PLAYER_V2_USERS=1,2,3  — forzar para user IDs específicos
+    */
+    'workout_player_v2' => [
+        'enabled' => env('WC_WORKOUT_PLAYER_V2', false),
+        'percentage' => (int) env('WC_WORKOUT_PLAYER_V2_PCT', 0),
+        'force_users' => array_filter(array_map('trim', explode(',', env('WC_WORKOUT_PLAYER_V2_USERS', '')))),
     ],
 ];

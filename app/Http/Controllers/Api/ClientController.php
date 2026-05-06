@@ -27,6 +27,7 @@ use App\Models\TrainingLog;
 use App\Models\WellcoreNotification;
 use App\Models\WorkoutSession;
 use App\Services\ClientCacheService;
+use App\Services\FeatureFlagService;
 use App\Services\ImagePipelineService;
 use App\Services\PlanLockService;
 use Carbon\Carbon;
@@ -64,6 +65,9 @@ class ClientController extends Controller
             'status' => $client->status instanceof ClientStatus
                 ? $client->status->value
                 : 'activo',
+            'features' => [
+                'workout_player_v2' => FeatureFlagService::isEnabledForUser('workout_player_v2', $client->id),
+            ],
         ]);
     }
 
