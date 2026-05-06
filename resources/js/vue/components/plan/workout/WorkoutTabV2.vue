@@ -26,6 +26,26 @@
 
     <!-- OK: content completo -->
     <template v-else>
+      <PlanHeroV2
+        :plan-type="clientPlanType"
+        :current-week="currentWeek"
+        :total-weeks="effectiveTotalWeeks"
+        :dias-semana="diasSemanaMeta"
+        :volumen-label="trainingPlan?.volumen_label || ''"
+        :total-series-semana="trainingPlan?.total_series_semana || null"
+        :rir-objetivo="trainingPlan?.rir_objetivo || ''"
+        :semanas="semanas"
+      />
+
+      <CoachQuoteV2
+        v-if="coachMessage"
+        :coach-name="coachDisplayName"
+        :message="coachMessage"
+        :total-weeks="effectiveTotalWeeks"
+        :time-ago="''"
+        :can-reply="false"
+      />
+
       <PlanObjetivoBanner
         v-if="objetivoBloque"
         :objetivo="objetivoBloque"
@@ -131,7 +151,7 @@
                 </div>
 
                 <button
-                  v-if="isDayToday(semana, dia, sIdx, dIdx)"
+                  v-if="shouldShowCtaToday(semana, dia)"
                   type="button"
                   class="cta-today"
                   @click="onTrainNow(semana, dia)"
@@ -140,8 +160,8 @@
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.25 5.65c0-.86.92-1.4 1.67-.99l11.54 6.35a1.13 1.13 0 0 1 0 1.97L6.92 19.34a1.13 1.13 0 0 1-1.67-.99V5.65Z"/></svg>
                   </span>
                   <span class="tx">
-                    <span class="lab">Sesión de hoy</span>
-                    <span class="ttl">Entrenar ahora</span>
+                    <span class="lab">{{ dia?.es_hoy ? 'Sesión de hoy' : 'Próxima sesión' }}</span>
+                    <span class="ttl">{{ dia?.es_hoy ? 'Entrenar ahora' : 'Empezar' }}</span>
                   </span>
                   <svg class="arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
                 </button>
@@ -199,6 +219,8 @@ import PlanSkeleton from './parts/PlanSkeleton.vue';
 import PlanErrorState from './parts/PlanErrorState.vue';
 import PlanEmptyState from './parts/PlanEmptyState.vue';
 import PlanLockOverlay from './parts/PlanLockOverlay.vue';
+import PlanHeroV2 from './parts/PlanHeroV2.vue';
+import CoachQuoteV2 from './parts/CoachQuoteV2.vue';
 import PlanObjetivoBanner from './parts/PlanObjetivoBanner.vue';
 import WeeklyScheduleOverview from './parts/WeeklyScheduleOverview.vue';
 import BlockDivider from './parts/BlockDivider.vue';
@@ -262,6 +284,27 @@ const coachShortName = computed(() => {
   const n = props.coach?.name || props.coach?.nombre || '';
   if (!n) return '';
   return n.split(/\s+/)[0];
+});
+
+const coachDisplayName = computed(() => {
+  return props.coach?.name || props.coach?.nombre || 'Tu coach';
+});
+
+const coachMessage = computed(() => {
+  // El mensaje del coach se toma de notas_coach del plan (si existe).
+  // El backend lo expone en trainingPlan.notas_coach. Si no hay, no se renderiza.
+  const m = props.trainingPlan?.notas_coach
+    || props.trainingPlan?.coach_note
+    || props.trainingPlan?.notas
+    || '';
+  return typeof m === 'string' ? m.trim() : '';
+});
+
+const diasSemanaMeta = computed(() => {
+  const explicit = props.trainingPlan?.dias_semana;
+  if (typeof explicit === 'number' && explicit > 0) return explicit;
+  const sem = semanas.value.find((s) => s?.es_actual) || semanas.value[0];
+  return sem?.dias?.length || null;
 });
 
 const errorMessage = computed(() => {
@@ -352,6 +395,12 @@ function toggleDay(sIdx, dIdx) {
 }
 function isDayToday(semana, dia) {
   return !!(dia?.es_hoy);
+}
+
+// CTA Entrenar ahora se muestra en cualquier día EXPANDIDO (no solo es_hoy).
+// Con label diferente: "Entrenar ahora" si es_hoy, "Empezar" si no.
+function shouldShowCtaToday(semana, dia) {
+  return !!(dia?.ejercicios?.length);
 }
 function dayStateClass(semana, dia) {
   if (dia?.es_hoy) return 'today';
