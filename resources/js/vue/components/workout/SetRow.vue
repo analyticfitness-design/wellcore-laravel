@@ -37,8 +37,6 @@ const emit = defineEmits([
 ]);
 
 const shake = ref(false);
-const editingWeight = ref(false);
-const editingReps   = ref(false);
 
 const weightStep = computed(() => (props.weightUnit === 'lbs' ? 5 : 2.5));
 
@@ -96,40 +94,11 @@ function onDurationInput(e) { emit('update:duration', Math.max(0, parseInt(e.tar
 function onSpeedInput(e)    { emit('update:speed',    Math.max(0, +parseFloat(e.target.value).toFixed(1) || 0)); }
 function onInclineInput(e)  { emit('update:incline',  Math.max(0, +parseFloat(e.target.value).toFixed(1) || 0)); }
 
-// Display values con formato target HTML
-const weightDisplay = computed(() => {
-    const v = parseFloat(props.weight);
-    if (isNaN(v) || v === 0) return '—';
-    return Number.isInteger(v) ? String(v) : v.toFixed(1).replace('.', ',');
-});
-const repsDisplay = computed(() => {
-    const v = parseInt(props.reps);
-    if (isNaN(v) || v === 0) return '—';
-    return String(v);
-});
-const durationDisplay = computed(() => {
-    const v = parseInt(props.duration);
-    return (isNaN(v) || v === 0) ? '—' : String(v);
-});
-const speedDisplay = computed(() => {
-    const v = parseFloat(props.speed);
-    return (isNaN(v) || v === 0) ? '—' : (Number.isInteger(v) ? String(v) : v.toFixed(1).replace('.', ','));
-});
-const inclineDisplay = computed(() => {
-    const v = parseFloat(props.incline);
-    return (isNaN(v) || v === 0) ? '—' : (Number.isInteger(v) ? String(v) : v.toFixed(1).replace('.', ','));
-});
-
 const targetRepsLabel = computed(() => {
     const tr = String(props.targetReps || '').trim();
     if (!tr) return '';
     return tr.replace('-', ' – ');
 });
-
-function startEditWeight() { if (!props.disabled) editingWeight.value = true; }
-function startEditReps()   { if (!props.disabled) editingReps.value = true; }
-function endEditWeight()   { editingWeight.value = false; }
-function endEditReps()     { editingReps.value = false; }
 </script>
 
 <template>
@@ -166,22 +135,18 @@ function endEditReps()     { editingReps.value = false; }
         <button type="button" aria-label="Disminuir peso" class="stepper-btn" @click="bumpWeight(-weightStep)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
-        <input
-          v-if="editingWeight"
-          ref="weightInput"
-          type="number"
-          inputmode="decimal"
-          :step="weightStep"
-          min="0"
-          :value="weight"
-          class="stepper-input"
-          autofocus
-          @input="onWeightInput"
-          @blur="endEditWeight"
-          @keydown.enter="endEditWeight"
-        />
-        <div v-else class="val" @click="startEditWeight" role="button" tabindex="0" @keydown.enter="startEditWeight">
-          {{ weightDisplay }}<span class="target">{{ weightUnit }}</span>
+        <div class="val-stack">
+          <input
+            type="number"
+            inputmode="decimal"
+            :step="weightStep"
+            min="0"
+            :value="weight"
+            class="stepper-input"
+            :placeholder="targetWeight !== null ? String(targetWeight) : '0'"
+            @input="onWeightInput"
+          />
+          <span class="target">{{ weightUnit }}</span>
         </div>
         <button type="button" aria-label="Aumentar peso" class="stepper-btn" @click="bumpWeight(+weightStep)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -194,21 +159,18 @@ function endEditReps()     { editingReps.value = false; }
         <button type="button" aria-label="Disminuir reps" class="stepper-btn" @click="bumpReps(-1)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
-        <input
-          v-if="editingReps"
-          type="number"
-          inputmode="numeric"
-          step="1"
-          min="0"
-          :value="reps"
-          class="stepper-input"
-          autofocus
-          @input="onRepsInput"
-          @blur="endEditReps"
-          @keydown.enter="endEditReps"
-        />
-        <div v-else class="val" @click="startEditReps" role="button" tabindex="0" @keydown.enter="startEditReps">
-          {{ repsDisplay }}<span class="target">{{ targetRepsLabel || '—' }}</span>
+        <div class="val-stack">
+          <input
+            type="number"
+            inputmode="numeric"
+            step="1"
+            min="0"
+            :value="reps"
+            class="stepper-input"
+            :placeholder="targetReps ? targetReps.toString().split('-')[0].trim() : '0'"
+            @input="onRepsInput"
+          />
+          <span class="target">{{ targetRepsLabel || '—' }}</span>
         </div>
         <button type="button" aria-label="Aumentar reps" class="stepper-btn" @click="bumpReps(+1)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -391,44 +353,19 @@ function endEditReps()     { editingReps.value = false; }
 .stepper-btn:active { background: rgba(220,38,38,0.18); color: var(--color-wc-accent-glow, #EF4444); }
 .stepper-btn svg    { width: 16px; height: 16px; }
 
-/* Display value (no editando) — replica target HTML */
-.val {
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  border: 0;
-  text-align: center;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 22px;
-  color: var(--color-wc-text);
-  font-variant-numeric: tabular-nums;
-  outline: none;
-  padding-top: 12px;
+/* Stack: input arriba + target hint abajo (replica target HTML) */
+.val-stack {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  line-height: 1.05;
-  cursor: text;
-  -webkit-user-select: none;
-  user-select: none;
-}
-.val:hover { background: rgba(255,255,255,0.02); }
-.val .target {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 400;
-  color: var(--color-wc-text-tertiary);
-  margin-top: -2px;
-  letter-spacing: 0.04em;
-  display: block;
+  height: 100%;
+  padding-top: 12px;
+  position: relative;
 }
 
-/* Input editable */
 .stepper-input {
   width: 100%;
-  height: 100%;
   background: transparent;
   border: 0;
   text-align: center;
@@ -438,14 +375,28 @@ function endEditReps()     { editingReps.value = false; }
   color: var(--color-wc-text);
   font-variant-numeric: tabular-nums;
   outline: none;
-  padding-top: 12px;
+  line-height: 1;
+  padding: 0;
+  height: 22px;
 }
+.stepper-input::placeholder { color: var(--color-wc-text-tertiary); opacity: 0.4; }
 .stepper-input::-webkit-outer-spin-button,
 .stepper-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 .stepper-input { -moz-appearance: textfield; }
+
+.val-stack .target {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--color-wc-text-tertiary);
+  letter-spacing: 0.04em;
+  margin-top: 2px;
+  text-transform: lowercase;
+  pointer-events: none;
+}
 
 .stepper-input--always { padding-top: 0; }
 
