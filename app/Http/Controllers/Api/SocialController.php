@@ -1526,7 +1526,9 @@ class SocialController extends Controller
         }
 
         $coachIds = $notes->pluck('coach_id')->unique()->filter()->all();
-        $coaches = Admin::whereIn('id', $coachIds)->get(['id', 'nombre', 'apellido', 'foto'])->keyBy('id');
+        // Fase 3 fix: tabla `admins` Laravel usa columnas `name` (no nombre/apellido) y no
+        // tiene `foto`. Selectear columnas inexistentes generaba SQL 1054.
+        $coaches = Admin::whereIn('id', $coachIds)->get(['id', 'name'])->keyBy('id');
 
         $payload = $notes->map(function ($n) use ($coaches) {
             $coach = $coaches->get($n->coach_id);
@@ -1539,8 +1541,8 @@ class SocialController extends Controller
                 'read_at' => $n->read_at,
                 'coach' => $coach ? [
                     'id' => $coach->id,
-                    'name' => trim(($coach->nombre ?? '').' '.($coach->apellido ?? '')),
-                    'avatar' => $coach->foto ?? null,
+                    'name' => $coach->name ?? '',
+                    'avatar' => null,
                 ] : null,
             ];
         });
