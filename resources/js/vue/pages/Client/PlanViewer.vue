@@ -1529,6 +1529,7 @@ onBeforeUnmount(() => {
               :coach-info="coachInfoForNutrition"
               :current-week="currentWeekForPlan"
               :total-weeks="totalWeeksForPlan"
+              :macros-today="nutrMacrosToday"
               @swap-applied="onNutritionSwapApplied"
               @open-ai-estimator="showAiEstimator = true"
             />

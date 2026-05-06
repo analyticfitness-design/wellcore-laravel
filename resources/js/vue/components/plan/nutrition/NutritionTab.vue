@@ -129,6 +129,10 @@ const props = defineProps({
   coachInfo: { type: Object, default: null },
   currentWeek: { type: Number, default: 1 },
   totalWeeks: { type: Number, default: 12 },
+  // macrosToday: estado reactivo de /api/v/client/nutrition/macros-today que vive
+  // en el padre PlanViewer. Sin esto, swap.isMealSwapped/getSwappedRecipe siempre
+  // retornan false y el banner REEMPLAZADO POR no se ve hasta refresh manual.
+  macrosToday: { type: Object, default: null },
 });
 
 const emit = defineEmits(['swap-applied', 'open-ai-estimator', 'note-acknowledged']);
@@ -196,16 +200,32 @@ function toggleMeal(idx) {
 }
 
 // ─── Swap composable ───────────────────────────────────────────────────
+function cleanName(name) {
+  return (name || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+// findTodayMeal replica findNutrTodayMeal del PlanViewer legacy (linea 182).
+// Lee props.macrosToday reactivamente: cuando el padre recarga macros-today
+// tras un swap, este componente re-renderea y la fn se re-llama con el
+// nuevo state.
 function findTodayMeal(meal) {
-  // Hook que el padre puede sobrescribir via macros today; aqui shape minimo
-  // basado en el meal mismo (no hay acceso al estado today desde tab).
-  return null;
+  const today = props.macrosToday;
+  if (!today?.meals) return null;
+  const target = cleanName((meal?.nombre || meal?.name || '').toUpperCase());
+  if (!target) return null;
+  return today.meals.find((m) => {
+    const mn = cleanName(m.name);
+    return mn === target || mn.includes(target) || target.includes(mn);
+  }) || null;
 }
 
 const swap = useMealSwap({
   findTodayMeal,
-  onSwapApplied: async () => {},
-  onSwapUndone: async () => {},
+  // El padre escucha swap-applied y llama loadNutrMacrosToday(). Cuando
+  // macrosToday cambia (prop reactiva), findTodayMeal devuelve el nuevo
+  // estado y el banner SWAPPED aparece automaticamente.
+  onSwapApplied: async () => { emit('swap-applied', { phase: 'apply' }); },
+  onSwapUndone: async () => { emit('swap-applied', { phase: 'undo' }); },
 });
 
 const swappedIndices = computed(() =>
