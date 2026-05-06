@@ -1735,7 +1735,12 @@ class CoachController extends Controller
         $client = Client::findOrFail($clientId);
 
         $token = bin2hex(random_bytes(32));
-        $expiresAt = now()->addMinutes(30);
+        // 8 horas: cubre un día laboral del coach. Antes era 30 min, lo cual
+        // dejaba al coach atrapado con 403 "Acceso solo para clientes" al
+        // volver a la PWA después de comer/horas. El backup wc_token_backup
+        // mantiene su token coach (30 días) y el frontend ahora auto-restaura
+        // si el cliente token expiró (ver useApi interceptor 401/403).
+        $expiresAt = now()->addHours(8);
 
         // Chain detection: is the current coach being impersonated by a superadmin?
         $rootChain = session('wc_impersonation_chain', []);

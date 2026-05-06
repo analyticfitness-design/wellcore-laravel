@@ -55,7 +55,11 @@ class AdminImpersonateController extends Controller
         }
 
         $newToken = bin2hex(random_bytes(32));
-        $expiresAt = now()->addMinutes(60);
+        // 8 horas: cubre un día laboral del admin/superadmin. Antes 60 min,
+        // dejaba atrapado al usuario en /coach o /admin con 403 al volver
+        // después de un break largo. El frontend ahora auto-restaura si el
+        // token impersonado expiró usando wc_token_backup.
+        $expiresAt = now()->addHours(8);
 
         $authToken = AuthToken::create([
             'user_type'  => UserType::Admin->value,

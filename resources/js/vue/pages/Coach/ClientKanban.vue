@@ -41,6 +41,12 @@ async function impersonateClient(client) {
     localStorage.setItem('wc_impersonating_by_coach', '1');
     localStorage.setItem('wc_impersonating_token_key', data.token);
     localStorage.setItem('wc_impersonation_client_id', String(data.client_id));
+    if (data.expires_at) {
+      const expiresMs = new Date(data.expires_at).getTime();
+      if (!isNaN(expiresMs)) {
+        localStorage.setItem('wc_impersonation_expires_at', String(expiresMs));
+      }
+    }
     window.location.href = data.redirect_url || '/client';
   } catch (err) {
     impersonating.value = false;

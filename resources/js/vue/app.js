@@ -13,6 +13,73 @@ if (window.location.pathname.startsWith('/v/')) {
     window.location.replace(clean || '/');
 }
 
+// ─────────────────────────────────────────────────────────────────────────
+// PWA boot-time impersonation recovery
+// ─────────────────────────────────────────────────────────────────────────
+// Caso: coach impersona cliente → cierra PWA → vuelve después de horas →
+// el token cliente (8h) puede haber expirado mientras el wc_token_backup
+// (token coach, 30 días) sigue válido.
+//
+// Si arrancamos en /client/* con flags de impersonación pero el token cliente
+// ya expiró por timestamp, restauramos la sesión coach SILENCIOSAMENTE antes
+// de que router/componentes hagan fetch. Esto evita el error "Acceso solo
+// para clientes" que dejaba al coach atrapado sin opción visible para volver.
+(function bootImpersonationRecovery() {
+    try {
+        const isImpersonating = localStorage.getItem('wc_impersonating_by_coach') === '1';
+        if (!isImpersonating) return;
+
+        const backupToken = localStorage.getItem('wc_token_backup');
+        if (!backupToken) return;
+
+        const expiresAt = parseInt(localStorage.getItem('wc_impersonation_expires_at') || '0', 10);
+        if (expiresAt > 0 && Date.now() < expiresAt) return; // Token cliente sigue válido
+
+        // Si llegamos aquí: token cliente expirado (o sin timestamp en
+        // impersonations viejas). Restaurar coach session.
+
+        // Best-effort: cerrar sesión en backend (no bloquear ni esperar)
+        const expiredToken = localStorage.getItem('wc_impersonating_token_key');
+        if (expiredToken) {
+            fetch('/api/v/coach/impersonate/end', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${backupToken}`,
+                },
+                body: JSON.stringify({ token: expiredToken }),
+                keepalive: true,
+            }).catch(() => { /* noop */ });
+        }
+
+        // Restaurar coach session desde backups
+        const userType = localStorage.getItem('wc_user_type_backup');
+        const userId   = localStorage.getItem('wc_user_id_backup');
+        const userName = localStorage.getItem('wc_user_name_backup') || '';
+        const portal   = localStorage.getItem('wc_user_portal_backup');
+
+        localStorage.setItem('wc_token', backupToken);
+        if (userType) localStorage.setItem('wc_user_type', userType);
+        if (userId)   localStorage.setItem('wc_user_id', userId);
+        localStorage.setItem('wc_user_name', userName);
+        if (portal)   localStorage.setItem('wc_user_portal', portal);
+
+        [
+            'wc_token_backup', 'wc_user_type_backup', 'wc_user_id_backup',
+            'wc_user_name_backup', 'wc_user_portal_backup',
+            'wc_impersonating_by_coach', 'wc_impersonating_token_key',
+            'wc_impersonation_client_id', 'wc_impersonation_expires_at',
+        ].forEach((k) => localStorage.removeItem(k));
+
+        // Hard redirect a /coach si estamos en /client/* (la URL cached por la PWA)
+        const path = window.location.pathname;
+        if (path.startsWith('/client/') || path === '/client') {
+            window.location.replace('/coach');
+        }
+    } catch { /* noop — best effort */ }
+})();
+
 const app = createApp(App);
 const pinia = createPinia();
 
