@@ -28,6 +28,7 @@ use App\Models\PersonalRecord;
 use App\Models\PostComment;
 use App\Models\PostReaction;
 use App\Models\ProgressPhoto;
+use App\Models\ProgressPhotoNote;
 use App\Models\Referral;
 use App\Models\SupplementLog;
 use App\Models\VideoCheckin;
@@ -1491,6 +1492,62 @@ class SocialController extends Controller
         $photo->delete();
 
         return response()->json(['deleted' => true]);
+    }
+
+    /**
+     * GET /api/v/client/photos/{id}/notes
+     *
+     * Returns coach notes attached to a specific progress photo of the auth client.
+     * Marks unread notes as read on first fetch (idempotent: read_at only set if null).
+     */
+    public function photoNotes(Request $request, int $id): JsonResponse
+    {
+        $client = $this->resolveClientOrFail($request);
+        $clientId = $client->id;
+
+        $photo = ProgressPhoto::where('client_id', $clientId)
+            ->where('id', $id)
+            ->first();
+
+        if (! $photo) {
+            return response()->json(['error' => 'Foto no encontrada.'], 404);
+        }
+
+        $notes = ProgressPhotoNote::where('photo_id', $id)
+            ->where('client_id', $clientId)
+            ->orderBy('created_at', 'asc')
+            ->get(['id', 'coach_id', 'note_text', 'x_pct', 'y_pct', 'created_at', 'read_at']);
+
+        $unreadIds = $notes->whereNull('read_at')->pluck('id')->all();
+        if (! empty($unreadIds)) {
+            ProgressPhotoNote::whereIn('id', $unreadIds)
+                ->whereNull('read_at')
+                ->update(['read_at' => now()]);
+        }
+
+        $coachIds = $notes->pluck('coach_id')->unique()->filter()->all();
+        // Fase 3 fix: tabla `admins` Laravel usa columnas `name` (no nombre/apellido) y no
+        // tiene `foto`. Selectear columnas inexistentes generaba SQL 1054.
+        $coaches = Admin::whereIn('id', $coachIds)->get(['id', 'name'])->keyBy('id');
+
+        $payload = $notes->map(function ($n) use ($coaches) {
+            $coach = $coaches->get($n->coach_id);
+            return [
+                'id' => $n->id,
+                'note_text' => $n->note_text,
+                'x_pct' => $n->x_pct,
+                'y_pct' => $n->y_pct,
+                'created_at' => $n->created_at,
+                'read_at' => $n->read_at,
+                'coach' => $coach ? [
+                    'id' => $coach->id,
+                    'name' => $coach->name ?? '',
+                    'avatar' => null,
+                ] : null,
+            ];
+        });
+
+        return response()->json(['notes' => $payload]);
     }
 
     // ─── Personal Records ──────────────────────────────────────────────
