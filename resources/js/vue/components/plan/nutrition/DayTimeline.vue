@@ -54,7 +54,7 @@ function resolveLabel(meal) {
   const raw = String(meal?.nombre || meal?.name || '').trim();
   if (!raw) return '';
   const firstWord = raw.split(/[\s\-·]+/).filter(Boolean)[0] || raw;
-  return firstWord.length > 10 ? firstWord.slice(0, 10) : firstWord;
+  return firstWord.length > 10 ? firstWord.slice(0, 9) + '…' : firstWord;
 }
 
 function resolveMealState(idx) {

@@ -24,7 +24,7 @@
         type="button"
         :disabled="restoring"
         aria-label="Restaurar comida original"
-        class="ml-auto inline-flex min-h-[32px] shrink-0 items-center gap-1 rounded-full border border-wc-accent/30 px-2.5 py-1 font-display text-[10px] uppercase tracking-[0.12em] text-wc-accent transition hover:bg-wc-accent/10 active:scale-95 disabled:opacity-40"
+        class="ml-auto inline-flex min-h-[44px] shrink-0 items-center gap-1 rounded-full border border-wc-accent/30 px-3 py-1.5 font-display text-[10px] uppercase tracking-[0.12em] text-wc-accent transition hover:bg-wc-accent/10 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
         @click="emit('restore')"
       >
         Restaurar original

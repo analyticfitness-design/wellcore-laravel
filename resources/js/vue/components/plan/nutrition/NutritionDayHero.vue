@@ -25,7 +25,7 @@
         <span class="inline-block rounded-full bg-wc-accent/20 px-2.5 py-0.5 mr-1.5 font-display text-[10px] uppercase tracking-[0.18em] text-wc-accent">
           {{ objetivoTag }}
         </span>
-        <span class="text-sm text-wc-text-secondary leading-relaxed">
+        <span v-if="objetivoBody" class="text-sm text-wc-text-secondary leading-relaxed">
           {{ objetivoBody }}
         </span>
       </div>

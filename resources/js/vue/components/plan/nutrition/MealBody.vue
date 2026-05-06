@@ -57,7 +57,7 @@
           :key="optKey"
           type="button"
           @click="emit('set-option', optKey)"
-          class="rounded-full px-3 py-1 text-xs font-semibold transition min-h-[36px]"
+          class="rounded-full px-4 py-2 text-xs font-semibold transition min-h-[44px] min-w-[44px]"
           :class="(activeOption || 'a') === optKey
             ? 'bg-wc-accent text-white'
             : 'bg-wc-bg-tertiary text-wc-text-secondary hover:text-wc-text border border-wc-border'"

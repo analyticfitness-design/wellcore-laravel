@@ -26,7 +26,8 @@ export function useMealSwap(options = {}) {
   const api = useApi();
 
   // ─── State ────────────────────────────────────────────────────────────
-  const swapping = ref(false);              // request en vuelo
+  const swapping = ref(false);              // POST swap en vuelo
+  const undoing = ref(false);               // DELETE swap en vuelo (banner restore)
   const swapIndex = ref(null);              // idx de meal-card con panel abierto
   const swapContext = ref(null);            // meal en proceso de swap (today shape)
   const searchQuery = ref('');
@@ -35,6 +36,7 @@ export function useMealSwap(options = {}) {
 
   let toastTimer = null;
   let abortCtrl = null;
+  let undoAbortCtrl = null;
 
   // ─── Score (relativo, matching nutrSwapCompatibility original) ────────
   function scoreCompatibility(recipe, meal) {
@@ -127,16 +129,26 @@ export function useMealSwap(options = {}) {
 
   // ─── Undo swap (DELETE) ───────────────────────────────────────────────
   async function undoSwap(meal) {
+    if (undoing.value) return false;
     const todayMeal = findTodayMeal(meal);
     if (!todayMeal?.swap_id) return false;
+    undoing.value = true;
+    undoAbortCtrl = new AbortController();
     try {
-      await api.delete(`/api/v/client/nutrition/swap/${todayMeal.swap_id}`);
+      await api.delete(`/api/v/client/nutrition/swap/${todayMeal.swap_id}`, {
+        signal: undoAbortCtrl.signal,
+      });
       await onSwapUndone(meal);
       showToast('success', 'Reemplazo deshecho');
       return true;
-    } catch {
-      showToast('error', 'No pudimos deshacer el cambio');
+    } catch (e) {
+      if (e?.name !== 'CanceledError' && e?.code !== 'ERR_CANCELED') {
+        showToast('error', 'No pudimos deshacer el cambio');
+      }
       return false;
+    } finally {
+      undoing.value = false;
+      undoAbortCtrl = null;
     }
   }
 
@@ -168,10 +180,11 @@ export function useMealSwap(options = {}) {
   onBeforeUnmount(() => {
     if (toastTimer) clearTimeout(toastTimer);
     if (abortCtrl) abortCtrl.abort();
+    if (undoAbortCtrl) undoAbortCtrl.abort();
   });
 
   return {
-    swapping, swappedRecipe, swapHistory, searchQuery, searchCandidates,
+    swapping, undoing, swappedRecipe, swapHistory, searchQuery, searchCandidates,
     swapIndex, swapContext, toast,
     openPanel, closePanel, search, applySwap, undoSwap,
     isMealSwapped, getSwappedRecipe, scoreCompatibility,

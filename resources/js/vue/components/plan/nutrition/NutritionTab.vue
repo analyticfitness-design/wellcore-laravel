@@ -77,7 +77,7 @@
       <Transition name="fade">
         <div
           v-if="swap.toast.value"
-          class="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-xl border px-5 py-3 text-sm font-semibold shadow-lg backdrop-blur-sm"
+          class="fixed bottom-24 left-1/2 z-50 max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-xl border px-5 py-3 text-center text-sm font-semibold shadow-lg backdrop-blur-sm"
           :class="swap.toast.value.type === 'success'
             ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
             : 'border-red-500/30 bg-red-500/10 text-red-400'"
@@ -101,6 +101,7 @@
         :swap-search-query="swap.searchQuery.value"
         :swap-candidates="swap.swapIndex.value === mIdx ? swap.searchCandidates.value : []"
         :applying="swap.swapping.value"
+        :restoring="swap.undoing.value"
         :active-option="activeOptions[mIdx] || 'a'"
         @toggle="toggleMeal(mIdx)"
         @open-swap="swap.openPanel(mIdx, meal)"

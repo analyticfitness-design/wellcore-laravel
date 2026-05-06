@@ -9,7 +9,7 @@
         <button
           type="button"
           @click="$emit('close')"
-          class="inline-flex min-h-[36px] items-center gap-1 font-data text-[11px] text-wc-text-tertiary transition hover:text-wc-text"
+          class="inline-flex min-h-[44px] items-center gap-1 px-2 -mr-2 font-data text-[11px] text-wc-text-tertiary transition hover:text-wc-text"
           aria-label="Cerrar panel de alternativas"
         >
           Cancelar
