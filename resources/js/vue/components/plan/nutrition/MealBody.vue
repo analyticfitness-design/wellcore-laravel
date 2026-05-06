@@ -27,7 +27,7 @@
         </ul>
 
         <template v-if="swappedRecipe.steps && swappedRecipe.steps.length">
-          <p class="mt-3.5 mb-1.5 font-display text-[10px] tracking-[0.18em] text-wc-text-secondary">PREPARACION</p>
+          <p class="mt-3.5 mb-1.5 font-display text-[10px] tracking-[0.18em] text-wc-text-secondary">PREPARACIÓN</p>
           <ol class="space-y-1.5">
             <li
               v-for="(step, si) in swappedRecipe.steps"
@@ -61,7 +61,7 @@
           :class="(activeOption || 'a') === optKey
             ? 'bg-wc-accent text-white'
             : 'bg-wc-bg-tertiary text-wc-text-secondary hover:text-wc-text border border-wc-border'"
-        >Opcion {{ optKey.toUpperCase() }}</button>
+        >Opción {{ optKey.toUpperCase() }}</button>
       </div>
       <ul>
         <MealItem
