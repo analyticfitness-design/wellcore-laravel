@@ -206,7 +206,7 @@ function formatDate(dateStr) {
           </svg>
         </div>
         <h3 class="mt-4 font-display text-xl text-wc-text">ANALIZANDO...</h3>
-        <p class="mt-2 text-sm text-wc-text-secondary">La IA esta procesando tu foto. Esto puede tomar unos segundos.</p>
+        <p class="mt-2 text-sm text-wc-text-secondary">Procesando tu foto. Esto puede tomar unos segundos.</p>
         <div class="mx-auto mt-4 h-1 w-48 overflow-hidden rounded-full bg-wc-bg-secondary">
           <div class="h-full animate-pulse rounded-full bg-wc-accent" style="width: 60%"></div>
         </div>
