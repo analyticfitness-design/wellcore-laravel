@@ -65,6 +65,8 @@
     /* DS Profile v2 — wc-text-quaternary para meta/captions (peso visual mínimo). */
     --color-wc-text-quaternary: #8A95A3;
     --color-wc-border: rgba(0, 0, 0, 0.12);
+    /* DS Nutrition v2 — wc-border-strong para divisores de mayor peso visual (cards hero, swap panel). */
+    --color-wc-border-strong: rgba(0, 0, 0, 0.14);
 
     /* Accent soft (for BentoToast ticket preset) */
     --color-wc-accent-soft: #f87171;

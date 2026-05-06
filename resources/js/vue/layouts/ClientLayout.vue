@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onUnmounted, onBeforeUnmount, provide } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import { useApi } from '../composables/useApi';
@@ -43,6 +43,10 @@ const accountCheckDone = ref(false);
 // Coach branding (P4)
 const coachBrand = ref(null); // { name, logo_url, logo_url_webp, primary_color, nombre_comercial, tagline }
 
+// Provide downstream para que NutritionTab/CoachNote consuman el coach asignado real
+// del cliente (en vez de placeholder "Tu coach"). Ver PlanViewer → coachInfoForNutrition.
+provide('clientCoach', coachBrand);
+
 // Plan phase badge (topbar)
 const planPhaseText = ref('');
 
@@ -72,6 +76,7 @@ onMounted(async () => {
             accountStatusValue.value = err.response.data.status || 'inactivo';
         }
     }
+
     accountCheckDone.value = true;
 
     // my-coach

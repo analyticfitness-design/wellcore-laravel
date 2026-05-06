@@ -16,7 +16,7 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2.5">
               <h2 class="font-display text-2xl tracking-wide text-wc-text">ANALIZAR COMIDA</h2>
-              <span class="rounded-full bg-wc-accent/10 border border-wc-accent/30 px-2 py-0.5 text-[10px] font-bold tracking-wider text-wc-accent uppercase">IA · Haiku</span>
+              <span class="rounded-full bg-wc-accent/10 border border-wc-accent/30 px-2 py-0.5 text-[10px] font-bold tracking-wider text-wc-accent uppercase">WellCore</span>
             </div>
             <button
               @click="$emit('close')"
@@ -82,13 +82,31 @@
               <div class="h-px flex-1 bg-wc-border"/>
             </div>
 
-            <!-- Textarea -->
-            <textarea
-              v-model="description"
-              placeholder="Ej: comí 2 arepas con queso, un jugo de naranja y un huevo frito..."
-              rows="3"
-              class="w-full resize-none rounded-xl border border-wc-border bg-wc-bg px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent/50 focus:outline-none focus:ring-2 focus:ring-wc-accent/20 transition-colors"
-            />
+            <!-- Textarea con boton de dictado por voz (matching FoodTracking) -->
+            <div class="relative">
+              <textarea
+                v-model="description"
+                :placeholder="isRecording ? 'Grabando…' : 'Ej: comí 2 arepas con queso, un jugo de naranja y un huevo frito...'"
+                rows="3"
+                class="w-full resize-none rounded-xl border border-wc-border bg-wc-bg px-4 py-3 pr-12 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent/50 focus:outline-none focus:ring-2 focus:ring-wc-accent/20 transition-colors"
+              />
+              <button
+                v-if="voice.supported.value"
+                type="button"
+                @click="isRecording ? stopDictating() : startDictating()"
+                :title="isRecording ? 'Detener dictado' : 'Dictar por voz'"
+                aria-label="Dictar por voz"
+                class="absolute right-2.5 top-2.5 flex h-9 w-9 items-center justify-center rounded-full transition"
+                :class="isRecording ? 'bg-red-500 text-white animate-pulse' : 'bg-wc-accent/10 text-wc-accent hover:bg-wc-accent/20'"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
+                </svg>
+              </button>
+            </div>
+            <p v-if="!voice.supported.value" class="text-[10px] text-wc-text-tertiary -mt-2">
+              Tu navegador no soporta dictado por voz.
+            </p>
 
             <!-- Analyze button -->
             <button
@@ -96,7 +114,7 @@
               :disabled="!canAnalyze"
               class="w-full rounded-xl bg-wc-accent py-3 text-sm font-bold uppercase tracking-wider text-white transition-opacity disabled:opacity-40 hover:opacity-90"
             >
-              Analizar con IA
+              Analizar comida
             </button>
           </template>
 
@@ -207,6 +225,12 @@
 <script setup>
 import { ref, computed, watch, onBeforeUnmount } from 'vue';
 import { useApi } from '../composables/useApi';
+import { useVoiceTranscription } from '../composables/useVoiceTranscription';
+
+// Voice logger — replica el patron de FoodTracking.vue para que el cliente
+// pueda dictar la descripcion en lugar de tipear.
+const voice = useVoiceTranscription({ lang: 'es-CO' });
+const isRecording = ref(false);
 
 const props = defineProps({
   show: {
@@ -238,7 +262,7 @@ const dotStates = [
   'Procesando imagen y texto...',
   'Identificando alimentos...',
   'Calculando macros...',
-  'Consultando al coach IA...',
+  'Consultando WellCore...',
 ];
 let dotsStep = 0;
 
@@ -270,6 +294,27 @@ watch(() => props.show, (val) => {
 
 function triggerCamera() {
   fileInput.value?.click();
+}
+
+async function startDictating() {
+  if (!voice.supported.value) return;
+  isRecording.value = true;
+  try {
+    const text = await voice.start({ continuous: false, interim: true });
+    if (text) {
+      const prev = (description.value || '').trim();
+      description.value = prev ? `${prev} ${text}` : text;
+    }
+  } catch {
+    /* silent — error message ya viene del composable si aplica */
+  } finally {
+    isRecording.value = false;
+  }
+}
+
+function stopDictating() {
+  voice.stop();
+  isRecording.value = false;
 }
 
 function handleImage(e) {
