@@ -83,23 +83,25 @@
       />
     </ul>
 
-    <!-- "POR QUÉ" inline (HTML target m-meal-note) -->
+    <!-- "POR QUÉ" inline con accent border-left wc-accent -->
     <div
       v-if="meal.notas"
-      class="rounded-lg border border-wc-border bg-wc-bg-tertiary px-3.5 py-3"
+      class="relative rounded-lg border border-wc-border bg-wc-bg-tertiary px-3.5 py-3"
     >
-      <p class="mb-1.5 font-data text-[9px] uppercase tracking-[0.14em] text-wc-text-tertiary">
+      <span aria-hidden="true" class="absolute left-0 top-3 bottom-3 w-[2px] rounded-full bg-wc-accent/60"></span>
+      <p class="mb-1.5 flex items-center gap-1.5 font-data text-[9px] uppercase tracking-[0.14em] text-wc-accent">
+        <span class="h-1 w-1 rounded-full bg-wc-accent"></span>
         Por qué
       </p>
       <p class="text-xs leading-relaxed text-wc-text-secondary">{{ meal.notas }}</p>
     </div>
 
-    <!-- Actions row: Marcar / Cambiar -->
+    <!-- Actions row: Marcar (emerald semantic OK) / Cambiar (wc-accent brand) -->
     <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
       <button
         type="button"
         @click="emit('mark-meal')"
-        class="inline-flex flex-1 min-h-[40px] items-center justify-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-tertiary/40 px-4 py-2.5 font-display text-[11px] uppercase tracking-[0.1em] text-wc-text-secondary transition hover:border-emerald-400/40 hover:text-emerald-400 active:scale-[0.98]"
+        class="inline-flex flex-1 min-h-[40px] items-center justify-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/[0.06] px-4 py-2.5 font-display text-[11px] uppercase tracking-[0.1em] text-emerald-400 transition hover:border-emerald-500/50 hover:bg-emerald-500/[0.12] active:scale-[0.98]"
       >
         <Check :size="13" :stroke-width="2.5" />
         Marcar
@@ -107,7 +109,7 @@
       <button
         type="button"
         @click="emit('open-swap')"
-        class="inline-flex flex-1 min-h-[40px] items-center justify-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-tertiary/40 px-4 py-2.5 font-display text-[11px] uppercase tracking-[0.1em] text-wc-text-secondary transition hover:border-wc-accent/40 hover:text-wc-accent active:scale-[0.98]"
+        class="inline-flex flex-1 min-h-[40px] items-center justify-center gap-1.5 rounded-full border border-wc-accent/30 bg-wc-accent/[0.06] px-4 py-2.5 font-display text-[11px] uppercase tracking-[0.1em] text-wc-accent transition hover:border-wc-accent/50 hover:bg-wc-accent/[0.12] active:scale-[0.98]"
       >
         <Replace :size="13" :stroke-width="2.5" />
         Cambiar

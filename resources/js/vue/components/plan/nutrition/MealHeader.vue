@@ -103,16 +103,25 @@ const subtitle = computed(() => {
     || '';
 });
 
-// Color accent del badge del index column basado en tipo de meal.
-// Replica getNutrMealColor del legacy: cada tipo de comida tiene su tinte sutil.
+// Paleta CONTROLADA — solo 3 acentos + neutral fallback. Sin pink/indigo (muy
+// femeninos). Reglas:
+//   - Desayuno → amber (warm energy)
+//   - Pre-entreno / post-entreno → emerald (semantic action OK)
+//   - Almuerzo / Cena → wc-accent (rojo brand WellCore)
+//   - Snack / Merienda / fallback → slate neutral
 const mealColorScheme = computed(() => {
   const n = (props.meal.nombre || props.meal.name || '').toLowerCase();
-  if (n.includes('desayuno')) return { bg: 'bg-amber-500/10', border: 'border-amber-500/30', num: 'text-amber-400', time: 'text-amber-400/80' };
-  if (n.includes('pre-entreno') || n.includes('pre entreno')) return { bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', num: 'text-emerald-400', time: 'text-emerald-400/80' };
-  if (n.includes('almuerzo') || n.includes('post-entreno') || n.includes('post entreno')) return { bg: 'bg-blue-500/10', border: 'border-blue-500/30', num: 'text-blue-400', time: 'text-blue-400/80' };
-  if (n.includes('cena')) return { bg: 'bg-indigo-500/10', border: 'border-indigo-500/30', num: 'text-indigo-400', time: 'text-indigo-400/80' };
-  if (n.includes('snack') || n.includes('merienda') || n.includes('media mañana') || n.includes('media manana')) return { bg: 'bg-pink-500/10', border: 'border-pink-500/30', num: 'text-pink-400', time: 'text-pink-400/80' };
-  return { bg: 'bg-wc-accent/10', border: 'border-wc-accent/30', num: 'text-wc-accent', time: 'text-wc-accent/80' };
+  if (n.includes('desayuno')) {
+    return { bg: 'bg-amber-500/10', border: 'border-amber-500/30', num: 'text-amber-400', time: 'text-amber-400/80' };
+  }
+  if (n.includes('pre-entreno') || n.includes('pre entreno') || n.includes('post-entreno') || n.includes('post entreno')) {
+    return { bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', num: 'text-emerald-400', time: 'text-emerald-400/80' };
+  }
+  if (n.includes('almuerzo') || n.includes('cena')) {
+    return { bg: 'bg-wc-accent/10', border: 'border-wc-accent/30', num: 'text-wc-accent', time: 'text-wc-accent/80' };
+  }
+  // Snacks, merienda, otros — neutral
+  return { bg: 'bg-wc-bg-tertiary', border: 'border-wc-border-strong', num: 'text-wc-text-tertiary', time: 'text-wc-text-secondary' };
 });
 
 const indexBadgeClass = computed(() => `${mealColorScheme.value.bg} ${mealColorScheme.value.border}`);

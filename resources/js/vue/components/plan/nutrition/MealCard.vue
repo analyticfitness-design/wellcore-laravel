@@ -101,16 +101,15 @@ defineEmits([
   'update:active-option',
 ]);
 
-// Color accent del border-left segun tipo de meal — matchea el badge del index.
+// Color accent del border-left segun tipo de meal — paleta controlada
+// (matchea el badge del index). Solo amber + emerald + wc-accent + neutral.
 const leftAccentClass = computed(() => {
   if (props.swapped) return 'bg-wc-accent';
   const n = (props.meal?.nombre || props.meal?.name || '').toLowerCase();
   if (n.includes('desayuno')) return 'bg-amber-500/60';
-  if (n.includes('pre-entreno') || n.includes('pre entreno')) return 'bg-emerald-500/60';
-  if (n.includes('almuerzo') || n.includes('post-entreno') || n.includes('post entreno')) return 'bg-blue-500/60';
-  if (n.includes('cena')) return 'bg-indigo-500/60';
-  if (n.includes('snack') || n.includes('merienda')) return 'bg-pink-500/60';
-  return 'bg-wc-accent/40';
+  if (n.includes('pre-entreno') || n.includes('pre entreno') || n.includes('post-entreno') || n.includes('post entreno')) return 'bg-emerald-500/60';
+  if (n.includes('almuerzo') || n.includes('cena')) return 'bg-wc-accent/60';
+  return 'bg-wc-border-strong';
 });
 </script>
 
