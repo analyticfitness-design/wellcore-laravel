@@ -59,10 +59,12 @@ const backLabelMobile = computed(() => 'Volver al admin');
 async function handleEnd() {
     if (ending.value) return;
     ending.value = true;
+    const topEntry = topOfChain.value;
+    const isClientImpersonation = topEntry?.target_type === 'client';
     try {
         const redirect = await authStore.endImpersonation();
         refresh();
-        window.location.href = redirect || '/admin/coaches';
+        window.location.href = isClientImpersonation ? '/admin/clients' : (redirect || '/admin/coaches');
     } catch (e) {
         // Last-resort: even if everything fails, clear local state and go to login.
         ['wc_token', 'wc_user_type', 'wc_user_id', 'wc_user_name', 'wc_user_portal',
