@@ -38,16 +38,38 @@ const FOOD_MAP = [
 ];
 
 /**
- * Resolve a food-name string to a representative emoji.
- * Iterates FOOD_MAP keywords in order and returns the first emoji whose
- * keyword appears (case-insensitive substring) in the input. Results are
- * memoized in a module-level Map keyed by the lowercased input.
+ * Normalize a food entry that may be a string or an object shaped like
+ * `{ nombre, alimento, name, cantidad, porcion, quantity, amount }`.
+ * Mirrors PlanViewer.vue formatNutrAlimento() (line 306) — DO NOT modify behavior.
  *
- * @param {string} text - Free-form food description (e.g. "4 huevos enteros").
+ * @param {string|object} alimento
+ * @returns {string} Display text (e.g. "4 huevos — 200g") or '' if unresolvable.
+ */
+function formatFoodName(alimento) {
+  if (typeof alimento === 'string') return alimento;
+  if (alimento && typeof alimento === 'object') {
+    const name = alimento.nombre || alimento.alimento || alimento.name || '';
+    const qty = alimento.cantidad || alimento.porcion || alimento.quantity || alimento.amount || '';
+    if (name && qty) return `${name} — ${qty}`;
+    return name || qty || '';
+  }
+  if (alimento === null || alimento === undefined) return '';
+  return String(alimento);
+}
+
+/**
+ * Resolve a food entry (string or object) to a representative emoji.
+ * Iterates FOOD_MAP keywords in order and returns the first emoji whose
+ * keyword appears (case-insensitive substring) in the input. Object inputs
+ * are normalized via formatFoodName() to extract the searchable name.
+ * Results are memoized in a module-level Map keyed by the lowercased text.
+ *
+ * @param {string|object} input - Food description string or object.
  * @returns {string} Emoji character, or empty string if no keyword matches.
  */
-function foodIcon(text) {
-  const lower = (typeof text === 'string' ? text : '').toLowerCase();
+function foodIcon(input) {
+  const text = typeof input === 'string' ? input : formatFoodName(input);
+  const lower = text.toLowerCase();
   if (!lower) return '';
   const cached = cache.get(lower);
   if (cached !== undefined) return cached;
@@ -70,5 +92,5 @@ function clearCache() {
 }
 
 export function useFoodIcon() {
-  return { foodIcon, clearCache };
+  return { foodIcon, formatFoodName, clearCache };
 }

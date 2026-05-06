@@ -8,10 +8,11 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useFoodIcon } from '@/composables/useFoodIcon';
 
 const props = defineProps({
   food: {
-    type: String,
+    type: [String, Object],
     required: true,
   },
   icon: {
@@ -20,9 +21,11 @@ const props = defineProps({
   },
 });
 
+const { formatFoodName } = useFoodIcon();
+
 const formattedFood = computed(() => {
-  if (!props.food) return '';
-  const trimmed = props.food.trim();
+  const raw = formatFoodName(props.food);
+  const trimmed = (raw || '').trim();
   if (!trimmed) return '';
   const first = trimmed.charAt(0);
   if (first === first.toLowerCase() && first !== first.toUpperCase()) {
