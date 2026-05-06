@@ -25,6 +25,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class TrainingController extends Controller
 {
@@ -87,6 +88,12 @@ class TrainingController extends Controller
             }
         }
 
+        // Plan Viewer V2: enrich aditivamente con campos derivados sin tocar el JSON original
+        // del plan. NUNCA reescribe gif_url, sort_order, coach_note, series, reps, rest, RIR.
+        if ($trainingPlan) {
+            $trainingPlan = $this->enrichTrainingPlanV2($trainingPlan, $clientId);
+        }
+
         // Week progression
         $currentWeek = 1;
         $totalWeeks = 1;
@@ -132,6 +139,281 @@ class TrainingController extends Controller
             'habit_compliance' => $habitData['compliance'],
             'bloodwork' => $bloodwork,
         ]);
+    }
+
+    // ─── Plan Viewer V2 — enrich + toggle variation ───────────────────
+
+    /**
+     * POST /api/v/client/plan/exercise/{id}/toggle-variation
+     *
+     * Persist el "estoy usando la variación" flag en una tabla auxiliar
+     * sin modificar el JSON content del plan ni el gif_url original.
+     * Idempotente. Rate-limited en routes/api.php.
+     * IDOR-safe: valida que el ejercicio pertenezca a un plan activo del cliente.
+     */
+    public function toggleVariation(Request $request, int $id): JsonResponse
+    {
+        $client = $this->resolveClientOrFail($request);
+
+        $validated = $request->validate([
+            'use_variant' => 'required|boolean',
+        ]);
+
+        // IDOR check: el ejercicio debe estar dentro del JSON content del plan
+        // de entrenamiento ACTIVO del cliente autenticado.
+        $plan = AssignedPlan::where('client_id', $client->id)
+            ->where('plan_type', 'entrenamiento')
+            ->where('active', true)
+            ->first();
+
+        if (! $plan) {
+            abort(404, 'No tienes un plan de entrenamiento activo.');
+        }
+
+        $content = is_array($plan->content)
+            ? $plan->content
+            : json_decode((string) $plan->content, true);
+
+        $belongs = false;
+        $hasVariant = false;
+        foreach (($content['semanas'] ?? []) as $sem) {
+            foreach (($sem['dias'] ?? []) as $dia) {
+                foreach (($dia['ejercicios'] ?? []) as $ej) {
+                    if ((int) ($ej['id'] ?? 0) === $id) {
+                        $belongs = true;
+                        $hasVariant = ! empty($ej['variacion']);
+                        break 3;
+                    }
+                }
+            }
+        }
+        if (! $belongs && isset($content['dias'])) {
+            // Plan plano (sin macrociclo): mismo check sobre dias[].ejercicios[]
+            foreach (($content['dias'] ?? []) as $dia) {
+                foreach (($dia['ejercicios'] ?? []) as $ej) {
+                    if ((int) ($ej['id'] ?? 0) === $id) {
+                        $belongs = true;
+                        $hasVariant = ! empty($ej['variacion']);
+                        break 2;
+                    }
+                }
+            }
+        }
+
+        if (! $belongs) {
+            abort(403);
+        }
+
+        // Defensive: si el ejercicio NO tiene variación definida en el plan, rechazar
+        // el toggle on-state (no se puede "usar variación" si no hay variación).
+        if ($validated['use_variant'] && ! $hasVariant) {
+            return response()->json([
+                'message' => 'Este ejercicio no tiene variación disponible.',
+            ], 422);
+        }
+
+        DB::table('plan_exercise_variations')->updateOrInsert(
+            ['client_id' => $client->id, 'exercise_id' => $id],
+            [
+                'using_variant' => (bool) $validated['use_variant'],
+                'updated_at' => now(),
+            ]
+        );
+
+        return response()->json([
+            'using_variant' => (bool) $validated['use_variant'],
+            'exercise_id' => $id,
+        ]);
+    }
+
+    /**
+     * Aditivo y defensivo: agrega campos V2 al training_plan SIN modificar
+     * los campos existentes (gif_url, series, reps, rest, RIR, coach_note,
+     * sort_order/numero, etc. quedan IDÉNTICOS al input).
+     */
+    private function enrichTrainingPlanV2(array $trainingPlan, int $clientId): array
+    {
+        // Variation states cargados de una sola vez (evita N+1)
+        $variantStates = [];
+        if (Schema::hasTable('plan_exercise_variations')) {
+            $variantStates = DB::table('plan_exercise_variations')
+                ->where('client_id', $clientId)
+                ->pluck('using_variant', 'exercise_id')
+                ->toArray();
+        }
+
+        // 1) objetivo_bloque: tomar tal cual del JSON si existe
+        $trainingPlan['objetivo_bloque'] = (string) ($trainingPlan['objetivo_bloque']
+            ?? $trainingPlan['objetivo']
+            ?? $trainingPlan['plan_objetivo']
+            ?? '');
+
+        // 2) weekly_schedule: derivado server-side desde semana actual
+        $trainingPlan['weekly_schedule'] = $this->deriveWeeklySchedule($trainingPlan);
+
+        // 3) Walk semanas/dias/ejercicios para enriquecer cada nodo
+        if (isset($trainingPlan['semanas']) && is_array($trainingPlan['semanas'])) {
+            foreach ($trainingPlan['semanas'] as $sIdx => $semana) {
+                foreach (($semana['dias'] ?? []) as $dIdx => $dia) {
+                    // cooldown: nombre canónico V2
+                    $cooldown = $dia['cooldown'] ?? $dia['vuelta_calma'] ?? $dia['vuelta_a_la_calma'] ?? null;
+                    $trainingPlan['semanas'][$sIdx]['dias'][$dIdx]['cooldown'] = $cooldown ? (string) $cooldown : null;
+
+                    foreach (($dia['ejercicios'] ?? []) as $eIdx => $ej) {
+                        $trainingPlan['semanas'][$sIdx]['dias'][$dIdx]['ejercicios'][$eIdx]
+                            = $this->enrichExerciseV2($ej, $variantStates);
+                    }
+                }
+            }
+        } elseif (isset($trainingPlan['dias']) && is_array($trainingPlan['dias'])) {
+            foreach ($trainingPlan['dias'] as $dIdx => $dia) {
+                $cooldown = $dia['cooldown'] ?? $dia['vuelta_calma'] ?? $dia['vuelta_a_la_calma'] ?? null;
+                $trainingPlan['dias'][$dIdx]['cooldown'] = $cooldown ? (string) $cooldown : null;
+
+                foreach (($dia['ejercicios'] ?? []) as $eIdx => $ej) {
+                    $trainingPlan['dias'][$dIdx]['ejercicios'][$eIdx]
+                        = $this->enrichExerciseV2($ej, $variantStates);
+                }
+            }
+        }
+
+        return $trainingPlan;
+    }
+
+    /**
+     * Enrich un ejercicio individual con los campos V2.
+     * No toca campos existentes — solo agrega los nuevos.
+     */
+    private function enrichExerciseV2(array $ej, array $variantStates): array
+    {
+        // tipo (fuerza | cardio) heurística defensiva
+        $ej['tipo'] = $this->detectExerciseType($ej);
+
+        // block_id / es_superset / es_circuito (defaults seguros)
+        $ej['block_id'] = isset($ej['block_id']) ? (string) $ej['block_id'] : (string) ($ej['bloque_id'] ?? '');
+        if ($ej['block_id'] === '') {
+            $ej['block_id'] = null;
+        }
+        $ej['es_superset'] = (bool) ($ej['es_superset'] ?? $ej['superset'] ?? false);
+        $ej['es_circuito'] = (bool) ($ej['es_circuito'] ?? $ej['circuito'] ?? false);
+
+        // variacion (objeto opcional con shape {nombre, gif_url, original_id})
+        $ej['variacion'] = $this->normalizeVariacion($ej['variacion'] ?? null);
+
+        // is_using_variant (server state)
+        $exId = (int) ($ej['id'] ?? 0);
+        $ej['is_using_variant'] = $exId > 0
+            ? (bool) ($variantStates[$exId] ?? false)
+            : false;
+
+        // Cardio fields (solo populated si tipo === 'cardio')
+        if ($ej['tipo'] === 'cardio') {
+            $ej['cardio_min'] = $ej['cardio_min'] ?? $ej['minutos'] ?? null;
+            $ej['cardio_velocidad'] = $ej['cardio_velocidad'] ?? $ej['velocidad'] ?? $ej['kmh'] ?? null;
+            $ej['cardio_inclinacion'] = $ej['cardio_inclinacion'] ?? $ej['inclinacion'] ?? null;
+        }
+
+        return $ej;
+    }
+
+    /**
+     * Heurística para clasificar ejercicio fuerza|cardio sin tocar el catálogo.
+     */
+    private function detectExerciseType(array $ej): string
+    {
+        $explicit = strtolower((string) ($ej['tipo'] ?? ''));
+        if ($explicit === 'cardio') {
+            return 'cardio';
+        }
+        if ($explicit === 'fuerza' || $explicit === 'strength') {
+            return 'fuerza';
+        }
+
+        $grupo = strtolower((string) ($ej['grupo'] ?? ''));
+        if ($grupo === 'cardio') {
+            return 'cardio';
+        }
+
+        $name = strtolower((string) ($ej['nombre'] ?? $ej['name'] ?? ''));
+        $cardioKeywords = ['cinta', 'caminadora', 'bicicleta', 'eliptica', 'elíptica', 'cardio', 'rower', 'remo cardio', 'salto', 'jumping'];
+        foreach ($cardioKeywords as $kw) {
+            if (str_contains($name, $kw)) {
+                return 'cardio';
+            }
+        }
+
+        // Si tiene cardio_min populated, tratarlo como cardio
+        if (! empty($ej['cardio_min']) || ! empty($ej['minutos']) || ! empty($ej['kmh'])) {
+            return 'cardio';
+        }
+
+        return 'fuerza';
+    }
+
+    /**
+     * Normaliza la estructura de variacion (defensive contra shapes legacy).
+     */
+    private function normalizeVariacion(mixed $raw): ?array
+    {
+        if (! is_array($raw) || empty($raw)) {
+            return null;
+        }
+        $nombre = (string) ($raw['nombre'] ?? $raw['name'] ?? '');
+        $gif = (string) ($raw['gif_url'] ?? $raw['gif'] ?? '');
+        $orig = $raw['original_id'] ?? $raw['exercise_id'] ?? null;
+        if ($nombre === '' && $gif === '') {
+            return null;
+        }
+        return [
+            'nombre' => $nombre,
+            'gif_url' => $gif,
+            'original_id' => $orig !== null ? (int) $orig : null,
+        ];
+    }
+
+    /**
+     * Derivar el weekly_schedule (split L-S) desde la semana ACTUAL o la primera.
+     */
+    private function deriveWeeklySchedule(array $trainingPlan): array
+    {
+        $semanas = $trainingPlan['semanas'] ?? [];
+        if (! is_array($semanas) || empty($semanas)) {
+            return [];
+        }
+
+        $sem = null;
+        foreach ($semanas as $s) {
+            if (! empty($s['es_actual'])) {
+                $sem = $s;
+                break;
+            }
+        }
+        if (! $sem) {
+            $sem = $semanas[0];
+        }
+
+        $letters = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+        $labels = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+
+        $out = [];
+        $dias = (array) ($sem['dias'] ?? []);
+        $count = min(count($dias), 7);
+        for ($i = 0; $i < $count; $i++) {
+            $d = $dias[$i] ?? null;
+            if (! is_array($d)) {
+                continue;
+            }
+            $titulo = (string) ($d['titulo'] ?? $d['nombre'] ?? '');
+            if ($titulo === '' && ! empty($d['grupos']) && is_array($d['grupos'])) {
+                $titulo = implode(' · ', array_map('ucfirst', $d['grupos']));
+            }
+            $out[] = [
+                'day_letter' => $letters[$i] ?? '·',
+                'day_label' => $labels[$i] ?? '',
+                'muscle_groups' => $titulo,
+            ];
+        }
+        return $out;
     }
 
     // ─── Training View (Weekly Calendar) ───────────────────────────────

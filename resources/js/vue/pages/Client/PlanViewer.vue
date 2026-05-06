@@ -9,6 +9,8 @@ import AiFoodEstimator from '../../components/AiFoodEstimator.vue';
 import LockOverlay from '../../components/LockOverlay.vue';
 import PlanHero from '../../components/plan/PlanHero.vue';
 import NutritionTab from '@/components/plan/nutrition/NutritionTab.vue';
+import WorkoutTabV2 from '@/components/plan/workout/WorkoutTabV2.vue';
+import { useFeatureFlag } from '../../composables/useFeatureFlag';
 import {
   FlaskConical, Dumbbell, Pill, Fish, Sun, Citrus, Star, Moon,
   Atom, Leaf, Zap, Dna, Flame, Bone, TestTube, Bed,
@@ -61,6 +63,11 @@ const router = useRouter();
 const route = useRoute();
 const toast = useToast();
 const { isLocked } = usePlanLock();
+
+// Feature flag para el redesign V2 del tab Entrenamiento.
+// Default OFF: evaluado server-side via window.__WC_FEATURES.plan_viewer_v2 (incluye pct gate).
+// QA local: localStorage.setItem('wc_force_plan_viewer_v2', '1'); reload().
+const useV2Workout = useFeatureFlag('plan_viewer_v2');
 
 // Modal de confirmación para eliminar bloodwork (reemplaza confirm() nativo)
 const showDeleteBwConfirm = ref(false);
@@ -888,6 +895,20 @@ onBeforeUnmount(() => {
 
         <!-- ==================== TAB: ENTRENAMIENTO ==================== -->
         <div v-if="activeTab === 'entrenamiento' && !isTabLocked('entrenamiento')">
+          <!-- V2 redesign behind feature flag (default OFF). Override local: localStorage wc_force_plan_viewer_v2='1' -->
+          <WorkoutTabV2
+            v-if="useV2Workout"
+            :training-plan="trainingPlan"
+            :client-plan-type="clientPlanType"
+            :coach="coachInfoForNutrition"
+            :is-locked="isLocked"
+            :loading="loading"
+            :error="error"
+            :current-week="currentWeek"
+            :total-weeks="totalWeeks ?? 4"
+            @retry="fetchPlan"
+          />
+          <template v-else>
           <template v-if="trainingPlan">
             <!-- Program Overview Card -->
             <div class="wc-topline wc-grain relative mb-6 overflow-hidden rounded-xl border border-wc-accent/20 bg-gradient-to-br from-wc-accent/[0.08] via-wc-bg-tertiary to-transparent p-5 sm:p-6">
@@ -1189,6 +1210,7 @@ onBeforeUnmount(() => {
             <h2 class="mt-5 font-display text-xl tracking-wide text-wc-text">PLAN EN PREPARACION</h2>
             <p class="mt-2 text-sm text-wc-text-secondary">Tu coach esta disenando tu plan de entrenamiento.</p>
           </div>
+          </template>
         </div>
 
         <!-- ==================== TAB: HABITOS ==================== -->

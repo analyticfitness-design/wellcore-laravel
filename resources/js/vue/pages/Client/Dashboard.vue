@@ -208,37 +208,37 @@ const PLAN_QUOTES = {
     metodo: [
         'El metodo no es perfeccion, es consistencia implacable.',
         'Proceso sobre resultado. El resultado es consecuencia del proceso.',
-        'Los habitos que construyes hoy son la persona que seras manana.',
-        'No hay atajo al cuerpo que quieres. Hay un metodo. Este es el tuyo.',
-        'La semana mas importante es la proxima. Empieza con esta sesion.',
-        'Confia en el plan. Los resultados llegan cuando la disciplina se vuelve rutina.',
-        'Un dia a la vez, una sesion a la vez. Eso es el metodo en accion.',
+        'Los hábitos que construyes hoy son la persona que serás mañana.',
+        'No hay atajo al cuerpo que quieres. Hay un método. Este es el tuyo.',
+        'La semana más importante es la próxima. Empieza con esta sesión.',
+        'Confía en el plan. Los resultados llegan cuando la disciplina se vuelve rutina.',
+        'Un día a la vez, una sesión a la vez. Eso es el método en acción.',
     ],
     presencial: [
-        'La presencia lo es todo: cuerpo, mente y enfoque en cada sesion.',
-        'Cada entrenamiento en persona es una inversion directa en ti.',
-        'Tu coach esta aqui. Tu esfuerzo tambien tiene que estarlo.',
+        'La presencia lo es todo: cuerpo, mente y enfoque en cada sesión.',
+        'Cada entrenamiento en persona es una inversión directa en ti.',
+        'Tu coach está aquí. Tu esfuerzo también tiene que estarlo.',
         'Lo que construyes en persona, nadie te lo puede quitar.',
-        'Conexion real, resultados reales. Eso es lo que logras hoy.',
+        'Conexión real, resultados reales. Eso es lo que logras hoy.',
         'La disciplina que traes al gym se traduce en la vida que llevas afuera.',
-        'Hoy no es un dia comun: es otro dia que eligiste mejorar.',
+        'Hoy no es un día común: es otro día que elegiste mejorar.',
     ],
     esencial: [
-        'Cada gran transformacion comenzo con un primer paso. El tuyo cuenta.',
+        'Cada gran transformación comenzó con un primer paso. El tuyo cuenta.',
         'No necesitas ser el mejor hoy. Solo necesitas ser mejor que ayer.',
-        'La salud no es un destino, es un camino. Hoy caminas en la direccion correcta.',
+        'La salud no es un destino, es un camino. Hoy caminas en la dirección correcta.',
         'Resultados reales vienen de acciones reales. Esta es una de ellas.',
         'No subestimes el poder de la constancia. Los cambios llegan.',
-        'Tu cuerpo es capaz de mas de lo que crees. Hoy lo demuestras.',
-        'Moverse es vivir. Seguir moviendose es prosperar.',
+        'Tu cuerpo es capaz de más de lo que crees. Hoy lo demuestras.',
+        'Moverse es vivir. Seguir moviéndose es prosperar.',
     ],
     trial: [
         'Bienvenido al inicio de algo diferente. Hoy cuentas.',
-        'Los mejores viajes empiezan con curiosidad. La tuya te trajo aqui.',
+        'Los mejores viajes empiezan con curiosidad. La tuya te trajo aquí.',
         'Una semana puede cambiar una perspectiva. Esta es la tuya.',
         'No hay mejor momento para empezar que cuando ya empezaste.',
-        'El primer paso siempre es el mas importante. Ya lo diste.',
-        'Siente la diferencia que hace moverse con proposito.',
+        'El primer paso siempre es el más importante. Ya lo diste.',
+        'Siente la diferencia que hace moverse con propósito.',
         'Esto es solo el comienzo. Y los comienzos son poderosos.',
     ],
 };
@@ -254,10 +254,10 @@ const motivationalQuote = computed(() => {
 const weeklySummaryMessage = computed(() => {
     if (!data.value) return {};
     const w = data.value.lastWeekWorkouts || 0;
-    if (w >= 5) return { label: 'Semana excepcional', colorClass: 'text-emerald-600 dark:text-emerald-400', desc: `${w} entrenamientos completados. Sigue asi.` };
+    if (w >= 5) return { label: 'Semana excepcional', colorClass: 'text-emerald-600 dark:text-emerald-400', desc: `${w} entrenamientos completados. Sigue así.` };
     if (w >= 3) return { label: 'Buen ritmo', colorClass: 'text-sky-600 dark:text-sky-400', desc: `${w} entrenamientos esta semana. Vas por buen camino.` };
-    if (w >= 1) return { label: 'En camino', colorClass: 'text-amber-600 dark:text-amber-400', desc: 'Cada sesion cuenta. Intenta sumar una mas esta semana.' };
-    return { label: 'Nueva semana', colorClass: 'text-wc-accent', desc: 'Es un nuevo comienzo. Tu primera sesion te espera.' };
+    if (w >= 1) return { label: 'En camino', colorClass: 'text-amber-600 dark:text-amber-400', desc: 'Cada sesión cuenta. Intenta sumar una más esta semana.' };
+    return { label: 'Nueva semana', colorClass: 'text-wc-accent', desc: 'Es un nuevo comienzo. Tu primera sesión te espera.' };
 });
 
 // ── Week markers for plan progress bar (desktop) ──
