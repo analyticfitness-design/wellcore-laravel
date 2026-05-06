@@ -4,7 +4,7 @@
     <div class="flex items-center justify-between gap-3 px-4 py-2.5">
       <div class="flex min-w-0 items-center gap-2.5 rounded-full border border-wc-border bg-wc-bg-secondary/50 px-3 py-1 backdrop-blur-sm">
         <span class="relative flex h-1 w-1 shrink-0">
-          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-wc-accent opacity-60"></span>
+          <span class="absolute inline-flex h-full w-full motion-safe:animate-ping rounded-full bg-wc-accent opacity-60"></span>
           <span class="relative inline-flex h-1 w-1 rounded-full bg-wc-accent"></span>
         </span>
         <span class="font-display text-[9px] tracking-[0.22em] text-wc-text-tertiary">REEMPLAZADO POR</span>

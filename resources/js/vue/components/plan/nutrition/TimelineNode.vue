@@ -50,7 +50,7 @@ const dotClasses = computed(() => {
     case 'done':
       return `${base} bg-emerald-400 ring-4 ring-emerald-400/30`;
     case 'current':
-      return `${base} bg-wc-accent ring-4 ring-wc-accent/30 animate-pulse`;
+      return `${base} bg-wc-accent ring-4 ring-wc-accent/30 motion-safe:animate-pulse`;
     case 'swapped':
       return `${base} bg-wc-accent ring-4 ring-wc-accent/30`;
     case 'pending':
