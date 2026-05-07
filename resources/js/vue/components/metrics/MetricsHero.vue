@@ -26,7 +26,7 @@ const formattedDate = computed(() => {
         <span class="mhero-crumb-item mhero-crumb-item--active" aria-current="page">Métricas</span>
       </nav>
       <h1 class="mhero-title">Métricas</h1>
-      <p class="mhero-sub">Registra peso, medidas y composición corporal</p>
+      <p class="mhero-sub">Tu peso, composición y mediciones — leídos en contexto por tu coach.</p>
     </div>
 
     <!-- Right: streak badge + last date -->

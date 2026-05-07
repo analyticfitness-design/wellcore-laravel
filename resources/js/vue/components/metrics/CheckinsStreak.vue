@@ -5,11 +5,9 @@ const props = defineProps({
   weeklyCheckins: { type: Array, default: () => [] },
 });
 
-// Build a 12-cell grid; fill from weeklyCheckins data
 const cells = computed(() => {
   const maxWeeks = 12;
   const filled = [...props.weeklyCheckins].slice(-maxWeeks);
-  // Pad with empty cells to always show 12
   const result = [];
   for (let i = 0; i < maxWeeks; i++) {
     const data = filled[i] || null;
@@ -34,8 +32,10 @@ const attendancePct = computed(() => {
 <template>
   <div class="checkins-streak">
     <div class="streak-hd">
-      <p class="streak-label">Check-ins Semanales</p>
-      <p class="streak-sub">Últimas 12 semanas</p>
+      <div>
+        <p class="streak-label">Check-ins Semanales</p>
+        <p class="streak-sub">Últimas 12 semanas</p>
+      </div>
     </div>
 
     <div v-if="weeklyCheckins.length" class="streak-grid" role="list" aria-label="Historial de check-ins">
@@ -55,9 +55,15 @@ const attendancePct = computed(() => {
 
     <p v-else class="streak-empty">Sin check-ins recientes</p>
 
+    <!-- Eje de tiempo -->
     <div v-if="weeklyCheckins.length" class="streak-meta">
-      <span>12 semanas</span>
-      <span class="tnum">{{ attendancePct }}% asistencia</span>
+      <span>HACE 12 SEM</span>
+      <span>HOY</span>
+    </div>
+
+    <!-- Asistencia -->
+    <div v-if="weeklyCheckins.length" class="streak-attendance">
+      <span class="streak-pct tnum">{{ attendancePct }}<small>% asistencia</small></span>
     </div>
   </div>
 </template>
@@ -92,6 +98,8 @@ const attendancePct = computed(() => {
 .streak-cell--full { background: var(--color-wc-success, #10B981); border-color: transparent; }
 .streak-cell--partial { background: rgba(16,185,129,.45); border-color: transparent; }
 .streak-cell--miss { background: var(--color-wc-bg); border-color: var(--color-wc-border); }
+
+/* Eje de tiempo */
 .streak-meta {
   display: flex;
   justify-content: space-between;
@@ -100,6 +108,31 @@ const attendancePct = computed(() => {
   font-size: 11px;
   color: var(--color-wc-text-tertiary);
   letter-spacing: .04em;
+}
+
+/* Asistencia total */
+.streak-attendance {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-wc-border);
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.streak-pct {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--color-wc-text);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.streak-pct small {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-wc-text-tertiary);
+  font-weight: 400;
+  margin-left: 3px;
 }
 .tnum { font-variant-numeric: tabular-nums; }
 .streak-empty {

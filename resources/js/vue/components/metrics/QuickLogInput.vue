@@ -85,7 +85,7 @@ const emit = defineEmits(['update:modelValue', 'expand', 'submit']);
 }
 .quick-field {
   font-family: var(--font-display);
-  font-size: 52px;
+  font-size: 48px;
   font-weight: 600;
   line-height: 1;
   color: var(--color-wc-text);

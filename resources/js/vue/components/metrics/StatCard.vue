@@ -124,7 +124,7 @@ defineProps({
   font-weight: 700;
   letter-spacing: -.02em;
 }
-.stat-card--counter .stat-card__num { font-size: 44px; }
+.stat-card--counter .stat-card__num { font-size: 36px; }
 .stat-card--empty .stat-card__num {
   color: var(--color-wc-text-tertiary);
   font-weight: 500;

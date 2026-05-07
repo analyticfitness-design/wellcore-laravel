@@ -1,9 +1,7 @@
 <script setup>
-import DeltaBadge from './DeltaBadge.vue';
-
 defineProps({
   composition: { type: Object, default: null },
-  // { grasa, musculo, agua, date }
+  // { grasa, musculo, agua, date, measurements: { chest, waist, hip, thigh, arm } }
 });
 </script>
 
@@ -40,6 +38,30 @@ defineProps({
             <div class="comp-fill comp-fill--agua" :style="{ width: composition.agua + '%' }"></div>
           </div>
           <span class="comp-num tnum">{{ composition.agua }}<small>%</small></span>
+        </div>
+      </div>
+
+      <!-- Measurements grid (if available) -->
+      <div v-if="composition.measurements && Object.values(composition.measurements).some(v => v)" class="meas-grid">
+        <div v-if="composition.measurements.chest" class="meas-item">
+          <p class="meas-lbl">Pecho</p>
+          <p class="meas-num tnum">{{ composition.measurements.chest }}<small>cm</small></p>
+        </div>
+        <div v-if="composition.measurements.waist" class="meas-item">
+          <p class="meas-lbl">Cintura</p>
+          <p class="meas-num tnum">{{ composition.measurements.waist }}<small>cm</small></p>
+        </div>
+        <div v-if="composition.measurements.hip" class="meas-item">
+          <p class="meas-lbl">Cadera</p>
+          <p class="meas-num tnum">{{ composition.measurements.hip }}<small>cm</small></p>
+        </div>
+        <div v-if="composition.measurements.thigh" class="meas-item">
+          <p class="meas-lbl">Muslo</p>
+          <p class="meas-num tnum">{{ composition.measurements.thigh }}<small>cm</small></p>
+        </div>
+        <div v-if="composition.measurements.arm" class="meas-item">
+          <p class="meas-lbl">Brazo</p>
+          <p class="meas-num tnum">{{ composition.measurements.arm }}<small>cm</small></p>
         </div>
       </div>
     </template>
@@ -109,6 +131,42 @@ defineProps({
   display: inline;
   margin-left: 1px;
 }
+
+/* Measurements sub-grid */
+.meas-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-wc-border);
+}
+.meas-item { /* left-aligned */ }
+.meas-lbl {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--color-wc-text-tertiary);
+  margin: 0 0 6px;
+}
+.meas-num {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-wc-text);
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+}
+.meas-num small {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-wc-text-tertiary);
+  font-weight: 400;
+  margin-left: 1px;
+}
+
 .comp-empty {
   font-size: 13px;
   color: var(--color-wc-text-tertiary);

@@ -78,6 +78,13 @@ const compositionData = computed(() => {
     grasa,
     agua: parseFloat(agua.toFixed(1)),
     date: lastDate.value,
+    measurements: {
+      chest: latestEntry.value.chest || latestEntry.value.pecho || null,
+      waist: latestEntry.value.waist || latestEntry.value.cintura || null,
+      hip: latestEntry.value.hip || latestEntry.value.cadera || null,
+      thigh: latestEntry.value.thigh || latestEntry.value.muslo || null,
+      arm: latestEntry.value.arm || latestEntry.value.brazo || null,
+    },
   };
 });
 

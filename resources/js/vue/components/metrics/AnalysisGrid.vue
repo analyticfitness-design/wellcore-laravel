@@ -11,14 +11,14 @@ defineProps({
 
 <template>
   <div class="analysis-grid">
-    <!-- Checkins streak -->
-    <div class="analysis-card">
-      <CheckinsStreak :weeklyCheckins="weeklyCheckins" />
-    </div>
-
-    <!-- Composition -->
+    <!-- MASTER: composición corporal (izquierda, más ancha) -->
     <div class="analysis-card">
       <CompositionPanel :composition="composition" />
+    </div>
+
+    <!-- DETAIL: check-ins semanales (derecha) -->
+    <div class="analysis-card">
+      <CheckinsStreak :weeklyCheckins="weeklyCheckins" />
     </div>
   </div>
 </template>
@@ -28,6 +28,7 @@ defineProps({
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
+  margin-bottom: 24px;
 }
 @media (min-width: 1024px) {
   .analysis-grid { grid-template-columns: 1.4fr 1fr; }

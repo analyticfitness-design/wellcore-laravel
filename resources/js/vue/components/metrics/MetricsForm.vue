@@ -23,9 +23,31 @@ const emit = defineEmits([
 </script>
 
 <template>
-  <section class="mform">
+  <section class="mform" id="log">
     <div class="mform-hd">
-      <p class="mform-title">Nuevo registro</p>
+      <div class="mform-hd-left">
+        <p class="mform-title">Nuevo registro</p>
+        <p class="mform-sub">Idealmente en ayunas, mismo día y hora cada semana.</p>
+      </div>
+      <!-- Mode toggle pills -->
+      <div class="mform-mode" role="tablist">
+        <button
+          type="button"
+          role="tab"
+          class="mform-mode-btn"
+          :class="{ 'mform-mode-btn--active': mode === 'quick' }"
+          :aria-selected="mode === 'quick'"
+          @click="emit('collapse')"
+        >Rápido</button>
+        <button
+          type="button"
+          role="tab"
+          class="mform-mode-btn"
+          :class="{ 'mform-mode-btn--active': mode === 'full' }"
+          :aria-selected="mode === 'full'"
+          @click="emit('expand')"
+        >Completo</button>
+      </div>
     </div>
 
     <form @submit.prevent="mode === 'quick' ? emit('quick-submit') : emit('full-submit')">
@@ -59,19 +81,64 @@ const emit = defineEmits([
 
 <style scoped>
 .mform {
-  padding: 0;
-  margin-bottom: 24px;
+  border-radius: 16px;
+  border: 1px solid var(--color-wc-border);
+  background: var(--color-wc-bg-secondary);
+  padding: 24px;
+  margin-bottom: 40px;
 }
-.mform-hd { margin-bottom: 16px; }
+.mform-hd {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.mform-hd-left { flex: 1; min-width: 0; }
 .mform-title {
   font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: .12em;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .18em;
   text-transform: uppercase;
-  color: var(--color-wc-text-tertiary);
+  color: var(--color-wc-text);
   margin: 0;
 }
+.mform-sub {
+  font-size: 13px;
+  color: var(--color-wc-text-tertiary);
+  margin: 4px 0 0;
+}
+
+/* Mode toggle */
+.mform-mode {
+  display: inline-flex;
+  padding: 4px;
+  background: var(--color-wc-bg);
+  border: 1px solid var(--color-wc-border);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+.mform-mode-btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  padding: 7px 14px;
+  border-radius: 999px;
+  color: var(--color-wc-text-tertiary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background .12s, color .12s;
+}
+.mform-mode-btn--active {
+  background: var(--color-wc-bg-secondary);
+  color: var(--color-wc-text);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.14);
+}
+
 /* Transition: slide + fade between modes */
 .mform-slide-enter-active,
 .mform-slide-leave-active { transition: opacity .18s ease, transform .18s ease; }
