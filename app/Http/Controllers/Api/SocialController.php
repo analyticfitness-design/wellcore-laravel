@@ -1539,6 +1539,7 @@ class SocialController extends Controller
                 'y_pct' => $n->y_pct,
                 'created_at' => $n->created_at,
                 'read_at' => $n->read_at,
+                'is_client_reply' => (bool) ($n->is_client_reply ?? false),
                 'coach' => $coach ? [
                     'id' => $coach->id,
                     'name' => $coach->name ?? '',
@@ -1548,6 +1549,65 @@ class SocialController extends Controller
         });
 
         return response()->json(['notes' => $payload]);
+    }
+
+    /**
+     * POST /api/v/client/photos/{id}/notes/reply
+     *
+     * Cliente responde a las notas del coach sobre una foto. Crea un
+     * ProgressPhotoNote con is_client_reply=true. coach_id queda al último
+     * coach que dejó una nota en esa foto (para mantener thread).
+     */
+    public function photoNotesReply(Request $request, int $id): JsonResponse
+    {
+        $client = $this->resolveClientOrFail($request);
+        $clientId = $client->id;
+
+        $validated = $request->validate([
+            'body' => ['required', 'string', 'min:1', 'max:2000'],
+        ]);
+
+        $photo = ProgressPhoto::where('client_id', $clientId)
+            ->where('id', $id)
+            ->first();
+
+        if (! $photo) {
+            return response()->json(['error' => 'Foto no encontrada.'], 404);
+        }
+
+        // Resolver coach_id del thread: última nota del coach en esta foto.
+        // Si no hay coach previo, usar coach actual del cliente.
+        $lastCoachNote = ProgressPhotoNote::where('photo_id', $id)
+            ->where('client_id', $clientId)
+            ->where(function ($q) {
+                $q->whereNull('is_client_reply')->orWhere('is_client_reply', false);
+            })
+            ->orderByDesc('created_at')
+            ->first(['coach_id']);
+
+        $coachId = $lastCoachNote?->coach_id ?? $client->coach_id ?? null;
+
+        if (! $coachId) {
+            return response()->json(['error' => 'Sin coach asignado para responder.'], 422);
+        }
+
+        $reply = ProgressPhotoNote::create([
+            'photo_id' => $id,
+            'coach_id' => $coachId,
+            'client_id' => $clientId,
+            'note_text' => $validated['body'],
+            'is_client_reply' => true,
+            'read_at' => null,
+        ]);
+
+        return response()->json([
+            'note' => [
+                'id' => $reply->id,
+                'note_text' => $reply->note_text,
+                'created_at' => $reply->created_at,
+                'is_client_reply' => true,
+            ],
+        ], 201);
     }
 
     // ─── Personal Records ──────────────────────────────────────────────

@@ -47,15 +47,14 @@ async function fetchNotes(photoId) {
 }
 
 async function markRead(photoId) {
+  // El endpoint GET /photos/{id}/notes ya marca las notas como leídas
+  // automáticamente en el backend (idempotente). Esta función queda como
+  // no-op para mantener API pública estable; actualizamos read_at local
+  // por si la UI necesita reflejar el cambio sin re-fetch.
   if (!photoId) return;
-  try {
-    await _api_().post(`/api/v/client/photos/${photoId}/notes/read`);
-    const list = _notesByPhotoId[photoId] || [];
-    const now = new Date().toISOString();
-    list.forEach((n) => { if (!n.read_at) n.read_at = now; });
-  } catch {
-    // Silent — not critical for UX
-  }
+  const list = _notesByPhotoId[photoId] || [];
+  const now = new Date().toISOString();
+  list.forEach((n) => { if (!n.read_at) n.read_at = now; });
 }
 
 async function reply(photoId, text) {
