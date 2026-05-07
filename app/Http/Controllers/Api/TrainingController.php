@@ -634,24 +634,85 @@ class TrainingController extends Controller
     }
 
     /**
-     * Normaliza la estructura de variacion (defensive contra shapes legacy).
+     * Normaliza la estructura de variacion preservando AL MÁXIMO la información del coach.
+     * Soporta shapes legacy:
+     *   - null/'' → null (sin variación)
+     *   - string "Press inclinado" → ['nombre' => 'Press inclinado', 'gif_url' => '', 'original_id' => null]
+     *   - array indexado ['Press inclinado', 'url.gif'] → nombre + gif_url
+     *   - array asociativo ['nombre' => '...', 'gif_url' => '...', 'original_id' => N] → respeta tal cual
+     *   - array con solo gif_url o solo nombre → conserva el campo populated
+     *
+     * Nunca destruye data del coach: si hay CUALQUIER hint de variación, retorna un array.
      */
     private function normalizeVariacion(mixed $raw): ?array
     {
-        if (! is_array($raw) || empty($raw)) {
+        // null o vacío → sin variación
+        if ($raw === null || $raw === '' || $raw === false) {
             return null;
         }
-        $nombre = $this->safeStr($raw['nombre'] ?? $raw['name'] ?? '');
-        $gif = $this->safeStr($raw['gif_url'] ?? $raw['gif'] ?? '');
-        $orig = $raw['original_id'] ?? $raw['exercise_id'] ?? null;
-        if ($nombre === '' && $gif === '') {
+
+        // string → tratarlo como nombre de la variación
+        if (is_string($raw)) {
+            $nombre = trim($raw);
+            return $nombre !== ''
+                ? ['nombre' => $nombre, 'gif_url' => '', 'original_id' => null]
+                : null;
+        }
+
+        // bool/int/float → no usable
+        if (! is_array($raw)) {
             return null;
         }
-        return [
+
+        if (empty($raw)) {
+            return null;
+        }
+
+        // Detectar si es array asociativo o indexado
+        $isAssoc = array_keys($raw) !== range(0, count($raw) - 1);
+
+        if ($isAssoc) {
+            // Shape canónico: {nombre, gif_url, original_id}
+            $nombre = $this->safeStr($raw['nombre'] ?? $raw['name'] ?? $raw['titulo'] ?? '');
+            $gif = $this->safeStr($raw['gif_url'] ?? $raw['gif'] ?? $raw['imagen'] ?? '');
+            $orig = $raw['original_id'] ?? $raw['exercise_id'] ?? $raw['id'] ?? null;
+            if ($nombre === '' && $gif === '') {
+                return null;
+            }
+            return [
+                'nombre' => $nombre,
+                'gif_url' => $gif,
+                'original_id' => is_numeric($orig) ? (int) $orig : null,
+            ];
+        }
+
+        // Array indexado: tomar el primer string como nombre, segundo como gif si existe
+        $nombre = $this->safeStr($raw[0] ?? '');
+        $gif = $this->safeStr($raw[1] ?? '');
+        // Si hay más de 1 variación (lista de opciones), tomar la primera como default
+        // y exponer las demás como `opciones` para futuras UI con selector múltiple.
+        $opciones = [];
+        if (count($raw) > 1) {
+            foreach ($raw as $opt) {
+                if (is_string($opt) && trim($opt) !== '') {
+                    $opciones[] = trim($opt);
+                } elseif (is_array($opt) && ! empty($opt['nombre'])) {
+                    $opciones[] = $this->safeStr($opt['nombre']);
+                }
+            }
+        }
+        if ($nombre === '') {
+            return null;
+        }
+        $result = [
             'nombre' => $nombre,
             'gif_url' => $gif,
-            'original_id' => is_numeric($orig) ? (int) $orig : null,
+            'original_id' => null,
         ];
+        if (! empty($opciones)) {
+            $result['opciones'] = $opciones;
+        }
+        return $result;
     }
 
     /**
