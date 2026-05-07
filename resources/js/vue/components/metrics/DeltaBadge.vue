@@ -56,8 +56,8 @@ import { computed } from 'vue';
   border: 1px solid rgba(220,38,38,.24);
 }
 .delta--neu {
-  color: var(--color-wc-text-secondary);
-  background: var(--color-wc-bg-secondary);
-  border: 1px solid var(--color-wc-border);
+  color: rgba(250,250,250,.64);
+  background: #1E1E22;
+  border: 1px solid rgba(255,255,255,.08);
 }
 </style>

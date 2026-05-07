@@ -18,6 +18,7 @@ const emit = defineEmits([
   'full-submit',
   'expand',
   'collapse',
+  'save-draft',
 ]);
 </script>
 
@@ -49,6 +50,7 @@ const emit = defineEmits([
           @update:form="emit('update:form', $event)"
           @submit="emit('full-submit')"
           @collapse="emit('collapse')"
+          @save-draft="emit('save-draft')"
         />
       </Transition>
     </form>
@@ -57,10 +59,7 @@ const emit = defineEmits([
 
 <style scoped>
 .mform {
-  border-radius: 16px;
-  border: 1px solid var(--color-wc-border);
-  background: var(--color-wc-bg-secondary);
-  padding: 20px;
+  padding: 0;
   margin-bottom: 24px;
 }
 .mform-hd { margin-bottom: 16px; }

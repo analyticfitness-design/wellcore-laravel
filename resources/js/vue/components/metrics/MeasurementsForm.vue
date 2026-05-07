@@ -7,7 +7,7 @@ defineProps({
   saving: { type: Boolean, default: false },
 });
 
-const emit = defineEmits(['update:form', 'submit', 'collapse']);
+const emit = defineEmits(['update:form', 'submit', 'collapse', 'save-draft']);
 const showGuide = ref(false);
 
 function updateField(key, value) {
@@ -131,16 +131,22 @@ function updateField(key, value) {
 
     <!-- Save row -->
     <div class="meas-save-row">
-      <button type="submit" class="btn-save" :disabled="saving" :aria-busy="saving">
-        <svg v-if="saving" class="spin" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity:.25"/>
-          <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" style="opacity:.75"/>
+      <div class="meas-privacy">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/>
         </svg>
-        {{ saving ? 'Guardando...' : 'Guardar registro' }}
-      </button>
-      <button type="button" class="btn-collapse" @click="emit('collapse')">
-        Modo rápido
-      </button>
+        <span>Solo tú y tu coach pueden ver estos datos</span>
+      </div>
+      <div class="meas-save-btns">
+        <button type="button" class="btn-draft" @click="emit('save-draft')">Guardar borrador</button>
+        <button type="submit" class="btn-save" :disabled="saving" :aria-busy="saving">
+          <svg v-if="saving" class="spin" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity:.25"/>
+            <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" style="opacity:.75"/>
+          </svg>
+          {{ saving ? 'Guardando...' : 'Guardar registro' }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -203,23 +209,49 @@ function updateField(key, value) {
 .guide-enter-active, .guide-leave-active { transition: max-height .3s ease, opacity .2s ease; max-height: 400px; }
 .guide-enter-from, .guide-leave-to { max-height: 0; opacity: 0; }
 /* Save row */
-.meas-save-row { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+.meas-save-row {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--color-wc-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.meas-privacy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  color: var(--color-wc-text-tertiary);
+}
+.meas-save-btns { display: flex; gap: 10px; }
+.btn-draft {
+  padding: 12px 18px;
+  min-height: 44px;
+  border-radius: 10px;
+  background: var(--color-wc-bg-secondary);
+  border: 1px solid var(--color-wc-border);
+  color: var(--color-wc-text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .12s;
+  white-space: nowrap;
+}
+.btn-draft:hover { background: var(--color-wc-bg-tertiary); }
 .btn-save {
-  flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: 48px; padding: 13px 20px; border-radius: 12px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 12px 20px; border-radius: 10px;
   background: var(--color-wc-accent); color: #fff;
-  font-family: var(--font-display); font-size: 15px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  font-family: var(--font-display); font-size: 14px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
   border: none; cursor: pointer; transition: background .12s;
+  white-space: nowrap;
 }
 .btn-save:hover:not(:disabled) { background: var(--color-wc-accent-hover); }
 .btn-save:disabled { opacity: .55; cursor: not-allowed; }
-.btn-collapse {
-  display: inline-flex; align-items: center; min-height: 48px; padding: 13px 16px; border-radius: 12px;
-  background: var(--color-wc-bg-secondary); border: 1px solid var(--color-wc-border);
-  font-size: 13px; font-weight: 500; color: var(--color-wc-text-secondary); cursor: pointer; transition: background .12s;
-  white-space: nowrap;
-}
-.btn-collapse:hover { background: var(--color-wc-bg-tertiary); color: var(--color-wc-text); }
 .spin { animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 </style>

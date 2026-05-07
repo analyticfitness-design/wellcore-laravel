@@ -3,7 +3,7 @@ import DeltaBadge from './DeltaBadge.vue';
 
 defineProps({
   composition: { type: Object, default: null },
-  // { grasa, musculo, otro, date }
+  // { grasa, musculo, agua, date }
 });
 </script>
 
@@ -33,13 +33,13 @@ defineProps({
           </div>
           <span class="comp-num tnum">{{ composition.grasa }}<small>%</small></span>
         </div>
-        <!-- Otro -->
+        <!-- Agua -->
         <div class="comp-row">
-          <span class="comp-name">Otro</span>
+          <span class="comp-name">Agua</span>
           <div class="comp-bar">
-            <div class="comp-fill comp-fill--otro" :style="{ width: composition.otro + '%' }"></div>
+            <div class="comp-fill comp-fill--agua" :style="{ width: composition.agua + '%' }"></div>
           </div>
-          <span class="comp-num tnum">{{ composition.otro }}<small>%</small></span>
+          <span class="comp-num tnum">{{ composition.agua }}<small>%</small></span>
         </div>
       </div>
     </template>
@@ -92,7 +92,7 @@ defineProps({
 }
 .comp-fill--musc { background: linear-gradient(90deg, #10B981, #34D399); }
 .comp-fill--grasa { background: linear-gradient(90deg, #F59E0B, #FBBF24); }
-.comp-fill--otro { background: linear-gradient(90deg, #525252, #737373); }
+.comp-fill--agua { background: linear-gradient(90deg, #3B82F6, #60A5FA); }
 .comp-num {
   font-family: var(--font-display);
   font-size: 18px;

@@ -29,8 +29,8 @@ defineProps({
   grid-template-columns: 1fr;
   gap: 16px;
 }
-@media (min-width: 768px) {
-  .analysis-grid { grid-template-columns: 1fr 1fr; }
+@media (min-width: 1024px) {
+  .analysis-grid { grid-template-columns: 1.4fr 1fr; }
 }
 .analysis-card {
   border-radius: 16px;

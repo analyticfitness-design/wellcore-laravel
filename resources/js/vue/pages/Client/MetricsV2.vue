@@ -40,6 +40,7 @@ const {
   errors: formErrors,
   saving: fullSaving,
   loadDraft,
+  saveDraft,
   updateField,
   submit: submitFullForm,
   resetForm,
@@ -71,11 +72,11 @@ const compositionData = computed(() => {
   if (!latestEntry.value?.porcentajeMusculo && !latestEntry.value?.porcentajeGrasa) return null;
   const musc = Number(latestEntry.value.porcentajeMusculo) || 0;
   const grasa = Number(latestEntry.value.porcentajeGrasa) || 0;
-  const otro = Math.max(0, 100 - musc - grasa);
+  const agua = Math.max(0, 100 - musc - grasa);
   return {
     musculo: musc,
     grasa,
-    otro: parseFloat(otro.toFixed(1)),
+    agua: parseFloat(agua.toFixed(1)),
     date: lastDate.value,
   };
 });
@@ -194,7 +195,7 @@ function triggerAchievement(message) {
     <div v-if="loading" class="mv2-skeleton">
       <div class="skel skel--hero"></div>
       <div class="mv2-stat-row">
-        <div class="skel skel--card" v-for="i in 3" :key="i"></div>
+        <div class="skel skel--card" v-for="i in 4" :key="i"></div>
       </div>
       <div class="skel skel--chart"></div>
     </div>
@@ -208,33 +209,35 @@ function triggerAchievement(message) {
         :lastDate="lastDate"
       />
 
-      <!-- Coach interpretation (if exists) -->
-      <CoachInterpretation :interpretation="interpretation" />
-
-      <!-- Photos crosslink -->
-      <CrossLinkPhotos :photos="photos" />
-
-      <!-- Stat cards row -->
+      <!-- Stat cards row (4 cards) -->
       <div class="mv2-stat-row">
         <StatCard
           label="Peso actual"
-          :value="currentWeight ? Number(currentWeight).toFixed(1) : '—'"
+          :value="currentWeight ? Number(currentWeight).toFixed(1) : null"
           unit="kg"
           variant="hero"
           :delta="weightChange"
         />
         <StatCard
-          label="Registros totales"
+          label="Cambio mensual"
+          :value="weightChange !== null ? weightChange : null"
+          unit="kg"
+          :delta="weightChange"
+        />
+        <StatCard
+          label="Objetivo"
+          :value="latestEntry?.objetivo ?? null"
+          unit="kg"
+        />
+        <StatCard
+          label="Registros"
           :value="recordsCount"
           variant="counter"
         />
-        <StatCard
-          label="Días desde último"
-          :value="daysSinceLast !== null ? daysSinceLast : '—'"
-          unit="días"
-          variant="default"
-        />
       </div>
+
+      <!-- Coach interpretation (if exists) -->
+      <CoachInterpretation :interpretation="interpretation" />
 
       <!-- Weight chart -->
       <WeightChart
@@ -250,6 +253,9 @@ function triggerAchievement(message) {
         :trainingVolume="weeklyVolume"
       />
 
+      <!-- Photos crosslink -->
+      <CrossLinkPhotos :photos="photos" />
+
       <!-- Log form -->
       <MetricsForm
         :mode="mode"
@@ -264,6 +270,7 @@ function triggerAchievement(message) {
         @full-submit="handleFullSubmit"
         @expand="setFull"
         @collapse="setQuick"
+        @save-draft="saveDraft"
       />
     </template>
   </div>
@@ -276,12 +283,15 @@ function triggerAchievement(message) {
 /* Stat row */
 .mv2-stat-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 12px;
   margin-bottom: 20px;
 }
-@media (max-width: 639px) {
-  .mv2-stat-row { grid-template-columns: 1fr; }
+@media (min-width: 768px) {
+  .mv2-stat-row { grid-template-columns: 1.5fr 1fr 1fr; }
+}
+@media (min-width: 1100px) {
+  .mv2-stat-row { grid-template-columns: 1.6fr 1fr 1fr .9fr; }
 }
 
 /* Skeleton */
