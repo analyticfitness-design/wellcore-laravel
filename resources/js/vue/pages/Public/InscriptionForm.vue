@@ -287,6 +287,10 @@ async function submit() {
     if (err.response?.data?.errors) {
       errors.value = err.response.data.errors;
       scrollToFirstError();
+      // Always surface a message so user knows why submit failed,
+      // even when the offending fields are on a previous hidden step.
+      errorMessage.value = err.response.data.message
+        || 'Revisa todos los campos e intenta de nuevo.';
     } else if (err.response?.data?.message) {
       errorMessage.value = err.response.data.message;
     } else {

@@ -810,6 +810,41 @@ class PublicFormController extends Controller
             };
         }
 
+        // comidas_dia (frontend) → comidas_por_dia (backend) with value normalisation
+        if (isset($input['comidas_dia']) && empty($input['comidas_por_dia'])) {
+            $input['comidas_por_dia'] = match ((string) $input['comidas_dia']) {
+                '2' => '2',
+                '3' => '3',
+                '4' => '4',
+                '5', '6+' => '5_mas',
+                default => (string) $input['comidas_dia'],
+            };
+        }
+
+        // horas_sueno frontend values → backend enum values
+        if (isset($input['horas_sueno'])) {
+            $input['horas_sueno'] = match ((string) $input['horas_sueno']) {
+                'menos_5', '5-6' => '5_menos',
+                '6-7', '7-8'     => '6_7',
+                '8+'             => '8_mas',
+                default          => (string) $input['horas_sueno'],
+            };
+        }
+
+        // horario_trabajo (job-type) → trabajo_tipo (activity-level) best-effort mapping
+        if (isset($input['horario_trabajo']) && empty($input['trabajo_tipo'])) {
+            $input['trabajo_tipo'] = match ($input['horario_trabajo']) {
+                'oficina', 'estudiante'               => 'sedentario',
+                'remoto', 'independiente', 'turnos'   => 'moderado',
+                default                               => 'moderado',
+            };
+        }
+
+        // alimentos_excluir (frontend name) → alimentos_evitar (backend/macros name)
+        if (isset($input['alimentos_excluir']) && empty($input['alimentos_evitar'])) {
+            $input['alimentos_evitar'] = $input['alimentos_excluir'];
+        }
+
         return $input;
     }
 
@@ -825,7 +860,7 @@ class PublicFormController extends Controller
             'peso' => 'required|numeric|min:30|max:300',
             'altura' => 'required|numeric|min:100|max:250',
             'genero' => 'required|in:hombre,mujer,otro,masculino,femenino',
-            'ciudad' => 'required|string|max:100',
+            'ciudad' => 'nullable|string|max:100',
             'pais' => 'nullable|string|max:100',
             'objetivo_principal' => 'required|string|max:255',
             'nivel_experiencia' => 'required|in:principiante,intermedio,avanzado',
