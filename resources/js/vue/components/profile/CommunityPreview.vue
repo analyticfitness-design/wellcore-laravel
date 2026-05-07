@@ -72,7 +72,7 @@ const displayName = computed(() => props.name || 'Tu nombre');
 
         <p v-if="bio" class="preview-bio">{{ bio }}</p>
         <p v-else class="preview-bio preview-bio--empty">
-          Sin descripción todavía.
+          Escribe algo sobre ti…
         </p>
       </div>
     </div>
