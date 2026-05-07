@@ -332,7 +332,7 @@ onBeforeUnmount(() => {
 }
 .select-trigger.is-open::after { transform: translateY(-30%) rotate(-135deg); }
 
-.select-trigger__placeholder { color: var(--color-wc-text-quaternary, var(--color-wc-text-tertiary)); }
+.select-trigger__placeholder { color: var(--color-wc-text-tertiary); }
 
 .select-trigger__icon {
   width: 28px;
