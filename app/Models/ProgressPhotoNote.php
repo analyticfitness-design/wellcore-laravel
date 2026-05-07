@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'x_pct',
     'y_pct',
     'read_at',
+    'is_client_reply',
 ])]
 class ProgressPhotoNote extends Model
 {
@@ -31,6 +32,7 @@ class ProgressPhotoNote extends Model
             'y_pct' => 'float',
             'created_at' => 'datetime',
             'read_at' => 'datetime',
+            'is_client_reply' => 'boolean',
         ];
     }
 
