@@ -177,10 +177,15 @@ class TrainingController extends Controller
 
         $belongs = false;
         $hasVariant = false;
-        foreach (($content['semanas'] ?? []) as $sem) {
-            foreach (($sem['dias'] ?? []) as $dia) {
-                foreach (($dia['ejercicios'] ?? []) as $ej) {
-                    if ((int) ($ej['id'] ?? 0) === $id) {
+        // Defensive: usar is_array() en vez de ?? [] porque el JSON content
+        // puede traer keys con valor null explícito (no missing).
+        $semanas = is_array($content['semanas'] ?? null) ? $content['semanas'] : [];
+        foreach ($semanas as $sem) {
+            $dias = is_array($sem['dias'] ?? null) ? $sem['dias'] : [];
+            foreach ($dias as $dia) {
+                $ejs = is_array($dia['ejercicios'] ?? null) ? $dia['ejercicios'] : [];
+                foreach ($ejs as $ej) {
+                    if (is_array($ej) && (int) ($ej['id'] ?? 0) === $id) {
                         $belongs = true;
                         $hasVariant = ! empty($ej['variacion']);
                         break 3;
@@ -188,11 +193,13 @@ class TrainingController extends Controller
                 }
             }
         }
-        if (! $belongs && isset($content['dias'])) {
+        if (! $belongs) {
             // Plan plano (sin macrociclo): mismo check sobre dias[].ejercicios[]
-            foreach (($content['dias'] ?? []) as $dia) {
-                foreach (($dia['ejercicios'] ?? []) as $ej) {
-                    if ((int) ($ej['id'] ?? 0) === $id) {
+            $diasFlat = is_array($content['dias'] ?? null) ? $content['dias'] : [];
+            foreach ($diasFlat as $dia) {
+                $ejs = is_array($dia['ejercicios'] ?? null) ? $dia['ejercicios'] : [];
+                foreach ($ejs as $ej) {
+                    if (is_array($ej) && (int) ($ej['id'] ?? 0) === $id) {
                         $belongs = true;
                         $hasVariant = ! empty($ej['variacion']);
                         break 2;
