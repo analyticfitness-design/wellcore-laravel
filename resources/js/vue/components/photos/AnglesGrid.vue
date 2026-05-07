@@ -1,17 +1,30 @@
 <script setup>
 /**
  * AnglesGrid — 3-column visual grid showing the three required angles
- * (Frente / Perfil / Espalda) as editorial silhouette cards.
+ * (Frente / Perfil / Espalda).
+ *
+ * Si recibe `genero` ('mujer' | 'hombre'), muestra las character images
+ * reales (silvia para mujer, dann para hombre) — preservando el flow del
+ * legacy ProgressPhotos.vue. Si NO se pasa género, fallback a las
+ * silhouettes editoriales SVG.
  *
  * Pure presentational — no interaction. Lives inside PhotoGuide.
  */
+import { computed } from 'vue';
 import AngleSilhouette from './AngleSilhouette.vue';
 
+const props = defineProps({
+  genero: { type: String, default: '' }, // 'mujer' | 'hombre' | ''
+});
+
 const ANGLES = [
-  { num: '01', variant: 'front', label: 'Frente',  desc: 'Mirando directo a la cámara, brazos relajados al lado del cuerpo. Pies separados al ancho de cadera.' },
-  { num: '02', variant: 'side',  label: 'Perfil',  desc: 'De lado izquierdo, exactamente 90° a la cámara. Mira al horizonte, brazos sueltos.' },
-  { num: '03', variant: 'back',  label: 'Espalda', desc: 'De espaldas a la cámara, brazos al lado del cuerpo. Hombros relajados, mirada al frente.' },
+  { num: '01', variant: 'front', file: 'frontal', label: 'Frente',  desc: 'Mirando directo a la cámara, brazos relajados al lado del cuerpo. Pies separados al ancho de cadera.' },
+  { num: '02', variant: 'side',  file: 'perfil',  label: 'Perfil',  desc: 'De lado izquierdo, exactamente 90° a la cámara. Mira al horizonte, brazos sueltos.' },
+  { num: '03', variant: 'back',  file: 'espalda', label: 'Espalda', desc: 'De espaldas a la cámara, brazos al lado del cuerpo. Hombros relajados, mirada al frente.' },
 ];
+
+const useCharacters = computed(() => props.genero === 'mujer' || props.genero === 'hombre');
+const characterBase = computed(() => props.genero === 'mujer' ? '/images/characters/silvia' : '/images/characters/dann');
 </script>
 
 <template>
@@ -30,7 +43,14 @@ const ANGLES = [
       </span>
 
       <div class="absolute inset-0 flex items-center justify-center">
-        <AngleSilhouette :variant="angle.variant" />
+        <img
+          v-if="useCharacters"
+          :src="`${characterBase}/${angle.file}.webp`"
+          :alt="angle.label"
+          class="h-[78%] w-auto object-contain"
+          loading="lazy"
+        />
+        <AngleSilhouette v-else :variant="angle.variant" />
       </div>
 
       <div class="relative bg-gradient-to-t from-black/55 to-transparent px-5 py-5">

@@ -17,6 +17,7 @@ import TipsList from './TipsList.vue';
 const props = defineProps({
   defaultOpen: { type: Boolean, default: true },
   storageKey: { type: String, default: 'wc_photo_guide' },
+  genero: { type: String, default: '' }, // 'mujer' | 'hombre' | '' — propaga a AnglesGrid
 });
 const emit = defineEmits(['toggle']);
 
@@ -37,7 +38,23 @@ function toggle() {
   emit('toggle', open.value);
 }
 
+function openGuide() {
+  if (open.value) return;
+  open.value = true;
+  try { localStorage.setItem(props.storageKey, 'open'); } catch { /* noop */ }
+  emit('toggle', true);
+}
+
+function closeGuide() {
+  if (!open.value) return;
+  open.value = false;
+  try { localStorage.setItem(props.storageKey, 'closed'); } catch { /* noop */ }
+  emit('toggle', false);
+}
+
 watch(() => props.storageKey, () => { open.value = _initial(); });
+
+defineExpose({ open: openGuide, close: closeGuide, toggle, isOpen: () => open.value });
 </script>
 
 <template>
@@ -95,7 +112,7 @@ watch(() => props.storageKey, () => { open.value = _initial(); });
             La técnica importa porque la comparativa solo es honesta si las fotos son consistentes.
           </p>
         </div>
-        <AnglesGrid />
+        <AnglesGrid :genero="genero" />
 
         <div class="mt-8">
           <TipsList />

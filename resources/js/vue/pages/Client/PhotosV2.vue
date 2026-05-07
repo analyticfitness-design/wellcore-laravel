@@ -87,6 +87,7 @@ const deletingId = ref(null);
 // --- Refs UI ---
 const uploadSectionRef = ref(null);
 const guideSectionRef = ref(null);
+const guideRef = ref(null); // expone .open() para forzar apertura desde EmptyState
 
 // --- Computed ---
 const sortedDates = computed(() => photosStore.sortedDates.value);
@@ -238,7 +239,13 @@ function scrollToUpload() {
   uploadSectionRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 function scrollToGuide() {
-  guideSectionRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Forzar apertura de la guía si está colapsada (sin esto el scroll va al
+  // header pero el cliente no ve los ángulos sin un click extra).
+  guideRef.value?.open?.();
+  // Defer scroll para que la animación de expansión arranque primero
+  requestAnimationFrame(() => {
+    guideSectionRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 }
 
 // --- Cleanup ---
@@ -418,7 +425,7 @@ onMounted(() => {
 
         <!-- Guía de fotos -->
         <div ref="guideSectionRef">
-          <PhotoGuide :default-open="true" />
+          <PhotoGuide ref="guideRef" :default-open="true" :genero="photosStore.genero.value" />
         </div>
 
         <!-- ===== Upload section ===== -->
