@@ -109,6 +109,8 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'throttle:api'])->group(
     Route::get('/dashboard', [ClientController::class, 'dashboard']);
     Route::get('/metrics', [ClientController::class, 'metrics']);
     Route::post('/metrics', [ClientController::class, 'storeMetric']);
+    Route::post('/metrics/dismiss-tutorial', [ClientController::class, 'dismissMetricsTutorial']);
+    Route::get('/checkins', [ClientController::class, 'clientCheckins']);
     Route::get('/profile', [ClientController::class, 'profile']);
     Route::put('/profile', [ClientController::class, 'updateProfile']);
     Route::post('/avatar', [ClientController::class, 'uploadAvatar']);

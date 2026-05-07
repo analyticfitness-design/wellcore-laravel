@@ -216,4 +216,18 @@ return [
         'percentage' => (int) env('WC_PHOTOS_V2_PCT', 0),
         'force_users' => array_filter(array_map('trim', explode(',', env('WC_PHOTOS_V2_USERS', '')))),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Metrics Tracker v2 Feature Flag (rollout gradual)
+    |--------------------------------------------------------------------------
+    | WC_METRICS_V2=false        — off para todos (default)
+    | WC_METRICS_V2_PCT=10       — on para 10% de usuarios
+    | WC_METRICS_V2_USERS=1,2,3  — forzar para user IDs específicos
+    */
+    'metrics_v2' => [
+        'enabled' => env('WC_METRICS_V2', false),
+        'percentage' => (int) env('WC_METRICS_V2_PCT', 0),
+        'force_users' => array_filter(array_map('trim', explode(',', env('WC_METRICS_V2_USERS', '')))),
+    ],
 ];
