@@ -30,7 +30,13 @@ import { useToast } from '../../composables/useToast';
 const props = defineProps({
     avatarUrl: { type: String, default: null },
     name:      { type: String, default: '' },
-    size:      { type: Number, default: 100 },
+    /**
+     * Tamaño total del wrapper (ring exterior). El avatar interno usa inset
+     * de `discInset` para dejar espacio al stroke del progress ring (HTML v2).
+     * Default 120 — encaja con CompletionRing 120 y deja 10px de margen.
+     */
+    size:      { type: Number, default: 120 },
+    discInset: { type: Number, default: 10 },
     disabled:  { type: Boolean, default: false },
 });
 const emit = defineEmits(['uploaded', 'update:avatarUrl', 'error']);
@@ -125,7 +131,7 @@ onBeforeUnmount(clearObjectUrl);
 
 <template>
   <div class="avatar-uploader" :style="{ width: size + 'px', height: size + 'px' }">
-    <div class="avatar-disc">
+    <div class="avatar-disc" :style="{ inset: discInset + 'px' }">
       <img
         v-if="displayUrl"
         :src="displayUrl"
@@ -188,8 +194,8 @@ onBeforeUnmount(clearObjectUrl);
 }
 
 .avatar-disc {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  /* `inset` se setea inline desde el script para respetar discInset */
   border-radius: 999px;
   background: var(--color-wc-bg-tertiary);
   border: 1px solid var(--color-wc-border);
@@ -254,8 +260,8 @@ onBeforeUnmount(clearObjectUrl);
 
 .avatar-cam {
   position: absolute;
-  right: -4px;
-  bottom: -4px;
+  right: 2px;
+  bottom: 2px;
   width: 44px;
   height: 44px;
   min-width: 44px;

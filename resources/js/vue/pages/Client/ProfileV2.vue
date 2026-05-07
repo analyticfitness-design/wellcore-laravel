@@ -250,7 +250,8 @@ onMounted(handleLoad);
               <AvatarUploader
                 :avatar-url="avatarUrl || ''"
                 :name="state.name"
-                :size="100"
+                :size="120"
+                :disc-inset="10"
                 @uploaded="handleAvatarUploaded"
               />
             </CompletionRing>
