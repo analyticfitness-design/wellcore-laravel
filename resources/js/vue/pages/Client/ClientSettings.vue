@@ -4,6 +4,7 @@ import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
 import { safeStorage } from '../../utils/safeStorage';
 import ClientLayout from '../../layouts/ClientLayout.vue';
+import WcErrorState from '../../components/WcErrorState.vue';
 
 const api = useApi();
 const toast = useToast();
@@ -342,12 +343,7 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- Error -->
-      <div v-else-if="profileError" class="flex flex-col items-center justify-center py-12">
-        <p class="text-sm text-wc-text-secondary">{{ profileError }}</p>
-        <button @click="fetchSettings" class="wc-btn-primary mt-4">
-          Reintentar
-        </button>
-      </div>
+      <WcErrorState v-else-if="profileError" :message="profileError" @retry="fetchSettings" />
 
       <!-- Profile form -->
       <div v-else class="max-w-xl rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">

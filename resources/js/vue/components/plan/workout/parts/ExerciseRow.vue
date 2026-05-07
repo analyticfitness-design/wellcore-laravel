@@ -24,16 +24,15 @@
     </div>
 
     <div class="ex-body">
-      <div class="ex-name">{{ effectiveName }}</div>
-
-      <ExerciseVariationToggle
-        v-if="hasVariation"
-        :has-variation="hasVariation"
-        :is-using-variant="isUsingVariant"
-        :variant-name="variantName"
-        :is-toggling="isToggling"
-        @toggle="onToggleVariation"
-      />
+      <div class="ex-name">
+        {{ effectiveName }}
+        <span v-if="isUsingVariant && hasVariation" class="variation-active-mark" data-testid="variation-active-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/>
+          </svg>
+          Usando variación
+        </span>
+      </div>
 
       <div v-if="!isCardio" class="chips">
         <span v-if="series" class="metric"><span class="k">Series</span><span class="v">{{ series }}</span></span>
@@ -65,6 +64,35 @@
         </svg>
         Nota del coach
       </button>
+
+      <!-- Variation toggle/selector — debajo del coach note (paridad con V1) -->
+      <div v-if="hasVariation || hasMultipleOpciones" class="variation-controls">
+        <ExerciseVariationToggle
+          v-if="hasVariation && !hasMultipleOpciones"
+          :has-variation="true"
+          :is-using-variant="isUsingVariant"
+          :variant-name="variantName"
+          :is-toggling="isToggling"
+          @toggle="onToggleVariation"
+        />
+        <!-- Selector múltiple cuando hay opciones a/b/c -->
+        <div v-if="hasMultipleOpciones" class="variation-selector" data-testid="variation-selector">
+          <span class="variation-selector__label">Opciones</span>
+          <div class="variation-selector__options">
+            <button
+              v-for="(opt, i) in opcionesList"
+              :key="i"
+              type="button"
+              class="variation-selector__opt"
+              :class="{ 'is-active': i === selectedOpcionIdx }"
+              :disabled="isToggling"
+              @click="onSelectOpcion(i)"
+            >
+              {{ String.fromCharCode(65 + i) }}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -105,6 +133,25 @@ const hasVariation = computed(() => {
 const variantName = computed(() => {
   return props.ejercicio?.variacion?.nombre ?? '';
 });
+
+// Opciones múltiples (a/b/c) — backend normalizeVariacion las extrae cuando
+// el JSON original tiene array indexado de strings.
+const opcionesList = computed(() => {
+  const opts = props.ejercicio?.variacion?.opciones;
+  return Array.isArray(opts) ? opts.filter((o) => typeof o === 'string' && o.trim().length > 0) : [];
+});
+const hasMultipleOpciones = computed(() => opcionesList.value.length >= 2);
+const selectedOpcionIdx = ref(0);
+
+function onSelectOpcion(idx) {
+  if (idx < 0 || idx >= opcionesList.value.length) return;
+  selectedOpcionIdx.value = idx;
+  // Idx 0 = original (volver al original), Idx >0 = usar variación N
+  // Emitimos el toggle con use_variant=true cuando idx>0, false cuando idx=0.
+  const exId = props.ejercicio?.id;
+  if (!exId) return;
+  emit('variation-toggle', exId, idx > 0);
+}
 
 // effectiveGifUrl: cuando is_using_variant=true preferir variacion.gif_url, sino el original.
 // IMPORTANTE: nunca sobreescribir el campo original — solo elegir cual mostrar.
@@ -320,6 +367,83 @@ function onGifError() {
   font-weight: 600;
   color: var(--wc-text);
   line-height: 1.30;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.variation-active-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(239, 68, 68, 0.85);
+  font-weight: 500;
+}
+.variation-active-mark svg { width: 9px; height: 9px; }
+
+/* Variation controls — paridad V1: debajo del coach note, pill prominente */
+.variation-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.variation-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.variation-selector__label {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--wc-text-tertiary);
+  font-weight: 600;
+}
+.variation-selector__options {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--wc-border);
+  background: var(--wc-bg-tertiary, rgba(255,255,255,0.04));
+}
+.variation-selector__opt {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  font-family: 'Oswald', Impact, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--wc-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.variation-selector__opt:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.08);
+  color: #EF4444;
+}
+.variation-selector__opt.is-active {
+  background: linear-gradient(135deg, #DC2626, #7F1D1D);
+  color: #fff;
+  box-shadow: 0 2px 8px -2px rgba(220, 38, 38, 0.5);
+}
+.variation-selector__opt:disabled {
+  opacity: 0.5;
+  cursor: progress;
 }
 .chips {
   display: flex;
