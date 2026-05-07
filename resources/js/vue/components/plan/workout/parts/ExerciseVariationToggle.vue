@@ -1,6 +1,6 @@
 <template>
-  <div class="variation-wrap" v-if="hasVariation">
-    <span v-if="isUsingVariant" class="variation-active-mark" data-testid="variation-active-mark">
+  <div class="variation-wrap">
+    <span v-if="isUsingVariant && hasVariation" class="variation-active-mark" data-testid="variation-active-mark">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/>
       </svg>
@@ -9,9 +9,10 @@
     <button
       type="button"
       class="variation-toggle"
-      :class="{ 'is-loading': isToggling }"
-      :disabled="isToggling"
+      :class="{ 'is-loading': isToggling, 'is-disabled': !hasVariation }"
+      :disabled="isToggling || !hasVariation"
       :aria-pressed="isUsingVariant"
+      :title="!hasVariation ? 'Tu coach no asignó variación para este ejercicio' : ''"
       data-testid="variation-toggle-btn"
       @click="onClick"
     >
@@ -40,7 +41,8 @@ const emit = defineEmits(['toggle']);
 
 const buttonLabel = computed(() => {
   if (props.isToggling) return 'Cambiando...';
-  return props.isUsingVariant ? 'Volver al original' : 'Usar variación';
+  if (!props.hasVariation) return 'Sin variación';
+  return props.isUsingVariant ? 'Volver al original' : 'Variación';
 });
 
 function onClick() {
@@ -98,6 +100,15 @@ function onClick() {
 .variation-toggle.is-loading {
   opacity: 0.6;
   cursor: progress;
+}
+.variation-toggle.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-style: dashed;
+}
+.variation-toggle.is-disabled:hover {
+  color: var(--wc-text-secondary);
+  border-color: var(--wc-border);
 }
 .variation-toggle svg {
   width: 10px;

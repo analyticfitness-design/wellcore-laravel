@@ -65,17 +65,10 @@
         Nota del coach
       </button>
 
-      <!-- Variation toggle/selector — debajo del coach note (paridad con V1) -->
-      <div v-if="hasVariation || hasMultipleOpciones" class="variation-controls">
-        <ExerciseVariationToggle
-          v-if="hasVariation && !hasMultipleOpciones"
-          :has-variation="true"
-          :is-using-variant="isUsingVariant"
-          :variant-name="variantName"
-          :is-toggling="isToggling"
-          @toggle="onToggleVariation"
-        />
-        <!-- Selector múltiple cuando hay opciones a/b/c -->
+      <!-- Variation toggle/selector — SIEMPRE visible bajo cada ejercicio (paridad V1).
+           Si no hay variación populada en el JSON: botón disabled "Sin variación". -->
+      <div class="variation-controls">
+        <!-- Selector múltiple A/B/C cuando hay opciones (>1 variación) -->
         <div v-if="hasMultipleOpciones" class="variation-selector" data-testid="variation-selector">
           <span class="variation-selector__label">Opciones</span>
           <div class="variation-selector__options">
@@ -86,12 +79,22 @@
               class="variation-selector__opt"
               :class="{ 'is-active': i === selectedOpcionIdx }"
               :disabled="isToggling"
+              :title="opt"
               @click="onSelectOpcion(i)"
             >
               {{ String.fromCharCode(65 + i) }}
             </button>
           </div>
         </div>
+        <!-- Toggle simple (1 variación) o botón disabled (sin variación) -->
+        <ExerciseVariationToggle
+          v-else
+          :has-variation="hasVariation"
+          :is-using-variant="isUsingVariant"
+          :variant-name="variantName"
+          :is-toggling="isToggling"
+          @toggle="onToggleVariation"
+        />
       </div>
     </div>
   </div>
